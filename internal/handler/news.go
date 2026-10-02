@@ -133,7 +133,11 @@ func (a *App) NewsIndex(c *Req) {
 							b.Attrs("author", apibuilder.A("id", n.AuthorID, "name", c.Page().UserName(n.Author)))
 						}
 						b.Value("title", n.Title)
-						b.Value("summary", nilIfEmptyString(n.Summary))
+						if n.SummaryNull {
+							b.Value("summary", nil)
+						} else {
+							b.Value("summary", n.Summary)
+						}
 						b.Value("description", nilIfEmptyString(n.Description))
 						b.Value("created_on", n.CreatedAt)
 					})
@@ -211,7 +215,7 @@ func (a *App) newsFormProjects(c *Req) []*domain.Project {
 
 // newNewsForm は News.new(:project => @project, :author => User.current)。
 func (a *App) newNewsForm(c *Req) *newsForm {
-	n := &domain.News{Project: c.Project, Author: c.User, AuthorID: c.User.ID}
+	n := &domain.News{Project: c.Project, Author: c.User, AuthorID: c.User.ID, SummaryNull: true}
 	if c.Project != nil {
 		n.ProjectID = c.Project.ID
 	}
@@ -229,6 +233,7 @@ func assignNews(c *Req, n *domain.News) {
 	}
 	if v, ok := p.StringOK("summary"); ok {
 		n.Summary = v
+		n.SummaryNull = false
 	}
 	if v, ok := p.StringOK("description"); ok {
 		n.Description = v

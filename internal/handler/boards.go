@@ -47,11 +47,13 @@ type boardForm struct {
 	*domain.Board
 	// ValidParents は valid_parents（project.boards - self_and_descendants）。
 	ValidParents []*domain.Board
+	// descriptionGiven は params[:board][:description] が渡された（新規でも value を出す）。
+	descriptionGiven bool
 }
 
 // Send は rails.Sender（新規の board の description は nil: Redmine の列は NULL 可で既定値が無い）。
 func (f *boardForm) Send(method string) (any, bool) {
-	if method == "description" && f.Board.ID == 0 && f.Board.Description == "" {
+	if method == "description" && f.Board.ID == 0 && f.Board.Description == "" && !f.descriptionGiven {
 		return nil, true
 	}
 	return nil, false
@@ -315,6 +317,9 @@ func (a *App) BoardsCreate(c *Req) {
 		return
 	}
 	f := &boardForm{contentForm: newContentForm(c, "board", 0), Board: b, ValidParents: vp}
+	if p := c.Params().Map("board"); p != nil {
+		f.descriptionGiven = p.Has("description")
+	}
 	validateBoard(f, b.ParentID != nil)
 	if f.errs.Any() {
 		a.renderBoardForm(c, "boards/new", f)

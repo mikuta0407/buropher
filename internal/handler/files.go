@@ -219,7 +219,9 @@ func (a *App) FilesCreate(c *Req) {
 		return
 	}
 	if api {
-		httpx.Head(c.W, c.R, http.StatusBadRequest)
+		// render :status => :bad_request は files/create の API テンプレートが無く、Redmine は
+		// "Missing template, responding with 404" で 404 を返す
+		httpx.Head(c.W, c.R, http.StatusNotFound)
 		c.Halt()
 		return
 	}

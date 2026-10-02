@@ -23,6 +23,7 @@ func (r *newsRow) news() *domain.News {
 	return &domain.News{
 		ID: r.ID, ProjectID: r.ProjectID, Title: r.Title, Summary: r.Summary.String, Description: r.Description.String,
 		AuthorID: r.AuthorID, CommentsCount: r.CommentsCount, CreatedAt: r.CreatedAt.Time,
+		SummaryNull: !r.Summary.Valid,
 	}
 }
 

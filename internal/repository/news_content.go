@@ -55,8 +55,13 @@ func CountNews(ctx context.Context, q db.Queryer, visible string, projectID int6
 func ListNews(ctx context.Context, q db.Queryer, visible string, projectID int64, limit, offset int) ([]*domain.News, error) {
 	where, args := newsScope(visible, projectID)
 	var rows []newsRow
-	// 同時刻は id の降順（LatestNews と同じ。参照環境の SQLite の走査順）
-	if err := q.Select(ctx, &rows, newsSelect+` WHERE `+where+` ORDER BY news.created_at DESC, news.id DESC `+
+	// 同時刻の並びは参照環境（SQLite）の実行計画に合わせる: 全体（created_on の索引を逆順に走査）は
+	// id の降順、プロジェクト内（project_id の索引で引いて並べ替え）は id の昇順
+	tie := "news.id DESC"
+	if projectID != 0 {
+		tie = "news.id ASC"
+	}
+	if err := q.Select(ctx, &rows, newsSelect+` WHERE `+where+` ORDER BY news.created_at DESC, `+tie+` `+
 		q.Dialect().LimitOffset(limit, offset), args...); err != nil {
 		return nil, err
 	}
@@ -66,7 +71,7 @@ func ListNews(ctx context.Context, q db.Queryer, visible string, projectID int64
 // InsertNews は news 行を作成して n.ID を設定する。
 func InsertNews(ctx context.Context, q db.Queryer, n *domain.News) error {
 	id, err := q.InsertReturningID(ctx, `INSERT INTO news (project_id, title, summary, description, author_id, comments_count, created_at)
-VALUES (?, ?, ?, ?, ?, 0, ?)`, n.ProjectID, n.Title, nullStr(n.Summary), nullStr(n.Description), n.AuthorID, db.NewTime(n.CreatedAt))
+VALUES (?, ?, ?, ?, ?, 0, ?)`, n.ProjectID, n.Title, newsSummaryArg(n), n.Description, n.AuthorID, db.NewTime(n.CreatedAt))
 	if err != nil {
 		return err
 	}
@@ -77,8 +82,16 @@ VALUES (?, ?, ?, ?, ?, 0, ?)`, n.ProjectID, n.Title, nullStr(n.Summary), nullStr
 // UpdateNews は title / summary / description を保存する。
 func UpdateNews(ctx context.Context, q db.Queryer, n *domain.News) error {
 	_, err := q.Exec(ctx, `UPDATE news SET title = ?, summary = ?, description = ? WHERE id = ?`,
-		n.Title, nullStr(n.Summary), nullStr(n.Description), n.ID)
+		n.Title, newsSummaryArg(n), n.Description, n.ID)
 	return err
+}
+
+// newsSummaryArg は summary の値（SummaryNull なら NULL、それ以外は空文字列もそのまま保存する）。
+func newsSummaryArg(n *domain.News) any {
+	if n.SummaryNull && n.Summary == "" {
+		return nil
+	}
+	return n.Summary
 }
 
 // DeleteNews は news 行を削除する（コメントは FK の CASCADE。コメントのリアクション・

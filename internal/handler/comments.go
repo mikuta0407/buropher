@@ -63,7 +63,9 @@ func (a *App) CommentsDestroy(c *Req) {
 	}
 	if err := repository.DeleteComment(c.Ctx(), a.DB, n.ID, id); err != nil {
 		if errors.Is(err, repository.ErrNotFound) {
-			c.Render404("")
+			// @news.comments.find は ActiveRecord::RecordNotFound を投げ、コントローラで処理されないため
+			// public/404.html になる
+			renderPublic404(c)
 			return
 		}
 		a.internalError(c, "destroy comment", err)
