@@ -63,3 +63,9 @@ entries:
     reason: "wiki_page_versions は wiki_contents と wiki_content_versions を統合して持ち、同じ版は wiki_contents を優先する（docs/schema.md）。フィクスチャの CookBook_documentation 版 3 は wiki_contents のコメント（Gzip compression activated）と wiki_content_versions のコメント（空）が食い違うため活動の説明が異なる"
     lines:
       - '^\s*<span class="description">(Gzip compression activated)?</span>$'
+
+  # ---- time_versions（バージョン） ----
+  - case: "time_versions/projects_*__*"
+    reason: "403 / 404 のアプリケーションメニューで project_id を引き継ぐ（url_for の recall）のは issues ブランチの menu.RecallEnv で対応済み。マージ後に削除する"
+    lines:
+      - '^\s*<a class="(issues|time-entries|gantt|calendar|news)" href="(/projects/[a-z0-9_-]+)?/(issues|time_entries|issues/gantt|issues/calendar|news)">'

@@ -1,0 +1,9 @@
+status: 422
+content-type: application/json
+
+{
+  "errors": [
+    "Name has already been taken",
+    "Status is not included in the list"
+  ]
+}

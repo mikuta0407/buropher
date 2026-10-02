@@ -6,6 +6,7 @@ package handler
 
 import (
 	"context"
+	"errors"
 	"html/template"
 	"math"
 	"net/url"
@@ -489,6 +490,7 @@ type statusBy struct {
 	Options  template.HTML
 	Rows     []statusByRow
 	URL      string
+	FormPath string
 }
 
 // statusByGroup は集計のキー（関連オブジェクト）。
@@ -546,7 +548,7 @@ func (vc *versionCtx) renderIssueStatusBy(v *versionModel, criteria string) (*st
 		gi, gj := groups[keys[i]], groups[keys[j]]
 		return compareStatusByGroup(criteria, gi, gj) < 0
 	})
-	sb := &statusBy{Criteria: criteria, URL: "/versions/" + strconv.FormatInt(v.ID, 10) + "/status_by"}
+	sb := &statusBy{Criteria: criteria, URL: "/versions/" + strconv.FormatInt(v.ID, 10) + "/status_by", FormPath: versionFormPath(c)}
 	var opts []any
 	for _, cr := range statusByCriterias {
 		opts = append(opts, []any{c.L("field_" + cr), cr})
@@ -692,10 +694,36 @@ func (vc *versionCtx) wikiContent(v *versionModel) (template.HTML, error) {
 	if t == "" {
 		return "", nil
 	}
-	_, text, ok, err := repository.VersionWikiPageText(vc.c.Ctx(), vc.a.DB, v.ProjectID, wikiTitleize(t))
+	ctx := vc.c.Ctx()
+	w, err := repository.FindWikiByProject(ctx, vc.a.DB, v.ProjectID)
+	if errors.Is(err, repository.ErrNotFound) {
+		return "", nil
+	} else if err != nil {
+		return "", err
+	}
+	page, err := repository.FindWikiPageByTitle(ctx, vc.a.DB, w.ID, wikiTitleize(t))
+	if err != nil {
+		if !errors.Is(err, repository.ErrNotFound) {
+			return "", err
+		}
+		if page, err = repository.FindWikiRedirect(ctx, vc.a.DB, w.ID, wikiTitleize(t)); err != nil {
+			if errors.Is(err, repository.ErrNotFound) {
+				return "", nil
+			}
+			return "", err
+		}
+	}
+	text, ok, err := repository.WikiPageText(ctx, vc.a.DB, page.ID)
 	if err != nil || !ok {
 		return "", err
 	}
-	body := vc.a.Helpers.VersionTextilizable(vc.page(), text)
+	obj := versionWikiObject{&redmine.Object{Kind: "wiki_content", ID: page.ID, Project: v.Project, Page: page}}
+	body := vc.a.Helpers.VersionTextilizable(vc.page(), text, obj)
 	return template.HTML("<div class=\"wiki wiki-page\">\n  ") + body + "\n</div>\n", nil
 }
+
+// versionWikiObject は textilizable の :object（WikiContent）。
+type versionWikiObject struct{ o *redmine.Object }
+
+// TextObject は helper.TextObject。
+func (w versionWikiObject) TextObject() *redmine.Object { return w.o }

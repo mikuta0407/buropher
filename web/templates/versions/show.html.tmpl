@@ -44,7 +44,7 @@
 </div>
 
 {{if .Issues}}
-{{form_tag request_path (hash "data" (hash "cm_url" "/issues/context_menu")) -}}
+{{form_tag .FormPath (hash "data" (hash "cm_url" "/issues/context_menu")) -}}
   <table class="list related-issues">
   <caption>{{l "label_related_issues"}}</caption>
   {{range $issue := .Issues}}

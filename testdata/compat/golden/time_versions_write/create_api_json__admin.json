@@ -1,0 +1,23 @@
+status: 201
+content-type: application/json
+location: {{BASE}}/versions/11
+
+{
+  "version": {
+    "id": 11,
+    "project": {
+      "id": 1,
+      "name": "eCookbook"
+    },
+    "name": "6.0",
+    "description": "",
+    "status": "locked",
+    "due_date": "2026-05-01",
+    "sharing": "tree",
+    "wiki_page_title": null,
+    "estimated_hours": 0.0,
+    "spent_hours": 0.0,
+    "created_on": "TIMESTAMP",
+    "updated_on": "TIMESTAMP"
+  }
+}

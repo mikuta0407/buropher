@@ -1,0 +1,53 @@
+status: 200
+content-type: application/json
+
+{
+  "versions": [
+    {
+      "id": 4,
+      "project": {
+        "id": 3,
+        "name": "eCookbook Subproject 1"
+      },
+      "name": "2.0",
+      "description": "Future version on subproject",
+      "status": "open",
+      "due_date": null,
+      "sharing": "tree",
+      "wiki_page_title": null,
+      "created_on": "2006-07-19T19:00:33Z",
+      "updated_on": "2006-07-19T19:00:33Z"
+    },
+    {
+      "id": 6,
+      "project": {
+        "id": 5,
+        "name": "Private child of eCookbook"
+      },
+      "name": "Private Version of public subproject",
+      "description": "Should be done any day now...",
+      "status": "open",
+      "due_date": null,
+      "sharing": "tree",
+      "wiki_page_title": null,
+      "created_on": "2006-07-19T19:00:07Z",
+      "updated_on": "2006-07-19T19:00:07Z"
+    },
+    {
+      "id": 7,
+      "project": {
+        "id": 2,
+        "name": "OnlineStore"
+      },
+      "name": "Systemwide visible version",
+      "description": null,
+      "status": "open",
+      "due_date": null,
+      "sharing": "system",
+      "wiki_page_title": null,
+      "created_on": "2006-07-19T19:00:07Z",
+      "updated_on": "2006-07-19T19:00:07Z"
+    }
+  ],
+  "total_count": 3
+}

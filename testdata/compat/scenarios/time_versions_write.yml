@@ -13,6 +13,7 @@ normalize:
     - "#footer"
   regex:
     - {pattern: '-[0-9a-f]{8}(\\" method=)', replace: '-RANDOM$1'}
+    - {pattern: '(authenticity_token\\" value=\\")[^\\]+', replace: '$1CSRF'}
   mask_timestamps: true
 
 requests:
@@ -34,6 +35,7 @@ requests:
       version[effective_date]: "foo"
       version[description]: "x"
   - id: create_no_params
+    form: {dummy: "1"}
     path: /projects/ecookbook/versions
     method: POST
     user: admin
