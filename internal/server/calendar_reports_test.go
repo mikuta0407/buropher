@@ -128,8 +128,12 @@ func TestCalendarReportsBehavior(t *testing.T) {
 	if res, _ := get(t, dl, ts.URL+"/projects/onlinestore/issues/report"); res.StatusCode != 403 {
 		t.Errorf("dlopper onlinestore report: %d", res.StatusCode)
 	}
-	// 非公開クエリ（他人のもの）は 403
-	if res, _ := get(t, dl, ts.URL+"/projects/ecookbook/issues/calendar?query_id=2"); res.StatusCode != 403 {
+	// 非公開クエリ（dlopper のもの）は他人には 403、本人には見える
+	js := login(t, ts, "jsmith", "jsmith")
+	if res, _ := get(t, js, ts.URL+"/projects/ecookbook/issues/calendar?query_id=2"); res.StatusCode != 403 {
+		t.Errorf("private query: %d", res.StatusCode)
+	}
+	if res, _ := get(t, dl, ts.URL+"/projects/ecookbook/issues/calendar?query_id=2"); res.StatusCode != 200 {
 		t.Errorf("private query: %d", res.StatusCode)
 	}
 }
