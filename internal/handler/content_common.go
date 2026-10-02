@@ -44,7 +44,9 @@ func (f *contentForm) ToParam() string { return strconv.FormatInt(f.id, 10) }
 func (f *contentForm) ErrorsOn(attr string) []string { return f.errs.Messages(f.loc, attr) }
 
 // HumanAttributeName は human_attribute_name(attr)。
-func (f *contentForm) HumanAttributeName(attr string) string { return f.errs.HumanAttributeName(f.loc, attr) }
+func (f *contentForm) HumanAttributeName(attr string) string {
+	return f.errs.HumanAttributeName(f.loc, attr)
+}
 
 // ValidationErrors は errors（error_messages_for に渡す）。
 func (f *contentForm) ValidationErrors() *validation.Errors { return f.errs }

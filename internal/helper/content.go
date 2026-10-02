@@ -43,8 +43,8 @@ func init() {
 				return projectTreeOptionsForSelect(pg(), projects, selected)
 			},
 			"quote_reply_button": func(url string, iconOnly bool) html { return d.quoteReplyButton(pg(), url, iconOnly) },
-			"news_index_path":   func(project any) string { return newsIndexPath(toProject(project)) },
-			"news_preview_path": newsPreviewPath,
+			"news_index_path":    func(project any) string { return newsIndexPath(toProject(project)) },
+			"news_preview_path":  newsPreviewPath,
 			"news_atom_path": func(project any, key string) string {
 				u := newsIndexPath(toProject(project)) + ".atom"
 				if key != "" {
