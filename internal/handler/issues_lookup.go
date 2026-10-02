@@ -420,7 +420,9 @@ func (l *issueLookup) linkToPrincipal(u *domain.User) template.HTML {
 	return l.a.Helpers.LinkToPrincipal(l.page, u, "")
 }
 
-func (l *issueLookup) principalName(u *domain.User) string { return helper.PrincipalUserName(l.page, u) }
+func (l *issueLookup) principalName(u *domain.User) string {
+	return helper.PrincipalUserName(l.page, u)
+}
 
 // linkToVersion は link_to_version(version)。
 func (l *issueLookup) linkToVersion(v *repository.Version) template.HTML {
