@@ -121,10 +121,3 @@ func (s SessionStore) DeleteExpiredSessions(ctx context.Context, now time.Time) 
 	}
 	return res.RowsAffected()
 }
-
-func nullString(s string) any {
-	if s == "" {
-		return nil
-	}
-	return s
-}

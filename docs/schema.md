@@ -236,6 +236,20 @@ Decisions taken where the planning documents were silent or contradictory:
     dependency order (Appendix A §6.1) and rely on deferral only for self references and the
     `projects.default_*` / `boards.last_message_id` cycles (the latter are filled by a later UPDATE).
 
+17. **Project tree order** (Redmine's `lft` order, `Project.sorted`) is computed in Go
+    (`repository.ProjectNestedSet` / `SortProjectsByTree`) from `parent_id`: siblings by name in
+    byte order (SQLite's BINARY collation, as on the reference instance), equal names by id
+    descending (Redmine inserts a moved/new project before equally named siblings). Redmine's actual
+    `lft` order depends on the DB collation (MySQL/PG locales are roughly case-insensitive) and on
+    history (moves keep the existing order of the other siblings; the official fixtures list
+    `eCookbook` before `OnlineStore`), which cannot be reproduced without storing `lft`.
+18. **Inherited memberships are materialised** exactly like Redmine (`member_roles.inherited_from`):
+    group memberships are copied to the group's users and memberships of `inherit_members`
+    subprojects are copied from the parent. The Go code in `internal/repository` (members.go,
+    principals.go, projects.go) ports the `Member` / `MemberRole` / `Group` / `Project` callbacks.
+    Inherited rows are deleted by Go before their source row, not by the `ON DELETE CASCADE`
+    (which would skip the "remove member if it has no roles left" callback).
+
 ## Redmine columns intentionally not carried over
 
 | Redmine | Reason |
