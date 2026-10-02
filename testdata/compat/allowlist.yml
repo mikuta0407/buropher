@@ -38,3 +38,11 @@ entries:
   - case: "issues_read/issues_changes.atom_project_id_ecookbook__*"
     reason: "journals#index は created_on DESC だけで並べるため、同時刻のジャーナル（フィクスチャの 2026-01-14 の 4 件）の順序は参照の SQLite の実行計画に依存する。buropher は id DESC で揃える（同時刻を含まない条件のケースは別に一致を確認している）"
     ignore: true
+  - case: "issues_read/*.json*"
+    reason: "空文字列は NULL で保存する（docs/schema.md の '' → NULL）ため、添付ファイル等の description: \"\" は null になる"
+    lines:
+      - '^\s*"description": (null|""),?$'
+  - case: "issues_read/*.xml*"
+    reason: "空文字列は NULL で保存する（docs/schema.md の '' → NULL）ため、添付ファイル等の <description></description> は <description/> になる"
+    lines:
+      - '^\s*<description(/>|></description>)$'

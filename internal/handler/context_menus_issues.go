@@ -293,7 +293,9 @@ func (a *App) contextMenuCustomFields(c *Req, l *issueLookup, cm *issueContextMe
 			continue
 		}
 		env := l.cfEnv(f)
-		env.ProjectUsers = func(projectID int64, roleIDs []int64) []customfield.Option { return l.projectUserOptions(projectID, roleIDs) }
+		env.ProjectUsers = func(projectID int64, roleIDs []int64) []customfield.Option {
+			return l.projectUserOptions(projectID, roleIDs)
+		}
 		env.SharedVersions = func(projectID int64, statuses []string) []customfield.Option {
 			return l.sharedVersionOptions(projectID, statuses)
 		}

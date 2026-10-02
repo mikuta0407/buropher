@@ -198,3 +198,43 @@ requests:
     users: [admin]
   - path: /issues/context_menu?ids[]=13&ids[]=14&back_url=/issues/gantt
     users: [admin]
+
+  # ---- API ----
+  - path: /issues.json
+    users: [admin, jsmith, anonymous]
+  - path: /issues.xml?limit=3&offset=2
+    users: [admin]
+  - path: /issues.json?include=attachments,relations&status_id=*&sort=id
+    users: [admin]
+  - path: /issues.json?project_id=ecookbook&status_id=closed
+    users: [jsmith]
+  - path: /projects/ecookbook/issues.xml?tracker_id=2
+    users: [admin]
+  - path: /issues.json?nometa=1&limit=1
+    users: [admin]
+  - path: /issues.json?set_filter=1&f[]=due_date&op[due_date]=%3E%3C&v[due_date][]=foo
+    users: [admin]
+  - path: /issues/1.json
+    users: [admin, anonymous]
+  - path: /issues/1.xml?include=journals,children,watchers
+    users: [admin]
+  - path: /issues/2.json?include=children,attachments,relations,changesets,journals,watchers,allowed_statuses
+    users: [admin, jsmith]
+  - path: /issues/14.xml?include=attachments,journals
+    users: [jsmith]
+  - path: /issues/6.json?include=journals,allowed_statuses
+    users: [dlopper]
+  - path: /issues/999.json
+    users: [admin]
+
+  # ---- CSV ----
+  - path: /issues.csv
+    users: [admin, anonymous]
+  - path: /issues.csv?set_filter=1&f[]=status_id&op[status_id]=*&c[]=all_inline&c[]=description&c[]=last_notes
+    users: [admin]
+  - path: /issues.csv?set_filter=1&f[]=status_id&op[status_id]=*&c[]=subject&c[]=cf_1&c[]=cf_2&c[]=cf_6&c[]=cf_8&encoding=UTF-8&field_separator=%3B
+    users: [admin]
+  - path: /projects/ecookbook/issues.csv?query_name=My%20Report&set_filter=1&c[]=subject&c[]=relations&c[]=estimated_hours&c[]=project.cf_3
+    users: [jsmith]
+  - path: /issues.csv?set_filter=1&f[]=due_date&op[due_date]=%3E%3C&v[due_date][]=foo
+    users: [admin]
