@@ -10,6 +10,10 @@ users:
 normalize:
   mask_text_selectors:
     - "#footer"
+  # buropher 拡張: LDAP の追加設定・同期の欄（class buropher-extra。参照に無い）
+  strip_selectors:
+    - "#ldap-extra"
+    - "#ldap-sync-status"
   regex:
     # 接続エラーの理由（net-ldap と go-ldap で文言が異なる）
     - {pattern: 'Unable to connect \(.*\)', replace: 'Unable to connect (MASKED)'}

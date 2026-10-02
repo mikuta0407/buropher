@@ -77,6 +77,8 @@ func setupNotify(cfg *config.Config, d *db.DB, app *handler.App, o Options) (*jo
 	svc := &notify.Service{DB: d, Settings: app.Settings, Queue: q, Renderer: app, Mail: sender, Discord: dc,
 		Secrets: app.Secrets, Logger: o.Logger, Now: o.Now}
 	svc.RegisterJobs()
+	// buropher 拡張: LDAP の定期同期
+	app.RegisterLDAPSyncJob(q)
 	app.Notify = svc
 	if svc.MailEnabled() {
 		// パスワード再発行・登録・2 要素認証のセキュリティ通知などのアカウント系メール（未設定ならログのみ）
@@ -100,6 +102,8 @@ func schedule(cfg *config.Config, q *jobs.Queue) (*jobs.Scheduler, error) {
 		Name: "cleanup", Kind: notify.JobCleanup, Schedule: jobs.Every(cleanup), RunAtStart: true,
 		Payload: notify.CleanupOptions{JobsRetention: jr, DeliveriesRetention: dr},
 	}}}
+	// LDAP の定期同期（各認証方式の sync_enabled / sync_interval はジョブの中で判定する）
+	s.Jobs = append(s.Jobs, jobs.Periodic{Name: "ldap_sync", Kind: handler.JobLDAPSync, Schedule: jobs.Every(handler.LDAPSyncCheckInterval)})
 	if r := cfg.Jobs.Reminders; r.Enabled {
 		at := r.At
 		if at == "" {

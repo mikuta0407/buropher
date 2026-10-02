@@ -47,6 +47,7 @@ func (a *App) routesAuthSources(r Router) {
 	a.Handle(r, http.MethodPatch, "/auth_sources/{id}", AuthSourcesController, "update", a.AuthSourcesUpdate, RequireAdmin(), find)
 	a.Handle(r, http.MethodPut, "/auth_sources/{id}", AuthSourcesController, "update", a.AuthSourcesUpdate, RequireAdmin(), find)
 	a.Handle(r, http.MethodDelete, "/auth_sources/{id}", AuthSourcesController, "destroy", a.AuthSourcesDestroy, RequireAdmin(), find)
+	a.routesAuthSourcesLDAPExt(r)
 }
 
 const ctxAuthSource = "auth_source"
@@ -91,6 +92,8 @@ type ldapSourceForm struct {
 	passwordChanged                        bool
 	errors                                 *validation.Errors
 	loc                                    *i18n.Localizer
+	// buropher 拡張（auth_sources_ldap_ext.go）
+	ldapExtFields
 }
 
 // ParamKey は form の as: :auth_source。
@@ -119,6 +122,9 @@ func (f *ldapSourceForm) ErrorsOn(attr string) []string { return f.errors.Messag
 
 // HumanAttributeName は AuthSourceLdap.human_attribute_name（field_auth_source_ldap_<attr> → field_<attr>）。
 func (f *ldapSourceForm) HumanAttributeName(attr string) string {
+	if isLDAPExtField(attr) {
+		return f.loc.L("buropher.ldap.field_" + attr)
+	}
 	return validation.HumanAttributeName(f.loc, "auth_source_ldap", attr)
 }
 
@@ -174,7 +180,7 @@ func (f *ldapSourceForm) Send(method string) (any, bool) {
 	case "ldap_mode":
 		return f.LDAPMode(), true
 	}
-	return nil, false
+	return f.sendExt(method)
 }
 
 func configStrPtr(rec *domain.AuthSourceRecord, key string) *string {
@@ -204,6 +210,7 @@ func (a *App) newLDAPSourceForm(c *Req, rec *domain.AuthSourceRecord) *ldapSourc
 		f.verifyPeer = true
 	}
 	f.password = a.openSecret(rec.Secret)
+	a.initLDAPExt(c, f)
 	return f
 }
 
@@ -284,6 +291,8 @@ func (f *ldapSourceForm) assign(p *httpx.Params) {
 			default:
 				f.tls, f.verifyPeer = false, false
 			}
+		default:
+			f.assignExt(k, s)
 		}
 	}
 }
@@ -415,6 +424,7 @@ func (a *App) validateLDAPSource(c *Req, f *ldapSourceForm) error {
 	if f.filter != nil && strings.TrimSpace(*f.filter) != "" && !ldap.ValidFilter(*f.filter) {
 		e.Add("filter", "invalid")
 	}
+	f.validateLDAPExt()
 	return nil
 }
 
@@ -457,6 +467,7 @@ func (a *App) saveLDAPSource(c *Req, f *ldapSourceForm) (bool, error) {
 	setStr("attr_firstname", f.attrFirstname)
 	setStr("attr_lastname", f.attrLastname)
 	setStr("attr_mail", f.attrMail)
+	f.saveLDAPExt(cfg)
 	rec.Config = cfg
 	rec.Name = f.name
 	rec.OntheflyRegister = f.onthefly
@@ -484,6 +495,11 @@ func (a *App) saveLDAPSource(c *Req, f *ldapSourceForm) (bool, error) {
 	if err := repository.SaveAuthSource(c.Ctx(), a.DB, rec); err != nil {
 		return false, err
 	}
+	if f.mappingsChanged {
+		if err := repository.ReplaceAuthSourceGroupMappings(c.Ctx(), a.DB, rec.ID, f.mappings); err != nil {
+			return false, err
+		}
+	}
 	return true, nil
 }
 
@@ -495,13 +511,15 @@ func (a *App) ldapSource(rec *domain.AuthSourceRecord) *ldap.Source {
 	str := func(k string) string { s, _ := rec.ConfigString(k); return s }
 	port, _ := rec.ConfigInt("port")
 	timeout, _ := rec.ConfigInt("timeout")
-	return &ldap.Source{
+	src := &ldap.Source{
 		ID: rec.ID, Name: rec.Name, Host: str("host"), Port: port, Account: str("account"),
 		AccountPassword: a.openSecret(rec.Secret), BaseDN: str("base_dn"), Filter: str("filter"), Timeout: timeout,
 		TLS: rec.ConfigBool("tls"), VerifyPeer: rec.ConfigBool("verify_peer"), StartTLS: rec.ConfigBool("starttls"),
 		AttrLogin: str("attr_login"), AttrFirstname: str("attr_firstname"), AttrLastname: str("attr_lastname"),
 		AttrMail: str("attr_mail"), OntheflyRegister: rec.OntheflyRegister,
 	}
+	applyLDAPExt(rec, src)
+	return src
 }
 
 // ---------------------------------------------------------------- アクション
@@ -546,6 +564,7 @@ func (a *App) buildNewAuthSource(c *Req) *ldapSourceForm {
 	}
 	f := a.newLDAPSourceForm(c, &domain.AuthSourceRecord{Kind: domain.AuthSourceKindLDAP, Config: map[string]any{}})
 	f.assign(c.Params().Map("auth_source"))
+	f.assignMappings(c.Params())
 	return f
 }
 
@@ -559,8 +578,7 @@ func (a *App) AuthSourcesNew(c *Req) {
 	if f == nil {
 		return
 	}
-	c.NoStore()
-	c.renderAdmin("auth_sources/new", map[string]any{"AuthSource": f}, false)
+	a.renderLDAPSourceForm(c, "auth_sources/new", f)
 }
 
 // AuthSourcesCreate は auth_sources#create。
@@ -583,8 +601,7 @@ func (a *App) AuthSourcesCreate(c *Req) {
 		c.Redirect("/auth_sources")
 		return
 	}
-	c.NoStore()
-	c.renderAdmin("auth_sources/new", map[string]any{"AuthSource": f}, false)
+	a.renderLDAPSourceForm(c, "auth_sources/new", f)
 }
 
 // AuthSourcesEdit は auth_sources#edit。
@@ -598,8 +615,7 @@ func (a *App) AuthSourcesEdit(c *Req) {
 		c.Render404("")
 		return
 	}
-	c.NoStore()
-	c.renderAdmin("auth_sources/edit", map[string]any{"AuthSource": a.newLDAPSourceForm(c, rec)}, false)
+	a.renderLDAPSourceForm(c, "auth_sources/edit", a.newLDAPSourceForm(c, rec))
 }
 
 // AuthSourcesUpdate は auth_sources#update。
@@ -615,6 +631,7 @@ func (a *App) AuthSourcesUpdate(c *Req) {
 	}
 	f := a.newLDAPSourceForm(c, rec)
 	f.assign(c.Params().Map("auth_source"))
+	f.assignMappings(c.Params())
 	ok, err := a.saveLDAPSource(c, f)
 	if err != nil {
 		a.internalError(c, "update auth source", err)
@@ -625,8 +642,7 @@ func (a *App) AuthSourcesUpdate(c *Req) {
 		c.Redirect("/auth_sources")
 		return
 	}
-	c.NoStore()
-	c.renderAdmin("auth_sources/edit", map[string]any{"AuthSource": f}, false)
+	a.renderLDAPSourceForm(c, "auth_sources/edit", f)
 }
 
 // AuthSourcesTestConnection は auth_sources#test_connection。
