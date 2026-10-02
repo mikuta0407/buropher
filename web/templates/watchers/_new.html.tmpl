@@ -1,0 +1,24 @@
+{{$a := .}}
+<h3 class="title">{{$a.Title}}</h3>
+
+{{/* Redmine は embed_authenticity_token_in_remote_forms が nil のため remote の form_tag にもトークンが入る */}}{{form_tag $a.FormURL (hash "remote" true "method" "post" "id" "new-watcher-form" "authenticity_token" true)}}
+
+  {{if $a.Watchables}}
+    {{hidden_field_tag "object_type" $a.ObjectType}}
+    {{range $w := $a.Watchables}}
+      {{hidden_field_tag "object_id[]" $w.ID}}
+    {{end}}
+  {{end}}
+  {{if $a.Project}}{{hidden_field_tag "project_id" $a.Project.ID}}{{end}}
+
+  <p>{{label_tag "user_search" (l "label_user_search")}}{{text_field_tag "user_search" nil}}</p>
+  {{javascript_tag (printf "observeSearchfield(\n          'user_search',\n          'users_for_watcher',\n          '%s'\n         )" (j $a.AutocompleteURL))}}
+  <div id="users_for_watcher">
+    {{principals_check_box_tags "watcher[user_ids][]" $a.Users}}
+  </div>
+
+  <p class="buttons">
+    {{submit_tag (l "button_add") (hash "name" nil "onclick" "hideModal(this);")}}
+    {{link_to_function (l "button_cancel") "hideModal(this);"}}
+  </p>
+{{end_form}}

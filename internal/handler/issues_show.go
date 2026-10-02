@@ -46,6 +46,11 @@ type issueShowView struct {
 	HasChangesets bool
 	AtomKey       string
 	CanViewTime   bool
+
+	// issue_relations#create.js で issue_relations/_form に渡す状態（@relation と @unsaved_relations）。
+	relationForm          *relationFormModel
+	RelationErrorMessages []string
+	UnsavedRelationsIDs   string
 }
 
 // IssuesShow は IssuesController#show。
@@ -946,19 +951,33 @@ func (v *issueShowView) RelationTypeChoices() []any {
 	return items
 }
 
-// NewRelation は @relation（IssueRelation.new）。
-func (v *issueShowView) NewRelation() *relationFormModel { return &relationFormModel{} }
+// NewRelation は @relation（show では IssueRelation.new、issue_relations#create.js では最後に保存を試みた関連）。
+func (v *issueShowView) NewRelation() *relationFormModel {
+	if v.relationForm != nil {
+		return v.relationForm
+	}
+	return &relationFormModel{}
+}
 
 // relationFormModel は form_for @relation のモデル。
-type relationFormModel struct{}
+type relationFormModel struct {
+	persisted    bool
+	relationType string
+	delay        any
+}
 
 func (r *relationFormModel) ParamKey() string { return "relation" }
-func (r *relationFormModel) Persisted() bool  { return false }
+func (r *relationFormModel) Persisted() bool  { return r.persisted }
 func (r *relationFormModel) Send(method string) (any, bool) {
 	switch method {
 	case "relation_type":
-		return "relates", true
-	case "issue_to_id", "delay":
+		if r.relationType == "" {
+			return "relates", true
+		}
+		return r.relationType, true
+	case "delay":
+		return r.delay, true
+	case "issue_to_id":
 		return nil, true
 	}
 	return nil, false
@@ -1106,22 +1125,37 @@ func (l *issueLookup) issueVisibleTo(m *issueModel, u *domain.User) bool {
 	return ok
 }
 
-// sortUsersByFormat は User.sorted（Setting.user_format の並び。グループは名前）。
+// sortUsersByFormat は Principal.sorted（type DESC = ユーザーが先、Setting.user_format の並び → lastname → id。
+// グループの firstname は空、lastname は名前）。
 func (l *issueLookup) sortUsersByFormat(us []*domain.User) {
 	f := l.a.Settings.String("user_format")
 	key := func(u *domain.User) []string {
+		first, last, login := u.Firstname, u.Lastname, u.Login
 		if u.Kind.IsGroup() {
-			return []string{u.Lastname, u.Firstname}
+			first, login = "", ""
+			if u.Principal.Name != "" {
+				last = u.Principal.Name
+			}
 		}
 		switch f {
-		case "lastname_firstname", "lastname_comma_firstname", "lastnamefirstname", "lastname":
-			return []string{u.Lastname, u.Firstname}
+		case "lastname_firstname", "lastname_comma_firstname", "lastnamefirstname":
+			return []string{last, first}
+		case "lastname":
+			return []string{last}
+		case "firstname":
+			return []string{first, last}
 		case "username":
-			return []string{u.Login}
+			return []string{login, last}
 		}
-		return []string{u.Firstname, u.Lastname}
+		return []string{first, last}
 	}
 	slices.SortStableFunc(us, func(a, b *domain.User) int {
+		if ga, gb := a.Kind.IsGroup(), b.Kind.IsGroup(); ga != gb {
+			if ga {
+				return 1
+			}
+			return -1
+		}
 		ka, kb := key(a), key(b)
 		for i := range ka {
 			if c := strings.Compare(ka[i], kb[i]); c != 0 {

@@ -49,4 +49,5 @@ func (a *App) Routes(r Router) {
 	a.routesSettings(r)
 	a.routesAdmin(r)
 	a.routesAuthSources(r)
+	a.routesIssueRelationsAndWatchers(r)
 }

@@ -1,0 +1,3 @@
+{{$selector := .Selector}}
+$("{{$selector}}").each(function(){$(this).replaceWith("{{j .WatcherLink}}")});
+$('#watchers').html('{{j (partial .WatchersPartial .WatchersLocals)}}');
