@@ -836,7 +836,7 @@ func (a *App) WikiUpdate(c *Req) {
 				a.wikiError(c, err)
 				return
 			}
-			c.W.Header().Set("Location", httpx.RequestBaseURL(c.R)+wikiPagePath(c.Project, page.Title))
+			c.W.Header().Set("Location", wikiPagePath(c.Project, page.Title))
 			a.renderWikiPageAPI(c, page, cur, http.StatusCreated)
 			return
 		}
@@ -950,7 +950,7 @@ func (a *App) WikiNew(c *Req) {
 		}
 	}
 	data := map[string]any{
-		"Form":     newFormOf(page.Title, errs),
+		"Form":     newFormOf(page.Title, c.Params().Has("title"), errs),
 		"Errors":   errs.FullMessages(c.Loc),
 		"ParentPr": c.Params().Present("parent"),
 		"Parent":   c.Params().String("parent"),
@@ -962,12 +962,31 @@ func (a *App) WikiNew(c *Req) {
 	c.Render("wiki/new", data)
 }
 
-func newFormOf(title string, errs *validation.Errors) *wikiNewForm {
+func newFormOf(title string, present bool, errs *validation.Errors) *wikiNewForm {
 	f := &wikiNewForm{errs: errs}
-	if title != "" {
+	if present {
 		f.Title = title
 	}
 	return f
+}
+
+// ErrorsOn は errors[attr]（labelled_form_for のラベルに class="error" を付ける）。
+func (f *wikiNewForm) ErrorsOn(attr string) []string { return errorsOn(f.errs, attr) }
+
+// ErrorsOn は errors[attr]。
+func (f *wikiRenameForm) ErrorsOn(attr string) []string { return errorsOn(f.errs, attr) }
+
+func errorsOn(e *validation.Errors, attr string) []string {
+	if e == nil {
+		return nil
+	}
+	var out []string
+	for _, x := range e.List() {
+		if x.Attr == attr {
+			out = append(out, x.Key+x.Message)
+		}
+	}
+	return out
 }
 
 func mapVars(m map[string]any) []any {

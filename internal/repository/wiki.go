@@ -180,7 +180,7 @@ func WikiPageDescendantIDs(ctx context.Context, q db.Queryer, pageID int64) ([]i
 // WikiPageAncestors は page.ancestors（親から根の順）。
 func WikiPageAncestors(ctx context.Context, q db.Queryer, page *domain.WikiPage) ([]*domain.WikiPage, error) {
 	var out []*domain.WikiPage
-	seen := map[int64]bool{page.ID: true}
+	seen := map[int64]bool{}
 	pid := page.ParentID
 	for pid != nil && !seen[*pid] {
 		seen[*pid] = true

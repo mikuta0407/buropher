@@ -59,8 +59,10 @@ func init() {
 					"age":    string(d.timeTag(p, c.UpdatedOn)),
 				}))
 			},
-			"content_author":         func(c *domain.WikiContentVersion) any { return contentAuthor(c) },
-			"other_formats_open":     func() html { return html(`<p class="other-formats hide-when-print">` + rails.EscapeString(pg().l("label_export_to"))) },
+			"content_author": func(c *domain.WikiContentVersion) any { return contentAuthor(c) },
+			"other_formats_open": func() html {
+				return html(`<p class="other-formats hide-when-print">` + rails.EscapeString(pg().l("label_export_to")))
+			},
 			"other_formats_close":    func() html { return "</p>" },
 			"other_format_link":      func(name, url string) html { return otherFormatLink(name, url) },
 			"number_to_human_size":   func(n any) string { return pg().Loc.NumberToHumanSize(n) },
