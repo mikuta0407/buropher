@@ -48,8 +48,8 @@ func init() {
 			"board_message_url":         boardMessageURL,
 			"boards_options_for_select": boardsOptionsForSelect,
 			// watcher_link(object, User.current)。objectType は object_type（wiki / wiki_page / news / board / message / enabled_module ...）。
-			"watcher_link": func(objectType string, id int64) html { return d.watcherLink(pg(), objectType, id) },
-			"truncate_lines":       func(s string) string { return truncateLines(s, 250) },
+			"watcher_link":   func(objectType string, id int64) html { return d.watcherLink(pg(), objectType, id) },
+			"truncate_lines": func(s string) string { return truncateLines(s, 250) },
 			"project_tree_options_for_select": func(projects []*domain.Project, selected any) html {
 				return projectTreeOptionsForSelect(pg(), projects, selected)
 			},

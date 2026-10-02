@@ -24,7 +24,6 @@ import (
 // link_to_context_menu, context_menu, actions_dropdown, error_messages_for, principals_check_box_tags,
 // project_css_classes, role_name, roles_to_s など。
 
-
 func init() {
 	registerFuncs(func(d *Deps, r *view.Render, pg func() *Page) ttemplate.FuncMap {
 		return ttemplate.FuncMap{
@@ -165,7 +164,6 @@ func (d *Deps) SpriteIcon(p *Page, name string, label any, opts *rails.Hash) htm
 	return d.spriteIcon(p, name, label, opts)
 }
 
-
 // autoWatchOnTags は users/_auto_watch_on の
 // pref_fields.collection_check_boxes :auto_watch_on, auto_watch_on_options, :last, :first の出力。
 func autoWatchOnTags(p *Page, selected []string) html {
@@ -213,8 +211,6 @@ func nilIfBlankAny(s string) any {
 	return s
 }
 
-
-
 // requestPath は現在のリクエストのパス（url_for で現在のアクションのパスを作る場合に使う）。
 func (p *Page) requestPath() string {
 	if p == nil || p.Request == nil {
@@ -222,7 +218,6 @@ func (p *Page) requestPath() string {
 	}
 	return p.Request.URL.Path
 }
-
 
 // langOptionsForSelect は ApplicationHelper#lang_options_for_select（[表示名, 値]）。
 func langOptionsForSelect(p *Page, blank bool) [][2]string {

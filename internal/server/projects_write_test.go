@@ -297,7 +297,7 @@ func TestProjectsCopy(t *testing.T) {
 	res, _ := projSubmit(t, admin, ts, http.MethodPost, "/projects/ecookbook/copy", url.Values{
 		"project[name]": {"Copied"}, "project[identifier]": {"copied"},
 		"project[enabled_module_names][]": {"issue_tracking", "boards", ""},
-		"only[]": {"members", "versions", "issue_categories", "queries", "boards", ""},
+		"only[]":                          {"members", "versions", "issue_categories", "queries", "boards", ""},
 	}, false)
 	expectRedirect(t, res, "/projects/copied/settings")
 	id := queryInt(t, d, `SELECT id FROM projects WHERE identifier = 'copied'`)

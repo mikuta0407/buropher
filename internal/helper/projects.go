@@ -119,7 +119,7 @@ func (d *Deps) projectsFuncs(r *view.Render, pg func() *Page) ttemplate.FuncMap 
 		},
 		// error_messages_for_list は error_messages_for（エラーメッセージの配列を渡す版）。
 		"error_messages_for_list": func(msgs []string) html { return RenderErrorMessages(d, pg(), msgs) },
-		"principal_icon": func(v any) html { return d.principalIconHTML(pg(), v) },
+		"principal_icon":          func(v any) html { return d.principalIconHTML(pg(), v) },
 		// link_to_principal_user は link_to_user(principal)（ユーザーならリンク、それ以外は名前）。
 		"link_to_principal_user": func(v any) html {
 			p := pg()

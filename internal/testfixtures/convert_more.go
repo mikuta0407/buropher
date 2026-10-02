@@ -269,7 +269,6 @@ var containerKinds = map[string]string{
 	"News": "news", "Document": "document", "CustomValue": "custom_value",
 }
 
-
 func loadUserPreferences(c *loadCtx, rows []row) error {
 	for _, r := range rows {
 		uid := r.int("user_id", 0)
