@@ -207,6 +207,15 @@ func TestIssueRelationsCreateDestroyJS(t *testing.T) {
 		t.Errorf("precedes delay: %d %v", delay, err)
 	}
 
+	// 反転後の関連が既にある（RecordNotUnique → errors.add :base, :taken）
+	for i := 0; i < 2; i++ {
+		res, body = projSubmit(t, admin, ts, http.MethodPost, "/issues/5/relations",
+			url.Values{"relation[issue_to_id]": {"13"}, "relation[relation_type]": {"follows"}, "relation[delay]": {""}}, true)
+	}
+	if res.StatusCode != 200 || !strings.Contains(body, "has already been taken") {
+		t.Errorf("duplicated follows: %d %s", res.StatusCode, body)
+	}
+
 	// html はリダイレクト
 	res, _ = projSubmit(t, admin, ts, http.MethodPost, "/issues/2/relations",
 		url.Values{"relation[issue_to_id]": {"7"}, "relation[relation_type]": {"relates"}}, false)

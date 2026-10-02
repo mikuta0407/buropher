@@ -262,3 +262,13 @@ func projectIDOf(ctx context.Context, q db.Queryer, query string, id int64) (int
 	}
 	return ids[0], true, nil
 }
+
+// IsUniqueViolation は一意制約違反（ActiveRecord::RecordNotUnique）か（SQLite / PostgreSQL）。
+func IsUniqueViolation(err error) bool {
+	if err == nil {
+		return false
+	}
+	s := err.Error()
+	return strings.Contains(s, "UNIQUE constraint failed") || strings.Contains(s, "SQLSTATE 23505") ||
+		strings.Contains(s, "duplicate key value violates unique constraint")
+}

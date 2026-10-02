@@ -269,6 +269,11 @@ func (a *App) IssueRelationsCreate(c *Req) {
 			return
 		}
 		ok, res, err := e.CreateRelation(ctx, r)
+		if repository.IsUniqueViolation(err) {
+			// rescue ActiveRecord::RecordNotUnique（反転後の関連が既にある）→ errors.add :base, :taken
+			r.Errors.Add("base", "taken", nil)
+			ok, err = false, nil
+		}
 		if err != nil {
 			a.internalError(c, "create relation", err)
 			return
