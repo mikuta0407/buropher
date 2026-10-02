@@ -40,4 +40,5 @@ func (a *App) Routes(r Router) {
 	a.routesWikis(r)
 	a.routesIssues(r)
 	a.routesJournals(r)
+	a.routesIssueRelationsAndWatchers(r)
 }

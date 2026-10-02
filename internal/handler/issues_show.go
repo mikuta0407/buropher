@@ -46,6 +46,11 @@ type issueShowView struct {
 	HasChangesets bool
 	AtomKey       string
 	CanViewTime   bool
+
+	// issue_relations#create.js で issue_relations/_form に渡す状態（@relation と @unsaved_relations）。
+	relationForm          *relationFormModel
+	RelationErrorMessages []string
+	UnsavedRelationsIDs   string
 }
 
 // IssuesShow は IssuesController#show。
@@ -946,19 +951,33 @@ func (v *issueShowView) RelationTypeChoices() []any {
 	return items
 }
 
-// NewRelation は @relation（IssueRelation.new）。
-func (v *issueShowView) NewRelation() *relationFormModel { return &relationFormModel{} }
+// NewRelation は @relation（show では IssueRelation.new、issue_relations#create.js では最後に保存を試みた関連）。
+func (v *issueShowView) NewRelation() *relationFormModel {
+	if v.relationForm != nil {
+		return v.relationForm
+	}
+	return &relationFormModel{}
+}
 
 // relationFormModel は form_for @relation のモデル。
-type relationFormModel struct{}
+type relationFormModel struct {
+	persisted    bool
+	relationType string
+	delay        any
+}
 
 func (r *relationFormModel) ParamKey() string { return "relation" }
-func (r *relationFormModel) Persisted() bool  { return false }
+func (r *relationFormModel) Persisted() bool  { return r.persisted }
 func (r *relationFormModel) Send(method string) (any, bool) {
 	switch method {
 	case "relation_type":
-		return "relates", true
-	case "issue_to_id", "delay":
+		if r.relationType == "" {
+			return "relates", true
+		}
+		return r.relationType, true
+	case "delay":
+		return r.delay, true
+	case "issue_to_id":
 		return nil, true
 	}
 	return nil, false

@@ -425,6 +425,11 @@ func (d *Deps) principalsCheckBoxTags(r *view.Render, p *Page, name string, prin
 	switch xs := principals.(type) {
 	case []*domain.User:
 		for _, u := range xs {
+			if u.Kind.IsGroup() {
+				// グループ（ウォッチャー候補など User と Group が混在する一覧）
+				add(u.ID, rails.ContentTag("span", d.spriteIcon(p, "group", nil, nil), rails.NewHash("class", "name icon icon-"+strings.ToLower(u.Kind.RedmineType()))), PrincipalUserName(p, u))
+				continue
+			}
 			icon := d.avatar(r, p, u, rails.NewHash("size", 16))
 			if icon == "" {
 				icon = rails.ContentTag("span", "", rails.NewHash("class", "name icon icon-user"))

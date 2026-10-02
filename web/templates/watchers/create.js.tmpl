@@ -1,0 +1,6 @@
+$('#ajax-modal').html(
+  '{{j (partial "watchers/new" .)}}');
+
+{{if .SetWatcher}}
+  {{partial "watchers/set_watcher" .SetWatcher}}
+{{end}}
