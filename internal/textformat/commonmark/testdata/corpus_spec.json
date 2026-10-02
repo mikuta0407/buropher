@@ -1,0 +1,2790 @@
+[
+ {
+  "name": "spec-001-tabs",
+  "input": "\tfoo\tbaz\t\tbim\n"
+ },
+ {
+  "name": "spec-002-tabs",
+  "input": "  \tfoo\tbaz\t\tbim\n"
+ },
+ {
+  "name": "spec-003-tabs",
+  "input": "    a\ta\n    ὐ\ta\n"
+ },
+ {
+  "name": "spec-004-tabs",
+  "input": "  - foo\n\n\tbar\n"
+ },
+ {
+  "name": "spec-005-tabs",
+  "input": "- foo\n\n\t\tbar\n"
+ },
+ {
+  "name": "spec-006-tabs",
+  "input": ">\t\tfoo\n"
+ },
+ {
+  "name": "spec-007-tabs",
+  "input": "-\t\tfoo\n"
+ },
+ {
+  "name": "spec-008-tabs",
+  "input": "    foo\n\tbar\n"
+ },
+ {
+  "name": "spec-009-tabs",
+  "input": " - foo\n   - bar\n\t - baz\n"
+ },
+ {
+  "name": "spec-010-tabs",
+  "input": "#\tFoo\n"
+ },
+ {
+  "name": "spec-011-tabs",
+  "input": "*\t*\t*\t\n"
+ },
+ {
+  "name": "spec-012-backslash-escapes",
+  "input": "\\!\\\"\\#\\$\\%\\&\\'\\(\\)\\*\\+\\,\\-\\.\\/\\:\\;\\<\\=\\>\\?\\@\\[\\\\\\]\\^\\_\\`\\{\\|\\}\\~\n"
+ },
+ {
+  "name": "spec-013-backslash-escapes",
+  "input": "\\\t\\A\\a\\ \\3\\φ\\«\n"
+ },
+ {
+  "name": "spec-014-backslash-escapes",
+  "input": "\\*not emphasized*\n\\<br/> not a tag\n\\[not a link](/foo)\n\\`not code`\n1\\. not a list\n\\* not a list\n\\# not a heading\n\\[foo]: /url \"not a reference\"\n\\&ouml; not a character entity\n"
+ },
+ {
+  "name": "spec-015-backslash-escapes",
+  "input": "\\\\*emphasis*\n"
+ },
+ {
+  "name": "spec-016-backslash-escapes",
+  "input": "foo\\\nbar\n"
+ },
+ {
+  "name": "spec-017-backslash-escapes",
+  "input": "`` \\[\\` ``\n"
+ },
+ {
+  "name": "spec-018-backslash-escapes",
+  "input": "    \\[\\]\n"
+ },
+ {
+  "name": "spec-019-backslash-escapes",
+  "input": "~~~\n\\[\\]\n~~~\n"
+ },
+ {
+  "name": "spec-020-backslash-escapes",
+  "input": "<https://example.com?find=\\*>\n"
+ },
+ {
+  "name": "spec-021-backslash-escapes",
+  "input": "<a href=\"/bar\\/)\">\n"
+ },
+ {
+  "name": "spec-022-backslash-escapes",
+  "input": "[foo](/bar\\* \"ti\\*tle\")\n"
+ },
+ {
+  "name": "spec-023-backslash-escapes",
+  "input": "[foo]\n\n[foo]: /bar\\* \"ti\\*tle\"\n"
+ },
+ {
+  "name": "spec-024-backslash-escapes",
+  "input": "``` foo\\+bar\nfoo\n```\n"
+ },
+ {
+  "name": "spec-025-entity-and-numeric-character-references",
+  "input": "&nbsp; &amp; &copy; &AElig; &Dcaron;\n&frac34; &HilbertSpace; &DifferentialD;\n&ClockwiseContourIntegral; &ngE;\n"
+ },
+ {
+  "name": "spec-026-entity-and-numeric-character-references",
+  "input": "&#35; &#1234; &#992; &#0;\n"
+ },
+ {
+  "name": "spec-027-entity-and-numeric-character-references",
+  "input": "&#X22; &#XD06; &#xcab;\n"
+ },
+ {
+  "name": "spec-028-entity-and-numeric-character-references",
+  "input": "&nbsp &x; &#; &#x;\n&#87654321;\n&#abcdef0;\n&ThisIsNotDefined; &hi?;\n"
+ },
+ {
+  "name": "spec-029-entity-and-numeric-character-references",
+  "input": "&copy\n"
+ },
+ {
+  "name": "spec-030-entity-and-numeric-character-references",
+  "input": "&MadeUpEntity;\n"
+ },
+ {
+  "name": "spec-031-entity-and-numeric-character-references",
+  "input": "<a href=\"&ouml;&ouml;.html\">\n"
+ },
+ {
+  "name": "spec-032-entity-and-numeric-character-references",
+  "input": "[foo](/f&ouml;&ouml; \"f&ouml;&ouml;\")\n"
+ },
+ {
+  "name": "spec-033-entity-and-numeric-character-references",
+  "input": "[foo]\n\n[foo]: /f&ouml;&ouml; \"f&ouml;&ouml;\"\n"
+ },
+ {
+  "name": "spec-034-entity-and-numeric-character-references",
+  "input": "``` f&ouml;&ouml;\nfoo\n```\n"
+ },
+ {
+  "name": "spec-035-entity-and-numeric-character-references",
+  "input": "`f&ouml;&ouml;`\n"
+ },
+ {
+  "name": "spec-036-entity-and-numeric-character-references",
+  "input": "    f&ouml;f&ouml;\n"
+ },
+ {
+  "name": "spec-037-entity-and-numeric-character-references",
+  "input": "&#42;foo&#42;\n*foo*\n"
+ },
+ {
+  "name": "spec-038-entity-and-numeric-character-references",
+  "input": "&#42; foo\n\n* foo\n"
+ },
+ {
+  "name": "spec-039-entity-and-numeric-character-references",
+  "input": "foo&#10;&#10;bar\n"
+ },
+ {
+  "name": "spec-040-entity-and-numeric-character-references",
+  "input": "&#9;foo\n"
+ },
+ {
+  "name": "spec-041-entity-and-numeric-character-references",
+  "input": "[a](url &quot;tit&quot;)\n"
+ },
+ {
+  "name": "spec-042-precedence",
+  "input": "- `one\n- two`\n"
+ },
+ {
+  "name": "spec-043-thematic-breaks",
+  "input": "***\n---\n___\n"
+ },
+ {
+  "name": "spec-044-thematic-breaks",
+  "input": "+++\n"
+ },
+ {
+  "name": "spec-045-thematic-breaks",
+  "input": "===\n"
+ },
+ {
+  "name": "spec-046-thematic-breaks",
+  "input": "--\n**\n__\n"
+ },
+ {
+  "name": "spec-047-thematic-breaks",
+  "input": " ***\n  ***\n   ***\n"
+ },
+ {
+  "name": "spec-048-thematic-breaks",
+  "input": "    ***\n"
+ },
+ {
+  "name": "spec-049-thematic-breaks",
+  "input": "Foo\n    ***\n"
+ },
+ {
+  "name": "spec-050-thematic-breaks",
+  "input": "_____________________________________\n"
+ },
+ {
+  "name": "spec-051-thematic-breaks",
+  "input": " - - -\n"
+ },
+ {
+  "name": "spec-052-thematic-breaks",
+  "input": " **  * ** * ** * **\n"
+ },
+ {
+  "name": "spec-053-thematic-breaks",
+  "input": "-     -      -      -\n"
+ },
+ {
+  "name": "spec-054-thematic-breaks",
+  "input": "- - - -    \n"
+ },
+ {
+  "name": "spec-055-thematic-breaks",
+  "input": "_ _ _ _ a\n\na------\n\n---a---\n"
+ },
+ {
+  "name": "spec-056-thematic-breaks",
+  "input": " *-*\n"
+ },
+ {
+  "name": "spec-057-thematic-breaks",
+  "input": "- foo\n***\n- bar\n"
+ },
+ {
+  "name": "spec-058-thematic-breaks",
+  "input": "Foo\n***\nbar\n"
+ },
+ {
+  "name": "spec-059-thematic-breaks",
+  "input": "Foo\n---\nbar\n"
+ },
+ {
+  "name": "spec-060-thematic-breaks",
+  "input": "* Foo\n* * *\n* Bar\n"
+ },
+ {
+  "name": "spec-061-thematic-breaks",
+  "input": "- Foo\n- * * *\n"
+ },
+ {
+  "name": "spec-062-atx-headings",
+  "input": "# foo\n## foo\n### foo\n#### foo\n##### foo\n###### foo\n"
+ },
+ {
+  "name": "spec-063-atx-headings",
+  "input": "####### foo\n"
+ },
+ {
+  "name": "spec-064-atx-headings",
+  "input": "#5 bolt\n\n#hashtag\n"
+ },
+ {
+  "name": "spec-065-atx-headings",
+  "input": "\\## foo\n"
+ },
+ {
+  "name": "spec-066-atx-headings",
+  "input": "# foo *bar* \\*baz\\*\n"
+ },
+ {
+  "name": "spec-067-atx-headings",
+  "input": "#                  foo                     \n"
+ },
+ {
+  "name": "spec-068-atx-headings",
+  "input": " ### foo\n  ## foo\n   # foo\n"
+ },
+ {
+  "name": "spec-069-atx-headings",
+  "input": "    # foo\n"
+ },
+ {
+  "name": "spec-070-atx-headings",
+  "input": "foo\n    # bar\n"
+ },
+ {
+  "name": "spec-071-atx-headings",
+  "input": "## foo ##\n  ###   bar    ###\n"
+ },
+ {
+  "name": "spec-072-atx-headings",
+  "input": "# foo ##################################\n##### foo ##\n"
+ },
+ {
+  "name": "spec-073-atx-headings",
+  "input": "### foo ###     \n"
+ },
+ {
+  "name": "spec-074-atx-headings",
+  "input": "### foo ### b\n"
+ },
+ {
+  "name": "spec-075-atx-headings",
+  "input": "# foo#\n"
+ },
+ {
+  "name": "spec-076-atx-headings",
+  "input": "### foo \\###\n## foo #\\##\n# foo \\#\n"
+ },
+ {
+  "name": "spec-077-atx-headings",
+  "input": "****\n## foo\n****\n"
+ },
+ {
+  "name": "spec-078-atx-headings",
+  "input": "Foo bar\n# baz\nBar foo\n"
+ },
+ {
+  "name": "spec-079-atx-headings",
+  "input": "## \n#\n### ###\n"
+ },
+ {
+  "name": "spec-080-setext-headings",
+  "input": "Foo *bar*\n=========\n\nFoo *bar*\n---------\n"
+ },
+ {
+  "name": "spec-081-setext-headings",
+  "input": "Foo *bar\nbaz*\n====\n"
+ },
+ {
+  "name": "spec-082-setext-headings",
+  "input": "  Foo *bar\nbaz*\t\n====\n"
+ },
+ {
+  "name": "spec-083-setext-headings",
+  "input": "Foo\n-------------------------\n\nFoo\n=\n"
+ },
+ {
+  "name": "spec-084-setext-headings",
+  "input": "   Foo\n---\n\n  Foo\n-----\n\n  Foo\n  ===\n"
+ },
+ {
+  "name": "spec-085-setext-headings",
+  "input": "    Foo\n    ---\n\n    Foo\n---\n"
+ },
+ {
+  "name": "spec-086-setext-headings",
+  "input": "Foo\n   ----      \n"
+ },
+ {
+  "name": "spec-087-setext-headings",
+  "input": "Foo\n    ---\n"
+ },
+ {
+  "name": "spec-088-setext-headings",
+  "input": "Foo\n= =\n\nFoo\n--- -\n"
+ },
+ {
+  "name": "spec-089-setext-headings",
+  "input": "Foo  \n-----\n"
+ },
+ {
+  "name": "spec-090-setext-headings",
+  "input": "Foo\\\n----\n"
+ },
+ {
+  "name": "spec-091-setext-headings",
+  "input": "`Foo\n----\n`\n\n<a title=\"a lot\n---\nof dashes\"/>\n"
+ },
+ {
+  "name": "spec-092-setext-headings",
+  "input": "> Foo\n---\n"
+ },
+ {
+  "name": "spec-093-setext-headings",
+  "input": "> foo\nbar\n===\n"
+ },
+ {
+  "name": "spec-094-setext-headings",
+  "input": "- Foo\n---\n"
+ },
+ {
+  "name": "spec-095-setext-headings",
+  "input": "Foo\nBar\n---\n"
+ },
+ {
+  "name": "spec-096-setext-headings",
+  "input": "---\nFoo\n---\nBar\n---\nBaz\n"
+ },
+ {
+  "name": "spec-097-setext-headings",
+  "input": "\n====\n"
+ },
+ {
+  "name": "spec-098-setext-headings",
+  "input": "---\n---\n"
+ },
+ {
+  "name": "spec-099-setext-headings",
+  "input": "- foo\n-----\n"
+ },
+ {
+  "name": "spec-100-setext-headings",
+  "input": "    foo\n---\n"
+ },
+ {
+  "name": "spec-101-setext-headings",
+  "input": "> foo\n-----\n"
+ },
+ {
+  "name": "spec-102-setext-headings",
+  "input": "\\> foo\n------\n"
+ },
+ {
+  "name": "spec-103-setext-headings",
+  "input": "Foo\n\nbar\n---\nbaz\n"
+ },
+ {
+  "name": "spec-104-setext-headings",
+  "input": "Foo\nbar\n\n---\n\nbaz\n"
+ },
+ {
+  "name": "spec-105-setext-headings",
+  "input": "Foo\nbar\n* * *\nbaz\n"
+ },
+ {
+  "name": "spec-106-setext-headings",
+  "input": "Foo\nbar\n\\---\nbaz\n"
+ },
+ {
+  "name": "spec-107-indented-code-blocks",
+  "input": "    a simple\n      indented code block\n"
+ },
+ {
+  "name": "spec-108-indented-code-blocks",
+  "input": "  - foo\n\n    bar\n"
+ },
+ {
+  "name": "spec-109-indented-code-blocks",
+  "input": "1.  foo\n\n    - bar\n"
+ },
+ {
+  "name": "spec-110-indented-code-blocks",
+  "input": "    <a/>\n    *hi*\n\n    - one\n"
+ },
+ {
+  "name": "spec-111-indented-code-blocks",
+  "input": "    chunk1\n\n    chunk2\n  \n \n \n    chunk3\n"
+ },
+ {
+  "name": "spec-112-indented-code-blocks",
+  "input": "    chunk1\n      \n      chunk2\n"
+ },
+ {
+  "name": "spec-113-indented-code-blocks",
+  "input": "Foo\n    bar\n\n"
+ },
+ {
+  "name": "spec-114-indented-code-blocks",
+  "input": "    foo\nbar\n"
+ },
+ {
+  "name": "spec-115-indented-code-blocks",
+  "input": "# Heading\n    foo\nHeading\n------\n    foo\n----\n"
+ },
+ {
+  "name": "spec-116-indented-code-blocks",
+  "input": "        foo\n    bar\n"
+ },
+ {
+  "name": "spec-117-indented-code-blocks",
+  "input": "\n    \n    foo\n    \n\n"
+ },
+ {
+  "name": "spec-118-indented-code-blocks",
+  "input": "    foo  \n"
+ },
+ {
+  "name": "spec-119-fenced-code-blocks",
+  "input": "```\n<\n >\n```\n"
+ },
+ {
+  "name": "spec-120-fenced-code-blocks",
+  "input": "~~~\n<\n >\n~~~\n"
+ },
+ {
+  "name": "spec-121-fenced-code-blocks",
+  "input": "``\nfoo\n``\n"
+ },
+ {
+  "name": "spec-122-fenced-code-blocks",
+  "input": "```\naaa\n~~~\n```\n"
+ },
+ {
+  "name": "spec-123-fenced-code-blocks",
+  "input": "~~~\naaa\n```\n~~~\n"
+ },
+ {
+  "name": "spec-124-fenced-code-blocks",
+  "input": "````\naaa\n```\n``````\n"
+ },
+ {
+  "name": "spec-125-fenced-code-blocks",
+  "input": "~~~~\naaa\n~~~\n~~~~\n"
+ },
+ {
+  "name": "spec-126-fenced-code-blocks",
+  "input": "```\n"
+ },
+ {
+  "name": "spec-127-fenced-code-blocks",
+  "input": "`````\n\n```\naaa\n"
+ },
+ {
+  "name": "spec-128-fenced-code-blocks",
+  "input": "> ```\n> aaa\n\nbbb\n"
+ },
+ {
+  "name": "spec-129-fenced-code-blocks",
+  "input": "```\n\n  \n```\n"
+ },
+ {
+  "name": "spec-130-fenced-code-blocks",
+  "input": "```\n```\n"
+ },
+ {
+  "name": "spec-131-fenced-code-blocks",
+  "input": " ```\n aaa\naaa\n```\n"
+ },
+ {
+  "name": "spec-132-fenced-code-blocks",
+  "input": "  ```\naaa\n  aaa\naaa\n  ```\n"
+ },
+ {
+  "name": "spec-133-fenced-code-blocks",
+  "input": "   ```\n   aaa\n    aaa\n  aaa\n   ```\n"
+ },
+ {
+  "name": "spec-134-fenced-code-blocks",
+  "input": "    ```\n    aaa\n    ```\n"
+ },
+ {
+  "name": "spec-135-fenced-code-blocks",
+  "input": "```\naaa\n  ```\n"
+ },
+ {
+  "name": "spec-136-fenced-code-blocks",
+  "input": "   ```\naaa\n  ```\n"
+ },
+ {
+  "name": "spec-137-fenced-code-blocks",
+  "input": "```\naaa\n    ```\n"
+ },
+ {
+  "name": "spec-138-fenced-code-blocks",
+  "input": "``` ```\naaa\n"
+ },
+ {
+  "name": "spec-139-fenced-code-blocks",
+  "input": "~~~~~~\naaa\n~~~ ~~\n"
+ },
+ {
+  "name": "spec-140-fenced-code-blocks",
+  "input": "foo\n```\nbar\n```\nbaz\n"
+ },
+ {
+  "name": "spec-141-fenced-code-blocks",
+  "input": "foo\n---\n~~~\nbar\n~~~\n# baz\n"
+ },
+ {
+  "name": "spec-142-fenced-code-blocks",
+  "input": "```ruby\ndef foo(x)\n  return 3\nend\n```\n"
+ },
+ {
+  "name": "spec-143-fenced-code-blocks",
+  "input": "~~~~    ruby startline=3 $%@#$\ndef foo(x)\n  return 3\nend\n~~~~~~~\n"
+ },
+ {
+  "name": "spec-144-fenced-code-blocks",
+  "input": "````;\n````\n"
+ },
+ {
+  "name": "spec-145-fenced-code-blocks",
+  "input": "``` aa ```\nfoo\n"
+ },
+ {
+  "name": "spec-146-fenced-code-blocks",
+  "input": "~~~ aa ``` ~~~\nfoo\n~~~\n"
+ },
+ {
+  "name": "spec-147-fenced-code-blocks",
+  "input": "```\n``` aaa\n```\n"
+ },
+ {
+  "name": "spec-148-html-blocks",
+  "input": "<table><tr><td>\n<pre>\n**Hello**,\n\n_world_.\n</pre>\n</td></tr></table>\n"
+ },
+ {
+  "name": "spec-149-html-blocks",
+  "input": "<table>\n  <tr>\n    <td>\n           hi\n    </td>\n  </tr>\n</table>\n\nokay.\n"
+ },
+ {
+  "name": "spec-150-html-blocks",
+  "input": " <div>\n  *hello*\n         <foo><a>\n"
+ },
+ {
+  "name": "spec-151-html-blocks",
+  "input": "</div>\n*foo*\n"
+ },
+ {
+  "name": "spec-152-html-blocks",
+  "input": "<DIV CLASS=\"foo\">\n\n*Markdown*\n\n</DIV>\n"
+ },
+ {
+  "name": "spec-153-html-blocks",
+  "input": "<div id=\"foo\"\n  class=\"bar\">\n</div>\n"
+ },
+ {
+  "name": "spec-154-html-blocks",
+  "input": "<div id=\"foo\" class=\"bar\n  baz\">\n</div>\n"
+ },
+ {
+  "name": "spec-155-html-blocks",
+  "input": "<div>\n*foo*\n\n*bar*\n"
+ },
+ {
+  "name": "spec-156-html-blocks",
+  "input": "<div id=\"foo\"\n*hi*\n"
+ },
+ {
+  "name": "spec-157-html-blocks",
+  "input": "<div class\nfoo\n"
+ },
+ {
+  "name": "spec-158-html-blocks",
+  "input": "<div *???-&&&-<---\n*foo*\n"
+ },
+ {
+  "name": "spec-159-html-blocks",
+  "input": "<div><a href=\"bar\">*foo*</a></div>\n"
+ },
+ {
+  "name": "spec-160-html-blocks",
+  "input": "<table><tr><td>\nfoo\n</td></tr></table>\n"
+ },
+ {
+  "name": "spec-161-html-blocks",
+  "input": "<div></div>\n``` c\nint x = 33;\n```\n"
+ },
+ {
+  "name": "spec-162-html-blocks",
+  "input": "<a href=\"foo\">\n*bar*\n</a>\n"
+ },
+ {
+  "name": "spec-163-html-blocks",
+  "input": "<Warning>\n*bar*\n</Warning>\n"
+ },
+ {
+  "name": "spec-164-html-blocks",
+  "input": "<i class=\"foo\">\n*bar*\n</i>\n"
+ },
+ {
+  "name": "spec-165-html-blocks",
+  "input": "</ins>\n*bar*\n"
+ },
+ {
+  "name": "spec-166-html-blocks",
+  "input": "<del>\n*foo*\n</del>\n"
+ },
+ {
+  "name": "spec-167-html-blocks",
+  "input": "<del>\n\n*foo*\n\n</del>\n"
+ },
+ {
+  "name": "spec-168-html-blocks",
+  "input": "<del>*foo*</del>\n"
+ },
+ {
+  "name": "spec-169-html-blocks",
+  "input": "<pre language=\"haskell\"><code>\nimport Text.HTML.TagSoup\n\nmain :: IO ()\nmain = print $ parseTags tags\n</code></pre>\nokay\n"
+ },
+ {
+  "name": "spec-170-html-blocks",
+  "input": "<script type=\"text/javascript\">\n// JavaScript example\n\ndocument.getElementById(\"demo\").innerHTML = \"Hello JavaScript!\";\n</script>\nokay\n"
+ },
+ {
+  "name": "spec-171-html-blocks",
+  "input": "<textarea>\n\n*foo*\n\n_bar_\n\n</textarea>\n"
+ },
+ {
+  "name": "spec-172-html-blocks",
+  "input": "<style\n  type=\"text/css\">\nh1 {color:red;}\n\np {color:blue;}\n</style>\nokay\n"
+ },
+ {
+  "name": "spec-173-html-blocks",
+  "input": "<style\n  type=\"text/css\">\n\nfoo\n"
+ },
+ {
+  "name": "spec-174-html-blocks",
+  "input": "> <div>\n> foo\n\nbar\n"
+ },
+ {
+  "name": "spec-175-html-blocks",
+  "input": "- <div>\n- foo\n"
+ },
+ {
+  "name": "spec-176-html-blocks",
+  "input": "<style>p{color:red;}</style>\n*foo*\n"
+ },
+ {
+  "name": "spec-177-html-blocks",
+  "input": "<!-- foo -->*bar*\n*baz*\n"
+ },
+ {
+  "name": "spec-178-html-blocks",
+  "input": "<script>\nfoo\n</script>1. *bar*\n"
+ },
+ {
+  "name": "spec-179-html-blocks",
+  "input": "<!-- Foo\n\nbar\n   baz -->\nokay\n"
+ },
+ {
+  "name": "spec-180-html-blocks",
+  "input": "<?php\n\n  echo '>';\n\n?>\nokay\n"
+ },
+ {
+  "name": "spec-181-html-blocks",
+  "input": "<!DOCTYPE html>\n"
+ },
+ {
+  "name": "spec-182-html-blocks",
+  "input": "<![CDATA[\nfunction matchwo(a,b)\n{\n  if (a < b && a < 0) then {\n    return 1;\n\n  } else {\n\n    return 0;\n  }\n}\n]]>\nokay\n"
+ },
+ {
+  "name": "spec-183-html-blocks",
+  "input": "  <!-- foo -->\n\n    <!-- foo -->\n"
+ },
+ {
+  "name": "spec-184-html-blocks",
+  "input": "  <div>\n\n    <div>\n"
+ },
+ {
+  "name": "spec-185-html-blocks",
+  "input": "Foo\n<div>\nbar\n</div>\n"
+ },
+ {
+  "name": "spec-186-html-blocks",
+  "input": "<div>\nbar\n</div>\n*foo*\n"
+ },
+ {
+  "name": "spec-187-html-blocks",
+  "input": "Foo\n<a href=\"bar\">\nbaz\n"
+ },
+ {
+  "name": "spec-188-html-blocks",
+  "input": "<div>\n\n*Emphasized* text.\n\n</div>\n"
+ },
+ {
+  "name": "spec-189-html-blocks",
+  "input": "<div>\n*Emphasized* text.\n</div>\n"
+ },
+ {
+  "name": "spec-190-html-blocks",
+  "input": "<table>\n\n<tr>\n\n<td>\nHi\n</td>\n\n</tr>\n\n</table>\n"
+ },
+ {
+  "name": "spec-191-html-blocks",
+  "input": "<table>\n\n  <tr>\n\n    <td>\n      Hi\n    </td>\n\n  </tr>\n\n</table>\n"
+ },
+ {
+  "name": "spec-192-link-reference-definitions",
+  "input": "[foo]: /url \"title\"\n\n[foo]\n"
+ },
+ {
+  "name": "spec-193-link-reference-definitions",
+  "input": "   [foo]: \n      /url  \n           'the title'  \n\n[foo]\n"
+ },
+ {
+  "name": "spec-194-link-reference-definitions",
+  "input": "[Foo*bar\\]]:my_(url) 'title (with parens)'\n\n[Foo*bar\\]]\n"
+ },
+ {
+  "name": "spec-195-link-reference-definitions",
+  "input": "[Foo bar]:\n<my url>\n'title'\n\n[Foo bar]\n"
+ },
+ {
+  "name": "spec-196-link-reference-definitions",
+  "input": "[foo]: /url '\ntitle\nline1\nline2\n'\n\n[foo]\n"
+ },
+ {
+  "name": "spec-197-link-reference-definitions",
+  "input": "[foo]: /url 'title\n\nwith blank line'\n\n[foo]\n"
+ },
+ {
+  "name": "spec-198-link-reference-definitions",
+  "input": "[foo]:\n/url\n\n[foo]\n"
+ },
+ {
+  "name": "spec-199-link-reference-definitions",
+  "input": "[foo]:\n\n[foo]\n"
+ },
+ {
+  "name": "spec-200-link-reference-definitions",
+  "input": "[foo]: <>\n\n[foo]\n"
+ },
+ {
+  "name": "spec-201-link-reference-definitions",
+  "input": "[foo]: <bar>(baz)\n\n[foo]\n"
+ },
+ {
+  "name": "spec-202-link-reference-definitions",
+  "input": "[foo]: /url\\bar\\*baz \"foo\\\"bar\\baz\"\n\n[foo]\n"
+ },
+ {
+  "name": "spec-203-link-reference-definitions",
+  "input": "[foo]\n\n[foo]: url\n"
+ },
+ {
+  "name": "spec-204-link-reference-definitions",
+  "input": "[foo]\n\n[foo]: first\n[foo]: second\n"
+ },
+ {
+  "name": "spec-205-link-reference-definitions",
+  "input": "[FOO]: /url\n\n[Foo]\n"
+ },
+ {
+  "name": "spec-206-link-reference-definitions",
+  "input": "[ΑΓΩ]: /φου\n\n[αγω]\n"
+ },
+ {
+  "name": "spec-207-link-reference-definitions",
+  "input": "[foo]: /url\n"
+ },
+ {
+  "name": "spec-208-link-reference-definitions",
+  "input": "[\nfoo\n]: /url\nbar\n"
+ },
+ {
+  "name": "spec-209-link-reference-definitions",
+  "input": "[foo]: /url \"title\" ok\n"
+ },
+ {
+  "name": "spec-210-link-reference-definitions",
+  "input": "[foo]: /url\n\"title\" ok\n"
+ },
+ {
+  "name": "spec-211-link-reference-definitions",
+  "input": "    [foo]: /url \"title\"\n\n[foo]\n"
+ },
+ {
+  "name": "spec-212-link-reference-definitions",
+  "input": "```\n[foo]: /url\n```\n\n[foo]\n"
+ },
+ {
+  "name": "spec-213-link-reference-definitions",
+  "input": "Foo\n[bar]: /baz\n\n[bar]\n"
+ },
+ {
+  "name": "spec-214-link-reference-definitions",
+  "input": "# [Foo]\n[foo]: /url\n> bar\n"
+ },
+ {
+  "name": "spec-215-link-reference-definitions",
+  "input": "[foo]: /url\nbar\n===\n[foo]\n"
+ },
+ {
+  "name": "spec-216-link-reference-definitions",
+  "input": "[foo]: /url\n===\n[foo]\n"
+ },
+ {
+  "name": "spec-217-link-reference-definitions",
+  "input": "[foo]: /foo-url \"foo\"\n[bar]: /bar-url\n  \"bar\"\n[baz]: /baz-url\n\n[foo],\n[bar],\n[baz]\n"
+ },
+ {
+  "name": "spec-218-link-reference-definitions",
+  "input": "[foo]\n\n> [foo]: /url\n"
+ },
+ {
+  "name": "spec-219-paragraphs",
+  "input": "aaa\n\nbbb\n"
+ },
+ {
+  "name": "spec-220-paragraphs",
+  "input": "aaa\nbbb\n\nccc\nddd\n"
+ },
+ {
+  "name": "spec-221-paragraphs",
+  "input": "aaa\n\n\nbbb\n"
+ },
+ {
+  "name": "spec-222-paragraphs",
+  "input": "  aaa\n bbb\n"
+ },
+ {
+  "name": "spec-223-paragraphs",
+  "input": "aaa\n             bbb\n                                       ccc\n"
+ },
+ {
+  "name": "spec-224-paragraphs",
+  "input": "   aaa\nbbb\n"
+ },
+ {
+  "name": "spec-225-paragraphs",
+  "input": "    aaa\nbbb\n"
+ },
+ {
+  "name": "spec-226-paragraphs",
+  "input": "aaa     \nbbb     \n"
+ },
+ {
+  "name": "spec-227-blank-lines",
+  "input": "  \n\naaa\n  \n\n# aaa\n\n  \n"
+ },
+ {
+  "name": "spec-228-block-quotes",
+  "input": "> # Foo\n> bar\n> baz\n"
+ },
+ {
+  "name": "spec-229-block-quotes",
+  "input": "># Foo\n>bar\n> baz\n"
+ },
+ {
+  "name": "spec-230-block-quotes",
+  "input": "   > # Foo\n   > bar\n > baz\n"
+ },
+ {
+  "name": "spec-231-block-quotes",
+  "input": "    > # Foo\n    > bar\n    > baz\n"
+ },
+ {
+  "name": "spec-232-block-quotes",
+  "input": "> # Foo\n> bar\nbaz\n"
+ },
+ {
+  "name": "spec-233-block-quotes",
+  "input": "> bar\nbaz\n> foo\n"
+ },
+ {
+  "name": "spec-234-block-quotes",
+  "input": "> foo\n---\n"
+ },
+ {
+  "name": "spec-235-block-quotes",
+  "input": "> - foo\n- bar\n"
+ },
+ {
+  "name": "spec-236-block-quotes",
+  "input": ">     foo\n    bar\n"
+ },
+ {
+  "name": "spec-237-block-quotes",
+  "input": "> ```\nfoo\n```\n"
+ },
+ {
+  "name": "spec-238-block-quotes",
+  "input": "> foo\n    - bar\n"
+ },
+ {
+  "name": "spec-239-block-quotes",
+  "input": ">\n"
+ },
+ {
+  "name": "spec-240-block-quotes",
+  "input": ">\n>  \n> \n"
+ },
+ {
+  "name": "spec-241-block-quotes",
+  "input": ">\n> foo\n>  \n"
+ },
+ {
+  "name": "spec-242-block-quotes",
+  "input": "> foo\n\n> bar\n"
+ },
+ {
+  "name": "spec-243-block-quotes",
+  "input": "> foo\n> bar\n"
+ },
+ {
+  "name": "spec-244-block-quotes",
+  "input": "> foo\n>\n> bar\n"
+ },
+ {
+  "name": "spec-245-block-quotes",
+  "input": "foo\n> bar\n"
+ },
+ {
+  "name": "spec-246-block-quotes",
+  "input": "> aaa\n***\n> bbb\n"
+ },
+ {
+  "name": "spec-247-block-quotes",
+  "input": "> bar\nbaz\n"
+ },
+ {
+  "name": "spec-248-block-quotes",
+  "input": "> bar\n\nbaz\n"
+ },
+ {
+  "name": "spec-249-block-quotes",
+  "input": "> bar\n>\nbaz\n"
+ },
+ {
+  "name": "spec-250-block-quotes",
+  "input": "> > > foo\nbar\n"
+ },
+ {
+  "name": "spec-251-block-quotes",
+  "input": ">>> foo\n> bar\n>>baz\n"
+ },
+ {
+  "name": "spec-252-block-quotes",
+  "input": ">     code\n\n>    not code\n"
+ },
+ {
+  "name": "spec-253-list-items",
+  "input": "A paragraph\nwith two lines.\n\n    indented code\n\n> A block quote.\n"
+ },
+ {
+  "name": "spec-254-list-items",
+  "input": "1.  A paragraph\n    with two lines.\n\n        indented code\n\n    > A block quote.\n"
+ },
+ {
+  "name": "spec-255-list-items",
+  "input": "- one\n\n two\n"
+ },
+ {
+  "name": "spec-256-list-items",
+  "input": "- one\n\n  two\n"
+ },
+ {
+  "name": "spec-257-list-items",
+  "input": " -    one\n\n     two\n"
+ },
+ {
+  "name": "spec-258-list-items",
+  "input": " -    one\n\n      two\n"
+ },
+ {
+  "name": "spec-259-list-items",
+  "input": "   > > 1.  one\n>>\n>>     two\n"
+ },
+ {
+  "name": "spec-260-list-items",
+  "input": ">>- one\n>>\n  >  > two\n"
+ },
+ {
+  "name": "spec-261-list-items",
+  "input": "-one\n\n2.two\n"
+ },
+ {
+  "name": "spec-262-list-items",
+  "input": "- foo\n\n\n  bar\n"
+ },
+ {
+  "name": "spec-263-list-items",
+  "input": "1.  foo\n\n    ```\n    bar\n    ```\n\n    baz\n\n    > bam\n"
+ },
+ {
+  "name": "spec-264-list-items",
+  "input": "- Foo\n\n      bar\n\n\n      baz\n"
+ },
+ {
+  "name": "spec-265-list-items",
+  "input": "123456789. ok\n"
+ },
+ {
+  "name": "spec-266-list-items",
+  "input": "1234567890. not ok\n"
+ },
+ {
+  "name": "spec-267-list-items",
+  "input": "0. ok\n"
+ },
+ {
+  "name": "spec-268-list-items",
+  "input": "003. ok\n"
+ },
+ {
+  "name": "spec-269-list-items",
+  "input": "-1. not ok\n"
+ },
+ {
+  "name": "spec-270-list-items",
+  "input": "- foo\n\n      bar\n"
+ },
+ {
+  "name": "spec-271-list-items",
+  "input": "  10.  foo\n\n           bar\n"
+ },
+ {
+  "name": "spec-272-list-items",
+  "input": "    indented code\n\nparagraph\n\n    more code\n"
+ },
+ {
+  "name": "spec-273-list-items",
+  "input": "1.     indented code\n\n   paragraph\n\n       more code\n"
+ },
+ {
+  "name": "spec-274-list-items",
+  "input": "1.      indented code\n\n   paragraph\n\n       more code\n"
+ },
+ {
+  "name": "spec-275-list-items",
+  "input": "   foo\n\nbar\n"
+ },
+ {
+  "name": "spec-276-list-items",
+  "input": "-    foo\n\n  bar\n"
+ },
+ {
+  "name": "spec-277-list-items",
+  "input": "-  foo\n\n   bar\n"
+ },
+ {
+  "name": "spec-278-list-items",
+  "input": "-\n  foo\n-\n  ```\n  bar\n  ```\n-\n      baz\n"
+ },
+ {
+  "name": "spec-279-list-items",
+  "input": "-   \n  foo\n"
+ },
+ {
+  "name": "spec-280-list-items",
+  "input": "-\n\n  foo\n"
+ },
+ {
+  "name": "spec-281-list-items",
+  "input": "- foo\n-\n- bar\n"
+ },
+ {
+  "name": "spec-282-list-items",
+  "input": "- foo\n-   \n- bar\n"
+ },
+ {
+  "name": "spec-283-list-items",
+  "input": "1. foo\n2.\n3. bar\n"
+ },
+ {
+  "name": "spec-284-list-items",
+  "input": "*\n"
+ },
+ {
+  "name": "spec-285-list-items",
+  "input": "foo\n*\n\nfoo\n1.\n"
+ },
+ {
+  "name": "spec-286-list-items",
+  "input": " 1.  A paragraph\n     with two lines.\n\n         indented code\n\n     > A block quote.\n"
+ },
+ {
+  "name": "spec-287-list-items",
+  "input": "  1.  A paragraph\n      with two lines.\n\n          indented code\n\n      > A block quote.\n"
+ },
+ {
+  "name": "spec-288-list-items",
+  "input": "   1.  A paragraph\n       with two lines.\n\n           indented code\n\n       > A block quote.\n"
+ },
+ {
+  "name": "spec-289-list-items",
+  "input": "    1.  A paragraph\n        with two lines.\n\n            indented code\n\n        > A block quote.\n"
+ },
+ {
+  "name": "spec-290-list-items",
+  "input": "  1.  A paragraph\nwith two lines.\n\n          indented code\n\n      > A block quote.\n"
+ },
+ {
+  "name": "spec-291-list-items",
+  "input": "  1.  A paragraph\n    with two lines.\n"
+ },
+ {
+  "name": "spec-292-list-items",
+  "input": "> 1. > Blockquote\ncontinued here.\n"
+ },
+ {
+  "name": "spec-293-list-items",
+  "input": "> 1. > Blockquote\n> continued here.\n"
+ },
+ {
+  "name": "spec-294-list-items",
+  "input": "- foo\n  - bar\n    - baz\n      - boo\n"
+ },
+ {
+  "name": "spec-295-list-items",
+  "input": "- foo\n - bar\n  - baz\n   - boo\n"
+ },
+ {
+  "name": "spec-296-list-items",
+  "input": "10) foo\n    - bar\n"
+ },
+ {
+  "name": "spec-297-list-items",
+  "input": "10) foo\n   - bar\n"
+ },
+ {
+  "name": "spec-298-list-items",
+  "input": "- - foo\n"
+ },
+ {
+  "name": "spec-299-list-items",
+  "input": "1. - 2. foo\n"
+ },
+ {
+  "name": "spec-300-list-items",
+  "input": "- # Foo\n- Bar\n  ---\n  baz\n"
+ },
+ {
+  "name": "spec-301-lists",
+  "input": "- foo\n- bar\n+ baz\n"
+ },
+ {
+  "name": "spec-302-lists",
+  "input": "1. foo\n2. bar\n3) baz\n"
+ },
+ {
+  "name": "spec-303-lists",
+  "input": "Foo\n- bar\n- baz\n"
+ },
+ {
+  "name": "spec-304-lists",
+  "input": "The number of windows in my house is\n14.  The number of doors is 6.\n"
+ },
+ {
+  "name": "spec-305-lists",
+  "input": "The number of windows in my house is\n1.  The number of doors is 6.\n"
+ },
+ {
+  "name": "spec-306-lists",
+  "input": "- foo\n\n- bar\n\n\n- baz\n"
+ },
+ {
+  "name": "spec-307-lists",
+  "input": "- foo\n  - bar\n    - baz\n\n\n      bim\n"
+ },
+ {
+  "name": "spec-308-lists",
+  "input": "- foo\n- bar\n\n<!-- -->\n\n- baz\n- bim\n"
+ },
+ {
+  "name": "spec-309-lists",
+  "input": "-   foo\n\n    notcode\n\n-   foo\n\n<!-- -->\n\n    code\n"
+ },
+ {
+  "name": "spec-310-lists",
+  "input": "- a\n - b\n  - c\n   - d\n  - e\n - f\n- g\n"
+ },
+ {
+  "name": "spec-311-lists",
+  "input": "1. a\n\n  2. b\n\n   3. c\n"
+ },
+ {
+  "name": "spec-312-lists",
+  "input": "- a\n - b\n  - c\n   - d\n    - e\n"
+ },
+ {
+  "name": "spec-313-lists",
+  "input": "1. a\n\n  2. b\n\n    3. c\n"
+ },
+ {
+  "name": "spec-314-lists",
+  "input": "- a\n- b\n\n- c\n"
+ },
+ {
+  "name": "spec-315-lists",
+  "input": "* a\n*\n\n* c\n"
+ },
+ {
+  "name": "spec-316-lists",
+  "input": "- a\n- b\n\n  c\n- d\n"
+ },
+ {
+  "name": "spec-317-lists",
+  "input": "- a\n- b\n\n  [ref]: /url\n- d\n"
+ },
+ {
+  "name": "spec-318-lists",
+  "input": "- a\n- ```\n  b\n\n\n  ```\n- c\n"
+ },
+ {
+  "name": "spec-319-lists",
+  "input": "- a\n  - b\n\n    c\n- d\n"
+ },
+ {
+  "name": "spec-320-lists",
+  "input": "* a\n  > b\n  >\n* c\n"
+ },
+ {
+  "name": "spec-321-lists",
+  "input": "- a\n  > b\n  ```\n  c\n  ```\n- d\n"
+ },
+ {
+  "name": "spec-322-lists",
+  "input": "- a\n"
+ },
+ {
+  "name": "spec-323-lists",
+  "input": "- a\n  - b\n"
+ },
+ {
+  "name": "spec-324-lists",
+  "input": "1. ```\n   foo\n   ```\n\n   bar\n"
+ },
+ {
+  "name": "spec-325-lists",
+  "input": "* foo\n  * bar\n\n  baz\n"
+ },
+ {
+  "name": "spec-326-lists",
+  "input": "- a\n  - b\n  - c\n\n- d\n  - e\n  - f\n"
+ },
+ {
+  "name": "spec-327-inlines",
+  "input": "`hi`lo`\n"
+ },
+ {
+  "name": "spec-328-code-spans",
+  "input": "`foo`\n"
+ },
+ {
+  "name": "spec-329-code-spans",
+  "input": "`` foo ` bar ``\n"
+ },
+ {
+  "name": "spec-330-code-spans",
+  "input": "` `` `\n"
+ },
+ {
+  "name": "spec-331-code-spans",
+  "input": "`  ``  `\n"
+ },
+ {
+  "name": "spec-332-code-spans",
+  "input": "` a`\n"
+ },
+ {
+  "name": "spec-333-code-spans",
+  "input": "` b `\n"
+ },
+ {
+  "name": "spec-334-code-spans",
+  "input": "` `\n`  `\n"
+ },
+ {
+  "name": "spec-335-code-spans",
+  "input": "``\nfoo\nbar  \nbaz\n``\n"
+ },
+ {
+  "name": "spec-336-code-spans",
+  "input": "``\nfoo \n``\n"
+ },
+ {
+  "name": "spec-337-code-spans",
+  "input": "`foo   bar \nbaz`\n"
+ },
+ {
+  "name": "spec-338-code-spans",
+  "input": "`foo\\`bar`\n"
+ },
+ {
+  "name": "spec-339-code-spans",
+  "input": "``foo`bar``\n"
+ },
+ {
+  "name": "spec-340-code-spans",
+  "input": "` foo `` bar `\n"
+ },
+ {
+  "name": "spec-341-code-spans",
+  "input": "*foo`*`\n"
+ },
+ {
+  "name": "spec-342-code-spans",
+  "input": "[not a `link](/foo`)\n"
+ },
+ {
+  "name": "spec-343-code-spans",
+  "input": "`<a href=\"`\">`\n"
+ },
+ {
+  "name": "spec-344-code-spans",
+  "input": "<a href=\"`\">`\n"
+ },
+ {
+  "name": "spec-345-code-spans",
+  "input": "`<https://foo.bar.`baz>`\n"
+ },
+ {
+  "name": "spec-346-code-spans",
+  "input": "<https://foo.bar.`baz>`\n"
+ },
+ {
+  "name": "spec-347-code-spans",
+  "input": "```foo``\n"
+ },
+ {
+  "name": "spec-348-code-spans",
+  "input": "`foo\n"
+ },
+ {
+  "name": "spec-349-code-spans",
+  "input": "`foo``bar``\n"
+ },
+ {
+  "name": "spec-350-emphasis-and-strong-emphasis",
+  "input": "*foo bar*\n"
+ },
+ {
+  "name": "spec-351-emphasis-and-strong-emphasis",
+  "input": "a * foo bar*\n"
+ },
+ {
+  "name": "spec-352-emphasis-and-strong-emphasis",
+  "input": "a*\"foo\"*\n"
+ },
+ {
+  "name": "spec-353-emphasis-and-strong-emphasis",
+  "input": "* a *\n"
+ },
+ {
+  "name": "spec-354-emphasis-and-strong-emphasis",
+  "input": "*$*alpha.\n\n*£*bravo.\n\n*€*charlie.\n"
+ },
+ {
+  "name": "spec-355-emphasis-and-strong-emphasis",
+  "input": "foo*bar*\n"
+ },
+ {
+  "name": "spec-356-emphasis-and-strong-emphasis",
+  "input": "5*6*78\n"
+ },
+ {
+  "name": "spec-357-emphasis-and-strong-emphasis",
+  "input": "_foo bar_\n"
+ },
+ {
+  "name": "spec-358-emphasis-and-strong-emphasis",
+  "input": "_ foo bar_\n"
+ },
+ {
+  "name": "spec-359-emphasis-and-strong-emphasis",
+  "input": "a_\"foo\"_\n"
+ },
+ {
+  "name": "spec-360-emphasis-and-strong-emphasis",
+  "input": "foo_bar_\n"
+ },
+ {
+  "name": "spec-361-emphasis-and-strong-emphasis",
+  "input": "5_6_78\n"
+ },
+ {
+  "name": "spec-362-emphasis-and-strong-emphasis",
+  "input": "пристаням_стремятся_\n"
+ },
+ {
+  "name": "spec-363-emphasis-and-strong-emphasis",
+  "input": "aa_\"bb\"_cc\n"
+ },
+ {
+  "name": "spec-364-emphasis-and-strong-emphasis",
+  "input": "foo-_(bar)_\n"
+ },
+ {
+  "name": "spec-365-emphasis-and-strong-emphasis",
+  "input": "_foo*\n"
+ },
+ {
+  "name": "spec-366-emphasis-and-strong-emphasis",
+  "input": "*foo bar *\n"
+ },
+ {
+  "name": "spec-367-emphasis-and-strong-emphasis",
+  "input": "*foo bar\n*\n"
+ },
+ {
+  "name": "spec-368-emphasis-and-strong-emphasis",
+  "input": "*(*foo)\n"
+ },
+ {
+  "name": "spec-369-emphasis-and-strong-emphasis",
+  "input": "*(*foo*)*\n"
+ },
+ {
+  "name": "spec-370-emphasis-and-strong-emphasis",
+  "input": "*foo*bar\n"
+ },
+ {
+  "name": "spec-371-emphasis-and-strong-emphasis",
+  "input": "_foo bar _\n"
+ },
+ {
+  "name": "spec-372-emphasis-and-strong-emphasis",
+  "input": "_(_foo)\n"
+ },
+ {
+  "name": "spec-373-emphasis-and-strong-emphasis",
+  "input": "_(_foo_)_\n"
+ },
+ {
+  "name": "spec-374-emphasis-and-strong-emphasis",
+  "input": "_foo_bar\n"
+ },
+ {
+  "name": "spec-375-emphasis-and-strong-emphasis",
+  "input": "_пристаням_стремятся\n"
+ },
+ {
+  "name": "spec-376-emphasis-and-strong-emphasis",
+  "input": "_foo_bar_baz_\n"
+ },
+ {
+  "name": "spec-377-emphasis-and-strong-emphasis",
+  "input": "_(bar)_.\n"
+ },
+ {
+  "name": "spec-378-emphasis-and-strong-emphasis",
+  "input": "**foo bar**\n"
+ },
+ {
+  "name": "spec-379-emphasis-and-strong-emphasis",
+  "input": "** foo bar**\n"
+ },
+ {
+  "name": "spec-380-emphasis-and-strong-emphasis",
+  "input": "a**\"foo\"**\n"
+ },
+ {
+  "name": "spec-381-emphasis-and-strong-emphasis",
+  "input": "foo**bar**\n"
+ },
+ {
+  "name": "spec-382-emphasis-and-strong-emphasis",
+  "input": "__foo bar__\n"
+ },
+ {
+  "name": "spec-383-emphasis-and-strong-emphasis",
+  "input": "__ foo bar__\n"
+ },
+ {
+  "name": "spec-384-emphasis-and-strong-emphasis",
+  "input": "__\nfoo bar__\n"
+ },
+ {
+  "name": "spec-385-emphasis-and-strong-emphasis",
+  "input": "a__\"foo\"__\n"
+ },
+ {
+  "name": "spec-386-emphasis-and-strong-emphasis",
+  "input": "foo__bar__\n"
+ },
+ {
+  "name": "spec-387-emphasis-and-strong-emphasis",
+  "input": "5__6__78\n"
+ },
+ {
+  "name": "spec-388-emphasis-and-strong-emphasis",
+  "input": "пристаням__стремятся__\n"
+ },
+ {
+  "name": "spec-389-emphasis-and-strong-emphasis",
+  "input": "__foo, __bar__, baz__\n"
+ },
+ {
+  "name": "spec-390-emphasis-and-strong-emphasis",
+  "input": "foo-__(bar)__\n"
+ },
+ {
+  "name": "spec-391-emphasis-and-strong-emphasis",
+  "input": "**foo bar **\n"
+ },
+ {
+  "name": "spec-392-emphasis-and-strong-emphasis",
+  "input": "**(**foo)\n"
+ },
+ {
+  "name": "spec-393-emphasis-and-strong-emphasis",
+  "input": "*(**foo**)*\n"
+ },
+ {
+  "name": "spec-394-emphasis-and-strong-emphasis",
+  "input": "**Gomphocarpus (*Gomphocarpus physocarpus*, syn.\n*Asclepias physocarpa*)**\n"
+ },
+ {
+  "name": "spec-395-emphasis-and-strong-emphasis",
+  "input": "**foo \"*bar*\" foo**\n"
+ },
+ {
+  "name": "spec-396-emphasis-and-strong-emphasis",
+  "input": "**foo**bar\n"
+ },
+ {
+  "name": "spec-397-emphasis-and-strong-emphasis",
+  "input": "__foo bar __\n"
+ },
+ {
+  "name": "spec-398-emphasis-and-strong-emphasis",
+  "input": "__(__foo)\n"
+ },
+ {
+  "name": "spec-399-emphasis-and-strong-emphasis",
+  "input": "_(__foo__)_\n"
+ },
+ {
+  "name": "spec-400-emphasis-and-strong-emphasis",
+  "input": "__foo__bar\n"
+ },
+ {
+  "name": "spec-401-emphasis-and-strong-emphasis",
+  "input": "__пристаням__стремятся\n"
+ },
+ {
+  "name": "spec-402-emphasis-and-strong-emphasis",
+  "input": "__foo__bar__baz__\n"
+ },
+ {
+  "name": "spec-403-emphasis-and-strong-emphasis",
+  "input": "__(bar)__.\n"
+ },
+ {
+  "name": "spec-404-emphasis-and-strong-emphasis",
+  "input": "*foo [bar](/url)*\n"
+ },
+ {
+  "name": "spec-405-emphasis-and-strong-emphasis",
+  "input": "*foo\nbar*\n"
+ },
+ {
+  "name": "spec-406-emphasis-and-strong-emphasis",
+  "input": "_foo __bar__ baz_\n"
+ },
+ {
+  "name": "spec-407-emphasis-and-strong-emphasis",
+  "input": "_foo _bar_ baz_\n"
+ },
+ {
+  "name": "spec-408-emphasis-and-strong-emphasis",
+  "input": "__foo_ bar_\n"
+ },
+ {
+  "name": "spec-409-emphasis-and-strong-emphasis",
+  "input": "*foo *bar**\n"
+ },
+ {
+  "name": "spec-410-emphasis-and-strong-emphasis",
+  "input": "*foo **bar** baz*\n"
+ },
+ {
+  "name": "spec-411-emphasis-and-strong-emphasis",
+  "input": "*foo**bar**baz*\n"
+ },
+ {
+  "name": "spec-412-emphasis-and-strong-emphasis",
+  "input": "*foo**bar*\n"
+ },
+ {
+  "name": "spec-413-emphasis-and-strong-emphasis",
+  "input": "***foo** bar*\n"
+ },
+ {
+  "name": "spec-414-emphasis-and-strong-emphasis",
+  "input": "*foo **bar***\n"
+ },
+ {
+  "name": "spec-415-emphasis-and-strong-emphasis",
+  "input": "*foo**bar***\n"
+ },
+ {
+  "name": "spec-416-emphasis-and-strong-emphasis",
+  "input": "foo***bar***baz\n"
+ },
+ {
+  "name": "spec-417-emphasis-and-strong-emphasis",
+  "input": "foo******bar*********baz\n"
+ },
+ {
+  "name": "spec-418-emphasis-and-strong-emphasis",
+  "input": "*foo **bar *baz* bim** bop*\n"
+ },
+ {
+  "name": "spec-419-emphasis-and-strong-emphasis",
+  "input": "*foo [*bar*](/url)*\n"
+ },
+ {
+  "name": "spec-420-emphasis-and-strong-emphasis",
+  "input": "** is not an empty emphasis\n"
+ },
+ {
+  "name": "spec-421-emphasis-and-strong-emphasis",
+  "input": "**** is not an empty strong emphasis\n"
+ },
+ {
+  "name": "spec-422-emphasis-and-strong-emphasis",
+  "input": "**foo [bar](/url)**\n"
+ },
+ {
+  "name": "spec-423-emphasis-and-strong-emphasis",
+  "input": "**foo\nbar**\n"
+ },
+ {
+  "name": "spec-424-emphasis-and-strong-emphasis",
+  "input": "__foo _bar_ baz__\n"
+ },
+ {
+  "name": "spec-425-emphasis-and-strong-emphasis",
+  "input": "__foo __bar__ baz__\n"
+ },
+ {
+  "name": "spec-426-emphasis-and-strong-emphasis",
+  "input": "____foo__ bar__\n"
+ },
+ {
+  "name": "spec-427-emphasis-and-strong-emphasis",
+  "input": "**foo **bar****\n"
+ },
+ {
+  "name": "spec-428-emphasis-and-strong-emphasis",
+  "input": "**foo *bar* baz**\n"
+ },
+ {
+  "name": "spec-429-emphasis-and-strong-emphasis",
+  "input": "**foo*bar*baz**\n"
+ },
+ {
+  "name": "spec-430-emphasis-and-strong-emphasis",
+  "input": "***foo* bar**\n"
+ },
+ {
+  "name": "spec-431-emphasis-and-strong-emphasis",
+  "input": "**foo *bar***\n"
+ },
+ {
+  "name": "spec-432-emphasis-and-strong-emphasis",
+  "input": "**foo *bar **baz**\nbim* bop**\n"
+ },
+ {
+  "name": "spec-433-emphasis-and-strong-emphasis",
+  "input": "**foo [*bar*](/url)**\n"
+ },
+ {
+  "name": "spec-434-emphasis-and-strong-emphasis",
+  "input": "__ is not an empty emphasis\n"
+ },
+ {
+  "name": "spec-435-emphasis-and-strong-emphasis",
+  "input": "____ is not an empty strong emphasis\n"
+ },
+ {
+  "name": "spec-436-emphasis-and-strong-emphasis",
+  "input": "foo ***\n"
+ },
+ {
+  "name": "spec-437-emphasis-and-strong-emphasis",
+  "input": "foo *\\**\n"
+ },
+ {
+  "name": "spec-438-emphasis-and-strong-emphasis",
+  "input": "foo *_*\n"
+ },
+ {
+  "name": "spec-439-emphasis-and-strong-emphasis",
+  "input": "foo *****\n"
+ },
+ {
+  "name": "spec-440-emphasis-and-strong-emphasis",
+  "input": "foo **\\***\n"
+ },
+ {
+  "name": "spec-441-emphasis-and-strong-emphasis",
+  "input": "foo **_**\n"
+ },
+ {
+  "name": "spec-442-emphasis-and-strong-emphasis",
+  "input": "**foo*\n"
+ },
+ {
+  "name": "spec-443-emphasis-and-strong-emphasis",
+  "input": "*foo**\n"
+ },
+ {
+  "name": "spec-444-emphasis-and-strong-emphasis",
+  "input": "***foo**\n"
+ },
+ {
+  "name": "spec-445-emphasis-and-strong-emphasis",
+  "input": "****foo*\n"
+ },
+ {
+  "name": "spec-446-emphasis-and-strong-emphasis",
+  "input": "**foo***\n"
+ },
+ {
+  "name": "spec-447-emphasis-and-strong-emphasis",
+  "input": "*foo****\n"
+ },
+ {
+  "name": "spec-448-emphasis-and-strong-emphasis",
+  "input": "foo ___\n"
+ },
+ {
+  "name": "spec-449-emphasis-and-strong-emphasis",
+  "input": "foo _\\__\n"
+ },
+ {
+  "name": "spec-450-emphasis-and-strong-emphasis",
+  "input": "foo _*_\n"
+ },
+ {
+  "name": "spec-451-emphasis-and-strong-emphasis",
+  "input": "foo _____\n"
+ },
+ {
+  "name": "spec-452-emphasis-and-strong-emphasis",
+  "input": "foo __\\___\n"
+ },
+ {
+  "name": "spec-453-emphasis-and-strong-emphasis",
+  "input": "foo __*__\n"
+ },
+ {
+  "name": "spec-454-emphasis-and-strong-emphasis",
+  "input": "__foo_\n"
+ },
+ {
+  "name": "spec-455-emphasis-and-strong-emphasis",
+  "input": "_foo__\n"
+ },
+ {
+  "name": "spec-456-emphasis-and-strong-emphasis",
+  "input": "___foo__\n"
+ },
+ {
+  "name": "spec-457-emphasis-and-strong-emphasis",
+  "input": "____foo_\n"
+ },
+ {
+  "name": "spec-458-emphasis-and-strong-emphasis",
+  "input": "__foo___\n"
+ },
+ {
+  "name": "spec-459-emphasis-and-strong-emphasis",
+  "input": "_foo____\n"
+ },
+ {
+  "name": "spec-460-emphasis-and-strong-emphasis",
+  "input": "**foo**\n"
+ },
+ {
+  "name": "spec-461-emphasis-and-strong-emphasis",
+  "input": "*_foo_*\n"
+ },
+ {
+  "name": "spec-462-emphasis-and-strong-emphasis",
+  "input": "__foo__\n"
+ },
+ {
+  "name": "spec-463-emphasis-and-strong-emphasis",
+  "input": "_*foo*_\n"
+ },
+ {
+  "name": "spec-464-emphasis-and-strong-emphasis",
+  "input": "****foo****\n"
+ },
+ {
+  "name": "spec-465-emphasis-and-strong-emphasis",
+  "input": "____foo____\n"
+ },
+ {
+  "name": "spec-466-emphasis-and-strong-emphasis",
+  "input": "******foo******\n"
+ },
+ {
+  "name": "spec-467-emphasis-and-strong-emphasis",
+  "input": "***foo***\n"
+ },
+ {
+  "name": "spec-468-emphasis-and-strong-emphasis",
+  "input": "_____foo_____\n"
+ },
+ {
+  "name": "spec-469-emphasis-and-strong-emphasis",
+  "input": "*foo _bar* baz_\n"
+ },
+ {
+  "name": "spec-470-emphasis-and-strong-emphasis",
+  "input": "*foo __bar *baz bim__ bam*\n"
+ },
+ {
+  "name": "spec-471-emphasis-and-strong-emphasis",
+  "input": "**foo **bar baz**\n"
+ },
+ {
+  "name": "spec-472-emphasis-and-strong-emphasis",
+  "input": "*foo *bar baz*\n"
+ },
+ {
+  "name": "spec-473-emphasis-and-strong-emphasis",
+  "input": "*[bar*](/url)\n"
+ },
+ {
+  "name": "spec-474-emphasis-and-strong-emphasis",
+  "input": "_foo [bar_](/url)\n"
+ },
+ {
+  "name": "spec-475-emphasis-and-strong-emphasis",
+  "input": "*<img src=\"foo\" title=\"*\"/>\n"
+ },
+ {
+  "name": "spec-476-emphasis-and-strong-emphasis",
+  "input": "**<a href=\"**\">\n"
+ },
+ {
+  "name": "spec-477-emphasis-and-strong-emphasis",
+  "input": "__<a href=\"__\">\n"
+ },
+ {
+  "name": "spec-478-emphasis-and-strong-emphasis",
+  "input": "*a `*`*\n"
+ },
+ {
+  "name": "spec-479-emphasis-and-strong-emphasis",
+  "input": "_a `_`_\n"
+ },
+ {
+  "name": "spec-480-emphasis-and-strong-emphasis",
+  "input": "**a<https://foo.bar/?q=**>\n"
+ },
+ {
+  "name": "spec-481-emphasis-and-strong-emphasis",
+  "input": "__a<https://foo.bar/?q=__>\n"
+ },
+ {
+  "name": "spec-482-links",
+  "input": "[link](/uri \"title\")\n"
+ },
+ {
+  "name": "spec-483-links",
+  "input": "[link](/uri)\n"
+ },
+ {
+  "name": "spec-484-links",
+  "input": "[](./target.md)\n"
+ },
+ {
+  "name": "spec-485-links",
+  "input": "[link]()\n"
+ },
+ {
+  "name": "spec-486-links",
+  "input": "[link](<>)\n"
+ },
+ {
+  "name": "spec-487-links",
+  "input": "[]()\n"
+ },
+ {
+  "name": "spec-488-links",
+  "input": "[link](/my uri)\n"
+ },
+ {
+  "name": "spec-489-links",
+  "input": "[link](</my uri>)\n"
+ },
+ {
+  "name": "spec-490-links",
+  "input": "[link](foo\nbar)\n"
+ },
+ {
+  "name": "spec-491-links",
+  "input": "[link](<foo\nbar>)\n"
+ },
+ {
+  "name": "spec-492-links",
+  "input": "[a](<b)c>)\n"
+ },
+ {
+  "name": "spec-493-links",
+  "input": "[link](<foo\\>)\n"
+ },
+ {
+  "name": "spec-494-links",
+  "input": "[a](<b)c\n[a](<b)c>\n[a](<b>c)\n"
+ },
+ {
+  "name": "spec-495-links",
+  "input": "[link](\\(foo\\))\n"
+ },
+ {
+  "name": "spec-496-links",
+  "input": "[link](foo(and(bar)))\n"
+ },
+ {
+  "name": "spec-497-links",
+  "input": "[link](foo(and(bar))\n"
+ },
+ {
+  "name": "spec-498-links",
+  "input": "[link](foo\\(and\\(bar\\))\n"
+ },
+ {
+  "name": "spec-499-links",
+  "input": "[link](<foo(and(bar)>)\n"
+ },
+ {
+  "name": "spec-500-links",
+  "input": "[link](foo\\)\\:)\n"
+ },
+ {
+  "name": "spec-501-links",
+  "input": "[link](#fragment)\n\n[link](https://example.com#fragment)\n\n[link](https://example.com?foo=3#frag)\n"
+ },
+ {
+  "name": "spec-502-links",
+  "input": "[link](foo\\bar)\n"
+ },
+ {
+  "name": "spec-503-links",
+  "input": "[link](foo%20b&auml;)\n"
+ },
+ {
+  "name": "spec-504-links",
+  "input": "[link](\"title\")\n"
+ },
+ {
+  "name": "spec-505-links",
+  "input": "[link](/url \"title\")\n[link](/url 'title')\n[link](/url (title))\n"
+ },
+ {
+  "name": "spec-506-links",
+  "input": "[link](/url \"title \\\"&quot;\")\n"
+ },
+ {
+  "name": "spec-507-links",
+  "input": "[link](/url \"title\")\n"
+ },
+ {
+  "name": "spec-508-links",
+  "input": "[link](/url \"title \"and\" title\")\n"
+ },
+ {
+  "name": "spec-509-links",
+  "input": "[link](/url 'title \"and\" title')\n"
+ },
+ {
+  "name": "spec-510-links",
+  "input": "[link](   /uri\n  \"title\"  )\n"
+ },
+ {
+  "name": "spec-511-links",
+  "input": "[link] (/uri)\n"
+ },
+ {
+  "name": "spec-512-links",
+  "input": "[link [foo [bar]]](/uri)\n"
+ },
+ {
+  "name": "spec-513-links",
+  "input": "[link] bar](/uri)\n"
+ },
+ {
+  "name": "spec-514-links",
+  "input": "[link [bar](/uri)\n"
+ },
+ {
+  "name": "spec-515-links",
+  "input": "[link \\[bar](/uri)\n"
+ },
+ {
+  "name": "spec-516-links",
+  "input": "[link *foo **bar** `#`*](/uri)\n"
+ },
+ {
+  "name": "spec-517-links",
+  "input": "[![moon](moon.jpg)](/uri)\n"
+ },
+ {
+  "name": "spec-518-links",
+  "input": "[foo [bar](/uri)](/uri)\n"
+ },
+ {
+  "name": "spec-519-links",
+  "input": "[foo *[bar [baz](/uri)](/uri)*](/uri)\n"
+ },
+ {
+  "name": "spec-520-links",
+  "input": "![[[foo](uri1)](uri2)](uri3)\n"
+ },
+ {
+  "name": "spec-521-links",
+  "input": "*[foo*](/uri)\n"
+ },
+ {
+  "name": "spec-522-links",
+  "input": "[foo *bar](baz*)\n"
+ },
+ {
+  "name": "spec-523-links",
+  "input": "*foo [bar* baz]\n"
+ },
+ {
+  "name": "spec-524-links",
+  "input": "[foo <bar attr=\"](baz)\">\n"
+ },
+ {
+  "name": "spec-525-links",
+  "input": "[foo`](/uri)`\n"
+ },
+ {
+  "name": "spec-526-links",
+  "input": "[foo<https://example.com/?search=](uri)>\n"
+ },
+ {
+  "name": "spec-527-links",
+  "input": "[foo][bar]\n\n[bar]: /url \"title\"\n"
+ },
+ {
+  "name": "spec-528-links",
+  "input": "[link [foo [bar]]][ref]\n\n[ref]: /uri\n"
+ },
+ {
+  "name": "spec-529-links",
+  "input": "[link \\[bar][ref]\n\n[ref]: /uri\n"
+ },
+ {
+  "name": "spec-530-links",
+  "input": "[link *foo **bar** `#`*][ref]\n\n[ref]: /uri\n"
+ },
+ {
+  "name": "spec-531-links",
+  "input": "[![moon](moon.jpg)][ref]\n\n[ref]: /uri\n"
+ },
+ {
+  "name": "spec-532-links",
+  "input": "[foo [bar](/uri)][ref]\n\n[ref]: /uri\n"
+ },
+ {
+  "name": "spec-533-links",
+  "input": "[foo *bar [baz][ref]*][ref]\n\n[ref]: /uri\n"
+ },
+ {
+  "name": "spec-534-links",
+  "input": "*[foo*][ref]\n\n[ref]: /uri\n"
+ },
+ {
+  "name": "spec-535-links",
+  "input": "[foo *bar][ref]*\n\n[ref]: /uri\n"
+ },
+ {
+  "name": "spec-536-links",
+  "input": "[foo <bar attr=\"][ref]\">\n\n[ref]: /uri\n"
+ },
+ {
+  "name": "spec-537-links",
+  "input": "[foo`][ref]`\n\n[ref]: /uri\n"
+ },
+ {
+  "name": "spec-538-links",
+  "input": "[foo<https://example.com/?search=][ref]>\n\n[ref]: /uri\n"
+ },
+ {
+  "name": "spec-539-links",
+  "input": "[foo][BaR]\n\n[bar]: /url \"title\"\n"
+ },
+ {
+  "name": "spec-540-links",
+  "input": "[ẞ]\n\n[SS]: /url\n"
+ },
+ {
+  "name": "spec-541-links",
+  "input": "[Foo\n  bar]: /url\n\n[Baz][Foo bar]\n"
+ },
+ {
+  "name": "spec-542-links",
+  "input": "[foo] [bar]\n\n[bar]: /url \"title\"\n"
+ },
+ {
+  "name": "spec-543-links",
+  "input": "[foo]\n[bar]\n\n[bar]: /url \"title\"\n"
+ },
+ {
+  "name": "spec-544-links",
+  "input": "[foo]: /url1\n\n[foo]: /url2\n\n[bar][foo]\n"
+ },
+ {
+  "name": "spec-545-links",
+  "input": "[bar][foo\\!]\n\n[foo!]: /url\n"
+ },
+ {
+  "name": "spec-546-links",
+  "input": "[foo][ref[]\n\n[ref[]: /uri\n"
+ },
+ {
+  "name": "spec-547-links",
+  "input": "[foo][ref[bar]]\n\n[ref[bar]]: /uri\n"
+ },
+ {
+  "name": "spec-548-links",
+  "input": "[[[foo]]]\n\n[[[foo]]]: /url\n"
+ },
+ {
+  "name": "spec-549-links",
+  "input": "[foo][ref\\[]\n\n[ref\\[]: /uri\n"
+ },
+ {
+  "name": "spec-550-links",
+  "input": "[bar\\\\]: /uri\n\n[bar\\\\]\n"
+ },
+ {
+  "name": "spec-551-links",
+  "input": "[]\n\n[]: /uri\n"
+ },
+ {
+  "name": "spec-552-links",
+  "input": "[\n ]\n\n[\n ]: /uri\n"
+ },
+ {
+  "name": "spec-553-links",
+  "input": "[foo][]\n\n[foo]: /url \"title\"\n"
+ },
+ {
+  "name": "spec-554-links",
+  "input": "[*foo* bar][]\n\n[*foo* bar]: /url \"title\"\n"
+ },
+ {
+  "name": "spec-555-links",
+  "input": "[Foo][]\n\n[foo]: /url \"title\"\n"
+ },
+ {
+  "name": "spec-556-links",
+  "input": "[foo] \n[]\n\n[foo]: /url \"title\"\n"
+ },
+ {
+  "name": "spec-557-links",
+  "input": "[foo]\n\n[foo]: /url \"title\"\n"
+ },
+ {
+  "name": "spec-558-links",
+  "input": "[*foo* bar]\n\n[*foo* bar]: /url \"title\"\n"
+ },
+ {
+  "name": "spec-559-links",
+  "input": "[[*foo* bar]]\n\n[*foo* bar]: /url \"title\"\n"
+ },
+ {
+  "name": "spec-560-links",
+  "input": "[[bar [foo]\n\n[foo]: /url\n"
+ },
+ {
+  "name": "spec-561-links",
+  "input": "[Foo]\n\n[foo]: /url \"title\"\n"
+ },
+ {
+  "name": "spec-562-links",
+  "input": "[foo] bar\n\n[foo]: /url\n"
+ },
+ {
+  "name": "spec-563-links",
+  "input": "\\[foo]\n\n[foo]: /url \"title\"\n"
+ },
+ {
+  "name": "spec-564-links",
+  "input": "[foo*]: /url\n\n*[foo*]\n"
+ },
+ {
+  "name": "spec-565-links",
+  "input": "[foo][bar]\n\n[foo]: /url1\n[bar]: /url2\n"
+ },
+ {
+  "name": "spec-566-links",
+  "input": "[foo][]\n\n[foo]: /url1\n"
+ },
+ {
+  "name": "spec-567-links",
+  "input": "[foo]()\n\n[foo]: /url1\n"
+ },
+ {
+  "name": "spec-568-links",
+  "input": "[foo](not a link)\n\n[foo]: /url1\n"
+ },
+ {
+  "name": "spec-569-links",
+  "input": "[foo][bar][baz]\n\n[baz]: /url\n"
+ },
+ {
+  "name": "spec-570-links",
+  "input": "[foo][bar][baz]\n\n[baz]: /url1\n[bar]: /url2\n"
+ },
+ {
+  "name": "spec-571-links",
+  "input": "[foo][bar][baz]\n\n[baz]: /url1\n[foo]: /url2\n"
+ },
+ {
+  "name": "spec-572-images",
+  "input": "![foo](/url \"title\")\n"
+ },
+ {
+  "name": "spec-573-images",
+  "input": "![foo *bar*]\n\n[foo *bar*]: train.jpg \"train & tracks\"\n"
+ },
+ {
+  "name": "spec-574-images",
+  "input": "![foo ![bar](/url)](/url2)\n"
+ },
+ {
+  "name": "spec-575-images",
+  "input": "![foo [bar](/url)](/url2)\n"
+ },
+ {
+  "name": "spec-576-images",
+  "input": "![foo *bar*][]\n\n[foo *bar*]: train.jpg \"train & tracks\"\n"
+ },
+ {
+  "name": "spec-577-images",
+  "input": "![foo *bar*][foobar]\n\n[FOOBAR]: train.jpg \"train & tracks\"\n"
+ },
+ {
+  "name": "spec-578-images",
+  "input": "![foo](train.jpg)\n"
+ },
+ {
+  "name": "spec-579-images",
+  "input": "My ![foo bar](/path/to/train.jpg  \"title\"   )\n"
+ },
+ {
+  "name": "spec-580-images",
+  "input": "![foo](<url>)\n"
+ },
+ {
+  "name": "spec-581-images",
+  "input": "![](/url)\n"
+ },
+ {
+  "name": "spec-582-images",
+  "input": "![foo][bar]\n\n[bar]: /url\n"
+ },
+ {
+  "name": "spec-583-images",
+  "input": "![foo][bar]\n\n[BAR]: /url\n"
+ },
+ {
+  "name": "spec-584-images",
+  "input": "![foo][]\n\n[foo]: /url \"title\"\n"
+ },
+ {
+  "name": "spec-585-images",
+  "input": "![*foo* bar][]\n\n[*foo* bar]: /url \"title\"\n"
+ },
+ {
+  "name": "spec-586-images",
+  "input": "![Foo][]\n\n[foo]: /url \"title\"\n"
+ },
+ {
+  "name": "spec-587-images",
+  "input": "![foo] \n[]\n\n[foo]: /url \"title\"\n"
+ },
+ {
+  "name": "spec-588-images",
+  "input": "![foo]\n\n[foo]: /url \"title\"\n"
+ },
+ {
+  "name": "spec-589-images",
+  "input": "![*foo* bar]\n\n[*foo* bar]: /url \"title\"\n"
+ },
+ {
+  "name": "spec-590-images",
+  "input": "![[foo]]\n\n[[foo]]: /url \"title\"\n"
+ },
+ {
+  "name": "spec-591-images",
+  "input": "![Foo]\n\n[foo]: /url \"title\"\n"
+ },
+ {
+  "name": "spec-592-images",
+  "input": "!\\[foo]\n\n[foo]: /url \"title\"\n"
+ },
+ {
+  "name": "spec-593-images",
+  "input": "\\![foo]\n\n[foo]: /url \"title\"\n"
+ },
+ {
+  "name": "spec-594-autolinks",
+  "input": "<http://foo.bar.baz>\n"
+ },
+ {
+  "name": "spec-595-autolinks",
+  "input": "<https://foo.bar.baz/test?q=hello&id=22&boolean>\n"
+ },
+ {
+  "name": "spec-596-autolinks",
+  "input": "<irc://foo.bar:2233/baz>\n"
+ },
+ {
+  "name": "spec-597-autolinks",
+  "input": "<MAILTO:FOO@BAR.BAZ>\n"
+ },
+ {
+  "name": "spec-598-autolinks",
+  "input": "<a+b+c:d>\n"
+ },
+ {
+  "name": "spec-599-autolinks",
+  "input": "<made-up-scheme://foo,bar>\n"
+ },
+ {
+  "name": "spec-600-autolinks",
+  "input": "<https://../>\n"
+ },
+ {
+  "name": "spec-601-autolinks",
+  "input": "<localhost:5001/foo>\n"
+ },
+ {
+  "name": "spec-602-autolinks",
+  "input": "<https://foo.bar/baz bim>\n"
+ },
+ {
+  "name": "spec-603-autolinks",
+  "input": "<https://example.com/\\[\\>\n"
+ },
+ {
+  "name": "spec-604-autolinks",
+  "input": "<foo@bar.example.com>\n"
+ },
+ {
+  "name": "spec-605-autolinks",
+  "input": "<foo+special@Bar.baz-bar0.com>\n"
+ },
+ {
+  "name": "spec-606-autolinks",
+  "input": "<foo\\+@bar.example.com>\n"
+ },
+ {
+  "name": "spec-607-autolinks",
+  "input": "<>\n"
+ },
+ {
+  "name": "spec-608-autolinks",
+  "input": "< https://foo.bar >\n"
+ },
+ {
+  "name": "spec-609-autolinks",
+  "input": "<m:abc>\n"
+ },
+ {
+  "name": "spec-610-autolinks",
+  "input": "<foo.bar.baz>\n"
+ },
+ {
+  "name": "spec-611-autolinks",
+  "input": "https://example.com\n"
+ },
+ {
+  "name": "spec-612-autolinks",
+  "input": "foo@bar.example.com\n"
+ },
+ {
+  "name": "spec-613-raw-html",
+  "input": "<a><bab><c2c>\n"
+ },
+ {
+  "name": "spec-614-raw-html",
+  "input": "<a/><b2/>\n"
+ },
+ {
+  "name": "spec-615-raw-html",
+  "input": "<a  /><b2\ndata=\"foo\" >\n"
+ },
+ {
+  "name": "spec-616-raw-html",
+  "input": "<a foo=\"bar\" bam = 'baz <em>\"</em>'\n_boolean zoop:33=zoop:33 />\n"
+ },
+ {
+  "name": "spec-617-raw-html",
+  "input": "Foo <responsive-image src=\"foo.jpg\" />\n"
+ },
+ {
+  "name": "spec-618-raw-html",
+  "input": "<33> <__>\n"
+ },
+ {
+  "name": "spec-619-raw-html",
+  "input": "<a h*#ref=\"hi\">\n"
+ },
+ {
+  "name": "spec-620-raw-html",
+  "input": "<a href=\"hi'> <a href=hi'>\n"
+ },
+ {
+  "name": "spec-621-raw-html",
+  "input": "< a><\nfoo><bar/ >\n<foo bar=baz\nbim!bop />\n"
+ },
+ {
+  "name": "spec-622-raw-html",
+  "input": "<a href='bar'title=title>\n"
+ },
+ {
+  "name": "spec-623-raw-html",
+  "input": "</a></foo >\n"
+ },
+ {
+  "name": "spec-624-raw-html",
+  "input": "</a href=\"foo\">\n"
+ },
+ {
+  "name": "spec-625-raw-html",
+  "input": "foo <!-- this is a --\ncomment - with hyphens -->\n"
+ },
+ {
+  "name": "spec-626-raw-html",
+  "input": "foo <!--> foo -->\n\nfoo <!---> foo -->\n"
+ },
+ {
+  "name": "spec-627-raw-html",
+  "input": "foo <?php echo $a; ?>\n"
+ },
+ {
+  "name": "spec-628-raw-html",
+  "input": "foo <!ELEMENT br EMPTY>\n"
+ },
+ {
+  "name": "spec-629-raw-html",
+  "input": "foo <![CDATA[>&<]]>\n"
+ },
+ {
+  "name": "spec-630-raw-html",
+  "input": "foo <a href=\"&ouml;\">\n"
+ },
+ {
+  "name": "spec-631-raw-html",
+  "input": "foo <a href=\"\\*\">\n"
+ },
+ {
+  "name": "spec-632-raw-html",
+  "input": "<a href=\"\\\"\">\n"
+ },
+ {
+  "name": "spec-633-hard-line-breaks",
+  "input": "foo  \nbaz\n"
+ },
+ {
+  "name": "spec-634-hard-line-breaks",
+  "input": "foo\\\nbaz\n"
+ },
+ {
+  "name": "spec-635-hard-line-breaks",
+  "input": "foo       \nbaz\n"
+ },
+ {
+  "name": "spec-636-hard-line-breaks",
+  "input": "foo  \n     bar\n"
+ },
+ {
+  "name": "spec-637-hard-line-breaks",
+  "input": "foo\\\n     bar\n"
+ },
+ {
+  "name": "spec-638-hard-line-breaks",
+  "input": "*foo  \nbar*\n"
+ },
+ {
+  "name": "spec-639-hard-line-breaks",
+  "input": "*foo\\\nbar*\n"
+ },
+ {
+  "name": "spec-640-hard-line-breaks",
+  "input": "`code  \nspan`\n"
+ },
+ {
+  "name": "spec-641-hard-line-breaks",
+  "input": "`code\\\nspan`\n"
+ },
+ {
+  "name": "spec-642-hard-line-breaks",
+  "input": "<a href=\"foo  \nbar\">\n"
+ },
+ {
+  "name": "spec-643-hard-line-breaks",
+  "input": "<a href=\"foo\\\nbar\">\n"
+ },
+ {
+  "name": "spec-644-hard-line-breaks",
+  "input": "foo\\\n"
+ },
+ {
+  "name": "spec-645-hard-line-breaks",
+  "input": "foo  \n"
+ },
+ {
+  "name": "spec-646-hard-line-breaks",
+  "input": "### foo\\\n"
+ },
+ {
+  "name": "spec-647-hard-line-breaks",
+  "input": "### foo  \n"
+ },
+ {
+  "name": "spec-648-soft-line-breaks",
+  "input": "foo\nbaz\n"
+ },
+ {
+  "name": "spec-649-soft-line-breaks",
+  "input": "foo \n baz\n"
+ },
+ {
+  "name": "spec-650-textual-content",
+  "input": "hello $.;'there\n"
+ },
+ {
+  "name": "spec-651-textual-content",
+  "input": "Foo χρῆν\n"
+ },
+ {
+  "name": "spec-652-textual-content",
+  "input": "Multiple     spaces\n"
+ },
+ {
+  "name": "gm-linkify-1",
+  "input": "www.commonmark.org\n"
+ },
+ {
+  "name": "gm-linkify-2",
+  "input": "Visit www.commonmark.org/help for more information.\n"
+ },
+ {
+  "name": "gm-linkify-3",
+  "input": "www.google.com/search?q=Markup+(business)\n\nwww.google.com/search?q=Markup+(business)))\n\n(www.google.com/search?q=Markup+(business))\n\n(www.google.com/search?q=Markup+(business)\n"
+ },
+ {
+  "name": "gm-linkify-4",
+  "input": "www.google.com/search?q=(business))+ok\n"
+ },
+ {
+  "name": "gm-linkify-5",
+  "input": "www.google.com/search?q=commonmark&hl=en\n\nwww.google.com/search?q=commonmark&hl;\n"
+ },
+ {
+  "name": "gm-linkify-6",
+  "input": "www.commonmark.org/he<lp\n"
+ },
+ {
+  "name": "gm-linkify-7",
+  "input": "http://commonmark.org\n\n(Visit https://encrypted.google.com/search?q=Markup+(business))\n\nAnonymous FTP is available at ftp://foo.bar.baz.\n"
+ },
+ {
+  "name": "gm-linkify-8",
+  "input": "foo@bar.baz\n"
+ },
+ {
+  "name": "gm-linkify-9",
+  "input": "hello@mail+xyz.example isn't valid, but hello+xyz@mail.example is.\n"
+ },
+ {
+  "name": "gm-linkify-10",
+  "input": "a.b-c_d@a.b\n\na.b-c_d@a.b.\n\na.b-c_d@a.b-\n\na.b-c_d@a.b_\n"
+ },
+ {
+  "name": "gm-linkify-11",
+  "input": "https://github.com#sun,mon\n"
+ },
+ {
+  "name": "gm-linkify-12",
+  "input": "https://github.com/sunday's\n"
+ },
+ {
+  "name": "gm-linkify-13",
+  "input": "https://github.com?q=stars:>1\n"
+ },
+ {
+  "name": "gm-linkify-14",
+  "input": "[https://google.com](https://google.com)\n"
+ },
+ {
+  "name": "gm-linkify-15",
+  "input": "This is a `git@github.com:vim/vim`\n"
+ },
+ {
+  "name": "gm-linkify-16",
+  "input": "https://nic.college\n"
+ },
+ {
+  "name": "gm-linkify-17",
+  "input": "http://server.intranet.acme.com:1313\n"
+ },
+ {
+  "name": "gm-linkify-18",
+  "input": "https://g.page/foo\n"
+ },
+ {
+  "name": "gm-linkify-19",
+  "input": "__http://test.com/~/a__\n__http://test.com/~/__\n__http://test.com/~__\n__http://test.com/a/~__\n"
+ },
+ {
+  "name": "gm-table-1",
+  "input": "| foo | bar |\n| --- | --- |\n| baz | bim |\n"
+ },
+ {
+  "name": "gm-table-2",
+  "input": "| abc | defghi |\n:-: | -----------:\nbar | baz\n"
+ },
+ {
+  "name": "gm-table-3",
+  "input": "| f\\|oo  |\n| ------ |\n| b `\\|` az |\n| b **\\|** im |\n"
+ },
+ {
+  "name": "gm-table-4",
+  "input": "| abc | def |\n| --- | --- |\n| bar | baz |\n> bar\n"
+ },
+ {
+  "name": "gm-table-5",
+  "input": "| abc | def |\n| --- | --- |\n| bar | baz |\nbar\n\nbar\n"
+ },
+ {
+  "name": "gm-table-6",
+  "input": "| abc | def |\n| --- |\n| bar |\n"
+ },
+ {
+  "name": "gm-table-7",
+  "input": "| abc | def |\n| --- | --- |\n| bar |\n| bar | baz | boo |\n"
+ },
+ {
+  "name": "gm-table-8",
+  "input": "| abc | def |\n| --- | --- |\n"
+ },
+ {
+  "name": "gm-table-9",
+  "input": "Foo|Bar\n---|---\n`Yoyo`|Dyne\n"
+ },
+ {
+  "name": "gm-table-10",
+  "input": "foo|bar\n---|---\n`\\` | second column\n"
+ },
+ {
+  "name": "gm-table-11",
+  "input": "**xxx**\n| hello |   hi  |\n| :----: | :----:|\n"
+ },
+ {
+  "name": "gm-table-12",
+  "input": "Foo\n    ---\n"
+ },
+ {
+  "name": "gm-tasklist-1",
+  "input": "- [ ] foo\n- [x] bar\n"
+ },
+ {
+  "name": "gm-tasklist-2",
+  "input": "- [x] foo\n  - [ ] bar\n  - [x] baz\n- [ ] bim\n"
+ },
+ {
+  "name": "gm-tasklist-3",
+  "input": "- test[x]=[x]\n"
+ },
+ {
+  "name": "gm-tasklist-4",
+  "input": "+ [x] [x]\n"
+ },
+ {
+  "name": "gm-strikethrough-1",
+  "input": "~~Hi~~ Hello, world!\n"
+ },
+ {
+  "name": "gm-strikethrough-2",
+  "input": "This ~~has a\n\nnew paragraph~~.\n"
+ },
+ {
+  "name": "gm-strikethrough-3",
+  "input": "~Hi~ Hello, world!\n"
+ },
+ {
+  "name": "gm-strikethrough-4",
+  "input": "This will ~~~not~~~ strike.\n"
+ },
+ {
+  "name": "gm-strikethrough-5",
+  "input": "~~~Hi~~~ Hello, world!\n"
+ },
+ {
+  "name": "gm-footnote-1",
+  "input": "That's some text with a footnote.[^1]\n\n[^1]: And that's the footnote.\n\n    That's the second paragraph.\n"
+ },
+ {
+  "name": "gm-footnote-3",
+  "input": "[^000]:0\t[^]:\n"
+ },
+ {
+  "name": "gm-footnote-4",
+  "input": "This[^3] is[^1] text with footnotes[^2].\n\n[^1]: Footnote one\n[^2]: Footnote two\n[^3]: Footnote three\n"
+ },
+ {
+  "name": "gm-footnote-5",
+  "input": "test![^1]\n\n[^1]: footnote\n"
+ },
+ {
+  "name": "gm-footnote-6",
+  "input": "something[^fn:1]\n\nsomething[^fn:1]\n\nsomething[^fn:1]\n\n[^fn:1]: footnote text\n"
+ }
+]

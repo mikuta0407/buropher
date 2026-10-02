@@ -1,0 +1,1236 @@
+Redmine CommonMark 差分テスト用コーパス（tools/gen-commonmark-fixtures.rb の書式）。
+各エントリは "@@@ 名前 key=value ..." の見出し行で始まり、次の見出し行までが入力。
+
+@@@ rm-hard-break-backslash chomp=1
+foo\
+bar
+@@@ rm-hard-break-spaces chomp=1
+foo
+bar
+@@@ rm-soft-break chomp=1
+foo
+bar
+@@@ rm-soft-break-nohardbreaks hardbreaks=false chomp=1
+foo
+bar
+@@@ rm-hard-break-nohardbreaks hardbreaks=false chomp=1
+foo
+bar\
+baz
+@@@ rm-image-ref-syntax-error chomp=1
+!>[](foo.png)
+@@@ rm-empty-image chomp=1
+![]()
+@@@ rm-inline-style chomp=1
+**foo**
+@@@ rm-intra-emphasis chomp=1
+foo_bar_baz
+@@@ rm-wiki-link chomp=1
+This is a wiki link: [[Foo]]
+@@@ rm-version-quotes chomp=1
+This is a redmine link: version:"1.0"
+@@@ rm-project-id chomp=1
+[project#3]
+@@@ rm-user-at chomp=1
+[@login]
+@@@ rm-user-colon chomp=1
+[user:login]
+@@@ rm-user-email chomp=1
+user:user@example.org
+@@@ rm-user-email-bracket chomp=1
+[user:user@example.org]
+@@@ rm-at-user-email chomp=1
+@user@example.org
+@@@ rm-at-user-email-bracket chomp=1
+[@user@example.org]
+@@@ rm-hires chomp=1
+printscreen@2x.png
+@@@ rm-hires-bracket chomp=1
+[printscreen@2x.png]
+@@@ rm-highlight-ruby
+~~~ruby
+def foo
+end
+~~~
+@@@ rm-highlight-cpp
+~~~c++
+int main() {
+}
+~~~
+@@@ rm-external-link chomp=1
+This is a [link](http://example.net/)
+@@@ rm-local-link chomp=1
+This is a [link](/issues)
+@@@ rm-list-no-blank
+  This is a list:
+  * One
+  * Two
+@@@ rm-footnotes
+This is some text[^1].
+
+[^1]: This is the foot note
+@@@ rm-sections
+# Title
+
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas sed libero.
+
+## Heading 2
+
+~~~ruby
+  def foo
+  end
+~~~
+
+Morbi facilisis accumsan orci non pharetra.
+
+~~~ ruby
+def foo
+end
+~~~
+
+```
+Pre Content:
+
+## Inside pre
+
+<tag> inside pre block
+
+Morbi facilisis accumsan orci non pharetra.
+```
+
+### Heading 3
+
+Nulla nunc nisi, egestas in ornare vel, posuere ac libero.
+@@@ rm-double-hash
+## Section A
+
+This text is a part of Section A.
+
+##1 : This is an issue reference, not an ATX heading.
+
+This text is also a part of Section A.
+<!-- Section A ends here -->
+@@@ rm-emphasize chomp=1
+This _text_ should be emphasized
+@@@ rm-strike chomp=1
+This ~~text~~ should be striked through
+@@@ rm-autolink-http chomp=1
+http://example.org
+@@@ rm-autolink-utf8 chomp=1
+http://www.redmine.org/projects/redmine/issues?utf8=✓
+@@@ rm-autolink-cyrillic chomp=1
+[Letters](https://yandex.ru/search/?text=кол-во)
+@@@ rm-autolink-www chomp=1
+www.example.org
+@@@ rm-autolink-email chomp=1
+user@example.org
+@@@ rm-html-table chomp=1
+<table style="background: red"><tr><td>Cell</td></tr></table>
+@@@ rm-unsafe-img chomp=1
+<img src="data:foobar">
+@@@ rm-unsafe-a chomp=1
+<a href="javascript:bla">click me</a>
+@@@ rm-unwanted-tags chomp=1
+sit<br/>amet <style>.foo { color: #fff; }</style> <script>alert("hello world");</script>
+@@@ rm-task-list
+Task list:
+* [ ] Task 1
+* [x] Task 2
+@@@ rm-alerts
+> [!note]
+> This is a note.
+
+> [!tip]
+> This is a tip.
+
+> [!warning]
+> This is a warning.
+
+> [!caution]
+> This is a caution.
+
+> [!important]
+> This is a important.
+@@@ rm-alert-unknown
+> [!unknown]
+> This should not become an alert.
+@@@ rm-alert-custom-title
+> [!note] Custom Note Title
+> This is a note.
+@@@ rm-alert-upper
+> [!NOTE]
+> Upper case.
+
+> [!Warning]
+> Mixed case.
+@@@ rm-alert-empty
+> [!TIP]
+@@@ rm-alert-nested
+> [!NOTE]
+> - list
+> - items
+>
+> ```ruby
+> puts 1
+> ```
+@@@ rm-alert-title-markup
+> [!IMPORTANT] **bold** <b>x</b> & more
+> body
+@@@ block-basic
+# H1
+## H2
+### H3
+#### H4
+##### H5
+###### H6
+
+Setext 1
+========
+
+Setext 2
+--------
+
+Paragraph with *em*, **strong**, ***both***, `code`, and [link](http://example.com "title").
+
+***
+
+> quote
+> > nested
+
+1. one
+2. two
+   - nested
+   - list
+
+3) paren
+4) list
+
+- [link](<url with spaces>)
+- ![img](/images/a.png "t")
+@@@ ordered-start
+5. five
+6. six
+
+10. ten
+@@@ loose-list
+- a
+
+- b
+- c
+@@@ code-indented
+    indented code
+      more
+
+    after blank
+@@@ code-fence-tilde
+~~~
+plain
+~~~
+
+````md
+```
+nested
+```
+````
+@@@ code-fence-langs
+```javascript
+var x = 1; // comment
+function f(a, b) { return a + b; }
+```
+
+```python
+def f(x):
+    return x * 2  # double
+```
+
+```sql
+SELECT * FROM issues WHERE id = 1;
+```
+
+```html
+<div class="a">&amp;</div>
+```
+
+```unknownlang
+foo bar
+```
+
+```diff
+- removed
++ added
+```
+
+```shell
+echo "hi" | grep h
+```
+
+```yaml
+key: value
+list:
+  - a
+```
+
+```json
+{"a": [1, 2, true, null]}
+```
+
+```go
+package main
+
+func main() {
+	println("hi")
+}
+```
+@@@ code-fence-info-extra
+```ruby startline=3 {.class}
+puts 1
+```
+@@@ code-fence-info-entity
+```c&#43;&#43;
+int x;
+```
+@@@ code-fence-special-lang
+```c-k&r
+int i;
+```
+@@@ code-fence-upper
+```Ruby
+puts 1
+```
+@@@ code-fence-aliases
+```delphi
+begin end.
+```
+
+```cplusplus
+int x;
+```
+
+```ecmascript
+var y;
+```
+
+```xhtml
+<p>x</p>
+```
+
+```js
+let z;
+```
+
+```rb
+z = 1
+```
+@@@ code-fence-empty
+```ruby
+```
+
+```
+```
+@@@ code-html-escape
+```
+<script>alert(1)</script> & "quotes" 'single'
+```
+
+`<b>inline</b> & co`
+@@@ code-fence-unclosed
+```ruby
+def foo
+@@@ table-basic
+| a | b | c |
+|---|:-:|--:|
+| 1 | 2 | 3 |
+| 4 | 5 |
+@@@ table-no-body
+| a | b |
+|---|---|
+@@@ table-inline
+| `code` | **bold** | [l](http://x.y) |
+|:-------|----------|-----------------|
+| a \| b | <br> | ~~s~~ |
+@@@ table-interrupt
+para
+| a |
+| - |
+| b |
+@@@ table-escape-pipe
+| x |
+|---|
+| `a\|b` |
+@@@ table-alignment-none
+a | b
+--|--
+c | d
+@@@ table-cjk
+| 名前 | 説明 |
+|------|------|
+| テスト | 日本語の表です |
+@@@ tasklist-variants
+- [ ] unchecked
+- [x] checked
+- [X] upper
+- [-] dash
+- [ ]no space
+- [ ]
+1. [ ] ordered
+2. [x] ordered checked
+@@@ tasklist-nested
+- [ ] parent
+  - [x] child
+  - plain child
+- normal
+@@@ tasklist-loose
+- [ ] a
+
+- [x] b
+@@@ footnote-multi
+Text[^a] and[^b] again[^a].
+
+[^a]: First *note*.
+[^b]: Second note.
+
+    With paragraph.
+@@@ footnote-undefined
+Missing[^nope] footnote.
+@@@ footnote-unused
+Para.
+
+[^x]: unused
+@@@ footnote-named
+Here[^note-name] and[^2].
+
+[^2]: two
+[^note-name]: named
+@@@ footnote-code
+Ref[^c].
+
+[^c]:
+    ```ruby
+    x = 1
+    ```
+@@@ autolink-variants
+Visit https://example.com/path?a=1&b=2#frag now.
+
+ftp://ftp.example.com/file
+
+(http://example.com/paren)
+
+http://example.com/trailing.
+
+www.example.com/a_b
+
+mailto:foo@example.com
+
+foo@bar.example.com.
+
+<http://angle.example.com>
+
+<foo@angle.example.com>
+
+https://例え.jp/パス
+@@@ autolink-punct
+http://example.com/foo_bar_ http://example.com/a?b=c, http://example.com/x; end
+@@@ autolink-in-link
+[http://example.com](http://other.example.com)
+@@@ autolink-xmpp
+xmpp:foo@bar.baz/res and xmpp:foo@bar.baz
+@@@ autolink-underscore-domain
+http://exa_mple.com www.exa_mple.com
+@@@ links-reference
+[foo][bar] and [bar] and [Bar][]
+
+[bar]: http://example.com/bar "Bar Title"
+@@@ links-title-quotes
+[a](http://x.y "it's \"quoted\"")
+@@@ links-empty-url
+[empty]() [space](<>)
+@@@ links-relative
+[rel](foo/bar) [anchor](#sec) [query](?x=1) [up](../a)
+@@@ links-schemes
+[js](javascript:alert(1)) [JS](JAVASCRIPT:alert(1)) [data](data:text/html,x) [vb](vbscript:x) [ok](ssh://host) [custom](foo:bar) [tel](tel:123)
+@@@ links-target-blank
+<a href="http://example.com" target="_blank">x</a> <a href="mailto:a@b.c" target="_blank">m</a> <a href="/local" target="_blank">l</a>
+@@@ links-existing-class
+<a href="http://example.com" class="foo">x</a>
+@@@ images
+![alt *text*](http://example.com/a.png "Title") ![](foo.png) ![x](javascript:alert(1))
+@@@ html-inline-allowed
+<kbd>Ctrl</kbd>+<kbd>C</kbd> H<sub>2</sub>O x<sup>2</sup> <u>under</u> <ins>ins</ins> <del>del</del> <s>s</s> <strike>strike</strike> <mark>mark</mark> <small>small</small> <abbr title="Abbr">ab</abbr> <q cite="http://x">q</q> <var>v</var> <samp>s</samp> <tt>tt</tt> <cite>c</cite> <dfn>d</dfn> <time datetime="2020-01-01">t</time> <bdo dir="rtl">b</bdo> <span lang="ja">日本</span> a<wbr>b
+@@@ html-block-allowed
+<details>
+<summary>Click</summary>
+
+Hidden *content*
+
+</details>
+
+<div align="center">centered</div>
+
+<dl>
+<dt>term</dt>
+<dd>def</dd>
+</dl>
+
+<figure>
+<img src="a.png" alt="a">
+<figcaption>cap</figcaption>
+</figure>
+
+<ruby>漢<rp>(</rp><rt>かん</rt><rp>)</rp></ruby>
+
+<blockquote cite="http://example.com">bq</blockquote>
+
+<hr>
+
+<h7>h7</h7>
+@@@ html-disallowed
+<iframe src="http://evil"></iframe>
+<form action="/x"><input type="text" name="q"><button>Go</button></form>
+<textarea>t</textarea>
+<select><option>o</option></select>
+<object data="x"></object>
+<embed src="x">
+<svg><circle r="1"/></svg>
+<math><mi>x</mi></math>
+<video src="v.mp4"></video>
+<style>p{color:red}</style>
+<link rel="stylesheet" href="x.css">
+<meta http-equiv="refresh" content="0">
+<base href="http://evil/">
+@@@ html-script-variants
+<script>alert(1)</script>
+
+<SCRIPT SRC=http://xss/xss.js></SCRIPT>
+
+a <script>inline()</script> b
+
+<scr<script>ipt>alert(1)</script>
+@@@ html-event-attrs
+<p onclick="alert(1)" title="t" id="x" class="c" style="color: blue">para</p>
+<img src="a.png" onerror="alert(1)" width="10" height="20" alt="A">
+<div itemscope itemtype="http://schema.org/Thing" data-x="1">d</div>
+@@@ html-style-attr
+<span style="color: red; background: url(javascript:alert(1)); font-weight: bold">a</span>
+<span style="position: fixed; top: 0">b</span>
+<span style="COLOR: Red !important; margin:0 auto">c</span>
+<span style="width: expression(alert(1))">d</span>
+<span style="color: red; /* comment */ font-size: 12px">e</span>
+<span style="">f</span>
+<span style="color:">g</span>
+<div style="text-align:center;float:left;border:1px solid #ccc;border-radius:3px">h</div>
+@@@ html-name-attr
+<a name="anchor">a</a> <p name="x">p</p>
+@@@ html-comments
+before <!-- comment --> after
+
+<!--
+block comment
+-->
+
+<!-- unterminated
+@@@ html-malformed
+<b>bold <i>both</b> italic</i>
+
+<p>unclosed para
+
+<div><span>unclosed span</div>
+
+text </div> stray
+
+<ul><li>one<li>two</ul>
+
+<table><tr><td>a<td>b</table>
+@@@ html-entities
+&amp; &lt; &gt; &quot; &nbsp; &copy; &#169; &#xA9; &hearts; &NotAnEntity; &#0; &#x110000; &ouml;
+@@@ html-entities-raw-block
+<div>&nbsp;&copy;&unknown;&amp;amp;</div>
+@@@ html-pre-raw
+<pre>
+line1
+  line2
+</pre>
+
+<pre><code class="language-ruby">def x; end
+</code></pre>
+
+<pre><code class="ruby">raw</code></pre>
+@@@ html-uppercase
+<DIV CLASS="markdown-alert markdown-alert-note"><P CLASS="markdown-alert-title">Note</P></DIV>
+@@@ html-input-variants
+<input type="checkbox" class="task-list-item-checkbox"> <input type="checkbox" class="task-list-item-checkbox" checked disabled> <input type="checkbox"> <input type="text" value="x">
+@@@ html-li-outside
+<li>loose li</li>
+<td>loose td</td>
+@@@ html-ids
+<a id="fnref-1" href="#fn-1">a</a> <a id="fnref-1-2">b</a> <a id="evil">c</a> <li id="fn-3">x</li> <ol><li id="fn-x">y</li></ol>
+@@@ escapes
+\*not em\* \_x\_ \# \[x\] \\ \` \< \> \& \! \~ \| \{ \}
+@@@ escapes-in-autolink
+https://example.com/\_x\_
+@@@ macros-text
+{{toc}}
+
+{{>toc}}
+
+{{child_pages(depth=2)}}
+
+!{{escaped_macro}}
+
+Text {{include(Foo)}} inline.
+
+{{collapse(Title)
+inner *md*
+}}
+@@@ redmine-links-text
+#123 ##123 #123-5 #note-5 r123 commit:abc123 source:trunk/a.rb@12#L10 attachment:file.zip document#17 version:1.0 version:"1.0 beta" forum#1 message#1218 news#2 project#3 user#2 @jsmith !#123 !r12 [[Wiki Page|text]] [[project:Page#anchor]] export:path/file.txt
+@@@ redmine-links-brackets
+[[Foo]] and [[Foo|Bar]] and [[Foo#anchor|Bar]] and [[sandbox:]]
+@@@ bang-image-textile
+!image.png! and !>right.png! and !{width:100px}image.png!
+@@@ cjk-text
+日本語の段落です。**強調**と*斜体*。
+次の行です。
+
+中文段落，包含`代码`和[链接](http://example.com)。
+
+한국어 문단입니다.
+
+全角スペース　あり　テキスト
+@@@ cjk-emphasis
+**日本語**の強調と、文中の**強調**です。「**括弧付き**」も。
+@@@ cjk-autolink
+URLは http://example.com/日本語 です。メールはuser@example.jpまで。
+@@@ unicode-misc
+Emoji 😀 :smile: combining é é and RTL שלום and ZWJ 👨‍👩‍👧
+@@@ hard-wrap-multi
+line one
+line two
+line three
+
+next para
+  indented continuation
+@@@ hard-wrap-list
+- item one
+  continued
+- item two
+@@@ hard-wrap-quote
+> quoted line one
+> quoted line two
+@@@ trailing-spaces chomp=1
+text with trailing spaces
+@@@ crlf esc=1 chomp=1
+line1\r\nline2\r\n\r\n# Head\r\n
+@@@ nul-char esc=1 chomp=1
+a\0b
+@@@ control-chars esc=1 chomp=1
+a\u0001b\u0008c\u000bd\u007fe
+@@@ tabs esc=1
+\tcode with tab\n\n-\tlist with tab\n
+@@@ empty-input chomp=1
+@@@ only-whitespace esc=1 chomp=1
+   \n\n  \n
+@@@ heading-trailing-hashes
+# Heading #
+## Heading ##
+### #
+#5 not heading
+#	tab heading
+@@@ heading-inline
+# Heading with `code` and *em* and [link](http://x.y)
+@@@ thematic-variants
+---
+***
+___
+- - -
+@@@ blockquote-lazy
+> a
+b
+> c
+
+> - list
+continued
+@@@ nested-structures
+1. First
+
+   > quote in list
+
+   ```ruby
+   code in list
+   ```
+
+2. Second
+   1. nested ordered
+      - deep
+@@@ setext-edge
+Foo
+---
+Bar
+===
+
+- not
+---
+@@@ html-block-types
+<div>
+*not md*
+</div>
+
+<div>
+
+*md inside*
+
+</div>
+
+<pre>
+*pre*
+</pre>
+
+<custom-tag>custom</custom-tag>
+
+<section>sec</section>
+
+<article><p>art</p></article>
+
+<?php echo 1; ?>
+
+<![CDATA[cdata]]>
+
+<!DOCTYPE html>
+@@@ html-inline-weird
+a <b class="x" >b</b> <span
+title="multi
+line">m</span> <a href='single'>s</a> <img src=noquote.png alt=x>
+@@@ tagfilter
+<title>t</title> <textarea>x</textarea> <style>s</style> <xmp>x</xmp> <iframe>i</iframe> <noembed>n</noembed> <noframes>n</noframes> <script>s</script> <plaintext>p</plaintext>
+@@@ tagfilter-block
+<textarea>
+block textarea
+</textarea>
+
+<style>
+.x {}
+</style>
+@@@ strikethrough-variants
+~one~ ~~two~~ ~~~three~~~ ~~mis~ match~ a~~b~~c
+@@@ emphasis-edge
+*a **b** c* **a *b* c** _a_b_ __init__ *foo*bar **x**y
+@@@ code-spans
+`` `x` `` ` a ` `a  b` `
+multi
+line`
+@@@ html-in-table
+| a |
+|---|
+| <span style="color:red">red</span> <script>x</script> |
+@@@ link-in-heading-and-email
+# See user@example.com and http://x.y
+
+Contact: <mailto:foo@bar.com>
+@@@ email-edge
+first.last+tag@sub.example.co.jp a@b user@localhost @mention foo@bar.baz_ x@y.z.
+@@@ hires-variants
+img@2x.png img@3x.jpg photo@2x.gif not@2x.txt image@2x.PNG
+@@@ user-prefix-email
+user:foo@bar.com and @foo@bar.com and (@foo@bar.com) user:<b>x</b>
+@@@ long-paragraph
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+@@@ issue-like-text
+Steps to reproduce:
+1. Open the page
+2. Click *Save*
+
+Expected: no error
+Actual: `NoMethodError` in `IssuesController#update`
+
+<pre>
+stack trace
+  line 2
+</pre>
+
+See #1234 and r567.
+@@@ ruby-highlight-heredoc
+```ruby
+class Foo < Bar
+  # comment
+  attr_reader :x
+  CONST = 1.5
+  def initialize(x = nil, *args, **opts, &blk)
+    @x = x || "default #{args.size}"
+    $global = :sym
+    yield self if block_given?
+    %w[a b c].each { |s| puts s }
+    /re[gx]/i =~ 'str'
+  end
+end
+```
+@@@ highlight-c
+```c
+#include <stdio.h>
+/* block */
+int main(int argc, char **argv) {
+    printf("%d\n", argc); // line
+    return 0;
+}
+```
+@@@ highlight-java
+```java
+public class A {
+    @Override
+    public String toString() { return "A" + 1L; }
+}
+```
+@@@ highlight-php
+```php
+<?php
+$x = array(1, 2);
+echo "Hello $x";
+?>
+```
+@@@ highlight-xml
+```xml
+<?xml version="1.0"?>
+<root attr="v"><!-- c --><child/></root>
+```
+@@@ highlight-css
+```css
+.a > b:hover { color: #fff; margin: 0 auto !important; }
+```
+@@@ highlight-bash
+```bash
+#!/bin/bash
+for f in *.txt; do
+  echo "$f" > /dev/null
+done
+```
+@@@ highlight-sql-upper
+```SQL
+select count(*) from users;
+```
+@@@ highlight-plaintext
+```text
+plain text
+```
+
+```plaintext
+plain
+```
+@@@ highlight-diff-full
+```diff
+diff --git a/x b/x
+index 1..2 100644
+--- a/x
++++ b/x
+@@ -1,2 +1,2 @@
+ same
+-old
++new
+```
+@@@ inline-html-autolink
+<span>http://example.com</span> <a href="http://x.y">http://inner.example.com</a>
+@@@ link-with-angle-in-text
+[a <b>bold</b> link](http://example.com)
+@@@ nested-links
+[outer [inner](http://inner)](http://outer)
+@@@ ref-def-only
+[foo]: http://example.com
+@@@ blank-lines-between-blocks
+
+
+
+para
+
+
+
+para2
+
+
+
+@@@ deeply-nested-quote
+> > > > deep
+@@@ list-with-code
+- item
+
+      code in item
+@@@ html-attrs-quotes
+<span title='a "b" c'>q1</span> <span title="it's">q2</span> <span title='both "x" and &#39;y&#39;'>q3</span>
+@@@ href-special-chars
+[a](http://x.y/a b) [b](<http://x.y/a b>) [c](http://x.y/"q") [d](http://x.y/{t}) [e](http://x.y/a%20b) [f](http://x.y/ä)
+@@@ href-whitespace
+<a href="  http://example.com/  ">ws</a> <a href="&#32;javascript:x">sp</a> <a href="jav&#x09;ascript:x">tab</a>
+@@@ javascript-entity
+<a href="javascript&#58;alert(1)">e1</a> <a href="&#106;avascript:x">e2</a>
+@@@ sanitize-textarea mode=sanitize chomp=1
+<textarea>foo</textarea> <blink>dont blink</blink>
+@@@ sanitize-attrs mode=sanitize chomp=1
+<a href="foo" onclick="bar" baz="foo">link</a>
+@@@ sanitize-relative mode=sanitize chomp=1
+<a href="foo/bar">foo/bar</a>
+@@@ sanitize-footnote1 mode=sanitize chomp=1
+<a href="#fn-1" id="fnref-1">foo</a>
+@@@ sanitize-footnote2 mode=sanitize chomp=1
+<a href="#fn-1" id="fnref-1-2">foo</a>
+@@@ sanitize-footnote3 mode=sanitize chomp=1
+<ol><li id="fn-1">footnote</li></ol>
+@@@ sanitize-invalid-id1 mode=sanitize chomp=1
+<a href="#fn1" id="foo">foo</a>
+@@@ sanitize-invalid-id2 mode=sanitize chomp=1
+<ol><li id="foo">footnote</li></ol>
+@@@ sanitize-class-p mode=sanitize chomp=1
+<p class="foo">bar</p>
+@@@ sanitize-class-code mode=sanitize chomp=1
+<code class="language-ruby">foo</code>
+@@@ sanitize-class-code-bad mode=sanitize chomp=1
+<code class="foo">foo</code>
+@@@ sanitize-alert mode=sanitize
+<div class="markdown-alert markdown-alert-tip">
+  <p class="markdown-alert-title">Tip</p>
+  <p>Useful tip.</p>
+</div>
+@@@ sanitize-bad-div mode=sanitize chomp=1
+<div class="bad-class">Text</div>
+@@@ sanitize-schemes mode=sanitize chomp=1
+<a href="http://example.org/">foo</a><a href="https://example.org/">foo</a><a href="ftp://example.org/">foo</a><a href="ssh://example.org/">foo</a><a href="foo://example.org/">foo</a>
+@@@ sanitize-mailto mode=sanitize chomp=1
+<a href="mailto:foo@example.org">bar</a>
+@@@ sanitize-empty-link mode=sanitize chomp=1
+<a href="">bar</a><a href=" ">bar</a>
+@@@ sanitize-str1 mode=sanitize chomp=1
+<span style="color: #333; background: url('https://example.com/evil.svg')">hello</span>"
+@@@ sanitize-str2 mode=sanitize chomp=1
+<img src="photo.jpg" style="min-width: 100px; max-width: 200px; min-height: 100px; max-height: 200px;">
+@@@ sanitize-str3 mode=sanitize chomp=1
+<b>Lo<!-- comment -->rem</b> <a href="pants" title="foo" style="text-decoration: underline;">ipsum</a> <a href="http://foo.com/"><strong>dolor</strong></a> sit<br/>amet <style>.foo { color: #fff; }</style> <script>alert("hello world");</script>
+@@@ sanitize-str4 mode=sanitize chomp=1
+Lo<!-- comment -->rem</b> <a href=pants title="foo>ipsum <a href="http://foo.com/"><strong>dolor</a></strong> sit<br/>amet <script>alert("hello world");
+@@@ sanitize-str5 mode=sanitize chomp=1
+<p>a</p><blockquote>b
+@@@ sanitize-str6 mode=sanitize chomp=1
+<b>Lo<!-- comment -->rem</b> <a href="javascript:pants" title="foo">ipsum</a> <a href="http://foo.com/"><strong>dolor</strong></a> sit<br/>amet <<foo>script>alert("hello world");</script>
+@@@ sanitize-proto1 mode=sanitize chomp=1
+<a href="javascript:alert('XSS');">foo</a>
+@@@ sanitize-proto2 mode=sanitize chomp=1
+<a href="javascript    :alert('XSS');">foo</a>
+@@@ sanitize-proto3 mode=sanitize chomp=1
+<a href="javascript:    alert('XSS');">foo</a>
+@@@ sanitize-proto4 mode=sanitize chomp=1
+<a href=":javascript:alert('XSS');">foo</a>
+@@@ sanitize-proto5 mode=sanitize chomp=1
+<a href="javascript&#58;">foo</a>
+@@@ sanitize-proto6 mode=sanitize chomp=1
+<a href="javascript&#0058;">foo</a>
+@@@ sanitize-proto7 mode=sanitize chomp=1
+<a href=&#0000106&#0000097&#0000118&#0000097&#0000115&#0000099&#0000114&#0000105&#0000112&#0000116&#0000058&#0000097&#0000108&#0000101&#0000114&#0000116&#0000040&#0000039&#0000088&#0000083&#0000083&#0000039&#0000041>foo</a>
+@@@ sanitize-proto8 mode=sanitize chomp=1
+<a href="javascript&#x3A;">foo</a>
+@@@ sanitize-proto9 mode=sanitize chomp=1
+<a href=&#x6A&#x61&#x76&#x61&#x73&#x63&#x72&#x69&#x70&#x74&#x3A&#x61&#x6C&#x65&#x72&#x74&#x28&#x27&#x58&#x53&#x53&#x27&#x29>foo</a>
+@@@ sanitize-proto10 mode=sanitize esc=1 chomp=1
+<img src=java\0script:alert("XSS")>
+@@@ sanitize-proto11 mode=sanitize chomp=1
+<img src=java\script:alert("XSS")>
+@@@ sanitize-proto12 mode=sanitize chomp=1
+<img src=" &#14;  javascript:alert('XSS');">
+@@@ sanitize-proto13 mode=sanitize chomp=1
+<a href=" http://example.com/"></a>
+@@@ sanitize-proto14 mode=sanitize chomp=1
+<img src="data:image/png;base64,foobar">
+@@@ sanitize-proto15 mode=sanitize chomp=1
+<a href="data:text/html;base64,foobar">XSS</a>
+@@@ sanitize-proto16 mode=sanitize chomp=1
+<a href="vbscript:foobar">XSS</a>
+@@@ sanitize-task1 mode=sanitize chomp=1
+<input type="checkbox" class="">
+@@@ sanitize-task2 mode=sanitize chomp=1
+<input type="checkbox" class="task-list-item-checkbox other">
+@@@ sanitize-task3 mode=sanitize chomp=1
+<input type="checkbox" class="task-list-item-checkbox" id="item1">
+@@@ sanitize-task4 mode=sanitize chomp=1
+<input type="text" class="">
+@@@ sanitize-task5 mode=sanitize chomp=1
+<input />
+@@@ sanitize-task6 mode=sanitize chomp=1
+<ul class="other"></ul
+@@@ sanitize-task7 mode=sanitize chomp=1
+<ul class="contains-task-list"></ul
+@@@ sanitize-task8 mode=sanitize chomp=1
+<ul class="contains-task-list" id="list1"></ul
+@@@ sanitize-task9 mode=sanitize chomp=1
+<li class="other"></li>
+@@@ sanitize-task10 mode=sanitize chomp=1
+<li id="other"></li>
+@@@ sanitize-task11 mode=sanitize chomp=1
+<li class="task-list-item"></li>
+@@@ sanitize-task12 mode=sanitize chomp=1
+<li class="task-list-item">Item 1</li>
+@@@ sanitize-external mode=sanitize chomp=1
+<a href="http://example.net/">link</a> <a href="/">home</a> <a href="relative">relative</a> <a href="#anchor">anchor</a> <a href="mailto:user@example.org">user</a> <a href="http://example.com/foo#bar#">Malformed URI</a>
+@@@ sanitize-target mode=sanitize chomp=1
+<a target="_blank" href="http://example.net/">link</a> <a target="_blank" href="http://example.net/" rel="nofollow">link</a>
+@@@ sanitize-plain-text mode=sanitize chomp=1
+plain & text < with > specials "quoted"
+@@@ sanitize-nested-lists mode=sanitize
+<ul>
+<li>a<ul><li>b</li></ul></li>
+<li>c</li>
+</ul>
+<ol start="3"><li>x</li></ol>
+@@@ sanitize-table-full mode=sanitize
+<table border="1" cellpadding="2">
+<caption>cap</caption>
+<thead><tr><th scope="col" colspan="2">h</th></tr></thead>
+<tbody><tr><td rowspan="2" valign="top">a</td><td nowrap>b</td></tr></tbody>
+<tfoot><tr><td>f</td></tr></tfoot>
+</table>
+@@@ sanitize-whitespace-elements mode=sanitize chomp=1
+a<section>b</section>c<article>d</article>e<header>f</header>g<nav></nav>h<aside>i</aside>
+@@@ sanitize-remove-contents mode=sanitize chomp=1
+a<script>x</script>b<style>y</style>c<iframe>z</iframe>d<noscript>n</noscript>e
+@@@ sanitize-cdata mode=sanitize chomp=1
+a<![CDATA[x<y]]>b
+@@@ sanitize-doctype mode=sanitize chomp=1
+<!DOCTYPE html><p>x</p>
+@@@ sanitize-body-html mode=sanitize chomp=1
+<html><head><title>t</title></head><body><p>x</p></body></html>
+@@@ sanitize-unicode-href mode=sanitize chomp=1
+<a href="http://example.com/日本語?q=ä b">u</a> <img src="/画像.png">
+@@@ sanitize-unicode-attr mode=sanitize chomp=1
+<span title="日本語 é">u</span>
+@@@ sanitize-amp-href mode=sanitize chomp=1
+<a href="http://x.y/?a=1&amp;b=2&c=3">q</a>
+@@@ sanitize-crlf mode=sanitize esc=1 chomp=1
+<p>a\r\nb</p>\r\n<p>c</p>
+@@@ sanitize-pre-newline mode=sanitize
+<pre>
+x</pre>
+<pre>
+
+y</pre>
+@@@ sanitize-empty-elements mode=sanitize chomp=1
+<p></p><div></div><span></span><b></b><br><hr><img><a></a>
+@@@ sanitize-unknown-nested mode=sanitize chomp=1
+<foo><bar>text</bar></foo><x-y>dash</x-y>
+@@@ sanitize-head-elements mode=sanitize chomp=1
+<p>a</p><title>t</title><meta charset="x"><link rel="x"><base href="/">b
+@@@ sanitize-format-newlines mode=sanitize chomp=1
+<div><p>a</p><p>b</p></div><ul><li>x</li><li>y</li></ul><table><tr><td>1</td></tr></table><blockquote><p>q</p></blockquote>
+@@@ sanitize-dl mode=sanitize chomp=1
+<dl><dt>a</dt><dd>b</dd><dt>c</dt><dd>d</dd></dl>
+@@@ sanitize-pre-nested mode=sanitize chomp=1
+<pre><code>a</code></pre><pre><b>x</b><i>y</i></pre>
+@@@ sanitize-details mode=sanitize chomp=1
+<details open><summary>s</summary><p>a</p><p>b</p></details>
+@@@ highlight-ruby-unit mode=highlight lang=ruby
+
+def foo
+end
+@@@ highlight-unknown mode=supported lang=foobar
+@@@ highlight-supported-ruby mode=supported lang=ruby
+@@@ highlight-supported-cpp mode=supported lang=c++
+@@@ highlight-supported-ckr mode=supported lang=c-k&r
+@@@ highlight-supported-delphi mode=supported lang=delphi
+@@@ highlight-supported-Ruby mode=supported lang=Ruby
+@@@ highlight-supported-xhtml mode=supported lang=xhtml
+@@@ highlight-supported-text mode=supported lang=text
+@@@ highlight-supported-shell mode=supported lang=shell
+@@@ highlight-supported-mermaid mode=supported lang=mermaid
+@@@ highlight-supported-tsx mode=supported lang=tsx
+@@@ highlight-supported-vue mode=supported lang=vue
+@@@ highlight-supported-objc mode=supported lang=objective-c
+@@@ highlight-supported-csharp mode=supported lang=c#
+@@@ highlight-supported-fsharp mode=supported lang=f#
+@@@ highlight-supported-dockerfile mode=supported lang=dockerfile
+@@@ highlight-supported-ps mode=supported lang=powershell
+@@@ highlight-supported-erb mode=supported lang=erb
+@@@ highlight-supported-plantuml mode=supported lang=plantuml
+@@@ highlight-file-rb mode=highlight_file filename=test.rb
+class A
+  def b; end
+end
+@@@ highlight-file-py mode=highlight_file filename=a.py
+import os
+print(os.name)
+@@@ highlight-file-crlf mode=highlight_file filename=a.js esc=1 chomp=1
+var a = 1;\r\nvar b = "x\r\ny";\r\n
+@@@ highlight-file-multiline-comment mode=highlight_file filename=a.c
+/* multi
+   line */
+int x;
+@@@ section-get-1 mode=section_get index=1
+# Title
+
+Lorem ipsum.
+
+## Heading 2
+
+Text 2
+
+# Second
+
+Text 3
+@@@ section-get-2 mode=section_get index=2
+# Title
+
+Lorem ipsum.
+
+## Heading 2
+
+Text 2
+
+# Second
+
+Text 3
+@@@ section-get-3 mode=section_get index=3
+# Title
+
+Lorem ipsum.
+
+## Heading 2
+
+Text 2
+
+# Second
+
+Text 3
+@@@ section-get-pre mode=section_get index=2
+# Title
+
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas sed libero.
+
+## Heading 2
+
+~~~ruby
+  def foo
+  end
+~~~
+
+Morbi facilisis accumsan orci non pharetra.
+
+~~~ ruby
+def foo
+end
+~~~
+
+```
+Pre Content:
+
+## Inside pre
+
+<tag> inside pre block
+
+Morbi facilisis accumsan orci non pharetra.
+```
+
+### Heading 3
+
+Nulla nunc nisi, egestas in ornare vel, posuere ac libero.
+@@@ section-get-pre3 mode=section_get index=3
+# Title
+
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas sed libero.
+
+## Heading 2
+
+~~~ruby
+  def foo
+  end
+~~~
+
+Morbi facilisis accumsan orci non pharetra.
+
+~~~ ruby
+def foo
+end
+~~~
+
+```
+Pre Content:
+
+## Inside pre
+
+<tag> inside pre block
+
+Morbi facilisis accumsan orci non pharetra.
+```
+
+### Heading 3
+
+Nulla nunc nisi, egestas in ornare vel, posuere ac libero.
+@@@ section-get-setext mode=section_get index=2
+Title
+=====
+
+Body
+
+Sub
+---
+
+Sub body
+
+Other
+=====
+@@@ section-get-crlf mode=section_get index=2 esc=1
+# A\r\n\r\ntext\r\n\r\n## B\r\n\r\nbtext\r\n\r\n# C\r\n
+@@@ section-get-out-of-range mode=section_get index=9
+# A
+
+a
+@@@ section-get-double-hash mode=section_get index=1
+## Section A
+
+This text is a part of Section A.
+
+##1 : This is an issue reference, not an ATX heading.
+
+This text is also a part of Section A.
+<!-- Section A ends here -->
+@@@ section-update-3 mode=section_update index=3 replacement="New text"
+# Title
+
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas sed libero.
+
+## Heading 2
+
+~~~ruby
+  def foo
+  end
+~~~
+
+Morbi facilisis accumsan orci non pharetra.
+
+~~~ ruby
+def foo
+end
+~~~
+
+```
+Pre Content:
+
+## Inside pre
+
+<tag> inside pre block
+
+Morbi facilisis accumsan orci non pharetra.
+```
+
+### Heading 3
+
+Nulla nunc nisi, egestas in ornare vel, posuere ac libero.
+@@@ section-update-1 mode=section_update index=1 replacement="# New Title\n\nNew body"
+# Title
+
+Lorem ipsum.
+
+## Heading 2
+
+Text 2
+
+# Second
+
+Text 3
+@@@ section-update-stale mode=section_update index=1 replacement="x" hash="deadbeef"
+# Title
+
+Body
+@@@ section-update-out-of-range mode=section_update index=5 replacement="x"
+# Title
+
+Body
