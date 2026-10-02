@@ -1,0 +1,122 @@
+{{$v := .V}}
+{{partial "issues/action_menu" (dict "V" $v)}}
+
+<h2 class="inline-block">{{$v.Heading}}</h2>{{$v.StatusBadge}}
+{{if $v.Issue.IsPrivate}}
+  <span class="badge badge-private private">{{l "field_is_private"}}</span>
+{{end}}
+
+<div class="{{$v.CSSClasses}} details">
+  {{if or $v.PrevIssueID $v.NextIssueID}}
+    <div class="next-prev-links contextual">
+      {{link_to_if $v.PrevIssueID (printf "« %s" (l "label_previous")) $v.PrevPath (hash "title" $v.PrevTitle "accesskey" (accesskey "previous"))}} |
+      {{if and $v.IssuePosition $v.IssueCount}}
+        <span class="position">
+          {{link_to_if $v.QueryPath $v.PositionLabel $v.QueryPath}}
+        </span> |
+      {{end}}
+      {{link_to_if $v.NextIssueID (printf "%s »" (l "label_next")) $v.NextPath (hash "title" $v.NextTitle "accesskey" (accesskey "next"))}}
+    </div>
+  {{end}}
+
+  <div class="avatar-with-child">
+    {{if $v.Author}}{{avatar $v.Author (hash "size" "50" "title" $v.AuthorAvatarTitle)}}{{end}}
+    {{if $v.AssignedTo}}{{avatar $v.AssignedTo (hash "size" "22" "class" "avatar-child" "title" $v.AssigneeAvatarTitle)}}{{end}}
+  </div>
+
+<div data-controller="sticky-issue-header">
+  <div class="subject" data-sticky-issue-header-target="original">
+    {{$v.SubjectWithTree}}
+  </div>
+  <div id="sticky-issue-header" data-sticky-issue-header-target="stickyHeader" class="issue">
+    <span class="issue-heading">{{$v.Heading}}:</span>
+    <span class="subject">{{$v.Issue.Subject}}</span>
+  </div>
+</div>
+
+<div class="reaction">
+  {{$v.ReactionButton}}
+</div>
+        <p class="author">
+        {{authoring $v.Issue.CreatedAt $v.Author}}.
+        {{if $v.Updated}}
+        {{$v.UpdatedTime}}.
+        {{end}}
+        </p>
+
+<div class="attributes">
+{{$v.AttributesRows}}
+{{$v.HalfWidthCustomFieldsRows}}
+{{call_hook "view_issues_show_details_bottom"}}
+</div>
+
+{{if $v.HasDescription}}
+<hr />
+<div class="description" data-controller="quote-reply">
+  <div class="contextual">
+  {{$v.QuoteButton}}
+  </div>
+
+  <p><strong>{{l "field_description"}}</strong></p>
+  <div id="issue_description_wiki" class="wiki" data-quote-reply-target="content">
+  {{$v.Description}}
+  </div>
+</div>
+{{end}}
+{{if $v.Attachments}}
+  <hr />
+  <p><strong>{{l "label_attachment_plural"}}</strong></p>
+  {{$v.AttachmentLinks}}
+{{end}}
+
+{{$v.FullWidthCustomFieldsRows}}
+
+{{call_hook "view_issues_show_description_bottom"}}
+
+{{if $v.ShowSubtasks}}
+<hr />
+<div id="issue_tree" class="{{$v.RelatedHeadersClass}}">
+  {{partial "issues/subtasks" (dict "V" $v)}}
+</div>
+{{end}}
+
+{{if $v.ShowRelations}}
+<hr />
+<div id="relations" class="{{$v.RelatedHeadersClass}}">
+  {{partial "issues/relations" (dict "V" $v)}}
+</div>
+{{end}}
+
+</div>
+
+{{if $v.ReverseComments}}{{partial "issues/action_menu_edit" (dict "V" $v "F" .F)}}{{end}}
+
+<div id="history" class="journals">
+{{render_tabs $v.HistoryTabs $v.HistoryDefaultTab}}
+</div>
+
+{{if not $v.ReverseComments}}{{partial "issues/action_menu_edit" (dict "V" $v "F" .F)}}{{end}}
+
+<p class="other-formats hide-when-print">{{l "label_export_to"}}  <span>{{link_to "PDF" (printf "/issues/%d.pdf" $v.Issue.ID) (hash "class" "pdf" "rel" "nofollow")}}</span>
+  <span>{{link_to "Atom" $v.AtomLinkURL (hash "class" "atom" "rel" "nofollow")}}</span>
+</p>
+
+{{html_title .Title}}
+
+{{define "issues/show#sidebar"}}
+  {{partial "issues/sidebar" .}}
+
+  {{if .V.ShowWatchers}}
+    <div id="watchers">
+      {{partial "watchers/watchers" (dict "V" .V)}}
+    </div>
+  {{end}}
+{{end}}
+{{content_for "sidebar" (capture "issues/show#sidebar")}}
+
+{{define "issues/show#header_tags"}}
+    {{auto_discovery_link_tag "atom" .V.AtomURL (hash "title" .V.AtomTitle)}}
+{{end}}
+{{content_for "header_tags" (capture "issues/show#header_tags")}}
+
+{{context_menu}}

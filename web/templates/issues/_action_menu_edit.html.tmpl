@@ -1,0 +1,10 @@
+<div style="clear: both;"></div>
+{{partial "issues/action_menu" (dict "V" .V)}}
+
+<div style="clear: both;"></div>
+{{if .V.M.Editable}}
+  <div id="update" style="display:none;">
+    <h3>{{l "button_edit"}}</h3>
+    {{partial "issues/edit" (dict "V" .V "F" .F)}}
+  </div>
+{{end}}

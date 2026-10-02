@@ -31,6 +31,8 @@ type issueShowView struct {
 	M *issueModel
 
 	relatedQuery *query.Query
+	// sessionQuery は retrieve_query_from_session の @query（サイドバーの選択表示に使う）。
+	sessionQuery *query.Query
 
 	Journals        []*journalView
 	Relations       []*repository.IssueRelation
@@ -101,6 +103,24 @@ func (a *App) issuesShowHTML(c *Req) {
 		return
 	}
 	data := map[string]any{"V": v, "M": m, "F": form, "Title": m.Heading() + ": " + m.Row.Subject}
+	cur := v.sessionQuery
+	if cur == nil {
+		env, err := a.queryEnv(c)
+		if err != nil {
+			a.internalError(c, "query env", err)
+			return
+		}
+		if cur, err = query.New(c.Ctx(), env, query.KindIssue, c.Project); err != nil {
+			a.internalError(c, "query", err)
+			return
+		}
+	}
+	sidebar, err := a.sidebarQueriesHTML(c, query.KindIssue, cur, issuesPath(c.Project))
+	if err != nil {
+		a.internalError(c, "sidebar queries", err)
+		return
+	}
+	data["SidebarQueries"] = sidebar
 	c.Render("issues/show", data)
 }
 
@@ -164,18 +184,24 @@ func newAuthorizerFor(l *issueLookup, u *domain.User) *authz.Authorizer { return
 
 // ---------------------------------------------------------------- 前後のチケット
 
+// flashPrevNextKey は flash[:previous_and_next_issue_ids]。
+const flashPrevNextKey = "previous_and_next_issue_ids"
+
 // retrievePreviousAndNextIssueIDs は IssuesController#retrieve_previous_and_next_issue_ids。
 func (a *App) retrievePreviousAndNextIssueIDs(c *Req, l *issueLookup, v *issueShowView) {
-	p := c.Params()
-	if rails.IsPresent(p.String("prev_issue_id")) || rails.IsPresent(p.String("next_issue_id")) {
+	// flash[:previous_and_next_issue_ids]（更新後のリダイレクトで設定される）。buropher の flash は文字列のみを
+	// 保持するため、値はクエリ文字列（prev_issue_id=..&next_issue_id=..&issue_position=..&issue_count=..）で持つ。
+	if f := c.Flash(); f != nil && f.Has(flashPrevNextKey) {
+		info, _ := url.ParseQuery(f.Get(flashPrevNextKey))
 		toI := func(k string) any {
-			if s := p.String(k); rails.IsPresent(s) {
+			if s := info.Get(k); rails.IsPresent(s) {
 				return int64(customfield.RubyToI(s))
 			}
 			return nil
 		}
 		v.PrevIssueID, v.NextIssueID = toI("prev_issue_id"), toI("next_issue_id")
 		v.IssuePosition, v.IssueCount = toI("issue_position"), toI("issue_count")
+		f.Delete(flashPrevNextKey)
 		return
 	}
 	q, err := a.retrieveIssueQueryFromSession(c)
@@ -186,6 +212,7 @@ func (a *App) retrievePreviousAndNextIssueIDs(c *Req, l *issueLookup, v *issueSh
 	if q == nil {
 		return
 	}
+	v.sessionQuery = q
 	perPage := c.PerPageOption()
 	const limit = 500
 	ids, err := q.IssueIDs(c.Ctx(), query.ListOptions{Limit: limit + 1})
@@ -196,7 +223,7 @@ func (a *App) retrievePreviousAndNextIssueIDs(c *Req, l *issueLookup, v *issueSh
 	}
 	id := v.M.Row.ID
 	if idx := slices.Index(ids, id); idx >= 0 && idx < limit {
-		if len(ids) < 500 {
+		if len(ids) < limit {
 			v.IssuePosition = int64(idx + 1)
 			v.IssueCount = int64(len(ids))
 		}
@@ -903,13 +930,31 @@ func (v *issueShowView) IssueRelations() template.HTML {
 	return rails.ContentTag("table", s, rails.NewHash("class", "list issues odd-even"))
 }
 
-// RelationTypeOptions は issue_relations/_form の relation_type の選択肢（collection_for_relation_type_select）。
-func (v *issueShowView) RelationTypeOptions() template.HTML {
+// RelationTypeChoices は collection_for_relation_type_select。
+func (v *issueShowView) RelationTypeChoices() []any {
 	var items []any
 	for _, k := range []string{"relates", "duplicates", "duplicated", "blocks", "blocked", "precedes", "follows", "copied_to", "copied_from"} {
 		items = append(items, []any{v.l.L(relationTypes[k].name), k})
 	}
-	return rails.OptionsForSelect(items, "relates")
+	return items
+}
+
+// NewRelation は @relation（IssueRelation.new）。
+func (v *issueShowView) NewRelation() *relationFormModel { return &relationFormModel{} }
+
+// relationFormModel は form_for @relation のモデル。
+type relationFormModel struct{}
+
+func (r *relationFormModel) ParamKey() string { return "relation" }
+func (r *relationFormModel) Persisted() bool  { return false }
+func (r *relationFormModel) Send(method string) (any, bool) {
+	switch method {
+	case "relation_type":
+		return "relates", true
+	case "issue_to_id", "delay":
+		return nil, true
+	}
+	return nil, false
 }
 
 // AutoCompleteRelationURL は auto_complete_issues_path(:project_id => @project, :issue_id => @issue)。
@@ -998,8 +1043,17 @@ func (v *issueShowView) CanViewWatchers() bool { return v.M.allowedTo("view_issu
 // WatcherCount は watched.watcher_users.size。
 func (v *issueShowView) WatcherCount() int { return len(v.watcherIDs()) }
 
-// WatchersList は watchers_list(@issue)。
-func (v *issueShowView) WatchersList(r *watchersRender) template.HTML {
+// watcherItem は watchers_list の 1 件。
+type watcherItem struct {
+	User    *domain.User
+	IsUser  bool
+	Link    template.HTML
+	Warning template.HTML
+	Delete  template.HTML
+}
+
+// WatcherItems は watchers_list(@issue) の項目（User.sorted の順）。
+func (v *issueShowView) WatcherItems() []watcherItem {
 	l := v.l
 	ids := v.watcherIDs()
 	l.preloadPrincipals(ids)
@@ -1011,42 +1065,27 @@ func (v *issueShowView) WatchersList(r *watchersRender) template.HTML {
 	}
 	l.sortUsersByFormat(users)
 	remove := v.M.allowedTo("delete_issue_watchers")
-	var content template.HTML
+	var out []watcherItem
 	for _, u := range users {
-		var s template.HTML
-		isUser := u.Kind.IsUser()
+		it := watcherItem{User: u, IsUser: u.Kind.IsUser()}
 		cls := "user"
-		if !isUser {
+		if !it.IsUser {
 			cls = "group"
 		}
-		if isUser {
-			s += r.Avatar(u)
-		}
-		s += l.a.Helpers.LinkToPrincipal(l.page, u, cls)
-		if isUser && !l.issueVisibleTo(v.M, u) {
-			s += rails.ContentTag("span", l.icon("warning", l.L("notice_invalid_watcher")),
+		it.Link = l.a.Helpers.LinkToPrincipal(l.page, u, cls)
+		if it.IsUser && !l.issueVisibleTo(v.M, u) {
+			it.Warning = rails.ContentTag("span", l.icon("warning", l.L("notice_invalid_watcher")),
 				rails.NewHash("class", "icon-only icon-warning", "title", l.L("notice_invalid_watcher")))
 		}
 		if remove {
-			s += " "
-			s += rails.LinkTo(l.icon("del", l.L("button_delete")),
+			it.Delete = rails.LinkTo(l.icon("del", l.L("button_delete")),
 				"/issues/"+strconv.FormatInt(v.M.Row.ID, 10)+"/watchers/"+strconv.FormatInt(u.ID, 10),
 				rails.NewHash("remote", true, "method", "delete", "class", "delete icon-only icon-del", "title", l.L("button_delete")))
 		}
-		content += rails.ContentTag("li", s, rails.NewHash("class", "user-"+strconv.FormatInt(u.ID, 10)))
+		out = append(out, it)
 	}
-	if content == "" {
-		return ""
-	}
-	return rails.ContentTag("ul", content, rails.NewHash("class", "watchers"))
+	return out
 }
-
-// watchersRender はテンプレートの avatar を Go から呼ぶための橋渡し。
-type watchersRender struct {
-	avatar func(u *domain.User) template.HTML
-}
-
-func (w *watchersRender) Avatar(u *domain.User) template.HTML { return w.avatar(u) }
 
 // issueVisibleTo は issue.visible?(user)（ウォッチャーの警告用）。
 func (l *issueLookup) issueVisibleTo(m *issueModel, u *domain.User) bool {
@@ -1135,7 +1174,8 @@ func (v *issueShowView) HistoryDefaultTab() string {
 		}
 		return "notes"
 	case "":
-		return "notes"
+		// NULL（nil）は render_tabs で先頭のタブになる。buropher は NULL と '' を区別しない
+		return ""
 	default:
 		return t
 	}
@@ -1174,6 +1214,15 @@ func (v *issueShowView) AtomURL() string {
 	return u
 }
 
+// AtomLinkURL は other_formats_links の Atom（:url => {:key => User.current.atom_key}）。
+func (v *issueShowView) AtomLinkURL() string {
+	u := "/issues/" + strconv.FormatInt(v.M.Row.ID, 10) + ".atom"
+	if v.AtomKey != "" {
+		u += "?key=" + v.AtomKey
+	}
+	return u
+}
+
 // AtomTitle は "#{@issue.project} - #{@issue.tracker} ##{@issue.id}: #{@issue.subject}"。
 func (v *issueShowView) AtomTitle() string {
 	return v.M.Project.Name + " - " + v.M.Heading() + ": " + v.M.Row.Subject
@@ -1198,3 +1247,21 @@ func (v *issueShowView) NextPath() any {
 func (v *issueShowView) PositionLabel() string {
 	return v.l.L("label_item_position", i18n.Vars{"position": v.IssuePosition, "count": v.IssueCount})
 }
+
+// PrevTitle / NextTitle は "##{@prev_issue_id}" / "##{@next_issue_id}"。
+func (v *issueShowView) PrevTitle() string {
+	if v.PrevIssueID == nil {
+		return "#"
+	}
+	return "#" + rails.ToS(v.PrevIssueID)
+}
+
+func (v *issueShowView) NextTitle() string {
+	if v.NextIssueID == nil {
+		return "#"
+	}
+	return "#" + rails.ToS(v.NextIssueID)
+}
+
+// ReverseComments は User.current.wants_comments_in_reverse_order?。
+func (v *issueShowView) ReverseComments() bool { return v.l.c.Pref().CommentsSorting == "desc" }

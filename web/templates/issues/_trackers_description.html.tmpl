@@ -1,0 +1,22 @@
+{{if .trackers}}
+  <div class="modal" id="trackers_description">
+    <h3 class="title">{{l "label_trackers_description"}}</h3>
+      <dl>
+      {{range $tracker := .trackers}}
+          <dt>{{content_tag "a" $tracker.Name (hash "onclick" (printf "selectTracker('%d'); return false;" $tracker.ID) "href" "#" "title" (l "text_select_apply_tracker"))}}</dt>
+          <dd>{{$tracker.DescriptionString}}</dd>
+      {{end}}
+      </dl>
+  </div>
+{{end}}
+{{define "issues/_trackers_description#js"}}
+
+  function selectTracker(id) {
+    var target = $('#issue_tracker_id');
+    target.attr("selected", false);
+    target.find('option[value="' + id + '"]').prop('selected', true);
+    target.trigger('change');
+    hideModal('#trackers_description h3');
+  }
+{{end}}
+{{javascript_tag (capture "issues/_trackers_description#js" .)}}

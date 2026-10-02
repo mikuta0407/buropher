@@ -1,0 +1,19 @@
+{{$F := .F}}
+{{$half := $F.HalfCustomFields}}
+{{if $half}}
+<div class="splitcontent">
+<div class="splitcontentleft">
+{{range $row := $half}}
+  <p>{{$row.Tag}}</p>
+{{if $row.SplitHere}}
+</div><div class="splitcontentright">
+{{end}}
+{{end}}
+</div>
+</div>
+{{end}}
+
+{{range $row := $F.FullCustomFields}}
+  <p>{{$row.Tag}}</p>
+  {{if $row.Toolbar}}{{wikitoolbar_for $row.FieldID $F.PreviewURL}}{{end}}
+{{end}}

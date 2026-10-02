@@ -88,3 +88,49 @@ requests:
     users: [admin, anonymous]
   - path: /projects/ecookbook/issues?query_id=3
     users: [jsmith]
+
+  # ---- 詳細 ----
+  # 前後のチケットのリンクはセッションのクエリに依存する（直前の一覧の条件）
+  - path: /issues?set_filter=1&f[]=status_id&op[status_id]=*&sort=id
+    id: show_prepare_session
+    users: [admin, jsmith, dlopper]
+  - path: /issues/1
+    users: [anonymous, admin, jsmith, dlopper]
+  - path: /issues/2
+    users: [anonymous, admin, jsmith, dlopper]
+  - path: /issues/3
+    users: [admin, jsmith]
+  - path: /issues/4
+    users: [anonymous, admin, jsmith]
+  - path: /issues/6
+    users: [anonymous, admin, dlopper]
+  - path: /issues/8
+    users: [admin]
+  - path: /issues/9
+    users: [admin]
+  - path: /issues/10
+    users: [admin]
+  - path: /issues/11
+    users: [admin]
+  - path: /issues/12
+    users: [admin]
+  - path: /issues/13
+    users: [jsmith]
+  - path: /issues/14
+    users: [anonymous, admin, jsmith, dlopper]
+  - path: /issues/999
+    users: [admin]
+  - path: /issues/1?tab=notes
+    users: [admin]
+  - path: /issues?set_filter=1&f[]=status_id&op[status_id]=o&sort=priority:desc,id
+    id: show_prepare_session_2
+    users: [admin]
+  - path: /issues/3
+    id: issues_3_after_priority_sort
+    users: [admin]
+  - path: /projects/ecookbook/issues?set_filter=1
+    id: show_prepare_session_project
+    users: [jsmith]
+  - path: /issues/2
+    id: issues_2_after_project_list
+    users: [jsmith]

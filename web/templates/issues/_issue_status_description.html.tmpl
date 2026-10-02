@@ -1,0 +1,22 @@
+{{if .issue_statuses}}
+  <div class="modal" id="issue_statuses_description">
+    <h3 class="title">{{l "label_issue_statuses_description"}}</h3>
+      <dl>
+      {{range $issue_status := .issue_statuses}}
+          <dt>{{content_tag "a" $issue_status.Name (hash "onclick" (printf "selectIssueStatus('%d'); return false;" $issue_status.ID) "href" "#" "title" (l "text_select_apply_issue_status"))}}</dt>
+          <dd>{{$issue_status.DescriptionString}}</dd>
+      {{end}}
+      </dl>
+  </div>
+{{end}}
+{{define "issues/_issue_status_description#js"}}
+
+  function selectIssueStatus(id) {
+    var target = $('#issue_status_id');
+    target.attr("selected", false);
+    target.find('option[value="' + id + '"]').prop('selected', true);
+    target.trigger('change');
+    hideModal('#issue_statuses_description h3');
+  }
+{{end}}
+{{javascript_tag (capture "issues/_issue_status_description#js" .)}}

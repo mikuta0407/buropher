@@ -673,5 +673,42 @@ ORDER BY reactions.id DESC`, kind, id)
 	return rows, err
 }
 
+// ProjectActivities は project.activities（共有の有効な作業分類のうちプロジェクトで上書きされていないもの +
+// プロジェクト別の有効な分類。position 順）。
+func ProjectActivities(ctx context.Context, q db.Queryer, projectID int64) ([]*domain.Enumeration, error) {
+	t := q.Dialect().BoolLiteral(true)
+	var rows []enumerationRow
+	if err := q.Select(ctx, &rows, enumerationSelect(domain.EnumTimeEntryActivity)+`
+WHERE (project_id IS NULL OR project_id = ?) AND active = `+t+`
+AND id NOT IN (SELECT parent_id FROM time_entry_activities WHERE project_id = ? AND parent_id IS NOT NULL)
+ORDER BY position, id`, projectID, projectID); err != nil {
+		return nil, err
+	}
+	out := make([]*domain.Enumeration, len(rows))
+	for i := range rows {
+		out[i] = rows[i].enumeration(domain.EnumTimeEntryActivity)
+	}
+	return out, nil
+}
+
+// TimeEntryCustomFieldIDs は TimeEntryCustomField の id（position 順）。
+func VisibleTimeEntryCustomFieldIDs(ctx context.Context, q db.Queryer) ([]int64, error) {
+	var ids []int64
+	err := q.Select(ctx, &ids, `SELECT id FROM custom_fields WHERE owner_kind = 'time_entry' ORDER BY position, id`)
+	return ids, err
+}
+
+// ProjectMemberUserIDs は project.users（有効なユーザーのメンバー。roleIDs が空でなければそのロールを持つもの）。
+func ProjectMemberUserIDs(ctx context.Context, q db.Queryer, projectID int64, roleIDs []int64) ([]int64, error) {
+	where := ""
+	if len(roleIDs) > 0 {
+		where = " AND members.id IN (SELECT member_id FROM member_roles WHERE role_id IN (" + joinIDs(roleIDs) + "))"
+	}
+	var ids []int64
+	err := q.Select(ctx, &ids, `SELECT DISTINCT p.id FROM principals p JOIN members ON members.principal_id = p.id
+WHERE members.project_id = ? AND p.kind = 'user' AND p.status = 1`+where+` ORDER BY p.id`, projectID)
+	return ids, err
+}
+
 // unused guard
 var _ = time.Time{}

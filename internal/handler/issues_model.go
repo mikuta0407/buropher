@@ -409,3 +409,9 @@ func (m *issueModel) TotalEstimatedHours() *float64 {
 func (m *issueModel) Heading() string {
 	return m.Tracker.Name + " #" + strconv.FormatInt(m.Row.ID, 10)
 }
+
+// CanManageCategories は User.current.allowed_to?(:manage_categories, @issue.project)。
+func (m *issueModel) CanManageCategories() bool { return m.allowedTo("manage_categories") }
+
+// CanManageVersions は User.current.allowed_to?(:manage_versions, @issue.project)。
+func (m *issueModel) CanManageVersions() bool { return m.allowedTo("manage_versions") }

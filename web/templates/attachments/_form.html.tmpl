@@ -1,0 +1,21 @@
+{{$F := .F}}
+
+<span class="attachments_form">
+  <span class="attachments_icons hidden">
+    {{sprite_icon "del" (hash "icon_only" true "css_class" "svg-del")}}
+    {{sprite_icon "attachment" (hash "icon_only" true "size" 16 "css_class" "svg-attachment")}}
+    {{sprite_icon "loader" (hash "icon_only" true "size" 16 "css_class" "svg-loader")}}
+    {{sprite_icon "hourglass" (hash "icon_only" true "size" 16 "css_class" "svg-hourglass")}}
+  </span>
+  <span class="attachments_fields">
+  </span>
+  <span class="add_attachment" style="">
+    {{$F.AttachmentFileField}}
+    ({{l "label_max_size"}}: {{$F.MaxSize}})
+  </span>
+</span>
+
+{{define "attachments/_form#header_tags"}}
+  {{javascript_include_tag "attachments"}}
+{{end}}
+{{content_for "header_tags" (capture "attachments/_form#header_tags" .)}}
