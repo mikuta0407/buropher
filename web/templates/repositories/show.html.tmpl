@@ -1,0 +1,55 @@
+{{$p := current_project}}{{$repo := .Repository}}
+{{call_hook "view_repositories_show_contextual"}}
+
+<div class="contextual">
+  {{partial "repositories/navigation" (dict)}}
+</div>
+
+<h2 class="breadcrumbs">{{partial "repositories/breadcrumbs" (dict "path" .Path "kind" "dir" "revision" .Rev)}}</h2>
+
+{{if and .Entries (authorize_for "repositories" "browse")}}
+  {{partial "repositories/dir_list" (dict)}}
+{{end}}
+
+{{if authorize_for "repositories" "revisions"}}
+  {{if .Changesets}}
+    <h3>{{l "label_latest_revision_plural"}}</h3>
+    {{partial "repositories/revisions" .Revisions}}
+  {{end}}
+  <p>
+  {{$sep := ""}}
+  {{if eq .Path ""}}
+    {{link_to (l "label_view_all_revisions") (repo_url "revisions" $p $repo "" "")}}
+    {{$sep = "|"}}
+  {{end}}
+  {{if and $repo.SupportsDirectoryRevisions (or .Branches (ne .Path "") (ne .Rev ""))}}
+    {{$sep}}
+    {{link_to (l "label_view_revisions") (repo_url "changes" $p $repo (to_path_param .Path) .Rev)}}
+  {{end}}
+  </p>
+  {{content_for "header_tags" (capture "repositories/show#atom")}}
+
+  {{other_formats_open}}
+    {{other_format_link "Atom" .AtomURL}}
+  {{other_formats_close}}
+{{end}}
+
+{{if gt (len .Repositories) 1}}
+  {{content_for "sidebar" (capture "repositories/show#sidebar")}}
+{{end}}
+
+{{define "repositories/show#header_tags"}}
+  {{stylesheet_link_tag "scm"}}
+{{end}}
+{{content_for "header_tags" (capture "repositories/show#header_tags")}}
+
+{{html_title (l "label_repository") -}}
+{{define "repositories/show#atom"}}
+      {{auto_discovery_link_tag "atom" .AtomDiscoveryURL}}
+{{end}}
+{{define "repositories/show#sidebar"}}
+    <h3>{{l "label_repository_plural"}}</h3>
+    <p>
+      {{repositories_sidebar_links current_project .Repositories .Repository}}
+    </p>
+{{end}}

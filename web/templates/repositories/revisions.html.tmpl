@@ -1,0 +1,25 @@
+{{$p := current_project}}{{$repo := .Repository}}
+<div class="contextual">
+{{form_tag (repo_url "revision" $p $repo "" "") (hash "method" "get")}}
+  {{l "label_revision"}}: {{text_field_tag "rev" nil (hash "size" 8)}}
+  {{submit_tag (l "button_view")}}
+{{end_form}}
+</div>
+
+<h2>{{l "label_revision_plural"}}</h2>
+
+{{partial "repositories/revisions" .Revisions}}
+
+<span class="pagination">{{pagination_links_full .Pages .Count}}</span>
+
+{{define "repositories/revisions#header_tags"}}
+  {{stylesheet_link_tag "scm"}}
+  {{auto_discovery_link_tag "atom" .AtomDiscoveryURL}}
+{{end}}
+{{content_for "header_tags" (capture "repositories/revisions#header_tags")}}
+
+{{other_formats_open}}
+  {{other_format_link "Atom" .AtomURL}}
+{{other_formats_close}}
+
+{{html_title (l "label_revision_plural")}}

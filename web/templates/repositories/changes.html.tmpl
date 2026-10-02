@@ -1,0 +1,18 @@
+{{call_hook "view_repositories_show_contextual"}}
+
+<div class="contextual">
+  {{partial "repositories/navigation" (dict)}}
+</div>
+
+<h2 class="breadcrumbs">{{partial "repositories/breadcrumbs" (dict "path" .Path "kind" .Entry.Kind "revision" .Rev)}}</h2>
+
+{{partial "repositories/link_to_functions" (dict)}}
+
+{{if .Changesets}}{{partial "repositories/revisions" .Revisions}}{{end}}
+
+{{define "repositories/changes#header_tags"}}
+{{stylesheet_link_tag "scm"}}
+{{end}}
+{{content_for "header_tags" (capture "repositories/changes#header_tags")}}
+
+{{html_title (l "label_change_plural")}}

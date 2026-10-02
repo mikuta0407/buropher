@@ -1,0 +1,41 @@
+{{$a := assigns}}{{$p := current_project}}{{$repo := $a.Repository}}{{$v := .}}
+{{form_tag (repo_url "diff" $p $repo (to_path_param .Path) "") (hash "method" "get")}}
+{{if .ShowDiff}}
+<p>
+  {{submit_tag (l "label_view_diff") (hash "name" nil)}}
+</p>
+{{end}}
+<div class="autoscroll">
+{{if .ShowGraph}}{{partial "repositories/revision_graph" (dict "commits" .GraphJSON "space" .GraphSpace)}}{{end}}
+<table class="list changesets">
+<thead><tr>
+<th>#</th>
+<th></th>
+<th></th>
+<th>{{l "label_date"}}</th>
+<th>{{l "field_author"}}</th>
+<th>{{l "field_comments"}}</th>
+</tr></thead>
+<tbody>
+{{range $changeset := .Revisions}}
+{{$n := $changeset.LineNum}}
+<tr class="changeset">
+{{content_tag_open "td" (hash "class" "id" "style" (ternary $v.ShowGraph $v.IDStyle nil))}}
+  {{link_to_revision $changeset.Changeset $p $repo}}
+{{end_tag "td"}}
+<td class="checkbox">{{if and $v.ShowDiff (lt $n $v.Count)}}{{radio_button_tag "rev" $changeset.Identifier (eq $n 1) (hash "id" (printf "cb-%d" $n) "onclick" (printf "$('#cbto-%d').prop('checked',true);" (add $n 1)))}}{{end}}</td>
+<td class="checkbox">{{if and $v.ShowDiff (gt $n 1)}}{{radio_button_tag "rev_to" $changeset.Identifier (eq $n 2) (hash "id" (printf "cbto-%d" $n) "onclick" (printf "if ($('#cb-%d').prop('checked')) {$('#cb-%d').prop('checked',true);}" $n (sub $n 1)))}}{{end}}</td>
+<td class="committed_on">{{format_time $changeset.CommittedOn}}</td>
+<td class="author">{{if $changeset.User}}{{link_to_user $changeset.User}}{{else}}{{str_truncate $changeset.CommitterName 30}}{{end}}</td>
+<td class="comments">{{textilizable (truncate_at_line_break $changeset.Comments) (hash "formatting" (setting_bool "commit_logs_formatting"))}}</td>
+</tr>
+{{end}}
+</tbody>
+</table>
+</div>
+{{if .ShowDiff}}
+<p>
+  {{submit_tag (l "label_view_diff") (hash "name" nil)}}
+</p>
+{{end}}
+{{end_form}}

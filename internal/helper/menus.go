@@ -152,7 +152,8 @@ func (e menuEnv) RepositoriesExist(mp menu.Project) bool {
 	if p == nil || e.p.DB == nil {
 		return false
 	}
-	ok, err := repository.ProjectHasRepositories(e.p.ctx(), e.p.DB, p.ID)
+	// :if => Proc.new {|p| p.repository && !p.repository.new_record?}（既定のリポジトリがあるとき）
+	ok, err := repository.ProjectHasDefaultRepository(e.p.ctx(), e.p.DB, p.ID)
 	return e.check("repositories", ok, err)
 }
 

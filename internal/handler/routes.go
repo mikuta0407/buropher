@@ -61,4 +61,6 @@ func (a *App) Routes(r Router) {
 	a.routesIssueRelationsAndWatchers(r)
 	a.routesIssuesBulk(r)
 	a.routesJournalsWrite(r)
+	a.routesRepositories(r)
+	a.routesSys(r)
 }

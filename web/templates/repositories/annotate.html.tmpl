@@ -1,0 +1,58 @@
+{{$p := current_project}}{{$repo := .Repository}}{{$v := .}}
+{{call_hook "view_repositories_show_contextual"}}
+
+<div class="contextual">
+  {{partial "repositories/navigation" (dict)}}
+</div>
+
+<h2 class="breadcrumbs">{{partial "repositories/breadcrumbs" (dict "path" .Path "kind" "file" "revision" .Rev)}}</h2>
+
+{{partial "repositories/link_to_functions" (dict)}}
+
+{{if .Lines}}
+<div class="autoscroll">
+<table class="filecontent annotate syntaxhl">
+  <tbody>
+    {{range $line := .Lines}}
+      <tr id="L{{$line.Num}}" class="bloc-{{$line.Color}} {{if $line.BlocChange}}bloc-change{{end}}">
+        <th class="line-num"><a href="#L{{$line.Num}}" data-txt="{{$line.Num}}"></a></th>
+        <td class="revision">
+          {{if and $line.Revision $line.Changed}}
+            {{if present $line.Revision.Identifier}}{{link_to_revision $line.Revision $p $repo}}{{else}}{{format_revision $line.Revision}}{{end}}
+          {{end}}
+        </td>
+        <td class="author">
+          {{if and $line.Revision $line.Changed}}
+            {{$line.Author}}
+          {{end}}
+        </td>
+        {{if $v.HasPrevious}}
+        <td class="previous">
+          {{if present $line.PreviousURL}}
+            {{link_to "" $line.PreviousURL (hash "title" (l "label_view_previous_annotation") "class" "icon icon-history")}}
+          {{end}}
+        </td>
+        {{end}}
+        {{if $line.Blank}}
+        <td class="line-code"><br></td>
+        {{else}}
+        <td class="line-code"><div>{{$line.HTML}}</div></td>
+        {{end}}
+      </tr>
+    {{end}}
+  </tbody>
+</table>
+</div>
+{{else}}
+<p id="errorExplanation">
+  {{notice_icon "error"}}
+  {{.ErrorMessage}}
+</p>
+{{end}}
+
+{{html_title (l "button_annotate")}}
+
+{{define "repositories/annotate#header_tags"}}
+{{stylesheet_link_tag "scm"}}
+{{end}}
+{{content_for "header_tags" (capture "repositories/annotate#header_tags")}}

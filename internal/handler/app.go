@@ -57,6 +57,8 @@ type App struct {
 	Secrets *secretbox.Box
 	// Version は buropher のバージョン（admin/info に表示する。空なら "dev"）。
 	Version string
+	// GitCommand は git の実行ファイル（設定 scm.git_command。空なら "git"。repositories.go）。
+	GitCommand string
 }
 
 func (a *App) now() time.Time {

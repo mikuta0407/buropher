@@ -1,0 +1,44 @@
+{{$p := current_project}}{{$repo := .Repository}}{{$cs := .Changeset}}
+<div class="contextual">
+  &#171;
+  {{if .Previous}}
+    {{link_to_revision .Previous $p $repo (hash "text" (l "label_previous") "accesskey" (accesskey "previous"))}}
+  {{else}}
+    {{l "label_previous"}}
+  {{end}}
+|
+  {{if .Next}}
+    {{link_to_revision .Next $p $repo (hash "text" (l "label_next") "accesskey" (accesskey "next"))}}
+  {{else}}
+    {{l "label_next"}}
+  {{end}}
+  &#187;&nbsp;
+
+  {{form_tag (repo_url "revision" $p $repo "" "") (hash "method" "get")}}
+    {{text_field_tag "rev" .Rev (hash "size" 8)}}
+    {{submit_tag (l "button_view") (hash "name" nil)}}
+  {{end_form}}
+</div>
+
+{{partial "repositories/changeset" (dict)}}
+
+{{if .BrowseRepository}}
+<ul id="changes-legend">
+<li class="change change-A">{{scm_change_icon "A" (l "label_added")}}</li>
+<li class="change change-M">{{scm_change_icon "M" (l "label_modified")}}</li>
+<li class="change change-C">{{scm_change_icon "C" (l "label_copied")}}</li>
+<li class="change change-R">{{scm_change_icon "R" (l "label_renamed")}}</li>
+<li class="change change-D">{{scm_change_icon "D" (l "label_deleted")}}</li>
+</ul>
+
+<div class="changeset-changes">
+{{render_changes_tree .ChangesTree $p $repo $cs.Identifier}}
+</div>
+{{end}}
+
+{{define "repositories/revision#header_tags"}}
+{{stylesheet_link_tag "scm"}}
+{{end}}
+{{content_for "header_tags" (capture "repositories/revision#header_tags")}}
+
+{{html_title (printf "%s %s - %s" (l "label_revision") (format_revision $cs) (str_truncate $cs.Comments 80)) -}}

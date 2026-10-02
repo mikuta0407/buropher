@@ -129,6 +129,7 @@ func New(cfg *config.Config, d *db.DB, opts ...Options) (*Server, error) {
 		DB: d, Settings: st, Bundle: i18n.Default(), Assets: ap, Views: views, Helpers: helpers,
 		Errors: errs, Logger: o.Logger, Now: o.Now, FormNameSuffix: o.FormNameSuffix, Version: o.Version, Notifier: o.Notifier,
 	}
+	app.GitCommand = cfg.SCM.GitCommand
 	if box, err := secretbox.New(string(secret)); err == nil {
 		app.Secrets = box
 	}
@@ -303,6 +304,7 @@ func healthz(d *db.DB) http.HandlerFunc {
 func (s *Server) Run(ctx context.Context) error {
 	srv := &http.Server{Addr: s.cfg.Server.Addr, Handler: s.router, ReadHeaderTimeout: 10 * time.Second}
 	errc := make(chan error, 1)
+	s.startSCMFetcher(ctx)
 	go func() {
 		slog.Info("listening", "addr", s.cfg.Server.Addr)
 		errc <- srv.ListenAndServe()

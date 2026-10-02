@@ -310,14 +310,43 @@ func NextChangeset(ctx context.Context, q db.Queryer, cs *domain.Changeset) (*do
 	return c, err
 }
 
-// ChangesetParents は changeset.parents（changeset_parents の挿入順 ≒ parent_id 順）。
-func ChangesetParents(ctx context.Context, q db.Queryer, id int64) ([]*domain.Changeset, error) {
-	return selectChangesets(ctx, q, `changesets.id IN (SELECT parent_id FROM changeset_parents WHERE changeset_id = ?) ORDER BY changesets.id`, id)
+// parentsOrder は changeset_parents の挿入順（SQLite は rowid。PostgreSQL は順序列が無いので parent_id）。
+// Redmine の habtm は結合表の挿入順（git の親の順）で返す。
+func parentsOrder(q db.Queryer) string {
+	if q.Dialect().Name() == db.SQLite {
+		return "changeset_parents.rowid"
+	}
+	return "changeset_parents.parent_id"
 }
 
-// ChangesetChildren は changeset.children。
+// ChangesetParents は changeset.parents（changeset_parents の挿入順）。
+func ChangesetParents(ctx context.Context, q db.Queryer, id int64) ([]*domain.Changeset, error) {
+	var rows []*changesetRow
+	if err := q.Select(ctx, &rows, `SELECT `+changesetCols+changesetFrom+`
+JOIN changeset_parents ON changeset_parents.parent_id = changesets.id
+WHERE changeset_parents.changeset_id = ? ORDER BY `+parentsOrder(q), id); err != nil {
+		return nil, err
+	}
+	out := make([]*domain.Changeset, len(rows))
+	for i, r := range rows {
+		out[i] = r.toDomain()
+	}
+	return out, nil
+}
+
+// ChangesetChildren は changeset.children（changeset_parents の挿入順）。
 func ChangesetChildren(ctx context.Context, q db.Queryer, id int64) ([]*domain.Changeset, error) {
-	return selectChangesets(ctx, q, `changesets.id IN (SELECT changeset_id FROM changeset_parents WHERE parent_id = ?) ORDER BY changesets.id`, id)
+	var rows []*changesetRow
+	if err := q.Select(ctx, &rows, `SELECT `+changesetCols+changesetFrom+`
+JOIN changeset_parents ON changeset_parents.changeset_id = changesets.id
+WHERE changeset_parents.parent_id = ? ORDER BY `+parentsOrder(q), id); err != nil {
+		return nil, err
+	}
+	out := make([]*domain.Changeset, len(rows))
+	for i, r := range rows {
+		out[i] = r.toDomain()
+	}
+	return out, nil
 }
 
 // ChangesetParentScmids は changeset_id → 親の scmid の一覧（リビジョングラフ用。parents の includes）。
@@ -332,7 +361,7 @@ func ChangesetParentScmids(ctx context.Context, q db.Queryer, ids []int64) (map[
 	}
 	if err := q.Select(ctx, &rows, `SELECT changeset_parents.changeset_id, changesets.scmid FROM changeset_parents
 JOIN changesets ON changesets.id = changeset_parents.parent_id
-WHERE changeset_parents.changeset_id IN (`+joinIDs(ids)+`) ORDER BY changeset_parents.changeset_id, changesets.id`); err != nil {
+WHERE changeset_parents.changeset_id IN (`+joinIDs(ids)+`) ORDER BY `+parentsOrder(q)); err != nil {
 		return nil, err
 	}
 	for _, r := range rows {
@@ -464,6 +493,34 @@ func RepositoryCommitters(ctx context.Context, q db.Queryer, repoID int64) ([]Co
 	var rows []Committer
 	err := q.Select(ctx, &rows, `SELECT DISTINCT COALESCE(committer, '') AS committer, user_id FROM changesets WHERE repository_id = ? ORDER BY 1, 2`, repoID)
 	return rows, err
+}
+
+// RepositoryCommittersByFirstAppearance は repository.committers（SQLite の DISTINCT と同じく最初に現れた順）。
+func RepositoryCommittersByFirstAppearance(ctx context.Context, q db.Queryer, repoID int64) ([]Committer, error) {
+	var rows []Committer
+	err := q.Select(ctx, &rows, `SELECT COALESCE(committer, '') AS committer, user_id FROM changesets WHERE repository_id = ?
+GROUP BY committer, user_id ORDER BY MIN(id)`, repoID)
+	return rows, err
+}
+
+// ProjectActiveMemberUsers は project.users（有効なユーザーのメンバー）。
+func ProjectActiveMemberUsers(ctx context.Context, q db.Queryer, projectID int64) ([]*domain.User, error) {
+	var ids []int64
+	if err := q.Select(ctx, &ids, `SELECT principals.id FROM members JOIN principals ON principals.id = members.principal_id
+WHERE members.project_id = ? AND principals.kind = 'user' AND principals.status = ? ORDER BY members.id`, projectID, domain.StatusActive); err != nil {
+		return nil, err
+	}
+	users, _, err := PrincipalsByIDs(ctx, q, ids)
+	if err != nil {
+		return nil, err
+	}
+	out := make([]*domain.User, 0, len(ids))
+	for _, id := range ids {
+		if u, ok := users[id]; ok {
+			out = append(out, u)
+		}
+	}
+	return out, nil
 }
 
 // UpdateCommitterUser は Changeset.where(repository_id, committer).update_all(user_id)。

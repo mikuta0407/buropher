@@ -1,0 +1,20 @@
+{{define "repositories/_revision_graph#js"}}
+function revisionGraphHandler(){
+  drawRevisionGraph(
+    document.getElementById('holder'),
+    {{.commits}},
+    {{.space}}
+  );
+}
+$(document).ready(revisionGraphHandler);
+$(window).resize(revisionGraphHandler);
+{{end}}
+{{javascript_tag (capture "repositories/_revision_graph#js" .)}}
+
+<div id="holder" class="revision-graph"></div>
+
+{{define "repositories/_revision_graph#header_tags"}}
+  {{javascript_include_tag "raphael"}}
+  {{javascript_include_tag "revision_graph"}}
+{{end}}
+{{content_for "header_tags" (capture "repositories/_revision_graph#header_tags")}}

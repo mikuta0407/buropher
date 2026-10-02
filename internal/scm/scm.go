@@ -38,6 +38,14 @@ type Entry struct {
 // IsDir は is_dir?。
 func (e *Entry) IsDir() bool { return e.Kind == "dir" }
 
+// SizeValue は size（nil なら 0）。
+func (e *Entry) SizeValue() int64 {
+	if e.Size == nil {
+		return 0
+	}
+	return *e.Size
+}
+
 // IsFile は is_file?。
 func (e *Entry) IsFile() bool { return e.Kind == "file" }
 

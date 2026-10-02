@@ -1,0 +1,31 @@
+{{$a := assigns}}{{$f := .f}}{{$repo := $a.Repository}}
+{{error_messages_for $repo}}
+
+<div class="box tabular">
+<p>
+{{label_tag "repository_scm" (l "label_scm")}}{{scm_select_tag $repo.NewRecord $a.NewRepositoryURL}}
+{{if not $a.SCMAvailable}}
+  <em class="info error">{{l "text_scm_command_not_available"}}</em>
+{{end}}
+</p>
+
+<p>{{$f.CheckBox "is_default" (hash "label" (sym "field_repository_is_default"))}}</p>
+<p>
+{{$f.TextField "identifier" (hash "disabled" $repo.IdentifierFrozen)}}
+{{if not $repo.IdentifierFrozen}}
+  <em class="info">
+    {{l "text_length_between" (hash "min" 1 "max" 255)}} {{raw (l "text_repository_identifier_info")}}
+  </em>
+{{end}}
+</p>
+
+{{$buttonDisabled := not $a.SCMAvailable}}
+<p>{{$f.TextField "url" (hash "label" (l "field_path_to_repository") "size" 60 "required" true "disabled" (not $repo.NewRecord))}}<em class="info">{{l "text_git_repository_note"}}</em></p>
+<p>{{$f.Select "path_encoding" (encoding_choices) (hash "label" (l "field_scm_path_encoding"))}}<em class="info">{{l "text_scm_path_encoding_note"}}</em></p>
+<p>{{$f.CheckBox "report_last_commit" (hash "label" (l "label_git_report_last_commit"))}}</p>
+</div>
+
+<p>
+  {{submit_tag (ternary $repo.NewRecord (l "button_create") (l "button_save")) (hash "disabled" $buttonDisabled)}}
+  {{link_to (l "button_cancel") (printf "/projects/%s/settings/repositories" current_project.Identifier)}}
+</p>
