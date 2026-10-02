@@ -711,7 +711,7 @@ func (d *Deps) renderProjectJumpBox(p *Page) html {
 	q := rails.TextFieldTag("q", "", rails.NewHash("id", "projects-quick-search", "class", "autocomplete",
 		"data", rails.NewHash("automcomplete_url", u), "autocomplete", "off"))
 	var allClass any
-	if p.Project == nil && p.MainMenu {
+	if p.Project == nil && !p.NewRecordProject && p.MainMenu {
 		allClass = "selected"
 	}
 	all := rails.LinkTo(p.l("label_project_all"), "/projects?jump="+item, rails.NewHash("class", allClass))

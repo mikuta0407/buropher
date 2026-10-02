@@ -2,6 +2,7 @@ package handler
 
 import (
 	"errors"
+	"io/fs"
 	"html/template"
 	"net/http"
 	"net/url"
@@ -16,6 +17,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/query"
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/view/rails"
+	"github.com/mikuta0407/buropher/web"
 )
 
 // このファイルは projects#index（ボード / リスト表示・CSV・Atom・API）と、
@@ -48,7 +50,8 @@ func (a *App) retrieveProjectQuery(c *Req, kind query.Kind) (*query.Query, bool)
 	q, _, err := query.Retrieve(ctx, env, kind, nil, p, nil, query.RetrieveOptions{UseSession: false, API: api})
 	switch {
 	case errors.Is(err, query.ErrNotFound):
-		c.Render404("")
+		// retrieve_query の ActiveRecord::RecordNotFound は rescue されず public/404.html になる
+		c.renderPublic404()
 		return nil, false
 	case errors.Is(err, query.ErrUnauthorized):
 		c.DenyAccess()
@@ -144,6 +147,19 @@ func (a *App) ProjectsIndex(c *Req) {
 	default:
 		c.unknownFormat()
 	}
+}
+
+// renderPublic404 は rescue されない ActiveRecord::RecordNotFound（public/404.html）。
+func (c *Req) renderPublic404() {
+	b, err := fs.ReadFile(web.Public(), "404.html")
+	if err != nil {
+		c.Render404("")
+		return
+	}
+	c.W.Header().Set("Content-Type", "text/html; charset=utf-8")
+	c.W.WriteHeader(http.StatusNotFound)
+	_, _ = c.W.Write(b)
+	c.Halt()
 }
 
 // queryStatementError は Query::StatementInvalid（rescue_from → render_error）。

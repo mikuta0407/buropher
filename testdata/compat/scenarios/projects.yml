@@ -1,0 +1,168 @@
+# プロジェクト（一覧・概要・新規・設定・メンバー・カテゴリ・管理画面のプロジェクト一覧・API）の
+# 参照系互換シナリオ。GET のみ（共用の参照環境 3998 に対して実行してよい）。
+# ただし参照 Redmine は GET でも「最近使ったプロジェクト」を記録するため、ジャンプボックスは
+# 実行順に依存する（参照・候補とも同じ順序で流すこと）。
+name: projects
+
+users:
+  admin: {login: admin, password: admin}
+  jsmith: {login: jsmith, password: jsmith}
+  dlopper: {login: dlopper, password: foo}
+
+normalize:
+  mask_text_selectors:
+    - "#footer"
+  regex:
+    # XHR の JavaScript 応答に埋め込まれたフォームの name 属性の乱数部（HTML の正規化が届かない）
+    - pattern: 'name=\\"([A-Za-z0-9_]+)-[0-9a-f]{8}\\"'
+      replace: 'name=\"$1-RANDOM\"'
+    # リポジトリの URL に含まれる参照環境の配置先
+    - pattern: '_reference/[A-Za-z0-9_-]+/tmp/test/'
+      replace: '_reference/REF/tmp/test/'
+
+requests:
+  # ---- 一覧（ボード・リスト・保存クエリ・ソート・ページ・グループ） ----
+  - path: /projects
+    users: [anonymous, admin, jsmith, dlopper]
+  - path: /projects?display_type=list&set_filter=1
+    users: [admin, jsmith]
+  - path: /projects?display_type=list&set_filter=1&c[]=name&c[]=status&c[]=short_description&c[]=identifier&c[]=parent_id&c[]=is_public&c[]=created_on&c[]=updated_on&c[]=cf_3&group_by=is_public
+    id: projects_list_all_columns__admin
+    user: admin
+  - path: /projects?display_type=list&set_filter=1&sort=name:desc
+    users: [admin]
+  - path: /projects?display_type=list&set_filter=1&per_page=2&page=2
+    id: projects_list_page2__admin
+    user: admin
+  - path: /projects?set_filter=1&f[]=status&op[status]=%3D&v[status][]=1&f[]=is_public&op[is_public]=%3D&v[is_public][]=0
+    id: projects_filter_private__admin
+    user: admin
+  - path: /projects?query_id=11
+    users: [admin, jsmith]
+  - path: /projects?query_id=12
+    users: [admin, jsmith]
+  - path: /projects?query_id=999
+    users: [admin]
+  - path: /projects?without_default=1
+    users: [admin]
+  - path: /projects?jump=issues
+    users: [admin]
+  - path: /projects.atom
+    users: [anonymous, admin]
+  - path: /projects.csv?display_type=list&set_filter=1&c[]=name&c[]=status&c[]=short_description&c[]=identifier&c[]=parent_id&c[]=is_public&c[]=cf_3
+    id: projects_csv__admin
+    user: admin
+  - path: /projects.json
+    users: [anonymous, admin, jsmith]
+  - path: /projects.xml?limit=2&offset=1
+    users: [admin]
+  - path: /projects.json?nometa=1
+    users: [jsmith]
+
+  # ---- 概要 ----
+  - path: /projects/ecookbook
+    users: [anonymous, admin, jsmith, dlopper]
+  - path: /projects/onlinestore
+    users: [anonymous, admin, jsmith]
+  - path: /projects/private-child
+    users: [admin, jsmith, dlopper]
+  - path: /projects/subproject1
+    users: [admin]
+  - path: /projects/2
+    users: [jsmith]
+  - path: /projects/ecookbook?jump=issues
+    users: [admin]
+  - path: /projects/nonexistent
+    users: [admin]
+  - path: /projects/ecookbook.json
+    users: [admin, anonymous]
+  - path: /projects/ecookbook.xml
+    users: [admin]
+  - path: /projects/ecookbook.json?include=trackers,issue_categories,time_entry_activities,enabled_modules,issue_custom_fields
+    id: projects_ecookbook_json_include__admin
+    user: admin
+
+  # ---- 新規・設定 ----
+  - path: /projects/new
+    users: [admin, jsmith, dlopper, anonymous]
+  - path: /projects/new?parent_id=ecookbook
+    users: [admin, jsmith]
+  - path: /projects/ecookbook/settings
+    users: [admin, jsmith, dlopper]
+  - path: /projects/ecookbook/settings/members
+    users: [admin]
+  - path: /projects/ecookbook/settings/versions?version_status=&version_name=2
+    id: projects_settings_versions_filter__admin
+    user: admin
+  - path: /projects/onlinestore/settings
+    users: [admin, jsmith]
+  - path: /projects/private-child/settings/versions
+    users: [admin]
+  - path: /projects/ecookbook/copy
+    users: [admin, jsmith]
+
+  # ---- メンバー ----
+  - path: /projects/ecookbook/memberships/new
+    users: [admin, jsmith]
+  - path: /projects/ecookbook/memberships/new
+    id: projects_ecookbook_memberships_new_js__admin
+    user: admin
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01"}
+  - path: /projects/ecookbook/memberships/autocomplete.js?q=misc
+    id: projects_ecookbook_memberships_autocomplete_misc__admin
+    user: admin
+    headers: {X-Requested-With: XMLHttpRequest}
+  - path: /projects/ecookbook/memberships/autocomplete.js
+    id: projects_ecookbook_memberships_autocomplete_nonxhr__admin
+    user: admin
+  - path: /memberships/1/edit
+    users: [admin, jsmith, dlopper]
+  - path: /memberships/2/edit
+    id: memberships_2_edit_js__admin
+    user: admin
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01"}
+  - path: /projects/ecookbook/memberships.json
+    users: [admin, jsmith]
+  - path: /projects/ecookbook/memberships.xml
+    users: [admin]
+  - path: /memberships/1.json
+    users: [admin]
+  - path: /projects/ecookbook/memberships
+    users: [admin]
+
+  # ---- カテゴリ ----
+  - path: /projects/ecookbook/issue_categories/new
+    users: [admin, jsmith, dlopper]
+  - path: /issue_categories/1/edit
+    users: [admin, jsmith]
+  - path: /projects/ecookbook/issue_categories.json
+    users: [admin]
+  - path: /projects/ecookbook/issue_categories.xml
+    users: [admin]
+  - path: /issue_categories/1.json
+    users: [admin]
+  - path: /issue_categories/1
+    users: [admin]
+
+  # ---- 管理画面 ----
+  - path: /admin/projects
+    users: [admin, jsmith, anonymous]
+  - path: /admin/projects?set_filter=1&f[]=status&op[status]=%3D&v[status][]=9
+    id: admin_projects_archived__admin
+    user: admin
+  - path: /admin/projects_context_menu?ids[]=1
+    users: [admin]
+  - path: /admin/projects_context_menu?ids[]=1&ids[]=2
+    users: [admin]
+  - path: /admin/projects_context_menu?ids[]=99
+    users: [admin]
+
+  # ---- ジャンプボックス ----
+  - path: /projects/autocomplete.js?q=sub&jump=projects
+    id: projects_autocomplete_sub__admin
+    user: admin
+    headers: {X-Requested-With: XMLHttpRequest}
+  - path: /projects/autocomplete.js?jump=overview
+    id: projects_autocomplete_blank__jsmith
+    user: jsmith
+    headers: {X-Requested-With: XMLHttpRequest}
