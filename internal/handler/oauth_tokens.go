@@ -159,7 +159,7 @@ func (a *App) createOAuthAccessToken(r *http.Request, q db.Queryer, appID, owner
 	plain, refresh := doorkeeper.GenerateToken(), doorkeeper.GenerateToken()
 	t := &domain.OAuthAccessToken{ResourceOwnerID: ownerID, ApplicationID: appID, Token: doorkeeper.HashToken(plain),
 		RefreshToken: doorkeeper.HashToken(refresh), ExpiresIn: expiresIn, Scopes: scopes, PreviousRefreshToken: previousRefresh}
-	if err := repository.CreateOAuthAccessToken(r.Context(), q, t); err != nil {
+	if err := repository.CreateOAuthAccessToken(r.Context(), q, t, a.now()); err != nil {
 		return nil, "", "", err
 	}
 	return t, plain, refresh, nil

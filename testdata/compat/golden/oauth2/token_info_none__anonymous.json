@@ -1,0 +1,8 @@
+status: 401
+content-type: application/json
+
+{
+  "error": "invalid_token",
+  "error_description": "The access token is invalid",
+  "state": "unauthorized"
+}

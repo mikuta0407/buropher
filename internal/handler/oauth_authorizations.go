@@ -248,7 +248,7 @@ func (a *App) oauthAuthorizeResponse(c *Req, pa *oauthPreAuth) oauthAuthResponse
 	g := &domain.OAuthAccessGrant{ResourceOwnerID: c.User.ID, ApplicationID: pa.client.ID, Token: doorkeeper.HashToken(plain),
 		ExpiresIn: doorkeeper.AuthorizationCodeExpiresIn, RedirectURI: derefStr(pa.RedirectURI), Scopes: strings.Join(pa.Scopes(), " "),
 		CodeChallenge: derefStr(pa.CodeChallenge), CodeChallengeMethod: derefStr(pa.CodeChallengeMethod)}
-	if err := repository.CreateOAuthAccessGrant(c.Ctx(), a.DB, g); err != nil {
+	if err := repository.CreateOAuthAccessGrant(c.Ctx(), a.DB, g, a.now()); err != nil {
 		a.logger().Error("create oauth grant", "err", err)
 		return oauthAuthResponse{err: a.newOAuthError(pa.lang, "server_error", derefStr(pa.State), derefStr(pa.RedirectURI))}
 	}

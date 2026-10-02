@@ -321,7 +321,7 @@ func (a *App) OAuth2ApplicationsCreate(c *Req) {
 		return
 	}
 	f.App.Secret = hashed
-	if err := repository.CreateOAuthApplication(c.Ctx(), a.DB, f.App); err != nil {
+	if err := repository.CreateOAuthApplication(c.Ctx(), a.DB, f.App, a.now()); err != nil {
 		a.internalError(c, "create oauth application", err)
 		return
 	}
@@ -366,7 +366,7 @@ func (a *App) OAuth2ApplicationsUpdate(c *Req) {
 		a.renderOAuthAppForm(c, "edit", f)
 		return
 	}
-	if err := repository.UpdateOAuthApplication(c.Ctx(), a.DB, f.App, changed); err != nil {
+	if err := repository.UpdateOAuthApplication(c.Ctx(), a.DB, f.App, changed, a.now()); err != nil {
 		a.internalError(c, "update oauth application", err)
 		return
 	}

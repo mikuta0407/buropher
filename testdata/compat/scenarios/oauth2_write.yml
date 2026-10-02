@@ -10,6 +10,8 @@ name: oauth2_write
 users:
   admin: {login: admin, password: admin}
   jsmith: {login: jsmith, password: jsmith}
+  # 言語が it のユーザー（doorkeeper-i18n の訳）
+  miscuser8: {login: miscuser8, password: foo}
 
 headers: {Accept-Language: en}
 
@@ -98,6 +100,15 @@ requests:
   - id: authorize_new
     path: /oauth/authorize?client_id=${uid}&redirect_uri=http%3A%2F%2F127.0.0.1%3A12345%2Fcb&response_type=code&scope=view_issues+view_project&state=xyz&code_challenge=E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM&code_challenge_method=S256
     user: jsmith
+  - id: authorize_new_it
+    path: /oauth/authorize?client_id=${uid}&redirect_uri=http%3A%2F%2F127.0.0.1%3A12345%2Fcb&response_type=code&scope=view_issues+add_issues
+    user: miscuser8
+  - id: authorize_error_it
+    path: /oauth/authorize?client_id=${uid}&redirect_uri=http%3A%2F%2F127.0.0.1%3A12345%2Fcb&response_type=code&code_challenge=x&code_challenge_method=bad
+    user: miscuser8
+  - id: authorized_apps_it
+    path: /oauth/authorized_applications
+    user: miscuser8
   - id: authorize_default_scopes
     path: /oauth/authorize?client_id=${uid}&redirect_uri=http%3A%2F%2F127.0.0.1%3A9999%2Fcb&response_type=code
     user: jsmith

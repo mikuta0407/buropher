@@ -6,6 +6,8 @@ name: oauth2
 users:
   admin: {login: admin, password: admin}
   jsmith: {login: jsmith, password: jsmith}
+  # 言語が it のユーザー（doorkeeper-i18n の訳）
+  miscuser8: {login: miscuser8, password: foo}
 
 headers: {Accept-Language: en}
 
@@ -42,10 +44,10 @@ requests:
     users: [jsmith, anonymous]
   - id: authorize_bad_client
     path: /oauth/authorize?client_id=unknown&redirect_uri=http%3A%2F%2F127.0.0.1%2Fcb&response_type=code
-    users: [jsmith]
+    users: [jsmith, miscuser8]
   - id: authorize_native
     path: /oauth/authorize/native?code=abcdef
-    users: [jsmith, anonymous]
+    users: [jsmith, miscuser8, anonymous]
 
   # トークン情報（Bearer なし・不正なトークン）
   - id: token_info_none

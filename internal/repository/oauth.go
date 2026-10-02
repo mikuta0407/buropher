@@ -77,8 +77,8 @@ func OAuthApplicationUIDTaken(ctx context.Context, q db.Queryer, uid string, exc
 }
 
 // CreateOAuthApplication はアプリケーションを作成し、ID・作成日時を設定する。
-func CreateOAuthApplication(ctx context.Context, q db.Queryer, a *domain.OAuthApplication) error {
-	now := db.Now()
+func CreateOAuthApplication(ctx context.Context, q db.Queryer, a *domain.OAuthApplication, at time.Time) error {
+	now := db.NewTime(at)
 	id, err := q.InsertReturningID(ctx, `INSERT INTO oauth_applications (name, uid, secret, redirect_uri, scopes, confidential, created_at, updated_at)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, a.Name, a.UID, a.Secret, a.RedirectURI, a.Scopes, a.Confidential, now, now)
 	if err != nil {
@@ -90,11 +90,11 @@ VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, a.Name, a.UID, a.Secret, a.RedirectURI, a.Scop
 
 // UpdateOAuthApplication は名前・リダイレクト URI・スコープ・confidential を更新する
 // （変更が無ければ updated_at も変えない。ActiveRecord の partial update と同じ）。
-func UpdateOAuthApplication(ctx context.Context, q db.Queryer, a *domain.OAuthApplication, changed bool) error {
+func UpdateOAuthApplication(ctx context.Context, q db.Queryer, a *domain.OAuthApplication, changed bool, at time.Time) error {
 	if !changed {
 		return nil
 	}
-	now := db.Now()
+	now := db.NewTime(at)
 	_, err := q.Exec(ctx, `UPDATE oauth_applications SET name = ?, redirect_uri = ?, scopes = ?, confidential = ?, updated_at = ? WHERE id = ?`,
 		a.Name, a.RedirectURI, a.Scopes, a.Confidential, now, a.ID)
 	if err == nil {
@@ -159,8 +159,8 @@ type oauthGrantRow struct {
 }
 
 // CreateOAuthAccessGrant は AccessGrant.create!（token は保存形式）。
-func CreateOAuthAccessGrant(ctx context.Context, q db.Queryer, g *domain.OAuthAccessGrant) error {
-	now := db.Now()
+func CreateOAuthAccessGrant(ctx context.Context, q db.Queryer, g *domain.OAuthAccessGrant, at time.Time) error {
+	now := db.NewTime(at)
 	id, err := q.InsertReturningID(ctx, `INSERT INTO oauth_access_grants (resource_owner_id, application_id, token, expires_in, redirect_uri,
 created_at, scopes, code_challenge, code_challenge_method) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 		g.ResourceOwnerID, g.ApplicationID, g.Token, g.ExpiresIn, g.RedirectURI, now, g.Scopes,
@@ -232,8 +232,8 @@ func (r *oauthTokenRow) token() *domain.OAuthAccessToken {
 }
 
 // CreateOAuthAccessToken は AccessToken.create_for（token / refresh_token は保存形式）。
-func CreateOAuthAccessToken(ctx context.Context, q db.Queryer, t *domain.OAuthAccessToken) error {
-	now := db.Now()
+func CreateOAuthAccessToken(ctx context.Context, q db.Queryer, t *domain.OAuthAccessToken, at time.Time) error {
+	now := db.NewTime(at)
 	var expires any
 	if t.ExpiresIn != nil {
 		expires = *t.ExpiresIn
