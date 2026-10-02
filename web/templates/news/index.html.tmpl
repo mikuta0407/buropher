@@ -1,0 +1,47 @@
+{{$pr := current_project -}}
+<div class="contextual">
+{{if .CanManage}}{{link_to (sprite_icon "add" (l "label_news_new")) (news_index_path $pr) (hash "class" "icon icon-add add-news-link" "onclick" "showAndScrollTo(\"add-news\", \"news_title\"); return false;")}}{{end}}
+{{if and $pr logged}}{{content_watcher_link "enabled_module" .ModuleID}}{{end}}
+</div>
+
+<div id="add-news" style="display:none;">
+<h2>{{l "label_news_new"}}</h2>
+{{$f := labelled_form_for "" .News (hash "url" (news_index_path $pr) "html" (hash "id" "news-form" "multipart" true))}}{{$f.Open}}
+{{partial "news/form" (dict "f" $f)}}
+{{submit_tag (l "button_create")}}
+{{link_to (l "button_cancel") "#" (hash "onclick" "$(\"#add-news\").hide()")}}
+{{end_form}}
+</div>
+
+<h2>{{l "label_news_plural"}}</h2>
+
+{{if not .Newss}}
+<p class="nodata">{{l "label_no_data"}}</p>
+{{else}}
+{{range $news := .Newss}}
+    <article class="news-article">
+      <header>
+        <h3>{{avatar $news.Author}}{{if not (and $pr (eq $pr.ID $news.ProjectID))}}{{link_to_project $news.Project}}: {{end}}
+        {{link_to $news.Title (news_path $news)}}
+        {{if gt $news.CommentsCount 0}}({{l "label_x_comments" (dict "count" $news.CommentsCount)}}){{end}}</h3>
+        <p class="author">{{authoring $news.CreatedAt $news.Author}}</p>
+      </header>
+      <div class="wiki">
+      {{textilizable $news.Description (hash "object" (news_text_object $news))}}
+      </div>
+    </article>
+{{end}}
+{{end}}
+<span class="pagination">{{pagination_links_full .Pages}}</span>
+
+{{other_formats_open -}}
+  {{other_format_link "Atom" (news_atom_path $pr .AtomKey)}}
+{{other_formats_close -}}
+
+{{define "news/index#header_tags"}}
+  {{auto_discovery_link_tag "atom" (news_atom_path current_project (assigns).AtomKey)}}
+  {{stylesheet_link_tag "scm"}}
+{{end}}
+{{content_for "header_tags" (capture "news/index#header_tags")}}
+
+{{html_title (l "label_news_plural") -}}

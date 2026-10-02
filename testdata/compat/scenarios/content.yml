@@ -1,0 +1,54 @@
+# ニュース・文書・ファイル・フォーラム・添付（NewsController / CommentsController / DocumentsController /
+# FilesController / BoardsController / MessagesController / AttachmentsController / WatchersController）の
+# 参照状態を変えない GET の互換シナリオ（REST API を含む）。
+name: content
+
+users:
+  admin: {login: admin, password: admin}
+  jsmith: {login: jsmith, password: jsmith}
+  dlopper: {login: dlopper, password: foo}
+
+normalize:
+  mask_text_selectors:
+    - "#footer"
+
+requests:
+  # ---- ニュース
+  - path: /news
+    users: [anonymous, admin, jsmith]
+  - path: /projects/ecookbook/news
+    users: [anonymous, admin, jsmith]
+  - path: /projects/onlinestore/news
+    users: [anonymous, jsmith]
+  - path: /news?page=2
+    users: [admin]
+  - path: /news/new
+    users: [anonymous, admin, jsmith]
+  - path: /projects/ecookbook/news/new
+    users: [admin, dlopper]
+  - path: /news/1
+    users: [anonymous, admin, jsmith, dlopper]
+  - path: /news/2
+    users: [admin]
+  - path: /news/3
+    users: [anonymous, jsmith]
+  - path: /news/999
+    users: [admin]
+  - path: /news/1/edit
+    users: [admin, dlopper]
+  - path: /news.atom
+    users: [anonymous]
+  - path: /projects/ecookbook/news.atom
+    users: [anonymous]
+  - path: /news.json
+    users: [admin, jsmith]
+  - path: /news.xml?limit=2&offset=1
+    users: [admin]
+  - path: /projects/ecookbook/news.json
+    users: [anonymous]
+  - path: /news/1.json?include=attachments,comments
+    users: [admin]
+  - path: /news/1.xml?include=comments
+    users: [admin]
+  - path: /news/2.json
+    users: [jsmith]
