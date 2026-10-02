@@ -79,7 +79,19 @@ type App struct {
 	PDFFonts *pdf.FontSet
 	// GitCommand は git の実行ファイル（設定 scm.git_command。空なら "git"。repositories.go）。
 	GitCommand string
+
+	// routeTable は Handle で登録したルート（ルート網羅テスト用。RouteTable）。
+	routeTable []RouteEntry
 }
+
+// RouteEntry は Handle で登録した 1 ルート（メソッド・chi のパターン・controller#action）。
+type RouteEntry struct {
+	Method, Pattern, Controller, Action string
+}
+
+// RouteTable は Handle で登録したルートの一覧を返す（Redmine のルート表との突き合わせに使う）。
+// 拡張子付きのパターン（pattern + ".{format}"）と GET に付随する HEAD は含まない。
+func (a *App) RouteTable() []RouteEntry { return a.routeTable }
 
 func (a *App) now() time.Time {
 	if a.Now != nil {
@@ -259,6 +271,7 @@ func (a *App) Handle(r chi.Router, method, pattern string, ctrl *Controller, act
 		csrf.ServeHTTP(w, r)
 	}
 	httpx.Route(r, method, pattern, h)
+	a.routeTable = append(a.routeTable, RouteEntry{Method: method, Pattern: pattern, Controller: ctrl.Name, Action: action})
 }
 
 func (a *App) newReq(w http.ResponseWriter, r *http.Request, ctrl *Controller, action string) *Req {
