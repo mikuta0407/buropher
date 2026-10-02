@@ -63,7 +63,8 @@ func (a *App) routesWatchers(r Router) {
 		a.WatchersAutocompleteForMention, auth...)
 	a.Handle(r, http.MethodGet, "/watchers/autocomplete_for_user", WatchersController, "autocomplete_for_user",
 		a.WatchersAutocompleteForUser, auth...)
-	issueAPI := append([]ActionOption{Before(func(c *Req) { c.Params().Set("object_type", "issue") })}, api...)
+	// :object_type => 'issue'（ルートの既定値。c.Params() は毎回作り直されるためリクエストのローカル値で持つ）
+	issueAPI := append([]ActionOption{Before(func(c *Req) { c.setLocal(ctxWatchersObjectType, "issue") })}, api...)
 	a.Handle(r, http.MethodPost, "/issues/{object_id}/watchers", WatchersController, "create", a.WatchersCreate, issueAPI...)
 	a.Handle(r, http.MethodDelete, "/issues/{object_id}/watchers/{user_id}", WatchersController, "destroy", a.WatchersDestroy, issueAPI...)
 }
@@ -200,7 +201,18 @@ func issueWatchersPartial(a *App, c *Req, w *watchable) (string, any, error) {
 	return "issues/watchers", map[string]any{"V": v}, nil
 }
 
-const ctxWatchables = "watchables"
+const (
+	ctxWatchables         = "watchables"
+	ctxWatchersObjectType = "watchers_object_type"
+)
+
+// watchersObjectType は params[:object_type]（ルートの既定値があればそれ）。
+func (c *Req) watchersObjectType() (any, bool) {
+	if v, ok := c.local(ctxWatchersObjectType).(string); ok {
+		return v, true
+	}
+	return c.Params().Get("object_type")
+}
 
 func (c *Req) watchables() []*watchable {
 	ws, _ := c.local(ctxWatchables).([]*watchable)
@@ -212,7 +224,8 @@ var errUnknownWatchable = errors.New("unknown watchable type")
 
 // findObjectsFromParams は find_objects_from_params（見えないものがあれば Unauthorized = deny_access で halted）。
 func (a *App) findObjectsFromParams(c *Req) ([]*watchable, error) {
-	t := watchableTypes[c.Params().String("object_type")]
+	ot, _ := c.watchersObjectType()
+	t := watchableTypes[httpx.ValueString(ot)]
 	if t == nil {
 		return nil, errUnknownWatchable
 	}
@@ -256,7 +269,7 @@ func (a *App) findWatchables(c *Req) {
 // findWatchersProject は WatchersController#find_project。
 func (a *App) findWatchersProject(c *Req) {
 	p := c.Params()
-	ot, hasType := p.Get("object_type")
+	ot, hasType := c.watchersObjectType()
 	oid, hasID := p.Get("object_id")
 	switch {
 	case hasType && ot != nil && hasID && oid != nil:

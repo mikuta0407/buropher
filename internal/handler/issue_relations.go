@@ -188,7 +188,7 @@ func (a *App) relationVisible(c *Req, rel *domain.IssueRelation) (bool, error) {
 }
 
 // relationIssuesToID は relation_issues_to_id（params[:relation].require(:issue_to_id) のカンマ区切り。
-// 無ければ検証エラーを 1 回返すための ['']）。
+// 無ければ検証エラーを 1 回返すための [”]）。
 func relationIssuesToID(p *httpx.Params) []string {
 	v, ok := p.Lookup("relation", "issue_to_id")
 	if !ok || v == nil {

@@ -1125,22 +1125,37 @@ func (l *issueLookup) issueVisibleTo(m *issueModel, u *domain.User) bool {
 	return ok
 }
 
-// sortUsersByFormat は User.sorted（Setting.user_format の並び。グループは名前）。
+// sortUsersByFormat は Principal.sorted（type DESC = ユーザーが先、Setting.user_format の並び → lastname → id。
+// グループの firstname は空、lastname は名前）。
 func (l *issueLookup) sortUsersByFormat(us []*domain.User) {
 	f := l.a.Settings.String("user_format")
 	key := func(u *domain.User) []string {
+		first, last, login := u.Firstname, u.Lastname, u.Login
 		if u.Kind.IsGroup() {
-			return []string{u.Lastname, u.Firstname}
+			first, login = "", ""
+			if u.Principal.Name != "" {
+				last = u.Principal.Name
+			}
 		}
 		switch f {
-		case "lastname_firstname", "lastname_comma_firstname", "lastnamefirstname", "lastname":
-			return []string{u.Lastname, u.Firstname}
+		case "lastname_firstname", "lastname_comma_firstname", "lastnamefirstname":
+			return []string{last, first}
+		case "lastname":
+			return []string{last}
+		case "firstname":
+			return []string{first, last}
 		case "username":
-			return []string{u.Login}
+			return []string{login, last}
 		}
-		return []string{u.Firstname, u.Lastname}
+		return []string{first, last}
 	}
 	slices.SortStableFunc(us, func(a, b *domain.User) int {
+		if ga, gb := a.Kind.IsGroup(), b.Kind.IsGroup(); ga != gb {
+			if ga {
+				return 1
+			}
+			return -1
+		}
 		ka, kb := key(a), key(b)
 		for i := range ka {
 			if c := strings.Compare(ka[i], kb[i]); c != 0 {

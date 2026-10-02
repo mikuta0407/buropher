@@ -3,7 +3,6 @@ package server_test
 import (
 	"io"
 	"net/http"
-	"net/http/httptest"
 	"net/url"
 	"os"
 	"regexp"
@@ -161,10 +160,4 @@ func TestAutoCompleteIssuesMatchesRedmine(t *testing.T) {
 	if body != `[{"id":13,"label":"Bug #13: Subproject issue two","value":13}]` {
 		t.Errorf("anonymous: %s", body)
 	}
-}
-
-// relwatchServer はフィクスチャのサーバと CSRF 付きの送信を用意する。
-func relwatchSubmit(t *testing.T, c *http.Client, ts *httptest.Server, method, path string, form url.Values, isXHR bool) (*http.Response, string) {
-	t.Helper()
-	return projSubmit(t, c, ts, method, path, form, isXHR)
 }
