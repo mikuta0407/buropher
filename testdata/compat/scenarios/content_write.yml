@@ -509,3 +509,15 @@ requests:
     id: news_after_reactions
     users: [jsmith]
 
+  # ---- プレビュー ----
+  - id: message_preview
+    path: /boards/1/topics/preview
+    method: POST
+    user: jsmith
+    form: {"text": "Preview of *message* with [[CookBook documentation]]", "id": "1"}
+  - id: message_preview_empty
+    path: /boards/1/topics/preview
+    method: POST
+    user: jsmith
+    form: {"_dummy": "1"}
+

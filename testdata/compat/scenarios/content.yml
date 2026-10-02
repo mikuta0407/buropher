@@ -257,3 +257,7 @@ requests:
     users: [jsmith]
   - path: /watchers/autocomplete_for_user?project_id=ecookbook
     users: [admin]
+  - path: /attachments/18/test%E3%83%86%E3%82%B9%E3%83%88.png
+    users: [admin]
+  - path: /attachments/16?per_page=2
+    users: [admin]
