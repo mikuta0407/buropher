@@ -1,0 +1,54 @@
+# Example docker compose setup. See docs/install.md.
+#
+#   docker compose build
+#   docker compose run --rm buropher init -admin-password 'change-me'   # first run only
+#   docker compose up -d
+#
+# SQLite (default): data lives in the "buropher-data" volume.
+# PostgreSQL: start with `docker compose --profile postgres up -d` and uncomment the
+# BUROPHER_DB_* lines below.
+services:
+  buropher:
+    build: .
+    image: buropher:local
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      # Generate once with e.g. `openssl rand -hex 64` and keep it (sessions and encrypted secrets depend on it).
+      # If unset, a key is generated and stored in /data/secret_key.
+      BUROPHER_SECRET_KEY: ${BUROPHER_SECRET_KEY:-}
+      BUROPHER_BASE_URL: ${BUROPHER_BASE_URL:-}
+      TZ: ${TZ:-UTC}
+      # BUROPHER_DB_DRIVER: postgres
+      # BUROPHER_DB_DSN: postgres://buropher:buropher@postgres:5432/buropher?sslmode=disable
+      # BUROPHER_MAIL_DELIVERY: smtp
+      # BUROPHER_SMTP_ADDRESS: smtp.example.com
+      # BUROPHER_SMTP_PORT: "587"
+    volumes:
+      - buropher-data:/data
+      # Optional: full config file (environment variables still override it)
+      # - ./config.toml:/etc/buropher/config.toml:ro
+    # command: ["serve", "-config", "/etc/buropher/config.toml"]
+    # depends_on:
+    #   postgres:
+    #     condition: service_healthy
+
+  postgres:
+    image: postgres:17-alpine
+    profiles: [postgres]
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: buropher
+      POSTGRES_PASSWORD: buropher
+      POSTGRES_DB: buropher
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U buropher"]
+      interval: 5s
+      retries: 10
+
+volumes:
+  buropher-data:
+  postgres-data:
