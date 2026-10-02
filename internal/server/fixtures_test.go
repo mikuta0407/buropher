@@ -111,11 +111,11 @@ func TestWelcomeWithFixtures(t *testing.T) {
 	t.Run("jsmith", func(t *testing.T) {
 		c := login(t, ts, "jsmith", "jsmith")
 		_, body := get(t, c, ts.URL+"/")
-		// 兄弟プロジェクトはバイト順で並べる（docs/schema.md 17. 参照環境の lft とは異なり OnlineStore が先）。
+		// 兄弟順は fixtures の lft を保持する（projects.position）ので参照環境と同じく eCookbook が先。
 		want := `<div class="drdn-items projects selection"><strong>All Projects</strong>` +
-			`<a title="OnlineStore" href="/projects/onlinestore?jump=welcome"><span style="padding-inline-start:0px;">OnlineStore</span></a>` +
 			`<a title="eCookbook" href="/projects/ecookbook?jump=welcome"><span style="padding-inline-start:0px;">eCookbook</span></a>` +
 			`<a title="Private child of eCookbook" href="/projects/private-child?jump=welcome"><span style="padding-inline-start:16px;">Private child of eCookbook</span></a>` +
+			`<a title="OnlineStore" href="/projects/onlinestore?jump=welcome"><span style="padding-inline-start:0px;">OnlineStore</span></a>` +
 			`</div>`
 		if !strings.Contains(body, want) {
 			t.Errorf("jump box mismatch:\n%s", extract(body, `<div class="drdn-items projects selection">`, `</div>`))

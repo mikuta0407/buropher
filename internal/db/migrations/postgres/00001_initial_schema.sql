@@ -199,6 +199,8 @@ CREATE TABLE projects (
   -- 1=有効, 5=終了, 9=アーカイブ, 10=削除予約
   status INTEGER NOT NULL DEFAULT 1 CHECK (status IN (1, 5, 9, 10)),
   inherit_members BOOLEAN NOT NULL DEFAULT FALSE,
+  -- 兄弟間の表示順 (Redmine の lft 順を保持する。移行時は旧 lft 順、新規・改名・移動時は名前で挿入位置を決める)
+  position INTEGER NOT NULL DEFAULT 0,
   default_version_id BIGINT,
   default_assigned_to_id BIGINT REFERENCES principals (id) ON DELETE SET NULL,
   default_issue_query_id BIGINT,
@@ -207,7 +209,7 @@ CREATE TABLE projects (
   CHECK (parent_id IS NULL OR parent_id <> id)
 );
 CREATE UNIQUE INDEX projects_identifier ON projects (identifier);
-CREATE INDEX projects_parent_id ON projects (parent_id);
+CREATE INDEX projects_parent_id ON projects (parent_id, position);
 CREATE INDEX projects_status ON projects (status);
 CREATE INDEX projects_default_version_id ON projects (default_version_id);
 CREATE INDEX projects_default_assigned_to_id ON projects (default_assigned_to_id);

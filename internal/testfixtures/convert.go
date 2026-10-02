@@ -157,11 +157,12 @@ func loadProjects(c *loadCtx, rows []row) error {
 		if a := r.int("default_assigned_to_id", 0); a != 0 && c.loaded["users"] {
 			assigned = a
 		}
+		// 兄弟順は fixtures の lft で保持する (position = lft)
 		if err := c.exec(`INSERT INTO projects (id, parent_id, name, identifier, description, homepage, is_public, status, inherit_members,
-  default_assigned_to_id, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+  position, default_assigned_to_id, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 			id, r.nint("parent_id"), r.str("name"), r.str("identifier"), r.nstr("description"), r.nstr("homepage"),
 			r.bool("is_public", true), r.int("status", domain.ProjectStatusActive), r.bool("inherit_members", false),
-			assigned, ts(c, r, "created_on"), ts(c, r, "updated_on")); err != nil {
+			r.int("lft", 0), assigned, ts(c, r, "created_on"), ts(c, r, "updated_on")); err != nil {
 			return err
 		}
 	}

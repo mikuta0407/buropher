@@ -186,6 +186,7 @@ type NestedSetValue struct{ Lft, Rgt int }
 type treeNode struct {
 	id       int64
 	parentID int64 // 0 = ルート
+	position int
 	name     string
 }
 
@@ -193,24 +194,91 @@ type treeNode struct {
 // lft/rgt に相当する値を計算して返す。
 //
 // Redmine は兄弟を「名前の昇順」に挿入する (project_nested_set.rb の target_lft の name < ?) が、
-// 比較は DB の照合順序に依存し、既存行の並びも操作履歴に依存する。buropher は lft を持たないため、
-// 次の決定的な規則で並べる:
-//  1. 名前のバイト順 (SQLite の BINARY 照合 = 参照環境の Redmine と同じ。'P' < 'e' のように大文字が先)
-//  2. 同名なら id の降順 (Redmine では後から追加・移動した方が同名兄弟の前に入るため)
+// 比較は DB の照合順序に依存し、既存行の並びも操作履歴に依存する。buropher は兄弟順を
+// projects.position に保持し (移行時は旧 lft 順)、次の規則で並べる:
+//  1. position の昇順
+//  2. 名前のバイト順
+//  3. 同名なら id の降順 (Redmine では後から追加・移動した方が同名兄弟の前に入るため)
 func ProjectNestedSet(ctx context.Context, q db.Queryer) (map[int64]NestedSetValue, error) {
 	var rows []struct {
 		ID       int64         `db:"id"`
 		ParentID sql.NullInt64 `db:"parent_id"`
+		Position int           `db:"position"`
 		Name     string        `db:"name"`
 	}
-	if err := q.Select(ctx, &rows, `SELECT id, parent_id, name FROM projects`); err != nil {
+	if err := q.Select(ctx, &rows, `SELECT id, parent_id, position, name FROM projects`); err != nil {
 		return nil, err
 	}
 	nodes := make([]treeNode, len(rows))
 	for i, r := range rows {
-		nodes[i] = treeNode{id: r.ID, parentID: r.ParentID.Int64, name: r.Name}
+		nodes[i] = treeNode{id: r.ID, parentID: r.ParentID.Int64, position: r.Position, name: r.Name}
 	}
 	return computeNestedSet(nodes), nil
+}
+
+// compareTreeNode は兄弟の表示順 (position, 名前のバイト順, id 降順)。
+func compareTreeNode(a, b treeNode) int {
+	if a.position != b.position {
+		return a.position - b.position
+	}
+	if c := strings.Compare(a.name, b.name); c != 0 {
+		return c
+	}
+	switch {
+	case a.id > b.id:
+		return -1
+	case a.id < b.id:
+		return 1
+	}
+	return 0
+}
+
+// placeProject は project_nested_set.rb の target_lft 相当: 兄弟のうち名前が小さい最後の兄弟の
+// 直後に id を置き、兄弟の position を振り直す。名前比較は大文字小文字を区別しない
+// (MySQL/PostgreSQL 上の Redmine の一般的な照合順序に合わせる)。
+func placeProject(ctx context.Context, q db.Queryer, id int64, parentID *int64, name string) error {
+	var rows []struct {
+		ID       int64  `db:"id"`
+		Position int    `db:"position"`
+		Name     string `db:"name"`
+	}
+	var err error
+	if parentID == nil {
+		err = q.Select(ctx, &rows, `SELECT id, position, name FROM projects WHERE parent_id IS NULL AND id <> ?`, id)
+	} else {
+		err = q.Select(ctx, &rows, `SELECT id, position, name FROM projects WHERE parent_id = ? AND id <> ?`, *parentID, id)
+	}
+	if err != nil {
+		return err
+	}
+	sibs := make([]treeNode, len(rows))
+	for i, r := range rows {
+		sibs[i] = treeNode{id: r.ID, position: r.Position, name: r.Name}
+	}
+	slices.SortFunc(sibs, compareTreeNode)
+	lname := strings.ToLower(name)
+	at := 0
+	for i, s := range sibs {
+		if strings.ToLower(s.name) < lname {
+			at = i + 1
+		}
+	}
+	order := make([]int64, 0, len(sibs)+1)
+	for i, s := range sibs {
+		if i == at {
+			order = append(order, id)
+		}
+		order = append(order, s.id)
+	}
+	if at == len(sibs) {
+		order = append(order, id)
+	}
+	for pos, pid := range order {
+		if _, err := q.Exec(ctx, `UPDATE projects SET position = ? WHERE id = ?`, pos, pid); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func computeNestedSet(nodes []treeNode) map[int64]NestedSetValue {
@@ -227,20 +295,9 @@ func computeNestedSet(nodes []treeNode) map[int64]NestedSetValue {
 		children[p] = append(children[p], n)
 	}
 	for _, cs := range children {
-		slices.SortFunc(cs, func(a, b treeNode) int {
-			if c := strings.Compare(a.name, b.name); c != 0 {
-				return c
-			}
-			// 同名は id 降順
-			switch {
-			case a.id > b.id:
-				return -1
-			case a.id < b.id:
-				return 1
-			}
-			return 0
-		})
+		slices.SortFunc(cs, compareTreeNode)
 	}
+
 	out := make(map[int64]NestedSetValue, len(nodes))
 	counter := 0
 	var walk func(id int64)
@@ -332,6 +389,9 @@ VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 		return err
 	}
 	p.ID = id
+	if err := placeProject(ctx, q, id, p.ParentID, p.Name); err != nil {
+		return err
+	}
 	if err := insertClosure(ctx, q, id, p.ParentID); err != nil {
 		return err
 	}
@@ -405,6 +465,12 @@ func UpdateProject(ctx context.Context, q db.Queryer, p *domain.Project) error {
 		p.ParentID, p.Name, nullString(p.Description), nullString(p.Homepage), p.IsPublic, p.Status, p.InheritMembers,
 		p.DefaultVersionID, p.DefaultAssignedToID, p.DefaultIssueQueryID, db.NewTime(p.UpdatedAt), p.ID); err != nil {
 		return err
+	}
+	if parentChanged || old.Name != p.Name {
+		// Redmine: 親または名前が変わると入れ子集合内の位置を移動する
+		if err := placeProject(ctx, q, p.ID, p.ParentID, p.Name); err != nil {
+			return err
+		}
 	}
 	if parentChanged {
 		if err := moveClosure(ctx, q, p.ID, p.ParentID); err != nil {
