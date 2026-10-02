@@ -52,8 +52,18 @@ func userProjectsCondition(userID int64) string {
 
 // MyPageNews は News.visible.where(:project => User.current.projects).limit(n).order(created_on DESC)。
 // visible は AllowedToCondition(view_news) の SQL。
+// 同時刻のニュースは id の昇順（参照環境の SQLite は includes(:project, :author) の結合で
+// news を主キー順に走査するため。News.latest とは逆）。
 func MyPageNews(ctx context.Context, q db.Queryer, visible string, userID int64, limit int) ([]*domain.News, error) {
-	return LatestNews(ctx, q, "("+condOr(visible)+") AND "+userProjectsCondition(userID), limit)
+	var rows []newsRow
+	if err := q.Select(ctx, &rows, `SELECT news.id, news.project_id, news.title, news.summary, news.description, news.author_id,
+  news.comments_count, news.created_at
+FROM news JOIN projects ON projects.id = news.project_id
+WHERE (`+condOr(visible)+`) AND `+userProjectsCondition(userID)+`
+ORDER BY news.created_at DESC, news.id ASC `+q.Dialect().LimitOffset(limit, 0)); err != nil {
+		return nil, err
+	}
+	return preloadNews(ctx, q, rows)
 }
 
 // MyPageDocument は文書一覧（documents/_document）に必要な列。

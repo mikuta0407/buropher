@@ -9,6 +9,7 @@ import (
 
 	"github.com/mikuta0407/buropher/internal/activity"
 	"github.com/mikuta0407/buropher/internal/authz"
+	"github.com/mikuta0407/buropher/internal/calendar"
 	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/helper"
 	"github.com/mikuta0407/buropher/internal/httpx"
@@ -385,9 +386,23 @@ func (a *App) myActivityBlock(c *Req, v *myBlockView) error {
 	return nil
 }
 
-// myCalendarBlock は render_calendar_block。
-// TODO(calendar): common/_calendar（CalendarsController の実装）と合わせる。
+// myCalendarBlock は render_calendar_block（今週の、自分のプロジェクトの可視なチケットの開始日・期日）。
 func (a *App) myCalendarBlock(c *Req, v *myBlockView) error {
+	cal := a.newCalendar(c, a.userToday(c), calendar.Week)
+	cond, err := c.Authz().IssueVisibleCondition(c.Ctx(), authz.ConditionOptions{})
+	if err != nil {
+		return err
+	}
+	ids, err := repository.MyPageCalendarIssueIDs(c.Ctx(), a.DB, cond, c.User.ID, cal.Startdt, cal.Enddt)
+	if err != nil {
+		return err
+	}
+	events, err := a.calendarEvents(c, ids, nil)
+	if err != nil {
+		return err
+	}
+	cal.SetEvents(events)
 	v.Partial = "my/blocks/calendar"
+	v.Locals["calendar"] = cal
 	return nil
 }
