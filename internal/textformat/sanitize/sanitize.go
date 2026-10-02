@@ -11,7 +11,6 @@
 package sanitize
 
 import (
-	"net/url"
 	"regexp"
 	"strings"
 
@@ -393,11 +392,7 @@ func uriScheme(s string) string {
 	if !rfc3986URI(s) {
 		return ""
 	}
-	u, err := url.Parse(s)
-	if err != nil {
-		return ""
-	}
-	return u.Scheme
+	return strings.ToLower(s[:strings.IndexByte(s, ':')])
 }
 
 // rfc3986URI は Ruby の URI::RFC3986_Parser が受理する文字列かを判定する。

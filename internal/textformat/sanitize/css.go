@@ -85,7 +85,6 @@ func isNonPrintable(r rune) bool {
 	return (r >= 0 && r <= 8) || r == 0x0b || (r >= 0x0e && r <= 0x1f) || r == 0x7f
 }
 
-
 // validEscapeText は Crass の valid_escape?（2 文字目が無い場合も "\" 単独なら true）。
 func validEscapeText(text []rune) bool {
 	if len(text) == 0 || text[0] != '\\' {
