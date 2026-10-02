@@ -45,7 +45,9 @@ func apiObj(name string, children ...*apiEl) *apiEl {
 func apiArr(name string, children ...*apiEl) *apiEl {
 	return &apiEl{name: name, kind: apiArray, children: children}
 }
-func apiAttr(name string, attrs ...[2]any) *apiEl { return &apiEl{name: name, kind: apiAttrs, attrs: attrs} }
+func apiAttr(name string, attrs ...[2]any) *apiEl {
+	return &apiEl{name: name, kind: apiAttrs, attrs: attrs}
+}
 
 // renderAPI は root（配列またはオブジェクト）を format（json / xml）で返す。
 func (c *Req) renderAPI(root *apiEl, status int) {

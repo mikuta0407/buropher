@@ -70,7 +70,9 @@ func (f *trackerForm) DefaultStatusID() any {
 func (f *trackerForm) HasDefaultStatus() bool { return f.Tracker.DefaultStatusID != 0 }
 
 // CoreFieldEnabled は @tracker.core_fields.include?(field)。
-func (f *trackerForm) CoreFieldEnabled(field string) bool { return slices.Contains(f.CoreFields(), field) }
+func (f *trackerForm) CoreFieldEnabled(field string) bool {
+	return slices.Contains(f.CoreFields(), field)
+}
 
 // HasCustomField は @tracker.custom_fields.include?(field)。
 func (f *trackerForm) HasCustomField(id int64) bool { return slices.Contains(f.CustomFieldIDs, id) }
