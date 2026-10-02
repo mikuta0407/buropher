@@ -3,8 +3,8 @@ package handler
 import (
 	"net/http"
 	"net/url"
-	"strings"
 	"strconv"
+	"strings"
 
 	"github.com/mikuta0407/buropher/internal/db"
 	"github.com/mikuta0407/buropher/internal/domain"
@@ -132,6 +132,8 @@ func (a *App) ProjectsDestroy(c *Req) {
 			a.internalError(c, "destroy project", err)
 			return
 		}
+		// hide project in layout（@project = nil。最近使ったプロジェクトにも記録しない）
+		c.Project = nil
 		c.Flash().SetNotice(c.L("notice_successful_delete"))
 		if api {
 			c.RenderAPIOKMin()

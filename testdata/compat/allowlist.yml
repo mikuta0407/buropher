@@ -26,7 +26,7 @@ entries:
       - '^\s*<value>(t|1)</value>$'
 
   # ---- projects（プロジェクト・メンバー・カテゴリ） ----
-  - case: "projects*/projects_*settings*"
+  - case: "projects*/*settings*"
     reason: "フィクスチャのカスタム値 true（SQLite に 't' で保存）はインポートで '1' に正規化される（作業分類タブの選択状態）"
     lines:
       - '^\s*<option (selected="selected" )?value="1">Yes</option>$'

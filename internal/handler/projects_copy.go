@@ -77,6 +77,9 @@ func (a *App) ProjectsCopy(c *Req) {
 				return
 			} else {
 				c.ResetAuthz()
+				if np, err := repository.GetProject(ctx, a.DB, f.Project.ID); err == nil {
+					c.Project = np
+				}
 				c.Flash().SetNotice(c.L("notice_successful_create"))
 				c.Redirect("/projects/" + f.Project.Identifier + "/settings")
 				return
@@ -150,6 +153,7 @@ func (a *App) copyProjectItems(c *Req, tx *db.Tx, src *domain.Project, dstID int
 
 func (a *App) renderProjectCopy(c *Req, f *projectForm, src *domain.Project) {
 	c.NewRecordProject = true
+	c.NewProjectName, c.NewProjectIdentifier = f.Project.Name, f.Project.Identifier
 	data, err := a.projectFormData(c, f)
 	if err != nil {
 		a.internalError(c, "project form", err)

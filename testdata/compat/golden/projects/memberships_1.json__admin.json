@@ -1,0 +1,22 @@
+status: 200
+content-type: application/json
+
+{
+  "membership": {
+    "id": 1,
+    "project": {
+      "id": 1,
+      "name": "eCookbook"
+    },
+    "user": {
+      "id": 2,
+      "name": "John Smith"
+    },
+    "roles": [
+      {
+        "id": 1,
+        "name": "Manager"
+      }
+    ]
+  }
+}

@@ -1,0 +1,21 @@
+status: 200
+content-type: application/xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <id>1</id>
+  <name>eCookbook</name>
+  <identifier>ecookbook</identifier>
+  <description>Recipes management application</description>
+  <homepage>http://ecookbook.somenet.foo/</homepage>
+  <status>1</status>
+  <is_public>true</is_public>
+  <inherit_members>false</inherit_members>
+  <custom_fields type="array">
+    <custom_field id="3" name="Development status">
+      <value>Stable</value>
+    </custom_field>
+  </custom_fields>
+  <created_on>2006-07-19T17:13:59Z</created_on>
+  <updated_on>2006-07-19T20:53:01Z</updated_on>
+</project>

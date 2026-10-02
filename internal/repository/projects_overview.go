@@ -332,3 +332,23 @@ func ProjectEnabledModules(ctx context.Context, q db.Queryer, projectID int64) (
 func MemberOfMemberRole(ctx context.Context, q db.Queryer, memberRoleID int64) (*domain.Member, error) {
 	return oneMember(loadMembers(ctx, q, `m.id IN (SELECT member_id FROM member_roles WHERE id = ?)`, memberRoleID))
 }
+
+// ReapplyInheritedMemberRoles は remove_inherited_member_roles + add_inherited_member_roles。
+// Redmine は新規作成時（parent_id と inherit_members の両方が変化）に update_inherited_members と
+// 親変更時のコールバックで継承メンバーを 2 回作り直すため、id の採番もそれに合わせる。
+func ReapplyInheritedMemberRoles(ctx context.Context, q db.Queryer, p *domain.Project) error {
+	if err := removeInheritedMemberRoles(ctx, q, p.ID); err != nil {
+		return err
+	}
+	return addInheritedMemberRoles(ctx, q, p)
+}
+
+// EnsureProjectWiki は EnabledModule#module_enabled（wiki モジュールを有効にしたら Wiki を作る）。
+func EnsureProjectWiki(ctx context.Context, q db.Queryer, projectID int64) error {
+	ok, err := ProjectHasWiki(ctx, q, projectID)
+	if err != nil || ok {
+		return err
+	}
+	_, err = q.Exec(ctx, `INSERT INTO wikis (project_id, start_page) VALUES (?, 'Wiki')`, projectID)
+	return err
+}

@@ -102,6 +102,7 @@ func (a *App) ProjectsNew(c *Req) {
 
 func (a *App) renderProjectNew(c *Req, f *projectForm) {
 	c.NewRecordProject = true
+	c.NewProjectName, c.NewProjectIdentifier = f.Project.Name, f.Project.Identifier
 	data, err := a.projectFormData(c, f)
 	if err != nil {
 		a.internalError(c, "project form", err)
@@ -168,6 +169,8 @@ func (a *App) ProjectsCreate(c *Req) {
 		a.internalError(c, "reload project", err)
 		return
 	}
+	// after_action :record_project_usage は作成したプロジェクトに対して行われる
+	c.Project = p
 	if api {
 		c.W.Header().Set("Location", httpx.RequestBaseURL(c.R)+"/projects/"+strconv.FormatInt(p.ID, 10))
 		a.renderProjectShowAPI(c, p, http.StatusCreated)
@@ -239,6 +242,9 @@ func (a *App) ProjectsUpdate(c *Req) {
 		c.RenderAPIErrorsMin(f.errs.FullMessages(c.L)...)
 		return
 	}
+	// render :action => 'settings'（レイアウトの @project は代入後の値。ジャンプボックスは name_was）
+	c.ProjectNameWas = c.Project.Name
+	c.Project = f.Project
 	a.renderProjectSettings(c, f)
 }
 
@@ -297,6 +303,10 @@ func projectSettingsTabs(c *Req, p *domain.Project) []helper.Tab {
 			continue
 		}
 		u := "/projects/" + p.Identifier + "/settings/" + d.name
+		if c.Action != "settings" {
+			// url_for(:tab => name) は現在のアクション（update）のルートで生成される
+			u = "/projects/" + p.Identifier + "?tab=" + d.name
+		}
 		if d.name == "versions" {
 			// :url => {:tab => 'versions', :version_status => params[:version_status], :version_name => params[:version_name]}
 			q := []string{}
@@ -307,7 +317,11 @@ func projectSettingsTabs(c *Req, p *domain.Project) []helper.Tab {
 				q = append(q, "version_status="+urlEncode(s))
 			}
 			if len(q) > 0 {
-				u += "?" + strings.Join(q, "&")
+				sep := "?"
+				if strings.Contains(u, "?") {
+					sep = "&"
+				}
+				u += sep + strings.Join(q, "&")
 			}
 		}
 		tabs = append(tabs, helper.Tab{Name: d.name, Label: c.L(d.label), Partial: d.partial, URL: u})

@@ -1,0 +1,16 @@
+status: 200
+content-type: application/json
+
+{
+  "issue_categories": [
+    {
+      "id": 2,
+      "project": {
+        "id": 1,
+        "name": "eCookbook"
+      },
+      "name": "Recipes"
+    }
+  ],
+  "total_count": 1
+}

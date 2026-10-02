@@ -701,6 +701,9 @@ func (d *Deps) renderProjectJumpBox(p *Page) html {
 	text := ""
 	if p.Project != nil && p.Project.ID != 0 {
 		text = p.Project.Name
+		if p.ProjectNameWas != "" {
+			text = p.ProjectNameWas
+		}
 	}
 	if text == "" {
 		text = p.l("label_jump_to_a_project")

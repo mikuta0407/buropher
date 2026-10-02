@@ -264,7 +264,8 @@ func (a *App) IssueCategoriesCreate(c *Req) {
 				a.internalError(c, "issue category api", err)
 				return
 			}
-			c.W.Header().Set("Location", httpx.RequestBaseURL(c.R)+"/issue_categories/"+strconv.FormatInt(f.ID, 10))
+			// :location => issue_category_path(@category)（相対パス）
+			c.W.Header().Set("Location", "/issue_categories/"+strconv.FormatInt(f.ID, 10))
 			c.renderAPIRoot(el, nil, http.StatusCreated)
 		default:
 			c.unknownFormat()

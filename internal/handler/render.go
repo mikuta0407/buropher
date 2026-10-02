@@ -25,6 +25,7 @@ func (c *Req) Page() *helper.Page {
 		DefaultSearchScope: c.Controller.DefaultSearchScope,
 		Question:           c.Question,
 		NewRecordProject:   c.NewRecordProject,
+		ProjectNameWas:     c.ProjectNameWas,
 		DB:                 a.DB,
 		Now:                a.now,
 		Logger:             a.logger(),
@@ -76,6 +77,9 @@ func (c *Req) ViewContext() *view.Context {
 		ctx.Project = c.Project
 		ctx.ProjectName = c.Project.Name
 		ctx.ProjectIdentifier = c.Project.Identifier
+	} else if c.NewRecordProject {
+		ctx.ProjectName = c.NewProjectName
+		ctx.ProjectIdentifier = c.NewProjectIdentifier
 	}
 	if t := a.Helpers.CurrentTheme(page); t != nil {
 		ctx.Theme = t.Name

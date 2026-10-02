@@ -80,6 +80,8 @@ type Page struct {
 	DefaultSearchScope string
 	// NewRecordProject は @project が未保存のプロジェクト（projects#new / create / copy）。
 	NewRecordProject bool
+	// ProjectNameWas は @project.name_was（空なら Project.Name。ジャンプボックスの表示に使う）。
+	ProjectNameWas string
 	// Question は @question（検索語）。
 	Question string
 	// DB はヘルパーがデータを読むための接続（nil ならデータを要する部分は空になる）。

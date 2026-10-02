@@ -1,0 +1,4 @@
+status: 200
+content-type: text/javascript
+
+$('#project-jump .drdn-items.projects').html('<strong>Results<\/strong><a title=\"eCookbook Subproject 1\" href=\"/projects/subproject1?jump=projects\"><span style=\"padding-inline-start:0px;\">eCookbook Subproject 1<\/span><\/a><a title=\"eCookbook Subproject 2\" href=\"/projects/subproject2?jump=projects\"><span style=\"padding-inline-start:0px;\">eCookbook Subproject 2<\/span><\/a>');

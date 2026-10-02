@@ -8,7 +8,7 @@
 {{l "text_project_destroy_confirmation"}}
 {{if .DescendantNames}}
   <br />
-  {{raw (l "text_subprojects_destroy_warning" (content_tag "strong" .DescendantsText))}}
+  {{raw (l "text_subprojects_destroy_warning" (printf "%s" (content_tag "strong" .DescendantsText)))}}
 {{end}}
 </p>
 

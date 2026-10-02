@@ -2,8 +2,8 @@ package handler
 
 import (
 	"errors"
-	"io/fs"
 	"html/template"
+	"io/fs"
 	"net/http"
 	"net/url"
 	"slices"

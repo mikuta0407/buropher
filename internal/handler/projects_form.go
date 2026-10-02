@@ -36,6 +36,8 @@ type projectForm struct {
 	// VisibleCFValues は visible_custom_field_values。
 	VisibleCFValues []*projectCFValue
 
+	// identifierAssigned は identifier が代入された（nil ではなく "" を表示する）。
+	identifierAssigned bool
 	// identifierWas は保存済みの識別子（identifier_frozen? の判定と変更検出に使う）。
 	identifierWas string
 	parentWas     *int64
@@ -60,7 +62,7 @@ func (f *projectForm) IdentifierFrozen() bool {
 
 // IdentifierValue は text_field :identifier の値（凍結されていなければ現在値）。
 func (f *projectForm) Identifier() any {
-	if f.Project.Identifier == "" && f.id == 0 {
+	if f.Project.Identifier == "" && f.id == 0 && !f.identifierAssigned {
 		return nil
 	}
 	return f.Project.Identifier
@@ -318,6 +320,7 @@ func (a *App) assignProject(c *Req, f *projectForm, attrs *httpx.Params) error {
 		case "identifier":
 			if !f.IdentifierFrozen() {
 				p.Identifier = attrs.String(key)
+				f.identifierAssigned = true
 			}
 		case "parent_id":
 			p.ParentID = optionalID(attrs.String(key))
@@ -456,6 +459,13 @@ func (a *App) saveProject(c *Req, f *projectForm, tx *db.Tx) error {
 			return err
 		}
 		f.id = p.ID
+		if p.ParentID != nil && p.InheritMembers {
+			// after_save :update_inherited_members（inherit_members の変化）と
+			// :remove_inherited_member_roles, :add_inherited_member_roles（parent_id の変化）の 2 回目
+			if err := repository.ReapplyInheritedMemberRoles(ctx, tx, p); err != nil {
+				return err
+			}
+		}
 	} else {
 		if err := repository.UpdateProject(ctx, tx, p); err != nil {
 			return err

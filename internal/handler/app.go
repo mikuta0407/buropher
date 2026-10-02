@@ -132,6 +132,11 @@ type Req struct {
 	Question string
 	// NewRecordProject は @project が未保存のプロジェクト（メニューの判定に使う）。
 	NewRecordProject bool
+	// NewProjectName / NewProjectIdentifier は未保存の @project の name / identifier
+	// （html_title と body_css_classes に使う）。
+	NewProjectName, NewProjectIdentifier string
+	// ProjectNameWas は @project.name_was（保存に失敗した場合のジャンプボックスの表示名）。
+	ProjectNameWas string
 
 	cfg    *actionConfig
 	authz  *authz.Authorizer
