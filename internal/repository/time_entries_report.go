@@ -93,3 +93,25 @@ func TimelogReportCustomFieldIDs(ctx context.Context, q db.Queryer, projectID *i
 	}
 	return out, nil
 }
+
+// TimelogPriorAssignedToID は Issue#prior_assigned_to の id（担当者変更の履歴の最新の旧値。無ければ nil）。
+func TimelogPriorAssignedToID(ctx context.Context, q db.Queryer, issueID int64) (*int64, error) {
+	var vals []string
+	if err := q.Select(ctx, &vals, `SELECT d.old_value FROM issue_journal_details d
+  INNER JOIN issue_journals j ON j.id = d.journal_id
+  WHERE j.issue_id = ? AND d.prop_key = 'assigned_to_id' AND d.old_value IS NOT NULL
+  ORDER BY j.id DESC LIMIT 1`, issueID); err != nil {
+		return nil, err
+	}
+	if len(vals) == 0 {
+		return nil, nil
+	}
+	var id int64
+	for _, ch := range vals[0] {
+		if ch < '0' || ch > '9' {
+			break
+		}
+		id = id*10 + int64(ch-'0')
+	}
+	return &id, nil
+}

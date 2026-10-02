@@ -2,6 +2,7 @@ package handler
 
 import (
 	"errors"
+	"io/fs"
 	"net/http"
 	"strconv"
 	"strings"
@@ -13,6 +14,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/query"
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/timelog"
+	"github.com/mikuta0407/buropher/web"
 )
 
 // TimelogController（app/controllers/timelog_controller.rb）。menu_item :time_entries。
@@ -202,9 +204,10 @@ func (a *App) teFindOptionalIssue(c *Req) {
 		c.Authorize(c.Controller.Name, c.Action, true)
 		return
 	}
+	// Issue.find の RecordNotFound は rescue されない（public/404.html）
 	id, ok := p.IntStrict("issue_id")
 	if !ok {
-		c.Render404("")
+		teRecordNotFound(c)
 		return
 	}
 	iss, err := a.teEnv(c).Issues().Find(c.Ctx(), id)
@@ -213,7 +216,7 @@ func (a *App) teFindOptionalIssue(c *Req) {
 		return
 	}
 	if iss == nil {
-		c.Render404("")
+		teRecordNotFound(c)
 		return
 	}
 	pr, err := a.teEnv(c).Project(c.Ctx(), &iss.ProjectID)
@@ -266,7 +269,8 @@ func (a *App) teRetrieveQuery(c *Req) (*query.Query, bool) {
 	if err != nil {
 		switch {
 		case errors.Is(err, query.ErrNotFound):
-			c.Render404("")
+			// retrieve_query の find の RecordNotFound は rescue されない（public/404.html）
+			teRecordNotFound(c)
 		case errors.Is(err, query.ErrUnauthorized):
 			c.DenyAccess()
 		default:
@@ -440,3 +444,28 @@ func (a *App) TimelogDestroy(c *Req) {
 
 // teBackURLPresent は params[:back_url] があるか。
 func teBackURLPresent(c *Req) bool { return strings.TrimSpace(c.Params().String("back_url")) != "" }
+
+// teRecordNotFound は rescue されない ActiveRecord::RecordNotFound の応答（ActionDispatch::ShowExceptions。
+// json / xml は {status, error}、それ以外は public/404.html）。
+func teRecordNotFound(c *Req) {
+	c.Halt()
+	switch httpx.Format(c.R) {
+	case "json":
+		c.W.Header().Set("Content-Type", "application/json; charset=utf-8")
+		c.W.WriteHeader(http.StatusNotFound)
+		_, _ = c.W.Write([]byte(`{"status":404,"error":"Not Found"}`))
+	case "xml":
+		c.W.Header().Set("Content-Type", "application/xml; charset=utf-8")
+		c.W.WriteHeader(http.StatusNotFound)
+		_, _ = c.W.Write([]byte("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<hash>\n  <status type=\"integer\">404</status>\n  <error>Not Found</error>\n</hash>\n"))
+	default:
+		b, err := fs.ReadFile(web.Public(), "404.html")
+		if err != nil {
+			http.NotFound(c.W, c.R)
+			return
+		}
+		c.W.Header().Set("Content-Type", "text/html; charset=utf-8")
+		c.W.WriteHeader(http.StatusNotFound)
+		_, _ = c.W.Write(b)
+	}
+}

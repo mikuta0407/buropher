@@ -1,0 +1,141 @@
+# 工数（TimelogController・ContextMenusController#time_entries・API）の参照系の互換シナリオ。
+# 状態を変えないので共用の参照環境（3998）に流してよい（書き込み系は timelog_write.yml）。
+name: timelog
+
+users:
+  admin: {login: admin, password: admin}
+  dlopper: {login: dlopper, password: foo}
+
+normalize:
+  mask_text_selectors:
+    - "#footer"
+  # 共用の参照環境では閲覧で変わるプロジェクトジャンプボックス（最近使ったプロジェクト）
+  strip_selectors:
+    - "#project-jump"
+  regex:
+    - {pattern: '-[0-9a-f]{8}(\\" method=)', replace: '-RANDOM$1'}
+
+requests:
+  # ---- 一覧 ----
+  - path: /time_entries
+    users: [anonymous, admin, jsmith, dlopper]
+  - path: /projects/ecookbook/time_entries
+    users: [anonymous, admin, jsmith, dlopper]
+  - path: /projects/ecookbook/time_entries?issue_id=1
+    users: [admin, jsmith]
+  - id: project_time_entries_issue_tree
+    path: /projects/ecookbook/time_entries?issue_id=~1
+    user: admin
+  - path: /projects/subproject1/time_entries
+    users: [admin, jsmith]
+  - path: /projects/onlinestore/time_entries
+    users: [admin, jsmith]
+  - path: /projects/unknown/time_entries
+    users: [admin, anonymous]
+  - path: /time_entries?set_filter=1&group_by=project
+    users: [admin]
+  - path: /time_entries?set_filter=1&group_by=user&sort=user,hours:desc
+    users: [admin]
+  - path: /time_entries?set_filter=1&group_by=issue
+    users: [admin, jsmith]
+  - path: /time_entries?set_filter=1&group_by=cf_10
+    users: [admin]
+  - path: /time_entries?set_filter=1&c[]=project&c[]=spent_on&c[]=created_on&c[]=tweek&c[]=author&c[]=issue.tracker&c[]=issue.status&c[]=issue.parent&c[]=issue.category&c[]=issue.fixed_version&c[]=cf_10&c[]=issue.cf_2&c[]=project.cf_3&c[]=hours
+    users: [admin]
+  - path: /time_entries?set_filter=1&f[]=spent_on&op[spent_on]=%3E%3C&v[spent_on][]=2007-03-01&v[spent_on][]=2007-03-31
+    users: [admin]
+  - path: /time_entries?from=2007-04-01&to=2007-04-30
+    users: [admin]
+  - path: /time_entries?set_filter=1&f[]=activity_id&op[activity_id]=%3D&v[activity_id][]=10&f[]=user_id&op[user_id]=%3D&v[user_id][]=me
+    users: [admin, jsmith]
+  - path: /time_entries?per_page=2
+    users: [admin]
+  - path: /time_entries?per_page=2&page=2&sort=hours
+    users: [admin]
+  - path: /time_entries?set_filter=1&f[]=hours&op[hours]=%3E%3D&v[hours][]=1000
+    users: [admin]
+  - path: /time_entries?query_id=10
+    users: [jsmith]
+  - path: /projects/ecookbook/time_entries?query_id=10
+    users: [jsmith]
+  - path: /time_entries?query_id=999
+    users: [admin]
+  # ---- レポート ----
+  - path: /time_entries/report
+    users: [anonymous, admin, jsmith]
+  - path: /time_entries/report?criteria[]=project&criteria[]=user&columns=month
+    users: [admin, dlopper]
+  - path: /projects/ecookbook/time_entries/report?criteria[]=activity&criteria[]=issue&criteria[]=user&columns=week
+    users: [admin, jsmith]
+  - path: /projects/ecookbook/time_entries/report?criteria[]=version&criteria[]=status&criteria[]=category&criteria[]=tracker&columns=year
+    users: [admin]
+  - path: /time_entries/report?criteria[]=tracker&columns=day&from=2007-03-20&to=2007-04-30
+    users: [admin]
+  - path: /time_entries/report?criteria[]=cf_10&criteria[]=cf_1&criteria[]=activity
+    users: [admin]
+  - path: /projects/ecookbook/time_entries/report?criteria[]=project&criteria[]=cf_3
+    users: [admin]
+  - path: /time_entries/report?criteria[]=project&set_filter=1&f[]=hours&op[hours]=%3E%3D&v[hours][]=1000
+    users: [admin]
+  - path: /time_entries/report.csv?criteria[]=project&criteria[]=user&columns=month
+    users: [admin]
+  - path: /time_entries/report.csv?criteria[]=issue&criteria[]=activity&columns=week&encoding=UTF-8
+    users: [admin]
+  # ---- CSV / Atom ----
+  - path: /time_entries.csv
+    users: [admin]
+  - path: /projects/ecookbook/time_entries.csv?c[]=all_inline&encoding=UTF-8&field_separator=%3B
+    users: [admin]
+  - path: /time_entries.atom
+    users: [admin, anonymous]
+  # ---- フォーム ----
+  - path: /time_entries/new
+    users: [admin, jsmith, anonymous]
+  - path: /projects/ecookbook/time_entries/new
+    users: [admin, jsmith, dlopper]
+  - path: /projects/onlinestore/time_entries/new
+    users: [admin]
+  - path: /issues/1/time_entries/new
+    users: [admin, jsmith]
+  - path: /issues/999/time_entries/new
+    users: [admin]
+  - path: /time_entries/new?time_entry[project_id]=3&time_entry[hours]=2.5&time_entry[comments]=abc&time_entry[spent_on]=2026-01-01
+    users: [admin]
+  - path: /time_entries/1/edit
+    users: [admin, jsmith, dlopper]
+  - path: /time_entries/4/edit
+    users: [admin, jsmith]
+  - path: /time_entries/999/edit
+    users: [admin]
+  - path: /time_entries/1
+    users: [admin]
+  # ---- 一括編集・コンテキストメニュー ----
+  - path: /time_entries/bulk_edit?ids[]=1&ids[]=2&ids[]=4
+    users: [admin]
+  - path: /time_entries/bulk_edit?ids[]=1&ids[]=2
+    users: [jsmith, dlopper]
+  - path: /time_entries/bulk_edit?ids[]=999
+    users: [admin]
+  - path: /time_entries/context_menu?ids[]=1&ids[]=2
+    users: [admin, jsmith]
+  - path: /time_entries/context_menu?ids[]=1&back_url=%2Ftime_entries
+    users: [admin, dlopper]
+  - path: /time_entries/context_menu?ids[]=4&ids[]=1
+    users: [admin]
+  # ---- API ----
+  - path: /time_entries.json
+    users: [admin, jsmith, anonymous]
+  - path: /time_entries.xml
+    users: [admin]
+  - path: /projects/ecookbook/time_entries.json?limit=2&offset=1
+    users: [jsmith]
+  - path: /time_entries.json?issue_id=1
+    users: [admin]
+  - path: /time_entries.json?user_id=me&spent_on=%3E%3C2007-01-01|2007-03-31
+    users: [jsmith]
+  - path: /time_entries/1.json
+    users: [admin, jsmith, dlopper]
+  - path: /time_entries/2.xml
+    users: [admin]
+  - path: /time_entries/999.json
+    users: [admin]

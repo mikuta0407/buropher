@@ -1,0 +1,778 @@
+status: 200
+content-type: text/html
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Spent time - Details - eCookbook - Redmine</title>
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta content="Redmine" name="description">
+    <meta content="issue,bug,tracker" name="keywords">
+    <meta content="authenticity_token" name="csrf-param">
+    <meta content="{{CSRF}}" name="csrf-token">
+    <link href="/assets/favicon-DIGEST.ico" rel="shortcut icon" type="image/x-icon">
+    <link href="/assets/jquery/jquery-ui-1.13.2-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/tribute-5.1.3-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/application-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/responsive-DIGEST.css" media="all" rel="stylesheet">
+    <script data-turbo-track="reload" type="importmap">{
+  "imports": {
+    "@rails/request.js": "/assets/requestjs-DIGEST.js",
+    "application": "/assets/application-DIGEST.js",
+    "@hotwired/stimulus": "/assets/stimulus.min-DIGEST.js",
+    "@hotwired/stimulus-loading": "/assets/stimulus-loading-DIGEST.js",
+    "turndown": "/assets/turndown-DIGEST.js",
+    "controllers/api_key_copy_controller": "/assets/controllers/api_key_copy_controller-DIGEST.js",
+    "controllers/application": "/assets/controllers/application-DIGEST.js",
+    "controllers": "/assets/controllers/index-DIGEST.js",
+    "controllers/list_autofill_controller": "/assets/controllers/list_autofill_controller-DIGEST.js",
+    "controllers/quote_reply_controller": "/assets/controllers/quote_reply_controller-DIGEST.js",
+    "controllers/sticky_issue_header_controller": "/assets/controllers/sticky_issue_header_controller-DIGEST.js"
+  }
+}</script>
+    <link href="/assets/requestjs-DIGEST.js" rel="modulepreload">
+    <link href="/assets/application-DIGEST.js" rel="modulepreload">
+    <link href="/assets/stimulus.min-DIGEST.js" rel="modulepreload">
+    <link href="/assets/stimulus-loading-DIGEST.js" rel="modulepreload">
+    <link href="/assets/turndown-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/api_key_copy_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/application-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/index-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/list_autofill_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/quote_reply_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/sticky_issue_header_controller-DIGEST.js" rel="modulepreload">
+    <script type="module">import "application"</script>
+    <script src="/assets/jquery-3.7.1-ui-1.13.3-DIGEST.js"></script>
+    <script src="/assets/rails-ujs-DIGEST.js"></script>
+    <script src="/assets/tribute-5.1.3.min-DIGEST.js"></script>
+    <script src="/assets/application-legacy-DIGEST.js"></script>
+    <script src="/assets/responsive-DIGEST.js"></script>
+    <script>//<![CDATA[
+$(window).on('load', function(){ warnLeavingUnsaved('The current page contains unsaved text that will be lost if you leave this page.'); });
+//]]></script>
+    <script>//<![CDATA[
+rm = window.rm || {};rm.I18n = rm.I18n || {};rm.I18n = Object.freeze({buttonCopy: 'Copy'});
+//]]></script>
+    <script>//<![CDATA[
+rm = window.rm || {};rm.AutoComplete = rm.AutoComplete || {};rm.AutoComplete.dataSources = JSON.parse('{"issues":"/issues/auto_complete?project_id=ecookbook\u0026q=","wiki_pages":"/wiki_pages/auto_complete?project_id=ecookbook\u0026q="}');
+//]]></script>
+    <script>//<![CDATA[
+var datepickerOptions={dateFormat: 'yy-mm-dd', firstDay: 0, showOn: 'button', buttonImageOnly: true, buttonImage: '/assets/calendar-DIGEST.png', showButtonPanel: true, showWeek: true, showOtherMonths: true, selectOtherMonths: true, changeMonth: true, changeYear: true, beforeShow: beforeShowDatePicker};
+//]]></script>
+    <script src="/assets/context_menu-DIGEST.js"></script>
+    <link href="/assets/context_menu-DIGEST.css" media="screen" rel="stylesheet">
+    <link href="{{BASE}}/projects/ecookbook/time_entries.atom?key=KEY" rel="alternate" title="Spent time" type="application/atom+xml">
+  </head>
+  <body class="project-ecookbook has-main-menu controller-timelog action-index avatars-off" data-text-formatting="common_mark">
+    <div id="wrapper">
+      <div class="flyout-menu js-flyout-menu">
+        <div class="flyout-menu__search">
+          <form accept-charset="UTF-8" action="/projects/ecookbook/search" method="get" name="form-RANDOM">
+            <label class="search-magnifier search-magnifier--flyout" for="flyout-search">
+              <svg aria-hidden="true" class="s18 icon-svg">
+                <use href="/assets/icons-DIGEST.svg#icon--search"></use>
+              </svg>
+              <span class="icon-label hidden">Search</span>
+            </label>
+            <input class="small js-search-input" id="flyout-search" name="q" placeholder="Search" type="text">
+          </form>
+        </div>
+        <div class="flyout-menu__avatar">
+          <a href="/users/1">
+            <span class="avatar-color-1 s40 avatar" role="img">RA</span>
+          </a>
+          <a class="user active" href="/users/1">admin</a>
+        </div>
+        <h3>Project</h3>
+        <span class="js-project-menu"></span>
+        <h3>General</h3>
+        <span class="js-general-menu"></span>
+        <span class="js-sidebar flyout-menu__sidebar"></span>
+        <h3>Profile</h3>
+        <span class="js-profile-menu"></span>
+      </div>
+      <div id="top-menu">
+        <div id="account">
+          <ul>
+            <li>
+              <a class="my-account" href="/my/account">My account</a>
+            </li>
+            <li>
+              <a class="logout" data-method="post" href="/logout" rel="nofollow">Sign out</a>
+            </li>
+          </ul>
+        </div>
+        <div id="loggedas">
+          Logged in as
+          <a class="user active" href="/users/1">admin</a>
+        </div>
+        <ul>
+          <li>
+            <a class="home" href="/">Home</a>
+          </li>
+          <li>
+            <a class="my-page" href="/my/page">My page</a>
+          </li>
+          <li>
+            <a class="projects" href="/projects">Projects</a>
+          </li>
+          <li>
+            <a class="administration" href="/admin">Administration</a>
+          </li>
+          <li>
+            <a class="help" href="https://www.redmine.org/guide" rel="noopener" target="_blank">Help</a>
+          </li>
+        </ul>
+      </div>
+      <div id="header">
+        <a class="mobile-toggle-button js-flyout-menu-toggle-button" href="#"></a>
+        <div id="quick-search">
+          <form accept-charset="UTF-8" action="/projects/ecookbook/search" method="get" name="form-RANDOM">
+            <input autocomplete="off" name="scope" type="hidden" value="subprojects">
+            <label for="q">
+              <a accesskey="4" href="/projects/ecookbook/search?scope=subprojects">Search</a>
+              :
+            </label>
+            <input accesskey="f" class="small" data-auto-complete="true" id="q" name="q" size="20" type="text">
+          </form>
+        </div>
+        <h1>
+          <span class="current-project">eCookbook</span>
+        </h1>
+        <div class="tabs" id="main-menu">
+          <ul>
+            <li>
+              <a class="new-object" href="#" id="new-object" onclick="toggleNewObjectDropdown(); return false;">+</a>
+              <ul class="menu-children">
+                <li>
+                  <a accesskey="7" class="new-issue-sub" href="/projects/ecookbook/issues/new">New issue</a>
+                </li>
+                <li>
+                  <a class="new-issue-category" href="/projects/ecookbook/issue_categories/new">New category</a>
+                </li>
+                <li>
+                  <a class="new-version" href="/projects/ecookbook/versions/new">New version</a>
+                </li>
+                <li>
+                  <a class="new-timelog" href="/projects/ecookbook/time_entries/new">Log time</a>
+                </li>
+                <li>
+                  <a class="new-news" href="/projects/ecookbook/news/new">Add news</a>
+                </li>
+                <li>
+                  <a class="new-document" href="/projects/ecookbook/documents/new">New document</a>
+                </li>
+                <li>
+                  <a class="new-wiki-page" href="/projects/ecookbook/wiki/new">New wiki page</a>
+                </li>
+                <li>
+                  <a class="new-file" href="/projects/ecookbook/files/new">New file</a>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <a class="overview" href="/projects/ecookbook">Overview</a>
+            </li>
+            <li>
+              <a class="activity" href="/projects/ecookbook/activity">Activity</a>
+            </li>
+            <li>
+              <a class="roadmap" href="/projects/ecookbook/roadmap">Roadmap</a>
+            </li>
+            <li>
+              <a class="issues" href="/projects/ecookbook/issues">Issues</a>
+            </li>
+            <li>
+              <a class="time-entries selected" href="/projects/ecookbook/time_entries">Spent time</a>
+            </li>
+            <li>
+              <a class="gantt" href="/projects/ecookbook/issues/gantt">Gantt</a>
+            </li>
+            <li>
+              <a class="calendar" href="/projects/ecookbook/issues/calendar">Calendar</a>
+            </li>
+            <li>
+              <a class="news" href="/projects/ecookbook/news">News</a>
+            </li>
+            <li>
+              <a class="documents" href="/projects/ecookbook/documents">Documents</a>
+            </li>
+            <li>
+              <a class="wiki" href="/projects/ecookbook/wiki">Wiki</a>
+            </li>
+            <li>
+              <a class="boards" href="/projects/ecookbook/boards">Forums</a>
+            </li>
+            <li>
+              <a class="files" href="/projects/ecookbook/files">Files</a>
+            </li>
+            <li>
+              <a class="repository" href="/projects/ecookbook/repository">Repository</a>
+            </li>
+            <li>
+              <a class="settings" href="/projects/ecookbook/settings">Settings</a>
+            </li>
+          </ul>
+          <div class="tabs-buttons" style="display:none;">
+            <button class="tab-left icon-only" onclick="moveTabLeft(this); return false;">
+              <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
+                <use href="/assets/icons-DIGEST.svg#icon--angle-left"></use>
+              </svg>
+            </button>
+            <button class="tab-right icon-only" onclick="moveTabRight(this); return false;">
+              <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
+                <use href="/assets/icons-DIGEST.svg#icon--angle-right"></use>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="collapsiblesidebar" id="main">
+        <script>//<![CDATA[
+$('#main.collapsiblesidebar').collapsibleSidebar();
+//]]></script>
+        <div id="sidebar">
+          <div id="sidebar-switch-panel" style="visibility: hidden;">
+            <a class="" href="#" id="sidebar-switch-button">
+              <svg aria-hidden="true" class="s20 icon-svg icon-rtl">
+                <use href="/assets/icons-DIGEST.svg#icon--chevrons-right"></use>
+              </svg>
+            </a>
+          </div>
+          <script>//<![CDATA[
+$('#sidebar-switch-panel').css('visibility', 'visible');
+//]]></script>
+          <div id="sidebar-wrapper">
+            <h3>Custom queries</h3>
+            <ul class="queries">
+              <li>
+                <a class="query" data-disable-with="My spent time" href="/projects/ecookbook/time_entries?query_id=10" title="Description for My spent time">My spent time</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div id="content">
+          <div class="contextual">
+            <a class="icon icon-time-add" href="/projects/ecookbook/time_entries/new">
+              <svg aria-hidden="true" class="s18 icon-svg">
+                <use href="/assets/icons-DIGEST.svg#icon--time-add"></use>
+              </svg>
+              <span class="icon-label">Log time</span>
+            </a>
+            <span class="drdn">
+              <span class="drdn-trigger">
+                <span class="icon-only icon-actions" title="Actions">
+                  <svg aria-hidden="true" class="s18 icon-svg">
+                    <use href="/assets/icons-DIGEST.svg#icon--3-bullets"></use>
+                  </svg>
+                  <span class="icon-label">Actions</span>
+                </span>
+              </span>
+              <div class="drdn-content">
+                <div class="drdn-items">
+                  <a class="icon icon-import" href="/time_entries/imports/new?project_id=ecookbook">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--import"></use>
+                    </svg>
+                    <span class="icon-label">Import</span>
+                  </a>
+                  <a class="icon icon-settings" href="/projects/ecookbook/settings/activities">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--settings"></use>
+                    </svg>
+                    <span class="icon-label">Settings</span>
+                  </a>
+                </div>
+              </div>
+            </span>
+          </div>
+          <h2>Spent time</h2>
+          <form accept-charset="UTF-8" action="/projects/ecookbook/time_entries" id="query_form" method="get" name="query_form-RANDOM">
+            <input autocomplete="off" id="set_filter" name="set_filter" type="hidden" value="1">
+            <input autocomplete="off" disabled="disabled" id="query_type" name="type" type="hidden" value="TimeEntryQuery">
+            <input autocomplete="off" name="sort" type="hidden" value="spent_on:desc">
+            <div class="hide-when-print" id="query_form_with_buttons">
+              <div id="query_form_content">
+                <fieldset class="collapsible" id="filters">
+                  <legend class="icon icon-expanded" onclick="toggleFieldset(this);">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--angle-down"></use>
+                    </svg>
+                    Filters
+                  </legend>
+                  <div style="">
+                    <script>//<![CDATA[
+
+var operatorLabels = {"=":"is","!":"is not","o":"open","c":"closed","!*":"none","*":"any","\u003e=":"\u003e=","\u003c=":"\u003c=","\u003e\u003c":"between","\u003ct+":"in less than","\u003et+":"in more than","\u003e\u003ct+":"in the next","t+":"in","nd":"tomorrow","t":"today","ld":"yesterday","nw":"next week","w":"this week","lw":"last week","l2w":"last 2 weeks","nm":"next month","m":"this month","lm":"last month","y":"this year","\u003et-":"less than days ago","\u003ct-":"more than days ago","\u003e\u003ct-":"in the past","t-":"days ago","~":"contains","!~":"doesn't contain","*~":"contains any of","^":"starts with","$":"ends with","=p":"any issues in project","=!p":"any issues not in project","!p":"no issues in project","*o":"any open issues","!o":"no open issues","ev":"has been","!ev":"has never been","cf":"changed from"};
+var operatorByType = {"list":["=","!"],"list_with_history":["=","!","ev","!ev","cf"],"list_status":["o","=","!","ev","!ev","cf","c","*"],"list_optional":["=","!","!*","*"],"list_optional_with_history":["=","!","ev","!ev","cf","!*","*"],"list_subprojects":["*","!*","=","!"],"date":["=","\u003e=","\u003c=","\u003e\u003c","\u003ct+","\u003et+","\u003e\u003ct+","t+","nd","t","ld","nw","w","lw","l2w","nm","m","lm","y","\u003et-","\u003ct-","\u003e\u003ct-","t-","!*","*"],"date_past":["=","\u003e=","\u003c=","\u003e\u003c","\u003et-","\u003ct-","\u003e\u003ct-","t-","t","ld","w","lw","l2w","m","lm","y","!*","*"],"string":["~","*~","=","!~","!","^","$","!*","*"],"text":["~","*~","!~","^","$","!*","*"],"search":["~","*~","!~"],"integer":["=","\u003e=","\u003c=","\u003e\u003c","!*","*"],"float":["=","\u003e=","\u003c=","\u003e\u003c","!*","*"],"relation":["=","!","=p","=!p","!p","*o","!o","!*","*"],"tree":["=","~","!*","*"]};
+var availableFilters = {"spent_on":{"type":"date_past","name":"Date","values":null},"subproject_id":{"type":"list_subprojects","name":"Subproject","remote":true},"issue_id":{"type":"tree","name":"Issue","values":null},"issue.tracker_id":{"type":"list","name":"Issue's Tracker","remote":true},"issue.parent_id":{"type":"tree","name":"Issue's Parent task","values":null},"issue.status_id":{"type":"list","name":"Issue's Status","remote":true},"issue.fixed_version_id":{"type":"list","name":"Issue's Target version","remote":true},"issue.category_id":{"type":"list_optional","name":"Issue's Category","remote":true},"issue.subject":{"type":"text","name":"Issue's Subject","values":null},"user_id":{"type":"list_optional","name":"User","remote":true},"user.group":{"type":"list_optional","name":"User's Group","remote":true},"user.role":{"type":"list_optional","name":"User's Role","remote":true},"author_id":{"type":"list_optional","name":"Author","remote":true},"activity_id":{"type":"list","name":"Activity","values":[["Design","9"],["Development","10"],["QA","11"]]},"project.status":{"type":"list","name":"Project's Status","remote":true},"comments":{"type":"text","name":"Comment","values":null},"hours":{"type":"float","name":"Hours","values":null},"project.cf_3":{"type":"list_optional","name":"Project's Development status","remote":true},"issue.cf_2":{"type":"string","name":"Issue's Searchable field","values":null},"issue.cf_1":{"type":"list_optional","name":"Issue's Database","remote":true},"issue.cf_9":{"type":"date","name":"Issue's Project 1 cf","values":null}};
+var labelDayPlural = "days";
+
+var filtersUrl = "\/queries\/filter?project_id=1\u0026type=TimeEntryQuery";
+
+$(document).ready(function(){
+  initFilters();
+  addFilter("spent_on", "*", []);
+});
+
+//]]></script>
+                    <div id="filters-table"></div>
+                    <div class="add-filter">
+                      <label for="add_filter_select">Add filter</label>
+                      <select id="add_filter_select">
+                        <option value=""></option>
+                        <option value="subproject_id">Subproject</option>
+                        <option value="issue_id">Issue</option>
+                        <option value="user_id">User</option>
+                        <option value="author_id">Author</option>
+                        <option value="activity_id">Activity</option>
+                        <option value="hours">Hours</option>
+                        <option value="spent_on">Date</option>
+                        <optgroup label="Text">
+                          <option value="comments">Comment</option>
+                        </optgroup>
+                        <optgroup label="Issue">
+                          <option value="issue.tracker_id">Issue&#39;s Tracker</option>
+                          <option value="issue.parent_id">Issue&#39;s Parent task</option>
+                          <option value="issue.status_id">Issue&#39;s Status</option>
+                          <option value="issue.fixed_version_id">Issue&#39;s Target version</option>
+                          <option value="issue.category_id">Issue&#39;s Category</option>
+                          <option value="issue.subject">Issue&#39;s Subject</option>
+                          <option value="issue.cf_2">Issue&#39;s Searchable field</option>
+                          <option value="issue.cf_1">Issue&#39;s Database</option>
+                          <option value="issue.cf_9">Issue&#39;s Project 1 cf</option>
+                        </optgroup>
+                        <optgroup label="User">
+                          <option value="user.group">User&#39;s Group</option>
+                          <option value="user.role">User&#39;s Role</option>
+                        </optgroup>
+                        <optgroup label="Project">
+                          <option value="project.status">Project&#39;s Status</option>
+                          <option value="project.cf_3">Project&#39;s Development status</option>
+                        </optgroup>
+                      </select>
+                    </div>
+                    <input autocomplete="off" id="f_" name="f[]" type="hidden" value="">
+                  </div>
+                </fieldset>
+                <fieldset class="collapsible collapsed" id="options">
+                  <legend class="icon icon-collapsed" onclick="toggleFieldset(this);">
+                    <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
+                      <use href="/assets/icons-DIGEST.svg#icon--angle-right"></use>
+                    </svg>
+                    Options
+                  </legend>
+                  <div class="hidden">
+                    <div class="" id="list-definition">
+                      <div>
+                        <div class="field">Columns</div>
+                        <div class="query-columns">
+                          <label for="available_c">Available Columns</label>
+                          <select id="available_c" multiple="multiple" name="available_columns[]" ondblclick="moveOptions(this.form.available_c, this.form.selected_c);" size="10">
+                            <option value="project">Project</option>
+                            <option value="created_on">Created</option>
+                            <option value="tweek">Week</option>
+                            <option value="author">Author</option>
+                            <option value="issue.tracker">Tracker</option>
+                            <option value="issue.parent">Parent task</option>
+                            <option value="issue.status">Status</option>
+                            <option value="issue.category">Category</option>
+                            <option value="issue.fixed_version">Target version</option>
+                            <option value="cf_10">Overtime</option>
+                            <option value="issue.cf_2">Searchable field</option>
+                            <option value="issue.cf_1">Database</option>
+                            <option value="issue.cf_6">Float field</option>
+                            <option value="issue.cf_8">Custom date</option>
+                            <option value="issue.cf_9">Project 1 cf</option>
+                            <option value="project.cf_3">Development status</option>
+                          </select>
+                        </div>
+                        <div class="buttons">
+                          <button class="move-right" onclick="moveOptions(this.form.available_c, this.form.selected_c);" type="button">
+                            <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
+                              <use href="/assets/icons-DIGEST.svg#icon--arrow-narrow-right"></use>
+                            </svg>
+                          </button>
+                          <button class="move-left" onclick="moveOptions(this.form.selected_c, this.form.available_c);" type="button">
+                            <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
+                              <use href="/assets/icons-DIGEST.svg#icon--arrow-narrow-left"></use>
+                            </svg>
+                          </button>
+                        </div>
+                        <div class="query-columns">
+                          <label for="selected_c">Selected Columns</label>
+                          <select id="selected_c" multiple="multiple" name="c[]" ondblclick="moveOptions(this.form.selected_c, this.form.available_c);" size="10">
+                            <option value="spent_on">Date</option>
+                            <option value="user">User</option>
+                            <option value="activity">Activity</option>
+                            <option value="issue">Issue</option>
+                            <option value="comments">Comment</option>
+                            <option value="hours">Hours</option>
+                          </select>
+                        </div>
+                        <div class="buttons">
+                          <button onclick="moveOptionTop(this.form.selected_c);" type="button">⇈</button>
+                          <button onclick="moveOptionUp(this.form.selected_c);" type="button">↑</button>
+                          <button onclick="moveOptionDown(this.form.selected_c);" type="button">↓</button>
+                          <button onclick="moveOptionBottom(this.form.selected_c);" type="button">⇊</button>
+                        </div>
+                        <script>//<![CDATA[
+
+$(document).ready(function(){
+  $('.query-columns').closest('form').submit(function(){
+    $('#selected_c option:not(:disabled)').prop('selected', true);
+  });
+});
+
+//]]></script>
+                      </div>
+                      <div>
+                        <div class="field">
+                          <label for="group_by">Group results by</label>
+                        </div>
+                        <div>
+                          <select id="group_by" name="group_by">
+                            <option value=""></option>
+                            <option value="project">Project</option>
+                            <option value="spent_on">Date</option>
+                            <option value="user">User</option>
+                            <option value="activity">Activity</option>
+                            <option value="issue">Issue</option>
+                            <option value="cf_10">Overtime</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div>
+                        <div class="field">Totals</div>
+                        <div>
+                          <label class="inline">
+                            <input checked="checked" name="t[]" type="checkbox" value="hours">
+                            Hours
+                          </label>
+                          <input autocomplete="off" id="t_" name="t[]" type="hidden" value="">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </fieldset>
+              </div>
+              <p class="buttons">
+                <a class="icon icon-checked" href="#" onclick="$(&#34;#query_form&#34;).submit(); return false;">
+                  <svg aria-hidden="true" class="s18 icon-svg">
+                    <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                  </svg>
+                  <span class="icon-label">Apply</span>
+                </a>
+                <a class="icon icon-reload" href="/projects/ecookbook/time_entries?set_filter=1&amp;sort=">
+                  <svg aria-hidden="true" class="s18 icon-svg">
+                    <use href="/assets/icons-DIGEST.svg#icon--reload"></use>
+                  </svg>
+                  <span class="icon-label">Clear</span>
+                </a>
+                <a class="icon icon-save" href="#" onclick="$(&#39;#query_type&#39;).prop(&#39;disabled&#39;,false);$(&#39;#query_form&#39;).attr(&#39;action&#39;, &#39;/projects/ecookbook/queries/new&#39;).submit(); return false;">
+                  <svg aria-hidden="true" class="s18 icon-svg">
+                    <use href="/assets/icons-DIGEST.svg#icon--save"></use>
+                  </svg>
+                  <span class="icon-label">Save custom query</span>
+                </a>
+              </p>
+            </div>
+            <script>//<![CDATA[
+
+$(function ($) {
+  $('input[name=display_type]').change(function (e) {
+    if ($("#display_type_list").is(':checked')) {
+      $('table#list-definition').show();
+    } else {
+      $('table#list-definition').hide();
+    }
+
+  })
+});
+
+
+//]]></script>
+            <div class="tabs hide-when-print">
+              <ul>
+                <li>
+                  <a class="selected" href="/projects/ecookbook/time_entries">Details</a>
+                </li>
+                <li>
+                  <a href="/projects/ecookbook/time_entries/report">Report</a>
+                </li>
+              </ul>
+            </div>
+          </form>
+          <p class="query-totals">
+            <span class="total-for-hours">
+              <span>Hours:</span>
+              <span class="value">162:54</span>
+            </span>
+          </p>
+          <form accept-charset="UTF-8" action="/projects/ecookbook/time_entries" data-cm-url="/time_entries/context_menu" method="post" name="form-RANDOM">
+            <input autocomplete="off" name="authenticity_token" type="hidden" value="{{CSRF}}">
+            <input autocomplete="off" name="back_url" type="hidden" value="/projects/ecookbook/time_entries">
+            <div class="autoscroll">
+              <table class="list odd-even time-entries">
+                <thead>
+                  <tr>
+                    <th class="checkbox hide-when-print">
+                      <input class="toggle-selection" id="check_all" name="check_all" title="Check all / Uncheck all" type="checkbox" value="">
+                    </th>
+                    <th class="spent_on">
+                      <a class="sort desc icon icon-sorted-asc" href="/projects/ecookbook/time_entries?sort=spent_on" title="Sort by &#34;Date&#34;">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--angle-down"></use>
+                        </svg>
+                        <span class="icon-label">Date</span>
+                      </a>
+                    </th>
+                    <th class="user">
+                      <a href="/projects/ecookbook/time_entries?sort=user%2Cspent_on%3Adesc" title="Sort by &#34;User&#34;">User</a>
+                    </th>
+                    <th class="activity">
+                      <a href="/projects/ecookbook/time_entries?sort=activity%2Cspent_on%3Adesc" title="Sort by &#34;Activity&#34;">Activity</a>
+                    </th>
+                    <th class="issue">
+                      <a href="/projects/ecookbook/time_entries?sort=issue%2Cspent_on%3Adesc" title="Sort by &#34;Issue&#34;">Issue</a>
+                    </th>
+                    <th class="comments">Comment</th>
+                    <th class="hours">
+                      <a href="/projects/ecookbook/time_entries?sort=hours%2Cspent_on%3Adesc" title="Sort by &#34;Hours&#34;">Hours</a>
+                    </th>
+                    <th class="buttons hide-when-print"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="time-entry odd hascontextmenu" id="time-entry-4">
+                    <td class="checkbox hide-when-print">
+                      <input name="ids[]" type="checkbox" value="4">
+                    </td>
+                    <td class="spent_on">04/22/2007</td>
+                    <td class="user">
+                      <a class="user active" href="/users/1">Redmine Admin</a>
+                    </td>
+                    <td class="activity">Development</td>
+                    <td class="issue"></td>
+                    <td class="comments">Time spent on a subproject</td>
+                    <td class="hours">7:39</td>
+                    <td class="buttons hide-when-print">
+                      <a class="icon-only icon-edit" href="/time_entries/4/edit" title="Edit">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--edit"></use>
+                        </svg>
+                        <span class="icon-label">Edit</span>
+                      </a>
+                      <a class="icon-only icon-del" data-confirm="Are you sure?" data-method="delete" href="/time_entries/4" rel="nofollow" title="Delete">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--del"></use>
+                        </svg>
+                        <span class="icon-label">Delete</span>
+                      </a>
+                      <a class="icon-only icon-actions js-contextmenu" href="#" title="Actions">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--3-bullets"></use>
+                        </svg>
+                        <span class="icon-label">Actions</span>
+                      </a>
+                    </td>
+                  </tr>
+                  <tr class="time-entry even hascontextmenu" id="time-entry-3">
+                    <td class="checkbox hide-when-print">
+                      <input name="ids[]" type="checkbox" value="3">
+                    </td>
+                    <td class="spent_on">04/21/2007</td>
+                    <td class="user">
+                      <a class="user active" href="/users/1">Redmine Admin</a>
+                    </td>
+                    <td class="activity">Design</td>
+                    <td class="issue">
+                      <a class="issue tracker-1 status-1 priority-4 priority-lowest overdue behind-schedule" href="/issues/3">Bug #3</a>
+                      : Error 281 when updating a recipe
+                    </td>
+                    <td class="comments"></td>
+                    <td class="hours">1:00</td>
+                    <td class="buttons hide-when-print">
+                      <a class="icon-only icon-edit" href="/time_entries/3/edit" title="Edit">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--edit"></use>
+                        </svg>
+                        <span class="icon-label">Edit</span>
+                      </a>
+                      <a class="icon-only icon-del" data-confirm="Are you sure?" data-method="delete" href="/time_entries/3" rel="nofollow" title="Delete">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--del"></use>
+                        </svg>
+                        <span class="icon-label">Delete</span>
+                      </a>
+                      <a class="icon-only icon-actions js-contextmenu" href="#" title="Actions">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--3-bullets"></use>
+                        </svg>
+                        <span class="icon-label">Actions</span>
+                      </a>
+                    </td>
+                  </tr>
+                  <tr class="time-entry odd hascontextmenu" id="time-entry-1">
+                    <td class="checkbox hide-when-print">
+                      <input name="ids[]" type="checkbox" value="1">
+                    </td>
+                    <td class="spent_on">03/23/2007</td>
+                    <td class="user">
+                      <a class="user active" href="/users/2">John Smith</a>
+                    </td>
+                    <td class="activity">Design</td>
+                    <td class="issue">
+                      <a class="issue tracker-1 status-1 priority-4 priority-lowest behind-schedule" href="/issues/1">Bug #1</a>
+                      : Cannot print recipes
+                    </td>
+                    <td class="comments">My hours</td>
+                    <td class="hours">4:15</td>
+                    <td class="buttons hide-when-print">
+                      <a class="icon-only icon-edit" href="/time_entries/1/edit" title="Edit">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--edit"></use>
+                        </svg>
+                        <span class="icon-label">Edit</span>
+                      </a>
+                      <a class="icon-only icon-del" data-confirm="Are you sure?" data-method="delete" href="/time_entries/1" rel="nofollow" title="Delete">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--del"></use>
+                        </svg>
+                        <span class="icon-label">Delete</span>
+                      </a>
+                      <a class="icon-only icon-actions js-contextmenu" href="#" title="Actions">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--3-bullets"></use>
+                        </svg>
+                        <span class="icon-label">Actions</span>
+                      </a>
+                    </td>
+                  </tr>
+                  <tr class="time-entry even hascontextmenu" id="time-entry-2">
+                    <td class="checkbox hide-when-print">
+                      <input name="ids[]" type="checkbox" value="2">
+                    </td>
+                    <td class="spent_on">03/12/2007</td>
+                    <td class="user">
+                      <a class="user active" href="/users/1">Redmine Admin</a>
+                    </td>
+                    <td class="activity">Design</td>
+                    <td class="issue">
+                      <a class="issue tracker-1 status-1 priority-4 priority-lowest behind-schedule" href="/issues/1">Bug #1</a>
+                      : Cannot print recipes
+                    </td>
+                    <td class="comments"></td>
+                    <td class="hours">150:00</td>
+                    <td class="buttons hide-when-print">
+                      <a class="icon-only icon-edit" href="/time_entries/2/edit" title="Edit">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--edit"></use>
+                        </svg>
+                        <span class="icon-label">Edit</span>
+                      </a>
+                      <a class="icon-only icon-del" data-confirm="Are you sure?" data-method="delete" href="/time_entries/2" rel="nofollow" title="Delete">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--del"></use>
+                        </svg>
+                        <span class="icon-label">Delete</span>
+                      </a>
+                      <a class="icon-only icon-actions js-contextmenu" href="#" title="Actions">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--3-bullets"></use>
+                        </svg>
+                        <span class="icon-label">Actions</span>
+                      </a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </form>
+          <span class="pagination">
+            <ul class="pages"></ul>
+            <span>
+              <span class="items">(1-4/4)</span>
+            </span>
+          </span>
+          <p class="other-formats hide-when-print">
+            Also available in:
+            <span>
+              <a class="csv" href="/projects/ecookbook/time_entries.csv" onclick="showModal(&#39;csv-export-options&#39;, &#39;330px&#39;); return false;" rel="nofollow">CSV</a>
+            </span>
+            <span>
+              <a class="atom" href="/projects/ecookbook/time_entries.atom?key=KEY" rel="nofollow">Atom</a>
+            </span>
+          </p>
+          <div id="csv-export-options" style="display:none;">
+            <h3 class="title">CSV export options</h3>
+            <form accept-charset="UTF-8" action="/projects/ecookbook/time_entries.csv" id="csv-export-form" method="get" name="csv-export-form-RANDOM">
+              <input autocomplete="off" name="set_filter" type="hidden" value="1">
+              <input autocomplete="off" name="f[]" type="hidden" value="spent_on">
+              <input autocomplete="off" name="op[spent_on]" type="hidden" value="*">
+              <input autocomplete="off" name="c[]" type="hidden" value="spent_on">
+              <input autocomplete="off" name="c[]" type="hidden" value="user">
+              <input autocomplete="off" name="c[]" type="hidden" value="activity">
+              <input autocomplete="off" name="c[]" type="hidden" value="issue">
+              <input autocomplete="off" name="c[]" type="hidden" value="comments">
+              <input autocomplete="off" name="c[]" type="hidden" value="hours">
+              <input autocomplete="off" name="t[]" type="hidden" value="hours">
+              <input autocomplete="off" name="sort" type="hidden" value="spent_on:desc">
+              <input autocomplete="off" id="query_name" name="query_name" type="hidden" value="_">
+              <p>
+                <label>
+                  <input checked="checked" id="c__" name="c[]" type="radio" value="">
+                  Selected Columns
+                </label>
+                <br>
+                <label>
+                  <input id="c__all_inline" name="c[]" type="radio" value="all_inline">
+                  All Columns
+                </label>
+              </p>
+              <p>
+                <label>
+                  Encoding
+                  <select id="encoding" name="encoding">
+                    <option selected="selected" value="UTF-8">UTF-8</option>
+                    <option value="ISO-8859-1">ISO-8859-1</option>
+                  </select>
+                </label>
+              </p>
+              <p>
+                <label>
+                  Field separator
+                  <select id="field_separator" name="field_separator">
+                    <option selected="selected" value=",">Comma</option>
+                    <option value=";">Semicolon</option>
+                  </select>
+                </label>
+              </p>
+              <p class="buttons">
+                <input onclick="hideModal(this);" type="submit" value="Export">
+                <a href="#" onclick="hideModal(this);; return false;">Cancel</a>
+              </p>
+            </form>
+          </div>
+          <div style="clear:both;"></div>
+        </div>
+      </div>
+      <div id="footer">MASKED</div>
+      <div id="ajax-indicator" style="display:none;">
+        <span class="icon">
+          <svg aria-hidden="true" class="s18 icon-svg svg-loader">
+            <use href="/assets/icons-DIGEST.svg#icon--loader"></use>
+          </svg>
+          <span class="icon-label">Loading...</span>
+        </span>
+      </div>
+      <div id="ajax-modal" style="display:none;"></div>
+      <div id="icon-copy-source" style="display: none;">
+        <svg aria-hidden="true" class="s18 icon-svg">
+          <use href="/assets/icons-DIGEST.svg#icon--"></use>
+        </svg>
+      </div>
+    </div>
+  </body>
+</html>

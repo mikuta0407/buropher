@@ -158,7 +158,11 @@ func (a *App) teBuildFormData(c *Req, t *timelog.Entry) (*teFormData, error) {
 		if t.UserID != nil {
 			sel = strconv.FormatInt(*t.UserID, 10)
 		}
-		d.UserOptions = tePrincipalsOptions(c, users, sel)
+		involved, err := a.teInvolvedPrincipals(c)
+		if err != nil {
+			return nil, err
+		}
+		d.UserOptions = tePrincipalsOptions(c, users, sel, involved)
 	} else if !d.New && t.UserID != nil {
 		if u, err := repository.GetUser(ctx, a.DB, *t.UserID); err == nil {
 			d.UserLink = a.Helpers.LinkToPrincipal(c.Page(), u, "")
@@ -297,7 +301,7 @@ func (a *App) teProjectTreeOptions(c *Req, selected *int64) (template.HTML, erro
 }
 
 // tePrincipalsOptions は principals_options_for_select(collection, selected)。
-func tePrincipalsOptions(c *Req, users []*domain.User, selected string) template.HTML {
+func tePrincipalsOptions(c *Req, users []*domain.User, selected string, involved []*domain.User) template.HTML {
 	page := c.Page()
 	var b strings.Builder
 	if c.User.Logged() && slices.ContainsFunc(users, func(u *domain.User) bool { return u.ID == c.User.ID }) {
@@ -307,14 +311,64 @@ func tePrincipalsOptions(c *Req, users []*domain.User, selected string) template
 	sort.SliceStable(sorted, func(i, j int) bool {
 		return strings.ToLower(helper.PrincipalName(page, sorted[i])) < strings.ToLower(helper.PrincipalName(page, sorted[j]))
 	})
+	var involvedHTML strings.Builder
+	for _, p := range involved {
+		disabled := !slices.ContainsFunc(users, func(u *domain.User) bool { return u.ID == p.ID })
+		involvedHTML.WriteString(string(rails.ContentTag("option", helper.PrincipalName(page, p), rails.NewHash("value", p.ID, "disabled", disabled))))
+	}
+	var usersHTML strings.Builder
 	for _, u := range sorted {
 		sel := ""
 		if strconv.FormatInt(u.ID, 10) == selected {
 			sel = ` selected="selected"`
 		}
-		b.WriteString(`<option value="` + strconv.FormatInt(u.ID, 10) + `"` + sel + `>` + string(rails.H(helper.PrincipalName(page, u))) + `</option>`)
+		usersHTML.WriteString(`<option value="` + strconv.FormatInt(u.ID, 10) + `"` + sel + `>` + string(rails.H(helper.PrincipalName(page, u))) + `</option>`)
+	}
+	if involvedHTML.Len() == 0 {
+		b.WriteString(usersHTML.String())
+	} else {
+		b.WriteString(`<optgroup label="` + string(rails.H(c.L("label_involved_principals"))) + `">` + involvedHTML.String() + `</optgroup>`)
+		if usersHTML.Len() > 0 {
+			b.WriteString(`<optgroup label="` + string(rails.H(c.L("label_user_plural"))) + `">` + usersHTML.String() + `</optgroup>`)
+		}
 	}
 	return template.HTML(b.String())
+}
+
+// teInvolvedPrincipals は @issue（チケット配下の new / create のみ）の [author, prior_assigned_to].uniq.compact。
+func (a *App) teInvolvedPrincipals(c *Req) ([]*domain.User, error) {
+	iid := teIssueID(c)
+	if iid == nil {
+		return nil, nil
+	}
+	ctx := c.Ctx()
+	iss, err := a.teEnv(c).Issues().Find(ctx, *iid)
+	if err != nil || iss == nil {
+		return nil, err
+	}
+	ids := []int64{iss.AuthorID}
+	prior, err := repository.TimelogPriorAssignedToID(ctx, a.DB, iss.ID)
+	if err != nil {
+		return nil, err
+	}
+	if prior != nil && *prior != iss.AuthorID {
+		ids = append(ids, *prior)
+	}
+	var out []*domain.User
+	for _, id := range ids {
+		u, err := repository.GetUser(ctx, a.DB, id)
+		if err != nil {
+			// グループ・削除済みは Principal として名前だけ使う
+			p, perr := repository.GetPrincipal(ctx, a.DB, id)
+			if perr != nil {
+				continue
+			}
+			out = append(out, &domain.User{Principal: *p})
+			continue
+		}
+		out = append(out, u)
+	}
+	return out, nil
 }
 
 // ---------------------------------------------------------------- actions
