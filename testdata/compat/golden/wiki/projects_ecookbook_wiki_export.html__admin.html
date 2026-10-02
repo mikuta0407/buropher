@@ -1,0 +1,124 @@
+status: 200
+content-type: text/html
+
+<!DOCTYPE html>
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>eCookbook</title>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type">
+    <style>body { font:80% Verdana,Tahoma,Arial,sans-serif; }
+h1, h2, h3, h4 {  font-family: "Trebuchet MS",Georgia,"Times New Roman",serif; }
+ul.toc { padding: 4px; margin-left: 0; }
+ul.toc li { list-style-type:none; }
+ul.toc li.heading2 { margin-left: 1em; }
+ul.toc li.heading3 { margin-left: 2em; }
+a.wiki-anchor { display: none; margin-left: 6px; text-decoration: none; }
+a.wiki-anchor:hover { color: #aaa !important; text-decoration: none; }
+h1:hover a.wiki-anchor, h2:hover a.wiki-anchor, h3:hover a.wiki-anchor { display: inline; color: #ddd; }</style>
+  </head>
+  <body>
+    <strong>Index by title</strong>
+    <ul class="pages-hierarchy">
+      <li>
+        <a href="#Another_page" title="Updated almost 19 years ago">Another page</a>
+        <ul class="pages-hierarchy">
+          <li>
+            <a href="#Child_1" title="Updated almost 19 years ago">Child 1</a>
+            <ul class="pages-hierarchy">
+              <li>
+                <a href="#Child_1_1" title="Updated almost 19 years ago">Child 1 1</a>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <a href="#Child_2" title="Updated almost 19 years ago">Child 2</a>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="#CookBook_documentation" title="Updated almost 19 years ago">CookBook documentation</a>
+        <ul class="pages-hierarchy">
+          <li>
+            <a href="#Page_with_an_inline_image" title="Updated almost 19 years ago">Page with an inline image</a>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="#Page_with_sections" title="Updated almost 19 years ago">Page with sections</a>
+      </li>
+      <li>
+        <a href="#Этика_менеджмента" title="Updated almost 19 years ago">Этика менеджмента</a>
+      </li>
+    </ul>
+    <hr>
+    <a name="Another_page">
+      <p>h1. Another page</p>
+    </a>
+    <p>
+      <a name="Another_page">This is a link to a ticket:</a>
+      <a class="issue tracker-2 status-2 priority-5 priority-default" href="{{BASE}}/issues/2" title="Feature request: Add ingredients categories (Assigned)">#2</a>
+      <br>
+      And this is an included page:
+      <br>
+    </p>
+    <p>h1. Page with an inline image</p>
+    <p>This is an inline image:</p>
+    <p>!logo.gif!</p>
+    <p></p>
+    <hr>
+    <a name="Child_1">
+      <p>h1. Child page 1</p>
+      <p>This is a child page</p>
+      <hr>
+    </a>
+    <a name="Child_1_1">
+      <p>This is a grandchild page</p>
+      <hr>
+    </a>
+    <a name="Child_2">
+      <p>h1. Child page 2</p>
+      <p>This is a child page</p>
+      <hr>
+    </a>
+    <a name="CookBook_documentation">
+      <p>h1. CookBook documentation</p>
+      <p></p>
+    </a>
+    <ul class="pages-hierarchy">
+      <a name="CookBook_documentation"></a>
+      <li>
+        <a name="CookBook_documentation"></a>
+        <a href="#Page_with_an_inline_image">Page with an inline image</a>
+      </li>
+    </ul>
+    <p></p>
+    <p>
+      Some updated
+      <a class="wiki-page new" href="#Documentation">documentation</a>
+      here with gzipped history
+    </p>
+    <hr>
+    <a name="Page_with_an_inline_image">
+      <p>h1. Page with an inline image</p>
+      <p>This is an inline image:</p>
+      <p>!logo.gif!</p>
+      <hr>
+    </a>
+    <a name="Page_with_sections">
+      <p>h1. Title</p>
+      <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas sed libero.</p>
+      <p>h2. Heading 1</p>
+      <p>@WHATEVER@</p>
+      <p>
+        Maecenas sed elit sit amet mi accumsan vestibulum non nec velit. Proin porta tincidunt lorem, consequat rhoncus dolor fermentum in.
+      </p>
+      <p>Cras ipsum felis, ultrices at porttitor vel, faucibus eu nunc.</p>
+      <p>h2. Heading 2</p>
+      <p>Morbi facilisis accumsan orci non pharetra.</p>
+      <hr>
+    </a>
+    <a name="Этика_менеджмента">
+      <p>Page with cyrillic title</p>
+    </a>
+  </body>
+</html>
