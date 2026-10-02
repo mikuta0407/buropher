@@ -3,6 +3,7 @@
   {{bookmark_link $p}}
 
   {{define "projects/show#actions"}}
+
   {{if .CanAddSubproject}}
     {{link_to (sprite_icon "add" (l "label_subproject_new")) (printf "/projects/new?parent_id=%s" (url_encode .Project.Identifier)) (hash "class" "icon icon-add")}}
   {{end}}
@@ -18,7 +19,7 @@
   {{end}}
   {{if .CanSettings}}{{link_to (sprite_icon "settings" (l "label_settings")) (printf "/projects/%s/settings" .Project.Identifier) (hash "class" "icon icon-settings")}}{{end}}
   {{end}}
-  {{actions_dropdown (capture "projects/show#actions")}}
+  {{actions_dropdown (capture "projects/show#actions") -}}
 </div>
 
 <h2>{{l "label_overview"}}</h2>

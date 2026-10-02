@@ -187,9 +187,14 @@ func (r *Render) Capture(name string, data any) (template.HTML, error) {
 
 // ContentFor はスロットに内容を追加する（html_safe でない値はエスケープされる）。
 func (r *Render) ContentFor(name string, content any) {
-	// ActionView#capture は空白だけのブロックを nil にするため、content_for は何も追加しない
-	if !rails.IsPresent(rails.ToS(content)) {
-		return
+	// ActionView#capture は出力が空白だけのブロックではブロックの戻り値を使う。ERB のブロックの戻り値は
+	// 最後に追加したリテラル（通常は行末の "\n"）なので、空白だけの内容は "\n" として扱う。
+	if s := rails.ToS(content); !rails.IsPresent(s) {
+		if strings.HasSuffix(s, "\n") {
+			content = "\n"
+		} else {
+			return
+		}
 	}
 	b := r.slots[name]
 	if b == nil {

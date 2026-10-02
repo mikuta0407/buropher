@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Settings - eCookbook - Redmine</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Redmine" />
+<meta name="keywords" content="issue,bug,tracker" />
+<meta name="csrf-param" content="authenticity_token" />
+<meta name="csrf-token" content="DjkOe2dj8PX2m4xtPJGbD3wj4sd91IJuKwrVqEWzHJq6DvC2BNUH8-Bsl454K8C2PPUmLq40eFCjCjcWrZWaNg" />
+<link rel="shortcut icon" type="image/x-icon" href="/assets/favicon-0e291875.ico" />
+<link rel="stylesheet" href="/assets/jquery/jquery-ui-1.13.2-70e53573.css" media="all" />
+<link rel="stylesheet" href="/assets/tribute-5.1.3-c23a7bf2.css" media="all" />
+<link rel="stylesheet" href="/assets/application-6dc0ec44.css" media="all" />
+<link rel="stylesheet" href="/assets/responsive-194751d3.css" media="all" />
+
+<script type="importmap" data-turbo-track="reload">{
+  "imports": {
+    "@rails/request.js": "/assets/requestjs-64720317.js",
+    "application": "/assets/application-20c5ac24.js",
+    "@hotwired/stimulus": "/assets/stimulus.min-7ea3d58b.js",
+    "@hotwired/stimulus-loading": "/assets/stimulus-loading-25917588.js",
+    "turndown": "/assets/turndown-93630580.js",
+    "controllers/api_key_copy_controller": "/assets/controllers/api_key_copy_controller-75f835b3.js",
+    "controllers/application": "/assets/controllers/application-fab29967.js",
+    "controllers": "/assets/controllers/index-dfefe98d.js",
+    "controllers/list_autofill_controller": "/assets/controllers/list_autofill_controller-5f013171.js",
+    "controllers/quote_reply_controller": "/assets/controllers/quote_reply_controller-3e6a21f7.js",
+    "controllers/sticky_issue_header_controller": "/assets/controllers/sticky_issue_header_controller-18502bbe.js"
+  }
+}</script>
+<link rel="modulepreload" href="/assets/requestjs-64720317.js">
+<link rel="modulepreload" href="/assets/application-20c5ac24.js">
+<link rel="modulepreload" href="/assets/stimulus.min-7ea3d58b.js">
+<link rel="modulepreload" href="/assets/stimulus-loading-25917588.js">
+<link rel="modulepreload" href="/assets/turndown-93630580.js">
+<link rel="modulepreload" href="/assets/controllers/api_key_copy_controller-75f835b3.js">
+<link rel="modulepreload" href="/assets/controllers/application-fab29967.js">
+<link rel="modulepreload" href="/assets/controllers/index-dfefe98d.js">
+<link rel="modulepreload" href="/assets/controllers/list_autofill_controller-5f013171.js">
+<link rel="modulepreload" href="/assets/controllers/quote_reply_controller-3e6a21f7.js">
+<link rel="modulepreload" href="/assets/controllers/sticky_issue_header_controller-18502bbe.js">
+<script type="module">import "application"</script>
+<script src="/assets/jquery-3.7.1-ui-1.13.3-3ca148b8.js"></script>
+<script src="/assets/rails-ujs-3de06f48.js"></script>
+<script src="/assets/tribute-5.1.3.min-6c16c47a.js"></script><script src="/assets/application-legacy-54b0807d.js"></script>
+<script src="/assets/responsive-aa0cdb6f.js"></script>
+<script>
+//<![CDATA[
+$(window).on('load', function(){ warnLeavingUnsaved('The current page contains unsaved text that will be lost if you leave this page.'); });
+//]]>
+</script>
+
+<script>
+//<![CDATA[
+rm = window.rm || {};rm.I18n = rm.I18n || {};rm.I18n = Object.freeze({buttonCopy: 'Copy'});
+//]]>
+</script>
+<script>
+//<![CDATA[
+rm = window.rm || {};rm.AutoComplete = rm.AutoComplete || {};rm.AutoComplete.dataSources = JSON.parse('{"issues":"/issues/auto_complete?project_id=ecookbook\u0026q=","wiki_pages":"/wiki_pages/auto_complete?project_id=ecookbook\u0026q="}');
+//]]>
+</script>
+
+<!-- page specific tags -->
+<script src="/assets/jstoolbar/jstoolbar-d7c21366.js"></script><script src="/assets/jstoolbar/common_mark-8a9a868d.js"></script><script src="/assets/jstoolbar/lang/jstoolbar-en-85c9edfe.js"></script><script>
+//<![CDATA[
+var wikiImageMimeTypes = ["image/gif","image/jpeg","image/png","image/tiff","image/webp","image/x-ms-bmp"];var userHlLanguages = ["c","cpp","csharp","css","diff","go","groovy","html","java","javascript","objc","perl","php","python","r","ruby","sass","scala","shell","sql","swift","xml","yaml"];
+//]]>
+</script><link rel="stylesheet" href="/assets/jstoolbar-57267577.css" media="screen" /></head>
+<body class="project-ecookbook has-main-menu controller-projects action-settings avatars-off" data-text-formatting="common_mark">
+
+<div id="wrapper">
+
+<div class="flyout-menu js-flyout-menu">
+
+        <div class="flyout-menu__search">
+            <form action="/projects/ecookbook/search" accept-charset="UTF-8" name="form-c9f0e419" method="get">
+            
+            <label class="search-magnifier search-magnifier--flyout" for="flyout-search"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--search"></use></svg><span class="icon-label hidden">Search</span></label>
+            <input type="text" name="q" id="flyout-search" class="small js-search-input" placeholder="Search" />
+</form>        </div>
+
+        <div class="flyout-menu__avatar">
+          <a href="/users/1"><span role="img" class="avatar-color-1 s40 avatar">RA</span></a>
+          <a class="user active" href="/users/1">admin</a>
+        </div>
+
+        <h3>Project</h3>
+        <span class="js-project-menu"></span>
+
+    <h3>General</h3>
+    <span class="js-general-menu"></span>
+
+    <span class="js-sidebar flyout-menu__sidebar"></span>
+
+    <h3>Profile</h3>
+    <span class="js-profile-menu"></span>
+
+</div>
+
+
+<div id="top-menu">
+    <div id="account">
+        <ul><li><a class="my-account" href="/my/account">My account</a></li><li><a class="logout" rel="nofollow" data-method="post" href="/logout">Sign out</a></li></ul>    </div>
+    <div id="loggedas">Logged in as <a class="user active" href="/users/1">admin</a></div>
+    <ul><li><a class="home" href="/">Home</a></li><li><a class="my-page" href="/my/page">My page</a></li><li><a class="projects" href="/projects">Projects</a></li><li><a class="administration" href="/admin">Administration</a></li><li><a target="_blank" rel="noopener" class="help" href="https://www.redmine.org/guide">Help</a></li></ul></div>
+
+<div id="header">
+
+    <a href="#" class="mobile-toggle-button js-flyout-menu-toggle-button"></a>
+
+    <div id="quick-search">
+        <form action="/projects/ecookbook/search" accept-charset="UTF-8" name="form-c67f9c11" method="get">
+        <input type="hidden" name="scope" value="subprojects" autocomplete="off" />
+        
+        <label for='q'>
+          <a accesskey="4" href="/projects/ecookbook/search?scope=subprojects">Search</a>:
+        </label>
+        <input type="text" name="q" id="q" size="20" class="small" accesskey="f" data-auto-complete="true" />
+</form>        <div id="project-jump" class="drdn"><span class="drdn-trigger">eCookbook</span><div class="drdn-content"><div class="quick-search"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--search"></use></svg><input type="text" name="q" id="projects-quick-search" value="" class="autocomplete" data-automcomplete-url="/projects/autocomplete.js?jump=settings" autocomplete="off" /></div><div class="drdn-items projects selection"><strong>Bookmarks</strong><a title="eCookbook" class="selected" href="/projects/ecookbook?jump=settings"><span style="padding-inline-start:0px;">eCookbook</span></a><a title="Private child of eCookbook" href="/projects/private-child?jump=settings"><span style="padding-inline-start:16px;">Private child of eCookbook</span></a><strong>All Projects</strong><a title="Private child of eCookbook" href="/projects/private-child?jump=settings"><span style="padding-inline-start:0px;">Private child of eCookbook</span></a></div><div class="drdn-items all-projects selection"><a href="/projects?jump=settings">All Projects</a></div></div></div>
+    </div>
+
+    <h1><span class="current-project">eCookbook</span></h1>
+
+    <div id="main-menu" class="tabs">
+        <ul><li>
+<a onclick="toggleNewObjectDropdown(); return false;" id="new-object" class="new-object" href="#"> + </a>
+<ul class="menu-children"><li><a accesskey="7" class="new-issue-sub" href="/projects/ecookbook/issues/new">New issue</a></li><li><a class="new-issue-category" href="/projects/ecookbook/issue_categories/new">New category</a></li><li><a class="new-version" href="/projects/ecookbook/versions/new">New version</a></li><li><a class="new-timelog" href="/projects/ecookbook/time_entries/new">Log time</a></li><li><a class="new-news" href="/projects/ecookbook/news/new">Add news</a></li><li><a class="new-document" href="/projects/ecookbook/documents/new">New document</a></li><li><a class="new-wiki-page" href="/projects/ecookbook/wiki/new">New wiki page</a></li><li><a class="new-file" href="/projects/ecookbook/files/new">New file</a></li></ul>
+</li><li><a class="overview" href="/projects/ecookbook">Overview</a></li><li><a class="activity" href="/projects/ecookbook/activity">Activity</a></li><li><a class="roadmap" href="/projects/ecookbook/roadmap">Roadmap</a></li><li><a class="issues" href="/projects/ecookbook/issues">Issues</a></li><li><a class="time-entries" href="/projects/ecookbook/time_entries">Spent time</a></li><li><a class="gantt" href="/projects/ecookbook/issues/gantt">Gantt</a></li><li><a class="calendar" href="/projects/ecookbook/issues/calendar">Calendar</a></li><li><a class="news" href="/projects/ecookbook/news">News</a></li><li><a class="documents" href="/projects/ecookbook/documents">Documents</a></li><li><a class="wiki" href="/projects/ecookbook/wiki">Wiki</a></li><li><a class="boards" href="/projects/ecookbook/boards">Forums</a></li><li><a class="files" href="/projects/ecookbook/files">Files</a></li><li><a class="repository" href="/projects/ecookbook/repository">Repository</a></li><li><a class="settings selected" href="/projects/ecookbook/settings">Settings</a></li></ul>
+        <div class="tabs-buttons" style="display:none;">
+            <button class="tab-left icon-only" onclick="moveTabLeft(this); return false;">
+              <svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--angle-left"></use></svg>
+            </button>
+            <button class="tab-right icon-only" onclick="moveTabRight(this); return false;">
+              <svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--angle-right"></use></svg>
+            </button>
+        </div>
+    </div>
+</div>
+
+<div id="main" class="nosidebar">
+  
+    <div id="sidebar">
+        <div id="sidebar-wrapper">
+          
+          
+        </div>
+    </div>
+
+    <div id="content">
+        
+        <h2>Settings</h2>
+
+
+<div class="tabs">
+  <ul>
+    <li><a id="tab-info" class="selected" onclick="showTab(&#39;info&#39;, this.href); return false;" href="/projects/ecookbook/settings/info">Project</a></li>
+    <li><a id="tab-members" onclick="showTab(&#39;members&#39;, this.href); return false;" href="/projects/ecookbook/settings/members">Members</a></li>
+    <li><a id="tab-issues" onclick="showTab(&#39;issues&#39;, this.href); return false;" href="/projects/ecookbook/settings/issues">Issue tracking</a></li>
+    <li><a id="tab-versions" onclick="showTab(&#39;versions&#39;, this.href); return false;" href="/projects/ecookbook/settings/versions">Versions</a></li>
+    <li><a id="tab-categories" onclick="showTab(&#39;categories&#39;, this.href); return false;" href="/projects/ecookbook/settings/categories">Issue categories</a></li>
+    <li><a id="tab-repositories" onclick="showTab(&#39;repositories&#39;, this.href); return false;" href="/projects/ecookbook/settings/repositories">Repositories</a></li>
+    <li><a id="tab-boards" onclick="showTab(&#39;boards&#39;, this.href); return false;" href="/projects/ecookbook/settings/boards">Forums</a></li>
+    <li><a id="tab-activities" onclick="showTab(&#39;activities&#39;, this.href); return false;" href="/projects/ecookbook/settings/activities">Time tracking</a></li>
+  </ul>
+  <div class="tabs-buttons" style="display:none;">
+    <button class="tab-left icon-only" type="button" onclick="moveTabLeft(this);">
+      <svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--angle-left"></use></svg>
+    </button>
+    <button class="tab-right icon-only" type="button" onclick="moveTabRight(this);">
+      <svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--angle-right"></use></svg>
+    </button>
+  </div>
+</div>
+
+  <div id="tab-content-info" class="tab-content"><form class="edit_project" id="edit_project_1" enctype="multipart/form-data" action="/projects/ecookbook" accept-charset="UTF-8" name="edit_project_1-45e2cf40" method="post"><input type="hidden" name="_method" value="patch" autocomplete="off" /><input type="hidden" name="authenticity_token" value="OG5qVdDH47v8Dc0YfPmp4-DHaYQZh0uhceT_09pZK9KMWZSYs3EUver61vs4Q_JaoBGtbcpnsZ_55B1tMn-tfg" autocomplete="off" />
+
+
+<div class="box tabular">
+<!--[form:project]-->
+<p><label for="project_name">Name<span class="required"> *</span></label><input size="60" type="text" value="eCookbook" name="project[name]" id="project_name" /></p>
+
+<p><label for="project_description">Description</label><textarea rows="8" class="wiki-edit" data-controller="list-autofill" data-action="beforeinput-&gt;list-autofill#handleBeforeInput" data-list-autofill-text-formatting-param="common_mark" name="project[description]" id="project_description">
+Recipes management application</textarea></p>
+<p><label for="project_identifier">Identifier<span class="required"> *</span></label><input size="60" disabled="disabled" maxlength="100" type="text" value="ecookbook" name="project[identifier]" id="project_identifier" />
+</p>
+<p><label for="project_homepage">Homepage</label><input size="60" type="text" value="http://ecookbook.somenet.foo/" name="project[homepage]" id="project_homepage" /></p>
+<p>
+  <label for="project_is_public">Public</label><input name="project[is_public]" type="hidden" value="0" autocomplete="off" /><input type="checkbox" value="1" checked="checked" name="project[is_public]" id="project_is_public" />
+  <em class="info">Public projects and their contents are openly available on the network.</em>
+</p>
+
+    <p><label for="project_parent_id">Subproject of</label><select name="project[parent_id]" id="project_parent_id"><option value=''>&nbsp;</option><option value="2">OnlineStore</option></select></p>
+
+<p><label for="project_inherit_members">Inherit members</label><input name="project[inherit_members]" type="hidden" value="0" autocomplete="off" /><input type="checkbox" value="1" name="project[inherit_members]" id="project_inherit_members" /></p>
+
+<script>
+//<![CDATA[
+var wikiToolbar = new jsToolBar(document.getElementById('project_description')); wikiToolbar.setHelpLink('/help/wiki_syntax'); wikiToolbar.setPreviewUrl('/preview/text'); wikiToolbar.draw();
+//]]>
+</script>
+
+  <p><label for="project_custom_field_values_3"><span>Development status</span></label><select name="project[custom_field_values][3]" id="project_custom_field_values_3" class="list_cf cf_3"><option value="">&nbsp;</option><option selected="selected" value="Stable">Stable</option>
+<option value="Beta">Beta</option>
+<option value="Alpha">Alpha</option>
+<option value="Planning">Planning</option></select></p>
+
+</div>
+
+<fieldset class="box tabular" id="project_modules"><legend><a href="#" onclick="toggleCheckboxesBySelector(&#39;#project_modules input[type=&quot;checkbox&quot;]&#39;); return false;" title="Check all / Uncheck all" class="icon icon-checked"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--checked"></use></svg><span class="icon-label"></span></a>Modules</legend>
+    <label class="floating">
+    <input type="checkbox" name="project[enabled_module_names][]" id="project_enabled_module_names_issue_tracking" value="issue_tracking" checked="checked" />
+    Issue tracking
+    </label>
+    <label class="floating">
+    <input type="checkbox" name="project[enabled_module_names][]" id="project_enabled_module_names_time_tracking" value="time_tracking" checked="checked" />
+    Time tracking
+    </label>
+    <label class="floating">
+    <input type="checkbox" name="project[enabled_module_names][]" id="project_enabled_module_names_news" value="news" checked="checked" />
+    News
+    </label>
+    <label class="floating">
+    <input type="checkbox" name="project[enabled_module_names][]" id="project_enabled_module_names_documents" value="documents" checked="checked" />
+    Documents
+    </label>
+    <label class="floating">
+    <input type="checkbox" name="project[enabled_module_names][]" id="project_enabled_module_names_files" value="files" checked="checked" />
+    Files
+    </label>
+    <label class="floating">
+    <input type="checkbox" name="project[enabled_module_names][]" id="project_enabled_module_names_wiki" value="wiki" checked="checked" />
+    Wiki
+    </label>
+    <label class="floating">
+    <input type="checkbox" name="project[enabled_module_names][]" id="project_enabled_module_names_repository" value="repository" checked="checked" />
+    Repository
+    </label>
+    <label class="floating">
+    <input type="checkbox" name="project[enabled_module_names][]" id="project_enabled_module_names_boards" value="boards" checked="checked" />
+    Forums
+    </label>
+    <label class="floating">
+    <input type="checkbox" name="project[enabled_module_names][]" id="project_enabled_module_names_calendar" value="calendar" checked="checked" />
+    Calendar
+    </label>
+    <label class="floating">
+    <input type="checkbox" name="project[enabled_module_names][]" id="project_enabled_module_names_gantt" value="gantt" checked="checked" />
+    Gantt
+    </label>
+<input type="hidden" name="project[enabled_module_names][]" id="project_enabled_module_names_" value="" autocomplete="off" />
+</fieldset>
+<!--[eoform:project]-->
+
+
+
+<input type="submit" name="commit" value="Save" data-disable-with="Save" />
+</form></div>
+  <div id="tab-content-members" style="display:none" class="tab-content">
+  <div class="contextual"><a class="icon icon-settings" href="/users"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--settings"></use></svg><span class="icon-label">Administration</span></a></div>
+<p><a class="icon icon-add" data-remote="true" href="/projects/ecookbook/memberships/new"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--add"></use></svg><span class="icon-label">New member</span></a></p>
+
+<table class="list members">
+  <thead>
+    <tr>
+      <th>User / Group</th>
+      <th>Roles</th>
+      <th></th>
+      
+    </tr>
+  </thead>
+  <tbody>
+  <tr id="member-1" class="member">
+  <td class="name">
+    <span class="icon">
+        
+        <a class="user active" href="/users/2">John Smith</a>
+    </span>
+  </td>
+  <td class="roles">
+    <span id="member-1-roles">Manager</span>
+    <div id="member-1-form"></div>
+  </td>
+  <td class="buttons">
+      <a class="icon icon-edit" data-remote="true" href="/memberships/1/edit"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--edit"></use></svg><span class="icon-label">Edit</span></a>
+      <a class="icon icon-del" data-remote="true" rel="nofollow" data-method="delete" href="/memberships/1"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--del"></use></svg><span class="icon-label">Delete</span></a>
+  </td>
+  
+  </tr>
+  <tr id="member-2" class="member">
+  <td class="name">
+    <span class="icon">
+        
+        <a class="user active" href="/users/3">Dave Lopper</a>
+    </span>
+  </td>
+  <td class="roles">
+    <span id="member-2-roles">Developer</span>
+    <div id="member-2-form"></div>
+  </td>
+  <td class="buttons">
+      <a class="icon icon-edit" data-remote="true" href="/memberships/2/edit"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--edit"></use></svg><span class="icon-label">Edit</span></a>
+      <a class="icon icon-del" data-remote="true" rel="nofollow" data-method="delete" href="/memberships/2"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--del"></use></svg><span class="icon-label">Delete</span></a>
+  </td>
+  
+  </tr>
+  <tr id="member-4" class="member">
+  <td class="name">
+    <span class="icon">
+        
+        <a class="user locked" href="/users/5">Dave2 Lopper2</a>
+    </span>
+  </td>
+  <td class="roles">
+    <span id="member-4-roles">Developer</span>
+    <div id="member-4-form"></div>
+  </td>
+  <td class="buttons">
+      <a class="icon icon-edit" data-remote="true" href="/memberships/4/edit"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--edit"></use></svg><span class="icon-label">Edit</span></a>
+      <a class="icon icon-del" data-remote="true" rel="nofollow" data-method="delete" href="/memberships/4"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--del"></use></svg><span class="icon-label">Delete</span></a>
+  </td>
+  
+  </tr>
+  </tbody>
+</table>
+</div>
+  <div id="tab-content-issues" style="display:none" class="tab-content"><form class="edit_project" id="project_issue_tracking" action="/projects/ecookbook" accept-charset="UTF-8" name="project_issue_tracking-f77c42ba" method="post"><input type="hidden" name="_method" value="patch" autocomplete="off" /><input type="hidden" name="authenticity_token" value="DzsDA1qHMQx_gXse3GhH__7hhik68J17i8ilDNcJxSC7DP3OOTHGCml2YP2Y0hxGvjdCwOkQZ0UDyEeyPy9DjA" autocomplete="off" />
+  <input type="hidden" name="tab" id="tab" value="issues" autocomplete="off" />
+
+  <fieldset class="box tabular" id="project_trackers"><legend><a href="#" onclick="toggleCheckboxesBySelector(&#39;#project_trackers input[type=checkbox]&#39;); return false;" title="Check all / Uncheck all" class="icon icon-checked"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--checked"></use></svg><span class="icon-label"></span></a>Trackers</legend>
+    <div class="contextual"><a class="icon icon-settings" href="/trackers"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--settings"></use></svg><span class="icon-label">Administration</span></a></div>
+    <label class="floating">
+      <input type="checkbox" name="project[tracker_ids][]" value="1" checked="checked" />
+      <span class="field-description" title="Description for Bug tracker">Bug</span>
+    </label>
+    <label class="floating">
+      <input type="checkbox" name="project[tracker_ids][]" value="2" checked="checked" />
+      <span class="field-description" title="Description for Feature request tracker">Feature request</span>
+    </label>
+    <label class="floating">
+      <input type="checkbox" name="project[tracker_ids][]" value="3" checked="checked" />
+      <span>Support request</span>
+    </label>
+  <input type="hidden" name="project[tracker_ids][]" id="project_tracker_ids_" value="" autocomplete="off" />
+  </fieldset>
+
+  <fieldset class="box tabular" id="project_issue_custom_fields"><legend><a href="#" onclick="toggleCheckboxesBySelector(&#39;#project_issue_custom_fields input[type=checkbox]:enabled&#39;); return false;" title="Check all / Uncheck all" class="icon icon-checked"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--checked"></use></svg><span class="icon-label"></span></a>Custom fields</legend>
+    <div class="contextual"><a class="icon icon-settings" href="/custom_fields"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--settings"></use></svg><span class="icon-label">Administration</span></a></div>
+    <label class="floating">
+      <input type="checkbox" name="project[issue_custom_field_ids][]" value="2" disabled="disabled" checked="checked" />
+      <span>Searchable field</span>
+    </label>
+    <label class="floating">
+      <input type="checkbox" name="project[issue_custom_field_ids][]" value="1" disabled="disabled" checked="checked" />
+      <span title="Select one of the databases" class="field-description">Database</span>
+    </label>
+    <label class="floating">
+      <input type="checkbox" name="project[issue_custom_field_ids][]" value="6" disabled="disabled" checked="checked" />
+      <span>Float field</span>
+    </label>
+    <label class="floating">
+      <input type="checkbox" name="project[issue_custom_field_ids][]" value="8" disabled="disabled" checked="checked" />
+      <span>Custom date</span>
+    </label>
+    <label class="floating">
+      <input type="checkbox" name="project[issue_custom_field_ids][]" value="9" checked="checked" />
+      <span>Project 1 cf</span>
+    </label>
+  <input type="hidden" name="project[issue_custom_field_ids][]" id="project_issue_custom_field_ids_" value="" autocomplete="off" />
+  </fieldset>
+
+  <div class="box tabular">
+    <p><label for="project_default_version_id">Default version</label><select name="project[default_version_id]" id="project_default_version_id"><option value="">none</option>
+<optgroup label="eCookbook"><option value="3">2.0</option></optgroup><optgroup label="eCookbook Subproject 1"><option value="4">2.0</option></optgroup><optgroup label="Private child of eCookbook"><option value="6">Private Version of public subproject</option></optgroup><optgroup label="OnlineStore"><option value="7">Systemwide visible version</option></optgroup></select></p>
+
+    <p><label for="project_default_assigned_to_id">Default assignee</label><select name="project[default_assigned_to_id]" id="project_default_assigned_to_id"><option value="">none</option>
+<option value="3">Dave Lopper</option><option value="2">John Smith</option></select></p>
+
+    <p><label for="project_default_issue_query_id">Default issue query</label><select name="project[default_issue_query_id]" id="project_default_issue_query_id"><option value="">none</option>
+<optgroup label="For all projects"><option value="4">Public query for all projects</option>
+<option value="5">Open issues by priority and tracker</option>
+<option value="6">Open issues grouped by tracker</option>
+<option value="9">Open issues grouped by list custom field</option></optgroup><optgroup label="For current project"><option value="1">Multiple custom fields query</option></optgroup></select><em class="info">Public (to any users) queries only selectable</em></p>
+  </div>
+
+  <p><input type="submit" name="commit" value="Save" data-disable-with="Save" /></p>
+</form></div>
+  <div id="tab-content-versions" style="display:none" class="tab-content">  <div class="contextual">
+    <a class="icon icon-locked" rel="nofollow" data-method="put" href="/projects/ecookbook/versions/close_completed"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--lock"></use></svg><span class="icon-label">Close completed versions</span></a>
+  </div>
+<p>
+  <a class="icon icon-add" href="/projects/ecookbook/versions/new?back_url="><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--add"></use></svg><span class="icon-label">New version</span></a>
+</p>
+
+<form action="/projects/ecookbook/settings/versions" accept-charset="UTF-8" name="form-f3ff7495" method="get">
+<fieldset><legend>Filters</legend>
+<label for='status'>Status:</label>
+<select name="version_status" id="version_status" onchange="this.form.submit(); return false;"><option value="">all</option>
+<option selected="selected" value="open">open</option>
+<option value="locked">locked</option>
+<option value="closed">closed</option></select>
+<label for='name'>Version:</label>
+<input type="text" name="version_name" id="version_name" size="30" />
+<input type="submit" value="Apply" data-disable-with="Apply" />
+<a class="icon icon-reload" href="/projects/ecookbook/settings/versions"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--reload"></use></svg><span class="icon-label">Clear</span></a>
+</fieldset>
+</form>&nbsp;
+
+<table class="list versions">
+  <thead><tr>
+    <th>Version</th>
+    <th>Default version</th>
+    <th>Due date</th>
+    <th>Description</th>
+    <th>Status</th>
+    <th>Sharing</th>
+    <th>Wiki page</th>
+    <th style="width:15%"></th>
+    </tr></thead>
+  <tbody>
+    <tr class="version open ">
+    <td class="name">
+      <span class="">
+        
+        <a href="/versions/3">2.0</a>
+      </span>
+    </td>
+    <td class="tick"></td>
+    <td class="date"></td>
+    <td class="description">Future version</td>
+    <td class="status">open</td>
+    <td class="sharing">Not shared</td>
+    <td></td>
+    <td class="buttons">
+        <a class="icon icon-edit" href="/versions/3/edit"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--edit"></use></svg><span class="icon-label">Edit</span></a>
+        <a data-confirm="Are you sure?" class="icon icon-del" rel="nofollow" data-method="delete" href="/versions/3"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--del"></use></svg><span class="icon-label">Delete</span></a>
+     </td>
+    </tr>
+    <tr class="version open shared">
+    <td class="name">
+      <span class="icon">
+        <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--link"></use></svg>
+        <a href="/versions/4">eCookbook Subproject 1 - 2.0</a>
+      </span>
+    </td>
+    <td class="tick"></td>
+    <td class="date"></td>
+    <td class="description">Future version on subproject</td>
+    <td class="status">open</td>
+    <td class="sharing">With project tree</td>
+    <td></td>
+    <td class="buttons">
+     </td>
+    </tr>
+    <tr class="version open shared">
+    <td class="name">
+      <span class="icon">
+        <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--link"></use></svg>
+        <a href="/versions/6">Private child of eCookbook - Private Version of public subproject</a>
+      </span>
+    </td>
+    <td class="tick"></td>
+    <td class="date"></td>
+    <td class="description">Should be done any day now...</td>
+    <td class="status">open</td>
+    <td class="sharing">With project tree</td>
+    <td></td>
+    <td class="buttons">
+     </td>
+    </tr>
+    <tr class="version open shared">
+    <td class="name">
+      <span class="icon">
+        <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--link"></use></svg>
+        <a href="/versions/7">OnlineStore - Systemwide visible version</a>
+      </span>
+    </td>
+    <td class="tick"></td>
+    <td class="date"></td>
+    <td class="description"></td>
+    <td class="status">open</td>
+    <td class="sharing">With all projects</td>
+    <td></td>
+    <td class="buttons">
+     </td>
+    </tr>
+    </tbody>
+</table>
+</div>
+  <div id="tab-content-categories" style="display:none" class="tab-content"><p><a class="icon icon-add" href="/projects/ecookbook/issue_categories/new"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--add"></use></svg><span class="icon-label">New category</span></a></p>
+
+<table class="list">
+  <thead><tr>
+    <th>Issue category</th>
+    <th>Assignee</th>
+    <th></th>
+  </tr></thead>
+  <tbody>
+  <tr>
+    <td class="name">Printing</td>
+    <td>John Smith</td>
+    <td class="buttons">
+        <a class="icon icon-edit" href="/issue_categories/1/edit"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--edit"></use></svg><span class="icon-label">Edit</span></a>
+        <a data-confirm="Are you sure?" class="icon icon-del" rel="nofollow" data-method="delete" href="/issue_categories/1"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--del"></use></svg><span class="icon-label">Delete</span></a>
+    </td>
+  </tr>
+  <tr>
+    <td class="name">Recipes</td>
+    <td></td>
+    <td class="buttons">
+        <a class="icon icon-edit" href="/issue_categories/2/edit"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--edit"></use></svg><span class="icon-label">Edit</span></a>
+        <a data-confirm="Are you sure?" class="icon icon-del" rel="nofollow" data-method="delete" href="/issue_categories/2"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--del"></use></svg><span class="icon-label">Delete</span></a>
+    </td>
+  </tr>
+    </tbody>
+</table>
+</div>
+  <div id="tab-content-repositories" style="display:none" class="tab-content">  <p><a class="icon icon-add" href="/projects/ecookbook/repositories/new"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--add"></use></svg><span class="icon-label">New repository</span></a></p>
+
+<div class="autoscroll">
+  <table class="list">
+    <thead>
+      <tr>
+        <th>Identifier</th>
+        <th>Main repository</th>
+        <th>SCM</th>
+        <th>Repository</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="name">
+        
+        </td>
+        <td><span class="icon-only icon-checked"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--checked"></use></svg></span></td>
+        <td>Subversion</td>
+        <td>file:////home/mikuta0407/projects/buropher/_reference/ref-projects/tmp/test/subversion_repository</td>
+        <td class="buttons">
+          <a class="icon icon-user" href="/repositories/10/committers"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--user"></use></svg><span class="icon-label">Users</span></a>
+          <a class="icon icon-edit" href="/repositories/10/edit"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--edit"></use></svg><span class="icon-label">Edit</span></a>
+          <a data-confirm="Are you sure?" class="icon icon-del" rel="nofollow" data-method="delete" href="/repositories/10"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--del"></use></svg><span class="icon-label">Delete</span></a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</div>
+  <div id="tab-content-boards" style="display:none" class="tab-content"><p><a class="icon icon-add" href="/projects/ecookbook/boards/new"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--add"></use></svg><span class="icon-label">New forum</span></a></p>
+
+<div class="table-list boards">
+  <div class="table-list-header">
+    <div class="table-list-cell">Forum</div>
+  </div>
+  <div class="sort-level"><div>
+  <div class="table-list-row">
+    <div class="table-list-cell name" style="padding-left: 2px">
+      <a href="/projects/ecookbook/boards/1">Help</a>
+    </div>
+    <div class="table-list-cell description">Help board</div>
+    <div class="table-list-cell buttons">
+      <span class="icon-only icon-sort-handle sort-handle" data-reorder-url="/projects/ecookbook/boards/1" data-reorder-param="board" title="Sort"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--reorder"></use></svg><span class="icon-label"></span></span>
+      <a class="icon icon-edit" href="/projects/ecookbook/boards/1/edit"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--edit"></use></svg><span class="icon-label">Edit</span></a>
+      <a data-confirm="Are you sure?" class="icon icon-del" rel="nofollow" data-method="delete" href="/projects/ecookbook/boards/1"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--del"></use></svg><span class="icon-label">Delete</span></a>
+    </div>
+  </div>
+</div><div>
+  <div class="table-list-row">
+    <div class="table-list-cell name" style="padding-left: 2px">
+      <a href="/projects/ecookbook/boards/2">Discussion</a>
+    </div>
+    <div class="table-list-cell description">Discussion board</div>
+    <div class="table-list-cell buttons">
+      <span class="icon-only icon-sort-handle sort-handle" data-reorder-url="/projects/ecookbook/boards/2" data-reorder-param="board" title="Sort"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--reorder"></use></svg><span class="icon-label"></span></span>
+      <a class="icon icon-edit" href="/projects/ecookbook/boards/2/edit"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--edit"></use></svg><span class="icon-label">Edit</span></a>
+      <a data-confirm="Are you sure?" class="icon icon-del" rel="nofollow" data-method="delete" href="/projects/ecookbook/boards/2"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--del"></use></svg><span class="icon-label">Delete</span></a>
+    </div>
+  </div>
+</div></div></div>
+
+<script>
+//<![CDATA[
+
+  $(function() { $("div.sort-level").positionedItems(); });
+
+//]]>
+</script>
+</div>
+  <div id="tab-content-activities" style="display:none" class="tab-content"><div class="contextual">
+<a data-confirm="Are you sure?" class="icon icon-del" rel="nofollow" data-method="delete" href="/projects/ecookbook/enumerations"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--del"></use></svg><span class="icon-label">Reset</span></a>
+<a class="icon icon-settings" href="/enumerations"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--settings"></use></svg><span class="icon-label">Administration</span></a>
+</div>
+
+<form class="tabular" action="/projects/ecookbook/enumerations" accept-charset="UTF-8" name="form-02bf65e1" method="post"><input type="hidden" name="_method" value="put" autocomplete="off" /><input type="hidden" name="authenticity_token" value="x3eV83o_mC6WCJwrKGmwqz8oQlGV3iTeJu4n2jUBzFtzQGs-GYlvKID_h8hs0-sSf_6GuEY-3uCu7sVk3SdK9w" autocomplete="off" />
+
+<table class="list">
+  <thead><tr>
+    <th>Name</th>
+    <th>System Activity</th>
+    <th>Billable</th>
+    <th><a href="#" onclick="toggleCheckboxesBySelector(&#39;input.enumerations_active&#39;); return false;" title="Check all / Uncheck all" class="icon icon-checked"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--checked"></use></svg><span class="icon-label"></span></a> Active</th>
+  </tr></thead>
+
+  
+  <tr>
+    <td class="name">
+      <input value="9" autocomplete="off" type="hidden" name="enumerations[9][parent_id]" id="enumerations_9_parent_id" />
+      Design
+    </td>
+    <td class="tick"><span class="icon-only icon-checked"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--checked"></use></svg></span></td>
+    <td>
+      <select name="enumerations[9][custom_field_values][7]" id="enumerations[9]_custom_field_values_7" class="bool_cf cf_7"><option value="">&nbsp;</option><option value="1">Yes</option>
+<option value="0">No</option></select>
+    </td>
+    <td>
+      <input name="enumerations[9][active]" type="hidden" value="0" autocomplete="off" /><input class="enumerations_active" type="checkbox" value="1" checked="checked" name="enumerations[9][active]" id="enumerations_9_active" />
+    </td>
+  </tr>
+  
+  <tr>
+    <td class="name">
+      <input value="10" autocomplete="off" type="hidden" name="enumerations[10][parent_id]" id="enumerations_10_parent_id" />
+      Development
+    </td>
+    <td class="tick"><span class="icon-only icon-checked"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--checked"></use></svg></span></td>
+    <td>
+      <select name="enumerations[10][custom_field_values][7]" id="enumerations[10]_custom_field_values_7" class="bool_cf cf_7"><option value="">&nbsp;</option><option value="1">Yes</option>
+<option value="0">No</option></select>
+    </td>
+    <td>
+      <input name="enumerations[10][active]" type="hidden" value="0" autocomplete="off" /><input class="enumerations_active" type="checkbox" value="1" checked="checked" name="enumerations[10][active]" id="enumerations_10_active" />
+    </td>
+  </tr>
+  
+  <tr>
+    <td class="name">
+      <input value="11" autocomplete="off" type="hidden" name="enumerations[11][parent_id]" id="enumerations_11_parent_id" />
+      QA
+    </td>
+    <td class="tick"><span class="icon-only icon-checked"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--checked"></use></svg></span></td>
+    <td>
+      <select name="enumerations[11][custom_field_values][7]" id="enumerations[11]_custom_field_values_7" class="bool_cf cf_7"><option value="">&nbsp;</option><option selected="selected" value="1">Yes</option>
+<option value="0">No</option></select>
+    </td>
+    <td>
+      <input name="enumerations[11][active]" type="hidden" value="0" autocomplete="off" /><input class="enumerations_active" type="checkbox" value="1" checked="checked" name="enumerations[11][active]" id="enumerations_11_active" />
+    </td>
+  </tr>
+  
+  <tr>
+    <td class="name">
+      <input value="14" autocomplete="off" type="hidden" name="enumerations[14][parent_id]" id="enumerations_14_parent_id" />
+      Inactive Activity
+    </td>
+    <td class="tick"><span class="icon-only icon-checked"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--checked"></use></svg></span></td>
+    <td>
+      <select name="enumerations[14][custom_field_values][7]" id="enumerations[14]_custom_field_values_7" class="bool_cf cf_7"><option value="">&nbsp;</option><option value="1">Yes</option>
+<option value="0">No</option></select>
+    </td>
+    <td>
+      <input name="enumerations[14][active]" type="hidden" value="0" autocomplete="off" /><input class="enumerations_active" type="checkbox" value="1" name="enumerations[14][active]" id="enumerations_14_active" />
+    </td>
+  </tr>
+</table>
+
+<input type="submit" name="commit" value="Save" data-disable-with="Save" />
+</form></div>
+
+<script>
+//<![CDATA[
+showTab('info', this.href)
+//]]>
+</script>
+
+
+
+        
+        <div style="clear:both;"></div>
+    </div>
+</div>
+<div id="footer">
+    Powered by <a target="_blank" rel="noopener" href="https://www.redmine.org/">Redmine</a> &copy; 2006-2026 Jean-Philippe Lang
+</div>
+
+<div id="ajax-indicator" style="display:none;">
+  <span class="icon">
+    <svg class="s18 icon-svg svg-loader" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--loader"></use></svg><span class="icon-label">Loading...</span>
+  </span>
+</div>
+<div id="ajax-modal" style="display:none;"></div>
+<div id="icon-copy-source" style="display: none;"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--"></use></svg></div>
+
+</div>
+
+</body>
+</html>
