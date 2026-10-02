@@ -208,7 +208,7 @@ func TestIssuesReadStatuses(t *testing.T) {
 		{admin, "/issues/999", 404},
 		{admin, "/projects/nonexistent/issues", 404},
 		{admin, "/issues?query_id=999", 404},
-		{anon, "/issues/6", 302},                     // 非公開プロジェクトのチケット → ログインへ
+		{anon, "/issues/6", 302},                      // 非公開プロジェクトのチケット → ログインへ
 		{anon, "/projects/private-child/issues", 302}, // 非公開プロジェクト
 		{admin, "/issues/1/tab/time_entries", 422},    // XHR 以外
 		{admin, "/journals/999/diff", 404},
