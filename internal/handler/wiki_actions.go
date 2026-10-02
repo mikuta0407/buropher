@@ -194,9 +194,7 @@ func (a *App) WikiShow(c *Req) {
 	if c.AllowedTo(domain.Perm("export_wiki_pages"), c.Project) {
 		switch format {
 		case "pdf":
-			// TODO: PDF 出力（Redmine::Export::PDF::WikiPdfHelper#wiki_page_to_pdf）は未実装。
-			wikiNotAcceptable(c)
-			c.Halt()
+			a.wikiShowPDF(c, page)
 			return
 		case "html":
 			a.wikiSendExport(c, page, content)
@@ -1614,12 +1612,12 @@ func (a *App) WikiDestroyVersion(c *Req) {
 
 // ---------------------------------------------------------------- export / preview / add_attachment
 
-// WikiExport は wiki#export（Wiki 全体の HTML。PDF は未実装）。
+// WikiExport は wiki#export（Wiki 全体の HTML / PDF）。
 func (a *App) WikiExport(c *Req) {
-	switch c.Params().String("format") {
-	case "", "html":
+	format := c.Params().String("format")
+	switch format {
+	case "", "html", "pdf":
 	default:
-		// TODO: format.pdf（wiki_pages_to_pdf）は未実装
 		wikiNotAcceptable(c)
 		c.Halt()
 		return
@@ -1627,6 +1625,10 @@ func (a *App) WikiExport(c *Req) {
 	pages, err := a.loadPagesForIndex(c)
 	if err != nil {
 		a.wikiError(c, err)
+		return
+	}
+	if format == "pdf" {
+		a.wikiExportPDF(c, pages)
 		return
 	}
 	type exported struct {

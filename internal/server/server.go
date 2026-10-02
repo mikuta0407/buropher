@@ -35,6 +35,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/httpx"
 	"github.com/mikuta0407/buropher/internal/i18n"
 	"github.com/mikuta0407/buropher/internal/issues"
+	"github.com/mikuta0407/buropher/internal/pdf"
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/settings"
 	"github.com/mikuta0407/buropher/internal/view"
@@ -132,6 +133,7 @@ func New(cfg *config.Config, d *db.DB, opts ...Options) (*Server, error) {
 	app.SudoMode = cfg.Auth.SudoMode
 	app.SudoModeTimeout = time.Duration(cfg.Auth.SudoModeTimeout) * time.Minute
 	app.BaseURL = cfg.Server.BaseURL
+	app.PDFFonts = pdf.NewFontSet(pdf.Config{Dir: cfg.PDF.FontDir, Fonts: cfg.PDF.Fonts, Logger: o.Logger})
 	if box, err := secretbox.New(string(secret)); err == nil {
 		app.Secrets = box
 	}

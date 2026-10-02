@@ -67,10 +67,11 @@ func (a *App) GanttsShow(c *Req) {
 	if qv.Valid {
 		g.query = q
 	}
-	switch formatOf(c) {
-	case "html":
+	format := formatOf(c)
+	switch format {
+	case "html", "pdf":
 	default:
-		// TODO(pdf): format.pdf（Gantt#to_pdf）は未対応。PNG は MiniMagick が無い Redmine と同じく受け付けない。
+		// PNG は MiniMagick が無い Redmine と同じく受け付けない。
 		renderUnknownFormat(c)
 		return
 	}
@@ -80,6 +81,10 @@ func (a *App) GanttsShow(c *Req) {
 	}
 	if g.l.err != nil {
 		a.serverError(c, g.l.err)
+		return
+	}
+	if format == "pdf" {
+		a.ganttShowPDF(c, g)
 		return
 	}
 	data, err := a.ganttViewData(c, g, q, qv)

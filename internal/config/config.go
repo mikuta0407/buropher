@@ -14,6 +14,7 @@ type Config struct {
 	Database Database `toml:"database"`
 	Storage  Storage  `toml:"storage"`
 	Auth     Auth     `toml:"auth"`
+	PDF      PDF      `toml:"pdf"`
 	// DevAssetsDir が空でなければ embed ではなくディスクからアセット/テンプレートを読む（開発用）。
 	DevWebDir string `toml:"dev_web_dir"`
 }
@@ -44,6 +45,14 @@ type Auth struct {
 	SudoModeTimeout int `toml:"sudo_mode_timeout"`
 }
 
+// PDF は PDF 出力のフォント（docs/pdf.md）。
+type PDF struct {
+	// FontDir は CJK などの追加の TrueType フォントを置くディレクトリ（空なら埋め込みの DejaVu だけ）。
+	FontDir string `toml:"font_dir"`
+	// Fonts はロケールごとのフォントファイル（例: ja = "ipaexg.ttf"。"regular.ttf,bold.ttf" で太字も指定できる）。
+	Fonts map[string]string `toml:"fonts"`
+}
+
 func Default() *Config {
 	return &Config{
 		Server:   Server{Addr: ":3000"},
@@ -68,6 +77,7 @@ func Load(path string) (*Config, error) {
 		"BUROPHER_DB_DSN":           &c.Database.DSN,
 		"BUROPHER_ATTACHMENTS_PATH": &c.Storage.AttachmentsPath,
 		"BUROPHER_DEV_WEB_DIR":      &c.DevWebDir,
+		"BUROPHER_PDF_FONT_DIR":     &c.PDF.FontDir,
 	}
 	for k, p := range env {
 		if v, ok := os.LookupEnv(k); ok {

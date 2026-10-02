@@ -110,7 +110,11 @@ func (f *face) style(s string) (actual string, synthBold bool) {
 }
 
 // FontSet は読み込んだフォントの集合（アプリ全体で共有し、並行に使える）。
+// フォントは最初に PDF を作るときに読み込む。
 type FontSet struct {
+	cfg  Config
+	once sync.Once
+
 	dejavu, mono *face
 	// cjk はロケールごとの書体、extra は代替に使う書体（cjk を含む、重複なし）。
 	cjk   map[string]*face
@@ -130,15 +134,28 @@ func Default() *FontSet {
 	return defaultSet
 }
 
-// NewFontSet は cfg のフォントを読み込む。読めないフォントは警告して無視する。
-func NewFontSet(cfg Config) *FontSet {
+var (
+	embeddedOnce               sync.Once
+	embeddedSans, embeddedMono *face
+)
+
+// NewFontSet は cfg のフォントの集合を作る（読み込みは最初の使用時。読めないフォントは警告して無視する）。
+func NewFontSet(cfg Config) *FontSet { return &FontSet{cfg: cfg} }
+
+func (fs *FontSet) init() { fs.once.Do(fs.load) }
+
+func (fs *FontSet) load() {
+	cfg := fs.cfg
 	logger := cfg.Logger
 	if logger == nil {
 		logger = slog.Default()
 	}
-	fs := &FontSet{cjk: map[string]*face{}}
-	fs.dejavu = mustEmbeddedFace("dejavu", map[string]string{"": "DejaVuSans.ttf.gz", "B": "DejaVuSans-Bold.ttf.gz", "I": "DejaVuSans-Oblique.ttf.gz"})
-	fs.mono = mustEmbeddedFace("dejavumono", map[string]string{"": "DejaVuSansMono.ttf.gz"})
+	embeddedOnce.Do(func() {
+		embeddedSans = mustEmbeddedFace("dejavu", map[string]string{"": "DejaVuSans.ttf.gz", "B": "DejaVuSans-Bold.ttf.gz", "I": "DejaVuSans-Oblique.ttf.gz"})
+		embeddedMono = mustEmbeddedFace("dejavumono", map[string]string{"": "DejaVuSansMono.ttf.gz"})
+	})
+	fs.cjk = map[string]*face{}
+	fs.dejavu, fs.mono = embeddedSans, embeddedMono
 
 	byPath := map[string]*face{}
 	load := func(spec string) *face {
@@ -203,11 +220,13 @@ func NewFontSet(cfg Config) *FontSet {
 			load(spec)
 		}
 	}
-	return fs
 }
 
 // HasCJK は locale（"ja" 等）用の CJK フォントがあるか。
-func (fs *FontSet) HasCJK(locale string) bool { return fs.cjkFace(locale) != nil }
+func (fs *FontSet) HasCJK(locale string) bool {
+	fs.init()
+	return fs.cjkFace(locale) != nil
+}
 
 func (fs *FontSet) cjkFace(locale string) *face {
 	if f := fs.cjk[locale]; f != nil {
@@ -224,6 +243,7 @@ func (fs *FontSet) cjkFace(locale string) *face {
 
 // chains はロケールの本文用・等幅用のフォントの優先順。
 func (fs *FontSet) chains(locale string) (main, mono []*face) {
+	fs.init()
 	var primary *face
 	if IsCJK(locale) {
 		primary = fs.cjkFace(locale)

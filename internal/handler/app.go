@@ -24,6 +24,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/httpx"
 	"github.com/mikuta0407/buropher/internal/i18n"
 	"github.com/mikuta0407/buropher/internal/issues"
+	"github.com/mikuta0407/buropher/internal/pdf"
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/settings"
 	"github.com/mikuta0407/buropher/internal/view"
@@ -67,6 +68,8 @@ type App struct {
 	OIDCHTTPClient *http.Client
 	// BaseURL は外部から見たベース URL（config の server.base_url。空ならリクエストから組み立てる）。
 	BaseURL string
+	// PDFFonts は PDF 出力のフォント（nil なら埋め込みフォントと BUROPHER_PDF_FONT_DIR。internal/pdf）。
+	PDFFonts *pdf.FontSet
 }
 
 func (a *App) now() time.Time {

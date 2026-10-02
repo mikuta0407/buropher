@@ -30,7 +30,7 @@ type ImageLoader func(src string) (data []byte, ok bool)
 // reTOC は RDMwriteFormattedCell が取り除く {{toc}}。
 var reTOC = regexp.MustCompile(`(?i)<p>\{\{((<|&lt;)|(>|&gt;))?toc\}\}</p>`)
 
-// WriteHTMLCell は RDMwriteFormattedCell(w, h, '', '', txt, attachments, border)（ln = 1）。
+// WriteHTMLCell は RDMwriteFormattedCell(w, h, ”, ”, txt, attachments, border)（ln = 1）。
 // 現在位置から幅 w（0 なら右余白まで）に HTML を描き、枠線 border を付ける。
 func (d *Doc) WriteHTMLCell(w, h float64, src, border string, images ImageLoader) {
 	src = reTOC.ReplaceAllString(src, "")
