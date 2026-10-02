@@ -314,6 +314,11 @@ func TestNotifyAdminTestEmail(t *testing.T) {
 
 // discordEnv は Discord 通知を有効にした環境（偽 Discord API）。
 func newDiscordEnv(t *testing.T) (*notifyEnv, *discordtest.Server) {
+	return newDiscordEnvWith(t)
+}
+
+// newDiscordEnvWith は newDiscordEnv に設定の変更を加えたもの。
+func newDiscordEnvWith(t *testing.T, mutate ...func(cfg *config.Config, o *server.Options)) (*notifyEnv, *discordtest.Server) {
 	fake := discordtest.New()
 	t.Cleanup(fake.Close)
 	fake.BotToken, fake.ClientID, fake.ClientSecret = "bot-token", "client-1", "secret-1"
@@ -321,6 +326,9 @@ func newDiscordEnv(t *testing.T) (*notifyEnv, *discordtest.Server) {
 		cfg.Discord.APIBase = fake.URL
 		cfg.Discord.AuthorizeURL = fake.URL + "/oauth2/authorize"
 		cfg.Discord.Enabled = true
+		for _, m := range mutate {
+			m(cfg, o)
+		}
 	})
 	e.set("buropher_discord_enabled", "1")
 	box := e.srv.App().Secrets
