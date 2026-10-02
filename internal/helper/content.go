@@ -4,6 +4,8 @@ package helper
 // （ReactionsHelper / BoardsHelper / WatchersHelper#watcher_link（種類の対応付き）/ ApplicationHelper の一部）。
 
 import (
+	"context"
+	"net/http"
 	"net/url"
 	"regexp"
 	"strconv"
@@ -13,9 +15,12 @@ import (
 	"github.com/mikuta0407/buropher/internal/authz"
 	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/httpx"
+	"github.com/mikuta0407/buropher/internal/pagination"
 	"github.com/mikuta0407/buropher/internal/query"
 	"github.com/mikuta0407/buropher/internal/repository"
+	"github.com/mikuta0407/buropher/internal/textformat/highlight"
 	"github.com/mikuta0407/buropher/internal/textformat/redmine"
+	"github.com/mikuta0407/buropher/internal/unifieddiff"
 	"github.com/mikuta0407/buropher/internal/view"
 	"github.com/mikuta0407/buropher/internal/view/rails"
 )
@@ -115,6 +120,81 @@ func init() {
 				}
 				return u
 			},
+			// watched.watcher_users.size
+			"content_watcher_count": func(objectType string, id int64) int {
+				p := pg()
+				if p.DB == nil {
+					return 0
+				}
+				ws, err := repository.WatcherPrincipals(p.ctx(), p.DB, watchableKind(objectType), id, p.userFormat())
+				if err != nil {
+					p.logError("watchers", err)
+				}
+				return len(ws)
+			},
+			// watchers_list(object)（project は object.project）
+			"content_watchers_list": func(objectType string, id int64, project any) html {
+				return d.contentWatchersList(r, pg(), objectType, id, toProject(project))
+			},
+			// principals_check_box_tags(name, principals)（ユーザーとグループの混在）
+			"watcher_principals_check_box_tags": func(name string, principals []any) html {
+				return d.watcherPrincipalsCheckBoxTags(r, pg(), name, principals)
+			},
+			"principal_id": func(v any) int64 {
+				switch x := v.(type) {
+				case *domain.User:
+					return x.ID
+				case *domain.Group:
+					return x.ID
+				}
+				return 0
+			},
+			// watchers_checkboxes(nil, users, true)
+			"watchers_checkboxes": func(users []any) html {
+				p := pg()
+				var b strings.Builder
+				for _, x := range users {
+					var id int64
+					var name string
+					switch v := x.(type) {
+					case *domain.User:
+						id, name = v.ID, p.userName(v, "")
+					case *domain.Group:
+						id, name = v.ID, GroupName(p, v)
+					default:
+						continue
+					}
+					tag := rails.CheckBoxTag("issue[watcher_user_ids][]", id, true, rails.NewHash("id", nil))
+					b.WriteString(string(rails.ContentTag("label", tag+" "+rails.H(name),
+						rails.NewHash("id", "issue_watcher_user_ids_"+strconv.FormatInt(id, 10), "class", "floating"))))
+				}
+				return html(b.String())
+			},
+			// AttachmentsHelper#render_pagination（添付の前後のページへのリンク）
+			"attachment_pagination": func(p *pagination.Paginator, atts []*domain.Attachment) html {
+				if p == nil {
+					return ""
+				}
+				return paginationLinksEach(pg(), p, false, func(text string, params *rails.Hash, opts *rails.Hash) html {
+					n := int(httpx.RubyToI(rails.ToS(params.Get(p.PageParam))))
+					if n < 1 || n > len(atts) {
+						return ""
+					}
+					att := atts[n-1]
+					return rails.LinkTo(text, "/attachments/"+strconv.FormatInt(att.ID, 10)+"/"+escapeSegment(att.Filename), nil)
+				})
+			},
+			// syntax_highlight_lines(filename, content)
+			"syntax_highlight_lines": func(filename, content string) []string {
+				return syntaxHighlightLines(filename, content)
+			},
+			// Redmine::UnifiedDiff.new(diff, :type => type, :max_lines => Setting.diff_max_lines_displayed, :style => style)
+			"unified_diff": func(diff, typ string, style any) *unifieddiff.UnifiedDiff {
+				return unifieddiff.Parse(diff, typ, rails.ToS(style), rubyToI(pg().setting("diff_max_lines_displayed")), nil)
+			},
+			"download_named_attachment_path": func(a *domain.Attachment) string {
+				return "/attachments/download/" + strconv.FormatInt(a.ID, 10) + "/" + escapeSegment(a.Filename)
+			},
 			"comment_text_area": func(name, method, value string, opts *rails.Hash) html {
 				return commentTextArea(name, method, value, opts)
 			},
@@ -133,6 +213,39 @@ func init() {
 			},
 		}
 	})
+}
+
+// syntaxHighlightLines は ApplicationHelper#syntax_highlight_lines（each_line の行。改行を含む）。
+func syntaxHighlightLines(filename, content string) []string {
+	out := highlight.HighlightByFilename(content, filename)
+	var lines []string
+	for out != "" {
+		i := strings.IndexByte(out, '\n')
+		if i < 0 {
+			lines = append(lines, out)
+			break
+		}
+		lines = append(lines, out[:i+1])
+		out = out[i+1:]
+	}
+	return lines
+}
+
+// routeFormatKey はルートで固定された :format（WithRouteFormat）の context キー。
+type routeFormatKey struct{}
+
+// WithRouteFormat はルートの :format => format 指定をリクエストに記録する（url_for の format の引き継ぎに使う）。
+func WithRouteFormat(r *http.Request, format string) *http.Request {
+	return r.WithContext(context.WithValue(r.Context(), routeFormatKey{}, format))
+}
+
+// RecalledFormat は url_for が引き継ぐ params[:format]（ルートで固定された場合のみ）。
+func (e menuEnv) RecalledFormat() string {
+	if e.p.Request == nil {
+		return ""
+	}
+	f, _ := e.p.Request.Context().Value(routeFormatKey{}).(string)
+	return f
 }
 
 // baseURL は request.base_url。
@@ -440,6 +553,82 @@ func (d *Deps) contentWatcherLink(p *Page, objectType string, id int64) html {
 	}
 	url := "/watchers/watch?object_id=" + strconv.FormatInt(id, 10) + "&object_type=" + objectType
 	return rails.LinkTo(d.spriteIcon(p, icon, text, nil), url, rails.NewHash("remote", true, "method", method, "class", css))
+}
+
+// watchableVisiblePerm は object.visible?(user) が見る権限（visible? を持たない種類は ""）。
+var watchableVisiblePerm = map[string]string{
+	"news": "view_news", "board": "view_messages", "message": "view_messages",
+	"wiki": "view_wiki_pages", "wiki_page": "view_wiki_pages", "issue": "view_issues",
+}
+
+// contentWatchersList は WatchersHelper#watchers_list(object)。
+func (d *Deps) contentWatchersList(r *view.Render, p *Page, objectType string, id int64, project *domain.Project) html {
+	if p.DB == nil {
+		return ""
+	}
+	removeAllowed := p.AllowedTo(domain.Perm("delete_"+objectType+"_watchers"), project)
+	ws, err := repository.WatcherPrincipals(p.ctx(), p.DB, watchableKind(objectType), id, p.userFormat())
+	if err != nil {
+		p.logError("watchers", err)
+		return ""
+	}
+	var b strings.Builder
+	for _, w := range ws {
+		var s html
+		var pid int64
+		switch x := w.(type) {
+		case *domain.User:
+			pid = x.ID
+			s += d.avatar(r, p, x, rails.NewHash("size", "16"))
+			s += d.linkToUser(p, x, rails.NewHash("class", "user"))
+			if perm := watchableVisiblePerm[objectType]; perm != "" && project != nil {
+				if ok, err := authz.New(p.DB, x).AllowedTo(p.ctx(), domain.Perm(perm), project); err == nil && !ok {
+					s += rails.ContentTag("span", d.spriteIcon(p, "warning", p.l("notice_invalid_watcher"), nil),
+						rails.NewHash("class", "icon-only icon-warning", "title", p.l("notice_invalid_watcher")))
+				}
+			}
+		case *domain.Group:
+			pid = x.ID
+			s += d.linkToPrincipal(p, x)
+		}
+		if removeAllowed {
+			u := "/watchers?object_id=" + strconv.FormatInt(id, 10) + "&object_type=" + objectType + "&user_id=" + strconv.FormatInt(pid, 10)
+			s += " " + rails.LinkTo(d.spriteIcon(p, "del", p.l("button_delete"), nil), u,
+				rails.NewHash("remote", true, "method", "delete", "class", "delete icon-only icon-del", "title", p.l("button_delete")))
+		}
+		b.WriteString(string(rails.ContentTag("li", s, rails.NewHash("class", "user-"+strconv.FormatInt(pid, 10)))))
+	}
+	if b.Len() == 0 {
+		return ""
+	}
+	return rails.ContentTag("ul", html(b.String()), rails.NewHash("class", "watchers"))
+}
+
+// watcherPrincipalsCheckBoxTags は ApplicationHelper#principals_check_box_tags。
+func (d *Deps) watcherPrincipalsCheckBoxTags(r *view.Render, p *Page, name string, principals []any) html {
+	var b strings.Builder
+	for _, x := range principals {
+		var id int64
+		var icon html
+		var label string
+		switch v := x.(type) {
+		case *domain.User:
+			id, label = v.ID, p.userName(v, "")
+			icon = d.avatar(r, p, v, rails.NewHash("size", 16))
+			if icon == "" {
+				icon = rails.ContentTag("span", "", rails.NewHash("class", "name icon icon-user"))
+			}
+		case *domain.Group:
+			id, label = v.ID, GroupName(p, v)
+			icon = rails.ContentTag("span", d.spriteIcon(p, "group", nil, nil),
+				rails.NewHash("class", "name icon icon-"+strings.ToLower(v.Kind.RedmineType())))
+		default:
+			continue
+		}
+		cb := rails.CheckBoxTag(name, id, false, rails.NewHash("id", nil))
+		b.WriteString(string(rails.ContentTag("label", cb+icon+rails.H(label), nil)))
+	}
+	return html(b.String())
 }
 
 // ---------------------------------------------------------------- Redmine::QuoteReply::Helper

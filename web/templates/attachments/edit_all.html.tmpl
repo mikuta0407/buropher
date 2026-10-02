@@ -1,0 +1,32 @@
+<h2>
+  {{if .ContainerLink}}{{.ContainerLink}} » {{end}}{{l "label_edit_attachments"}}
+</h2>
+
+{{error_messages_for .Errors}}
+
+{{form_tag (printf "/attachments/%s/%d" .Container.ObjectType .Container.ID) (hash "method" "patch")}}
+  {{back_url_hidden_field_tag}}
+  <div class="box attachments">
+  <table>
+  {{range $attachment := .Edits}}
+    <tr>
+      <td colspan="2">
+        <span class="icon icon-attachment">{{sprite_icon "attachment" $attachment.FilenameWas}}</span>
+        <span class="size">({{number_to_human_size $attachment.Filesize}})</span>
+        <span class="author">{{if $attachment.Author}}{{user_name $attachment.Author}}{{end}}, {{format_time $attachment.CreatedOn}}</span>
+      </td>
+    </tr>
+    <tr id="attachment-{{$attachment.ID}}">
+      <td>{{text_field_tag (printf "attachments[%d][filename]" $attachment.ID) $attachment.Filename (hash "size" 40)}}</td>
+      <td>
+        {{text_field_tag (printf "attachments[%d][description]" $attachment.ID) (presence $attachment.Description) (hash "size" 80 "placeholder" (l "label_optional_description"))}}
+      </td>
+    </tr>
+  {{end}}
+  </table>
+  </div>
+  <p>
+    {{submit_tag (l "button_save")}}
+    {{if present back_url}}{{link_to (l "button_cancel") back_url}}{{end}}
+  </p>
+{{end_form}}

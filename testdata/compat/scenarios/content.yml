@@ -159,3 +159,52 @@ requests:
     id: projects_ecookbook_boards_1_xhr
     users: [admin]
     headers: {X-Requested-With: XMLHttpRequest}
+
+  # ---- 添付ファイル
+  - path: /attachments/4
+    users: [anonymous, admin, jsmith]
+  - path: /attachments/4/source.rb
+    users: [admin]
+  - path: /attachments/4/wrong.rb
+    users: [admin]
+  - path: /attachments/16
+    users: [admin, jsmith, dlopper]
+  - path: /attachments/6
+    users: [admin]
+  - path: /attachments/22
+    users: [admin]
+  - path: /attachments/23
+    users: [admin]
+  - path: /attachments/5
+    users: [admin]
+  - path: /attachments/14
+    users: [admin]
+  - path: /attachments/14?type=sbs
+    users: [admin]
+  - path: /attachments/14
+    id: attachments_14_after_sbs
+    users: [admin]
+  - path: /attachments/2
+    users: [admin]
+  - path: /attachments/999
+    users: [admin]
+  - path: /attachments/4.json
+    users: [admin]
+  - path: /attachments/16.xml
+    users: [jsmith]
+  - path: /attachments/22.json
+    users: [anonymous]
+  - path: /attachments/documents/1/edit
+    users: [admin, jsmith]
+  - path: /attachments/issues/14/edit
+    users: [admin]
+  - path: /attachments/projects/1/edit
+    users: [admin]
+  - path: /attachments/news/1/edit
+    users: [admin]
+  - path: /attachments/messages/1/edit
+    users: [admin, dlopper]
+  - path: /attachments/bogus/1/edit
+    users: [admin]
+  - path: /attachments/issues/999/edit
+    users: [admin]

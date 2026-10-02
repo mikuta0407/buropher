@@ -1,0 +1,7 @@
+<p class="nodata">
+  {{if .download_link}}
+    {{raw (l "label_no_preview_alternative_html" (dict "link" .download_link))}}
+  {{else}}
+    {{l "label_no_preview"}}
+  {{end}}
+</p>

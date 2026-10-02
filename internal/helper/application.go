@@ -599,7 +599,10 @@ func pageHeaderTitle(p *Page) html {
 	var b []html
 	ancestors := p.visibleAncestors(p.Project)
 	if len(ancestors) > 0 {
-		jump := rails.NewHash("jump", p.currentMenuItem())
+		jump := rails.NewHash()
+		if item := p.currentMenuItem(); item != "" {
+			jump.Set("jump", item)
+		}
 		root := ancestors[0]
 		ancestors = ancestors[1:]
 		b = append(b, linkToProject(root, jump, rails.NewHash("class", "root")))
@@ -660,7 +663,7 @@ func (d *Deps) renderProjectsForJumpBox(p *Page, jb *JumpBox, selected *domain.P
 		if selected != nil && selected.ID == pr.ID {
 			cls = "selected"
 		}
-		s.WriteString(string(rails.LinkTo(text, "/projects/"+pr.Identifier+"?jump="+url.QueryEscape(jump),
+		s.WriteString(string(rails.LinkTo(text, "/projects/"+pr.Identifier+jumpQuery("?", jump),
 			rails.NewHash("title", pr.Name, "class", cls))))
 	}
 	groups := []struct {
@@ -706,6 +709,14 @@ func ProjectTree(projects []JumpProject, fn func(p JumpProject, level int)) {
 	}
 }
 
+// jumpQuery は :jump => item のクエリ（item が nil（current_menu_item が nil）なら付けない）。
+func jumpQuery(sep, item string) string {
+	if item == "" {
+		return ""
+	}
+	return sep + "jump=" + url.QueryEscape(item)
+}
+
 // renderProjectJumpBox は ApplicationHelper#render_project_jump_box。
 func (d *Deps) renderProjectJumpBox(p *Page) html {
 	jb := p.jumpBox()
@@ -716,8 +727,8 @@ func (d *Deps) renderProjectJumpBox(p *Page) html {
 	if text == "" {
 		text = p.l("label_jump_to_a_project")
 	}
-	item := url.QueryEscape(p.currentMenuItem())
-	u := "/projects/autocomplete.js?jump=" + item
+	item := p.currentMenuItem()
+	u := "/projects/autocomplete.js" + jumpQuery("?", item)
 	trigger := rails.ContentTag("span", text, rails.NewHash("class", "drdn-trigger"))
 	q := rails.TextFieldTag("q", "", rails.NewHash("id", "projects-quick-search", "class", "autocomplete",
 		"data", rails.NewHash("automcomplete_url", u), "autocomplete", "off"))
@@ -725,7 +736,7 @@ func (d *Deps) renderProjectJumpBox(p *Page) html {
 	if p.Project == nil && p.MainMenu {
 		allClass = "selected"
 	}
-	all := rails.LinkTo(p.l("label_project_all"), "/projects?jump="+item, rails.NewHash("class", allClass))
+	all := rails.LinkTo(p.l("label_project_all"), "/projects"+jumpQuery("?", item), rails.NewHash("class", allClass))
 	content := rails.ContentTag("div",
 		rails.ContentTag("div", d.spriteIcon(p, "search", nil, rails.NewHash("icon_only", true, "size", 18))+q, rails.NewHash("class", "quick-search"))+
 			rails.ContentTag("div", d.renderProjectsForJumpBox(p, jb, p.Project), rails.NewHash("class", "drdn-items projects selection"))+

@@ -48,6 +48,8 @@ type Store struct {
 	Now func() time.Time
 	// Logger はログ出力先（nil なら slog.Default()）。
 	Logger *slog.Logger
+	// ThumbnailsRoot はサムネイルの保存先（Attachment.thumbnails_storage_path。空なら Root の親の tmp/thumbnails）。
+	ThumbnailsRoot string
 }
 
 func (s *Store) now() time.Time {
@@ -367,8 +369,7 @@ func identicalFiles(a, b string) (bool, error) {
 }
 
 // DeleteFromDisk は Attachment#delete_from_disk: 同じ disk_filename を参照する他の添付が無ければ
-// ディスク上のファイルを消す。行を削除したトランザクションのコミット後に呼ぶ（after_commit on destroy）。
-// TODO: サムネイル（thumbnails_storage_path の "#{digest}_#{filesize}_*.thumb"）の削除。
+// ディスク上のファイルとサムネイルを消す。行を削除したトランザクションのコミット後に呼ぶ（after_commit on destroy）。
 func (s *Store) DeleteFromDisk(ctx context.Context, q db.Queryer, atts ...*domain.Attachment) error {
 	var firstErr error
 	for _, a := range atts {
@@ -385,10 +386,11 @@ func (s *Store) DeleteFromDisk(ctx context.Context, q db.Queryer, atts ...*domai
 		if n > 0 {
 			continue
 		}
-		// delete_from_disk!（FileUtils.rm_f）
+		// delete_from_disk!（FileUtils.rm_f とサムネイルの削除）
 		if err := os.Remove(s.Diskfile(a)); err != nil && !errors.Is(err, os.ErrNotExist) && firstErr == nil {
 			firstErr = err
 		}
+		s.deleteThumbnails(a)
 	}
 	return firstErr
 }

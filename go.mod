@@ -55,5 +55,6 @@ require (
 	github.com/klauspost/compress v1.19.2
 	github.com/microsoft/go-mssqldb v1.11.0
 	github.com/yuin/goldmark v1.8.6
+	golang.org/x/image v0.26.0
 	golang.org/x/text v0.42.0
 )

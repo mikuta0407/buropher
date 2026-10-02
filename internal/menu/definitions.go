@@ -30,6 +30,18 @@ func recallable(s string) func(Env, Project) string {
 	}
 }
 
+// roadmapURL は {:controller => 'versions', :action => 'index'} の URL。ルートで :format が固定されている
+// リクエスト（attachments/:id/:filename など）では get 'versions.:format' のルートが format を引き継ぐ
+// （Env が RecalledFormat を実装していれば "/projects/:id/versions.html" になる）。
+func roadmapURL(e Env, p Project) string {
+	if r, ok := e.(interface{ RecalledFormat() string }); ok && p != nil {
+		if f := r.RecalledFormat(); f != "" {
+			return "/projects/" + p.Identifier() + "/versions." + f
+		}
+	}
+	return projectPath("/projects", "/roadmap")(e, p)
+}
+
 func globalModule(perm, module string) func(Env, Project) bool {
 	return func(e Env, _ Project) bool {
 		return e.AllowedToGlobally(perm) && e.ModuleEnabledInVisibleProject(module)
@@ -135,7 +147,7 @@ func ProjectMenu() *Menu {
 
 	m.Push(&Item{Name: "overview", Controller: "projects", Action: "show", URL: projectPath("/projects", "")}, "")
 	m.Push(&Item{Name: "activity", Controller: "activities", Action: "index", URL: projectPath("/projects", "/activity")}, "")
-	m.Push(&Item{Name: "roadmap", Controller: "versions", Action: "index", URL: projectPath("/projects", "/roadmap"),
+	m.Push(&Item{Name: "roadmap", Controller: "versions", Action: "index", URL: roadmapURL,
 		Cond: func(e Env, p Project) bool {
 			if e.SharedVersionsAny(p) {
 				return true

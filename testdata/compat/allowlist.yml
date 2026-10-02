@@ -63,3 +63,9 @@ entries:
     reason: "wiki_page_versions は wiki_contents と wiki_content_versions を統合して持ち、同じ版は wiki_contents を優先する（docs/schema.md）。フィクスチャの CookBook_documentation 版 3 は wiki_contents のコメント（Gzip compression activated）と wiki_content_versions のコメント（空）が食い違うため活動の説明が異なる"
     lines:
       - '^\s*<span class="description">(Gzip compression activated)?</span>$'
+
+  # ---- content（ニュース・文書・ファイル・フォーラム・添付）
+  - case: "content*/attachments_issues_14_edit__*"
+    reason: "フィクスチャの attachments.description の空文字はインポートで NULL に正規化されるため、空の説明欄に value=\"\" が付かない"
+    lines:
+      - '^\s*<input id="attachments_\d+_description" name="attachments\[\d+\]\[description\]" placeholder="Optional description" size="80" type="text"( value="")?>$'

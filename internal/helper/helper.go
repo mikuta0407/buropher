@@ -254,8 +254,15 @@ func (d *Deps) currentTheme(p *Page) *assets.Theme {
 // CurrentTheme は current_theme（ビュー Context の構築用）。
 func (d *Deps) CurrentTheme(p *Page) *assets.Theme { return d.currentTheme(p) }
 
+// NoMenuItem は Page.MenuItem に設定すると current_menu_item が nil になる値
+// （AttachmentsController#current_menu_item でコンテナが無い場合など）。
+const NoMenuItem = "-"
+
 // currentMenuItem は current_menu_item。
 func (p *Page) currentMenuItem() string {
+	if p.MenuItem == NoMenuItem {
+		return ""
+	}
 	if p.MenuItem != "" {
 		return p.MenuItem
 	}

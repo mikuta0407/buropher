@@ -1,0 +1,18 @@
+<div class="autoscroll">
+<table class="filecontent syntaxhl">
+<tbody>
+{{range $i, $line := syntax_highlight_lines .filename .content}}
+  <tr id="L{{add $i 1}}">
+    <th class="line-num"><a href="#L{{add $i 1}}" data-txt="{{add $i 1}}"></a></th>
+    <td class="line-code">
+      {{if or (eq $line "\n") (eq $line "\r\n")}}
+      <br>
+      {{else}}
+      <div>{{raw $line}}</div>
+      {{end}}
+    </td>
+  </tr>
+{{end}}
+</tbody>
+</table>
+</div>

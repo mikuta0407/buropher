@@ -71,7 +71,7 @@
 {{define "messages/show#sidebar"}}
   {{if (assigns).ShowWatchers}}
     <div id="watchers">
-      {{partial "watchers/watchers" (dict "kind" "message" "id" (assigns).Topic.ID)}}
+      {{partial "watchers/watched" (dict "object_type" "message" "id" (assigns).Topic.ID "project" current_project)}}
     </div>
   {{end}}
 {{end}}

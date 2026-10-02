@@ -39,4 +39,6 @@ func (a *App) Routes(r Router) {
 	a.routesFiles(r)
 	a.routesBoards(r)
 	a.routesMessages(r)
+	a.routesWatchers(r)
+	a.routesAttachmentsMore(r)
 }

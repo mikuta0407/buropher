@@ -1,0 +1,48 @@
+{{$att := .Attachment -}}
+<div class="contextual">
+  {{link_to_attachment $att (hash "text" (printf "%s (%s)" (l "button_download") (number_to_human_size $att.Filesize)) "download" true "class" "icon icon-download" "icon" "download") -}}
+</div>
+
+<h2>
+  {{if .ContainerLink}}{{.ContainerLink}} » {{end}}{{$att.Filename}}
+</h2>
+
+<div class="attachments">
+<p>{{if present $att.Description}}{{$att.Description}} - {{end}}
+   <span class="author">{{link_to_user $att.Author}}, {{format_time $att.CreatedOn}}</span></p>
+</div>
+<div class="filecontent-container">
+  {{if eq .Kind "file"}}
+  &nbsp;
+  {{partial "common/file" (dict "content" .Content "filename" $att.Filename)}}
+  {{else if eq .Kind "markup"}}
+  &nbsp;
+  <div class="filecontent wiki">
+  {{.Markup}}
+</div>
+  {{else if eq .Kind "image"}}
+  <img alt="{{$att.Filename}}" class="filecontent image" src="{{download_named_attachment_path $att}}" />
+  {{else if eq .Kind "diff"}}
+  {{form_tag request_path (hash "method" "get")}}
+    <p>
+      {{l "label_view_diff"}}:
+      <label>{{radio_button_tag "type" "inline" (ne .DiffType "sbs") (hash "onchange" "this.form.submit()")}} {{l "label_diff_inline"}}</label>
+      <label>{{radio_button_tag "type" "sbs" (eq .DiffType "sbs") (hash "onchange" "this.form.submit()")}} {{l "label_diff_side_by_side"}}</label>
+    </p>
+  {{end_form}}
+  {{partial "common/diff" (dict "diff" .Diff "diff_type" .DiffType)}}
+  {{else}}
+  {{partial "common/other" (dict "kind" .MediaKind "path" .DownloadURL "download_link" (link_to_attachment $att (hash "text" (l "label_no_preview_download") "icon" "download" "download" true "class" "icon icon-download")))}}
+  {{end}}
+</div>
+
+<span class="pagination filepreview">
+  {{attachment_pagination .Paginator .PageAttachments}}
+</span>
+
+{{html_title $att.Filename}}
+
+{{define "attachments/show#header_tags"}}
+    {{stylesheet_link_tag "scm" -}}
+{{end}}
+{{content_for "header_tags" (capture "attachments/show#header_tags")}}
