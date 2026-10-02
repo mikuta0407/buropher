@@ -1,0 +1,468 @@
+# OAuth2 プロバイダ（Doorkeeper）の書き込みを伴う互換シナリオ。
+# アプリケーションの作成 → 認可（PKCE S256）→ トークン → API（スコープの制限）→ リフレッシュ → 失効 → 削除。
+# 状態を変えるため、共用の参照環境（3998）ではなく専用の参照インスタンスに対して、
+# 参照・候補とも実行前に reset して流すこと（-reset-ref / -reset-cand）。ケースは記述順に依存する。
+#
+# UID・シークレット・認可コード・トークン（43 文字の URL-safe Base64）はランダムなので伏せ、
+# 後続のリクエストには capture / capture_body で取り出した値を使う。
+name: oauth2_write
+
+users:
+  admin: {login: admin, password: admin}
+  jsmith: {login: jsmith, password: jsmith}
+
+headers: {Accept-Language: en}
+
+normalize:
+  mask_text_selectors:
+    - "#footer"
+  regex:
+    - {pattern: '(^|[^A-Za-z0-9_-])[A-Za-z0-9_-]{43}([^A-Za-z0-9_-]|$)', replace: '${1}TOKEN${2}'}
+    # URL エンコードされた back_url 内の client_id
+    - {pattern: 'client_id%3D[A-Za-z0-9_-]{43}', replace: 'client_id%3DTOKEN'}
+
+requests:
+  # ---------------------------------------------------------------- 管理画面: アプリケーションの作成・編集
+  - id: create_invalid
+    path: /oauth/applications
+    method: POST
+    user: admin
+    form:
+      doorkeeper_application[name]: ""
+      doorkeeper_application[redirect_uri]: "http://example.com/cb\nfoo\njavascript:alert(1)\nhttp://x.example/#frag\nlocalhost:3000\n/relative\nhttp://\nhttps://ok.example.com/\nmyapp://callback\nurn:ietf:wg:oauth:2.0:oob:auto"
+      doorkeeper_application[scopes][]: [view_issues, admin, ""]
+  - id: create_blank
+    path: /oauth/applications
+    method: POST
+    user: admin
+    form:
+      doorkeeper_application[name]: "x"
+      doorkeeper_application[redirect_uri]: "  "
+      doorkeeper_application[scopes][]: ["", bogus_scope]
+  - id: create
+    path: /oauth/applications
+    method: POST
+    user: admin
+    expect_status: 302
+    form:
+      doorkeeper_application[name]: "Test <App>"
+      doorkeeper_application[redirect_uri]: "http://127.0.0.1:12345/cb\nurn:ietf:wg:oauth:2.0:oob"
+      doorkeeper_application[scopes][]: [view_issues, add_issues, ""]
+    capture: {app: '/oauth/applications/([0-9]+)'}
+  - id: show_created
+    path: /oauth/applications/${app}
+    user: admin
+    capture_body:
+      uid: 'UID:</span>\s*<code>([A-Za-z0-9_-]{43})</code>'
+      secret: 'Secret:</span>\s*<code>\s*([A-Za-z0-9_-]{43})'
+  - id: show_again
+    path: /oauth/applications/${app}
+    user: admin
+  - id: index
+    path: /oauth/applications
+    user: admin
+  - id: edit
+    path: /oauth/applications/${app}/edit
+    user: admin
+  - id: update_invalid
+    path: /oauth/applications/${app}
+    method: PATCH
+    user: admin
+    form:
+      doorkeeper_application[name]: ""
+      doorkeeper_application[redirect_uri]: "https://ok.example.com/cb#x"
+      doorkeeper_application[scopes][]: [view_issues, ""]
+  - id: update
+    path: /oauth/applications/${app}
+    method: PATCH
+    user: admin
+    expect_status: 302
+    form:
+      doorkeeper_application[name]: "Test App"
+      doorkeeper_application[redirect_uri]: "http://127.0.0.1:12345/cb\nurn:ietf:wg:oauth:2.0:oob\nhttps://client.example.com/cb?x=1"
+      doorkeeper_application[scopes][]: [view_issues, add_issues, view_time_entries, ""]
+  - id: show_updated
+    path: /oauth/applications/${app}
+    user: admin
+  - id: index_jsmith
+    path: /oauth/applications/${app}
+    user: jsmith
+
+  # ---------------------------------------------------------------- 認可画面
+  - id: authorized_apps_empty
+    path: /oauth/authorized_applications
+    user: jsmith
+  - id: authorize_anonymous
+    path: /oauth/authorize?client_id=${uid}&redirect_uri=http%3A%2F%2F127.0.0.1%3A12345%2Fcb&response_type=code
+    user: anonymous
+  - id: authorize_new
+    path: /oauth/authorize?client_id=${uid}&redirect_uri=http%3A%2F%2F127.0.0.1%3A12345%2Fcb&response_type=code&scope=view_issues+view_project&state=xyz&code_challenge=E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM&code_challenge_method=S256
+    user: jsmith
+  - id: authorize_default_scopes
+    path: /oauth/authorize?client_id=${uid}&redirect_uri=http%3A%2F%2F127.0.0.1%3A9999%2Fcb&response_type=code
+    user: jsmith
+  - id: authorize_admin_scope
+    path: /oauth/authorize?client_id=${uid}&redirect_uri=http%3A%2F%2F127.0.0.1%3A12345%2Fcb&response_type=code&scope=admin
+    user: jsmith
+  - id: authorize_bad_redirect
+    path: /oauth/authorize?client_id=${uid}&redirect_uri=http%3A%2F%2Fevil.example%2Fcb&response_type=code
+    user: jsmith
+  - id: authorize_no_response_type
+    path: /oauth/authorize?client_id=${uid}&redirect_uri=http%3A%2F%2F127.0.0.1%3A12345%2Fcb
+    user: jsmith
+  - id: authorize_token_response_type
+    path: /oauth/authorize?client_id=${uid}&redirect_uri=http%3A%2F%2F127.0.0.1%3A12345%2Fcb&response_type=token
+    user: jsmith
+  - id: authorize_bad_response_mode
+    path: /oauth/authorize?client_id=${uid}&redirect_uri=http%3A%2F%2F127.0.0.1%3A12345%2Fcb&response_type=code&response_mode=bogus
+    user: jsmith
+  - id: authorize_bad_challenge_method
+    path: /oauth/authorize?client_id=${uid}&redirect_uri=http%3A%2F%2F127.0.0.1%3A12345%2Fcb&response_type=code&code_challenge=abc&code_challenge_method=S512
+    user: jsmith
+  - id: authorize_query_redirect
+    path: /oauth/authorize?client_id=${uid}&redirect_uri=https%3A%2F%2Fclient.example.com%2Fcb%3Fx%3D1&response_type=code&scope=view_issues
+    user: jsmith
+  - id: authorize_query_mismatch
+    path: /oauth/authorize?client_id=${uid}&redirect_uri=https%3A%2F%2Fclient.example.com%2Fcb%3Fx%3D2&response_type=code&scope=view_issues
+    user: jsmith
+
+  # 承認（POST）→ 認可コード付きでリダイレクト
+  - id: approve
+    path: /oauth/authorize
+    method: POST
+    user: jsmith
+    expect_status: 302
+    form:
+      client_id: ${uid}
+      redirect_uri: http://127.0.0.1:12345/cb
+      state: xyz
+      response_type: code
+      scope: view_issues view_project
+      code_challenge: E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM
+      code_challenge_method: S256
+    capture: {code: 'code=([A-Za-z0-9_-]+)'}
+  - id: approve_invalid_scope
+    path: /oauth/authorize
+    method: POST
+    user: jsmith
+    form:
+      client_id: ${uid}
+      redirect_uri: http://127.0.0.1:12345/cb
+      state: s2
+      response_type: code
+      scope: admin
+  - id: approve_bad_client
+    path: /oauth/authorize
+    method: POST
+    user: jsmith
+    form:
+      client_id: nope
+      redirect_uri: http://127.0.0.1:12345/cb
+      response_type: code
+
+  # ---------------------------------------------------------------- トークンエンドポイント
+  - id: token_missing_grant_type
+    path: /oauth/token
+    method: POST
+    user: anonymous
+    auth: none
+    format: json
+    form: {state: abc}
+  - id: token_client_credentials
+    path: /oauth/token
+    method: POST
+    user: anonymous
+    auth: none
+    format: json
+    form: {grant_type: client_credentials, client_id: "${uid}", client_secret: "${secret}"}
+  - id: token_password
+    path: /oauth/token
+    method: POST
+    user: anonymous
+    auth: none
+    format: json
+    form: {grant_type: password, username: jsmith, password: jsmith}
+  - id: token_missing_code
+    path: /oauth/token
+    method: POST
+    user: anonymous
+    auth: none
+    format: json
+    form: {grant_type: authorization_code}
+  - id: token_missing_verifier
+    path: /oauth/token
+    method: POST
+    user: anonymous
+    auth: none
+    format: json
+    form: {grant_type: authorization_code, code: "${code}", redirect_uri: "http://127.0.0.1:12345/cb", client_id: "${uid}", client_secret: "${secret}"}
+  - id: token_missing_redirect_uri
+    path: /oauth/token
+    method: POST
+    user: anonymous
+    auth: none
+    format: json
+    form: {grant_type: authorization_code, code: "unknown"}
+  - id: token_bad_secret
+    path: /oauth/token
+    method: POST
+    user: anonymous
+    auth: none
+    format: json
+    form: {grant_type: authorization_code, code: "${code}", redirect_uri: "http://127.0.0.1:12345/cb", client_id: "${uid}", client_secret: "bad", code_verifier: "dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk"}
+  - id: token_bad_verifier
+    path: /oauth/token
+    method: POST
+    user: anonymous
+    auth: none
+    format: json
+    form: {grant_type: authorization_code, code: "${code}", redirect_uri: "http://127.0.0.1:12345/cb", client_id: "${uid}", client_secret: "${secret}", code_verifier: "wrong"}
+  - id: token_bad_redirect
+    path: /oauth/token
+    method: POST
+    user: anonymous
+    auth: none
+    format: json
+    form: {grant_type: authorization_code, code: "${code}", redirect_uri: "http://127.0.0.1:12345/other", client_id: "${uid}", client_secret: "${secret}", code_verifier: "dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk"}
+  - id: token
+    path: /oauth/token
+    method: POST
+    user: anonymous
+    auth: none
+    format: json
+    form: {grant_type: authorization_code, code: "${code}", redirect_uri: "http://127.0.0.1:12345/cb", client_id: "${uid}", client_secret: "${secret}", code_verifier: "dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk"}
+    capture_body:
+      access: '"access_token":"([A-Za-z0-9_-]+)"'
+      refresh: '"refresh_token":"([A-Za-z0-9_-]+)"'
+  - id: token_code_reuse
+    path: /oauth/token
+    method: POST
+    user: anonymous
+    auth: none
+    format: json
+    form: {grant_type: authorization_code, code: "${code}", redirect_uri: "http://127.0.0.1:12345/cb", client_id: "${uid}", client_secret: "${secret}", code_verifier: "dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk"}
+
+  # ---------------------------------------------------------------- API（Bearer。スコープで権限を制限）
+  - id: api_issues
+    path: /projects/onlinestore/issues.json
+    user: anonymous
+    auth: none
+    headers: {Authorization: "Bearer ${access}"}
+  - id: api_time_entries_forbidden
+    path: /projects/ecookbook/time_entries.json
+    user: anonymous
+    auth: none
+    headers: {Authorization: "Bearer ${access}"}
+  - id: api_current_user
+    path: /users/current.json
+    user: anonymous
+    auth: none
+    headers: {Authorization: "Bearer ${access}"}
+  - id: api_users_admin_only
+    path: /users.json
+    user: anonymous
+    auth: none
+    headers: {Authorization: "Bearer ${access}"}
+  - id: api_access_token_param
+    path: /issues/1.json?access_token=${access}
+    user: anonymous
+    auth: none
+  - id: api_html_with_bearer
+    path: /projects/onlinestore/issues
+    user: anonymous
+    auth: none
+    headers: {Authorization: "Bearer ${access}"}
+  - id: token_info
+    path: /oauth/token/info
+    user: anonymous
+    auth: none
+    format: json
+    headers: {Authorization: "Bearer ${access}"}
+
+  # 認可済みアプリケーション・同じスコープでの再認可（同意画面を省略してリダイレクト）
+  - id: authorized_apps
+    path: /oauth/authorized_applications
+    user: jsmith
+  - id: authorize_again_skips_consent
+    path: /oauth/authorize?client_id=${uid}&redirect_uri=http%3A%2F%2F127.0.0.1%3A12345%2Fcb&response_type=code&scope=view_issues+view_project&state=again
+    user: jsmith
+
+  # ---------------------------------------------------------------- リフレッシュ
+  - id: refresh_missing
+    path: /oauth/token
+    method: POST
+    user: anonymous
+    auth: none
+    format: json
+    form: {grant_type: refresh_token}
+  - id: refresh_without_client
+    path: /oauth/token
+    method: POST
+    user: anonymous
+    auth: none
+    format: json
+    form: {grant_type: refresh_token, refresh_token: "${refresh}"}
+  - id: refresh_bad_scope
+    path: /oauth/token
+    method: POST
+    user: anonymous
+    auth: none
+    format: json
+    form: {grant_type: refresh_token, refresh_token: "${refresh}", client_id: "${uid}", client_secret: "${secret}", scope: "view_issues add_issues"}
+  - id: refresh
+    path: /oauth/token
+    method: POST
+    user: anonymous
+    auth: none
+    format: json
+    form: {grant_type: refresh_token, refresh_token: "${refresh}", client_id: "${uid}", client_secret: "${secret}", scope: "view_issues"}
+    capture_body:
+      access2: '"access_token":"([A-Za-z0-9_-]+)"'
+      refresh2: '"refresh_token":"([A-Za-z0-9_-]+)"'
+  # 新しいトークンが使われるまでは旧トークンも有効
+  - id: api_old_token_before_use
+    path: /users/current.json
+    user: anonymous
+    auth: none
+    headers: {Authorization: "Bearer ${access}"}
+  - id: api_new_token
+    path: /projects/onlinestore/issues.json
+    user: anonymous
+    auth: none
+    headers: {Authorization: "Bearer ${access2}"}
+  - id: api_old_token_revoked
+    path: /users/current.json
+    user: anonymous
+    auth: none
+    headers: {Authorization: "Bearer ${access}"}
+  - id: refresh_reuse_old
+    path: /oauth/token
+    method: POST
+    user: anonymous
+    auth: none
+    format: json
+    form: {grant_type: refresh_token, refresh_token: "${refresh}", client_id: "${uid}", client_secret: "${secret}"}
+
+  # ---------------------------------------------------------------- 失効（RFC 7009）
+  - id: revoke_no_client
+    path: /oauth/revoke
+    method: POST
+    user: anonymous
+    auth: none
+    format: json
+    form: {token: "${access2}"}
+  - id: revoke_unknown_token
+    path: /oauth/revoke
+    method: POST
+    user: anonymous
+    auth: none
+    format: json
+    form: {token: "unknown", client_id: "${uid}", client_secret: "${secret}"}
+  - id: revoke
+    path: /oauth/revoke
+    method: POST
+    user: anonymous
+    auth: none
+    format: json
+    form: {token: "${access2}", client_id: "${uid}", client_secret: "${secret}"}
+  - id: api_after_revoke
+    path: /users/current.json
+    user: anonymous
+    auth: none
+    headers: {Authorization: "Bearer ${access2}"}
+  - id: token_info_after_revoke
+    path: /oauth/token/info
+    user: anonymous
+    auth: none
+    format: json
+    headers: {Authorization: "Bearer ${access2}"}
+
+  # ---------------------------------------------------------------- 拒否・OOB
+  - id: deny
+    path: /oauth/authorize
+    method: DELETE
+    user: jsmith
+    form:
+      client_id: ${uid}
+      redirect_uri: http://127.0.0.1:12345/cb
+      state: s1
+      response_type: code
+      scope: view_issues
+  - id: deny_oob
+    path: /oauth/authorize
+    method: DELETE
+    user: jsmith
+    auth: session
+    format: json
+    form:
+      client_id: ${uid}
+      redirect_uri: urn:ietf:wg:oauth:2.0:oob
+      response_type: code
+      scope: view_issues
+  - id: deny_bogus_response_type
+    path: /oauth/authorize
+    method: DELETE
+    user: jsmith
+    form:
+      client_id: ${uid}
+      redirect_uri: http://127.0.0.1:12345/cb
+      response_type: bogus
+  - id: approve_oob
+    path: /oauth/authorize
+    method: POST
+    user: jsmith
+    expect_status: 302
+    form:
+      client_id: ${uid}
+      redirect_uri: urn:ietf:wg:oauth:2.0:oob
+      response_type: code
+      scope: view_issues add_issues
+    capture: {oobcode: 'code=([A-Za-z0-9_-]+)'}
+  - id: native
+    path: /oauth/authorize/native?code=${oobcode}
+    user: jsmith
+  - id: token_oob_basic
+    path: /oauth/token
+    method: POST
+    user: anonymous
+    auth: none
+    format: json
+    form: {grant_type: authorization_code, code: "${oobcode}", redirect_uri: "urn:ietf:wg:oauth:2.0:oob", client_id: "${uid}", client_secret: "${secret}"}
+    capture_body:
+      access3: '"access_token":"([A-Za-z0-9_-]+)"'
+  - id: api_add_scope_token
+    path: /users/current.json
+    user: anonymous
+    auth: none
+    headers: {Authorization: "Bearer ${access3}"}
+
+  # ---------------------------------------------------------------- 認可の取り消し・削除
+  - id: authorized_apps_before_revoke
+    path: /oauth/authorized_applications
+    user: jsmith
+  - id: authorized_apps_revoke
+    path: /oauth/authorized_applications/${app}
+    method: DELETE
+    user: jsmith
+    expect_status: 302
+    form: {back: "1"}
+  - id: authorized_apps_after_revoke
+    path: /oauth/authorized_applications
+    user: jsmith
+  - id: api_after_app_revoke
+    path: /users/current.json
+    user: anonymous
+    auth: none
+    headers: {Authorization: "Bearer ${access3}"}
+  - id: destroy
+    path: /oauth/applications/${app}
+    method: DELETE
+    user: admin
+    expect_status: 302
+    form: {back: "1"}
+  - id: index_after_destroy
+    path: /oauth/applications
+    user: admin
+  - id: show_after_destroy
+    path: /oauth/applications/${app}
+    user: admin

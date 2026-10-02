@@ -80,7 +80,7 @@ func (a *App) userSetup(c *Req) {
 // セッション → autologin → atom キー（accept_atom_auth のアクションのみ）→
 // API キー / HTTP Basic（REST API 有効かつ accept_api_auth のアクションのみ）の順に探す。
 // エラー応答を返した場合は c.Halted() が true になる。
-// TODO(oauth): Doorkeeper（OAuth2 アクセストークン）による認証。
+// OAuth2 のアクセストークン（Doorkeeper.authenticate）は API キーの次に確認する（oauthCurrentUser）。
 func (a *App) findCurrentUser(c *Req) *domain.User {
 	var user *domain.User
 	p := c.Params()
@@ -97,6 +97,11 @@ func (a *App) findCurrentUser(c *Req) *domain.User {
 	if user == nil && a.Settings.Bool("rest_api_enabled") && c.cfg.acceptAPIAuth {
 		if key := apiKeyFromRequest(c); key != "" {
 			user = a.findTokenUser(c, repository.TokenAPI, key, 0)
+		} else if tok := a.authenticateOAuthToken(c.R, p); tok != nil {
+			// OAuth（Doorkeeper のアクセストークン）
+			if !a.oauthCurrentUser(c, tok, &user) {
+				return nil
+			}
 		} else if username, pw, ok := c.R.BasicAuth(); ok {
 			// HTTP Basic（ログイン名とパスワード、または API キーと任意の文字列）
 			u, err := a.tryToLogin(c, username, pw, true)

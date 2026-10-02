@@ -14,6 +14,7 @@ type Router = chi.Router
 // 並べる（並列開発での衝突を避けるため。追加するときは 1 行足すだけにすること）。
 // 順序は config/routes.rb の記述順に合わせる（chi は登録順に依存しないが、読み比べやすくするため）。
 func (a *App) Routes(r Router) {
+	a.routesOAuth(r)
 	a.routesWelcome(r)
 	a.routesAccount(r)
 	a.routesContextMenus(r)

@@ -1,0 +1,33 @@
+<div class="contextual">
+{{link_to (sprite_icon "add" (l "doorkeeper.applications.index.new")) "/oauth/applications/new" (hash "class" "icon icon-add")}}
+</div>
+
+{{title (l "label_oauth_application_plural")}}
+
+{{if .Applications}}
+<div class="autoscroll">
+<table class="list">
+  <thead><tr>
+    <th>{{call .T "doorkeeper.applications.index.name"}}</th>
+    <th>{{call .T "doorkeeper.applications.index.callback_url"}}</th>
+    <th>{{call .T "doorkeeper.applications.index.scopes"}}</th>
+    <th></th>
+  </tr></thead>
+  <tbody>
+  {{range $app := .Applications}}
+    <tr id="application_{{$app.ID}}" class="{{cycle "odd" "even"}}">
+      <td class="name"><span>{{link_to $app.Name (printf "/oauth/applications/%d" $app.ID)}}</span></td>
+      <td class="description">{{truncate $app.CallbackURLs (hash "length" 50)}}</td>
+      <td class="description">{{$app.ScopeLabels}}</td>
+      <td class="buttons">
+        {{link_to (sprite_icon "edit" (l "doorkeeper.applications.buttons.edit")) (printf "/oauth/applications/%d/edit" $app.ID) (hash "class" "icon icon-edit")}}
+        {{link_to (sprite_icon "del" (l "doorkeeper.applications.buttons.destroy")) (printf "/oauth/applications/%d" $app.ID) (hash "data" (hash "confirm" (l "doorkeeper.applications.confirmations.destroy")) "method" "delete" "class" "icon icon-del")}}
+      </td>
+    </tr>
+  {{end}}
+  </tbody>
+</table>
+</div>
+{{else}}
+  <p class="nodata">{{l "label_no_data"}}</p>
+{{end}}
