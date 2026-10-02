@@ -53,6 +53,7 @@ var order = []string{
 	"projects", "enabled_modules", "projects_trackers", "versions", "issue_categories",
 	"roles", "members", "member_roles", "issues", "workflows", "watchers",
 	"news", "user_preferences", "wikis", "boards", "repositories",
+	"custom_fields", "custom_fields_projects", "custom_fields_trackers", "custom_values",
 }
 
 var defs = map[string]fixtureDef{
@@ -79,6 +80,13 @@ var defs = map[string]fixtureDef{
 	"wikis":            {deps: []string{"projects"}, tables: []string{"wikis"}, load: loadWikis},
 	"boards":           {deps: []string{"projects"}, tables: []string{"boards"}, load: loadBoards},
 	"repositories":     {deps: []string{"projects"}, tables: []string{"repositories"}, load: loadRepositories},
+	"custom_fields":    {tables: []string{"custom_fields"}, load: loadCustomFields},
+	"custom_fields_projects": {deps: []string{"custom_fields", "projects"},
+		load: loadCustomFieldLinks("custom_fields_projects", "project_id")},
+	"custom_fields_trackers": {deps: []string{"custom_fields", "trackers"},
+		load: loadCustomFieldLinks("custom_fields_trackers", "tracker_id")},
+	"custom_values": {deps: []string{"custom_fields", "issues", "projects", "users", "enumerations"},
+		tables: []string{"custom_values"}, load: loadCustomValues},
 }
 
 // Supported は変換に対応しているフィクスチャ名を投入順で返す。
@@ -96,6 +104,8 @@ type loadCtx struct {
 	projectDefaultVersions map[int64]int64
 	// userNotify は members.mail_notification の変換に使う principals.kind。
 	kinds map[int64]string
+	// customFields は投入したカスタムフィールドの id（type が CustomField の行は捨てる）。
+	customFields map[int64]bool
 }
 
 func (c *loadCtx) exec(q string, args ...any) error {

@@ -2,6 +2,7 @@ package testfixtures
 
 import (
 	"embed"
+	"encoding/base64"
 	"fmt"
 	"regexp"
 	"sort"
@@ -21,6 +22,8 @@ var fixtureFS embed.FS
 type row struct {
 	label string
 	cols  map[string]*string
+	// lists はシーケンス値の列（custom_fields.possible_values 等）。!binary は base64 を復号する。
+	lists map[string][]string
 }
 
 // readFixture は ERB を評価した上で YAML を読み、id (無ければラベル) 順の行を返す。
@@ -51,6 +54,17 @@ func readFixture(name string, now time.Time) ([]row, error) {
 		r := row{label: label, cols: map[string]*string{}}
 		for j := 0; j+1 < len(m.Content); j += 2 {
 			k, v := m.Content[j].Value, m.Content[j+1]
+			if v.Kind == yaml.SequenceNode {
+				list, err := scalarList(v)
+				if err != nil {
+					return nil, fmt.Errorf("testfixtures: %s.%s.%s: %w", name, label, k, err)
+				}
+				if r.lists == nil {
+					r.lists = map[string][]string{}
+				}
+				r.lists[k] = list
+				continue
+			}
 			if v.Kind != yaml.ScalarNode {
 				return nil, fmt.Errorf("testfixtures: %s.%s.%s: non-scalar value", name, label, k)
 			}
@@ -72,6 +86,26 @@ func readFixture(name string, now time.Time) ([]row, error) {
 		return rows[i].label < rows[j].label
 	})
 	return rows, nil
+}
+
+// scalarList はスカラーのシーケンスを文字列配列にする（!binary は base64 を復号する）。
+func scalarList(n *yaml.Node) ([]string, error) {
+	out := make([]string, 0, len(n.Content))
+	for _, e := range n.Content {
+		if e.Kind != yaml.ScalarNode {
+			return nil, fmt.Errorf("non-scalar sequence element")
+		}
+		if e.Tag == "!binary" || e.Tag == "!!binary" {
+			b, err := base64.StdEncoding.DecodeString(strings.Join(strings.Fields(e.Value), ""))
+			if err != nil {
+				return nil, err
+			}
+			out = append(out, string(b))
+			continue
+		}
+		out = append(out, e.Value)
+	}
+	return out, nil
 }
 
 func (r row) id() (int64, bool) {
