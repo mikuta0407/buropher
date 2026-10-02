@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/mikuta0407/buropher/internal/repository"
+	"github.com/mikuta0407/buropher/internal/urlroot"
 )
 
 // TwofaBackupCodesController（app/controllers/twofa_backup_codes_controller.rb）。main_menu = false。
@@ -117,7 +118,7 @@ func (a *App) TwofaBackupCodesShow(c *Req) {
 		}
 	}
 	if len(codes) == 0 || !created.After(a.now().Add(-5*time.Minute)) {
-		c.Flash().SetWarning(c.L("twofa_backup_codes_already_shown", map[string]any{"bc_path": "/my/twofa/backup_codes/init"}))
+		c.Flash().SetWarning(c.L("twofa_backup_codes_already_shown", map[string]any{"bc_path": urlroot.Path("/my/twofa/backup_codes/init")}))
 		c.Redirect("/my/account")
 		return
 	}

@@ -150,6 +150,12 @@ func rootURLAttr(key string, value any) any {
 	return value
 }
 
+// RawURL は relative_url_root を前置しない URL 属性値（利用者が入力した URL など、Redmine で
+// url_for を通らずに文字列のまま link_to に渡されるもの）。
+type RawURL string
+
+func (u RawURL) String() string { return string(u) }
+
 // prefixTagOption は TagBuilder#prefix_tag_option（data-* / aria-*）。
 // 値が文字列・シンボル以外なら to_json する。
 func prefixTagOption(prefix, key string, value any, escape bool) string {
