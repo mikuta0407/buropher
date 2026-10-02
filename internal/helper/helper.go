@@ -79,6 +79,10 @@ type Page struct {
 	MenuItem string
 	// DefaultSearchScope は controller.default_search_scope（空なら nil）。
 	DefaultSearchScope string
+	// NewRecordProject は @project が未保存のプロジェクト（projects#new / create / copy）。
+	NewRecordProject bool
+	// ProjectNameWas は @project.name_was（空なら Project.Name。ジャンプボックスの表示に使う）。
+	ProjectNameWas string
 	// Question は @question（検索語）。
 	Question string
 	// QuestionSet は @question が nil でない（空文字列でも value="" を出す）。

@@ -69,10 +69,10 @@ func newRailsView(ctx *Context) *rails.View {
 	}
 	v.FormName = func(base string) string { return base + "-" + ctx.formNameSuffix() }
 	v.Translate = func(key string) string { return ctx.translate(key) }
-	// Rails 5 以降の既定値（config.action_view.embed_authenticity_token_in_remote_forms = false）:
-	// remote: true の form_tag には authenticity_token を埋め込まない
-	embed := false
-	v.EmbedAuthenticityTokenInRemoteForms = &embed
+	// Rails 7.2 の既定値（config.action_view.embed_authenticity_token_in_remote_forms = nil）:
+	// remote: true の form_for には authenticity_token を埋め込まず、form_tag には埋め込む
+	// （form_tag は == false のときだけ省く）
+	v.EmbedAuthenticityTokenInRemoteForms = nil
 	return v
 }
 
@@ -191,6 +191,15 @@ func (r *Render) Capture(name string, data any) (template.HTML, error) {
 
 // ContentFor はスロットに内容を追加する（html_safe でない値はエスケープされる）。
 func (r *Render) ContentFor(name string, content any) {
+	// ActionView#capture は出力が空白だけのブロックではブロックの戻り値を使う。ERB のブロックの戻り値は
+	// 最後に追加したリテラル（通常は行末の "\n"）なので、空白だけの内容は "\n" として扱う。
+	if s := rails.ToS(content); !rails.IsPresent(s) {
+		if strings.HasSuffix(s, "\n") {
+			content = "\n"
+		} else {
+			return
+		}
+	}
 	b := r.slots[name]
 	if b == nil {
 		b = &strings.Builder{}

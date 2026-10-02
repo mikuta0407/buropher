@@ -1,0 +1,439 @@
+# プロジェクト・メンバー・カテゴリ・作業分類の作成・更新・削除の互換シナリオ。
+# 状態を変えるため、共用の参照環境（3998）ではなく専用の参照インスタンスに対して、
+# 参照・候補とも実行前に reset して流すこと（-reset-ref / -reset-cand）。
+# ケースは記述順に依存する（作成した id 7 のプロジェクト等を後続で使う）。
+name: projects_write
+
+users:
+  admin: {login: admin, password: admin}
+  jsmith: {login: jsmith, password: jsmith}
+  dlopper: {login: dlopper, password: foo}
+
+normalize:
+  mask_text_selectors:
+    - "#footer"
+  regex:
+    - pattern: 'name=\\"([A-Za-z0-9_]+)-[0-9a-f]{8}\\"'
+      replace: 'name=\"$1-RANDOM\"'
+    - pattern: '_reference/[A-Za-z0-9_-]+/tmp/test/'
+      replace: '_reference/REF/tmp/test/'
+
+requests:
+  # Redmine はアプリケーションメニューを一度描画すると項目の URL ハッシュ（:controller）が "/issues" 等に
+  # 書き換わり、以後「未保存のプロジェクト」に対するメニュー判定が常に偽になる。参照の起動直後の状態を
+  # 避けるため、最初に一覧を表示しておく（buropher は常にこの状態と同じ表示をする）。
+  - id: warmup
+    path: /projects
+    user: admin
+
+  # ---- 作成 ----
+  - id: create_invalid
+    path: /projects
+    method: POST
+    user: admin
+    form:
+      project[name]: ""
+      project[identifier]: "1234"
+      project[is_public]: "0"
+      project[enabled_module_names][]: ["issue_tracking", ""]
+  - id: create_taken
+    path: /projects
+    method: POST
+    user: admin
+    form:
+      project[name]: "Dup"
+      project[identifier]: "ecookbook"
+  - id: create
+    path: /projects
+    method: POST
+    user: admin
+    form:
+      project[name]: "zeta project"
+      project[description]: "A new project"
+      project[identifier]: "new-project"
+      project[homepage]: "http://example.net/"
+      project[is_public]: "1"
+      project[parent_id]: "1"
+      project[inherit_members]: "1"
+      project[custom_field_values][3]: "Beta"
+      project[enabled_module_names][]: ["issue_tracking", "wiki", "news", ""]
+      project[tracker_ids][]: ["1", "2", ""]
+  - id: g01_settings
+    path: /projects/new-project/settings
+    user: admin
+  - id: g02_show
+    path: /projects/new-project
+    user: admin
+  - id: g03_index
+    path: /projects
+    user: admin
+  - id: g04_show_json
+    normalize: {mask_timestamps: true}
+    path: /projects/new-project.json
+    user: admin
+  - id: create_continue
+    path: /projects
+    method: POST
+    user: admin
+    form:
+      project[name]: "Child two"
+      project[identifier]: "child-two"
+      project[parent_id]: "7"
+      continue: "Create and add another"
+  - id: create_subproject_jsmith
+    path: /projects
+    method: POST
+    user: jsmith
+    form:
+      project[name]: "zsmith child"
+      project[identifier]: "smith-child"
+      project[parent_id]: "1"
+      project[enabled_module_names][]: ["issue_tracking", ""]
+  - id: create_root_jsmith
+    path: /projects
+    method: POST
+    user: jsmith
+    form:
+      project[name]: "Smith root"
+      project[identifier]: "smith-root"
+      project[parent_id]: ""
+  - id: g05_smith_child_settings
+    path: /projects/smith-child/settings
+    user: jsmith
+
+  # ---- 更新 ----
+  - id: update_invalid
+    path: /projects/new-project
+    method: PATCH
+    user: admin
+    form:
+      project[name]: ""
+  - id: update
+    path: /projects/new-project
+    method: PATCH
+    user: admin
+    form:
+      project[name]: "zeta renamed"
+      project[description]: "Changed"
+      project[is_public]: "0"
+      project[parent_id]: ""
+      project[custom_field_values][3]: "Alpha"
+      project[enabled_module_names][]: ["issue_tracking", "time_tracking", "boards", ""]
+  - id: update_issues_tab
+    path: /projects/new-project
+    method: PATCH
+    user: admin
+    form:
+      tab: "issues"
+      project[tracker_ids][]: ["2", "3", ""]
+      project[issue_custom_field_ids][]: ["9", ""]
+      project[default_version_id]: ""
+      project[default_assigned_to_id]: ""
+      project[default_issue_query_id]: "4"
+  - id: g06_settings_issues
+    path: /projects/new-project/settings/issues
+    user: admin
+  - id: g07_admin_projects
+    path: /admin/projects
+    user: admin
+
+  # ---- メンバー ----
+  - id: members_create_html
+    path: /projects/new-project/memberships
+    method: POST
+    user: admin
+    form:
+      membership[user_ids][]: ["2", "3"]
+      membership[role_ids][]: ["1", "2"]
+  - id: members_create_js_invalid
+    path: /projects/new-project/memberships
+    method: POST
+    user: admin
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01"}
+    form:
+      membership[user_ids][]: ["8"]
+  - id: members_create_js
+    path: /projects/new-project/memberships
+    method: POST
+    user: admin
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01"}
+    form:
+      membership[user_ids][]: ["8", "11"]
+      membership[role_ids][]: ["3"]
+  - id: g08_settings_members
+    path: /projects/new-project/settings/members
+    user: admin
+  - id: members_update_js
+    path: /memberships/12
+    method: PUT
+    user: admin
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01"}
+    form:
+      membership[role_ids][]: ["2", ""]
+  - id: members_update_html
+    path: /memberships/13
+    method: PATCH
+    user: admin
+    form:
+      membership[role_ids][]: ["1", "3", ""]
+  - id: members_destroy_js
+    path: /memberships/14
+    method: DELETE
+    user: admin
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01"}
+    form: {utf8: "✓"}
+  - id: g09_memberships_json
+    path: /projects/new-project/memberships.json
+    user: admin
+  - id: members_create_api
+    path: /projects/new-project/memberships.json
+    method: POST
+    user: admin
+    content_type: application/json
+    body: '{"membership":{"user_id":7,"role_ids":[3]}}'
+  - id: members_create_api_invalid
+    path: /projects/new-project/memberships.json
+    method: POST
+    user: admin
+    content_type: application/json
+    body: '{"membership":{"user_id":7,"role_ids":[3]}}'
+  - id: g10_settings_members
+    path: /projects/new-project/settings/members
+    user: admin
+
+  # ---- カテゴリ ----
+  - id: categories_create_invalid
+    path: /projects/new-project/issue_categories
+    method: POST
+    user: admin
+    form:
+      issue_category[name]: ""
+  - id: categories_create
+    path: /projects/new-project/issue_categories
+    method: POST
+    user: admin
+    form:
+      issue_category[name]: "Backend"
+      issue_category[assigned_to_id]: "2"
+  - id: categories_create_api
+    path: /projects/new-project/issue_categories.json
+    method: POST
+    user: admin
+    content_type: application/json
+    body: '{"issue_category":{"name":"Frontend"}}'
+  - id: g11_settings_categories
+    path: /projects/new-project/settings/categories
+    user: admin
+  - id: categories_update
+    path: /issue_categories/4
+    method: PUT
+    user: admin
+    form:
+      issue_category[name]: "Backend 2"
+      issue_category[assigned_to_id]: ""
+  - id: categories_update_api
+    path: /issue_categories/5.json
+    method: PUT
+    user: admin
+    content_type: application/json
+    body: '{"issue_category":{"name":"Backend 2"}}'
+  - id: categories_destroy_with_issues
+    path: /issue_categories/1
+    method: DELETE
+    user: admin
+    form: {utf8: "✓"}
+  - id: categories_destroy_reassign
+    path: /issue_categories/1
+    method: DELETE
+    user: admin
+    form:
+      todo: "reassign"
+      reassign_to_id: "2"
+  - id: categories_destroy_api
+    path: /issue_categories/5.json
+    method: DELETE
+    user: admin
+  - id: g12_ecookbook_categories_json
+    path: /projects/ecookbook/issue_categories.json
+    user: admin
+
+  # ---- 作業分類 ----
+  - id: activities_update
+    path: /projects/ecookbook/enumerations
+    method: PUT
+    user: admin
+    form:
+      enumerations[9][parent_id]: "9"
+      enumerations[9][active]: "0"
+      enumerations[9][custom_field_values][7]: ""
+      enumerations[10][parent_id]: "10"
+      enumerations[10][active]: "1"
+      enumerations[10][custom_field_values][7]: "0"
+  - id: g13_settings_activities
+    path: /projects/ecookbook/settings/activities
+    user: admin
+  - id: activities_reset
+    path: /projects/ecookbook/enumerations
+    method: DELETE
+    user: admin
+    form: {utf8: "✓"}
+  - id: g14_settings_activities
+    path: /projects/ecookbook/settings/activities
+    user: admin
+
+  # ---- 状態（クローズ・アーカイブ）とブックマーク ----
+  - id: close
+    path: /projects/subproject1/close
+    method: POST
+    user: jsmith
+    form: {utf8: "✓"}
+  - id: g15_closed_show
+    path: /projects/subproject1
+    user: jsmith
+  - id: reopen
+    path: /projects/subproject1/reopen
+    method: POST
+    user: jsmith
+    form: {utf8: "✓"}
+  - id: archive
+    path: /projects/onlinestore/archive
+    method: POST
+    user: admin
+    form: {utf8: "✓"}
+  - id: g16_admin_projects_archived
+    path: /admin/projects?set_filter=1&f[]=status&op[status]=%3D&v[status][]=9
+    user: admin
+  - id: g17_archived_show
+    path: /projects/onlinestore
+    user: admin
+  - id: unarchive
+    path: /projects/onlinestore/unarchive
+    method: POST
+    user: admin
+    form: {utf8: "✓"}
+  - id: archive_api
+    path: /projects/subproject2/archive.json
+    method: PUT
+    user: admin
+  - id: unarchive_api
+    path: /projects/subproject2/unarchive.json
+    method: PUT
+    user: admin
+  - id: close_api
+    path: /projects/subproject2/close.json
+    method: PUT
+    user: admin
+  - id: reopen_api
+    path: /projects/subproject2/reopen.json
+    method: PUT
+    user: admin
+  - id: bookmark_add
+    path: /projects/onlinestore/bookmark
+    method: POST
+    user: admin
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01"}
+    form: {utf8: "✓"}
+  - id: bookmark_delete
+    path: /projects/ecookbook/bookmark
+    method: DELETE
+    user: admin
+    form: {utf8: "✓"}
+
+  # ---- API による作成・更新 ----
+  - id: api_create
+    normalize: {mask_timestamps: true}
+    path: /projects.json
+    method: POST
+    user: admin
+    content_type: application/json
+    body: '{"project":{"name":"API project","identifier":"api-project","enabled_module_names":["issue_tracking"],"tracker_ids":[1]}}'
+  - id: api_create_invalid
+    path: /projects.xml
+    method: POST
+    user: admin
+    content_type: application/xml
+    body: '<project><name>API project</name><identifier>api-project</identifier></project>'
+  - id: api_update
+    path: /projects/api-project.json
+    method: PUT
+    user: admin
+    content_type: application/json
+    body: '{"project":{"name":"API project 2","description":"described"}}'
+  - id: g18_api_project_xml
+    normalize: {mask_timestamps: true}
+    path: /projects/api-project.xml
+    user: admin
+
+  # ---- 複製 ----
+  - id: copy_invalid
+    path: /projects/ecookbook/copy
+    method: POST
+    user: admin
+    form:
+      project[name]: ""
+      project[identifier]: ""
+      only[]: ["members", ""]
+  - id: copy
+    path: /projects/ecookbook/copy
+    method: POST
+    user: admin
+    form:
+      project[name]: "Copied"
+      project[identifier]: "copied"
+      project[is_public]: "1"
+      project[enabled_module_names][]: ["issue_tracking", "boards", "wiki", ""]
+      project[tracker_ids][]: ["1", "2", "3"]
+      only[]: ["members", "versions", "issue_categories", "queries", "boards", "wiki", ""]
+  - id: g19_copied_settings
+    path: /projects/copied/settings
+    user: admin
+  - id: g20_copied_memberships_json
+    path: /projects/copied/memberships.json
+    user: admin
+
+  # ---- 削除 ----
+  - id: destroy_confirm_page
+    path: /projects/new-project
+    method: DELETE
+    user: admin
+    form: {utf8: "✓"}
+  - id: destroy_wrong_identifier
+    path: /projects/new-project
+    method: DELETE
+    user: admin
+    form:
+      confirm: "wrong"
+  - id: destroy
+    path: /projects/new-project
+    method: DELETE
+    user: admin
+    form:
+      confirm: "new-project"
+  - id: destroy_api
+    path: /projects/api-project.json
+    method: DELETE
+    user: admin
+  - id: destroy_jsmith_denied
+    path: /projects/ecookbook
+    method: DELETE
+    user: dlopper
+    form:
+      confirm: "ecookbook"
+  - id: bulk_destroy_confirm
+    path: /projects/bulk_destroy?ids[]=8&ids[]=9
+    method: DELETE
+    user: admin
+    form: {utf8: "✓"}
+  - id: bulk_destroy
+    path: /projects/bulk_destroy?ids[]=8&ids[]=9
+    method: DELETE
+    user: admin
+    form:
+      confirm: "Yes"
+  - id: g21_admin_projects
+    path: /admin/projects
+    user: admin
+  - id: g22_projects_json
+    normalize: {mask_timestamps: true}
+    path: /projects.json
+    user: admin

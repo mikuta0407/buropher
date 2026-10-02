@@ -1,0 +1,21 @@
+status: 200
+content-type: application/xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <id>10</id>
+  <name>API project 2</name>
+  <identifier>api-project</identifier>
+  <description>described</description>
+  <homepage/>
+  <status>1</status>
+  <is_public>true</is_public>
+  <inherit_members>false</inherit_members>
+  <custom_fields type="array">
+    <custom_field id="3" name="Development status">
+      <value/>
+    </custom_field>
+  </custom_fields>
+  <created_on>TIMESTAMP</created_on>
+  <updated_on>TIMESTAMP</updated_on>
+</project>

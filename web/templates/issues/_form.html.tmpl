@@ -1,0 +1,81 @@
+{{$v := .V}}{{$F := .F}}
+{{$f := labelled_fields_for "issue" $F.Model}}
+{{call_hook "view_issues_form_details_top"}}
+{{hidden_field_tag "form_update_triggered_by" ""}}
+{{if present (param "back_url")}}{{hidden_field_tag "back_url" (param "back_url") (hash "id" nil)}}{{end}}
+
+{{if $v.M.SafeAttribute "is_private"}}
+<p id="issue_is_private_wrap">
+  {{$f.CheckBox "is_private" (hash "no_label" true)}}<label class="inline" for="issue_is_private" id="issue_is_private_label">{{l "field_is_private"}}</label>
+</p>
+{{end}}
+
+{{if $F.ShowProjectSelect}}
+<p>{{$f.Select "project_id" $F.ProjectOptions (hash "required" true) (hash "onchange" $F.UpdateFormOnchange)}}</p>
+{{end}}
+
+{{if $F.ShowTrackerSelect}}
+<p>
+  {{$f.Select "tracker_id" $F.TrackerOptions (hash "required" true) (hash "onchange" $F.UpdateFormOnchange "title" $F.TrackerTitle)}}
+  {{if $F.TrackersWithDescription}}{{content_tag "a" (sprite_icon "help" (l "label_open_trackers_description")) (hash "class" "icon-only icon-help" "title" (l "label_open_trackers_description") "onclick" "showModal('trackers_description', '500px'); return false;" "href" "#")}}{{end}}
+</p>
+  {{partial "issues/trackers_description" (dict "trackers" $F.TrackersWithDescription)}}
+{{end}}
+
+{{if $v.M.SafeAttribute "subject"}}
+<p>{{$f.TextField "subject" (hash "size" 80 "maxlength" 255 "required" true)}}</p>
+{{end}}
+
+{{if $v.M.SafeAttribute "description"}}
+<p>
+  {{$f.LabelForField "description" (hash "required" ($v.M.RequiredAttribute "description"))}}
+  {{content_tag_open "span" (hash "id" "issue_description_and_toolbar" "style" "display:none")}}
+    {{$f.TextArea "description" (hash "cols" 60 "accesskey" (accesskey "edit") "class" "wiki-edit" "rows" $F.DescriptionRows "data" $F.ListAutofillData "no_label" true)}}
+  {{end_tag "span"}}
+  {{link_to_function (content_tag "span" (sprite_icon "edit" (l "button_edit"))) "$(this).hide(); $(\"#issue_description_and_toolbar\").show()" (hash "class" "icon icon-edit")}}
+</p>
+{{wikitoolbar_for "issue_description" $F.PreviewURL}}
+{{end}}
+
+<div id="attributes" class="attributes">
+  {{partial "issues/attributes" (dict "V" $v "F" $F)}}
+</div>
+
+{{call_hook "view_issues_form_details_bottom"}}
+
+{{heads_for_wiki_formatter}}
+{{heads_for_auto_complete $v.M.Project}}
+
+{{if $v.CanAddWatchers}}
+  {{$F.WatchersDataSourcesJS}}
+{{end}}
+
+{{define "issues/_form#js"}}
+
+$(document).ready(function(){
+  $("#issue_tracker_id, #issue_status_id").each(function(){
+    $(this).val($(this).find("option[selected=selected]").val());
+  });
+  $(".assign-to-me-link").click(function(event){
+    event.preventDefault();
+    var element = $(event.target);
+    $('#issue_assigned_to_id').val(element.data('id'));
+    element.hide();
+  });
+  $('#issue_assigned_to_id').change(function(event){
+    var assign_to_me_link = $(".assign-to-me-link");
+
+    if (assign_to_me_link.length > 0) {
+      var user_id = $(event.target).val();
+      var current_user_id = assign_to_me_link.data('id');
+
+      if (user_id == current_user_id) {
+        assign_to_me_link.hide();
+      } else {
+        assign_to_me_link.show();
+      }
+    }
+  });
+});
+{{end}}
+{{javascript_tag (capture "issues/_form#js" .) -}}

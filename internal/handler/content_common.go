@@ -2,7 +2,6 @@ package handler
 
 import (
 	"errors"
-	"io/fs"
 	"net/http"
 	"strconv"
 	"strings"
@@ -15,7 +14,6 @@ import (
 	"github.com/mikuta0407/buropher/internal/i18n"
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/validation"
-	"github.com/mikuta0407/buropher/web"
 )
 
 // このファイルはニュース・文書・ファイル・フォーラムのコントローラで共通に使う部品
@@ -169,19 +167,6 @@ func nilIfEmptyString(s string) any {
 		return nil
 	}
 	return s
-}
-
-// renderPublic404 は処理されない ActiveRecord::RecordNotFound の応答（public/404.html）。
-func renderPublic404(c *Req) {
-	b, err := fs.ReadFile(web.Public(), "404.html")
-	c.Halt()
-	if err != nil {
-		http.NotFound(c.W, c.R)
-		return
-	}
-	c.W.Header().Set("Content-Type", "text/html; charset=utf-8")
-	c.W.WriteHeader(http.StatusNotFound)
-	_, _ = c.W.Write(b)
 }
 
 // respondNotAcceptable は respond_to に該当する形式が無い場合（ActionController::UnknownFormat → 406）。

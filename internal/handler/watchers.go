@@ -130,7 +130,7 @@ func (a *App) findObjectsFromParams(c *Req) ([]*watchable, error) {
 
 var errUnauthorized = errors.New("unauthorized")
 
-func newAuthorizerFor(a *App, u *domain.User) *authz.Authorizer { return authz.New(a.DB, u) }
+func watcherAuthorizer(a *App, u *domain.User) *authz.Authorizer { return authz.New(a.DB, u) }
 
 // watchableVisible は watchable.visible?(user)（visible? を持たない enabled_module は project.visible?）。
 func (a *App) watchableVisible(c *Req, w *watchable, u *domain.User) bool {
@@ -139,7 +139,7 @@ func (a *App) watchableVisible(c *Req, w *watchable, u *domain.User) bool {
 	}
 	az := c.Authz()
 	if u.ID != c.User.ID {
-		az = newAuthorizerFor(a, u)
+		az = watcherAuthorizer(a, u)
 	}
 	switch w.Type {
 	case "issue":

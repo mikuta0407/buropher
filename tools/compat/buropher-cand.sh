@@ -34,13 +34,26 @@ env_run() {
 start() {
   [ -f "$WORK/db/pristine.db" ] || prepare
   build
-  env_run nohup "$BIN" serve > "$WORK/serve.log" 2>&1 &
+  # $! が buropher 自身の pid になるよう、関数（サブシェル）ではなく nohup env で直接起動する
+  nohup env BUROPHER_DB_DSN=$WORK/db/buropher.db BUROPHER_ATTACHMENTS_PATH=$WORK/files BUROPHER_SECRET_KEY=compat-secret \
+    BUROPHER_ADDR=127.0.0.1:$PORT BUROPHER_FAKE_NOW=$FROZEN TZ=UTC "$BIN" serve > "$WORK/serve.log" 2>&1 &
   echo $! > "$PIDFILE"
   for _ in $(seq 50); do curl -sf "http://127.0.0.1:$PORT/healthz" >/dev/null && { echo "buropher candidate on http://127.0.0.1:$PORT"; return; }; sleep 0.2; done
   echo "failed to start; see $WORK/serve.log" >&2; exit 1
 }
 
-stop() { [ -f "$PIDFILE" ] && kill "$(cat "$PIDFILE")" 2>/dev/null || true; rm -f "$PIDFILE"; }
+# stop は終了を待つ（終了前に DB を差し替えると、旧プロセスが閉じるときに WAL を書き戻して状態が残るため）。
+# PIDFILE はサブシェルの pid のことがあるため、同じバイナリの serve も止める。
+stop() {
+  if [ -f "$PIDFILE" ]; then
+    pid=$(cat "$PIDFILE")
+    kill "$pid" 2>/dev/null || true
+    for _ in $(seq 100); do kill -0 "$pid" 2>/dev/null || break; sleep 0.1; done
+  fi
+  rm -f "$PIDFILE"
+  pkill -f "^$BIN serve\$" 2>/dev/null || true
+  for _ in $(seq 50); do pgrep -f "^$BIN serve\$" >/dev/null || break; sleep 0.2; done
+}
 
 case "${1:-}" in
   start) start ;;

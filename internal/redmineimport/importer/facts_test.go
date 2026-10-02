@@ -343,6 +343,14 @@ func checkFixtureFacts(t *testing.T, d *db.DB, rep *Report, filesDir string) {
 	if _, err := d.Exec(context.Background(), `DELETE FROM issue_statuses WHERE id = ?`, id); err != nil {
 		t.Fatal(err)
 	}
+	// 破棄した行 (custom_fields id=11, 基底クラス) の ID は再利用しない
+	cfID, err := d.InsertReturningID(context.Background(), `INSERT INTO custom_fields (owner_kind, name, field_format) VALUES ('issue', 'Seq test', 'string')`)
+	if err != nil || cfID != 12 {
+		t.Errorf("next custom_fields id = %d, %v", cfID, err)
+	}
+	if _, err := d.Exec(context.Background(), `DELETE FROM custom_fields WHERE id = ?`, cfID); err != nil {
+		t.Fatal(err)
+	}
 	if !rep.OK() || !rep.Committed {
 		t.Errorf("report not OK: %+v", rep.Checks)
 	}

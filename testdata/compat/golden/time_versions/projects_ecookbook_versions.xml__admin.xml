@@ -1,0 +1,78 @@
+status: 200
+content-type: application/xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<versions total_count="6" type="array">
+  <version>
+    <id>1</id>
+    <project id="1" name="eCookbook"/>
+    <name>0.1</name>
+    <description>Beta</description>
+    <status>closed</status>
+    <due_date>2006-07-01</due_date>
+    <sharing>none</sharing>
+    <wiki_page_title/>
+    <created_on>2006-07-19T19:00:07Z</created_on>
+    <updated_on>2006-07-19T19:00:07Z</updated_on>
+  </version>
+  <version>
+    <id>2</id>
+    <project id="1" name="eCookbook"/>
+    <name>1.0</name>
+    <description>Stable release</description>
+    <status>locked</status>
+    <due_date>2026-02-04</due_date>
+    <sharing>none</sharing>
+    <wiki_page_title>ECookBookV1</wiki_page_title>
+    <created_on>2006-07-19T19:00:33Z</created_on>
+    <updated_on>2006-07-19T19:00:33Z</updated_on>
+  </version>
+  <version>
+    <id>3</id>
+    <project id="1" name="eCookbook"/>
+    <name>2.0</name>
+    <description>Future version</description>
+    <status>open</status>
+    <due_date/>
+    <sharing>none</sharing>
+    <wiki_page_title/>
+    <created_on>2006-07-19T19:00:33Z</created_on>
+    <updated_on>2006-07-19T19:00:33Z</updated_on>
+  </version>
+  <version>
+    <id>4</id>
+    <project id="3" name="eCookbook Subproject 1"/>
+    <name>2.0</name>
+    <description>Future version on subproject</description>
+    <status>open</status>
+    <due_date/>
+    <sharing>tree</sharing>
+    <wiki_page_title/>
+    <created_on>2006-07-19T19:00:33Z</created_on>
+    <updated_on>2006-07-19T19:00:33Z</updated_on>
+  </version>
+  <version>
+    <id>6</id>
+    <project id="5" name="Private child of eCookbook"/>
+    <name>Private Version of public subproject</name>
+    <description>Should be done any day now...</description>
+    <status>open</status>
+    <due_date/>
+    <sharing>tree</sharing>
+    <wiki_page_title/>
+    <created_on>2006-07-19T19:00:07Z</created_on>
+    <updated_on>2006-07-19T19:00:07Z</updated_on>
+  </version>
+  <version>
+    <id>7</id>
+    <project id="2" name="OnlineStore"/>
+    <name>Systemwide visible version</name>
+    <description/>
+    <status>open</status>
+    <due_date/>
+    <sharing>system</sharing>
+    <wiki_page_title/>
+    <created_on>2006-07-19T19:00:07Z</created_on>
+    <updated_on>2006-07-19T19:00:07Z</updated_on>
+  </version>
+</versions>

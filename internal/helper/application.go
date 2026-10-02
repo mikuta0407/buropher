@@ -453,7 +453,9 @@ func (d *Deps) gravatarAvatarTag(r *view.Render, p *Page, u *domain.User, opts *
 	}
 	sz, _ := strconv.Atoi(rails.ToS(o.Get("size")))
 	o.Set("srcset", gravatarURL(strings.ToLower(email), o.Clone().Set("size", sz*2))+" 2x")
-	return r.Rails.ImageTag(string(rails.H(src)), o.Except("rating", "size", "default", "ssl"))
+	// Redmine は h(src)（html_safe）を image_tag に渡すため & は 1 回だけエスケープされる。
+	// ImageTag は属性値をエスケープするので、ここではエスケープ前の URL を渡す。
+	return r.Rails.ImageTag(src, o.Except("rating", "size", "default", "ssl"))
 }
 
 func gravatarURL(email string, o *rails.Hash) string {
@@ -723,6 +725,9 @@ func (d *Deps) renderProjectJumpBox(p *Page) html {
 	text := ""
 	if p.Project != nil && p.Project.ID != 0 {
 		text = p.Project.Name
+		if p.ProjectNameWas != "" {
+			text = p.ProjectNameWas
+		}
 	}
 	if text == "" {
 		text = p.l("label_jump_to_a_project")
@@ -733,7 +738,7 @@ func (d *Deps) renderProjectJumpBox(p *Page) html {
 	q := rails.TextFieldTag("q", "", rails.NewHash("id", "projects-quick-search", "class", "autocomplete",
 		"data", rails.NewHash("automcomplete_url", u), "autocomplete", "off"))
 	var allClass any
-	if p.Project == nil && p.MainMenu {
+	if p.Project == nil && !p.NewRecordProject && p.MainMenu {
 		allClass = "selected"
 	}
 	all := rails.LinkTo(p.l("label_project_all"), "/projects"+jumpQuery("?", item), rails.NewHash("class", allClass))

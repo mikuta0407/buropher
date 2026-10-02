@@ -1,0 +1,115 @@
+status: 200
+content-type: application/xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<issue>
+  <id>14</id>
+  <project id="3" name="eCookbook Subproject 1"/>
+  <tracker id="1" name="Bug"/>
+  <status id="1" is_closed="false" name="New"/>
+  <priority id="5" name="Normal"/>
+  <author id="2" name="John Smith"/>
+  <subject>Private issue on public project</subject>
+  <description>This is a private issue</description>
+  <start_date/>
+  <due_date/>
+  <done_ratio>0</done_ratio>
+  <is_private>true</is_private>
+  <estimated_hours/>
+  <total_estimated_hours/>
+  <spent_hours>0.0</spent_hours>
+  <total_spent_hours>0.0</total_spent_hours>
+  <custom_fields type="array">
+    <custom_field id="2" name="Searchable field">
+      <value/>
+    </custom_field>
+    <custom_field id="1" name="Database">
+      <value/>
+    </custom_field>
+    <custom_field id="6" name="Float field">
+      <value/>
+    </custom_field>
+    <custom_field id="8" name="Custom date">
+      <value/>
+    </custom_field>
+  </custom_fields>
+  <created_on>2025-12-31T12:00:00Z</created_on>
+  <updated_on>2025-12-31T12:00:00Z</updated_on>
+  <closed_on/>
+  <attachments type="array">
+    <attachment>
+      <id>15</id>
+      <filename>private.diff</filename>
+      <filesize>687</filesize>
+      <content_type>text/x-diff</content_type>
+      <description>attachment of a private issue</description>
+      <content_url>{{BASE}}/attachments/download/15/private.diff</content_url>
+      <author id="2" name="John Smith"/>
+      <created_on>2010-07-19T19:07:27Z</created_on>
+    </attachment>
+    <attachment>
+      <id>16</id>
+      <filename>testfile.png</filename>
+      <filesize>2654</filesize>
+      <content_type>image/png</content_type>
+      <description/>
+      <content_url>{{BASE}}/attachments/download/16/testfile.png</content_url>
+      <thumbnail_url>{{BASE}}/attachments/thumbnail/16</thumbnail_url>
+      <author id="2" name="John Smith"/>
+      <created_on>2010-11-23T07:14:50Z</created_on>
+    </attachment>
+    <attachment>
+      <id>17</id>
+      <filename>testfile.PNG</filename>
+      <filesize>3582</filesize>
+      <content_type>image/png</content_type>
+      <description/>
+      <content_url>{{BASE}}/attachments/download/17/testfile.PNG</content_url>
+      <thumbnail_url>{{BASE}}/attachments/thumbnail/17</thumbnail_url>
+      <author id="2" name="John Smith"/>
+      <created_on>2010-12-23T07:14:50Z</created_on>
+    </attachment>
+    <attachment>
+      <id>18</id>
+      <filename>testテスト.png</filename>
+      <filesize>2654</filesize>
+      <content_type>image/png</content_type>
+      <description/>
+      <content_url>{{BASE}}/attachments/download/18/test%E3%83%86%E3%82%B9%E3%83%88.png</content_url>
+      <thumbnail_url>{{BASE}}/attachments/thumbnail/18</thumbnail_url>
+      <author id="2" name="John Smith"/>
+      <created_on>2011-01-23T07:14:50Z</created_on>
+    </attachment>
+    <attachment>
+      <id>19</id>
+      <filename>Testテスト.PNG</filename>
+      <filesize>3582</filesize>
+      <content_type>image/png</content_type>
+      <description/>
+      <content_url>{{BASE}}/attachments/download/19/Test%E3%83%86%E3%82%B9%E3%83%88.PNG</content_url>
+      <thumbnail_url>{{BASE}}/attachments/thumbnail/19</thumbnail_url>
+      <author id="2" name="John Smith"/>
+      <created_on>2011-02-23T07:14:50Z</created_on>
+    </attachment>
+    <attachment>
+      <id>20</id>
+      <filename>root_attachment.txt</filename>
+      <filesize>54</filesize>
+      <content_type>text/plain</content_type>
+      <description/>
+      <content_url>{{BASE}}/attachments/download/20/root_attachment.txt</content_url>
+      <author id="2" name="John Smith"/>
+      <created_on>2012-05-12T07:14:50Z</created_on>
+    </attachment>
+  </attachments>
+  <journals type="array">
+    <journal id="5">
+      <user id="2" name="John Smith"/>
+      <notes>A comment on a private issue.</notes>
+      <created_on>2026-01-14T00:00:00Z</created_on>
+      <updated_on>2026-01-14T00:00:00Z</updated_on>
+      <private_notes>false</private_notes>
+      <details type="array"/>
+    </journal>
+  </journals>
+</issue>

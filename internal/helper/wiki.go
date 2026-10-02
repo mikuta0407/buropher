@@ -90,6 +90,11 @@ func init() {
 				p := pg()
 				return d.wikitoolbarFor(r, p, fieldID, previewURL, &headsIncluded)
 			},
+			// heads_for_wiki_formatter（wikitoolbar_for と同じく header_tags に 1 回だけ加える）
+			"heads_for_wiki_formatter": func() string {
+				d.headsForWikiFormatter(r, pg(), &headsIncluded)
+				return ""
+			},
 			"list_autofill_data_attributes": func() *rails.Hash { return listAutofillDataAttributes(pg()) },
 			"update_data_sources_for_auto_complete": func(sources *rails.Hash) html {
 				return updateDataSourcesForAutoComplete(sources)
@@ -450,15 +455,28 @@ func pluralKind(kind string) string {
 
 // wikitoolbarFor は Redmine::WikiFormatting::*::Helper#wikitoolbar_for(field_id, preview_url)。
 func (d *Deps) wikitoolbarFor(r *view.Render, p *Page, fieldID, previewURL string, included *bool) html {
-	format := p.setting("text_formatting")
+	switch p.setting("text_formatting") {
+	case "textile", "common_mark", "markdown":
+	default:
+		return ""
+	}
+	d.headsForWikiFormatter(r, p, included)
+	return rails.JavascriptTag("var wikiToolbar = new jsToolBar(document.getElementById('"+fieldID+"')); "+
+		"wikiToolbar.setHelpLink('"+rails.EscapeJavascriptString("/help/wiki_syntax")+"'); "+
+		"wikiToolbar.setPreviewUrl('"+rails.EscapeJavascriptString(previewURL)+"'); "+
+		"wikiToolbar.draw();", nil)
+}
+
+// headsForWikiFormatter は heads_for_wiki_formatter（jsToolBar の JS / CSS を header_tags に 1 回だけ加える）。
+func (d *Deps) headsForWikiFormatter(r *view.Render, p *Page, included *bool) {
 	var lib string
-	switch format {
+	switch p.setting("text_formatting") {
 	case "textile":
 		lib = "textile"
 	case "common_mark", "markdown":
 		lib = "common_mark"
 	default:
-		return ""
+		return
 	}
 	if !*included {
 		lang := []string{"c", "cpp", "csharp", "css", "diff", "go", "groovy", "html", "java", "javascript", "objc", "perl", "php", "python", "r", "ruby", "sass", "scala", "shell", "sql", "swift", "xml", "yaml"}
@@ -476,10 +494,6 @@ func (d *Deps) wikitoolbarFor(r *view.Render, p *Page, fieldID, previewURL strin
 		}
 		*included = true
 	}
-	return rails.JavascriptTag("var wikiToolbar = new jsToolBar(document.getElementById('"+fieldID+"')); "+
-		"wikiToolbar.setHelpLink('"+rails.EscapeJavascriptString("/help/wiki_syntax")+"'); "+
-		"wikiToolbar.setPreviewUrl('"+rails.EscapeJavascriptString(previewURL)+"'); "+
-		"wikiToolbar.draw();", nil)
 }
 
 // listAutofillDataAttributes は ApplicationHelper#list_autofill_data_attributes。

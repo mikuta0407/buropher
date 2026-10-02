@@ -1,0 +1,206 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>New authentication mode (LDAP) - Authentication modes - Redmine</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Redmine" />
+<meta name="keywords" content="issue,bug,tracker" />
+<meta name="csrf-param" content="authenticity_token" />
+<meta name="csrf-token" content="-u-J33iv1nmHTSokS9rWoLU_SMS--bNPXTmDK9JVFu0UNAmuPyuKwALpI-HigGIVryuP_8me5o5PfAhbqNF3pQ" />
+<link rel="shortcut icon" type="image/x-icon" href="/assets/favicon-0e291875.ico" />
+<link rel="stylesheet" href="/assets/jquery/jquery-ui-1.13.2-70e53573.css" media="all" />
+<link rel="stylesheet" href="/assets/tribute-5.1.3-c23a7bf2.css" media="all" />
+<link rel="stylesheet" href="/assets/application-6dc0ec44.css" media="all" />
+<link rel="stylesheet" href="/assets/responsive-194751d3.css" media="all" />
+
+<script type="importmap" data-turbo-track="reload">{
+  "imports": {
+    "@rails/request.js": "/assets/requestjs-64720317.js",
+    "application": "/assets/application-20c5ac24.js",
+    "@hotwired/stimulus": "/assets/stimulus.min-7ea3d58b.js",
+    "@hotwired/stimulus-loading": "/assets/stimulus-loading-25917588.js",
+    "turndown": "/assets/turndown-93630580.js",
+    "controllers/api_key_copy_controller": "/assets/controllers/api_key_copy_controller-75f835b3.js",
+    "controllers/application": "/assets/controllers/application-fab29967.js",
+    "controllers": "/assets/controllers/index-dfefe98d.js",
+    "controllers/list_autofill_controller": "/assets/controllers/list_autofill_controller-5f013171.js",
+    "controllers/quote_reply_controller": "/assets/controllers/quote_reply_controller-3e6a21f7.js",
+    "controllers/sticky_issue_header_controller": "/assets/controllers/sticky_issue_header_controller-18502bbe.js"
+  }
+}</script>
+<link rel="modulepreload" href="/assets/requestjs-64720317.js">
+<link rel="modulepreload" href="/assets/application-20c5ac24.js">
+<link rel="modulepreload" href="/assets/stimulus.min-7ea3d58b.js">
+<link rel="modulepreload" href="/assets/stimulus-loading-25917588.js">
+<link rel="modulepreload" href="/assets/turndown-93630580.js">
+<link rel="modulepreload" href="/assets/controllers/api_key_copy_controller-75f835b3.js">
+<link rel="modulepreload" href="/assets/controllers/application-fab29967.js">
+<link rel="modulepreload" href="/assets/controllers/index-dfefe98d.js">
+<link rel="modulepreload" href="/assets/controllers/list_autofill_controller-5f013171.js">
+<link rel="modulepreload" href="/assets/controllers/quote_reply_controller-3e6a21f7.js">
+<link rel="modulepreload" href="/assets/controllers/sticky_issue_header_controller-18502bbe.js">
+<script type="module">import "application"</script>
+<script src="/assets/jquery-3.7.1-ui-1.13.3-3ca148b8.js"></script>
+<script src="/assets/rails-ujs-3de06f48.js"></script>
+<script src="/assets/tribute-5.1.3.min-6c16c47a.js"></script><script src="/assets/application-legacy-54b0807d.js"></script>
+<script src="/assets/responsive-aa0cdb6f.js"></script>
+<script>
+//<![CDATA[
+$(window).on('load', function(){ warnLeavingUnsaved('The current page contains unsaved text that will be lost if you leave this page.'); });
+//]]>
+</script>
+
+<script>
+//<![CDATA[
+rm = window.rm || {};rm.I18n = rm.I18n || {};rm.I18n = Object.freeze({buttonCopy: 'Copy'});
+//]]>
+</script>
+<script>
+//<![CDATA[
+rm = window.rm || {};rm.AutoComplete = rm.AutoComplete || {};rm.AutoComplete.dataSources = JSON.parse('{"issues":"/issues/auto_complete?q=","wiki_pages":"/wiki_pages/auto_complete?q="}');
+//]]>
+</script>
+
+<!-- page specific tags -->
+</head>
+<body class="controller-auth_sources action-new avatars-off" data-text-formatting="common_mark">
+
+<div id="wrapper">
+
+<div class="flyout-menu js-flyout-menu">
+
+        <div class="flyout-menu__search">
+            <form action="/search" accept-charset="UTF-8" name="form-176ac080" method="get">
+            
+            <label class="search-magnifier search-magnifier--flyout" for="flyout-search"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--search"></use></svg><span class="icon-label hidden">Search</span></label>
+            <input type="text" name="q" id="flyout-search" class="small js-search-input" placeholder="Search" />
+</form>        </div>
+
+        <div class="flyout-menu__avatar">
+          <a href="/users/1"><span role="img" class="avatar-color-1 s40 avatar">RA</span></a>
+          <a class="user active" href="/users/1">admin</a>
+        </div>
+
+
+    <h3>General</h3>
+    <span class="js-general-menu"></span>
+
+    <span class="js-sidebar flyout-menu__sidebar"></span>
+
+    <h3>Profile</h3>
+    <span class="js-profile-menu"></span>
+
+</div>
+
+
+<div id="top-menu">
+    <div id="account">
+        <ul><li><a class="my-account" href="/my/account">My account</a></li><li><a class="logout" rel="nofollow" data-method="post" href="/logout">Sign out</a></li></ul>    </div>
+    <div id="loggedas">Logged in as <a class="user active" href="/users/1">admin</a></div>
+    <ul><li><a class="home" href="/">Home</a></li><li><a class="my-page" href="/my/page">My page</a></li><li><a class="projects" href="/projects">Projects</a></li><li><a class="administration" href="/admin">Administration</a></li><li><a target="_blank" rel="noopener" class="help" href="https://www.redmine.org/guide">Help</a></li></ul></div>
+
+<div id="header">
+
+    <a href="#" class="mobile-toggle-button js-flyout-menu-toggle-button"></a>
+
+    <div id="quick-search">
+        <form action="/search" accept-charset="UTF-8" name="form-067ef596" method="get">
+        <input type="hidden" name="scope" autocomplete="off" />
+        
+        <label for='q'>
+          <a accesskey="4" href="/search">Search</a>:
+        </label>
+        <input type="text" name="q" id="q" size="20" class="small" accesskey="f" data-auto-complete="true" />
+</form>        <div id="project-jump" class="drdn"><span class="drdn-trigger">Jump to a project...</span><div class="drdn-content"><div class="quick-search"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--search"></use></svg><input type="text" name="q" id="projects-quick-search" value="" class="autocomplete" data-automcomplete-url="/projects/autocomplete.js?jump=ldap_authentication" autocomplete="off" /></div><div class="drdn-items projects selection"><strong>Bookmarks</strong><a title="eCookbook" href="/projects/ecookbook?jump=ldap_authentication"><span style="padding-inline-start:0px;">eCookbook</span></a><a title="Private child of eCookbook" href="/projects/private-child?jump=ldap_authentication"><span style="padding-inline-start:16px;">Private child of eCookbook</span></a><strong>Recently used</strong><a title="OnlineStore" href="/projects/onlinestore?jump=ldap_authentication"><span style="padding-inline-start:0px;">OnlineStore</span></a><a title="eCookbook Subproject 1" href="/projects/subproject1?jump=ldap_authentication"><span style="padding-inline-start:0px;">eCookbook Subproject 1</span></a><strong>All Projects</strong><a title="Private child of eCookbook" href="/projects/private-child?jump=ldap_authentication"><span style="padding-inline-start:0px;">Private child of eCookbook</span></a></div><div class="drdn-items all-projects selection"><a href="/projects?jump=ldap_authentication">All Projects</a></div></div></div>
+    </div>
+
+    <h1>Redmine</h1>
+
+</div>
+
+<div id="main" class="collapsiblesidebar">
+  <script>
+//<![CDATA[
+$('#main.collapsiblesidebar').collapsibleSidebar();
+//]]>
+</script>
+    <div id="sidebar">
+          <div id="sidebar-switch-panel" style="visibility: hidden;">
+            <a id="sidebar-switch-button" class="" href="#">
+              <svg class="s20 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--chevrons-right"></use></svg></a>
+          </div>
+          <script>
+//<![CDATA[
+$('#sidebar-switch-panel').css('visibility', 'visible');
+//]]>
+</script>
+        <div id="sidebar-wrapper">
+              <h3>Administration</h3>
+    <div id="admin-menu">
+  <ul><li><a class="icon icon-projects projects" href="/admin/projects"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--projects"></use></svg><span class="icon-label">Projects</span></a></li><li><a class="icon icon-user users" href="/users"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--user"></use></svg><span class="icon-label">Users</span></a></li><li><a class="icon icon-group groups" href="/groups"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--group"></use></svg><span class="icon-label">Groups</span></a></li><li><a class="icon icon-roles roles" href="/roles"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--roles"></use></svg><span class="icon-label">Roles and permissions</span></a></li><li><a class="icon icon-issue trackers" href="/trackers"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--issue"></use></svg><span class="icon-label">Trackers</span></a></li><li><a class="icon icon-issue-edit issue-statuses" href="/issue_statuses"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--issue-edit"></use></svg><span class="icon-label">Issue statuses</span></a></li><li><a class="icon icon-workflows workflows" href="/workflows/edit"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--workflows"></use></svg><span class="icon-label">Workflow</span></a></li><li><a class="icon icon-custom-fields custom-fields" href="/custom_fields"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--custom-fields"></use></svg><span class="icon-label">Custom fields</span></a></li><li><a class="icon icon-list enumerations" href="/enumerations"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--list"></use></svg><span class="icon-label">Enumerations</span></a></li><li><a class="icon icon-settings settings" href="/settings"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--settings"></use></svg><span class="icon-label">Settings</span></a></li><li><a class="icon icon-server-authentication ldap-authentication selected" href="/auth_sources"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--server-authentication"></use></svg><span class="icon-label">LDAP authentication</span></a></li><li><a class="icon icon-applications applications" href="/oauth/applications"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--apps"></use></svg><span class="icon-label">Applications</span></a></li><li><a class="icon icon-plugins plugins" href="/admin/plugins"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--plugins"></use></svg><span class="icon-label">Plugins</span></a></li><li><a class="icon icon-help info" href="/admin/info"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--help"></use></svg><span class="icon-label">Information</span></a></li></ul>
+</div>
+
+
+          
+        </div>
+    </div>
+
+    <div id="content">
+        
+        <h2><a href="/auth_sources">Authentication modes</a> &#187; New authentication mode (LDAP)</h2>
+
+<form class="new_auth_source" id="auth_source_form" action="/auth_sources" accept-charset="UTF-8" name="auth_source_form-7f641490" method="post"><input type="hidden" name="authenticity_token" value="4v0zikJSleSzARJQjX0f7DjmVXnYm_vo9gN6WzjjVfsMJrP7BdbJXTalG5UkJ6tZIvKSQq_8rinkRvErQmc0sw" autocomplete="off" />
+  <input type="hidden" name="type" id="type" value="AuthSourceLdap" autocomplete="off" />
+  
+
+<div class="box tabular">
+  <p><label for="auth_source_name">Name<span class="required"> *</span></label><input type="text" value="" name="auth_source[name]" id="auth_source_name" /></p>
+  <p><label for="auth_source_host">Host<span class="required"> *</span></label><input type="text" name="auth_source[host]" id="auth_source_host" /></p>
+  <p>
+    <label for="auth_source_port">Port<span class="required"> *</span></label><input size="6" type="text" name="auth_source[port]" id="auth_source_port" />
+    <select name="auth_source[ldap_mode]" id="auth_source_ldap_mode"><option selected="selected" value="ldap">LDAP</option>
+<option value="ldaps_verify_none">LDAPS (without certificate check)</option>
+<option value="ldaps_verify_peer">LDAPS</option></select>
+    <em class="info ldaps_warning">It is recommended to use an encrypted LDAPS connection with certificate check to prevent any manipulation during the authentication process.</em>
+  </p>
+  <p><label for="auth_source_account">Account</label><input type="text" name="auth_source[account]" id="auth_source_account" /></p>
+  <p><label for="auth_source_account_password">Password</label><input value="" name="dummy_password" onfocus="this.value=&#39;&#39;; this.name=&#39;auth_source[account_password]&#39;;" onchange="this.name=&#39;auth_source[account_password]&#39;;" type="password" id="auth_source_account_password" /></p>
+  <p><label for="auth_source_base_dn">Base DN<span class="required"> *</span></label><input size="60" type="text" name="auth_source[base_dn]" id="auth_source_base_dn" /></p>
+  <p><label for="auth_source_filter">LDAP filter</label><textarea name="auth_source[filter]" id="auth_source_filter">
+</textarea></p>
+  <p><label for="auth_source_timeout">Timeout (in seconds)</label><input size="4" type="text" name="auth_source[timeout]" id="auth_source_timeout" /></p>
+  <p><label for="auth_source_onthefly_register">On-the-fly user creation</label><input name="auth_source[onthefly_register]" type="hidden" value="0" autocomplete="off" /><input type="checkbox" value="1" name="auth_source[onthefly_register]" id="auth_source_onthefly_register" /></p>
+</div>
+
+<fieldset class="box tabular"><legend>Attributes</legend>
+  <p><label for="auth_source_attr_login">Login attribute<span class="required"> *</span></label><input size="20" type="text" name="auth_source[attr_login]" id="auth_source_attr_login" /></p>
+  <p><label for="auth_source_attr_firstname">Firstname attribute</label><input size="20" type="text" name="auth_source[attr_firstname]" id="auth_source_attr_firstname" /></p>
+  <p><label for="auth_source_attr_lastname">Lastname attribute</label><input size="20" type="text" name="auth_source[attr_lastname]" id="auth_source_attr_lastname" /></p>
+  <p><label for="auth_source_attr_mail">Email attribute</label><input size="20" type="text" name="auth_source[attr_mail]" id="auth_source_attr_mail" /></p>
+</fieldset>
+
+  <input type="submit" name="commit" value="Create" data-disable-with="Create" />
+</form>
+        
+        <div style="clear:both;"></div>
+    </div>
+</div>
+<div id="footer">
+    Powered by <a target="_blank" rel="noopener" href="https://www.redmine.org/">Redmine</a> &copy; 2006-2026 Jean-Philippe Lang
+</div>
+
+<div id="ajax-indicator" style="display:none;">
+  <span class="icon">
+    <svg class="s18 icon-svg svg-loader" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--loader"></use></svg><span class="icon-label">Loading...</span>
+  </span>
+</div>
+<div id="ajax-modal" style="display:none;"></div>
+<div id="icon-copy-source" style="display: none;"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--"></use></svg></div>
+
+</div>
+
+</body>
+</html>
+

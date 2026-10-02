@@ -53,6 +53,9 @@ type Dialect interface {
 	DeferConstraints(ctx context.Context, e Execer) error
 	// ResetSequence は明示 ID 挿入後に table の id 採番を max(id)+1 以降に進める。
 	ResetSequence(ctx context.Context, e Execer, table string) error
+	// AdvanceSequence は table の次の採番を max(atLeast, max(id)) + 1 以降に進める
+	// (移行で破棄した行の ID を再利用しないため)。
+	AdvanceSequence(ctx context.Context, e Execer, table string, atLeast int64) error
 }
 
 // DialectFor は名前から Dialect を返す。
@@ -159,6 +162,14 @@ func (sqliteDialect) ResetSequence(ctx context.Context, e Execer, table string) 
 	return err
 }
 
+func (sqliteDialect) AdvanceSequence(ctx context.Context, e Execer, table string, atLeast int64) error {
+	if _, err := e.Exec(ctx, "INSERT INTO sqlite_sequence (name, seq) SELECT ?, 0 WHERE NOT EXISTS (SELECT 1 FROM sqlite_sequence WHERE name = ?)", table, table); err != nil {
+		return err
+	}
+	_, err := e.Exec(ctx, "UPDATE sqlite_sequence SET seq = ? WHERE name = ? AND seq < ?", atLeast, table, atLeast)
+	return err
+}
+
 // ---------------------------------------------------------------- PostgreSQL
 
 type postgresDialect struct{}
@@ -187,6 +198,13 @@ func (postgresDialect) DeferConstraints(ctx context.Context, e Execer) error {
 	_, err := e.Exec(ctx, "SET CONSTRAINTS ALL DEFERRED")
 	return err
 }
+func (postgresDialect) AdvanceSequence(ctx context.Context, e Execer, table string, atLeast int64) error {
+	_, err := e.Exec(ctx,
+		"SELECT setval(pg_get_serial_sequence(?, 'id'), GREATEST(?, COALESCE((SELECT MAX(id) FROM "+table+"), 0)) + 1, false)",
+		table, atLeast)
+	return err
+}
+
 func (postgresDialect) ResetSequence(ctx context.Context, e Execer, table string) error {
 	// 空テーブルなら次の採番が 1 になるよう is_called=false で設定する。
 	_, err := e.Exec(ctx,

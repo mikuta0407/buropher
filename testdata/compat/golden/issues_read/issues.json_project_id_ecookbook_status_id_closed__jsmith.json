@@ -1,0 +1,218 @@
+status: 200
+content-type: application/json
+
+{
+  "issues": [
+    {
+      "id": 12,
+      "project": {
+        "id": 1,
+        "name": "eCookbook"
+      },
+      "tracker": {
+        "id": 1,
+        "name": "Bug"
+      },
+      "status": {
+        "id": 5,
+        "name": "Closed",
+        "is_closed": true
+      },
+      "priority": {
+        "id": 5,
+        "name": "Normal"
+      },
+      "author": {
+        "id": 3,
+        "name": "Dave Lopper"
+      },
+      "category": {
+        "id": 1,
+        "name": "Printing"
+      },
+      "fixed_version": {
+        "id": 2,
+        "name": "1.0"
+      },
+      "subject": "Closed issue on a locked version",
+      "description": null,
+      "start_date": "2026-01-14",
+      "due_date": null,
+      "done_ratio": 0,
+      "is_private": false,
+      "estimated_hours": null,
+      "total_estimated_hours": null,
+      "spent_hours": 0.0,
+      "total_spent_hours": 0.0,
+      "custom_fields": [
+        {
+          "id": 2,
+          "name": "Searchable field",
+          "value": null
+        },
+        {
+          "id": 1,
+          "name": "Database",
+          "value": null
+        },
+        {
+          "id": 6,
+          "name": "Float field",
+          "value": null
+        },
+        {
+          "id": 8,
+          "name": "Custom date",
+          "value": null
+        },
+        {
+          "id": 9,
+          "name": "Project 1 cf",
+          "value": null
+        }
+      ],
+      "created_on": "2026-01-12T12:00:00Z",
+      "updated_on": "2026-01-14T12:00:00Z",
+      "closed_on": "2026-01-14T12:00:00Z"
+    },
+    {
+      "id": 11,
+      "project": {
+        "id": 1,
+        "name": "eCookbook"
+      },
+      "tracker": {
+        "id": 1,
+        "name": "Bug"
+      },
+      "status": {
+        "id": 5,
+        "name": "Closed",
+        "is_closed": true
+      },
+      "priority": {
+        "id": 5,
+        "name": "Normal"
+      },
+      "author": {
+        "id": 2,
+        "name": "John Smith"
+      },
+      "category": {
+        "id": 1,
+        "name": "Printing"
+      },
+      "fixed_version": {
+        "id": 1,
+        "name": "0.1"
+      },
+      "subject": "Closed issue on a closed version",
+      "description": null,
+      "start_date": "2026-01-14",
+      "due_date": null,
+      "done_ratio": 0,
+      "is_private": false,
+      "estimated_hours": null,
+      "total_estimated_hours": null,
+      "spent_hours": 0.0,
+      "total_spent_hours": 0.0,
+      "custom_fields": [
+        {
+          "id": 2,
+          "name": "Searchable field",
+          "value": null
+        },
+        {
+          "id": 1,
+          "name": "Database",
+          "value": null
+        },
+        {
+          "id": 6,
+          "name": "Float field",
+          "value": null
+        },
+        {
+          "id": 8,
+          "name": "Custom date",
+          "value": null
+        },
+        {
+          "id": 9,
+          "name": "Project 1 cf",
+          "value": null
+        }
+      ],
+      "created_on": "2026-01-12T12:00:00Z",
+      "updated_on": "2026-01-14T12:00:00Z",
+      "closed_on": "2026-01-14T12:00:00Z"
+    },
+    {
+      "id": 8,
+      "project": {
+        "id": 1,
+        "name": "eCookbook"
+      },
+      "tracker": {
+        "id": 1,
+        "name": "Bug"
+      },
+      "status": {
+        "id": 5,
+        "name": "Closed",
+        "is_closed": true
+      },
+      "priority": {
+        "id": 5,
+        "name": "Normal"
+      },
+      "author": {
+        "id": 2,
+        "name": "John Smith"
+      },
+      "subject": "Closed issue",
+      "description": "This is a closed issue.",
+      "start_date": null,
+      "due_date": null,
+      "done_ratio": 0,
+      "is_private": false,
+      "estimated_hours": null,
+      "total_estimated_hours": null,
+      "spent_hours": 0.0,
+      "total_spent_hours": 0.0,
+      "custom_fields": [
+        {
+          "id": 2,
+          "name": "Searchable field",
+          "value": null
+        },
+        {
+          "id": 1,
+          "name": "Database",
+          "value": null
+        },
+        {
+          "id": 6,
+          "name": "Float field",
+          "value": null
+        },
+        {
+          "id": 8,
+          "name": "Custom date",
+          "value": null
+        },
+        {
+          "id": 9,
+          "name": "Project 1 cf",
+          "value": null
+        }
+      ],
+      "created_on": "2026-01-05T12:00:00Z",
+      "updated_on": "2026-01-05T12:00:00Z",
+      "closed_on": "2026-01-12T12:00:00Z"
+    }
+  ],
+  "total_count": 3,
+  "offset": 0,
+  "limit": 25
+}

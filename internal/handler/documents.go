@@ -6,7 +6,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	"unicode"
 
 	"github.com/mikuta0407/buropher/internal/db"
 	"github.com/mikuta0407/buropher/internal/domain"
@@ -317,19 +316,6 @@ func groupDocuments(c *Req, docs []*domain.Document, sortBy string) []documentGr
 		out[i] = documentGroup{Name: g.name, Documents: g.docs}
 	}
 	return out
-}
-
-// casecmp は String#casecmp（ASCII の大文字小文字を無視したバイト比較）。
-func casecmp(a, b string) int {
-	fold := func(s string) string {
-		return strings.Map(func(r rune) rune {
-			if r < unicode.MaxASCII {
-				return unicode.ToLower(r)
-			}
-			return r
-		}, s)
-	}
-	return strings.Compare(fold(a), fold(b))
 }
 
 // activeDocumentCategories は DocumentCategory.active.collect {|c| [c.name, c.id]}。

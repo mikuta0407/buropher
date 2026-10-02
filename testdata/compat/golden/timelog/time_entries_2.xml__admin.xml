@@ -1,0 +1,21 @@
+status: 200
+content-type: application/xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<time_entry>
+  <id>2</id>
+  <project id="1" name="eCookbook"/>
+  <issue id="1"/>
+  <user id="1" name="Redmine Admin"/>
+  <activity id="9" name="Design"/>
+  <hours>150.0</hours>
+  <comments/>
+  <spent_on>2007-03-12</spent_on>
+  <created_on>2007-03-23T13:11:04Z</created_on>
+  <updated_on>2007-03-23T13:11:04Z</updated_on>
+  <custom_fields type="array">
+    <custom_field id="10" name="Overtime">
+      <value/>
+    </custom_field>
+  </custom_fields>
+</time_entry>

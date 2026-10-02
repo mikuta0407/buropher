@@ -1,0 +1,10 @@
+status: 200
+content-type: text/csv
+
+Project,User,2007-3,2007-4,Total time
+eCookbook,"",154.25,1.00,155.25
+"",Redmine Admin,150.00,1.00,151.00
+"",John Smith,4.25,"",4.25
+eCookbook Subproject 1,"","",7.65,7.65
+"",Redmine Admin,"",7.65,7.65
+Total time,"",154.25,8.65,162.90

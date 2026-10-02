@@ -173,6 +173,17 @@ func (q *Query) subprojectValues(ctx context.Context) ([]Option, error) {
 WHERE pc.ancestor_id = ? AND pc.depth > 0 AND (`+cond+`) ORDER BY projects.id`, q.Project.ID); err != nil {
 		return nil, err
 	}
+	// project.descendants は lft 順
+	ns, err := q.nestedSet(ctx)
+	if err != nil {
+		return nil, err
+	}
+	slices.SortStableFunc(rows, func(a, b struct {
+		ID   int64  `db:"id"`
+		Name string `db:"name"`
+	}) int {
+		return ns[a.ID].Lft - ns[b.ID].Lft
+	})
 	out := make([]Option, len(rows))
 	for i, r := range rows {
 		out[i] = Option{Label: r.Name, Value: itoa(r.ID)}

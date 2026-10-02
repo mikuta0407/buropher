@@ -85,6 +85,8 @@ func (h adminH) progressBar(pct any, opts ...*rails.Hash) html {
 	return progressBarHTML(n, legend)
 }
 
+// ProgressBar は progress_bar(pct, :legend => legend)（Go コードから使う）。
+
 func progressBarHTML(pct int, legend string) html {
 	var cells html
 	if pct > 0 {
@@ -105,6 +107,8 @@ type Tab struct {
 	Label   string
 	URL     string
 	Onclick string
+	// Remote は :remote => true（部分テンプレートが無くても空の tab-content を出す）。
+	Remote bool
 	// Locals は部分テンプレートに tab と一緒に渡す追加の locals。
 	Locals map[string]any
 }
@@ -161,16 +165,20 @@ func (h adminH) renderTabs(tabs []Tab, selected ...string) (html, error) {
 		"    <button class=\"tab-right icon-only\" type=\"button\" onclick=\"moveTabRight(this);\">\n      " +
 		string(h.icon("angle-right", nil, rails.NewHash("rtl", true))) + "\n    </button>\n  </div>\n</div>\n\n")
 	for _, t := range tabs {
-		if t.Partial == "" {
+		if t.Partial == "" && !t.Remote {
 			continue
 		}
-		locals := map[string]any{"tab": t}
-		for k, v := range t.Locals {
-			locals[k] = v
-		}
-		content, err := h.r.Partial(t.Partial, locals)
-		if err != nil {
-			return "", err
+		var content html
+		if t.Partial != "" {
+			locals := map[string]any{"tab": t}
+			for k, v := range t.Locals {
+				locals[k] = v
+			}
+			var err error
+			content, err = h.r.Partial(t.Partial, locals)
+			if err != nil {
+				return "", err
+			}
 		}
 		var style any
 		if t.Name != sel {

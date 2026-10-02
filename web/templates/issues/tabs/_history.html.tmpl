@@ -1,0 +1,42 @@
+{{$v := .V}}
+{{$reply_links := $v.ReplyLinks}}
+{{range $journal := $v.Journals}}
+  <div id="change-{{$journal.ID}}" class="{{$journal.CSSClasses}}" data-controller="quote-reply">
+    <div id="note-{{$journal.Indice}}" class="note">
+      <h4 class="journal-header">
+        <span class="journal-info">
+          {{avatar $journal.User}}
+          {{authoring $journal.CreatedAt $journal.User (hash "label" "label_updated_time_by")}}
+          {{$journal.PrivateNotesIndicator}}
+          {{$journal.UpdateInfo}}
+        </span>
+        <span class="journal-meta">
+          <span class="journal-actions">
+            {{$journal.Actions $reply_links}}
+          </span>
+          <a href="#note-{{$journal.Indice}}" class="journal-link">#{{$journal.Indice}}</a>
+        </span>
+      </h4>
+      <div class="journal-content">
+        {{if $journal.Details}}
+          <ul class="journal-details">
+            {{range $string := $journal.DetailStrings}}
+              <li>{{$string}}</li>
+            {{end}}
+          </ul>
+          {{if $v.ThumbnailsEnabled}}{{$thumbs := $v.JournalThumbnails $journal}}{{if $thumbs}}
+            <div class="thumbnails">
+              {{range $t := $thumbs}}
+                {{$t}}
+              {{end}}
+            </div>
+          {{end}}{{end}}
+        {{end}}
+        {{if $journal.HasNotes}}{{$journal.NotesHTML}}{{end}}
+      </div>
+    </div>
+  </div>
+  {{call_hook "view_issues_history_journal_bottom"}}
+{{end}}
+
+{{if $v.CanEditNotes}}{{heads_for_wiki_formatter}}{{end}}

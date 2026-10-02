@@ -1,0 +1,6 @@
+<h2>{{link_to (l "label_report_plural") .ReportPath}} »</h2>
+
+<h3>{{.ReportTitle}}</h3>
+{{partial "reports/details" (dict "table" .Table "detail" .Detail "csv_path" .CSVPath "report_title" .ReportTitle)}}
+<br />
+{{link_to (l "button_back") .ReportPath}}

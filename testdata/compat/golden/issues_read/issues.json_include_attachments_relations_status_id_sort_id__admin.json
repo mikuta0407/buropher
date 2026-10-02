@@ -1,0 +1,1122 @@
+status: 200
+content-type: application/json
+
+{
+  "issues": [
+    {
+      "id": 1,
+      "project": {
+        "id": 1,
+        "name": "eCookbook"
+      },
+      "tracker": {
+        "id": 1,
+        "name": "Bug"
+      },
+      "status": {
+        "id": 1,
+        "name": "New",
+        "is_closed": false
+      },
+      "priority": {
+        "id": 4,
+        "name": "Low"
+      },
+      "author": {
+        "id": 2,
+        "name": "John Smith"
+      },
+      "category": {
+        "id": 1,
+        "name": "Printing"
+      },
+      "subject": "Cannot print recipes",
+      "description": "Unable to print recipes",
+      "start_date": "2026-01-14",
+      "due_date": "2026-01-25",
+      "done_ratio": 0,
+      "is_private": false,
+      "estimated_hours": 200.0,
+      "total_estimated_hours": 200.0,
+      "spent_hours": 154.25,
+      "total_spent_hours": 154.25,
+      "custom_fields": [
+        {
+          "id": 2,
+          "name": "Searchable field",
+          "value": "125"
+        },
+        {
+          "id": 1,
+          "name": "Database",
+          "value": null
+        },
+        {
+          "id": 6,
+          "name": "Float field",
+          "value": "2.1"
+        },
+        {
+          "id": 8,
+          "name": "Custom date",
+          "value": "2009-12-01"
+        },
+        {
+          "id": 9,
+          "name": "Project 1 cf",
+          "value": null
+        }
+      ],
+      "created_on": "2026-01-12T12:00:00Z",
+      "updated_on": "2026-01-14T12:00:00Z",
+      "closed_on": null,
+      "attachments": [],
+      "relations": []
+    },
+    {
+      "id": 2,
+      "project": {
+        "id": 1,
+        "name": "eCookbook"
+      },
+      "tracker": {
+        "id": 2,
+        "name": "Feature request"
+      },
+      "status": {
+        "id": 2,
+        "name": "Assigned",
+        "is_closed": false
+      },
+      "priority": {
+        "id": 5,
+        "name": "Normal"
+      },
+      "author": {
+        "id": 2,
+        "name": "John Smith"
+      },
+      "assigned_to": {
+        "id": 3,
+        "name": "Dave Lopper"
+      },
+      "fixed_version": {
+        "id": 2,
+        "name": "1.0"
+      },
+      "subject": "Add ingredients categories",
+      "description": "Ingredients of the recipe should be classified by categories",
+      "start_date": "2026-01-13",
+      "due_date": null,
+      "done_ratio": 30,
+      "is_private": false,
+      "estimated_hours": 0.5,
+      "total_estimated_hours": 0.5,
+      "spent_hours": 0.0,
+      "total_spent_hours": 0.0,
+      "custom_fields": [
+        {
+          "id": 6,
+          "name": "Float field",
+          "value": "2.05"
+        },
+        {
+          "id": 8,
+          "name": "Custom date",
+          "value": null
+        }
+      ],
+      "created_on": "2006-07-19T19:04:21Z",
+      "updated_on": "2006-07-19T19:09:50Z",
+      "closed_on": null,
+      "attachments": [
+        {
+          "id": 4,
+          "filename": "source.rb",
+          "filesize": 153,
+          "content_type": "application/x-ruby",
+          "description": "This is a Ruby source file",
+          "content_url": "{{BASE}}/attachments/download/4/source.rb",
+          "author": {
+            "id": 2,
+            "name": "John Smith"
+          },
+          "created_on": "2006-07-19T19:07:27Z"
+        },
+        {
+          "id": 10,
+          "filename": "picture.jpg",
+          "filesize": 452,
+          "content_type": "image/jpeg",
+          "description": null,
+          "content_url": "{{BASE}}/attachments/download/10/picture.jpg",
+          "thumbnail_url": "{{BASE}}/attachments/thumbnail/10",
+          "author": {
+            "id": 2,
+            "name": "John Smith"
+          },
+          "created_on": "2006-07-19T19:07:27Z"
+        }
+      ],
+      "relations": [
+        {
+          "id": 2,
+          "issue_id": 2,
+          "issue_to_id": 3,
+          "relation_type": "relates",
+          "delay": null
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "project": {
+        "id": 1,
+        "name": "eCookbook"
+      },
+      "tracker": {
+        "id": 1,
+        "name": "Bug"
+      },
+      "status": {
+        "id": 1,
+        "name": "New",
+        "is_closed": false
+      },
+      "priority": {
+        "id": 4,
+        "name": "Low"
+      },
+      "author": {
+        "id": 2,
+        "name": "John Smith"
+      },
+      "assigned_to": {
+        "id": 3,
+        "name": "Dave Lopper"
+      },
+      "subject": "Error 281 when updating a recipe",
+      "description": "Error 281 is encountered when saving a recipe",
+      "start_date": "2025-12-31",
+      "due_date": "2026-01-10",
+      "done_ratio": 0,
+      "is_private": false,
+      "estimated_hours": 1.0,
+      "total_estimated_hours": 1.0,
+      "spent_hours": 1.0,
+      "total_spent_hours": 1.0,
+      "custom_fields": [
+        {
+          "id": 2,
+          "name": "Searchable field",
+          "value": "125"
+        },
+        {
+          "id": 1,
+          "name": "Database",
+          "value": "MySQL"
+        },
+        {
+          "id": 6,
+          "name": "Float field",
+          "value": "11.65"
+        },
+        {
+          "id": 8,
+          "name": "Custom date",
+          "value": null
+        },
+        {
+          "id": 9,
+          "name": "Project 1 cf",
+          "value": null
+        }
+      ],
+      "created_on": "2006-07-19T19:07:27Z",
+      "updated_on": "2006-07-19T19:07:27Z",
+      "closed_on": null,
+      "attachments": [
+        {
+          "id": 1,
+          "filename": "error281.txt",
+          "filesize": 28,
+          "content_type": "text/plain",
+          "description": "An attachment",
+          "content_url": "{{BASE}}/attachments/download/1/error281.txt",
+          "author": {
+            "id": 2,
+            "name": "John Smith"
+          },
+          "created_on": "2006-07-19T19:07:27Z"
+        },
+        {
+          "id": 5,
+          "filename": "changeset_iso8859-1.diff",
+          "filesize": 687,
+          "content_type": "text/x-diff",
+          "description": null,
+          "content_url": "{{BASE}}/attachments/download/5/changeset_iso8859-1.diff",
+          "author": {
+            "id": 2,
+            "name": "John Smith"
+          },
+          "created_on": "2006-07-19T19:07:27Z"
+        },
+        {
+          "id": 6,
+          "filename": "archive.zip",
+          "filesize": 157,
+          "content_type": "application/zip",
+          "description": null,
+          "content_url": "{{BASE}}/attachments/download/6/archive.zip",
+          "author": {
+            "id": 2,
+            "name": "John Smith"
+          },
+          "created_on": "2006-07-19T19:07:27Z"
+        },
+        {
+          "id": 14,
+          "filename": "changeset_utf8.diff",
+          "filesize": 687,
+          "content_type": "text/x-diff",
+          "description": null,
+          "content_url": "{{BASE}}/attachments/download/14/changeset_utf8.diff",
+          "author": {
+            "id": 2,
+            "name": "John Smith"
+          },
+          "created_on": "2006-07-19T19:07:27Z"
+        }
+      ],
+      "relations": [
+        {
+          "id": 2,
+          "issue_id": 2,
+          "issue_to_id": 3,
+          "relation_type": "relates",
+          "delay": null
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "project": {
+        "id": 2,
+        "name": "OnlineStore"
+      },
+      "tracker": {
+        "id": 1,
+        "name": "Bug"
+      },
+      "status": {
+        "id": 1,
+        "name": "New",
+        "is_closed": false
+      },
+      "priority": {
+        "id": 4,
+        "name": "Low"
+      },
+      "author": {
+        "id": 2,
+        "name": "John Smith"
+      },
+      "assigned_to": {
+        "id": 2,
+        "name": "John Smith"
+      },
+      "subject": "Issue on project 2",
+      "description": "Issue on project 2",
+      "start_date": null,
+      "due_date": null,
+      "done_ratio": 0,
+      "is_private": false,
+      "estimated_hours": null,
+      "total_estimated_hours": null,
+      "custom_fields": [
+        {
+          "id": 2,
+          "name": "Searchable field",
+          "value": null
+        },
+        {
+          "id": 1,
+          "name": "Database",
+          "value": null
+        },
+        {
+          "id": 6,
+          "name": "Float field",
+          "value": null
+        },
+        {
+          "id": 8,
+          "name": "Custom date",
+          "value": null
+        }
+      ],
+      "created_on": "2026-01-10T12:00:00Z",
+      "updated_on": "2026-01-13T12:00:00Z",
+      "closed_on": null,
+      "attachments": [
+        {
+          "id": 7,
+          "filename": "archive.zip",
+          "filesize": 157,
+          "content_type": "application/zip",
+          "description": null,
+          "content_url": "{{BASE}}/attachments/download/7/archive.zip",
+          "author": {
+            "id": 1,
+            "name": "Redmine Admin"
+          },
+          "created_on": "2006-07-19T19:07:27Z"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": 5,
+      "project": {
+        "id": 3,
+        "name": "eCookbook Subproject 1"
+      },
+      "tracker": {
+        "id": 1,
+        "name": "Bug"
+      },
+      "status": {
+        "id": 1,
+        "name": "New",
+        "is_closed": false
+      },
+      "priority": {
+        "id": 4,
+        "name": "Low"
+      },
+      "author": {
+        "id": 2,
+        "name": "John Smith"
+      },
+      "subject": "Subproject issue",
+      "description": "This is an issue on a cookbook subproject",
+      "start_date": null,
+      "due_date": null,
+      "done_ratio": 0,
+      "is_private": false,
+      "estimated_hours": 2.0,
+      "total_estimated_hours": 2.0,
+      "spent_hours": 0.0,
+      "total_spent_hours": 0.0,
+      "custom_fields": [
+        {
+          "id": 2,
+          "name": "Searchable field",
+          "value": null
+        },
+        {
+          "id": 1,
+          "name": "Database",
+          "value": null
+        },
+        {
+          "id": 6,
+          "name": "Float field",
+          "value": "-7.6"
+        },
+        {
+          "id": 8,
+          "name": "Custom date",
+          "value": null
+        }
+      ],
+      "created_on": "2026-01-10T12:00:00Z",
+      "updated_on": "2026-01-13T12:00:00Z",
+      "closed_on": null,
+      "attachments": [],
+      "relations": []
+    },
+    {
+      "id": 6,
+      "project": {
+        "id": 5,
+        "name": "Private child of eCookbook"
+      },
+      "tracker": {
+        "id": 1,
+        "name": "Bug"
+      },
+      "status": {
+        "id": 1,
+        "name": "New",
+        "is_closed": false
+      },
+      "priority": {
+        "id": 4,
+        "name": "Low"
+      },
+      "author": {
+        "id": 2,
+        "name": "John Smith"
+      },
+      "subject": "Issue of a private subproject",
+      "description": "This is an issue of a private subproject of cookbook",
+      "start_date": "2026-01-15",
+      "due_date": "2026-01-16",
+      "done_ratio": 0,
+      "is_private": false,
+      "estimated_hours": null,
+      "total_estimated_hours": null,
+      "custom_fields": [
+        {
+          "id": 2,
+          "name": "Searchable field",
+          "value": null
+        },
+        {
+          "id": 1,
+          "name": "Database",
+          "value": null
+        },
+        {
+          "id": 6,
+          "name": "Float field",
+          "value": null
+        },
+        {
+          "id": 8,
+          "name": "Custom date",
+          "value": null
+        }
+      ],
+      "created_on": "2026-01-15T11:59:00Z",
+      "updated_on": "2026-01-15T11:59:00Z",
+      "closed_on": null,
+      "attachments": [],
+      "relations": []
+    },
+    {
+      "id": 7,
+      "project": {
+        "id": 1,
+        "name": "eCookbook"
+      },
+      "tracker": {
+        "id": 1,
+        "name": "Bug"
+      },
+      "status": {
+        "id": 1,
+        "name": "New",
+        "is_closed": false
+      },
+      "priority": {
+        "id": 5,
+        "name": "Normal"
+      },
+      "author": {
+        "id": 2,
+        "name": "John Smith"
+      },
+      "subject": "Issue due today",
+      "description": "This is an issue that is due today",
+      "start_date": "2026-01-05",
+      "due_date": "2026-01-15",
+      "done_ratio": 0,
+      "is_private": false,
+      "estimated_hours": null,
+      "total_estimated_hours": null,
+      "spent_hours": 0.0,
+      "total_spent_hours": 0.0,
+      "custom_fields": [
+        {
+          "id": 2,
+          "name": "Searchable field",
+          "value": "this is a stringforcustomfield search"
+        },
+        {
+          "id": 1,
+          "name": "Database",
+          "value": null
+        },
+        {
+          "id": 6,
+          "name": "Float field",
+          "value": ""
+        },
+        {
+          "id": 8,
+          "name": "Custom date",
+          "value": null
+        },
+        {
+          "id": 9,
+          "name": "Project 1 cf",
+          "value": null
+        }
+      ],
+      "created_on": "2026-01-05T12:00:00Z",
+      "updated_on": "2026-01-05T12:00:00Z",
+      "closed_on": null,
+      "attachments": [],
+      "relations": []
+    },
+    {
+      "id": 8,
+      "project": {
+        "id": 1,
+        "name": "eCookbook"
+      },
+      "tracker": {
+        "id": 1,
+        "name": "Bug"
+      },
+      "status": {
+        "id": 5,
+        "name": "Closed",
+        "is_closed": true
+      },
+      "priority": {
+        "id": 5,
+        "name": "Normal"
+      },
+      "author": {
+        "id": 2,
+        "name": "John Smith"
+      },
+      "subject": "Closed issue",
+      "description": "This is a closed issue.",
+      "start_date": null,
+      "due_date": null,
+      "done_ratio": 0,
+      "is_private": false,
+      "estimated_hours": null,
+      "total_estimated_hours": null,
+      "spent_hours": 0.0,
+      "total_spent_hours": 0.0,
+      "custom_fields": [
+        {
+          "id": 2,
+          "name": "Searchable field",
+          "value": null
+        },
+        {
+          "id": 1,
+          "name": "Database",
+          "value": null
+        },
+        {
+          "id": 6,
+          "name": "Float field",
+          "value": null
+        },
+        {
+          "id": 8,
+          "name": "Custom date",
+          "value": null
+        },
+        {
+          "id": 9,
+          "name": "Project 1 cf",
+          "value": null
+        }
+      ],
+      "created_on": "2026-01-05T12:00:00Z",
+      "updated_on": "2026-01-05T12:00:00Z",
+      "closed_on": "2026-01-12T12:00:00Z",
+      "attachments": [],
+      "relations": []
+    },
+    {
+      "id": 9,
+      "project": {
+        "id": 5,
+        "name": "Private child of eCookbook"
+      },
+      "tracker": {
+        "id": 1,
+        "name": "Bug"
+      },
+      "status": {
+        "id": 1,
+        "name": "New",
+        "is_closed": false
+      },
+      "priority": {
+        "id": 5,
+        "name": "Normal"
+      },
+      "author": {
+        "id": 2,
+        "name": "John Smith"
+      },
+      "subject": "Blocked Issue",
+      "description": "This is an issue that is blocked by issue",
+      "start_date": "2026-01-15",
+      "due_date": "2026-01-16",
+      "done_ratio": 0,
+      "is_private": false,
+      "estimated_hours": null,
+      "total_estimated_hours": null,
+      "custom_fields": [
+        {
+          "id": 2,
+          "name": "Searchable field",
+          "value": null
+        },
+        {
+          "id": 1,
+          "name": "Database",
+          "value": null
+        },
+        {
+          "id": 6,
+          "name": "Float field",
+          "value": null
+        },
+        {
+          "id": 8,
+          "name": "Custom date",
+          "value": null
+        }
+      ],
+      "created_on": "2026-01-15T11:59:00Z",
+      "updated_on": "2026-01-15T11:59:00Z",
+      "closed_on": null,
+      "attachments": [],
+      "relations": [
+        {
+          "id": 1,
+          "issue_id": 10,
+          "issue_to_id": 9,
+          "relation_type": "blocks",
+          "delay": null
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "project": {
+        "id": 5,
+        "name": "Private child of eCookbook"
+      },
+      "tracker": {
+        "id": 1,
+        "name": "Bug"
+      },
+      "status": {
+        "id": 1,
+        "name": "New",
+        "is_closed": false
+      },
+      "priority": {
+        "id": 5,
+        "name": "Normal"
+      },
+      "author": {
+        "id": 2,
+        "name": "John Smith"
+      },
+      "subject": "Issue Doing the Blocking",
+      "description": "This is an issue that blocks issue",
+      "start_date": "2026-01-15",
+      "due_date": "2026-01-16",
+      "done_ratio": 0,
+      "is_private": false,
+      "estimated_hours": null,
+      "total_estimated_hours": null,
+      "custom_fields": [
+        {
+          "id": 2,
+          "name": "Searchable field",
+          "value": null
+        },
+        {
+          "id": 1,
+          "name": "Database",
+          "value": null
+        },
+        {
+          "id": 6,
+          "name": "Float field",
+          "value": null
+        },
+        {
+          "id": 8,
+          "name": "Custom date",
+          "value": null
+        }
+      ],
+      "created_on": "2026-01-15T11:59:00Z",
+      "updated_on": "2026-01-15T11:59:00Z",
+      "closed_on": null,
+      "attachments": [],
+      "relations": [
+        {
+          "id": 1,
+          "issue_id": 10,
+          "issue_to_id": 9,
+          "relation_type": "blocks",
+          "delay": null
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "project": {
+        "id": 1,
+        "name": "eCookbook"
+      },
+      "tracker": {
+        "id": 1,
+        "name": "Bug"
+      },
+      "status": {
+        "id": 5,
+        "name": "Closed",
+        "is_closed": true
+      },
+      "priority": {
+        "id": 5,
+        "name": "Normal"
+      },
+      "author": {
+        "id": 2,
+        "name": "John Smith"
+      },
+      "category": {
+        "id": 1,
+        "name": "Printing"
+      },
+      "fixed_version": {
+        "id": 1,
+        "name": "0.1"
+      },
+      "subject": "Closed issue on a closed version",
+      "description": null,
+      "start_date": "2026-01-14",
+      "due_date": null,
+      "done_ratio": 0,
+      "is_private": false,
+      "estimated_hours": null,
+      "total_estimated_hours": null,
+      "spent_hours": 0.0,
+      "total_spent_hours": 0.0,
+      "custom_fields": [
+        {
+          "id": 2,
+          "name": "Searchable field",
+          "value": null
+        },
+        {
+          "id": 1,
+          "name": "Database",
+          "value": null
+        },
+        {
+          "id": 6,
+          "name": "Float field",
+          "value": null
+        },
+        {
+          "id": 8,
+          "name": "Custom date",
+          "value": null
+        },
+        {
+          "id": 9,
+          "name": "Project 1 cf",
+          "value": null
+        }
+      ],
+      "created_on": "2026-01-12T12:00:00Z",
+      "updated_on": "2026-01-14T12:00:00Z",
+      "closed_on": "2026-01-14T12:00:00Z",
+      "attachments": [],
+      "relations": []
+    },
+    {
+      "id": 12,
+      "project": {
+        "id": 1,
+        "name": "eCookbook"
+      },
+      "tracker": {
+        "id": 1,
+        "name": "Bug"
+      },
+      "status": {
+        "id": 5,
+        "name": "Closed",
+        "is_closed": true
+      },
+      "priority": {
+        "id": 5,
+        "name": "Normal"
+      },
+      "author": {
+        "id": 3,
+        "name": "Dave Lopper"
+      },
+      "category": {
+        "id": 1,
+        "name": "Printing"
+      },
+      "fixed_version": {
+        "id": 2,
+        "name": "1.0"
+      },
+      "subject": "Closed issue on a locked version",
+      "description": null,
+      "start_date": "2026-01-14",
+      "due_date": null,
+      "done_ratio": 0,
+      "is_private": false,
+      "estimated_hours": null,
+      "total_estimated_hours": null,
+      "spent_hours": 0.0,
+      "total_spent_hours": 0.0,
+      "custom_fields": [
+        {
+          "id": 2,
+          "name": "Searchable field",
+          "value": null
+        },
+        {
+          "id": 1,
+          "name": "Database",
+          "value": null
+        },
+        {
+          "id": 6,
+          "name": "Float field",
+          "value": null
+        },
+        {
+          "id": 8,
+          "name": "Custom date",
+          "value": null
+        },
+        {
+          "id": 9,
+          "name": "Project 1 cf",
+          "value": null
+        }
+      ],
+      "created_on": "2026-01-12T12:00:00Z",
+      "updated_on": "2026-01-14T12:00:00Z",
+      "closed_on": "2026-01-14T12:00:00Z",
+      "attachments": [],
+      "relations": []
+    },
+    {
+      "id": 13,
+      "project": {
+        "id": 3,
+        "name": "eCookbook Subproject 1"
+      },
+      "tracker": {
+        "id": 1,
+        "name": "Bug"
+      },
+      "status": {
+        "id": 1,
+        "name": "New",
+        "is_closed": false
+      },
+      "priority": {
+        "id": 4,
+        "name": "Low"
+      },
+      "author": {
+        "id": 2,
+        "name": "John Smith"
+      },
+      "subject": "Subproject issue two",
+      "description": "This is a second issue on a cookbook subproject",
+      "start_date": null,
+      "due_date": null,
+      "done_ratio": 0,
+      "is_private": false,
+      "estimated_hours": null,
+      "total_estimated_hours": null,
+      "spent_hours": 0.0,
+      "total_spent_hours": 0.0,
+      "custom_fields": [
+        {
+          "id": 2,
+          "name": "Searchable field",
+          "value": null
+        },
+        {
+          "id": 1,
+          "name": "Database",
+          "value": null
+        },
+        {
+          "id": 6,
+          "name": "Float field",
+          "value": null
+        },
+        {
+          "id": 8,
+          "name": "Custom date",
+          "value": null
+        }
+      ],
+      "created_on": "2026-01-10T12:00:00Z",
+      "updated_on": "2026-01-13T12:00:00Z",
+      "closed_on": null,
+      "attachments": [],
+      "relations": []
+    },
+    {
+      "id": 14,
+      "project": {
+        "id": 3,
+        "name": "eCookbook Subproject 1"
+      },
+      "tracker": {
+        "id": 1,
+        "name": "Bug"
+      },
+      "status": {
+        "id": 1,
+        "name": "New",
+        "is_closed": false
+      },
+      "priority": {
+        "id": 5,
+        "name": "Normal"
+      },
+      "author": {
+        "id": 2,
+        "name": "John Smith"
+      },
+      "subject": "Private issue on public project",
+      "description": "This is a private issue",
+      "start_date": null,
+      "due_date": null,
+      "done_ratio": 0,
+      "is_private": true,
+      "estimated_hours": null,
+      "total_estimated_hours": null,
+      "spent_hours": 0.0,
+      "total_spent_hours": 0.0,
+      "custom_fields": [
+        {
+          "id": 2,
+          "name": "Searchable field",
+          "value": null
+        },
+        {
+          "id": 1,
+          "name": "Database",
+          "value": null
+        },
+        {
+          "id": 6,
+          "name": "Float field",
+          "value": null
+        },
+        {
+          "id": 8,
+          "name": "Custom date",
+          "value": null
+        }
+      ],
+      "created_on": "2025-12-31T12:00:00Z",
+      "updated_on": "2025-12-31T12:00:00Z",
+      "closed_on": null,
+      "attachments": [
+        {
+          "id": 15,
+          "filename": "private.diff",
+          "filesize": 687,
+          "content_type": "text/x-diff",
+          "description": "attachment of a private issue",
+          "content_url": "{{BASE}}/attachments/download/15/private.diff",
+          "author": {
+            "id": 2,
+            "name": "John Smith"
+          },
+          "created_on": "2010-07-19T19:07:27Z"
+        },
+        {
+          "id": 16,
+          "filename": "testfile.png",
+          "filesize": 2654,
+          "content_type": "image/png",
+          "description": "",
+          "content_url": "{{BASE}}/attachments/download/16/testfile.png",
+          "thumbnail_url": "{{BASE}}/attachments/thumbnail/16",
+          "author": {
+            "id": 2,
+            "name": "John Smith"
+          },
+          "created_on": "2010-11-23T07:14:50Z"
+        },
+        {
+          "id": 17,
+          "filename": "testfile.PNG",
+          "filesize": 3582,
+          "content_type": "image/png",
+          "description": "",
+          "content_url": "{{BASE}}/attachments/download/17/testfile.PNG",
+          "thumbnail_url": "{{BASE}}/attachments/thumbnail/17",
+          "author": {
+            "id": 2,
+            "name": "John Smith"
+          },
+          "created_on": "2010-12-23T07:14:50Z"
+        },
+        {
+          "id": 18,
+          "filename": "testテスト.png",
+          "filesize": 2654,
+          "content_type": "image/png",
+          "description": "",
+          "content_url": "{{BASE}}/attachments/download/18/test%E3%83%86%E3%82%B9%E3%83%88.png",
+          "thumbnail_url": "{{BASE}}/attachments/thumbnail/18",
+          "author": {
+            "id": 2,
+            "name": "John Smith"
+          },
+          "created_on": "2011-01-23T07:14:50Z"
+        },
+        {
+          "id": 19,
+          "filename": "Testテスト.PNG",
+          "filesize": 3582,
+          "content_type": "image/png",
+          "description": "",
+          "content_url": "{{BASE}}/attachments/download/19/Test%E3%83%86%E3%82%B9%E3%83%88.PNG",
+          "thumbnail_url": "{{BASE}}/attachments/thumbnail/19",
+          "author": {
+            "id": 2,
+            "name": "John Smith"
+          },
+          "created_on": "2011-02-23T07:14:50Z"
+        },
+        {
+          "id": 20,
+          "filename": "root_attachment.txt",
+          "filesize": 54,
+          "content_type": "text/plain",
+          "description": "",
+          "content_url": "{{BASE}}/attachments/download/20/root_attachment.txt",
+          "author": {
+            "id": 2,
+            "name": "John Smith"
+          },
+          "created_on": "2012-05-12T07:14:50Z"
+        }
+      ],
+      "relations": []
+    }
+  ],
+  "total_count": 14,
+  "offset": 0,
+  "limit": 25
+}

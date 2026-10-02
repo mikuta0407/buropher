@@ -1,0 +1,9 @@
+<h3 class="title">{{l "label_member_new"}}</h3>
+
+{{$f := form_for "membership" nil (hash "url" (printf "/projects/%s/memberships" (assigns).Project.Identifier) "remote" true "method" "post" "html" (hash "class" "new_membership" "id" "new_membership"))}}{{$f.Open}}
+  {{partial "members/new_form" .}}
+  <p class="buttons">
+    {{submit_tag (l "button_add") (hash "id" "member-add-submit")}}
+    {{link_to_function (l "button_cancel") "hideModal(this);"}}
+  </p>
+{{end_form}}

@@ -55,8 +55,8 @@ func GetBoard(ctx context.Context, q db.Queryer, id int64) (*domain.Board, error
 	return r.board(), nil
 }
 
-// ProjectBoards は project.boards（position 順）。withLastMessage なら last_message と author を読み込む。
-func ProjectBoards(ctx context.Context, q db.Queryer, projectID int64, withLastMessage bool) ([]*domain.Board, error) {
+// ProjectBoardList は project.boards（position 順）。withLastMessage なら last_message と author を読み込む。
+func ProjectBoardList(ctx context.Context, q db.Queryer, projectID int64, withLastMessage bool) ([]*domain.Board, error) {
 	var rows []boardRow
 	if err := q.Select(ctx, &rows, boardSelect+` WHERE project_id = ? ORDER BY position, id`, projectID); err != nil {
 		return nil, err

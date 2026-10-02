@@ -1,0 +1,80 @@
+{{$a := assigns}}
+{{$u := $a.User}}
+<div class="contextual">
+{{if $a.ShowEmailsLink}}{{link_to (sprite_icon "email" (l "label_email_address_plural")) (printf "/users/%d/email_addresses" $u.ID) (hash "class" "icon icon-email-add" "remote" true)}}{{end}}
+{{if $a.ChangePasswordAllowed}}{{link_to (sprite_icon "key" (l "button_change_password")) "/my/password" (hash "class" "icon icon-passwd")}}{{end}}
+{{if $a.RestAPIEnabled}}{{link_to (sprite_icon "apps" (l "label_oauth_authorized_application_plural")) "/oauth/authorized_applications" (hash "class" "icon icon-applications")}}{{end}}
+{{call_hook "view_my_account_contextual"}}
+</div>
+
+<h2>
+  {{if $a.GravatarEnabled}}{{link_to (avatar $u.User (hash "title" (l "button_edit") "size" "50")) $a.AvatarServerURL (hash "target" "_blank")}}{{end}}
+  {{l "label_my_account"}}
+</h2>
+
+{{error_messages_for $u}}
+
+{{$f := labelled_form_for "user" $u (hash "url" "/my/account" "html" (hash "id" "my_account_form" "method" "put" "multipart" true))}}
+{{$f.Open}}
+<div class="splitcontent">
+<div class="splitcontentleft">
+<fieldset class="box tabular">
+  <legend>{{l "label_information_plural"}}</legend>
+  <p>{{$f.TextField "firstname" (hash "required" true)}}</p>
+  <p>{{$f.TextField "lastname" (hash "required" true)}}</p>
+  <p>{{$f.TextField "mail" (hash "required" true)}}</p>
+  {{if not $a.ForceDefaultLanguage}}
+  <p>{{$f.Select "language" (lang_options_for_select)}}</p>
+  {{end}}
+  {{if $a.Twofa}}
+  <p>
+    <label>{{l "setting_twofa"}}</label>
+    {{if $a.TwofaActive}}
+      {{l "twofa_currently_active" (hash "twofa_scheme_name" (l (printf "twofa__%s__name" $u.TwofaScheme)))}}<br/>
+      {{link_to (l "button_disable") (printf "/my/twofa/%s/deactivate/init" $u.TwofaScheme) (hash "method" "post")}}<br/>
+      {{link_to (l "twofa_generate_backup_codes") "/my/twofa/backup_codes/init" (hash "method" "post" "data" (hash "confirm" (cond $a.TwofaBackupCodes (l "twofa_text_generate_backup_codes_confirmation") nil))) -}}
+    {{else}}
+      {{range $s := $a.TwofaSchemes}}
+        {{link_to (l (printf "twofa__%s__label_activate" $s)) (printf "/my/twofa/%s/activate/init" $s) (hash "method" "post")}}<br/>
+      {{end}}
+    {{end}}
+  </p>
+  {{end}}
+
+  {{range $tag := $a.EditableCustomFieldTags}}
+    <p>{{$tag}}</p>
+  {{end}}
+  {{call_hook "view_my_account"}}
+</fieldset>
+
+<p class="mobile-hide">{{submit_tag (l "button_save")}}</p>
+</div>
+
+<div class="splitcontentright">
+<fieldset class="box">
+  <legend>{{l "field_mail_notification"}}</legend>
+  {{partial "users/mail_notifications"}}
+</fieldset>
+
+<fieldset class="box">
+  <legend>{{l "label_auto_watch_on"}}</legend>
+  {{partial "users/auto_watch_on"}}
+</fieldset>
+
+<fieldset class="box tabular">
+  <legend>{{l "label_preferences"}}</legend>
+  {{partial "users/preferences"}}
+  {{call_hook "view_my_account_preferences"}}
+</fieldset>
+
+<p class="mobile-show">{{submit_tag (l "button_save")}}</p>
+</div>
+</div>
+{{end_form}}
+
+{{define "my/account#sidebar"}}
+{{partial "my/sidebar"}}
+{{end}}
+{{content_for "sidebar" (capture "my/account#sidebar")}}
+
+{{html_title (l "label_my_account")}}

@@ -1,0 +1,31 @@
+{{$t := .table}}
+{{if $t.Empty}}
+    <p><i>{{l "label_no_data"}}</i></p>
+{{else}}
+<table class="list issue-report">
+<thead><tr>
+<th></th>
+<th>{{l "label_open_issues_plural"}}</th>
+<th>{{l "label_closed_issues_plural"}}</th>
+<th>{{l "label_total"}}</th>
+</tr></thead>
+<tbody>
+{{range $row := $t.Rows}}
+<tr>
+  <td class="name">{{$row.NameLink}}</td>
+  <td>{{$row.Open.Link}}</td>
+  <td>{{$row.Closed.Link}}</td>
+  <td>{{$row.Total.Link}}</td>
+</tr>
+{{end}}
+<tfoot>
+<tr class="total">
+  <td>{{l "label_total"}}</td>
+  <td>{{$t.TotalOpen}}</td>
+  <td>{{$t.TotalClosed}}</td>
+  <td>{{$t.Total}}</td>
+</tr>
+</tfoot>
+</tbody>
+</table>
+{{end}}

@@ -1,0 +1,17 @@
+{{$a := assigns}}
+<fieldset class="box">
+  <legend>{{label_tag "principal_search" (l "label_principal_search")}}</legend>
+  <p>{{text_field_tag "principal_search" nil}}</p>
+  {{javascript_tag (printf "observeSearchfield('principal_search', null, '%s')" (j (printf "/projects/%s/memberships/autocomplete.js" $a.Project.Identifier)))}}
+  <div id="principals_for_new_member">
+    {{$a.PrincipalsForNewMembers}}
+  </div>
+</fieldset>
+<fieldset class="box">
+  <legend>{{toggle_checkboxes_link ".roles-selection input"}}{{l "label_role_plural"}}</legend>
+  <div class="roles-selection">
+    {{range $role := $a.ManagedRoles}}
+      <label>{{check_box_tag "membership[role_ids][]" $role.ID false (hash "id" nil)}} {{role_name $role}}</label>
+    {{end}}
+  </div>
+</fieldset>

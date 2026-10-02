@@ -1,0 +1,414 @@
+status: 200
+content-type: text/html
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Redmine</title>
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta content="Redmine" name="description">
+    <meta content="issue,bug,tracker" name="keywords">
+    <meta content="authenticity_token" name="csrf-param">
+    <meta content="{{CSRF}}" name="csrf-token">
+    <link href="/assets/favicon-DIGEST.ico" rel="shortcut icon" type="image/x-icon">
+    <link href="/assets/jquery/jquery-ui-1.13.2-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/tribute-5.1.3-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/application-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/responsive-DIGEST.css" media="all" rel="stylesheet">
+    <script data-turbo-track="reload" type="importmap">{
+  "imports": {
+    "@rails/request.js": "/assets/requestjs-DIGEST.js",
+    "application": "/assets/application-DIGEST.js",
+    "@hotwired/stimulus": "/assets/stimulus.min-DIGEST.js",
+    "@hotwired/stimulus-loading": "/assets/stimulus-loading-DIGEST.js",
+    "turndown": "/assets/turndown-DIGEST.js",
+    "controllers/api_key_copy_controller": "/assets/controllers/api_key_copy_controller-DIGEST.js",
+    "controllers/application": "/assets/controllers/application-DIGEST.js",
+    "controllers": "/assets/controllers/index-DIGEST.js",
+    "controllers/list_autofill_controller": "/assets/controllers/list_autofill_controller-DIGEST.js",
+    "controllers/quote_reply_controller": "/assets/controllers/quote_reply_controller-DIGEST.js",
+    "controllers/sticky_issue_header_controller": "/assets/controllers/sticky_issue_header_controller-DIGEST.js"
+  }
+}</script>
+    <link href="/assets/requestjs-DIGEST.js" rel="modulepreload">
+    <link href="/assets/application-DIGEST.js" rel="modulepreload">
+    <link href="/assets/stimulus.min-DIGEST.js" rel="modulepreload">
+    <link href="/assets/stimulus-loading-DIGEST.js" rel="modulepreload">
+    <link href="/assets/turndown-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/api_key_copy_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/application-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/index-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/list_autofill_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/quote_reply_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/sticky_issue_header_controller-DIGEST.js" rel="modulepreload">
+    <script type="module">import "application"</script>
+    <script src="/assets/jquery-3.7.1-ui-1.13.3-DIGEST.js"></script>
+    <script src="/assets/rails-ujs-DIGEST.js"></script>
+    <script src="/assets/tribute-5.1.3.min-DIGEST.js"></script>
+    <script src="/assets/application-legacy-DIGEST.js"></script>
+    <script src="/assets/responsive-DIGEST.js"></script>
+    <script>//<![CDATA[
+$(window).on('load', function(){ warnLeavingUnsaved('The current page contains unsaved text that will be lost if you leave this page.'); });
+//]]></script>
+    <script>//<![CDATA[
+rm = window.rm || {};rm.I18n = rm.I18n || {};rm.I18n = Object.freeze({buttonCopy: 'Copy'});
+//]]></script>
+    <script>//<![CDATA[
+rm = window.rm || {};rm.AutoComplete = rm.AutoComplete || {};rm.AutoComplete.dataSources = JSON.parse('{"issues":"/issues/auto_complete?q=","wiki_pages":"/wiki_pages/auto_complete?q="}');
+//]]></script>
+    <script src="/assets/jstoolbar/jstoolbar-DIGEST.js"></script>
+    <script src="/assets/jstoolbar/common_mark-DIGEST.js"></script>
+    <script src="/assets/jstoolbar/lang/jstoolbar-en-DIGEST.js"></script>
+    <script>//<![CDATA[
+var wikiImageMimeTypes = ["image/gif","image/jpeg","image/png","image/tiff","image/webp","image/x-ms-bmp"];var userHlLanguages = ["c","cpp","csharp","css","diff","go","groovy","html","java","javascript","objc","perl","php","python","r","ruby","sass","scala","shell","sql","swift","xml","yaml"];
+//]]></script>
+    <link href="/assets/jstoolbar-DIGEST.css" media="screen" rel="stylesheet">
+    <script src="/assets/project_identifier-DIGEST.js"></script>
+  </head>
+  <body class="has-main-menu controller-projects action-copy avatars-off" data-text-formatting="common_mark">
+    <div id="wrapper">
+      <div class="flyout-menu js-flyout-menu">
+        <div class="flyout-menu__search">
+          <form accept-charset="UTF-8" action="/search" method="get" name="form-RANDOM">
+            <label class="search-magnifier search-magnifier--flyout" for="flyout-search">
+              <svg aria-hidden="true" class="s18 icon-svg">
+                <use href="/assets/icons-DIGEST.svg#icon--search"></use>
+              </svg>
+              <span class="icon-label hidden">Search</span>
+            </label>
+            <input class="small js-search-input" id="flyout-search" name="q" placeholder="Search" type="text">
+          </form>
+        </div>
+        <div class="flyout-menu__avatar">
+          <a href="/users/1">
+            <span class="avatar-color-1 s40 avatar" role="img">RA</span>
+          </a>
+          <a class="user active" href="/users/1">admin</a>
+        </div>
+        <h3>Project</h3>
+        <span class="js-project-menu"></span>
+        <h3>General</h3>
+        <span class="js-general-menu"></span>
+        <span class="js-sidebar flyout-menu__sidebar"></span>
+        <h3>Profile</h3>
+        <span class="js-profile-menu"></span>
+      </div>
+      <div id="top-menu">
+        <div id="account">
+          <ul>
+            <li>
+              <a class="my-account" href="/my/account">My account</a>
+            </li>
+            <li>
+              <a class="logout" data-method="post" href="/logout" rel="nofollow">Sign out</a>
+            </li>
+          </ul>
+        </div>
+        <div id="loggedas">
+          Logged in as
+          <a class="user active" href="/users/1">admin</a>
+        </div>
+        <ul>
+          <li>
+            <a class="home" href="/">Home</a>
+          </li>
+          <li>
+            <a class="my-page" href="/my/page">My page</a>
+          </li>
+          <li>
+            <a class="projects selected" href="/projects">Projects</a>
+          </li>
+          <li>
+            <a class="administration" href="/admin">Administration</a>
+          </li>
+          <li>
+            <a class="help" href="https://www.redmine.org/guide" rel="noopener" target="_blank">Help</a>
+          </li>
+        </ul>
+      </div>
+      <div id="header">
+        <a class="mobile-toggle-button js-flyout-menu-toggle-button" href="#"></a>
+        <div id="quick-search">
+          <form accept-charset="UTF-8" action="/search" method="get" name="form-RANDOM">
+            <input autocomplete="off" name="scope" type="hidden">
+            <label for="q">
+              <a accesskey="4" href="/search">Search</a>
+              :
+            </label>
+            <input accesskey="f" class="small" data-auto-complete="true" id="q" name="q" size="20" type="text">
+          </form>
+          <div class="drdn" id="project-jump">
+            <span class="drdn-trigger">Jump to a project...</span>
+            <div class="drdn-content">
+              <div class="quick-search">
+                <svg aria-hidden="true" class="s18 icon-svg">
+                  <use href="/assets/icons-DIGEST.svg#icon--search"></use>
+                </svg>
+                <input autocomplete="off" class="autocomplete" data-automcomplete-url="/projects/autocomplete.js?jump=projects" id="projects-quick-search" name="q" type="text" value="">
+              </div>
+              <div class="drdn-items projects selection">
+                <strong>Bookmarks</strong>
+                <a href="/projects/private-child?jump=projects" title="Private child of eCookbook">
+                  <span style="padding-inline-start:0px;">Private child of eCookbook</span>
+                </a>
+                <a href="/projects/onlinestore?jump=projects" title="OnlineStore">
+                  <span style="padding-inline-start:0px;">OnlineStore</span>
+                </a>
+                <strong>Recently used</strong>
+                <a href="/projects/api-project?jump=projects" title="API project 2">
+                  <span style="padding-inline-start:0px;">API project 2</span>
+                </a>
+                <a href="/projects/ecookbook?jump=projects" title="eCookbook">
+                  <span style="padding-inline-start:0px;">eCookbook</span>
+                </a>
+                <a href="/projects/subproject2?jump=projects" title="eCookbook Subproject 2">
+                  <span style="padding-inline-start:0px;">eCookbook Subproject 2</span>
+                </a>
+                <strong>All Projects</strong>
+                <a href="/projects/private-child?jump=projects" title="Private child of eCookbook">
+                  <span style="padding-inline-start:0px;">Private child of eCookbook</span>
+                </a>
+              </div>
+              <div class="drdn-items all-projects selection">
+                <a href="/projects?jump=projects">All Projects</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <h1>Redmine</h1>
+        <div class="tabs" id="main-menu">
+          <ul>
+            <li>
+              <a class="projects selected" href="/projects">Projects</a>
+            </li>
+          </ul>
+          <div class="tabs-buttons" style="display:none;">
+            <button class="tab-left icon-only" onclick="moveTabLeft(this); return false;">
+              <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
+                <use href="/assets/icons-DIGEST.svg#icon--angle-left"></use>
+              </svg>
+            </button>
+            <button class="tab-right icon-only" onclick="moveTabRight(this); return false;">
+              <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
+                <use href="/assets/icons-DIGEST.svg#icon--angle-right"></use>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="nosidebar" id="main">
+        <div id="sidebar">
+          <div id="sidebar-wrapper"></div>
+        </div>
+        <div id="content">
+          <h2>New project</h2>
+          <form accept-charset="UTF-8" action="/projects/ecookbook/copy" class="new_project" id="new_project" method="post" name="new_project-RANDOM">
+            <input autocomplete="off" name="authenticity_token" type="hidden" value="{{CSRF}}">
+            <div id="errorExplanation">
+              <svg aria-hidden="true" class="s18 icon-svg">
+                <use href="/assets/icons-DIGEST.svg#icon--warning"></use>
+              </svg>
+              <ul>
+                <li>Name cannot be blank</li>
+                <li>Identifier cannot be blank</li>
+              </ul>
+            </div>
+            <div class="box tabular">
+              <p>
+                <label class="error" for="project_name">
+                  Name
+                  <span class="required">*</span>
+                </label>
+                <input id="project_name" name="project[name]" size="60" type="text" value="">
+              </p>
+              <p>
+                <label for="project_description">Description</label>
+                <textarea class="wiki-edit" data-action="beforeinput-&gt;list-autofill#handleBeforeInput" data-controller="list-autofill" data-list-autofill-text-formatting-param="common_mark" id="project_description" name="project[description]" rows="8"></textarea>
+              </p>
+              <p>
+                <label class="error" for="project_identifier">
+                  Identifier
+                  <span class="required">*</span>
+                </label>
+                <input id="project_identifier" maxlength="100" name="project[identifier]" size="60" type="text" value="">
+                <em class="info">
+                  Length between 1 and 100 characters. Only lower case letters (a-z), numbers, dashes and underscores are allowed.
+                  <br>
+                  Once saved, the identifier cannot be changed.
+                </em>
+              </p>
+              <p>
+                <label for="project_homepage">Homepage</label>
+                <input id="project_homepage" name="project[homepage]" size="60" type="text" value="">
+              </p>
+              <p>
+                <label for="project_is_public">Public</label>
+                <input autocomplete="off" name="project[is_public]" type="hidden" value="0">
+                <input checked="checked" id="project_is_public" name="project[is_public]" type="checkbox" value="1">
+                <em class="info">Public projects and their contents are openly available on the network.</em>
+              </p>
+              <p>
+                <label for="project_parent_id">Subproject of</label>
+                <select id="project_parent_id" name="project[parent_id]">
+                  <option value=""></option>
+                  <option value="10">API project 2</option>
+                  <option value="1">eCookbook</option>
+                  <option value="5">» Private child of eCookbook</option>
+                  <option value="6">» Child of private child</option>
+                  <option value="3">» eCookbook Subproject 1</option>
+                  <option value="4">» eCookbook Subproject 2</option>
+                  <option value="2">OnlineStore</option>
+                  <option value="9">Smith root</option>
+                  <option value="7">zeta renamed</option>
+                  <option value="8">» Child two</option>
+                </select>
+              </p>
+              <p>
+                <label for="project_inherit_members">Inherit members</label>
+                <input autocomplete="off" name="project[inherit_members]" type="hidden" value="0">
+                <input id="project_inherit_members" name="project[inherit_members]" type="checkbox" value="1">
+              </p>
+              <script>//<![CDATA[
+var wikiToolbar = new jsToolBar(document.getElementById('project_description')); wikiToolbar.setHelpLink('/help/wiki_syntax'); wikiToolbar.setPreviewUrl('/preview/text'); wikiToolbar.draw();
+//]]></script>
+              <p>
+                <label for="project_custom_field_values_3">
+                  <span>Development status</span>
+                </label>
+                <select class="list_cf cf_3" id="project_custom_field_values_3" name="project[custom_field_values][3]">
+                  <option value=""></option>
+                  <option value="Stable">Stable</option>
+                  <option value="Beta">Beta</option>
+                  <option value="Alpha">Alpha</option>
+                  <option value="Planning">Planning</option>
+                </select>
+              </p>
+            </div>
+            <fieldset class="box tabular" id="project_modules">
+              <legend>
+                <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;#project_modules input[type=&#34;checkbox&#34;]&#39;); return false;" title="Check all / Uncheck all">
+                  <svg aria-hidden="true" class="s18 icon-svg">
+                    <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                  </svg>
+                  <span class="icon-label"></span>
+                </a>
+                Modules
+              </legend>
+              <label class="floating">
+                <input checked="checked" id="project_enabled_module_names_issue_tracking" name="project[enabled_module_names][]" type="checkbox" value="issue_tracking">
+                Issue tracking
+              </label>
+              <label class="floating">
+                <input checked="checked" id="project_enabled_module_names_time_tracking" name="project[enabled_module_names][]" type="checkbox" value="time_tracking">
+                Time tracking
+              </label>
+              <label class="floating">
+                <input checked="checked" id="project_enabled_module_names_news" name="project[enabled_module_names][]" type="checkbox" value="news">
+                News
+              </label>
+              <label class="floating">
+                <input checked="checked" id="project_enabled_module_names_documents" name="project[enabled_module_names][]" type="checkbox" value="documents">
+                Documents
+              </label>
+              <label class="floating">
+                <input checked="checked" id="project_enabled_module_names_files" name="project[enabled_module_names][]" type="checkbox" value="files">
+                Files
+              </label>
+              <label class="floating">
+                <input checked="checked" id="project_enabled_module_names_wiki" name="project[enabled_module_names][]" type="checkbox" value="wiki">
+                Wiki
+              </label>
+              <label class="floating">
+                <input checked="checked" id="project_enabled_module_names_repository" name="project[enabled_module_names][]" type="checkbox" value="repository">
+                Repository
+              </label>
+              <label class="floating">
+                <input checked="checked" id="project_enabled_module_names_boards" name="project[enabled_module_names][]" type="checkbox" value="boards">
+                Forums
+              </label>
+              <label class="floating">
+                <input checked="checked" id="project_enabled_module_names_calendar" name="project[enabled_module_names][]" type="checkbox" value="calendar">
+                Calendar
+              </label>
+              <label class="floating">
+                <input checked="checked" id="project_enabled_module_names_gantt" name="project[enabled_module_names][]" type="checkbox" value="gantt">
+                Gantt
+              </label>
+              <input autocomplete="off" id="project_enabled_module_names_" name="project[enabled_module_names][]" type="hidden" value="">
+            </fieldset>
+            <fieldset class="box tabular">
+              <legend>
+                <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.box input[type=&#34;checkbox&#34;][name=&#34;only[]&#34;]&#39;); return false;" title="Check all / Uncheck all">
+                  <svg aria-hidden="true" class="s18 icon-svg">
+                    <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                  </svg>
+                  <span class="icon-label"></span>
+                </a>
+                Copy
+              </legend>
+              <label class="block">
+                <input checked="checked" name="only[]" type="checkbox" value="members">
+                Members (2)
+              </label>
+              <label class="block">
+                <input checked="checked" name="only[]" type="checkbox" value="versions">
+                Versions (3) and Files
+              </label>
+              <label class="block">
+                <input checked="checked" name="only[]" type="checkbox" value="issue_categories">
+                Issue categories (1)
+              </label>
+              <label class="block">
+                <input checked="checked" name="only[]" type="checkbox" value="issues">
+                Issues (7)
+              </label>
+              <label class="block">
+                <input checked="checked" name="only[]" type="checkbox" value="queries">
+                Custom queries (3)
+              </label>
+              <label class="block">
+                <input checked="checked" name="only[]" type="checkbox" value="documents">
+                Documents (3)
+              </label>
+              <label class="block">
+                <input checked="checked" name="only[]" type="checkbox" value="boards">
+                Forums (2)
+              </label>
+              <label class="block">
+                <input checked="checked" name="only[]" type="checkbox" value="wiki">
+                Wiki pages (8)
+              </label>
+              <input autocomplete="off" id="only_" name="only[]" type="hidden" value="">
+              <br>
+              <label class="block">
+                <input id="notifications" name="notifications" type="checkbox" value="1">
+                Send email notifications during the project copy
+              </label>
+            </fieldset>
+            <input autocomplete="off" id="project_tracker_ids_" name="project[tracker_ids][]" type="hidden" value="1">
+            <input autocomplete="off" id="project_tracker_ids_" name="project[tracker_ids][]" type="hidden" value="2">
+            <input autocomplete="off" id="project_tracker_ids_" name="project[tracker_ids][]" type="hidden" value="3">
+            <input data-disable-with="Copy" name="commit" type="submit" value="Copy">
+          </form>
+          <div style="clear:both;"></div>
+        </div>
+      </div>
+      <div id="footer">MASKED</div>
+      <div id="ajax-indicator" style="display:none;">
+        <span class="icon">
+          <svg aria-hidden="true" class="s18 icon-svg svg-loader">
+            <use href="/assets/icons-DIGEST.svg#icon--loader"></use>
+          </svg>
+          <span class="icon-label">Loading...</span>
+        </span>
+      </div>
+      <div id="ajax-modal" style="display:none;"></div>
+      <div id="icon-copy-source" style="display: none;">
+        <svg aria-hidden="true" class="s18 icon-svg">
+          <use href="/assets/icons-DIGEST.svg#icon--"></use>
+        </svg>
+      </div>
+    </div>
+  </body>
+</html>

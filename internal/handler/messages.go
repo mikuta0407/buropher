@@ -469,7 +469,7 @@ func (a *App) MessagesEdit(c *Req) {
 			return
 		}
 	}
-	boards, err := repository.ProjectBoards(c.Ctx(), a.DB, c.Project.ID, false)
+	boards, err := repository.ProjectBoardList(c.Ctx(), a.DB, c.Project.ID, false)
 	if err != nil {
 		a.internalError(c, "boards", err)
 		return

@@ -1,0 +1,159 @@
+{{$p := .Project -}}
+<div class="contextual">
+  {{bookmark_link $p}}
+
+  {{define "projects/show#actions"}}
+
+  {{if .CanAddSubproject}}
+    {{link_to (sprite_icon "add" (l "label_subproject_new")) (printf "/projects/new?parent_id=%s" (url_encode .Project.Identifier)) (hash "class" "icon icon-add")}}
+  {{end}}
+  {{if .CanCloseProject}}
+    {{if .Project.Active}}
+      {{link_to (sprite_icon "lock" (l "button_close")) (printf "/projects/%s/close" .Project.Identifier) (hash "data" (hash "confirm" (l "text_project_close_confirmation" .Project.Name)) "method" "post" "class" "icon icon-lock")}}
+    {{else}}
+      {{link_to (sprite_icon "unlock" (l "button_reopen")) (printf "/projects/%s/reopen" .Project.Identifier) (hash "data" (hash "confirm" (l "text_project_reopen_confirmation" .Project.Name)) "method" "post" "class" "icon icon-unlock")}}
+    {{end}}
+  {{end}}
+  {{if .Deletable}}
+    {{link_to (sprite_icon "del" (l "button_delete")) (printf "/projects/%s" .Project.Identifier) (hash "method" "delete" "class" "icon icon-del")}}
+  {{end}}
+  {{if .CanSettings}}{{link_to (sprite_icon "settings" (l "label_settings")) (printf "/projects/%s/settings" .Project.Identifier) (hash "class" "icon icon-settings")}}{{end}}
+  {{end}}
+  {{actions_dropdown (capture "projects/show#actions") -}}
+</div>
+
+<h2>{{l "label_overview"}}</h2>
+
+{{if not $p.Active}}
+  <p class="warning"><span class="icon icon-lock">{{sprite_icon "lock" (l "text_project_closed")}}</span></p>
+{{end}}
+
+<div class="splitcontent">
+<div class="splitcontentleft">
+  {{if present $p.Description}}
+  <div class="wiki">
+    {{textilizable $p.Description}}
+  </div>
+  {{end}}
+  {{if or (present $p.Homepage) .AnyCustomFieldValue}}
+  <ul>
+  {{if present $p.Homepage}}
+    <li><span class="label">{{l "field_homepage"}}:</span> {{link_to_if (uri_with_safe_scheme $p.Homepage) $p.Homepage $p.Homepage}}</li>
+  {{end}}
+  {{range $v := .CustomFieldDisplay}}
+    <li class="{{$v.Field.CSSClasses}}"><span class="label">{{$v.Field.Name}}:</span> {{$v.Formatted}}</li>
+  {{end}}
+  </ul>
+  {{end}}
+
+  {{if .CanViewIssues}}
+  <div class="issues box">
+    <h3 class="icon icon-issue">
+      {{sprite_icon "issue" (l "label_issue_tracking")}}&nbsp;
+      {{link_to (sprite_icon "zoom-in" (l "label_details")) (printf "/projects/%s/issues/report/tracker" $p.Identifier) (hash "class" "icon-only icon-zoom-in" "title" (l "label_details"))}}
+    </h3>
+    {{if .IssueReport}}
+    <table class="list issue-report">
+      <thead>
+        <tr>
+          <th></th>
+          <th>{{l "label_open_issues_plural"}}</th>
+          <th>{{l "label_closed_issues_plural"}}</th>
+          <th>{{l "label_total"}}</th>
+        </tr>
+      </thead>
+      <tbody>
+      {{range $row := .IssueReport}}
+        <tr>
+          <td class="name">
+            {{link_to $row.Tracker.Name (printf "/projects/%s/issues?set_filter=1&tracker_id=%d" $p.Identifier $row.Tracker.ID) (hash "title" (deref $row.Tracker.Description))}}
+          </td>
+          <td>
+            {{link_to $row.Open (printf "/projects/%s/issues?set_filter=1&tracker_id=%d" $p.Identifier $row.Tracker.ID)}}
+          </td>
+          <td>
+            {{link_to $row.Closed (printf "/projects/%s/issues?set_filter=1&status_id=c&tracker_id=%d" $p.Identifier $row.Tracker.ID)}}
+          </td>
+          <td class="total">
+            {{link_to $row.Total (printf "/projects/%s/issues?set_filter=1&status_id=%%2A&tracker_id=%d" $p.Identifier $row.Tracker.ID)}}
+          </td>
+        </tr>
+      {{end}}
+      </tbody>
+    </table>
+    {{end}}
+    <p>
+      {{link_to (l "label_issue_view_all") (printf "/projects/%s/issues?set_filter=1" $p.Identifier)}}
+      | {{link_to (l "field_summary") (printf "/projects/%s/issues/report" $p.Identifier)}}
+      {{if .CanViewCalendar}}
+        | {{link_to (l "label_calendar") (printf "/projects/%s/issues/calendar" $p.Identifier)}}
+      {{end}}
+      {{if .CanViewGantt}}
+        | {{link_to (l "label_gantt") (printf "/projects/%s/issues/gantt" $p.Identifier)}}
+      {{end}}
+    </p>
+  </div>
+  {{end}}
+
+  {{if .CanViewTimeEntries}}
+  <div class="spent_time box">
+    <h3 class="icon icon-time">{{sprite_icon "time" (l "label_time_tracking")}}</h3>
+    <ul>
+      {{if .ShowHours}}
+        <li>{{l "field_estimated_hours"}}: {{l_hours .TotalEstimatedHours}}</li>
+      {{end}}
+      {{if .ShowHours}}
+        <li>{{l "label_spent_time"}}: {{l_hours .TotalHours}}</li>
+      {{end}}
+    </ul>
+    <p>
+    {{if .CanLogTime}}
+      {{link_to (l "button_log_time") (printf "/projects/%s/time_entries/new" $p.Identifier)}} |
+    {{end}}
+    {{link_to (l "label_details") (printf "/projects/%s/time_entries" $p.Identifier)}} |
+    {{link_to (l "label_report") (printf "/projects/%s/time_entries/report" $p.Identifier)}}
+    </p>
+  </div>
+{{end}}
+  {{call_hook "view_projects_show_left"}}
+</div>
+
+<div class="splitcontentright">
+  {{if .CanViewNews}}
+  <div class="news box">
+    <h3 class="icon icon-news">{{sprite_icon "news" (l "label_news_latest")}}</h3>
+    {{render_collection "news/news" .News}}
+    <p>{{link_to (l "label_news_view_all") (printf "/projects/%s/news" $p.Identifier)}}</p>
+  </div>
+  {{end}}
+
+  {{partial "projects/members_box" .}}
+
+  {{if .Subprojects}}
+  <div class="projects box">
+    <h3 class="icon icon-projects">{{sprite_icon "projects" (l "label_subproject_plural")}}</h3>
+    <div>
+      <ul class="subprojects">
+        {{range $sp := .Subprojects}}
+        <li>{{link_to $sp.Name (project_path $sp) (hash "class" (project_css_classes $sp))}}</li>
+        {{end}}
+        </ul>
+      </div>
+    </div>
+  {{end}}
+
+  {{call_hook "view_projects_show_right"}}
+</div>
+</div>
+
+{{define "projects/show#sidebar"}}
+  {{call_hook "view_projects_show_sidebar_bottom"}}
+{{end}}
+{{content_for "sidebar" (capture "projects/show#sidebar")}}
+
+{{define "projects/show#header_tags"}}
+{{auto_discovery_link_tag "atom" (url_for_atom (printf "/projects/%s/activity" .Project.Identifier) .AtomKey)}}
+{{end}}
+{{content_for "header_tags" (capture "projects/show#header_tags")}}
+
+{{html_title (l "label_overview") -}}

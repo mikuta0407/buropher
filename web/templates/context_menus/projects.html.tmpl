@@ -1,0 +1,19 @@
+<ul>
+  {{if and .Project (not .Project.ScheduledForDeletion)}}
+    {{if .Project.Archived}}
+      <li>{{context_menu_link (sprite_icon "unlock" (l "button_unarchive")) (printf "/projects/%s/unarchive" .Project.Identifier) (hash "method" "post" "class" "icon icon-unlock")}}</li>
+    {{else}}
+      <li>{{context_menu_link (sprite_icon "lock" (l "button_archive")) (printf "/projects/%s/archive" .Project.Identifier) (hash "data" (hash "confirm" (l "text_project_archive_confirmation" .Project.Name)) "method" "post" "class" "icon icon-lock")}}</li>
+    {{end}}
+    <li>
+      {{context_menu_link (sprite_icon "copy" (l "button_copy")) (printf "/projects/%s/copy" .Project.Identifier) (hash "class" "icon icon-copy")}}
+    </li>
+    <li>
+      {{context_menu_link (sprite_icon "del" (l "button_delete")) (printf "/projects/%s" .Project.Identifier) (hash "method" "delete" "class" "icon icon-del")}}
+    </li>
+  {{else}}
+    <li>
+      {{context_menu_link (sprite_icon "del" (l "button_delete")) .BulkDestroyPath (hash "method" "delete" "data" (hash "confirm" (l "text_projects_bulk_destroy_confirmation")) "class" "icon icon-del")}}
+    </li>
+  {{end}}
+</ul>

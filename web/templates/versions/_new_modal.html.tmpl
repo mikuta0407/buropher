@@ -1,0 +1,9 @@
+<h3 class="title">{{l "label_version_new"}}</h3>
+
+{{$f := labelled_form_for "" (assigns).Version (hash "url" (assigns).CreatePath "html" (hash "multipart" true) "remote" true)}}{{$f.Open}}
+{{partial "versions/form" (dict "f" $f)}}
+  <p class="buttons">
+    {{submit_tag (l "button_create") (hash "name" nil)}}
+    {{link_to_function (l "button_cancel") "hideModal(this);"}}
+  </p>
+{{end_form}}

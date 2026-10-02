@@ -1,0 +1,49 @@
+# 設定画面（settings#index / edit / plugin）と管理画面トップ（admin#index / plugins / info）の互換シナリオ（GET のみ）。
+# 共用の参照環境（3998）で実行できる。
+name: settings_admin
+
+users:
+  admin: {login: admin, password: admin}
+  jsmith: {login: jsmith, password: jsmith}
+
+normalize:
+  mask_text_selectors:
+    - "#footer"
+
+requests:
+  # ---- 権限 ----
+  - path: /settings
+    users: [anonymous, jsmith]
+  - path: /admin
+    users: [anonymous, jsmith]
+  - path: /admin/plugins
+    users: [jsmith]
+  - path: /admin/info
+    users: [jsmith]
+
+  # ---- 設定画面 ----
+  - path: /settings
+    users: [admin]
+  - path: /settings/edit
+    users: [admin]
+  - path: /settings?tab=display
+    users: [admin]
+  - path: /settings?tab=authentication
+    users: [admin]
+  - path: /settings?tab=issues
+    users: [admin]
+  - path: /settings?tab=repositories
+    users: [admin]
+  - path: /settings?tab=unknown
+    users: [admin]
+  # プラグインは無い（Redmine::PluginNotFound → 404）
+  - path: /settings/plugin/foo
+    users: [admin]
+
+  # ---- 管理画面 ----
+  - path: /admin
+    users: [admin]
+  - path: /admin/plugins
+    users: [admin]
+  - path: /admin/info
+    users: [admin]

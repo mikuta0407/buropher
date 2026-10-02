@@ -1,0 +1,88 @@
+{{$qv := .qv}}
+{{define "issues/index#actions"}}
+    {{if current_project}}
+      {{link_to (sprite_icon "summary" (l "field_summary")) (printf "/projects/%s/issues/report" current_project.Identifier) (hash "class" "icon icon-stats")}}
+    {{end}}
+
+    {{if .CanImport}}
+      {{link_to (sprite_icon "import" (l "button_import")) .ImportPath (hash "class" "icon icon-import")}}
+    {{end}}
+
+    {{if .CanEditProject}}{{link_to (sprite_icon "settings" (l "label_settings")) (printf "/projects/%s/settings/issues" current_project.Identifier) (hash "class" "icon icon-settings")}}{{end}}
+{{end}}
+<div class="contextual">
+  {{if .CanAddIssue}}
+    {{link_to (sprite_icon "add" (l "label_issue_new")) .NewIssuePath (hash "class" "icon icon-add new-issue")}}
+  {{end}}
+  {{actions_dropdown (capture "issues/index#actions")}}
+</div>
+
+<h2>{{.Title}}</h2>
+{{html_title .Title}}
+{{if and (not $qv.NewRecord) (present $qv.Q.Description)}}{{content_tag "p" $qv.Q.Description (hash "class" "subtitle")}}{{end}}
+
+{{form_tag .IssuesPath (hash "method" "get" "id" "query_form")}}
+  {{partial "queries/query_form" (dict "qv" $qv)}}
+{{end_form}}
+
+{{if .Valid}}
+{{if .Empty}}
+<p class="nodata">{{l "label_no_data"}}</p>
+{{else}}
+{{.Totals}}
+{{partial "issues/list" (dict "list" .List)}}
+<span class="pagination">{{pagination_links_full .Pages .Count}}</span>
+{{end}}
+
+<p class="other-formats hide-when-print">{{l "label_export_to"}}  <span>{{link_to "CSV" (.List.FormatURL "csv" "") (hash "class" "csv" "rel" "nofollow" "onclick" "showModal('csv-export-options', '350px'); return false;")}}</span>
+  <span>{{link_to "PDF" (.List.FormatURL "pdf" "") (hash "class" "pdf" "rel" "nofollow")}}</span>
+  <span>{{link_to "Atom" (.List.FormatURL "atom" .AtomKey) (hash "class" "atom" "rel" "nofollow")}}</span>
+</p>
+
+<div id="csv-export-options" style="display:none;">
+  <h3 class="title">{{l "label_export_options" (hash "export_format" "CSV")}}</h3>
+  {{form_tag (printf "%s.csv" .IssuesPath) (hash "method" "get" "id" "csv-export-form")}}
+  {{.CSVHidden}}
+  {{hidden_field_tag "query_name" $qv.Q.Name}}
+  <p>
+    <label>{{radio_button_tag "c[]" "" true}} {{l "description_selected_columns"}}</label><br />
+    <label>{{radio_button_tag "c[]" "all_inline"}} {{l "description_all_columns"}}</label>
+  </p>
+  {{if .CSVBlockColumns}}
+    <fieldset id="csv-export-block-columns">
+      <legend>
+        {{toggle_checkboxes_link "#csv-export-block-columns input[type=checkbox]"}}
+      </legend>
+      {{range $column := .CSVBlockColumns}}
+        <label>{{check_box_tag "c[]" $column.Name $column.Checked (hash "id" nil)}} {{$column.Caption}}</label>
+      {{end}}
+    </fieldset>
+  {{end}}
+  {{export_csv_encoding_select_tag}}
+  {{export_csv_separator_select_tag}}
+  {{if .OverExportLimit}}
+  <p class="icon icon-warning">
+    {{sprite_icon "warning" (l "setting_issues_export_limit")}}: {{.ExportLimit}}
+  </p>
+  {{end}}
+  <p class="buttons">
+    {{submit_tag (l "button_export") (hash "name" nil "onclick" "hideModal(this);" "data" (hash "disable_with" false))}}
+    {{link_to_function (l "button_cancel") "hideModal(this);"}}
+  </p>
+  {{end_form}}
+</div>
+
+{{end}}
+
+{{define "issues/index#sidebar"}}
+    {{partial "issues/sidebar" .}}
+{{end}}
+{{content_for "sidebar" (capture "issues/index#sidebar")}}
+
+{{define "issues/index#header_tags"}}
+    {{auto_discovery_link_tag "atom" .AtomIssuesURL (hash "title" (l "label_issue_plural"))}}
+    {{auto_discovery_link_tag "atom" .AtomJournalsURL (hash "title" (l "label_changes_details"))}}
+{{end}}
+{{content_for "header_tags" (capture "issues/index#header_tags")}}
+
+{{context_menu}}

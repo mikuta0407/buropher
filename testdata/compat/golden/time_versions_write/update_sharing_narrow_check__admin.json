@@ -1,0 +1,22 @@
+status: 200
+content-type: application/json
+
+{
+  "version": {
+    "id": 4,
+    "project": {
+      "id": 3,
+      "name": "eCookbook Subproject 1"
+    },
+    "name": "2.0",
+    "description": "Future version on subproject",
+    "status": "open",
+    "due_date": null,
+    "sharing": "none",
+    "wiki_page_title": null,
+    "estimated_hours": 0.0,
+    "spent_hours": 0.0,
+    "created_on": "TIMESTAMP",
+    "updated_on": "TIMESTAMP"
+  }
+}

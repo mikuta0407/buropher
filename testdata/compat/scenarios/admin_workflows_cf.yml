@@ -4,12 +4,10 @@
 # POST / PATCH / PUT / DELETE を含み DB を変更するため、参照・候補とも実行前に初期化すること:
 #   go run ./tools/compat diff -ref http://127.0.0.1:4013 -cand http://127.0.0.1:4113 -run 'admin_workflows_cf/.*' \
 #     -reset-ref 'COMPAT_REF_DIR=.../_reference/ref-wf COMPAT_REF_PORT=4013 tools/compat/redmine-ref.sh reset' \
-#     -reset-cand 'BUROPHER_CAND_PORT=4113 BUROPHER_CAND_DIR=$PWD/data/cand tools/compat/buropher-cand.sh reset && \
-#                  sqlite3 $PWD/data/cand/db/buropher.db "UPDATE sqlite_sequence SET seq = 11 WHERE name = '"'"'custom_fields'"'"'"'
+#     -reset-cand 'BUROPHER_CAND_PORT=4113 BUROPHER_CAND_DIR=$PWD/data/cand tools/compat/buropher-cand.sh reset'
 #
-# 候補側の sqlite_sequence の調整: 参照のフィクスチャには基底クラス（type が CustomField）の異常な
-# カスタムフィールド id=11 があり、インポータはこれを捨てるため、新規作成時の id が 1 つずれる
-# （参照 12、候補 11）。作成したフィールドの URL を揃えるため候補の採番を参照に合わせる。
+# 参照のフィクスチャには基底クラス（type が CustomField）の異常なカスタムフィールド id=11 があり
+# インポータはこれを捨てるが、採番は移行元の最大 ID まで進めるので新規作成時の id は参照と揃う（12）。
 #
 # 配列のパラメータ（tracker_id[] など）は form の値にシーケンスで書く。クエリ文字列と本文の
 # パラメータは浅くマージされる（同じキーのハッシュはクエリ側で置き換わる）ため混ぜないこと。

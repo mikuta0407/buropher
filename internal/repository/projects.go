@@ -615,8 +615,14 @@ func SetEnabledModules(ctx context.Context, q db.Queryer, projectID int64, names
 
 // EnableModule は Project#enable_module! (有効なら何もしない)。
 func EnableModule(ctx context.Context, q db.Queryer, projectID int64, name string) error {
-	_, err := q.Exec(ctx, q.Dialect().Upsert("project_modules", []string{"project_id", "name"}, []string{"project_id", "name"}, nil), projectID, name)
-	return err
+	if _, err := q.Exec(ctx, q.Dialect().Upsert("project_modules", []string{"project_id", "name"}, []string{"project_id", "name"}, nil), projectID, name); err != nil {
+		return err
+	}
+	// EnabledModule#module_enabled（after_create）: wiki モジュールなら既定の開始ページで Wiki を作る
+	if name == "wiki" {
+		return EnsureProjectWiki(ctx, q, projectID)
+	}
+	return nil
 }
 
 // DisableModule は Project#disable_module!。ニュースモジュールのウォッチャ (watchable_kind='project_module') も削除する。

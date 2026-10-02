@@ -1,0 +1,62 @@
+{{$v := assigns}}
+{{form_tag "/settings/edit"}}
+
+<div class="box tabular settings">
+<p>{{setting_text_field "app_title" (hash "size" 30)}}</p>
+
+<p>{{setting_text_area "welcome_text" (hash "cols" 60 "rows" 5 "class" "wiki-edit" "data" (list_autofill_data_attributes))}}</p>
+{{wikitoolbar_for "settings_welcome_text" "/preview/text"}}
+
+
+<p>{{setting_text_field "per_page_options" (hash "size" 20)}}
+<em class="info">{{l "text_comma_separated"}}</em></p>
+
+<p>{{setting_text_field "search_results_per_page" (hash "size" 6)}}
+
+<p>{{setting_text_field "activity_days_default" (hash "size" 6)}} {{l "label_day_plural"}}</p>
+
+<p>{{setting_text_field "host_name" (hash "size" 60)}}
+<em class="info">{{l "label_example"}}: {{$v.GuessedHostAndPath}}</em></p>
+
+<p>{{setting_select "protocol" (list (list "HTTP" "http") (list "HTTPS" "https"))}}</p>
+
+<p>{{setting_select "text_formatting" $v.TextFormattingOptions (hash "blank" (sym "label_none"))}}
+  <span id="common_mark_info" class="{{if ne $v.TextFormatting "common_mark"}}hidden{{end}}">
+    <label class="block">
+      {{check_box_tag nil "" $v.CommonMarkHardbreaks (hash "disabled" true)}}
+      Hardbreaks
+    </label>
+    <em class="info">
+      {{l "text_setting_config_change"}}
+    </em>
+  </span>
+</p>
+
+<p>{{setting_check_box "cache_formatted_text"}}</p>
+
+<p>{{setting_select "wiki_compression" (list (list "Gzip" "gzip")) (hash "blank" (sym "label_none"))}}</p>
+
+<p>{{setting_text_field "feeds_limit" (hash "size" 6)}}</p>
+
+<p>{{setting_check_box "reactions_enabled"}}</p>
+
+{{call_hook "view_settings_general_form"}}
+</div>
+
+{{submit_tag (l "button_save")}}
+{{end_form}}
+
+{{define "settings/_general#js"}}
+
+  $('#settings_text_formatting').on('change', function(e){
+    const formatter = e.target.value;
+    const parent_block = document.getElementById("common_mark_info");
+
+    if (formatter == "common_mark") {
+      parent_block.classList.remove('hidden');
+    } else {
+      parent_block.classList.add('hidden');
+    }
+  });
+{{end}}
+{{javascript_tag (capture "settings/_general#js" .) -}}

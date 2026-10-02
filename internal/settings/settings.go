@@ -10,6 +10,7 @@ import (
 	"context"
 	_ "embed"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/mail"
 	"regexp"
@@ -241,7 +242,8 @@ func (s *Settings) Set(ctx context.Context, name string, v any) error {
 	} else {
 		v = rubyToS(v)
 		if d.Format == "int" {
-			if _, err := strconv.Atoi(strings.TrimSpace(v.(string))); err != nil {
+			// validates_numericality_of :value, :only_integer => true（/\A[+-]?\d+\z/）
+			if !reInteger.MatchString(v.(string)) {
 				return &ValidationError{Name: name, Message: "is not a number"}
 			}
 		}
@@ -279,9 +281,10 @@ type FieldError struct {
 }
 
 var (
-	reLines = regexp.MustCompile(`[\r\n]+`)
-	reComma = regexp.MustCompile(`\s*,\s*`)
-	reEmail = regexp.MustCompile(`\A[a-zA-Z0-9.!#$%&'*+/=?^_` + "`" + `{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\z`)
+	reInteger = regexp.MustCompile(`\A[+-]?\d+\z`)
+	reLines   = regexp.MustCompile(`[\r\n]+`)
+	reComma   = regexp.MustCompile(`\s*,\s*`)
+	reEmail   = regexp.MustCompile(`\A[a-zA-Z0-9.!#$%&'*+/=?^_` + "`" + `{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\z`)
 )
 
 // ValidateAllFromParams は Setting.validate_all_from_params の移植。
@@ -376,6 +379,11 @@ func (s *Settings) SetAllFromParams(ctx context.Context, params map[string]any, 
 			v = h(v)
 		}
 		if err := s.Set(ctx, name, v); err != nil {
+			// Setting[name]= は検証に失敗すると保存せずに続行する（エラーは返さない）
+			var ve *ValidationError
+			if errors.As(err, &ve) {
+				continue
+			}
 			return nil, nil, err
 		}
 		cur, _ := json.Marshal(s.Get(name))

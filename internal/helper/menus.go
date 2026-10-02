@@ -52,6 +52,7 @@ type menuEnv struct {
 var _ menu.Env = menuEnv{}
 
 func (e menuEnv) L(key string) string { return e.p.l(key) }
+
 func (e menuEnv) LOrHumanize(name, prefix string) string {
 	if e.p.Loc == nil {
 		return rails.Humanize(name)
@@ -158,6 +159,10 @@ func (e menuEnv) RepositoriesExist(mp menu.Project) bool {
 // AllowedTo は User.current.allowed_to?(action, project)（ヘルパー・テンプレート用）。
 // Authorizer が無い場合は管理者のみ許可する。
 func (p *Page) AllowedTo(action domain.Action, project *domain.Project) bool {
+	if project != nil && project.ID == 0 {
+		// 未保存のプロジェクト（NewRecordProject のメニュー描画）
+		return false
+	}
 	a := p.authorizer()
 	if a == nil {
 		return p.admin() && project != nil && project.AllowsTo(action)
@@ -199,6 +204,11 @@ func (d *Deps) renderMenu(p *Page, name string, project *domain.Project) templat
 // renderMainMenu は render_main_menu(project)。
 func (d *Deps) renderMainMenu(p *Page, project *domain.Project) template.HTML {
 	if name := p.currentMenu(project); name != "" {
+		if project == nil && p.NewRecordProject {
+			// @project が未保存（projects#new / create / copy）の場合、アプリケーションメニューの項目は
+			// 未保存のプロジェクトに対して権限判定される（allowed_to? は常に false になる）
+			return d.renderMenu(p, name, &domain.Project{})
+		}
 		return d.renderMenu(p, name, project)
 	}
 	return ""

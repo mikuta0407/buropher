@@ -1,0 +1,44 @@
+{{$a := assigns}}
+{{$p := current_project}}
+<div class="contextual">
+{{link_to (sprite_icon "del" (l "button_reset")) (printf "/projects/%s/enumerations" $p.Identifier) (hash "method" "delete" "data" (hash "confirm" (l "text_are_you_sure")) "class" "icon icon-del")}}
+{{if admin}}
+{{link_to (sprite_icon "settings" (l "label_administration")) "/enumerations" (hash "class" "icon icon-settings")}}
+{{end}}
+</div>
+
+{{form_tag (printf "/projects/%s/enumerations" $p.Identifier) (hash "method" "put" "class" "tabular")}}
+
+<table class="list">
+  <thead><tr>
+    <th>{{l "field_name"}}</th>
+    <th>{{l "enumeration_system_activity"}}</th>
+    {{range $value := $a.ActivityCustomFields}}
+    <th>{{$value.Name}}</th>
+    {{end}}
+    <th>{{toggle_checkboxes_link "input.enumerations_active"}} {{l "field_active"}}</th>
+  </tr></thead>
+
+  {{range $enumeration := $a.Activities}}
+  {{$ff := fields_for (printf "enumerations[%d]" $enumeration.ID) $enumeration.Enumeration}}
+  
+  <tr>
+    <td class="name">
+      {{if $enumeration.System}}{{$ff.HiddenField "parent_id" (hash "value" $enumeration.ID)}}{{end}}
+      {{$enumeration.Name}}
+    </td>
+    <td class="tick">{{checked_image $enumeration.System}}</td>
+    {{range $value := $enumeration.CFValues}}
+    <td>
+      {{custom_field_tag (printf "enumerations[%d]" $enumeration.ID) $value}}
+    </td>
+    {{end}}
+    <td>
+      {{$ff.CheckBox "active" (hash "class" "enumerations_active")}}
+    </td>
+  </tr>
+  {{end}}
+</table>
+
+{{submit_tag (l "button_save")}}
+{{end_form}}

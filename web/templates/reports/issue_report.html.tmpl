@@ -1,0 +1,55 @@
+<h2>{{l "label_report_plural"}}</h2>
+
+<div class="splitcontent">
+<div class="splitcontentleft">
+<h3>
+  {{l "field_tracker"}}&nbsp;
+  {{link_to (sprite_icon "zoom-in" (l "label_details")) (printf "%s/tracker" .ReportPath) (hash "class" "icon-only icon-zoom-in" "title" (l "label_details"))}}
+</h3>
+{{partial "reports/simple" (dict "table" (index .Tables "tracker"))}}
+<br />
+<h3>
+  {{l "field_priority"}}&nbsp;
+  {{link_to (sprite_icon "zoom-in" (l "label_details")) (printf "%s/priority" .ReportPath) (hash "class" "icon-only icon-zoom-in" "title" (l "label_details"))}}
+</h3>
+{{partial "reports/simple" (dict "table" (index .Tables "priority"))}}
+<br />
+<h3>
+  {{l "field_assigned_to"}}&nbsp;
+  {{link_to (sprite_icon "zoom-in" (l "label_details")) (printf "%s/assigned_to" .ReportPath) (hash "class" "icon-only icon-zoom-in" "title" (l "label_details"))}}
+</h3>
+{{partial "reports/simple" (dict "table" (index .Tables "assigned_to"))}}
+<br />
+<h3>
+  {{l "field_author"}}&nbsp;
+  {{link_to (sprite_icon "zoom-in" (l "label_details")) (printf "%s/author" .ReportPath) (hash "class" "icon-only icon-zoom-in" "title" (l "label_details"))}}
+</h3>
+{{partial "reports/simple" (dict "table" (index .Tables "author"))}}
+<br />
+{{call_hook "view_reports_issue_report_split_content_left"}}
+</div>
+
+<div class="splitcontentright">
+<h3>
+  {{l "field_version"}}&nbsp;
+  {{link_to (sprite_icon "zoom-in" (l "label_details")) (printf "%s/version" .ReportPath) (hash "class" "icon-only icon-zoom-in" "title" (l "label_details"))}}
+</h3>
+{{partial "reports/simple" (dict "table" (index .Tables "version"))}}
+<br />
+{{if .HasChildren}}
+<h3>
+  {{l "field_subproject"}}&nbsp;
+  {{link_to (sprite_icon "zoom-in" (l "label_details")) (printf "%s/subproject" .ReportPath) (hash "class" "icon-only icon-zoom-in" "title" (l "label_details"))}}
+</h3>
+{{partial "reports/simple" (dict "table" (index .Tables "subproject"))}}
+<br />
+{{end}}
+<h3>
+  {{l "field_category"}}&nbsp;
+  {{link_to (sprite_icon "zoom-in" (l "label_details")) (printf "%s/category" .ReportPath) (hash "class" "icon-only icon-zoom-in" "title" (l "label_details"))}}
+</h3>
+{{partial "reports/simple" (dict "table" (index .Tables "category"))}}
+<br />
+{{call_hook "view_reports_issue_report_split_content_right"}}
+</div>
+</div>

@@ -138,7 +138,7 @@ func (timeEntryKind) availableColumns(ctx context.Context, q *Query) ([]*Column,
 	cols := []*Column{
 		newColumn("project", ColumnPlain, colOpt{sortable: []string{"projects.name"}, groupable: true, groupSQL: "time_entries.project_id", groupAssoc: true}),
 		newColumn("spent_on", ColumnPlain, colOpt{sortable: []string{"time_entries.spent_on", "time_entries.created_at"}, defaultOrder: "desc", groupable: true, groupSQL: "time_entries.spent_on"}),
-		newColumn("created_on", ColumnTimestamp, colOpt{sortable: []string{"time_entries.created_at"}, defaultOrder: "desc", groupable: true, groupSQL: q.timestampToDate("time_entries.created_at")}),
+		newColumn("created_on", ColumnTimestamp, colOpt{sortable: []string{"time_entries.created_at"}, defaultOrder: "desc", groupable: q.timestampGroupable(), groupSQL: q.timestampToDate("time_entries.created_at")}),
 		newColumn("tweek", ColumnPlain, colOpt{sortable: []string{"time_entries.tyear", "time_entries.tweek"}, caption: "label_week"}),
 		newColumn("author", ColumnPlain, colOpt{sortable: customfield.UserOrderFields("users", uf)}),
 		newColumn("user", ColumnPlain, colOpt{sortable: customfield.UserOrderFields("users", uf), groupable: true, groupSQL: "time_entries.user_id", groupAssoc: true}),

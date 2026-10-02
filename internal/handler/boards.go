@@ -88,7 +88,7 @@ func (a *App) findBoardIfAvailable(c *Req) {
 
 // BoardsIndex は boards#index（フォーラムが 1 つならそれを表示する）。
 func (a *App) BoardsIndex(c *Req) {
-	boards, err := repository.ProjectBoards(c.Ctx(), a.DB, c.Project.ID, true)
+	boards, err := repository.ProjectBoardList(c.Ctx(), a.DB, c.Project.ID, true)
 	if err != nil {
 		a.internalError(c, "boards", err)
 		return
@@ -197,7 +197,7 @@ func (a *App) boardAncestors(c *Req, b *domain.Board) ([]*domain.Board, error) {
 
 // boardValidParents は valid_parents（project.boards - self_and_descendants）。
 func (a *App) boardValidParents(c *Req, b *domain.Board) ([]*domain.Board, error) {
-	boards, err := repository.ProjectBoards(c.Ctx(), a.DB, c.Project.ID, false)
+	boards, err := repository.ProjectBoardList(c.Ctx(), a.DB, c.Project.ID, false)
 	if err != nil {
 		return nil, err
 	}

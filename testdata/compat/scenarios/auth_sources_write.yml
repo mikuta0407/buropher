@@ -1,0 +1,111 @@
+# 認証方式（LDAP）の作成・更新・接続テスト・削除の互換シナリオ。
+# 状態を変えるため、共用の参照環境（3998）ではなく専用の参照インスタンスに対して、
+# 参照・候補とも実行前に reset して流すこと（-reset-ref / -reset-cand）。
+# ケースは記述順に依存する（作成した id 2 の認証方式を後続で使う）。
+name: auth_sources_write
+
+users:
+  admin: {login: admin, password: admin}
+
+normalize:
+  mask_text_selectors:
+    - "#footer"
+  regex:
+    # 接続エラーの理由（net-ldap と go-ldap で文言が異なる）
+    - {pattern: 'Unable to connect \(.*\)', replace: 'Unable to connect (MASKED)'}
+
+requests:
+  - id: create_invalid
+    path: /auth_sources
+    method: POST
+    user: admin
+    form:
+      type: AuthSourceLdap
+      auth_source[name]: "LDAP test server"
+      auth_source[host]: ""
+      auth_source[port]: "abc"
+      auth_source[ldap_mode]: "ldap"
+      auth_source[account]: ""
+      auth_source[base_dn]: ""
+      auth_source[filter]: "(uid=x"
+      auth_source[timeout]: "1.5"
+      auth_source[onthefly_register]: "0"
+      auth_source[attr_login]: "  "
+      auth_source[attr_firstname]: ""
+      auth_source[attr_lastname]: ""
+      auth_source[attr_mail]: ""
+  - id: create
+    path: /auth_sources
+    method: POST
+    user: admin
+    expect_status: 302
+    form:
+      type: AuthSourceLdap
+      auth_source[name]: "Corp"
+      auth_source[host]: "127.0.0.1"
+      auth_source[port]: "1"
+      auth_source[ldap_mode]: "ldaps_verify_none"
+      auth_source[account]: "cn=admin,dc=example"
+      auth_source[account_password]: "s3cret"
+      auth_source[base_dn]: "dc=example"
+      auth_source[filter]: "(objectClass=person)"
+      auth_source[timeout]: "5"
+      auth_source[onthefly_register]: "1"
+      auth_source[attr_login]: " uid "
+      auth_source[attr_firstname]: "givenName"
+      auth_source[attr_lastname]: "sn"
+      auth_source[attr_mail]: "mail"
+  - id: g01_index
+    path: /auth_sources
+    user: admin
+  - id: g02_edit_2
+    path: /auth_sources/2/edit
+    user: admin
+  - id: update_invalid
+    path: /auth_sources/2
+    method: PATCH
+    user: admin
+    form:
+      auth_source[name]: ""
+      auth_source[port]: ""
+      dummy_password: "xxxxxxxxxxxxxxx"
+  - id: update
+    path: /auth_sources/2
+    method: PATCH
+    user: admin
+    expect_status: 302
+    form:
+      auth_source[name]: "Corp 2"
+      auth_source[ldap_mode]: "ldap"
+      auth_source[attr_mail]: ""
+      dummy_password: "xxxxxxxxxxxxxxx"
+  - id: g03_edit_2
+    path: /auth_sources/2/edit
+    user: admin
+  - id: update_clear_password
+    path: /auth_sources/2
+    method: PATCH
+    user: admin
+    expect_status: 302
+    form:
+      auth_source[account_password]: ""
+  - id: g04_edit_2
+    path: /auth_sources/2/edit
+    user: admin
+  # 127.0.0.1:1 は接続できない → flash エラー
+  - id: test_connection
+    path: /auth_sources/2/test_connection
+    user: admin
+    expect_status: 302
+  - id: g05_index
+    path: /auth_sources
+    user: admin
+  - id: destroy
+    path: /auth_sources/2
+    method: DELETE
+    user: admin
+    expect_status: 302
+    form: {_dummy: "1"}
+  - id: g06_index
+    path: /auth_sources
+    user: admin

@@ -1,0 +1,163 @@
+<title>eCookbook - Redmine</title>
+----
+<!-- page specific tags -->
+  <script src="/assets/chart.min-DIGEST.js"></script>
+</head>
+----
+<div id="main" class="nosidebar">
+  
+    <div id="sidebar">
+        <div id="sidebar-wrapper">
+          
+          
+        </div>
+    </div>
+
+    <div id="content">
+        
+        <h2><a href="/projects/ecookbook/issues/report">Reports</a> »</h2>
+
+<h3>Assignee</h3>
+<table class="list issue-report-detailed">
+<thead><tr>
+<th></th>
+<th>New</th>
+<th>Assigned</th>
+<th>Resolved</th>
+<th>Feedback</th>
+<th>Closed</th>
+<th>Rejected</th>
+<th><strong>open</strong></th>
+<th><strong>closed</strong></th>
+<th><strong>Total</strong></th>
+</tr></thead>
+<tbody>
+<tr>
+  <td class="name"><a href="/projects/ecookbook/issues?assigned_to_id=3&amp;set_filter=1">Dave Lopper</a></td>
+    <td><a href="/projects/ecookbook/issues?assigned_to_id=3&amp;set_filter=1&amp;status_id=1">1</a></td>
+    <td><a href="/projects/ecookbook/issues?assigned_to_id=3&amp;set_filter=1&amp;status_id=2">1</a></td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+  <td><a href="/projects/ecookbook/issues?assigned_to_id=3&amp;set_filter=1&amp;status_id=o">2</a></td>
+  <td>-</td>
+  <td><a href="/projects/ecookbook/issues?assigned_to_id=3&amp;set_filter=1&amp;status_id=%2A">2</a></td>
+</tr>
+<tr>
+  <td class="name"><a href="/projects/ecookbook/issues?assigned_to_id=2&amp;set_filter=1">John Smith</a></td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+</tr>
+<tr>
+  <td class="name"><a href="/projects/ecookbook/issues?assigned_to_id=%21%2A&amp;set_filter=1">[none] </a></td>
+    <td><a href="/projects/ecookbook/issues?assigned_to_id=%21%2A&amp;set_filter=1&amp;status_id=1">8</a></td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td><a href="/projects/ecookbook/issues?assigned_to_id=%21%2A&amp;set_filter=1&amp;status_id=5">3</a></td>
+    <td>-</td>
+  <td><a href="/projects/ecookbook/issues?assigned_to_id=%21%2A&amp;set_filter=1&amp;status_id=o">8</a></td>
+  <td><a href="/projects/ecookbook/issues?assigned_to_id=%21%2A&amp;set_filter=1&amp;status_id=c">3</a></td>
+  <td><a href="/projects/ecookbook/issues?assigned_to_id=%21%2A&amp;set_filter=1&amp;status_id=%2A">11</a></td>
+</tr>
+</tbody>
+<tfoot>
+<tr class="total">
+  <td>Total</td>
+  <td>9</td>
+  <td>1</td>
+  <td>0</td>
+  <td>0</td>
+  <td>3</td>
+  <td>0</td>
+  <td>10</td>
+  <td>3</td>
+  <td>13</td>
+</tr>
+</tfoot>
+</table>
+<p class="other-formats hide-when-print">Also available in:  <span><a class="csv" rel="nofollow" onclick="showModal(&#39;csv-export-options&#39;, &#39;330px&#39;); return false;" href="/projects/ecookbook/issues/report/assigned_to.csv">CSV</a></span>
+</p><div id="csv-export-options" style="display: none;">
+  <h3 class="title">CSV export options</h3>
+  <form id="csv-export-form" action="/projects/ecookbook/issues/report/assigned_to.csv" accept-charset="UTF-8" name="csv-export-form-RANDOM" method="get">
+  <p><label>Encoding <select name="encoding" id="encoding"><option selected="selected" value="UTF-8">UTF-8</option>
+<option value="ISO-8859-1">ISO-8859-1</option></select></label></p>
+  <p><label>Field separator <select name="field_separator" id="field_separator"><option selected="selected" value=",">Comma</option>
+<option value=";">Semicolon</option></select></label></p>
+  <p class="buttons">
+    <input type="submit" value="Export" onclick="hideModal(this);" />
+    <a href="#" onclick="hideModal(this);; return false;">Cancel</a>
+  </p>
+</form></div>
+
+<div class="issue-report-graph hide-when-print">
+  <canvas id="issues_by_assigned_to"></canvas>
+</div>
+<div class="issue-report-graph hide-when-print">
+  <canvas id="issues_by_status"></canvas>
+</div>
+<script>
+//<![CDATA[
+
+  function renderChart(canvas_id, title, chartData){
+    var backgroundColors = ['rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(255, 206, 86, 0.2)', 'rgba(75, 192, 192, 0.2)', 'rgba(153, 102, 255, 0.2)', 'rgba(255, 159, 64, 0.2)'];
+    var borderColors = ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)', 'rgba(255, 206, 86, 1)', 'rgba(75, 192, 192, 1)', 'rgba(153, 102, 255, 1)', 'rgba(255, 159, 64, 1)'];
+    for (var i = 0; i < chartData.datasets.length; i++) {
+      chartData.datasets[i].backgroundColor = backgroundColors[i % backgroundColors.length];
+      chartData.datasets[i].borderColor = borderColors[i % borderColors.length];
+      chartData.datasets[i].borderWidth = 1;
+    }
+    new Chart($(canvas_id), {
+      type: 'bar',
+      data: chartData,
+      options: {
+        indexAxis: 'y',
+        elements: {
+          bar: {borderWidth: 2}
+        },
+        responsive: true,
+        plugins: {
+          legend: {position: 'right'},
+          title: {
+            display: true,
+            text: title
+          }
+        },
+        scales: {
+          yAxis: {stacked: true},
+          xAxis: {stacked: true, ticks: {precision: 0}}
+        }
+      }
+    });
+  }
+  $(document).ready(function(){
+    var chartData1 = {
+      labels: ["Dave Lopper","John Smith","[none] "],
+      datasets: [{"label":"New","hidden":false,"data":[1,0,8]},{"label":"Assigned","hidden":false,"data":[1,0,0]},{"label":"Resolved","hidden":false,"data":[0,0,0]},{"label":"Feedback","hidden":false,"data":[0,0,0]},{"label":"Closed","hidden":true,"data":[0,0,3]},{"label":"Rejected","hidden":true,"data":[0,0,0]}]
+    };
+    var chartData2 = {
+      labels: ["New","Assigned","Resolved","Feedback","Closed","Rejected"],
+      datasets: [{"label":"Dave Lopper","data":[1,1,0,0,0,0]},{"label":"John Smith","data":[0,0,0,0,0,0]},{"label":"[none] ","data":[8,0,0,0,3,0]}]
+    };
+    renderChart("#issues_by_assigned_to", "Issues by Assignee", chartData1);
+    renderChart("#issues_by_status", "Issues by Status", chartData2);
+  });
+
+//]]>
+</script>
+<br />
+<a href="/projects/ecookbook/issues/report">Back</a>
+
+        
+        <div style="clear:both;"></div>
+    </div>
+</div>
+<div id="footer">

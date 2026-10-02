@@ -1,0 +1,8 @@
+{{partial "queries/query_form" (dict "qv" (assigns).qv)}}
+
+<div class="tabs hide-when-print">
+<ul>
+    <li>{{link_to (l "label_details") (assigns).DetailsTabURL (hash "class" (ternary (eq action_name "index") "selected" nil))}}</li>
+    <li>{{link_to (l "label_report") (assigns).ReportTabURL (hash "class" (ternary (eq action_name "report") "selected" nil))}}</li>
+</ul>
+</div>

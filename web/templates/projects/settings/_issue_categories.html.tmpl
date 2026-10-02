@@ -1,0 +1,29 @@
+{{$a := assigns}}
+{{$p := current_project}}
+<p>{{if $a.CanManageCategories}}{{link_to (sprite_icon "add" (l "label_issue_category_new")) (printf "/projects/%s/issue_categories/new" $p.Identifier) (hash "class" "icon icon-add")}}{{end}}</p>
+
+{{if $a.Categories}}
+<table class="list">
+  <thead><tr>
+    <th>{{l "label_issue_category"}}</th>
+    <th>{{l "field_assigned_to"}}</th>
+    <th></th>
+  </tr></thead>
+  <tbody>
+{{range $category := $a.Categories}}
+  <tr>
+    <td class="name">{{$category.Name}}</td>
+    <td>{{if $category.AssignedToID}}{{index $a.CategoryAssignees (deref $category.AssignedToID)}}{{end}}</td>
+    <td class="buttons">
+      {{if $a.CanManageCategories}}
+        {{link_to (sprite_icon "edit" (l "button_edit")) (printf "/issue_categories/%d/edit" $category.ID) (hash "class" "icon icon-edit")}}
+        {{delete_link (printf "/issue_categories/%d" $category.ID)}}
+      {{end}}
+    </td>
+  </tr>
+{{end}}
+    </tbody>
+</table>
+{{else}}
+<p class="nodata">{{l "label_no_data"}}</p>
+{{end}}

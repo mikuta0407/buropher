@@ -1,0 +1,26 @@
+{{title (l "label_confirmation")}}
+
+{{form_tag .FormPath (hash "method" "delete")}}
+<div class="warning">
+
+<p>{{simple_format (l "text_projects_bulk_destroy_head")}}</p>
+
+{{range $item := .Items}}
+  <p>{{l "label_project"}}: <strong>{{$item.Project.Name}}</strong>
+    {{if $item.Descendants}}
+      <br />
+      {{l "text_subprojects_bulk_destroy" $item.Descendants}}
+    {{end}}
+  </p>
+{{end}}
+
+<p>{{l "text_projects_bulk_destroy_confirm" (hash "yes" (l "general_text_Yes"))}}</p>
+<p>{{text_field_tag "confirm"}}</p>
+
+</div>
+
+<p>
+  {{submit_tag (l "button_delete") (hash "class" "btn-alert btn-small")}}
+  {{link_to (l "button_cancel") "/admin/projects"}}
+</p>
+{{end_form}}
