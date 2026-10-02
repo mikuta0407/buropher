@@ -16,6 +16,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/bootstrap"
 	"github.com/mikuta0407/buropher/internal/config"
 	"github.com/mikuta0407/buropher/internal/db"
+	"github.com/mikuta0407/buropher/internal/redmineimport/export"
 	"github.com/mikuta0407/buropher/internal/server"
 )
 
@@ -28,6 +29,7 @@ commands:
   serve     start the web server
   migrate   apply database migrations (up|down|status)
   init      load default data and create the administrator
+  redmine   migrate data from Redmine (export)
   version   print version
 `)
 }
@@ -46,6 +48,8 @@ func main() {
 		err = migrate(args)
 	case "init":
 		err = initCmd(args)
+	case "redmine":
+		err = redmineCmd(args)
 	case "version":
 		fmt.Println("buropher", version)
 	default:
@@ -167,4 +171,17 @@ func initCmd(args []string) error {
 		fmt.Printf("generated password: %s\n", *pw)
 	}
 	return nil
+}
+
+func redmineCmd(args []string) error {
+	if len(args) == 0 {
+		return fmt.Errorf("usage: buropher redmine export [options]")
+	}
+	switch args[0] {
+	case "export":
+		export.ToolVersion = version
+		return export.Main(args[1:])
+	default:
+		return fmt.Errorf("unknown redmine command %q", args[0])
+	}
 }
