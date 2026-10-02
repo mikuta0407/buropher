@@ -135,6 +135,9 @@ func (d *Deps) RequestFuncs(r *view.Render) ttemplate.FuncMap {
 	for k, v := range d.mastersFuncs(r, pg) {
 		fm[k] = v
 	}
+	for k, v := range d.projectsFuncs(r, pg) {
+		fm[k] = v
+	}
 	return fm
 }
 

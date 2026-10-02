@@ -1,0 +1,28 @@
+{{$selected := .selected_tab}}
+{{$default_action := ""}}
+
+<div class="tabs">
+  <ul>
+  {{range $tab := .tabs}}
+    {{$action := get_tab_action $tab}}
+    <li>{{link_to $tab.Label $tab.URL (hash "id" (printf "tab-%s" $tab.Name) "class" (ternary (eq $tab.Name $selected) "selected" nil) "onclick" (ternary $action (printf "%s; return false;" $action) nil))}}</li>
+    {{if eq $tab.Name $selected}}
+    {{$default_action = $action}}
+    {{end}}
+  {{end}}
+  </ul>
+  <div class="tabs-buttons" style="display:none;">
+    <button class="tab-left icon-only" type="button" onclick="moveTabLeft(this);">
+      {{sprite_icon "angle-left" (hash "rtl" true)}}
+    </button>
+    <button class="tab-right icon-only" type="button" onclick="moveTabRight(this);">
+      {{sprite_icon "angle-right" (hash "rtl" true)}}
+    </button>
+  </div>
+</div>
+
+{{range $tab := .tabs}}
+  {{if $tab.Partial}}{{content_tag "div" (partial $tab.Partial (dict "tab" $tab)) (hash "id" (printf "tab-content-%s" $tab.Name) "style" (ternary (eq $tab.Name $selected) nil "display:none") "class" "tab-content")}}{{end}}
+{{end}}
+
+{{if $default_action}}{{javascript_tag $default_action}}{{end}}
