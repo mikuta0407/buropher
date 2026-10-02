@@ -6,7 +6,7 @@
 //
 // 名前は Redmine のフィクスチャ名 (= 旧テーブル名)。外部キーを満たすため依存する
 // フィクスチャは自動的に追加され (例: issues → projects, trackers, users ...)、
-// 指定順に関係なく依存順で投入される。変換規則は付録 A のマッピングに従う:
+// 指定順に関係なく依存順で投入される。変換規則は付録 A のマッピングに従う (custom_values.value 等の空文字は NULL):
 //   - users.type → principals.kind、ユーザ属性は user_accounts、グループ名は principals.name
 //   - users.hashed_password/salt → user_accounts.password_hash ("redmine-sha1$salt$hash")
 //   - users.mail_notification → user_notification_settings
@@ -53,6 +53,8 @@ var order = []string{
 	"projects", "enabled_modules", "projects_trackers", "versions", "issue_categories",
 	"roles", "members", "member_roles", "issues", "workflows", "watchers",
 	"news", "user_preferences", "wikis", "boards", "repositories",
+	"custom_fields", "custom_fields_projects", "custom_fields_trackers", "custom_values",
+	"journals", "journal_details", "time_entries", "queries", "issue_relations", "attachments",
 }
 
 var defs = map[string]fixtureDef{
@@ -72,13 +74,24 @@ var defs = map[string]fixtureDef{
 	"member_roles":      {deps: []string{"members", "roles"}, tables: []string{"member_roles"}, load: loadMemberRoles},
 	"issues": {deps: []string{"projects", "trackers", "issue_statuses", "enumerations", "users", "issue_categories", "versions"},
 		tables: []string{"issues"}, load: loadIssues},
-	"workflows":        {deps: []string{"trackers", "roles", "issue_statuses"}, tables: []string{"workflow_transitions"}, load: loadWorkflows},
-	"watchers":         {deps: []string{"users"}, tables: []string{"watchers"}, load: loadWatchers},
-	"news":             {deps: []string{"projects", "users"}, tables: []string{"news"}, load: loadNews},
-	"user_preferences": {deps: []string{"users", "projects"}, load: loadUserPreferences},
-	"wikis":            {deps: []string{"projects"}, tables: []string{"wikis"}, load: loadWikis},
-	"boards":           {deps: []string{"projects"}, tables: []string{"boards"}, load: loadBoards},
-	"repositories":     {deps: []string{"projects"}, tables: []string{"repositories"}, load: loadRepositories},
+	"workflows":              {deps: []string{"trackers", "roles", "issue_statuses"}, tables: []string{"workflow_transitions"}, load: loadWorkflows},
+	"watchers":               {deps: []string{"users"}, tables: []string{"watchers"}, load: loadWatchers},
+	"news":                   {deps: []string{"projects", "users"}, tables: []string{"news"}, load: loadNews},
+	"user_preferences":       {deps: []string{"users", "projects"}, load: loadUserPreferences},
+	"wikis":                  {deps: []string{"projects"}, tables: []string{"wikis"}, load: loadWikis},
+	"boards":                 {deps: []string{"projects"}, tables: []string{"boards"}, load: loadBoards},
+	"repositories":           {deps: []string{"projects"}, tables: []string{"repositories"}, load: loadRepositories},
+	"custom_fields":          {tables: []string{"custom_fields"}, load: loadCustomFields},
+	"custom_fields_projects": {deps: []string{"custom_fields", "projects"}, load: loadCustomFieldsProjects},
+	"custom_fields_trackers": {deps: []string{"custom_fields", "trackers"}, load: loadCustomFieldsTrackers},
+	"custom_values":          {deps: []string{"custom_fields"}, tables: []string{"custom_values"}, load: loadCustomValues},
+	"journals":               {deps: []string{"issues", "users"}, tables: []string{"issue_journals"}, load: loadJournals},
+	"journal_details":        {deps: []string{"journals"}, tables: []string{"issue_journal_details"}, load: loadJournalDetails},
+	"time_entries": {deps: []string{"projects", "users", "issues", "enumerations"},
+		tables: []string{"time_entries"}, load: loadTimeEntries},
+	"queries":         {deps: []string{"projects", "users"}, tables: []string{"queries"}, load: loadQueries},
+	"issue_relations": {deps: []string{"issues"}, tables: []string{"issue_relations"}, load: loadIssueRelations},
+	"attachments":     {deps: []string{"users"}, tables: []string{"attachments"}, load: loadAttachments},
 }
 
 // Supported は変換に対応しているフィクスチャ名を投入順で返す。
@@ -96,6 +109,8 @@ type loadCtx struct {
 	projectDefaultVersions map[int64]int64
 	// userNotify は members.mail_notification の変換に使う principals.kind。
 	kinds map[int64]string
+	// customFields は投入したカスタムフィールドの id (基底クラスの異常行は投入しない)。
+	customFields map[int64]bool
 }
 
 func (c *loadCtx) exec(q string, args ...any) error {
@@ -147,6 +162,15 @@ func Load(t testing.TB, d *db.DB, names ...string) {
 	}
 }
 
+// LoadAt は ERB の相対日時と既定タイムスタンプの基準時刻を now に固定して投入する。
+// Redmine 側を時刻固定 (COMPAT_FROZEN_TIME) で動かした結果と比較するテストで使う。
+func LoadAt(t testing.TB, d *db.DB, now time.Time, names ...string) {
+	t.Helper()
+	if err := LoadContext(context.Background(), d, now, names...); err != nil {
+		t.Fatal(err)
+	}
+}
+
 // LoadContext は Load のエラーを返す版。now は ERB の相対日時と既定タイムスタンプの基準時刻。
 func LoadContext(ctx context.Context, d *db.DB, now time.Time, names ...string) error {
 	list, err := Resolve(names...)
@@ -159,7 +183,7 @@ func LoadContext(ctx context.Context, d *db.DB, now time.Time, names ...string) 
 			return err
 		}
 		c := &loadCtx{ctx: ctx, tx: tx, now: now, loaded: map[string]bool{},
-			projectDefaultVersions: map[int64]int64{}, kinds: map[int64]string{}}
+			projectDefaultVersions: map[int64]int64{}, kinds: map[int64]string{}, customFields: map[int64]bool{}}
 		for _, n := range list {
 			c.loaded[n] = true
 		}

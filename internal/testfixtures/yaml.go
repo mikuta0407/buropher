@@ -2,6 +2,7 @@ package testfixtures
 
 import (
 	"embed"
+	"encoding/base64"
 	"fmt"
 	"regexp"
 	"sort"
@@ -21,6 +22,8 @@ var fixtureFS embed.FS
 type row struct {
 	label string
 	cols  map[string]*string
+	// lists はシーケンス値の列 (custom_fields.possible_values 等)。!binary は復号済み。
+	lists map[string][]string
 }
 
 // readFixture は ERB を評価した上で YAML を読み、id (無ければラベル) 順の行を返す。
@@ -48,9 +51,28 @@ func readFixture(name string, now time.Time) ([]row, error) {
 	for i := 0; i+1 < len(top.Content); i += 2 {
 		label := top.Content[i].Value
 		m := top.Content[i+1]
-		r := row{label: label, cols: map[string]*string{}}
+		r := row{label: label, cols: map[string]*string{}, lists: map[string][]string{}}
 		for j := 0; j+1 < len(m.Content); j += 2 {
 			k, v := m.Content[j].Value, m.Content[j+1]
+			if v.Kind == yaml.SequenceNode {
+				var items []string
+				for _, it := range v.Content {
+					if it.Kind != yaml.ScalarNode {
+						return nil, fmt.Errorf("testfixtures: %s.%s.%s: nested sequence", name, label, k)
+					}
+					val := it.Value
+					if it.Tag == "!binary" || it.Tag == "!!binary" {
+						b, err := base64.StdEncoding.DecodeString(strings.Join(strings.Fields(val), ""))
+						if err != nil {
+							return nil, fmt.Errorf("testfixtures: %s.%s.%s: %w", name, label, k, err)
+						}
+						val = string(b)
+					}
+					items = append(items, val)
+				}
+				r.lists[k] = items
+				continue
+			}
 			if v.Kind != yaml.ScalarNode {
 				return nil, fmt.Errorf("testfixtures: %s.%s.%s: non-scalar value", name, label, k)
 			}
