@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/mikuta0407/buropher/internal/clock"
+	"github.com/mikuta0407/buropher/internal/db"
 )
 
 // このファイルはマイページ・個人設定（MyController）の参照 Redmine との比較テストと、書き込みの振る舞いのテスト。
@@ -371,4 +372,56 @@ func TestMyWriteBehavior(t *testing.T) {
 			t.Errorf("user not deleted (redirected to %s)", res.Header.Get("Location"))
 		}
 	})
+}
+
+// myTimelogEntries は作業時間ブロックの比較用に追加する jsmith の作業時間（eCookbook）。
+var myTimelogEntries = []struct {
+	issueID  any
+	hours    float64
+	activity int
+	comments any
+	spentOn  string
+}{
+	{1, 2.5, 9, "Test <comment>", "2026-01-15"},
+	{nil, 0.75, 9, "Project work", "2026-01-13"},
+	{3, 1.0, 10, nil, "2026-01-13"},
+}
+
+// TestMyTimelogBlockMatchRedmine は作業時間ブロック（当日・過去の日・チケットなしの行）が参照 Redmine と一致することを確認する。
+// 取り直すときは reset 直後の専用参照環境に jsmith で myTimelogEntries と同じ作業時間を
+// POST /time_entries.json で作ってから
+// BUROPHER_MY_GOLDEN_TIMELOG_REF=http://127.0.0.1:4020 go test -run TestMyTimelogBlockMatchRedmine ./internal/server
+func TestMyTimelogBlockMatchRedmine(t *testing.T) {
+	dir := filepath.Join("testdata", "my")
+	const golden = "page_timelog_jsmith.html"
+	add := func(base string, clients map[string]*http.Client) string {
+		asFetch(t, base, clients, "jsmith", "/my/account")
+		res, _ := mySend(t, clients["jsmith"], base, http.MethodPost, "/my/add_block", url.Values{"block": {"timelog"}}, false)
+		res.Body.Close()
+		status, body := asFetch(t, base, clients, "jsmith", "/my/page")
+		if status != 200 {
+			t.Fatalf("status %d", status)
+		}
+		return extract(myNormalize(body, base), `<div class="mypage-box" id="block-timelog">`, `<div class="mypage-box" id="block-issuesassignedtome">`)
+	}
+	if ref := os.Getenv("BUROPHER_MY_GOLDEN_TIMELOG_REF"); ref != "" {
+		if err := os.WriteFile(filepath.Join(dir, golden), []byte(add(ref, map[string]*http.Client{})), 0o644); err != nil {
+			t.Fatal(err)
+		}
+	}
+	myFreezeClock(t)
+	ts, d := newFixtureServer(t)
+	for _, e := range myTimelogEntries {
+		tm, err := time.Parse("2006-01-02", e.spentOn)
+		if err != nil {
+			t.Fatal(err)
+		}
+		_, week := tm.ISOWeek()
+		if _, err := d.Exec(context.Background(), `INSERT INTO time_entries (project_id, user_id, author_id, issue_id, hours, comments, activity_id,
+  spent_on, tyear, tmonth, tweek, created_at, updated_at) VALUES (1, 2, 2, ?, ?, ?, ?, ?, 2026, 1, ?, ?, ?)`,
+			e.issueID, e.hours, e.comments, e.activity, e.spentOn, week, db.NewTime(frozenTime), db.NewTime(frozenTime)); err != nil {
+			t.Fatal(err)
+		}
+	}
+	myCompare(t, dir, golden, add(ts.URL, map[string]*http.Client{}))
 }
