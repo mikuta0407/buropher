@@ -109,6 +109,11 @@ func (f *oidcSourceForm) Send(method string) (any, bool) {
 func (a *App) newOIDCSourceForm(c *Req, rec *domain.AuthSourceRecord) *oidcSourceForm {
 	f := &oidcSourceForm{rec: rec, name: rec.Name, strs: map[string]string{}, bools: map[string]bool{},
 		enabled: rec.Enabled, onthefly: rec.OntheflyRegister, errors: validation.New("auth_source"), loc: c.Loc}
+	// 検証エラーの属性名は buropher.sso.field_<attr>
+	f.errors.AttrNames = map[string]string{}
+	for _, k := range append(slices.Clone(oidcStringFields), oidcBoolFields...) {
+		f.errors.AttrNames[k] = "buropher.sso.field_" + k
+	}
 	for _, k := range oidcStringFields {
 		if s, ok := rec.ConfigString(k); ok {
 			f.strs[k] = s

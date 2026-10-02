@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"crypto/subtle"
 	"errors"
 	"net/http"
 	"net/url"
@@ -225,7 +226,8 @@ func (a *App) OIDCCallback(c *Req) {
 	}
 	str := func(k string) string { return httpx.ValueString(saved[k]) }
 	created := httpx.ValueInt(saved["created_at"])
-	if str("auth_source_id") != strconv.FormatInt(rec.ID, 10) || p.String("state") == "" || p.String("state") != str("state") {
+	if httpx.ValueInt(saved["auth_source_id"]) != rec.ID || p.String("state") == "" ||
+		subtle.ConstantTimeCompare([]byte(p.String("state")), []byte(str("state"))) != 1 {
 		a.oidcFail(c, "state", errors.New("state mismatch"))
 		return
 	}
