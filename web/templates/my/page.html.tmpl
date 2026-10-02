@@ -1,0 +1,50 @@
+<div class="contextual">
+  {{form_tag "/my/add_block" (hash "remote" true "id" "block-form" "authenticity_token" true)}}
+    {{label_tag "block-select" (l "button_add")}}:
+    {{.BlockSelect}}
+  {{end_form}}
+  {{call_hook "view_my_page_contextual"}}
+</div>
+
+<h2>{{l "label_my_page"}}</h2>
+
+<div id="my-page" class="splitcontent">
+{{range $g := .Groups}}
+  <div id="list-{{$g.Name}}" class="block-receiver splitcontent{{$g.Name}}">
+    {{partial "my/blocks" (dict "blocks" $g.Blocks)}}
+  </div>
+{{end}}
+{{call_hook "view_my_page_splitcontent"}}
+</div>
+
+{{context_menu}}
+
+{{define "my/page#js"}}
+
+$(document).ready(function(){
+  $('#block-select').val('');
+  $('.block-receiver').sortable({
+    connectWith: '.block-receiver',
+    tolerance: 'pointer',
+    handle: '.sort-handle',
+    start: function(event, ui){$(this).parent().addClass('dragging');},
+    stop: function(event, ui){$(this).parent().removeClass('dragging');},
+    update: function(event, ui){
+      // trigger the call on the list that receives the block only
+      if ($(this).find(ui.item).length > 0) {
+        $.ajax({
+          url: "{{j "/my/order_blocks"}}",
+          type: 'post',
+          data: {
+            'group': $(this).attr('id').replace(/^list-/, ''),
+            'blocks': $.map($(this).children(), function(el){return $(el).attr('id').replace(/^block-/, '');})
+          }
+        });
+      }
+    }
+  });
+});
+{{end}}
+{{javascript_tag (capture "my/page#js")}}
+
+{{html_title (l "label_my_page")}}
