@@ -409,14 +409,14 @@ func (a *App) UsersShow(c *Req) {
 		}
 	}
 	c.Render("users/show", map[string]any{
-		"User":          u,
-		"Pref":          pref,
-		"Emails":        emails,
-		"CustomValues":  cfs[u.ID],
-		"Counts":        counts,
-		"AssignedToIDs": strings.Join(assignedParam, "|"),
-		"Memberships":   tree,
-		"Groups":        groups,
+		"User":            u,
+		"Pref":            pref,
+		"Emails":          emails,
+		"CustomValues":    cfs[u.ID],
+		"Counts":          counts,
+		"AssignedToIDs":   strings.Join(assignedParam, "|"),
+		"Memberships":     tree,
+		"Groups":          groups,
 		"EventsByDay":     eventsByDay,
 		"ActivityURL":     activityURL,
 		"ActivityAtomURL": helper.URLWithQuery("/activity.atom", atomParams),
