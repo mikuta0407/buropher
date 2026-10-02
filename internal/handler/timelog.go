@@ -35,6 +35,7 @@ func (a *App) routesTimelog(r Router) {
 	optProject := FindOptionalProject()
 	api := AcceptAPIAuth()
 	ctrl := TimelogController
+	a.routesTimelogContextMenu(r)
 
 	// プロジェクト配下（resources :time_entries, :except => [:show, :edit, :update, :destroy]）
 	a.Handle(r, http.MethodGet, "/projects/{project_id}/time_entries/report", ctrl, "report", a.TimelogReport, optProject)

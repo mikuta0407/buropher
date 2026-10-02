@@ -49,6 +49,12 @@ var timelogCases = []asCase{
 	{"jsmith", "/issues/1/time_entries/new", "issue_new_jsmith.html"},
 	{"admin", "/time_entries/1/edit", "edit_1_admin.html"},
 	{"jsmith", "/time_entries/1/edit", "edit_1_jsmith.html"},
+	// 一括編集・コンテキストメニュー
+	{"admin", "/time_entries/bulk_edit?ids[]=1&ids[]=2&ids[]=4", "bulk_edit_admin.html"},
+	{"jsmith", "/time_entries/bulk_edit?ids[]=1&ids[]=2", "bulk_edit_jsmith.html"},
+	{"admin", "/time_entries/context_menu?ids[]=1&ids[]=2", "context_menu_admin.html"},
+	{"admin", "/time_entries/context_menu?ids[]=1&back_url=%2Ftime_entries", "context_menu_1_admin.html"},
+	{"dlopper", "/time_entries/context_menu?ids[]=1", "context_menu_1_dlopper.html"},
 	// API
 	{"admin", "/time_entries.json", "index_admin.json"},
 	{"admin", "/time_entries.xml", "index_admin.xml"},
