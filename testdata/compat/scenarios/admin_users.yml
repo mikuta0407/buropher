@@ -239,6 +239,7 @@ requests:
     path: /users/2/memberships/3
     method: DELETE
     user: admin
+    form: {"commit": "Save"}
     expect_status: 302
   - id: m_membership_after
     path: /users/2/edit?tab=memberships
@@ -286,6 +287,7 @@ requests:
     path: /groups/11/users/3
     method: DELETE
     user: admin
+    form: {"commit": "Save"}
     expect_status: 302
   - id: m_groups_update
     path: /groups/10
@@ -297,6 +299,7 @@ requests:
     path: /groups/10
     method: DELETE
     user: admin
+    form: {"commit": "Save"}
     expect_status: 302
   - id: m_groups_index_after_destroy
     path: /groups
