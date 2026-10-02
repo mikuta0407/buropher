@@ -1,0 +1,11 @@
+# buropher 独自機能用の訳文（Redmine 本体の redmine/*.yml より後に読み込まれ、同名キーは上書きする）。
+# Redmine のキーと衝突しないよう、原則として buropher 名前空間の下に置く。
+# en/ja 以外の言語は en にフォールバックする。
+en:
+  buropher:
+    sso:
+      label_sso: "Single sign-on"
+      button_login_with: "Log in with %{provider}"
+    discord:
+      label_discord_notification: "Discord notifications"
+      field_webhook_url: "Webhook URL"

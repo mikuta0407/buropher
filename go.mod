@@ -12,6 +12,7 @@ require (
 	modernc.org/sqlite v1.60.1
 )
 
+<<<<<<< HEAD
 require (
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/google/uuid v1.6.0 // indirect
@@ -37,3 +38,6 @@ require (
 )
 
 require gopkg.in/yaml.v3 v3.0.1
+=======
+require go.yaml.in/yaml/v3 v3.0.4
+>>>>>>> worktree-agent-a3009acaad1b46381

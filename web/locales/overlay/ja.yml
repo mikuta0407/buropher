@@ -1,0 +1,9 @@
+# buropher 独自機能用の訳文（en.yml と同じキー構造にすること）。
+ja:
+  buropher:
+    sso:
+      label_sso: "シングルサインオン"
+      button_login_with: "%{provider} でログイン"
+    discord:
+      label_discord_notification: "Discord 通知"
+      field_webhook_url: "Webhook URL"
