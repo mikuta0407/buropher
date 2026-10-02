@@ -1,0 +1,4 @@
+
+      <label>
+        {{check_box_tag "membership[project_ids][]" .project.ID false (hash "id" nil "disabled" (has_id .member_of .project.ID))}} {{.project.Name}}
+      </label>

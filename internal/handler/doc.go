@@ -89,8 +89,30 @@
 //     HTTP Basic、管理者の X-Redmine-Switch-User を find_current_user が処理する）。
 //   - 形式の判定は httpx.Format(c.R) / httpx.IsAPIRequest(c.R) / httpx.Negotiate。API のエラーは
 //     a.Errors.RenderAPIErrors（422）・c.RenderError（ステータスのみ）。
-//   - JSON / XML の本文は Redmine::Views::Builders と同じキー順・型で出す必要がある（未実装。最初に必要になったときに
-//     builder を移植し、この節を更新すること）。
+//   - JSON / XML の本文（.api.rsb テンプレート）は internal/apibuilder（Redmine::Views::Builders の移植）で組み立て、
+//     c.RenderAPI(status, func(b apibuilder.Builder) { ... }) で返す（status 0 は 200。json / xml 以外は 406。
+//     JSONP は Setting.jsonp_enabled と callback / jsonp パラメータで自動処理）。
+//
+// .api.rsb の DSL と apibuilder の対応（左が Redmine、右が Go）:
+//
+//	api.array :users, api_meta(total_count: n) do  →  b.Array("users", c.APIMeta(apibuilder.A("total_count", n)), func() {
+//	api.user do                                    →  b.Object("user", func() {
+//	api.id user.id                                 →  b.Value("id", u.ID)  // nil は null / <id/>、time.Time は xmlschema
+//	api.project :id => 1, :name => "x"             →  b.Attrs("project", apibuilder.A("id", 1, "name", "x"))
+//	api.custom_field attrs do api.value v end      →  b.ObjectAttrs("custom_field", attrs, func() { b.Value("value", v) })
+//
+// その他の API 用ヘルパー: c.RenderAPIOK()（render_api_ok = 204）、c.RenderAPIErrors(msgs...) /
+// c.RenderValidationErrors(errs)（422）、c.IncludeInAPIResponse("memberships")（include_in_api_response?）、
+// c.APIMeta（nometa / X-Redmine-Nometa）、c.APIOffsetAndLimit()（api_offset_and_limit）。
+// API 形式ではセッションを使わない（find_current_user と同じ）。
+//
+// # 規約: ページネーション・検証エラー
+//
+//   - 一覧のページ分割は internal/pagination（Redmine::Pagination::Paginator）と c.PerPageOption()（per_page_option）を使い、
+//     テンプレートでは {{pagination_links_full .Pages .Count}}（per_page_links を含む。リンクは現在のパス + クエリ）。
+//   - モデルの検証エラーは internal/validation（ActiveModel::Errors 相当。full_messages は human_attribute_name の規則で
+//     field_<model>_<attr> / field_<attr> を引く）。フォームのモデルが ValidationErrors() を実装すれば error_messages_for に渡せる。
+//   - before_action で取得したモデル（@user など）は c.setValue(key, v) / c.value(key) で持たせる（req_values.go）。
 //
 // # 規約: 互換テスト
 //

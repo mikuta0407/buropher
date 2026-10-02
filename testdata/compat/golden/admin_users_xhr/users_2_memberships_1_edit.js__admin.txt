@@ -1,0 +1,5 @@
+status: 200
+content-type: text/javascript
+
+$("#member-1-roles").hide();
+$("#member-1-form").html("<form class=\"edit_membership\" id=\"edit_membership\" action=\"/users/2/memberships/1\" accept-charset=\"UTF-8\" data-remote=\"true\" name=\"edit_membership-RANDOM\" method=\"post\"><input type=\"hidden\" name=\"_method\" value=\"put\" autocomplete=\"off\" />\n  <p>\n    <label class=\"block\">\n      <input type=\"checkbox\" name=\"membership[role_ids][]\" value=\"1\" checked=\"checked\" /> Manager\n      \n    <\/label>\n    <label class=\"block\">\n      <input type=\"checkbox\" name=\"membership[role_ids][]\" value=\"2\" /> Developer\n      \n    <\/label>\n    <label class=\"block\">\n      <input type=\"checkbox\" name=\"membership[role_ids][]\" value=\"3\" /> Reporter\n      \n    <\/label>\n  <\/p>\n  <input type=\"hidden\" name=\"membership[role_ids][]\" value=\"\" autocomplete=\"off\" />\n  <p>\n    <input type=\"submit\" name=\"commit\" value=\"Save\" data-disable-with=\"Save\" />\n    <a href=\"#\" onclick=\"\$(&#39;#member-1-roles&#39;).show(); \$(&#39;#member-1-form&#39;).empty(); return false;; return false;\">Cancel<\/a>\n  <\/p>\n<\/form>");

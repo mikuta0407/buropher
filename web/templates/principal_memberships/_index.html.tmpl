@@ -1,0 +1,35 @@
+{{$a := assigns}}
+{{$base := $a.PrincipalBase}}
+
+<p>{{link_to (sprite_icon "add" (l "label_add_projects")) (printf "%s/memberships/new" $base) (hash "remote" true "class" "icon icon-add")}}</p>
+
+{{if $a.Memberships}}
+<table class="list memberships">
+  <thead><tr>
+    <th>{{l "label_project"}}</th>
+    <th>{{l "label_role_plural"}}</th>
+    <th style="width:15%"></th>
+      {{call_hook "view_memberships_table_header"}}
+  </tr></thead>
+  <tbody>
+  {{range $m := $a.Memberships}}
+  <tr id="member-{{$m.Member.ID}}" class="class">
+  <td class="project name">
+    {{link_to_project $m.Project}}
+  </td>
+  <td class="roles">
+    <span id="member-{{$m.Member.ID}}-roles">{{$m.RolesText}}</span>
+    <div id="member-{{$m.Member.ID}}-form"></div>
+  </td>
+  <td class="buttons">
+      {{link_to (sprite_icon "edit" (l "button_edit")) (printf "%s/memberships/%d/edit" $base $m.Member.ID) (hash "remote" true "class" "icon icon-edit")}}
+      {{if $m.Deletable}}{{delete_link (printf "%s/memberships/%d" $base $m.Member.ID) (hash "remote" true)}}{{end}}
+  </td>
+      {{call_hook "view_memberships_table_row"}}
+  </tr>
+  {{end}}
+  </tbody>
+</table>
+{{else}}
+<p class="nodata">{{l "label_no_data"}}</p>
+{{end}}

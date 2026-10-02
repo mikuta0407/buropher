@@ -1,0 +1,11 @@
+$('#tab-content-memberships').html('{{j (partial "principal_memberships/index" (dict "principal" .Principal))}}');
+hideOnLoad();
+
+{{if .AllPersisted}}
+  hideModal();
+  {{range $m := .Members}}
+    $("#member-{{$m.Member.ID}}").effect("highlight");
+  {{end}}
+{{else if .Members}}
+  alert('{{raw (j (l "notice_failed_to_save_members" (hash "errors" .ErrorsText)))}}');
+{{end}}

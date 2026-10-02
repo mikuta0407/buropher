@@ -1,0 +1,6 @@
+{{$g := (assigns).Group}}
+{{$f := labelled_form_for $g.ParamKey $g (hash "url" (printf "/groups/%d" $g.ID) "html" (hash "multipart" true))}}
+{{$f.Open}}
+{{partial "groups/form" (dict "f" $f)}}
+{{submit_tag (l "button_save")}}
+{{end_form}}

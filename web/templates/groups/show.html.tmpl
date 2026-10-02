@@ -1,0 +1,21 @@
+<div class="contextual">
+{{if admin}}{{link_to (sprite_icon "edit" (l "button_edit")) (printf "/groups/%d/edit" .Group.ID) (hash "class" "icon icon-edit")}}{{end}}
+</div>
+
+<h2>{{group_name .Group}}</h2>
+
+{{if .HasCustomValues}}
+  <ul>
+    {{range $cv := .CustomValues}}
+      <li><span class="label">{{$cv.Name}}:</span> {{$cv.ValueString}}</li>
+    {{end}}
+  </ul>
+{{end}}
+
+<h3>{{l "label_member_plural"}}</h3>
+<ul>
+{{range $u := .Users}}
+    <li>{{link_to_user $u}}</li>
+{{end}}
+</ul>
+{{html_title (group_name .Group)}}

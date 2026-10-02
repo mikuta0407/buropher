@@ -57,14 +57,3 @@ func (m *Member) HasInheritedRole(roleID int64) bool {
 	}
 	return false
 }
-
-// Issue はチケット (権限・可視性判定に必要な列のみ)。
-type Issue struct {
-	ID           int64
-	ProjectID    int64
-	TrackerID    int64
-	StatusID     int64
-	AuthorID     int64
-	AssignedToID *int64
-	IsPrivate    bool
-}

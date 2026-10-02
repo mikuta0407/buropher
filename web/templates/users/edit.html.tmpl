@@ -1,0 +1,11 @@
+{{$u := .User}}
+<div class="contextual">
+{{link_to (sprite_icon "user" (l "label_profile")) (printf "/users/%d" $u.ID) (hash "class" "icon icon-user")}}
+{{if .ShowEmailsLink}}{{link_to (sprite_icon "email" (l "label_email_address_plural")) (printf "/users/%d/email_addresses" $u.ID) (hash "class" "icon icon-email-add" "remote" true)}}{{end}}
+{{change_status_link $u.User}}
+{{if ne $u.ID (current_user).ID}}{{delete_link (printf "/users/%d" $u.ID)}}{{end}}
+</div>
+
+{{user_edit_title $u.User}}
+
+{{render_tabs .Tabs}}

@@ -1,0 +1,347 @@
+# 管理画面: ユーザー・グループ（UsersController / GroupsController / PrincipalMembershipsController /
+# EmailAddressesController / ContextMenusController#users）と REST API（users / groups）。
+# 前半は参照状態を変えない GET、後半（id が m_ で始まるもの）は状態を変更する POST/PUT/DELETE。
+# 実行順序に意味がある（後半は前の操作の結果を表示する）ため、並べ替えたらゴールデンを取り直すこと。
+name: admin_users
+
+users:
+  admin: {login: admin, password: admin}
+  jsmith: {login: jsmith, password: jsmith}
+  dlopper: {login: dlopper, password: foo}
+
+normalize:
+  mask_text_selectors:
+    - "#footer"
+  # API キーは参照側では既存のトークン、候補側では生成値になる
+  mask_keys: [api_key]
+  # 候補の時計は固定時刻から進む（参照は travel_to で止まっている）ため、同じ分の秒を揃える
+  regex:
+    - {pattern: "2026-01-15T12:0\\d:\\d\\dZ", replace: "2026-01-15T12:00:00Z"}
+
+requests:
+  # ---- 一覧
+  - path: /users
+    users: [anonymous, admin, jsmith]
+  - path: /users?set_filter=1&f[]=status&op[status]=%3D&v[status][]=3
+    users: [admin]
+  - path: /users?set_filter=1&f[]=name&op[name]=~&v[name][]=smith
+    users: [admin]
+  - path: /users?set_filter=1&f[]=is_member_of_group&op[is_member_of_group]=%3D&v[is_member_of_group][]=10
+    users: [admin]
+  - path: /users?sort=lastname,login
+    users: [admin]
+  - path: /users?sort=last_login_on:desc,login
+    users: [admin]
+  - path: /users?set_filter=1&f[]=&c[]=login&c[]=mail&c[]=status&c[]=updated_on
+    users: [admin]
+  - path: /users?per_page=2
+    users: [admin]
+  - path: /users?per_page=2&page=2
+    users: [admin]
+  - path: /users?set_filter=1&f[]=status&op[status]=%3D&v[status][]=1&per_page=25
+    users: [admin]
+  - path: /users?status=3
+    users: [admin]
+  - path: /users?set_filter=1&f[]=name&op[name]=~&v[name][]=
+    users: [admin]
+  - path: /users.csv
+    users: [admin]
+    format: text
+  - path: /users.csv?set_filter=1&f[]=&c[]=all_inline&encoding=UTF-8&field_separator=%3B
+    users: [admin]
+    format: text
+  # ---- 詳細・作成・編集
+  - path: /users/2
+    users: [anonymous, admin, jsmith, dlopper]
+  - path: /users/1
+    users: [admin, jsmith]
+  - path: /users/5
+    users: [admin, jsmith]
+  - path: /users/999
+    users: [admin]
+  - path: /users/current
+    users: [anonymous, jsmith]
+  - path: /users/new
+    users: [admin, jsmith]
+  - path: /users/2/edit
+    users: [admin, jsmith]
+  - path: /users/1/edit
+    users: [admin]
+  - path: /users/5/edit
+    users: [admin]
+  - path: /users/3/edit?tab=memberships
+    users: [admin]
+  - path: /users/8/edit?tab=groups
+    users: [admin]
+  - path: /users/6/edit
+    users: [admin]
+  - path: /users/context_menu?ids[]=2
+    users: [admin]
+  - path: /users/context_menu?ids[]=2&ids[]=3
+    users: [admin]
+  - path: /users/context_menu?ids[]=1
+    users: [admin]
+  - path: /users/2/email_addresses
+    users: [admin, jsmith, dlopper]
+  - path: /users/2/memberships/new
+    users: [admin]
+  - path: /users/2/memberships/1/edit
+    users: [admin]
+  # ---- グループ
+  - path: /groups
+    users: [anonymous, admin, jsmith]
+  - path: /groups?name=team
+    users: [admin]
+  - path: /groups/new
+    users: [admin]
+  - path: /groups/10
+    users: [anonymous, admin, jsmith]
+  - path: /groups/10/edit
+    users: [admin]
+  - path: /groups/10/edit?tab=users
+    users: [admin]
+  - path: /groups/11/edit?tab=memberships
+    users: [admin]
+  - path: /groups/12/edit
+    users: [admin]
+  - path: /groups/13/edit
+    users: [admin]
+  - path: /groups/10/users/new
+    users: [admin]
+  - path: /groups/999
+    users: [admin]
+  # ---- REST API
+  - path: /users.json
+    users: [admin, jsmith]
+  - path: /users.xml
+    users: [admin]
+  - path: /users.json?status=&limit=3&offset=2
+    users: [admin]
+  - path: /users.json?name=jsmith
+    users: [admin]
+  - path: /users.json?group_id=10
+    users: [admin]
+  - path: /users.json?nometa=1&limit=2
+    users: [admin]
+  - path: /users/2.json?include=memberships,groups
+    users: [admin, jsmith]
+  - path: /users/2.xml?include=memberships,groups
+    users: [admin]
+  - path: /users/3.json
+    users: [jsmith]
+  - path: /users/current.json
+    users: [jsmith]
+  - path: /groups.json
+    users: [admin]
+  - path: /groups.xml?builtin=1
+    users: [admin]
+  - path: /groups/10.json?include=users,memberships
+    users: [admin]
+  - path: /groups/12.xml?include=users,memberships
+    users: [admin]
+
+  # ---- 状態を変更する操作
+  - id: m_users_create_invalid
+    path: /users
+    method: POST
+    user: admin
+    form: {"user[login]": "", "user[firstname]": "", "user[lastname]": "", "user[mail]": "bad", "user[password]": "short", "user[password_confirmation]": "other"}
+  - id: m_users_create
+    path: /users
+    method: POST
+    user: admin
+    form: {"user[login]": "newuser", "user[firstname]": "New", "user[lastname]": "User", "user[mail]": "newuser@example.net", "user[language]": "fr", "user[password]": "secret123", "user[password_confirmation]": "secret123", "user[mail_notification]": "none", "pref[hide_mail]": "0", "pref[time_zone]": "Tokyo", "pref[comments_sorting]": "desc"}
+    expect_status: 302
+  - id: m_users_list_after_create
+    path: /users?set_filter=1&sort=created_on:desc
+    user: admin
+  - id: m_users_create_taken
+    path: /users
+    method: POST
+    user: admin
+    form: {"user[login]": "NEWUSER", "user[firstname]": "Dup", "user[lastname]": "User", "user[mail]": "NewUser@example.net", "user[password]": "secret123", "user[password_confirmation]": "secret123"}
+  - id: m_users_update
+    path: /users/2
+    method: PUT
+    user: admin
+    form: {"user[firstname]": "Johnny", "user[mail]": "johnny@somenet.foo", "user[admin]": "1", "pref[hide_mail]": "0", "pref[comments_sorting]": "desc", "pref[warn_on_leaving_unsaved]": "0"}
+    expect_status: 302
+  - id: m_users_edit_after_update
+    path: /users/2/edit
+    user: admin
+  - id: m_users_show_after_update
+    path: /users/2
+    user: dlopper
+  - id: m_users_update_invalid
+    path: /users/2
+    method: PUT
+    user: admin
+    form: {"user[login]": "admin", "user[firstname]": "", "user[password]": "abc", "user[password_confirmation]": "abd"}
+  - id: m_users_update_groups
+    path: /users/2?user[group_ids][]=10&user[group_ids][]=
+    method: PUT
+    user: admin
+    form: {"commit": "Save"}
+    expect_status: 302
+  - id: m_users_edit_groups
+    path: /users/2/edit?tab=groups
+    user: admin
+  - id: m_users_lock
+    path: /users/3
+    method: PUT
+    user: admin
+    form: {"user[status]": "3"}
+    expect_status: 302
+  - id: m_users_list_locked
+    path: /users?set_filter=1&f[]=status&op[status]=%3D&v[status][]=3
+    user: admin
+  - id: m_users_bulk_unlock
+    path: /users/bulk_unlock?ids[]=3
+    method: POST
+    user: admin
+    form: {"commit": "Save"}
+    expect_status: 302
+  - id: m_users_bulk_lock
+    path: /users/bulk_lock?ids[]=7&ids[]=8
+    method: POST
+    user: admin
+    form: {"commit": "Save"}
+    expect_status: 302
+  - id: m_users_destroy_confirm
+    path: /users/7
+    method: DELETE
+    user: admin
+  - id: m_users_bulk_destroy_confirm
+    path: /users/bulk_destroy?ids[]=7&ids[]=8
+    method: DELETE
+    user: admin
+    form: {"commit": "Save"}
+  - id: m_users_destroy
+    path: /users/7
+    method: DELETE
+    user: admin
+    form: {"confirm": "someone"}
+    expect_status: 302
+  - id: m_users_list_after_destroy
+    path: /users?set_filter=1&f[]=
+    user: admin
+  # メンバーシップ
+  - id: m_membership_create
+    path: /users/3/memberships?membership[project_ids][]=1&membership[project_ids][]=2&membership[role_ids][]=3
+    method: POST
+    user: admin
+    form: {"commit": "Save"}
+    expect_status: 302
+  - id: m_membership_edit_tab
+    path: /users/3/edit?tab=memberships
+    user: admin
+  - id: m_membership_update
+    path: /users/2/memberships/1?membership[role_ids][]=1&membership[role_ids][]=2
+    method: PUT
+    user: admin
+    form: {"commit": "Save"}
+    expect_status: 302
+  - id: m_membership_destroy
+    path: /users/2/memberships/3
+    method: DELETE
+    user: admin
+    form: {"commit": "Save"}
+    expect_status: 302
+  - id: m_membership_after
+    path: /users/2/edit?tab=memberships
+    user: admin
+  # 追加のメールアドレス
+  - id: m_email_create
+    path: /users/2/email_addresses
+    method: POST
+    user: admin
+    form: {"email_address[address]": "jsmith2@example.net"}
+    expect_status: 302
+  - id: m_email_create_invalid
+    path: /users/2/email_addresses
+    method: POST
+    user: admin
+    form: {"email_address[address]": "jsmith2@example.net"}
+  - id: m_email_index
+    path: /users/2/email_addresses
+    user: admin
+  # グループ
+  - id: m_groups_create_invalid
+    path: /groups
+    method: POST
+    user: admin
+    form: {"group[name]": "A team"}
+  - id: m_groups_create
+    path: /groups
+    method: POST
+    user: admin
+    form: {"group[name]": "C Team"}
+    expect_status: 302
+  - id: m_groups_index_after_create
+    path: /groups
+    user: admin
+  - id: m_groups_add_users
+    path: /groups/11/users?user_ids[]=2&user_ids[]=3
+    method: POST
+    user: admin
+    form: {"commit": "Save"}
+    expect_status: 302
+  - id: m_groups_users_tab
+    path: /groups/11/edit?tab=users
+    user: admin
+  - id: m_groups_remove_user
+    path: /groups/11/users/3
+    method: DELETE
+    user: admin
+    form: {"commit": "Save"}
+    expect_status: 302
+  - id: m_groups_update
+    path: /groups/10
+    method: PUT
+    user: admin
+    form: {"group[name]": "A Team renamed"}
+    expect_status: 302
+  - id: m_groups_destroy
+    path: /groups/10
+    method: DELETE
+    user: admin
+    form: {"commit": "Save"}
+    expect_status: 302
+  - id: m_groups_index_after_destroy
+    path: /groups
+    user: admin
+  # API
+  - id: m_api_users_create
+    path: /users.json
+    method: POST
+    user: admin
+    auth: basic
+    format: json
+    form: {"user[login]": "apiuser", "user[firstname]": "Api", "user[lastname]": "User", "user[mail]": "apiuser@example.net", "user[password]": "secret123"}
+  - id: m_api_users_create_invalid
+    path: /users.json
+    method: POST
+    user: admin
+    auth: basic
+    format: json
+    form: {"user[login]": "apiuser", "user[firstname]": "", "user[lastname]": "User", "user[mail]": "apiuser@example.net"}
+  - id: m_api_users_update
+    path: /users/4.json
+    method: PUT
+    user: admin
+    auth: basic
+    format: json
+    form: {"user[lastname]": "Hilly"}
+  - id: m_api_users_show_after
+    path: /users/4.json
+    user: admin
+  - id: m_api_groups_create
+    path: /groups.xml?group[user_ids][]=2&group[user_ids][]=4
+    method: POST
+    user: admin
+    auth: basic
+    format: xml
+    form: {"group[name]": "Api Group"}
+  - id: m_api_groups_list
+    path: /groups.json
+    user: admin

@@ -1,0 +1,6 @@
+<h2>{{l "label_user_new"}}</h2>
+
+{{form_tag (printf "/groups/%d/users" .Group.ID) (hash "class" "edit_group" "id" (printf "edit_group_%d" .Group.ID) "method" "post")}}
+  {{partial "groups/new_users_form"}}
+  <p>{{submit_tag (l "button_add")}}</p>
+{{end_form}}

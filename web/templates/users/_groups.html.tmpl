@@ -1,0 +1,14 @@
+{{$a := assigns}}
+{{$u := $a.User}}
+{{form_tag (printf "/users/%d" $u.ID) (hash "method" "put")}}
+<div class="box">
+<div id="user_group_ids">
+{{range $g := $a.Groups}}
+<label>{{check_box_tag "user[group_ids][]" $g.ID (has_id $u.GroupIDs $g.ID) (hash "id" nil)}} {{group_name $g}}</label><br />
+{{end}}
+{{hidden_field_tag "user[group_ids][]" ""}}
+</div>
+<p>{{check_all_links "user_group_ids"}}</p>
+</div>
+{{submit_tag (l "button_save")}}
+{{end_form}}

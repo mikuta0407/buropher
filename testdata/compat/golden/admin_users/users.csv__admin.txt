@@ -1,0 +1,11 @@
+status: 200
+content-type: text/csv
+
+Login,First name,Last name,Email,Administrator,Created,Last sign in
+admin,Redmine,Admin,admin@somenet.foo,Yes,07/19/2006 05:12 PM,01/15/2026 12:00 PM
+dlopper,Dave,Lopper,dlopper@somenet.foo,No,07/19/2006 05:33 PM,""
+jsmith,John,Smith,jsmith@somenet.foo,No,07/19/2006 05:32 PM,01/15/2026 12:00 PM
+miscuser8,User,Misc,miscuser8@foo.bar,No,07/19/2006 05:33 PM,""
+miscuser9,User,Misc,miscuser9@foo.bar,No,07/19/2006 05:33 PM,""
+rhill,Robert,Hill,rhill@somenet.foo,No,07/19/2006 05:34 PM,""
+someone,Some,One,someone@foo.bar,No,07/19/2006 05:33 PM,""

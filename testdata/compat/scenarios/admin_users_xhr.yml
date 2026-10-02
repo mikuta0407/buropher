@@ -1,0 +1,85 @@
+# 管理画面: ユーザー・グループの XHR（.js）応答。
+# Rails は XHR 以外の GET .js を拒否する（cross-origin JavaScript 保護）ため X-Requested-With を付ける。
+name: admin_users_xhr
+
+users:
+  admin: {login: admin, password: admin}
+
+headers:
+  X-Requested-With: XMLHttpRequest
+
+normalize:
+  # .js 応答の中のフォーム名の乱数部（form_tag_html）
+  regex:
+    - {pattern: '-[0-9a-f]{8}(\\" method=)', replace: '-RANDOM$1'}
+
+requests:
+  - path: /users/2/memberships/new.js
+    users: [admin]
+    format: text
+  - path: /users/2/memberships/1/edit.js
+    users: [admin]
+    format: text
+  - path: /groups/10/memberships/6/edit.js
+    users: [admin]
+    format: text
+  - path: /users/2/email_addresses.js
+    users: [admin]
+    format: text
+  - path: /groups/10/users/new.js
+    users: [admin]
+    format: text
+  - path: /groups/10/autocomplete_for_user.js?q=mis
+    users: [admin]
+    format: text
+  - path: /groups/10/autocomplete_for_user.js
+    users: [admin]
+    format: text
+  - id: m_xhr_membership_create
+    path: /users/3/memberships.js?membership[project_ids][]=1&membership[role_ids][]=3
+    method: POST
+    user: admin
+    format: text
+    form: {"commit": "Add"}
+  - id: m_xhr_membership_create_empty_roles
+    path: /users/3/memberships.js?membership[project_ids][]=2
+    method: POST
+    user: admin
+    format: text
+    form: {"commit": "Add"}
+  - id: m_xhr_membership_update
+    path: /users/2/memberships/1.js?membership[role_ids][]=1&membership[role_ids][]=2
+    method: PUT
+    user: admin
+    format: text
+    form: {"commit": "Save"}
+  - id: m_xhr_membership_destroy
+    path: /users/2/memberships/3.js
+    method: DELETE
+    user: admin
+    format: text
+    form: {"commit": "Delete"}
+  - id: m_xhr_email_create
+    path: /users/2/email_addresses.js
+    method: POST
+    user: admin
+    format: text
+    form: {"email_address[address]": "xhr@example.net"}
+  - id: m_xhr_email_create_invalid
+    path: /users/2/email_addresses.js
+    method: POST
+    user: admin
+    format: text
+    form: {"email_address[address]": "invalid"}
+  - id: m_xhr_group_add_users
+    path: /groups/10/users.js?user_ids[]=2
+    method: POST
+    user: admin
+    format: text
+    form: {"commit": "Add"}
+  - id: m_xhr_group_remove_user
+    path: /groups/10/users/8.js
+    method: DELETE
+    user: admin
+    format: text
+    form: {"commit": "Delete"}

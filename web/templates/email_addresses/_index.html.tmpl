@@ -1,0 +1,29 @@
+{{$a := assigns}}
+{{$u := $a.User}}
+{{if $a.Addresses}}
+  <table class="list email_addresses">
+  {{range $ad := $a.Addresses}}
+    <tr>
+      <td class="email">{{$ad.Address}}</td>
+      <td class="buttons">
+        {{if $ad.Notify}}{{link_to (sprite_icon "email" (l "label_disable_notifications")) (printf "/users/%d/email_addresses/%d?notify=0" $u.ID $ad.ID) (hash "method" "put" "remote" true "title" (l "label_disable_notifications") "class" "icon-only icon-email")}}{{else}}{{link_to (sprite_icon "email-disabled" (l "label_enable_notifications")) (printf "/users/%d/email_addresses/%d?notify=1" $u.ID $ad.ID) (hash "method" "put" "remote" true "title" (l "label_enable_notifications") "class" "icon-only icon-email-disabled")}}{{end}}
+        {{delete_link (printf "/users/%d/email_addresses/%d" $u.ID $ad.ID) (hash "remote" true)}}
+      </td>
+    </tr>
+  {{end}}
+  </table>
+{{end}}
+
+{{if lt (len $a.Addresses) $a.MaxAdditional}}
+  <div>
+  {{$f := form_for "email_address" $a.Address (hash "url" (printf "/users/%d/email_addresses" $u.ID) "remote" true)}}
+  {{$f.Open}}
+    <p>{{l "label_email_address_add"}}</p>
+    {{error_messages_for $a.Address}}
+    <p>
+      {{$f.TextField "address" (hash "size" 40)}}
+      {{submit_tag (l "button_add")}}
+    </p>
+  {{end_form}}
+  </div>
+{{end}}
