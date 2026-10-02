@@ -3,6 +3,7 @@ package issues
 import (
 	"context"
 	"fmt"
+	"os"
 	"slices"
 	"strings"
 	"sync/atomic"
@@ -33,7 +34,13 @@ type tc struct {
 
 func setup(t testing.TB) *tc {
 	t.Helper()
-	d := dbtest.New(t)
+	var d *db.DB
+	if os.Getenv("BUROPHER_ISSUES_TEST_PG") != "" {
+		// PostgreSQL で実行する (BUROPHER_TEST_PG_DSN も必要)
+		d = dbtest.NewPostgres(t)
+	} else {
+		d = dbtest.New(t)
+	}
 	testfixtures.LoadAt(t, d, frozenNow, testfixtures.All()...)
 	ctx := context.Background()
 	st, err := settings.New(ctx, repository.SettingsStore{DB: d})

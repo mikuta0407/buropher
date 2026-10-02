@@ -821,8 +821,8 @@ func TestIssueBNewStatusesAllowedToShouldReturnAllTransitionsForAdmin(t *testing
 	if c.count(`SELECT COUNT(*) FROM members WHERE principal_id = 1 AND project_id = ?`, iss.ProjectID) != 0 {
 		t.Fatal("admin is member")
 	}
-	news := c.ids(`SELECT DISTINCT s.id FROM workflow_transitions wt JOIN issue_statuses s ON s.id = wt.new_status_id
-WHERE wt.old_status_id = ? ORDER BY s.position`, iss.StatusID)
+	news := c.ids(`SELECT s.id FROM issue_statuses s WHERE s.id IN
+(SELECT wt.new_status_id FROM workflow_transitions wt WHERE wt.old_status_id = ?) ORDER BY s.position`, iss.StatusID)
 	want := append([]int64{iss.StatusID}, news...)
 	ss, err := e.NewStatusesAllowedTo(c.ctx, iss, c.user(1), false)
 	c.must(err)

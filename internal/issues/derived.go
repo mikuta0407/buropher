@@ -8,6 +8,7 @@ import (
 	"regexp"
 
 	"github.com/mikuta0407/buropher/internal/authz"
+	"github.com/mikuta0407/buropher/internal/db"
 	"github.com/mikuta0407/buropher/internal/domain"
 )
 
@@ -143,14 +144,13 @@ JOIN issue_priorities ip ON ip.id = c.priority_id WHERE c.parent_id = ? AND s.is
 		return err
 	} else if d {
 		var r struct {
-			Start sql.NullString `db:"s"`
-			Due   sql.NullString `db:"d"`
+			Start db.NullDate `db:"s"`
+			Due   db.NullDate `db:"d"`
 		}
 		if err := e.Q.Get(ctx, &r, `SELECT MIN(start_date) AS s, MAX(due_date) AS d FROM issues WHERE parent_id = ?`, p.ID); err != nil {
 			return err
 		}
-		start, _ := parseDateInput(firstN(r.Start.String, 10))
-		due, _ := parseDateInput(firstN(r.Due.String, 10))
+		start, due := nullDate(r.Start), nullDate(r.Due)
 		if start != nil && due != nil && due.Before(*start) {
 			start, due = due, start
 		}
@@ -220,13 +220,6 @@ JOIN issue_priorities ip ON ip.id = c.priority_id WHERE c.parent_id = ? AND s.is
 	}
 	_, err = e.save(ctx, p, false, st)
 	return err
-}
-
-func firstN(s string, n int) string {
-	if len(s) > n {
-		return s[:n]
-	}
-	return s
 }
 
 var _ = domain.Issue{}
