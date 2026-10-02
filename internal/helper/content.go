@@ -29,7 +29,11 @@ func init() {
 	registerFuncs(func(d *Deps, r *view.Render, pg func() *Page) ttemplate.FuncMap {
 		return ttemplate.FuncMap{
 			// reaction_button(object)。kind は reactions.reactable_kind（news / comment / message / journal / issue）。
-			"reaction_button": func(kind string, id int64) html { return d.reactionButton(pg(), kind, id) },
+			"reaction_button": func(kind string, id int64) html { return d.reactionButton(pg(), kind, id, pg().Project) },
+			// reaction_button(object)（object.project を明示する。ReactionsController の JS 応答など）
+			"reaction_button_for": func(kind string, id int64, project any) html {
+				return d.reactionButton(pg(), kind, id, toProject(project))
+			},
 			// toggle_link(name, id, :focus => ..., :scroll => ...)
 			"toggle_link": func(name any, id string, args ...any) html { return toggleLink(name, id, optHash(args)) },
 			// link_to_if_authorized(name, {:controller, :action ...}, html_options)（URL は呼び出し側で組み立てる）
@@ -336,7 +340,7 @@ var reactableClass = map[string]string{
 
 // reactionButton は ReactionsHelper#reaction_button(object)。オブジェクトは現在のプロジェクトに属し、
 // 表示中の画面で見えている（visible?）前提。
-func (d *Deps) reactionButton(p *Page, kind string, id int64) html {
+func (d *Deps) reactionButton(p *Page, kind string, id int64, project *domain.Project) html {
 	if !p.settingBool("reactions_enabled") || p.DB == nil {
 		return ""
 	}
@@ -388,7 +392,7 @@ func (d *Deps) reactionButton(p *Page, kind string, id int64) html {
 		}
 		return strings.Join(parts, " ")
 	}
-	editable := p.logged() && p.Project != nil && p.Project.Active()
+	editable := p.logged() && project != nil && project.Active()
 	class := reactableClass[kind]
 	sid := strconv.FormatInt(id, 10)
 	var inner html

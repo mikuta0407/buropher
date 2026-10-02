@@ -1,0 +1,8 @@
+(() => {
+  const button = $('[data-reaction-button-id=reaction_{{.Kind}}_{{.ID}}]');
+
+  removeHoverTooltips(button);
+  button.html($('{{j (reaction_button_for .Kind .ID .Project)}}').children());
+  setupHoverTooltips(button);
+})();
+

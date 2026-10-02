@@ -56,4 +56,5 @@ func (a *App) Routes(r Router) {
 	a.routesMessages(r)
 	a.routesWatchers(r)
 	a.routesAttachmentsMore(r)
+	a.routesReactions(r)
 }

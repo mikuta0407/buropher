@@ -460,3 +460,37 @@ requests:
     method: DELETE
     user: dlopper
     form: {_dummy: "1"}
+
+  # ---- リアクション ----
+  - id: reaction_create_news
+    path: /reactions?object_type=News&object_id=1
+    method: POST
+    user: jsmith
+    headers: {X-Requested-With: XMLHttpRequest, Accept: text/javascript}
+    form: {_dummy: "1"}
+  - id: reaction_create_message
+    path: /reactions?object_type=Message&object_id=1
+    method: POST
+    user: dlopper
+    headers: {X-Requested-With: XMLHttpRequest, Accept: text/javascript}
+    form: {_dummy: "1"}
+  - id: reaction_destroy_news
+    path: /reactions/7?object_type=News&object_id=1
+    method: DELETE
+    user: admin
+    headers: {X-Requested-With: XMLHttpRequest, Accept: text/javascript}
+    form: {_dummy: "1"}
+  - id: reaction_create_bad_type
+    path: /reactions?object_type=Project&object_id=1
+    method: POST
+    user: jsmith
+    form: {_dummy: "1"}
+  - id: reaction_create_html
+    path: /reactions?object_type=News&object_id=1
+    method: POST
+    user: jsmith
+    form: {_dummy: "1"}
+  - path: /news/1
+    id: news_after_reactions
+    users: [jsmith]
+
