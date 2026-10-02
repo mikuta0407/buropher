@@ -1,53 +1,38 @@
-// Package customfield は Redmine のカスタムフィールド書式（lib/redmine/field_format.rb の
-// Redmine::FieldFormat）の移植。
-//
-// 書式は 13 種類（string, text, link, int, float, date, list, bool, enumeration, user, version,
-// attachment, progressbar）で、Find(name) で *Format を得る。Format は Redmine の書式クラスの
-// クラス属性（Info: multiple_supported, is_filter_supported, searchable_supported, form_partial ...）と
-// 振る舞いを持つ:
-//
-//   - 値の正規化・型変換: SetValue（set_custom_field_value）, Cast（cast_value）
-//   - 検証: ValidateCustomField（validate_custom_field）, ValidateValue（validate_custom_value）,
-//     ValidateSingleValue（validate_single_value）。CustomField 全体の検証は ValidateField（CustomField#validate_custom_field）
-//   - 選択肢: PossibleValuesOptions / PossibleCustomValueOptions
-//   - 表示: FormattedValue（formatted_value）。URL パターンによるリンクは URLFromPattern
-//   - フォーム: EditTag / BulkEditTag（edit_tag_style による drop-down / check_box / radio）
-//   - クエリ: QueryFilterType（query_filter_options の :type）, OrderNumeric
-//   - 保存前処理: BeforeSave（before_custom_field_save）, ApplyFieldRules（set_searchable）
-//
-// DB やビューに依存する処理（キー・値リストの選択肢、プロジェクトのユーザー、共有バージョン、
-// テキスト整形、カレンダー、添付フォーム）は Env の関数フィールドで呼び出し側から受け取る。
-// 未設定の関数は Redmine で該当データが無い場合と同じ結果（空の選択肢など）になる。
-//
-// 値は Redmine と同じく文字列（単一値）または []string（複数値）で扱う（nil は未設定）。
 package customfield
 
 import (
 	"sort"
+	"strconv"
 	"strings"
+	"time"
 
-	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/view/rails"
 )
 
-// Info は書式クラスのクラス属性（class_attribute）。
-type Info struct {
-	// Name は format_name。
+// Format は Redmine::FieldFormat::Base のサブクラス（lib/redmine/field_format.rb）のインスタンス。
+// クラス属性（class_attribute）を公開フィールドで、振る舞い（検証・キャスト・表示・編集タグ ...）を
+// メソッドで提供する。書式は 13 種類で FindFormat(name) で得る（formats.go に定義）。
+type Format struct {
+	// Name は書式名（custom_fields.field_format。format_name）。
 	Name string
-	// Label は label（翻訳キー）。
+	// Label は書式名の i18n キー（label）。
 	Label string
-	// MultipleSupported は multiple_supported。
+	// MultipleSupported は複数値をサポートする（multiple_supported）。
 	MultipleSupported bool
-	// IsFilterSupported は is_filter_supported。
+	// IsFilterSupported はフィルタとして使える（is_filter_supported）。
 	IsFilterSupported bool
-	// SearchableSupported は searchable_supported。
+	// SearchableSupported は全文検索の対象にできる（searchable_supported）。
 	SearchableSupported bool
-	// TotalableSupported は totalable_supported。
+	// TotalableSupported は合計できる（totalable_supported）。
 	TotalableSupported bool
-	// BulkEditSupported は bulk_edit_supported。
+	// BulkEditSupported は一括編集できる（bulk_edit_supported）。
 	BulkEditSupported bool
-	// CustomizedClassNames は customized_class_names（nil ならすべてのクラスで使える）。
-	CustomizedClassNames []string
+	// Target は値が参照するレコード種別（RecordList#target_class）。"user" / "version" / "enumeration" / ""。
+	Target string
+	// CustomizedKinds は追加できるカスタムフィールド種別（customized_class_names）。nil は制限なし。
+	CustomizedKinds []OwnerKind
+	// FilterType は query_filter_options の :type。
+	FilterType string
 	// FormPartial は form_partial（管理画面の書式別オプションの部分テンプレート）。
 	FormPartial string
 	// ChangeAsDiff は change_as_diff（履歴を差分で表示する）。
@@ -56,7 +41,214 @@ type Info struct {
 	ChangeNoDetails bool
 	// FieldAttributes は field_attributes で宣言された format_store のキー（共通の url_pattern, full_width_layout を含む）。
 	FieldAttributes []string
+
+	numeric   bool // Numeric のサブクラス（CAST によるソート）
+	groupable bool // group_statement を持つ（Base/StringFormat 系は持たない）
+
+	// 以下はサブクラスでの上書きに相当するフック（nil なら Base の既定動作）。
+	castSingle         func(env *Env, cf *CustomField, v string, customized *Customized) any
+	validateSingle     func(env *Env, cf *CustomField, v string, customized *Customized) []string
+	validateValue      func(env *Env, cv *CustomValue) []string
+	validateField      func(env *Env, cf *CustomField) []FieldError
+	possibleValues     func(env *Env, cf *CustomField, object any) []Option
+	possibleCustomVals func(env *Env, cv *CustomValue) []Option
+	formatted          func(f *Format, env *Env, cf *CustomField, value any, customized *Customized, html bool) any
+	editTag            func(f *Format, env *Env, tagID, tagName string, cv *CustomValue, opts *rails.Hash) rails.HTML
+	bulkEditTag        func(f *Format, env *Env, tagID, tagName string, cf *CustomField, objects []*Customized, value any, opts *rails.Hash) rails.HTML
+	setValue           func(env *Env, cf *CustomField, cv *CustomValue, value any) any
+	beforeSave         func(env *Env, cf *CustomField)
+	valueFromKeyword   func(f *Format, env *Env, cf *CustomField, keyword string, object any) any
 }
+
+// Numeric は数値書式（int / float / progressbar）なら true。
+func (f *Format) Numeric() bool { return f.numeric }
+
+// Groupable は group_statement が nil でない書式なら true。
+func (f *Format) Groupable() bool { return f.groupable }
+
+// IsRecordList は値がレコード id の書式（user / version / enumeration）なら true。
+func (f *Format) IsRecordList() bool { return f.Target != "" }
+
+// JoinAlias は join_alias(custom_field)（"cf_<id>"）。
+func JoinAlias(cf *CustomField) string { return "cf_" + strconv.FormatInt(cf.ID, 10) }
+
+// valueJoinAlias は RecordList#value_join_alias（"cf_<id>_<format>"）。
+func valueJoinAlias(cf *CustomField) string { return JoinAlias(cf) + "_" + cf.FieldFormat }
+
+// TargetTable は RecordList の参照先テーブル。
+func (f *Format) TargetTable() string {
+	switch f.Target {
+	case "user":
+		return "principals"
+	case "version":
+		return "versions"
+	case "enumeration":
+		return "custom_field_enumerations"
+	}
+	return ""
+}
+
+// CastSingleValue は cast_single_value のクエリ向けの移植（DB を引かない）。戻り値の型は書式により
+// string / int64 / float64 / bool / db 日付文字列（YYYY-MM-DD）/ レコード id（int64）。
+// RecordList / attachment は存在確認を行わず id を返す（Redmine はレコードを返す）。
+// 表示用のキャスト（レコードの名前・time.Time の日付）は CastSingle / Cast を使う。
+func (f *Format) CastSingleValue(v string) any {
+	switch f.Name {
+	case "int":
+		return RubyToI(v)
+	case "progressbar":
+		n := RubyToI(v)
+		return max(0, min(100, n))
+	case "float":
+		return RubyToF(v)
+	case "date":
+		t, err := time.Parse("2006-01-02", strings.TrimSpace(v))
+		if err != nil {
+			return nil
+		}
+		return t.Format("2006-01-02")
+	case "bool":
+		return v == "1"
+	case "user", "version", "enumeration", "attachment":
+		if strings.TrimSpace(v) == "" {
+			return nil
+		}
+		return RubyToI(v)
+	}
+	return v
+}
+
+// RubyToI は String#to_i（先頭の符号付き整数部分。解釈できなければ 0）。
+func RubyToI(s string) int64 {
+	s = strings.TrimLeft(s, " \t\n\v\f\r")
+	i := 0
+	if i < len(s) && (s[i] == '+' || s[i] == '-') {
+		i++
+	}
+	j := i
+	for j < len(s) && (s[j] >= '0' && s[j] <= '9' || (s[j] == '_' && j > i && j+1 < len(s) && s[j+1] >= '0' && s[j+1] <= '9')) {
+		j++
+	}
+	n, err := strconv.ParseInt(strings.ReplaceAll(s[:j], "_", ""), 10, 64)
+	if err != nil {
+		return 0
+	}
+	return n
+}
+
+// RubyToF は String#to_f（先頭の浮動小数部分。解釈できなければ 0）。
+func RubyToF(s string) float64 {
+	s = strings.TrimLeft(s, " \t\n\v\f\r")
+	i := 0
+	if i < len(s) && (s[i] == '+' || s[i] == '-') {
+		i++
+	}
+	digits := func() {
+		for i < len(s) && (s[i] >= '0' && s[i] <= '9' || (s[i] == '_' && i > 0 && s[i-1] >= '0' && s[i-1] <= '9' && i+1 < len(s) && s[i+1] >= '0' && s[i+1] <= '9')) {
+			i++
+		}
+	}
+	start := i
+	digits()
+	if i < len(s) && s[i] == '.' && i+1 < len(s) && s[i+1] >= '0' && s[i+1] <= '9' {
+		i++
+		digits()
+	}
+	if i == start {
+		return 0
+	}
+	if i < len(s) && (s[i] == 'e' || s[i] == 'E') {
+		k := i + 1
+		if k < len(s) && (s[k] == '+' || s[k] == '-') {
+			k++
+		}
+		if k < len(s) && s[k] >= '0' && s[k] <= '9' {
+			i = k
+			digits()
+		}
+	}
+	f, err := strconv.ParseFloat(strings.ReplaceAll(s[:i], "_", ""), 64)
+	if err != nil {
+		return 0
+	}
+	return f
+}
+
+// ---------------------------------------------------------------- 登録
+
+// FormatNames は利用可能な書式名（Redmine::FieldFormat.available_formats の登録順）。
+var FormatNames = []string{"string", "text", "link", "int", "float", "date", "list", "bool", "enumeration", "user", "version", "attachment", "progressbar"}
+
+var (
+	registry []*Format
+	formats  = map[string]*Format{}
+)
+
+func register(f *Format) {
+	f.FieldAttributes = append([]string{"url_pattern", "full_width_layout"}, f.FieldAttributes...)
+	registry = append(registry, f)
+	formats[f.Name] = f
+}
+
+// FindFormat は書式を返す。未知の書式は Base 相当（string と同じ扱い。Redmine の Hash.new(Base.instance)）を返す。
+func FindFormat(name string) *Format {
+	if f, ok := formats[name]; ok {
+		return f
+	}
+	return &Format{Name: name, Label: "label_" + name, IsFilterSupported: true, BulkEditSupported: true, FilterType: "string"}
+}
+
+// Find は Redmine::FieldFormat.find(name)（未知の名前なら nil。validates_inclusion_of :field_format の判定に使う）。
+func Find(name string) *Format { return formats[name] }
+
+// All は FieldFormat.all.values（登録順）。
+func All() []*Format { return append([]*Format(nil), registry...) }
+
+// AvailableFor は kind で使える書式（登録順。FieldFormat.formats_for_custom_field_class）。
+func AvailableFor(kind OwnerKind) []*Format {
+	var out []*Format
+	for _, f := range registry {
+		if f.CustomizedKinds == nil || containsKind(f.CustomizedKinds, kind) {
+			out = append(out, f)
+		}
+	}
+	return out
+}
+
+// AsSelect は FieldFormat.as_select(class_name)（翻訳したラベルでソートした [label, name]）。
+// kind が空ならすべての書式。
+func AsSelect(t func(key string, args ...any) string, kind OwnerKind) []Option {
+	var out []Option
+	for _, f := range registry {
+		if kind != "" && f.CustomizedKinds != nil && !containsKind(f.CustomizedKinds, kind) {
+			continue
+		}
+		out = append(out, Option{Label: t(f.Label), Value: f.Name})
+	}
+	// Ruby の sort_by(&:first)（文字列のバイト順）
+	sort.SliceStable(out, func(i, j int) bool { return out[i].Label < out[j].Label })
+	return out
+}
+
+func containsKind(ks []OwnerKind, k OwnerKind) bool {
+	for _, x := range ks {
+		if x == k {
+			return true
+		}
+	}
+	return false
+}
+
+func contains(xs []string, s string) bool {
+	for _, x := range xs {
+		if x == s {
+			return true
+		}
+	}
+	return false
+}
+
+// ---------------------------------------------------------------- 値
 
 // Option は選択肢 1 件（[label, value]）。list 書式のように値とラベルが同じ場合は Label == Value。
 type Option struct {
@@ -69,124 +261,6 @@ func (o Option) String() string { return o.Label }
 
 // Pair は options_for_select に渡す [label, value]。
 func (o Option) Pair() []any { return []any{o.Label, o.Value} }
-
-// Format は 1 つのカスタムフィールド書式（Redmine::FieldFormat::Base のサブクラスのインスタンス）。
-type Format struct {
-	info Info
-
-	// 以下はサブクラスでの上書きに相当するフック（nil なら Base の既定動作）。
-	castSingle         func(env *Env, cf *domain.CustomField, v string, customized *Customized) any
-	validateSingle     func(env *Env, cf *domain.CustomField, v string, customized *Customized) []string
-	validateValue      func(env *Env, cv *CustomValue) []string
-	validateField      func(env *Env, cf *domain.CustomField) []FieldError
-	possibleValues     func(env *Env, cf *domain.CustomField, object any) []Option
-	possibleCustomVals func(env *Env, cv *CustomValue) []Option
-	formatted          func(f *Format, env *Env, cf *domain.CustomField, value any, customized *Customized, html bool) any
-	editTag            func(f *Format, env *Env, tagID, tagName string, cv *CustomValue, opts *rails.Hash) rails.HTML
-	bulkEditTag        func(f *Format, env *Env, tagID, tagName string, cf *domain.CustomField, objects []*Customized, value any, opts *rails.Hash) rails.HTML
-	setValue           func(env *Env, cf *domain.CustomField, cv *CustomValue, value any) any
-	beforeSave         func(env *Env, cf *domain.CustomField)
-	valueFromKeyword   func(f *Format, env *Env, cf *domain.CustomField, keyword string, object any) any
-	filterType         string
-	orderNumeric       bool
-	groupable          bool
-	recordList         bool
-}
-
-// Info は書式のクラス属性。
-func (f *Format) Info() Info { return f.info }
-
-// Name は format_name。
-func (f *Format) Name() string { return f.info.Name }
-
-// Label は label（翻訳キー）。
-func (f *Format) Label() string { return f.info.Label }
-
-// QueryFilterType は query_filter_options の :type（string, text, integer, float, date, list_optional）。
-// attachment は is_filter_supported が偽だが Base と同じ string を返す。
-func (f *Format) QueryFilterType() string { return f.filterType }
-
-// OrderNumeric は order_statement が数値（CAST ... AS decimal）で並べる書式なら true（int, float, progressbar）。
-func (f *Format) OrderNumeric() bool { return f.orderNumeric }
-
-// Groupable は group_statement が nil でない書式なら true（int, date, list, bool, enumeration, user, version, progressbar）。
-func (f *Format) Groupable() bool { return f.groupable }
-
-// RecordList は RecordList（user / version / enumeration）なら true（値がレコードの id）。
-func (f *Format) RecordList() bool { return f.recordList }
-
-// 登録順は Redmine の FieldFormat.add の呼び出し順（field_format.rb の定義順）。
-var (
-	registry []*Format
-	byName   = map[string]*Format{}
-)
-
-func register(f *Format) *Format {
-	f.info.FieldAttributes = append([]string{"url_pattern", "full_width_layout"}, f.info.FieldAttributes...)
-	registry = append(registry, f)
-	byName[f.info.Name] = f
-	return f
-}
-
-// Find は Redmine::FieldFormat.find(name)。未知の名前なら nil。
-func Find(name string) *Format { return byName[name] }
-
-// MustFind は Find の結果を返す。未知の名前なら Redmine の Hash.new(Base.instance) と同じく
-// どの書式にも属さない Base 相当（string と同じ振る舞いの無名書式）を返す。
-func MustFind(name string) *Format {
-	if f := byName[name]; f != nil {
-		return f
-	}
-	return baseFormat
-}
-
-// All は FieldFormat.all.values（登録順）。
-func All() []*Format { return append([]*Format(nil), registry...) }
-
-// AvailableFormats は FieldFormat.available_formats（登録順の名前）。
-func AvailableFormats() []string {
-	out := make([]string, len(registry))
-	for i, f := range registry {
-		out[i] = f.info.Name
-	}
-	return out
-}
-
-// AvailableFor は className（Issue, User ... = customized_class の名前）で使える書式（登録順）。
-// FieldFormat.formats_for_custom_field_class。
-func AvailableFor(className string) []*Format {
-	var out []*Format
-	for _, f := range registry {
-		if f.info.CustomizedClassNames == nil || contains(f.info.CustomizedClassNames, className) {
-			out = append(out, f)
-		}
-	}
-	return out
-}
-
-// AsSelect は FieldFormat.as_select(class_name)（翻訳したラベルでソートした [label, name]）。
-// className が空ならすべての書式。
-func AsSelect(t func(key string, args ...any) string, className string) []Option {
-	var out []Option
-	for _, f := range registry {
-		if className != "" && f.info.CustomizedClassNames != nil && !contains(f.info.CustomizedClassNames, className) {
-			continue
-		}
-		out = append(out, Option{Label: t(f.info.Label), Value: f.info.Name})
-	}
-	// Ruby の sort_by(&:first)（文字列のバイト順。安定ソートではないが同一ラベルはない）
-	sort.SliceStable(out, func(i, j int) bool { return out[i].Label < out[j].Label })
-	return out
-}
-
-func contains(xs []string, s string) bool {
-	for _, x := range xs {
-		if x == s {
-			return true
-		}
-	}
-	return false
-}
 
 // FieldError は validate_custom_field が返す [attribute, message]（message は errors のシンボル: invalid, blank）。
 type FieldError struct {
@@ -207,7 +281,7 @@ type Customized struct {
 
 // CustomValue は CustomValue / CustomFieldValue（カスタムフィールド・所有者・値）。
 type CustomValue struct {
-	CustomField *domain.CustomField
+	CustomField *CustomField
 	Customized  *Customized
 	// Value は値（string / []string / nil）。
 	Value any

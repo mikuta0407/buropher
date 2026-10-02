@@ -275,25 +275,29 @@ func TestProjectNestedSetValues(t *testing.T) {
 	withFixtures(t, func(e *env) {
 		ns, err := repository.ProjectNestedSet(e.ctx, e.d)
 		e.must(err)
-		// バイト順で 'O'nlineStore が 'e'Cookbook より前に来る (フィクスチャの lft はこれと異なる)
+		// 兄弟順は fixtures の lft を保持する (projects.position) ので lft/rgt も fixtures と一致する
 		want := map[int64]repository.NestedSetValue{
-			2: {Lft: 1, Rgt: 2}, 1: {Lft: 3, Rgt: 12}, 5: {Lft: 4, Rgt: 7}, 6: {Lft: 5, Rgt: 6},
-			3: {Lft: 8, Rgt: 9}, 4: {Lft: 10, Rgt: 11},
+			1: {Lft: 1, Rgt: 10}, 5: {Lft: 2, Rgt: 5}, 6: {Lft: 3, Rgt: 4},
+			3: {Lft: 6, Rgt: 7}, 4: {Lft: 8, Rgt: 9}, 2: {Lft: 11, Rgt: 12},
 		}
 		for id, w := range want {
 			if ns[id] != w {
 				t.Errorf("project %d = %+v, want %+v", id, ns[id], w)
 			}
 		}
-		// 同名の兄弟は id の降順
-		a := &domain.Project{Name: "Same", Identifier: "same-a", IsPublic: true}
+		// 新規プロジェクトは名前 (大文字小文字無視) で挿入位置が決まる: "Mid" は eCookbook と OnlineStore の間、
+		// 同名の兄弟では後から作った方が前 (Redmine の target_lft と同じ)
+		a := &domain.Project{Name: "Mid", Identifier: "same-a", IsPublic: true}
 		e.must(repository.CreateProject(e.ctx, e.d, a, repository.CreateProjectOptions{}))
-		b := &domain.Project{Name: "Same", Identifier: "same-b", IsPublic: true}
+		b := &domain.Project{Name: "Mid", Identifier: "same-b", IsPublic: true}
 		e.must(repository.CreateProject(e.ctx, e.d, b, repository.CreateProjectOptions{}))
 		ns, err = repository.ProjectNestedSet(e.ctx, e.d)
 		e.must(err)
 		if ns[b.ID].Lft >= ns[a.ID].Lft {
 			t.Errorf("same-name siblings: a=%+v b=%+v", ns[a.ID], ns[b.ID])
+		}
+		if !(ns[1].Lft < ns[b.ID].Lft && ns[a.ID].Lft < ns[2].Lft) {
+			t.Errorf("insert position: ecookbook=%+v same=%+v/%+v onlinestore=%+v", ns[1], ns[b.ID], ns[a.ID], ns[2])
 		}
 	})
 }

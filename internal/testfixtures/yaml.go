@@ -22,7 +22,7 @@ var fixtureFS embed.FS
 type row struct {
 	label string
 	cols  map[string]*string
-	// lists はシーケンス値の列（custom_fields.possible_values 等）。!binary は base64 を復号する。
+	// lists はシーケンス値の列 (custom_fields.possible_values 等)。!binary は復号済み。
 	lists map[string][]string
 }
 
@@ -51,18 +51,26 @@ func readFixture(name string, now time.Time) ([]row, error) {
 	for i := 0; i+1 < len(top.Content); i += 2 {
 		label := top.Content[i].Value
 		m := top.Content[i+1]
-		r := row{label: label, cols: map[string]*string{}}
+		r := row{label: label, cols: map[string]*string{}, lists: map[string][]string{}}
 		for j := 0; j+1 < len(m.Content); j += 2 {
 			k, v := m.Content[j].Value, m.Content[j+1]
 			if v.Kind == yaml.SequenceNode {
-				list, err := scalarList(v)
-				if err != nil {
-					return nil, fmt.Errorf("testfixtures: %s.%s.%s: %w", name, label, k, err)
+				var items []string
+				for _, it := range v.Content {
+					if it.Kind != yaml.ScalarNode {
+						return nil, fmt.Errorf("testfixtures: %s.%s.%s: nested sequence", name, label, k)
+					}
+					val := it.Value
+					if it.Tag == "!binary" || it.Tag == "!!binary" {
+						b, err := base64.StdEncoding.DecodeString(strings.Join(strings.Fields(val), ""))
+						if err != nil {
+							return nil, fmt.Errorf("testfixtures: %s.%s.%s: %w", name, label, k, err)
+						}
+						val = string(b)
+					}
+					items = append(items, val)
 				}
-				if r.lists == nil {
-					r.lists = map[string][]string{}
-				}
-				r.lists[k] = list
+				r.lists[k] = items
 				continue
 			}
 			if v.Kind != yaml.ScalarNode {
@@ -88,26 +96,6 @@ func readFixture(name string, now time.Time) ([]row, error) {
 	return rows, nil
 }
 
-// scalarList はスカラーのシーケンスを文字列配列にする（!binary は base64 を復号する）。
-func scalarList(n *yaml.Node) ([]string, error) {
-	out := make([]string, 0, len(n.Content))
-	for _, e := range n.Content {
-		if e.Kind != yaml.ScalarNode {
-			return nil, fmt.Errorf("non-scalar sequence element")
-		}
-		if e.Tag == "!binary" || e.Tag == "!!binary" {
-			b, err := base64.StdEncoding.DecodeString(strings.Join(strings.Fields(e.Value), ""))
-			if err != nil {
-				return nil, err
-			}
-			out = append(out, string(b))
-			continue
-		}
-		out = append(out, e.Value)
-	}
-	return out, nil
-}
-
 func (r row) id() (int64, bool) {
 	v := r.cols["id"]
 	if v == nil {
@@ -124,6 +112,14 @@ func (r row) str(k string) string {
 		return *v
 	}
 	return ""
+}
+
+// strOrNil は値が無ければ nil、空文字はそのまま（Redmine で nil と "" が区別される列: custom_fields.regexp 等）。
+func (r row) strOrNil(k string) any {
+	if v := r.cols[k]; v != nil {
+		return *v
+	}
+	return nil
 }
 
 // nstr は値が無いか空文字なら nil (”→NULL 変換)。

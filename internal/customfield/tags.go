@@ -3,7 +3,6 @@ package customfield
 import (
 	"strconv"
 
-	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/view/rails"
 )
 
@@ -20,7 +19,7 @@ func (f *Format) EditTag(env *Env, tagID, tagName string, cv *CustomValue, opts 
 }
 
 // BulkEditTag は bulk_edit_tag(view, tag_id, tag_name, custom_field, objects, value, options)（一括編集）。
-func (f *Format) BulkEditTag(env *Env, tagID, tagName string, cf *domain.CustomField, objects []*Customized, value any, opts *rails.Hash) rails.HTML {
+func (f *Format) BulkEditTag(env *Env, tagID, tagName string, cf *CustomField, objects []*Customized, value any, opts *rails.Hash) rails.HTML {
 	if opts == nil {
 		opts = rails.NewHash()
 	}
@@ -40,7 +39,7 @@ func merge(h *rails.Hash, kv ...any) *rails.Hash {
 }
 
 // bulkClearTag は Base#bulk_clear_tag。
-func bulkClearTag(env *Env, tagID, tagName string, cf *domain.CustomField, value any) rails.HTML {
+func bulkClearTag(env *Env, tagID, tagName string, cf *CustomField, value any) rails.HTML {
 	if cf.IsRequired {
 		return ""
 	}
@@ -53,7 +52,7 @@ func textEditTag(f *Format, env *Env, tagID, tagName string, cv *CustomValue, op
 	return rails.TextAreaTag(tagName, cv.Value, merge(opts, "id", tagID, "rows", 8))
 }
 
-func textBulkEditTag(f *Format, env *Env, tagID, tagName string, cf *domain.CustomField, objects []*Customized, value any, opts *rails.Hash) rails.HTML {
+func textBulkEditTag(f *Format, env *Env, tagID, tagName string, cf *CustomField, objects []*Customized, value any, opts *rails.Hash) rails.HTML {
 	return rails.TextAreaTag(tagName, value, merge(opts, "id", tagID, "rows", 8)) + "<br />" +
 		bulkClearTag(env, tagID, tagName, cf, value)
 }
@@ -69,7 +68,7 @@ func dateEditTag(f *Format, env *Env, tagID, tagName string, cv *CustomValue, op
 	return rails.DateFieldTag(tagName, cv.Value, merge(opts, "id", tagID, "size", 10)) + calendarFor(env, tagID)
 }
 
-func dateBulkEditTag(f *Format, env *Env, tagID, tagName string, cf *domain.CustomField, objects []*Customized, value any, opts *rails.Hash) rails.HTML {
+func dateBulkEditTag(f *Format, env *Env, tagID, tagName string, cf *CustomField, objects []*Customized, value any, opts *rails.Hash) rails.HTML {
 	return rails.DateFieldTag(tagName, value, merge(opts, "id", tagID, "size", 10)) + calendarFor(env, tagID) +
 		bulkClearTag(env, tagID, tagName, cf, value)
 }
@@ -165,7 +164,7 @@ func boolEditTag(f *Format, env *Env, tagID, tagName string, cv *CustomValue, op
 }
 
 // listBulkEditTag は List#bulk_edit_tag。
-func listBulkEditTag(f *Format, env *Env, tagID, tagName string, cf *domain.CustomField, objects []*Customized, value any, opts *rails.Hash) rails.HTML {
+func listBulkEditTag(f *Format, env *Env, tagID, tagName string, cf *CustomField, objects []*Customized, value any, opts *rails.Hash) rails.HTML {
 	var options []Option
 	if !cf.Multiple {
 		options = append(options, Option{env.l("label_no_change_option"), ""})
@@ -182,8 +181,8 @@ func listBulkEditTag(f *Format, env *Env, tagID, tagName string, cf *domain.Cust
 		merge(opts, "multiple", cf.Multiple))
 }
 
-func ratioSteps(cf *domain.CustomField) []any {
-	step := int(rubyToI(cf.SettingString("ratio_interval")))
+func ratioSteps(cf *CustomField) []any {
+	step := int(RubyToI(cf.Setting("ratio_interval")))
 	if step <= 0 {
 		step = 10
 	}
@@ -199,7 +198,7 @@ func progressbarEditTag(f *Format, env *Env, tagID, tagName string, cv *CustomVa
 		merge(opts, "id", tagID, "style", "width: 75px;"))
 }
 
-func progressbarBulkEditTag(f *Format, env *Env, tagID, tagName string, cf *domain.CustomField, objects []*Customized, value any, opts *rails.Hash) rails.HTML {
+func progressbarBulkEditTag(f *Format, env *Env, tagID, tagName string, cf *CustomField, objects []*Customized, value any, opts *rails.Hash) rails.HTML {
 	container := append([]any{[]any{env.l("label_no_change_option"), ""}}, ratioSteps(cf)...)
 	return rails.SelectTag(tagName, rails.OptionsForSelect(container, nil), merge(opts, "id", tagID, "style", "width: 75px;")) +
 		bulkClearTag(env, tagID, tagName, cf, value)

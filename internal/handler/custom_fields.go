@@ -10,7 +10,6 @@ import (
 
 	"github.com/mikuta0407/buropher/internal/customfield"
 	"github.com/mikuta0407/buropher/internal/db"
-	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/helper"
 	"github.com/mikuta0407/buropher/internal/httpx"
 	"github.com/mikuta0407/buropher/internal/repository"
@@ -52,14 +51,14 @@ func (a *App) routesCustomFields(r Router) {
 // cfForm はフォームビルダに渡すカスタムフィールド（@custom_field）。
 // Redmine の属性名（format_store のアクセサを含む）を rails.Sender で返し、エラーと属性名の表示名も提供する。
 type cfForm struct {
-	CF     *domain.CustomField
+	CF     *customfield.CustomField
 	Errors *customfield.Errors
 	// ActiveEnumerations は custom_field.enumerations.active（enumeration 書式の既定値の選択肢）。
-	ActiveEnumerations []*domain.CustomFieldEnumeration
+	ActiveEnumerations []*customfield.Enumeration
 	// CopyFrom は @copy_from（コピー元。無ければ nil）。
-	CopyFrom *domain.CustomField
+	CopyFrom *customfield.CustomField
 	// copyEnumerations はコピー元の選択肢（create 時に複製する）。
-	copyEnumerations []*domain.CustomFieldEnumeration
+	copyEnumerations []*customfield.Enumeration
 	env              *customfield.Env
 }
 
@@ -114,7 +113,7 @@ func (f *cfForm) Send(method string) (any, bool) {
 		return cf.ID != 0, true
 	case "url_pattern", "full_width_layout", "text_formatting", "edit_tag_style", "user_role", "version_status",
 		"extensions_allowed", "thousands_delimiter", "ratio_interval":
-		return cf.Setting(method), true
+		return cf.SettingValue(method), true
 	}
 	return nil, false
 }
@@ -142,10 +141,10 @@ func (f *cfForm) FullErrorMessages() []string {
 }
 
 // Format は custom_field.format。
-func (f *cfForm) Format() *customfield.Format { return customfield.MustFind(f.CF.FieldFormat) }
+func (f *cfForm) Format() *customfield.Format { return customfield.FindFormat(f.CF.FieldFormat) }
 
 // FormatInfo は format のクラス属性。
-func (f *cfForm) FormatInfo() customfield.Info { return f.Format().Info() }
+func (f *cfForm) FormatInfo() *customfield.Format { return f.Format() }
 
 // ClassName は custom_field.class.name。
 func (f *cfForm) ClassName() string { return f.CF.ClassName() }
@@ -155,16 +154,15 @@ func (f *cfForm) IsNewRecord() bool { return f.CF.ID == 0 }
 
 // SettingListIncludes は custom_field.<key>.is_a?(Array) && include?(v)（user_role / version_status）。
 func (f *cfForm) SettingListIncludes(key, v string) bool {
-	l, ok := f.CF.SettingList(key)
-	return ok && slices.Contains(l, v)
+	return slices.Contains(f.CF.SettingList(key), v)
 }
 
 // SettingBlank は custom_field.<key>.blank?。
 func (f *cfForm) SettingBlank(key string) bool {
-	if l, ok := f.CF.SettingList(key); ok {
+	if l := f.CF.SettingList(key); l != nil {
 		return len(l) == 0
 	}
-	return httpx.IsBlank(f.CF.SettingString(key))
+	return httpx.IsBlank(f.CF.Setting(key))
 }
 
 // PossibleValuesText は possible_values.to_a.join("\n")。
@@ -193,7 +191,7 @@ func (f *cfForm) RatioIntervalSelected(def int) any {
 	if f.IsNewRecord() {
 		return def
 	}
-	return f.CF.Setting("ratio_interval")
+	return f.CF.SettingValue("ratio_interval")
 }
 
 // cfEnv はカスタムフィールドの書式が使う環境。
@@ -205,8 +203,8 @@ func (a *App) cfEnv(c *Req) *customfield.Env {
 			n, _ := strconv.Atoi(a.Settings.String("issue_done_ratio_interval"))
 			return n
 		},
-		Enumerations: func(cfID int64, activeOnly bool) []*domain.CustomFieldEnumeration {
-			es, err := repository.CustomFieldEnumerations(c.Ctx(), a.DB, cfID, activeOnly)
+		Enumerations: func(cfID int64, activeOnly bool) []*customfield.Enumeration {
+			es, err := customfield.Enumerations(c.Ctx(), a.DB, cfID, activeOnly)
 			if err != nil {
 				a.logger().Error("custom field enumerations", "err", err)
 			}
@@ -240,16 +238,16 @@ func (c *Req) cfFormOf() *cfForm {
 // buildNewCustomField は build_new_custom_field（種類が不正なら select_type を描画する）。
 func (a *App) buildNewCustomField(c *Req) {
 	p := c.Params()
-	typ := domain.CustomFieldTypeByClass(p.String("type"))
+	typ := customfield.TypeByClass(p.String("type"))
 	if typ == nil {
 		a.renderSelectType(c)
 		return
 	}
-	cf := &domain.CustomField{OwnerKind: typ.OwnerKind, Regexp: strPtr(""), Editable: true, Visible: true,
-		PossibleValues: []string{}, FormatSettings: map[string]any{}}
+	cf := &customfield.CustomField{OwnerKind: typ.Kind, Regexp: strPtr(""), Editable: true, Visible: true,
+		PossibleValues: []string{}, Settings: map[string]any{}}
 	form := &cfForm{CF: cf, Errors: &customfield.Errors{}, env: a.cfEnv(c)}
 	if p.Present("copy") {
-		if src, err := repository.GetCustomField(c.Ctx(), a.DB, httpx.RubyToI(p.String("copy"))); err == nil {
+		if src, err := getCustomField(c.Ctx(), a.DB, httpx.RubyToI(p.String("copy"))); err == nil {
 			a.copyCustomFieldFrom(c, form, src)
 		} else if !errors.Is(err, repository.ErrNotFound) {
 			a.renderErr(c, "custom field copy", err)
@@ -261,18 +259,18 @@ func (a *App) buildNewCustomField(c *Req) {
 }
 
 // copyCustomFieldFrom は CustomField#copy_from。
-func (a *App) copyCustomFieldFrom(c *Req, form *cfForm, src *domain.CustomField) {
+func (a *App) copyCustomFieldFrom(c *Req, form *cfForm, src *customfield.CustomField) {
 	cf := form.CF
 	owner := cf.OwnerKind
 	*cf = *src
 	cf.ID, cf.Name, cf.Position = 0, "", 0
 	cf.OwnerKind = owner
 	cf.PossibleValues = slices.Clone(src.PossibleValues)
-	cf.FormatSettings = map[string]any{}
-	for k, v := range src.FormatSettings {
-		cf.FormatSettings[k] = v
+	cf.Settings = map[string]any{}
+	for k, v := range src.Settings {
+		cf.Settings[k] = v
 	}
-	es, err := repository.CustomFieldEnumerations(c.Ctx(), a.DB, src.ID, false)
+	es, err := customfield.Enumerations(c.Ctx(), a.DB, src.ID, false)
 	if err != nil {
 		a.logger().Error("custom field enumerations", "err", err)
 	}
@@ -282,10 +280,10 @@ func (a *App) copyCustomFieldFrom(c *Req, form *cfForm, src *domain.CustomField)
 	}
 	cf.RoleIDs, cf.TrackerIDs, cf.ProjectIDs = nil, nil, nil
 	switch owner {
-	case domain.CFOwnerIssue, domain.CFOwnerTimeEntry, domain.CFOwnerProject, domain.CFOwnerVersion:
+	case customfield.KindIssue, customfield.KindTimeEntry, customfield.KindProject, customfield.KindVersion:
 		cf.RoleIDs = slices.Clone(src.RoleIDs)
 	}
-	if owner == domain.CFOwnerIssue {
+	if owner == customfield.KindIssue {
 		cf.TrackerIDs = slices.Clone(src.TrackerIDs)
 		cf.ProjectIDs = slices.Clone(src.ProjectIDs)
 	}
@@ -294,7 +292,7 @@ func (a *App) copyCustomFieldFrom(c *Req, form *cfForm, src *domain.CustomField)
 
 // findCustomField は find_custom_field。
 func (a *App) findCustomField(c *Req) {
-	cf, err := repository.GetCustomField(c.Ctx(), a.DB, httpx.RubyToI(c.Params().String("id")))
+	cf, err := getCustomField(c.Ctx(), a.DB, httpx.RubyToI(c.Params().String("id")))
 	if err != nil {
 		if errors.Is(err, repository.ErrNotFound) {
 			c.Render404("")
@@ -362,7 +360,7 @@ func valueStrings(v any) []string {
 }
 
 // assignCustomFieldAttributes は custom_field.safe_attributes = params[:custom_field]。
-func assignCustomFieldAttributes(env *customfield.Env, cf *domain.CustomField, p *httpx.Params) {
+func assignCustomFieldAttributes(env *customfield.Env, cf *customfield.CustomField, p *httpx.Params) {
 	if p == nil {
 		return
 	}
@@ -412,11 +410,11 @@ func assignCustomFieldAttributes(env *customfield.Env, cf *domain.CustomField, p
 		case "role_ids":
 			cf.RoleIDs = paramIDList(v)
 		case "tracker_ids":
-			if cf.OwnerKind == domain.CFOwnerIssue {
+			if cf.OwnerKind == customfield.KindIssue {
 				cf.TrackerIDs = paramIDList(v)
 			}
 		case "project_ids":
-			if cf.OwnerKind == domain.CFOwnerIssue {
+			if cf.OwnerKind == customfield.KindIssue {
 				cf.ProjectIDs = paramIDList(v)
 			}
 		default:
@@ -439,11 +437,11 @@ func assignCustomFieldAttributes(env *customfield.Env, cf *domain.CustomField, p
 
 // saveCustomField は CustomField#save（検証・before_save・acts_as_positioned・関連・after_save）。
 // 検証に失敗したら false（form.Errors にエラー）。
-func (a *App) saveCustomField(c *Req, form *cfForm, before *domain.CustomField) (bool, error) {
+func (a *App) saveCustomField(c *Req, form *cfForm, before *customfield.CustomField) (bool, error) {
 	cf := form.CF
 	env := form.env
 	customfield.ApplyFieldRules(cf)
-	taken, err := repository.CustomFieldNameTaken(c.Ctx(), a.DB, cf.OwnerKind, cf.Name, cf.ID)
+	taken, err := customfield.NameTaken(c.Ctx(), a.DB, cf.OwnerKind, cf.Name, cf.ID)
 	if err != nil {
 		return false, err
 	}
@@ -451,7 +449,7 @@ func (a *App) saveCustomField(c *Req, form *cfForm, before *domain.CustomField) 
 	if form.Errors.Any() {
 		return false, nil
 	}
-	customfield.MustFind(cf.FieldFormat).BeforeSave(env, cf)
+	customfield.FindFormat(cf.FieldFormat).BeforeSave(env, cf)
 	err = a.DB.WithTx(c.Ctx(), func(tx *db.Tx) error {
 		isNew := cf.ID == 0
 		var oldPos int
@@ -461,7 +459,7 @@ func (a *App) saveCustomField(c *Req, form *cfForm, before *domain.CustomField) 
 		posGiven := cf.Position != 0
 		if cf.Position == 0 {
 			// set_default_position
-			m, err := repository.MaxCustomFieldPosition(c.Ctx(), tx, cf.OwnerKind)
+			m, err := customfield.MaxPosition(c.Ctx(), tx, cf.OwnerKind)
 			if err != nil {
 				return err
 			}
@@ -475,31 +473,31 @@ func (a *App) saveCustomField(c *Req, form *cfForm, before *domain.CustomField) 
 			// after_save: 表示を「すべて」に変えたらロールを外す
 			cf.RoleIDs = nil
 		}
-		if err := repository.SaveCustomField(c.Ctx(), tx, cf); err != nil {
+		if err := customfield.Save(c.Ctx(), tx, cf); err != nil {
 			return err
 		}
 		// update_position
 		switch {
 		case isNew:
-			if err := repository.InsertCustomFieldPosition(c.Ctx(), tx, cf.OwnerKind, cf.Position, cf.ID); err != nil {
+			if err := customfield.InsertPosition(c.Ctx(), tx, cf.OwnerKind, cf.Position, cf.ID); err != nil {
 				return err
 			}
 		case posGiven && oldPos != cf.Position:
-			if err := repository.ShiftCustomFieldPositions(c.Ctx(), tx, cf.OwnerKind, cf.ID, oldPos, cf.Position); err != nil {
+			if err := customfield.ShiftPositions(c.Ctx(), tx, cf.OwnerKind, cf.ID, oldPos, cf.Position); err != nil {
 				return err
 			}
 		}
 		if isNew {
 			for _, e := range form.copyEnumerations {
-				ne := &domain.CustomFieldEnumeration{CustomFieldID: cf.ID, Name: e.Name, Active: e.Active}
-				if err := repository.CreateCustomFieldEnumeration(c.Ctx(), tx, ne); err != nil {
+				ne := &customfield.Enumeration{CustomFieldID: cf.ID, Name: e.Name, Active: e.Active}
+				if err := customfield.CreateEnumeration(c.Ctx(), tx, ne); err != nil {
 					return err
 				}
 			}
 		}
 		if before != nil && before.Multiple && !cf.Multiple {
 			// handle_multiplicity_change
-			if err := repository.DeleteDuplicateCustomValues(c.Ctx(), tx, cf.ID); err != nil {
+			if err := customfield.DeleteDuplicateValues(c.Ctx(), tx, cf.ID); err != nil {
 				return err
 			}
 		}
@@ -511,12 +509,12 @@ func (a *App) saveCustomField(c *Req, form *cfForm, before *domain.CustomField) 
 // ---------------------------------------------------------------- actions
 
 // customFieldsByType は CustomField.all.group_by {|f| f.class.name}。
-func (a *App) customFieldsByType(c *Req) (map[string][]*domain.CustomField, error) {
-	cfs, err := repository.ListCustomFields(c.Ctx(), a.DB)
+func (a *App) customFieldsByType(c *Req) (map[string][]*customfield.CustomField, error) {
+	cfs, err := customfield.Load(c.Ctx(), a.DB, "")
 	if err != nil {
 		return nil, err
 	}
-	out := map[string][]*domain.CustomField{}
+	out := map[string][]*customfield.CustomField{}
 	for _, cf := range cfs {
 		out[cf.ClassName()] = append(out[cf.ClassName()], cf)
 	}
@@ -535,13 +533,13 @@ func (a *App) CustomFieldsIndex(c *Req) {
 		a.renderErr(c, "custom fields index", err)
 		return
 	}
-	counts, err := repository.IssueCustomFieldProjectCounts(c.Ctx(), a.DB)
+	counts, err := customfield.IssueProjectCounts(c.Ctx(), a.DB)
 	if err != nil {
 		a.renderErr(c, "custom fields index", err)
 		return
 	}
 	var tabs []helper.Tab
-	for _, t := range domain.CustomFieldTypes {
+	for _, t := range customfield.Types {
 		if _, ok := byType[t.ClassName]; ok {
 			tabs = append(tabs, helper.Tab{Name: t.ClassName, Partial: "custom_fields/index", Label: t.TabLabel})
 		}
@@ -561,7 +559,7 @@ func (a *App) renderSelectType(c *Req) {
 // cfFormData は new / edit の表示データ。
 func (a *App) cfFormData(c *Req, form *cfForm) (map[string]any, error) {
 	if form.CF.FieldFormat == "enumeration" && form.CF.ID != 0 {
-		es, err := repository.CustomFieldEnumerations(c.Ctx(), a.DB, form.CF.ID, true)
+		es, err := customfield.Enumerations(c.Ctx(), a.DB, form.CF.ID, true)
 		if err != nil {
 			return nil, err
 		}
@@ -570,7 +568,7 @@ func (a *App) cfFormData(c *Req, form *cfForm) (map[string]any, error) {
 	data := map[string]any{"CustomField": form}
 	needs := form.CF.FieldFormat == "user"
 	switch form.CF.OwnerKind {
-	case domain.CFOwnerIssue, domain.CFOwnerTimeEntry, domain.CFOwnerProject, domain.CFOwnerVersion:
+	case customfield.KindIssue, customfield.KindTimeEntry, customfield.KindProject, customfield.KindVersion:
 		needs = true
 	}
 	if needs {
@@ -580,7 +578,7 @@ func (a *App) cfFormData(c *Req, form *cfForm) (map[string]any, error) {
 		}
 		data["GivableRoles"] = roles
 	}
-	if form.CF.OwnerKind == domain.CFOwnerIssue {
+	if form.CF.OwnerKind == customfield.KindIssue {
 		ts, err := repository.ListTrackers(c.Ctx(), a.DB)
 		if err != nil {
 			return nil, err
@@ -699,11 +697,11 @@ func (a *App) CustomFieldsUpdate(c *Req) {
 func (a *App) CustomFieldsDestroy(c *Req) {
 	cf := c.cfFormOf().CF
 	err := a.DB.WithTx(c.Ctx(), func(tx *db.Tx) error {
-		if err := repository.DeleteCustomField(c.Ctx(), tx, cf.ID); err != nil {
+		if err := customfield.Delete(c.Ctx(), tx, cf.ID); err != nil {
 			return err
 		}
 		// after_destroy :remove_position
-		return repository.RemoveCustomFieldPosition(c.Ctx(), tx, cf.OwnerKind, cf.Position, cf.ID)
+		return customfield.RemovePosition(c.Ctx(), tx, cf.OwnerKind, cf.Position, cf.ID)
 	})
 	if err != nil {
 		a.logger().Error("custom field destroy", "err", err)
@@ -715,10 +713,22 @@ func (a *App) CustomFieldsDestroy(c *Req) {
 }
 
 // CustomFieldModel は helper.CustomFieldModel。
-func (f *cfForm) CustomFieldModel() *domain.CustomField { return f.CF }
+func (f *cfForm) CustomFieldModel() *customfield.CustomField { return f.CF }
 
 // DefaultValueAttr は default_value（nil は nil）。
 func (f *cfForm) DefaultValueAttr() any {
 	v, _ := f.Send("default_value")
 	return v
+}
+
+// getCustomField は CustomField.find(id)（無ければ repository.ErrNotFound）。
+func getCustomField(ctx context.Context, q db.Queryer, id int64) (*customfield.CustomField, error) {
+	cf, err := customfield.Get(ctx, q, id)
+	if err != nil {
+		return nil, err
+	}
+	if cf == nil {
+		return nil, repository.ErrNotFound
+	}
+	return cf, nil
 }

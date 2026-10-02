@@ -4,7 +4,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/i18n"
 	"github.com/mikuta0407/buropher/internal/view/rails"
 )
@@ -17,32 +16,32 @@ func testEnv(t *testing.T) *Env {
 	return &Env{T: loc.L, NormalizeFloat: loc.NormalizeFloat}
 }
 
-func field(format string, opts ...func(cf *domain.CustomField)) *domain.CustomField {
-	cf := &domain.CustomField{OwnerKind: domain.CFOwnerIssue, Name: "F", FieldFormat: format, Visible: true, Editable: true,
-		PossibleValues: []string{}, FormatSettings: map[string]any{}}
+func field(format string, opts ...func(cf *CustomField)) *CustomField {
+	cf := &CustomField{OwnerKind: KindIssue, Name: "F", FieldFormat: format, Visible: true, Editable: true,
+		PossibleValues: []string{}, Settings: map[string]any{}}
 	for _, o := range opts {
 		o(cf)
 	}
 	return cf
 }
 
-func withSetting(k string, v any) func(cf *domain.CustomField) {
-	return func(cf *domain.CustomField) { cf.SetSetting(k, v) }
+func withSetting(k string, v any) func(cf *CustomField) {
+	return func(cf *CustomField) { cf.SetSetting(k, v) }
 }
 
-func withValues(vs ...string) func(cf *domain.CustomField) {
-	return func(cf *domain.CustomField) { cf.PossibleValues = vs }
+func withValues(vs ...string) func(cf *CustomField) {
+	return func(cf *CustomField) { cf.PossibleValues = vs }
 }
 
 func str(s string) *string { return &s }
 
-func formatted(env *Env, cf *domain.CustomField, value any, c *Customized, html bool) string {
-	return rails.ToS(MustFind(cf.FieldFormat).FormattedValue(env, cf, value, c, html))
+func formatted(env *Env, cf *CustomField, value any, c *Customized, html bool) string {
+	return rails.ToS(FindFormat(cf.FieldFormat).FormattedValue(env, cf, value, c, html))
 }
 
 func TestAllFormats(t *testing.T) {
 	want := []string{"string", "text", "link", "int", "float", "date", "list", "bool", "enumeration", "user", "version", "attachment", "progressbar"}
-	if got := AvailableFormats(); strings.Join(got, ",") != strings.Join(want, ",") {
+	if got := FormatNames; strings.Join(got, ",") != strings.Join(want, ",") {
 		t.Fatalf("formats = %v", got)
 	}
 }
@@ -50,19 +49,20 @@ func TestAllFormats(t *testing.T) {
 func TestAsSelect(t *testing.T) {
 	env := testEnv(t)
 	// test_as_select_should_return_enumeration_for_all_classes
-	for _, k := range []string{"Issue", "TimeEntry", "Project", "Version", "Document", "User", "Group", "TimeEntryActivity", "IssuePriority", "DocumentCategory"} {
+	for _, ty := range Types {
+		k := ty.Kind
 		if !containsValue(AsSelect(env.T, k), "enumeration") {
 			t.Errorf("%s: enumeration missing", k)
 		}
 	}
 	var labels []string
-	for _, o := range AsSelect(env.T, "Issue") {
+	for _, o := range AsSelect(env.T, KindIssue) {
 		labels = append(labels, o.Label)
 	}
 	if got := strings.Join(labels, ","); got != "Boolean,Date,File,Float,Integer,Key/value list,Link,List,Long text,Progress bar,Text,User,Version" {
 		t.Errorf("as_select(Issue) = %s", got)
 	}
-	if containsValue(AsSelect(env.T, "User"), "user") || containsValue(AsSelect(env.T, "User"), "version") {
+	if containsValue(AsSelect(env.T, KindUser), "user") || containsValue(AsSelect(env.T, KindUser), "version") {
 		t.Error("user/version formats should not be available for User")
 	}
 }
@@ -114,7 +114,7 @@ func TestURLPattern(t *testing.T) {
 		t.Errorf("blank: %q", got)
 	}
 	// int の非 HTML はキャストされた整数
-	if v := MustFind("int").FormattedValue(env, field("int", withSetting("url_pattern", "x")), "3", nil, false); v != int64(3) {
+	if v := FindFormat("int").FormattedValue(env, field("int", withSetting("url_pattern", "x")), "3", nil, false); v != int64(3) {
 		t.Errorf("int cast = %#v", v)
 	}
 }
@@ -187,7 +187,7 @@ func TestValidateField(t *testing.T) {
 	if got := ValidateField(env, cf, false).FullMessages(human); strings.Join(got, "|") != "Roles cannot be blank" {
 		t.Errorf("roles: %v", got)
 	}
-	cf.OwnerKind = domain.CFOwnerUser
+	cf.OwnerKind = KindUser
 	if ValidateField(env, cf, false).Any() {
 		t.Error("user custom field does not require roles")
 	}
@@ -397,10 +397,10 @@ func TestProgressbarTags(t *testing.T) {
 	}
 	cf2 := field("progressbar")
 	pb.BeforeSave(env, cf2)
-	if cf2.SettingString("ratio_interval") != "10" {
-		t.Errorf("default ratio interval = %v", cf2.Setting("ratio_interval"))
+	if cf2.Setting("ratio_interval") != "10" {
+		t.Errorf("default ratio interval = %v", cf2.SettingValue("ratio_interval"))
 	}
-	if pb.Info().TotalableSupported || pb.QueryFilterType() != "integer" {
+	if pb.TotalableSupported || pb.FilterType != "integer" {
 		t.Error("progressbar attributes")
 	}
 }
@@ -448,12 +448,12 @@ func TestValueFromKeyword(t *testing.T) {
 
 func TestEnumerationAndRecordList(t *testing.T) {
 	env := testEnv(t)
-	env.Enumerations = func(cfID int64, active bool) []*domain.CustomFieldEnumeration {
-		all := []*domain.CustomFieldEnumeration{{ID: 1, Name: "Foo", Active: true}, {ID: 2, Name: "Bar", Active: false}, {ID: 3, Name: "Baz", Active: true}}
+	env.Enumerations = func(cfID int64, active bool) []*Enumeration {
+		all := []*Enumeration{{ID: 1, Name: "Foo", Active: true}, {ID: 2, Name: "Bar", Active: false}, {ID: 3, Name: "Baz", Active: true}}
 		if !active {
 			return all
 		}
-		return []*domain.CustomFieldEnumeration{all[0], all[2]}
+		return []*Enumeration{all[0], all[2]}
 	}
 	env.RecordOptions = func(format string, ids []string) []Option {
 		var out []Option
@@ -507,7 +507,7 @@ func TestUserFormatOptions(t *testing.T) {
 		t.Errorf("role filtered = %v", opts)
 	}
 	u.BeforeSave(env, cf)
-	if l, _ := cf.SettingList("user_role"); strings.Join(l, ",") != "1" {
+	if l := cf.SettingList("user_role"); strings.Join(l, ",") != "1" {
 		t.Errorf("before_save user_role = %v", l)
 	}
 }

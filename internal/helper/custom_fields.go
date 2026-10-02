@@ -13,12 +13,12 @@ import (
 
 // CustomFieldModel はフォーム用のラッパーからカスタムフィールドを取り出すためのインターフェース。
 type CustomFieldModel interface {
-	CustomFieldModel() *domain.CustomField
+	CustomFieldModel() *customfield.CustomField
 }
 
-func toCustomField(v any) *domain.CustomField {
+func toCustomField(v any) *customfield.CustomField {
 	switch x := v.(type) {
-	case *domain.CustomField:
+	case *customfield.CustomField:
 		return x
 	case CustomFieldModel:
 		if x == nil {
@@ -42,7 +42,7 @@ func (h adminH) customFieldFuncs() ttemplate.FuncMap {
 		"version_statuses":                   func() []string { return VersionStatuses },
 		"custom_field_format_label": func(v any) string {
 			if cf := toCustomField(v); cf != nil {
-				return customfield.MustFind(cf.FieldFormat).Label()
+				return customfield.FindFormat(cf.FieldFormat).Label
 			}
 			return ""
 		},
@@ -50,7 +50,7 @@ func (h adminH) customFieldFuncs() ttemplate.FuncMap {
 		// prepend_list は [x] + list。
 		"prepend_list": func(x any, rest []any) []any { return append([]any{x}, rest...) },
 		// enumeration_options は enumerations.map {|v| [v.name, v.id.to_s]}。
-		"enumeration_options": func(es []*domain.CustomFieldEnumeration) []any {
+		"enumeration_options": func(es []*customfield.Enumeration) []any {
 			out := make([]any, len(es))
 			for i, e := range es {
 				out[i] = []any{e.Name, strconv.FormatInt(e.ID, 10)}
@@ -80,11 +80,11 @@ func (h adminH) customFieldTitle(v any) html {
 // selectTypeRadioButtons は CustomFieldsHelper#select_type_radio_buttons(default_type)。
 func (h adminH) selectTypeRadioButtons(defaultType any) html {
 	def := rails.ToS(defaultType)
-	if domain.CustomFieldTypeByClass(def) == nil {
+	if customfield.TypeByClass(def) == nil {
 		def = "IssueCustomField"
 	}
-	parts := make([]string, 0, len(domain.CustomFieldTypes))
-	for _, t := range domain.CustomFieldTypes {
+	parts := make([]string, 0, len(customfield.Types))
+	for _, t := range customfield.Types {
 		parts = append(parts, string(rails.ContentTag("label",
 			rails.RadioButtonTag("type", t.ClassName, t.ClassName == def, nil)+rails.H(h.l(t.TabLabel)),
 			rails.NewHash("style", "display:block;"))))
@@ -95,14 +95,12 @@ func (h adminH) selectTypeRadioButtons(defaultType any) html {
 // customFieldFormatsForSelect は custom_field_formats_for_select(custom_field)。
 func (h adminH) customFieldFormatsForSelect(v any) []any {
 	cf := toCustomField(v)
-	class := ""
+	var kind customfield.OwnerKind
 	if cf != nil {
-		if t := cf.Type(); t != nil {
-			class = t.CustomizedClass
-		}
+		kind = cf.OwnerKind
 	}
 	var out []any
-	for _, o := range customfield.AsSelect(h.l, class) {
+	for _, o := range customfield.AsSelect(h.l, kind) {
 		out = append(out, o.Pair())
 	}
 	return out
@@ -123,7 +121,7 @@ func (h adminH) renderCustomFieldFormatPartial(f *rails.FormBuilder, v any) (htm
 	if cf == nil {
 		return "", nil
 	}
-	partial := customfield.MustFind(cf.FieldFormat).Info().FormPartial
+	partial := customfield.FindFormat(cf.FieldFormat).FormPartial
 	if partial == "" {
 		return "", nil
 	}

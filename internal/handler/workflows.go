@@ -6,6 +6,7 @@ import (
 	"slices"
 	"strconv"
 
+	"github.com/mikuta0407/buropher/internal/customfield"
 	"github.com/mikuta0407/buropher/internal/db"
 	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/helper"
@@ -482,7 +483,7 @@ func (a *App) WorkflowsPermissions(c *Req) {
 			fields = append(fields, helper.WorkflowField{Key: f, Label: c.L("field_" + name),
 				Required: slices.Contains([]string{"project_id", "tracker_id", "subject", "priority_id", "is_private"}, f)})
 		}
-		cfs, err := repository.TrackersCustomFields(c.Ctx(), a.DB, trackerIDs(st.Trackers))
+		cfs, err := customfield.TrackersCustomFields(c.Ctx(), a.DB, trackerIDs(st.Trackers))
 		if err != nil {
 			a.renderErr(c, "workflows permissions", err)
 			return

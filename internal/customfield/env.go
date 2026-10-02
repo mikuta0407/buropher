@@ -1,7 +1,6 @@
 package customfield
 
 import (
-	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/view/rails"
 )
 
@@ -15,7 +14,7 @@ type Env struct {
 	CurrentUserID int64
 
 	// Enumerations は custom_field.enumerations（activeOnly なら .active。position 順）。
-	Enumerations func(cfID int64, activeOnly bool) []*domain.CustomFieldEnumeration
+	Enumerations func(cfID int64, activeOnly bool) []*Enumeration
 	// ProjectUsers は project.users（roleIDs が空でなければそのロールを持つメンバーのみ）を sorted 順で返す
 	// （Label は User#name、Value は id）。
 	ProjectUsers func(projectID int64, roleIDs []int64) []Option

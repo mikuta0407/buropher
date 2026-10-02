@@ -5,7 +5,6 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/view/rails"
 )
 
@@ -62,12 +61,12 @@ func HumanAttributeName(env *Env, attr string) string {
 }
 
 // ApplyFieldRules は before_validation :set_searchable（書式が対応しない searchable / multiple を偽にする）。
-func ApplyFieldRules(cf *domain.CustomField) {
-	f := MustFind(cf.FieldFormat)
-	if !f.info.SearchableSupported {
+func ApplyFieldRules(cf *CustomField) {
+	f := FindFormat(cf.FieldFormat)
+	if !f.SearchableSupported {
 		cf.Searchable = false
 	}
-	if !f.info.MultipleSupported {
+	if !f.MultipleSupported {
 		cf.Multiple = false
 	}
 }
@@ -76,7 +75,7 @@ func ApplyFieldRules(cf *domain.CustomField) {
 // validates_length_of :name, :regexp / validates_inclusion_of :field_format / validate_custom_field と
 // IssueCustomField・TimeEntryCustomField のロール必須）。set_searchable は先に ApplyFieldRules で適用すること。
 // nameTaken は同じ種類に同名のフィールドがあるか（呼び出し側が DB で調べる）。
-func ValidateField(env *Env, cf *domain.CustomField, nameTaken bool) *Errors {
+func ValidateField(env *Env, cf *CustomField, nameTaken bool) *Errors {
 	errs := &Errors{}
 	msg := func(key string, args ...any) string { return env.l("activerecord.errors.messages."+key, args...) }
 	if isBlank(cf.Name) {
@@ -97,7 +96,7 @@ func ValidateField(env *Env, cf *domain.CustomField, nameTaken bool) *Errors {
 	f := Find(cf.FieldFormat)
 	if f == nil {
 		errs.Add("field_format", msg("inclusion"))
-		f = baseFormat
+		f = FindFormat(cf.FieldFormat)
 	}
 	// validate_custom_field
 	for _, fe := range f.ValidateCustomField(env, cf) {
@@ -113,7 +112,7 @@ func ValidateField(env *Env, cf *domain.CustomField, nameTaken bool) *Errors {
 			errs.Add("default_value", m)
 		}
 	}
-	if (cf.OwnerKind == domain.CFOwnerIssue || cf.OwnerKind == domain.CFOwnerTimeEntry) && !cf.Visible && len(cf.RoleIDs) == 0 {
+	if (cf.OwnerKind == KindIssue || cf.OwnerKind == KindTimeEntry) && !cf.Visible && len(cf.RoleIDs) == 0 {
 		errs.Add("base", env.l("label_role_plural")+" "+msg("blank"))
 	}
 	return errs
@@ -122,7 +121,7 @@ func ValidateField(env *Env, cf *domain.CustomField, nameTaken bool) *Errors {
 // ValidateCustomValue は CustomField#validate_custom_value（書式の検証に加え、複数値でない配列と必須の空値を検出する）。
 func ValidateCustomValue(env *Env, cv *CustomValue) []string {
 	cf := cv.CustomField
-	f := MustFind(cf.FieldFormat)
+	f := FindFormat(cf.FieldFormat)
 	errs := f.ValidateValue(env, cv)
 	if len(errs) > 0 {
 		return errs
@@ -141,14 +140,14 @@ func ValidateCustomValue(env *Env, cv *CustomValue) []string {
 }
 
 // ValidateFieldValue は CustomField#validate_field_value(value)（所有者なしの値として検証する）。
-func ValidateFieldValue(env *Env, cf *domain.CustomField, value any) []string {
+func ValidateFieldValue(env *Env, cf *CustomField, value any) []string {
 	cv := &CustomValue{CustomField: cf}
-	cv.Value = MustFind(cf.FieldFormat).SetValue(env, cf, cv, value)
+	cv.Value = FindFormat(cf.FieldFormat).SetValue(env, cf, cv, value)
 	return ValidateCustomValue(env, cv)
 }
 
 // SetPossibleValues は CustomField#possible_values=（配列なら strip して空を除く、文字列なら改行で分割する）。
-func SetPossibleValues(cf *domain.CustomField, v any) {
+func SetPossibleValues(cf *CustomField, v any) {
 	var lines []string
 	switch x := v.(type) {
 	case []string:

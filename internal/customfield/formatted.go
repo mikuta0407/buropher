@@ -7,14 +7,13 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/view/rails"
 )
 
 // FormattedValue は formatted_value(view, custom_field, value, customized, html)。
 // html が偽ならキャスト後の値（string / int64 / float64 / bool / time.Time / Option / []any）を返し、
 // 真なら表示用の HTML（rails.HTML）または値を返す（呼び出し側で format_object する）。
-func (f *Format) FormattedValue(env *Env, cf *domain.CustomField, value any, customized *Customized, html bool) any {
+func (f *Format) FormattedValue(env *Env, cf *CustomField, value any, customized *Customized, html bool) any {
 	if f.formatted != nil {
 		return f.formatted(f, env, cf, value, customized, html)
 	}
@@ -27,7 +26,7 @@ func (f *Format) FormattedCustomValue(env *Env, cv *CustomValue, html bool) any 
 }
 
 // baseFormatted は Base#formatted_value（url_pattern があれば各値をリンクにする）。
-func baseFormatted(f *Format, env *Env, cf *domain.CustomField, value any, customized *Customized, html bool) any {
+func baseFormatted(f *Format, env *Env, cf *CustomField, value any, customized *Customized, html bool) any {
 	casted := f.Cast(env, cf, value, customized)
 	if html && trimSpace(cf.URLPattern()) != "" {
 		type link struct{ text, url string }
@@ -70,7 +69,7 @@ func castedToS(v any) string {
 	return rails.ToS(v)
 }
 
-func formattedString(f *Format, env *Env, cf *domain.CustomField, value any, customized *Customized, html bool) any {
+func formattedString(f *Format, env *Env, cf *CustomField, value any, customized *Customized, html bool) any {
 	if html {
 		switch {
 		case trimSpace(cf.URLPattern()) != "":
@@ -82,7 +81,7 @@ func formattedString(f *Format, env *Env, cf *domain.CustomField, value any, cus
 	return rails.ToS(value)
 }
 
-func formattedText(f *Format, env *Env, cf *domain.CustomField, value any, customized *Customized, html bool) any {
+func formattedText(f *Format, env *Env, cf *CustomField, value any, customized *Customized, html bool) any {
 	if !html {
 		return rails.ToS(value)
 	}
@@ -95,7 +94,7 @@ func formattedText(f *Format, env *Env, cf *domain.CustomField, value any, custo
 	return rails.SimpleFormat(rails.H(rails.ToS(value)), nil, nil)
 }
 
-func formattedLink(f *Format, env *Env, cf *domain.CustomField, value any, customized *Customized, html bool) any {
+func formattedLink(f *Format, env *Env, cf *CustomField, value any, customized *Customized, html bool) any {
 	if html && !isBlank(value) {
 		s := rails.ToS(value)
 		var u string
@@ -114,11 +113,11 @@ func formattedLink(f *Format, env *Env, cf *domain.CustomField, value any, custo
 
 var schemeRe = regexp.MustCompile(`(?i)\A[a-z]+://`)
 
-func formattedProgressbar(f *Format, env *Env, cf *domain.CustomField, value any, customized *Customized, html bool) any {
+func formattedProgressbar(f *Format, env *Env, cf *CustomField, value any, customized *Customized, html bool) any {
 	if !html {
 		return rails.ToS(value)
 	}
-	n := int(rubyToI(rails.ToS(value)))
+	n := int(RubyToI(rails.ToS(value)))
 	text := strconv.Itoa(n) + "%"
 	legend := ""
 	if env != nil && env.ActionName == "show" {
@@ -156,7 +155,7 @@ func textilizable(env *Env, text string, customized *Customized) rails.HTML {
 }
 
 // URLFromPattern は url_from_pattern(custom_field, value, customized)。
-func URLFromPattern(cf *domain.CustomField, value string, customized *Customized) string {
+func URLFromPattern(cf *CustomField, value string, customized *Customized) string {
 	u := cf.URLPattern()
 	var id, projectID, projectIdentifier string
 	if customized != nil {

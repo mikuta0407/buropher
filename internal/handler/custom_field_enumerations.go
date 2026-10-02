@@ -9,7 +9,6 @@ import (
 
 	"github.com/mikuta0407/buropher/internal/customfield"
 	"github.com/mikuta0407/buropher/internal/db"
-	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/helper"
 	"github.com/mikuta0407/buropher/internal/httpx"
 	"github.com/mikuta0407/buropher/internal/repository"
@@ -24,7 +23,7 @@ type cfEnumCtxKey struct{}
 
 // findEnumCustomField は find_custom_field（params[:custom_field_id]）。
 func (a *App) findEnumCustomField(c *Req) {
-	cf, err := repository.GetCustomField(c.Ctx(), a.DB, httpx.RubyToI(c.Params().String("custom_field_id")))
+	cf, err := getCustomField(c.Ctx(), a.DB, httpx.RubyToI(c.Params().String("custom_field_id")))
 	if err != nil {
 		if errors.Is(err, repository.ErrNotFound) {
 			c.Render404("")
@@ -39,7 +38,7 @@ func (a *App) findEnumCustomField(c *Req) {
 // findEnumeration は find_enumeration（@custom_field.enumerations.find(params[:id])）。
 func (a *App) findEnumeration(c *Req) {
 	cf := c.cfFormOf().CF
-	es, err := repository.CustomFieldEnumerations(c.Ctx(), a.DB, cf.ID, false)
+	es, err := customfield.Enumerations(c.Ctx(), a.DB, cf.ID, false)
 	if err != nil {
 		a.renderErr(c, "find enumeration", err)
 		return
@@ -56,7 +55,7 @@ func (a *App) findEnumeration(c *Req) {
 
 // enumForm は CustomFieldEnumeration のエラー表示用モデル。
 type enumForm struct {
-	E      *domain.CustomFieldEnumeration
+	E      *customfield.Enumeration
 	Errors *customfield.Errors
 	env    *customfield.Env
 }
@@ -67,7 +66,7 @@ func (f *enumForm) FullErrorMessages() []string {
 }
 
 // validateEnumeration は CustomFieldEnumeration の検証（validates_presence_of :name / validates_length_of :name, maximum: 60）。
-func validateEnumeration(env *customfield.Env, e *domain.CustomFieldEnumeration) *customfield.Errors {
+func validateEnumeration(env *customfield.Env, e *customfield.Enumeration) *customfield.Errors {
 	errs := &customfield.Errors{}
 	if httpx.IsBlank(e.Name) {
 		errs.Add("name", env.T("activerecord.errors.messages.blank"))
@@ -80,7 +79,7 @@ func validateEnumeration(env *customfield.Env, e *domain.CustomFieldEnumeration)
 
 func (a *App) enumerationsIndexData(c *Req) (map[string]any, error) {
 	form := c.cfFormOf()
-	es, err := repository.CustomFieldEnumerations(c.Ctx(), a.DB, form.CF.ID, false)
+	es, err := customfield.Enumerations(c.Ctx(), a.DB, form.CF.ID, false)
 	if err != nil {
 		return nil, err
 	}
@@ -106,7 +105,7 @@ func (a *App) CustomFieldEnumerationsCreate(c *Req) {
 		c.RenderError(http.StatusBadRequest, "")
 		return
 	}
-	e := &domain.CustomFieldEnumeration{CustomFieldID: form.CF.ID, Active: true}
+	e := &customfield.Enumeration{CustomFieldID: form.CF.ID, Active: true}
 	if v, ok := p.Get("name"); ok {
 		e.Name = httpx.ValueString(v)
 	}
@@ -115,7 +114,7 @@ func (a *App) CustomFieldEnumerationsCreate(c *Req) {
 	}
 	ef := &enumForm{E: e, Errors: validateEnumeration(form.env, e), env: form.env}
 	if !ef.Errors.Any() {
-		if err := repository.CreateCustomFieldEnumeration(c.Ctx(), a.DB, e); err != nil {
+		if err := customfield.CreateEnumeration(c.Ctx(), a.DB, e); err != nil {
 			a.renderErr(c, "enumeration create", err)
 			return
 		}
@@ -155,12 +154,12 @@ func (a *App) CustomFieldEnumerationsUpdateEach(c *Req) {
 		c.RenderError(http.StatusBadRequest, "")
 		return
 	}
-	es, err := repository.CustomFieldEnumerations(c.Ctx(), a.DB, form.CF.ID, false)
+	es, err := customfield.Enumerations(c.Ctx(), a.DB, form.CF.ID, false)
 	if err != nil {
 		a.renderErr(c, "enumerations update_each", err)
 		return
 	}
-	byID := map[int64]*domain.CustomFieldEnumeration{}
+	byID := map[int64]*customfield.Enumeration{}
 	for _, e := range es {
 		byID[e.ID] = e
 	}
@@ -197,7 +196,7 @@ func (a *App) CustomFieldEnumerationsUpdateEach(c *Req) {
 				failed = true
 				return
 			}
-			if err := repository.UpdateCustomFieldEnumeration(c.Ctx(), tx, &ne); err != nil {
+			if err := customfield.UpdateEnumeration(c.Ctx(), tx, &ne); err != nil {
 				failed = true
 			}
 		})
@@ -220,13 +219,13 @@ func (a *App) CustomFieldEnumerationsUpdateEach(c *Req) {
 // CustomFieldEnumerationsDestroy は custom_field_enumerations#destroy（使用中で移行先が無ければ確認画面）。
 func (a *App) CustomFieldEnumerationsDestroy(c *Req) {
 	form := c.cfFormOf()
-	value, _ := c.R.Context().Value(cfEnumCtxKey{}).(*domain.CustomFieldEnumeration)
-	es, err := repository.CustomFieldEnumerations(c.Ctx(), a.DB, form.CF.ID, false)
+	value, _ := c.R.Context().Value(cfEnumCtxKey{}).(*customfield.Enumeration)
+	es, err := customfield.Enumerations(c.Ctx(), a.DB, form.CF.ID, false)
 	if err != nil {
 		a.renderErr(c, "enumeration destroy", err)
 		return
 	}
-	var reassign *domain.CustomFieldEnumeration
+	var reassign *customfield.Enumeration
 	if s := c.Params().String("reassign_to_id"); s != "" {
 		if id, err := strconv.ParseInt(s, 10, 64); err == nil {
 			for _, e := range es {
@@ -236,13 +235,13 @@ func (a *App) CustomFieldEnumerationsDestroy(c *Req) {
 			}
 		}
 	}
-	count, err := repository.CustomFieldEnumerationObjectsCount(c.Ctx(), a.DB, value)
+	count, err := customfield.EnumerationObjectsCount(c.Ctx(), a.DB, value)
 	if err != nil {
 		a.renderErr(c, "enumeration destroy", err)
 		return
 	}
 	if reassign == nil && count > 0 {
-		var others []*domain.CustomFieldEnumeration
+		var others []*customfield.Enumeration
 		for _, e := range es {
 			if e.ID != value.ID {
 				others = append(others, e)
@@ -254,7 +253,7 @@ func (a *App) CustomFieldEnumerationsDestroy(c *Req) {
 		return
 	}
 	err = a.DB.WithTx(c.Ctx(), func(tx *db.Tx) error {
-		return repository.DestroyCustomFieldEnumeration(c.Ctx(), tx, value, reassign)
+		return customfield.DestroyEnumeration(c.Ctx(), tx, value, reassign)
 	})
 	if err != nil {
 		a.renderErr(c, "enumeration destroy", err)
