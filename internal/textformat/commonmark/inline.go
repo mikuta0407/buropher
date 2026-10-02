@@ -79,8 +79,24 @@ func fixTableCellPipes(doc ast.Node) {
 			case *east.TableCell:
 				walk(x, true)
 			case *Escaped:
-				if s, ok := x.FirstChild().(*Str); ok && inCell && s.Value == "|" {
+				s, _ := x.FirstChild().(*Str)
+				if !inCell || s == nil {
+					break
+				}
+				switch s.Value {
+				case "|":
+					// "\|" → "|"
 					n.ReplaceChild(n, x, &Str{Value: "|"})
+				case "\\":
+					// "\\|" → バックスラッシュが 1 つ除かれ "\|"（エスケープされた '|'）になる
+					if ns, ok := x.NextSibling().(*Str); ok && strings.HasPrefix(ns.Value, "|") {
+						s.Value = "|"
+						ns.Value = ns.Value[1:]
+						if ns.Value == "" {
+							n.RemoveChild(n, ns)
+						}
+						next = x.NextSibling()
+					}
 				}
 			case *Code:
 				if inCell {
@@ -417,7 +433,6 @@ func postprocessText(node ast.Node, inBracket bool) {
 			}
 			processTasklist(s)
 			if !inBracket {
-				processWWWAfterDelim(s)
 				processEmailAutolinks(s)
 			}
 			next := s.NextSibling()
@@ -505,44 +520,6 @@ func scanTasklist(s string) (end int, symbol byte, ok bool) {
 		return i + 1, symbol, true
 	}
 	return 0, 0, false
-}
-
-// processWWWAfterDelim は '*' '_' '~' の直後にある "www." を自動リンクにする
-// （goldmark ではこれらの文字でインラインパーサを起動できないため後処理で行う）。
-func processWWWAfterDelim(s *Str) {
-	if !strings.HasPrefix(s.Value, "www.") {
-		return
-	}
-	prev := s.PreviousSibling()
-	ok := false
-	switch p := prev.(type) {
-	case nil:
-		// 親が強調等で、その開始記号の直後
-		switch s.Parent().(type) {
-		case *ast.Emphasis, *east.Strikethrough:
-			ok = true
-		}
-	case *Str:
-		if v := p.Value; v != "" {
-			last := v[len(v)-1]
-			ok = last == '*' || last == '_' || last == '~'
-		}
-	case *ast.Emphasis, *east.Strikethrough:
-		ok = true
-	}
-	if !ok {
-		return
-	}
-	end, matched := wwwMatch([]byte(s.Value))
-	if !matched || end == 0 {
-		return
-	}
-	t := s.Value[:end]
-	link := &Link{URL: "http://" + t}
-	link.AppendChild(link, &Str{Value: t})
-	parent := s.Parent()
-	parent.InsertBefore(parent, s, link)
-	s.Value = s.Value[end:]
 }
 
 // ---- 自動リンク補助（comrak の parser/autolink.rs） ----

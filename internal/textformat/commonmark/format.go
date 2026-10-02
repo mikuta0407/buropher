@@ -155,7 +155,7 @@ func AlertsIconsFilter(frag *htmldom.Node, opts Options) {
 				label = opts.Translate("label_alert_" + alertType)
 			}
 			if label == "" {
-				label = node.Text()
+				label = alertDefaultTitle(alertType)
 			}
 			node.SetText(label)
 		}

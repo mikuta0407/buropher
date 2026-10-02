@@ -1559,6 +1559,1071 @@
       "expected": "# Title\n\nBody"
     },
     {
+      "name": "tbl-cont-header-indent",
+      "input": "para\n  | a | b |\n  |---|---|\n  | 1 | 2 |\n",
+      "expected": "<p>para</p>\n<table>\n<thead>\n<tr>\n<th>a</th>\n<th>b</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>1</td>\n<td>2</td>\n</tr>\n</tbody>\n</table>"
+    },
+    {
+      "name": "tbl-in-list",
+      "input": "- item\n\n  | a | b |\n  |---|---|\n  | 1 | 2 |\n- next\n",
+      "expected": "<ul>\n<li>\n<p>item</p>\n<table>\n<thead>\n<tr>\n<th>a</th>\n<th>b</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>1</td>\n<td>2</td>\n</tr>\n</tbody>\n</table>\n</li>\n<li>\n<p>next</p>\n</li>\n</ul>"
+    },
+    {
+      "name": "tbl-in-quote",
+      "input": "> | a | b |\n> |---|---|\n> | 1 | 2 |\n",
+      "expected": "<blockquote>\n<table>\n<thead>\n<tr>\n<th>a</th>\n<th>b</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>1</td>\n<td>2</td>\n</tr>\n</tbody>\n</table>\n</blockquote>"
+    },
+    {
+      "name": "tbl-then-text",
+      "input": "| a | b |\n|---|---|\n| 1 | 2 |\nfollowing text\nmore\n",
+      "expected": "<table>\n<thead>\n<tr>\n<th>a</th>\n<th>b</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>1</td>\n<td>2</td>\n</tr>\n<tr>\n<td>following text</td>\n<td></td>\n</tr>\n<tr>\n<td>more</td>\n<td></td>\n</tr>\n</tbody>\n</table>"
+    },
+    {
+      "name": "tbl-then-list",
+      "input": "| a |\n|---|\n| 1 |\n- list item\n",
+      "expected": "<table>\n<thead>\n<tr>\n<th>a</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>1</td>\n</tr>\n</tbody>\n</table>\n<ul>\n<li>list item</li>\n</ul>"
+    },
+    {
+      "name": "tbl-then-quote",
+      "input": "| a |\n|---|\n| 1 |\n> quote\n",
+      "expected": "<table>\n<thead>\n<tr>\n<th>a</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>1</td>\n</tr>\n</tbody>\n</table>\n<blockquote>\n<p>quote</p>\n</blockquote>"
+    },
+    {
+      "name": "tbl-then-heading",
+      "input": "| a |\n|---|\n| 1 |\n# heading\n",
+      "expected": "<table>\n<thead>\n<tr>\n<th>a</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>1</td>\n</tr>\n</tbody>\n</table>\n<h1>heading</h1>"
+    },
+    {
+      "name": "tbl-then-fence",
+      "input": "| a |\n|---|\n| 1 |\n```\ncode\n```\n",
+      "expected": "<table>\n<thead>\n<tr>\n<th>a</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>1</td>\n</tr>\n</tbody>\n</table>\n<pre><code>code\n</code></pre>"
+    },
+    {
+      "name": "tbl-then-html",
+      "input": "| a |\n|---|\n| 1 |\n<div>html</div>\n",
+      "expected": "<table>\n<thead>\n<tr>\n<th>a</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>1</td>\n</tr>\n</tbody>\n</table>\n<div>html</div>"
+    },
+    {
+      "name": "tbl-then-hr",
+      "input": "| a |\n|---|\n| 1 |\n***\n",
+      "expected": "<table>\n<thead>\n<tr>\n<th>a</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>1</td>\n</tr>\n</tbody>\n</table>\n<hr>"
+    },
+    {
+      "name": "tbl-then-indented",
+      "input": "| a |\n|---|\n| 1 |\n    indented\n",
+      "expected": "<table>\n<thead>\n<tr>\n<th>a</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>1</td>\n</tr>\n</tbody>\n</table>\n<pre><code>indented\n</code></pre>"
+    },
+    {
+      "name": "tbl-more-cells",
+      "input": "| a | b |\n|---|---|\n| 1 | 2 | 3 | 4 |\n| 5 |\n",
+      "expected": "<table>\n<thead>\n<tr>\n<th>a</th>\n<th>b</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>1</td>\n<td>2</td>\n</tr>\n<tr>\n<td>5</td>\n<td></td>\n</tr>\n</tbody>\n</table>"
+    },
+    {
+      "name": "tbl-code-pipe",
+      "input": "| a | b |\n|---|---|\n| `x|y` | z |\n",
+      "expected": "<table>\n<thead>\n<tr>\n<th>a</th>\n<th>b</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>`x</td>\n<td>y`</td>\n</tr>\n</tbody>\n</table>"
+    },
+    {
+      "name": "tbl-only-pipe",
+      "input": "| a |\n|---|\n|\n| b |\n",
+      "expected": "<table>\n<thead>\n<tr>\n<th>a</th>\n</tr>\n</thead>\n</table>\n<p>|<br>\n| b |</p>"
+    },
+    {
+      "name": "tbl-empty-cells",
+      "input": "| a | b | c |\n|---|---|---|\n|| x ||\n",
+      "expected": "<table>\n<thead>\n<tr>\n<th>a</th>\n<th>b</th>\n<th>c</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td></td>\n<td>x</td>\n<td></td>\n</tr>\n</tbody>\n</table>"
+    },
+    {
+      "name": "tbl-mismatch",
+      "input": "| a | b |\n|---|\n| c | d |\n",
+      "expected": "<p>| a | b |<br>\n|---|<br>\n| c | d |</p>"
+    },
+    {
+      "name": "tbl-mismatch-then-ok",
+      "input": "| a | b |\n|---|\n| c | d |\n|---|---|\n",
+      "expected": "<p>| a | b |<br>\n|---|<br>\n| c | d |<br>\n|---|---|</p>"
+    },
+    {
+      "name": "tbl-single-col-dash",
+      "input": "a\n---\nb\n",
+      "expected": "<h2>a</h2>\n<p>b</p>"
+    },
+    {
+      "name": "tbl-minimal",
+      "input": "|a|\n|-|\n",
+      "expected": "<table>\n<thead>\n<tr>\n<th>a</th>\n</tr>\n</thead>\n</table>"
+    },
+    {
+      "name": "tbl-multi-line-para",
+      "input": "first line\nsecond line\n| h1 | h2 |\n| -- | -- |\n| v1 | v2 |\n",
+      "expected": "<p>first line<br>\nsecond line</p>\n<table>\n<thead>\n<tr>\n<th>h1</th>\n<th>h2</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>v1</td>\n<td>v2</td>\n</tr>\n</tbody>\n</table>"
+    },
+    {
+      "name": "tbl-tabs",
+      "input": "|\ta\t|\tb\t|\n|---|---|\n|\t1\t|\t2\t|\n\n",
+      "expected": "<table>\n<thead>\n<tr>\n<th>a</th>\n<th>b</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>1</td>\n<td>2</td>\n</tr>\n</tbody>\n</table>"
+    },
+    {
+      "name": "tbl-in-footnote",
+      "input": "Ref[^t].\n\n[^t]: | a |\n    |---|\n    | 1 |\n",
+      "expected": "<p>Ref<sup><a href=\"#fn-t\">1</a></sup>.</p>\n \n<ol>\n<li>\n<table>\n<thead>\n<tr>\n<th>a</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>1</td>\n</tr>\n</tbody>\n</table>\n<a href=\"#fnref-t\" aria-label=\"Back to reference 1\">↩</a>\n</li>\n</ol>\n "
+    },
+    {
+      "name": "tbl-no-leading-pipe",
+      "input": "a | b\n- | -\n1 | 2\n",
+      "expected": "<p>a | b</p>\n<ul>\n<li>| -<br>\n1 | 2</li>\n</ul>"
+    },
+    {
+      "name": "tbl-escaped-backslash-pipe",
+      "input": "| a |\n|---|\n| x \\\\| y |\n",
+      "expected": "<table>\n<thead>\n<tr>\n<th>a</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>x <span>|</span> y</td>\n</tr>\n</tbody>\n</table>"
+    },
+    {
+      "name": "tbl-inline-link-pipe",
+      "input": "| a |\n|---|\n| [l|x](http://x.y) |\n",
+      "expected": "<table>\n<thead>\n<tr>\n<th>a</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>[l</td>\n</tr>\n</tbody>\n</table>"
+    },
+    {
+      "name": "tbl-header-emphasis",
+      "input": "| *a* | **b** |\n|:---:|----:|\n| _c_ | ~~d~~ |\n",
+      "expected": "<table>\n<thead>\n<tr>\n<th align=\"center\"><em>a</em></th>\n<th align=\"right\"><strong>b</strong></th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td align=\"center\"><em>c</em></td>\n<td align=\"right\"><del>d</del></td>\n</tr>\n</tbody>\n</table>"
+    },
+    {
+      "name": "tbl-cjk-align",
+      "input": "| 項目 | 値 |\n|:----|:---:|\n| 名前 | テスト |\n| 説明 | 長い説明文です |\n",
+      "expected": "<table>\n<thead>\n<tr>\n<th align=\"left\">項目</th>\n<th align=\"center\">値</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td align=\"left\">名前</td>\n<td align=\"center\">テスト</td>\n</tr>\n<tr>\n<td align=\"left\">説明</td>\n<td align=\"center\">長い説明文です</td>\n</tr>\n</tbody>\n</table>"
+    },
+    {
+      "name": "tbl-after-blank-header",
+      "input": "|   |   |\n|---|---|\n| a | b |\n",
+      "expected": "<table>\n<thead>\n<tr>\n<th></th>\n<th></th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>a</td>\n<td>b</td>\n</tr>\n</tbody>\n</table>"
+    },
+    {
+      "name": "tbl-delim-spaces",
+      "input": "| a | b |\n| :--- | ---: |\n| 1 | 2 |\n",
+      "expected": "<table>\n<thead>\n<tr>\n<th align=\"left\">a</th>\n<th align=\"right\">b</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td align=\"left\">1</td>\n<td align=\"right\">2</td>\n</tr>\n</tbody>\n</table>"
+    },
+    {
+      "name": "tbl-html-cell",
+      "input": "| a |\n|---|\n| <b>bold</b> <br/> <img src=\"x.png\"> |\n",
+      "expected": "<table>\n<thead>\n<tr>\n<th>a</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>\n<b>bold</b> <br> <img src=\"x.png\">\n</td>\n</tr>\n</tbody>\n</table>"
+    },
+    {
+      "name": "fn-def-before-ref",
+      "input": "[^a]: Definition first.\n\nThen ref[^a].\n",
+      "expected": "<p>Then ref<sup><a href=\"#fn-a\">1</a></sup>.</p>\n \n<ol>\n<li>\n<p>Definition first. <a href=\"#fnref-a\" aria-label=\"Back to reference 1\">↩</a></p>\n</li>\n</ol>\n "
+    },
+    {
+      "name": "fn-duplicate-defs",
+      "input": "Ref[^d].\n\n[^d]: First def.\n[^d]: Second def.\n",
+      "expected": "<p>Ref<sup><a href=\"#fn-d\">1</a></sup>.</p>\n \n<ol>\n<li>\n<p>Second def. <a href=\"#fnref-d\" aria-label=\"Back to reference 1\">↩</a></p>\n</li>\n</ol>\n "
+    },
+    {
+      "name": "fn-case",
+      "input": "Ref[^Note] and[^NOTE].\n\n[^note]: case insensitive\n",
+      "expected": "<p>Ref<sup><a href=\"#fn-note\">1</a></sup> and<sup><a href=\"#fn-note\">1</a></sup>.</p>\n \n<ol>\n<li>\n<p>case insensitive <a href=\"#fnref-note\" aria-label=\"Back to reference 1\">↩</a> <a href=\"#fnref-note-2\" aria-label=\"Back to reference 1-2\">↩<sup>2</sup></a></p>\n</li>\n</ol>\n "
+    },
+    {
+      "name": "fn-in-table",
+      "input": "| a |\n|---|\n| x[^1] |\n\n[^1]: in table\n",
+      "expected": "<table>\n<thead>\n<tr>\n<th>a</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>x<sup><a href=\"#fn-1\" id=\"fnref-1\">1</a></sup>\n</td>\n</tr>\n</tbody>\n</table>\n \n<ol>\n<li id=\"fn-1\">\n<p>in table <a href=\"#fnref-1\" aria-label=\"Back to reference 1\">↩</a></p>\n</li>\n</ol>\n "
+    },
+    {
+      "name": "fn-in-link",
+      "input": "[link[^1]](http://x.y)\n\n[^1]: in link\n",
+      "expected": "<p><a href=\"http://x.y\" class=\"external\">link<sup><a href=\"#fn-1\" id=\"fnref-1\">1</a></sup></a></p>\n \n<ol>\n<li id=\"fn-1\">\n<p>in link <a href=\"#fnref-1\" aria-label=\"Back to reference 1\">↩</a></p>\n</li>\n</ol>\n "
+    },
+    {
+      "name": "fn-in-heading",
+      "input": "# Heading[^h]\n\n[^h]: heading note\n",
+      "expected": "<h1>Heading<sup><a href=\"#fn-h\">1</a></sup>\n</h1>\n \n<ol>\n<li>\n<p>heading note <a href=\"#fnref-h\" aria-label=\"Back to reference 1\">↩</a></p>\n</li>\n</ol>\n "
+    },
+    {
+      "name": "fn-nested",
+      "input": "Outer[^o].\n\n[^o]: Outer has[^i].\n[^i]: Inner.\n",
+      "expected": "<p>Outer<sup><a href=\"#fn-o\">1</a></sup>.</p>\n \n<ol>\n<li>\n<p>Outer has<sup><a href=\"#fn-i\">2</a></sup>. <a href=\"#fnref-o\" aria-label=\"Back to reference 1\">↩</a></p>\n</li>\n<li>\n<p>Inner. <a href=\"#fnref-i\" aria-label=\"Back to reference 2\">↩</a></p>\n</li>\n</ol>\n "
+    },
+    {
+      "name": "fn-empty-def",
+      "input": "Ref[^e].\n\n[^e]:\n",
+      "expected": "<p>Ref<sup><a href=\"#fn-e\">1</a></sup>.</p>\n \n<ol>\n<li>\n<a href=\"#fnref-e\" aria-label=\"Back to reference 1\">↩</a>\n</li>\n</ol>\n "
+    },
+    {
+      "name": "fn-unicode",
+      "input": "注釈[^注].\n\n[^注]: 日本語の注釈\n",
+      "expected": "<p>注釈<sup><a href=\"#fn-%E6%B3%A8\">1</a></sup>.</p>\n \n<ol>\n<li>\n<p>日本語の注釈 <a href=\"#fnref-%E6%B3%A8\" aria-label=\"Back to reference 1\">↩</a></p>\n</li>\n</ol>\n "
+    },
+    {
+      "name": "fn-ref-paren",
+      "input": "[^1](http://x.y) and [^1][ref]\n\n[^1]: note\n[ref]: http://ref.example.com\n",
+      "expected": "<p><a href=\"http://x.y\" class=\"external\">^1</a> and <sup><a href=\"#fn-1\" id=\"fnref-1\">1</a></sup>[ref]</p>\n \n<ol>\n<li id=\"fn-1\">\n<p>note<br>\n[ref]: <a href=\"http://ref.example.com\" class=\"external\">http://ref.example.com</a> <a href=\"#fnref-1\" aria-label=\"Back to reference 1\">↩</a></p>\n</li>\n</ol>\n "
+    },
+    {
+      "name": "fn-space-label",
+      "input": "Ref[^a b].\n\n[^a b]: no\n",
+      "expected": "<p>Ref<a href=\"no\">^a b</a>.</p>"
+    },
+    {
+      "name": "fn-list-content",
+      "input": "Ref[^l].\n\n[^l]: Item list:\n\n    - one\n    - two\n",
+      "expected": "<p>Ref<sup><a href=\"#fn-l\">1</a></sup>.</p>\n \n<ol>\n<li>\n<p>Item list:</p>\n<ul>\n<li>one</li>\n<li>two</li>\n</ul>\n<a href=\"#fnref-l\" aria-label=\"Back to reference 1\">↩</a>\n</li>\n</ol>\n "
+    },
+    {
+      "name": "fn-many-refs",
+      "input": "A[^x] B[^x] C[^x].\n\n[^x]: thrice\n",
+      "expected": "<p>A<sup><a href=\"#fn-x\">1</a></sup> B<sup><a href=\"#fn-x\">1</a></sup> C<sup><a href=\"#fn-x\">1</a></sup>.</p>\n \n<ol>\n<li>\n<p>thrice <a href=\"#fnref-x\" aria-label=\"Back to reference 1\">↩</a> <a href=\"#fnref-x-2\" aria-label=\"Back to reference 1-2\">↩<sup>2</sup></a> <a href=\"#fnref-x-3\" aria-label=\"Back to reference 1-3\">↩<sup>3</sup></a></p>\n</li>\n</ol>\n "
+    },
+    {
+      "name": "fn-def-in-quote",
+      "input": "> Ref[^q].\n>\n> [^q]: quoted def\n",
+      "expected": "<blockquote>\n<p>Ref<sup><a href=\"#fn-q\">1</a></sup>.</p>\n</blockquote>\n \n<ol>\n<li>\n<p>quoted def <a href=\"#fnref-q\" aria-label=\"Back to reference 1\">↩</a></p>\n</li>\n</ol>\n "
+    },
+    {
+      "name": "fn-numeric-order",
+      "input": "B[^2] A[^1].\n\n[^1]: one\n[^2]: two\n",
+      "expected": "<p>B<sup><a href=\"#fn-2\" id=\"fnref-2\">1</a></sup> A<sup><a href=\"#fn-1\" id=\"fnref-1\">2</a></sup>.</p>\n \n<ol>\n<li id=\"fn-2\">\n<p>two <a href=\"#fnref-2\" aria-label=\"Back to reference 1\">↩</a></p>\n</li>\n<li id=\"fn-1\">\n<p>one <a href=\"#fnref-1\" aria-label=\"Back to reference 2\">↩</a></p>\n</li>\n</ol>\n "
+    },
+    {
+      "name": "fn-not-referenced-mixed",
+      "input": "Only[^b].\n\n[^a]: unused\n[^b]: used\n[^c]: unused too\n",
+      "expected": "<p>Only<sup><a href=\"#fn-b\">1</a></sup>.</p>\n \n<ol>\n<li>\n<p>used <a href=\"#fnref-b\" aria-label=\"Back to reference 1\">↩</a></p>\n</li>\n</ol>\n "
+    },
+    {
+      "name": "fn-bang",
+      "input": "Hi![^z]\n\n[^z]: bang\n",
+      "expected": "<p>Hi!<sup><a href=\"#fn-z\">1</a></sup></p>\n \n<ol>\n<li>\n<p>bang <a href=\"#fnref-z\" aria-label=\"Back to reference 1\">↩</a></p>\n</li>\n</ol>\n "
+    },
+    {
+      "name": "fn-emphasis-label",
+      "input": "Ref[^*x*].\n\n[^*x*]: star\n",
+      "expected": "<p>Ref<sup><a href=\"#fn-*x*\">1</a></sup>.</p>\n \n<ol>\n<li>\n<p>star <a href=\"#fnref-*x*\" aria-label=\"Back to reference 1\">↩</a></p>\n</li>\n</ol>\n "
+    },
+    {
+      "name": "al-www-variants",
+      "input": "www.example.com. www.ex_ample.com www.example.com/path?q=1. (www.example.com) *www.example.com* _www.example.com_ ~www.example.com~ www. www.a\n",
+      "expected": "<p><a href=\"http://www.example.com\" class=\"external\">www.example.com</a>. www.ex_ample.com <a href=\"http://www.example.com/path?q=1\" class=\"external\">www.example.com/path?q=1</a>. (<a href=\"http://www.example.com\" class=\"external\">www.example.com</a>) <em><a href=\"http://www.example.com\" class=\"external\">www.example.com</a></em> <em>www.example.com</em> <del><a href=\"http://www.example.com\" class=\"external\">www.example.com</a></del> <a href=\"http://www\" class=\"external\">www</a>. <a href=\"http://www.a\" class=\"external\">www.a</a></p>"
+    },
+    {
+      "name": "al-www-bracket",
+      "input": "[www.example.com] [a] www.example.com\n",
+      "expected": "<p>[www.example.com] [a] <a href=\"http://www.example.com\" class=\"external\">www.example.com</a></p>"
+    },
+    {
+      "name": "al-url-parens",
+      "input": "http://example.com/path(with)parens http://example.com/a) (http://example.com/b) http://example.com/c((d))\n",
+      "expected": "<p><a href=\"http://example.com/path(with)parens\" class=\"external\">http://example.com/path(with)parens</a> <a href=\"http://example.com/a\" class=\"external\">http://example.com/a</a>) (<a href=\"http://example.com/b\" class=\"external\">http://example.com/b</a>) <a href=\"http://example.com/c((d))\" class=\"external\">http://example.com/c((d))</a></p>"
+    },
+    {
+      "name": "al-url-entity",
+      "input": "https://example.com/?q=a&amp;b=c https://example.com/x&copy; https://example.com/y&amp;\n",
+      "expected": "<p><a href=\"https://example.com/?q=a&amp;amp;b=c\" class=\"external\">https://example.com/?q=a&amp;amp;b=c</a> <a href=\"https://example.com/x\" class=\"external\">https://example.com/x</a>© <a href=\"https://example.com/y\" class=\"external\">https://example.com/y</a>&amp;</p>"
+    },
+    {
+      "name": "al-localhost",
+      "input": "http://localhost:3000/issues/1 http://127.0.0.1/ ftp://x https://a\n",
+      "expected": "<p><a href=\"http://localhost:3000/issues/1\" class=\"external\">http://localhost:3000/issues/1</a> <a href=\"http://127.0.0.1/\" class=\"external\">http://127.0.0.1/</a> <a href=\"ftp://x\" class=\"external\">ftp://x</a> <a href=\"https://a\" class=\"external\">https://a</a></p>"
+    },
+    {
+      "name": "al-uppercase-scheme",
+      "input": "HTTP://EXAMPLE.COM Https://example.com xhttp://foo.com\n",
+      "expected": "<p>HTTP://EXAMPLE.COM Https://example.com xhttp://foo.com</p>"
+    },
+    {
+      "name": "al-in-link-text",
+      "input": "[see http://x.y here](http://z.example.com) and [www.a.com](http://b.c)\n",
+      "expected": "<p><a href=\"http://z.example.com\" class=\"external\">see http://x.y here</a> and <a href=\"http://b.c\" class=\"external\">www.a.com</a></p>"
+    },
+    {
+      "name": "al-after-bracket",
+      "input": "[a] http://x.example.com [b]http://y.example.com\n",
+      "expected": "<p>[a] <a href=\"http://x.example.com\" class=\"external\">http://x.example.com</a> [b]<a href=\"http://y.example.com\" class=\"external\">http://y.example.com</a></p>"
+    },
+    {
+      "name": "al-in-emphasis",
+      "input": "*http://x.example.com* **http://x.example.com/** _http://y.example.com_\n",
+      "expected": "<p><em><a href=\"http://x.example.com\" class=\"external\">http://x.example.com</a></em> <strong><a href=\"http://x.example.com/\" class=\"external\">http://x.example.com/</a></strong> <em>http://y.example.com</em></p>"
+    },
+    {
+      "name": "al-email-prefix",
+      "input": "mailto:a@b.cc xmpp:a@b.cc/res xmpp:x@y.zz mailto:foo\n",
+      "expected": "<p><a href=\"mailto:a@b.cc\" class=\"email\">mailto:a@b.cc</a> <a href=\"xmpp:a@b.cc/res\" class=\"external\">xmpp:a@b.cc/res</a> <a href=\"xmpp:x@y.zz\" class=\"external\">xmpp:x@y.zz</a> mailto:foo</p>"
+    },
+    {
+      "name": "al-email-brackets",
+      "input": "[a@b.cc] [[c@d.ee] (f@g.hh) <i@j.kk>\n",
+      "expected": "<p>[a@b.cc] [[c@d.ee] (f@g.hh) <a href=\"mailto:i@j.kk\" class=\"email\">i@j.kk</a></p>"
+    },
+    {
+      "name": "al-email-trailing",
+      "input": "a@b.cc. c@d.ee- f@g.hh_ i@j.kk, l@m.nn!\n",
+      "expected": "<p><a href=\"mailto:a@b.cc\" class=\"email\">a@b.cc</a>. c@d.ee- f@g.hh_ <a href=\"mailto:i@j.kk\" class=\"email\">i@j.kk</a>, <a href=\"mailto:l@m.nn\" class=\"email\">l@m.nn</a>!</p>"
+    },
+    {
+      "name": "al-email-plus",
+      "input": "first.last+tag@example.co.jp foo-bar@sub.domain.example.org x@y.z1\n",
+      "expected": "<p><a href=\"mailto:first.last+tag@example.co.jp\" class=\"email\">first.last+tag@example.co.jp</a> <a href=\"mailto:foo-bar@sub.domain.example.org\" class=\"email\">foo-bar@sub.domain.example.org</a> x@y.z1</p>"
+    },
+    {
+      "name": "al-email-port",
+      "input": "user@example.com:8080 user@example.com/path\n",
+      "expected": "<p><a href=\"mailto:user@example.com\" class=\"email\">user@example.com</a>:8080 <a href=\"mailto:user@example.com\" class=\"email\">user@example.com</a>/path</p>"
+    },
+    {
+      "name": "al-url-lt",
+      "input": "http://x.example.com<b>bold</b> http://y.example.com/<\n",
+      "expected": "<p><a href=\"http://x.example.com\" class=\"external\">http://x.example.com</a><b>bold</b> <a href=\"http://y.example.com/\" class=\"external\">http://y.example.com/</a>&lt;</p>"
+    },
+    {
+      "name": "al-underscores",
+      "input": "http://x.example.com/a_b_c http://x_y.example.com http://a.b_c.example.com http://x.y_z\n",
+      "expected": "<p><a href=\"http://x.example.com/a_b_c\" class=\"external\">http://x.example.com/a_b_c</a> <a href=\"http://x_y.example.com\" class=\"external\">http://x_y.example.com</a> <a href=\"http://a.b_c.example.com\" class=\"external\">http://a.b_c.example.com</a> http://x.y_z</p>"
+    },
+    {
+      "name": "al-cjk-after",
+      "input": "http://example.com/です。 http://example.com/パス、次 メールはuser@example.jpです\n",
+      "expected": "<p><a href=\"http://example.com/%E3%81%A7%E3%81%99%E3%80%82\" class=\"external\">http://example.com/です。</a> <a href=\"http://example.com/%E3%83%91%E3%82%B9%E3%80%81%E6%AC%A1\" class=\"external\">http://example.com/パス、次</a> メールは<a href=\"mailto:user@example.jp\" class=\"email\">user@example.jp</a>です</p>"
+    },
+    {
+      "name": "al-idn",
+      "input": "https://例え.jp https://日本語.example/パス www.例え.jp\n",
+      "expected": "<p><a href=\"https://%E4%BE%8B%E3%81%88.jp\" class=\"external\">https://例え.jp</a> <a href=\"https://%E6%97%A5%E6%9C%AC%E8%AA%9E.example/%E3%83%91%E3%82%B9\" class=\"external\">https://日本語.example/パス</a> <a href=\"http://www.%E4%BE%8B%E3%81%88.jp\" class=\"external\">www.例え.jp</a></p>"
+    },
+    {
+      "name": "al-newline",
+      "input": "see http://example.com\nand www.example.org\n",
+      "expected": "<p>see <a href=\"http://example.com\" class=\"external\">http://example.com</a><br>\nand <a href=\"http://www.example.org\" class=\"external\">www.example.org</a></p>"
+    },
+    {
+      "name": "al-escaped",
+      "input": "www.x\\_y.com http://a.b/\\_c\\_ https://x.y/\\)\n",
+      "expected": "<p>www.x<span>_</span>y.com <a href=\"http://a.b/%5C_c%5C\" class=\"external\">http://a.b/\\_c\\</a>_ <a href=\"https://x.y/%5C\" class=\"external\">https://x.y/\\</a>)</p>"
+    },
+    {
+      "name": "al-trailing-punct",
+      "input": "http://x.example.com/foo? http://x.example.com/foo! http://x.example.com/foo, http://x.example.com/foo: http://x.example.com/foo' http://x.example.com/foo\"\n",
+      "expected": "<p><a href=\"http://x.example.com/foo\" class=\"external\">http://x.example.com/foo</a>? <a href=\"http://x.example.com/foo\" class=\"external\">http://x.example.com/foo</a>! <a href=\"http://x.example.com/foo\" class=\"external\">http://x.example.com/foo</a>, <a href=\"http://x.example.com/foo\" class=\"external\">http://x.example.com/foo</a>: <a href=\"http://x.example.com/foo\" class=\"external\">http://x.example.com/foo</a>' <a href=\"http://x.example.com/foo\" class=\"external\">http://x.example.com/foo</a>\"</p>"
+    },
+    {
+      "name": "al-quote-wrapped",
+      "input": "\"http://x.example.com\" 'http://y.example.com'\n",
+      "expected": "<p>\"<a href=\"http://x.example.com\" class=\"external\">http://x.example.com</a>\" '<a href=\"http://y.example.com\" class=\"external\">http://y.example.com</a>'</p>"
+    },
+    {
+      "name": "al-hash-only",
+      "input": "http:// https://. www.\n",
+      "expected": "<p><a href=\"http://\" class=\"external\">http://</a> <a href=\"https://\" class=\"external\">https://</a>. <a href=\"http://www\" class=\"external\">www</a>.</p>"
+    },
+    {
+      "name": "esc-in-link",
+      "input": "[a\\*b](http://x.y) [c](http://x.y/\\*) ![d\\_e](f.png)\n",
+      "expected": "<p><a href=\"http://x.y\" class=\"external\">a<span>*</span>b</a> <a href=\"http://x.y/*\" class=\"external\">c</a> <img src=\"f.png\" alt=\"d_e\"></p>"
+    },
+    {
+      "name": "esc-heading",
+      "input": "# Heading \\# with \\*escapes\\*\n",
+      "expected": "<h1>Heading <span>#</span> with <span>*</span>escapes<span>*</span>\n</h1>"
+    },
+    {
+      "name": "esc-end",
+      "input": "trailing backslash \\",
+      "expected": "<p>trailing backslash \\</p>"
+    },
+    {
+      "name": "esc-double",
+      "input": "\\\\ \\\\\\* \\\\\\\\\n",
+      "expected": "<p><span>\\</span> <span>\\</span><span>*</span> <span>\\</span><span>\\</span></p>"
+    },
+    {
+      "name": "esc-in-code",
+      "input": "`\\*` and ``\\` ``\n",
+      "expected": "<p><code>\\*</code> and <code>\\` </code></p>"
+    },
+    {
+      "name": "html-block-blank",
+      "input": "<div>\n\n*md*\n\n</div>\n",
+      "expected": "<div>\n<p><em>md</em></p>\n</div>"
+    },
+    {
+      "name": "html-type7",
+      "input": "<custom-element attr=\"1\">\nnot *md*\n</custom-element>\n\n<span>inline start\n*md*</span>\n",
+      "expected": "\nnot *md*\n\n<p><span>inline start<br>\n<em>md</em></span></p>"
+    },
+    {
+      "name": "html-comment-para",
+      "input": "para <!-- comment --> after\n\n<!-- comment block -->\nnext\n",
+      "expected": "<p>para  after</p>\n\n<p>next</p>"
+    },
+    {
+      "name": "html-pi-cdata",
+      "input": "<?php echo 1; ?>\n\n<![CDATA[x < y]]>\n\n<!ELEMENT br EMPTY>\n",
+      "expected": "<?php echo 1; ?>\n\n"
+    },
+    {
+      "name": "html-unclosed-end",
+      "input": "<div><span>unclosed\n",
+      "expected": "<div><span>unclosed</span></div>"
+    },
+    {
+      "name": "html-stray-close",
+      "input": "text </p> more </span> end\n",
+      "expected": "<p>text </p> more  end"
+    },
+    {
+      "name": "html-p-in-li",
+      "input": "- <p>para in li</p>\n- <div>div in li</div>\n",
+      "expected": "<ul>\n<li>\n<p>para in li</p>\n</li>\n<li>\n<div>div in li</div>\n</li>\n</ul>"
+    },
+    {
+      "name": "html-img-attrs",
+      "input": "<img src=\"a.png\" srcset=\"a@2x.png 2x\" width=\"100\" height=\"50\" alt=\"A\" title=\"T\" loading=\"lazy\" style=\"max-width:100%\">\n",
+      "expected": "<img src=\"a.png\" width=\"100\" height=\"50\" alt=\"A\" title=\"T\" style=\"max-width:100%\">"
+    },
+    {
+      "name": "html-a-name",
+      "input": "<a name=\"top\"></a> <a name=\"x y\">sp</a> <a id=\"fnref-3\" name=\"n\">both</a>\n",
+      "expected": "<p><a name=\"top\"></a> <a name=\"x%20y\">sp</a> <a id=\"fnref-3\" name=\"n\">both</a></p>"
+    },
+    {
+      "name": "html-details-open",
+      "input": "<details open>\n<summary>Sum</summary>\n\nBody **bold**\n\n</details>\n",
+      "expected": "<details open>\n<summary>Sum</summary>\n<p>Body <strong>bold</strong></p>\n</details>"
+    },
+    {
+      "name": "html-table-md",
+      "input": "<table>\n<tr>\n<td>\n\n**md in cell**\n\n</td>\n</tr>\n</table>\n",
+      "expected": "<table>\n<tr>\n<td>\n<p><strong>md in cell</strong></p>\n</td>\n</tr>\n</table>"
+    },
+    {
+      "name": "html-uppercase-inline",
+      "input": "<B>bold</B> <I>it</I> <SPAN STYLE=\"color:red\">x</SPAN> <A HREF=\"http://x.y\">l</A>\n",
+      "expected": "<p><b>bold</b> <i>it</i> <span style=\"color:red\">x</span> <a href=\"http://x.y\" class=\"external\">l</a></p>"
+    },
+    {
+      "name": "html-nbsp-raw",
+      "input": "<p>a&nbsp;b&nbsp;&nbsp;c</p>\n",
+      "expected": "<p>a b  c</p>"
+    },
+    {
+      "name": "html-pre-leading-newline",
+      "input": "<pre>\n\ntwo newlines</pre>\n",
+      "expected": "<pre>\n\ntwo newlines</pre>"
+    },
+    {
+      "name": "html-raw-pre-code-lang",
+      "input": "<pre><code class=\"language-ruby\">def foo\n  1\nend</code></pre>\n",
+      "expected": "<pre><code class=\"ruby syntaxhl\" data-language=\"ruby\"><span class=\"k\">def</span> <span class=\"nf\">foo</span>\n  <span class=\"mi\">1</span>\n<span class=\"k\">end</span></code></pre>"
+    },
+    {
+      "name": "html-code-outside-pre",
+      "input": "<code class=\"language-ruby\">def x; end</code>\n",
+      "expected": "<p><code class=\"language-ruby\">def x; end</code></p>"
+    },
+    {
+      "name": "html-tagfilter-inline",
+      "input": "a <textarea>t</textarea> b <title>x</title> c <TEXTAREA>u</TEXTAREA>\n",
+      "expected": "<p>a &lt;textarea&gt;t&lt;/textarea&gt; b &lt;title&gt;x&lt;/title&gt; c &lt;TEXTAREA&gt;u&lt;/TEXTAREA&gt;</p>"
+    },
+    {
+      "name": "html-javascript-variants",
+      "input": "<a href=\"JavaScript:alert(1)\">a</a> <a href=\" javascript:alert(1)\">b</a> <a href=\"java&#x0A;script:alert(1)\">c</a> <a href=\"&#x6A;avascript:x\">d</a> <img src=\"javascript:x\">\n",
+      "expected": "<p><a>a</a> <a>b</a> <a>c</a> <a>d</a> <img></p>"
+    },
+    {
+      "name": "html-data-attrs",
+      "input": "<span data-foo=\"bar\" aria-label=\"lbl\" role=\"note\" title=\"t\">x</span>\n",
+      "expected": "<p><span aria-label=\"lbl\" role=\"note\" title=\"t\">x</span></p>"
+    },
+    {
+      "name": "html-ol-start",
+      "input": "<ol start=\"5\" type=\"a\"><li>five</li></ol>\n",
+      "expected": "<ol start=\"5\" type=\"a\"><li>five</li></ol>"
+    },
+    {
+      "name": "html-nested-inline",
+      "input": "<b><i><u>deep</u></i></b> <strong><em>se</em></strong>\n",
+      "expected": "<p><b><i><u>deep</u></i></b> <strong><em>se</em></strong></p>"
+    },
+    {
+      "name": "html-entity-attrs",
+      "input": "<a href=\"http://x.y/?a=1&amp;b=2&c=3\" title=\"&lt;t&gt; &quot;q&quot;\">e</a>\n",
+      "expected": "<p><a href=\"http://x.y/?a=1&amp;b=2&amp;c=3\" title='&lt;t&gt; \"q\"' class=\"external\">e</a></p>"
+    },
+    {
+      "name": "html-br-variants",
+      "input": "a<br>b<br/>c<br />d<BR>e\n",
+      "expected": "<p>a<br>b<br>c<br>d<br>e</p>"
+    },
+    {
+      "name": "html-hr-variants",
+      "input": "<hr>\n<hr/>\n<hr class=\"x\" />\n",
+      "expected": "<hr>\n<hr>\n<hr>"
+    },
+    {
+      "name": "list-start-zero",
+      "input": "0. zero\n1. one\n",
+      "expected": "<ol start=\"0\">\n<li>zero</li>\n<li>one</li>\n</ol>"
+    },
+    {
+      "name": "list-paren",
+      "input": "1) a\n2) b\n",
+      "expected": "<ol>\n<li>a</li>\n<li>b</li>\n</ol>"
+    },
+    {
+      "name": "list-mixed-markers",
+      "input": "- a\n+ b\n* c\n",
+      "expected": "<ul>\n<li>a</li>\n</ul>\n<ul>\n<li>b</li>\n</ul>\n<ul>\n<li>c</li>\n</ul>"
+    },
+    {
+      "name": "list-code-only",
+      "input": "-     code in item\n",
+      "expected": "<ul>\n<li>\n<pre><code>code in item\n</code></pre>\n</li>\n</ul>"
+    },
+    {
+      "name": "list-task-tab",
+      "input": "-\t[ ] tab task\n- [x]\ttab after\n\n",
+      "expected": "<ul class=\"contains-task-list\">\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" disabled> tab task</li>\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" checked disabled> tab after</li>\n</ul>"
+    },
+    {
+      "name": "list-task-link",
+      "input": "- [ ] [link](http://x.y)\n- [x] **bold** task\n- [ ] `code` task\n",
+      "expected": "<ul class=\"contains-task-list\">\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" disabled> <a href=\"http://x.y\" class=\"external\">link</a>\n</li>\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" checked disabled> <strong>bold</strong> task</li>\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" disabled> <code>code</code> task</li>\n</ul>"
+    },
+    {
+      "name": "list-task-nested-ol",
+      "input": "1. top\n   - [ ] nested task\n   - [x] done\n",
+      "expected": "<ol>\n<li>top\n<ul class=\"contains-task-list\">\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" disabled> nested task</li>\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" checked disabled> done</li>\n</ul>\n</li>\n</ol>"
+    },
+    {
+      "name": "list-task-only-space",
+      "input": "- [ ]\n- [x]\n",
+      "expected": "<ul class=\"contains-task-list\">\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" disabled> </li>\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" checked disabled> </li>\n</ul>"
+    },
+    {
+      "name": "list-loose-nested",
+      "input": "- a\n\n  - b\n\n  - c\n",
+      "expected": "<ul>\n<li>\n<p>a</p>\n<ul>\n<li>\n<p>b</p>\n</li>\n<li>\n<p>c</p>\n</li>\n</ul>\n</li>\n</ul>"
+    },
+    {
+      "name": "list-lazy",
+      "input": "- item\ncontinued lazily\n",
+      "expected": "<ul>\n<li>item<br>\ncontinued lazily</li>\n</ul>"
+    },
+    {
+      "name": "list-interrupt-para",
+      "input": "para\n- list\npara2\n1. not interrupt if not 1?\n2. two\n",
+      "expected": "<p>para</p>\n<ul>\n<li>list<br>\npara2</li>\n</ul>\n<ol>\n<li>not interrupt if not 1?</li>\n<li>two</li>\n</ol>"
+    },
+    {
+      "name": "list-empty-item",
+      "input": "-\n- b\n-\n\n  c\n",
+      "expected": "<ul>\n<li>\n<li>b</li>\n<li>\n</ul>\n<p>c</p>"
+    },
+    {
+      "name": "em-triple",
+      "input": "***strong em*** **a*b*c** *a**b**c*\n",
+      "expected": "<p><em><strong>strong em</strong></em> <strong>a<em>b</em>c</strong> <em>a<strong>b</strong>c</em></p>"
+    },
+    {
+      "name": "em-underscore-intraword",
+      "input": "snake_case_word __init__ _a_b _x_\n",
+      "expected": "<p>snake_case_word <strong>init</strong> _a_b <em>x</em></p>"
+    },
+    {
+      "name": "em-cjk",
+      "input": "**日本語**の強調。**「括弧」**と、文中の*斜体*です。中文的**粗体**。\n",
+      "expected": "<p><strong>日本語</strong>の強調。<strong>「括弧」<strong>と、文中の<em>斜体</em>です。中文的</strong>粗体</strong>。</p>"
+    },
+    {
+      "name": "em-strike-abort",
+      "input": "~~a~ *b* **c**\n",
+      "expected": "<p>~~a~ *b* **c**</p>"
+    },
+    {
+      "name": "em-strike-abort-link",
+      "input": "[~~x~ *y*](http://z.example.com) *after*\n",
+      "expected": "<p><a href=\"http://z.example.com\" class=\"external\">~~x~ *y*</a> <em>after</em></p>"
+    },
+    {
+      "name": "em-strike-nested",
+      "input": "~~**bold strike**~~ **~~strike bold~~**\n",
+      "expected": "<p><del><strong>bold strike</strong></del> <strong><del>strike bold</del></strong></p>"
+    },
+    {
+      "name": "em-punct",
+      "input": "*\"quoted\"* **(paren)** _[bracket]_\n",
+      "expected": "<p><em>\"quoted\"</em> <strong>(paren)</strong> <em>[bracket]</em></p>"
+    },
+    {
+      "name": "alert-in-list",
+      "input": "- > [!NOTE]\n  > in list\n",
+      "expected": "<ul>\n<li>\n<div class=\"markdown-alert markdown-alert-note\">\n<p class=\"markdown-alert-title\"><svg class=\"s18 icon-svg\" aria-hidden=\"true\"><use href=\"/assets/icons-a9735328.svg#icon--help\"></use></svg><span class=\"icon-label\">Note</span></p>\n<p>in list</p>\n</div>\n</li>\n</ul>"
+    },
+    {
+      "name": "alert-lazy",
+      "input": "> [!TIP]\nlazy line\n",
+      "expected": "<div class=\"markdown-alert markdown-alert-tip\">\n<p class=\"markdown-alert-title\"><svg class=\"s18 icon-svg\" aria-hidden=\"true\"><use href=\"/assets/icons-a9735328.svg#icon--bulb\"></use></svg><span class=\"icon-label\">Tip</span></p>\n</div>\n<p>lazy line</p>"
+    },
+    {
+      "name": "alert-blank-then-text",
+      "input": "> [!WARNING]\n>\n> after blank\n",
+      "expected": "<div class=\"markdown-alert markdown-alert-warning\">\n<p class=\"markdown-alert-title\"><svg class=\"s18 icon-svg\" aria-hidden=\"true\"><use href=\"/assets/icons-a9735328.svg#icon--warning\"></use></svg><span class=\"icon-label\">Warning</span></p>\n<p>after blank</p>\n</div>"
+    },
+    {
+      "name": "alert-nested",
+      "input": "> [!NOTE]\n> > [!TIP]\n> > inner\n",
+      "expected": "<div class=\"markdown-alert markdown-alert-note\">\n<p class=\"markdown-alert-title\"><svg class=\"s18 icon-svg\" aria-hidden=\"true\"><use href=\"/assets/icons-a9735328.svg#icon--help\"></use></svg><span class=\"icon-label\">Note</span></p>\n<div class=\"markdown-alert markdown-alert-tip\">\n<p class=\"markdown-alert-title\"><svg class=\"s18 icon-svg\" aria-hidden=\"true\"><use href=\"/assets/icons-a9735328.svg#icon--bulb\"></use></svg><span class=\"icon-label\">Tip</span></p>\n<p>inner</p>\n</div>\n</div>"
+    },
+    {
+      "name": "alert-double-gt",
+      "input": ">> [!NOTE]\n>> double\n",
+      "expected": "<blockquote>\n<div class=\"markdown-alert markdown-alert-note\">\n<p class=\"markdown-alert-title\"><svg class=\"s18 icon-svg\" aria-hidden=\"true\"><use href=\"/assets/icons-a9735328.svg#icon--help\"></use></svg><span class=\"icon-label\">Note</span></p>\n<p>double</p>\n</div>\n</blockquote>"
+    },
+    {
+      "name": "alert-title-spaces",
+      "input": "> [!NOTE]   Spaced   Title\n> body\n",
+      "expected": "<div class=\"markdown-alert markdown-alert-note\">\n<p class=\"markdown-alert-title\"><svg class=\"s18 icon-svg\" aria-hidden=\"true\"><use href=\"/assets/icons-a9735328.svg#icon--help\"></use></svg><span class=\"icon-label\">Spaced   Title</span></p>\n<p>body</p>\n</div>"
+    },
+    {
+      "name": "alert-title-entities",
+      "input": "> [!CAUTION] Fish &amp; Chips \\*x\\*\n> body\n",
+      "expected": "<div class=\"markdown-alert markdown-alert-caution\">\n<p class=\"markdown-alert-title\"><svg class=\"s18 icon-svg\" aria-hidden=\"true\"><use href=\"/assets/icons-a9735328.svg#icon--alert-circle\"></use></svg><span class=\"icon-label\">Fish &amp; Chips *x*</span></p>\n<p>body</p>\n</div>"
+    },
+    {
+      "name": "alert-title-is-type",
+      "input": "> [!NOTE] Warning\n> body\n\n> [!TIP] tip\n> body\n",
+      "expected": "<div class=\"markdown-alert markdown-alert-note\">\n<p class=\"markdown-alert-title\"><svg class=\"s18 icon-svg\" aria-hidden=\"true\"><use href=\"/assets/icons-a9735328.svg#icon--help\"></use></svg><span class=\"icon-label\">Note</span></p>\n<p>body</p>\n</div>\n<div class=\"markdown-alert markdown-alert-tip\">\n<p class=\"markdown-alert-title\"><svg class=\"s18 icon-svg\" aria-hidden=\"true\"><use href=\"/assets/icons-a9735328.svg#icon--bulb\"></use></svg><span class=\"icon-label\">Tip</span></p>\n<p>body</p>\n</div>"
+    },
+    {
+      "name": "alert-setext",
+      "input": "> [!NOTE]\n> ===\n",
+      "expected": "<div class=\"markdown-alert markdown-alert-note\">\n<p class=\"markdown-alert-title\"><svg class=\"s18 icon-svg\" aria-hidden=\"true\"><use href=\"/assets/icons-a9735328.svg#icon--help\"></use></svg><span class=\"icon-label\">Note</span></p>\n<p>===</p>\n</div>"
+    },
+    {
+      "name": "alert-no-space",
+      "input": ">[!NOTE]\n> no space\n",
+      "expected": "<blockquote>\n<p>[!NOTE]<br>\nno space</p>\n</blockquote>"
+    },
+    {
+      "name": "alert-text-after",
+      "input": "> [!note]text-without-space\n",
+      "expected": "<div class=\"markdown-alert markdown-alert-note\">\n<p class=\"markdown-alert-title\"><svg class=\"s18 icon-svg\" aria-hidden=\"true\"><use href=\"/assets/icons-a9735328.svg#icon--help\"></use></svg><span class=\"icon-label\">text-without-space</span></p>\n</div>"
+    },
+    {
+      "name": "alert-two-spaces",
+      "input": ">  [!NOTE]\n> two spaces\n",
+      "expected": "<blockquote>\n<p>[!NOTE]<br>\ntwo spaces</p>\n</blockquote>"
+    },
+    {
+      "name": "alert-indented",
+      "input": "   > [!IMPORTANT]\n   > indented 3\n",
+      "expected": "<div class=\"markdown-alert markdown-alert-important\">\n<p class=\"markdown-alert-title\"><svg class=\"s18 icon-svg\" aria-hidden=\"true\"><use href=\"/assets/icons-a9735328.svg#icon--message-report\"></use></svg><span class=\"icon-label\">Important</span></p>\n<p>indented 3</p>\n</div>"
+    },
+    {
+      "name": "alert-code",
+      "input": "> [!NOTE]\n>     indented code\n",
+      "expected": "<div class=\"markdown-alert markdown-alert-note\">\n<p class=\"markdown-alert-title\"><svg class=\"s18 icon-svg\" aria-hidden=\"true\"><use href=\"/assets/icons-a9735328.svg#icon--help\"></use></svg><span class=\"icon-label\">Note</span></p>\n<pre><code>indented code\n</code></pre>\n</div>"
+    },
+    {
+      "name": "alert-unknown-types",
+      "input": "> [!INFO]\n> info\n\n> [!DANGER]\n> danger\n",
+      "expected": "<blockquote>\n<p>[!INFO]<br>\ninfo</p>\n</blockquote>\n<blockquote>\n<p>[!DANGER]<br>\ndanger</p>\n</blockquote>"
+    },
+    {
+      "name": "code-info-spaces",
+      "input": "```   ruby   extra\nx = 1\n```\n",
+      "expected": "<pre><code class=\"ruby syntaxhl\" data-language=\"ruby\"><span class=\"n\">x</span> <span class=\"o\">=</span> <span class=\"mi\">1</span>\n</code></pre>"
+    },
+    {
+      "name": "code-backtick-info",
+      "input": "``` a`b\ncode\n```\n",
+      "expected": "<p>``` a`b<br>\ncode</p>\n<pre><code></code></pre>"
+    },
+    {
+      "name": "code-indented-fence",
+      "input": "   ```\n   indented fence\n   ```\n",
+      "expected": "<pre><code>indented fence\n</code></pre>"
+    },
+    {
+      "name": "code-in-list",
+      "input": "- item\n\n  ```ruby\n  puts 1\n  ```\n",
+      "expected": "<ul>\n<li>\n<p>item</p>\n<pre><code class=\"ruby syntaxhl\" data-language=\"ruby\"><span class=\"nb\">puts</span> <span class=\"mi\">1</span>\n</code></pre>\n</li>\n</ul>"
+    },
+    {
+      "name": "code-tilde-info-backtick",
+      "input": "~~~ a`b\ncode\n~~~\n",
+      "expected": "<pre><code data-language=\"a`b\">code\n</code></pre>"
+    },
+    {
+      "name": "code-long-fence",
+      "input": "`````\n````\ninner\n````\n`````\n",
+      "expected": "<pre><code>````\ninner\n````\n</code></pre>"
+    },
+    {
+      "name": "code-lang-uppercase-unknown",
+      "input": "```FooBar\nx\n```\n",
+      "expected": "<pre><code data-language=\"FooBar\">x\n</code></pre>"
+    },
+    {
+      "name": "code-lang-plus",
+      "input": "```c++\nint x = 1;\n```\n\n```objective-c\n@interface A\n@end\n```\n",
+      "expected": "<pre><code class=\"c++ syntaxhl\" data-language=\"c++\"><span class=\"kt\">int</span> <span class=\"n\">x</span> <span class=\"o\">=</span> <span class=\"mi\">1</span><span class=\"p\">;</span>\n</code></pre>\n<pre><code class=\"objective-c syntaxhl\" data-language=\"objective-c\"><span class=\"k\">@interface</span> <span class=\"nc\">A</span>\n<span class=\"k\">@end</span>\n</code></pre>"
+    },
+    {
+      "name": "code-blank-lines",
+      "input": "```\n\nline after blank\n\n\n```\n",
+      "expected": "<pre><code>\nline after blank\n\n\n</code></pre>"
+    },
+    {
+      "name": "heading-empty",
+      "input": "#\n#\n##\n",
+      "expected": "<h1></h1>\n<h1></h1>\n<h2></h2>"
+    },
+    {
+      "name": "heading-closing",
+      "input": "# A #\n## B ##########\n### C # D\n",
+      "expected": "<h1>A</h1>\n<h2>B</h2>\n<h3>C # D</h3>"
+    },
+    {
+      "name": "heading-setext-multi",
+      "input": "Line one\nline two\n========\n",
+      "expected": "<h1>Line one<br>\nline two</h1>"
+    },
+    {
+      "name": "heading-cjk",
+      "input": "# 見出し１\n## 見出し２ ##\n",
+      "expected": "<h1>見出し１</h1>\n<h2>見出し２</h2>"
+    },
+    {
+      "name": "hb-in-quote",
+      "input": "> line1\n> line2\n",
+      "hardbreaks": false,
+      "expected": "<blockquote>\n<p>line1\nline2</p>\n</blockquote>"
+    },
+    {
+      "name": "hb-list",
+      "input": "- a\n  b\n- c\n",
+      "hardbreaks": false,
+      "expected": "<ul>\n<li>a\nb</li>\n<li>c</li>\n</ul>"
+    },
+    {
+      "name": "hb-table-para",
+      "input": "para\nline\n",
+      "hardbreaks": false,
+      "expected": "<p>para\nline</p>"
+    },
+    {
+      "name": "hb-cjk",
+      "input": "日本語の\n改行\n",
+      "hardbreaks": false,
+      "expected": "<p>日本語の\n改行</p>"
+    },
+    {
+      "name": "hb-trailing-spaces",
+      "input": "spaces\nbackslash\\\nend\n",
+      "hardbreaks": false,
+      "expected": "<p>spaces\nbackslash<br>\nend</p>"
+    },
+    {
+      "name": "img-alt-emphasis",
+      "input": "![*em* and `code` and <b>x</b>](a.png \"Title\") ![a&amp;b](c.png)\n",
+      "expected": "<p><img src=\"a.png\" alt=\"em and code and &lt;b&gt;x&lt;/b&gt;\" title=\"Title\"> <img src=\"c.png\" alt=\"a&amp;b\"></p>"
+    },
+    {
+      "name": "img-in-link",
+      "input": "[![img](i.png)](http://x.example.com)\n",
+      "expected": "<p><a href=\"http://x.example.com\" class=\"external\"><img src=\"i.png\" alt=\"img\"></a></p>"
+    },
+    {
+      "name": "img-angle-url",
+      "input": "![a](<my image.png>) ![b](my%20image.png)\n",
+      "expected": "<p><img src=\"my%20image.png\" alt=\"a\"> <img src=\"my%20image.png\" alt=\"b\"></p>"
+    },
+    {
+      "name": "link-ref-titles",
+      "input": "[a][r1] [b][r2] [c][R3]\n\n[r1]: http://a.example.com \"Title 1\"\n[r2]: <http://b.example.com/x y> 'Title 2'\n[r3]: http://c.example.com (Title 3)\n",
+      "expected": "<p><a href=\"http://a.example.com\" title=\"Title 1\" class=\"external\">a</a> <a href=\"http://b.example.com/x%20y\" title=\"Title 2\" class=\"external\">b</a> <a href=\"http://c.example.com\" title=\"Title 3\" class=\"external\">c</a></p>"
+    },
+    {
+      "name": "link-unicode-label",
+      "input": "[日本語][リンク]\n\n[リンク]: http://example.jp\n",
+      "expected": "<p><a href=\"http://example.jp\" class=\"external\">日本語</a></p>"
+    },
+    {
+      "name": "link-nested-brackets",
+      "input": "[a [b] c](http://x.y) [d [e](http://f.g)](http://h.i)\n",
+      "expected": "<p><a href=\"http://x.y\" class=\"external\">a [b] c</a> [d <a href=\"http://f.g\" class=\"external\">e</a>](<a href=\"http://h.i\" class=\"external\">http://h.i</a>)</p>"
+    },
+    {
+      "name": "link-entity-url",
+      "input": "[a](http://x.y/?a&amp;b) [b](http://x.y/&#x41;) [c](http://x.y/%41)\n",
+      "expected": "<p><a href=\"http://x.y/?a&amp;b\" class=\"external\">a</a> <a href=\"http://x.y/A\" class=\"external\">b</a> <a href=\"http://x.y/%41\" class=\"external\">c</a></p>"
+    },
+    {
+      "name": "link-angle-space",
+      "input": "[a](<b c>) [d](<e)>)\n",
+      "expected": "<p><a href=\"b%20c\">a</a> <a href=\"e)\">d</a></p>"
+    },
+    {
+      "name": "link-empty",
+      "input": "[]() [x]() [](y)\n",
+      "expected": "<p><a></a> <a>x</a> <a href=\"y\"></a></p>"
+    },
+    {
+      "name": "link-mailto",
+      "input": "[mail](mailto:a@b.c) [MAIL](MAILTO:A@B.C)\n",
+      "expected": "<p><a href=\"mailto:a@b.c\" class=\"email\">mail</a> <a href=\"MAILTO:A@B.C\" class=\"email\">MAIL</a></p>"
+    },
+    {
+      "name": "link-title-entity",
+      "input": "[a](http://x.y \"&amp; &quot; \\\"esc\\\"\")\n",
+      "expected": "<p><a href=\"http://x.y\" title='&amp; \" \"esc\"' class=\"external\">a</a></p>"
+    },
+    {
+      "name": "ent-variants",
+      "input": "&#X41; &#0; &#xE000; &#55357; &#x110000; &amp;amp; &#1234567; &#12345678; &CounterClockwiseContourIntegral; &nbsp\n",
+      "expected": "<p>A � � � � &amp;amp; � &amp;#12345678; ∳ &amp;nbsp</p>"
+    },
+    {
+      "name": "misc-zero-width",
+      "input": "a​b (ZWSP) and c‌d and e﻿f\n",
+      "expected": "<p>a​b (ZWSP) and c‌d and e﻿f</p>"
+    },
+    {
+      "name": "misc-nbsp",
+      "input": "non breaking space here\n",
+      "expected": "<p>non breaking space here</p>"
+    },
+    {
+      "name": "misc-emoji-shortcode",
+      "input": ":smile: :+1: :thumbsup:\n",
+      "expected": "<p>:smile: :+1: :thumbsup:</p>"
+    },
+    {
+      "name": "misc-long-word",
+      "input": "Averyveryveryveryveryveryveryveryveryveryveryveryveryveryveryveryveryveryveryveryverylongword\n",
+      "expected": "<p>Averyveryveryveryveryveryveryveryveryveryveryveryveryveryveryveryveryveryveryveryverylongword</p>"
+    },
+    {
+      "name": "misc-only-html",
+      "input": "<b>x</b>\n",
+      "expected": "<p><b>x</b></p>"
+    },
+    {
+      "name": "misc-only-entity",
+      "input": "&copy;",
+      "expected": "<p>©</p>"
+    },
+    {
+      "name": "misc-hr-after-para",
+      "input": "para\n***\ntext\n",
+      "expected": "<p>para</p>\n<hr>\n<p>text</p>"
+    },
+    {
+      "name": "misc-quote-list-code",
+      "input": "> 1. item\n>    ```\n>    code\n>    ```\n> 2. item2\n",
+      "expected": "<blockquote>\n<ol>\n<li>item\n<pre><code>code\n</code></pre>\n</li>\n<li>item2</li>\n</ol>\n</blockquote>"
+    },
+    {
+      "name": "misc-wiki-and-macro-in-code",
+      "input": "`[[Wiki]]` and `{{macro}}` and ```#123```\n",
+      "expected": "<p><code>[[Wiki]]</code> and <code>{{macro}}</code> and <code>#123</code></p>"
+    },
+    {
+      "name": "misc-redmine-pre-block",
+      "input": "<pre>\n#123 [[Wiki]] {{macro}}\n</pre>\n",
+      "expected": "<pre>\n#123 [[Wiki]] {{macro}}\n</pre>"
+    },
+    {
+      "name": "misc-at-mentions",
+      "input": "@user @user.name @user-name hello@world (@paren)\n",
+      "expected": "<p>@user @user.name @user-name hello@world (@paren)</p>"
+    },
+    {
+      "name": "misc-url-in-code",
+      "input": "`http://example.com` and <code>www.example.com</code>\n",
+      "expected": "<p><code>http://example.com</code> and <code>www.example.com</code></p>"
+    },
+    {
+      "name": "misc-ampersand-text",
+      "input": "AT&T R&D a & b a&b &unknown\n",
+      "expected": "<p>AT&amp;T R&amp;D a &amp; b a&amp;b &amp;unknown</p>"
+    },
+    {
+      "name": "misc-angle-text",
+      "input": "a < b > c <notatag 1 < 2\n",
+      "expected": "<p>a &lt; b &gt; c &lt;notatag 1 &lt; 2</p>"
+    },
+    {
+      "name": "misc-quotes",
+      "input": "\"double\" 'single' `back`\n",
+      "expected": "<p>\"double\" 'single' <code>back</code></p>"
+    },
+    {
+      "name": "misc-backslash-newline-list",
+      "input": "- a\\\n  b\n",
+      "expected": "<ul>\n<li>a<br>\nb</li>\n</ul>"
+    },
+    {
+      "name": "misc-heading-in-list",
+      "input": "- # heading in list\n- text\n",
+      "expected": "<ul>\n<li>\n<h1>heading in list</h1>\n</li>\n<li>text</li>\n</ul>"
+    },
+    {
+      "name": "misc-thematic-in-list",
+      "input": "- a\n- ***\n- b\n",
+      "expected": "<ul>\n<li>a</li>\n<li>\n<hr>\n</li>\n<li>b</li>\n</ul>"
+    },
+    {
+      "name": "misc-setext-in-quote",
+      "input": "> Title\n> =====\n",
+      "expected": "<blockquote>\n<h1>Title</h1>\n</blockquote>"
+    },
+    {
+      "name": "misc-html-inline-across-lines",
+      "input": "a <span\nclass=\"x\">b</span> c\n",
+      "expected": "<p>a <span>b</span> c</p>"
+    },
+    {
+      "name": "misc-link-across-lines",
+      "input": "[multi\nline](http://x.y) [ref\nlabel]\n\n[ref label]: http://r.example.com\n",
+      "expected": "<p><a href=\"http://x.y\" class=\"external\">multi<br>\nline</a> <a href=\"http://r.example.com\" class=\"external\">ref<br>\nlabel</a></p>"
+    },
+    {
+      "name": "misc-emphasis-across-lines",
+      "input": "*em\nacross* **strong\nacross**\n",
+      "expected": "<p><em>em<br>\nacross</em> <strong>strong<br>\nacross</strong></p>"
+    },
+    {
+      "name": "misc-autolink-angle-variants",
+      "input": "<http://a.b> <https://a.b/c?d=e&f=g> <ftp://a.b> <irc://a.b> <a+b://c> <foo@bar.example.com> <mailto:foo@bar> <http://a.b/c d>\n",
+      "expected": "<p><a href=\"http://a.b\" class=\"external\">http://a.b</a> <a href=\"https://a.b/c?d=e&amp;f=g\" class=\"external\">https://a.b/c?d=e&amp;f=g</a> <a href=\"ftp://a.b\" class=\"external\">ftp://a.b</a> <a href=\"irc://a.b\" class=\"external\">irc://a.b</a> <a href=\"a+b://c\" class=\"external\">a+b://c</a> <a href=\"mailto:foo@bar.example.com\" class=\"email\">foo@bar.example.com</a> <a href=\"mailto:foo@bar\" class=\"email\">mailto:foo@bar</a> &lt;<a href=\"http://a.b/c\" class=\"external\">http://a.b/c</a> d&gt;</p>"
+    },
+    {
+      "name": "misc-sanitizer-svg-math",
+      "input": "<svg><script>alert(1)</script><circle/></svg> <math><mi>x</mi></math>\n",
+      "expected": "<p>&lt;script&gt;alert(1)&lt;/script&gt; x</p>"
+    },
+    {
+      "name": "misc-iframe-content",
+      "input": "<iframe src=\"https://www.youtube.com/embed/x\">fallback text</iframe>\n",
+      "expected": "&lt;iframe src=\"https://www.youtube.com/embed/x\"&gt;fallback text&lt;/iframe&gt;"
+    },
+    {
+      "name": "misc-object-embed",
+      "input": "<object data=\"x.swf\"><param name=\"a\" value=\"b\"><embed src=\"x.swf\"></object>\n",
+      "expected": "<p></p>"
+    },
+    {
+      "name": "misc-form-elements",
+      "input": "<form><label for=\"a\">L</label><input id=\"a\"><select><option selected>o</option></select><textarea>t</textarea><button>b</button></form>\n",
+      "expected": "Lo&lt;textarea&gt;t&lt;/textarea&gt;b"
+    },
+    {
+      "name": "misc-style-block",
+      "input": "<style>\nbody { color: red }\n</style>\nafter\n",
+      "expected": "&lt;style&gt;\nbody { color: red }\n&lt;/style&gt;\n<p>after</p>"
+    },
+    {
+      "name": "misc-font-center",
+      "input": "<font color=\"red\">red</font> <center>c</center> <big>b</big>\n",
+      "expected": "<p>red </p>c b"
+    },
+    {
+      "name": "misc-abbr-dfn",
+      "input": "<abbr title=\"HyperText\">HTML</abbr> <dfn>term</dfn> <cite>c</cite>\n",
+      "expected": "<p><abbr title=\"HyperText\">HTML</abbr> <dfn>term</dfn> <cite>c</cite></p>"
+    },
+    {
+      "name": "misc-time",
+      "input": "<time datetime=\"2024-01-01T00:00\">Jan</time>\n",
+      "expected": "<p><time datetime=\"2024-01-01T00:00\">Jan</time></p>"
+    },
+    {
+      "name": "misc-del-ins-cite",
+      "input": "<del cite=\"http://x.y\" datetime=\"2020\">d</del> <ins cite=\"javascript:x\">i</ins> <q cite=\"/rel\">q</q> <blockquote cite=\"ftp://x\">b</blockquote>\n",
+      "expected": "<p><del cite=\"http://x.y\" datetime=\"2020\">d</del> <ins>i</ins> <q cite=\"/rel\">q</q> </p><blockquote>b</blockquote>"
+    },
+    {
+      "name": "misc-img-longdesc",
+      "input": "<img src=\"a.png\" longdesc=\"http://x.y/desc\"> <img src=\"b.png\" longdesc=\"javascript:x\">\n",
+      "expected": "<p><img src=\"a.png\" longdesc=\"http://x.y/desc\"> <img src=\"b.png\"></p>"
+    },
+    {
+      "name": "misc-table-attrs",
+      "input": "<table border=\"1\" cellspacing=\"0\" cellpadding=\"3\" width=\"100%\" style=\"border-collapse:collapse\"><tr><th colspan=\"2\" align=\"center\" bgcolor=\"#ccc\">h</th></tr><tr><td valign=\"top\" nowrap>a</td><td headers=\"x\" scope=\"row\">b</td></tr></table>\n",
+      "expected": "<table border=\"1\" cellspacing=\"0\" cellpadding=\"3\" width=\"100%\" style=\"border-collapse:collapse\">\n<tr><th colspan=\"2\" align=\"center\">h</th></tr>\n<tr>\n<td valign=\"top\" nowrap>a</td>\n<td headers=\"x\" scope=\"row\">b</td>\n</tr>\n</table>"
+    },
+    {
+      "name": "misc-sup-sub-footnote-like",
+      "input": "x<sup>2</sup> H<sub>2</sub>O <sup><a href=\"#fn-1\" id=\"fnref-1\">1</a></sup>\n",
+      "expected": "<p>x<sup>2</sup> H<sub>2</sub>O <sup><a href=\"#fn-1\" id=\"fnref-1\">1</a></sup></p>"
+    },
+    {
+      "name": "misc-ul-class",
+      "input": "<ul class=\"contains-task-list\"><li class=\"task-list-item\"><input type=\"checkbox\" class=\"task-list-item-checkbox\" disabled checked> raw task</li></ul>\n",
+      "expected": "<ul class=\"contains-task-list\"><li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" disabled checked> raw task</li></ul>"
+    },
+    {
+      "name": "misc-div-alert-raw",
+      "input": "<div class=\"markdown-alert markdown-alert-note\">\n<p class=\"markdown-alert-title\">Note</p>\n<p>raw alert html</p>\n</div>\n",
+      "expected": "<div class=\"markdown-alert markdown-alert-note\">\n<p class=\"markdown-alert-title\"><svg class=\"s18 icon-svg\" aria-hidden=\"true\"><use href=\"/assets/icons-a9735328.svg#icon--help\"></use></svg><span class=\"icon-label\">Note</span></p>\n<p>raw alert html</p>\n</div>"
+    },
+    {
+      "name": "misc-div-alert-raw-custom",
+      "input": "<div class=\"markdown-alert markdown-alert-custom\">\n<p class=\"markdown-alert-title\">Custom</p>\n</div>\n",
+      "expected": "<div class=\"markdown-alert markdown-alert-custom\">\n<p class=\"markdown-alert-title\">Custom</p>\n</div>"
+    },
+    {
+      "name": "misc-section-footnotes-raw",
+      "input": "<section class=\"footnotes\"><ol><li id=\"fn-1\"><p>raw</p></li></ol></section>\n",
+      "expected": " <ol><li id=\"fn-1\"><p>raw</p></li></ol> "
+    },
+    {
+      "name": "misc-empty-link-text",
+      "input": "[](http://x.example.com) <a href=\"http://y.example.com\"></a>\n",
+      "expected": "<p><a href=\"http://x.example.com\" class=\"external\"></a> <a href=\"http://y.example.com\" class=\"external\"></a></p>"
+    },
+    {
+      "name": "misc-link-target-raw",
+      "input": "<a href=\"http://x.example.com\" target=\"_blank\" rel=\"nofollow\">t</a> <a href=\"/rel\" target=\"_blank\">r</a> <a href=\"mailto:a@b.c\" target=\"_top\">m</a>\n",
+      "expected": "<p><a href=\"http://x.example.com\" target=\"_blank\" rel=\"nofollow noopener\" class=\"external\">t</a> <a href=\"/rel\" target=\"_blank\">r</a> <a href=\"mailto:a@b.c\" target=\"_top\" class=\"email\">m</a></p>"
+    },
+    {
+      "name": "misc-link-class-raw",
+      "input": "<a href=\"http://x.example.com\" class=\"wiki-page\">w</a> <a href=\"http://x.example.com\" class=\"  \">sp</a>\n",
+      "expected": "<p><a href=\"http://x.example.com\" class=\"external\">w</a> <a href=\"http://x.example.com\" class=\"external\">sp</a></p>"
+    },
+    {
+      "name": "misc-url-with-quotes",
+      "input": "<a href='http://x.example.com/\"q\"'>q</a> <a href=\"http://x.example.com/it's\">a</a>\n",
+      "expected": "<p><a href=\"http://x.example.com/%22q%22\" class=\"external\">q</a> <a href=\"http://x.example.com/it's\" class=\"external\">a</a></p>"
+    },
+    {
+      "name": "misc-href-space-encoding",
+      "input": "<a href=\"http://x.example.com/a b\">s</a> <img src=\"/a b.png\">\n",
+      "expected": "<p><a href=\"http://x.example.com/a%20b\" class=\"external\">s</a> <img src=\"/a%20b.png\"></p>"
+    },
+    {
+      "name": "misc-autolinked-user-mailto",
+      "input": "@foo@bar.com user:foo@bar.com  user: foo@bar.com attachment:foo@2x.png\n",
+      "expected": "<p>@foo@bar.com user:foo@bar.com  user: <a href=\"mailto:foo@bar.com\" class=\"email\">foo@bar.com</a> attachment:foo@2x.png</p>"
+    },
+    {
+      "name": "misc-hires-in-link",
+      "input": "[printscreen@2x.png](printscreen@2x.png) <a href=\"mailto:x@2x.png\">x@2x.png</a>\n",
+      "expected": "<p><a href=\"printscreen@2x.png\">printscreen@2x.png</a> <a href=\"mailto:x@2x.png\" class=\"email\"></a>x@2x.png</p>"
+    },
+    {
+      "name": "misc-heading-with-link-and-footnote",
+      "input": "## [Link](http://x.example.com) and code `x` [^n]\n\n[^n]: note\n",
+      "expected": "<h2>\n<a href=\"http://x.example.com\" class=\"external\">Link</a> and code <code>x</code> <sup><a href=\"#fn-n\">1</a></sup>\n</h2>\n \n<ol>\n<li>\n<p>note <a href=\"#fnref-n\" aria-label=\"Back to reference 1\">↩</a></p>\n</li>\n</ol>\n "
+    },
+    {
+      "name": "misc-blockquote-footnote-alert",
+      "input": "> [!NOTE]\n> See[^a].\n\n[^a]: alert footnote\n",
+      "expected": "<div class=\"markdown-alert markdown-alert-note\">\n<p class=\"markdown-alert-title\"><svg class=\"s18 icon-svg\" aria-hidden=\"true\"><use href=\"/assets/icons-a9735328.svg#icon--help\"></use></svg><span class=\"icon-label\">Note</span></p>\n<p>See<sup><a href=\"#fn-a\">1</a></sup>.</p>\n</div>\n \n<ol>\n<li>\n<p>alert footnote <a href=\"#fnref-a\" aria-label=\"Back to reference 1\">↩</a></p>\n</li>\n</ol>\n "
+    },
+    {
       "name": "spec-001-tabs",
       "input": "\tfoo\tbaz\t\tbim\n",
       "expected": "<pre><code>foo\tbaz\t\tbim\n</code></pre>"

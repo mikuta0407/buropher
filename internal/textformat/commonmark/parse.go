@@ -181,8 +181,22 @@ func (p *wwwAutolinkParser) Parse(parent ast.Node, block text.Reader, pc parser.
 	}
 	line, seg := block.PeekLine()
 	consume := 0
-	if isSpace(line[0]) || line[0] == '(' {
+	switch {
+	case isSpace(line[0]) || line[0] == '(':
 		consume = 1
+	case line[0] == 'w':
+		// 行頭、または強調等の区切り（* _ ~）の直後のみ（comrak の WWW_DELIMS）
+		l, pos := block.Position()
+		lines := parent.Lines()
+		lineHead := lines != nil && l < lines.Len() && pos.Start == lines.At(l).Start
+		if !lineHead {
+			prev := block.PrecendingCharacter()
+			if prev != '*' && prev != '_' && prev != '~' {
+				return nil
+			}
+		}
+	default:
+		return nil
 	}
 	rest := line[consume:]
 	if !bytes.HasPrefix(rest, []byte("www.")) {
@@ -379,8 +393,20 @@ func (p *footnoteRefParser) lookahead(line []byte, pc parser.Context) ast.Node {
 	if len(content) == 0 || bytes.ContainsAny(content, "`<&\\[\n\r") {
 		return nil
 	}
-	if end+1 < len(line) && (line[end+1] == '(' || line[end+1] == '[') {
+	if end+1 < len(line) && line[end+1] == '(' {
 		return nil
+	}
+	if end+1 < len(line) && line[end+1] == '[' {
+		// 参照リンク [^x][label] / [^x][]
+		if e2 := bytes.IndexByte(line[end+1:], ']'); e2 > 0 {
+			label := line[end+2 : end+1+e2]
+			if len(bytes.TrimSpace(label)) == 0 {
+				label = line[1:end]
+			}
+			if _, ok := pc.Reference(util.ToLinkReference(label)); ok {
+				return nil
+			}
+		}
 	}
 	if _, ok := pc.Reference(util.ToLinkReference(line[1:end])); ok {
 		return nil
@@ -483,11 +509,11 @@ func tableCellLen(s []byte) int {
 	i := 0
 	for i < len(s) {
 		c := s[i]
-		if c == '\\' && i+1 < len(s) && isPunct(s[i+1]) {
-			i += 2
-			continue
+		if c == 0 || c == '\r' || c == '\n' {
+			break
 		}
-		if c == 0 || c == '|' || c == '\r' || c == '\n' {
+		// '|' は直前がバックスラッシュの場合のみセルに含まれる（re2c の最長一致）
+		if c == '|' && (i == 0 || s[i-1] != '\\') {
 			break
 		}
 		i++
@@ -548,6 +574,10 @@ func (p *tableParser) Open(parent ast.Node, reader text.Reader, pc parser.Contex
 	source := reader.Source()
 	hseg := lines.At(lines.Len() - 1)
 	hline := lineWithNewline(source[hseg.Start:hseg.Stop])
+	for len(hline) > 0 && (hline[0] == ' ' || hline[0] == '\t') {
+		hline = hline[1:]
+		hseg.Start++
+	}
 	headerCells, _, ok := parseTableRow(hline)
 	if !ok || len(headerCells) != len(delimCells) {
 		markVisited()
@@ -580,6 +610,10 @@ func (p *tableParser) Open(parent ast.Node, reader text.Reader, pc parser.Contex
 	}
 	table.AppendChild(table, header)
 	// 見出し行を段落から取り除く（段落が空になれば goldmark が Close で削除する）
+	if lines.Len() == 1 && para.HasBlankPreviousLines() {
+		// 段落の直前の空行を表に引き継ぐ（リストの tight 判定用。Close で反映する）
+		table.SetAttributeString("cm-blank-before", true)
+	}
 	lines.SetSliced(0, lines.Len()-1)
 	_ = seg
 	reader.AdvanceToEOL()
@@ -631,7 +665,11 @@ func startsOtherBlock(rest []byte) bool {
 	return true
 }
 
-func (p *tableParser) Close(node ast.Node, reader text.Reader, pc parser.Context) {}
+func (p *tableParser) Close(node ast.Node, reader text.Reader, pc parser.Context) {
+	if v, ok := node.AttributeString("cm-blank-before"); ok && v == true {
+		node.SetBlankPreviousLines(true)
+	}
+}
 
 func (p *tableParser) CanInterruptParagraph() bool { return true }
 
