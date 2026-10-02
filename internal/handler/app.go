@@ -17,6 +17,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/attachments"
 	"github.com/mikuta0407/buropher/internal/authz"
 	"github.com/mikuta0407/buropher/internal/clock"
+	"github.com/mikuta0407/buropher/internal/crypto/secretbox"
 	"github.com/mikuta0407/buropher/internal/db"
 	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/helper"
@@ -49,6 +50,8 @@ type App struct {
 	AutologinCookieSecure *bool
 	// AttachmentStore は添付ファイルの保存先（Attachment.storage_path。doc.go の「規約: 添付ファイル」）。
 	AttachmentStore *attachments.Store
+	// Secrets は DB に保存する秘密値（LDAP の account_password 等）の暗号化器（server.secret_key 由来）。
+	Secrets *secretbox.Box
 }
 
 func (a *App) now() time.Time {
