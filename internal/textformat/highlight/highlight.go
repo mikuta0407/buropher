@@ -139,6 +139,11 @@ func tokens(text string, l *rougeLexer) [][2]string {
 	if out, ok := rougeTokens(text, tag); ok {
 		return out
 	}
+	return chromaTokens(text, l)
+}
+
+// chromaTokens は chroma で字句解析する（Rouge のレキサーを移植していない言語用）。
+func chromaTokens(text string, l *rougeLexer) [][2]string {
 	var lx chroma.Lexer
 	if l == nil || l.Tag == "plaintext" {
 		lx = lexers.Get("plaintext")
