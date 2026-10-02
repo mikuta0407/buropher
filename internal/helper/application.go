@@ -40,7 +40,7 @@ func (d *Deps) RequestFuncs(r *view.Render) ttemplate.FuncMap {
 		},
 		"param_blank": func(key string) bool { return httpx.IsBlank(pg().Params().String(key)) },
 		"question": func() any {
-			if q := pg().Question; q != "" {
+			if q := pg().Question; q != "" || pg().QuestionSet {
 				return q
 			}
 			return nil

@@ -1,0 +1,127 @@
+<title>Search - Redmine</title>
+----
+<!-- page specific tags -->
+</head>
+----
+<div id="main" class="nosidebar">
+  
+    <div id="sidebar">
+        <div id="sidebar-wrapper">
+          
+          
+        </div>
+    </div>
+
+    <div id="content">
+        
+        <h2>Search</h2>
+
+<form id="search-form" action="/search" accept-charset="UTF-8" name="search-form-RANDOM" method="get">
+<div class="box">
+<label class="hidden-for-sighted" for="search-input">Searchfield</label>
+<p><input type="text" name="q" id="search-input" value="recipe" size="60" data-auto-complete="true" data-controller="list-autofill" data-action="beforeinput-&gt;list-autofill#handleBeforeInput" data-list-autofill-text-formatting-param="common_mark" />
+
+<input type="hidden" name="all_words" value="" autocomplete="off" />
+<label><input type="checkbox" name="all_words" id="all_words" value="1" checked="checked" /> All words</label>
+<input type="hidden" name="titles_only" value="" autocomplete="off" />
+<label><input type="checkbox" name="titles_only" id="titles_only" value="1" /> Search titles only</label>
+</p>
+
+<fieldset class="box">
+  <legend><a href="#" onclick="toggleCheckboxesBySelector(&#39;p#search-types input&#39;); return false;" title="Check all / Uncheck all" class="icon icon-checked"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--checked"></use></svg><span class="icon-label"></span></a></legend>
+  <p id="search-types">
+  <label><input type="checkbox" name="issues" id="issues" value="1" checked="checked" /> <a href="#">Issues</a></label>
+  <label><input type="checkbox" name="news" id="news" value="1" checked="checked" /> <a href="#">News</a></label>
+  <label><input type="checkbox" name="documents" id="documents" value="1" checked="checked" /> <a href="#">Documents</a></label>
+  <label><input type="checkbox" name="changesets" id="changesets" value="1" checked="checked" /> <a href="#">Changesets</a></label>
+  <label><input type="checkbox" name="wiki_pages" id="wiki_pages" value="1" checked="checked" /> <a href="#">Wiki pages</a></label>
+  <label><input type="checkbox" name="messages" id="messages" value="1" checked="checked" /> <a href="#">Messages</a></label>
+  <label><input type="checkbox" name="projects" id="projects" value="1" checked="checked" /> <a href="#">Projects</a></label>
+  </p>
+</fieldset>
+
+<fieldset class="collapsible collapsed">
+  <legend onclick="toggleFieldset(this);" class="icon icon-collapsed">
+    <svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--angle-right"></use></svg>
+    Options
+  </legend>
+  <div id="options-content" style="display:none;">
+    <p><label><input type="checkbox" name="open_issues" id="open_issues" value="1" /> Open issues only</label></p>
+    <p>
+      <label><input type="radio" name="attachments" id="attachments_0" value="0" checked="checked" /> Do not search attachments</label>
+      <label><input type="radio" name="attachments" id="attachments_1" value="1" /> Search attachment filenames and descriptions</label>
+      <label><input type="radio" name="attachments" id="attachments_only" value="only" /> Search attachments only</label>
+    </p>
+    
+  </div>
+</fieldset>
+<input type="hidden" name="options" id="show-options" value="" autocomplete="off" />
+
+</div>
+<p><input type="submit" name="commit" value="Search" data-disable-with="Search" /></p>
+</form>
+    <div id="search-results-counts">
+      <ul><li><a href="/search?issues=1&amp;q=recipe">Issues (3)</a></li> <li><a href="/search?projects=1&amp;q=recipe">Projects (1)</a></li></ul>
+    </div>
+    <h3>Results (4)</h3>
+      <p class="buttons">
+        <a class="icon icon-list" href="/issues?f%5B%5D=status_id&amp;f%5B%5D=any_searchable&amp;op%5Bany_searchable%5D=~&amp;op%5Bstatus_id%5D=%2A&amp;set_filter=1&amp;sort=updated_on%3Adesc&amp;v%5Bany_searchable%5D%5B%5D=recipe"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--list"></use></svg><span class="icon-label">Apply issues filter</span></a>
+      </p>
+    <dl id="search-results">
+        <dt class="issue icon icon-issue">
+          <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--issue"></use></svg>
+          <span class="project">eCookbook</span>
+          <a href="/issues/1">Bug #1 (New): Cannot print <span class="highlight token-0">recipe</span>s</a>
+        </dt>
+        <dd><span class="description">Unable to print <span class="highlight token-0">recipe</span>s</span>
+        <span class="author">01/12/2026 12:00 PM</span></dd>
+        <dt class="issue icon icon-issue">
+          <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--issue"></use></svg>
+          <span class="project">eCookbook</span>
+          <a href="/issues/3">Bug #3 (New): Error 281 when updating a <span class="highlight token-0">recipe</span></a>
+        </dt>
+        <dd><span class="description">Error 281 is encountered when saving a <span class="highlight token-0">recipe</span></span>
+        <span class="author">07/19/2006 07:07 PM</span></dd>
+        <dt class="issue icon icon-issue">
+          <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--issue"></use></svg>
+          <span class="project">eCookbook</span>
+          <a href="/issues/2">Feature request #2 (Assigned): Add ingredients categories</a>
+        </dt>
+        <dd><span class="description">Ingredients of the <span class="highlight token-0">recipe</span> should be classified by categories</span>
+        <span class="author">07/19/2006 07:04 PM</span></dd>
+        <dt class="project icon icon-project">
+          <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--project"></use></svg>
+          <span class="project">eCookbook</span>
+          <a href="/projects/ecookbook">Project: eCookbook</a>
+        </dt>
+        <dd><span class="description"><span class="highlight token-0">Recipe</span>s management application</span>
+        <span class="author">07/19/2006 05:13 PM</span></dd>
+    </dl>
+
+<span class="pagination"><ul class="pages"></ul><span><span class="items">(1-4/4)</span> </span></span>
+
+
+<script>
+//<![CDATA[
+
+$("#search-types a").click(function(e){
+  e.preventDefault();
+  $("#search-types input[type=checkbox]").prop('checked', false);
+  $(this).siblings("input[type=checkbox]").prop('checked', true);
+  if ($("#search-input").val() != "") {
+    $("#search-form").submit();
+  }
+});
+
+$("#search-form").submit(function(){
+  $("#show-options").val($("#options-content").is(":visible") ? '1' : '0');
+});
+
+
+//]]>
+</script>
+        
+        <div style="clear:both;"></div>
+    </div>
+</div>
+<div id="footer">

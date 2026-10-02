@@ -1,0 +1,38 @@
+status: 200
+content-type: application/xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<results limit="25" offset="0" total_count="4" type="array">
+  <result>
+    <id>1</id>
+    <title>Bug #1 (New): Cannot print recipes</title>
+    <type>issue</type>
+    <url>{{BASE}}/issues/1</url>
+    <description>Unable to print recipes</description>
+    <datetime>2026-01-12T12:00:00Z</datetime>
+  </result>
+  <result>
+    <id>3</id>
+    <title>Bug #3 (New): Error 281 when updating a recipe</title>
+    <type>issue</type>
+    <url>{{BASE}}/issues/3</url>
+    <description>Error 281 is encountered when saving a recipe</description>
+    <datetime>2006-07-19T19:07:27Z</datetime>
+  </result>
+  <result>
+    <id>2</id>
+    <title>Feature request #2 (Assigned): Add ingredients categories</title>
+    <type>issue</type>
+    <url>{{BASE}}/issues/2</url>
+    <description>Ingredients of the recipe should be classified by categories</description>
+    <datetime>2006-07-19T19:04:21Z</datetime>
+  </result>
+  <result>
+    <id>1</id>
+    <title>Project: eCookbook</title>
+    <type>project</type>
+    <url>{{BASE}}/projects/ecookbook</url>
+    <description>Recipes management application</description>
+    <datetime>2006-07-19T17:13:59Z</datetime>
+  </result>
+</results>

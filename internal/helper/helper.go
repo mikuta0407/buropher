@@ -81,6 +81,8 @@ type Page struct {
 	DefaultSearchScope string
 	// Question は @question（検索語）。
 	Question string
+	// QuestionSet は @question が nil でない（空文字列でも value="" を出す）。
+	QuestionSet bool
 	// DB はヘルパーがデータを読むための接続（nil ならデータを要する部分は空になる）。
 	DB db.Queryer
 	// Authz は User.current の Authorizer を返す（nil なら管理者のみ許可する保守的な判定）。

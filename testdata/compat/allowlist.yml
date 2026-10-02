@@ -58,3 +58,8 @@ entries:
     reason: "フィクスチャの CookBook_documentation の版 3 のコメントが wiki_contents と wiki_content_versions で食い違う（統合時に wiki_contents を優先）"
     lines:
       - '^\s*<td class="comments">(Gzip compression activated)?</td>$'
+  # ---- activity_search（活動・検索） ----
+  - case: "activity_search/activity_from_2007-03-06_show_wiki_edits_*"
+    reason: "wiki_page_versions は wiki_contents と wiki_content_versions を統合して持ち、同じ版は wiki_contents を優先する（docs/schema.md）。フィクスチャの CookBook_documentation 版 3 は wiki_contents のコメント（Gzip compression activated）と wiki_content_versions のコメント（空）が食い違うため活動の説明が異なる"
+    lines:
+      - '^\s*<span class="description">(Gzip compression activated)?</span>$'

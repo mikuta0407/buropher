@@ -3,6 +3,7 @@ package handler
 import (
 	"errors"
 	"net/http"
+	"net/url"
 	"sort"
 	"strconv"
 	"strings"
@@ -393,17 +394,35 @@ func (a *App) UsersShow(c *Req) {
 	for i, id := range assigned {
 		assignedParam[i] = itoa(id)
 	}
+	// Redmine::Activity::Fetcher.new(User.current, :author => @user).events(nil, nil, :limit => 10)
+	eventsByDay, err := a.userActivityEvents(c, u)
+	if err != nil {
+		a.serverError(c, err)
+		return
+	}
+	var activityURL string
+	atomParams := rails.NewHash("user_id", u.ID)
+	if len(eventsByDay) > 0 {
+		activityURL = helper.URLWithQuery("/activity", rails.NewHash("user_id", u.ID, "from", eventsByDay[0].Day.Format("2006-01-02")))
+		if k := c.AtomKey(); k != "" {
+			atomParams.Set("key", k)
+		}
+	}
 	c.Render("users/show", map[string]any{
-		"User":          u,
-		"Pref":          pref,
-		"Emails":        emails,
-		"CustomValues":  cfs[u.ID],
-		"Counts":        counts,
-		"AssignedToIDs": strings.Join(assignedParam, "|"),
-		"Memberships":   tree,
-		"Groups":        groups,
-		// TODO(activity): Redmine::Activity::Fetcher による最近の活動（events_by_day）
-		"EventsByDay": nil,
+		"User":            u,
+		"Pref":            pref,
+		"Emails":          emails,
+		"CustomValues":    cfs[u.ID],
+		"Counts":          counts,
+		"AssignedToIDs":   strings.Join(assignedParam, "|"),
+		"Memberships":     tree,
+		"Groups":          groups,
+		"EventsByDay":     eventsByDay,
+		"ActivityURL":     activityURL,
+		"ActivityAtomURL": helper.URLWithQuery("/activity.atom", atomParams),
+		// url_for(:controller => 'activities', :action => 'index', :user_id => @user, :format => :atom, :key => ...)
+		// は :id => nil を指定しないため現在のパスパラメータ id が残り /projects/:id/activity.atom になる（Redmine と同じ）
+		"ActivityFeedURL": httpx.RequestBaseURL(c.R) + helper.URLWithQuery("/projects/"+url.PathEscape(c.Params().String("id"))+"/activity.atom", atomParams),
 	})
 }
 

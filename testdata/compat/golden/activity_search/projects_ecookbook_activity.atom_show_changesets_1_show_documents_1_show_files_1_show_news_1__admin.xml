@@ -1,0 +1,174 @@
+status: 200
+content-type: application/atom+xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>eCookbook: Activity</title>
+  <link href="{{BASE}}/projects/ecookbook/activity.atom?show_changesets=1&amp;show_documents=1&amp;show_files=1&amp;show_news=1" rel="self"/>
+  <link href="{{BASE}}/projects/ecookbook/activity?show_changesets=1&amp;show_documents=1&amp;show_files=1&amp;show_news=1" rel="alternate"/>
+  <id>{{BASE}}/</id>
+  <icon>{{BASE}}/assets/favicon-DIGEST.ico</icon>
+  <updated>2025-04-07T19:00:00Z</updated>
+  <author>
+    <name>Redmine</name>
+  </author>
+  <generator uri="https://www.redmine.org/">&#xA;Redmine  </generator>
+  <entry>
+    <title>Revision 11: This commit references an issue and a [[wiki]] page</title>
+    <link href="{{BASE}}/projects/ecookbook/repository/10/revisions/11" rel="alternate"/>
+    <id>{{BASE}}/projects/ecookbook/repository/10/revisions/11</id>
+    <updated>2025-04-07T19:00:00Z</updated>
+    <author>
+      <name>Dave Lopper</name>
+      <email>dlopper@somenet.foo</email>
+    </author>
+    <content type="html">&#xA;&lt;p&gt;Refs &lt;a class=&#34;issue tracker-2 status-2 priority-5 priority-default&#34; title=&#34;Feature request: Add ingredients categories (Assigned)&#34; href=&#34;{{BASE}}/issues/2&#34;&gt;#2&lt;/a&gt;&lt;/p&gt;    </content>
+  </entry>
+  <entry>
+    <title>redmine_logo.ai.unknown</title>
+    <link href="{{BASE}}/attachments/22/redmine_logo.ai.unknown" rel="alternate"/>
+    <id>{{BASE}}/attachments/22/redmine_logo.ai.unknown</id>
+    <updated>2019-04-30T00:23:44Z</updated>
+    <author>
+      <name>Redmine Admin</name>
+    </author>
+    <content type="html">&#xA;&lt;p&gt;unknown type&lt;/p&gt;    </content>
+  </entry>
+  <entry>
+    <title>Revision 10: Same file modified.</title>
+    <link href="{{BASE}}/projects/ecookbook/repository/10/revisions/10" rel="alternate"/>
+    <id>{{BASE}}/projects/ecookbook/repository/10/revisions/10</id>
+    <updated>2009-09-10T19:04:35Z</updated>
+    <author>
+      <name>Dave Lopper</name>
+      <email>dlopper@somenet.foo</email>
+    </author>
+    <content type="html"/>
+  </entry>
+  <entry>
+    <title>Revision 9: One file added.</title>
+    <link href="{{BASE}}/projects/ecookbook/repository/10/revisions/9" rel="alternate"/>
+    <id>{{BASE}}/projects/ecookbook/repository/10/revisions/9</id>
+    <updated>2009-09-10T19:04:35Z</updated>
+    <author>
+      <name>Dave Lopper</name>
+      <email>dlopper@somenet.foo</email>
+    </author>
+    <content type="html"/>
+  </entry>
+  <entry>
+    <title>Revision 8: This commits references an issue.</title>
+    <link href="{{BASE}}/projects/ecookbook/repository/10/revisions/8" rel="alternate"/>
+    <id>{{BASE}}/projects/ecookbook/repository/10/revisions/8</id>
+    <updated>2007-09-10T19:04:35Z</updated>
+    <author>
+      <name>Dave Lopper</name>
+      <email>dlopper@somenet.foo</email>
+    </author>
+    <content type="html">&#xA;&lt;p&gt;Refs &lt;a class=&#34;issue tracker-2 status-2 priority-5 priority-default&#34; title=&#34;Feature request: Add ingredients categories (Assigned)&#34; href=&#34;{{BASE}}/issues/2&#34;&gt;#2&lt;/a&gt;&lt;/p&gt;    </content>
+  </entry>
+  <entry>
+    <title>Revision 7: Removed one file.</title>
+    <link href="{{BASE}}/projects/ecookbook/repository/10/revisions/7" rel="alternate"/>
+    <id>{{BASE}}/projects/ecookbook/repository/10/revisions/7</id>
+    <updated>2007-09-10T19:02:16Z</updated>
+    <author>
+      <name>Dave Lopper</name>
+      <email>dlopper@somenet.foo</email>
+    </author>
+    <content type="html"/>
+  </entry>
+  <entry>
+    <title>Revision 6: Moved helloworld.rb from / to /folder.</title>
+    <link href="{{BASE}}/projects/ecookbook/repository/10/revisions/6" rel="alternate"/>
+    <id>{{BASE}}/projects/ecookbook/repository/10/revisions/6</id>
+    <updated>2007-09-10T19:01:47Z</updated>
+    <author>
+      <name>Dave Lopper</name>
+      <email>dlopper@somenet.foo</email>
+    </author>
+    <content type="html"/>
+  </entry>
+  <entry>
+    <title>Revision 5: Modified one file in the folder.</title>
+    <link href="{{BASE}}/projects/ecookbook/repository/10/revisions/5" rel="alternate"/>
+    <id>{{BASE}}/projects/ecookbook/repository/10/revisions/5</id>
+    <updated>2007-09-10T19:01:08Z</updated>
+    <author>
+      <name>Dave Lopper</name>
+      <email>dlopper@somenet.foo</email>
+    </author>
+    <content type="html"/>
+  </entry>
+  <entry>
+    <title>Revision 4: A commit with an issue id of an other project</title>
+    <link href="{{BASE}}/projects/ecookbook/repository/10/revisions/4" rel="alternate"/>
+    <id>{{BASE}}/projects/ecookbook/repository/10/revisions/4</id>
+    <updated>2007-04-12T13:14:44Z</updated>
+    <author>
+      <name>Dave Lopper</name>
+      <email>dlopper@somenet.foo</email>
+    </author>
+    <content type="html">&#xA;&lt;p&gt;IssueID 4 2&lt;/p&gt;    </content>
+  </entry>
+  <entry>
+    <title>Revision 3: A commit with wrong issue ids</title>
+    <link href="{{BASE}}/projects/ecookbook/repository/10/revisions/3" rel="alternate"/>
+    <id>{{BASE}}/projects/ecookbook/repository/10/revisions/3</id>
+    <updated>2007-04-12T13:14:44Z</updated>
+    <author>
+      <name>Dave Lopper</name>
+      <email>dlopper@somenet.foo</email>
+    </author>
+    <content type="html">&#xA;&lt;p&gt;IssueID #666 &lt;a class=&#34;issue tracker-1 status-1 priority-4 priority-lowest overdue behind-schedule&#34; title=&#34;Bug: Error 281 when updating a recipe (New)&#34; href=&#34;{{BASE}}/issues/3&#34;&gt;#3&lt;/a&gt;&lt;/p&gt;    </content>
+  </entry>
+  <entry>
+    <title>Revision 2: This commit fixes #1, #2 and references #1 &amp; #3</title>
+    <link href="{{BASE}}/projects/ecookbook/repository/10/revisions/2" rel="alternate"/>
+    <id>{{BASE}}/projects/ecookbook/repository/10/revisions/2</id>
+    <updated>2007-04-12T13:14:44Z</updated>
+    <author>
+      <name>Dave Lopper</name>
+      <email>dlopper@somenet.foo</email>
+    </author>
+    <content type="html"/>
+  </entry>
+  <entry>
+    <title>Revision 1: My very first commit do not escaping #&lt;&gt;&amp;</title>
+    <link href="{{BASE}}/projects/ecookbook/repository/10/revisions/1" rel="alternate"/>
+    <id>{{BASE}}/projects/ecookbook/repository/10/revisions/1</id>
+    <updated>2007-04-11T13:14:44Z</updated>
+    <author>
+      <name>Dave Lopper</name>
+      <email>dlopper@somenet.foo</email>
+    </author>
+    <content type="html"/>
+  </entry>
+  <entry>
+    <title>Document: An other document 2</title>
+    <link href="{{BASE}}/documents/3" rel="alternate"/>
+    <id>{{BASE}}/documents/3</id>
+    <updated>2007-03-05T14:08:27Z</updated>
+    <author>
+      <name>Redmine Admin</name>
+    </author>
+    <content type="html"/>
+  </entry>
+  <entry>
+    <title>archive.zip</title>
+    <link href="{{BASE}}/attachments/21/archive.zip" rel="alternate"/>
+    <id>{{BASE}}/attachments/21/archive.zip</id>
+    <updated>2007-03-05T14:08:27Z</updated>
+    <author>
+      <name>Redmine Admin</name>
+    </author>
+    <content type="html"/>
+  </entry>
+  <entry>
+    <title>Document: An other document</title>
+    <link href="{{BASE}}/documents/2" rel="alternate"/>
+    <id>{{BASE}}/documents/2</id>
+    <updated>2007-02-12T14:08:27Z</updated>
+    <content type="html"/>
+  </entry>
+</feed>
