@@ -110,7 +110,7 @@ func TestGanttBehavior(t *testing.T) {
 	for path, want := range map[string]int{
 		"/projects/unknown/issues/gantt":        404,
 		"/issues/gantt?query_id=999":            404,
-		"/issues/gantt.pdf":                     406,
+		"/issues/gantt.pdf":                     200,
 		"/issues/gantt.png":                     406,
 		"/projects/ecookbook/issues/gantt":      200,
 		"/projects/ecookbook/issues/gantt.json": 406,

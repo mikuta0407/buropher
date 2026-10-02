@@ -45,7 +45,7 @@ requests:
     users: [dlopper]
   - path: /issues/gantt.pdf
     users: [admin]
-    skip: "TODO(pdf): Gantt#to_pdf は未対応（候補は 406）"
+    skip: "PDF は見た目の近似でバイト一致しない（docs/pdf.md。internal/server/pdf_test.go で検証）"
   # ---- プロジェクト
   - path: /projects/ecookbook/issues/gantt?set_filter=1&zoom=2&months=6
     users: [anonymous, admin, jsmith, dlopper]
@@ -76,7 +76,7 @@ requests:
     users: [admin]
   - path: /projects/ecookbook/issues/gantt.pdf?zoom=2&months=6
     users: [jsmith]
-    skip: "TODO(pdf): Gantt#to_pdf は未対応（候補は 406）"
+    skip: "PDF は見た目の近似でバイト一致しない（docs/pdf.md。internal/server/pdf_test.go で検証）"
   # ---- XHR（layout なし）
   - path: /projects/ecookbook/issues/gantt?set_filter=1&zoom=2&months=6
     id: project_gantt_xhr

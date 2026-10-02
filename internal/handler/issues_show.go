@@ -1,6 +1,6 @@
 package handler
 
-// IssuesController#show（html / atom / api）と issue_tab、およびチケット詳細画面の HTML 部品
+// IssuesController#show（html / atom / pdf / api）と issue_tab、およびチケット詳細画面の HTML 部品
 // （issues/show・_action_menu・_relations・_subtasks・tabs/_history・watchers/_watchers・attachments/_links）。
 
 import (
@@ -63,8 +63,7 @@ func (a *App) IssuesShow(c *Req) {
 	case "atom":
 		a.issuesShowAtom(c)
 	case "pdf":
-		// TODO(pdf): PDF 出力は未対応
-		renderUnknownFormat(c)
+		a.issuesShowPDF(c)
 	default:
 		renderUnknownFormat(c)
 	}

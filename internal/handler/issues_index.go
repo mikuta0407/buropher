@@ -71,8 +71,7 @@ func (a *App) IssuesIndex(c *Req) {
 	case "csv":
 		a.renderIssuesIndexCSV(c, q)
 	case "pdf":
-		// TODO(pdf): PDF 出力は未対応
-		renderUnknownFormat(c)
+		a.renderIssuesIndexPDF(c, q)
 	}
 }
 

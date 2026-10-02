@@ -3,7 +3,7 @@ package handler
 // このファイルは Redmine::Helpers::Gantt（lib/redmine/helpers/gantt.rb）の HTML 形式の移植。
 // 期間（year / month / months）・拡大率（zoom）の決定、プロジェクト・バージョン・チケットの木の並び、
 // 左側の題名（subjects）・右側の線（lines）・選択列（selected_column_content）の描画を行う。
-// PDF / PNG 形式（to_pdf / to_image）は未対応。
+// PDF 形式（to_pdf）は gantt_pdf.go。PNG 形式（to_image）は未対応。
 
 import (
 	"context"
@@ -121,6 +121,8 @@ type ganttOptions struct {
 	subjectWidth            int
 	only                    string // "" / "subjects" / "lines" / "selected_columns"
 	column                  *query.Column
+	// pdf は :format => :pdf のときの描画先（gantt_pdf.go）。
+	pdf *ganttPDF
 }
 
 // newGanttChart は Gantt.new(params)（個人設定 gantt_zoom / gantt_months の保存を含む）。
@@ -512,6 +514,9 @@ func (g *ganttChart) render(o ganttOptions) {
 		o.indentIncrement = 20
 	}
 	indent := 4
+	if o.pdf != nil {
+		indent = 0
+	}
 	switch o.only {
 	case "":
 		g.subjects.Reset()
@@ -526,6 +531,9 @@ func (g *ganttChart) render(o ganttOptions) {
 	})
 	if errors.Is(err, errGanttMaxLines) {
 		g.Truncated = true
+	}
+	if o.pdf != nil {
+		o.pdf.renderEnd()
 	}
 }
 
@@ -651,7 +659,9 @@ func (g *ganttChart) renderIssues(issues []*query.IssueRow, o *ganttOptions) err
 }
 
 func (g *ganttChart) renderObjectRow(obj any, o *ganttOptions) error {
-	if o.only != "lines" && o.only != "selected_columns" {
+	if o.pdf != nil {
+		g.pdfObjectRow(obj, o)
+	} else if o.only != "lines" && o.only != "selected_columns" {
 		switch x := obj.(type) {
 		case *domain.Project:
 			g.htmlSubject(o, x)
@@ -661,7 +671,7 @@ func (g *ganttChart) renderObjectRow(obj any, o *ganttOptions) error {
 			g.htmlSubject(o, x)
 		}
 	}
-	if o.only != "subjects" && o.only != "selected_columns" {
+	if o.pdf == nil && o.only != "subjects" && o.only != "selected_columns" {
 		switch x := obj.(type) {
 		case *domain.Project:
 			g.lineForProject(x, o)
