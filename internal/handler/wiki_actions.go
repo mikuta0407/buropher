@@ -67,7 +67,7 @@ func (a *App) WikiIndex(c *Req) {
 	if !a.wikiHTMLFormat(c) {
 		return
 	}
-	c.Render("wiki/index", a.wikiIndexData(c, pages))
+	a.wikiRender(c, "wiki/index", a.wikiIndexData(c, pages))
 }
 
 func wikiPageVersionValue(p *domain.WikiPage) any {
@@ -163,7 +163,7 @@ func (a *App) WikiDateIndex(c *Req) {
 	sort.Slice(groups, func(i, j int) bool { return groups[i].Date.After(groups[j].Date) })
 	data := a.wikiIndexData(c, pages)
 	data["PagesByDate"] = groups
-	c.Render("wiki/date_index", data)
+	a.wikiRender(c, "wiki/date_index", data)
 }
 
 // ---------------------------------------------------------------- show
@@ -268,7 +268,7 @@ func (a *App) WikiShow(c *Req) {
 	data["AttachmentsDeletable"] = visible && a.wikiAttachmentsDeletable(c, page)
 	data["CanAddAttachment"] = c.Authorize0("wiki", "add_attachment")
 	data["ShowWatchers"] = a.wikiShowWatchers(c, page)
-	c.Render("wiki/show", data)
+	a.wikiRender(c, "wiki/show", data)
 }
 
 // Authorize0 は authorize_for(controller, action)（@project で判定。描画しない）。
@@ -585,7 +585,7 @@ func (a *App) renderWikiEdit(c *Req, ev *wikiEditView) {
 	data["Attachments"] = atts
 	data["AttachmentsDeletable"] = len(atts) > 0 && a.wikiAttachmentsDeletable(c, page)
 	data["CanAddWatchers"] = c.AllowedTo(domain.Perm("add_wiki_page_watchers"), c.Project)
-	c.Render("wiki/edit", data)
+	a.wikiRender(c, "wiki/edit", data)
 }
 
 // parentPageOptions は wiki_page_options_for_select(@wiki.pages - @page.self_and_descendants, @page.parent)。
@@ -959,7 +959,7 @@ func (a *App) WikiNew(c *Req) {
 		c.Render("wiki/new", data, RenderOptions{Format: "js"})
 		return
 	}
-	c.Render("wiki/new", data)
+	a.wikiRender(c, "wiki/new", data)
 }
 
 func newFormOf(title string, present bool, errs *validation.Errors) *wikiNewForm {
@@ -1147,7 +1147,7 @@ func (a *App) WikiRename(c *Req) {
 		}
 		data["WikiOptions"] = wo
 	}
-	c.Render("wiki/rename", data)
+	a.wikiRender(c, "wiki/rename", data)
 }
 
 func withoutKey(e *validation.Errors, attr, key string) *validation.Errors {
@@ -1329,7 +1329,7 @@ func (a *App) WikiDiff(c *Req) {
 	data["ContentTo"] = to
 	data["ContentFrom"] = from
 	data["DiffHTML"] = wikidiff.WordDiffHTML(to.Text, from.Text)
-	c.Render("wiki/diff", data)
+	a.wikiRender(c, "wiki/diff", data)
 }
 
 // wikiDiffContents は WikiPage#diff(version_to, version_from) の (content_to, content_from)。
@@ -1452,7 +1452,7 @@ func (a *App) WikiAnnotate(c *Req) {
 	}
 	data["AnnotateContent"] = all[idx]
 	data["Lines"] = out
-	c.Render("wiki/annotate", data)
+	a.wikiRender(c, "wiki/annotate", data)
 }
 
 // ---------------------------------------------------------------- destroy / destroy_version
@@ -1571,7 +1571,7 @@ func (a *App) renderWikiDestroy(c *Req, page *domain.WikiPage, count int, descen
 	data["DescendantsCount"] = count
 	data["Reassignable"] = &WikiPageOptions{Pages: re}
 	data["HasReassignable"] = len(re) > 0
-	c.Render("wiki/destroy", data)
+	a.wikiRender(c, "wiki/destroy", data)
 }
 
 // WikiDestroyVersion は wiki#destroy_version。
@@ -1718,4 +1718,13 @@ func (a *App) WikiAddAttachment(c *Req) {
 	}
 	a.wikiAttachFiles(c, page, c.Params().Map("attachments"))
 	c.Redirect(wikiPagePath(c.Project, page.Title))
+}
+
+// wikiRender は HTML の描画（ApplicationController#use_layout: XHR ならレイアウトなし）。
+func (a *App) wikiRender(c *Req, name string, data any) {
+	opts := RenderOptions{}
+	if httpx.IsXHR(c.R) {
+		opts.Layout = view.NoLayout
+	}
+	c.Render(name, data, opts)
 }
