@@ -415,3 +415,24 @@ func (m *issueModel) CanManageCategories() bool { return m.allowedTo("manage_cat
 
 // CanManageVersions は User.current.allowed_to?(:manage_versions, @issue.project)。
 func (m *issueModel) CanManageVersions() bool { return m.allowedTo("manage_versions") }
+
+// issueRowFromIssue は編集中（未保存の変更を含む）チケットの表示用の行。
+func issueRowFromIssue(iss *issues.Issue) *query.IssueRow {
+	r := &query.IssueRow{ID: iss.ID, ProjectID: iss.ProjectID, TrackerID: iss.TrackerID, StatusID: iss.StatusID,
+		PriorityID: iss.PriorityID, AuthorID: iss.AuthorID, AssignedToID: iss.AssignedToID, CategoryID: iss.CategoryID,
+		FixedVersionID: iss.FixedVersionID, ParentID: iss.ParentID, RootID: iss.RootID, HierPath: iss.HierPath,
+		Subject: iss.Subject, StartDate: iss.StartDate, DueDate: iss.DueDate, DoneRatio: iss.DoneRatio,
+		EstimatedHours: iss.EstimatedHours, IsPrivate: iss.IsPrivate, LockVersion: iss.LockVersion,
+		CreatedAt: iss.CreatedAt, UpdatedAt: iss.UpdatedAt, ClosedAt: iss.ClosedAt}
+	if iss.Description != nil {
+		r.Description = *iss.Description
+	}
+	return r
+}
+
+// modelFor は編集中のチケット（issues.Issue のインスタンス）の issueModel（new / edit / update の @issue）。
+func (l *issueLookup) modelFor(iss *issues.Issue) *issueModel {
+	r := issueRowFromIssue(iss)
+	return &issueModel{l: l, Row: r, I: iss, Project: l.project(r.ProjectID), Tracker: l.tracker(r.TrackerID),
+		Status: l.status(r.StatusID), Priority: l.priority(r.PriorityID)}
+}

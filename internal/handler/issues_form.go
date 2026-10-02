@@ -7,13 +7,16 @@ import (
 	"html/template"
 	"net/url"
 	"regexp"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
 
+	"github.com/mikuta0407/buropher/internal/attachments"
 	"github.com/mikuta0407/buropher/internal/customfield"
 	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/helper"
+	"github.com/mikuta0407/buropher/internal/issues"
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/view/rails"
 )
@@ -29,14 +32,25 @@ type issueEditForm struct {
 	// TimeEntry は @time_entry（time_tracking モジュールが無効なら nil）。
 	TimeEntry *timeEntryFormModel
 
+	// IsNew は @issue.new_record?。
+	IsNew bool
+	// ErrorMessages は error_messages_for 'issue'（edit では 'issue', 'time_entry'）。
+	ErrorMessages []string
+	// Conflict は @conflict（楽観ロックの衝突）。
+	Conflict bool
+	// ConflictJournals は @conflict_journals。
+	ConflictJournals []*journalView
+	// saved は save_attachments の結果（saved_attachments の再表示）。
+	saved *attachments.SaveResult
+
 	cfEnvCache map[int64]*customfield.Env
 }
 
 // newIssueEditForm は編集フォームのデータを作る。
 func (a *App) newIssueEditForm(c *Req, l *issueLookup, v *issueShowView) *issueEditForm {
 	m := v.M
-	f := &issueEditForm{l: l, v: v, m: m, Model: &issueFormModel{l: l, m: m}}
-	if m.Project.ModuleEnabled("time_tracking") {
+	f := &issueEditForm{l: l, v: v, m: m, Model: &issueFormModel{l: l, m: m}, IsNew: m.I != nil && m.I.NewRecord()}
+	if !f.IsNew && m.Project.ModuleEnabled("time_tracking") {
 		f.TimeEntry = a.newTimeEntryFormModel(l, m)
 	}
 	return f
@@ -54,7 +68,15 @@ type issueFormModel struct {
 func (f *issueFormModel) ParamKey() string { return "issue" }
 
 // Persisted は persisted?。
-func (f *issueFormModel) Persisted() bool { return true }
+func (f *issueFormModel) Persisted() bool { return f.m.I == nil || f.m.I.Persisted() }
+
+// ErrorsOn は errors[attr]（ラベルの class="error" に使う）。
+func (f *issueFormModel) ErrorsOn(attr string) []string {
+	if f.m.I == nil {
+		return nil
+	}
+	return f.m.I.Errors.On(attr)
+}
 
 // ToParam は to_param。
 func (f *issueFormModel) ToParam() string { return strconv.FormatInt(f.m.Row.ID, 10) }
@@ -101,11 +123,17 @@ func (f *issueFormModel) Send(method string) (any, bool) {
 	case "fixed_version_id":
 		return idOrNil(r.FixedVersionID), true
 	case "parent_issue_id":
+		if f.m.I != nil {
+			if s := f.m.I.ParentIssueID(); s != "" {
+				return s, true
+			}
+			return nil, true
+		}
 		return idOrNil(r.ParentID), true
 	case "subject":
 		return r.Subject, true
 	case "description":
-		if r.Description == "" && f.m.I != nil && f.m.I.Description == nil {
+		if f.m.I != nil && f.m.I.Description == nil {
 			return nil, true
 		}
 		return r.Description, true
@@ -118,14 +146,27 @@ func (f *issueFormModel) Send(method string) (any, bool) {
 			return nil, true
 		}
 		return *r.EstimatedHours, true
+	case "estimated_hours_before_type_cast":
+		if f.m.I != nil && f.m.I.EstimatedHoursBeforeTypeCast() != "" {
+			return f.m.I.EstimatedHoursBeforeTypeCast(), true
+		}
+		if r.EstimatedHours == nil {
+			return nil, true
+		}
+		return *r.EstimatedHours, true
 	case "done_ratio":
 		return r.DoneRatio, true
 	case "lock_version":
 		return r.LockVersion, true
 	case "notes":
+		if f.m.I != nil {
+			if n := f.m.I.Notes(); n != nil {
+				return *n, true
+			}
+		}
 		return nil, true
 	case "private_notes":
-		return false, true
+		return f.m.I != nil && f.m.I.PrivateNotes(), true
 	}
 	return nil, false
 }
@@ -137,6 +178,27 @@ type timeEntryFormModel struct {
 	ActivityID any
 	Activities []*domain.Enumeration
 	CFValues   []*issueCFValue
+	// TE は入力値を代入済みの @time_entry（update の検証エラー時の再表示。nil なら新規の既定値）。
+	TE *issues.TimeEntry
+	// Params は params[:time_entry]。
+	Params *issues.TimeEntryParams
+}
+
+// setInput は @time_entry.safe_attributes = params[:time_entry] の結果をフォームに反映する。
+func (t *timeEntryFormModel) setInput(te *issues.TimeEntry, p *issues.TimeEntryParams) {
+	t.TE, t.Params = te, p
+	if te == nil {
+		return
+	}
+	t.ActivityID = nil
+	if te.ActivityID != nil {
+		t.ActivityID = *te.ActivityID
+	}
+	for _, v := range t.CFValues {
+		if vals, ok := te.CustomFieldValues[v.CF.ID]; ok {
+			v.Values = vals
+		}
+	}
 }
 
 // newTimeEntryFormModel は TimeEntry.new(:issue => @issue, :project => @issue.project)。
@@ -179,12 +241,33 @@ func (t *timeEntryFormModel) HumanAttributeName(attr string) string {
 // Send は属性値。
 func (t *timeEntryFormModel) Send(method string) (any, bool) {
 	switch method {
-	case "hours", "comments":
+	case "hours":
+		if t.TE != nil && t.TE.Hours != nil {
+			return *t.TE.Hours, true
+		}
+		return nil, true
+	case "hours_before_type_cast":
+		if t.TE != nil && t.Params != nil && t.Params.Hours != nil {
+			return *t.Params.Hours, true
+		}
+		return nil, true
+	case "comments":
+		if t.Params != nil && t.Params.Comments != nil {
+			return *t.Params.Comments, true
+		}
 		return nil, true
 	case "activity_id":
 		return t.ActivityID, true
 	}
 	return nil, false
+}
+
+// ErrorsOn は errors[attr]。
+func (t *timeEntryFormModel) ErrorsOn(attr string) []string {
+	if t.TE == nil {
+		return nil
+	}
+	return t.TE.Errors.On(attr)
 }
 
 // ActivityOptions は activity_collection_for_select_options(@time_entry)。
@@ -219,11 +302,33 @@ func (t *timeEntryFormModel) CustomFieldTags(f *issueEditForm) []template.HTML {
 
 // UpdateFormPath は update_issue_form_path(@project, @issue)（escape_javascript 済みの onchange 用）。
 func (f *issueEditForm) UpdateFormOnchange() string {
-	return "updateIssueFrom('" + rails.EscapeJavascriptString("/issues/"+strconv.FormatInt(f.m.Row.ID, 10)+"/edit.js") + "', this)"
+	return "updateIssueFrom('" + rails.EscapeJavascriptString(f.updateFormPath()) + "', this)"
+}
+
+// updateFormPath は update_issue_form_path(@project, @issue)。
+func (f *issueEditForm) updateFormPath() string {
+	if f.IsNew {
+		if p := f.l.c.Project; p != nil {
+			return "/projects/" + p.Identifier + "/issues/new.js"
+		}
+		return "/issues/new.js"
+	}
+	return "/issues/" + strconv.FormatInt(f.m.Row.ID, 10) + "/edit.js"
+}
+
+// CategoryOnchange は category_id の onchange（新規のときだけ update_form を呼ぶ）。
+func (f *issueEditForm) CategoryOnchange() any {
+	if f.IsNew {
+		return f.UpdateFormOnchange()
+	}
+	return nil
 }
 
 // PreviewURL は preview_issue_path(:project_id => @issue.project, :issue_id => @issue.id)。
 func (f *issueEditForm) PreviewURL() string {
+	if f.IsNew {
+		return "/issues/preview?project_id=" + url.QueryEscape(f.m.Project.Identifier)
+	}
 	return "/issues/preview?issue_id=" + strconv.FormatInt(f.m.Row.ID, 10) + "&project_id=" + url.QueryEscape(f.m.Project.Identifier)
 }
 
@@ -231,22 +336,34 @@ func (f *issueEditForm) PreviewURL() string {
 func (f *issueEditForm) NotesPreviewURL() string {
 	p := f.l.c.Project
 	if p == nil {
-		p = f.m.Project
+		return "/issues/preview?issue_id=" + strconv.FormatInt(f.m.Row.ID, 10)
 	}
 	return "/issues/preview?issue_id=" + strconv.FormatInt(f.m.Row.ID, 10) + "&project_id=" + url.QueryEscape(p.Identifier)
 }
 
 // ShowProjectSelect は project_id の select の表示条件（既存チケット）。
 func (f *issueEditForm) ShowProjectSelect() bool {
-	if !f.m.SafeAttribute("project_id") {
+	if !f.m.SafeAttribute("project_id") && !(f.m.I != nil && f.m.I.AttrChanged("project_id")) {
 		return false
 	}
-	return f.l.c.Project == nil || len(f.projects()) > 1
+	return f.l.c.Project == nil || len(f.projects()) > 1 || (f.m.I != nil && f.m.I.IsCopy())
 }
 
 // projects は projects_for_select(@issue)。
 func (f *issueEditForm) projects() []*domain.Project {
-	ps := f.m.AllowedTargetProjects()
+	var ps []*domain.Project
+	switch iss := f.m.I; {
+	case iss != nil && iss.ParentIssueID() != "":
+		var err error
+		ps, err = f.m.env().AllowedTargetProjectsForSubtask(f.l.ctx, iss, f.l.c.User)
+		f.l.fail(err)
+	case iss != nil && f.l.c.Project != nil && iss.NewRecord() && !iss.IsCopy():
+		var err error
+		ps, err = f.m.env().AllowedTargetProjects(f.l.ctx, iss, f.l.c.User, "tree")
+		f.l.fail(err)
+	default:
+		ps = f.m.AllowedTargetProjects()
+	}
 	if f.m.ReadOnlyAttribute("project_id") {
 		if id := f.l.c.Params().String("project_id"); rails.IsPresent(id) {
 			if p, err := repository.FindProjectByIdentifier(f.l.ctx, f.l.a.DB, id); err == nil {
@@ -314,13 +431,31 @@ func isProjectAncestorIn(anc, p *domain.Project, in map[int64]*domain.Project) b
 	return false
 }
 
-// ShowTrackerSelect は safe_attribute?('tracker_id')。
-func (f *issueEditForm) ShowTrackerSelect() bool { return f.m.SafeAttribute("tracker_id") }
+// ShowTrackerSelect は safe_attribute?('tracker_id') || (persisted? && tracker_id_changed?)。
+func (f *issueEditForm) ShowTrackerSelect() bool {
+	return f.m.SafeAttribute("tracker_id") || (f.m.I != nil && f.m.I.Persisted() && f.m.I.AttrChanged("tracker_id"))
+}
+
+// trackersForSelect は trackers_for_select(@issue)。
+func (f *issueEditForm) trackersForSelect() []*domain.Tracker {
+	ts := f.m.AllowedTargetTrackers()
+	if iss := f.m.I; iss != nil && iss.NewRecord() && iss.ParentIssueID() != "" {
+		var out []*domain.Tracker
+		for _, t := range ts {
+			if iss.TrackerID != t.ID && slices.Contains(t.DisabledCoreFields, "parent_issue_id") {
+				continue
+			}
+			out = append(out, t)
+		}
+		ts = out
+	}
+	return ts
+}
 
 // TrackerOptions は trackers_options_for_select(@issue)。
 func (f *issueEditForm) TrackerOptions() []any {
 	var out []any
-	for _, t := range f.m.AllowedTargetTrackers() {
+	for _, t := range f.trackersForSelect() {
 		out = append(out, []any{t.Name, t.ID})
 	}
 	return out
@@ -337,7 +472,7 @@ func (f *issueEditForm) TrackerTitle() any {
 // TrackersWithDescription は trackers_for_select(@issue) のうち説明のあるもの。
 func (f *issueEditForm) TrackersWithDescription() []*domain.Tracker {
 	var out []*domain.Tracker
-	for _, t := range f.m.AllowedTargetTrackers() {
+	for _, t := range f.trackersForSelect() {
 		if strings.TrimSpace(t.DescriptionString()) != "" {
 			out = append(out, t)
 		}
@@ -442,12 +577,15 @@ func (f *issueEditForm) AssigneeOptions() template.HTML {
 		s.WriteString(string(rails.ContentTag("option", "<< "+l.L("label_me")+" >>", rails.NewHash("value", cur.ID))))
 	}
 	// involved principals（author, prior_assigned_to）
+	// この optgroup は既存チケットの編集時だけ表示する
 	var involved []*domain.User
-	if a := l.principal(f.m.Row.AuthorID); a != nil {
-		involved = append(involved, a)
-	}
-	if p := f.m.PriorAssignedTo(); p != nil && (len(involved) == 0 || involved[0].ID != p.ID) {
-		involved = append(involved, p)
+	if !f.IsNew {
+		if a := l.principal(f.m.Row.AuthorID); a != nil {
+			involved = append(involved, a)
+		}
+		if p := f.m.PriorAssignedTo(); p != nil && (len(involved) == 0 || involved[0].ID != p.ID) {
+			involved = append(involved, p)
+		}
 	}
 	var invHTML strings.Builder
 	for _, p := range involved {
@@ -547,7 +685,11 @@ func (f *issueEditForm) ParentAutocompleteJS() string {
 	if f.m.Closed() {
 		status = "c"
 	}
-	u := "/issues/auto_complete?" + helper.ToQuery(rails.NewHash("issue_id", f.m.Row.ID, "project_id", f.m.Project.Identifier,
+	var issueID any = f.m.Row.ID
+	if f.IsNew {
+		issueID = nil
+	}
+	u := "/issues/auto_complete?" + helper.ToQuery(rails.NewHash("issue_id", issueID, "project_id", f.m.Project.Identifier,
 		"scope", f.l.a.Settings.String("cross_project_subtasks"), "status", status))
 	return "observeAutocompleteField('issue_parent_issue_id', '" + rails.EscapeJavascriptString(u) + "')"
 }
@@ -576,6 +718,10 @@ func (f *issueEditForm) HoursFieldOptions(size int, required bool, value *float6
 	if required {
 		h.Set("required", true)
 	}
+	if f.m.I != nil && len(f.m.I.Errors.On("estimated_hours")) > 0 {
+		// hours_field: エラーがあれば value_before_type_cast をそのまま表示する
+		return h
+	}
 	if value != nil {
 		h.Set("value", f.l.c.Loc.FormatHours(*value))
 	} else {
@@ -584,9 +730,20 @@ func (f *issueEditForm) HoursFieldOptions(size int, required bool, value *float6
 	return h
 }
 
-// TimeEntryHoursOptions は time_entry.hours_field :hours, :size => 6, :label => :label_spent_time の options。
+// TimeEntryHoursOptions は time_entry.hours_field :hours, :size => 6, :label => :label_spent_time の options
+// （検証エラーが無ければ format_hours(hours)、あれば入力値のまま）。
 func (f *issueEditForm) TimeEntryHoursOptions() *rails.Hash {
-	return rails.NewHash("placeholder", "h:mm", "size", 6, "label", rails.Symbol("label_spent_time"), "value", "")
+	h := rails.NewHash("placeholder", "h:mm", "size", 6, "label", rails.Symbol("label_spent_time"))
+	t := f.TimeEntry
+	if t != nil && t.TE != nil && len(t.TE.Errors.On("hours")) > 0 {
+		return h
+	}
+	if t != nil && t.TE != nil && t.TE.Hours != nil {
+		h.Set("value", f.l.c.Loc.FormatHours(*t.TE.Hours))
+	} else {
+		h.Set("value", "")
+	}
+	return h
 }
 
 // EstimatedHours は @issue.estimated_hours。
@@ -744,7 +901,11 @@ func (f *issueEditForm) ShowWatcherDataSources() bool {
 
 // WatchersDataSourcesJS は update_data_sources_for_auto_complete({users: watchers_autocomplete_for_mention_path(...)})。
 func (f *issueEditForm) WatchersDataSourcesJS() template.HTML {
-	u := "/watchers/autocomplete_for_mention?" + helper.ToQuery(rails.NewHash("object_id", f.m.Row.ID, "object_type", "issue",
+	var objectID any = f.m.Row.ID
+	if f.IsNew {
+		objectID = nil
+	}
+	u := "/watchers/autocomplete_for_mention?" + helper.ToQuery(rails.NewHash("object_id", objectID, "object_type", "issue",
 		"project_id", f.m.Project.Identifier, "q", ""))
 	return rails.JavascriptTag("rm.AutoComplete.dataSources = Object.assign(rm.AutoComplete.dataSources, JSON.parse('"+
 		jsonForJS(map[string]string{"users": u})+"'));", nil)
@@ -764,7 +925,16 @@ func (f *issueEditForm) LastJournalID() any {
 }
 
 // FormURL は issue_path(@issue)（labelled_form_for @issue の url）。
-func (f *issueEditForm) FormURL() string { return "/issues/" + strconv.FormatInt(f.m.Row.ID, 10) }
+func (f *issueEditForm) FormURL() string {
+	if f.IsNew {
+		// _project_issues_path(@project)
+		if p := f.l.c.Project; p != nil {
+			return "/projects/" + p.Identifier + "/issues"
+		}
+		return "/issues"
+	}
+	return "/issues/" + strconv.FormatInt(f.m.Row.ID, 10)
+}
 
 // AttachmentsPartialData は attachments/_form の data 属性。
 func (f *issueEditForm) AttachmentFileField() template.HTML {

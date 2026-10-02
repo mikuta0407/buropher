@@ -200,7 +200,10 @@ func renderAPIRelation(b apibuilder.Builder, rel *repository.IssueRelation) {
 }
 
 // issuesShowAPI は IssuesController#show の format.api。
-func (a *App) issuesShowAPI(c *Req) {
+func (a *App) issuesShowAPI(c *Req) { a.issuesShowAPIStatus(c, 0) }
+
+// issuesShowAPIStatus は show.api.rsb をステータス status で返す（create の 201 でも使う）。
+func (a *App) issuesShowAPIStatus(c *Req, status int) {
 	ctx := c.Ctx()
 	l := a.newIssueLookup(c)
 	m := l.model(c.currentIssue())
@@ -241,7 +244,7 @@ func (a *App) issuesShowAPI(c *Req) {
 		a.internalError(c, "issue api", l.err)
 		return
 	}
-	c.RenderAPI(0, func(b apibuilder.Builder) {
+	c.RenderAPI(status, func(b apibuilder.Builder) {
 		b.Object("issue", func() {
 			l.renderAPIIssueCore(b, m)
 			if inc("children") && !m.Leaf() {
