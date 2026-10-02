@@ -30,3 +30,9 @@ entries:
     reason: "time_zone_select の Casablanca の基準オフセットは internal/i18n/zones_gen.go の生成時点の値（+00:00）で、参照（固定時刻 2026-01-15）は +01:00。並び位置も変わる。zones_gen.go を参照時刻で再生成すれば解消する"
     lines:
       - '^\s*<option value="Casablanca">\(GMT\+0[01]:00\) Casablanca</option>$'
+
+  # ---- activity_search（活動・検索） ----
+  - case: "activity_search/activity_from_2007-03-06_show_wiki_edits_*"
+    reason: "wiki_page_versions は wiki_contents と wiki_content_versions を統合して持ち、同じ版は wiki_contents を優先する（docs/schema.md）。フィクスチャの CookBook_documentation 版 3 は wiki_contents のコメント（Gzip compression activated）と wiki_content_versions のコメント（空）が食い違うため活動の説明が異なる"
+    lines:
+      - '^\s*<span class="description">(Gzip compression activated)?</span>$'

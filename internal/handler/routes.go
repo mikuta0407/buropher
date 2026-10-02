@@ -28,4 +28,6 @@ func (a *App) Routes(r Router) {
 	a.routesPreviews(r)
 	a.routesCustomFields(r)
 	a.routesWorkflows(r)
+	a.routesActivities(r)
+	a.routesSearch(r)
 }

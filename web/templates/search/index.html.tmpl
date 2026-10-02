@@ -1,0 +1,91 @@
+<h2>{{l "label_search"}}</h2>
+
+{{form_tag .Path (hash "method" "get" "id" "search-form")}}
+<div class="box">
+{{label_tag "search-input" (l "description_search") (hash "class" "hidden-for-sighted")}}
+<p>{{text_field_tag "q" .Question (hash "size" 60 "id" "search-input" "data" search_input_data)}}
+{{if gt (len .ScopeOptions) 1}}{{label_tag "scope" (l "description_project_scope") (hash "class" "hidden-for-sighted")}}{{select_tag "scope" (options_for_select .ScopeOptions (param_string "scope"))}}{{end}}
+{{hidden_field_tag "all_words" "" (hash "id" nil)}}
+<label>{{check_box_tag "all_words" 1 .AllWords}} {{l "label_all_words"}}</label>
+{{hidden_field_tag "titles_only" "" (hash "id" nil)}}
+<label>{{check_box_tag "titles_only" 1 .TitlesOnly}} {{l "label_search_titles_only"}}</label>
+</p>
+
+<fieldset class="box">
+  <legend>{{toggle_checkboxes_link "p#search-types input"}}</legend>
+  <p id="search-types">
+  {{range $t := .ObjectTypes}}
+  <label>{{check_box_tag $t 1 (index $.Scope $t)}} {{link_to (search_type_label $t) "#"}}</label>
+  {{end}}
+  </p>
+</fieldset>
+
+<fieldset class="collapsible collapsed">
+  <legend onclick="toggleFieldset(this);" class="icon icon-collapsed">
+    {{sprite_icon "angle-right" (hash "rtl" true)}}
+    {{l "label_options"}}
+  </legend>
+  <div id="options-content" style="display:none;">
+    <p><label>{{check_box_tag "open_issues" 1 .OpenIssues}} {{l "label_search_open_issues_only"}}</label></p>
+    <p>
+      <label>{{radio_button_tag "attachments" "0" (eq .Attachments "0")}} {{l "label_search_attachments_no"}}</label>
+      <label>{{radio_button_tag "attachments" "1" (eq .Attachments "1")}} {{l "label_search_attachments_yes"}}</label>
+      <label>{{radio_button_tag "attachments" "only" (eq .Attachments "only")}} {{l "label_search_attachments_only"}}</label>
+    </p>
+    {{call_hook "view_search_index_options_content_bottom"}}
+  </div>
+</fieldset>
+{{hidden_field_tag "options" "" (hash "id" "show-options")}}
+
+</div>
+<p>{{submit_tag (l "label_search")}}</p>
+{{end_form}}
+
+{{if .HasResults}}
+    <div id="search-results-counts">
+      {{if ne .ScopeSize 1}}{{.ResultsByType}}{{end}}
+    </div>
+    <h3>{{l "label_result_plural"}} ({{.ResultCount}})</h3>
+    {{if .ShowIssuesBtn}}
+      <p class="buttons">
+        {{link_to (sprite_icon "list" (l "button_apply_issues_filter")) .IssuesFilterPath (hash "class" "icon icon-list")}}
+      </p>
+    {{end}}
+    <dl id="search-results">
+      {{range $e := .Results}}
+        <dt class="{{$e.Type}} icon icon-{{$e.Type}}">
+          {{sprite_icon $e.Type}}
+          {{if not (and current_project (same_project current_project $e.Project))}}{{content_tag "span" (project_name $e.Project) (hash "class" "project")}}{{end}}
+          {{link_to (highlight_tokens (truncate_chars $e.Title 255) $.Tokens) $e.URL}}
+        </dt>
+        <dd><span class="description">{{highlight_tokens $e.Description $.Tokens}}</span>
+        <span class="author">{{format_time $e.Datetime}}</span></dd>
+      {{end}}
+    </dl>
+{{end}}
+
+{{if .Pages}}
+<span class="pagination">{{pagination_links_full .Pages .ResultCount (hash "per_page_links" false)}}</span>
+{{end}}
+
+{{html_title (l "label_search")}}
+
+{{define "search/index#js"}}
+$("#search-types a").click(function(e){
+  e.preventDefault();
+  $("#search-types input[type=checkbox]").prop('checked', false);
+  $(this).siblings("input[type=checkbox]").prop('checked', true);
+  if ($("#search-input").val() != "") {
+    $("#search-form").submit();
+  }
+});
+
+$("#search-form").submit(function(){
+  $("#show-options").val($("#options-content").is(":visible") ? '1' : '0');
+});
+
+{{if eq (param_string "options") "1"}}
+toggleFieldset($("#options-content"));
+{{end}}
+{{end}}
+{{javascript_tag (printf "\n%s" (capture "search/index#js")) -}}

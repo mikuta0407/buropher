@@ -1,0 +1,154 @@
+<title>Activity - eCookbook - Redmine</title>
+----
+<!-- page specific tags -->
+<link rel="alternate" type="application/atom+xml" title="ATOM" href="{{BASE}}/projects/ecookbook/activity.atom?key=KEY&amp;show_documents=1&amp;show_files=1" />
+<script>
+//<![CDATA[
+var datepickerOptions={dateFormat: 'yy-mm-dd', firstDay: 0, showOn: 'button', buttonImageOnly: true, buttonImage: '/assets/calendar-DIGEST.png', showButtonPanel: true, showWeek: true, showOtherMonths: true, selectOtherMonths: true, changeMonth: true, changeYear: true, beforeShow: beforeShowDatePicker};
+//]]>
+</script></head>
+----
+<div id="main" class="collapsiblesidebar">
+  <script>
+//<![CDATA[
+$('#main.collapsiblesidebar').collapsibleSidebar();
+//]]>
+</script>
+    <div id="sidebar">
+          <div id="sidebar-switch-panel" style="visibility: hidden;">
+            <a id="sidebar-switch-button" class="" href="#">
+              <svg class="s20 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--chevrons-right"></use></svg></a>
+          </div>
+          <script>
+//<![CDATA[
+$('#sidebar-switch-panel').css('visibility', 'visible');
+//]]>
+</script>
+        <div id="sidebar-wrapper">
+          <form id="activity_scope_form" action="/projects/ecookbook/activity" accept-charset="UTF-8" name="activity_scope_form-RANDOM" method="get">
+<h3>Activity</h3>
+<p>
+  10 days up to <input type="date" name="from" id="from" value="2007-03-06" max="9999-12-31" size="10" />
+  <script>
+//<![CDATA[
+$(function() { $('#from').addClass('date').datepickerFallback(datepickerOptions); });
+//]]>
+</script>
+</p>
+<p>
+  User
+  <select name="user_id" id="user_id"><option value="" label=" "></option><option value="2">&lt;&lt; me &gt;&gt;</option>
+<option value="3">Dave Lopper</option>
+<option value="2">John Smith</option>
+<option value="1">Redmine Admin</option>
+<option value="8">User Misc</option></select>
+</p>
+<ul>
+  <li>
+    <input type="checkbox" name="show_issues" id="show_issues" value="1" />
+    <label for="show_issues">
+      <a href="/projects/ecookbook/activity?from=2007-03-06&amp;show_issues=1">Issues</a>
+    </label>
+  </li>
+  <li>
+    <input type="checkbox" name="show_changesets" id="show_changesets" value="1" />
+    <label for="show_changesets">
+      <a href="/projects/ecookbook/activity?from=2007-03-06&amp;show_changesets=1">Changesets</a>
+    </label>
+  </li>
+  <li>
+    <input type="checkbox" name="show_news" id="show_news" value="1" />
+    <label for="show_news">
+      <a href="/projects/ecookbook/activity?from=2007-03-06&amp;show_news=1">News</a>
+    </label>
+  </li>
+  <li>
+    <input type="checkbox" name="show_documents" id="show_documents" value="1" checked="checked" />
+    <label for="show_documents">
+      <a href="/projects/ecookbook/activity?from=2007-03-06&amp;show_documents=1">Documents</a>
+    </label>
+  </li>
+  <li>
+    <input type="checkbox" name="show_files" id="show_files" value="1" checked="checked" />
+    <label for="show_files">
+      <a href="/projects/ecookbook/activity?from=2007-03-06&amp;show_files=1">Files</a>
+    </label>
+  </li>
+  <li>
+    <input type="checkbox" name="show_wiki_edits" id="show_wiki_edits" value="1" />
+    <label for="show_wiki_edits">
+      <a href="/projects/ecookbook/activity?from=2007-03-06&amp;show_wiki_edits=1">Wiki edits</a>
+    </label>
+  </li>
+  <li>
+    <input type="checkbox" name="show_messages" id="show_messages" value="1" />
+    <label for="show_messages">
+      <a href="/projects/ecookbook/activity?from=2007-03-06&amp;show_messages=1">Messages</a>
+    </label>
+  </li>
+  <li>
+    <input type="checkbox" name="show_time_entries" id="show_time_entries" value="1" />
+    <label for="show_time_entries">
+      <a href="/projects/ecookbook/activity?from=2007-03-06&amp;show_time_entries=1">Spent time</a>
+    </label>
+  </li>
+</ul>
+    <input type="hidden" name="with_subprojects" value="0" autocomplete="off" />
+    <p><label><input type="checkbox" name="with_subprojects" id="with_subprojects" value="1" checked="checked" /> Subprojects</label></p>
+<p><input type="submit" name="submit" value="Apply" class="button-small" data-disable-with="Apply" /></p>
+</form>
+          
+        </div>
+    </div>
+
+    <div id="content">
+        
+        <h2>Activity</h2>
+
+<p class="subtitle">From 02/25/2007 to 03/06/2007</p>
+
+<div id="activity">
+<h3>03/05/2007</h3>
+<dl>
+  <dt class="attachment icon icon-attachment  ">
+  <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--attachment"></use></svg>
+  <span role="img" class="avatar-color-1 s24 avatar">RA</span>
+  <span class="time">02:08 PM</span>
+  
+  <a href="/attachments/21/archive.zip">archive.zip</a>
+  </dt>
+  <dd class=""><span class="description"></span>
+  <span class="author"><a class="user active" href="/users/1">Redmine Admin</a></span></dd>
+  <dt class="document icon icon-document  ">
+  <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--document"></use></svg>
+  <span role="img" class="avatar-color-1 s24 avatar">RA</span>
+  <span class="time">02:08 PM</span>
+  
+  <a href="/documents/3">Document: An other document 2</a>
+  </dt>
+  <dd class=""><span class="description"></span>
+  <span class="author"><a class="user active" href="/users/1">Redmine Admin</a></span></dd>
+</dl>
+</div>
+
+
+
+<span class="pagination">
+  <ul class="pages">
+    <li class="previous page">
+<a title="From 02/15/2007 to 02/24/2007" accesskey="p" href="/projects/ecookbook/activity?from=2007-02-24&amp;show_documents=1&amp;show_files=1">« Previous</a>
+    </li><li class="next page">
+<a title="From 03/07/2007 to 03/16/2007" accesskey="n" href="/projects/ecookbook/activity?from=2007-03-16&amp;show_documents=1&amp;show_files=1">Next »</a></li>
+  </ul>
+</span>
+&nbsp;
+<p class="other-formats hide-when-print">Also available in:  <span><a class="atom" rel="nofollow" href="/projects/ecookbook/activity.atom?key=KEY&amp;show_documents=1&amp;show_files=1">Atom</a></span>
+</p>
+
+
+
+        
+        <div style="clear:both;"></div>
+    </div>
+</div>
+<div id="footer">

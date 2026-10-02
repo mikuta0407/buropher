@@ -1,0 +1,34 @@
+status: 200
+content-type: application/json
+
+{
+  "results": [
+    {
+      "id": 6,
+      "title": "Bug #6 (New): Issue of a private subproject",
+      "type": "issue",
+      "url": "{{BASE}}/issues/6",
+      "description": "This is an issue of a private subproject of cookbook",
+      "datetime": "2026-01-15T11:59:00Z"
+    },
+    {
+      "id": 12,
+      "title": "Bug #12 (Closed): Closed issue on a locked version",
+      "type": "issue-closed",
+      "url": "{{BASE}}/issues/12",
+      "description": null,
+      "datetime": "2026-01-12T12:00:00Z"
+    },
+    {
+      "id": 11,
+      "title": "Bug #11 (Closed): Closed issue on a closed version",
+      "type": "issue-closed",
+      "url": "{{BASE}}/issues/11",
+      "description": null,
+      "datetime": "2026-01-12T12:00:00Z"
+    }
+  ],
+  "total_count": 15,
+  "offset": 2,
+  "limit": 3
+}

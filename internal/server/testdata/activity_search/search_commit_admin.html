@@ -1,0 +1,140 @@
+<title>Search - Redmine</title>
+----
+<!-- page specific tags -->
+</head>
+----
+<div id="main" class="nosidebar">
+  
+    <div id="sidebar">
+        <div id="sidebar-wrapper">
+          
+          
+        </div>
+    </div>
+
+    <div id="content">
+        
+        <h2>Search</h2>
+
+<form id="search-form" action="/search" accept-charset="UTF-8" name="search-form-RANDOM" method="get">
+<div class="box">
+<label class="hidden-for-sighted" for="search-input">Searchfield</label>
+<p><input type="text" name="q" id="search-input" value="commit" size="60" data-auto-complete="true" data-controller="list-autofill" data-action="beforeinput-&gt;list-autofill#handleBeforeInput" data-list-autofill-text-formatting-param="common_mark" />
+<label class="hidden-for-sighted" for="scope">Search scope</label><select name="scope" id="scope"><option value="all">All Projects</option>
+<option value="my_projects">My projects</option>
+<option value="bookmarks">My bookmarks</option></select>
+<input type="hidden" name="all_words" value="" autocomplete="off" />
+<label><input type="checkbox" name="all_words" id="all_words" value="1" checked="checked" /> All words</label>
+<input type="hidden" name="titles_only" value="" autocomplete="off" />
+<label><input type="checkbox" name="titles_only" id="titles_only" value="1" /> Search titles only</label>
+</p>
+
+<fieldset class="box">
+  <legend><a href="#" onclick="toggleCheckboxesBySelector(&#39;p#search-types input&#39;); return false;" title="Check all / Uncheck all" class="icon icon-checked"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--checked"></use></svg><span class="icon-label"></span></a></legend>
+  <p id="search-types">
+  <label><input type="checkbox" name="issues" id="issues" value="1" checked="checked" /> <a href="#">Issues</a></label>
+  <label><input type="checkbox" name="news" id="news" value="1" checked="checked" /> <a href="#">News</a></label>
+  <label><input type="checkbox" name="documents" id="documents" value="1" checked="checked" /> <a href="#">Documents</a></label>
+  <label><input type="checkbox" name="changesets" id="changesets" value="1" checked="checked" /> <a href="#">Changesets</a></label>
+  <label><input type="checkbox" name="wiki_pages" id="wiki_pages" value="1" checked="checked" /> <a href="#">Wiki pages</a></label>
+  <label><input type="checkbox" name="messages" id="messages" value="1" checked="checked" /> <a href="#">Messages</a></label>
+  <label><input type="checkbox" name="projects" id="projects" value="1" checked="checked" /> <a href="#">Projects</a></label>
+  </p>
+</fieldset>
+
+<fieldset class="collapsible collapsed">
+  <legend onclick="toggleFieldset(this);" class="icon icon-collapsed">
+    <svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--angle-right"></use></svg>
+    Options
+  </legend>
+  <div id="options-content" style="display:none;">
+    <p><label><input type="checkbox" name="open_issues" id="open_issues" value="1" /> Open issues only</label></p>
+    <p>
+      <label><input type="radio" name="attachments" id="attachments_0" value="0" checked="checked" /> Do not search attachments</label>
+      <label><input type="radio" name="attachments" id="attachments_1" value="1" /> Search attachment filenames and descriptions</label>
+      <label><input type="radio" name="attachments" id="attachments_only" value="only" /> Search attachments only</label>
+    </p>
+    
+  </div>
+</fieldset>
+<input type="hidden" name="options" id="show-options" value="" autocomplete="off" />
+
+</div>
+<p><input type="submit" name="commit" value="Search" data-disable-with="Search" /></p>
+</form>
+    <div id="search-results-counts">
+      <ul><li><a href="/search?changesets=1&amp;q=commit">Changesets (6)</a></li></ul>
+    </div>
+    <h3>Results (6)</h3>
+    <dl id="search-results">
+        <dt class="changeset icon icon-changeset">
+          <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--changeset"></use></svg>
+          <span class="project">eCookbook</span>
+          <a href="/projects/ecookbook/repository/10/revisions/11">Revision 11: This <span class="highlight token-0">commit</span> references an issue and a [[wiki]] page</a>
+        </dt>
+        <dd><span class="description">Refs #2</span>
+        <span class="author">04/07/2025 07:00 PM</span></dd>
+        <dt class="changeset icon icon-changeset">
+          <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--changeset"></use></svg>
+          <span class="project">eCookbook</span>
+          <a href="/projects/ecookbook/repository/10/revisions/8">Revision 8: This <span class="highlight token-0">commit</span>s references an issue.</a>
+        </dt>
+        <dd><span class="description">Refs #2</span>
+        <span class="author">09/10/2007 07:04 PM</span></dd>
+        <dt class="changeset icon icon-changeset">
+          <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--changeset"></use></svg>
+          <span class="project">eCookbook</span>
+          <a href="/projects/ecookbook/repository/10/revisions/4">Revision 4: A <span class="highlight token-0">commit</span> with an issue id of an other project</a>
+        </dt>
+        <dd><span class="description">IssueID 4 2</span>
+        <span class="author">04/12/2007 01:14 PM</span></dd>
+        <dt class="changeset icon icon-changeset">
+          <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--changeset"></use></svg>
+          <span class="project">eCookbook</span>
+          <a href="/projects/ecookbook/repository/10/revisions/3">Revision 3: A <span class="highlight token-0">commit</span> with wrong issue ids</a>
+        </dt>
+        <dd><span class="description">IssueID #666 #3</span>
+        <span class="author">04/12/2007 01:14 PM</span></dd>
+        <dt class="changeset icon icon-changeset">
+          <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--changeset"></use></svg>
+          <span class="project">eCookbook</span>
+          <a href="/projects/ecookbook/repository/10/revisions/2">Revision 2: This <span class="highlight token-0">commit</span> fixes #1, #2 and references #1 &amp; #3</a>
+        </dt>
+        <dd><span class="description"></span>
+        <span class="author">04/12/2007 01:14 PM</span></dd>
+        <dt class="changeset icon icon-changeset">
+          <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--changeset"></use></svg>
+          <span class="project">eCookbook</span>
+          <a href="/projects/ecookbook/repository/10/revisions/1">Revision 1: My very first <span class="highlight token-0">commit</span> do not escaping #&lt;&gt;&amp;</a>
+        </dt>
+        <dd><span class="description"></span>
+        <span class="author">04/11/2007 01:14 PM</span></dd>
+    </dl>
+
+<span class="pagination"><ul class="pages"></ul><span><span class="items">(1-6/6)</span> </span></span>
+
+
+<script>
+//<![CDATA[
+
+$("#search-types a").click(function(e){
+  e.preventDefault();
+  $("#search-types input[type=checkbox]").prop('checked', false);
+  $(this).siblings("input[type=checkbox]").prop('checked', true);
+  if ($("#search-input").val() != "") {
+    $("#search-form").submit();
+  }
+});
+
+$("#search-form").submit(function(){
+  $("#show-options").val($("#options-content").is(":visible") ? '1' : '0');
+});
+
+
+//]]>
+</script>
+        
+        <div style="clear:both;"></div>
+    </div>
+</div>
+<div id="footer">
