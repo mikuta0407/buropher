@@ -1,0 +1,4839 @@
+[
+  {
+    "name": null,
+    "verb": "",
+    "path": "/cable",
+    "controller": null,
+    "action": null,
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "native_oauth_authorization",
+    "verb": "GET",
+    "path": "/oauth/authorize/native(.:format)",
+    "controller": "doorkeeper/authorizations",
+    "action": "show",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "oauth_authorization",
+    "verb": "GET",
+    "path": "/oauth/authorize(.:format)",
+    "controller": "doorkeeper/authorizations",
+    "action": "new",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "DELETE",
+    "path": "/oauth/authorize(.:format)",
+    "controller": "doorkeeper/authorizations",
+    "action": "destroy",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "POST",
+    "path": "/oauth/authorize(.:format)",
+    "controller": "doorkeeper/authorizations",
+    "action": "create",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "oauth_token",
+    "verb": "POST",
+    "path": "/oauth/token(.:format)",
+    "controller": "doorkeeper/tokens",
+    "action": "create",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "oauth_revoke",
+    "verb": "POST",
+    "path": "/oauth/revoke(.:format)",
+    "controller": "doorkeeper/tokens",
+    "action": "revoke",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "oauth_applications",
+    "verb": "GET",
+    "path": "/oauth/applications(.:format)",
+    "controller": "oauth2_applications",
+    "action": "index",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "POST",
+    "path": "/oauth/applications(.:format)",
+    "controller": "oauth2_applications",
+    "action": "create",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "new_oauth_application",
+    "verb": "GET",
+    "path": "/oauth/applications/new(.:format)",
+    "controller": "oauth2_applications",
+    "action": "new",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "edit_oauth_application",
+    "verb": "GET",
+    "path": "/oauth/applications/:id/edit(.:format)",
+    "controller": "oauth2_applications",
+    "action": "edit",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "oauth_application",
+    "verb": "GET",
+    "path": "/oauth/applications/:id(.:format)",
+    "controller": "oauth2_applications",
+    "action": "show",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "PATCH",
+    "path": "/oauth/applications/:id(.:format)",
+    "controller": "oauth2_applications",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "PUT",
+    "path": "/oauth/applications/:id(.:format)",
+    "controller": "oauth2_applications",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "DELETE",
+    "path": "/oauth/applications/:id(.:format)",
+    "controller": "oauth2_applications",
+    "action": "destroy",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "oauth_authorized_applications",
+    "verb": "GET",
+    "path": "/oauth/authorized_applications(.:format)",
+    "controller": "doorkeeper/authorized_applications",
+    "action": "index",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "oauth_authorized_application",
+    "verb": "DELETE",
+    "path": "/oauth/authorized_applications/:id(.:format)",
+    "controller": "doorkeeper/authorized_applications",
+    "action": "destroy",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "oauth_token_info",
+    "verb": "GET",
+    "path": "/oauth/token/info(.:format)",
+    "controller": "doorkeeper/token_info",
+    "action": "show",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "root",
+    "verb": "GET",
+    "path": "/",
+    "controller": "welcome",
+    "action": "index",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "home",
+    "verb": "GET",
+    "path": "/",
+    "controller": "welcome",
+    "action": "index",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "signin",
+    "verb": "GET|POST",
+    "path": "/login(.:format)",
+    "controller": "account",
+    "action": "login",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "signout",
+    "verb": "GET|POST",
+    "path": "/logout(.:format)",
+    "controller": "account",
+    "action": "logout",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "account_twofa_confirm",
+    "verb": "GET",
+    "path": "/account/twofa/confirm(.:format)",
+    "controller": "account",
+    "action": "twofa_confirm",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "account_twofa_resend",
+    "verb": "POST",
+    "path": "/account/twofa/resend(.:format)",
+    "controller": "account",
+    "action": "twofa_resend",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "account_twofa",
+    "verb": "GET|POST",
+    "path": "/account/twofa(.:format)",
+    "controller": "account",
+    "action": "twofa",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "register",
+    "verb": "GET|POST",
+    "path": "/account/register(.:format)",
+    "controller": "account",
+    "action": "register",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "lost_password",
+    "verb": "GET|POST",
+    "path": "/account/lost_password(.:format)",
+    "controller": "account",
+    "action": "lost_password",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "account_activate",
+    "verb": "GET",
+    "path": "/account/activate(.:format)",
+    "controller": "account",
+    "action": "activate",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "activation_email",
+    "verb": "GET",
+    "path": "/account/activation_email(.:format)",
+    "controller": "account",
+    "action": "activation_email",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "preview_news",
+    "verb": "GET|POST|PUT|PATCH",
+    "path": "/news/preview(.:format)",
+    "controller": "previews",
+    "action": "news",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "preview_issue",
+    "verb": "GET|POST|PUT|PATCH",
+    "path": "/issues/preview(.:format)",
+    "controller": "previews",
+    "action": "issue",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "preview_text",
+    "verb": "GET|POST|PUT|PATCH",
+    "path": "/preview/text(.:format)",
+    "controller": "previews",
+    "action": "text",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "GET|POST",
+    "path": "/projects/:id/wiki/destroy(.:format)",
+    "controller": "wikis",
+    "action": "destroy",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "new_board_message",
+    "verb": "GET|POST",
+    "path": "/boards/:board_id/topics/new(.:format)",
+    "controller": "messages",
+    "action": "new",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "board_message",
+    "verb": "GET",
+    "path": "/boards/:board_id/topics/:id(.:format)",
+    "controller": "messages",
+    "action": "show",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "GET|POST",
+    "path": "/boards/:board_id/topics/quote/:id(.:format)",
+    "controller": "messages",
+    "action": "quote",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "GET",
+    "path": "/boards/:board_id/topics/:id/edit(.:format)",
+    "controller": "messages",
+    "action": "edit",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "preview_board_message",
+    "verb": "POST",
+    "path": "/boards/:board_id/topics/preview(.:format)",
+    "controller": "messages",
+    "action": "preview",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "POST",
+    "path": "/boards/:board_id/topics/:id/replies(.:format)",
+    "controller": "messages",
+    "action": "reply",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "POST",
+    "path": "/boards/:board_id/topics/:id/edit(.:format)",
+    "controller": "messages",
+    "action": "edit",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "POST",
+    "path": "/boards/:board_id/topics/:id/destroy(.:format)",
+    "controller": "messages",
+    "action": "destroy",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "auto_complete_issues",
+    "verb": "GET",
+    "path": "/issues/auto_complete(.:format)",
+    "controller": "auto_completes",
+    "action": "issues",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "auto_complete_wiki_pages",
+    "verb": "GET",
+    "path": "/wiki_pages/auto_complete(.:format)",
+    "controller": "auto_completes",
+    "action": "wiki_pages",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "issues_context_menu",
+    "verb": "GET|POST",
+    "path": "/issues/context_menu(.:format)",
+    "controller": "context_menus",
+    "action": "issues",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "issue_changes",
+    "verb": "GET",
+    "path": "/issues/changes(.:format)",
+    "controller": "journals",
+    "action": "index",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "quoted_issue",
+    "verb": "POST",
+    "path": "/issues/:id/quoted(.:format)",
+    "controller": "journals",
+    "action": "new",
+    "defaults": {
+    },
+    "requirements": {
+      "id": "(?-mix:\\d+)"
+    }
+  },
+  {
+    "name": "diff_journal",
+    "verb": "GET",
+    "path": "/journals/:id/diff(.:format)",
+    "controller": "journals",
+    "action": "diff",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "edit_journal",
+    "verb": "GET",
+    "path": "/journals/:id/edit(.:format)",
+    "controller": "journals",
+    "action": "edit",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "journal",
+    "verb": "PATCH",
+    "path": "/journals/:id(.:format)",
+    "controller": "journals",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "PUT",
+    "path": "/journals/:id(.:format)",
+    "controller": "journals",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "reactions",
+    "verb": "POST",
+    "path": "/reactions(.:format)",
+    "controller": "reactions",
+    "action": "create",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "reaction",
+    "verb": "DELETE",
+    "path": "/reactions/:id(.:format)",
+    "controller": "reactions",
+    "action": "destroy",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "project_gantt",
+    "verb": "GET",
+    "path": "/projects/:project_id/issues/gantt(.:format)",
+    "controller": "gantts",
+    "action": "show",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "issues_gantt",
+    "verb": "GET",
+    "path": "/issues/gantt(.:format)",
+    "controller": "gantts",
+    "action": "show",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "project_calendar",
+    "verb": "GET",
+    "path": "/projects/:project_id/issues/calendar(.:format)",
+    "controller": "calendars",
+    "action": "show",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "issues_calendar",
+    "verb": "GET",
+    "path": "/issues/calendar(.:format)",
+    "controller": "calendars",
+    "action": "show",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "project_issues_report",
+    "verb": "GET",
+    "path": "/projects/:id/issues/report(.:format)",
+    "controller": "reports",
+    "action": "issue_report",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "project_issues_report_details",
+    "verb": "GET",
+    "path": "/projects/:id/issues/report/:detail(.:format)",
+    "controller": "reports",
+    "action": "issue_report_details",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "new_issues_import",
+    "verb": "GET",
+    "path": "/issues/imports/new(.:format)",
+    "controller": "imports",
+    "action": "new",
+    "defaults": {
+      "type": "IssueImport"
+    },
+    "requirements": {
+      "type": "IssueImport"
+    }
+  },
+  {
+    "name": "new_time_entries_import",
+    "verb": "GET",
+    "path": "/time_entries/imports/new(.:format)",
+    "controller": "imports",
+    "action": "new",
+    "defaults": {
+      "type": "TimeEntryImport"
+    },
+    "requirements": {
+      "type": "TimeEntryImport"
+    }
+  },
+  {
+    "name": "new_users_import",
+    "verb": "GET",
+    "path": "/users/imports/new(.:format)",
+    "controller": "imports",
+    "action": "new",
+    "defaults": {
+      "type": "UserImport"
+    },
+    "requirements": {
+      "type": "UserImport"
+    }
+  },
+  {
+    "name": "imports",
+    "verb": "POST",
+    "path": "/imports(.:format)",
+    "controller": "imports",
+    "action": "create",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "import",
+    "verb": "GET",
+    "path": "/imports/:id(.:format)",
+    "controller": "imports",
+    "action": "show",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "import_settings",
+    "verb": "GET|POST",
+    "path": "/imports/:id/settings(.:format)",
+    "controller": "imports",
+    "action": "settings",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "import_mapping",
+    "verb": "GET|POST",
+    "path": "/imports/:id/mapping(.:format)",
+    "controller": "imports",
+    "action": "mapping",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "import_run",
+    "verb": "GET|POST",
+    "path": "/imports/:id/run(.:format)",
+    "controller": "imports",
+    "action": "run",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "my_account",
+    "verb": "GET|PUT",
+    "path": "/my/account(.:format)",
+    "controller": "my",
+    "action": "account",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "delete_my_account",
+    "verb": "GET|POST",
+    "path": "/my/account/destroy(.:format)",
+    "controller": "my",
+    "action": "destroy",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "my_page",
+    "verb": "GET",
+    "path": "/my/page(.:format)",
+    "controller": "my",
+    "action": "page",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "POST",
+    "path": "/my/page(.:format)",
+    "controller": "my",
+    "action": "update_page",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "my",
+    "verb": "GET",
+    "path": "/my(.:format)",
+    "controller": "my",
+    "action": "index",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "my_api_key",
+    "verb": "GET",
+    "path": "/my/api_key(.:format)",
+    "controller": "my",
+    "action": "show_api_key",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "POST",
+    "path": "/my/api_key(.:format)",
+    "controller": "my",
+    "action": "reset_api_key",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "my_atom_key",
+    "verb": "POST",
+    "path": "/my/atom_key(.:format)",
+    "controller": "my",
+    "action": "reset_atom_key",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "my_password",
+    "verb": "GET|POST",
+    "path": "/my/password(.:format)",
+    "controller": "my",
+    "action": "password",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "my_add_block",
+    "verb": "POST",
+    "path": "/my/add_block(.:format)",
+    "controller": "my",
+    "action": "add_block",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "my_remove_block",
+    "verb": "POST",
+    "path": "/my/remove_block(.:format)",
+    "controller": "my",
+    "action": "remove_block",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "my_order_blocks",
+    "verb": "POST",
+    "path": "/my/order_blocks(.:format)",
+    "controller": "my",
+    "action": "order_blocks",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "my_twofa_activate_init",
+    "verb": "POST",
+    "path": "/my/twofa/activate/init(.:format)",
+    "controller": "twofa",
+    "action": "activate_init",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "POST",
+    "path": "/my/twofa/:scheme/activate/init(.:format)",
+    "controller": "twofa",
+    "action": "activate_init",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "GET",
+    "path": "/my/twofa/:scheme/activate/confirm(.:format)",
+    "controller": "twofa",
+    "action": "activate_confirm",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "GET|POST",
+    "path": "/my/twofa/:scheme/activate(.:format)",
+    "controller": "twofa",
+    "action": "activate",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "POST",
+    "path": "/my/twofa/:scheme/deactivate/init(.:format)",
+    "controller": "twofa",
+    "action": "deactivate_init",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "GET",
+    "path": "/my/twofa/:scheme/deactivate/confirm(.:format)",
+    "controller": "twofa",
+    "action": "deactivate_confirm",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "GET|POST",
+    "path": "/my/twofa/:scheme/deactivate(.:format)",
+    "controller": "twofa",
+    "action": "deactivate",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "my_twofa_select_scheme",
+    "verb": "GET",
+    "path": "/my/twofa/select_scheme(.:format)",
+    "controller": "twofa",
+    "action": "select_scheme",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "my_twofa_backup_codes_init",
+    "verb": "POST",
+    "path": "/my/twofa/backup_codes/init(.:format)",
+    "controller": "twofa_backup_codes",
+    "action": "init",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "my_twofa_backup_codes_confirm",
+    "verb": "GET",
+    "path": "/my/twofa/backup_codes/confirm(.:format)",
+    "controller": "twofa_backup_codes",
+    "action": "confirm",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "my_twofa_backup_codes_create",
+    "verb": "GET|POST",
+    "path": "/my/twofa/backup_codes/create(.:format)",
+    "controller": "twofa_backup_codes",
+    "action": "create",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "my_twofa_backup_codes",
+    "verb": "GET",
+    "path": "/my/twofa/backup_codes(.:format)",
+    "controller": "twofa_backup_codes",
+    "action": "show",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "POST",
+    "path": "/users/:user_id/twofa/deactivate(.:format)",
+    "controller": "twofa",
+    "action": "admin_deactivate",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "users_context_menu",
+    "verb": "GET|POST",
+    "path": "/users/context_menu(.:format)",
+    "controller": "context_menus",
+    "action": "users",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "bulk_destroy_users",
+    "verb": "DELETE",
+    "path": "/users/bulk_destroy(.:format)",
+    "controller": "users",
+    "action": "bulk_destroy",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "bulk_lock_users",
+    "verb": "POST",
+    "path": "/users/bulk_lock(.:format)",
+    "controller": "users",
+    "action": "bulk_lock",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "bulk_unlock_users",
+    "verb": "POST",
+    "path": "/users/bulk_unlock(.:format)",
+    "controller": "users",
+    "action": "bulk_unlock",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "user_memberships",
+    "verb": "GET",
+    "path": "/users/:user_id/memberships(.:format)",
+    "controller": "principal_memberships",
+    "action": "index",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "POST",
+    "path": "/users/:user_id/memberships(.:format)",
+    "controller": "principal_memberships",
+    "action": "create",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "new_user_membership",
+    "verb": "GET",
+    "path": "/users/:user_id/memberships/new(.:format)",
+    "controller": "principal_memberships",
+    "action": "new",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "edit_user_membership",
+    "verb": "GET",
+    "path": "/users/:user_id/memberships/:id/edit(.:format)",
+    "controller": "principal_memberships",
+    "action": "edit",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "user_membership",
+    "verb": "GET",
+    "path": "/users/:user_id/memberships/:id(.:format)",
+    "controller": "principal_memberships",
+    "action": "show",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "PATCH",
+    "path": "/users/:user_id/memberships/:id(.:format)",
+    "controller": "principal_memberships",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "PUT",
+    "path": "/users/:user_id/memberships/:id(.:format)",
+    "controller": "principal_memberships",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "DELETE",
+    "path": "/users/:user_id/memberships/:id(.:format)",
+    "controller": "principal_memberships",
+    "action": "destroy",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "user_email_addresses",
+    "verb": "GET",
+    "path": "/users/:user_id/email_addresses(.:format)",
+    "controller": "email_addresses",
+    "action": "index",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "POST",
+    "path": "/users/:user_id/email_addresses(.:format)",
+    "controller": "email_addresses",
+    "action": "create",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "user_email_address",
+    "verb": "PATCH",
+    "path": "/users/:user_id/email_addresses/:id(.:format)",
+    "controller": "email_addresses",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "PUT",
+    "path": "/users/:user_id/email_addresses/:id(.:format)",
+    "controller": "email_addresses",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "DELETE",
+    "path": "/users/:user_id/email_addresses/:id(.:format)",
+    "controller": "email_addresses",
+    "action": "destroy",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "users",
+    "verb": "GET",
+    "path": "/users(.:format)",
+    "controller": "users",
+    "action": "index",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "POST",
+    "path": "/users(.:format)",
+    "controller": "users",
+    "action": "create",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "new_user",
+    "verb": "GET",
+    "path": "/users/new(.:format)",
+    "controller": "users",
+    "action": "new",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "edit_user",
+    "verb": "GET",
+    "path": "/users/:id/edit(.:format)",
+    "controller": "users",
+    "action": "edit",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "user",
+    "verb": "GET",
+    "path": "/users/:id(.:format)",
+    "controller": "users",
+    "action": "show",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "PATCH",
+    "path": "/users/:id(.:format)",
+    "controller": "users",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "PUT",
+    "path": "/users/:id(.:format)",
+    "controller": "users",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "DELETE",
+    "path": "/users/:id(.:format)",
+    "controller": "users",
+    "action": "destroy",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "watch",
+    "verb": "POST",
+    "path": "/watchers/watch(.:format)",
+    "controller": "watchers",
+    "action": "watch",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "watchers_watch",
+    "verb": "DELETE",
+    "path": "/watchers/watch(.:format)",
+    "controller": "watchers",
+    "action": "unwatch",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "new_watchers",
+    "verb": "GET",
+    "path": "/watchers/new(.:format)",
+    "controller": "watchers",
+    "action": "new",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "watchers",
+    "verb": "POST",
+    "path": "/watchers(.:format)",
+    "controller": "watchers",
+    "action": "create",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "watchers_append",
+    "verb": "POST",
+    "path": "/watchers/append(.:format)",
+    "controller": "watchers",
+    "action": "append",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "DELETE",
+    "path": "/watchers(.:format)",
+    "controller": "watchers",
+    "action": "destroy",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "watchers_autocomplete_for_mention",
+    "verb": "GET",
+    "path": "/watchers/autocomplete_for_mention(.:format)",
+    "controller": "watchers",
+    "action": "autocomplete_for_mention",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "watchers_autocomplete_for_user",
+    "verb": "GET",
+    "path": "/watchers/autocomplete_for_user(.:format)",
+    "controller": "watchers",
+    "action": "autocomplete_for_user",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "POST",
+    "path": "/issues/:object_id/watchers(.:format)",
+    "controller": "watchers",
+    "action": "create",
+    "defaults": {
+      "object_type": "issue"
+    },
+    "requirements": {
+      "object_type": "issue"
+    }
+  },
+  {
+    "name": null,
+    "verb": "DELETE",
+    "path": "/issues/:object_id/watchers/:user_id(.:format)",
+    "controller": "watchers",
+    "action": "destroy",
+    "defaults": {
+      "object_type": "issue"
+    },
+    "requirements": {
+      "object_type": "issue"
+    }
+  },
+  {
+    "name": "autocomplete_projects",
+    "verb": "GET",
+    "path": "/projects/autocomplete(.:format)",
+    "controller": "projects",
+    "action": "autocomplete",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "bulk_destroy_projects",
+    "verb": "DELETE",
+    "path": "/projects/bulk_destroy(.:format)",
+    "controller": "projects",
+    "action": "bulk_destroy",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "settings_project",
+    "verb": "GET",
+    "path": "/projects/:id/settings(/:tab)(.:format)",
+    "controller": "projects",
+    "action": "settings",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "archive_project",
+    "verb": "POST|PUT",
+    "path": "/projects/:id/archive(.:format)",
+    "controller": "projects",
+    "action": "archive",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "unarchive_project",
+    "verb": "POST|PUT",
+    "path": "/projects/:id/unarchive(.:format)",
+    "controller": "projects",
+    "action": "unarchive",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "close_project",
+    "verb": "POST|PUT",
+    "path": "/projects/:id/close(.:format)",
+    "controller": "projects",
+    "action": "close",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "reopen_project",
+    "verb": "POST|PUT",
+    "path": "/projects/:id/reopen(.:format)",
+    "controller": "projects",
+    "action": "reopen",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "copy_project",
+    "verb": "GET|POST",
+    "path": "/projects/:id/copy(.:format)",
+    "controller": "projects",
+    "action": "copy",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "bookmark_project",
+    "verb": "DELETE|POST",
+    "path": "/projects/:id/bookmark(.:format)",
+    "controller": "projects",
+    "action": "bookmark",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "autocomplete_project_memberships",
+    "verb": "GET",
+    "path": "/projects/:project_id/memberships/autocomplete(.:format)",
+    "controller": "members",
+    "action": "autocomplete",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "project_memberships",
+    "verb": "GET",
+    "path": "/projects/:project_id/memberships(.:format)",
+    "controller": "members",
+    "action": "index",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "POST",
+    "path": "/projects/:project_id/memberships(.:format)",
+    "controller": "members",
+    "action": "create",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "new_project_membership",
+    "verb": "GET",
+    "path": "/projects/:project_id/memberships/new(.:format)",
+    "controller": "members",
+    "action": "new",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "edit_membership",
+    "verb": "GET",
+    "path": "/memberships/:id/edit(.:format)",
+    "controller": "members",
+    "action": "edit",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "membership",
+    "verb": "GET",
+    "path": "/memberships/:id(.:format)",
+    "controller": "members",
+    "action": "show",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "PATCH",
+    "path": "/memberships/:id(.:format)",
+    "controller": "members",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "PUT",
+    "path": "/memberships/:id(.:format)",
+    "controller": "members",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "DELETE",
+    "path": "/memberships/:id(.:format)",
+    "controller": "members",
+    "action": "destroy",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "project_enumerations",
+    "verb": "PATCH",
+    "path": "/projects/:project_id/enumerations(.:format)",
+    "controller": "project_enumerations",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "PUT",
+    "path": "/projects/:project_id/enumerations(.:format)",
+    "controller": "project_enumerations",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "DELETE",
+    "path": "/projects/:project_id/enumerations(.:format)",
+    "controller": "project_enumerations",
+    "action": "destroy",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "project_copy_issue",
+    "verb": "GET",
+    "path": "/projects/:project_id/issues/:copy_from/copy(.:format)",
+    "controller": "issues",
+    "action": "new",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "project_issues",
+    "verb": "GET",
+    "path": "/projects/:project_id/issues(.:format)",
+    "controller": "issues",
+    "action": "index",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "POST",
+    "path": "/projects/:project_id/issues(.:format)",
+    "controller": "issues",
+    "action": "create",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "new_project_issue",
+    "verb": "GET",
+    "path": "/projects/:project_id/issues/new(.:format)",
+    "controller": "issues",
+    "action": "new",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "project_issues_new",
+    "verb": "POST",
+    "path": "/projects/:project_id/issues/new(.:format)",
+    "controller": "issues",
+    "action": "new",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "project_files",
+    "verb": "GET",
+    "path": "/projects/:project_id/files(.:format)",
+    "controller": "files",
+    "action": "index",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "POST",
+    "path": "/projects/:project_id/files(.:format)",
+    "controller": "files",
+    "action": "create",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "new_project_file",
+    "verb": "GET",
+    "path": "/projects/:project_id/files/new(.:format)",
+    "controller": "files",
+    "action": "new",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "close_completed_project_versions",
+    "verb": "PUT",
+    "path": "/projects/:project_id/versions/close_completed(.:format)",
+    "controller": "versions",
+    "action": "close_completed",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "project_versions",
+    "verb": "POST",
+    "path": "/projects/:project_id/versions(.:format)",
+    "controller": "versions",
+    "action": "create",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "new_project_version",
+    "verb": "GET",
+    "path": "/projects/:project_id/versions/new(.:format)",
+    "controller": "versions",
+    "action": "new",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "GET",
+    "path": "/projects/:project_id/versions.:format",
+    "controller": "versions",
+    "action": "index",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "project_roadmap",
+    "verb": "GET",
+    "path": "/projects/:project_id/roadmap",
+    "controller": "versions",
+    "action": "index",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "GET",
+    "path": "/projects/:project_id/versions(.:format)",
+    "controller": "versions",
+    "action": "index",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "project_news_index",
+    "verb": "GET",
+    "path": "/projects/:project_id/news(.:format)",
+    "controller": "news",
+    "action": "index",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "POST",
+    "path": "/projects/:project_id/news(.:format)",
+    "controller": "news",
+    "action": "create",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "new_project_news",
+    "verb": "GET",
+    "path": "/projects/:project_id/news/new(.:format)",
+    "controller": "news",
+    "action": "new",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "report_project_time_entries",
+    "verb": "GET",
+    "path": "/projects/:project_id/time_entries/report(.:format)",
+    "controller": "timelog",
+    "action": "report",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "project_time_entries",
+    "verb": "GET",
+    "path": "/projects/:project_id/time_entries(.:format)",
+    "controller": "timelog",
+    "action": "index",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "POST",
+    "path": "/projects/:project_id/time_entries(.:format)",
+    "controller": "timelog",
+    "action": "create",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "new_project_time_entry",
+    "verb": "GET",
+    "path": "/projects/:project_id/time_entries/new(.:format)",
+    "controller": "timelog",
+    "action": "new",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "project_queries",
+    "verb": "POST",
+    "path": "/projects/:project_id/queries(.:format)",
+    "controller": "queries",
+    "action": "create",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "new_project_query",
+    "verb": "GET",
+    "path": "/projects/:project_id/queries/new(.:format)",
+    "controller": "queries",
+    "action": "new",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "project_issue_categories",
+    "verb": "GET",
+    "path": "/projects/:project_id/issue_categories(.:format)",
+    "controller": "issue_categories",
+    "action": "index",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "POST",
+    "path": "/projects/:project_id/issue_categories(.:format)",
+    "controller": "issue_categories",
+    "action": "create",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "new_project_issue_category",
+    "verb": "GET",
+    "path": "/projects/:project_id/issue_categories/new(.:format)",
+    "controller": "issue_categories",
+    "action": "new",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "edit_issue_category",
+    "verb": "GET",
+    "path": "/issue_categories/:id/edit(.:format)",
+    "controller": "issue_categories",
+    "action": "edit",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "issue_category",
+    "verb": "GET",
+    "path": "/issue_categories/:id(.:format)",
+    "controller": "issue_categories",
+    "action": "show",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "PATCH",
+    "path": "/issue_categories/:id(.:format)",
+    "controller": "issue_categories",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "PUT",
+    "path": "/issue_categories/:id(.:format)",
+    "controller": "issue_categories",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "DELETE",
+    "path": "/issue_categories/:id(.:format)",
+    "controller": "issue_categories",
+    "action": "destroy",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "project_documents",
+    "verb": "GET",
+    "path": "/projects/:project_id/documents(.:format)",
+    "controller": "documents",
+    "action": "index",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "POST",
+    "path": "/projects/:project_id/documents(.:format)",
+    "controller": "documents",
+    "action": "create",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "new_project_document",
+    "verb": "GET",
+    "path": "/projects/:project_id/documents/new(.:format)",
+    "controller": "documents",
+    "action": "new",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "project_boards",
+    "verb": "GET",
+    "path": "/projects/:project_id/boards(.:format)",
+    "controller": "boards",
+    "action": "index",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "POST",
+    "path": "/projects/:project_id/boards(.:format)",
+    "controller": "boards",
+    "action": "create",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "new_project_board",
+    "verb": "GET",
+    "path": "/projects/:project_id/boards/new(.:format)",
+    "controller": "boards",
+    "action": "new",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "edit_project_board",
+    "verb": "GET",
+    "path": "/projects/:project_id/boards/:id/edit(.:format)",
+    "controller": "boards",
+    "action": "edit",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "project_board",
+    "verb": "GET",
+    "path": "/projects/:project_id/boards/:id(.:format)",
+    "controller": "boards",
+    "action": "show",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "PATCH",
+    "path": "/projects/:project_id/boards/:id(.:format)",
+    "controller": "boards",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "PUT",
+    "path": "/projects/:project_id/boards/:id(.:format)",
+    "controller": "boards",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "DELETE",
+    "path": "/projects/:project_id/boards/:id(.:format)",
+    "controller": "boards",
+    "action": "destroy",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "committers_repository",
+    "verb": "GET|POST",
+    "path": "/repositories/:id/committers(.:format)",
+    "controller": "repositories",
+    "action": "committers",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "project_repositories",
+    "verb": "POST",
+    "path": "/projects/:project_id/repositories(.:format)",
+    "controller": "repositories",
+    "action": "create",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "new_project_repository",
+    "verb": "GET",
+    "path": "/projects/:project_id/repositories/new(.:format)",
+    "controller": "repositories",
+    "action": "new",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "edit_repository",
+    "verb": "GET",
+    "path": "/repositories/:id/edit(.:format)",
+    "controller": "repositories",
+    "action": "edit",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "repository",
+    "verb": "PATCH",
+    "path": "/repositories/:id(.:format)",
+    "controller": "repositories",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "PUT",
+    "path": "/repositories/:id(.:format)",
+    "controller": "repositories",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "DELETE",
+    "path": "/repositories/:id(.:format)",
+    "controller": "repositories",
+    "action": "destroy",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "project_wiki_index",
+    "verb": "GET",
+    "path": "/projects/:project_id/wiki/index(.:format)",
+    "controller": "wiki",
+    "action": "index",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "rename_project_wiki_page",
+    "verb": "GET",
+    "path": "/projects/:project_id/wiki/:id/rename(.:format)",
+    "controller": "wiki",
+    "action": "rename",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "POST",
+    "path": "/projects/:project_id/wiki/:id/rename(.:format)",
+    "controller": "wiki",
+    "action": "rename",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "history_project_wiki_page",
+    "verb": "GET",
+    "path": "/projects/:project_id/wiki/:id/history(.:format)",
+    "controller": "wiki",
+    "action": "history",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "diff_project_wiki_page",
+    "verb": "GET",
+    "path": "/projects/:project_id/wiki/:id/diff(.:format)",
+    "controller": "wiki",
+    "action": "diff",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "preview_project_wiki_page",
+    "verb": "POST|PUT|PATCH",
+    "path": "/projects/:project_id/wiki/:id/preview(.:format)",
+    "controller": "wiki",
+    "action": "preview",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "protect_project_wiki_page",
+    "verb": "POST",
+    "path": "/projects/:project_id/wiki/:id/protect(.:format)",
+    "controller": "wiki",
+    "action": "protect",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "add_attachment_project_wiki_page",
+    "verb": "POST",
+    "path": "/projects/:project_id/wiki/:id/add_attachment(.:format)",
+    "controller": "wiki",
+    "action": "add_attachment",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "export_project_wiki_page_index",
+    "verb": "GET",
+    "path": "/projects/:project_id/wiki/export(.:format)",
+    "controller": "wiki",
+    "action": "export",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "date_index_project_wiki_page_index",
+    "verb": "GET",
+    "path": "/projects/:project_id/wiki/date_index(.:format)",
+    "controller": "wiki",
+    "action": "date_index",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "project_wiki_page_index",
+    "verb": "POST",
+    "path": "/projects/:project_id/wiki/new(.:format)",
+    "controller": "wiki",
+    "action": "new",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "new_project_wiki_page",
+    "verb": "GET",
+    "path": "/projects/:project_id/wiki/new(.:format)",
+    "controller": "wiki",
+    "action": "new",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "edit_project_wiki_page",
+    "verb": "GET",
+    "path": "/projects/:project_id/wiki/:id/edit(.:format)",
+    "controller": "wiki",
+    "action": "edit",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "project_wiki_page",
+    "verb": "GET",
+    "path": "/projects/:project_id/wiki/:id(.:format)",
+    "controller": "wiki",
+    "action": "show",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "PATCH",
+    "path": "/projects/:project_id/wiki/:id(.:format)",
+    "controller": "wiki",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "PUT",
+    "path": "/projects/:project_id/wiki/:id(.:format)",
+    "controller": "wiki",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "DELETE",
+    "path": "/projects/:project_id/wiki/:id(.:format)",
+    "controller": "wiki",
+    "action": "destroy",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "project_wiki",
+    "verb": "GET",
+    "path": "/projects/:project_id/wiki(.:format)",
+    "controller": "wiki",
+    "action": "show",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "GET",
+    "path": "/projects/:project_id/wiki/:id/:version(.:format)",
+    "controller": "wiki",
+    "action": "show",
+    "defaults": {
+    },
+    "requirements": {
+      "version": "(?-mix:\\d+)"
+    }
+  },
+  {
+    "name": null,
+    "verb": "DELETE",
+    "path": "/projects/:project_id/wiki/:id/:version(.:format)",
+    "controller": "wiki",
+    "action": "destroy_version",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "GET",
+    "path": "/projects/:project_id/wiki/:id/:version/annotate(.:format)",
+    "controller": "wiki",
+    "action": "annotate",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "GET",
+    "path": "/projects/:project_id/wiki/:id/:version/diff(.:format)",
+    "controller": "wiki",
+    "action": "diff",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "projects",
+    "verb": "GET",
+    "path": "/projects(.:format)",
+    "controller": "projects",
+    "action": "index",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "POST",
+    "path": "/projects(.:format)",
+    "controller": "projects",
+    "action": "create",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "new_project",
+    "verb": "GET",
+    "path": "/projects/new(.:format)",
+    "controller": "projects",
+    "action": "new",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "edit_project",
+    "verb": "GET",
+    "path": "/projects/:id/edit(.:format)",
+    "controller": "projects",
+    "action": "edit",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "project",
+    "verb": "GET",
+    "path": "/projects/:id(.:format)",
+    "controller": "projects",
+    "action": "show",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "PATCH",
+    "path": "/projects/:id(.:format)",
+    "controller": "projects",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "PUT",
+    "path": "/projects/:id(.:format)",
+    "controller": "projects",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "DELETE",
+    "path": "/projects/:id(.:format)",
+    "controller": "projects",
+    "action": "destroy",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "edit_issue",
+    "verb": "PATCH",
+    "path": "/issues/:id/edit(.:format)",
+    "controller": "issues",
+    "action": "edit",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "tab_issue",
+    "verb": "GET",
+    "path": "/issues/:id/tab/:name(.:format)",
+    "controller": "issues",
+    "action": "issue_tab",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "bulk_edit_issues",
+    "verb": "GET|POST",
+    "path": "/issues/bulk_edit(.:format)",
+    "controller": "issues",
+    "action": "bulk_edit",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "bulk_update_issues",
+    "verb": "POST|PATCH",
+    "path": "/issues/bulk_update(.:format)",
+    "controller": "issues",
+    "action": "bulk_update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "issue_time_entries",
+    "verb": "POST",
+    "path": "/issues/:issue_id/time_entries(.:format)",
+    "controller": "timelog",
+    "action": "create",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "new_issue_time_entry",
+    "verb": "GET",
+    "path": "/issues/:issue_id/time_entries/new(.:format)",
+    "controller": "timelog",
+    "action": "new",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "issue_relations",
+    "verb": "GET",
+    "path": "/issues/:issue_id/relations(.:format)",
+    "controller": "issue_relations",
+    "action": "index",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "POST",
+    "path": "/issues/:issue_id/relations(.:format)",
+    "controller": "issue_relations",
+    "action": "create",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "relation",
+    "verb": "GET",
+    "path": "/relations/:id(.:format)",
+    "controller": "issue_relations",
+    "action": "show",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "DELETE",
+    "path": "/relations/:id(.:format)",
+    "controller": "issue_relations",
+    "action": "destroy",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "issues",
+    "verb": "GET",
+    "path": "/issues(.:format)",
+    "controller": "issues",
+    "action": "index",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "POST",
+    "path": "/issues(.:format)",
+    "controller": "issues",
+    "action": "create",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "new_issue",
+    "verb": "GET",
+    "path": "/issues/new(.:format)",
+    "controller": "issues",
+    "action": "new",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "GET",
+    "path": "/issues/:id/edit(.:format)",
+    "controller": "issues",
+    "action": "edit",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "issue",
+    "verb": "GET",
+    "path": "/issues/:id(.:format)",
+    "controller": "issues",
+    "action": "show",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "PATCH",
+    "path": "/issues/:id(.:format)",
+    "controller": "issues",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "PUT",
+    "path": "/issues/:id(.:format)",
+    "controller": "issues",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "DELETE",
+    "path": "/issues/:id(.:format)",
+    "controller": "issues",
+    "action": "destroy",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "issues_new",
+    "verb": "POST",
+    "path": "/issues/new(.:format)",
+    "controller": "issues",
+    "action": "new",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "DELETE",
+    "path": "/issues(.:format)",
+    "controller": "issues",
+    "action": "destroy",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "queries",
+    "verb": "GET",
+    "path": "/queries(.:format)",
+    "controller": "queries",
+    "action": "index",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "POST",
+    "path": "/queries(.:format)",
+    "controller": "queries",
+    "action": "create",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "new_query",
+    "verb": "GET",
+    "path": "/queries/new(.:format)",
+    "controller": "queries",
+    "action": "new",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "edit_query",
+    "verb": "GET",
+    "path": "/queries/:id/edit(.:format)",
+    "controller": "queries",
+    "action": "edit",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "query",
+    "verb": "PATCH",
+    "path": "/queries/:id(.:format)",
+    "controller": "queries",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "PUT",
+    "path": "/queries/:id(.:format)",
+    "controller": "queries",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "DELETE",
+    "path": "/queries/:id(.:format)",
+    "controller": "queries",
+    "action": "destroy",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "queries_filter",
+    "verb": "GET",
+    "path": "/queries/filter(.:format)",
+    "controller": "queries",
+    "action": "filter",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "news_index",
+    "verb": "GET",
+    "path": "/news(.:format)",
+    "controller": "news",
+    "action": "index",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "POST",
+    "path": "/news(.:format)",
+    "controller": "news",
+    "action": "create",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "new_news",
+    "verb": "GET",
+    "path": "/news/new(.:format)",
+    "controller": "news",
+    "action": "new",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "edit_news",
+    "verb": "GET",
+    "path": "/news/:id/edit(.:format)",
+    "controller": "news",
+    "action": "edit",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "news",
+    "verb": "GET",
+    "path": "/news/:id(.:format)",
+    "controller": "news",
+    "action": "show",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "PATCH",
+    "path": "/news/:id(.:format)",
+    "controller": "news",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "PUT",
+    "path": "/news/:id(.:format)",
+    "controller": "news",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "DELETE",
+    "path": "/news/:id(.:format)",
+    "controller": "news",
+    "action": "destroy",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "POST",
+    "path": "/news/:id/comments(.:format)",
+    "controller": "comments",
+    "action": "create",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "DELETE",
+    "path": "/news/:id/comments/:comment_id(.:format)",
+    "controller": "comments",
+    "action": "destroy",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "status_by_version",
+    "verb": "POST",
+    "path": "/versions/:id/status_by(.:format)",
+    "controller": "versions",
+    "action": "status_by",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "edit_version",
+    "verb": "GET",
+    "path": "/versions/:id/edit(.:format)",
+    "controller": "versions",
+    "action": "edit",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "version",
+    "verb": "GET",
+    "path": "/versions/:id(.:format)",
+    "controller": "versions",
+    "action": "show",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "PATCH",
+    "path": "/versions/:id(.:format)",
+    "controller": "versions",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "PUT",
+    "path": "/versions/:id(.:format)",
+    "controller": "versions",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "DELETE",
+    "path": "/versions/:id(.:format)",
+    "controller": "versions",
+    "action": "destroy",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "add_attachment_document",
+    "verb": "POST",
+    "path": "/documents/:id/add_attachment(.:format)",
+    "controller": "documents",
+    "action": "add_attachment",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "edit_document",
+    "verb": "GET",
+    "path": "/documents/:id/edit(.:format)",
+    "controller": "documents",
+    "action": "edit",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "document",
+    "verb": "GET",
+    "path": "/documents/:id(.:format)",
+    "controller": "documents",
+    "action": "show",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "PATCH",
+    "path": "/documents/:id(.:format)",
+    "controller": "documents",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "PUT",
+    "path": "/documents/:id(.:format)",
+    "controller": "documents",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "DELETE",
+    "path": "/documents/:id(.:format)",
+    "controller": "documents",
+    "action": "destroy",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "time_entries_context_menu",
+    "verb": "GET|POST",
+    "path": "/time_entries/context_menu(.:format)",
+    "controller": "context_menus",
+    "action": "time_entries",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "edit_time_entry",
+    "verb": "PATCH",
+    "path": "/time_entries/:id/edit(.:format)",
+    "controller": "timelog",
+    "action": "edit",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "report_time_entries",
+    "verb": "GET",
+    "path": "/time_entries/report(.:format)",
+    "controller": "timelog",
+    "action": "report",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "bulk_edit_time_entries",
+    "verb": "GET",
+    "path": "/time_entries/bulk_edit(.:format)",
+    "controller": "timelog",
+    "action": "bulk_edit",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "bulk_update_time_entries",
+    "verb": "POST",
+    "path": "/time_entries/bulk_update(.:format)",
+    "controller": "timelog",
+    "action": "bulk_update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "time_entries",
+    "verb": "GET",
+    "path": "/time_entries(.:format)",
+    "controller": "timelog",
+    "action": "index",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "POST",
+    "path": "/time_entries(.:format)",
+    "controller": "timelog",
+    "action": "create",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "new_time_entry",
+    "verb": "GET",
+    "path": "/time_entries/new(.:format)",
+    "controller": "timelog",
+    "action": "new",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "GET",
+    "path": "/time_entries/:id/edit(.:format)",
+    "controller": "timelog",
+    "action": "edit",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "time_entry",
+    "verb": "GET",
+    "path": "/time_entries/:id(.:format)",
+    "controller": "timelog",
+    "action": "show",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "PATCH",
+    "path": "/time_entries/:id(.:format)",
+    "controller": "timelog",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "PUT",
+    "path": "/time_entries/:id(.:format)",
+    "controller": "timelog",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "DELETE",
+    "path": "/time_entries/:id(.:format)",
+    "controller": "timelog",
+    "action": "destroy",
+    "defaults": {
+    },
+    "requirements": {
+      "id": "(?-mix:\\d+)"
+    }
+  },
+  {
+    "name": "time_entries_destroy",
+    "verb": "DELETE",
+    "path": "/time_entries/destroy(.:format)",
+    "controller": "timelog",
+    "action": "destroy",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "time_entries_new",
+    "verb": "POST",
+    "path": "/time_entries/new(.:format)",
+    "controller": "timelog",
+    "action": "new",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "time_entries_bulk_edit",
+    "verb": "POST",
+    "path": "/time_entries/bulk_edit(.:format)",
+    "controller": "timelog",
+    "action": "bulk_edit",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "project_activity",
+    "verb": "GET",
+    "path": "/projects/:id/activity(.:format)",
+    "controller": "activities",
+    "action": "index",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "activity",
+    "verb": "GET",
+    "path": "/activity(.:format)",
+    "controller": "activities",
+    "action": "index",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "GET",
+    "path": "/projects/:id/repository/:repository_id/statistics(.:format)",
+    "controller": "repositories",
+    "action": "stats",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "GET",
+    "path": "/projects/:id/repository/:repository_id/graph(.:format)",
+    "controller": "repositories",
+    "action": "graph",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "POST",
+    "path": "/projects/:id/repository/:repository_id/fetch_changesets(.:format)",
+    "controller": "repositories",
+    "action": "fetch_changesets",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "GET",
+    "path": "/projects/:id/repository/:repository_id/revisions/:rev(.:format)",
+    "controller": "repositories",
+    "action": "revision",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "GET",
+    "path": "/projects/:id/repository/:repository_id/revision(.:format)",
+    "controller": "repositories",
+    "action": "revision",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "POST",
+    "path": "/projects/:id/repository/:repository_id/revisions/:rev/issues(.:format)",
+    "controller": "repositories",
+    "action": "add_related_issue",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "DELETE",
+    "path": "/projects/:id/repository/:repository_id/revisions/:rev/issues/:issue_id(.:format)",
+    "controller": "repositories",
+    "action": "remove_related_issue",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "GET",
+    "path": "/projects/:id/repository/:repository_id/revisions(.:format)",
+    "controller": "repositories",
+    "action": "revisions",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "GET",
+    "path": "/projects/:id/repository/:repository_id/revisions/:rev/browse(/*path)(.:format)",
+    "controller": "repositories",
+    "action": "browse",
+    "defaults": {
+      "format": "html"
+    },
+    "requirements": {
+      "format": "(?-mix:html)",
+      "path": "(?-mix:.*)",
+      "rev": "(?-mix:[a-z0-9\\.\\-_]+)"
+    }
+  },
+  {
+    "name": null,
+    "verb": "GET",
+    "path": "/projects/:id/repository/:repository_id/revisions/:rev/show(/*path)(.:format)",
+    "controller": "repositories",
+    "action": "show",
+    "defaults": {
+      "format": "html"
+    },
+    "requirements": {
+      "format": "(?-mix:html)",
+      "path": "(?-mix:.*)",
+      "rev": "(?-mix:[a-z0-9\\.\\-_]+)"
+    }
+  },
+  {
+    "name": null,
+    "verb": "GET",
+    "path": "/projects/:id/repository/:repository_id/revisions/:rev/entry(/*path)(.:format)",
+    "controller": "repositories",
+    "action": "entry",
+    "defaults": {
+      "format": "html"
+    },
+    "requirements": {
+      "format": "(?-mix:html)",
+      "path": "(?-mix:.*)",
+      "rev": "(?-mix:[a-z0-9\\.\\-_]+)"
+    }
+  },
+  {
+    "name": null,
+    "verb": "GET",
+    "path": "/projects/:id/repository/:repository_id/revisions/:rev/raw(/*path)(.:format)",
+    "controller": "repositories",
+    "action": "raw",
+    "defaults": {
+      "format": "html"
+    },
+    "requirements": {
+      "format": "(?-mix:html)",
+      "path": "(?-mix:.*)",
+      "rev": "(?-mix:[a-z0-9\\.\\-_]+)"
+    }
+  },
+  {
+    "name": null,
+    "verb": "GET",
+    "path": "/projects/:id/repository/:repository_id/revisions/:rev/annotate(/*path)(.:format)",
+    "controller": "repositories",
+    "action": "annotate",
+    "defaults": {
+      "format": "html"
+    },
+    "requirements": {
+      "format": "(?-mix:html)",
+      "path": "(?-mix:.*)",
+      "rev": "(?-mix:[a-z0-9\\.\\-_]+)"
+    }
+  },
+  {
+    "name": null,
+    "verb": "GET",
+    "path": "/projects/:id/repository/:repository_id/browse(/*path)(.:format)",
+    "controller": "repositories",
+    "action": "browse",
+    "defaults": {
+      "format": "html"
+    },
+    "requirements": {
+      "format": "(?-mix:html)",
+      "path": "(?-mix:.*)"
+    }
+  },
+  {
+    "name": null,
+    "verb": "GET",
+    "path": "/projects/:id/repository/:repository_id/entry(/*path)(.:format)",
+    "controller": "repositories",
+    "action": "entry",
+    "defaults": {
+      "format": "html"
+    },
+    "requirements": {
+      "format": "(?-mix:html)",
+      "path": "(?-mix:.*)"
+    }
+  },
+  {
+    "name": null,
+    "verb": "GET",
+    "path": "/projects/:id/repository/:repository_id/raw(/*path)(.:format)",
+    "controller": "repositories",
+    "action": "raw",
+    "defaults": {
+      "format": "html"
+    },
+    "requirements": {
+      "format": "(?-mix:html)",
+      "path": "(?-mix:.*)"
+    }
+  },
+  {
+    "name": null,
+    "verb": "GET",
+    "path": "/projects/:id/repository/:repository_id/changes(/*path)(.:format)",
+    "controller": "repositories",
+    "action": "changes",
+    "defaults": {
+      "format": "html"
+    },
+    "requirements": {
+      "format": "(?-mix:html)",
+      "path": "(?-mix:.*)"
+    }
+  },
+  {
+    "name": null,
+    "verb": "GET",
+    "path": "/projects/:id/repository/:repository_id/annotate(/*path)(.:format)",
+    "controller": "repositories",
+    "action": "annotate",
+    "defaults": {
+      "format": "html"
+    },
+    "requirements": {
+      "format": "(?-mix:html)",
+      "path": "(?-mix:.*)"
+    }
+  },
+  {
+    "name": null,
+    "verb": "GET",
+    "path": "/projects/:id/repository/:repository_id/revisions/:rev/diff(/*path)(.:format)",
+    "controller": "repositories",
+    "action": "diff",
+    "defaults": {
+      "format": "html"
+    },
+    "requirements": {
+      "format": "(?-mix:(html|diff))",
+      "path": "(?-mix:.*)",
+      "rev": "(?-mix:[a-z0-9\\.\\-_]+)"
+    }
+  },
+  {
+    "name": null,
+    "verb": "GET",
+    "path": "/projects/:id/repository/:repository_id/diff(/*path)(.:format)",
+    "controller": "repositories",
+    "action": "diff",
+    "defaults": {
+      "format": "html"
+    },
+    "requirements": {
+      "format": "(?-mix:(html|diff))",
+      "path": "(?-mix:.*)"
+    }
+  },
+  {
+    "name": null,
+    "verb": "GET",
+    "path": "/projects/:id/repository/:repository_id/show/*path(.:format)",
+    "controller": "repositories",
+    "action": "show",
+    "defaults": {
+      "format": "html"
+    },
+    "requirements": {
+      "format": "(?-mix:html)",
+      "path": "(?-mix:.*)"
+    }
+  },
+  {
+    "name": null,
+    "verb": "GET",
+    "path": "/projects/:id/repository/:repository_id(.:format)",
+    "controller": "repositories",
+    "action": "show",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "GET",
+    "path": "/projects/:id/repository(.:format)",
+    "controller": "repositories",
+    "action": "show",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "named_attachment",
+    "verb": "GET",
+    "path": "/attachments/:id/:filename(.:format)",
+    "controller": "attachments",
+    "action": "show",
+    "defaults": {
+      "format": "html"
+    },
+    "requirements": {
+      "format": "(?-mix:html)",
+      "id": "(?-mix:\\d+)",
+      "filename": "(?-mix:.*)"
+    }
+  },
+  {
+    "name": "download_named_attachment",
+    "verb": "GET",
+    "path": "/attachments/download/:id/:filename(.:format)",
+    "controller": "attachments",
+    "action": "download",
+    "defaults": {
+      "format": "html"
+    },
+    "requirements": {
+      "format": "(?-mix:html)",
+      "id": "(?-mix:\\d+)",
+      "filename": "(?-mix:.*)"
+    }
+  },
+  {
+    "name": null,
+    "verb": "GET",
+    "path": "/attachments/download/:id(.:format)",
+    "controller": "attachments",
+    "action": "download",
+    "defaults": {
+    },
+    "requirements": {
+      "id": "(?-mix:\\d+)"
+    }
+  },
+  {
+    "name": "thumbnail",
+    "verb": "GET",
+    "path": "/attachments/thumbnail/:id(/:size)(.:format)",
+    "controller": "attachments",
+    "action": "thumbnail",
+    "defaults": {
+    },
+    "requirements": {
+      "id": "(?-mix:\\d+)",
+      "size": "(?-mix:\\d+)"
+    }
+  },
+  {
+    "name": "attachment",
+    "verb": "GET",
+    "path": "/attachments/:id(.:format)",
+    "controller": "attachments",
+    "action": "show",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "PATCH",
+    "path": "/attachments/:id(.:format)",
+    "controller": "attachments",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "PUT",
+    "path": "/attachments/:id(.:format)",
+    "controller": "attachments",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "DELETE",
+    "path": "/attachments/:id(.:format)",
+    "controller": "attachments",
+    "action": "destroy",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "object_attachments_edit",
+    "verb": "GET",
+    "path": "/attachments/:object_type/:object_id/edit(.:format)",
+    "controller": "attachments",
+    "action": "edit_all",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "object_attachments",
+    "verb": "PATCH",
+    "path": "/attachments/:object_type/:object_id(.:format)",
+    "controller": "attachments",
+    "action": "update_all",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "object_attachments_download",
+    "verb": "GET",
+    "path": "/attachments/:object_type/:object_id/download(.:format)",
+    "controller": "attachments",
+    "action": "download_all",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "group_memberships",
+    "verb": "GET",
+    "path": "/groups/:group_id/memberships(.:format)",
+    "controller": "principal_memberships",
+    "action": "index",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "POST",
+    "path": "/groups/:group_id/memberships(.:format)",
+    "controller": "principal_memberships",
+    "action": "create",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "new_group_membership",
+    "verb": "GET",
+    "path": "/groups/:group_id/memberships/new(.:format)",
+    "controller": "principal_memberships",
+    "action": "new",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "edit_group_membership",
+    "verb": "GET",
+    "path": "/groups/:group_id/memberships/:id/edit(.:format)",
+    "controller": "principal_memberships",
+    "action": "edit",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "group_membership",
+    "verb": "GET",
+    "path": "/groups/:group_id/memberships/:id(.:format)",
+    "controller": "principal_memberships",
+    "action": "show",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "PATCH",
+    "path": "/groups/:group_id/memberships/:id(.:format)",
+    "controller": "principal_memberships",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "PUT",
+    "path": "/groups/:group_id/memberships/:id(.:format)",
+    "controller": "principal_memberships",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "DELETE",
+    "path": "/groups/:group_id/memberships/:id(.:format)",
+    "controller": "principal_memberships",
+    "action": "destroy",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "autocomplete_for_user_group",
+    "verb": "GET",
+    "path": "/groups/:id/autocomplete_for_user(.:format)",
+    "controller": "groups",
+    "action": "autocomplete_for_user",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "groups",
+    "verb": "GET",
+    "path": "/groups(.:format)",
+    "controller": "groups",
+    "action": "index",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "POST",
+    "path": "/groups(.:format)",
+    "controller": "groups",
+    "action": "create",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "new_group",
+    "verb": "GET",
+    "path": "/groups/new(.:format)",
+    "controller": "groups",
+    "action": "new",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "edit_group",
+    "verb": "GET",
+    "path": "/groups/:id/edit(.:format)",
+    "controller": "groups",
+    "action": "edit",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "group",
+    "verb": "GET",
+    "path": "/groups/:id(.:format)",
+    "controller": "groups",
+    "action": "show",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "PATCH",
+    "path": "/groups/:id(.:format)",
+    "controller": "groups",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "PUT",
+    "path": "/groups/:id(.:format)",
+    "controller": "groups",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "DELETE",
+    "path": "/groups/:id(.:format)",
+    "controller": "groups",
+    "action": "destroy",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "new_group_users",
+    "verb": "GET",
+    "path": "/groups/:id/users/new(.:format)",
+    "controller": "groups",
+    "action": "new_users",
+    "defaults": {
+    },
+    "requirements": {
+      "id": "(?-mix:\\d+)"
+    }
+  },
+  {
+    "name": "group_users",
+    "verb": "POST",
+    "path": "/groups/:id/users(.:format)",
+    "controller": "groups",
+    "action": "add_users",
+    "defaults": {
+    },
+    "requirements": {
+      "id": "(?-mix:\\d+)"
+    }
+  },
+  {
+    "name": "group_user",
+    "verb": "DELETE",
+    "path": "/groups/:id/users/:user_id(.:format)",
+    "controller": "groups",
+    "action": "remove_user",
+    "defaults": {
+    },
+    "requirements": {
+      "id": "(?-mix:\\d+)"
+    }
+  },
+  {
+    "name": "fields_trackers",
+    "verb": "GET|POST",
+    "path": "/trackers/fields(.:format)",
+    "controller": "trackers",
+    "action": "fields",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "trackers",
+    "verb": "GET",
+    "path": "/trackers(.:format)",
+    "controller": "trackers",
+    "action": "index",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "POST",
+    "path": "/trackers(.:format)",
+    "controller": "trackers",
+    "action": "create",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "new_tracker",
+    "verb": "GET",
+    "path": "/trackers/new(.:format)",
+    "controller": "trackers",
+    "action": "new",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "edit_tracker",
+    "verb": "GET",
+    "path": "/trackers/:id/edit(.:format)",
+    "controller": "trackers",
+    "action": "edit",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "tracker",
+    "verb": "PATCH",
+    "path": "/trackers/:id(.:format)",
+    "controller": "trackers",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "PUT",
+    "path": "/trackers/:id(.:format)",
+    "controller": "trackers",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "DELETE",
+    "path": "/trackers/:id(.:format)",
+    "controller": "trackers",
+    "action": "destroy",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "update_issue_done_ratio_issue_statuses",
+    "verb": "POST",
+    "path": "/issue_statuses/update_issue_done_ratio(.:format)",
+    "controller": "issue_statuses",
+    "action": "update_issue_done_ratio",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "issue_statuses",
+    "verb": "GET",
+    "path": "/issue_statuses(.:format)",
+    "controller": "issue_statuses",
+    "action": "index",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "POST",
+    "path": "/issue_statuses(.:format)",
+    "controller": "issue_statuses",
+    "action": "create",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "new_issue_status",
+    "verb": "GET",
+    "path": "/issue_statuses/new(.:format)",
+    "controller": "issue_statuses",
+    "action": "new",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "edit_issue_status",
+    "verb": "GET",
+    "path": "/issue_statuses/:id/edit(.:format)",
+    "controller": "issue_statuses",
+    "action": "edit",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "issue_status",
+    "verb": "PATCH",
+    "path": "/issue_statuses/:id(.:format)",
+    "controller": "issue_statuses",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "PUT",
+    "path": "/issue_statuses/:id(.:format)",
+    "controller": "issue_statuses",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "DELETE",
+    "path": "/issue_statuses/:id(.:format)",
+    "controller": "issue_statuses",
+    "action": "destroy",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "custom_field_enumerations",
+    "verb": "GET",
+    "path": "/custom_fields/:custom_field_id/enumerations(.:format)",
+    "controller": "custom_field_enumerations",
+    "action": "index",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "POST",
+    "path": "/custom_fields/:custom_field_id/enumerations(.:format)",
+    "controller": "custom_field_enumerations",
+    "action": "create",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "custom_field_enumeration",
+    "verb": "PATCH",
+    "path": "/custom_fields/:custom_field_id/enumerations/:id(.:format)",
+    "controller": "custom_field_enumerations",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "PUT",
+    "path": "/custom_fields/:custom_field_id/enumerations/:id(.:format)",
+    "controller": "custom_field_enumerations",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "DELETE",
+    "path": "/custom_fields/:custom_field_id/enumerations/:id(.:format)",
+    "controller": "custom_field_enumerations",
+    "action": "destroy",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "PUT",
+    "path": "/custom_fields/:custom_field_id/enumerations(.:format)",
+    "controller": "custom_field_enumerations",
+    "action": "update_each",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "custom_fields",
+    "verb": "GET",
+    "path": "/custom_fields(.:format)",
+    "controller": "custom_fields",
+    "action": "index",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "POST",
+    "path": "/custom_fields(.:format)",
+    "controller": "custom_fields",
+    "action": "create",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "new_custom_field",
+    "verb": "GET",
+    "path": "/custom_fields/new(.:format)",
+    "controller": "custom_fields",
+    "action": "new",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "edit_custom_field",
+    "verb": "GET",
+    "path": "/custom_fields/:id/edit(.:format)",
+    "controller": "custom_fields",
+    "action": "edit",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "custom_field",
+    "verb": "PATCH",
+    "path": "/custom_fields/:id(.:format)",
+    "controller": "custom_fields",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "PUT",
+    "path": "/custom_fields/:id(.:format)",
+    "controller": "custom_fields",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "DELETE",
+    "path": "/custom_fields/:id(.:format)",
+    "controller": "custom_fields",
+    "action": "destroy",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "permissions_roles",
+    "verb": "GET",
+    "path": "/roles/permissions(.:format)",
+    "controller": "roles",
+    "action": "permissions",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "POST",
+    "path": "/roles/permissions(.:format)",
+    "controller": "roles",
+    "action": "update_permissions",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "roles",
+    "verb": "GET",
+    "path": "/roles(.:format)",
+    "controller": "roles",
+    "action": "index",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "POST",
+    "path": "/roles(.:format)",
+    "controller": "roles",
+    "action": "create",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "new_role",
+    "verb": "GET",
+    "path": "/roles/new(.:format)",
+    "controller": "roles",
+    "action": "new",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "edit_role",
+    "verb": "GET",
+    "path": "/roles/:id/edit(.:format)",
+    "controller": "roles",
+    "action": "edit",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "role",
+    "verb": "GET",
+    "path": "/roles/:id(.:format)",
+    "controller": "roles",
+    "action": "show",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "PATCH",
+    "path": "/roles/:id(.:format)",
+    "controller": "roles",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "PUT",
+    "path": "/roles/:id(.:format)",
+    "controller": "roles",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "DELETE",
+    "path": "/roles/:id(.:format)",
+    "controller": "roles",
+    "action": "destroy",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "enumerations",
+    "verb": "GET",
+    "path": "/enumerations(.:format)",
+    "controller": "enumerations",
+    "action": "index",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "POST",
+    "path": "/enumerations(.:format)",
+    "controller": "enumerations",
+    "action": "create",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "new_enumeration",
+    "verb": "GET",
+    "path": "/enumerations/new(.:format)",
+    "controller": "enumerations",
+    "action": "new",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "edit_enumeration",
+    "verb": "GET",
+    "path": "/enumerations/:id/edit(.:format)",
+    "controller": "enumerations",
+    "action": "edit",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "enumeration",
+    "verb": "PATCH",
+    "path": "/enumerations/:id(.:format)",
+    "controller": "enumerations",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "PUT",
+    "path": "/enumerations/:id(.:format)",
+    "controller": "enumerations",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "DELETE",
+    "path": "/enumerations/:id(.:format)",
+    "controller": "enumerations",
+    "action": "destroy",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "GET",
+    "path": "/enumerations/:type(.:format)",
+    "controller": "enumerations",
+    "action": "index",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "search",
+    "verb": "GET",
+    "path": "(/projects/:id)/search(.:format)",
+    "controller": "search",
+    "action": "index",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "mail_handler",
+    "verb": "GET",
+    "path": "/mail_handler(.:format)",
+    "controller": "mail_handler",
+    "action": "new",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "POST",
+    "path": "/mail_handler(.:format)",
+    "controller": "mail_handler",
+    "action": "index",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "admin",
+    "verb": "GET",
+    "path": "/admin(.:format)",
+    "controller": "admin",
+    "action": "index",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "admin_projects",
+    "verb": "GET",
+    "path": "/admin/projects(.:format)",
+    "controller": "admin",
+    "action": "projects",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "admin_plugins",
+    "verb": "GET",
+    "path": "/admin/plugins(.:format)",
+    "controller": "admin",
+    "action": "plugins",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "admin_info",
+    "verb": "GET",
+    "path": "/admin/info(.:format)",
+    "controller": "admin",
+    "action": "info",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "test_email",
+    "verb": "POST",
+    "path": "/admin/test_email(.:format)",
+    "controller": "admin",
+    "action": "test_email",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "admin_default_configuration",
+    "verb": "POST",
+    "path": "/admin/default_configuration(.:format)",
+    "controller": "admin",
+    "action": "default_configuration",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "projects_context_menu",
+    "verb": "GET|POST",
+    "path": "/admin/projects_context_menu(.:format)",
+    "controller": "context_menus",
+    "action": "projects",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "try_connection_auth_source",
+    "verb": "GET",
+    "path": "/auth_sources/:id/test_connection(.:format)",
+    "controller": "auth_sources",
+    "action": "test_connection",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "autocomplete_for_new_user_auth_sources",
+    "verb": "GET",
+    "path": "/auth_sources/autocomplete_for_new_user(.:format)",
+    "controller": "auth_sources",
+    "action": "autocomplete_for_new_user",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "auth_sources",
+    "verb": "GET",
+    "path": "/auth_sources(.:format)",
+    "controller": "auth_sources",
+    "action": "index",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "POST",
+    "path": "/auth_sources(.:format)",
+    "controller": "auth_sources",
+    "action": "create",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "new_auth_source",
+    "verb": "GET",
+    "path": "/auth_sources/new(.:format)",
+    "controller": "auth_sources",
+    "action": "new",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "edit_auth_source",
+    "verb": "GET",
+    "path": "/auth_sources/:id/edit(.:format)",
+    "controller": "auth_sources",
+    "action": "edit",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "auth_source",
+    "verb": "GET",
+    "path": "/auth_sources/:id(.:format)",
+    "controller": "auth_sources",
+    "action": "show",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "PATCH",
+    "path": "/auth_sources/:id(.:format)",
+    "controller": "auth_sources",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "PUT",
+    "path": "/auth_sources/:id(.:format)",
+    "controller": "auth_sources",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "DELETE",
+    "path": "/auth_sources/:id(.:format)",
+    "controller": "auth_sources",
+    "action": "destroy",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "edit_workflows",
+    "verb": "GET",
+    "path": "/workflows/edit(.:format)",
+    "controller": "workflows",
+    "action": "edit",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "workflows",
+    "verb": "PATCH",
+    "path": "/workflows/update(.:format)",
+    "controller": "workflows",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "permissions_workflows",
+    "verb": "GET",
+    "path": "/workflows/permissions(.:format)",
+    "controller": "workflows",
+    "action": "permissions",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "update_permissions_workflows",
+    "verb": "PATCH",
+    "path": "/workflows/update_permissions(.:format)",
+    "controller": "workflows",
+    "action": "update_permissions",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "copy_workflows",
+    "verb": "GET",
+    "path": "/workflows/copy(.:format)",
+    "controller": "workflows",
+    "action": "copy",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "duplicate_workflows",
+    "verb": "POST",
+    "path": "/workflows/duplicate(.:format)",
+    "controller": "workflows",
+    "action": "duplicate",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "GET",
+    "path": "/workflows(.:format)",
+    "controller": "workflows",
+    "action": "index",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "settings",
+    "verb": "GET",
+    "path": "/settings(.:format)",
+    "controller": "settings",
+    "action": "index",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "settings_edit",
+    "verb": "GET|POST",
+    "path": "/settings/edit(.:format)",
+    "controller": "settings",
+    "action": "edit",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "plugin_settings",
+    "verb": "GET|POST",
+    "path": "/settings/plugin/:id(.:format)",
+    "controller": "settings",
+    "action": "plugin",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "sys_projects",
+    "verb": "GET",
+    "path": "/sys/projects(.:format)",
+    "controller": "sys",
+    "action": "projects",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "POST",
+    "path": "/sys/projects/:id/repository(.:format)",
+    "controller": "sys",
+    "action": "create_project_repository",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "sys_fetch_changesets",
+    "verb": "GET|POST",
+    "path": "/sys/fetch_changesets(.:format)",
+    "controller": "sys",
+    "action": "fetch_changesets",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "uploads",
+    "verb": "POST",
+    "path": "/uploads(.:format)",
+    "controller": "attachments",
+    "action": "upload",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "GET",
+    "path": "/robots.:format",
+    "controller": "welcome",
+    "action": "robots",
+    "defaults": {
+    },
+    "requirements": {
+      "format": "txt"
+    }
+  },
+  {
+    "name": "help_wiki_syntax",
+    "verb": "GET",
+    "path": "/help/wiki_syntax(/:type)(.:format)",
+    "controller": "help",
+    "action": "show_wiki_syntax",
+    "defaults": {
+    },
+    "requirements": {
+      "type": "(?-mix:detailed)"
+    }
+  },
+  {
+    "name": "help_code_highlighting",
+    "verb": "GET",
+    "path": "/help/code_highlighting(.:format)",
+    "controller": "help",
+    "action": "show_code_highlighting",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "rails_health_check",
+    "verb": "GET",
+    "path": "/up(.:format)",
+    "controller": "rails/health",
+    "action": "show",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  }
+]
