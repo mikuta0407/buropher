@@ -453,7 +453,9 @@ func (l *issueLookup) formatValue(cf *customfield.CustomField, multi []string, s
 	return rails.ToS(l.formatCustomValue(cf, v, l.dummyCustomized(), false))
 }
 
-func (l *issueLookup) dummyCustomized() *customfield.Customized { return &customfield.Customized{Kind: "issue"} }
+func (l *issueLookup) dummyCustomized() *customfield.Customized {
+	return &customfield.Customized{Kind: "issue"}
+}
 
 // findNameByReflection は find_name_by_reflection(field, id)。
 func (l *issueLookup) findNameByReflection(field, id string) string {

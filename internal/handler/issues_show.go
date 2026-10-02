@@ -348,7 +348,9 @@ func (v *issueShowView) SubjectWithTree() template.HTML {
 }
 
 // ReactionButton は reaction_button(@issue)。
-func (v *issueShowView) ReactionButton() template.HTML { return v.l.reactionButton("issue", v.M.Row.ID, v.M) }
+func (v *issueShowView) ReactionButton() template.HTML {
+	return v.l.reactionButton("issue", v.M.Row.ID, v.M)
+}
 
 // Updated は @issue.created_on != @issue.updated_on。
 func (v *issueShowView) Updated() bool { return !v.M.Row.CreatedAt.Equal(v.M.Row.UpdatedAt) }
@@ -583,7 +585,9 @@ func (v *issueShowView) QuoteButton() template.HTML {
 }
 
 // Attachments は @issue.attachments。
-func (v *issueShowView) Attachments() []*repository.ReadAttachment { return v.l.issueAttachments(v.M.Row.ID) }
+func (v *issueShowView) Attachments() []*repository.ReadAttachment {
+	return v.l.issueAttachments(v.M.Row.ID)
+}
 
 // AttachmentLinks は link_to_attachments @issue, :thumbnails => true（attachments/_links）。
 func (v *issueShowView) AttachmentLinks() template.HTML {
@@ -965,7 +969,9 @@ func (v *issueShowView) AutoCompleteRelationURL() string {
 // ---------------------------------------------------------------- アクションメニュー
 
 // EditPath は edit_issue_path(@issue)。
-func (v *issueShowView) EditPath() string { return "/issues/" + strconv.FormatInt(v.M.Row.ID, 10) + "/edit" }
+func (v *issueShowView) EditPath() string {
+	return "/issues/" + strconv.FormatInt(v.M.Row.ID, 10) + "/edit"
+}
 
 // WatcherLink は watcher_link(@issue, User.current)。
 func (v *issueShowView) WatcherLink() template.HTML {
