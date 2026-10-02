@@ -16,4 +16,5 @@ type Router = chi.Router
 func (a *App) Routes(r Router) {
 	a.routesWelcome(r)
 	a.routesAccount(r)
+	a.routesWorkflows(r)
 }

@@ -1,0 +1,112 @@
+{{partial "workflows/action_menu"}}
+
+{{title (l "label_workflow")}}
+
+<div class="tabs">
+  <ul>
+    <li>{{link_to (l "label_status_transitions") (printf "/workflows/edit%s" .Query)}}</li>
+    <li>{{link_to (l "label_fields_permissions") (printf "/workflows/permissions%s" .Query) (hash "class" "selected")}}</li>
+  </ul>
+</div>
+
+<p>{{l "text_workflow_edit"}}:</p>
+
+{{form_tag "/workflows/permissions" (hash "method" "get")}}
+<p>
+  <label>{{l "label_role"}}:
+  {{options_for_workflow_select "role_id[]" .AllRoles .Roles (hash "id" "role_id" "class" "expandable")}}
+  <span class="toggle-multiselect icon-only">{{sprite_icon ""}}</span>
+  </label>
+
+  <label>{{l "label_tracker"}}:
+  {{options_for_workflow_select "tracker_id[]" .AllTrackers .Trackers (hash "id" "tracker_id" "class" "expandable")}}
+  <span class="toggle-multiselect icon-only">{{sprite_icon ""}}</span>
+  </label>
+  {{submit_tag (l "button_edit") (hash "name" nil)}}
+
+  {{hidden_field_tag "used_statuses_only" "0" (hash "id" nil)}}
+  <label>{{check_box_tag "used_statuses_only" "1" .UsedStatusesOnly}} {{l "label_display_used_statuses_only"}}</label>
+</p>
+{{end_form}}
+
+{{if .Show}}
+  {{form_tag "/workflows/update_permissions" (hash "method" "patch" "id" "workflow_form")}}
+    {{range $t := .Trackers}}{{hidden_field_tag "tracker_id[]" $t.ID (hash "id" nil)}}{{end}}
+    {{range $r := .Roles}}{{hidden_field_tag "role_id[]" $r.ID (hash "id" nil)}}{{end}}
+    {{hidden_field_tag "used_statuses_only" .UsedParam (hash "id" nil)}}
+    <div class="autoscroll">
+    <table class="list workflows fields_permissions">
+    <thead>
+      <tr>
+        <th>
+        </th>
+        <th colspan="{{len .Statuses}}">{{l "label_issue_status"}}</th>
+      </tr>
+      <tr>
+        <td></td>
+        {{range $status := .Statuses}}
+        <td style="width:{{$.StatusWidth}}%;">
+          {{$status.Name}}
+        </td>
+        {{end}}
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="group open">
+        <td colspan="{{add (len .Statuses) 1}}">
+          <span class="expander icon icon-expanded" onclick="toggleRowGroup(this);">{{sprite_icon "angle-down"}}</span>
+          {{l "field_core_fields"}}
+        </td>
+      </tr>
+      {{range $field := .Fields}}
+      <tr>
+        <td class="name">
+          {{$field.Label}} {{if $field.Required}}{{content_tag "span" "*" (hash "class" "required")}}{{end}}
+        </td>
+        {{range $i, $status := $.Statuses}}
+        <td class="{{join_rules (index $.Permissions $status.ID) $field.Key}}" title="{{$field.Label}} ({{$status.Name}})">
+          {{field_permission_tag (index $.Permissions $status.ID) $status.ID $field $.Total}}
+          {{if ne (add $i 1) (len $.Statuses)}}<a href="#" class="repeat-value" title="{{l "button_copy"}}">&#187;</a>{{end}}
+        </td>
+        {{end}}
+      </tr>
+      {{end}}
+      {{if .CustomFields}}
+        <tr class="group open">
+          <td colspan="{{add (len .Statuses) 1}}">
+            <span class="expander icon icon-expanded" onclick="toggleRowGroup(this);">{{sprite_icon "angle-down"}}</span>
+            {{l "label_custom_field_plural"}}
+          </td>
+        </tr>
+        {{range $field := .CustomFields}}
+        <tr>
+          <td class="name">
+            {{$field.Label}} {{if $field.Required}}{{content_tag "span" "*" (hash "class" "required")}}{{end}}
+          </td>
+          {{range $i, $status := $.Statuses}}
+          <td class="{{join_rules (index $.Permissions $status.ID) $field.Key}}" title="{{$field.Label}} ({{$status.Name}})">
+            {{field_permission_tag (index $.Permissions $status.ID) $status.ID $field $.Total}}
+            {{if ne (add $i 1) (len $.Statuses)}}<a href="#" class="repeat-value">&#187;</a>{{end}}
+          </td>
+          {{end}}
+        </tr>
+        {{end}}
+      {{end}}
+    </tbody>
+    </table>
+    </div>
+    {{submit_tag (l "button_save")}}
+  {{end_form}}
+{{end}}
+
+{{define "workflows/permissions#js"}}
+
+$("a.repeat-value").click(function(e){
+  e.preventDefault();
+  var td = $(this).closest('td');
+  var selected = td.find("select").find(":selected").val();
+  td.nextAll('td').find("select").val(selected);
+});
+{{end}}
+{{/* ERB の <% end %> と同じく末尾の改行を出さない */}}
+{{javascript_tag (capture "workflows/permissions#js")}}
