@@ -144,17 +144,41 @@ func (a *App) deleteWikiAttachments(c *Req, tx *db.Tx, page *domain.WikiPage, id
 	return nil
 }
 
+// AttachmentSaver は Wiki が使う添付の保存（Attachment.attach_files(container, params)）の抽象。
+// 戻り値の warning は render_attachment_warning_if_needed の flash[:warning]（無ければ ""）。
+// 共通の添付基盤が差し替わってもここを合わせるだけで済むよう、Wiki はこの口だけを使う。
+type AttachmentSaver interface {
+	SaveAttachments(c *Req, kind string, id int64, uploads *httpx.Params) (warning string, err error)
+}
+
+// storeAttachmentSaver は internal/attachments.Store による AttachmentSaver。
+type storeAttachmentSaver struct{ a *App }
+
+func (s storeAttachmentSaver) SaveAttachments(c *Req, kind string, id int64, uploads *httpx.Params) (string, error) {
+	if s.a.AttachmentStore == nil {
+		return "", nil
+	}
+	res, err := s.a.AttachmentStore.AttachFiles(c.Ctx(), s.a.DB, kind, id, uploads, c.User, c.Loc)
+	if err != nil {
+		return "", err
+	}
+	return res.WarningNotSaved(c.Loc), nil
+}
+
+// NewWikiAttachmentSaver は Wiki が使う AttachmentSaver（テストや基盤の差し替え用に変数にしている）。
+var NewWikiAttachmentSaver = func(a *App) AttachmentSaver { return storeAttachmentSaver{a} }
+
 // wikiAttachFiles は Attachment.attach_files(@page, params) と render_attachment_warning_if_needed。
 func (a *App) wikiAttachFiles(c *Req, page *domain.WikiPage, params *httpx.Params) {
-	if params == nil || a.AttachmentStore == nil {
+	if params == nil {
 		return
 	}
-	res, err := a.AttachmentStore.AttachFiles(c.Ctx(), a.DB, "wiki_page", page.ID, params, c.User, c.Loc)
+	w, err := NewWikiAttachmentSaver(a).SaveAttachments(c, "wiki_page", page.ID, params)
 	if err != nil {
 		a.logger().Error("attach files", "err", err)
 		return
 	}
-	if w := res.WarningNotSaved(c.Loc); w != "" {
+	if w != "" {
 		c.Flash().SetWarning(w)
 	}
 }

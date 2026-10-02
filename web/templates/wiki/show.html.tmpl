@@ -96,7 +96,6 @@
       {{link_to (sprite_icon "add" (l "label_wiki_page_new")) (printf "/projects/%s/wiki/new?parent=%s" (project_param current_project) (url_encode_param .Page.Title)) (hash "remote" true "class" "icon icon-add")}}
     {{end}}
 {{end}}
-
 {{define "wiki/show#sidebar"}}
   {{partial "wiki/sidebar" .}}
   {{if .ShowWatchers}}

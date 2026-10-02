@@ -51,3 +51,10 @@ entries:
   - case: "wiki*/projects_ecookbook_wiki_CookBook_documentation_3_annotate__*"
     reason: "フィクスチャの CookBook_documentation は wiki_contents（v3: child_pages 入りの本文・コメント付き）と wiki_content_versions の v3（別の本文）が食い違う。buropher は統合時に wiki_contents を優先するため、版 3 の本文・コメントを使う画面（履歴・差分・注釈・版 3 の表示）が異なる"
     ignore: true
+  - case: "wiki_write/diff_after_update__*"
+    reason: "フィクスチャの Another_page の版 1 は wiki_contents（include マクロ入り）と wiki_content_versions（短い本文）が食い違う。buropher は統合時に wiki_contents を優先するため、版 1 との差分が異なる"
+    ignore: true
+  - case: "wiki_write/history_after_destroy_version__*"
+    reason: "フィクスチャの CookBook_documentation の版 3 のコメントが wiki_contents と wiki_content_versions で食い違う（統合時に wiki_contents を優先）"
+    lines:
+      - '^\s*<td class="comments">(Gzip compression activated)?</td>$'
