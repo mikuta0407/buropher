@@ -140,7 +140,7 @@ func (s *Store) SaveAttachments(ctx context.Context, q db.Queryer, attachments a
 		if a == nil {
 			continue
 		}
-		a.Description = rubyStrip(att.String("description"))
+		a.Description, a.DescriptionNull = rubyStrip(att.String("description")), false
 		if a.NewRecord() {
 			res.Unsaved = append(res.Unsaved, a)
 			res.UnsavedErrors = append(res.UnsavedErrors, errs)

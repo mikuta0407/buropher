@@ -1,0 +1,6 @@
+{{title (list (l "label_oauth_application_plural") "/oauth/applications") .Application.App.Name}}
+
+{{$f := labelled_form_for "" .Application (hash "url" (printf "/oauth/applications/%d" .Application.App.ID))}}{{$f.Open}}
+  {{partial "doorkeeper/applications/form" (dict "f" $f)}}
+  {{submit_tag (l "button_save")}}
+{{end_form}}

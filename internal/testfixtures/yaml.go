@@ -122,7 +122,22 @@ func (r row) strOrNil(k string) any {
 	return nil
 }
 
-// nstr は値が無いか空文字なら nil (”→NULL 変換)。
+// text は文字列列の値を Redmine のフィクスチャ投入と同じく返す (D-17: 空文字列と NULL を区別する)。
+// 値が null なら nil、"" なら ""。キー自体が無い行は Redmine のスキーマ既定値 def
+// (default: "" の列は ""、既定値の無い列は nil) になる。
+func (r row) text(k string, def any) any {
+	v, present := r.cols[k]
+	if !present {
+		return def
+	}
+	if v == nil {
+		return nil
+	}
+	return *v
+}
+
+// nstr は値が無いか空文字なら nil (”→NULL 変換)。空文字列が値として成り立たない列
+// (twofa_scheme・mail_notification・リポジトリの任意列など) だけに使う。
 func (r row) nstr(k string) any {
 	if v := r.cols[k]; v != nil && *v != "" {
 		return *v

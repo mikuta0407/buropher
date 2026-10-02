@@ -29,7 +29,7 @@
     {{end}}
     {{range $file := $container.Attachments}}
     <tr class="file">
-      <td class="filename">{{link_to_attachment $file (hash "title" (presence $file.Description)) -}}</td>
+      <td class="filename">{{link_to_attachment $file (hash "title" $file.DescriptionValue) -}}</td>
       <td class="created_on">{{format_time $file.CreatedOn}}</td>
       <td class="filesize">{{number_to_human_size $file.Filesize}}</td>
       <td class="downloads">{{$file.Downloads}}</td>

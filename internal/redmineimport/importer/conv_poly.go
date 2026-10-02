@@ -105,8 +105,8 @@ func (im *imp) importQueries() error {
 			}
 		}
 		im.st.queries[id] = kind
-		return ins.add(id, kind, project, user, r.str("name"), r.strNull("description", true), vis, filters, columns, sort,
-			r.strNull("group_by", true), totalable, display, toJSON(options))
+		return ins.add(id, kind, project, user, r.str("name"), r.strNull("description", false), vis, filters, columns, sort,
+			r.strNull("group_by", false), totalable, display, toJSON(options))
 	})
 	if err != nil {
 		return err
@@ -174,7 +174,7 @@ func (im *imp) customizedExists(kind, owner string, id int64) (ok bool, reason s
 	return true, ""
 }
 
-// normalizeCFValue は §4.13 の正規化(空 → NULL、bool の表記揺れ、数値の前後空白)。
+// normalizeCFValue は §4.13 の正規化(空文字列はそのまま保持、bool の表記揺れ、数値の前後空白)。
 func normalizeCFValue(format string, v any) (any, bool) {
 	s, ok := toStr(v)
 	if !ok {
@@ -183,7 +183,7 @@ func normalizeCFValue(format string, v any) (any, bool) {
 	switch format {
 	case "int", "float", "progressbar":
 		if ts := strings.TrimSpace(s); ts != s {
-			return nullStr(ts), true
+			return ts, true
 		}
 	case "bool":
 		switch strings.ToLower(strings.TrimSpace(s)) {
@@ -193,7 +193,7 @@ func normalizeCFValue(format string, v any) (any, bool) {
 			return "0", s != "0"
 		}
 	}
-	return nullStr(s), false
+	return s, false
 }
 
 func (im *imp) importCustomValues() error {
@@ -292,7 +292,7 @@ func (im *imp) importAttachments() error {
 			t.drop(id, "empty disk_filename")
 			return nil
 		}
-		dir := r.strNull("disk_directory", true)
+		dir := r.strNull("disk_directory", false)
 		var digest, algo any
 		if d := strings.ToLower(strings.TrimSpace(r.str("digest"))); d != "" {
 			switch len(d) {
@@ -305,7 +305,7 @@ func (im *imp) importAttachments() error {
 			}
 		}
 		rel := diskFile
-		if dir != nil {
+		if dir != nil && dir != "" {
 			rel = dir.(string) + "/" + diskFile
 		}
 		if c, err := cleanRelPath(path.Clean(rel)); err == nil {
@@ -317,8 +317,8 @@ func (im *imp) importAttachments() error {
 		}
 		author := im.authorOr(t, id, "author_id", r.ref("author_id"))
 		im.st.attachments.add(id)
-		return ins.add(id, kind, cid, r.str("filename"), dir, diskFile, r.intOr("filesize", 0), r.strNull("content_type", true),
-			digest, algo, r.intOr("downloads", 0), author, r.strNull("description", true), im.tsOr(t, id, r, "created_on"))
+		return ins.add(id, kind, cid, r.str("filename"), dir, diskFile, r.intOr("filesize", 0), r.strNull("content_type", false),
+			digest, algo, r.intOr("downloads", 0), author, r.strNull("description", false), im.tsOr(t, id, r, "created_on"))
 	})
 	if err != nil {
 		return err

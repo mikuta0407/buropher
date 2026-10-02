@@ -39,7 +39,7 @@ func (r *attachmentRow) attachment() *domain.Attachment {
 		ID: r.ID, ContainerKind: r.ContainerKind.String, Filename: r.Filename,
 		DiskDirectory: r.DiskDirectory.String, DiskFilename: r.DiskFilename, Filesize: r.Filesize,
 		ContentType: r.ContentType.String, Digest: r.Digest.String, DigestAlgo: r.DigestAlgo.String,
-		Downloads: r.Downloads, AuthorID: r.AuthorID, Description: r.Description.String, CreatedOn: r.CreatedAt.Time,
+		Downloads: r.Downloads, AuthorID: r.AuthorID, Description: r.Description.String, DescriptionNull: !r.Description.Valid, CreatedOn: r.CreatedAt.Time,
 	}
 	if r.ContainerID.Valid {
 		id := r.ContainerID.Int64
@@ -48,7 +48,13 @@ func (r *attachmentRow) attachment() *domain.Attachment {
 	return a
 }
 
+// nullStr は空文字列を NULL にする（content_type・digest・disk_directory など、Redmine でも空にならず nil になる列用）。
 func nullStr(s string) sql.NullString { return sql.NullString{String: s, Valid: s != ""} }
+
+// attachmentDescriptionArg は description の保存値（DescriptionNull で空なら NULL、それ以外は "" もそのまま。D-17）。
+func attachmentDescriptionArg(a *domain.Attachment) sql.NullString {
+	return sql.NullString{String: a.Description, Valid: !a.DescriptionNull || a.Description != ""}
+}
 
 // attachmentContainerArgs は container_kind / container_id の値（未紐付けなら両方 NULL）。
 func attachmentContainerArgs(a *domain.Attachment) (sql.NullString, sql.NullInt64) {
@@ -75,7 +81,7 @@ func InsertAttachment(ctx context.Context, q db.Queryer, a *domain.Attachment) e
   disk_filename, filesize, content_type, digest, digest_algo, downloads, author_id, description, created_at)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 		kind, cid, a.Filename, nullStr(a.DiskDirectory), a.DiskFilename, a.Filesize, nullStr(a.ContentType),
-		nullStr(a.Digest), nullStr(algo), a.Downloads, a.AuthorID, nullStr(a.Description), db.NewTime(a.CreatedOn))
+		nullStr(a.Digest), nullStr(algo), a.Downloads, a.AuthorID, attachmentDescriptionArg(a), db.NewTime(a.CreatedOn))
 	if err != nil {
 		return err
 	}
@@ -89,7 +95,7 @@ VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 func UpdateAttachment(ctx context.Context, q db.Queryer, a *domain.Attachment) error {
 	kind, cid := attachmentContainerArgs(a)
 	_, err := q.Exec(ctx, `UPDATE attachments SET container_kind = ?, container_id = ?, filename = ?, description = ?, content_type = ?
-WHERE id = ?`, kind, cid, a.Filename, nullStr(a.Description), nullStr(a.ContentType), a.ID)
+WHERE id = ?`, kind, cid, a.Filename, attachmentDescriptionArg(a), nullStr(a.ContentType), a.ID)
 	return err
 }
 

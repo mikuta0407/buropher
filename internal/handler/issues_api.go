@@ -342,9 +342,8 @@ func (a *App) issuesShowAPIStatus(c *Req, status int) {
 	})
 }
 
-// hasNotesColumn はノートが NULL でないか（buropher の domain.Journal は NULL を "" で持つため常に true とみなす）。
-// TODO(journal): notes が NULL のジャーナル（変更のみ）は Redmine では "notes": "" と null のどちらもあり得る。
-func (j *journalView) hasNotesColumn() bool { return true }
+// hasNotesColumn はノートが NULL でないか（NULL なら Redmine は "notes": null を出す）。
+func (j *journalView) hasNotesColumn() bool { return !j.NotesNull }
 
 // renderAPIIssueChildren は render_api_issue_children(issue, api)。
 func (l *issueLookup) renderAPIIssueChildren(b apibuilder.Builder, r *query.IssueRow) {

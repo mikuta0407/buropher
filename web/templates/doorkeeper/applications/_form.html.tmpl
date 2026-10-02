@@ -1,0 +1,35 @@
+{{$f := .f}}{{$app := (assigns).Application -}}
+{{error_messages_for $app}}
+<div class="box tabular">
+  <p>{{$f.TextField "name" (hash "required" true)}}</p>
+
+  <p>
+    {{$f.TextArea "redirect_uri" (hash "required" true "size" 60 "label" (sym "activerecord.attributes.doorkeeper/application.redirect_uri"))}}
+    <em class="info">
+      {{l "doorkeeper.applications.help.redirect_uri"}}
+    </em>
+  </p>
+</div>
+
+<h3>{{l "activerecord.attributes.doorkeeper/application.scopes"}}</h3>
+<p><em class="info">{{l "text_oauth_info_scopes"}}</em></p>
+<div class="box tabular" id="scopes">
+<fieldset><legend>{{l "label_oauth_admin_access"}}</legend>
+  <label class="floating" style="width: auto;">
+    {{check_box_tag "doorkeeper_application[scopes][]" "admin" ($app.HasScope "admin") (hash "id" "doorkeeper_application_scopes_admin")}}
+    {{l "text_oauth_admin_permission"}}
+  </label>
+</fieldset>
+{{range $g := (assigns).ScopeGroups}}
+    <fieldset><legend>{{$g.Label}}</legend>
+    {{range $p := $g.Permissions}}
+        <label class="floating">
+        {{check_box_tag "doorkeeper_application[scopes][]" $p.Name (or $p.Public ($app.HasScope $p.Name)) (hash "id" (printf "doorkeeper_application_scopes_%s" $p.Name) "disabled" $p.Public)}}
+        {{l_or_humanize $p.Name "permission_"}}
+        </label>
+    {{end}}
+    </fieldset>
+{{end}}
+<br />{{check_all_links "scopes"}}
+{{hidden_field_tag "doorkeeper_application[scopes][]" ""}}
+</div>

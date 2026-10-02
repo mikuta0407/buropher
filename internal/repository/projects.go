@@ -46,7 +46,7 @@ func nullID(n sql.NullInt64) *int64 {
 func (r *projectRow) project() *domain.Project {
 	return &domain.Project{
 		ID: r.ID, ParentID: nullID(r.ParentID), Name: r.Name, Identifier: r.Identifier,
-		Description: r.Description.String, Homepage: r.Homepage.String, IsPublic: r.IsPublic,
+		Description: r.Description.String, DescriptionNull: !r.Description.Valid, Homepage: r.Homepage.String, IsPublic: r.IsPublic,
 		Status: r.Status, InheritMembers: r.InheritMembers,
 		DefaultVersionID: nullID(r.DefaultVersionID), DefaultAssignedToID: nullID(r.DefaultAssignedToID),
 		DefaultIssueQueryID: nullID(r.DefaultIssueQueryID),
@@ -382,7 +382,7 @@ func CreateProject(ctx context.Context, q db.Queryer, p *domain.Project, opt Cre
 	id, err := q.InsertReturningID(ctx, `INSERT INTO projects (parent_id, name, identifier, description, homepage, is_public, status,
   inherit_members, default_version_id, default_assigned_to_id, default_issue_query_id, created_at, updated_at)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-		p.ParentID, p.Name, p.Identifier, nullString(p.Description), nullString(p.Homepage), p.IsPublic, p.Status,
+		p.ParentID, p.Name, p.Identifier, projectDescriptionArg(p), p.Homepage, p.IsPublic, p.Status,
 		p.InheritMembers, p.DefaultVersionID, p.DefaultAssignedToID, p.DefaultIssueQueryID,
 		db.NewTime(p.CreatedAt), db.NewTime(p.UpdatedAt))
 	if err != nil {
@@ -410,6 +410,15 @@ VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 	return nil
 }
 
+// projectDescriptionArg は description の保存値（DescriptionNull で空なら NULL、それ以外は "" もそのまま。D-17）。
+func projectDescriptionArg(p *domain.Project) any {
+	if p.DescriptionNull && p.Description == "" {
+		return nil
+	}
+	return p.Description
+}
+
+// nullString は空文字列を NULL にする（Redmine に無い buropher 独自の列や、Redmine でも空にならない列用）。
 func nullString(s string) any {
 	if s == "" {
 		return nil
@@ -462,7 +471,7 @@ func UpdateProject(ctx context.Context, q db.Queryer, p *domain.Project) error {
 	p.UpdatedAt = db.Now().Time
 	if _, err := q.Exec(ctx, `UPDATE projects SET parent_id = ?, name = ?, description = ?, homepage = ?, is_public = ?, status = ?,
   inherit_members = ?, default_version_id = ?, default_assigned_to_id = ?, default_issue_query_id = ?, updated_at = ? WHERE id = ?`,
-		p.ParentID, p.Name, nullString(p.Description), nullString(p.Homepage), p.IsPublic, p.Status, p.InheritMembers,
+		p.ParentID, p.Name, projectDescriptionArg(p), p.Homepage, p.IsPublic, p.Status, p.InheritMembers,
 		p.DefaultVersionID, p.DefaultAssignedToID, p.DefaultIssueQueryID, db.NewTime(p.UpdatedAt), p.ID); err != nil {
 		return err
 	}

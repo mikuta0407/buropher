@@ -100,7 +100,11 @@
 // # 規約: API（.json / .xml）
 //
 //   - API を受け付けるアクションは AcceptAPIAuth() を付ける（API キー: key パラメータ / X-Redmine-API-Key、
+//     OAuth2 の Bearer トークン（Authorization: Bearer / access_token / bearer_token パラメータ）、
 //     HTTP Basic、管理者の X-Redmine-Switch-User を find_current_user が処理する）。
+//   - OAuth2 で認証したユーザーは c.User.OAuthScope（トークンのスコープ）を持ち、権限判定（authz）は
+//     Role#allowed_to?(action, scope) と同じくスコープとの積になる。IsAdmin は admin スコープがある場合のみ真。
+//     プロバイダ側（Doorkeeper 互換の /oauth/*）は oauth_*.go と internal/auth/doorkeeper。
 //   - 形式の判定は httpx.Format(c.R) / httpx.IsAPIRequest(c.R) / httpx.Negotiate。API のエラーは
 //     a.Errors.RenderAPIErrors（422）・c.RenderError（ステータスのみ）。
 //   - JSON / XML の本文（.api.rsb テンプレート）は internal/apibuilder（Redmine::Views::Builders の移植）で組み立て、

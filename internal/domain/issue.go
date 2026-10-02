@@ -210,10 +210,12 @@ func CompareRelations(a, b *IssueRelation) int {
 
 // Journal は issue_journals 行 (Redmine Journal, journalized_type = Issue)。
 type Journal struct {
-	ID           int64
-	IssueID      int64
-	UserID       int64
-	Notes        string // NULL は ""
+	ID      int64
+	IssueID int64
+	UserID  int64
+	Notes   string // NULL は ""
+	// NotesNull は notes が NULL（Redmine の nil。API で null を出す）。"" とは区別する (D-17)。
+	NotesNull    bool
 	PrivateNotes bool
 	CreatedAt    time.Time
 	UpdatedAt    *time.Time

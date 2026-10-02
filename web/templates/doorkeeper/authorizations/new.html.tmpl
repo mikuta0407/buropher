@@ -1,0 +1,49 @@
+{{$pa := .PreAuth -}}
+{{title (l "doorkeeper.authorizations.new.title")}}
+
+<div class="warning">
+<p><strong>{{$pa.Client.Name}}</strong></p>
+
+<p>{{.Prompt}}</p>
+
+<div class="oauth-permissions">
+  <p>{{l "doorkeeper.authorizations.new.able_to"}}:</p>
+  <ul>
+    <li>{{l "text_oauth_implicit_permissions"}}</li>
+    {{range $scope := $pa.Scopes}}
+      {{if eq $scope "admin"}}
+        <li>{{l "label_oauth_permission_admin"}}</li>
+      {{else}}
+        <li>{{l_or_humanize $scope "permission_"}}</li>
+      {{end}}
+    {{end}}
+  </ul>
+</div>
+
+{{if $pa.IncludesAdmin}}
+  <p>{{l "text_oauth_admin_permission_info"}}</p>
+{{end}}
+</div>
+
+<p>
+  {{form_tag "/oauth/authorize" (hash "method" "post")}}
+    {{hidden_field_tag "client_id" $pa.Client.UID}}
+    {{hidden_field_tag "redirect_uri" $pa.RedirectURIValue}}
+    {{hidden_field_tag "state" $pa.StateValue}}
+    {{hidden_field_tag "response_type" $pa.ResponseType}}
+    {{hidden_field_tag "scope" $pa.Scope}}
+    {{hidden_field_tag "code_challenge" $pa.CodeChallengeValue}}
+    {{hidden_field_tag "code_challenge_method" $pa.CodeChallengeMethodValue}}
+    {{submit_tag (l "doorkeeper.authorizations.buttons.authorize")}}
+  {{end_form}}
+  {{form_tag "/oauth/authorize" (hash "method" "delete")}}
+    {{hidden_field_tag "client_id" $pa.Client.UID}}
+    {{hidden_field_tag "redirect_uri" $pa.RedirectURIValue}}
+    {{hidden_field_tag "state" $pa.StateValue}}
+    {{hidden_field_tag "response_type" $pa.ResponseType}}
+    {{hidden_field_tag "scope" $pa.Scope}}
+    {{hidden_field_tag "code_challenge" $pa.CodeChallengeValue}}
+    {{hidden_field_tag "code_challenge_method" $pa.CodeChallengeMethodValue}}
+    {{submit_tag (l "doorkeeper.authorizations.buttons.deny")}}
+  {{end_form}}
+</p>

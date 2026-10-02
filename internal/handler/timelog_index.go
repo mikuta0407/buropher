@@ -49,13 +49,20 @@ func teEntriesFromRows(rows []*query.TimeEntryRow) []*timelog.Entry {
 	out := make([]*timelog.Entry, len(rows))
 	for i, r := range rows {
 		out[i] = timelog.FromRecord(&domain.TimeEntry{ID: r.ID, ProjectID: r.ProjectID, UserID: r.UserID, AuthorID: r.AuthorID,
-			IssueID: r.IssueID, Hours: r.Hours, Comments: teCommentsPtr(r.Comments), ActivityID: r.ActivityID, SpentOn: r.SpentOn,
+			IssueID: r.IssueID, Hours: r.Hours, Comments: teCommentsPtr(r), ActivityID: r.ActivityID, SpentOn: r.SpentOn,
 			TYear: r.TYear, TMonth: r.TMonth, TWeek: r.TWeek, CreatedAt: r.CreatedAt, UpdatedAt: r.UpdatedAt})
 	}
 	return out
 }
 
-func teCommentsPtr(s string) *string { return &s }
+// teCommentsPtr は comments（NULL なら nil。D-17）。
+func teCommentsPtr(r *query.TimeEntryRow) *string {
+	if r.CommentsNull {
+		return nil
+	}
+	s := r.Comments
+	return &s
+}
 
 // teIndexAPI は index.api.rsb。
 func (a *App) teIndexAPI(c *Req, q *query.Query) {

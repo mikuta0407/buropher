@@ -494,7 +494,7 @@ func (a *App) AttachmentsUpdate(c *Req) {
 			att.ContentType = v
 		}
 		if v, ok := p.StringOK("description"); ok {
-			att.Description = v
+			att.Description, att.DescriptionNull = v, false
 		}
 	}
 	errs := a.AttachmentStore.Validate(att, -1, filenameChanged, c.Loc)
@@ -751,7 +751,7 @@ func (a *App) AttachmentsUpdateAll(c *Req) {
 			}
 		}
 		if v, ok := p.StringOK("description"); ok {
-			att.Description = v
+			att.Description, att.DescriptionNull = v, false
 		}
 		// saved &&= attachment.save（最初の失敗以降は保存しない）
 		if saved {

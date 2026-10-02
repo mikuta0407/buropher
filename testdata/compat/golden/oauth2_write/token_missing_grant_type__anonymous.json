@@ -1,0 +1,8 @@
+status: 400
+content-type: application/json
+
+{
+  "error": "invalid_request",
+  "error_description": "Missing required parameter: grant_type.",
+  "state": "abc"
+}

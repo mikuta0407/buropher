@@ -103,9 +103,9 @@ func loadCustomValues(c *loadCtx, rows []row) error {
 		if !c.customFields[r.int("custom_field_id", 0)] {
 			continue
 		}
-		// '' は NULL に変換する (付録 A)
+		// '' と NULL はフィクスチャのまま (D-17)
 		if err := c.exec(`INSERT INTO custom_values (id, customized_kind, customized_id, custom_field_id, value) VALUES (?, ?, ?, ?, ?)`,
-			r.int("id", 0), kind, r.int("customized_id", 0), r.int("custom_field_id", 0), r.nstr("value")); err != nil {
+			r.int("id", 0), kind, r.int("customized_id", 0), r.int("custom_field_id", 0), r.text("value", nil)); err != nil {
 			return err
 		}
 	}
@@ -119,7 +119,7 @@ func loadJournals(c *loadCtx, rows []row) error {
 		}
 		if err := c.exec(`INSERT INTO issue_journals (id, issue_id, user_id, notes, private_notes, created_at, updated_at, updated_by_id)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-			r.int("id", 0), r.int("journalized_id", 0), r.int("user_id", 0), r.nstr("notes"), r.bool("private_notes", false),
+			r.int("id", 0), r.int("journalized_id", 0), r.int("user_id", 0), r.text("notes", nil), r.bool("private_notes", false),
 			ts(c, r, "created_on"), nts(r, "updated_on"), r.nint("updated_by_id")); err != nil {
 			return err
 		}
@@ -163,7 +163,7 @@ func loadTimeEntries(c *loadCtx, rows []row) error {
 		if err := c.exec(`INSERT INTO time_entries (id, project_id, user_id, author_id, issue_id, hours, comments, activity_id, spent_on,
   tyear, tmonth, tweek, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 			r.int("id", 0), r.int("project_id", 0), r.int("user_id", 0), author, r.nint("issue_id"), r.float("hours"),
-			r.nstr("comments"), r.int("activity_id", 0), r.date("spent_on"), r.int("tyear", 0), r.int("tmonth", 0),
+			r.text("comments", nil), r.int("activity_id", 0), r.date("spent_on"), r.int("tyear", 0), r.int("tmonth", 0),
 			r.int("tweek", 0), ts(c, r, "created_on"), ts(c, r, "updated_on")); err != nil {
 			return err
 		}
@@ -246,8 +246,8 @@ func loadQueries(c *loadCtx, rows []row) error {
 		}
 		if err := c.exec(`INSERT INTO queries (id, kind, project_id, user_id, name, description, visibility, filters, column_names,
   sort_criteria, group_by, totalable_names, display_type, options) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-			r.int("id", 0), kind, r.nint("project_id"), user, r.str("name"), r.nstr("description"), r.int("visibility", 0),
-			filters, columns, sortCrit, r.nstr("group_by"), totalable, display, options); err != nil {
+			r.int("id", 0), kind, r.nint("project_id"), user, r.str("name"), r.text("description", nil), r.int("visibility", 0),
+			filters, columns, sortCrit, r.text("group_by", nil), totalable, display, options); err != nil {
 			return err
 		}
 	}
@@ -319,7 +319,7 @@ func loadUserPreferences(c *loadCtx, rows []row) error {
 		}
 		eb, _ := json.Marshal(extra)
 		if err := c.exec(`INSERT INTO user_preferences (user_id, hide_mail, time_zone, comments_sorting, warn_on_leaving_unsaved, textarea_font, recently_used_projects, my_page_layout, extra)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`, uid, r.bool("hide_mail", true), r.nstr("time_zone"), sorting, warn, font, recent, layout, string(eb)); err != nil {
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`, uid, r.bool("hide_mail", true), r.text("time_zone", nil), sorting, warn, font, recent, layout, string(eb)); err != nil {
 			return err
 		}
 		for i, pid := range bookmarks {
@@ -412,7 +412,7 @@ func writeNodeJSON(buf *bytes.Buffer, n *yaml.Node) error {
 func loadNews(c *loadCtx, rows []row) error {
 	for _, r := range rows {
 		if err := c.exec(`INSERT INTO news (id, project_id, title, summary, description, author_id, comments_count, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-			r.int("id", 0), r.int("project_id", 0), r.str("title"), r.nstr("summary"), r.nstr("description"),
+			r.int("id", 0), r.int("project_id", 0), r.str("title"), r.text("summary", ""), r.text("description", nil),
 			r.int("author_id", 0), r.int("comments_count", 0), ts(c, r, "created_on")); err != nil {
 			return err
 		}

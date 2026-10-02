@@ -170,6 +170,13 @@ func (t *Target) expand(s string) string {
 func (t *Target) expandCase(c scenario.Case) scenario.Case {
 	c.Path = t.expand(c.Path)
 	c.Body = t.expand(c.Body)
+	if len(c.Headers) > 0 {
+		hs := make(map[string]string, len(c.Headers))
+		for k, v := range c.Headers {
+			hs[k] = t.expand(v)
+		}
+		c.Headers = hs
+	}
 	if len(c.Form) > 0 {
 		form := scenario.FormValues{}
 		for k, vs := range c.Form {
@@ -184,14 +191,19 @@ func (t *Target) expandCase(c scenario.Case) scenario.Case {
 	return c
 }
 
-// capture は Location ヘッダから変数を取り出す。
-func (t *Target) capture(c scenario.Case, location string) {
-	for name, pattern := range c.Capture {
+// capture は Location ヘッダ（Capture）と本文（CaptureBody）から変数を取り出す。
+func (t *Target) capture(c scenario.Case, location string, body []byte) {
+	t.captureFrom(c.Capture, location)
+	t.captureFrom(c.CaptureBody, string(body))
+}
+
+func (t *Target) captureFrom(patterns map[string]string, text string) {
+	for name, pattern := range patterns {
 		re, err := regexp.Compile(pattern)
 		if err != nil {
 			continue
 		}
-		m := re.FindStringSubmatch(location)
+		m := re.FindStringSubmatch(text)
 		switch {
 		case m == nil:
 			delete(t.vars, name)
@@ -324,7 +336,7 @@ func (t *Target) Do(c scenario.Case) (*Response, error) {
 	if err != nil {
 		return nil, err
 	}
-	t.capture(c, resp.Header.Get("Location"))
+	t.capture(c, resp.Header.Get("Location"), data)
 	return &Response{
 		Status:      resp.StatusCode,
 		ContentType: resp.Header.Get("Content-Type"),

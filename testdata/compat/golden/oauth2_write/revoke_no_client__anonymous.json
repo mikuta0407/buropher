@@ -1,0 +1,7 @@
+status: 403
+content-type: application/json
+
+{
+  "error": "unauthorized_client",
+  "error_description": "You are not authorized to revoke this token"
+}

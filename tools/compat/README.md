@@ -139,6 +139,22 @@ requests:
     users: [jsmith]
 ```
 
+本文から値を取り出すときは `capture_body`（同じ形式。レスポンス本文に適用）。取り出した変数はヘッダーの値でも展開される
+（`oauth2_write.yml` を参照）:
+
+```yaml
+  - id: token
+    path: /oauth/token
+    method: POST
+    auth: none
+    form: {grant_type: authorization_code, code: "${code}"}
+    capture_body: {access: '"access_token":"([A-Za-z0-9_-]+)"'}
+  - id: api
+    path: /users/current.json
+    auth: none
+    headers: {Authorization: "Bearer ${access}"}
+```
+
 簡易 TXT 形式（`.txt`）: `[METHOD] /path [user1,user2] [format=json] [auth=basic]`、`#` 以降コメント。
 
 **注意**: Redmine は GET でも DB を更新する（最近使ったプロジェクト、RSS キー生成、`last_login_on` 等）。

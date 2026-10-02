@@ -1,0 +1,15 @@
+status: 200
+content-type: application/json
+
+{
+  "resource_owner_id": 2,
+  "scope": [
+    "view_issues",
+    "view_project"
+  ],
+  "expires_in": 7200,
+  "application": {
+    "uid": "TOKEN"
+  },
+  "created_at": 1768478400
+}

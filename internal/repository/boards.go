@@ -320,7 +320,7 @@ func TopicReplies(ctx context.Context, q db.Queryer, topicID int64, limit, offse
 func InsertMessage(ctx context.Context, q db.Queryer, m *domain.Message) error {
 	id, err := q.InsertReturningID(ctx, `INSERT INTO messages (board_id, parent_id, subject, content, author_id, replies_count,
   locked, sticky, created_at, updated_at) VALUES (?, ?, ?, ?, ?, 0, ?, ?, ?, ?)`,
-		m.BoardID, ptrNullInt64(m.ParentID), m.Subject, nullStr(m.Content), ptrNullInt64(m.AuthorID), m.Locked, m.Sticky,
+		m.BoardID, ptrNullInt64(m.ParentID), m.Subject, m.Content, ptrNullInt64(m.AuthorID), m.Locked, m.Sticky,
 		db.NewTime(m.CreatedAt), db.NewTime(m.UpdatedAt))
 	if err != nil {
 		return err
@@ -332,7 +332,7 @@ func InsertMessage(ctx context.Context, q db.Queryer, m *domain.Message) error {
 // UpdateMessage は subject / content / locked / sticky / board_id / updated_at を保存する。
 func UpdateMessage(ctx context.Context, q db.Queryer, m *domain.Message) error {
 	_, err := q.Exec(ctx, `UPDATE messages SET board_id = ?, subject = ?, content = ?, locked = ?, sticky = ?, updated_at = ? WHERE id = ?`,
-		m.BoardID, m.Subject, nullStr(m.Content), m.Locked, m.Sticky, db.NewTime(m.UpdatedAt), m.ID)
+		m.BoardID, m.Subject, m.Content, m.Locked, m.Sticky, db.NewTime(m.UpdatedAt), m.ID)
 	return err
 }
 
