@@ -1,0 +1,14 @@
+{{$kind := .kind}}
+{{if allowed_to (printf "add_%s_watchers" $kind) current_project}}
+<div class="contextual">
+{{link_to (l "button_add") (printf "/watchers/new?object_id=%d&object_type=%s" .id $kind) (hash "remote" true "method" "get")}}
+</div>
+{{end}}
+
+{{if allowed_to (printf "view_%s_watchers" $kind) current_project}}
+<h3>{{l (printf "label_%s_watchers" $kind)}} ({{len (watcher_users $kind .id)}})</h3>
+
+{{watchers_list $kind .id}}
+{{else}}
+<h3>{{l (printf "label_%s_watchers" $kind)}}</h3>
+{{end}}

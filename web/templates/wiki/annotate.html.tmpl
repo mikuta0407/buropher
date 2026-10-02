@@ -1,0 +1,35 @@
+{{$page := .Page}}
+{{$path := wiki_page_path $page.Project $page.Title}}
+{{$content := .AnnotateContent}}
+<div class="contextual">
+{{link_to (sprite_icon "edit" (l "button_edit")) (printf "%s/edit" (wiki_page_path current_project $page.Title)) (hash "class" "icon icon-edit")}}
+{{link_to (sprite_icon "history" (l "label_history")) (printf "%s/history" (wiki_page_path current_project $page.Title)) (hash "class" "icon icon-history")}}
+</div>
+
+{{wiki_page_breadcrumb .Ancestors}}
+
+{{title (list $page.PrettyTitle $path) (list (l "label_history") (printf "%s/history" $path)) (printf "%s %d" (l "label_version") $content.Version)}}
+
+<p>
+  <em>{{if $content.Author}}{{link_to_user $content.Author}}{{else}}{{l "label_user_anonymous"}}{{end}}, {{format_time $content.UpdatedOn}} </em><br />
+  {{$content.CommentsString}}
+</p>
+
+
+<table class="filecontent annotate">
+<tbody>
+{{range $line := .Lines}}
+<tr class="bloc-{{$line.Color}}">
+    <th class="line-num">{{$line.Num}}</th>
+    <td class="revision">{{if $line.First}}{{link_to $line.Version (printf "/projects/%s/wiki/%s/%d" (project_param current_project) (url_segment $page.Title) $line.Version)}}{{end}}</td>
+    <td class="author">{{if and $line.First $line.HasAuthor}}{{user_name $line.Author}}{{end}}</td>
+    <td class="line-code"><pre>{{$line.Text}}</pre></td>
+</tr>
+{{end}}
+</tbody>
+</table>
+
+{{define "wiki/annotate#header_tags"}}
+{{stylesheet_link_tag "scm"}}
+{{end}}
+{{content_for "header_tags" (capture "wiki/annotate#header_tags")}}

@@ -11,6 +11,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/apibuilder"
 	"github.com/mikuta0407/buropher/internal/db"
 	"github.com/mikuta0407/buropher/internal/domain"
+	"github.com/mikuta0407/buropher/internal/helper"
 	"github.com/mikuta0407/buropher/internal/httpx"
 	"github.com/mikuta0407/buropher/internal/pagination"
 	"github.com/mikuta0407/buropher/internal/repository"
@@ -85,11 +86,11 @@ func wikiPageUpdatedOnValue(p *domain.WikiPage) any {
 
 // wikiHTMLFormat は respond_to の format.html のみのアクションで html 以外を 406 にする。
 func (a *App) wikiHTMLFormat(c *Req) bool {
-	switch httpx.Format(c.R) {
+	switch c.Params().String("format") {
 	case "", "html":
 		return true
 	}
-	httpx.Head(c.W, c.R, http.StatusNotAcceptable)
+	wikiNotAcceptable(c)
 	c.Halt()
 	return false
 }
@@ -144,9 +145,9 @@ func (a *App) WikiDateIndex(c *Req) {
 	byDate := map[string]*group{}
 	for _, p := range pages {
 		// p.updated_on.to_date（Time.zone のローカル日付）
-		t := p.UpdatedOn.In(c.Loc.Location)
-		if c.Loc.Location == nil {
-			t = p.UpdatedOn.Local()
+		t := p.UpdatedOn.Local()
+		if c.Loc.Location != nil {
+			t = p.UpdatedOn.In(c.Loc.Location)
 		}
 		d := time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, time.UTC)
 		k := d.Format("2006-01-02")
@@ -189,12 +190,12 @@ func (a *App) WikiShow(c *Req) {
 		c.Render404("")
 		return
 	}
-	format := httpx.Format(c.R)
+	format := c.Params().String("format")
 	if c.AllowedTo(domain.Perm("export_wiki_pages"), c.Project) {
 		switch format {
 		case "pdf":
 			// TODO: PDF 出力（Redmine::Export::PDF::WikiPdfHelper#wiki_page_to_pdf）は未実装。
-			httpx.Head(c.W, c.R, http.StatusNotAcceptable)
+			wikiNotAcceptable(c)
 			c.Halt()
 			return
 		case "html":
@@ -214,8 +215,8 @@ func (a *App) WikiShow(c *Req) {
 		a.renderWikiPageAPI(c, page, content, 0)
 		return
 	}
-	if format != "" {
-		httpx.Head(c.W, c.R, http.StatusNotAcceptable)
+	if format != "" && format != "html" {
+		wikiNotAcceptable(c)
 		c.Halt()
 		return
 	}
@@ -253,6 +254,18 @@ func (a *App) WikiShow(c *Req) {
 	}
 	data["VersionsCount"] = n
 	data["VersionParam"] = versionParam
+	atts, err := a.wikiAttachments(c, page)
+	if err != nil {
+		a.wikiError(c, err)
+		return
+	}
+	data["Attachments"] = atts
+	// acts_as_attachable: attachments_editable? = visible? && edit_wiki_pages、
+	// attachments_deletable? = editable_by? && visible? && delete_wiki_pages_attachments
+	pr := c.wikiPageProject(page)
+	visible := c.AllowedTo(domain.Perm("view_wiki_pages"), pr)
+	data["AttachmentsEditable"] = visible && c.AllowedTo(domain.Perm("edit_wiki_pages"), pr)
+	data["AttachmentsDeletable"] = visible && a.wikiAttachmentsDeletable(c, page)
 	data["CanAddAttachment"] = c.Authorize0("wiki", "add_attachment")
 	data["ShowWatchers"] = a.wikiShowWatchers(c, page)
 	c.Render("wiki/show", data)
@@ -421,7 +434,7 @@ func (a *App) renderWikiPageAPI(c *Req, page *domain.WikiPage, content *domain.W
 // wikiContentForm は edit フォームの @content（form_for @content, :as => :content）。
 type wikiContentForm struct {
 	Version   int
-	Comments  *string
+	Comments  any // nil なら value 属性を出さない
 	persisted bool
 	errs      *validation.Errors
 }
@@ -666,7 +679,9 @@ func (a *App) WikiUpdate(c *Req) {
 		s := cp.String("comments")
 		comments = &s
 	}
-	ev.Content.Comments = comments
+	if comments != nil {
+		ev.Content.Comments = *comments
+	}
 	var text *string
 	if v, ok := cp.Get("text"); ok && v != nil {
 		s := cp.String("text")
@@ -889,7 +904,8 @@ func (a *App) validateWikiPage(c *Req, page *domain.WikiPage, errs *validation.E
 
 // wikiNewForm は new フォームの @page（labelled_form_for :page）。
 type wikiNewForm struct {
-	Title string
+	// Title は title（nil なら value 属性を出さない）。
+	Title any
 	errs  *validation.Errors
 }
 
@@ -934,7 +950,7 @@ func (a *App) WikiNew(c *Req) {
 		}
 	}
 	data := map[string]any{
-		"Form":     &wikiNewForm{Title: page.Title, errs: errs},
+		"Form":     newFormOf(page.Title, errs),
 		"Errors":   errs.FullMessages(c.Loc),
 		"ParentPr": c.Params().Present("parent"),
 		"Parent":   c.Params().String("parent"),
@@ -944,6 +960,14 @@ func (a *App) WikiNew(c *Req) {
 		return
 	}
 	c.Render("wiki/new", data)
+}
+
+func newFormOf(title string, errs *validation.Errors) *wikiNewForm {
+	f := &wikiNewForm{errs: errs}
+	if title != "" {
+		f.Title = title
+	}
+	return f
 }
 
 func mapVars(m map[string]any) []any {
@@ -963,7 +987,13 @@ type wikiRenameForm struct {
 	RedirectExistingLinks any
 	WikiID                int64
 	ParentID              *int64
+	errs                  *validation.Errors
 }
+
+func (f *wikiRenameForm) Persisted() bool { return true }
+
+// ValidationErrors は error_messages_for 'page'。
+func (f *wikiRenameForm) ValidationErrors() *validation.Errors { return f.errs }
 
 // WikiRename は wiki#rename（タイトル変更・リダイレクト・親ページ変更・他プロジェクトの Wiki への移動）。
 func (a *App) WikiRename(c *Req) {
@@ -1074,7 +1104,8 @@ func (a *App) WikiRename(c *Req) {
 	}
 	data["OriginalTitle"] = originalTitle
 	data["Form"] = form
-	data["Errors"] = errs
+	form.errs = errs
+	data["OriginalPageTitle"] = oldTitle
 	data["CanManage"] = canManage
 	data["StartPageDisabled"] = startPage
 	data["CanMove"] = canRename
@@ -1159,16 +1190,8 @@ func (a *App) moveWikiChildren(c *Req, tx *db.Tx, page *domain.WikiPage, oldWiki
 	return nil
 }
 
-// WikiProjectOption は wiki_page_wiki_options_for_select の 1 項目。
-type WikiProjectOption struct {
-	Project  *domain.Project
-	WikiID   int64
-	Level    int
-	Selected bool
-}
-
 // wikiOptionsForSelect は wiki_page_wiki_options_for_select(page)。
-func (a *App) wikiOptionsForSelect(c *Req, page *domain.WikiPage) ([]WikiProjectOption, error) {
+func (a *App) wikiOptionsForSelect(c *Req, page *domain.WikiPage) ([]helper.WikiProjectOption, error) {
 	cond, err := c.Authz().AllowedToCondition(c.Ctx(), "rename_wiki_pages", authzOpts(), nil)
 	if err != nil {
 		return nil, err
@@ -1196,9 +1219,9 @@ func (a *App) wikiOptionsForSelect(c *Req, page *domain.WikiPage) ([]WikiProject
 	if err != nil {
 		return nil, err
 	}
-	out := make([]WikiProjectOption, len(projects))
+	out := make([]helper.WikiProjectOption, len(projects))
 	for i, p := range projects {
-		out[i] = WikiProjectOption{Project: p, WikiID: wikis[p.ID], Level: levels[i], Selected: wikis[p.ID] == page.WikiID}
+		out[i] = helper.WikiProjectOption{Project: p, WikiID: wikis[p.ID], Level: levels[i], Selected: wikis[p.ID] == page.WikiID}
 	}
 	return out, nil
 }
@@ -1574,11 +1597,11 @@ func (a *App) WikiDestroyVersion(c *Req) {
 
 // WikiExport は wiki#export（Wiki 全体の HTML。PDF は未実装）。
 func (a *App) WikiExport(c *Req) {
-	switch httpx.Format(c.R) {
+	switch c.Params().String("format") {
 	case "", "html":
 	default:
 		// TODO: format.pdf（wiki_pages_to_pdf）は未実装
-		httpx.Head(c.W, c.R, http.StatusNotAcceptable)
+		wikiNotAcceptable(c)
 		c.Halt()
 		return
 	}

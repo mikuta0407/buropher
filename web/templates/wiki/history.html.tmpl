@@ -1,0 +1,45 @@
+{{$page := .Page}}
+{{$path := wiki_page_path $page.Project $page.Title}}
+{{wiki_page_breadcrumb .Ancestors}}
+
+{{title (list $page.PrettyTitle $path) (l "label_history")}}
+
+{{form_tag (printf "%s/diff" $path) (hash "method" "get")}}
+{{$showDiff := .ShowDiff}}
+{{if $showDiff}}
+  <p>{{submit_tag (l "label_view_diff")}}</p>
+{{end}}
+<table class="list wiki-page-versions">
+<thead><tr>
+    <th>#</th>
+    <th></th>
+    <th></th>
+    <th>{{l "field_updated_on"}}</th>
+    <th>{{l "field_author"}}</th>
+    <th>{{l "field_comments"}}</th>
+    <th></th>
+</tr></thead>
+<tbody>
+{{$n := len .Versions}}
+{{range $i, $ver := .Versions}}
+{{$lineNum := add $i 1}}
+<tr class="wiki-page-version">
+    <td class="id">{{link_to $ver.Version (printf "%s/%d" $path $ver.Version)}}</td>
+    <td class="checkbox">{{if and $showDiff (lt $lineNum $n)}}{{radio_button_tag "version" $ver.Version (eq $lineNum 1) (hash "id" (printf "cb-%d" $lineNum) "onclick" (printf "$('#cbto-%d').prop('checked', true);" (add $lineNum 1)))}}{{end}}</td>
+    <td class="checkbox">{{if and $showDiff (gt $lineNum 1)}}{{radio_button_tag "version_from" $ver.Version (eq $lineNum 2) (hash "id" (printf "cbto-%d" $lineNum))}}{{end}}</td>
+    <td class="updated_on">{{format_time $ver.UpdatedOn}}</td>
+    <td class="author">{{link_to_user (content_author $ver)}}</td>
+    <td class="comments">{{$ver.CommentsString}}</td>
+    <td class="buttons">
+      {{link_to (l "button_annotate") (printf "%s/%d/annotate" $path $ver.Version)}}
+      {{if $.CanDelete}}{{delete_link (printf "%s/%d" $path $ver.Version)}}{{end}}
+    </td>
+</tr>
+{{end}}
+</tbody>
+</table>
+{{if $showDiff}}
+  <p>{{submit_tag (l "label_view_diff")}}</p>
+{{end}}
+<span class="pagination">{{pagination_links_full .VersionPages .VersionCount}}</span>
+{{end_form}}

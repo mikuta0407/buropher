@@ -80,6 +80,13 @@ func containsStr(s, sub string) bool {
 
 func queryEscape(s string) string { return url.QueryEscape(s) }
 
+// wikiNotAcceptable は respond_to に一致する形式が無い場合（ActionController::UnknownFormat → 406、本文なし）。
+func wikiNotAcceptable(c *Req) {
+	c.W.Header().Set("Content-Type", "text/html; charset=utf-8")
+	c.W.WriteHeader(http.StatusNotAcceptable)
+	c.Halt()
+}
+
 // jsonString は to_json（Rails と同じく < > & を \u エスケープする）。
 func jsonString(s string) string {
 	b, _ := json.Marshal(s)

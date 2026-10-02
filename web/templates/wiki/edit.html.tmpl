@@ -1,0 +1,68 @@
+{{$page := .Page}}
+{{$ev := .Edit}}
+{{$pr := current_project}}
+{{wiki_page_breadcrumb .Ancestors}}
+
+<h2>{{$page.PrettyTitle}}</h2>
+
+{{$f := form_for "content" .Content (hash "as" "content" "url" (wiki_page_path $pr $page.Title) "html" (hash "method" "put" "multipart" true "id" "wiki_form"))}}
+{{$f.Open}}
+{{$f.HiddenField "version"}}
+{{if $ev.HasSection}}
+{{hidden_field_tag "section" $ev.Section}}
+{{hidden_field_tag "section_hash" $ev.SectionHash}}
+{{end}}
+{{error_messages_for .Content}}
+
+<div class="box tabular">
+{{text_area_tag "content[text]" $ev.Text (hash "cols" 100 "rows" 25 "accesskey" (accesskey "edit") "class" "wiki-edit" "data" (merge_hash (hash "auto_complete" true) list_autofill_data_attributes))}}
+
+{{if .ParentOptions}}
+  {{""}}
+    <p>
+      <label>{{l "field_parent_title"}}</label>
+      {{select_tag "wiki_page[parent_id]" (safe_concat (content_tag "option" "" (hash "value" "")) (wiki_page_options_for_select .ParentOptions.Pages .ParentOptions.Selected)) (hash "id" "wiki_page_parent_id")}}
+    </p>
+{{end}}
+
+<p><label>{{l "field_comments"}}</label>{{$f.TextField "comments" (hash "size" 120 "maxlength" 1024)}}</p>
+<fieldset>
+<legend>{{l "label_attachment_plural"}}</legend>
+{{if .AttachmentsDeletable}}
+<div class="contextual">{{link_to (l "label_edit_attachments") "#" (hash "onclick" "$('#existing-attachments').toggle(); return false;")}}</div>
+<div id="existing-attachments" style="{{if not $ev.DeletedAttachmentIDs}}display:none;{{end}}">
+  {{range $attachment := .Attachments}}
+  <span class="existing-attachment">
+    {{sprite_icon "attachment" (hash "size" 12)}}
+    {{text_field_tag "" $attachment.Filename (hash "class" "icon icon-attachment filename" "disabled" true)}}
+    <label class='inline'>
+      {{check_box_tag "wiki_page[deleted_attachment_ids][]" $attachment.ID (str_slice_contains_id $ev.DeletedAttachmentIDs $attachment.ID) (hash "id" nil "class" "deleted_attachment")}} {{l "button_delete"}}
+    </label>
+  </span>
+  {{end}}
+  <hr />
+</div>
+{{end}}
+<div id="new-attachments" style="display:inline-block;">
+  {{partial "attachments/form" (dict)}}
+</div>
+</fieldset>
+</div>
+
+<p>
+  {{submit_tag (l "button_save")}}
+  {{link_to (l "button_cancel") (wiki_edit_cancel_path $page $ev.Parent)}}
+ </p>
+{{wikitoolbar_for "content_text" (printf "%s/preview" (wiki_page_path $pr $page.Title))}}
+
+{{if .CanAddWatchers}}
+  {{update_data_sources_for_auto_complete (hash "users" (watchers_autocomplete_path $pr $page))}}
+{{end}}
+{{end_form}}
+
+{{define "wiki/edit#header_tags"}}
+  {{robot_exclusion_tag}}
+{{end}}
+{{content_for "header_tags" (capture "wiki/edit#header_tags")}}
+
+{{html_title $page.PrettyTitle}}
