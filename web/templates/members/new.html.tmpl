@@ -1,0 +1,6 @@
+<h2>{{l "label_member_new"}}</h2>
+
+{{$f := form_for "membership" nil (hash "url" (printf "/projects/%s/memberships" .Project.Identifier) "method" "post" "html" (hash "class" "new_membership" "id" "new_membership"))}}{{$f.Open}}
+  {{partial "members/new_form" .}}
+  <p>{{submit_tag (l "button_add") (hash "name" nil)}}</p>
+{{end_form}}

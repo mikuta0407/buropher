@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Settings - OnlineStore - Redmine</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Redmine" />
+<meta name="keywords" content="issue,bug,tracker" />
+<meta name="csrf-param" content="authenticity_token" />
+<meta name="csrf-token" content="cjcAdyBVcx6NSOql4p1R9UH_5tmy4m3KZHzwyFGAA9jsWqxgWjL86K-vxtEOIkDQznE2K3Fw15WHadkTvaBVnw" />
+<link rel="shortcut icon" type="image/x-icon" href="/assets/favicon-0e291875.ico" />
+<link rel="stylesheet" href="/assets/jquery/jquery-ui-1.13.2-70e53573.css" media="all" />
+<link rel="stylesheet" href="/assets/tribute-5.1.3-c23a7bf2.css" media="all" />
+<link rel="stylesheet" href="/assets/application-6dc0ec44.css" media="all" />
+<link rel="stylesheet" href="/assets/responsive-194751d3.css" media="all" />
+
+<script type="importmap" data-turbo-track="reload">{
+  "imports": {
+    "@rails/request.js": "/assets/requestjs-64720317.js",
+    "application": "/assets/application-20c5ac24.js",
+    "@hotwired/stimulus": "/assets/stimulus.min-7ea3d58b.js",
+    "@hotwired/stimulus-loading": "/assets/stimulus-loading-25917588.js",
+    "turndown": "/assets/turndown-93630580.js",
+    "controllers/api_key_copy_controller": "/assets/controllers/api_key_copy_controller-75f835b3.js",
+    "controllers/application": "/assets/controllers/application-fab29967.js",
+    "controllers": "/assets/controllers/index-dfefe98d.js",
+    "controllers/list_autofill_controller": "/assets/controllers/list_autofill_controller-5f013171.js",
+    "controllers/quote_reply_controller": "/assets/controllers/quote_reply_controller-3e6a21f7.js",
+    "controllers/sticky_issue_header_controller": "/assets/controllers/sticky_issue_header_controller-18502bbe.js"
+  }
+}</script>
+<link rel="modulepreload" href="/assets/requestjs-64720317.js">
+<link rel="modulepreload" href="/assets/application-20c5ac24.js">
+<link rel="modulepreload" href="/assets/stimulus.min-7ea3d58b.js">
+<link rel="modulepreload" href="/assets/stimulus-loading-25917588.js">
+<link rel="modulepreload" href="/assets/turndown-93630580.js">
+<link rel="modulepreload" href="/assets/controllers/api_key_copy_controller-75f835b3.js">
+<link rel="modulepreload" href="/assets/controllers/application-fab29967.js">
+<link rel="modulepreload" href="/assets/controllers/index-dfefe98d.js">
+<link rel="modulepreload" href="/assets/controllers/list_autofill_controller-5f013171.js">
+<link rel="modulepreload" href="/assets/controllers/quote_reply_controller-3e6a21f7.js">
+<link rel="modulepreload" href="/assets/controllers/sticky_issue_header_controller-18502bbe.js">
+<script type="module">import "application"</script>
+<script src="/assets/jquery-3.7.1-ui-1.13.3-3ca148b8.js"></script>
+<script src="/assets/rails-ujs-3de06f48.js"></script>
+<script src="/assets/tribute-5.1.3.min-6c16c47a.js"></script><script src="/assets/application-legacy-54b0807d.js"></script>
+<script src="/assets/responsive-aa0cdb6f.js"></script>
+<script>
+//<![CDATA[
+$(window).on('load', function(){ warnLeavingUnsaved('The current page contains unsaved text that will be lost if you leave this page.'); });
+//]]>
+</script>
+
+<script>
+//<![CDATA[
+rm = window.rm || {};rm.I18n = rm.I18n || {};rm.I18n = Object.freeze({buttonCopy: 'Copy'});
+//]]>
+</script>
+<script>
+//<![CDATA[
+rm = window.rm || {};rm.AutoComplete = rm.AutoComplete || {};rm.AutoComplete.dataSources = JSON.parse('{"issues":"/issues/auto_complete?project_id=onlinestore\u0026q=","wiki_pages":"/wiki_pages/auto_complete?project_id=onlinestore\u0026q="}');
+//]]>
+</script>
+
+<!-- page specific tags -->
+<script src="/assets/jstoolbar/jstoolbar-d7c21366.js"></script><script src="/assets/jstoolbar/common_mark-8a9a868d.js"></script><script src="/assets/jstoolbar/lang/jstoolbar-en-85c9edfe.js"></script><script>
+//<![CDATA[
+var wikiImageMimeTypes = ["image/gif","image/jpeg","image/png","image/tiff","image/webp","image/x-ms-bmp"];var userHlLanguages = ["c","cpp","csharp","css","diff","go","groovy","html","java","javascript","objc","perl","php","python","r","ruby","sass","scala","shell","sql","swift","xml","yaml"];
+//]]>
+</script><link rel="stylesheet" href="/assets/jstoolbar-57267577.css" media="screen" /></head>
+<body class="project-onlinestore has-main-menu controller-projects action-settings avatars-off" data-text-formatting="common_mark">
+
+<div id="wrapper">
+
+<div class="flyout-menu js-flyout-menu">
+
+        <div class="flyout-menu__search">
+            <form action="/projects/onlinestore/search" accept-charset="UTF-8" name="form-e38d7949" method="get">
+            
+            <label class="search-magnifier search-magnifier--flyout" for="flyout-search"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--search"></use></svg><span class="icon-label hidden">Search</span></label>
+            <input type="text" name="q" id="flyout-search" class="small js-search-input" placeholder="Search" />
+</form>        </div>
+
+        <div class="flyout-menu__avatar">
+          <a href="/users/2"><span role="img" class="avatar-color-2 s40 avatar">JS</span></a>
+          <a class="user active" href="/users/2">jsmith</a>
+        </div>
+
+        <h3>Project</h3>
+        <span class="js-project-menu"></span>
+
+    <h3>General</h3>
+    <span class="js-general-menu"></span>
+
+    <span class="js-sidebar flyout-menu__sidebar"></span>
+
+    <h3>Profile</h3>
+    <span class="js-profile-menu"></span>
+
+</div>
+
+
+<div id="top-menu">
+    <div id="account">
+        <ul><li><a class="my-account" href="/my/account">My account</a></li><li><a class="logout" rel="nofollow" data-method="post" href="/logout">Sign out</a></li></ul>    </div>
+    <div id="loggedas">Logged in as <a class="user active" href="/users/2">jsmith</a></div>
+    <ul><li><a class="home" href="/">Home</a></li><li><a class="my-page" href="/my/page">My page</a></li><li><a class="projects" href="/projects">Projects</a></li><li><a target="_blank" rel="noopener" class="help" href="https://www.redmine.org/guide">Help</a></li></ul></div>
+
+<div id="header">
+
+    <a href="#" class="mobile-toggle-button js-flyout-menu-toggle-button"></a>
+
+    <div id="quick-search">
+        <form action="/projects/onlinestore/search" accept-charset="UTF-8" name="form-0e571e59" method="get">
+        <input type="hidden" name="scope" autocomplete="off" />
+        
+        <label for='q'>
+          <a accesskey="4" href="/projects/onlinestore/search">Search</a>:
+        </label>
+        <input type="text" name="q" id="q" size="20" class="small" accesskey="f" data-auto-complete="true" />
+</form>        <div id="project-jump" class="drdn"><span class="drdn-trigger">OnlineStore</span><div class="drdn-content"><div class="quick-search"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--search"></use></svg><input type="text" name="q" id="projects-quick-search" value="" class="autocomplete" data-automcomplete-url="/projects/autocomplete.js?jump=settings" autocomplete="off" /></div><div class="drdn-items projects selection"><strong>Recently used</strong><a title="OnlineStore" class="selected" href="/projects/onlinestore?jump=settings"><span style="padding-inline-start:0px;">OnlineStore</span></a><strong>All Projects</strong><a title="eCookbook" href="/projects/ecookbook?jump=settings"><span style="padding-inline-start:0px;">eCookbook</span></a><a title="Private child of eCookbook" href="/projects/private-child?jump=settings"><span style="padding-inline-start:16px;">Private child of eCookbook</span></a><a title="OnlineStore" class="selected" href="/projects/onlinestore?jump=settings"><span style="padding-inline-start:0px;">OnlineStore</span></a></div><div class="drdn-items all-projects selection"><a href="/projects?jump=settings">All Projects</a></div></div></div>
+    </div>
+
+    <h1><span class="current-project">OnlineStore</span></h1>
+
+    <div id="main-menu" class="tabs">
+        <ul><li>
+<a onclick="toggleNewObjectDropdown(); return false;" id="new-object" class="new-object" href="#"> + </a>
+<ul class="menu-children"><li><a accesskey="7" class="new-issue-sub" href="/projects/onlinestore/issues/new">New issue</a></li><li><a class="new-issue-category" href="/projects/onlinestore/issue_categories/new">New category</a></li><li><a class="new-version" href="/projects/onlinestore/versions/new">New version</a></li><li><a class="new-news" href="/projects/onlinestore/news/new">Add news</a></li><li><a class="new-wiki-page" href="/projects/onlinestore/wiki/new">New wiki page</a></li></ul>
+</li><li><a class="overview" href="/projects/onlinestore">Overview</a></li><li><a class="activity" href="/projects/onlinestore/activity">Activity</a></li><li><a class="roadmap" href="/projects/onlinestore/roadmap">Roadmap</a></li><li><a class="issues" href="/projects/onlinestore/issues">Issues</a></li><li><a class="gantt" href="/projects/onlinestore/issues/gantt">Gantt</a></li><li><a class="calendar" href="/projects/onlinestore/issues/calendar">Calendar</a></li><li><a class="news" href="/projects/onlinestore/news">News</a></li><li><a class="wiki" href="/projects/onlinestore/wiki">Wiki</a></li><li><a class="boards" href="/projects/onlinestore/boards">Forums</a></li><li><a class="repository" href="/projects/onlinestore/repository">Repository</a></li><li><a class="settings selected" href="/projects/onlinestore/settings">Settings</a></li></ul>
+        <div class="tabs-buttons" style="display:none;">
+            <button class="tab-left icon-only" onclick="moveTabLeft(this); return false;">
+              <svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--angle-left"></use></svg>
+            </button>
+            <button class="tab-right icon-only" onclick="moveTabRight(this); return false;">
+              <svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--angle-right"></use></svg>
+            </button>
+        </div>
+    </div>
+</div>
+
+<div id="main" class="nosidebar">
+  
+    <div id="sidebar">
+        <div id="sidebar-wrapper">
+          
+          
+        </div>
+    </div>
+
+    <div id="content">
+        
+        <h2>Settings</h2>
+
+
+<div class="tabs">
+  <ul>
+    <li><a id="tab-info" class="selected" onclick="showTab(&#39;info&#39;, this.href); return false;" href="/projects/onlinestore/settings/info">Project</a></li>
+    <li><a id="tab-members" onclick="showTab(&#39;members&#39;, this.href); return false;" href="/projects/onlinestore/settings/members">Members</a></li>
+    <li><a id="tab-issues" onclick="showTab(&#39;issues&#39;, this.href); return false;" href="/projects/onlinestore/settings/issues">Issue tracking</a></li>
+    <li><a id="tab-versions" onclick="showTab(&#39;versions&#39;, this.href); return false;" href="/projects/onlinestore/settings/versions">Versions</a></li>
+    <li><a id="tab-categories" onclick="showTab(&#39;categories&#39;, this.href); return false;" href="/projects/onlinestore/settings/categories">Issue categories</a></li>
+    <li><a id="tab-boards" onclick="showTab(&#39;boards&#39;, this.href); return false;" href="/projects/onlinestore/settings/boards">Forums</a></li>
+  </ul>
+  <div class="tabs-buttons" style="display:none;">
+    <button class="tab-left icon-only" type="button" onclick="moveTabLeft(this);">
+      <svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--angle-left"></use></svg>
+    </button>
+    <button class="tab-right icon-only" type="button" onclick="moveTabRight(this);">
+      <svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--angle-right"></use></svg>
+    </button>
+  </div>
+</div>
+
+  <div id="tab-content-info" class="tab-content"><form class="edit_project" id="edit_project_2" enctype="multipart/form-data" action="/projects/onlinestore" accept-charset="UTF-8" name="edit_project_2-3ac37ae9" method="post"><input type="hidden" name="_method" value="patch" autocomplete="off" /><input type="hidden" name="authenticity_token" value="ac_vsKrMWG6wZnnXz4X0_L5Zi7xMMXjfVBbQ1zd0K833okOn0KvXmJKBVaMjOuXZMddbTo-jwoC3A_kM21R9ig" autocomplete="off" />
+
+
+<div class="box tabular">
+<!--[form:project]-->
+<p><label for="project_name">Name<span class="required"> *</span></label><input size="60" type="text" value="OnlineStore" name="project[name]" id="project_name" /></p>
+
+<p><label for="project_description">Description</label><textarea rows="8" class="wiki-edit" data-controller="list-autofill" data-action="beforeinput-&gt;list-autofill#handleBeforeInput" data-list-autofill-text-formatting-param="common_mark" name="project[description]" id="project_description">
+E-commerce web site</textarea></p>
+<p><label for="project_identifier">Identifier<span class="required"> *</span></label><input size="60" disabled="disabled" maxlength="100" type="text" value="onlinestore" name="project[identifier]" id="project_identifier" />
+</p>
+<p><label for="project_homepage">Homepage</label><input size="60" type="text" value="" name="project[homepage]" id="project_homepage" /></p>
+<p>
+  <label for="project_is_public">Public</label><input name="project[is_public]" type="hidden" value="0" autocomplete="off" /><input type="checkbox" value="1" name="project[is_public]" id="project_is_public" />
+  <em class="info">Public projects and their contents are openly available on the network.</em>
+</p>
+
+
+<p><label for="project_inherit_members">Inherit members</label><input name="project[inherit_members]" type="hidden" value="0" autocomplete="off" /><input type="checkbox" value="1" name="project[inherit_members]" id="project_inherit_members" /></p>
+
+<script>
+//<![CDATA[
+var wikiToolbar = new jsToolBar(document.getElementById('project_description')); wikiToolbar.setHelpLink('/help/wiki_syntax'); wikiToolbar.setPreviewUrl('/preview/text'); wikiToolbar.draw();
+//]]>
+</script>
+
+  <p><label for="project_custom_field_values_3"><span>Development status</span></label><select name="project[custom_field_values][3]" id="project_custom_field_values_3" class="list_cf cf_3"><option value="">&nbsp;</option><option value="Stable">Stable</option>
+<option value="Beta">Beta</option>
+<option value="Alpha">Alpha</option>
+<option value="Planning">Planning</option></select></p>
+
+</div>
+
+<!--[eoform:project]-->
+
+
+
+<input type="submit" name="commit" value="Save" data-disable-with="Save" />
+</form></div>
+  <div id="tab-content-members" style="display:none" class="tab-content">
+<p><a class="icon icon-add" data-remote="true" href="/projects/onlinestore/memberships/new"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--add"></use></svg><span class="icon-label">New member</span></a></p>
+
+<table class="list members">
+  <thead>
+    <tr>
+      <th>User / Group</th>
+      <th>Roles</th>
+      <th></th>
+      
+    </tr>
+  </thead>
+  <tbody>
+  <tr id="member-3" class="member">
+  <td class="name">
+    <span class="icon">
+        
+        <a class="user active" href="/users/2">John Smith</a>
+    </span>
+  </td>
+  <td class="roles">
+    <span id="member-3-roles">Developer</span>
+    <div id="member-3-form"></div>
+  </td>
+  <td class="buttons">
+      <a class="icon icon-edit" data-remote="true" href="/memberships/3/edit"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--edit"></use></svg><span class="icon-label">Edit</span></a>
+      <a data-confirm="You are about to remove some or all of your permissions and may no longer be able to edit this project after that.
+Are you sure you want to continue?" class="icon icon-del" data-remote="true" rel="nofollow" data-method="delete" href="/memberships/3"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--del"></use></svg><span class="icon-label">Delete</span></a>
+  </td>
+  
+  </tr>
+  <tr id="member-10" class="member">
+  <td class="name">
+    <span class="icon">
+        
+        <a class="user active" href="/users/8">User Misc</a>
+    </span>
+  </td>
+  <td class="roles">
+    <span id="member-10-roles">Developer</span>
+    <div id="member-10-form"></div>
+  </td>
+  <td class="buttons">
+      <a class="icon icon-edit" data-remote="true" href="/memberships/10/edit"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--edit"></use></svg><span class="icon-label">Edit</span></a>
+      
+  </td>
+  
+  </tr>
+  <tr id="member-9" class="member">
+  <td class="name">
+    <span class="icon">
+        <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--group"></use></svg>
+        B Team
+    </span>
+  </td>
+  <td class="roles">
+    <span id="member-9-roles">Developer</span>
+    <div id="member-9-form"></div>
+  </td>
+  <td class="buttons">
+      <a class="icon icon-edit" data-remote="true" href="/memberships/9/edit"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--edit"></use></svg><span class="icon-label">Edit</span></a>
+      <a class="icon icon-del" data-remote="true" rel="nofollow" data-method="delete" href="/memberships/9"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--del"></use></svg><span class="icon-label">Delete</span></a>
+  </td>
+  
+  </tr>
+  </tbody>
+</table>
+</div>
+  <div id="tab-content-issues" style="display:none" class="tab-content"><form class="edit_project" id="project_issue_tracking" action="/projects/onlinestore" accept-charset="UTF-8" name="project_issue_tracking-6237d014" method="post"><input type="hidden" name="_method" value="patch" autocomplete="off" /><input type="hidden" name="authenticity_token" value="a-v5853VqSDvw4P1Uc0KEuW6qxwKJsupdYcfb1IfNn31hlXk57Im1s0kr4G9chs3ajR77sm0cfaWkja0vj9gOg" autocomplete="off" />
+  <input type="hidden" name="tab" id="tab" value="issues" autocomplete="off" />
+
+  <fieldset class="box tabular" id="project_trackers"><legend><a href="#" onclick="toggleCheckboxesBySelector(&#39;#project_trackers input[type=checkbox]&#39;); return false;" title="Check all / Uncheck all" class="icon icon-checked"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--checked"></use></svg><span class="icon-label"></span></a>Trackers</legend>
+    <label class="floating">
+      <input type="checkbox" name="project[tracker_ids][]" value="1" checked="checked" />
+      <span class="field-description" title="Description for Bug tracker">Bug</span>
+    </label>
+    <label class="floating">
+      <input type="checkbox" name="project[tracker_ids][]" value="2" checked="checked" />
+      <span class="field-description" title="Description for Feature request tracker">Feature request</span>
+    </label>
+    <label class="floating">
+      <input type="checkbox" name="project[tracker_ids][]" value="3" checked="checked" />
+      <span>Support request</span>
+    </label>
+  <input type="hidden" name="project[tracker_ids][]" id="project_tracker_ids_" value="" autocomplete="off" />
+  </fieldset>
+
+  <fieldset class="box tabular" id="project_issue_custom_fields"><legend><a href="#" onclick="toggleCheckboxesBySelector(&#39;#project_issue_custom_fields input[type=checkbox]:enabled&#39;); return false;" title="Check all / Uncheck all" class="icon icon-checked"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--checked"></use></svg><span class="icon-label"></span></a>Custom fields</legend>
+    <label class="floating">
+      <input type="checkbox" name="project[issue_custom_field_ids][]" value="2" disabled="disabled" checked="checked" />
+      <span>Searchable field</span>
+    </label>
+    <label class="floating">
+      <input type="checkbox" name="project[issue_custom_field_ids][]" value="1" disabled="disabled" checked="checked" />
+      <span title="Select one of the databases" class="field-description">Database</span>
+    </label>
+    <label class="floating">
+      <input type="checkbox" name="project[issue_custom_field_ids][]" value="6" disabled="disabled" checked="checked" />
+      <span>Float field</span>
+    </label>
+    <label class="floating">
+      <input type="checkbox" name="project[issue_custom_field_ids][]" value="8" disabled="disabled" checked="checked" />
+      <span>Custom date</span>
+    </label>
+    <label class="floating">
+      <input type="checkbox" name="project[issue_custom_field_ids][]" value="9" />
+      <span>Project 1 cf</span>
+    </label>
+  <input type="hidden" name="project[issue_custom_field_ids][]" id="project_issue_custom_field_ids_" value="" autocomplete="off" />
+  </fieldset>
+
+  <div class="box tabular">
+    <p><label for="project_default_version_id">Default version</label><select name="project[default_version_id]" id="project_default_version_id"><option value="">none</option>
+<option value="5">Alpha</option>
+<option value="7">Systemwide visible version</option></select></p>
+
+    <p><label for="project_default_assigned_to_id">Default assignee</label><select name="project[default_assigned_to_id]" id="project_default_assigned_to_id"><option value="">none</option>
+<option value="2">&lt;&lt; me &gt;&gt;</option><option value="2">John Smith</option><option value="8">User Misc</option></select></p>
+
+    <p><label for="project_default_issue_query_id">Default issue query</label><select name="project[default_issue_query_id]" id="project_default_issue_query_id"><option value="">none</option>
+<optgroup label="For all projects"><option value="4">Public query for all projects</option>
+<option value="5">Open issues by priority and tracker</option>
+<option value="6">Open issues grouped by tracker</option>
+<option value="9">Open issues grouped by list custom field</option></optgroup><optgroup label="For current project"><option value="7">Public query for project 2</option></optgroup></select><em class="info">Public (to any users) queries only selectable</em></p>
+  </div>
+
+  <p><input type="submit" name="commit" value="Save" data-disable-with="Save" /></p>
+</form></div>
+  <div id="tab-content-versions" style="display:none" class="tab-content">  <div class="contextual">
+    <a class="icon icon-locked" rel="nofollow" data-method="put" href="/projects/onlinestore/versions/close_completed"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--lock"></use></svg><span class="icon-label">Close completed versions</span></a>
+  </div>
+<p>
+  <a class="icon icon-add" href="/projects/onlinestore/versions/new?back_url="><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--add"></use></svg><span class="icon-label">New version</span></a>
+</p>
+
+<form action="/projects/onlinestore/settings/versions" accept-charset="UTF-8" name="form-c90121a5" method="get">
+<fieldset><legend>Filters</legend>
+<label for='status'>Status:</label>
+<select name="version_status" id="version_status" onchange="this.form.submit(); return false;"><option value="">all</option>
+<option selected="selected" value="open">open</option>
+<option value="locked">locked</option>
+<option value="closed">closed</option></select>
+<label for='name'>Version:</label>
+<input type="text" name="version_name" id="version_name" size="30" />
+<input type="submit" value="Apply" data-disable-with="Apply" />
+<a class="icon icon-reload" href="/projects/onlinestore/settings/versions"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--reload"></use></svg><span class="icon-label">Clear</span></a>
+</fieldset>
+</form>&nbsp;
+
+<table class="list versions">
+  <thead><tr>
+    <th>Version</th>
+    <th>Default version</th>
+    <th>Due date</th>
+    <th>Description</th>
+    <th>Status</th>
+    <th>Sharing</th>
+    <th>Wiki page</th>
+    <th style="width:15%"></th>
+    </tr></thead>
+  <tbody>
+    <tr class="version open ">
+    <td class="name">
+      <span class="">
+        
+        <a title="07/01/2006" href="/versions/5">Alpha</a>
+      </span>
+    </td>
+    <td class="tick"></td>
+    <td class="date">07/01/2006</td>
+    <td class="description">Private Alpha</td>
+    <td class="status">open</td>
+    <td class="sharing">Not shared</td>
+    <td></td>
+    <td class="buttons">
+        <a class="icon icon-edit" href="/versions/5/edit"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--edit"></use></svg><span class="icon-label">Edit</span></a>
+        <a data-confirm="Are you sure?" class="icon icon-del" rel="nofollow" data-method="delete" href="/versions/5"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--del"></use></svg><span class="icon-label">Delete</span></a>
+     </td>
+    </tr>
+    <tr class="version open ">
+    <td class="name">
+      <span class="">
+        
+        <a href="/versions/7">Systemwide visible version</a>
+      </span>
+    </td>
+    <td class="tick"></td>
+    <td class="date"></td>
+    <td class="description"></td>
+    <td class="status">open</td>
+    <td class="sharing">With all projects</td>
+    <td></td>
+    <td class="buttons">
+        <a class="icon icon-edit" href="/versions/7/edit"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--edit"></use></svg><span class="icon-label">Edit</span></a>
+        <a data-confirm="Are you sure?" class="icon icon-del" rel="nofollow" data-method="delete" href="/versions/7"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--del"></use></svg><span class="icon-label">Delete</span></a>
+     </td>
+    </tr>
+    </tbody>
+</table>
+</div>
+  <div id="tab-content-categories" style="display:none" class="tab-content"><p><a class="icon icon-add" href="/projects/onlinestore/issue_categories/new"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--add"></use></svg><span class="icon-label">New category</span></a></p>
+
+<table class="list">
+  <thead><tr>
+    <th>Issue category</th>
+    <th>Assignee</th>
+    <th></th>
+  </tr></thead>
+  <tbody>
+  <tr>
+    <td class="name">Printing</td>
+    <td></td>
+    <td class="buttons">
+        <a class="icon icon-edit" href="/issue_categories/4/edit"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--edit"></use></svg><span class="icon-label">Edit</span></a>
+        <a data-confirm="Are you sure?" class="icon icon-del" rel="nofollow" data-method="delete" href="/issue_categories/4"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--del"></use></svg><span class="icon-label">Delete</span></a>
+    </td>
+  </tr>
+  <tr>
+    <td class="name">Stock management</td>
+    <td></td>
+    <td class="buttons">
+        <a class="icon icon-edit" href="/issue_categories/3/edit"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--edit"></use></svg><span class="icon-label">Edit</span></a>
+        <a data-confirm="Are you sure?" class="icon icon-del" rel="nofollow" data-method="delete" href="/issue_categories/3"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--del"></use></svg><span class="icon-label">Delete</span></a>
+    </td>
+  </tr>
+    </tbody>
+</table>
+</div>
+  <div id="tab-content-boards" style="display:none" class="tab-content"><p><a class="icon icon-add" href="/projects/onlinestore/boards/new"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--add"></use></svg><span class="icon-label">New forum</span></a></p>
+
+<div class="table-list boards">
+  <div class="table-list-header">
+    <div class="table-list-cell">Forum</div>
+  </div>
+  <div class="sort-level"><div>
+  <div class="table-list-row">
+    <div class="table-list-cell name" style="padding-left: 2px">
+      <a href="/projects/onlinestore/boards/3">Discussion</a>
+    </div>
+    <div class="table-list-cell description">Discussion board</div>
+    <div class="table-list-cell buttons">
+      <span class="icon-only icon-sort-handle sort-handle" data-reorder-url="/projects/onlinestore/boards/3" data-reorder-param="board" title="Sort"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--reorder"></use></svg><span class="icon-label"></span></span>
+      <a class="icon icon-edit" href="/projects/onlinestore/boards/3/edit"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--edit"></use></svg><span class="icon-label">Edit</span></a>
+      <a data-confirm="Are you sure?" class="icon icon-del" rel="nofollow" data-method="delete" href="/projects/onlinestore/boards/3"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--del"></use></svg><span class="icon-label">Delete</span></a>
+    </div>
+  </div>
+</div></div></div>
+
+<script>
+//<![CDATA[
+
+  $(function() { $("div.sort-level").positionedItems(); });
+
+//]]>
+</script>
+</div>
+
+<script>
+//<![CDATA[
+showTab('info', this.href)
+//]]>
+</script>
+
+
+
+        
+        <div style="clear:both;"></div>
+    </div>
+</div>
+<div id="footer">
+    Powered by <a target="_blank" rel="noopener" href="https://www.redmine.org/">Redmine</a> &copy; 2006-2026 Jean-Philippe Lang
+</div>
+
+<div id="ajax-indicator" style="display:none;">
+  <span class="icon">
+    <svg class="s18 icon-svg svg-loader" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--loader"></use></svg><span class="icon-label">Loading...</span>
+  </span>
+</div>
+<div id="ajax-modal" style="display:none;"></div>
+<div id="icon-copy-source" style="display: none;"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--"></use></svg></div>
+
+</div>
+
+</body>
+</html>

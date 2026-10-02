@@ -1,0 +1,8 @@
+  {{if .PrincipalsByRole}}
+  <div class="members box">
+    <h3 class="icon icon-group">{{sprite_icon "group" (l "label_member_plural")}}</h3>
+    {{range $rm := .PrincipalsByRole}}
+      <p><span class="label">{{role_name $rm.Role}}:</span> {{principal_links $rm.Principals}}</p>
+    {{end}}
+  </div>
+  {{end}}

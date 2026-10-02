@@ -1,0 +1,159 @@
+status: 200
+content-type: application/json
+
+{
+  "projects": [
+    {
+      "id": 11,
+      "name": "Copied",
+      "identifier": "copied",
+      "description": null,
+      "homepage": "",
+      "status": 1,
+      "is_public": true,
+      "inherit_members": false,
+      "custom_fields": [
+        {
+          "id": 3,
+          "name": "Development status",
+          "value": ""
+        }
+      ],
+      "created_on": "TIMESTAMP",
+      "updated_on": "TIMESTAMP"
+    },
+    {
+      "id": 1,
+      "name": "eCookbook",
+      "identifier": "ecookbook",
+      "description": "Recipes management application",
+      "homepage": "http://ecookbook.somenet.foo/",
+      "status": 1,
+      "is_public": true,
+      "inherit_members": false,
+      "custom_fields": [
+        {
+          "id": 3,
+          "name": "Development status",
+          "value": "Stable"
+        }
+      ],
+      "created_on": "TIMESTAMP",
+      "updated_on": "TIMESTAMP"
+    },
+    {
+      "id": 5,
+      "name": "Private child of eCookbook",
+      "identifier": "private-child",
+      "description": "This is a private subproject of a public project",
+      "homepage": "",
+      "parent": {
+        "id": 1,
+        "name": "eCookbook"
+      },
+      "status": 1,
+      "is_public": false,
+      "inherit_members": false,
+      "custom_fields": [
+        {
+          "id": 3,
+          "name": "Development status",
+          "value": null
+        }
+      ],
+      "created_on": "TIMESTAMP",
+      "updated_on": "TIMESTAMP"
+    },
+    {
+      "id": 6,
+      "name": "Child of private child",
+      "identifier": "project6",
+      "description": "This is a public subproject of a private project",
+      "homepage": "",
+      "parent": {
+        "id": 5,
+        "name": "Private child of eCookbook"
+      },
+      "status": 1,
+      "is_public": true,
+      "inherit_members": false,
+      "custom_fields": [
+        {
+          "id": 3,
+          "name": "Development status",
+          "value": null
+        }
+      ],
+      "created_on": "TIMESTAMP",
+      "updated_on": "TIMESTAMP"
+    },
+    {
+      "id": 3,
+      "name": "eCookbook Subproject 1",
+      "identifier": "subproject1",
+      "description": "eCookBook Subproject 1",
+      "homepage": "",
+      "parent": {
+        "id": 1,
+        "name": "eCookbook"
+      },
+      "status": 1,
+      "is_public": true,
+      "inherit_members": false,
+      "custom_fields": [
+        {
+          "id": 3,
+          "name": "Development status",
+          "value": null
+        }
+      ],
+      "created_on": "TIMESTAMP",
+      "updated_on": "TIMESTAMP"
+    },
+    {
+      "id": 4,
+      "name": "eCookbook Subproject 2",
+      "identifier": "subproject2",
+      "description": "eCookbook Subproject 2",
+      "homepage": "",
+      "parent": {
+        "id": 1,
+        "name": "eCookbook"
+      },
+      "status": 1,
+      "is_public": true,
+      "inherit_members": false,
+      "custom_fields": [
+        {
+          "id": 3,
+          "name": "Development status",
+          "value": null
+        }
+      ],
+      "created_on": "TIMESTAMP",
+      "updated_on": "TIMESTAMP"
+    },
+    {
+      "id": 2,
+      "name": "OnlineStore",
+      "identifier": "onlinestore",
+      "description": "E-commerce web site",
+      "homepage": "",
+      "status": 1,
+      "is_public": false,
+      "inherit_members": false,
+      "custom_fields": [
+        {
+          "id": 3,
+          "name": "Development status",
+          "value": null
+        }
+      ],
+      "created_on": "TIMESTAMP",
+      "updated_on": "TIMESTAMP"
+    }
+  ],
+  "total_count": 7,
+  "offset": 0,
+  "limit": 25
+}

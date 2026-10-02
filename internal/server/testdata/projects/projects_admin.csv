@@ -1,0 +1,7 @@
+Name,Status,Description,Identifier,Subproject of,Public,Development status
+eCookbook,active,Recipes management application,ecookbook,,Yes,Stable
+Private child of eCookbook,active,This is a private subproject of a public project,private-child,eCookbook,No,""
+Child of private child,active,This is a public subproject of a private project,project6,Private child of eCookbook,Yes,""
+eCookbook Subproject 1,active,eCookBook Subproject 1,subproject1,eCookbook,Yes,""
+eCookbook Subproject 2,active,eCookbook Subproject 2,subproject2,eCookbook,Yes,""
+OnlineStore,active,E-commerce web site,onlinestore,,No,""

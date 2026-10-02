@@ -25,6 +25,11 @@ entries:
       - '^\s*"value": "(t|1)"$'
       - '^\s*<value>(t|1)</value>$'
 
+  # ---- projects（プロジェクト・メンバー・カテゴリ） ----
+  - case: "projects*/*settings*"
+    reason: "フィクスチャのカスタム値 true（SQLite に 't' で保存）はインポートで '1' に正規化される（作業分類タブの選択状態）"
+    lines:
+      - '^\s*<option (selected="selected" )?value="1">Yes</option>$'
   # ---- admin_users（ユーザー・グループ） ----
   - case: "admin_users/*"
     reason: "time_zone_select の Casablanca の基準オフセットは internal/i18n/zones_gen.go の生成時点の値（+00:00）で、参照（固定時刻 2026-01-15）は +01:00。並び位置も変わる。zones_gen.go を参照時刻で再生成すれば解消する"

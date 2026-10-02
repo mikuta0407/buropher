@@ -1,0 +1,6 @@
+<h2>{{l "label_issue_category_new"}}</h2>
+
+{{$f := labelled_form_for "issue_category" .Category (hash "as" "issue_category" "url" (printf "/projects/%s/issue_categories" .Project.Identifier))}}{{$f.Open}}
+{{partial "issue_categories/form" (dict "f" $f)}}
+{{submit_tag (l "button_create")}}
+{{end_form}}

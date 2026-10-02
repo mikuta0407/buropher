@@ -1,0 +1,17 @@
+<h2>{{l "label_issue_category"}}: {{.Category.Name}}</h2>
+
+{{form_tag (printf "/issue_categories/%d" .Category.ID) (hash "method" "delete")}}
+<div class="box">
+<p><strong>{{l "text_issue_category_destroy_question" .IssueCount}}</strong></p>
+<p><label>{{radio_button_tag "todo" "nullify" true}} {{l "text_issue_category_destroy_assignments"}}</label><br />
+{{if .Others}}
+<label>{{radio_button_tag "todo" "reassign" false}} {{l "text_issue_category_reassign_to"}}</label>:
+{{label_tag "reassign_to_id" (l "description_issue_category_reassign") (hash "class" "hidden-for-sighted")}}
+{{select_tag "reassign_to_id" .OtherOptions}}
+{{end}}
+</p>
+</div>
+
+{{submit_tag (l "button_apply")}}
+{{link_to (l "button_cancel") (printf "/projects/%s/settings/categories" current_project.Identifier)}}
+{{end_form}}

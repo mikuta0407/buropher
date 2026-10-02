@@ -1,0 +1,11 @@
+$('#tab-content-members').html('{{j (partial "projects/settings/members" .)}}');
+hideOnLoad();
+
+{{if and .HasMembers .AllValid}}
+  hideModal();
+  {{range $id := .CreatedIDs}}
+    $("#member-{{$id}}").effect("highlight");
+  {{end}}
+{{else if .HasMembers}}
+  alert('{{raw (j .ErrorsMessage)}}');
+{{end}}

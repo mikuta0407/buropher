@@ -182,11 +182,18 @@ func (c *Req) local(key string) any { return c.R.Context().Value(localKey(key)) 
 // encodeQueryRails は Hash#to_query（キー順、配列は key[]=v）。
 func encodeQueryRails(q url.Values) string { return q.Encode() }
 
+// csvNil は CSV の nil 値（引用符なしの空欄になる）。
+const csvNil = "\x00nil"
+
 // csvRow は Redmine::Export::CSV の 1 行（Ruby の CSV と同じく必要なときだけ引用する）。
 func csvRow(b *bytes.Buffer, sep string, fields []string) {
 	for i, f := range fields {
 		if i > 0 {
 			b.WriteString(sep)
+		}
+		if f == csvNil {
+			// nil は引用符なしの空欄（"" は引用符付き）
+			continue
 		}
 		if f == "" || strings.ContainsAny(f, sep+"\"\r\n") {
 			b.WriteString(`"` + strings.ReplaceAll(f, `"`, `""`) + `"`)

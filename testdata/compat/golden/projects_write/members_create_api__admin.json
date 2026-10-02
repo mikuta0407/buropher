@@ -1,0 +1,23 @@
+status: 201
+content-type: application/json
+location: {{BASE}}/memberships/22
+
+{
+  "membership": {
+    "id": 22,
+    "project": {
+      "id": 7,
+      "name": "zeta renamed"
+    },
+    "user": {
+      "id": 7,
+      "name": "Some One"
+    },
+    "roles": [
+      {
+        "id": 3,
+        "name": "Reporter"
+      }
+    ]
+  }
+}

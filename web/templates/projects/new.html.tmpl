@@ -1,0 +1,7 @@
+{{title (l "label_project_new")}}
+
+{{$f := labelled_form_for "" .Project (hash "url" "/projects" "html" (hash "multipart" true))}}{{$f.Open}}
+{{partial "projects/form" (dict "f" $f)}}
+{{submit_tag (l "button_create")}}
+{{submit_tag (l "button_create_and_continue") (hash "name" "continue")}}
+{{end_form}}
