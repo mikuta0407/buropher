@@ -53,8 +53,11 @@ func (a *App) AdminPlugins(c *Req) {
 
 // AdminDefaultConfiguration は admin#default_configuration（POST。既定の設定データを投入する）。
 func (a *App) AdminDefaultConfiguration(c *Req) {
-	// Loader.load(lang) の set_language_if_valid（以降の flash もその言語になる）
-	c.Loc.SetLanguageIfValid(c.Params().String("lang"))
+	// Loader.load(lang): データがあれば言語を変えずに DataAlreadyLoaded、無ければ set_language_if_valid
+	// （以降の flash もその言語になる）
+	if empty, err := repository.NoConfigurationData(c.Ctx(), a.DB); err == nil && empty {
+		c.Loc.SetLanguageIfValid(c.Params().String("lang"))
+	}
 	if err := bootstrap.LoadDefaultData(c.Ctx(), a.DB, c.Loc.Lang); err != nil {
 		c.Flash().SetError(c.L("error_can_t_load_default_data", html.EscapeString(err.Error())))
 	} else {

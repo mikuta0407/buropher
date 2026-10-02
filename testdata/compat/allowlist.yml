@@ -68,3 +68,18 @@ entries:
     reason: "wiki_page_versions は wiki_contents と wiki_content_versions を統合して持ち、同じ版は wiki_contents を優先する（docs/schema.md）。フィクスチャの CookBook_documentation 版 3 は wiki_contents のコメント（Gzip compression activated）と wiki_content_versions のコメント（空）が食い違うため活動の説明が異なる"
     lines:
       - '^\s*<span class="description">(Gzip compression activated)?</span>$'
+
+  # ---- settings_admin（設定画面・管理画面） ----
+  - case: "settings_admin*/*settings*"
+    reason: "buropher は SCM として Git のみ対応する（D-15）ため、設定画面のリポジトリタブの SCM 表には Git の行だけを出す。Casablanca の基準オフセットは admin_users と同じ理由（zones_gen.go の生成時点の値）"
+    lines:
+      - '^\s*</?(tr|td|label)>$'
+      - '^\s*<td class="scm_name">$'
+      - '^\s*<td></td>$'
+      - '^\s*<input (checked="checked" )?name="settings\[enabled_scm\]\[\]" type="checkbox" value="(Subversion|Mercurial|Cvs|Bazaar|Filesystem)">$'
+      - '^\s*(Subversion|Mercurial|Cvs|Bazaar|Filesystem|svn|hg|cvs|bzr)$'
+      - '^\s*<span class="icon icon-(ok|error)"></span>$'
+      - '^\s*<option value="Casablanca">\(GMT\+0[01]:00\) Casablanca</option>$'
+  - case: "settings_admin/admin_info__admin"
+    reason: "admin#info は意図的に buropher のバージョン・Go のバージョン・DB アダプタ等を表示する（Redmine の Ruby / Rails / ImageMagick の確認項目は持たない）。レイアウトと CSS クラスは同じ"
+    ignore: true
