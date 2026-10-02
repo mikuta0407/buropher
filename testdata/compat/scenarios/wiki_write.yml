@@ -1,0 +1,311 @@
+# Wiki の状態を変える互換シナリオ（編集・競合・セクション編集・新規作成・名前変更・保護・削除・版の削除・API）。
+# 参照は専用インスタンスで実行前に reset すること:
+#   COMPAT_REF_DIR=_reference/ref-wiki COMPAT_REF_PORT=4016 tools/compat/redmine-ref.sh start
+#   go run ./tools/compat diff -ref http://127.0.0.1:4016 -cand http://127.0.0.1:4116 \
+#     -reset-ref 'COMPAT_REF_DIR=... COMPAT_REF_PORT=4016 tools/compat/redmine-ref.sh reset' \
+#     -reset-cand '...buropher-cand.sh reset' testdata/compat/scenarios/wiki_write.yml
+# ケースは記述順に実行され、前のケースの結果に依存する。
+name: wiki_write
+
+users:
+  admin: {login: admin, password: admin}
+  jsmith: {login: jsmith, password: jsmith}
+  dlopper: {login: dlopper, password: foo}
+
+normalize:
+  mask_text_selectors:
+    - "#footer"
+  regex:
+    - {pattern: 'new_page-[0-9a-f]{8}', replace: 'new_page-RANDOM'}
+
+requests:
+  # ---- 編集（新しい版） ----
+  - id: update_another_page
+    path: /projects/ecookbook/wiki/Another_page
+    method: PUT
+    user: admin
+    form: {"content[text]": "h1. Another page\n\nUpdated text with a [[CookBook documentation|link]]", "content[comments]": "my comment", "content[version]": "1"}
+    expect_status: 302
+  - path: /projects/ecookbook/wiki/Another_page
+    users: [admin]
+    id: show_after_update
+  - path: /projects/ecookbook/wiki/Another_page/history
+    users: [admin]
+    id: history_after_update
+  - path: /projects/ecookbook/wiki/Another_page/diff
+    users: [admin]
+    id: diff_after_update
+  - path: /projects/ecookbook/wiki/Another_page/2/annotate
+    users: [admin]
+    id: annotate_after_update
+  # 同じ版のまま更新 → 競合
+  - id: update_conflict
+    path: /projects/ecookbook/wiki/Another_page
+    method: PUT
+    user: admin
+    form: {"content[text]": "conflicting text", "content[comments]": "c", "content[version]": "1"}
+  # 本文が変わらない更新（版は増えない）
+  - id: update_same_text
+    path: /projects/ecookbook/wiki/Another_page
+    method: PUT
+    user: admin
+    form: {"content[text]": "h1. Another page\n\nUpdated text with a [[CookBook documentation|link]]", "content[version]": "2"}
+    expect_status: 302
+  - path: /projects/ecookbook/wiki/Another_page/history
+    users: [admin]
+    id: history_after_same_text
+  # 空の本文 → 検証エラー
+  - id: update_blank
+    path: /projects/ecookbook/wiki/Another_page
+    method: PUT
+    user: admin
+    form: {"content[text]": "", "content[version]": "2"}
+
+  # ---- 新規作成 ----
+  - id: create_page
+    path: /projects/ecookbook/wiki/New_page
+    method: PUT
+    user: admin
+    form: {"content[text]": "# New page\n\nSome content\n\n## Sub section\n\nSub text", "content[comments]": "created", "wiki_page[parent_id]": "1"}
+    expect_status: 302
+  - path: /projects/ecookbook/wiki/New_page
+    users: [admin, anonymous]
+    id: show_new_page
+  # ---- セクション編集 ----
+  - id: update_section
+    path: /projects/ecookbook/wiki/New_page
+    method: PUT
+    user: admin
+    form: {"section": "2", "section_hash": "", "content[text]": "## Sub section updated\n\nNew section text", "content[version]": "1"}
+    expect_status: 302
+  - path: /projects/ecookbook/wiki/New_page
+    users: [admin]
+    id: show_after_section
+  - id: update_section_stale
+    path: /projects/ecookbook/wiki/New_page
+    method: PUT
+    user: admin
+    form: {"section": "1", "section_hash": "0000000000000000", "content[text]": "# x", "content[version]": "2"}
+
+  - path: /projects/ecookbook/wiki/index
+    users: [admin]
+    id: index_after_create
+  - id: create_page_blank
+    path: /projects/ecookbook/wiki/Blank_page
+    method: PUT
+    user: admin
+    form: {"content[text]": "", "wiki_page[parent_id]": ""}
+  - id: new_title_taken
+    path: /projects/ecookbook/wiki/new
+    method: POST
+    user: admin
+    form: {"title": "Another page"}
+  - id: new_title_invalid
+    path: /projects/ecookbook/wiki/new
+    method: POST
+    user: admin
+    form: {"title": ""}
+  - id: new_title_ok
+    path: /projects/ecookbook/wiki/new
+    method: POST
+    user: admin
+    form: {"title": "Brand new page", "parent": "Another_page"}
+    expect_status: 302
+  - id: new_title_ok_js
+    path: /projects/ecookbook/wiki/new.js
+    method: POST
+    user: admin
+    headers: {X-Requested-With: XMLHttpRequest}
+    form: {"title": "Brand new page"}
+  - id: new_title_taken_js
+    path: /projects/ecookbook/wiki/new.js
+    method: POST
+    user: admin
+    headers: {X-Requested-With: XMLHttpRequest}
+    form: {"title": "Another page"}
+
+  # ---- 名前変更（リダイレクト・親ページ・プロジェクト間の移動） ----
+  - id: rename_child_2
+    path: /projects/ecookbook/wiki/Child_2/rename
+    method: POST
+    user: admin
+    form: {"wiki_page[title]": "Renamed child", "wiki_page[redirect_existing_links]": "1", "wiki_page[parent_id]": "1"}
+    expect_status: 302
+  - path: /projects/ecookbook/wiki/Child_2
+    users: [admin]
+    id: show_old_title_redirects
+  - path: /projects/ecookbook/wiki/Renamed_child
+    users: [admin]
+    id: show_renamed
+  - id: rename_without_redirect
+    path: /projects/ecookbook/wiki/Child_1_1/rename
+    method: POST
+    user: admin
+    form: {"wiki_page[title]": "Child 1 1 renamed", "wiki_page[redirect_existing_links]": "0"}
+    expect_status: 302
+  - path: /projects/ecookbook/wiki/Child_1_1
+    users: [admin]
+    id: show_old_title_no_redirect
+  - id: rename_invalid
+    path: /projects/ecookbook/wiki/Child_1/rename
+    method: POST
+    user: admin
+    form: {"wiki_page[title]": "Another page"}
+  - id: rename_circular
+    path: /projects/ecookbook/wiki/Another_page/rename
+    method: POST
+    user: admin
+    form: {"wiki_page[title]": "Another_page", "wiki_page[parent_id]": "5"}
+  - id: rename_start_page
+    path: /projects/ecookbook/wiki/Page_with_sections/rename
+    method: POST
+    user: admin
+    form: {"wiki_page[title]": "Page_with_sections", "wiki_page[is_start_page]": "1", "wiki_page[redirect_existing_links]": "1"}
+    expect_status: 302
+  - path: /projects/ecookbook/wiki
+    users: [admin]
+    id: show_new_start_page
+  - id: move_to_onlinestore
+    path: /projects/ecookbook/wiki/Page_with_an_inline_image/rename
+    method: POST
+    user: admin
+    form: {"wiki_page[title]": "Page_with_an_inline_image", "wiki_page[wiki_id]": "2", "wiki_page[parent_id]": ""}
+    expect_status: 302
+  - path: /projects/onlinestore/wiki/index
+    users: [admin]
+    id: onlinestore_index_after_move
+  - path: /projects/ecookbook/wiki/Page_with_an_inline_image
+    users: [admin]
+    id: show_moved_redirect
+
+  # ---- 保護 ----
+  - id: protect_another_page
+    path: /projects/ecookbook/wiki/Another_page/protect
+    method: POST
+    user: admin
+    form: {"protected": "1"}
+    expect_status: 302
+  - path: /projects/ecookbook/wiki/Another_page
+    users: [admin, jsmith, dlopper]
+    id: show_protected
+  - path: /projects/ecookbook/wiki/Another_page/edit
+    users: [dlopper]
+    id: edit_protected
+  - id: unprotect_cookbook
+    path: /projects/ecookbook/wiki/CookBook_documentation/protect
+    method: POST
+    user: admin
+    form: {"protected": "0"}
+    expect_status: 302
+
+  # ---- プレビュー ----
+  - id: preview_existing
+    path: /projects/ecookbook/wiki/CookBook_documentation/preview
+    method: POST
+    user: admin
+    form: {"content[text]": "Preview of [[Another page]] and {{child_pages}}"}
+  - id: preview_new
+    path: /projects/ecookbook/wiki/Not_yet/preview
+    method: POST
+    user: admin
+    form: {"text": "*bold*"}
+
+  # ---- 版の削除 ----
+  - id: destroy_version
+    path: /projects/ecookbook/wiki/CookBook_documentation/1
+    method: DELETE
+    user: admin
+    form: {"x": "1"}
+    expect_status: 302
+  - path: /projects/ecookbook/wiki/CookBook_documentation/history
+    users: [admin]
+    id: history_after_destroy_version
+
+  # ---- ページの削除（子ページの扱い） ----
+  - id: destroy_with_children_form
+    path: /projects/ecookbook/wiki/Another_page
+    method: DELETE
+    user: admin
+    form: {"x": "1"}
+  - id: destroy_reassign
+    path: /projects/ecookbook/wiki/Another_page
+    method: DELETE
+    user: admin
+    form: {"todo": "reassign", "reassign_to_id": "11"}
+    expect_status: 302
+  - path: /projects/ecookbook/wiki/index
+    users: [admin]
+    id: index_after_reassign
+  - id: destroy_nullify
+    path: /projects/ecookbook/wiki/Page_with_sections
+    method: DELETE
+    user: admin
+    form: {"todo": "nullify"}
+    expect_status: 302
+  - id: destroy_leaf
+    path: /projects/ecookbook/wiki/New_page
+    method: DELETE
+    user: admin
+    form: {"x": "1"}
+    expect_status: 302
+  - path: /projects/ecookbook/wiki/index
+    users: [admin]
+    id: index_after_destroy
+
+  # ---- API ----
+  - id: api_create
+    path: /projects/ecookbook/wiki/Api_page.json
+    method: PUT
+    user: admin
+    content_type: application/json
+    body: '{"wiki_page":{"text":"API text","comments":"via api"}}'
+    expect_status: 201
+  - id: api_show
+    path: /projects/ecookbook/wiki/Api_page.json
+    users: [admin]
+  - id: api_update
+    path: /projects/ecookbook/wiki/Api_page.json
+    method: PUT
+    user: admin
+    content_type: application/json
+    body: '{"wiki_page":{"text":"API text 2","version":1}}'
+    expect_status: 204
+  - id: api_conflict
+    path: /projects/ecookbook/wiki/Api_page.json
+    method: PUT
+    user: admin
+    content_type: application/json
+    body: '{"wiki_page":{"text":"API text 3","version":1}}'
+    expect_status: 409
+  - id: api_blank
+    path: /projects/ecookbook/wiki/Api_page.xml
+    method: PUT
+    user: admin
+    content_type: application/xml
+    body: '<?xml version="1.0"?><wiki_page><text></text></wiki_page>'
+    expect_status: 422
+  - id: api_show_xml
+    path: /projects/ecookbook/wiki/Api_page.xml
+    users: [admin]
+  - id: api_destroy
+    path: /projects/ecookbook/wiki/Api_page.json
+    method: DELETE
+    user: admin
+    expect_status: 204
+  - id: api_show_deleted
+    path: /projects/ecookbook/wiki/Api_page.json
+    users: [admin]
+
+  # ---- Wiki の削除（WikisController） ----
+  - id: wikis_destroy
+    path: /projects/onlinestore/wiki/destroy
+    method: POST
+    user: admin
+    form: {"confirm": "1"}
+    expect_status: 302
+  - path: /projects/onlinestore/wiki
+    users: [admin]
+    id: onlinestore_after_destroy
+  - path: /projects/onlinestore/wiki/index
+    users: [admin]
+    id: onlinestore_index_after_destroy

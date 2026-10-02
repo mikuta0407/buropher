@@ -1,0 +1,8 @@
+status: 200
+content-type: text/plain
+
+h1. CookBook documentation v2
+
+
+Line from v1
+Some updated [[documentation]] here...

@@ -1,0 +1,44 @@
+<div class="contextual">
+{{if .CanEdit}}
+{{link_to (sprite_icon "add" (l "label_wiki_page_new")) (printf "/projects/%s/wiki/new" .ProjectKey) (hash "remote" true "class" "icon icon-add")}}
+{{end}}
+{{watcher_link "wiki" .Wiki.ID}}
+{{if .CanManage}}
+{{link_to (sprite_icon "del" (l "button_delete")) (printf "/projects/%s/wiki/destroy" .ProjectKey) (hash "class" "icon icon-del")}}
+{{end}}
+</div>
+
+<h2>{{l "label_index_by_date"}}</h2>
+
+{{if not .Pages}}
+<p class="nodata">{{l "label_no_data"}}</p>
+{{end}}
+
+{{range $g := .PagesByDate}}
+<h3>{{format_date $g.Date}}</h3>
+<ul>
+{{range $page := $g.Pages}}
+    <li>{{link_to $page.PrettyTitle (wiki_page_path $page.Project $page.Title)}}</li>
+{{end}}
+</ul>
+{{end}}
+
+{{define "wiki/date_index#sidebar"}}
+  {{partial "wiki/sidebar" .}}
+{{end}}
+{{content_for "sidebar" (capture "wiki/date_index#sidebar")}}
+
+{{if .Pages}}
+{{other_formats_open -}}
+  {{if .CanExport}}
+  {{other_format_link "PDF" (printf "/projects/%s/wiki/export.pdf" .ProjectKey)}}
+  {{other_format_link "HTML" (printf "/projects/%s/wiki/export.html" .ProjectKey)}}
+  {{end}}
+  {{other_format_link "Atom" (wiki_activity_atom_url .ProjectKey .AtomKey false)}}
+{{other_formats_close -}}
+{{end}}
+
+{{define "wiki/date_index#header_tags"}}
+{{auto_discovery_link_tag "atom" (wiki_activity_atom_url .ProjectKey .AtomKey true)}}
+{{end}}
+{{content_for "header_tags" (capture "wiki/date_index#header_tags")}}

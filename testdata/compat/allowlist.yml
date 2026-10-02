@@ -31,6 +31,33 @@ entries:
     lines:
       - '^\s*<option value="Casablanca">\(GMT\+0[01]:00\) Casablanca</option>$'
 
+  # ---- wiki ----
+  - case: "wiki*/*"
+    reason: "フィクスチャの wiki_contents に対応する wiki_content_versions が無いページ（Child_1 等）。buropher は wiki_contents と履歴を wiki_page_versions に統合するため、最新版も履歴の 1 件として数える（実データでは最新版は必ず履歴にもある）"
+    lines:
+      - '^\s*<a href="[^"]*/history">[01] revisions</a>$'
+  - case: "wiki*/projects_ecookbook_wiki_CookBook_documentation_3__*"
+    reason: "フィクスチャの CookBook_documentation は wiki_contents（v3: child_pages 入りの本文・コメント付き）と wiki_content_versions の v3（別の本文）が食い違う。buropher は統合時に wiki_contents を優先するため、版 3 の本文・コメントを使う画面（履歴・差分・注釈・版 3 の表示）が異なる"
+    ignore: true
+  - case: "wiki*/projects_ecookbook_wiki_CookBook_documentation_history__*"
+    reason: "フィクスチャの CookBook_documentation は wiki_contents（v3: child_pages 入りの本文・コメント付き）と wiki_content_versions の v3（別の本文）が食い違う。buropher は統合時に wiki_contents を優先するため、版 3 の本文・コメントを使う画面（履歴・差分・注釈・版 3 の表示）が異なる"
+    ignore: true
+  - case: "wiki*/projects_ecookbook_wiki_CookBook_documentation_diff__*"
+    reason: "フィクスチャの CookBook_documentation は wiki_contents（v3: child_pages 入りの本文・コメント付き）と wiki_content_versions の v3（別の本文）が食い違う。buropher は統合時に wiki_contents を優先するため、版 3 の本文・コメントを使う画面（履歴・差分・注釈・版 3 の表示）が異なる"
+    ignore: true
+  - case: "wiki*/projects_ecookbook_wiki_CookBook_documentation_diff_version_3_version_from_1__*"
+    reason: "フィクスチャの CookBook_documentation は wiki_contents（v3: child_pages 入りの本文・コメント付き）と wiki_content_versions の v3（別の本文）が食い違う。buropher は統合時に wiki_contents を優先するため、版 3 の本文・コメントを使う画面（履歴・差分・注釈・版 3 の表示）が異なる"
+    ignore: true
+  - case: "wiki*/projects_ecookbook_wiki_CookBook_documentation_3_annotate__*"
+    reason: "フィクスチャの CookBook_documentation は wiki_contents（v3: child_pages 入りの本文・コメント付き）と wiki_content_versions の v3（別の本文）が食い違う。buropher は統合時に wiki_contents を優先するため、版 3 の本文・コメントを使う画面（履歴・差分・注釈・版 3 の表示）が異なる"
+    ignore: true
+  - case: "wiki_write/diff_after_update__*"
+    reason: "フィクスチャの Another_page の版 1 は wiki_contents（include マクロ入り）と wiki_content_versions（短い本文）が食い違う。buropher は統合時に wiki_contents を優先するため、版 1 との差分が異なる"
+    ignore: true
+  - case: "wiki_write/history_after_destroy_version__*"
+    reason: "フィクスチャの CookBook_documentation の版 3 のコメントが wiki_contents と wiki_content_versions で食い違う（統合時に wiki_contents を優先）"
+    lines:
+      - '^\s*<td class="comments">(Gzip compression activated)?</td>$'
   # ---- activity_search（活動・検索） ----
   - case: "activity_search/activity_from_2007-03-06_show_wiki_edits_*"
     reason: "wiki_page_versions は wiki_contents と wiki_content_versions を統合して持ち、同じ版は wiki_contents を優先する（docs/schema.md）。フィクスチャの CookBook_documentation 版 3 は wiki_contents のコメント（Gzip compression activated）と wiki_content_versions のコメント（空）が食い違うため活動の説明が異なる"

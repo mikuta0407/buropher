@@ -1,0 +1,37 @@
+<div class="attachments">
+<div class="contextual">
+  {{if .options.Get "editable"}}{{link_to (sprite_icon "edit" (l "label_edit_attachments")) .editPath (hash "title" (l "label_edit_attachments") "class" "icon-only icon-edit ")}}{{end}}
+  {{if gt (len .attachments) 1}}{{link_to (sprite_icon "download" (l "label_download_all_attachments")) .downloadPath (hash "title" (l "label_download_all_attachments") "class" "icon-only icon-download ")}}{{end}}
+</div>
+<table>
+{{range $attachment := .attachments}}
+<tr>
+  <td>
+    {{link_to_attachment $attachment (hash "class" "icon icon-attachment " "icon" "attachment") -}}
+    <span class="size">({{number_to_human_size $attachment.Filesize}})</span>
+    {{link_to_attachment $attachment (hash "class" "icon-only icon-download " "title" (l "button_download") "download" true "icon" "download") -}}
+  </td>
+  <td>{{if not (blank $attachment.Description)}}{{$attachment.Description}}{{end}}</td>
+  <td>
+    {{if $.options.Get "author"}}
+      <span class="author">{{if $attachment.Author}}{{user_name $attachment.Author}}{{end}}, {{format_time $attachment.CreatedOn}}</span>
+    {{end}}
+  </td>
+  <td>
+    {{if $.options.Get "deletable"}}
+      {{link_to (sprite_icon "del" (l "button_delete")) (printf "/attachments/%d" $attachment.ID) (hash "data" (hash "confirm" (l "text_are_you_sure")) "method" "delete" "class" "delete icon-only icon-del " "title" (l "button_delete"))}}
+    {{end}}
+  </td>
+</tr>
+{{end}}
+</table>
+{{if .thumbnails}}
+  {{if .images}}
+  <div class="thumbnails">
+    {{range $attachment := .images}}
+      {{thumbnail_tag $attachment}}
+    {{end}}
+  </div>
+  {{end}}
+{{end}}
+</div>

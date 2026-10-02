@@ -1,0 +1,17 @@
+{{title (l "label_wiki_page_new")}}
+
+{{$f := labelled_form_for "page" .Form (hash "as" "page" "url" (printf "/projects/%s/wiki/new" (project_param current_project)))}}
+{{$f.Open}}
+
+  {{render_error_messages .Errors}}
+
+  <div class="box tabular">
+    <p>
+      {{$f.TextField "title" (hash "name" "title" "size" 60 "required" true)}}
+      <em class="info">{{l "text_unallowed_characters"}}: , . / ? ; : |</em>
+    </p>
+  </div>
+
+  {{submit_tag (l "label_next")}}
+
+{{end_form}}

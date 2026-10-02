@@ -14,6 +14,7 @@ import (
 	"github.com/go-chi/chi/v5"
 
 	"github.com/mikuta0407/buropher/internal/assets"
+	"github.com/mikuta0407/buropher/internal/attachments"
 	"github.com/mikuta0407/buropher/internal/authz"
 	"github.com/mikuta0407/buropher/internal/clock"
 	"github.com/mikuta0407/buropher/internal/db"
@@ -46,6 +47,8 @@ type App struct {
 	AutologinCookiePath string
 	// AutologinCookieSecure は autologin_cookie_secure（nil ならリクエストが HTTPS のとき）。
 	AutologinCookieSecure *bool
+	// AttachmentStore は添付ファイルの保存先（Attachment.storage_path。doc.go の「規約: 添付ファイル」）。
+	AttachmentStore *attachments.Store
 }
 
 func (a *App) now() time.Time {

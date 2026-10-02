@@ -1,0 +1,19 @@
+{{$page := .Page}}
+{{$path := wiki_page_path $page.Project $page.Title}}
+<div class="contextual">
+{{link_to (sprite_icon "history" (l "label_history")) (printf "%s/history" (wiki_page_path current_project $page.Title)) (hash "class" "icon icon-history")}}
+</div>
+
+{{wiki_page_breadcrumb .Ancestors}}
+
+{{title (list $page.PrettyTitle $path) (list (l "label_history") (printf "%s/history" $path)) (printf "%s %d" (l "label_revision") .ContentTo.Version)}}
+
+<p>
+{{l "label_revision"}} {{link_to .ContentFrom.Version (printf "%s/%d" $path .ContentFrom.Version)}}
+<em>({{if .ContentFrom.Author}}{{user_name .ContentFrom.Author}}{{else}}{{l "label_user_anonymous"}}{{end}}, {{format_time .ContentFrom.UpdatedOn}})</em>
+&#8594;
+{{l "label_revision"}} {{link_to .ContentTo.Version (printf "%s/%d" $path .ContentTo.Version)}}/{{$page.CurrentVersion}}
+<em>({{if .ContentTo.Author}}{{user_name .ContentTo.Author}}{{else}}{{l "label_user_anonymous"}}{{end}}, {{format_time .ContentTo.UpdatedOn}})</em>
+</p>
+
+<pre class="text-diff">{{raw .DiffHTML}}</pre>
