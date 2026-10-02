@@ -52,12 +52,12 @@ type authEnv struct {
 }
 
 var (
-	authMetaCSRF   = regexp.MustCompile(`<meta name="csrf-token" content="([^"]+)"`)
-	authQRRe       = regexp.MustCompile(`data:image/png;base64,[A-Za-z0-9+/=]+`)
-	authTotpKeyRe  = regexp.MustCompile(`<code>((?:[A-Z2-7]{4} ){7}[A-Z2-7]{4})</code>`)
-	authBackupRe   = regexp.MustCompile(`<li><code>([0-9a-f]{4} [0-9a-f]{4} [0-9a-f]{4})</code></li>`)
-	authSessionRe  = regexp.MustCompile(`[0-9a-f]{40}`)
-	authPasswords  = map[string]string{"admin": "admin", "jsmith": "jsmith", "dlopper": "foo", "rhill": "foo"}
+	authMetaCSRF  = regexp.MustCompile(`<meta name="csrf-token" content="([^"]+)"`)
+	authQRRe      = regexp.MustCompile(`data:image/png;base64,[A-Za-z0-9+/=]+`)
+	authTotpKeyRe = regexp.MustCompile(`<code>((?:[A-Z2-7]{4} ){7}[A-Z2-7]{4})</code>`)
+	authBackupRe  = regexp.MustCompile(`<li><code>([0-9a-f]{4} [0-9a-f]{4} [0-9a-f]{4})</code></li>`)
+	authSessionRe = regexp.MustCompile(`[0-9a-f]{40}`)
+	authPasswords = map[string]string{"admin": "admin", "jsmith": "jsmith", "dlopper": "foo", "rhill": "foo"}
 )
 
 func (e *authEnv) client(user string) *http.Client {
