@@ -13,17 +13,17 @@ type fenceLexer struct {
 	fallback string // ctx が nil の場合の扱い: "sb"（未知）または "chroma:<tag>"
 }
 
-func newFenceLexer(name string) *fenceLexer {
+func newFenceLexer(c *rctx, name string) *fenceLexer {
 	if name == "" {
 		// 推定（guess）は未対応: 検出できない場合と同じく PlainText（Text）
-		return &fenceLexer{ctx: newCtx(rougeLexerByTag("plaintext"))}
+		return &fenceLexer{ctx: c.child(rougeLexerByTag("plaintext"))}
 	}
 	l := findLexer(name)
 	if l == nil {
 		return &fenceLexer{fallback: "sb"}
 	}
 	if lx := rougeLexerByTag(l.Tag); lx != nil {
-		return &fenceLexer{ctx: newCtx(lx)}
+		return &fenceLexer{ctx: c.child(lx)}
 	}
 	return &fenceLexer{fallback: "chroma:" + l.Tag}
 }
@@ -61,7 +61,7 @@ func init() {
 			ruleF(`(?m)^([ \t]*)(`+"`"+`{3,}|~{3,})([^\n]*\n)((.*?)(\n\1)(\2))?`, func(c *rctx) {
 				m1, m2, m3 := c.group(1), c.group(2), c.group(3)
 				name := strings.Trim(m3, " \t\n\v\f\r\x00")
-				fl := newFenceLexer(name)
+				fl := newFenceLexer(c, name)
 				if fl.ctx != nil {
 					fl.ctx.reset()
 				}

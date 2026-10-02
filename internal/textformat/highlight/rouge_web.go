@@ -18,7 +18,7 @@ func (c *rctx) sub(tag string) *rctx {
 		if lx == nil {
 			return nil
 		}
-		s = newCtx(lx)
+		s = c.child(lx)
 		c.subs[tag] = s
 	}
 	return s

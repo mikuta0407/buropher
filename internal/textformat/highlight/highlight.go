@@ -407,24 +407,223 @@ func FilenameSupported(filename string) bool {
 	return len(guessByFilename(filename)) > 0
 }
 
+var (
+	reEmacsModeline = regexp.MustCompile(`(?i)-\*-\s*(?:(?:[\w-]+\s*:\s*(?:[\w+-]+)\s*;?\s*)*?(?:mode\s*:)?\s*([\w+-]+)\s*(?:;\s*[\w-]+\s*:\s*[\w+-]+\s*)*;?\s*)-\*-`)
+	reVimModeline1  = regexp.MustCompile(`(?i)(?:vim|vi|ex):\s*(?:ft|filetype|syntax)=(\w+)\s?`)
+	reVimModeline2  = regexp.MustCompile(`(?:vim|vi|Vim|ex):\s*se(?:t)?.*\s(?:ft|filetype|syntax)=(\w+)\s?.*:`)
+	reShebang       = regexp.MustCompile(`(?m)\A[ \t\n\v\f\r]*#!(.*)$`)
+	reDoctype       = regexp.MustCompile(`(?s)\A[ \t\n\v\f\r]*(?:<\?.*?\?>[ \t\n\v\f\r]*)?<!DOCTYPE[ \t\n\v\f\r]+(.+?)>`)
+)
+
+// textAnalyzer は Rouge の TextAnalyzer（シバンと DOCTYPE の判定）。
+type textAnalyzer struct {
+	text    string
+	shebang *string
+	doctype *string
+}
+
+func (t *textAnalyzer) shebangText() (string, bool) {
+	if t.shebang == nil {
+		s := ""
+		if m := reShebang.FindStringSubmatch(t.text); m != nil {
+			s = m[1]
+			t.shebang = &s
+		} else {
+			t.shebang = new(string)
+			*t.shebang = "\x00none"
+		}
+	}
+	if *t.shebang == "\x00none" {
+		return "", false
+	}
+	return *t.shebang, true
+}
+
+// shebangIs は shebang?(match)（/\b#{match}(\s|$)/ に一致するか）。
+func (t *textAnalyzer) shebangIs(match string) bool {
+	s, ok := t.shebangText()
+	if !ok {
+		return false
+	}
+	return regexp.MustCompile(`\b(?:` + match + `)(\s|$)`).MatchString(s)
+}
+
+func (t *textAnalyzer) doctypeText() (string, bool) {
+	if t.doctype == nil {
+		s := "\x00none"
+		if m := reDoctype.FindStringSubmatch(t.text); m != nil {
+			s = m[1]
+		}
+		t.doctype = &s
+	}
+	if *t.doctype == "\x00none" {
+		return "", false
+	}
+	return *t.doctype, true
+}
+
+// rougeDetectors は detect? を持つ Rouge レキサーの判定関数。
+var rougeDetectors = map[string]func(t *textAnalyzer) bool{
+	"awk":          func(t *textAnalyzer) bool { return t.shebangIs("awk") },
+	"biml":         func(t *textAnalyzer) bool { return regexp.MustCompile(`<\s*Biml\b`).MatchString(t.text) },
+	"coffeescript": func(t *textAnalyzer) bool { return t.shebangIs("coffee") },
+	"crystal":      func(t *textAnalyzer) bool { return t.shebangIs("crystal") },
+	"diff": func(t *textAnalyzer) bool {
+		return strings.HasPrefix(t.text, "Index: ") ||
+			regexp.MustCompile(`\Adiff[^\n]*?\ba/[^\n]*\bb/`).MatchString(t.text) ||
+			regexp.MustCompile(`---.*?\n[+][+][+]`).MatchString(t.text) ||
+			regexp.MustCompile(`[+][+][+].*?\n---`).MatchString(t.text)
+	},
+	"elixir":  func(t *textAnalyzer) bool { return t.shebangIs("elixir") },
+	"factor":  func(t *textAnalyzer) bool { return t.shebangIs("factor") },
+	"gherkin": func(t *textAnalyzer) bool { return t.shebangIs("cucumber") },
+	"groovy":  func(t *textAnalyzer) bool { return t.shebangIs("groovy") || t.shebangIs("nextflow") },
+	"hack": func(t *textAnalyzer) bool {
+		return strings.Contains(t.text, "<?hh") || t.shebangIs("hhvm") ||
+			regexp.MustCompile(`async function [a-zA-Z]`).MatchString(t.text) || strings.Contains(t.text, "): Awaitable<")
+	},
+	"haskell": func(t *textAnalyzer) bool { return t.shebangIs("runhaskell") },
+	"haxe":    func(t *textAnalyzer) bool { return t.shebangIs("haxe") },
+	"html": func(t *textAnalyzer) bool {
+		if d, ok := t.doctypeText(); ok && regexp.MustCompile(`(?i)\bhtml\b`).MatchString(d) {
+			return true
+		}
+		if regexp.MustCompile(`\A<\?xml\b`).MatchString(t.text) {
+			return false
+		}
+		return regexp.MustCompile(`<\s*html\b`).MatchString(t.text)
+	},
+	"io":         func(t *textAnalyzer) bool { return t.shebangIs("io") },
+	"javascript": func(t *textAnalyzer) bool { return t.shebangIs("node") || t.shebangIs("jsc") },
+	"julia":      func(t *textAnalyzer) bool { return t.shebangIs("julia") },
+	"lasso": func(t *textAnalyzer) bool {
+		return t.shebangIs("lasso9") || regexp.MustCompile(`\A.*?<\?(lasso(script)?|=)`).MatchString(t.text)
+	},
+	"livescript": func(t *textAnalyzer) bool { return t.shebangIs("lsc") },
+	"lua":        func(t *textAnalyzer) bool { return t.shebangIs("lua") },
+	"mojo":       func(t *textAnalyzer) bool { return t.shebangIs(`mojow?(?:[23](?:\.\d+)?)?`) },
+	"moonscript": func(t *textAnalyzer) bool { return t.shebangIs("moon") },
+	"perl":       func(t *textAnalyzer) bool { return t.shebangIs("perl") },
+	"php": func(t *textAnalyzer) bool {
+		if t.shebangIs("php") {
+			return true
+		}
+		if regexp.MustCompile(`(?m)^<\?hh`).MatchString(t.text) {
+			return false
+		}
+		return regexp.MustCompile(`(?m)^<\?php`).MatchString(t.text)
+	},
+	"postscript": func(t *textAnalyzer) bool { return regexp.MustCompile(`(?m)^%!`).MatchString(t.text) },
+	"praat":      func(t *textAnalyzer) bool { return t.shebangIs("praat") },
+	"puppet":     func(t *textAnalyzer) bool { return t.shebangIs("puppet-apply") || t.shebangIs("puppet") },
+	"python":     func(t *textAnalyzer) bool { return t.shebangIs(`pythonw?(?:[23](?:\.\d+)?)?`) },
+	"r":          func(t *textAnalyzer) bool { return t.shebangIs("Rscript") },
+	"racket": func(t *textAnalyzer) bool {
+		m := regexp.MustCompile(`(?m)\A#lang\s*(.*?)$`).FindStringSubmatch(t.text)
+		return m != nil && regexp.MustCompile(`racket|scribble`).MatchString(m[1])
+	},
+	"ruby": func(t *textAnalyzer) bool { return t.shebangIs("ruby") },
+	"rust": func(t *textAnalyzer) bool { return t.shebangIs("rustc") },
+	"sed":  func(t *textAnalyzer) bool { return t.shebangIs("sed") },
+	"shell": func(t *textAnalyzer) bool {
+		return t.shebangIs(`(ba|z|k)?sh`) || strings.HasPrefix(t.text, "#compdef") || strings.HasPrefix(t.text, "#autoload")
+	},
+	"tcl": func(t *textAnalyzer) bool { return t.shebangIs("tclsh") || t.shebangIs("wish") || t.shebangIs("jimsh") },
+	"tex": func(t *textAnalyzer) bool {
+		return regexp.MustCompile(`\A\s*\\(documentclass|input|documentstyle|relax|ProvidesPackage|ProvidesClass)`).MatchString(t.text)
+	},
+	"tulip": func(t *textAnalyzer) bool { return t.shebangIs("tulip") },
+	"xml": func(t *textAnalyzer) bool {
+		d, ok := t.doctypeText()
+		if ok && strings.Contains(d, "html") {
+			return false
+		}
+		return regexp.MustCompile(`\A<\?xml\b`).MatchString(t.text) || ok
+	},
+	"yaml": func(t *textAnalyzer) bool { return regexp.MustCompile(`(?s)\A\s*%YAML`).MatchString(t.text) },
+}
+
+// guessLexer は Rouge の Lexer.guess(filename:, source:)。
+// 一意に定まらない場合は ambiguous=true（Redmine はエスケープしたテキストを返す）。
+func guessLexer(filename, source string) (l *rougeLexer, ambiguous bool) {
+	all := make([]*rougeLexer, len(rougeLexers))
+	for i := range rougeLexers {
+		all[i] = &rougeLexers[i]
+	}
+	lexers := all
+	apply := func(next []*rougeLexer) {
+		if len(next) > 0 {
+			lexers = next
+		}
+	}
+	// Filename
+	apply(guessByFilename(filename))
+	// Modeline
+	if len(lexers) > 1 {
+		lines := strings.Split(source, "\n")
+		first, last := lines, lines
+		if len(first) > 5 {
+			first = first[:5]
+		}
+		if len(last) > 5 {
+			last = last[len(last)-5:]
+		}
+		space := strings.Join(append(append([]string{}, first...), last...), "\n")
+		set := map[string]bool{}
+		for _, re := range []*regexp.Regexp{reEmacsModeline, reVimModeline1, reVimModeline2} {
+			if m := re.FindStringSubmatch(space); m != nil {
+				set[m[1]] = true
+			}
+		}
+		if len(set) > 0 {
+			var sel []*rougeLexer
+			for _, x := range lexers {
+				ok := set[x.Tag]
+				for _, a := range x.Aliases {
+					ok = ok || set[a]
+				}
+				if ok {
+					sel = append(sel, x)
+				}
+			}
+			apply(sel)
+		}
+	}
+	// Source
+	if len(lexers) > 1 {
+		ta := &textAnalyzer{text: source}
+		var sel []*rougeLexer
+		for _, x := range lexers {
+			if d, ok := rougeDetectors[x.Tag]; ok && d(ta) {
+				sel = append(sel, x)
+			}
+		}
+		apply(sel)
+	}
+	// Disambiguation
+	if len(lexers) > 1 && len(lexers) != len(all) {
+		apply(disambiguate(filename, source, lexers))
+	}
+	if len(lexers) == len(all) {
+		lexers = nil
+	}
+	switch len(lexers) {
+	case 0:
+		return registry["plaintext"], false
+	case 1:
+		return lexers[0], false
+	}
+	return nil, true
+}
+
 // HighlightByFilename は Redmine::SyntaxHighlighting.highlight_by_filename。
 // 行ごとに span を閉じる形式（CustomHTMLLinewise）で出力する。
 // 推定が一意に定まらない場合は Redmine と同様にエスケープしたテキストを返す。
-// （Rouge のモードライン・シバンによる推定は未対応）
 func HighlightByFilename(text, filename string) string {
 	text = strings.ReplaceAll(text, "\r\n", "\n")
 	text = strings.ReplaceAll(text, "\r", "\n")
-	cands := guessByFilename(filename)
-	if len(cands) > 1 {
-		cands = disambiguate(filename, text, cands)
-	}
-	var l *rougeLexer
-	switch len(cands) {
-	case 0:
-		l = registry["plaintext"]
-	case 1:
-		l = cands[0]
-	default:
+	l, ambiguous := guessLexer(filename, text)
+	if ambiguous {
 		return htmlEscapeAll(text)
 	}
 	var sb strings.Builder

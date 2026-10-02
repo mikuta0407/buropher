@@ -16,7 +16,7 @@ func init() {
 	registerRouge("console", func() *rlexer {
 		l := &rlexer{tag: "console"}
 		l.stream = func(c *rctx, text string) {
-			shell := newCtx(rougeLexerByTag("shell"))
+			shell := c.child(rougeLexerByTag("shell"))
 			for len(text) > 0 {
 				m := reConsoleLine.FindStringIndex(text)
 				line := text[:m[1]]

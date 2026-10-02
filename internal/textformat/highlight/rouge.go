@@ -3,6 +3,7 @@ package highlight
 import (
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/dlclark/regexp2/v2"
 )
@@ -50,6 +51,22 @@ type rctx struct {
 	emit  func(tok rtok, val string)
 	vars  map[string]any
 	subs  map[string]*rctx // delegate 先のレキサー（インスタンスを保持する）
+	// budget は字句解析全体の時間制限（異常に遅い正規表現への対策）
+	budget *lexBudget
+}
+
+// lexBudget は 1 回の字句解析の時間制限。
+type lexBudget struct {
+	deadline time.Time
+	steps    int
+	exceeded bool
+}
+
+// child は時間制限を引き継いだ別レキサーのインスタンスを作る。
+func (c *rctx) child(lx *rlexer) *rctx {
+	n := newCtx(lx)
+	n.budget = c.budget
+	return n
 }
 
 func newCtx(lx *rlexer) *rctx {
@@ -153,7 +170,7 @@ func (c *rctx) delegate(tag string, text ...string) {
 			c.emit("", v)
 			return
 		}
-		sub = newCtx(lx)
+		sub = c.child(lx)
 		c.subs[tag] = sub
 	}
 	sub.continueLex(v, c.emit)
@@ -164,7 +181,7 @@ func (c *rctx) recurse(text string) {
 	saved := c.runes
 	savedPos := c.pos
 	savedM := c.m
-	sub := newCtx(c.lx)
+	sub := c.child(c.lx)
 	sub.continueLex(text, c.emit)
 	c.runes, c.pos, c.m = saved, savedPos, savedM
 }
@@ -176,7 +193,7 @@ func (c *rctx) delegateFresh(tag, text string) {
 		c.emit("", text)
 		return
 	}
-	newCtx(lx).continueLex(text, c.emit)
+	c.child(lx).continueLex(text, c.emit)
 }
 
 func (lx *rlexer) get(name string) *rstate {
@@ -228,6 +245,16 @@ func (c *rctx) streamTokens(text string) {
 	c.pos = 0
 	nullSteps := 0
 	for c.pos < len(c.runes) {
+		if b := c.budget; b != nil {
+			if b.exceeded {
+				return
+			}
+			b.steps++
+			if b.steps%256 == 0 && time.Now().After(b.deadline) {
+				b.exceeded = true
+				return
+			}
+		}
 		if !c.step(c.state(), &nullSteps) {
 			c.emit("err", string(c.runes[c.pos]))
 			c.pos++
@@ -383,6 +410,7 @@ func rubyRegexp(pattern string) (*regexp2.Regexp, bool) {
 	bol := strings.HasPrefix(p, "^")
 	conv := translateRegexp(p)
 	re := regexp2.MustCompile(`\A(?:`+conv+`)`, opts)
+	re.MatchTimeout = regexTimeout
 	rxCache.Store(pattern, rxEntry{re, bol})
 	return re, bol
 }
@@ -554,9 +582,21 @@ func rougeTokens(text, tag string) ([][2]string, bool) {
 		return nil, false
 	}
 	c := newCtx(lx)
+	c.budget = &lexBudget{deadline: time.Now().Add(lexTimeout)}
 	var out [][2]string
 	c.continueLex(text, func(t rtok, v string) {
 		out = append(out, [2]string{t, v})
 	})
+	if c.budget.exceeded {
+		// 時間切れ: Redmine の例外時と同様に装飾なしのテキストにする
+		return [][2]string{{"", text}}, true
+	}
 	return out, true
 }
+
+const (
+	// lexTimeout は 1 回のハイライト全体の上限時間。
+	lexTimeout = 3 * time.Second
+	// regexTimeout は 1 回の正規表現照合の上限時間。
+	regexTimeout = 500 * time.Millisecond
+)
