@@ -75,12 +75,6 @@ func (h adminH) title(args ...any) html {
 	return rails.ContentTag("h2", html(strings.Join(parts, " &#187; ")), nil)
 }
 
-
-
-
-
-
-
 // progressBar は progress_bar(pct, legend:)（単一値のみ）。
 func (h adminH) progressBar(pct any, opts ...*rails.Hash) html {
 	n, _ := strconv.Atoi(rails.ToS(pct))
@@ -198,7 +192,6 @@ func (h adminH) renderTabs(tabs []Tab, selected ...string) (html, error) {
 type ErrorMessenger interface {
 	FullErrorMessages() []string
 }
-
 
 const calendarIncludedKey = "helper.calendar_headers_tags_included"
 

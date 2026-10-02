@@ -1,0 +1,1382 @@
+status: 200
+content-type: text/html
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Workflow - Redmine</title>
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta content="Redmine" name="description">
+    <meta content="issue,bug,tracker" name="keywords">
+    <meta content="authenticity_token" name="csrf-param">
+    <meta content="{{CSRF}}" name="csrf-token">
+    <link href="/assets/favicon-DIGEST.ico" rel="shortcut icon" type="image/x-icon">
+    <link href="/assets/jquery/jquery-ui-1.13.2-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/tribute-5.1.3-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/application-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/responsive-DIGEST.css" media="all" rel="stylesheet">
+    <script data-turbo-track="reload" type="importmap">{
+  "imports": {
+    "@rails/request.js": "/assets/requestjs-DIGEST.js",
+    "application": "/assets/application-DIGEST.js",
+    "@hotwired/stimulus": "/assets/stimulus.min-DIGEST.js",
+    "@hotwired/stimulus-loading": "/assets/stimulus-loading-DIGEST.js",
+    "turndown": "/assets/turndown-DIGEST.js",
+    "controllers/api_key_copy_controller": "/assets/controllers/api_key_copy_controller-DIGEST.js",
+    "controllers/application": "/assets/controllers/application-DIGEST.js",
+    "controllers": "/assets/controllers/index-DIGEST.js",
+    "controllers/list_autofill_controller": "/assets/controllers/list_autofill_controller-DIGEST.js",
+    "controllers/quote_reply_controller": "/assets/controllers/quote_reply_controller-DIGEST.js",
+    "controllers/sticky_issue_header_controller": "/assets/controllers/sticky_issue_header_controller-DIGEST.js"
+  }
+}</script>
+    <link href="/assets/requestjs-DIGEST.js" rel="modulepreload">
+    <link href="/assets/application-DIGEST.js" rel="modulepreload">
+    <link href="/assets/stimulus.min-DIGEST.js" rel="modulepreload">
+    <link href="/assets/stimulus-loading-DIGEST.js" rel="modulepreload">
+    <link href="/assets/turndown-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/api_key_copy_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/application-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/index-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/list_autofill_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/quote_reply_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/sticky_issue_header_controller-DIGEST.js" rel="modulepreload">
+    <script type="module">import "application"</script>
+    <script src="/assets/jquery-3.7.1-ui-1.13.3-DIGEST.js"></script>
+    <script src="/assets/rails-ujs-DIGEST.js"></script>
+    <script src="/assets/tribute-5.1.3.min-DIGEST.js"></script>
+    <script src="/assets/application-legacy-DIGEST.js"></script>
+    <script src="/assets/responsive-DIGEST.js"></script>
+    <script>//<![CDATA[
+$(window).on('load', function(){ warnLeavingUnsaved('The current page contains unsaved text that will be lost if you leave this page.'); });
+//]]></script>
+    <script>//<![CDATA[
+rm = window.rm || {};rm.I18n = rm.I18n || {};rm.I18n = Object.freeze({buttonCopy: 'Copy'});
+//]]></script>
+    <script>//<![CDATA[
+rm = window.rm || {};rm.AutoComplete = rm.AutoComplete || {};rm.AutoComplete.dataSources = JSON.parse('{"issues":"/issues/auto_complete?q=","wiki_pages":"/wiki_pages/auto_complete?q="}');
+//]]></script>
+  </head>
+  <body class="controller-workflows action-permissions avatars-off" data-text-formatting="common_mark">
+    <div id="wrapper">
+      <div class="flyout-menu js-flyout-menu">
+        <div class="flyout-menu__search">
+          <form accept-charset="UTF-8" action="/search" method="get" name="form-RANDOM">
+            <label class="search-magnifier search-magnifier--flyout" for="flyout-search">
+              <svg aria-hidden="true" class="s18 icon-svg">
+                <use href="/assets/icons-DIGEST.svg#icon--search"></use>
+              </svg>
+              <span class="icon-label hidden">Search</span>
+            </label>
+            <input class="small js-search-input" id="flyout-search" name="q" placeholder="Search" type="text">
+          </form>
+        </div>
+        <div class="flyout-menu__avatar">
+          <a href="/users/1">
+            <span class="avatar-color-1 s40 avatar" role="img">RA</span>
+          </a>
+          <a class="user active" href="/users/1">admin</a>
+        </div>
+        <h3>General</h3>
+        <span class="js-general-menu"></span>
+        <span class="js-sidebar flyout-menu__sidebar"></span>
+        <h3>Profile</h3>
+        <span class="js-profile-menu"></span>
+      </div>
+      <div id="top-menu">
+        <div id="account">
+          <ul>
+            <li>
+              <a class="my-account" href="/my/account">My account</a>
+            </li>
+            <li>
+              <a class="logout" data-method="post" href="/logout" rel="nofollow">Sign out</a>
+            </li>
+          </ul>
+        </div>
+        <div id="loggedas">
+          Logged in as
+          <a class="user active" href="/users/1">admin</a>
+        </div>
+        <ul>
+          <li>
+            <a class="home" href="/">Home</a>
+          </li>
+          <li>
+            <a class="my-page" href="/my/page">My page</a>
+          </li>
+          <li>
+            <a class="projects" href="/projects">Projects</a>
+          </li>
+          <li>
+            <a class="administration" href="/admin">Administration</a>
+          </li>
+          <li>
+            <a class="help" href="https://www.redmine.org/guide" rel="noopener" target="_blank">Help</a>
+          </li>
+        </ul>
+      </div>
+      <div id="header">
+        <a class="mobile-toggle-button js-flyout-menu-toggle-button" href="#"></a>
+        <div id="quick-search">
+          <form accept-charset="UTF-8" action="/search" method="get" name="form-RANDOM">
+            <input autocomplete="off" name="scope" type="hidden">
+            <label for="q">
+              <a accesskey="4" href="/search">Search</a>
+              :
+            </label>
+            <input accesskey="f" class="small" data-auto-complete="true" id="q" name="q" size="20" type="text">
+          </form>
+          <div class="drdn" id="project-jump">
+            <span class="drdn-trigger">Jump to a project...</span>
+            <div class="drdn-content">
+              <div class="quick-search">
+                <svg aria-hidden="true" class="s18 icon-svg">
+                  <use href="/assets/icons-DIGEST.svg#icon--search"></use>
+                </svg>
+                <input autocomplete="off" class="autocomplete" data-automcomplete-url="/projects/autocomplete.js?jump=workflows" id="projects-quick-search" name="q" type="text" value="">
+              </div>
+              <div class="drdn-items projects selection">
+                <strong>Bookmarks</strong>
+                <a href="/projects/ecookbook?jump=workflows" title="eCookbook">
+                  <span style="padding-inline-start:0px;">eCookbook</span>
+                </a>
+                <a href="/projects/private-child?jump=workflows" title="Private child of eCookbook">
+                  <span style="padding-inline-start:16px;">Private child of eCookbook</span>
+                </a>
+                <strong>All Projects</strong>
+                <a href="/projects/private-child?jump=workflows" title="Private child of eCookbook">
+                  <span style="padding-inline-start:0px;">Private child of eCookbook</span>
+                </a>
+              </div>
+              <div class="drdn-items all-projects selection">
+                <a href="/projects?jump=workflows">All Projects</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <h1>Redmine</h1>
+      </div>
+      <div class="collapsiblesidebar" id="main">
+        <script>//<![CDATA[
+$('#main.collapsiblesidebar').collapsibleSidebar();
+//]]></script>
+        <div id="sidebar">
+          <div id="sidebar-switch-panel" style="visibility: hidden;">
+            <a class="" href="#" id="sidebar-switch-button">
+              <svg aria-hidden="true" class="s20 icon-svg icon-rtl">
+                <use href="/assets/icons-DIGEST.svg#icon--chevrons-right"></use>
+              </svg>
+            </a>
+          </div>
+          <script>//<![CDATA[
+$('#sidebar-switch-panel').css('visibility', 'visible');
+//]]></script>
+          <div id="sidebar-wrapper">
+            <h3>Administration</h3>
+            <div id="admin-menu">
+              <ul>
+                <li>
+                  <a class="icon icon-projects projects" href="/admin/projects">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--projects"></use>
+                    </svg>
+                    <span class="icon-label">Projects</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-user users" href="/users">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--user"></use>
+                    </svg>
+                    <span class="icon-label">Users</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-group groups" href="/groups">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--group"></use>
+                    </svg>
+                    <span class="icon-label">Groups</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-roles roles" href="/roles">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--roles"></use>
+                    </svg>
+                    <span class="icon-label">Roles and permissions</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-issue trackers" href="/trackers">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--issue"></use>
+                    </svg>
+                    <span class="icon-label">Trackers</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-issue-edit issue-statuses" href="/issue_statuses">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--issue-edit"></use>
+                    </svg>
+                    <span class="icon-label">Issue statuses</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-workflows workflows selected" href="/workflows/edit">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--workflows"></use>
+                    </svg>
+                    <span class="icon-label">Workflow</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-custom-fields custom-fields" href="/custom_fields">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--custom-fields"></use>
+                    </svg>
+                    <span class="icon-label">Custom fields</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-list enumerations" href="/enumerations">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--list"></use>
+                    </svg>
+                    <span class="icon-label">Enumerations</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-settings settings" href="/settings">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--settings"></use>
+                    </svg>
+                    <span class="icon-label">Settings</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-server-authentication ldap-authentication" href="/auth_sources">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--server-authentication"></use>
+                    </svg>
+                    <span class="icon-label">LDAP authentication</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-applications applications" href="/oauth/applications">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--apps"></use>
+                    </svg>
+                    <span class="icon-label">Applications</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-plugins plugins" href="/admin/plugins">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--plugins"></use>
+                    </svg>
+                    <span class="icon-label">Plugins</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-help info" href="/admin/info">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--help"></use>
+                    </svg>
+                    <span class="icon-label">Information</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div id="content">
+          <div class="flash notice" id="flash_notice">
+            <svg aria-hidden="true" class="s18 icon-svg">
+              <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+            </svg>
+            Successful update.
+          </div>
+          <div class="contextual">
+            <a class="icon icon-copy" href="/workflows/copy">
+              <svg aria-hidden="true" class="s18 icon-svg">
+                <use href="/assets/icons-DIGEST.svg#icon--copy"></use>
+              </svg>
+              <span class="icon-label">Copy</span>
+            </a>
+            <a class="icon icon-summary" href="/workflows">
+              <svg aria-hidden="true" class="s18 icon-svg">
+                <use href="/assets/icons-DIGEST.svg#icon--summary"></use>
+              </svg>
+              <span class="icon-label">Summary</span>
+            </a>
+          </div>
+          <h2>Workflow</h2>
+          <div class="tabs">
+            <ul>
+              <li>
+                <a href="/workflows/edit?role_id%5B%5D=1&amp;tracker_id%5B%5D=1">Status transitions</a>
+              </li>
+              <li>
+                <a class="selected" href="/workflows/permissions?role_id%5B%5D=1&amp;tracker_id%5B%5D=1">Fields permissions</a>
+              </li>
+            </ul>
+          </div>
+          <p>Select a role and a tracker to edit the workflow:</p>
+          <form accept-charset="UTF-8" action="/workflows/permissions" method="get" name="form-RANDOM">
+            <p>
+              <label>
+                Role:
+                <select class="expandable" id="role_id" name="role_id[]">
+                  <option value="all">all</option>
+                  <option selected="selected" value="1">Manager</option>
+                  <option value="2">Developer</option>
+                  <option value="3">Reporter</option>
+                  <option value="4">Non member</option>
+                </select>
+                <span class="toggle-multiselect icon-only">
+                  <svg aria-hidden="true" class="s18 icon-svg">
+                    <use href="/assets/icons-DIGEST.svg#icon--"></use>
+                  </svg>
+                </span>
+              </label>
+              <label>
+                Tracker:
+                <select class="expandable" id="tracker_id" name="tracker_id[]">
+                  <option value="all">all</option>
+                  <option selected="selected" value="1">Bug</option>
+                  <option value="2">Feature request</option>
+                  <option value="3">Support request</option>
+                </select>
+                <span class="toggle-multiselect icon-only">
+                  <svg aria-hidden="true" class="s18 icon-svg">
+                    <use href="/assets/icons-DIGEST.svg#icon--"></use>
+                  </svg>
+                </span>
+              </label>
+              <input data-disable-with="Edit" type="submit" value="Edit">
+              <input autocomplete="off" name="used_statuses_only" type="hidden" value="0">
+              <label>
+                <input checked="checked" id="used_statuses_only" name="used_statuses_only" type="checkbox" value="1">
+                Only display statuses that are used by this tracker
+              </label>
+            </p>
+          </form>
+          <form accept-charset="UTF-8" action="/workflows/update_permissions" id="workflow_form" method="post" name="workflow_form-RANDOM">
+            <input autocomplete="off" name="_method" type="hidden" value="patch">
+            <input autocomplete="off" name="authenticity_token" type="hidden" value="{{CSRF}}">
+            <input autocomplete="off" name="tracker_id[]" type="hidden" value="1">
+            <input autocomplete="off" name="role_id[]" type="hidden" value="1">
+            <input autocomplete="off" name="used_statuses_only" type="hidden">
+            <div class="autoscroll">
+              <table class="list workflows fields_permissions">
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th colspan="6">Issue status</th>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td style="width:12%;">New</td>
+                    <td style="width:12%;">Assigned</td>
+                    <td style="width:12%;">Resolved</td>
+                    <td style="width:12%;">Feedback</td>
+                    <td style="width:12%;">Closed</td>
+                    <td style="width:12%;">Rejected</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="group open">
+                    <td colspan="7">
+                      <span class="expander icon icon-expanded" onclick="toggleRowGroup(this);">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--angle-down"></use>
+                        </svg>
+                      </span>
+                      Standard fields
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="name">
+                      Project
+                      <span class="required">*</span>
+                    </td>
+                    <td class="" title="Project (New)">
+                      <select id="permissions_1_project_id" name="permissions[1][project_id]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Project (Assigned)">
+                      <select id="permissions_2_project_id" name="permissions[2][project_id]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Project (Resolved)">
+                      <select id="permissions_3_project_id" name="permissions[3][project_id]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Project (Feedback)">
+                      <select id="permissions_4_project_id" name="permissions[4][project_id]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Project (Closed)">
+                      <select id="permissions_5_project_id" name="permissions[5][project_id]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Project (Rejected)">
+                      <select id="permissions_6_project_id" name="permissions[6][project_id]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="name">
+                      Tracker
+                      <span class="required">*</span>
+                    </td>
+                    <td class="" title="Tracker (New)">
+                      <select id="permissions_1_tracker_id" name="permissions[1][tracker_id]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Tracker (Assigned)">
+                      <select id="permissions_2_tracker_id" name="permissions[2][tracker_id]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Tracker (Resolved)">
+                      <select id="permissions_3_tracker_id" name="permissions[3][tracker_id]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Tracker (Feedback)">
+                      <select id="permissions_4_tracker_id" name="permissions[4][tracker_id]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Tracker (Closed)">
+                      <select id="permissions_5_tracker_id" name="permissions[5][tracker_id]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Tracker (Rejected)">
+                      <select id="permissions_6_tracker_id" name="permissions[6][tracker_id]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="name">
+                      Subject
+                      <span class="required">*</span>
+                    </td>
+                    <td class="" title="Subject (New)">
+                      <select id="permissions_1_subject" name="permissions[1][subject]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Subject (Assigned)">
+                      <select id="permissions_2_subject" name="permissions[2][subject]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="readonly" title="Subject (Resolved)">
+                      <select id="permissions_3_subject" name="permissions[3][subject]">
+                        <option value=""></option>
+                        <option selected="selected" value="readonly">Read-only</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Subject (Feedback)">
+                      <select id="permissions_4_subject" name="permissions[4][subject]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Subject (Closed)">
+                      <select id="permissions_5_subject" name="permissions[5][subject]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Subject (Rejected)">
+                      <select id="permissions_6_subject" name="permissions[6][subject]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="name">
+                      Private
+                      <span class="required">*</span>
+                    </td>
+                    <td class="" title="Private (New)">
+                      <select id="permissions_1_is_private" name="permissions[1][is_private]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Private (Assigned)">
+                      <select id="permissions_2_is_private" name="permissions[2][is_private]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Private (Resolved)">
+                      <select id="permissions_3_is_private" name="permissions[3][is_private]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Private (Feedback)">
+                      <select id="permissions_4_is_private" name="permissions[4][is_private]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Private (Closed)">
+                      <select id="permissions_5_is_private" name="permissions[5][is_private]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Private (Rejected)">
+                      <select id="permissions_6_is_private" name="permissions[6][is_private]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="name">Assignee</td>
+                    <td class="required" title="Assignee (New)">
+                      <select id="permissions_1_assigned_to_id" name="permissions[1][assigned_to_id]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option selected="selected" value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Assignee (Assigned)">
+                      <select id="permissions_2_assigned_to_id" name="permissions[2][assigned_to_id]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Assignee (Resolved)">
+                      <select id="permissions_3_assigned_to_id" name="permissions[3][assigned_to_id]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Assignee (Feedback)">
+                      <select id="permissions_4_assigned_to_id" name="permissions[4][assigned_to_id]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Assignee (Closed)">
+                      <select id="permissions_5_assigned_to_id" name="permissions[5][assigned_to_id]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Assignee (Rejected)">
+                      <select id="permissions_6_assigned_to_id" name="permissions[6][assigned_to_id]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="name">Category</td>
+                    <td class="" title="Category (New)">
+                      <select id="permissions_1_category_id" name="permissions[1][category_id]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Category (Assigned)">
+                      <select id="permissions_2_category_id" name="permissions[2][category_id]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Category (Resolved)">
+                      <select id="permissions_3_category_id" name="permissions[3][category_id]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Category (Feedback)">
+                      <select id="permissions_4_category_id" name="permissions[4][category_id]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Category (Closed)">
+                      <select id="permissions_5_category_id" name="permissions[5][category_id]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Category (Rejected)">
+                      <select id="permissions_6_category_id" name="permissions[6][category_id]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="name">Target version</td>
+                    <td class="" title="Target version (New)">
+                      <select id="permissions_1_fixed_version_id" name="permissions[1][fixed_version_id]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Target version (Assigned)">
+                      <select id="permissions_2_fixed_version_id" name="permissions[2][fixed_version_id]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Target version (Resolved)">
+                      <select id="permissions_3_fixed_version_id" name="permissions[3][fixed_version_id]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Target version (Feedback)">
+                      <select id="permissions_4_fixed_version_id" name="permissions[4][fixed_version_id]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Target version (Closed)">
+                      <select id="permissions_5_fixed_version_id" name="permissions[5][fixed_version_id]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Target version (Rejected)">
+                      <select id="permissions_6_fixed_version_id" name="permissions[6][fixed_version_id]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="name">Parent task</td>
+                    <td class="" title="Parent task (New)">
+                      <select id="permissions_1_parent_issue_id" name="permissions[1][parent_issue_id]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Parent task (Assigned)">
+                      <select id="permissions_2_parent_issue_id" name="permissions[2][parent_issue_id]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Parent task (Resolved)">
+                      <select id="permissions_3_parent_issue_id" name="permissions[3][parent_issue_id]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Parent task (Feedback)">
+                      <select id="permissions_4_parent_issue_id" name="permissions[4][parent_issue_id]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Parent task (Closed)">
+                      <select id="permissions_5_parent_issue_id" name="permissions[5][parent_issue_id]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Parent task (Rejected)">
+                      <select id="permissions_6_parent_issue_id" name="permissions[6][parent_issue_id]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="name">Start date</td>
+                    <td class="" title="Start date (New)">
+                      <select id="permissions_1_start_date" name="permissions[1][start_date]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Start date (Assigned)">
+                      <select id="permissions_2_start_date" name="permissions[2][start_date]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Start date (Resolved)">
+                      <select id="permissions_3_start_date" name="permissions[3][start_date]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Start date (Feedback)">
+                      <select id="permissions_4_start_date" name="permissions[4][start_date]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Start date (Closed)">
+                      <select id="permissions_5_start_date" name="permissions[5][start_date]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Start date (Rejected)">
+                      <select id="permissions_6_start_date" name="permissions[6][start_date]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="name">Due date</td>
+                    <td class="readonly" title="Due date (New)">
+                      <select id="permissions_1_due_date" name="permissions[1][due_date]">
+                        <option value=""></option>
+                        <option selected="selected" value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Due date (Assigned)">
+                      <select id="permissions_2_due_date" name="permissions[2][due_date]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Due date (Resolved)">
+                      <select id="permissions_3_due_date" name="permissions[3][due_date]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Due date (Feedback)">
+                      <select id="permissions_4_due_date" name="permissions[4][due_date]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Due date (Closed)">
+                      <select id="permissions_5_due_date" name="permissions[5][due_date]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Due date (Rejected)">
+                      <select id="permissions_6_due_date" name="permissions[6][due_date]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="name">Estimated time</td>
+                    <td class="" title="Estimated time (New)">
+                      <select id="permissions_1_estimated_hours" name="permissions[1][estimated_hours]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Estimated time (Assigned)">
+                      <select id="permissions_2_estimated_hours" name="permissions[2][estimated_hours]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Estimated time (Resolved)">
+                      <select id="permissions_3_estimated_hours" name="permissions[3][estimated_hours]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Estimated time (Feedback)">
+                      <select id="permissions_4_estimated_hours" name="permissions[4][estimated_hours]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Estimated time (Closed)">
+                      <select id="permissions_5_estimated_hours" name="permissions[5][estimated_hours]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Estimated time (Rejected)">
+                      <select id="permissions_6_estimated_hours" name="permissions[6][estimated_hours]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="name">% Done</td>
+                    <td class="" title="% Done (New)">
+                      <select id="permissions_1_done_ratio" name="permissions[1][done_ratio]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="% Done (Assigned)">
+                      <select id="permissions_2_done_ratio" name="permissions[2][done_ratio]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="% Done (Resolved)">
+                      <select id="permissions_3_done_ratio" name="permissions[3][done_ratio]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="% Done (Feedback)">
+                      <select id="permissions_4_done_ratio" name="permissions[4][done_ratio]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="% Done (Closed)">
+                      <select id="permissions_5_done_ratio" name="permissions[5][done_ratio]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="% Done (Rejected)">
+                      <select id="permissions_6_done_ratio" name="permissions[6][done_ratio]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="name">Description</td>
+                    <td class="" title="Description (New)">
+                      <select id="permissions_1_description" name="permissions[1][description]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Description (Assigned)">
+                      <select id="permissions_2_description" name="permissions[2][description]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Description (Resolved)">
+                      <select id="permissions_3_description" name="permissions[3][description]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Description (Feedback)">
+                      <select id="permissions_4_description" name="permissions[4][description]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Description (Closed)">
+                      <select id="permissions_5_description" name="permissions[5][description]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Description (Rejected)">
+                      <select id="permissions_6_description" name="permissions[6][description]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="name">
+                      Priority
+                      <span class="required">*</span>
+                    </td>
+                    <td class="" title="Priority (New)">
+                      <select id="permissions_1_priority_id" name="permissions[1][priority_id]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Priority (Assigned)">
+                      <select id="permissions_2_priority_id" name="permissions[2][priority_id]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Priority (Resolved)">
+                      <select id="permissions_3_priority_id" name="permissions[3][priority_id]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Priority (Feedback)">
+                      <select id="permissions_4_priority_id" name="permissions[4][priority_id]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Priority (Closed)">
+                      <select id="permissions_5_priority_id" name="permissions[5][priority_id]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                      </select>
+                      <a class="repeat-value" href="#" title="Copy">»</a>
+                    </td>
+                    <td class="" title="Priority (Rejected)">
+                      <select id="permissions_6_priority_id" name="permissions[6][priority_id]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr class="group open">
+                    <td colspan="7">
+                      <span class="expander icon icon-expanded" onclick="toggleRowGroup(this);">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--angle-down"></use>
+                        </svg>
+                      </span>
+                      Custom fields
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="name">Searchable field</td>
+                    <td class="" title="Searchable field (New)">
+                      <select id="permissions_1_2" name="permissions[1][2]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#">»</a>
+                    </td>
+                    <td class="readonly" title="Searchable field (Assigned)">
+                      <select id="permissions_2_2" name="permissions[2][2]">
+                        <option value=""></option>
+                        <option selected="selected" value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#">»</a>
+                    </td>
+                    <td class="" title="Searchable field (Resolved)">
+                      <select id="permissions_3_2" name="permissions[3][2]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#">»</a>
+                    </td>
+                    <td class="" title="Searchable field (Feedback)">
+                      <select id="permissions_4_2" name="permissions[4][2]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#">»</a>
+                    </td>
+                    <td class="" title="Searchable field (Closed)">
+                      <select id="permissions_5_2" name="permissions[5][2]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#">»</a>
+                    </td>
+                    <td class="" title="Searchable field (Rejected)">
+                      <select id="permissions_6_2" name="permissions[6][2]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="name">Database</td>
+                    <td class="" title="Database (New)">
+                      <select id="permissions_1_1" name="permissions[1][1]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#">»</a>
+                    </td>
+                    <td class="" title="Database (Assigned)">
+                      <select id="permissions_2_1" name="permissions[2][1]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#">»</a>
+                    </td>
+                    <td class="" title="Database (Resolved)">
+                      <select id="permissions_3_1" name="permissions[3][1]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#">»</a>
+                    </td>
+                    <td class="" title="Database (Feedback)">
+                      <select id="permissions_4_1" name="permissions[4][1]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#">»</a>
+                    </td>
+                    <td class="" title="Database (Closed)">
+                      <select id="permissions_5_1" name="permissions[5][1]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#">»</a>
+                    </td>
+                    <td class="" title="Database (Rejected)">
+                      <select id="permissions_6_1" name="permissions[6][1]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="name">Float field</td>
+                    <td class="" title="Float field (New)">
+                      <select id="permissions_1_6" name="permissions[1][6]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#">»</a>
+                    </td>
+                    <td class="" title="Float field (Assigned)">
+                      <select id="permissions_2_6" name="permissions[2][6]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#">»</a>
+                    </td>
+                    <td class="" title="Float field (Resolved)">
+                      <select id="permissions_3_6" name="permissions[3][6]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#">»</a>
+                    </td>
+                    <td class="" title="Float field (Feedback)">
+                      <select id="permissions_4_6" name="permissions[4][6]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#">»</a>
+                    </td>
+                    <td class="" title="Float field (Closed)">
+                      <select id="permissions_5_6" name="permissions[5][6]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#">»</a>
+                    </td>
+                    <td class="" title="Float field (Rejected)">
+                      <select id="permissions_6_6" name="permissions[6][6]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="name">Custom date</td>
+                    <td class="" title="Custom date (New)">
+                      <select id="permissions_1_8" name="permissions[1][8]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#">»</a>
+                    </td>
+                    <td class="" title="Custom date (Assigned)">
+                      <select id="permissions_2_8" name="permissions[2][8]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#">»</a>
+                    </td>
+                    <td class="" title="Custom date (Resolved)">
+                      <select id="permissions_3_8" name="permissions[3][8]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#">»</a>
+                    </td>
+                    <td class="" title="Custom date (Feedback)">
+                      <select id="permissions_4_8" name="permissions[4][8]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#">»</a>
+                    </td>
+                    <td class="" title="Custom date (Closed)">
+                      <select id="permissions_5_8" name="permissions[5][8]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#">»</a>
+                    </td>
+                    <td class="" title="Custom date (Rejected)">
+                      <select id="permissions_6_8" name="permissions[6][8]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="name">Project 1 cf</td>
+                    <td class="" title="Project 1 cf (New)">
+                      <select id="permissions_1_9" name="permissions[1][9]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#">»</a>
+                    </td>
+                    <td class="" title="Project 1 cf (Assigned)">
+                      <select id="permissions_2_9" name="permissions[2][9]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#">»</a>
+                    </td>
+                    <td class="" title="Project 1 cf (Resolved)">
+                      <select id="permissions_3_9" name="permissions[3][9]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#">»</a>
+                    </td>
+                    <td class="" title="Project 1 cf (Feedback)">
+                      <select id="permissions_4_9" name="permissions[4][9]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#">»</a>
+                    </td>
+                    <td class="" title="Project 1 cf (Closed)">
+                      <select id="permissions_5_9" name="permissions[5][9]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                      <a class="repeat-value" href="#">»</a>
+                    </td>
+                    <td class="" title="Project 1 cf (Rejected)">
+                      <select id="permissions_6_9" name="permissions[6][9]">
+                        <option value=""></option>
+                        <option value="readonly">Read-only</option>
+                        <option value="required">Required</option>
+                      </select>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <input data-disable-with="Save" name="commit" type="submit" value="Save">
+          </form>
+          <script>//<![CDATA[
+
+$("a.repeat-value").click(function(e){
+  e.preventDefault();
+  var td = $(this).closest('td');
+  var selected = td.find("select").find(":selected").val();
+  td.nextAll('td').find("select").val(selected);
+});
+
+//]]></script>
+          <div style="clear:both;"></div>
+        </div>
+      </div>
+      <div id="footer">MASKED</div>
+      <div id="ajax-indicator" style="display:none;">
+        <span class="icon">
+          <svg aria-hidden="true" class="s18 icon-svg svg-loader">
+            <use href="/assets/icons-DIGEST.svg#icon--loader"></use>
+          </svg>
+          <span class="icon-label">Loading...</span>
+        </span>
+      </div>
+      <div id="ajax-modal" style="display:none;"></div>
+      <div id="icon-copy-source" style="display: none;">
+        <svg aria-hidden="true" class="s18 icon-svg">
+          <use href="/assets/icons-DIGEST.svg#icon--"></use>
+        </svg>
+      </div>
+    </div>
+  </body>
+</html>

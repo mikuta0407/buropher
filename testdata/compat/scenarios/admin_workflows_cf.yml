@@ -25,6 +25,10 @@ normalize:
   # プロジェクトのツリー（render_project_nested_lists）の兄弟順は docs/schema.md 17. の既知の差分
   strip_selectors:
     - "#custom_field_project_ids ul.projects"
+  # XHR の応答（.js）に埋め込まれた HTML の CSRF トークンとフォーム名の乱数部
+  regex:
+    - {pattern: 'value=\\"[A-Za-z0-9_-]{40,}\\"', replace: 'value=\"{{CSRF}}\"'}
+    - {pattern: '-[0-9a-f]{8}\\"', replace: '-RANDOM\"'}
 
 requests:
   # ---------------------------------------------------------------- 権限
@@ -224,6 +228,10 @@ requests:
     users: [admin]
   - path: /custom_fields/new?type=IssueCustomField&copy=1
     users: [admin]
+  - id: cf_new_js
+    path: /custom_fields/new.js?type=IssueCustomField&custom_field[field_format]=int&custom_field[name]=Foo
+    user: admin
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01"}
   - path: /custom_fields/1/edit
     users: [admin]
   - path: /custom_fields/7/edit
@@ -321,6 +329,18 @@ requests:
   - path: /custom_fields/14/enumerations
     id: custom_fields_14_enumerations__2
     users: [admin]
+  - id: cfe_create_js
+    path: /custom_fields/14/enumerations
+    method: POST
+    user: admin
+    form: {"custom_field_enumeration[name]": "Gamma"}
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01"}
+  - id: cfe_create_js_invalid
+    path: /custom_fields/14/enumerations
+    method: POST
+    user: admin
+    form: {"custom_field_enumeration[name]": ""}
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01"}
   - id: cfe_update_each
     path: /custom_fields/14/enumerations
     method: PUT
@@ -395,6 +415,18 @@ requests:
     users: [admin]
   - path: /workflows/permissions?role_id=2&tracker_id=1
     users: [admin]
+  - id: cf_update_position_js
+    path: /custom_fields/3
+    method: PUT
+    user: admin
+    form: {"custom_field[position]": "1"}
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01"}
+  - id: cf_update_position_js_invalid
+    path: /custom_fields/3
+    method: PUT
+    user: admin
+    form: {"custom_field[name]": ""}
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01"}
   - id: cf_update_position
     path: /custom_fields/2
     method: PUT
