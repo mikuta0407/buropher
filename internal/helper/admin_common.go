@@ -85,6 +85,8 @@ func (h adminH) progressBar(pct any, opts ...*rails.Hash) html {
 	return progressBarHTML(n, legend)
 }
 
+// ProgressBar は progress_bar(pct, :legend => legend)（Go コードから使う）。
+
 func progressBarHTML(pct int, legend string) html {
 	var cells html
 	if pct > 0 {

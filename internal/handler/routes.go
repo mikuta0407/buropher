@@ -42,4 +42,7 @@ func (a *App) Routes(r Router) {
 	a.routesIssues(r)
 	a.routesJournals(r)
 	a.routesVersions(r)
+	a.routesMy(r)
+	a.routesCalendars(r)
+	a.routesReports(r)
 }

@@ -1,0 +1,57 @@
+{{/* issues/_list.html.erb（マイページのチケットブロック用。TODO(issues): issues/_list と共通化する） */}}
+{{$q := .query}}
+
+{{form_tag request_path (hash "data" (hash "cm_url" "/issues/context_menu")) -}}
+{{hidden_field_tag "back_url" $q.BackURL (hash "id" nil)}}
+{{$q.ColumnsHiddenTags}}
+<div class="autoscroll">
+<table class="list issues odd-even {{$q.CSSClasses}}">
+  <thead>
+    <tr>
+      <th class="checkbox hide-when-print">
+        {{check_box_tag "check_all" "" false (hash "class" "toggle-selection" "title" (printf "%s / %s" (l "button_check_all") (l "button_uncheck_all")))}}
+      </th>
+      {{range $col := $q.InlineColumns}}
+        {{$q.ColumnHeader $col}}
+      {{end}}
+      <th class="buttons hide-when-print"></th>
+    </tr>
+  </thead>
+  <tbody>
+  {{range $row := $q.Rows}}
+  {{if $row.HasGroup}}
+    {{reset_cycle}}
+    <tr class="group open">
+      <td colspan="{{$q.Colspan}}">
+        <span class="expander icon icon-expanded" onclick="toggleRowGroup(this);">{{sprite_icon "angle-down"}}</span>
+        <span class="name">{{$row.GroupName}}</span>
+        {{if $row.GroupCount}}
+        <span class="badge badge-count count">{{$row.GroupCount}}</span>
+        {{end}}
+        <span class="totals">{{$row.GroupTotals}}</span>
+        {{link_to_function (printf "%s/%s" (l "button_collapse_all") (l "button_expand_all")) "toggleAllRowGroups(this)" (hash "class" "toggle-all")}}
+      </td>
+    </tr>
+  {{end}}
+  <tr id="issue-{{$row.Issue.ID}}" class="hascontextmenu {{cycle "odd" "even"}} {{$row.CSS}} {{if gt $row.Level 0}}idnt idnt-{{$row.Level}}{{end}}">
+    <td class="checkbox hide-when-print">{{check_box_tag "ids[]" $row.Issue.ID false (hash "id" nil)}}</td>
+    {{range $cell := $row.Cells}}
+    {{$cell}}
+    {{end}}
+    <td class="buttons hide-when-print">{{link_to_context_menu}}</td>
+  </tr>
+  {{range $bc := $row.BlockCells}}
+  <tr class="{{current_cycle}}">
+    <td colspan="{{$q.Colspan}}" class="{{$bc.CSS}} block_column">
+      {{if $q.ShowBlockCaption}}
+        <span>{{$bc.Caption}}</span>
+      {{end}}
+      {{$bc.Text}}
+    </td>
+  </tr>
+  {{end}}
+  {{end}}
+  </tbody>
+</table>
+</div>
+{{end_form}}

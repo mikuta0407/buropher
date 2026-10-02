@@ -1,0 +1,33 @@
+<title>Redmine</title>
+----
+<!-- page specific tags -->
+</head>
+----
+<div id="main" class="nosidebar">
+  
+    <div id="sidebar">
+        <div id="sidebar-wrapper">
+          
+          
+        </div>
+    </div>
+
+    <div id="content">
+        
+        <h2>Confirmation</h2>
+<div class="warning">
+<p><p>Are you sure you want to proceed?
+<br />Your account will be permanently deleted, with no way to reactivate it.</p></p>
+<p>
+  <form action="/my/account/destroy" accept-charset="UTF-8" name="form-RANDOM" method="post"><input type="hidden" name="authenticity_token" value="{{CSRF}}" autocomplete="off" />
+    <label><input type="checkbox" name="confirm" id="confirm" value="1" /> Yes</label>
+    <input type="submit" name="commit" value="Delete my account" data-disable-with="Delete my account" /> |
+    <a href="/my/account">Cancel</a>
+</form></p>
+</div>
+
+        
+        <div style="clear:both;"></div>
+    </div>
+</div>
+<div id="footer">
