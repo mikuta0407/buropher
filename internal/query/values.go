@@ -90,9 +90,16 @@ func (q *Query) allProjects(ctx context.Context) ([]*domain.Project, error) {
 	if err != nil {
 		return nil, err
 	}
-	if err := repository.SortProjectsByTree(ctx, q.env.Q, ps); err != nil {
+	ns, err := q.nestedSet(ctx)
+	if err != nil {
 		return nil, err
 	}
+	slices.SortStableFunc(ps, func(a, b *domain.Project) int {
+		if la, lb := ns[a.ID].Lft, ns[b.ID].Lft; la != lb {
+			return la - lb
+		}
+		return int(a.ID - b.ID)
+	})
 	return ps, nil
 }
 

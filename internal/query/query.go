@@ -650,16 +650,18 @@ WHERE pc.ancestor_id = ? AND pc.depth > 0 AND p.status <> ? ORDER BY p.id`, q.Pr
 	return q.subprojectIDs, nil
 }
 
+// nestedSet はプロジェクトのツリー順 (lft/rgt 相当)。Env.ProjectNestedSet があればそれを使う。
+func (q *Query) nestedSet(ctx context.Context) (map[int64]repository.NestedSetValue, error) {
+	if q.env.ProjectNestedSet != nil {
+		return q.env.ProjectNestedSet(ctx)
+	}
+	return repository.ProjectNestedSet(ctx, q.env.Q)
+}
+
 // projectsLftExpr は projects.lft 相当の SQL 式 (ツリー順の CASE 式)。
 func (q *Query) projectsLftExpr(ctx context.Context, table string) (string, error) {
 	if q.nestedSetExpr == "" {
-		nsFn := q.env.ProjectNestedSet
-		if nsFn == nil {
-			nsFn = func(ctx context.Context) (map[int64]repository.NestedSetValue, error) {
-				return repository.ProjectNestedSet(ctx, q.env.Q)
-			}
-		}
-		ns, err := nsFn(ctx)
+		ns, err := q.nestedSet(ctx)
 		if err != nil {
 			return "", err
 		}
