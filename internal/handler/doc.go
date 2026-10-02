@@ -114,6 +114,26 @@
 //     field_<model>_<attr> / field_<attr> を引く）。フォームのモデルが ValidationErrors() を実装すれば error_messages_for に渡せる。
 //   - before_action で取得したモデル（@user など）は c.setValue(key, v) / c.value(key) で持たせる（req_values.go）。
 //
+// # 規約: 添付ファイル
+//
+// 添付ファイル（Attachment / acts_as_attachable）は internal/attachments の Store（a.AttachmentStore。
+// 保存先は config の storage.attachments_path、ディスク上の配置は Redmine と同一）を使う。行の SQL は
+// internal/repository/attachments.go、型は domain.Attachment（Token / IsImage / IsPDF ... は Attachment のメソッド）。
+//
+//   - 新規作成（params[:attachments] の file）とトークン（POST /uploads で作った未紐付けの添付）の両方を
+//     受ける save_attachments は a.AttachmentStore.SaveAttachments(ctx, tx, c.Params().Get("attachments") の値, c.User, c.Loc)、
+//     コンテナの保存と同じトランザクションで AttachSaved(ctx, tx, res, domain.AttachmentContainerWikiPage, id)。
+//     保存済みのコンテナへの Attachment.attach_files は AttachFiles(ctx, q, kind, id, attachments, c.User, c.Loc)。
+//   - res.FailedCount > 0（見つからないトークン）はコンテナの検証エラー res.FailedMessage(c.Loc)
+//     （warn_about_failed_attachments）。render_attachment_warning_if_needed(obj) は c.AttachFilesWarning(res)。
+//   - トランザクションがロールバックされたら a.AttachmentStore.DeleteFromDisk(ctx, a.DB, res.Created...)。
+//   - 一覧は repository.ContainerAttachmentList(ctx, q, kind, id)（created_on, id 順・author 読み込み済み）。
+//     コンテナ削除時は tx 内で repository.DeleteContainerAttachments(ctx, tx, kind, ids) し、コミット後に
+//     a.AttachmentStore.DeleteFromDisk(ctx, a.DB, deleted...)（after_commit :delete_from_disk）。
+//   - 可視性（Attachment#visible?）は c.AttachmentVisible(att)。ダウンロードの Content-Disposition は
+//     httpx.ContentDisposition（send_file / send_data と同じ書式）。
+//   - 添付フォーム（attachments/_form）の JS は POST /uploads.js（attachments#upload）を呼ぶ。
+//
 // # 規約: 互換テスト
 //
 //   - 画面のテストは internal/server のテストで、internal/testfixtures で Redmine の公式フィクスチャを投入した DB に

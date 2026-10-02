@@ -26,6 +26,7 @@ import (
 	"github.com/go-chi/chi/v5"
 
 	"github.com/mikuta0407/buropher/internal/assets"
+	"github.com/mikuta0407/buropher/internal/attachments"
 	"github.com/mikuta0407/buropher/internal/config"
 	"github.com/mikuta0407/buropher/internal/db"
 	"github.com/mikuta0407/buropher/internal/handler"
@@ -122,6 +123,7 @@ func New(cfg *config.Config, d *db.DB, opts ...Options) (*Server, error) {
 		DB: d, Settings: st, Bundle: i18n.Default(), Assets: ap, Views: views, Helpers: helpers,
 		Errors: errs, Logger: o.Logger, Now: o.Now, FormNameSuffix: o.FormNameSuffix,
 	}
+	app.AttachmentStore = &attachments.Store{Root: cfg.Storage.AttachmentsPath, Settings: st, Now: o.Now, Logger: o.Logger}
 	errs.Page = app.ErrorPage()
 	if b, err := fs.ReadFile(web.Public(), "500.html"); err == nil {
 		handler.InternalErrorPage = b
