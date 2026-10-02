@@ -394,7 +394,9 @@ func (l *issueLookup) doneRatio(r *query.IssueRow) int {
 func (l *issueLookup) renderer() *redmine.Renderer { return l.a.Helpers.WikiRenderer(l.page) }
 
 // cssClasses は issue.css_classes。
-func (l *issueLookup) cssClasses(r *query.IssueRow) string { return l.renderer().IssueCSSClasses(l.refIssue(r)) }
+func (l *issueLookup) cssClasses(r *query.IssueRow) string {
+	return l.renderer().IssueCSSClasses(l.refIssue(r))
+}
 
 // linkToIssue は link_to_issue(issue, options)。
 func (l *issueLookup) linkToIssue(r *query.IssueRow, o redmine.LinkToIssueOptions) template.HTML {
