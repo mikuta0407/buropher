@@ -98,6 +98,9 @@ type Page struct {
 
 	// PreviewAttachments は @attachments（プレビューで thumbnail マクロが参照する未保存の添付）。
 	PreviewAttachments []*redmine.Attachment
+	// BaseURL は完全 URL（only_path: false）の基点の上書き（メールの描画で Mailer.default_url_options を使う）。
+	// 空ならリクエストの base_url。
+	BaseURL string
 
 	accessKeys   []string
 	wikiRenderer *redmine.Renderer

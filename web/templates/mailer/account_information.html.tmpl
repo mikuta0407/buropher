@@ -1,0 +1,13 @@
+{{if .AuthSource}}
+<p>{{l "mail_body_account_information_external" .AuthSource}}</p>
+{{else}}
+<p>{{l "mail_body_account_information"}}:</p>
+<ul>
+    <li>{{l "field_login"}}: {{.Login}}</li>
+    {{if .Password}}
+    <li>{{l "field_password"}}: {{.Password}}</li>
+    {{end}}
+</ul>
+{{end}}
+
+<p>{{l "label_login"}}: {{link_to .LoginURL .LoginURL}}</p>

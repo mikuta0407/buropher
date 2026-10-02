@@ -44,7 +44,9 @@ func (d *Deps) WikiRenderer(p *Page) *redmine.Renderer {
 		loc := p.Loc.Location
 		r.Today = func() time.Time { return p.now().In(loc) }
 	}
-	if p.Request != nil {
+	if p.BaseURL != "" {
+		r.BaseURL = p.BaseURL
+	} else if p.Request != nil {
 		r.BaseURL = httpx.RequestBaseURL(p.Request)
 	}
 	if p.DB != nil {

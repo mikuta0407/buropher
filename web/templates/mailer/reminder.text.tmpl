@@ -1,0 +1,8 @@
+{{.BodyText}}:
+
+{{range .Items}}
+* {{.Text}}
+{{end}}
+
+{{l "label_issue_view_all"}} ({{.OpenCount}})
+{{.OpenIssuesURL}}

@@ -1,0 +1,12 @@
+<h1>{{.ProjectName}} - {{.BoardName}}: {{link_to .Subject .MessageURL}}</h1>
+<em>{{.AuthorName}}</em>
+
+{{.ContentHTML}}
+
+{{if .Attachments}}
+<fieldset class="attachments"><legend>{{l "label_attachment_plural"}}</legend>
+{{range .Attachments}}
+  {{.Link}} ({{.Size}})<br />
+{{end}}
+</fieldset>
+{{end}}

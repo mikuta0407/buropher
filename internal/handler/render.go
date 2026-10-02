@@ -31,6 +31,7 @@ func (c *Req) Page() *helper.Page {
 		Now:                a.now,
 		Logger:             a.logger(),
 		PreviewAttachments: c.Attachments,
+		BaseURL:            c.MailBaseURL,
 	}
 	if c.User != nil {
 		p.Pref = c.Pref()

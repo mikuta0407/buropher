@@ -149,6 +149,8 @@ type Req struct {
 	QuestionSet bool
 	// Attachments は @attachments（find_attachments が読み込む未紐付けの添付。プレビューで使う）。
 	Attachments []*repository.RefAttachment
+	// MailBaseURL はメール描画時の完全 URL の基点（Mailer.default_url_options。通常のリクエストでは空）。
+	MailBaseURL string
 
 	cfg    *actionConfig
 	authz  *authz.Authorizer

@@ -1,0 +1,14 @@
+<p>{{l "mail_body_settings_updated"}}</p>
+
+<ul>
+{{range .Changes}}
+  <li>{{.}}</li>
+{{end}}
+</ul>
+
+{{link_to .URL .URL}}
+
+<p>{{l "field_user"}}: <strong>{{.SenderLogin}}</strong><br/>
+{{l "field_remote_ip"}}: <strong>{{.RemoteIP}}</strong><br/>
+{{l "label_date"}}: <strong>{{.Date}}</strong></p>
+
