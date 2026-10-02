@@ -46,7 +46,9 @@ func (projectKind) defaultColumnNames(q *Query) []string {
 
 func (projectKind) defaultTotalableNames(*Query) []string { return nil }
 
-func (projectKind) columnFor(field string) (string, string) { return "projects", renameTimestamp(field) }
+func (projectKind) columnFor(field string) (string, string) {
+	return "projects", renameTimestamp(field)
+}
 
 func (projectKind) initializeAvailableFilters(ctx context.Context, q *Query) error {
 	q.addAvailableFilter("status", filterOpt{Type: "list", ValuesFunc: q.projectStatusesValues})
@@ -98,13 +100,13 @@ func (k projectKind) baseScope(ctx context.Context, q *Query) (string, frag, err
 		return "", frag{}, err
 	}
 	if k.admin {
-		return "projects", st.wrap("(", ")"), nil
+		return "projects", paren(st), nil
 	}
 	vis, err := q.env.Auth.VisibleCondition(ctx, authz.ConditionOptions{})
 	if err != nil {
 		return "", frag{}, err
 	}
-	return "projects", joinFrags(" AND ", raw("("+vis+")"), st.wrap("(", ")")), nil
+	return "projects", joinFrags(" AND ", raw("("+vis+")"), paren(st)), nil
 }
 
 func (projectKind) joinsForOrderStatement(ctx context.Context, q *Query, order string) ([]string, error) {
@@ -228,7 +230,7 @@ func (userKind) baseScope(ctx context.Context, q *Query) (string, frag, error) {
 	}
 	from := "principals users INNER JOIN user_accounts ON user_accounts.principal_id = users.id" +
 		" LEFT OUTER JOIN email_addresses ON email_addresses.user_id = users.id AND email_addresses.is_default = " + q.env.boolLit(true)
-	return from, joinFrags(" AND ", raw("users.kind IN ('user', 'anonymous_user') AND users.status <> 0"), st.wrap("(", ")")), nil
+	return from, joinFrags(" AND ", raw("users.kind IN ('user', 'anonymous_user') AND users.status <> 0"), paren(st)), nil
 }
 
 func (userKind) joinsForOrderStatement(ctx context.Context, q *Query, order string) ([]string, error) {

@@ -26,6 +26,14 @@ func (f frag) wrap(pre, post string) frag {
 	return frag{SQL: pre + f.SQL + post, Args: f.Args}
 }
 
+// paren は空でなければ括弧で囲む。
+func paren(f frag) frag {
+	if f.empty() {
+		return frag{}
+	}
+	return f.wrap("(", ")")
+}
+
 // joinFrags は空でない断片を sep で連結する。
 func joinFrags(sep string, fs ...frag) frag {
 	var b strings.Builder

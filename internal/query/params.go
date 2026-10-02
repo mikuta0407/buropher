@@ -50,13 +50,13 @@ type Params struct {
 
 // Defaults は build_from_params の defaults / params[:query] のハッシュ。
 type Defaults struct {
-	GroupBy           *string
-	ColumnNames       []string
-	HasColumnNames    bool
-	TotalableNames    []string
-	HasTotalableNames bool
-	SortCriteria      SortCriteria
-	DisplayType       string
+	GroupBy             *string
+	ColumnNames         []string
+	HasColumnNames      bool
+	TotalableNames      []string
+	HasTotalableNames   bool
+	SortCriteria        SortCriteria
+	DisplayType         string
 	DrawRelations       string
 	DrawProgressLine    string
 	DrawSelectedColumns string

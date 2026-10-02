@@ -144,7 +144,9 @@ func (q *Query) IDs(ctx context.Context, opts ListOptions) ([]int64, error) {
 }
 
 // IssueIDs は IssueQuery#issue_ids。
-func (q *Query) IssueIDs(ctx context.Context, opts ListOptions) ([]int64, error) { return q.IDs(ctx, opts) }
+func (q *Query) IssueIDs(ctx context.Context, opts ListOptions) ([]int64, error) {
+	return q.IDs(ctx, opts)
+}
 
 // ---------------------------------------------------------------- グループ
 
@@ -334,7 +336,8 @@ func (q *Query) totalSpec(ctx context.Context, c *Column) (agg string, joins []s
 	if c.CustomField != nil {
 		// Numeric#total_for_scope
 		cf := c.CustomField
-		joins = []string{"INNER JOIN custom_values ON custom_values.customized_kind = '" + cf.OwnerKind.CustomizedKind() + "'" +
+		// scope.joins(:custom_values): 関連 CF 列でもクエリ対象自身のカスタム値を結合する (Redmine と同じ)
+		joins = []string{"INNER JOIN custom_values ON custom_values.customized_kind = '" + q.impl.customizedKind() + "'" +
 			" AND custom_values.customized_id = " + q.impl.queriedTable() + ".id"}
 		where = "custom_values.custom_field_id = " + itoa(cf.ID) + " AND custom_values.value <> ''"
 		agg = "SUM(CAST(custom_values.value AS decimal(30,3)))"
@@ -518,29 +521,29 @@ type IssueRow struct {
 }
 
 type issueRowDB struct {
-	ID             int64         `db:"id"`
-	ProjectID      int64         `db:"project_id"`
-	TrackerID      int64         `db:"tracker_id"`
-	StatusID       int64         `db:"status_id"`
-	PriorityID     int64         `db:"priority_id"`
-	AuthorID       int64         `db:"author_id"`
-	AssignedToID   *int64        `db:"assigned_to_id"`
-	CategoryID     *int64        `db:"category_id"`
-	FixedVersionID *int64        `db:"fixed_version_id"`
-	ParentID       *int64        `db:"parent_id"`
-	RootID         int64         `db:"root_id"`
-	HierPath       string        `db:"hier_path"`
-	Subject        string        `db:"subject"`
-	Description    *string       `db:"description"`
-	StartDate      db.NullDate   `db:"start_date"`
-	DueDate        db.NullDate   `db:"due_date"`
-	DoneRatio      int           `db:"done_ratio"`
-	EstimatedHours *float64      `db:"estimated_hours"`
-	IsPrivate      bool          `db:"is_private"`
-	LockVersion    int           `db:"lock_version"`
-	CreatedAt      db.Time       `db:"created_at"`
-	UpdatedAt      db.Time       `db:"updated_at"`
-	ClosedAt       db.NullTime   `db:"closed_at"`
+	ID             int64       `db:"id"`
+	ProjectID      int64       `db:"project_id"`
+	TrackerID      int64       `db:"tracker_id"`
+	StatusID       int64       `db:"status_id"`
+	PriorityID     int64       `db:"priority_id"`
+	AuthorID       int64       `db:"author_id"`
+	AssignedToID   *int64      `db:"assigned_to_id"`
+	CategoryID     *int64      `db:"category_id"`
+	FixedVersionID *int64      `db:"fixed_version_id"`
+	ParentID       *int64      `db:"parent_id"`
+	RootID         int64       `db:"root_id"`
+	HierPath       string      `db:"hier_path"`
+	Subject        string      `db:"subject"`
+	Description    *string     `db:"description"`
+	StartDate      db.NullDate `db:"start_date"`
+	DueDate        db.NullDate `db:"due_date"`
+	DoneRatio      int         `db:"done_ratio"`
+	EstimatedHours *float64    `db:"estimated_hours"`
+	IsPrivate      bool        `db:"is_private"`
+	LockVersion    int         `db:"lock_version"`
+	CreatedAt      db.Time     `db:"created_at"`
+	UpdatedAt      db.Time     `db:"updated_at"`
+	ClosedAt       db.NullTime `db:"closed_at"`
 }
 
 func dateOrNil(d db.NullDate) *time.Time {

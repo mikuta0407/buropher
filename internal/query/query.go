@@ -496,7 +496,10 @@ func (q *Query) DrawProgressLine() bool { v, _ := q.option("draw_progress_line")
 func (q *Query) SetDrawProgressLine(arg string) { q.setFlag("draw_progress_line", arg) }
 
 // DrawSelectedColumns は draw_selected_columns ('1' なら true)。
-func (q *Query) DrawSelectedColumns() bool { v, _ := q.option("draw_selected_columns"); return v == "1" }
+func (q *Query) DrawSelectedColumns() bool {
+	v, _ := q.option("draw_selected_columns")
+	return v == "1"
+}
 
 // SetDrawSelectedColumns は draw_selected_columns=。
 func (q *Query) SetDrawSelectedColumns(arg string) { q.setFlag("draw_selected_columns", arg) }
@@ -650,7 +653,13 @@ WHERE pc.ancestor_id = ? AND pc.depth > 0 AND p.status <> ? ORDER BY p.id`, q.Pr
 // projectsLftExpr は projects.lft 相当の SQL 式 (ツリー順の CASE 式)。
 func (q *Query) projectsLftExpr(ctx context.Context, table string) (string, error) {
 	if q.nestedSetExpr == "" {
-		ns, err := repository.ProjectNestedSet(ctx, q.env.Q)
+		nsFn := q.env.ProjectNestedSet
+		if nsFn == nil {
+			nsFn = func(ctx context.Context) (map[int64]repository.NestedSetValue, error) {
+				return repository.ProjectNestedSet(ctx, q.env.Q)
+			}
+		}
+		ns, err := nsFn(ctx)
 		if err != nil {
 			return "", err
 		}

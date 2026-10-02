@@ -10,6 +10,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/db"
 	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/i18n"
+	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/settings"
 )
 
@@ -30,6 +31,9 @@ type Env struct {
 	TimeZone *time.Location
 	// ServerLocation は Time.local のタイムゾーン (サーバのローカル時刻)。nil なら time.Local。
 	ServerLocation *time.Location
+
+	// ProjectNestedSet はプロジェクトのツリー順 (lft) の計算方法。nil なら repository.ProjectNestedSet。
+	ProjectNestedSet func(ctx context.Context) (map[int64]repository.NestedSetValue, error)
 
 	bookmarks       []int64
 	bookmarksLoaded bool

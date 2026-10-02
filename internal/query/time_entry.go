@@ -199,7 +199,7 @@ func (timeEntryKind) baseScope(ctx context.Context, q *Query) (string, frag, err
 		" INNER JOIN principals users ON users.id = time_entries.user_id" +
 		" LEFT OUTER JOIN time_entry_activities ON time_entry_activities.id = time_entries.activity_id" +
 		" LEFT OUTER JOIN issues ON issues.id = time_entries.issue_id AND (" + ivis + ")"
-	return from, joinFrags(" AND ", raw("("+vis+")"), st.wrap("(", ")")), nil
+	return from, joinFrags(" AND ", raw("("+vis+")"), paren(st)), nil
 }
 
 func (timeEntryKind) joinsForOrderStatement(ctx context.Context, q *Query, order string) ([]string, error) {

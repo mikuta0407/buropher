@@ -59,10 +59,12 @@ func (issueKind) defaultFilters() *Filters {
 	return f
 }
 
-func (issueKind) defaultSortCriteria() SortCriteria       { return SortCriteria{{"id", "desc"}} }
-func (issueKind) availableDisplayTypes(*Query) []string   { return []string{"list"} }
-func (issueKind) defaultDisplayType(q *Query) string      { return "list" }
-func (issueKind) defaultTotalableNames(q *Query) []string { return q.env.settingStrings("issue_list_default_totals") }
+func (issueKind) defaultSortCriteria() SortCriteria     { return SortCriteria{{"id", "desc"}} }
+func (issueKind) availableDisplayTypes(*Query) []string { return []string{"list"} }
+func (issueKind) defaultDisplayType(q *Query) string    { return "list" }
+func (issueKind) defaultTotalableNames(q *Query) []string {
+	return q.env.settingStrings("issue_list_default_totals")
+}
 
 func (issueKind) defaultColumnNames(q *Query) []string {
 	cols := q.env.settingStrings("issue_list_default_columns")
@@ -296,7 +298,7 @@ func (issueKind) baseScope(ctx context.Context, q *Query) (string, frag, error) 
 		return "", frag{}, err
 	}
 	from := "issues INNER JOIN projects ON projects.id = issues.project_id INNER JOIN issue_statuses ON issue_statuses.id = issues.status_id"
-	return from, joinFrags(" AND ", raw("("+vis+")"), st.wrap("(", ")")), nil
+	return from, joinFrags(" AND ", raw("("+vis+")"), paren(st)), nil
 }
 
 func (issueKind) joinsForOrderStatement(ctx context.Context, q *Query, order string) ([]string, error) {
