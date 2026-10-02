@@ -68,21 +68,23 @@ func (a *App) routesRepositories(r Router) {
 		AcceptAPIAuth(), findPR, findCS, auth)
 	a.Handle(r, http.MethodGet, base+"/revisions", rc, "revisions", a.RepositoriesRevisions, AcceptAtomAuth(), findPR, auth)
 	revCheck := Before(checkRevConstraint)
+	// :format => 'html' のルート（url_for が format を引き継ぐ: ロードマップのメニューが versions.html になる）
+	rf := r.With(routeFormat("html"))
 	for _, action := range []string{"browse", "show", "entry", "raw", "annotate"} {
 		fn := a.repositoryAction(action)
-		a.Handle(r, http.MethodGet, base+"/revisions/{rev}/"+action, rc, action, fn, revCheck, findPR, auth)
-		a.Handle(r, http.MethodGet, base+"/revisions/{rev}/"+action+"/*", rc, action, fn, revCheck, findPR, auth)
+		a.Handle(rf, http.MethodGet, base+"/revisions/{rev}/"+action, rc, action, fn, revCheck, findPR, auth)
+		a.Handle(rf, http.MethodGet, base+"/revisions/{rev}/"+action+"/*", rc, action, fn, revCheck, findPR, auth)
 	}
 	for _, action := range []string{"browse", "entry", "raw", "changes", "annotate"} {
 		fn := a.repositoryAction(action)
-		a.Handle(r, http.MethodGet, base+"/"+action, rc, action, fn, findPR, auth)
-		a.Handle(r, http.MethodGet, base+"/"+action+"/*", rc, action, fn, findPR, auth)
+		a.Handle(rf, http.MethodGet, base+"/"+action, rc, action, fn, findPR, auth)
+		a.Handle(rf, http.MethodGet, base+"/"+action+"/*", rc, action, fn, findPR, auth)
 	}
-	a.Handle(r, http.MethodGet, base+"/revisions/{rev}/diff", rc, "diff", a.RepositoriesDiff, revCheck, findPR, auth)
-	a.Handle(r, http.MethodGet, base+"/revisions/{rev}/diff/*", rc, "diff", a.RepositoriesDiff, revCheck, findPR, auth)
-	a.Handle(r, http.MethodGet, base+"/diff", rc, "diff", a.RepositoriesDiff, findPR, auth)
-	a.Handle(r, http.MethodGet, base+"/diff/*", rc, "diff", a.RepositoriesDiff, findPR, auth)
-	a.Handle(r, http.MethodGet, base+"/show/*", rc, "show", a.RepositoriesShow, findPR, auth)
+	a.Handle(rf, http.MethodGet, base+"/revisions/{rev}/diff", rc, "diff", a.RepositoriesDiff, revCheck, findPR, auth)
+	a.Handle(rf, http.MethodGet, base+"/revisions/{rev}/diff/*", rc, "diff", a.RepositoriesDiff, revCheck, findPR, auth)
+	a.Handle(rf, http.MethodGet, base+"/diff", rc, "diff", a.RepositoriesDiff, findPR, auth)
+	a.Handle(rf, http.MethodGet, base+"/diff/*", rc, "diff", a.RepositoriesDiff, findPR, auth)
+	a.Handle(rf, http.MethodGet, base+"/show/*", rc, "show", a.RepositoriesShow, findPR, auth)
 	a.Handle(r, http.MethodGet, base, rc, "show", a.RepositoriesShow, findPR, auth)
 	a.Handle(r, http.MethodGet, "/projects/{id}/repository", rc, "show", a.RepositoriesShow, findPR, auth)
 }
@@ -308,8 +310,22 @@ func repositoryErrors() *validation.Errors {
 // ValidationErrors は error_messages_for のエラー。
 func (f *repositoryForm) ValidationErrors() *validation.Errors { return f.errors }
 
+// ErrorsOn は errors[attr]（ラベルの class="error"）。
+func (f *repositoryForm) ErrorsOn(attr string) []string {
+	var out []string
+	for _, e := range f.errors.List() {
+		if e.Attr == attr {
+			out = append(out, e.Key+e.Message)
+		}
+	}
+	return out
+}
+
 // NewRecord は new_record?。
 func (f *repositoryForm) NewRecord() bool { return f.newRecord }
+
+// Persisted は persisted?（フォームの class / method の判定）。
+func (f *repositoryForm) Persisted() bool { return !f.newRecord }
 
 // IdentifierFrozen は identifier_frozen?（保存済みで identifier が空でなく、identifier のエラーが無い）。
 func (f *repositoryForm) IdentifierFrozen() bool {
@@ -336,6 +352,8 @@ func (f *repositoryForm) Send(name string) (any, bool) {
 		return f.Login, true
 	case "report_last_commit":
 		return f.ReportLastCommit(), true
+	case "persisted?":
+		return !f.newRecord, true
 	}
 	return nil, false
 }

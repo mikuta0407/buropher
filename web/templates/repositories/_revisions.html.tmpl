@@ -1,5 +1,5 @@
 {{$a := assigns}}{{$p := current_project}}{{$repo := $a.Repository}}{{$v := .}}
-{{form_tag (repo_url "diff" $p $repo (to_path_param .Path) "") (hash "method" "get")}}
+{{form_tag .DiffURL (hash "method" "get")}}
 {{if .ShowDiff}}
 <p>
   {{submit_tag (l "label_view_diff") (hash "name" nil)}}

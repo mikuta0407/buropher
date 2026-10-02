@@ -267,6 +267,8 @@ func (a *App) revisionsData(c *Req, s *repoState, revisions []*domain.Changeset,
 	data := map[string]any{
 		"Path": path, "Revisions": rows, "ShowDiff": showDiff, "ShowGraph": showGraph && len(revisions) > 0,
 		"Count": len(revisions),
+		// form_tag の url_for は :rev を指定しないため、ルートの :rev を引き継ぐ（Rails の recall）
+		"DiffURL": helperRepositoryURL(c.Project, s.repo, "diff", helper.ToPathParam(path), chi.URLParam(c.R, "rev")),
 	}
 	if showGraph && len(revisions) > 0 {
 		js, space, err := a.indexCommits(c, s, revisions)

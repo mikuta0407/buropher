@@ -92,7 +92,7 @@ $(document).ready(function(){
   });
 });
 {{end}}
-{{javascript_tag (capture "repositories/stats#js")}}
+{{javascript_tag (printf "\n%s" (capture "repositories/stats#js"))}}
 
 
 <p>{{link_to (l "button_back") .BackURL}}</p>

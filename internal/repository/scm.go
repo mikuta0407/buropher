@@ -495,11 +495,13 @@ func RepositoryCommitters(ctx context.Context, q db.Queryer, repoID int64) ([]Co
 	return rows, err
 }
 
-// RepositoryCommittersByFirstAppearance は repository.committers（SQLite の DISTINCT と同じく最初に現れた順）。
+// RepositoryCommittersByFirstAppearance は repository.committers（distinct.pluck(:committer, :user_id)）。
+// Redmine（SQLite）の DISTINCT は (repository_id, scmid) の索引を走査した順に最初に現れた組を返すため、
+// scmid の昇順で最初に現れた順に並べる。
 func RepositoryCommittersByFirstAppearance(ctx context.Context, q db.Queryer, repoID int64) ([]Committer, error) {
 	var rows []Committer
 	err := q.Select(ctx, &rows, `SELECT COALESCE(committer, '') AS committer, user_id FROM changesets WHERE repository_id = ?
-GROUP BY committer, user_id ORDER BY MIN(id)`, repoID)
+GROUP BY committer, user_id ORDER BY MIN(COALESCE(scmid, '')), MIN(id)`, repoID)
 	return rows, err
 }
 

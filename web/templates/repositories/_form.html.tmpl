@@ -1,4 +1,6 @@
-{{$a := assigns}}{{$f := .f}}{{$repo := $a.Repository}}
+{{$a := assigns}}
+{{$f := .f}}
+{{$repo := $a.Repository}}
 {{error_messages_for $repo}}
 
 <div class="box tabular">
@@ -20,9 +22,7 @@
 </p>
 
 {{$buttonDisabled := not $a.SCMAvailable}}
-<p>{{$f.TextField "url" (hash "label" (l "field_path_to_repository") "size" 60 "required" true "disabled" (not $repo.NewRecord))}}<em class="info">{{l "text_git_repository_note"}}</em></p>
-<p>{{$f.Select "path_encoding" (encoding_choices) (hash "label" (l "field_scm_path_encoding"))}}<em class="info">{{l "text_scm_path_encoding_note"}}</em></p>
-<p>{{$f.CheckBox "report_last_commit" (hash "label" (l "label_git_report_last_commit"))}}</p>
+  <p>{{$f.TextField "url" (hash "label" (l "field_path_to_repository") "size" 60 "required" true "disabled" (not $repo.NewRecord))}}<em class="info">{{l "text_git_repository_note"}}</em></p><p>{{$f.Select "path_encoding" (encoding_choices) (hash "label" (l "field_scm_path_encoding"))}}<em class="info">{{l "text_scm_path_encoding_note"}}</em></p><p>{{$f.CheckBox "report_last_commit" (hash "label" (l "label_git_report_last_commit"))}}</p>
 </div>
 
 <p>
