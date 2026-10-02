@@ -76,6 +76,9 @@ type Page struct {
 	Controller, Action string
 	// MainMenu は controller.class.main_menu。
 	MainMenu bool
+	// NoCurrentMenu は current_menu(project) が（@project が無いとき）nil を返す
+	// （ImportsController#current_menu の admin レイアウト）。
+	NoCurrentMenu bool
 	// MenuItem は current_menu_item の上書き（空なら menu.CurrentMenuItem）。
 	MenuItem string
 	// DefaultSearchScope は controller.default_search_scope（空なら nil）。

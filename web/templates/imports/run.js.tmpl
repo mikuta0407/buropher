@@ -1,0 +1,11 @@
+$('#import-progress').progressbar({value: {{.Current}}});
+$('#progress-label').text("{{.Current}} / {{.Total}}");
+
+{{if .Finished}}
+window.location.href='{{print "/imports/" .Filename}}';
+{{else}}
+$.ajax({
+  url: '{{print "/imports/" .Filename "/run.js"}}',
+  type: 'post'
+});
+{{end}}

@@ -374,3 +374,49 @@ func replaceIn(m *mail.Message, old, new string) {
 	m.HTML = strings.ReplaceAll(m.HTML, old, new)
 	m.Subject = strings.ReplaceAll(m.Subject, old, new)
 }
+
+// TestNotifyWiringImports は CSV インポートの通知（チケットは settings['notifications'] に従う、
+// ユーザーは notifications なら Mailer.deliver_account_information）を確かめる。
+func TestNotifyWiringImports(t *testing.T) {
+	gs := loadMailGoldens(t)
+	w := newWiringEnv(t)
+	jsmith := login(t, w.ts, "jsmith", "jsmith")
+	_, ids := runImport(t, jsmith, w.ts, w.d, "IssueImport", "import_issues.csv", "issues", utf8Semicolon, issueImportMapping)
+	w.run()
+	if len(ids) != 3 || len(w.sender.Messages()) != 0 {
+		t.Fatalf("import without notifications: issues=%d mails=%d", len(ids), len(w.sender.Messages()))
+	}
+	_, ids = runImport(t, jsmith, w.ts, w.d, "IssueImport", "import_issues.csv", "issues",
+		merge(utf8Semicolon, map[string]string{"notifications": "1"}), issueImportMapping)
+	w.run()
+	adds := 0
+	for _, m := range w.sender.Messages() {
+		if strings.HasPrefix(m.MessageID, "redmine.issue-") {
+			adds++
+		}
+	}
+	if len(ids) != 3 || adds == 0 {
+		t.Fatalf("import with notifications: issues=%d issue_add mails=%d", len(ids), adds)
+	}
+	w.sender.Clear()
+
+	admin := login(t, w.ts, "admin", "admin")
+	mapping := map[string]string{"login": "1", "firstname": "2", "lastname": "3", "mail": "4", "language": "5", "admin": "6",
+		"password": "8", "must_change_passwd": "9", "status": "10", "cf_4": "11"}
+	_, uids := runImport(t, admin, w.ts, w.d, "UserImport", "import_users.csv", "principals",
+		merge(utf8Semicolon, map[string]string{"notifications": "1"}), mapping)
+	w.run()
+	// user2 は language = ja なので件名は日本語
+	subjects := map[string]bool{gs["account_information"].Mails[0].Subject: true, "Redmine アカウント登録の確認": true}
+	var info []string
+	for _, m := range w.sender.Messages() {
+		if subjects[m.Subject] {
+			info = append(info, strings.Join(m.To, ","))
+		}
+	}
+	sort.Strings(info)
+	expectRecipients(t, "account_information", info, []string{"user1@somenet.foo", "user2@somenet.foo", "user3@somenet.foo"})
+	if len(uids) != 3 {
+		t.Fatalf("users = %d", len(uids))
+	}
+}

@@ -22,6 +22,7 @@ func (c *Req) Page() *helper.Page {
 		Controller:         c.Controller.Name,
 		Action:             c.Action,
 		MainMenu:           c.Controller.MainMenu,
+		NoCurrentMenu:      c.Controller.NoCurrentMenu,
 		DefaultSearchScope: c.Controller.DefaultSearchScope,
 		Question:           c.Question,
 		NewRecordProject:   c.NewRecordProject,

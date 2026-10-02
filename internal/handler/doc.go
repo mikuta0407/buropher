@@ -173,6 +173,7 @@
 //     メールか Discord が使えれば a.Notify、どちらも無効なら LogNotifier）で行い、コミット後に
 //     a.dispatchIssueNotifications(c, res...)（issues.SaveResult.Notifications を配送。失敗はログのみ）。
 //     ジャーナルを作る操作（作成・更新・一括編集・関連の追加削除・チケットの添付の削除）はすべてこれを呼ぶ。
+//     CSV インポートは issueState().env（Notifier 設定済み）で保存後に env.Dispatch（Issue#notify = settings['notifications']）。
 //   - ニュース・コメント・文書・ファイル・フォーラム: コミット後に a.notify(c, setting_event, mailer_action, obj)
 //     （content_common.go）。Setting.notified_events に setting_event があれば a.Notify の NewsAdded /
 //     NewsCommentAdded / DocumentAdded(ctx, docID, c.User) / AttachmentsAddedFor(ctx, event, ids)（files#create は

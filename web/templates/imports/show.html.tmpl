@@ -1,0 +1,28 @@
+<h2>{{.Title}}</h2>
+
+{{if gt .SavedCount 0}}
+  <p>{{l "notice_import_finished" (dict "count" .SavedCount)}}:</p>
+
+  {{partial (print "imports/" .Prefix "_saved_objects") .SavedObjects}}
+{{end}}
+
+{{if gt .UnsavedCount 0}}
+  <p>{{l "notice_import_finished_with_errors" (dict "count" .UnsavedCount "total" .Total)}}:</p>
+
+  <table id="unsaved-items" class="list">
+    <thead>
+    <tr>
+      <th>{{l "label_position"}}</th>
+      <th>{{l "label_message"}}</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{range $item := .UnsavedItems}}
+    <tr>
+      <td>{{$item.Position}}</td>
+      <td>{{$item.Message}}</td>
+    </tr>
+    {{end}}
+    </tbody>
+  </table>
+{{end}}

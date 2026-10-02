@@ -17,6 +17,7 @@ func (a *App) Routes(r Router) {
 	a.routesWelcome(r)
 	a.routesAccount(r)
 	a.routesContextMenus(r)
+	a.routesImports(r)
 	a.routesUsers(r)
 	a.routesPrincipalMemberships(r)
 	a.routesEmailAddresses(r)

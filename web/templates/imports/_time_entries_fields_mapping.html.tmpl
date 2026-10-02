@@ -1,0 +1,45 @@
+{{$i := .Import}}
+<p>
+  <label for="import_mapping_project_id">{{l "label_project"}}</label>
+  {{select_tag "import_settings[mapping][project_id]" (project_tree_options_for_select .Projects .Project) (hash "id" "import_mapping_project_id")}}
+</p>
+<p>
+  <label for="import_mapping_activity">{{l "field_activity"}}</label>
+  {{$i.MappingSelectTag "activity" (hash "required" true "values" .ActivityValues)}}
+</p>
+
+<div class="splitcontent">
+  <div class="splitcontentleft">
+  {{if .LogTimeForOtherUsers}}
+    <p>
+      <label for="import_mapping_user">{{l "field_user"}}</label>
+      {{$i.MappingSelectTag "user" (hash "required" true "values" .UserValues "default_value" .UserDefault)}}
+    </p>
+  {{end}}
+  <p>
+    <label for="import_mapping_issue_id">{{l "field_issue"}}</label>
+    {{$i.MappingSelectTag "issue_id" nil}}
+  </p>
+  <p>
+    <label for="import_mapping_spent_on">{{l "field_spent_on"}}</label>
+    {{$i.MappingSelectTag "spent_on" (hash "required" true)}}
+  </p>
+  <p>
+    <label for="import_mapping_hours">{{l "field_hours"}}</label>
+    {{$i.MappingSelectTag "hours" (hash "required" true)}}
+  </p>
+  <p>
+    <label for="import_mapping_comments">{{l "field_comments"}}</label>
+    {{$i.MappingSelectTag "comments" nil}}
+  </p>
+  </div>
+
+  <div class="splitcontentright">
+  {{range $field := .CustomFields}}
+    <p>
+      <label for="import_mapping_cf_{{$field.ID}}">{{$field.Name}}</label>
+      {{$i.MappingSelectTag (print "cf_" $field.ID) (hash "required" $field.IsRequired)}}
+    </p>
+  {{end}}
+  </div>
+</div>

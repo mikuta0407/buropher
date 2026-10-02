@@ -1,0 +1,28 @@
+<fieldset class="box tabular">
+  <legend>{{l "label_fields_mapping"}}</legend>
+  <div id="fields-mapping">
+    {{partial "imports/issues_fields_mapping" .}}
+  </div>
+</fieldset>
+
+<fieldset class="box tabular collapsible collapsed">
+  <legend onclick="toggleFieldset(this);" class="icon icon-collapsed">
+    {{sprite_icon "angle-right" (hash "rtl" true)}}
+    {{l "label_relations_mapping"}}
+  </legend>
+  <div id="relations-mapping" style="display: none;">
+    {{partial "imports/issues_relations_mapping" .}}
+  </div>
+</fieldset>
+
+{{define "imports/_issues_mapping#js"}}
+
+  $('#fields-mapping').on('change', '#import_mapping_project_id, #import_mapping_tracker', function(){
+    $.ajax({
+      url: '{{print "/imports/" .Filename "/mapping.js"}}',
+      type: 'post',
+      data: $('#import-form').serialize()
+    });
+  });
+{{end}}
+{{javascript_tag (capture "imports/_issues_mapping#js" .) -}}

@@ -109,6 +109,8 @@ type Controller struct {
 	Name string
 	// MainMenu は self.main_menu（既定 true）。
 	MainMenu bool
+	// NoCurrentMenu は current_menu(project) の上書きで、@project が無ければメインメニューを出さない。
+	NoCurrentMenu bool
 	// DefaultSearchScope は default_search_scope（空なら nil）。
 	DefaultSearchScope string
 	// MenuItem は menu_item の宣言をアクション名から決める関数（nil なら menu.CurrentMenuItem）。

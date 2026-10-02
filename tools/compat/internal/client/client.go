@@ -5,9 +5,15 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"mime/multipart"
 	"net/http"
 	"net/http/cookiejar"
+	"net/textproto"
 	"net/url"
+	"os"
+	"path/filepath"
+	"regexp"
+	"sort"
 	"strings"
 	"time"
 
@@ -30,6 +36,8 @@ type Target struct {
 	Base     *url.URL
 	timeout  time.Duration
 	sessions map[string]*http.Client
+	// vars はシナリオの capture で得た変数（${name}）。
+	vars map[string]string
 }
 
 // New は baseURL を対象とする Target を作る。
@@ -143,8 +151,107 @@ func (t *Target) login(cl *http.Client, cred scenario.Credential) error {
 	return nil
 }
 
+var reVar = regexp.MustCompile(`\$\{([A-Za-z0-9_]+)\}`)
+
+// expand は ${name} を capture で得た変数に置き換える（未定義はそのまま）。
+func (t *Target) expand(s string) string {
+	if !strings.Contains(s, "${") {
+		return s
+	}
+	return reVar.ReplaceAllStringFunc(s, func(m string) string {
+		if v, ok := t.vars[reVar.FindStringSubmatch(m)[1]]; ok {
+			return v
+		}
+		return m
+	})
+}
+
+// expandCase は Path / Form / Body の変数を展開したケースを返す。
+func (t *Target) expandCase(c scenario.Case) scenario.Case {
+	c.Path = t.expand(c.Path)
+	c.Body = t.expand(c.Body)
+	if len(c.Form) > 0 {
+		form := scenario.FormValues{}
+		for k, vs := range c.Form {
+			var out []string
+			for _, v := range vs {
+				out = append(out, t.expand(v))
+			}
+			form[t.expand(k)] = out
+		}
+		c.Form = form
+	}
+	return c
+}
+
+// capture は Location ヘッダから変数を取り出す。
+func (t *Target) capture(c scenario.Case, location string) {
+	for name, pattern := range c.Capture {
+		re, err := regexp.Compile(pattern)
+		if err != nil {
+			continue
+		}
+		m := re.FindStringSubmatch(location)
+		switch {
+		case m == nil:
+			delete(t.vars, name)
+		case len(m) > 1:
+			t.vars[name] = m[1]
+		default:
+			t.vars[name] = m[0]
+		}
+	}
+}
+
+// multipartBody は Form と Files を multipart/form-data で組み立てる。
+func multipartBody(form url.Values, files map[string]string) (io.Reader, string, error) {
+	var buf bytes.Buffer
+	mw := multipart.NewWriter(&buf)
+	keys := make([]string, 0, len(form))
+	for k := range form {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	for _, k := range keys {
+		for _, v := range form[k] {
+			if err := mw.WriteField(k, v); err != nil {
+				return nil, "", err
+			}
+		}
+	}
+	names := make([]string, 0, len(files))
+	for k := range files {
+		names = append(names, k)
+	}
+	sort.Strings(names)
+	for _, k := range names {
+		data, err := os.ReadFile(files[k])
+		if err != nil {
+			return nil, "", err
+		}
+		h := make(textproto.MIMEHeader)
+		h.Set("Content-Disposition", fmt.Sprintf(`form-data; name="%s"; filename="%s"`, k, filepath.Base(files[k])))
+		h.Set("Content-Type", "text/csv")
+		w, err := mw.CreatePart(h)
+		if err != nil {
+			return nil, "", err
+		}
+		if _, err := w.Write(data); err != nil {
+			return nil, "", err
+		}
+	}
+	if err := mw.Close(); err != nil {
+		return nil, "", err
+	}
+	return &buf, mw.FormDataContentType(), nil
+}
+
 // Do はケース 1 件を実行する。
 func (t *Target) Do(c scenario.Case) (*Response, error) {
+	if t.vars == nil {
+		t.vars = map[string]string{}
+	}
+	c = t.expandCase(c)
 	cl, err := t.session(c)
 	if err != nil {
 		return nil, err
@@ -152,6 +259,28 @@ func (t *Target) Do(c scenario.Case) (*Response, error) {
 	var body io.Reader
 	ctype := c.CType
 	switch {
+	case len(c.Files) > 0:
+		form := url.Values{}
+		for k, vs := range c.Form {
+			for _, v := range vs {
+				form.Add(k, v)
+			}
+		}
+		if c.Auth == "session" && form.Get("authenticity_token") == "" {
+			tok, err := t.fetchToken(cl, "/")
+			if err != nil {
+				return nil, err
+			}
+			form.Set("authenticity_token", tok)
+		}
+		b, ct, err := multipartBody(form, c.Files)
+		if err != nil {
+			return nil, err
+		}
+		body = b
+		if ctype == "" {
+			ctype = ct
+		}
 	case len(c.Form) > 0:
 		form := url.Values{}
 		for k, vs := range c.Form {
@@ -195,6 +324,7 @@ func (t *Target) Do(c scenario.Case) (*Response, error) {
 	if err != nil {
 		return nil, err
 	}
+	t.capture(c, resp.Header.Get("Location"))
 	return &Response{
 		Status:      resp.StatusCode,
 		ContentType: resp.Header.Get("Content-Type"),

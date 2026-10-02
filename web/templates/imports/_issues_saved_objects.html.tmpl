@@ -1,0 +1,7 @@
+<ul id="saved-items">
+  {{range $link := .links}}
+    <li>{{$link}}</li>
+  {{end}}
+</ul>
+
+<p>{{link_to (l "label_issue_view_all") .view_all_url}}</p>
