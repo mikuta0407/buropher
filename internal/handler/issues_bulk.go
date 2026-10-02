@@ -677,7 +677,7 @@ func (v *bulkEditView) ShowDoneRatio() bool {
 	return v.Safe("done_ratio") && v.l.a.Settings.String("issue_done_ratio") == "issue_field"
 }
 
-// DoneRatioOptions は options_for_select([[(No change), '']] + (0..100).step(interval) ..., @issue_params[:done_ratio])。
+// DoneRatioOptions は options_for_select([[(No change), ”]] + (0..100).step(interval) ..., @issue_params[:done_ratio])。
 func (v *bulkEditView) DoneRatioOptions() template.HTML {
 	step, _ := strconv.Atoi(v.l.a.Settings.String("issue_done_ratio_interval"))
 	if step <= 0 {

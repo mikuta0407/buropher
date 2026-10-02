@@ -1,0 +1,22 @@
+{{$d := .D}}
+<h2>{{l "label_confirmation"}}</h2>
+
+{{form_tag .Action (hash "method" "delete")}}
+{{range $i, $id := $d.IDs}}{{if $i}}
+{{end}}{{hidden_field_tag "ids[]" $id (hash "id" nil)}}{{end}}
+<div class="box">
+<p><strong>{{l "text_destroy_time_entries_question" (hash "hours" $d.HoursText)}}</strong></p>
+<p>
+<label>{{radio_button_tag "todo" "destroy" true}} {{l "text_destroy_time_entries"}}</label><br />
+{{if $d.ShowNullify}}
+<label>{{radio_button_tag "todo" "nullify" false}} {{l "text_assign_time_entries_to_project"}}</label><br />
+{{end}}
+{{if $d.Project}}
+<label>{{radio_button_tag "todo" "reassign" false (hash "onchange" "if (this.checked) { $(\"#reassign_to_id\").focus(); }")}} {{l "text_reassign_time_entries"}}</label>
+{{text_field_tag "reassign_to_id" $d.ReassignTo (hash "size" 6 "onfocus" "$(\"#todo_reassign\").attr(\"checked\", true);")}}
+{{javascript_tag $d.AutoComplete}}
+{{end}}
+</p>
+</div>
+{{submit_tag (l "button_apply")}}
+{{end_form}}
