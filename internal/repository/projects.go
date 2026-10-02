@@ -192,12 +192,11 @@ type treeNode struct {
 // ProjectNestedSet は全プロジェクトについて、Redmine の ProjectNestedSet が保持する
 // lft/rgt に相当する値を計算して返す。
 //
-// Redmine は兄弟を「名前の昇順」に挿入する (project_nested_set.rb の target_lft) が、比較は DB の
-// 照合順序に依存し (MySQL / PG の既定ロケールでは大文字小文字をほぼ無視、SQLite はバイト順)、
-// 既存行の並びも操作履歴に依存する。buropher は lft を持たないため、次の決定的な規則で並べる:
-//  1. 名前を小文字化して比較 (MySQL / PG 既定照合に近い)
-//  2. 同じなら名前のバイト順
-//  3. 同名なら id の降順 (Redmine では後から追加・移動した方が同名兄弟の前に入るため)
+// Redmine は兄弟を「名前の昇順」に挿入する (project_nested_set.rb の target_lft の name < ?) が、
+// 比較は DB の照合順序に依存し、既存行の並びも操作履歴に依存する。buropher は lft を持たないため、
+// 次の決定的な規則で並べる:
+//  1. 名前のバイト順 (SQLite の BINARY 照合 = 参照環境の Redmine と同じ。'P' < 'e' のように大文字が先)
+//  2. 同名なら id の降順 (Redmine では後から追加・移動した方が同名兄弟の前に入るため)
 func ProjectNestedSet(ctx context.Context, q db.Queryer) (map[int64]NestedSetValue, error) {
 	var rows []struct {
 		ID       int64         `db:"id"`
@@ -229,9 +228,6 @@ func computeNestedSet(nodes []treeNode) map[int64]NestedSetValue {
 	}
 	for _, cs := range children {
 		slices.SortFunc(cs, func(a, b treeNode) int {
-			if c := strings.Compare(strings.ToLower(a.name), strings.ToLower(b.name)); c != 0 {
-				return c
-			}
 			if c := strings.Compare(a.name, b.name); c != 0 {
 				return c
 			}

@@ -142,6 +142,26 @@ func ProjectMemberships(ctx context.Context, q db.Queryer, projectID int64) ([]*
 	return loadMembers(ctx, q, `m.project_id = ?`, projectID)
 }
 
+// BuiltinGroupMemberships はプロジェクトの組込グループ (GroupAnonymous / GroupNonMember) の
+// メンバーシップを kind 別に返す (Project#override_roles が参照する @override_members)。
+func BuiltinGroupMemberships(ctx context.Context, q db.Queryer, projectID int64) (map[domain.PrincipalKind]*domain.Member, error) {
+	ms, err := loadMembers(ctx, q, `m.project_id = ? AND m.principal_id IN (SELECT id FROM principals WHERE kind IN ('group_anonymous', 'group_non_member'))`, projectID)
+	if err != nil {
+		return nil, err
+	}
+	out := map[domain.PrincipalKind]*domain.Member{}
+	for _, m := range ms {
+		var kind string
+		if err := q.Get(ctx, &kind, `SELECT kind FROM principals WHERE id = ?`, m.PrincipalID); err != nil {
+			return nil, err
+		}
+		if _, ok := out[domain.PrincipalKind(kind)]; !ok {
+			out[domain.PrincipalKind(kind)] = m
+		}
+	}
+	return out, nil
+}
+
 // MemberProjectIDs は Principal#project_ids (アーカイブされていないメンバーシップのプロジェクト ID)。
 func MemberProjectIDs(ctx context.Context, q db.Queryer, principalID int64) ([]int64, error) {
 	var ids []int64

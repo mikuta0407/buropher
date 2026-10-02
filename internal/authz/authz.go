@@ -27,7 +27,7 @@ type Authorizer struct {
 	builtinGroupID    int64
 	rolesByID         map[int64]*domain.Role
 	memberships       map[int64]*domain.Member // project_id -> membership (nil = 非メンバー)
-	overrideMembers   map[int64][]*domain.Member
+	overrideMembers   map[int64]map[domain.PrincipalKind]*domain.Member
 	roles             []*domain.Role
 	rolesLoaded       bool
 	projectIDs        []int64
@@ -46,7 +46,7 @@ func New(q db.Queryer, user *domain.User) *Authorizer {
 		q: q, user: user,
 		rolesByID:       map[int64]*domain.Role{},
 		memberships:     map[int64]*domain.Member{},
-		overrideMembers: map[int64][]*domain.Member{},
+		overrideMembers: map[int64]map[domain.PrincipalKind]*domain.Member{},
 	}
 }
 
@@ -126,18 +126,10 @@ func (a *Authorizer) Membership(ctx context.Context, projectID int64) (*domain.M
 func (a *Authorizer) OverrideRoles(ctx context.Context, p *domain.Project, role *domain.Role) ([]*domain.Role, error) {
 	ms, ok := a.overrideMembers[p.ID]
 	if !ok {
-		all, err := repository.ProjectMemberships(ctx, a.q, p.ID)
+		var err error
+		ms, err = repository.BuiltinGroupMemberships(ctx, a.q, p.ID)
 		if err != nil {
 			return nil, err
-		}
-		for _, m := range all {
-			pr, err := repository.GetPrincipal(ctx, a.q, m.PrincipalID)
-			if err != nil {
-				return nil, err
-			}
-			if pr.Kind.IsBuiltinGroup() {
-				ms = append(ms, m)
-			}
 		}
 		a.overrideMembers[p.ID] = ms
 	}
@@ -145,14 +137,8 @@ func (a *Authorizer) OverrideRoles(ctx context.Context, p *domain.Project, role 
 	if role.IsAnonymous() {
 		kind = domain.KindGroupAnonymous
 	}
-	for _, m := range ms {
-		pr, err := repository.GetPrincipal(ctx, a.q, m.PrincipalID)
-		if err != nil {
-			return nil, err
-		}
-		if pr.Kind == kind {
-			return a.rolesFor(ctx, m.RoleIDs())
-		}
+	if m := ms[kind]; m != nil {
+		return a.rolesFor(ctx, m.RoleIDs())
 	}
 	return []*domain.Role{role}, nil
 }
