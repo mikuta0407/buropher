@@ -1,23 +1,19 @@
 package handler
 
 import (
-	"net/http"
-
 	"github.com/go-chi/chi/v5"
 )
 
+// Router はルート登録先（chi.Router）。
+type Router = chi.Router
+
 // Routes は config/routes.rb のうち実装済みのルートを登録する。
 // r はセッション等のミドルウェアを適用済みのルータ（ルーティング後の CSRF 検証は Handle が行う）。
-func (a *App) Routes(r chi.Router) {
-	// root :to => 'welcome#index'
-	a.Handle(r, http.MethodGet, "/", WelcomeController, "index", a.WelcomeIndex)
-
-	// match 'login', :to => 'account#login', :as => 'signin', :via => [:get, :post]
-	for _, m := range []string{http.MethodGet, http.MethodPost} {
-		a.Handle(r, m, "/login", AccountController, "login", a.AccountLogin,
-			Skip(FilterLoginRequired, FilterPasswordChange))
-		// match 'logout', :to => 'account#logout', :as => 'signout', :via => [:get, :post]
-		a.Handle(r, m, "/logout", AccountController, "logout", a.AccountLogout,
-			Skip(FilterLoginRequired, FilterPasswordChange, FilterTwofaActivation))
-	}
+//
+// ルートはコントローラごとのファイルの routesXxx メソッドで登録し、ここではその呼び出しだけを
+// 並べる（並列開発での衝突を避けるため。追加するときは 1 行足すだけにすること）。
+// 順序は config/routes.rb の記述順に合わせる（chi は登録順に依存しないが、読み比べやすくするため）。
+func (a *App) Routes(r Router) {
+	a.routesWelcome(r)
+	a.routesAccount(r)
 }

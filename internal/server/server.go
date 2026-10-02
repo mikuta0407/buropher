@@ -118,7 +118,6 @@ func New(cfg *config.Config, d *db.DB, opts ...Options) (*Server, error) {
 	errs := &httpx.ErrorRenderer{}
 	app := &handler.App{
 		DB: d, Settings: st, Bundle: i18n.Default(), Assets: ap, Views: views, Helpers: helpers,
-		Users:  &handler.SQLUserStore{DB: d, Settings: st},
 		Errors: errs, Logger: o.Logger, Now: o.Now, FormNameSuffix: o.FormNameSuffix,
 	}
 	errs.Page = app.ErrorPage()

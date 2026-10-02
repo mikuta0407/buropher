@@ -5,16 +5,23 @@
 // Page にまとめ、view.Context.Values[PageKey] に格納する。テンプレート関数は
 // Deps.RequestFuncs で view.Engine に登録する。
 //
-// ドメインモデル（User / Project）は internal/domain の完成までインタフェースで受け取る。
+// ユーザー・プロジェクトは internal/domain の型（*domain.User / *domain.Project）で受け取る。
 package helper
 
 import (
+	"context"
 	"html/template"
+	"log/slog"
 	"net/http"
+	"time"
 
 	"github.com/mikuta0407/buropher/internal/assets"
+	"github.com/mikuta0407/buropher/internal/authz"
+	"github.com/mikuta0407/buropher/internal/db"
+	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/httpx"
 	"github.com/mikuta0407/buropher/internal/i18n"
+	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/settings"
 	"github.com/mikuta0407/buropher/internal/view"
 )
@@ -27,42 +34,6 @@ const AppName = "Redmine"
 
 // AppURL は Redmine::Info.url。
 const AppURL = "https://www.redmine.org/"
-
-// User はヘルパーが参照する User.current / 任意のユーザーの情報。
-type User interface {
-	ID() int64
-	// Logged は User#logged?（匿名ユーザーなら false）。
-	Logged() bool
-	Admin() bool
-	// Active は status == STATUS_ACTIVE。
-	Active() bool
-	Login() string
-	// Mail は既定のメールアドレス（なければ空）。
-	Mail() string
-	// Name は User#name(formatter)。format が空なら Setting.user_format。
-	Name(format string) string
-	// Initials は User#initials。
-	Initials() string
-	// CSSClasses は User#css_classes（"user active" など）。
-	CSSClasses() string
-	// WarnOnLeavingUnsaved は pref.warn_on_leaving_unsaved != '0'。
-	WarnOnLeavingUnsaved() bool
-	// TextareaFont は pref.textarea_font（"monospace" / "proportional" / ""）。
-	TextareaFont() string
-	// AtomKey は User#atom_key（匿名なら空。ログインユーザーは必要なら作成する）。
-	AtomKey() string
-}
-
-// Project はヘルパーが参照する @project の情報。
-type Project interface {
-	ID() int64
-	Identifier() string
-	Name() string
-	// Archived は status == STATUS_ARCHIVED。
-	Archived() bool
-	// Leaf は子プロジェクトがない。
-	Leaf() bool
-}
 
 // JumpProject はプロジェクトジャンプボックスの 1 項目。
 // Lft / Rgt はネストセット相当の値（project_tree の is_descendant_of 判定と並び順に使う）。
@@ -83,21 +54,21 @@ type JumpBox struct {
 	Recents []JumpProject
 }
 
-// Authz は権限判定（internal/authz の完成までの差し替え点）。
-type Authz interface {
-	AllowedTo(permission string, p Project) bool
-	AllowedToAction(controller, action string, p Project) bool
-	AllowedToGlobally(permission string) bool
-	ModuleEnabledInVisibleProject(module string) bool
-}
-
 // Page は 1 リクエスト分の描画状態（コントローラのインスタンス変数・User.current 等）。
+//
+// ユーザー・プロジェクトは internal/domain の型をそのまま使う。権限判定は Authz が返す
+// internal/authz の Authorizer（リクエスト単位）で行い、追加のデータは DB から
+// internal/repository の関数で読む（ヘルパー内で SQL を書かない）。
 type Page struct {
 	Request  *http.Request
 	Settings *settings.Settings
 	Loc      *i18n.Localizer
-	User     User
-	Project  Project
+	// User は User.current（nil なら匿名として扱う）。
+	User *domain.User
+	// Pref は User.current.pref（nil なら既定値）。
+	Pref *domain.UserPreference
+	// Project は @project（nil 可）。
+	Project *domain.Project
 	// Controller / Action は controller_name / action_name。
 	Controller, Action string
 	// MainMenu は controller.class.main_menu。
@@ -108,14 +79,19 @@ type Page struct {
 	DefaultSearchScope string
 	// Question は @question（検索語）。
 	Question string
-	// JumpBox はジャンプボックスの一覧を返す（nil なら空）。
-	JumpBox func() *JumpBox
-	// Authz は権限判定（nil なら管理者のみ許可する保守的な判定）。
-	Authz Authz
+	// DB はヘルパーがデータを読むための接続（nil ならデータを要する部分は空になる）。
+	DB db.Queryer
+	// Authz は User.current の Authorizer を返す（nil なら管理者のみ許可する保守的な判定）。
+	Authz func() *authz.Authorizer
+	// Now は現在時刻（nil なら time.Now。distance_of_time_in_words の基準）。
+	Now func() time.Time
+	// Logger はヘルパー内のエラーの記録先（nil なら slog.Default()）。
+	Logger *slog.Logger
 
 	accessKeys []string
 	theme      *assets.Theme
 	themeSet   bool
+	leaf       map[int64]bool
 }
 
 // Params は Rails の params。
@@ -169,7 +145,86 @@ func (p *Page) l(key string, args ...any) string {
 func (p *Page) logged() bool { return p.User != nil && p.User.Logged() }
 
 // admin は User.current.admin?。
-func (p *Page) admin() bool { return p.User != nil && p.User.Admin() }
+func (p *Page) admin() bool { return p.User != nil && p.User.IsAdmin() }
+
+// ctx はデータ読み込み用の context。
+func (p *Page) ctx() context.Context {
+	if p.Request != nil {
+		return p.Request.Context()
+	}
+	return context.Background()
+}
+
+// now は現在時刻。
+func (p *Page) now() time.Time {
+	if p.Now != nil {
+		return p.Now()
+	}
+	return time.Now()
+}
+
+// logError はヘルパー内のエラーを記録する（描画は続ける）。
+func (p *Page) logError(what string, err error) {
+	l := p.Logger
+	if l == nil {
+		l = slog.Default()
+	}
+	l.Error("helper: "+what, "err", err)
+}
+
+// authorizer は User.current の Authorizer（未設定なら nil）。
+func (p *Page) authorizer() *authz.Authorizer {
+	if p.Authz == nil || p.User == nil {
+		return nil
+	}
+	return p.Authz()
+}
+
+// pref は User.current.pref。
+func (p *Page) pref() *domain.UserPreference {
+	if p.Pref != nil {
+		return p.Pref
+	}
+	var id int64
+	if p.User != nil {
+		id = p.User.ID
+	}
+	return domain.DefaultUserPreference(id)
+}
+
+// userFormat は Setting.user_format（name(nil) が使う書式）。
+func (p *Page) userFormat() string { return p.setting("user_format") }
+
+// userName は User#name(format)（format が空なら Setting.user_format。匿名は label_user_anonymous）。
+func (p *Page) userName(u *domain.User, format string) string {
+	if u.Anonymous() {
+		return p.l("label_user_anonymous")
+	}
+	if format == "" || !domain.ValidUserFormat(format) {
+		format = p.userFormat()
+	}
+	return u.Name(format)
+}
+
+// projectLeaf は Project#leaf?（子プロジェクトがない）。
+func (p *Page) projectLeaf(pr *domain.Project) bool {
+	if v, ok := p.leaf[pr.ID]; ok {
+		return v
+	}
+	if p.DB == nil {
+		return true
+	}
+	v, err := repository.IsProjectLeaf(p.ctx(), p.DB, pr.ID)
+	if err != nil {
+		p.logError("project leaf", err)
+		v = true
+	}
+	if p.leaf == nil {
+		p.leaf = map[int64]bool{}
+	}
+	p.leaf[pr.ID] = v
+	return v
+}
 
 // currentTheme は Redmine::Themes::Helper#current_theme。
 func (d *Deps) currentTheme(p *Page) *assets.Theme {

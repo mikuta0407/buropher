@@ -3,7 +3,9 @@ package helper
 import (
 	"html/template"
 
+	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/menu"
+	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/view/rails"
 )
 
@@ -20,24 +22,28 @@ func menuCurrentItem(controller, action string) string {
 	return menu.CurrentMenuItem(controller, action)
 }
 
-// menuProject は helper.Project を menu.Project として渡すアダプタ。
-type menuProject struct{ Project }
+// menuProject は *domain.Project を menu.Project として渡すアダプタ。
+type menuProject struct{ p *domain.Project }
 
-func toMenuProject(p Project) menu.Project {
+func (m menuProject) Identifier() string { return m.p.Identifier }
+
+func toMenuProject(p *domain.Project) menu.Project {
 	if p == nil {
 		return nil
 	}
 	return menuProject{p}
 }
 
-func fromMenuProject(p menu.Project) Project {
+func fromMenuProject(p menu.Project) *domain.Project {
 	if mp, ok := p.(menuProject); ok {
-		return mp.Project
+		return mp.p
 	}
 	return nil
 }
 
-// menuEnv は menu.Env の実装（User.current・Setting・i18n を Page から引く）。
+// menuEnv は menu.Env の実装（User.current・Setting・i18n・権限を Page から引く）。
+// 権限は internal/authz の Authorizer、表示条件のデータは internal/repository で判定する。
+// DB エラーはログに残して「表示しない」側に倒す。
 type menuEnv struct {
 	d *Deps
 	p *Page
@@ -54,23 +60,37 @@ func (e menuEnv) LOrHumanize(name, prefix string) string {
 }
 func (e menuEnv) LoggedIn() bool { return e.p.logged() }
 func (e menuEnv) Admin() bool    { return e.p.admin() }
-func (e menuEnv) authz() Authz {
-	if e.p.Authz != nil {
-		return e.p.Authz
+
+// check は (bool, error) の結果をログ付きで bool にする。
+func (e menuEnv) check(what string, ok bool, err error) bool {
+	if err != nil {
+		e.p.logError(what, err)
+		return false
 	}
-	return adminOnlyAuthz{admin: e.p.admin()}
+	return ok
 }
+
 func (e menuEnv) AllowedTo(permission string, p menu.Project) bool {
-	return e.authz().AllowedTo(permission, fromMenuProject(p))
+	return e.p.AllowedTo(domain.Perm(permission), fromMenuProject(p))
 }
 func (e menuEnv) AllowedToAction(controller, action string, p menu.Project) bool {
-	return e.authz().AllowedToAction(controller, action, fromMenuProject(p))
+	return e.p.AllowedTo(domain.ControllerAction(controller, action), fromMenuProject(p))
 }
 func (e menuEnv) AllowedToGlobally(permission string) bool {
-	return e.authz().AllowedToGlobally(permission)
+	a := e.p.authorizer()
+	if a == nil {
+		return e.p.admin()
+	}
+	ok, err := a.AllowedToGlobally(e.p.ctx(), domain.Perm(permission), nil)
+	return e.check("allowed_to_globally", ok, err)
 }
 func (e menuEnv) ModuleEnabledInVisibleProject(module string) bool {
-	return e.authz().ModuleEnabledInVisibleProject(module)
+	a := e.p.authorizer()
+	if a == nil {
+		return false
+	}
+	ok, err := a.ModuleEnabledInVisibleProject(e.p.ctx(), module)
+	return e.check("module_enabled_in_visible_project", ok, err)
 }
 func (e menuEnv) Setting(name string) string { return e.p.setting(name) }
 func (e menuEnv) SpriteIcon(icon string, label template.HTML) template.HTML {
@@ -78,25 +98,80 @@ func (e menuEnv) SpriteIcon(icon string, label template.HTML) template.HTML {
 }
 func (e menuEnv) CurrentMenuItem() string { return e.p.currentMenuItem() }
 
-// TODO(authz): プロジェクトメニューの表示条件はプロジェクト関連リポジトリの完成後に実装する。
-func (e menuEnv) SharedVersionsAny(menu.Project) bool        { return false }
-func (e menuEnv) RolledUpVersionsAny(menu.Project) bool      { return false }
-func (e menuEnv) AllowedTargetTrackersAny(menu.Project) bool { return false }
-func (e menuEnv) HasWiki(menu.Project) bool                  { return false }
-func (e menuEnv) BoardsAny(menu.Project) bool                { return false }
-func (e menuEnv) RepositoriesExist(menu.Project) bool        { return false }
+// ---- プロジェクトメニューの表示条件（lib/redmine/preparation.rb の :if） ----
 
-// adminOnlyAuthz は Authz 未設定時の判定（管理者は常に許可、それ以外は拒否）。
-// TODO(authz): internal/authz の User#allowed_to? に置き換える。
-type adminOnlyAuthz struct{ admin bool }
+func (e menuEnv) SharedVersionsAny(mp menu.Project) bool {
+	p := fromMenuProject(mp)
+	if p == nil || e.p.DB == nil {
+		return false
+	}
+	ok, err := repository.ProjectHasSharedVersions(e.p.ctx(), e.p.DB, p)
+	return e.check("shared_versions", ok, err)
+}
 
-func (a adminOnlyAuthz) AllowedTo(string, Project) bool               { return a.admin }
-func (a adminOnlyAuthz) AllowedToAction(string, string, Project) bool { return a.admin }
-func (a adminOnlyAuthz) AllowedToGlobally(string) bool                { return a.admin }
-func (a adminOnlyAuthz) ModuleEnabledInVisibleProject(string) bool    { return false }
+func (e menuEnv) RolledUpVersionsAny(mp menu.Project) bool {
+	p := fromMenuProject(mp)
+	if p == nil || e.p.DB == nil {
+		return false
+	}
+	ok, err := repository.ProjectHasRolledUpVersions(e.p.ctx(), e.p.DB, p)
+	return e.check("rolled_up_versions", ok, err)
+}
+
+func (e menuEnv) AllowedTargetTrackersAny(mp menu.Project) bool {
+	p := fromMenuProject(mp)
+	a := e.p.authorizer()
+	if p == nil || a == nil {
+		return false
+	}
+	ids, err := a.AllowedTargetTrackerIDs(e.p.ctx(), p, 0)
+	return e.check("allowed_target_trackers", len(ids) > 0, err)
+}
+
+func (e menuEnv) HasWiki(mp menu.Project) bool {
+	p := fromMenuProject(mp)
+	if p == nil || e.p.DB == nil {
+		return false
+	}
+	ok, err := repository.ProjectHasWiki(e.p.ctx(), e.p.DB, p.ID)
+	return e.check("wiki", ok, err)
+}
+
+func (e menuEnv) BoardsAny(mp menu.Project) bool {
+	p := fromMenuProject(mp)
+	if p == nil || e.p.DB == nil {
+		return false
+	}
+	ok, err := repository.ProjectHasBoards(e.p.ctx(), e.p.DB, p.ID)
+	return e.check("boards", ok, err)
+}
+
+func (e menuEnv) RepositoriesExist(mp menu.Project) bool {
+	p := fromMenuProject(mp)
+	if p == nil || e.p.DB == nil {
+		return false
+	}
+	ok, err := repository.ProjectHasRepositories(e.p.ctx(), e.p.DB, p.ID)
+	return e.check("repositories", ok, err)
+}
+
+// AllowedTo は User.current.allowed_to?(action, project)（ヘルパー・テンプレート用）。
+// Authorizer が無い場合は管理者のみ許可する。
+func (p *Page) AllowedTo(action domain.Action, project *domain.Project) bool {
+	a := p.authorizer()
+	if a == nil {
+		return p.admin() && project != nil && project.AllowsTo(action)
+	}
+	ok, err := a.AllowedTo(p.ctx(), action, project)
+	if err != nil {
+		p.logError("allowed_to", err)
+		return false
+	}
+	return ok
+}
 
 // currentMenu は MenuController#current_menu(project)。
-func (p *Page) currentMenu(project Project) string {
+func (p *Page) currentMenu(project *domain.Project) string {
 	if project != nil {
 		return "project_menu"
 	}
@@ -107,13 +182,13 @@ func (p *Page) currentMenu(project Project) string {
 }
 
 // displayMainMenu は display_main_menu?(project)。
-func (p *Page) displayMainMenu(project Project) bool {
+func (p *Page) displayMainMenu(project *domain.Project) bool {
 	name := p.currentMenu(project)
 	return name != "" && menus[name].HasItems()
 }
 
 // renderMenu は render_menu(menu, project)。
-func (d *Deps) renderMenu(p *Page, name string, project Project) template.HTML {
+func (d *Deps) renderMenu(p *Page, name string, project *domain.Project) template.HTML {
 	m := menus[name]
 	if m == nil {
 		return ""
@@ -122,7 +197,7 @@ func (d *Deps) renderMenu(p *Page, name string, project Project) template.HTML {
 }
 
 // renderMainMenu は render_main_menu(project)。
-func (d *Deps) renderMainMenu(p *Page, project Project) template.HTML {
+func (d *Deps) renderMainMenu(p *Page, project *domain.Project) template.HTML {
 	if name := p.currentMenu(project); name != "" {
 		return d.renderMenu(p, name, project)
 	}
@@ -130,4 +205,4 @@ func (d *Deps) renderMainMenu(p *Page, project Project) template.HTML {
 }
 
 // DisplayMainMenu は display_main_menu?(project)（body_css_classes 用）。
-func (p *Page) DisplayMainMenu(project Project) bool { return p.displayMainMenu(project) }
+func (p *Page) DisplayMainMenu(project *domain.Project) bool { return p.displayMainMenu(project) }

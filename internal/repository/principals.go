@@ -46,6 +46,7 @@ type userRow struct {
 	AuthSourceID       sql.NullInt64  `db:"auth_source_id"`
 	LastLoginAt        db.NullTime    `db:"last_login_at"`
 	TwofaScheme        sql.NullString `db:"twofa_scheme"`
+	Mail               sql.NullString `db:"mail"`
 }
 
 func (r *userRow) user() *domain.User {
@@ -59,6 +60,7 @@ func (r *userRow) user() *domain.User {
 		Language:           r.Language.String,
 		LastLoginAt:        r.LastLoginAt.Ptr(),
 		TwofaScheme:        r.TwofaScheme.String,
+		Mail:               r.Mail.String,
 	}
 	if r.AuthSourceID.Valid {
 		v := r.AuthSourceID.Int64
@@ -70,7 +72,8 @@ func (r *userRow) user() *domain.User {
 const principalCols = `p.id, p.kind, p.status, p.firstname, p.lastname, p.name, p.twofa_required, p.created_at, p.updated_at`
 
 const userSelect = `SELECT ` + principalCols + `, ua.login, ua.password_hash, ua.password_changed_at, ua.must_change_password,
-  ua.admin, ua.language, ua.auth_source_id, ua.last_login_at, ua.twofa_scheme
+  ua.admin, ua.language, ua.auth_source_id, ua.last_login_at, ua.twofa_scheme,
+  (SELECT e.address FROM email_addresses e WHERE e.user_id = p.id AND e.is_default = TRUE) AS mail
 FROM principals p LEFT JOIN user_accounts ua ON ua.principal_id = p.id`
 
 func notFound(err error) error {

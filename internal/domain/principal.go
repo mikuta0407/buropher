@@ -111,6 +111,8 @@ type User struct {
 	AuthSourceID *int64
 	LastLoginAt  *time.Time
 	TwofaScheme  string
+	// Mail は既定のメールアドレス (User#mail, email_addresses.is_default)。無ければ ""。
+	Mail string
 
 	// OAuthScope は OAuth で認証されたリクエストのスコープ (User#oauth_scope=)。
 	// nil = OAuth 認証ではない。空スライス (非 nil) = スコープなしの OAuth 認証。

@@ -5,7 +5,6 @@ import (
 	"encoding/hex"
 	"html/template"
 	"net/url"
-	"reflect"
 	"regexp"
 	"sort"
 	"strconv"
@@ -13,7 +12,9 @@ import (
 	ttemplate "text/template"
 	"time"
 
+	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/httpx"
+	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/view"
 	"github.com/mikuta0407/buropher/internal/view/rails"
 )
@@ -85,7 +86,7 @@ func (d *Deps) RequestFuncs(r *view.Render) ttemplate.FuncMap {
 		"display_main_menu": func(project any) bool { return pg().displayMainMenu(toProject(project)) },
 		"render_main_menu":  func(project any) html { return d.renderMainMenu(pg(), toProject(project)) },
 		"render_menu": func(name string, project ...any) html {
-			var p Project
+			var p *domain.Project
 			if len(project) > 0 {
 				p = toProject(project[0])
 			}
@@ -96,7 +97,7 @@ func (d *Deps) RequestFuncs(r *view.Render) ttemplate.FuncMap {
 		// --- header / search ---
 		"search_path":                  func(args ...any) string { return searchPath(optHash(args)) },
 		"default_search_scope":         func() string { return pg().DefaultSearchScope },
-		"default_search_project_scope": func() any { return defaultSearchProjectScope(pg().Project) },
+		"default_search_project_scope": func() any { return defaultSearchProjectScope(pg(), pg().Project) },
 		"accesskey":                    func(name string) any { return pg().accesskey(name) },
 		"render_project_jump_box":      func() html { return d.renderProjectJumpBox(pg()) },
 		"page_header_title":            func() html { return pageHeaderTitle(pg()) },
@@ -108,8 +109,20 @@ func (d *Deps) RequestFuncs(r *view.Render) ttemplate.FuncMap {
 		"back_url":                  func() string { return backURL(pg()) },
 		"back_url_hidden_field_tag": func() html { return backURLHiddenFieldTag(pg()) },
 		"textilizable":              func(text any, args ...any) html { return Textilizable(text) },
-		"link_to_project":           func(p any, args ...any) html { return linkToProject(toProject(p), optHash(args)) },
-		"project_path":              func(p any) string { return projectPath(toProject(p)) },
+		"link_to_project": func(p any, args ...any) html {
+			var opts, htmlOpts *rails.Hash
+			if len(args) > 0 {
+				opts, _ = args[0].(*rails.Hash)
+			}
+			if len(args) > 1 {
+				htmlOpts, _ = args[1].(*rails.Hash)
+			}
+			if opts == nil {
+				opts = rails.NewHash()
+			}
+			return linkToProject(toProject(p), opts, htmlOpts)
+		},
+		"project_path": func(p any) string { return projectPath(toProject(p)) },
 		"authoring": func(created time.Time, author any, args ...any) html {
 			return d.authoring(pg(), created, author, optHash(args))
 		},
@@ -142,27 +155,20 @@ func truthy(v any) bool {
 	return true
 }
 
-func toUser(v any) User {
-	if u, ok := v.(User); ok && !isNil(u) {
+// toUser はテンプレートの値を *domain.User にする（ユーザーでなければ nil）。
+func toUser(v any) *domain.User {
+	if u, ok := v.(*domain.User); ok {
 		return u
 	}
 	return nil
 }
 
-func toProject(v any) Project {
-	if p, ok := v.(Project); ok && !isNil(p) {
+// toProject はテンプレートの値を *domain.Project にする（プロジェクトでなければ nil）。
+func toProject(v any) *domain.Project {
+	if p, ok := v.(*domain.Project); ok {
 		return p
 	}
 	return nil
-}
-
-// isNil は型付き nil ポインタを含めて nil かを返す。
-func isNil(v any) bool {
-	if v == nil {
-		return true
-	}
-	rv := reflect.ValueOf(v)
-	return rv.Kind() == reflect.Pointer && rv.IsNil()
 }
 
 // ---- head ----
@@ -227,7 +233,7 @@ func (d *Deps) javascriptHeads(p *Page) html {
 		tags += d.jsInclude("tablesort-5.2.1.min.js", "tablesort-5.2.1.number.min.js")
 	}
 	tags += d.jsInclude("application-legacy", "responsive")
-	if p.User == nil || p.User.WarnOnLeavingUnsaved() {
+	if p.pref().WarnOnLeavingUnsaved {
 		warn := rails.EscapeJavascriptString(p.l("text_warn_on_leaving_unsaved"))
 		tags += "\n" + rails.JavascriptTag("$(window).on('load', function(){ warnLeavingUnsaved('"+warn+"'); });", nil)
 	}
@@ -250,10 +256,10 @@ func (d *Deps) headsForI18n(p *Page) html {
 }
 
 // headsForAutoComplete は ApplicationHelper#heads_for_auto_complete。
-func (d *Deps) headsForAutoComplete(project Project) html {
+func (d *Deps) headsForAutoComplete(project *domain.Project) html {
 	q := "?q="
 	if project != nil {
-		q = "?project_id=" + url.QueryEscape(project.Identifier()) + "&q="
+		q = "?project_id=" + url.QueryEscape(project.Identifier) + "&q="
 	}
 	js := `{"issues":` + rails.ToJSON("/issues/auto_complete"+q) + `,"wiki_pages":` + rails.ToJSON("/wiki_pages/auto_complete"+q) + `}`
 	return rails.JavascriptTag("rm = window.rm || {};"+
@@ -379,7 +385,7 @@ func (d *Deps) FlashIcon(r *view.Render, kind string) template.HTML {
 // ---- avatars / users ----
 
 // avatar は AvatarsHelper#avatar。
-func (d *Deps) avatar(r *view.Render, p *Page, u User, opts *rails.Hash) html {
+func (d *Deps) avatar(r *view.Render, p *Page, u *domain.User, opts *rails.Hash) html {
 	opts = opts.Clone()
 	cls := "avatar"
 	if c := opts.Get("class"); c != nil {
@@ -403,21 +409,21 @@ func (d *Deps) avatar(r *view.Render, p *Page, u User, opts *rails.Hash) html {
 	if v, ok := opts.Delete("size"); ok && v != nil {
 		size, _ = strconv.Atoi(rails.ToS(v))
 	}
-	css := "avatar-color-" + strconv.FormatInt(u.ID()%8, 10) + " s" + strconv.Itoa(size) + " " + rails.ToS(opts.Get("class"))
-	return rails.ContentTag("span", u.Initials(), rails.NewHash("role", "img", "class", css, "title", opts.Get("title")))
+	css := "avatar-color-" + strconv.FormatInt(u.ID%8, 10) + " s" + strconv.Itoa(size) + " " + rails.ToS(opts.Get("class"))
+	return rails.ContentTag("span", u.Initials(p.userFormat()), rails.NewHash("role", "img", "class", css, "title", opts.Get("title")))
 }
 
 // gravatarAvatarTag は AvatarsHelper#gravatar_avatar_tag + GravatarHelper#gravatar。
-func (d *Deps) gravatarAvatarTag(r *view.Render, p *Page, u User, opts *rails.Hash) html {
+func (d *Deps) gravatarAvatarTag(r *view.Render, p *Page, u *domain.User, opts *rails.Hash) html {
 	opts.Set("default", p.setting("gravatar_default"))
 	opts.Set("class", "gravatar "+rails.ToS(opts.Get("class")))
 	if opts.Get("title") == nil {
-		opts.Set("title", u.Name(""))
+		opts.Set("title", p.userName(u, ""))
 	}
-	if rails.ToS(opts.Get("default")) == "initials" && u.Initials() != "" {
-		opts.Set("initials", u.Initials())
+	if initials := u.Initials(p.userFormat()); rails.ToS(opts.Get("default")) == "initials" && initials != "" {
+		opts.Set("initials", initials)
 	}
-	email := u.Mail()
+	email := u.Mail
 	if email == "" {
 		return ""
 	}
@@ -452,11 +458,11 @@ func gravatarURL(email string, o *rails.Hash) string {
 	return u
 }
 
-func userPath(u User) string {
+func userPath(u *domain.User) string {
 	if u == nil {
 		return ""
 	}
-	return "/users/" + strconv.FormatInt(u.ID(), 10)
+	return "/users/" + strconv.FormatInt(u.ID, 10)
 }
 
 // linkToUser は ApplicationHelper#link_to_user / link_to_principal（User の場合）。
@@ -465,7 +471,7 @@ func (d *Deps) linkToUser(p *Page, v any, opts *rails.Hash) html {
 	if u == nil {
 		return rails.H(rails.ToS(v))
 	}
-	name := u.Name(rails.ToS(opts.Get("format")))
+	name := p.userName(u, rails.ToS(opts.Get("format")))
 	if truthy(opts.Get("mention")) {
 		name = "@" + name
 	}
@@ -485,7 +491,7 @@ func (d *Deps) linkToUser(p *Page, v any, opts *rails.Hash) html {
 func searchPath(opts *rails.Hash) string {
 	path := "/search"
 	if p := toProject(opts.Get("id")); p != nil {
-		path = "/projects/" + p.Identifier() + "/search"
+		path = "/projects/" + p.Identifier + "/search"
 	}
 	if s := opts.Get("scope"); s != nil && rails.ToS(s) != "" {
 		path += "?scope=" + url.QueryEscape(rails.ToS(s))
@@ -494,8 +500,8 @@ func searchPath(opts *rails.Hash) string {
 }
 
 // defaultSearchProjectScope は default_search_project_scope（nil なら nil）。
-func defaultSearchProjectScope(p Project) any {
-	if p != nil && !p.Leaf() {
+func defaultSearchProjectScope(pg *Page, p *domain.Project) any {
+	if p != nil && !pg.projectLeaf(p) {
 		return "subprojects"
 	}
 	return nil
@@ -521,26 +527,26 @@ func (p *Page) accesskey(name string) any {
 	return key
 }
 
-func projectPath(p Project) string {
+func projectPath(p *domain.Project) string {
 	if p == nil {
 		return ""
 	}
-	return "/projects/" + p.Identifier()
+	return "/projects/" + p.Identifier
 }
 
-// linkToProject は ApplicationHelper#link_to_project。
-func linkToProject(p Project, opts *rails.Hash) html {
+// linkToProject は ApplicationHelper#link_to_project(project, options, html_options)。
+func linkToProject(p *domain.Project, opts, htmlOpts *rails.Hash) html {
 	if p == nil {
 		return ""
 	}
 	if p.Archived() {
-		return rails.H(p.Name())
+		return rails.H(p.Name)
 	}
 	u := projectPath(p)
 	if opts.Len() > 0 {
 		u += "?" + toQuery(opts)
 	}
-	return rails.LinkTo(p.Name(), u, nil)
+	return rails.LinkTo(p.Name, u, htmlOpts)
 }
 
 // toQuery は Hash#to_query（キーでソート）。
@@ -559,16 +565,63 @@ func toQuery(h *rails.Hash) string {
 }
 
 // pageHeaderTitle は ApplicationHelper#page_header_title。
-// TODO(project): 祖先プロジェクトのパンくず（ancestors.visible）は Project ドメインの完成後に実装する。
 func pageHeaderTitle(p *Page) html {
-	if p.Project == nil {
+	if p.Project == nil || p.Project.ID == 0 {
 		return rails.H(p.setting("app_title"))
 	}
-	return rails.ContentTag("span", rails.H(p.Project.Name()), rails.NewHash("class", "current-project"))
+	var b []html
+	ancestors := p.visibleAncestors(p.Project)
+	if len(ancestors) > 0 {
+		jump := rails.NewHash("jump", p.currentMenuItem())
+		root := ancestors[0]
+		ancestors = ancestors[1:]
+		b = append(b, linkToProject(root, jump, rails.NewHash("class", "root")))
+		if len(ancestors) > 2 {
+			b = append(b, rails.H("\u2026"))
+			ancestors = ancestors[len(ancestors)-2:]
+		}
+		for _, a := range ancestors {
+			b = append(b, linkToProject(a, jump, rails.NewHash("class", "ancestor")))
+		}
+	}
+	b = append(b, rails.ContentTag("span", rails.H(p.Project.Name), rails.NewHash("class", "current-project")))
+	if len(b) > 1 {
+		sep := rails.ContentTag("span", html(" &raquo; "), rails.NewHash("class", "separator"))
+		var path strings.Builder
+		for _, x := range b[:len(b)-1] {
+			path.WriteString(string(x))
+			path.WriteString(string(sep))
+		}
+		b = []html{rails.ContentTag("span", html(path.String()), rails.NewHash("class", "breadcrumbs")), b[len(b)-1]}
+	}
+	var out strings.Builder
+	for _, x := range b {
+		out.WriteString(string(x))
+	}
+	return html(out.String())
+}
+
+// visibleAncestors は project.ancestors.visible（ルートから順）。ルートなら空。
+func (p *Page) visibleAncestors(pr *domain.Project) []*domain.Project {
+	if pr.IsRoot() || p.DB == nil {
+		return nil
+	}
+	all, err := repository.ProjectAncestors(p.ctx(), p.DB, pr.ID)
+	if err != nil {
+		p.logError("project ancestors", err)
+		return nil
+	}
+	var out []*domain.Project
+	for _, a := range all {
+		if p.AllowedTo(domain.Perm("view_project"), a) {
+			out = append(out, a)
+		}
+	}
+	return out
 }
 
 // renderProjectsForJumpBox は render_projects_for_jump_box。
-func (d *Deps) renderProjectsForJumpBox(p *Page, jb *JumpBox, selected Project) html {
+func (d *Deps) renderProjectsForJumpBox(p *Page, jb *JumpBox, selected *domain.Project) html {
 	var s strings.Builder
 	jump := p.Params().String("jump")
 	if jump == "" {
@@ -577,7 +630,7 @@ func (d *Deps) renderProjectsForJumpBox(p *Page, jb *JumpBox, selected Project) 
 	link := func(pr JumpProject, level int) {
 		text := rails.ContentTag("span", pr.Name, rails.NewHash("style", "padding-inline-start:"+strconv.Itoa(level*16)+"px;"))
 		var cls any
-		if selected != nil && selected.ID() == pr.ID {
+		if selected != nil && selected.ID == pr.ID {
 			cls = "selected"
 		}
 		s.WriteString(string(rails.LinkTo(text, "/projects/"+pr.Identifier+"?jump="+url.QueryEscape(jump),
@@ -628,18 +681,10 @@ func ProjectTree(projects []JumpProject, fn func(p JumpProject, level int)) {
 
 // renderProjectJumpBox は ApplicationHelper#render_project_jump_box。
 func (d *Deps) renderProjectJumpBox(p *Page) html {
-	jb := &JumpBox{}
-	if p.JumpBox != nil {
-		if j := p.JumpBox(); j != nil {
-			jb = j
-		}
-	}
-	if !p.logged() {
-		jb.Projects = nil
-	}
+	jb := p.jumpBox()
 	text := ""
-	if p.Project != nil {
-		text = p.Project.Name()
+	if p.Project != nil && p.Project.ID != 0 {
+		text = p.Project.Name
 	}
 	if text == "" {
 		text = p.l("label_jump_to_a_project")
@@ -739,14 +784,14 @@ func (d *Deps) timeTag(p *Page, t time.Time) html {
 	}
 	text := ""
 	if p.Loc != nil {
-		text = p.Loc.DistanceOfTimeInWords(time.Now(), t)
+		text = p.Loc.DistanceOfTimeInWords(p.now(), t)
 	}
 	if p.Project != nil {
 		from := t
 		if p.Loc != nil && p.Loc.Location != nil {
 			from = t.In(p.Loc.Location)
 		}
-		return rails.LinkTo(text, "/projects/"+p.Project.Identifier()+"/activity?from="+from.Format("2006-01-02"),
+		return rails.LinkTo(text, "/projects/"+p.Project.Identifier+"/activity?from="+from.Format("2006-01-02"),
 			rails.NewHash("title", formatTime(p, t, true)))
 	}
 	return rails.ContentTag("abbr", text, rails.NewHash("title", formatTime(p, t, true)))

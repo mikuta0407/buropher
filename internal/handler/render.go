@@ -17,27 +17,23 @@ func (c *Req) Page() *helper.Page {
 		Request:            c.R,
 		Settings:           a.Settings,
 		Loc:                c.Loc,
+		User:               c.User,
 		Project:            c.Project,
 		Controller:         c.Controller.Name,
 		Action:             c.Action,
 		MainMenu:           c.Controller.MainMenu,
 		DefaultSearchScope: c.Controller.DefaultSearchScope,
 		Question:           c.Question,
+		DB:                 a.DB,
+		Now:                a.now,
+		Logger:             a.logger(),
 	}
 	if c.User != nil {
-		p.User = c.User
+		p.Pref = c.Pref()
+		p.Authz = c.Authz
 	}
 	if c.Controller.MenuItem != nil {
 		p.MenuItem = c.Controller.MenuItem(c.Action)
-	}
-	u := c.User
-	p.JumpBox = func() *helper.JumpBox {
-		jb, err := a.Users.JumpBox(c.Ctx(), u)
-		if err != nil {
-			a.logger().Error("jump box", "err", err)
-			return nil
-		}
-		return jb
 	}
 	return p
 }
@@ -73,12 +69,12 @@ func (c *Req) ViewContext() *view.Context {
 	}
 	if c.User != nil {
 		ctx.User = c.User
-		ctx.TextareaFont = c.User.TextareaFont()
+		ctx.TextareaFont = page.Pref.TextareaFont
 	}
 	if c.Project != nil {
 		ctx.Project = c.Project
-		ctx.ProjectName = c.Project.Name()
-		ctx.ProjectIdentifier = c.Project.Identifier()
+		ctx.ProjectName = c.Project.Name
+		ctx.ProjectIdentifier = c.Project.Identifier
 	}
 	if t := a.Helpers.CurrentTheme(page); t != nil {
 		ctx.Theme = t.Name
@@ -188,6 +184,11 @@ func (a *App) ErrorPage() httpx.ErrorPage {
 		if !layout {
 			opts.Layout = view.NoLayout
 		}
-		c.Render("common/error", map[string]any{"Status": status, "Message": message}, opts)
+		data := map[string]any{"Status": status, "Message": message}
+		if p := c.ArchivedProject; p != nil {
+			data["ArchivedProject"] = p
+			data["UnarchivePath"] = "/projects/" + p.Identifier + "/unarchive"
+		}
+		c.Render("common/error", data, opts)
 	})
 }

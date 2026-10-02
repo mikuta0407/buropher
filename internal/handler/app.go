@@ -19,10 +19,13 @@ import (
 	"github.com/go-chi/chi/v5"
 
 	"github.com/mikuta0407/buropher/internal/assets"
+	"github.com/mikuta0407/buropher/internal/authz"
 	"github.com/mikuta0407/buropher/internal/db"
+	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/helper"
 	"github.com/mikuta0407/buropher/internal/httpx"
 	"github.com/mikuta0407/buropher/internal/i18n"
+	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/settings"
 	"github.com/mikuta0407/buropher/internal/view"
 )
@@ -35,7 +38,6 @@ type App struct {
 	Assets   *assets.Pipeline
 	Views    *view.Engine
 	Helpers  *helper.Deps
-	Users    UserStore
 	Errors   *httpx.ErrorRenderer
 	Logger   *slog.Logger
 	// Now は現在時刻（テスト用。nil なら time.Now）。
@@ -89,7 +91,7 @@ type Controller struct {
 	MenuItem func(action string) string
 }
 
-// Filter は before_action の種類（skip_before_action の指定に使う）。
+// Filter は ApplicationController の before_action の種類（skip_before_action の指定に使う）。
 type Filter int
 
 const (
@@ -98,20 +100,18 @@ const (
 	FilterTwofaActivation
 )
 
-// ActionOption はアクション単位の設定。
+// ActionOption はアクション単位の設定（skip_before_action・コントローラの before_action・
+// accept_api_auth 等）。filters.go の Skip / FindProject / Authorize / RequireAdmin ... を参照。
 type ActionOption func(*actionConfig)
 
 type actionConfig struct {
 	skip map[Filter]bool
-}
-
-// Skip は skip_before_action。
-func Skip(filters ...Filter) ActionOption {
-	return func(c *actionConfig) {
-		for _, f := range filters {
-			c.skip[f] = true
-		}
-	}
+	// before はコントローラの before_action（宣言順に ApplicationController の before_action の後で実行）。
+	before []func(c *Req)
+	// acceptAPIAuth は accept_api_auth（API キー・HTTP Basic による認証を受け付ける）。
+	acceptAPIAuth bool
+	// acceptAtomAuth は accept_atom_auth（GET の .atom で key パラメータによる認証を受け付ける）。
+	acceptAtomAuth bool
 }
 
 // Req は 1 リクエスト分のコントローラ状態（コントローラのインスタンス変数・User.current など）。
@@ -122,15 +122,22 @@ type Req struct {
 	Controller *Controller
 	Action     string
 
-	// User は User.current。
-	User *User
+	// User は User.current（常に非 nil。匿名なら AnonymousUser）。変更は SetUser で行う。
+	User *domain.User
 	// Loc は current_language と翻訳。
 	Loc *i18n.Localizer
 	// Project は @project（nil 可）。
-	Project helper.Project
+	Project *domain.Project
+	// Projects は @projects（一括操作などで複数プロジェクトを対象にする場合。authorize が参照する）。
+	Projects []*domain.Project
+	// ArchivedProject は @archived_project（アーカイブ済みプロジェクトの 403 画面で使う）。
+	ArchivedProject *domain.Project
 	// Question は @question。
 	Question string
 
+	cfg    *actionConfig
+	authz  *authz.Authorizer
+	pref   *domain.UserPreference
 	halted bool
 }
 
@@ -174,7 +181,10 @@ func (c *Req) Halt() { c.halted = true }
 func (c *Req) Halted() bool { return c.halted }
 
 // Handle はルートを登録する。CSRF 検証（verify_authenticity_token）→ ApplicationController の
-// before_action → アクションの順に実行する。
+// before_action（session_expiration, user_setup, check_if_login_required, set_localization,
+// check_password_change, check_twofa_activation）→ opts で宣言したコントローラの before_action
+// （FindProject, Authorize ...）→ アクション → after_action（record_project_usage）の順に実行する。
+// before_action が render / redirect した（Halted）場合はアクションと after_action を実行しない。
 func (a *App) Handle(r chi.Router, method, pattern string, ctrl *Controller, action string, fn func(c *Req), opts ...ActionOption) {
 	cfg := &actionConfig{skip: map[Filter]bool{}}
 	for _, o := range opts {
@@ -182,10 +192,12 @@ func (a *App) Handle(r chi.Router, method, pattern string, ctrl *Controller, act
 	}
 	inner := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		c := a.newReq(w, r, ctrl, action)
+		c.cfg = cfg
 		if a.runBeforeActions(c, cfg) {
 			return
 		}
 		fn(c)
+		a.recordProjectUsage(c)
 	})
 	csrf := httpx.CSRFMiddleware(httpx.CSRFOptions{
 		OnFailure: httpx.RedmineCSRFFailure(httpx.RedmineCSRFFailureOptions{
@@ -206,7 +218,7 @@ func (a *App) Handle(r chi.Router, method, pattern string, ctrl *Controller, act
 }
 
 func (a *App) newReq(w http.ResponseWriter, r *http.Request, ctrl *Controller, action string) *Req {
-	c := &Req{App: a, W: w, Controller: ctrl, Action: action}
+	c := &Req{App: a, W: w, Controller: ctrl, Action: action, cfg: &actionConfig{skip: map[Filter]bool{}}}
 	r = r.WithContext(context.WithValue(r.Context(), ctxReq, c))
 	c.R = r
 	return c
@@ -222,26 +234,30 @@ func (a *App) anonymousReq(w http.ResponseWriter, r *http.Request) *Req {
 		ctrl, action = ri.ctrl, ri.action
 	}
 	c := a.newReq(w, r, ctrl, action)
-	c.User = a.anonymous(r.Context())
+	c.SetUser(a.anonymous(r.Context()))
 	a.setLocalization(c, nil)
 	return c
 }
 
-func (a *App) anonymous(ctx context.Context) *User {
-	u, err := a.Users.Anonymous(ctx)
+// anonymous は User.anonymous（組込の匿名ユーザー。DB に無ければ作成する）。
+func (a *App) anonymous(ctx context.Context) *domain.User {
+	u, err := repository.AnonymousUser(ctx, a.DB)
 	if err != nil || u == nil {
 		a.logger().Error("anonymous user", "err", err)
-		return &User{Status: StatusAnonymous, Lastname: "Anonymous", anonymous: true, PrefWarnOnLeaving: true, settings: a.Settings}
+		return &domain.User{Principal: domain.Principal{Kind: domain.KindAnonymousUser, Status: domain.StatusAnonymous, Lastname: "Anonymous"}}
 	}
 	return u
 }
 
-// runBeforeActions は ApplicationController の before_action を順に実行する。止まった場合 true。
+// runBeforeActions は ApplicationController の before_action とコントローラの before_action を
+// 順に実行する。止まった場合 true。
 func (a *App) runBeforeActions(c *Req, cfg *actionConfig) bool {
 	if a.sessionExpiration(c); c.halted {
 		return true
 	}
-	a.userSetup(c)
+	if a.userSetup(c); c.halted {
+		return true
+	}
 	if !cfg.skip[FilterLoginRequired] {
 		if a.checkIfLoginRequired(c); c.halted {
 			return true
@@ -258,177 +274,19 @@ func (a *App) runBeforeActions(c *Req, cfg *actionConfig) bool {
 			return true
 		}
 	}
+	for _, f := range cfg.before {
+		if f(c); c.halted {
+			return true
+		}
+	}
 	return false
 }
 
-// policy は Setting.session_lifetime / session_timeout。
-func (a *App) policy() httpx.ExpiryPolicy {
-	return httpx.PolicyFromMinutes(a.Settings.Int("session_lifetime"), a.Settings.Int("session_timeout"))
-}
-
-// SessionPolicy は SessionManager.Policy に渡す関数。
-func (a *App) SessionPolicy() httpx.ExpiryPolicy { return a.policy() }
-
-// sessionExpiration は ApplicationController#session_expiration。
-func (a *App) sessionExpiration(c *Req) {
-	s := c.Session()
-	if s == nil {
-		return
-	}
-	expired := (s.UserID() != 0 && s.Expired(a.policy(), a.now())) || s.Revoked()
-	if !expired {
-		return
-	}
-	if u := a.tryToAutologin(c); u != nil {
-		return
-	}
-	var user *User
-	if s.UserID() != 0 {
-		user, _ = a.Users.FindActive(c.Ctx(), s.UserID())
-	}
-	if user == nil {
-		user = a.anonymous(c.Ctx())
-	}
-	a.setLocalization(c, user)
-	a.setLoggedUser(c, nil)
-	c.Flash().SetError(c.L("error_session_expired"))
-	a.requireLogin(c)
-}
-
-// userSetup は ApplicationController#user_setup / find_current_user。
-// TODO(api): API キー（X-Redmine-API-Key / key パラメータ）・HTTP Basic・OAuth2・atom キー認証。
-func (a *App) userSetup(c *Req) {
-	var user *User
-	if !httpx.IsAPIRequest(c.R) {
-		if s := c.Session(); s != nil && s.UserID() != 0 {
-			u, err := a.Users.FindActive(c.Ctx(), s.UserID())
-			if err != nil {
-				a.logger().Error("find current user", "err", err)
-			}
-			user = u
-		} else if u := a.tryToAutologin(c); u != nil {
-			user = u
-		}
-	}
-	if user == nil {
-		user = a.anonymous(c.Ctx())
-	}
-	c.User = user
-}
-
-// tryToAutologin は ApplicationController#try_to_autologin。
-func (a *App) tryToAutologin(c *Req) *User {
-	ck, err := c.R.Cookie(a.autologinCookieName())
-	if err != nil || ck.Value == "" || !a.Settings.Bool("autologin") {
-		return nil
-	}
-	u, err := a.Users.FindTokenUser(c.Ctx(), "autologin", ck.Value, a.Settings.Int("autologin"))
-	if err != nil {
-		a.logger().Error("autologin", "err", err)
-		return nil
-	}
-	if u == nil {
-		return nil
-	}
-	_ = a.Users.UpdateLastLogin(c.Ctx(), u.ID(), a.now())
-	if s := c.Session(); s != nil {
-		s.Reset()
-		a.startUserSession(c, u)
-	}
-	c.User = u
-	return u
-}
-
-// startUserSession は ApplicationController#start_user_session。
-func (a *App) startUserSession(c *Req, u *User) {
-	s := c.Session()
-	s.SetUserID(u.ID())
-	if u.MustChangePassword() {
-		s.Set("pwd", "1")
-	}
-	if u.MustActivateTwofa() {
-		s.Set("must_activate_twofa", "1")
-	}
-}
-
-// setLoggedUser は ApplicationController#logged_user=。
-func (a *App) setLoggedUser(c *Req, u *User) {
-	if s := c.Session(); s != nil {
-		s.Reset()
-	}
-	if u != nil {
-		c.User = u
-		if c.Session() != nil {
-			a.startUserSession(c, u)
-		}
-	} else {
-		c.User = a.anonymous(c.Ctx())
-	}
-}
-
-// logoutUser は ApplicationController#logout_user。
-func (a *App) logoutUser(c *Req) {
-	if !c.User.Logged() {
-		return
-	}
-	if ck, err := c.R.Cookie(a.autologinCookieName()); err == nil {
-		a.deleteAutologinCookie(c)
-		if ck.Value != "" {
-			_ = a.Users.DeleteToken(c.Ctx(), c.User.ID(), "autologin", ck.Value)
-		}
-	}
-	a.setLoggedUser(c, nil)
-}
-
-func (a *App) deleteAutologinCookie(c *Req) {
-	http.SetCookie(c.W, &http.Cookie{Name: a.autologinCookieName(), Value: "", Path: a.autologinCookiePath(), MaxAge: -1, Expires: time.Unix(0, 0)})
-}
-
-// checkIfLoginRequired は ApplicationController#check_if_login_required。
-func (a *App) checkIfLoginRequired(c *Req) {
-	if c.User.Logged() {
-		return
-	}
-	if a.Settings.Bool("login_required") {
-		a.requireLogin(c)
-	}
-}
-
-// checkPasswordChange は ApplicationController#check_password_change。
-func (a *App) checkPasswordChange(c *Req) {
-	s := c.Session()
-	if s == nil || !s.Has("pwd") {
-		return
-	}
-	if c.User.MustChangePassword() {
-		c.Flash().SetError(c.L("error_password_expired"))
-		c.Redirect("/my/password")
-		return
-	}
-	s.Delete("pwd")
-}
-
-// checkTwofaActivation は ApplicationController#check_twofa_activation。
-// TODO(twofa): 2FA 実装後に init_twofa_pairing_and_send_code_for を移植する（現在は画面へリダイレクトのみ）。
-func (a *App) checkTwofaActivation(c *Req) {
-	s := c.Session()
-	if s == nil || !s.Has("must_activate_twofa") {
-		return
-	}
-	if c.User.MustActivateTwofa() {
-		c.Flash().SetWarning(c.L("twofa_warning_require"))
-		// 利用可能な方式は totp のみ
-		c.Redirect("/my/twofa/totp/activate/confirm")
-		return
-	}
-	s.Delete("must_activate_twofa")
-}
-
 // setLocalization は ApplicationController#set_localization。
-func (a *App) setLocalization(c *Req, user *User) {
+func (a *App) setLocalization(c *Req, user *domain.User) {
 	lang := ""
 	if user != nil && user.Logged() {
-		lang = a.Bundle.FindLanguage(user.EffectiveLanguage())
+		lang = a.Bundle.FindLanguage(a.userLanguage(user))
 	}
 	if lang == "" && !a.Settings.Bool("force_default_language_for_anonymous") {
 		if al := c.R.Header.Get("Accept-Language"); al != "" {
@@ -452,8 +310,10 @@ func (a *App) setLocalization(c *Req, user *User) {
 		DefaultLanguage: a.Settings.String("default_language"),
 	}
 	var loc *time.Location
-	if user != nil && user.PrefTimeZone != "" {
-		loc = i18n.UserLocation(user.PrefTimeZone)
+	if user != nil && user.Logged() {
+		if tz := a.preference(c, user).TimeZone; tz != "" {
+			loc = i18n.UserLocation(tz)
+		}
 	}
 	// set_language_if_valid: 無効なら現在の言語（既定 en）のまま
 	cur := "en"
@@ -520,7 +380,7 @@ func (a *App) requireLogin(c *Req) bool {
 	case format == "atom" || format == "pdf" || format == "csv":
 		c.Redirect(signin)
 	case format == "xml" || format == "json":
-		if a.Settings.Bool("rest_api_enabled") {
+		if a.Settings.Bool("rest_api_enabled") && c.cfg.acceptAPIAuth {
 			c.W.Header().Set("WWW-Authenticate", `Basic realm="Redmine API"`)
 			httpx.Head(c.W, c.R, http.StatusUnauthorized)
 		} else {
