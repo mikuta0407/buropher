@@ -49,8 +49,11 @@ require (
 )
 
 require (
+	github.com/alecthomas/chroma/v2 v2.27.0
 	github.com/dlclark/regexp2 v1.12.0
+	github.com/dlclark/regexp2/v2 v2.8.1
 	github.com/go-sql-driver/mysql v1.10.0
 	github.com/klauspost/compress v1.19.2
 	github.com/microsoft/go-mssqldb v1.11.0
+	github.com/yuin/goldmark v1.8.6
 )

@@ -53,6 +53,12 @@ func New(q db.Queryer, user *domain.User) *Authorizer {
 // User は主体のユーザを返す。
 func (a *Authorizer) User() *domain.User { return a.user }
 
+// Queryer は判定に使う DB ハンドルを返す。
+func (a *Authorizer) Queryer() db.Queryer { return a.q }
+
+// Dialect は DB の dialect を返す (SQL 断片を組み立てる呼び出し側向け)。
+func (a *Authorizer) Dialect() db.Dialect { return a.q.Dialect() }
+
 // BuiltinRole は User#builtin_role (匿名なら Anonymous ロール、それ以外は Non member ロール)。
 func (a *Authorizer) BuiltinRole(ctx context.Context) (*domain.Role, error) {
 	if a.builtinRole == nil {
