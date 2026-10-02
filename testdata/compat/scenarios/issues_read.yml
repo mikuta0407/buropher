@@ -176,3 +176,25 @@ requests:
     users: [admin]
   - path: /journals/999/diff
     users: [admin]
+
+  # ---- コンテキストメニュー ----
+  - path: /issues/context_menu?ids[]=1&back_url=/issues
+    users: [admin, jsmith, dlopper, anonymous]
+  - path: /issues/context_menu?ids[]=2&back_url=/projects/ecookbook/issues
+    users: [admin, jsmith]
+  - path: /issues/context_menu?ids[]=1&ids[]=2&back_url=/issues
+    users: [admin, jsmith]
+  - path: /issues/context_menu?ids[]=1&ids[]=4&back_url=/issues
+    users: [admin, jsmith]
+  - path: /issues/context_menu?ids[]=1&ids[]=2&back_url=/issues&c[]=subject&c[]=status
+    users: [admin]
+  - path: /issues/context_menu?ids[]=8
+    users: [admin]
+  - path: /issues/context_menu?ids[]=1&back_url=/issues/1
+    users: [jsmith]
+  - path: /issues/context_menu?ids[]=6&back_url=/issues
+    users: [dlopper, jsmith]
+  - path: /issues/context_menu?ids[]=999
+    users: [admin]
+  - path: /issues/context_menu?ids[]=13&ids[]=14&back_url=/issues/gantt
+    users: [admin]

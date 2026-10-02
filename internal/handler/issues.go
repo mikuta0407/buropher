@@ -32,6 +32,7 @@ func (a *App) routesIssues(r Router) {
 		FindOptionalProject(), AcceptAtomAuth(), AcceptAPIAuth())
 	a.Handle(r, http.MethodGet, "/projects/{project_id}/issues", IssuesController, "index", a.IssuesIndex,
 		FindOptionalProject(), AcceptAtomAuth(), AcceptAPIAuth())
+	a.routesContextMenusIssues(r)
 	a.Handle(r, http.MethodGet, "/issues/{id}", IssuesController, "show", a.IssuesShow,
 		Before(a.findIssue), Authorize(), AcceptAtomAuth(), AcceptAPIAuth())
 	a.Handle(r, http.MethodGet, "/issues/{id}/tab/{name}", IssuesController, "issue_tab", a.IssuesTab,
