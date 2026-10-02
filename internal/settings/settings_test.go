@@ -65,9 +65,9 @@ func TestSetAllFromParams(t *testing.T) {
 	s := newTest(t, nil)
 	ctx := context.Background()
 	changed, errs, err := s.SetAllFromParams(ctx, map[string]any{
-		"app_title":           "X",
-		"password_min_length": "10",
-		"lost_password":       "0",
+		"app_title":                  "X",
+		"password_min_length":        "10",
+		"lost_password":              "0",
 		"issue_list_default_columns": []any{"tracker", "", "status"},
 	}, nil)
 	if err != nil || len(errs) > 0 {

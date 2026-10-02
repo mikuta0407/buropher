@@ -11,7 +11,7 @@ import (
 // 有効な優先度を position 順に並べ、既定（なければ中央）を基準に CSS 用の名前を付ける。
 func ComputePriorityPositionNames(ctx context.Context, q db.Queryer) error {
 	var ps []struct {
-		ID        int64 `db:"id"`
+		ID       int64 `db:"id"`
 		Position int   `db:"position"`
 	}
 	if err := q.Select(ctx, &ps, `SELECT id, position FROM issue_priorities WHERE active = ? ORDER BY position`, true); err != nil {
