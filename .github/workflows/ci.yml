@@ -1,8 +1,24 @@
 name: ci
 on: [push, pull_request]
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - run: go vet ./...
+      - run: make build
+      - run: ./bin/buropher version
+
   test:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # 長時間かかるパッケージを分けて並列に実行する
+        group: [server, query-issues, rest]
     services:
       postgres:
         image: postgres:17-alpine
@@ -17,6 +33,13 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version-file: go.mod
-      - run: go vet ./...
-      - run: go test ./...
-      - run: make build
+      - name: select packages
+        run: |
+          slow='github.com/mikuta0407/buropher/internal/(server|query|issues)$'
+          case "${{ matrix.group }}" in
+            server)       pkgs=./internal/server/ ;;
+            query-issues) pkgs="./internal/query/ ./internal/issues/" ;;
+            rest)         pkgs=$(go list ./... | grep -Ev "$slow" | tr '\n' ' ') ;;
+          esac
+          echo "PKGS=$pkgs" >> "$GITHUB_ENV"
+      - run: go test -timeout 30m $PKGS

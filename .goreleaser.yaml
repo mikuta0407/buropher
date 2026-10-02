@@ -1,0 +1,63 @@
+# GoReleaser configuration (https://goreleaser.com). Run by .github/workflows/release.yml on v* tags.
+# Local dry run: goreleaser release --snapshot --clean
+version: 2
+
+project_name: buropher
+
+before:
+  hooks:
+    - go mod download
+
+builds:
+  - id: buropher
+    main: ./cmd/buropher
+    binary: buropher
+    env:
+      - CGO_ENABLED=0
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w
+      - -X main.version={{ .Version }}
+      - -X main.commit={{ .FullCommit }}
+      - -X main.date={{ .CommitDate }}
+    mod_timestamp: "{{ .CommitTimestamp }}"
+    goos: [linux, darwin, windows]
+    goarch: [amd64, arm64]
+    ignore:
+      - goos: windows
+        goarch: arm64
+
+archives:
+  - id: buropher
+    formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    files:
+      - LICENSE
+      - README.md
+      - config.example.toml
+      - docs/*.md
+      - packaging/systemd/buropher.service
+
+checksum:
+  name_template: checksums.txt
+  algorithm: sha256
+
+snapshot:
+  version_template: "{{ incpatch .Version }}-next"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^Merge "
+
+release:
+  github:
+    owner: mikuta0407
+    name: buropher
+  draft: true
+  prerelease: auto

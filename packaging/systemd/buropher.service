@@ -1,0 +1,46 @@
+# systemd unit for buropher. See docs/install.md.
+#   useradd --system --home-dir /var/lib/buropher --shell /usr/sbin/nologin buropher
+#   install -m 0755 buropher /usr/local/bin/buropher
+#   install -m 0640 -o root -g buropher config.example.toml /etc/buropher/config.toml
+#   cp buropher.service /etc/systemd/system/ && systemctl daemon-reload
+#   sudo -u buropher buropher init -config /etc/buropher/config.toml
+#   systemctl enable --now buropher
+[Unit]
+Description=buropher (Redmine-compatible issue tracker)
+Documentation=https://github.com/mikuta0407/buropher
+After=network-online.target
+Wants=network-online.target
+# Uncomment when PostgreSQL runs on the same host.
+#After=postgresql.service
+
+[Service]
+Type=simple
+User=buropher
+Group=buropher
+WorkingDirectory=/var/lib/buropher
+ExecStart=/usr/local/bin/buropher serve -config /etc/buropher/config.toml
+Restart=on-failure
+RestartSec=5s
+# Optional overrides (BUROPHER_* variables take precedence over the config file).
+#EnvironmentFile=-/etc/buropher/buropher.env
+StateDirectory=buropher
+StateDirectoryMode=0750
+
+# Hardening
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+RestrictNamespaces=true
+LockPersonality=true
+ReadWritePaths=/var/lib/buropher
+# Add the directories of local Git repositories (read-only is enough):
+#ReadOnlyPaths=/srv/git
+
+[Install]
+WantedBy=multi-user.target

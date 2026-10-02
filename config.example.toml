@@ -1,0 +1,143 @@
+# buropher configuration example.
+#
+# Copy to config.toml (or /etc/buropher/config.toml) and pass it with `-config <path>`.
+# Every key is optional; the values shown (commented out) are the built-in defaults.
+# Most keys can also be set with BUROPHER_* environment variables, which override this file.
+# See docs/configuration.md for details. Application settings (host name, protocol, text
+# formatting, authentication options, ...) are stored in the database and edited in
+# Administration > Settings, as in Redmine.
+
+# Development only: load templates/assets from this directory instead of the embedded copy.
+# Top-level keys must come before the first [table]. env: BUROPHER_DEV_WEB_DIR
+#dev_web_dir = ""
+
+[server]
+# Listen address. env: BUROPHER_ADDR
+#addr = ":3000"
+
+# Public base URL without trailing slash, e.g. "https://redmine.example.com".
+# Used for OIDC redirect URIs. Links in e-mails use "Host name and path" and "Protocol"
+# in Administration > Settings > General. Sub-path deployment is not supported.
+# env: BUROPHER_BASE_URL
+#base_url = ""
+
+# Secret used to sign sessions/CSRF tokens and to encrypt stored secrets (TOTP keys,
+# LDAP bind passwords, repository passwords, OIDC/Discord client secrets).
+# If empty, a random key is generated once and stored in <data dir>/secret_key
+# (<data dir> = directory of the SQLite database, or ./data for PostgreSQL).
+# Keep it stable: changing it logs everyone out and makes stored secrets unreadable.
+# `buropher redmine import --secret-key` must use the same value.
+# env: BUROPHER_SECRET_KEY
+#secret_key = ""
+
+[database]
+# "sqlite" or "postgres". env: BUROPHER_DB_DRIVER
+#driver = "sqlite"
+
+# SQLite: file path (parent directories are created). PostgreSQL: a libpq/pgx DSN,
+# e.g. "postgres://buropher:secret@localhost:5432/buropher?sslmode=disable".
+# env: BUROPHER_DB_DSN
+#dsn = "data/buropher.db"
+
+[storage]
+# Attachment storage directory (Redmine's attachments_storage_path).
+# env: BUROPHER_ATTACHMENTS_PATH
+#attachments_path = "data/files"
+
+[mail]
+# "smtp", "sendmail" or "none". Empty = e-mails are not delivered (like Redmine without
+# email_delivery). env: BUROPHER_MAIL_DELIVERY
+#delivery_method = ""
+
+[mail.smtp]
+#address = ""                   # env: BUROPHER_SMTP_ADDRESS
+#port = 25                      # env: BUROPHER_SMTP_PORT (0 = 25, or 465 when tls = true)
+#domain = ""                    # HELO domain. env: BUROPHER_SMTP_DOMAIN
+#user_name = ""                 # env: BUROPHER_SMTP_USER_NAME
+#password = ""                  # env: BUROPHER_SMTP_PASSWORD
+#authentication = ""            # "plain", "login" or "cram_md5". env: BUROPHER_SMTP_AUTH
+#enable_starttls_auto = true    # use STARTTLS when the server offers it
+#tls = false                    # implicit TLS (SMTPS)
+#openssl_verify_mode = "peer"   # "peer" or "none"
+#timeout = 30                   # seconds
+
+[mail.sendmail]
+#location = "/usr/sbin/sendmail"
+#arguments = ["-i"]
+
+[jobs]
+# Background job workers started by `serve` (notifications, Discord DMs, ...).
+# 0 = 2 workers; negative = no workers (run `buropher jobs run` from cron instead).
+#workers = 2
+#poll_interval = "2s"            # Go duration
+#max_attempts = 10
+# Interval for deleting expired sessions/tokens and old job records.
+#cleanup_interval = "1h"
+#jobs_retention_days = 7
+#deliveries_retention_days = 30
+
+[jobs.reminders]
+# Built-in scheduler for due date reminders (rake redmine:send_reminders).
+#enabled = false
+#at = "08:00"                    # daily, in the server's local time zone (TZ)
+#days = 7
+#tracker = 0                     # tracker id, 0 = all
+#project = ""                    # project id or identifier, empty = all
+#users = []                      # user/group ids, empty = all
+#version = ""                    # target version name
+
+[auth]
+# Ask for the password again before administrative actions (Redmine's sudo_mode).
+# env: BUROPHER_SUDO_MODE ("1"/"true")
+#sudo_mode = false
+#sudo_mode_timeout = 15          # minutes
+
+[discord]
+# Enables Discord DM notifications (configured in Administration > Plugins). See docs/discord.md.
+#enabled = false
+#api_base = "https://discord.com/api/v10"            # env: BUROPHER_DISCORD_API_BASE
+#authorize_url = "https://discord.com/oauth2/authorize"
+
+[pdf]
+# Extra TrueType fonts for PDF export (CJK etc.). See docs/pdf.md.
+#font_dir = ""                   # env: BUROPHER_PDF_FONT_DIR
+[pdf.fonts]
+#ja = "ipaexg.ttf"
+#zh = "regular.ttf,bold.ttf"
+
+[scm]
+# Git executable (Redmine's scm_git_command). env: BUROPHER_SCM_GIT_COMMAND
+#git_command = "git"
+# Fetch changesets of all repositories periodically, e.g. "15m". Empty = disabled
+# (changesets are then fetched on browse when "Fetch commits automatically" is enabled
+# in Administration > Settings > Repositories, or via /sys/fetch_changesets).
+# env: BUROPHER_SCM_FETCH_INTERVAL
+#fetch_interval = ""
+
+[web]
+# Directory of additional themes (each <theme>/stylesheets/application.css), like Redmine's themes/.
+# Themes are read at startup. env: BUROPHER_THEMES_DIR
+#themes_dir = ""
+
+[mail_receive]
+# Poll a mailbox periodically and feed emails to the mail handler
+# (instead of cron + rake redmine:email:receive_imap / receive_pop3). See `buropher mail receive -h`.
+#protocol = ""                   # "imap" or "pop3"; empty = disabled
+#interval = 300                  # seconds
+#host = ""
+#port = ""
+#ssl = ""                        # non-empty = use SSL/TLS; "force" = do not verify the certificate
+#starttls = false
+#username = ""
+#password = ""
+#folder = "INBOX"                # IMAP only
+#move_on_success = ""            # IMAP only
+#move_on_failure = ""            # IMAP only
+#apop = false                    # POP3 only
+#delete_unprocessed = false      # POP3 only
+[mail_receive.options]
+# MailHandler options with the same names as the rake variables, e.g.:
+#unknown_user = "ignore"         # ignore | accept | create
+#project = "ecookbook"
+#tracker = "Bug"
+#allow_override = "tracker,priority"

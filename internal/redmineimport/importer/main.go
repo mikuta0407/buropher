@@ -4,6 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"github.com/mikuta0407/buropher/internal/config"
 	"io"
 	"log/slog"
 	"os"
@@ -53,6 +54,14 @@ func mainWith(args []string, stdout, stderr io.Writer) error {
 	if archivePath == "" {
 		fs.Usage()
 		return fmt.Errorf("archive is required")
+	}
+	if opt.NewCipherKey == "" {
+		// serve と同じ鍵（設定 → データディレクトリの secret_key → 生成）を使う
+		key, err := config.SecretKey(&config.Config{Database: config.Database{Driver: driver, DSN: dsn}})
+		if err != nil {
+			return err
+		}
+		opt.NewCipherKey = string(key)
 	}
 	level := slog.LevelInfo
 	if quiet {

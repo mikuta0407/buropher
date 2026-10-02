@@ -9,8 +9,6 @@ package server
 
 import (
 	"context"
-	"crypto/rand"
-	"encoding/hex"
 	"errors"
 	"fmt"
 	"io/fs"
@@ -19,7 +17,6 @@ import (
 	"os"
 	"path/filepath"
 	"runtime/debug"
-	"strings"
 	"text/template"
 	"time"
 
@@ -225,37 +222,11 @@ func newViews(cfg *config.Config, helpers *helper.Deps) (*view.Engine, error) {
 	return view.New(opts)
 }
 
-// dataDir は実行時データの置き場（SQLite なら DB ファイルのディレクトリ、それ以外は data）。
-func dataDir(cfg *config.Config) string {
-	if cfg.Database.Driver == "sqlite" && cfg.Database.DSN != ":memory:" && !strings.HasPrefix(cfg.Database.DSN, "file:") {
-		return filepath.Dir(cfg.Database.DSN)
-	}
-	return "data"
-}
+// dataDir は実行時データの置き場（config.DataDir）。
+func dataDir(cfg *config.Config) string { return config.DataDir(cfg) }
 
-// secretKey は config の secret_key を返す。未設定なら data/secret_key を読み、なければ生成して保存する。
-func secretKey(cfg *config.Config) ([]byte, error) {
-	if cfg.Server.SecretKey != "" {
-		return []byte(cfg.Server.SecretKey), nil
-	}
-	path := filepath.Join(dataDir(cfg), "secret_key")
-	if b, err := os.ReadFile(path); err == nil && len(strings.TrimSpace(string(b))) > 0 {
-		return []byte(strings.TrimSpace(string(b))), nil
-	}
-	var buf [64]byte
-	if _, err := rand.Read(buf[:]); err != nil {
-		return nil, err
-	}
-	key := hex.EncodeToString(buf[:])
-	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
-		return nil, err
-	}
-	if err := os.WriteFile(path, []byte(key+"\n"), 0o600); err != nil {
-		return nil, fmt.Errorf("write %s: %w", path, err)
-	}
-	slog.Info("generated session secret", "path", path)
-	return []byte(key), nil
-}
+// secretKey は config.SecretKey。
+func secretKey(cfg *config.Config) ([]byte, error) { return config.SecretKey(cfg) }
 
 // defaultHeaders は Redmine（Rails）の既定のレスポンスヘッダ。
 func defaultHeaders(next http.Handler) http.Handler {

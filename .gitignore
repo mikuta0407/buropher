@@ -10,3 +10,5 @@
 # 互換テストのレポート出力
 /compat-report/
 /compat
+# goreleaser の出力
+/dist/

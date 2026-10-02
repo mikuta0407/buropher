@@ -1,0 +1,13 @@
+.git
+.github
+.claude
+_planning
+_reference
+bin
+data
+compat
+compat-report
+config.toml
+dist
+testdata
+tools
