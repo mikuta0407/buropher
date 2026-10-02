@@ -1,0 +1,35 @@
+status: 200
+content-type: application/json
+
+{
+  "time_entry": {
+    "id": 1,
+    "project": {
+      "id": 1,
+      "name": "eCookbook"
+    },
+    "issue": {
+      "id": 1
+    },
+    "user": {
+      "id": 2,
+      "name": "John Smith"
+    },
+    "activity": {
+      "id": 9,
+      "name": "Design"
+    },
+    "hours": 4.25,
+    "comments": "My hours",
+    "spent_on": "2007-03-23",
+    "created_on": "2007-03-23T11:54:18Z",
+    "updated_on": "2007-03-23T11:54:18Z",
+    "custom_fields": [
+      {
+        "id": 10,
+        "name": "Overtime",
+        "value": null
+      }
+    ]
+  }
+}

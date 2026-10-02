@@ -1,0 +1,6 @@
+<h2>{{l "label_version_new"}}</h2>
+
+{{$f := labelled_form_for "" .Version (hash "url" .CreatePath "html" (hash "multipart" true))}}{{$f.Open}}
+{{partial "versions/form" (dict "f" $f)}}
+{{submit_tag (l "button_create")}}
+{{end_form}}

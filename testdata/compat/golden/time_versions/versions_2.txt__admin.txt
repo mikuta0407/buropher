@@ -1,0 +1,11 @@
+status: 200
+content-type: text/plain
+
+# 1.0
+
+02/04/2026
+
+Stable release
+
+* Feature request #2: Add ingredients categories
+* Bug #12: Closed issue on a locked version

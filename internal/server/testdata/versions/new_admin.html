@@ -1,0 +1,52 @@
+<title>eCookbook - Redmine</title>
+----
+<!-- page specific tags -->
+<script>
+//<![CDATA[
+var datepickerOptions={dateFormat: 'yy-mm-dd', firstDay: 0, showOn: 'button', buttonImageOnly: true, buttonImage: '/assets/calendar-DIGEST.png', showButtonPanel: true, showWeek: true, showOtherMonths: true, selectOtherMonths: true, changeMonth: true, changeYear: true, beforeShow: beforeShowDatePicker};
+//]]>
+</script></head>
+----
+<div id="main" class="nosidebar">
+  
+    <div id="sidebar">
+        <div id="sidebar-wrapper">
+          
+          
+        </div>
+    </div>
+
+    <div id="content">
+        
+        <h2>New version</h2>
+
+<form class="new_version" id="new_version" enctype="multipart/form-data" action="/projects/ecookbook/versions" accept-charset="UTF-8" name="new_version-RANDOM" method="post"><input type="hidden" name="authenticity_token" value="{{CSRF}}" autocomplete="off" />
+
+
+
+<div class="box tabular">
+<p><label for="version_name">Name<span class="required"> *</span></label><input maxlength="60" size="60" type="text" name="version[name]" id="version_name" /></p>
+<p><label for="version_description">Description</label><input size="60" type="text" value="" name="version[description]" id="version_description" /></p>
+<p><label for="version_wiki_page_title">Wiki page</label><input size="60" type="text" name="version[wiki_page_title]" id="version_wiki_page_title" /></p>
+<p><label for="version_effective_date">Due date</label><input max="9999-12-31" size="10" type="date" name="version[effective_date]" id="version_effective_date" /><script>
+//<![CDATA[
+$(function() { $('#version_effective_date').addClass('date').datepickerFallback(datepickerOptions); });
+//]]>
+</script></p>
+<p><label for="version_sharing">Sharing</label><select name="version[sharing]" id="version_sharing"><option selected="selected" value="none">Not shared</option>
+<option value="descendants">With subprojects</option>
+<option value="hierarchy">With project hierarchy</option>
+<option value="tree">With project tree</option>
+<option value="system">With all projects</option></select></p>
+<p><label for="version_default_project_version">Default version</label><input name="version[default_project_version]" type="hidden" value="0" autocomplete="off" /><input type="checkbox" value="1" name="version[default_project_version]" id="version_default_project_version" /></p>
+
+
+</div>
+
+<input type="submit" name="commit" value="Create" data-disable-with="Create" />
+</form>
+        
+        <div style="clear:both;"></div>
+    </div>
+</div>
+<div id="footer">

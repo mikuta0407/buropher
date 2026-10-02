@@ -1,0 +1,50 @@
+{{form_tag (printf "/projects/%s/roadmap" current_project.Identifier) (hash "method" "get")}}
+{{hidden_field_tag "tracker_ids[]" nil (hash "id" nil)}}
+<h3>{{l "label_roadmap"}}</h3>
+<ul>
+{{range $tracker := .Trackers}}
+  <li>
+    <label>
+      {{check_box_tag "tracker_ids[]" $tracker.ID $tracker.Selected (hash "id" nil)}}
+      {{$tracker.Name}}
+    </label>
+  </li>
+{{end}}
+</ul>
+<p></p>
+<ul>
+  <li>
+    <label for="completed">
+      {{check_box_tag "completed" 1 .Completed}} {{l "label_show_completed_versions"}}
+    </label>
+  </li>
+  {{if .HasSubprojects}}
+  <li>
+    {{hidden_field_tag "with_subprojects" 0 (hash "id" nil)}}
+    <label>
+      {{check_box_tag "with_subprojects" 1 .WithSubprojects}} {{l "label_subproject_plural"}}
+    </label>
+  </li>
+  {{end}}
+</ul>
+<p>{{submit_tag (l "button_apply") (hash "class" "button-small" "name" nil)}}</p>
+{{end_form}}
+
+<h3>{{l "label_version_plural"}}</h3>
+<ul>
+{{range $v := .SideVersions}}
+  <li>
+    {{link_to $v.Name (printf "#%s" $v.Anchor)}}
+  </li>
+{{end}}
+</ul>
+{{if .CompletedVersions}}
+<p>
+  {{link_to_function (sprite_icon "angle-right" (l "label_completed_versions") (hash "rtl" true)) "$(\"#toggle-completed-versions\").toggleClass(\"icon-collapsed icon-expanded\"); $(\"#completed-versions\").toggle(); toggleExpendCollapseIcon(this);" (hash "id" "toggle-completed-versions" "class" "icon icon-collapsed collapsible")}}
+  <ul id = "completed-versions" style = "display:none;">
+    {{range $l := .CompletedVersions}}
+      <li>{{$l}}</li>
+    {{end}}
+  </ul>
+</p>
+{{end}}

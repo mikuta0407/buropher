@@ -1,0 +1,22 @@
+{{$f := .f}}{{$version := (assigns).Version -}}
+{{back_url_hidden_field_tag}}
+{{error_messages_for $version.Errors}}
+
+<div class="box tabular">
+<p>{{$f.TextField "name" (hash "maxlength" 60 "size" 60 "required" true)}}</p>
+<p>{{$f.TextField "description" (hash "size" 60)}}</p>
+{{if not $version.NewRecord}}
+  <p>{{$f.Select "status" (assigns).StatusOptions}}</p>
+{{end}}
+<p>{{$f.TextField "wiki_page_title" (hash "label" (sym "label_wiki_page") "size" 60 "disabled" (assigns).NoWiki)}}</p>
+<p>{{$f.DateField "effective_date" (hash "size" 10)}}{{calendar_for "version_effective_date"}}</p>
+<p>{{$f.Select "sharing" (assigns).SharingOptions}}</p>
+{{if $version.NewRecord}}
+<p>{{$f.CheckBox "default_project_version" (hash "label" (sym "field_default_version"))}}</p>
+{{end}}
+
+{{range $value := $version.CustomValues}}
+  <p>{{custom_field_tag_with_label "version" $value}}</p>
+{{end}}
+
+</div>

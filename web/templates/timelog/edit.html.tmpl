@@ -1,0 +1,7 @@
+<h2>{{l "label_spent_time"}}</h2>
+
+{{$f := labelled_form_for "" .F.Form (hash "url" .F.URL "html" (hash "multipart" true))}}{{$f.Open}}
+  {{partial "timelog/form" (dict "f" $f "d" .F)}}
+  {{submit_tag (l "button_save")}}
+  {{link_to (l "button_cancel") .F.CancelURL}}
+{{end_form}}

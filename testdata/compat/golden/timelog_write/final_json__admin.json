@@ -1,0 +1,292 @@
+status: 200
+content-type: application/json
+
+{
+  "time_entries": [
+    {
+      "id": 6,
+      "project": {
+        "id": 1,
+        "name": "eCookbook"
+      },
+      "user": {
+        "id": 2,
+        "name": "John Smith"
+      },
+      "activity": {
+        "id": 9,
+        "name": "Design"
+      },
+      "hours": 1.0,
+      "comments": "",
+      "spent_on": "2027-01-01",
+      "created_on": "TIMESTAMP",
+      "updated_on": "TIMESTAMP",
+      "custom_fields": [
+        {
+          "id": 10,
+          "name": "Overtime",
+          "value": "0"
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "project": {
+        "id": 1,
+        "name": "eCookbook"
+      },
+      "user": {
+        "id": 2,
+        "name": "John Smith"
+      },
+      "activity": {
+        "id": 10,
+        "name": "Development"
+      },
+      "hours": 1.0,
+      "comments": "",
+      "spent_on": "2026-01-15",
+      "created_on": "TIMESTAMP",
+      "updated_on": "TIMESTAMP",
+      "custom_fields": [
+        {
+          "id": 10,
+          "name": "Overtime",
+          "value": "0"
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "project": {
+        "id": 1,
+        "name": "eCookbook"
+      },
+      "user": {
+        "id": 1,
+        "name": "Redmine Admin"
+      },
+      "activity": {
+        "id": 9,
+        "name": "Design"
+      },
+      "hours": 0.5,
+      "comments": "",
+      "spent_on": "2026-01-14",
+      "created_on": "TIMESTAMP",
+      "updated_on": "TIMESTAMP",
+      "custom_fields": [
+        {
+          "id": 10,
+          "name": "Overtime",
+          "value": "0"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "project": {
+        "id": 3,
+        "name": "eCookbook Subproject 1"
+      },
+      "user": {
+        "id": 1,
+        "name": "Redmine Admin"
+      },
+      "activity": {
+        "id": 10,
+        "name": "Development"
+      },
+      "hours": 3.0,
+      "comments": "",
+      "spent_on": "2026-01-13",
+      "created_on": "TIMESTAMP",
+      "updated_on": "TIMESTAMP",
+      "custom_fields": [
+        {
+          "id": 10,
+          "name": "Overtime",
+          "value": "0"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "project": {
+        "id": 1,
+        "name": "eCookbook"
+      },
+      "issue": {
+        "id": 1
+      },
+      "user": {
+        "id": 3,
+        "name": "Dave Lopper"
+      },
+      "activity": {
+        "id": 11,
+        "name": "QA"
+      },
+      "hours": 0.75,
+      "comments": "",
+      "spent_on": "2026-01-12",
+      "created_on": "TIMESTAMP",
+      "updated_on": "TIMESTAMP",
+      "custom_fields": [
+        {
+          "id": 10,
+          "name": "Overtime",
+          "value": "0"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "project": {
+        "id": 1,
+        "name": "eCookbook"
+      },
+      "issue": {
+        "id": 3
+      },
+      "user": {
+        "id": 2,
+        "name": "John Smith"
+      },
+      "activity": {
+        "id": 10,
+        "name": "Development"
+      },
+      "hours": 2.5,
+      "comments": "continue",
+      "spent_on": "2026-01-11",
+      "created_on": "TIMESTAMP",
+      "updated_on": "TIMESTAMP",
+      "custom_fields": [
+        {
+          "id": 10,
+          "name": "Overtime",
+          "value": "0"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "project": {
+        "id": 1,
+        "name": "eCookbook"
+      },
+      "issue": {
+        "id": 1
+      },
+      "user": {
+        "id": 2,
+        "name": "John Smith"
+      },
+      "activity": {
+        "id": 9,
+        "name": "Design"
+      },
+      "hours": 1.5,
+      "comments": "Created by jsmith",
+      "spent_on": "2026-01-10",
+      "created_on": "TIMESTAMP",
+      "updated_on": "TIMESTAMP",
+      "custom_fields": [
+        {
+          "id": 10,
+          "name": "Overtime",
+          "value": "1"
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "project": {
+        "id": 1,
+        "name": "eCookbook"
+      },
+      "issue": {
+        "id": 2
+      },
+      "user": {
+        "id": 1,
+        "name": "Redmine Admin"
+      },
+      "activity": {
+        "id": 9,
+        "name": "Design"
+      },
+      "hours": 2.25,
+      "comments": "api",
+      "spent_on": "2026-01-09",
+      "created_on": "TIMESTAMP",
+      "updated_on": "TIMESTAMP",
+      "custom_fields": [
+        {
+          "id": 10,
+          "name": "Overtime",
+          "value": "1"
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "project": {
+        "id": 3,
+        "name": "eCookbook Subproject 1"
+      },
+      "user": {
+        "id": 1,
+        "name": "Redmine Admin"
+      },
+      "activity": {
+        "id": 10,
+        "name": "Development"
+      },
+      "hours": 4.0,
+      "comments": "xml",
+      "spent_on": "2026-01-08",
+      "created_on": "TIMESTAMP",
+      "updated_on": "TIMESTAMP",
+      "custom_fields": [
+        {
+          "id": 10,
+          "name": "Overtime",
+          "value": "0"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "project": {
+        "id": 3,
+        "name": "eCookbook Subproject 1"
+      },
+      "user": {
+        "id": 1,
+        "name": "Redmine Admin"
+      },
+      "activity": {
+        "id": 9,
+        "name": "Design"
+      },
+      "hours": 1.0,
+      "comments": "",
+      "spent_on": "2026-01-05",
+      "created_on": "TIMESTAMP",
+      "updated_on": "TIMESTAMP",
+      "custom_fields": [
+        {
+          "id": 10,
+          "name": "Overtime",
+          "value": null
+        }
+      ]
+    }
+  ],
+  "total_count": 10,
+  "offset": 0,
+  "limit": 100
+}

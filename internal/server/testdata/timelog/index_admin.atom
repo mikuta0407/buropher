@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Spent time</title>
+  <link rel="self" href="{{BASE}}/time_entries.atom"/>
+  <link rel="alternate" href="{{BASE}}/time_entries"/>
+  <id>{{BASE}}/</id>
+  <icon>{{BASE}}/assets/favicon-DIGEST.ico</icon>
+  <updated>2007-04-22T10:20:48Z</updated>
+  <author>
+    <name>Redmine</name>
+  </author>
+  <generator uri="https://www.redmine.org/">
+Redmine  </generator>
+  <entry>
+    <title>eCookbook Subproject 1 - 7:39 hours (Project: eCookbook Subproject 1)</title>
+    <link rel="alternate" href="{{BASE}}/projects/subproject1/time_entries"/>
+    <id>{{BASE}}/projects/subproject1/time_entries</id>
+    <updated>2007-04-22T10:20:48Z</updated>
+    <author>
+      <name>Redmine Admin</name>
+    </author>
+    <content type="html">
+&lt;p&gt;Time spent on a subproject&lt;/p&gt;    </content>
+  </entry>
+  <entry>
+    <title>eCookbook - 1:00 hour (Bug #3 (New): Error 281 when updating a recipe)</title>
+    <link rel="alternate" href="{{BASE}}/projects/ecookbook/time_entries?issue_id=3"/>
+    <id>{{BASE}}/projects/ecookbook/time_entries?issue_id=3</id>
+    <updated>2007-04-21T10:20:48Z</updated>
+    <author>
+      <name>Redmine Admin</name>
+    </author>
+    <content type="html">
+    </content>
+  </entry>
+  <entry>
+    <title>eCookbook - 150:00 hours (Bug #1 (New): Cannot print recipes)</title>
+    <link rel="alternate" href="{{BASE}}/projects/ecookbook/time_entries?issue_id=1"/>
+    <id>{{BASE}}/projects/ecookbook/time_entries?issue_id=1</id>
+    <updated>2007-03-23T13:11:04Z</updated>
+    <author>
+      <name>Redmine Admin</name>
+    </author>
+    <content type="html">
+    </content>
+  </entry>
+  <entry>
+    <title>eCookbook - 4:15 hours (Bug #1 (New): Cannot print recipes)</title>
+    <link rel="alternate" href="{{BASE}}/projects/ecookbook/time_entries?issue_id=1"/>
+    <id>{{BASE}}/projects/ecookbook/time_entries?issue_id=1</id>
+    <updated>2007-03-23T11:54:18Z</updated>
+    <author>
+      <name>John Smith</name>
+    </author>
+    <content type="html">
+&lt;p&gt;My hours&lt;/p&gt;    </content>
+  </entry>
+</feed>

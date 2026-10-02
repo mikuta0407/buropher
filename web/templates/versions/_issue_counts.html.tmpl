@@ -1,0 +1,24 @@
+{{$sb := .sb}}
+{{form_tag $sb.FormPath (hash "id" "status_by_form") -}}
+<fieldset>
+<legend>
+{{raw (l "label_issues_by" (hash "value" (select_tag "status_by" $sb.Options (hash "id" "status_by_select" "data" (hash "remote" true "method" "post" "url" $sb.URL)))))}}
+</legend>
+{{if not $sb.Rows}}
+    <p><em>{{l "label_no_data"}}</em></p>
+{{else}}
+    <table>
+    {{range $count := $sb.Rows}}
+    <tr>
+        <td style="width:130px; text-align:right;">
+            {{$count.Link}}
+        </td>
+        <td style="width:240px;">
+            {{$count.ProgressBar}}
+        </td>
+    </tr>
+    {{end}}
+    </table>
+{{end}}
+</fieldset>
+{{end_form}}

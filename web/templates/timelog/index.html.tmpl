@@ -1,0 +1,68 @@
+{{define "timelog/index#actions"}}
+
+  {{if .CanImport}}
+    {{link_to (sprite_icon "import" (l "button_import")) .ImportPath (hash "class" "icon icon-import")}}
+  {{end}}
+
+  {{if .CanManageActivities}}{{link_to (sprite_icon "settings" (l "label_settings")) .SettingsActivitiesPath (hash "class" "icon icon-settings")}}{{end}}
+{{end}}
+<div class="contextual">
+{{if .CanLogTime}}{{link_to (sprite_icon "time-add" (l "button_log_time")) .NewTimeEntryPath (hash "class" "icon icon-time-add")}}{{end}}
+{{actions_dropdown (capture "timelog/index#actions")}}</div>
+
+<h2>{{.Title}}</h2>
+{{if .Description}}{{content_tag "p" .Description (hash "class" "subtitle")}}{{end}}
+
+{{form_tag .TimeEntriesPath (hash "method" "get" "id" "query_form")}}
+{{partial "timelog/date_range" .}}
+{{end_form}}
+
+{{if .Valid}}
+{{if .Empty}}
+<p class="nodata">{{l "label_no_data"}}</p>
+{{else}}
+{{.Totals}}
+{{partial "timelog/list" (dict "list" .List)}}
+<span class="pagination">{{pagination_links_full .Pages .Count}}</span>
+
+<p class="other-formats hide-when-print">{{l "label_export_to"}}  <span>{{link_to "CSV" .CSVURL (hash "class" "csv" "rel" "nofollow" "onclick" "showModal('csv-export-options', '330px'); return false;")}}</span>
+  <span>{{link_to "Atom" .AtomURL (hash "class" "atom" "rel" "nofollow")}}</span>
+</p>
+<div id="csv-export-options" style="display:none;">
+  <h3 class="title">{{l "label_export_options" (hash "export_format" "CSV")}}</h3>
+  {{form_tag (printf "%s.csv" .TimeEntriesPath) (hash "method" "get" "id" "csv-export-form")}}
+  {{.CSVHidden}}
+  {{hidden_field_tag "query_name" .qv.Q.Name}}
+  <p>
+    <label>{{radio_button_tag "c[]" "" true}} {{l "description_selected_columns"}}</label><br />
+    <label>{{radio_button_tag "c[]" "all_inline"}} {{l "description_all_columns"}}</label>
+  </p>
+  {{if .CSVBlockColumns}}
+    <fieldset id="csv-export-block-columns">
+      <legend>
+        {{toggle_checkboxes_link "#csv-export-block-columns input[type=checkbox]"}}
+      </legend>
+      {{range $b := .CSVBlockColumns}}
+        <label>{{check_box_tag "c[]" $b.Name false (hash "id" nil)}} {{$b.Caption}}</label>
+      {{end}}
+    </fieldset>
+  {{end}}
+  {{export_csv_encoding_select_tag}}
+  {{export_csv_separator_select_tag}}
+  <p class="buttons">
+    {{submit_tag (l "button_export") (hash "name" nil "onclick" "hideModal(this);" "data" (hash "disable_with" false))}}
+    {{link_to_function (l "button_cancel") "hideModal(this);"}}
+  </p>
+  {{end_form}}
+</div>
+{{end}}
+{{end}}
+
+{{content_for "sidebar" .Sidebar}}
+
+{{html_title .Title (l "label_details")}}
+
+{{define "timelog/index#header_tags"}}
+    {{auto_discovery_link_tag "atom" .AtomDiscoveryURL (hash "title" (l "label_spent_time"))}}
+{{end}}
+{{content_for "header_tags" (capture "timelog/index#header_tags")}}
