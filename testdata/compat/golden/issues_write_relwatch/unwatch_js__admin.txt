@@ -1,0 +1,5 @@
+status: 200
+content-type: text/javascript
+
+$(".issue-1-watcher").each(function(){$(this).replaceWith("<a class=\"issue-1-watcher icon icon-fav-off\" data-remote=\"true\" rel=\"nofollow\" data-method=\"post\" href=\"/watchers/watch?object_id=1&amp;object_type=issue\"><svg class=\"s18 icon-svg\" aria-hidden=\"true\"><use href=\"/assets/icons-DIGEST.svg#icon--watch\"><\/use><\/svg><span class=\"icon-label\">Watch<\/span><\/a>")});
+$('#watchers').html('<div class=\"contextual\">\n<a data-remote=\"true\" data-method=\"get\" href=\"/watchers/new?object_id=1&amp;object_type=issue\">Add<\/a>\n<\/div>\n\n<h3>Watchers (0)<\/h3>\n\n\n');

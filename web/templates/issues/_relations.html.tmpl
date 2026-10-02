@@ -20,8 +20,18 @@
 
 {{$rf := form_for "relation" $v.NewRelation (hash "as" "relation" "remote" true "url" (printf "/issues/%d/relations" $v.Issue.ID) "method" "post" "html" (hash "id" "new-relation-form" "style" "display: none;"))}}
 {{$rf.Open}}
+{{if $v.RelationErrorMessages}}
+  <div id="errorExplanation">
+    {{notice_icon "error"}}
+    <ul>
+      {{range $message := $v.RelationErrorMessages}}
+        <li>{{$message}}</li>
+      {{end}}
+    </ul>
+  </div>
+{{end}}
 <p>{{$rf.Select "relation_type" $v.RelationTypeChoices (hash) (hash "onchange" "setPredecessorFieldsVisibility();")}}
-{{l "label_issue"}} #{{$rf.TextField "issue_to_id" (hash "value" "" "size" 10)}}
+{{l "label_issue"}} #{{$rf.TextField "issue_to_id" (hash "value" $v.UnsavedRelationsIDs "size" 10)}}
 <span id="predecessor_fields" style="display:none;">
 {{l "field_delay"}}: {{$rf.TextField "delay" (hash "size" 3)}} {{l "label_day_plural"}}
 </span>
@@ -33,4 +43,5 @@
 {{javascript_tag (printf "multipleAutocompleteField('relation_issue_to_id', '%s')" (j $v.AutoCompleteRelationURL))}}
 
 {{javascript_tag "setPredecessorFieldsVisibility();"}}
+
 {{end_form}}

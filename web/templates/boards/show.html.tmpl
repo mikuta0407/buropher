@@ -3,7 +3,7 @@
 
 <div class="contextual">
 {{if .CanAdd}}{{link_to (sprite_icon "add" (l "label_message_new")) (printf "/boards/%d/topics/new" $board.ID) (hash "class" "icon icon-add" "onclick" "showAndScrollTo(\"add-message\", \"message_subject\"); return false;")}}{{end}}
-{{content_watcher_link "board" $board.ID}}
+{{watcher_link "board" $board.ID}}
 {{if .ManageBoards}}{{link_to_if_authorized (sprite_icon "settings" (l "label_settings")) "projects" "settings" (printf "/projects/%s/settings/boards" $pr.Identifier) (hash "class" "icon icon-settings")}}{{end}}
 
 </div>

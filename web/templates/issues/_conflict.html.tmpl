@@ -1,0 +1,31 @@
+{{$F := .F}}<div class="conflict">
+  {{notice_icon "warning"}}
+  {{l "notice_issue_update_conflict"}}
+  {{if $F.ConflictJournals}}
+    <div class="conflict-details">
+    {{range $journal := $F.ConflictJournals}}
+      <div class="conflict-journal">
+      <p>{{authoring $journal.CreatedAt $journal.User (hash "label" "label_updated_time_by")}}</p>
+      {{if $journal.Details}}
+      <ul class="details">
+        {{range $string := $F.ConflictDetailStrings $journal}}
+         <li>{{$string}}</li>
+        {{end}}
+      </ul>
+      {{end}}
+      <div class="wiki">
+        {{$F.ConflictNotes $journal}}
+      </div>
+      </div>
+    {{end}}
+    </div>
+  {{end}}
+</div>
+<p>
+  <label>{{radio_button_tag "conflict_resolution" "overwrite"}} {{l "text_issue_conflict_resolution_overwrite"}}</label><br />
+  {{if $F.HasNotes}}
+  <label>{{radio_button_tag "conflict_resolution" "add_notes"}} {{l "text_issue_conflict_resolution_add_notes"}}</label><br />
+  {{end}}
+  <label>{{radio_button_tag "conflict_resolution" "cancel"}} {{$F.ConflictCancelLabel}}</label>
+</p>
+<p>{{submit_tag (l "button_submit")}}</p>

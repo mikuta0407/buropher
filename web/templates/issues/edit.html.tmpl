@@ -1,0 +1,7 @@
+<h2>{{.TrackerWas}} #{{.V.Issue.ID}}</h2>
+
+{{partial "issues/edit" .}}
+{{define "issues/edit#header_tags"}}
+    {{robot_exclusion_tag}}
+{{end}}
+{{content_for "header_tags" (capture "issues/edit#header_tags")}}

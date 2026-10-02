@@ -1,0 +1,50 @@
+status: 200
+content-type: application/json
+
+[
+  {
+    "id": 13,
+    "label": "Bug #13: Subproject issue two",
+    "value": 13
+  },
+  {
+    "id": 12,
+    "label": "Bug #12: Closed issue on a locked version",
+    "value": 12
+  },
+  {
+    "id": 11,
+    "label": "Bug #11: Closed issue on a closed version",
+    "value": 11
+  },
+  {
+    "id": 8,
+    "label": "Bug #8: Closed issue",
+    "value": 8
+  },
+  {
+    "id": 7,
+    "label": "Bug #7: Issue due today",
+    "value": 7
+  },
+  {
+    "id": 5,
+    "label": "Bug #5: Subproject issue",
+    "value": 5
+  },
+  {
+    "id": 3,
+    "label": "Bug #3: Error 281 when updating a recipe",
+    "value": 3
+  },
+  {
+    "id": 2,
+    "label": "Feature request #2: Add ingredients categories",
+    "value": 2
+  },
+  {
+    "id": 1,
+    "label": "Bug #1: Cannot print recipes",
+    "value": 1
+  }
+]

@@ -1,0 +1,8 @@
+status: 422
+content-type: application/json
+
+{
+  "errors": [
+    "Relation type is not included in the list"
+  ]
+}

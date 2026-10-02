@@ -472,6 +472,8 @@ func runFetch(args []string) error {
 	format := fs.String("format", "", "html/json/xml/text（省略時は Content-Type から判定）")
 	auth := fs.String("auth", "", "session/basic/none（省略時は自動）")
 	raw := fs.Bool("raw", false, "正規化せずに本文を出力する")
+	var headers headerFlags
+	fs.Var(&headers, "H", "追加のリクエストヘッダー（\"Name: value\"。複数指定可。例: -H 'X-Requested-With: XMLHttpRequest'）")
 	_ = fs.Parse(args)
 	if fs.NArg() != 1 {
 		return errors.New("usage: compat fetch [flags] /path")
@@ -481,9 +483,10 @@ func runFetch(args []string) error {
 		pw = *user
 	}
 	sf := &scenario.File{
-		Name:     "fetch",
-		Users:    map[string]scenario.Credential{*user: {Login: *user, Password: pw}},
-		Requests: []scenario.Request{{Path: fs.Arg(0), Method: *method, Format: normalize.Format(*format), Auth: *auth, Users: []string{*user}}},
+		Name:  "fetch",
+		Users: map[string]scenario.Credential{*user: {Login: *user, Password: pw}},
+		Requests: []scenario.Request{{Path: fs.Arg(0), Method: *method, Format: normalize.Format(*format), Auth: *auth, Users: []string{*user},
+			Headers: headers.m}},
 	}
 	cs, err := sf.Cases()
 	if err != nil {
@@ -507,4 +510,21 @@ func runFetch(args []string) error {
 	}
 	_, err = io.WriteString(os.Stdout, doc)
 	return err
+}
+
+// headerFlags は fetch の -H（"Name: value" の繰り返し）。
+type headerFlags struct{ m map[string]string }
+
+func (h *headerFlags) String() string { return "" }
+
+func (h *headerFlags) Set(v string) error {
+	name, value, ok := strings.Cut(v, ":")
+	if !ok {
+		return fmt.Errorf("invalid header %q", v)
+	}
+	if h.m == nil {
+		h.m = map[string]string{}
+	}
+	h.m[strings.TrimSpace(name)] = strings.TrimSpace(value)
+	return nil
 }

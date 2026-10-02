@@ -3,6 +3,7 @@ package handler
 // issues/index.api.rsb と issues/show.api.rsb（REST API の JSON / XML）。
 
 import (
+	"net/http"
 	"net/url"
 	"slices"
 	"time"
@@ -107,7 +108,12 @@ func (l *issueLookup) renderAPIIssueCore(b apibuilder.Builder, m *issueModel) {
 	b.Value("is_private", r.IsPrivate)
 	b.Value("estimated_hours", floatOrNil(r.EstimatedHours))
 	b.Value("total_estimated_hours", floatOrNil(m.TotalEstimatedHours()))
-	if l.c.AllowedTo(domain.Perm("view_time_entries"), m.Project) {
+	timeProject := m.Project
+	if l.apiTimeProjectSet {
+		// create の show.api.rsb は User.current.allowed_to?(:view_time_entries, @project)（@project はパラメータのプロジェクト）
+		timeProject = l.c.Project
+	}
+	if timeProject != nil && l.c.AllowedTo(domain.Perm("view_time_entries"), timeProject) {
 		b.Value("spent_hours", m.SpentHours())
 		b.Value("total_spent_hours", m.TotalSpentHours())
 	}
@@ -200,9 +206,13 @@ func renderAPIRelation(b apibuilder.Builder, rel *repository.IssueRelation) {
 }
 
 // issuesShowAPI は IssuesController#show の format.api。
-func (a *App) issuesShowAPI(c *Req) {
+func (a *App) issuesShowAPI(c *Req) { a.issuesShowAPIStatus(c, 0) }
+
+// issuesShowAPIStatus は show.api.rsb をステータス status で返す（create の 201 でも使う）。
+func (a *App) issuesShowAPIStatus(c *Req, status int) {
 	ctx := c.Ctx()
 	l := a.newIssueLookup(c)
+	l.apiTimeProjectSet = status == http.StatusCreated
 	m := l.model(c.currentIssue())
 	inc := func(k string) bool { return c.IncludeInAPIResponse(k) }
 	var journals []*journalView
@@ -241,7 +251,7 @@ func (a *App) issuesShowAPI(c *Req) {
 		a.internalError(c, "issue api", l.err)
 		return
 	}
-	c.RenderAPI(0, func(b apibuilder.Builder) {
+	c.RenderAPI(status, func(b apibuilder.Builder) {
 		b.Object("issue", func() {
 			l.renderAPIIssueCore(b, m)
 			if inc("children") && !m.Leaf() {

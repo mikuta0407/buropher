@@ -1,0 +1,10 @@
+status: 200
+content-type: text/javascript
+
+showAndScrollTo("update");
+
+var notes = $('#issue_notes').val();
+if (notes > "") { notes = notes + "\n\n"}
+
+$('#issue_notes').blur().focus().val(notes + "John Smith wrote:\n> Unable to print recipes\n\n");
+

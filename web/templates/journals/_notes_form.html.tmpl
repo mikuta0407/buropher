@@ -1,0 +1,15 @@
+{{$f := .F}}
+{{$id := $f.Journal.ID}}
+{{form_tag (printf "/journals/%d" $id) (hash "remote" true "method" "put" "id" (printf "journal-%d-form" $id))}}
+    {{label_tag "notes" (l "description_notes") (hash "class" "hidden-for-sighted" "for" (printf "journal_%d_notes" $id))}}
+    {{text_area_tag "journal[notes]" $f.Journal.NotesString (hash "id" (printf "journal_%d_notes" $id) "class" "wiki-edit" "rows" $f.Rows "data" $f.Data)}}
+    {{if $f.ShowPrivate}}
+      {{hidden_field_tag "journal[private_notes]" "0"}}
+      {{check_box_tag "journal[private_notes]" "1" $f.Journal.PrivateNotes (hash "id" (printf "journal_%d_private_notes" $id))}}
+      <label for="journal_{{$id}}_private_notes">{{l "field_private_notes"}}</label>
+    {{end}}
+    {{call_hook "view_journals_notes_form_after_notes"}}
+    <p>{{submit_tag (l "button_save")}}
+    {{link_to (l "button_cancel") "#" (hash "onclick" $f.CancelOnclick)}}</p>
+{{end_form}}
+{{wikitoolbar_for (printf "journal_%d_notes" $id) $f.PreviewURL}}

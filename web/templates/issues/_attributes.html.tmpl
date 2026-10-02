@@ -31,7 +31,7 @@
 {{end}}
 
 {{if and ($v.M.SafeAttribute "category_id") $F.CategoryOptions}}
-<p>{{$f.Select "category_id" $F.CategoryOptions (hash "include_blank" true "required" ($v.M.RequiredAttribute "category_id")) (hash "onchange" nil)}}
+<p>{{$f.Select "category_id" $F.CategoryOptions (hash "include_blank" true "required" ($v.M.RequiredAttribute "category_id")) (hash "onchange" $F.CategoryOnchange)}}
 {{if $v.M.CanManageCategories}}{{link_to (sprite_icon "add" (l "label_issue_category_new")) (printf "/projects/%s/issue_categories/new" $v.M.Project.Identifier) (hash "remote" true "method" "get" "title" (l "label_issue_category_new") "tabindex" 200 "class" "icon-only icon-add")}}{{end}}</p>
 {{end}}
 
@@ -75,5 +75,6 @@
 {{if $v.M.SafeAttribute "custom_field_values"}}
 {{partial "issues/form_custom_fields" (dict "F" $F)}}
 {{end}}
+
 
 {{$_ := include_calendar_headers_tags}}

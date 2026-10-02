@@ -1,7 +1,7 @@
 {{$pr := current_project}}{{$news := .News.News -}}
 {{breadcrumb (link_to (l "label_news_plural") (news_index_path $pr))}}
 <div class="contextual">
-{{content_watcher_link "news" $news.ID}}
+{{watcher_link "news" $news.ID}}
 {{if .CanManage}}{{link_to (sprite_icon "edit" (l "button_edit")) (printf "/news/%d/edit" $news.ID) (hash "class" "icon icon-edit" "accesskey" (accesskey "edit") "onclick" "$(\"#edit-news\").show(); return false;")}}{{end}}
 {{if .CanManage}}{{delete_link (news_path $news)}}{{end}}
 </div>

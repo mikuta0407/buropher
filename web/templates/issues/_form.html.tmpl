@@ -29,10 +29,10 @@
 {{if $v.M.SafeAttribute "description"}}
 <p>
   {{$f.LabelForField "description" (hash "required" ($v.M.RequiredAttribute "description"))}}
-  {{content_tag_open "span" (hash "id" "issue_description_and_toolbar" "style" "display:none")}}
+  {{content_tag_open "span" (hash "id" "issue_description_and_toolbar" "style" (cond $F.IsNew nil "display:none"))}}
     {{$f.TextArea "description" (hash "cols" 60 "accesskey" (accesskey "edit") "class" "wiki-edit" "rows" $F.DescriptionRows "data" $F.ListAutofillData "no_label" true)}}
   {{end_tag "span"}}
-  {{link_to_function (content_tag "span" (sprite_icon "edit" (l "button_edit"))) "$(this).hide(); $(\"#issue_description_and_toolbar\").show()" (hash "class" "icon icon-edit")}}
+  {{if not $F.IsNew}}{{link_to_function (content_tag "span" (sprite_icon "edit" (l "button_edit"))) "$(this).hide(); $(\"#issue_description_and_toolbar\").show()" (hash "class" "icon icon-edit")}}{{end}}
 </p>
 {{wikitoolbar_for "issue_description" $F.PreviewURL}}
 {{end}}
@@ -43,7 +43,7 @@
 
 {{call_hook "view_issues_form_details_bottom"}}
 
-{{heads_for_wiki_formatter}}
+{{$_ := heads_for_wiki_formatter}}
 {{heads_for_auto_complete $v.M.Project}}
 
 {{if $v.CanAddWatchers}}

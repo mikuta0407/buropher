@@ -1,0 +1,6 @@
+status: 200
+content-type: text/javascript
+
+  $("#issue_watcher_user_ids_2").remove();
+  $("#issue_watcher_user_ids_3").remove();
+$('#watchers_inputs').append('<label id=\"issue_watcher_user_ids_2\" class=\"floating\"><input type=\"checkbox\" name=\"issue[watcher_user_ids][]\" value=\"2\" checked=\"checked\" /> John Smith<\/label><label id=\"issue_watcher_user_ids_3\" class=\"floating\"><input type=\"checkbox\" name=\"issue[watcher_user_ids][]\" value=\"3\" checked=\"checked\" /> Dave Lopper<\/label>');

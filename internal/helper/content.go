@@ -47,8 +47,8 @@ func init() {
 			"link_to_message":           func(m *domain.Message, args ...any) html { return linkToMessage(m, optHash(args)) },
 			"board_message_url":         boardMessageURL,
 			"boards_options_for_select": boardsOptionsForSelect,
-			// watcher_link(object, User.current)。objectType は object_type（news / board / message / enabled_module ...）。
-			"content_watcher_link": func(objectType string, id int64) html { return d.contentWatcherLink(pg(), objectType, id) },
+			// watcher_link(object, User.current)。objectType は object_type（wiki / wiki_page / news / board / message / enabled_module ...）。
+			"watcher_link": func(objectType string, id int64) html { return d.watcherLink(pg(), objectType, id) },
 			"truncate_lines":       func(s string) string { return truncateLines(s, 250) },
 			"project_tree_options_for_select": func(projects []*domain.Project, selected any) html {
 				return projectTreeOptionsForSelect(pg(), projects, selected)
@@ -139,40 +139,6 @@ func init() {
 			// watchers_list(object)（project は object.project）
 			"content_watchers_list": func(objectType string, id int64, project any) html {
 				return d.contentWatchersList(r, pg(), objectType, id, toProject(project))
-			},
-			// principals_check_box_tags(name, principals)（ユーザーとグループの混在）
-			"watcher_principals_check_box_tags": func(name string, principals []any) html {
-				return d.watcherPrincipalsCheckBoxTags(r, pg(), name, principals)
-			},
-			"principal_id": func(v any) int64 {
-				switch x := v.(type) {
-				case *domain.User:
-					return x.ID
-				case *domain.Group:
-					return x.ID
-				}
-				return 0
-			},
-			// watchers_checkboxes(nil, users, true)
-			"watchers_checkboxes": func(users []any) html {
-				p := pg()
-				var b strings.Builder
-				for _, x := range users {
-					var id int64
-					var name string
-					switch v := x.(type) {
-					case *domain.User:
-						id, name = v.ID, p.userName(v, "")
-					case *domain.Group:
-						id, name = v.ID, GroupName(p, v)
-					default:
-						continue
-					}
-					tag := rails.CheckBoxTag("issue[watcher_user_ids][]", id, true, rails.NewHash("id", nil))
-					b.WriteString(string(rails.ContentTag("label", tag+" "+rails.H(name),
-						rails.NewHash("id", "issue_watcher_user_ids_"+strconv.FormatInt(id, 10), "class", "floating"))))
-				}
-				return html(b.String())
 			},
 			// AttachmentsHelper#render_pagination（添付の前後のページへのリンク）
 			"attachment_pagination": func(p *pagination.Paginator, atts []*domain.Attachment) html {
@@ -537,8 +503,9 @@ func watchableKind(objectType string) string {
 	return objectType
 }
 
-// contentWatcherLink は WatchersHelper#watcher_link(object, User.current)（object_type と DB の種類の対応付き）。
-func (d *Deps) contentWatcherLink(p *Page, objectType string, id int64) html {
+// watcherLink は WatchersHelper#watcher_link(object, User.current)（object_type と DB の種類の対応付き）。
+// JS 応答（watchers/_set_watcher）では handler 側の watcherLink が複数オブジェクトにも対応して描画する。
+func (d *Deps) watcherLink(p *Page, objectType string, id int64) html {
 	if !p.logged() || p.DB == nil {
 		return ""
 	}
@@ -606,33 +573,6 @@ func (d *Deps) contentWatchersList(r *view.Render, p *Page, objectType string, i
 		return ""
 	}
 	return rails.ContentTag("ul", html(b.String()), rails.NewHash("class", "watchers"))
-}
-
-// watcherPrincipalsCheckBoxTags は ApplicationHelper#principals_check_box_tags。
-func (d *Deps) watcherPrincipalsCheckBoxTags(r *view.Render, p *Page, name string, principals []any) html {
-	var b strings.Builder
-	for _, x := range principals {
-		var id int64
-		var icon html
-		var label string
-		switch v := x.(type) {
-		case *domain.User:
-			id, label = v.ID, p.userName(v, "")
-			icon = d.avatar(r, p, v, rails.NewHash("size", 16))
-			if icon == "" {
-				icon = rails.ContentTag("span", "", rails.NewHash("class", "name icon icon-user"))
-			}
-		case *domain.Group:
-			id, label = v.ID, GroupName(p, v)
-			icon = rails.ContentTag("span", d.spriteIcon(p, "group", nil, nil),
-				rails.NewHash("class", "name icon icon-"+strings.ToLower(v.Kind.RedmineType())))
-		default:
-			continue
-		}
-		cb := rails.CheckBoxTag(name, id, false, rails.NewHash("id", nil))
-		b.WriteString(string(rails.ContentTag("label", cb+icon+rails.H(label), nil)))
-	}
-	return html(b.String())
 }
 
 // ---------------------------------------------------------------- Redmine::QuoteReply::Helper

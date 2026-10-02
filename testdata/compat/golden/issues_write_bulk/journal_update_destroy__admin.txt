@@ -1,0 +1,6 @@
+status: 200
+content-type: text/javascript
+
+  $("#change-2").remove();
+
+

@@ -9,7 +9,6 @@ import (
 
 	"github.com/mikuta0407/buropher/internal/authz"
 	"github.com/mikuta0407/buropher/internal/domain"
-	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/textformat/redmine"
 	"github.com/mikuta0407/buropher/internal/view"
 	"github.com/mikuta0407/buropher/internal/view/rails"
@@ -67,15 +66,6 @@ func init() {
 			"other_format_link":      func(name, url string) html { return otherFormatLink(name, url) },
 			"number_to_human_size":   func(n any) string { return pg().Loc.NumberToHumanSize(n) },
 			"distance_of_time_words": func(t time.Time) string { return pg().Loc.DistanceOfTimeInWords(pg().now(), t) },
-			"watcher_link": func(kind string, id int64) html {
-				return d.watcherLink(pg(), kind, id)
-			},
-			"watcher_users": func(kind string, id int64) []*domain.User {
-				return watcherUsers(pg(), kind, id)
-			},
-			"watchers_list": func(kind string, id int64) html {
-				return d.watchersList(r, pg(), kind, id)
-			},
 			"link_to_attachments": func(kind string, id int64, atts []*domain.Attachment, opts *rails.Hash) (html, error) {
 				return d.linkToAttachments(r, pg(), kind, id, atts, opts)
 			},
@@ -271,98 +261,6 @@ func wikiPageOptionsForSelect(pages []*domain.WikiPage, selected int64) html {
 // otherFormatLink は Redmine::Views::OtherFormatsBuilder#link_to(name, url)。
 func otherFormatLink(name, url string) html {
 	return rails.ContentTag("span", rails.LinkTo(name, url, rails.NewHash("class", strings.ToLower(name), "rel", "nofollow")), nil)
-}
-
-// ---------------------------------------------------------------- ウォッチャー
-
-// watcherLink は WatchersHelper#watcher_link(object, User.current)。kind は wiki / wiki_page など。
-func (d *Deps) watcherLink(p *Page, kind string, id int64) html {
-	if !p.logged() || p.DB == nil {
-		return ""
-	}
-	watched, err := repository.WatchedBy(p.ctx(), p.DB, kind, id, p.User.ID)
-	if err != nil {
-		p.logError("watcher_link", err)
-		return ""
-	}
-	css := kind + "-" + strconv.FormatInt(id, 10) + "-watcher"
-	icon, text, method := "watch", p.l("button_watch"), "post"
-	if watched {
-		css += " icon icon-fav"
-		icon, text, method = "unwatch", p.l("button_unwatch"), "delete"
-	} else {
-		css += " icon icon-fav-off"
-	}
-	url := "/watchers/watch?object_id=" + strconv.FormatInt(id, 10) + "&object_type=" + kind
-	return rails.LinkTo(d.spriteIcon(p, icon, text, nil), url, rails.NewHash("remote", true, "method", method, "class", css))
-}
-
-// watcherUsers は watched.watcher_users。
-func watcherUsers(p *Page, kind string, id int64) []*domain.User {
-	if p.DB == nil {
-		return nil
-	}
-	us, err := repository.Watchers(p.ctx(), p.DB, kind, id)
-	if err != nil {
-		p.logError("watchers", err)
-	}
-	return us
-}
-
-// watchersList は WatchersHelper#watchers_list(object)。
-func (d *Deps) watchersList(r *view.Render, p *Page, kind string, id int64) html {
-	removeAllowed := p.AllowedTo(domain.Perm("delete_"+kind+"_watchers"), p.Project)
-	users := watcherUsers(p, kind, id)
-	sortUsersByName(p, users)
-	var b strings.Builder
-	for _, u := range users {
-		s := string(d.avatar(r, p, u, rails.NewHash("size", "16")))
-		s += string(d.linkToUser(p, u, rails.NewHash("class", "user")))
-		// object.visible?(user): wiki_page は view_wiki_pages
-		if kind == "wiki_page" && p.Project != nil && p.Authz != nil {
-			if ok := userAllowed(p, u, "view_wiki_pages"); !ok {
-				s += string(rails.ContentTag("span", d.spriteIcon(p, "warning", p.l("notice_invalid_watcher"), nil),
-					rails.NewHash("class", "icon-only icon-warning", "title", p.l("notice_invalid_watcher"))))
-			}
-		}
-		if removeAllowed {
-			url := "/watchers?object_id=" + strconv.FormatInt(id, 10) + "&object_type=" + kind + "&user_id=" + strconv.FormatInt(u.ID, 10)
-			s += " " + string(rails.LinkTo(d.spriteIcon(p, "del", p.l("button_delete"), nil), url,
-				rails.NewHash("remote", true, "method", "delete", "class", "delete icon-only icon-del", "title", p.l("button_delete"))))
-		}
-		b.WriteString(string(rails.ContentTag("li", html(s), rails.NewHash("class", "user-"+strconv.FormatInt(u.ID, 10)))))
-	}
-	if b.Len() == 0 {
-		return ""
-	}
-	return rails.ContentTag("ul", html(b.String()), rails.NewHash("class", "watchers"))
-}
-
-// sortUsersByName は User.sorted（Setting.user_format の並び）の近似（名前順）。
-// TODO: User.fields_for_order_statement の完全な移植。
-func sortUsersByName(p *Page, users []*domain.User) {
-	key := func(u *domain.User) string { return strings.ToLower(u.Firstname + " " + u.Lastname) }
-	switch p.userFormat() {
-	case "lastname_firstname", "lastname_comma_firstname", "lastname", "lastnamefirstname", "lastname_coma_firstname":
-		key = func(u *domain.User) string { return strings.ToLower(u.Lastname + " " + u.Firstname) }
-	case "username":
-		key = func(u *domain.User) string { return strings.ToLower(u.Login) }
-	}
-	for i := 1; i < len(users); i++ {
-		for j := i; j > 0 && (key(users[j]) < key(users[j-1]) || key(users[j]) == key(users[j-1]) && users[j].ID < users[j-1].ID); j-- {
-			users[j], users[j-1] = users[j-1], users[j]
-		}
-	}
-}
-
-// userAllowed は user.allowed_to?(perm, @project)。
-func userAllowed(p *Page, u *domain.User, perm string) bool {
-	az := newAuthorizer(p, u)
-	if az == nil {
-		return true
-	}
-	ok, err := az.AllowedTo(p.ctx(), domain.Perm(perm), p.Project)
-	return err == nil && ok
 }
 
 // ---------------------------------------------------------------- 添付

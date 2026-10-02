@@ -1,0 +1,21 @@
+status: 200
+content-type: text/javascript
+
+  $("#change-2").attr('class', 'journal has-notes private-notes');
+  $("#change-2 .journal-actions").html('<span class=\"reaction-button-wrapper\" data-reaction-button-id=\"reaction_journal_2\"><a class=\"icon reaction-button\" data-remote=\"true\" rel=\"nofollow\" data-method=\"post\" href=\"/reactions?object_id=2&amp;object_type=Journal\"><svg class=\"s18 icon-svg\" aria-hidden=\"true\"><use href=\"/assets/icons-DIGEST.svg#icon--thumb-up\"><\/use><\/svg><\/a><\/span> <a data-action=\"quote-reply#quote\" data-quote-reply-url-param=\"/issues/1/quoted?journal_id=2&amp;journal_indice=2\" data-quote-reply-text-formatting-param=\"common_mark\" class=\"icon-only icon-quote\" title=\"Quote\" href=\"#\"><svg class=\"s18 icon-svg icon-svg-filled\" aria-hidden=\"true\"><use href=\"/assets/icons-DIGEST.svg#icon--quote-filled\"><\/use><\/svg><span class=\"icon-label hidden\">Quote<\/span><\/a> <a title=\"Edit\" class=\"icon-only icon-edit\" data-remote=\"true\" data-method=\"get\" href=\"/journals/2/edit\"><svg class=\"s18 icon-svg\" aria-hidden=\"true\"><use href=\"/assets/icons-DIGEST.svg#icon--edit\"><\/use><\/svg><span class=\"icon-label\">Edit<\/span><\/a><span class=\"drdn\"><span class=\"drdn-trigger\"><span class=\"icon-only icon-actions\" title=\"Actions\"><svg class=\"s18 icon-svg\" aria-hidden=\"true\"><use href=\"/assets/icons-DIGEST.svg#icon--3-bullets\"><\/use><\/svg><span class=\"icon-label\">Actions<\/span><\/span><\/span><div class=\"drdn-content\"><div class=\"drdn-items\"><a href=\"#\" onclick=\"copyDataClipboardTextToClipboard(this);; return false;\" class=\"icon icon-copy-link\" data-clipboard-text=\"{{BASE}}/issues/1#note-2\"><svg class=\"s18 icon-svg\" aria-hidden=\"true\"><use href=\"/assets/icons-DIGEST.svg#icon--copy-link\"><\/use><\/svg><span class=\"icon-label\">Copy link<\/span><\/a> <a data-confirm=\"Are you sure?\" class=\"icon icon-del\" data-remote=\"true\" rel=\"nofollow\" data-method=\"put\" href=\"/journals/2?journal%5Bnotes%5D=\"><svg class=\"s18 icon-svg\" aria-hidden=\"true\"><use href=\"/assets/icons-DIGEST.svg#icon--del\"><\/use><\/svg><span class=\"icon-label\">Delete<\/span><\/a><\/div><\/div><\/span>');
+  $("#journal-2-private_notes").replaceWith('<span id=\"journal-2-private_notes\" class=\"badge badge-private private\">Private<\/span>');
+  $("#journal-2-notes").replaceWith('<div id=\"journal-2-notes\" class=\"wiki journal-note\" data-quote-reply-target=\"content\"><p>Updated <strong>notes<\/strong><\/p><\/div>');
+  $("#journal-2-notes").show();
+  $("#journal-2-form").remove();
+  var journal_header = $("#change-2>div.note>h4.journal-header>.journal-info");
+  var journal_updated_info = journal_header.find("span.update-info");
+  if (journal_updated_info.length > 0) {
+    journal_updated_info.replaceWith('<span title=\"01/15/2026 12:00 PM by Redmine Admin\" class=\"update-info\">· Edited<\/span>');
+  } else {
+    journal_header.append('<span title=\"01/15/2026 12:00 PM by Redmine Admin\" class=\"update-info\">· Edited<\/span>');
+  }
+  setupWikiTableSortableHeader();
+  setupCopyButtonsToPreElements();
+  setupHoverTooltips();
+
+
