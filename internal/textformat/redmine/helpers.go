@@ -395,6 +395,36 @@ func (r *Renderer) LinkToProject(p *domain.Project, htmlOpts *rails.Hash) templa
 	return rails.LinkTo(p.Name, r.url("/projects/"+escapeSegment(projectParam(p))), htmlOpts)
 }
 
+// VersionRef は link_to_version に必要なバージョンの情報。
+type VersionRef struct {
+	ID            int64
+	Name          string
+	Project       *domain.Project
+	EffectiveDate *time.Time
+	// Visible は version.visible?。
+	Visible bool
+}
+
+// LinkToVersion は link_to_version(version)（title は format_date(effective_date)、
+// 表示名は format_version_name：@project と異なるプロジェクトなら "Project - Version"）。
+func (r *Renderer) LinkToVersion(v *VersionRef) template.HTML {
+	if v == nil {
+		return ""
+	}
+	name := v.Name
+	if v.Project != nil && (r.Project == nil || r.Project.ID != v.Project.ID) {
+		name = v.Project.Name + " - " + v.Name
+	}
+	var title any
+	if v.EffectiveDate != nil {
+		if r.Loc == nil {
+			r.l("")
+		}
+		title = r.Loc.FormatDate(*v.EffectiveDate)
+	}
+	return rails.LinkToIf(v.Visible, name, "/versions/"+strconv.FormatInt(v.ID, 10), rails.NewHash("title", title))
+}
+
 // linkToMessage は link_to_message(message, {}, html_options)。
 func (r *Renderer) linkToMessage(m *Message, htmlOpts *rails.Hash) template.HTML {
 	topic := m.ID

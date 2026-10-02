@@ -9,9 +9,39 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/mikuta0407/buropher/internal/authz"
+	"github.com/mikuta0407/buropher/internal/db"
+	"github.com/mikuta0407/buropher/internal/db/dbtest"
 	"github.com/mikuta0407/buropher/internal/repository"
+	"github.com/mikuta0407/buropher/internal/testfixtures"
 	"github.com/mikuta0407/buropher/internal/view/rails"
 )
+
+// TestWikiRedirect は Wiki#find_page がリダイレクトを辿ること（フィクスチャに wiki_redirects が無いので行を足す）。
+func TestWikiRedirect(t *testing.T) {
+	d := dbtest.New(t)
+	ctx := context.Background()
+	if err := testfixtures.LoadContext(ctx, d, frozenNow, "wikis", "wiki_pages", "wiki_contents", "users", "members", "member_roles", "roles", "enabled_modules"); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := d.Exec(ctx, `INSERT INTO wiki_redirects (wiki_id, title, redirects_to, redirects_to_wiki_id, created_at) VALUES (1, 'Old_page', 'Another_page', 1, ?)`, db.NewTime(frozenNow)); err != nil {
+		t.Fatal(err)
+	}
+	u, err := repository.FindUserByLogin(ctx, d, "jsmith")
+	if err != nil {
+		t.Fatal(err)
+	}
+	p, err := repository.FindProject(ctx, d, "ecookbook")
+	if err != nil {
+		t.Fatal(err)
+	}
+	r := &Renderer{Store: NewDBStore(ctx, d, authz.New(d, u)), User: u, Project: p, TextFormatting: "textile"}
+	got := string(r.Textilizable("[[Old page]] [[Missing]]", Options{}))
+	want := `<p><a class="wiki-page" href="/projects/ecookbook/wiki/Old_page">Old page</a> <a class="wiki-page new" href="/projects/ecookbook/wiki/Missing">Missing</a></p>`
+	if got != want {
+		t.Errorf("got  %s\nwant %s", got, want)
+	}
+}
 
 // 期待値は参照 Redmine（フィクスチャ DB・admin）でヘルパーを直接呼んだ結果。
 
