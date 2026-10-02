@@ -1,0 +1,12 @@
+{{.NewsTitle}}
+{{.NewsURL}}
+{{.AuthorName}}
+
+{{.Description}}
+
+{{if .Attachments}}
+---{{.AttachmentsLabel}}
+{{range .Attachments}}
+{{.Filename}} ({{.Size}})
+{{end}}
+{{end}}

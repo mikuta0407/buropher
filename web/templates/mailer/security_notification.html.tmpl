@@ -1,0 +1,12 @@
+<p>{{.Message}}<br />
+{{if and .URL .Title}}
+{{link_to .Title .URL -}}
+{{else if .URL}}
+{{link_to .URL .URL -}}
+{{else if .Title}}
+{{content_tag "h1" .Title -}}
+{{end}}</p>
+
+<p>{{l "field_user"}}: <strong>{{.SenderLogin}}</strong><br/>
+{{l "field_remote_ip"}}: <strong>{{.RemoteIP}}</strong><br/>
+{{l "label_date"}}: <strong>{{.Date}}</strong></p>

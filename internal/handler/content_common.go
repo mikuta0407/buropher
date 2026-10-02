@@ -3,6 +3,7 @@ package handler
 import (
 	"errors"
 	"net/http"
+	"slices"
 	"strconv"
 	"strings"
 
@@ -51,33 +52,45 @@ func (f *contentForm) HumanAttributeName(attr string) string {
 // ValidationErrors は errors（error_messages_for に渡す）。
 func (f *contentForm) ValidationErrors() *validation.Errors { return f.errs }
 
-// Notifier はメール通知のフック（Mailer.deliver_*）。メール送信は未実装のため既定は何もしない。
-// 通知機能を実装するときに SetContentNotifier で設定する。
-type Notifier interface {
-	// Notify は Mailer のアクション名（news_added / news_comment_added / document_added /
-	// attachments_added / message_posted）と対象（*domain.News, *domain.Comment, *domain.Document,
-	// []*domain.Attachment, *domain.Message）を受け取る。
-	Notify(c *Req, action string, obj any)
-}
-
-// notify は Setting.notified_events に event が含まれていれば通知フック（Mailer.deliver_<action>）を呼ぶ。
+// notify は Setting.notified_events に event が含まれていれば Mailer.deliver_<action> に相当する通知を
+// a.Notify（internal/notify）に渡す（DB のコミット後に呼ぶ）。action と obj は
+// news_added (*domain.News) / news_comment_added (*domain.Comment) / document_added (*domain.Document) /
+// attachments_added ([]*domain.Attachment。event は files#create なら file_added、documents#add_attachment なら
+// document_added) / message_posted (*domain.Message)。
 func (a *App) notify(c *Req, event, action string, obj any) {
-	if contentNotifier == nil {
+	if a.Notify == nil || !slices.Contains(a.Settings.Strings("notified_events"), event) {
 		return
 	}
-	for _, e := range a.Settings.Strings("notified_events") {
-		if e == event {
-			contentNotifier.Notify(c, action, obj)
-			return
+	ctx := c.Ctx()
+	switch action {
+	case "news_added":
+		if n, ok := obj.(*domain.News); ok {
+			a.Notify.NewsAdded(ctx, n.ID)
 		}
+	case "news_comment_added":
+		if cm, ok := obj.(*domain.Comment); ok {
+			a.Notify.NewsCommentAdded(ctx, cm.ID)
+		}
+	case "document_added":
+		if d, ok := obj.(*domain.Document); ok {
+			a.Notify.DocumentAdded(ctx, d.ID, c.User)
+		}
+	case "attachments_added":
+		if as, ok := obj.([]*domain.Attachment); ok {
+			ids := make([]int64, 0, len(as))
+			for _, at := range as {
+				ids = append(ids, at.ID)
+			}
+			a.Notify.AttachmentsAddedFor(ctx, event, ids)
+		}
+	case "message_posted":
+		if m, ok := obj.(*domain.Message); ok {
+			a.Notify.MessagePosted(ctx, m.ID)
+		}
+	default:
+		a.logger().Error("notify: unknown content notification", "action", action)
 	}
 }
-
-// contentNotifier は通知フックの実装（nil なら通知しない）。SetContentNotifier で設定する。
-var contentNotifier Notifier
-
-// SetContentNotifier はニュース・文書・ファイル・フォーラムのメール通知フックを設定する。
-func SetContentNotifier(n Notifier) { contentNotifier = n }
 
 // saveContainerAttachments は container.save_attachments(params) をコンテナ保存前に行う
 // （Attachment.create はコンテナのトランザクションの外で行われる）。

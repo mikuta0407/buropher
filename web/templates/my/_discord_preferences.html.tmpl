@@ -1,0 +1,16 @@
+<p>
+  <label for="pref_notification_channel">{{l "buropher.discord.field_notification_channel"}}</label>
+  {{select_tag "pref[notification_channel]" (options_for_select .ChannelOptions .Channel) (hash "id" "pref_notification_channel")}}
+</p>
+<p>
+  <label>{{l "buropher.discord.label_link_status"}}</label>
+  {{if .LinkedAs}}
+    {{l "buropher.discord.label_linked_as" (hash "name" .LinkedAs)}}
+    {{link_to (l "buropher.discord.button_send_test") "/my/discord/test" (hash "method" "post")}} |
+    {{link_to (l "buropher.discord.button_unlink") "/my/discord/unlink" (hash "method" "post" "data" (hash "confirm" (l "text_are_you_sure")))}}
+    {{if .Failing}}<br /><em class="info">{{.Failing}}</em>{{end}}
+  {{else}}
+    {{l "buropher.discord.label_not_linked"}}
+    {{if .LinkUsable}}{{link_to (l "buropher.discord.button_link") "/my/discord/link"}}{{end}}
+  {{end}}
+</p>

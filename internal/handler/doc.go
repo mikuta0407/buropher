@@ -163,10 +163,28 @@
 //   - サイドバーは共通の watchers/_watchers（dict "object_type" "id" "project"）。チケットだけはビューモデルを使う
 //     issues/_watchers。作成時の add_author_as_watcher は repository.AddWatcher(ctx, tx, kind, id, userID)。
 //
-// # 規約: メール通知のフック
+// # 規約: 通知（Mailer.deliver_* / Redmine::Notifiable）
 //
-//   - メール送信は未実装。ニュース・文書・ファイル・メッセージの作成時は a.notify(c, setting_event, mailer_action, obj)
-//     を呼び、Setting.notified_events に含まれていれば SetContentNotifier で設定した Notifier に渡す（既定は何もしない）。
+// メール・Discord DM の通知は a.Notify（*notify.Service。nil でも呼べる）に、DB のコミット後に渡す
+// （Redmine の after_create_commit / deliver_later と同じ。通知の失敗で操作を失敗させない）。
+// Setting.notified_events の判定・受信者の計算・チャネル（メール / Discord）の決定・ジョブ投入は notify が行う。
+//
+//   - チケット: 書き込みは a.writeIssuesEnv(c, q)（Notifier は a.issueNotifier()。App.Notifier があればそれ、
+//     メールか Discord が使えれば a.Notify、どちらも無効なら LogNotifier）で行い、コミット後に
+//     a.dispatchIssueNotifications(c, res...)（issues.SaveResult.Notifications を配送。失敗はログのみ）。
+//     ジャーナルを作る操作（作成・更新・一括編集・関連の追加削除・チケットの添付の削除）はすべてこれを呼ぶ。
+//     CSV インポートは issueState().env（Notifier 設定済み）で保存後に env.Dispatch（Issue#notify = settings['notifications']）。
+//   - ニュース・コメント・文書・ファイル・フォーラム: コミット後に a.notify(c, setting_event, mailer_action, obj)
+//     （content_common.go）。Setting.notified_events に setting_event があれば a.Notify の NewsAdded /
+//     NewsCommentAdded / DocumentAdded(ctx, docID, c.User) / AttachmentsAddedFor(ctx, event, ids)（files#create は
+//     file_added、documents#add_attachment は document_added）/ MessagePosted を呼ぶ。
+//   - Wiki の作成・本文の更新 a.Notify.WikiContentAdded / WikiContentUpdated（wiki_actions.go）。
+//   - アカウント・セキュリティ系（常にメール）: AccountInformation、AccountActivationRequest（自己登録の承認待ち）、
+//     AccountActivated、LostPassword(ctx, user, token, recipient)、Register(ctx, user, token)、PasswordUpdated、
+//     SecurityNotification / EmailAddress*（メールアドレスの追加・変更・削除）/ AdminFlagChanged / Twofa（2FA の
+//     有効化・無効化・バックアップコード）、SettingsUpdated、TestEmail（同期送信）。sender は c.User、remote_ip は c.remoteIP()。
+//   - メールの本文は mailer*.go（notify.Renderer の実装）と web/templates/mailer/*.tmpl。期待値は
+//     internal/server/testdata/mail（Redmine で生成。gen/regen.sh）。
 //
 // # 規約: 認証・sudo モード・アカウントのメール
 //
@@ -174,7 +192,11 @@
 //     新しく移植するコントローラでは Handle の opts の before_action の位置に RequireSudoMode(methods...) を置く。
 //     既定では無効（config の [auth] sudo_mode）。
 //   - パスワード再発行・登録・2 要素認証のセキュリティ通知などのメールは a.accountMailer()（AccountMailer。
-//     account_mailer.go）経由で送る。配信基盤は App.Mailer に接続する（nil ならログに記録するだけ）。
+//     account_mailer.go）経由で送る。メール配送が設定されていれば server が App.Mailer に
+//     NotifyAccountMailer（account_mailer_notify.go。a.Notify の LostPassword / Register /
+//     AccountActivationRequest / AccountActivated / PasswordUpdated / SecurityNotification に委譲）を設定する。
+//     未設定（nil）ならログに記録するだけ。a.Notify を直接呼んでもよい（Twofa(ctx, user, c.User, c.remoteIP(),
+//     action, "totp") など。上の「規約: 通知」）。
 //   - ログイン直後にセッションへ値を入れる処理は handleActiveUser の afterLogin で行う（セッションはリダイレクトの
 //     送出時に保存されるため、リダイレクトの後に Set しても保存されない）。
 //   - c.Params() は呼び出しごとに作り直されるため、before_action で params[:x] ||= ... のように値を足すときは

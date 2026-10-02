@@ -1,0 +1,9 @@
+<p>{{.BodyHTML}}</p>
+
+<ul>
+{{range .Items}}
+  <li>{{.HTML}}</li>
+{{end}}
+</ul>
+
+<p>{{.ViewAllLink}} ({{.OpenCount}})</p>

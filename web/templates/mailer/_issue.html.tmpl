@@ -1,0 +1,17 @@
+<h1>
+  {{link_to .IssueTitle .IssueURL}}
+  {{.StatusBadge}}
+</h1>
+
+{{.AttributesHTML}}
+
+{{.DescriptionHTML}}
+
+{{if .Attachments}}
+  <fieldset class="attachments"><legend>{{l "label_attachment_plural"}}</legend>
+  {{range .Attachments}}
+    {{.Link}}
+    ({{.Size}})<br />
+  {{end}}
+  </fieldset>
+{{end}}

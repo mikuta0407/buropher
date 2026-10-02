@@ -145,6 +145,15 @@ func RemoteIP(r *http.Request) string {
 	return ip
 }
 
+// RemoteIPFromContext は RemoteIPMiddleware が ctx に記録したクライアントの IP（無ければ空）。
+// リクエストを持たない層（メール送信など）で User.current.remote_ip を得るのに使う。
+func RemoteIPFromContext(ctx context.Context) string {
+	if ri, ok := ctx.Value(ctxRemoteIP).(*remoteInfo); ok {
+		return ri.ip
+	}
+	return ""
+}
+
 // peerIsTrustedProxy は直接の接続元が信頼プロキシかを返す。
 func peerIsTrustedProxy(r *http.Request) bool {
 	var cfg *ProxyConfig

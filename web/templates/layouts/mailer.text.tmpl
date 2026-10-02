@@ -1,0 +1,8 @@
+{{if present .EmailsHeader}}
+{{.EmailsHeader}}
+{{end}}
+{{yield}}
+{{if present .EmailsFooter}}
+-- 
+{{.EmailsFooter}}
+{{end}}

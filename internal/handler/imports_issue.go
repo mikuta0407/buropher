@@ -37,6 +37,8 @@ func (m *importModel) issueState() *issueImportState {
 	if m.issue == nil {
 		env := issues.NewEnv(m.a.DB, m.a.Settings, m.c.User)
 		env.Now = m.a.now
+		// 保存後の env.Dispatch の配送先（通知の有無は Issue#notify = settings['notifications']）
+		env.Notifier = m.a.issueNotifier()
 		env.Translate = m.c.L
 		env.DateFormat = m.c.Loc.FormatDate
 		m.issue = &issueImportState{env: env}
