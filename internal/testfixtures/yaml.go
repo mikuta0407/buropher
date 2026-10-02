@@ -114,6 +114,14 @@ func (r row) str(k string) string {
 	return ""
 }
 
+// strOrNil は値が無ければ nil、空文字はそのまま（Redmine で nil と "" が区別される列: custom_fields.regexp 等）。
+func (r row) strOrNil(k string) any {
+	if v := r.cols[k]; v != nil {
+		return *v
+	}
+	return nil
+}
+
 // nstr は値が無いか空文字なら nil (”→NULL 変換)。
 func (r row) nstr(k string) any {
 	if v := r.cols[k]; v != nil && *v != "" {

@@ -1,0 +1,379 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Custom fields - Redmine</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Redmine" />
+<meta name="keywords" content="issue,bug,tracker" />
+<meta name="csrf-param" content="authenticity_token" />
+<meta name="csrf-token" content="{{CSRF}}" />
+<link rel="shortcut icon" type="image/x-icon" href="/assets/favicon-DIGEST.ico" />
+<link rel="stylesheet" href="/assets/jquery/jquery-ui-1.13.2-DIGEST.css" media="all" />
+<link rel="stylesheet" href="/assets/tribute-5.1.3-DIGEST.css" media="all" />
+<link rel="stylesheet" href="/assets/application-DIGEST.css" media="all" />
+<link rel="stylesheet" href="/assets/responsive-DIGEST.css" media="all" />
+
+<script type="importmap" data-turbo-track="reload">{
+  "imports": {
+    "@rails/request.js": "/assets/requestjs-DIGEST.js",
+    "application": "/assets/application-DIGEST.js",
+    "@hotwired/stimulus": "/assets/stimulus.min-DIGEST.js",
+    "@hotwired/stimulus-loading": "/assets/stimulus-loading-DIGEST.js",
+    "turndown": "/assets/turndown-DIGEST.js",
+    "controllers/api_key_copy_controller": "/assets/controllers/api_key_copy_controller-DIGEST.js",
+    "controllers/application": "/assets/controllers/application-DIGEST.js",
+    "controllers": "/assets/controllers/index-DIGEST.js",
+    "controllers/list_autofill_controller": "/assets/controllers/list_autofill_controller-DIGEST.js",
+    "controllers/quote_reply_controller": "/assets/controllers/quote_reply_controller-DIGEST.js",
+    "controllers/sticky_issue_header_controller": "/assets/controllers/sticky_issue_header_controller-DIGEST.js"
+  }
+}</script>
+<link rel="modulepreload" href="/assets/requestjs-DIGEST.js">
+<link rel="modulepreload" href="/assets/application-DIGEST.js">
+<link rel="modulepreload" href="/assets/stimulus.min-DIGEST.js">
+<link rel="modulepreload" href="/assets/stimulus-loading-DIGEST.js">
+<link rel="modulepreload" href="/assets/turndown-DIGEST.js">
+<link rel="modulepreload" href="/assets/controllers/api_key_copy_controller-DIGEST.js">
+<link rel="modulepreload" href="/assets/controllers/application-DIGEST.js">
+<link rel="modulepreload" href="/assets/controllers/index-DIGEST.js">
+<link rel="modulepreload" href="/assets/controllers/list_autofill_controller-DIGEST.js">
+<link rel="modulepreload" href="/assets/controllers/quote_reply_controller-DIGEST.js">
+<link rel="modulepreload" href="/assets/controllers/sticky_issue_header_controller-DIGEST.js">
+<script type="module">import "application"</script>
+<script src="/assets/jquery-3.7.1-ui-1.13.3-DIGEST.js"></script>
+<script src="/assets/rails-ujs-DIGEST.js"></script>
+<script src="/assets/tribute-5.1.3.min-DIGEST.js"></script><script src="/assets/application-legacy-DIGEST.js"></script>
+<script src="/assets/responsive-DIGEST.js"></script>
+<script>
+//<![CDATA[
+$(window).on('load', function(){ warnLeavingUnsaved('The current page contains unsaved text that will be lost if you leave this page.'); });
+//]]>
+</script>
+
+<script>
+//<![CDATA[
+rm = window.rm || {};rm.I18n = rm.I18n || {};rm.I18n = Object.freeze({buttonCopy: 'Copy'});
+//]]>
+</script>
+<script>
+//<![CDATA[
+rm = window.rm || {};rm.AutoComplete = rm.AutoComplete || {};rm.AutoComplete.dataSources = JSON.parse('{"issues":"/issues/auto_complete?q=","wiki_pages":"/wiki_pages/auto_complete?q="}');
+//]]>
+</script>
+
+<!-- page specific tags -->
+</head>
+<body class="controller-custom_fields action-index avatars-off" data-text-formatting="common_mark">
+
+<div id="wrapper">
+
+<div class="flyout-menu js-flyout-menu">
+
+        <div class="flyout-menu__search">
+            <form action="/search" accept-charset="UTF-8" name="form-RANDOM" method="get">
+            
+            <label class="search-magnifier search-magnifier--flyout" for="flyout-search"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--search"></use></svg><span class="icon-label hidden">Search</span></label>
+            <input type="text" name="q" id="flyout-search" class="small js-search-input" placeholder="Search" />
+</form>        </div>
+
+        <div class="flyout-menu__avatar">
+          <a href="/users/1"><span role="img" class="avatar-color-1 s40 avatar">RA</span></a>
+          <a class="user active" href="/users/1">admin</a>
+        </div>
+
+
+    <h3>General</h3>
+    <span class="js-general-menu"></span>
+
+    <span class="js-sidebar flyout-menu__sidebar"></span>
+
+    <h3>Profile</h3>
+    <span class="js-profile-menu"></span>
+
+</div>
+
+
+<div id="top-menu">
+    <div id="account">
+        <ul><li><a class="my-account" href="/my/account">My account</a></li><li><a class="logout" rel="nofollow" data-method="post" href="/logout">Sign out</a></li></ul>    </div>
+    <div id="loggedas">Logged in as <a class="user active" href="/users/1">admin</a></div>
+    <ul><li><a class="home" href="/">Home</a></li><li><a class="my-page" href="/my/page">My page</a></li><li><a class="projects" href="/projects">Projects</a></li><li><a class="administration" href="/admin">Administration</a></li><li><a target="_blank" rel="noopener" class="help" href="https://www.redmine.org/guide">Help</a></li></ul></div>
+
+<div id="header">
+
+    <a href="#" class="mobile-toggle-button js-flyout-menu-toggle-button"></a>
+
+    <div id="quick-search">
+        <form action="/search" accept-charset="UTF-8" name="form-RANDOM" method="get">
+        <input type="hidden" name="scope" autocomplete="off" />
+        
+        <label for='q'>
+          <a accesskey="4" href="/search">Search</a>:
+        </label>
+        <input type="text" name="q" id="q" size="20" class="small" accesskey="f" data-auto-complete="true" />
+</form>        <div id="project-jump" class="drdn"><span class="drdn-trigger">Jump to a project...</span><div class="drdn-content"><div class="quick-search"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--search"></use></svg><input type="text" name="q" id="projects-quick-search" value="" class="autocomplete" data-automcomplete-url="/projects/autocomplete.js?jump=custom_fields" autocomplete="off" /></div><div class="drdn-items projects selection"><strong>Bookmarks</strong><a title="eCookbook" href="/projects/ecookbook?jump=custom_fields"><span style="padding-inline-start:0px;">eCookbook</span></a><a title="Private child of eCookbook" href="/projects/private-child?jump=custom_fields"><span style="padding-inline-start:16px;">Private child of eCookbook</span></a><strong>All Projects</strong><a title="Private child of eCookbook" href="/projects/private-child?jump=custom_fields"><span style="padding-inline-start:0px;">Private child of eCookbook</span></a></div><div class="drdn-items all-projects selection"><a href="/projects?jump=custom_fields">All Projects</a></div></div></div>
+    </div>
+
+    <h1>Redmine</h1>
+
+</div>
+
+<div id="main" class="collapsiblesidebar">
+  <script>
+//<![CDATA[
+$('#main.collapsiblesidebar').collapsibleSidebar();
+//]]>
+</script>
+    <div id="sidebar">
+          <div id="sidebar-switch-panel" style="visibility: hidden;">
+            <a id="sidebar-switch-button" class="" href="#">
+              <svg class="s20 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--chevrons-right"></use></svg></a>
+          </div>
+          <script>
+//<![CDATA[
+$('#sidebar-switch-panel').css('visibility', 'visible');
+//]]>
+</script>
+        <div id="sidebar-wrapper">
+              <h3>Administration</h3>
+    <div id="admin-menu">
+  <ul><li><a class="icon icon-projects projects" href="/admin/projects"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--projects"></use></svg><span class="icon-label">Projects</span></a></li><li><a class="icon icon-user users" href="/users"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--user"></use></svg><span class="icon-label">Users</span></a></li><li><a class="icon icon-group groups" href="/groups"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--group"></use></svg><span class="icon-label">Groups</span></a></li><li><a class="icon icon-roles roles" href="/roles"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--roles"></use></svg><span class="icon-label">Roles and permissions</span></a></li><li><a class="icon icon-issue trackers" href="/trackers"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--issue"></use></svg><span class="icon-label">Trackers</span></a></li><li><a class="icon icon-issue-edit issue-statuses" href="/issue_statuses"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--issue-edit"></use></svg><span class="icon-label">Issue statuses</span></a></li><li><a class="icon icon-workflows workflows" href="/workflows/edit"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--workflows"></use></svg><span class="icon-label">Workflow</span></a></li><li><a class="icon icon-custom-fields custom-fields selected" href="/custom_fields"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--custom-fields"></use></svg><span class="icon-label">Custom fields</span></a></li><li><a class="icon icon-list enumerations" href="/enumerations"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--list"></use></svg><span class="icon-label">Enumerations</span></a></li><li><a class="icon icon-settings settings" href="/settings"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--settings"></use></svg><span class="icon-label">Settings</span></a></li><li><a class="icon icon-server-authentication ldap-authentication" href="/auth_sources"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--server-authentication"></use></svg><span class="icon-label">LDAP authentication</span></a></li><li><a class="icon icon-applications applications" href="/oauth/applications"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--apps"></use></svg><span class="icon-label">Applications</span></a></li><li><a class="icon icon-plugins plugins" href="/admin/plugins"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--plugins"></use></svg><span class="icon-label">Plugins</span></a></li><li><a class="icon icon-help info" href="/admin/info"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--help"></use></svg><span class="icon-label">Information</span></a></li></ul>
+</div>
+
+
+          
+        </div>
+    </div>
+
+    <div id="content">
+        
+        <div class="contextual">
+<a href="#" onclick="location.href = &#39;/custom_fields/new?tab=&#39; + encodeURIComponent(($(&#39;.tabs a.selected&#39;).attr(&#39;id&#39;)||&#39;&#39;).split(&#39;tab-&#39;).pop()); return false;" class="icon icon-add"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--add"></use></svg><span class="icon-label">New custom field</span></a>
+</div>
+
+<h2>Custom fields</h2>
+
+  
+<div class="tabs">
+  <ul>
+    <li><a id="tab-IssueCustomField" onclick="showTab(&#39;IssueCustomField&#39;, this.href); return false;" href="/custom_fields?tab=IssueCustomField">Issues</a></li>
+    <li><a id="tab-TimeEntryCustomField" onclick="showTab(&#39;TimeEntryCustomField&#39;, this.href); return false;" href="/custom_fields?tab=TimeEntryCustomField">Spent time</a></li>
+    <li><a id="tab-ProjectCustomField" onclick="showTab(&#39;ProjectCustomField&#39;, this.href); return false;" href="/custom_fields?tab=ProjectCustomField">Projects</a></li>
+    <li><a id="tab-UserCustomField" class="selected" onclick="showTab(&#39;UserCustomField&#39;, this.href); return false;" href="/custom_fields?tab=UserCustomField">Users</a></li>
+    <li><a id="tab-TimeEntryActivityCustomField" onclick="showTab(&#39;TimeEntryActivityCustomField&#39;, this.href); return false;" href="/custom_fields?tab=TimeEntryActivityCustomField">Activities (time tracking)</a></li>
+  </ul>
+  <div class="tabs-buttons" style="display:none;">
+    <button class="tab-left icon-only" type="button" onclick="moveTabLeft(this);">
+      <svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--angle-left"></use></svg>
+    </button>
+    <button class="tab-right icon-only" type="button" onclick="moveTabRight(this);">
+      <svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--angle-right"></use></svg>
+    </button>
+  </div>
+</div>
+
+  <div id="tab-content-IssueCustomField" style="display:none" class="tab-content"><table class="list custom_fields">
+  <thead><tr>
+    <th>Name</th>
+    <th>Format</th>
+    <th>Required</th>
+      <th>For all projects</th>
+      <th>Used by</th>
+    <th></th>
+  </tr></thead>
+  <tbody>
+    <tr>
+      <td class="name"><a href="/custom_fields/2/edit">Searchable field</a></td>
+      <td>Text</td>
+      <td></td>
+      <td><span class="icon-only icon-checked"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--checked"></use></svg></span></td>
+      <td></td>
+      <td class="buttons">
+        <span class="icon-only icon-sort-handle sort-handle" data-reorder-url="/custom_fields/2" data-reorder-param="custom_field" title="Sort"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--reorder"></use></svg><span class="icon-label"></span></span>
+        <a href="#" onclick="location.href = &#39;/custom_fields/new?copy=2&amp;type=&#39; + encodeURIComponent(($(&#39;.tabs a.selected&#39;).attr(&#39;id&#39;)||&#39;&#39;).split(&#39;tab-&#39;).pop()); return false;" class="icon icon-copy"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--copy"></use></svg><span class="icon-label">Copy</span></a>
+        <a data-confirm="Are you sure?" class="icon icon-del" rel="nofollow" data-method="delete" href="/custom_fields/2"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--del"></use></svg><span class="icon-label">Delete</span></a>
+      </td>
+    </tr>
+    <tr>
+      <td class="name"><a href="/custom_fields/1/edit">Database</a></td>
+      <td>List</td>
+      <td></td>
+      <td><span class="icon-only icon-checked"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--checked"></use></svg></span></td>
+      <td></td>
+      <td class="buttons">
+        <span class="icon-only icon-sort-handle sort-handle" data-reorder-url="/custom_fields/1" data-reorder-param="custom_field" title="Sort"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--reorder"></use></svg><span class="icon-label"></span></span>
+        <a href="#" onclick="location.href = &#39;/custom_fields/new?copy=1&amp;type=&#39; + encodeURIComponent(($(&#39;.tabs a.selected&#39;).attr(&#39;id&#39;)||&#39;&#39;).split(&#39;tab-&#39;).pop()); return false;" class="icon icon-copy"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--copy"></use></svg><span class="icon-label">Copy</span></a>
+        <a data-confirm="Are you sure?" class="icon icon-del" rel="nofollow" data-method="delete" href="/custom_fields/1"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--del"></use></svg><span class="icon-label">Delete</span></a>
+      </td>
+    </tr>
+    <tr>
+      <td class="name"><a href="/custom_fields/6/edit">Float field</a></td>
+      <td>Float</td>
+      <td></td>
+      <td><span class="icon-only icon-checked"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--checked"></use></svg></span></td>
+      <td></td>
+      <td class="buttons">
+        <span class="icon-only icon-sort-handle sort-handle" data-reorder-url="/custom_fields/6" data-reorder-param="custom_field" title="Sort"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--reorder"></use></svg><span class="icon-label"></span></span>
+        <a href="#" onclick="location.href = &#39;/custom_fields/new?copy=6&amp;type=&#39; + encodeURIComponent(($(&#39;.tabs a.selected&#39;).attr(&#39;id&#39;)||&#39;&#39;).split(&#39;tab-&#39;).pop()); return false;" class="icon icon-copy"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--copy"></use></svg><span class="icon-label">Copy</span></a>
+        <a data-confirm="Are you sure?" class="icon icon-del" rel="nofollow" data-method="delete" href="/custom_fields/6"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--del"></use></svg><span class="icon-label">Delete</span></a>
+      </td>
+    </tr>
+    <tr>
+      <td class="name"><a href="/custom_fields/8/edit">Custom date</a></td>
+      <td>Date</td>
+      <td></td>
+      <td><span class="icon-only icon-checked"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--checked"></use></svg></span></td>
+      <td></td>
+      <td class="buttons">
+        <span class="icon-only icon-sort-handle sort-handle" data-reorder-url="/custom_fields/8" data-reorder-param="custom_field" title="Sort"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--reorder"></use></svg><span class="icon-label"></span></span>
+        <a href="#" onclick="location.href = &#39;/custom_fields/new?copy=8&amp;type=&#39; + encodeURIComponent(($(&#39;.tabs a.selected&#39;).attr(&#39;id&#39;)||&#39;&#39;).split(&#39;tab-&#39;).pop()); return false;" class="icon icon-copy"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--copy"></use></svg><span class="icon-label">Copy</span></a>
+        <a data-confirm="Are you sure?" class="icon icon-del" rel="nofollow" data-method="delete" href="/custom_fields/8"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--del"></use></svg><span class="icon-label">Delete</span></a>
+      </td>
+    </tr>
+    <tr>
+      <td class="name"><a href="/custom_fields/9/edit">Project 1 cf</a></td>
+      <td>Date</td>
+      <td></td>
+      <td></td>
+      <td>1 project</td>
+      <td class="buttons">
+        <span class="icon-only icon-sort-handle sort-handle" data-reorder-url="/custom_fields/9" data-reorder-param="custom_field" title="Sort"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--reorder"></use></svg><span class="icon-label"></span></span>
+        <a href="#" onclick="location.href = &#39;/custom_fields/new?copy=9&amp;type=&#39; + encodeURIComponent(($(&#39;.tabs a.selected&#39;).attr(&#39;id&#39;)||&#39;&#39;).split(&#39;tab-&#39;).pop()); return false;" class="icon icon-copy"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--copy"></use></svg><span class="icon-label">Copy</span></a>
+        <a data-confirm="Are you sure?" class="icon icon-del" rel="nofollow" data-method="delete" href="/custom_fields/9"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--del"></use></svg><span class="icon-label">Delete</span></a>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</div>
+  <div id="tab-content-TimeEntryCustomField" style="display:none" class="tab-content"><table class="list custom_fields">
+  <thead><tr>
+    <th>Name</th>
+    <th>Format</th>
+    <th>Required</th>
+    <th></th>
+  </tr></thead>
+  <tbody>
+    <tr>
+      <td class="name"><a href="/custom_fields/10/edit">Overtime</a></td>
+      <td>Boolean</td>
+      <td></td>
+      <td class="buttons">
+        <span class="icon-only icon-sort-handle sort-handle" data-reorder-url="/custom_fields/10" data-reorder-param="custom_field" title="Sort"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--reorder"></use></svg><span class="icon-label"></span></span>
+        <a href="#" onclick="location.href = &#39;/custom_fields/new?copy=10&amp;type=&#39; + encodeURIComponent(($(&#39;.tabs a.selected&#39;).attr(&#39;id&#39;)||&#39;&#39;).split(&#39;tab-&#39;).pop()); return false;" class="icon icon-copy"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--copy"></use></svg><span class="icon-label">Copy</span></a>
+        <a data-confirm="Are you sure?" class="icon icon-del" rel="nofollow" data-method="delete" href="/custom_fields/10"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--del"></use></svg><span class="icon-label">Delete</span></a>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</div>
+  <div id="tab-content-ProjectCustomField" style="display:none" class="tab-content"><table class="list custom_fields">
+  <thead><tr>
+    <th>Name</th>
+    <th>Format</th>
+    <th>Required</th>
+    <th></th>
+  </tr></thead>
+  <tbody>
+    <tr>
+      <td class="name"><a href="/custom_fields/3/edit">Development status</a></td>
+      <td>List</td>
+      <td></td>
+      <td class="buttons">
+        <span class="icon-only icon-sort-handle sort-handle" data-reorder-url="/custom_fields/3" data-reorder-param="custom_field" title="Sort"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--reorder"></use></svg><span class="icon-label"></span></span>
+        <a href="#" onclick="location.href = &#39;/custom_fields/new?copy=3&amp;type=&#39; + encodeURIComponent(($(&#39;.tabs a.selected&#39;).attr(&#39;id&#39;)||&#39;&#39;).split(&#39;tab-&#39;).pop()); return false;" class="icon icon-copy"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--copy"></use></svg><span class="icon-label">Copy</span></a>
+        <a data-confirm="Are you sure?" class="icon icon-del" rel="nofollow" data-method="delete" href="/custom_fields/3"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--del"></use></svg><span class="icon-label">Delete</span></a>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</div>
+  <div id="tab-content-UserCustomField" class="tab-content"><table class="list custom_fields">
+  <thead><tr>
+    <th>Name</th>
+    <th>Format</th>
+    <th>Required</th>
+    <th></th>
+  </tr></thead>
+  <tbody>
+    <tr>
+      <td class="name"><a href="/custom_fields/4/edit">Phone number</a></td>
+      <td>Text</td>
+      <td></td>
+      <td class="buttons">
+        <span class="icon-only icon-sort-handle sort-handle" data-reorder-url="/custom_fields/4" data-reorder-param="custom_field" title="Sort"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--reorder"></use></svg><span class="icon-label"></span></span>
+        <a href="#" onclick="location.href = &#39;/custom_fields/new?copy=4&amp;type=&#39; + encodeURIComponent(($(&#39;.tabs a.selected&#39;).attr(&#39;id&#39;)||&#39;&#39;).split(&#39;tab-&#39;).pop()); return false;" class="icon icon-copy"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--copy"></use></svg><span class="icon-label">Copy</span></a>
+        <a data-confirm="Are you sure?" class="icon icon-del" rel="nofollow" data-method="delete" href="/custom_fields/4"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--del"></use></svg><span class="icon-label">Delete</span></a>
+      </td>
+    </tr>
+    <tr>
+      <td class="name"><a href="/custom_fields/5/edit">Money</a></td>
+      <td>Float</td>
+      <td></td>
+      <td class="buttons">
+        <span class="icon-only icon-sort-handle sort-handle" data-reorder-url="/custom_fields/5" data-reorder-param="custom_field" title="Sort"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--reorder"></use></svg><span class="icon-label"></span></span>
+        <a href="#" onclick="location.href = &#39;/custom_fields/new?copy=5&amp;type=&#39; + encodeURIComponent(($(&#39;.tabs a.selected&#39;).attr(&#39;id&#39;)||&#39;&#39;).split(&#39;tab-&#39;).pop()); return false;" class="icon icon-copy"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--copy"></use></svg><span class="icon-label">Copy</span></a>
+        <a data-confirm="Are you sure?" class="icon icon-del" rel="nofollow" data-method="delete" href="/custom_fields/5"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--del"></use></svg><span class="icon-label">Delete</span></a>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</div>
+  <div id="tab-content-TimeEntryActivityCustomField" style="display:none" class="tab-content"><table class="list custom_fields">
+  <thead><tr>
+    <th>Name</th>
+    <th>Format</th>
+    <th>Required</th>
+    <th></th>
+  </tr></thead>
+  <tbody>
+    <tr>
+      <td class="name"><a href="/custom_fields/7/edit">Billable</a></td>
+      <td>Boolean</td>
+      <td></td>
+      <td class="buttons">
+        <span class="icon-only icon-sort-handle sort-handle" data-reorder-url="/custom_fields/7" data-reorder-param="custom_field" title="Sort"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--reorder"></use></svg><span class="icon-label"></span></span>
+        <a href="#" onclick="location.href = &#39;/custom_fields/new?copy=7&amp;type=&#39; + encodeURIComponent(($(&#39;.tabs a.selected&#39;).attr(&#39;id&#39;)||&#39;&#39;).split(&#39;tab-&#39;).pop()); return false;" class="icon icon-copy"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--copy"></use></svg><span class="icon-label">Copy</span></a>
+        <a data-confirm="Are you sure?" class="icon icon-del" rel="nofollow" data-method="delete" href="/custom_fields/7"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--del"></use></svg><span class="icon-label">Delete</span></a>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<script>
+//<![CDATA[
+showTab('UserCustomField', this.href)
+//]]>
+</script>
+
+
+<script>
+//<![CDATA[
+
+  $(function() { $("table.custom_fields tbody").positionedItems(); });
+
+//]]>
+</script>
+        
+        <div style="clear:both;"></div>
+    </div>
+</div>
+<div id="footer">
+    Powered by <a target="_blank" rel="noopener" href="https://www.redmine.org/">Redmine</a> &copy; 2006-2026 Jean-Philippe Lang
+</div>
+
+<div id="ajax-indicator" style="display:none;">
+  <span class="icon">
+    <svg class="s18 icon-svg svg-loader" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--loader"></use></svg><span class="icon-label">Loading...</span>
+  </span>
+</div>
+<div id="ajax-modal" style="display:none;"></div>
+<div id="icon-copy-source" style="display: none;"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--"></use></svg></div>
+
+</div>
+
+</body>
+</html>
+

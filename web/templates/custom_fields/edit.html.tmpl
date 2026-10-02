@@ -1,0 +1,6 @@
+{{custom_field_title .CustomField}}
+
+{{$f := labelled_form_for "custom_field" .CustomField (hash "as" "custom_field" "url" (printf "/custom_fields/%d" .CustomField.CF.ID) "html" (hash "method" "put" "id" "custom_field_form"))}}
+{{$f.Open}}
+{{partial "custom_fields/form" (dict "f" $f)}}
+{{end_form}}

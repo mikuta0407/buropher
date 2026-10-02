@@ -247,7 +247,12 @@ func (v *View) setDefaultDisableWith(value any, html *Hash) {
 			text = data.Get("disable_with")
 		}
 		if !truthy(text) {
-			text = ToS(value)
+			// value.to_s（html_safe な値は SafeBuffer のまま。データ属性で二重にエスケープされない）
+			if h, ok := value.(HTML); ok {
+				text = h
+			} else {
+				text = ToS(value)
+			}
 		}
 		if data != nil {
 			data.Set("disable_with", text)

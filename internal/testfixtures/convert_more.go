@@ -51,9 +51,9 @@ func loadCustomFields(c *loadCtx, rows []row) error {
 		if err := c.exec(`INSERT INTO custom_fields (id, owner_kind, name, description, field_format, regexp, min_length, max_length,
   is_required, is_for_all, is_filter, searchable, default_value, editable, visible, multiple, position, possible_values, format_settings)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-			id, kind, r.str("name"), r.nstr("description"), r.str("field_format"), r.nstr("regexp"),
+			id, kind, r.str("name"), r.strOrNil("description"), r.str("field_format"), r.strOrNil("regexp"),
 			r.nint("min_length"), r.nint("max_length"), r.bool("is_required", false), r.bool("is_for_all", false),
-			r.bool("is_filter", false), r.bool("searchable", false), r.nstr("default_value"), r.bool("editable", true),
+			r.bool("is_filter", false), r.bool("searchable", false), r.strOrNil("default_value"), r.bool("editable", true),
 			r.bool("visible", true), r.bool("multiple", false), r.int("position", 1), pv, fs); err != nil {
 			return err
 		}

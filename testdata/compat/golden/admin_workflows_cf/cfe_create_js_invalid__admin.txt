@@ -1,0 +1,8 @@
+status: 200
+content-type: text/javascript
+
+$('#errorExplanation').remove();
+
+$('form#add-element').prepend('<div id=\'errorExplanation\'>\n<svg class=\"s18 icon-svg\" aria-hidden=\"true\"><use href=\"/assets/icons-DIGEST.svg#icon--warning\"><\/use><\/svg><ul>\n<li>Name cannot be blank<\/li>\n<\/ul><\/div>\n');
+
+$('#custom_field_enumeration_name').focus();

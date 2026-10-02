@@ -1,0 +1,32 @@
+{{title (list (l "label_workflow") "/workflows/edit") (l "field_summary")}}
+
+{{if or (not .Roles) (not .Trackers)}}
+<p class="nodata">{{l "label_no_data"}}</p>
+{{else}}
+<div class="autoscroll">
+<table class="list">
+<thead>
+    <tr>
+    <th></th>
+    {{range $role := .Roles}}
+    <th>
+        {{content_tag (ternary $role.Builtin "em" "span") $role.Name}}
+    </th>
+    {{end}}
+    </tr>
+</thead>
+<tbody>
+{{range $row := .Rows}}
+<tr>
+  <td class="name">{{$row.Tracker.Name}}</td>
+  {{range $cell := $row.Cells}}
+    <td>
+      {{link_to $cell.Count (printf "/workflows/edit?role_id=%d&tracker_id=%d" $cell.RoleID $row.Tracker.ID) (hash "title" (l "button_edit") "class" (ternary (eq $cell.Count 0) "decoration-red" nil))}}
+    </td>
+  {{end}}
+</tr>
+{{end}}
+</tbody>
+</table>
+</div>
+{{end}}

@@ -1,0 +1,454 @@
+# ワークフロー（WorkflowsController）とカスタムフィールド（CustomFieldsController /
+# CustomFieldEnumerationsController）の管理画面の互換シナリオ（Redmine 公式 test/fixtures 前提）。
+#
+# POST / PATCH / PUT / DELETE を含み DB を変更するため、参照・候補とも実行前に初期化すること:
+#   go run ./tools/compat diff -ref http://127.0.0.1:4013 -cand http://127.0.0.1:4113 -run 'admin_workflows_cf/.*' \
+#     -reset-ref 'COMPAT_REF_DIR=.../_reference/ref-wf COMPAT_REF_PORT=4013 tools/compat/redmine-ref.sh reset' \
+#     -reset-cand 'BUROPHER_CAND_PORT=4113 BUROPHER_CAND_DIR=$PWD/data/cand tools/compat/buropher-cand.sh reset && \
+#                  sqlite3 $PWD/data/cand/db/buropher.db "UPDATE sqlite_sequence SET seq = 11 WHERE name = '"'"'custom_fields'"'"'"'
+#
+# 候補側の sqlite_sequence の調整: 参照のフィクスチャには基底クラス（type が CustomField）の異常な
+# カスタムフィールド id=11 があり、インポータはこれを捨てるため、新規作成時の id が 1 つずれる
+# （参照 12、候補 11）。作成したフィールドの URL を揃えるため候補の採番を参照に合わせる。
+#
+# 配列のパラメータ（tracker_id[] など）は form の値にシーケンスで書く。クエリ文字列と本文の
+# パラメータは浅くマージされる（同じキーのハッシュはクエリ側で置き換わる）ため混ぜないこと。
+name: admin_workflows_cf
+
+users:
+  admin: {login: admin, password: admin}
+  jsmith: {login: jsmith, password: jsmith}
+
+normalize:
+  mask_text_selectors:
+    - "#footer"
+  # プロジェクトのツリー（render_project_nested_lists）の兄弟順は docs/schema.md 17. の既知の差分
+  strip_selectors:
+    - "#custom_field_project_ids ul.projects"
+  # XHR の応答（.js）に埋め込まれた HTML の CSRF トークンとフォーム名の乱数部
+  regex:
+    - {pattern: 'value=\\"[A-Za-z0-9_-]{40,}\\"', replace: 'value=\"{{CSRF}}\"'}
+    - {pattern: '-[0-9a-f]{8}\\"', replace: '-RANDOM\"'}
+
+requests:
+  # ---------------------------------------------------------------- 権限
+  - path: /workflows
+    users: [anonymous, jsmith, admin]
+  - path: /workflows/edit?role_id=1&tracker_id=1
+    users: [anonymous, jsmith]
+  - path: /custom_fields
+    users: [anonymous, jsmith, admin]
+  - path: /custom_fields/new?type=IssueCustomField
+    users: [jsmith]
+
+  # ---------------------------------------------------------------- ワークフロー画面
+  - path: /workflows/edit
+    users: [admin]
+  - path: /workflows/edit?role_id=1&tracker_id=1
+    id: workflows_edit_role_id_1_tracker_id_1__2
+    users: [admin]
+  - path: /workflows/edit?role_id=1&tracker_id=1&used_statuses_only=0
+    users: [admin]
+  - path: /workflows/edit?role_id[]=1&role_id[]=2&tracker_id[]=1
+    users: [admin]
+  - path: /workflows/edit?role_id=all&tracker_id=all
+    users: [admin]
+  - path: /workflows/edit?role_id=999&tracker_id=1
+    users: [admin]
+  - path: /workflows/permissions
+    users: [admin]
+  - path: /workflows/permissions?role_id=1&tracker_id=1
+    users: [admin]
+  - path: /workflows/permissions?role_id[]=1&role_id[]=2&tracker_id[]=1&tracker_id[]=2
+    users: [admin]
+  - path: /workflows/copy
+    users: [admin]
+  - path: /workflows/copy?source_tracker_id=any&source_role_id=2&target_tracker_ids[]=1&target_role_ids[]=3
+    users: [admin]
+
+  # ---------------------------------------------------------------- 遷移の更新
+  - id: wf_update_r1t1
+    path: /workflows/update
+    method: PATCH
+    user: admin
+    form:
+      "role_id[]": ["1"]
+      "tracker_id[]": ["1"]
+      "transitions[1][5][always]": "0"
+      "transitions[1][6][always]": "1"
+      "transitions[0][3][always]": "no_change"
+      "transitions[2][1][author]": "1"
+      "transitions[3][4][assignee]": "1"
+      "transitions[4][2][author]": "1"
+      "transitions[4][2][assignee]": "1"
+    expect_status: 302
+  - path: /workflows/edit?role_id=1&tracker_id=1
+    id: workflows_edit_role_id_1_tracker_id_1__3
+    users: [admin]
+  - path: /workflows
+    id: workflows__2
+    users: [admin]
+  - id: wf_update_author_off
+    path: /workflows/update
+    method: PATCH
+    user: admin
+    form:
+      "role_id[]": ["1"]
+      "tracker_id[]": ["1"]
+      "transitions[4][2][author]": "0"
+      "transitions[2][1][author]": "0"
+    expect_status: 302
+  - path: /workflows/edit?role_id=1&tracker_id=1&used_statuses_only=0
+    id: workflows_edit_role_id_1_tracker_id_1_used_statuses_only_0__2
+    users: [admin]
+  - id: wf_update_multi
+    path: /workflows/update
+    method: PATCH
+    user: admin
+    form:
+      "role_id[]": ["1", "2"]
+      "tracker_id[]": ["1"]
+      "used_statuses_only": "0"
+      "transitions[0][2][always]": "1"
+      "transitions[2][3][always]": "0"
+      "transitions[1][4][always]": "no_change"
+    expect_status: 302
+  - path: /workflows/edit?role_id[]=1&role_id[]=2&tracker_id[]=1
+    id: workflows_edit_role_id_1_role_id_2_tracker_id_1__2
+    users: [admin]
+  - id: wf_update_no_roles
+    path: /workflows/update
+    method: PATCH
+    user: admin
+    form:
+      "tracker_id[]": ["1"]
+      "transitions[1][2][always]": "0"
+  - path: /workflows
+    id: workflows__3
+    users: [admin]
+
+  # ---------------------------------------------------------------- フィールド権限の更新
+  - id: wf_update_permissions
+    path: /workflows/update_permissions
+    method: PATCH
+    user: admin
+    form:
+      "role_id[]": ["1"]
+      "tracker_id[]": ["1"]
+      "permissions[1][assigned_to_id]": "required"
+      "permissions[1][due_date]": "readonly"
+      "permissions[2][2]": "readonly"
+      "permissions[3][subject]": "readonly"
+      "permissions[1][start_date]": "no_change"
+      "permissions[4][bogus_field]": "readonly"
+      "permissions[5][priority_id]": "bogus"
+    expect_status: 302
+  - path: /workflows/permissions?role_id=1&tracker_id=1
+    id: workflows_permissions_role_id_1_tracker_id_1__2
+    users: [admin]
+  - path: /workflows/permissions?role_id[]=1&role_id[]=2&tracker_id[]=1
+    users: [admin]
+  - id: wf_update_permissions_clear
+    path: /workflows/update_permissions
+    method: PATCH
+    user: admin
+    form:
+      "role_id[]": ["1", "2"]
+      "tracker_id[]": ["1"]
+      "permissions[1][assigned_to_id]": ""
+      "permissions[1][due_date]": "required"
+    expect_status: 302
+  - path: /workflows/permissions?role_id[]=1&role_id[]=2&tracker_id[]=1
+    id: workflows_permissions_role_id_1_role_id_2_tracker_id_1__2
+    users: [admin]
+
+  # ---------------------------------------------------------------- コピー
+  - id: wf_duplicate_no_source
+    path: /workflows/duplicate
+    method: POST
+    user: admin
+    form: {source_tracker_id: "", source_role_id: ""}
+  - id: wf_duplicate_no_target
+    path: /workflows/duplicate
+    method: POST
+    user: admin
+    form: {source_tracker_id: "1", source_role_id: "1"}
+  - id: wf_duplicate_any_any
+    path: /workflows/duplicate
+    method: POST
+    user: admin
+    form:
+      "target_tracker_ids[]": ["2"]
+      "target_role_ids[]": ["3"]
+      source_tracker_id: "any"
+      source_role_id: "any"
+  - id: wf_duplicate
+    path: /workflows/duplicate
+    method: POST
+    user: admin
+    form:
+      "target_tracker_ids[]": ["2", "3"]
+      "target_role_ids[]": ["3"]
+      source_tracker_id: "1"
+      source_role_id: "1"
+    expect_status: 302
+  - path: /workflows/copy?source_role_id=1&source_tracker_id=1
+    users: [admin]
+  - path: /workflows/edit?role_id=3&tracker_id=2
+    users: [admin]
+  - path: /workflows/permissions?role_id=3&tracker_id=3
+    users: [admin]
+  - id: wf_duplicate_same_tracker
+    path: /workflows/duplicate
+    method: POST
+    user: admin
+    form:
+      "target_tracker_ids[]": ["1"]
+      "target_role_ids[]": ["2"]
+      source_tracker_id: "any"
+      source_role_id: "1"
+    expect_status: 302
+  - path: /workflows
+    id: workflows__4
+    users: [admin]
+
+  # ---------------------------------------------------------------- カスタムフィールド画面
+  - path: /custom_fields?tab=UserCustomField
+    users: [admin]
+  - path: /custom_fields/new
+    users: [admin]
+  - path: /custom_fields/new?type=Foo&tab=ProjectCustomField
+    users: [admin]
+  - path: /custom_fields/new?type=IssueCustomField
+    id: custom_fields_new_type_issuecustomfield__2
+    users: [admin]
+  - path: /custom_fields/new?type=IssueCustomField&custom_field[field_format]=user
+    users: [admin]
+  - path: /custom_fields/new?type=VersionCustomField&custom_field[field_format]=version
+    users: [admin]
+  - path: /custom_fields/new?type=IssueCustomField&copy=1
+    users: [admin]
+  - id: cf_new_js
+    path: /custom_fields/new.js?type=IssueCustomField&custom_field[field_format]=int&custom_field[name]=Foo
+    user: admin
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01"}
+  - path: /custom_fields/1/edit
+    users: [admin]
+  - path: /custom_fields/7/edit
+    users: [admin]
+  - path: /custom_fields/99/edit
+    users: [admin]
+
+  # ---------------------------------------------------------------- 作成
+  - id: cf_create_blank
+    path: /custom_fields
+    method: POST
+    user: admin
+    form: {type: IssueCustomField, "custom_field[field_format]": list, "custom_field[name]": "", "custom_field[possible_values]": ""}
+  - id: cf_create_taken
+    path: /custom_fields
+    method: POST
+    user: admin
+    form: {type: IssueCustomField, "custom_field[field_format]": string, "custom_field[name]": "Database", "custom_field[url_pattern]": "foo://x/%value%", "custom_field[visible]": "0"}
+  - id: cf_create_default_invalid
+    path: /custom_fields
+    method: POST
+    user: admin
+    form: {type: IssueCustomField, "custom_field[field_format]": int, "custom_field[name]": "Number", "custom_field[default_value]": "abc", "custom_field[regexp]": "^\\d+$"}
+  - id: cf_create_string
+    path: /custom_fields
+    method: POST
+    user: admin
+    form:
+      "custom_field[tracker_ids][]": ["1", "3", ""]
+      "custom_field[project_ids][]": ["2", ""]
+      "custom_field[role_ids][]": [""]
+      type: IssueCustomField
+      "custom_field[field_format]": string
+      "custom_field[name]": "New string"
+      "custom_field[description]": "A new field"
+      "custom_field[min_length]": "2"
+      "custom_field[max_length]": ""
+      "custom_field[regexp]": ""
+      "custom_field[text_formatting]": ""
+      "custom_field[default_value]": "ab"
+      "custom_field[url_pattern]": "http://example.net/%value%"
+      "custom_field[is_required]": "0"
+      "custom_field[is_filter]": "1"
+      "custom_field[searchable]": "1"
+      "custom_field[visible]": "1"
+      "custom_field[is_for_all]": "0"
+    expect_status: 302
+  - path: /custom_fields
+    id: custom_fields__2
+    users: [admin]
+  - path: /custom_fields/12/edit
+    users: [admin]
+  - id: cf_create_continue
+    path: /custom_fields
+    method: POST
+    user: admin
+    form: {type: UserCustomField, continue: "Create and add another", "custom_field[field_format]": int, "custom_field[name]": "Age", "custom_field[visible]": "1", "custom_field[editable]": "0", "custom_field[thousands_delimiter]": "1"}
+    expect_status: 302
+  - id: cf_create_enumeration
+    path: /custom_fields
+    method: POST
+    user: admin
+    form:
+      "custom_field[tracker_ids][]": ["1", ""]
+      type: IssueCustomField
+      "custom_field[field_format]": enumeration
+      "custom_field[name]": "Enum"
+      "custom_field[edit_tag_style]": "check_box"
+      "custom_field[is_for_all]": "1"
+    expect_status: 302
+  - path: /custom_fields/14/edit
+    users: [admin]
+  - path: /custom_fields/14/enumerations
+    users: [admin]
+
+  # ---------------------------------------------------------------- 選択肢
+  - id: cfe_create_a
+    path: /custom_fields/14/enumerations
+    method: POST
+    user: admin
+    form: {"custom_field_enumeration[name]": "Alpha"}
+    expect_status: 302
+  - id: cfe_create_b
+    path: /custom_fields/14/enumerations
+    method: POST
+    user: admin
+    form: {"custom_field_enumeration[name]": "Beta"}
+    expect_status: 302
+  - id: cfe_create_blank
+    path: /custom_fields/14/enumerations
+    method: POST
+    user: admin
+    form: {"custom_field_enumeration[name]": ""}
+    expect_status: 302
+  - path: /custom_fields/14/enumerations
+    id: custom_fields_14_enumerations__2
+    users: [admin]
+  - id: cfe_create_js
+    path: /custom_fields/14/enumerations
+    method: POST
+    user: admin
+    form: {"custom_field_enumeration[name]": "Gamma"}
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01"}
+  - id: cfe_create_js_invalid
+    path: /custom_fields/14/enumerations
+    method: POST
+    user: admin
+    form: {"custom_field_enumeration[name]": ""}
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01"}
+  - id: cfe_update_each
+    path: /custom_fields/14/enumerations
+    method: PUT
+    user: admin
+    form:
+      "custom_field_enumerations[1][name]": "Alpha 2"
+      "custom_field_enumerations[1][active]": "0"
+      "custom_field_enumerations[1][position]": "2"
+      "custom_field_enumerations[2][name]": "Beta"
+      "custom_field_enumerations[2][active]": "1"
+      "custom_field_enumerations[2][position]": "1"
+    expect_status: 302
+  - path: /custom_fields/14/enumerations
+    id: custom_fields_14_enumerations__3
+    users: [admin]
+  - path: /custom_fields/14/edit
+    id: custom_fields_14_edit__2
+    users: [admin]
+  - id: cfe_update_each_invalid
+    path: /custom_fields/14/enumerations
+    method: PUT
+    user: admin
+    form:
+      "custom_field_enumerations[2][name]": ""
+    expect_status: 302
+  - path: /custom_fields/14/enumerations
+    id: custom_fields_14_enumerations__4
+    users: [admin]
+  - id: cfe_destroy
+    path: /custom_fields/14/enumerations/1
+    method: DELETE
+    user: admin
+    form: {x: "1"}
+    expect_status: 302
+  - path: /custom_fields/14/enumerations
+    id: custom_fields_14_enumerations__5
+    users: [admin]
+  - path: /custom_fields/new?type=IssueCustomField&copy=14
+    users: [admin]
+
+  # ---------------------------------------------------------------- 更新
+  - id: cf_update
+    path: /custom_fields/1
+    method: PUT
+    user: admin
+    form: {"custom_field[name]": "Database 2", "custom_field[multiple]": "1", "custom_field[field_format]": "string", "custom_field[possible_values]": "MySQL\nPostgreSQL\n\nSQLite"}
+    expect_status: 302
+  - path: /custom_fields/1/edit
+    id: custom_fields_1_edit__2
+    users: [admin]
+  - id: cf_update_blank
+    path: /custom_fields/1
+    method: PATCH
+    user: admin
+    form: {"custom_field[name]": "", "custom_field[default_value]": "Oracle"}
+  - id: cf_update_roles_blank
+    path: /custom_fields/6
+    method: PUT
+    user: admin
+    form:
+      "custom_field[role_ids][]": [""]
+      "custom_field[visible]": "0"
+  - id: cf_update_roles
+    path: /custom_fields/6
+    method: PUT
+    user: admin
+    form:
+      "custom_field[role_ids][]": ["1", ""]
+      "custom_field[visible]": "0"
+    expect_status: 302
+  - path: /custom_fields/6/edit
+    users: [admin]
+  - path: /workflows/permissions?role_id=2&tracker_id=1
+    users: [admin]
+  - id: cf_update_position_js
+    path: /custom_fields/3
+    method: PUT
+    user: admin
+    form: {"custom_field[position]": "1"}
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01"}
+  - id: cf_update_position_js_invalid
+    path: /custom_fields/3
+    method: PUT
+    user: admin
+    form: {"custom_field[name]": ""}
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01"}
+  - id: cf_update_position
+    path: /custom_fields/2
+    method: PUT
+    user: admin
+    form: {"custom_field[position]": "4"}
+    expect_status: 302
+  - path: /custom_fields
+    id: custom_fields__3
+    users: [admin]
+
+  # ---------------------------------------------------------------- 削除
+  - id: cf_destroy
+    path: /custom_fields/12
+    method: DELETE
+    user: admin
+    form: {x: "1"}
+    expect_status: 302
+  - path: /custom_fields
+    id: custom_fields__4
+    users: [admin]
+  - id: cf_destroy_jsmith
+    path: /custom_fields/13
+    method: DELETE
+    user: jsmith
+    form: {x: "1"}

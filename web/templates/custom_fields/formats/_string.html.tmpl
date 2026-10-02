@@ -1,0 +1,4 @@
+{{partial "custom_fields/formats/regexp" (dict "f" .f "custom_field" .custom_field)}}
+<p>{{.f.CheckBox "text_formatting" (hash "label" (sym "setting_text_formatting") "data" (hash "disables" "#custom_field_url_pattern")) "full" ""}}</p>
+<p>{{.f.TextField "default_value"}}</p>
+<p>{{.f.TextField "url_pattern" (hash "size" 50 "label" (sym "label_link_values_to"))}}</p>

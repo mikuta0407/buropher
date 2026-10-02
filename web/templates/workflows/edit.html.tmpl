@@ -1,0 +1,66 @@
+{{partial "workflows/action_menu"}}
+
+{{title (l "label_workflow")}}
+
+<div class="tabs">
+  <ul>
+    <li>{{link_to (l "label_status_transitions") (printf "/workflows/edit%s" .Query) (hash "class" "selected")}}</li>
+    <li>{{link_to (l "label_fields_permissions") (printf "/workflows/permissions%s" .Query)}}</li>
+  </ul>
+</div>
+
+<p>{{l "text_workflow_edit"}}:</p>
+
+{{form_tag "/workflows/edit" (hash "method" "get")}}
+<p>
+  <label>{{l "label_role"}}:
+  {{options_for_workflow_select "role_id[]" .AllRoles .Roles (hash "id" "role_id" "class" "expandable")}}
+  <span class="toggle-multiselect icon-only">{{sprite_icon ""}}</span>
+  </label>
+
+  <label>{{l "label_tracker"}}:
+  {{options_for_workflow_select "tracker_id[]" .AllTrackers .Trackers (hash "id" "tracker_id" "class" "expandable")}}
+  <span class="toggle-multiselect icon-only">{{sprite_icon ""}}</span>
+  </label>
+
+  {{submit_tag (l "button_edit") (hash "name" nil)}}
+
+  {{hidden_field_tag "used_statuses_only" "0" (hash "id" nil)}}
+  <label>{{check_box_tag "used_statuses_only" "1" .UsedStatusesOnly}} {{l "label_display_used_statuses_only"}}</label>
+
+</p>
+{{end_form}}
+
+{{if .Show}}
+  {{form_tag "/workflows/update" (hash "method" "patch" "id" "workflow_form")}}
+    {{range $t := .Trackers}}{{hidden_field_tag "tracker_id[]" $t.ID (hash "id" nil)}}{{end}}
+    {{range $r := .Roles}}{{hidden_field_tag "role_id[]" $r.ID (hash "id" nil)}}{{end}}
+    {{hidden_field_tag "used_statuses_only" .UsedParam (hash "id" nil)}}
+    <div class="autoscroll">
+      {{partial "workflows/form" (dict "table" .Always "statuses" .Statuses "total" .Total "width" .StatusWidth)}}
+
+      <fieldset class="collapsible" style="padding: 0; margin-top: 0.5em;">
+        <legend onclick="toggleFieldset(this);" class="icon icon-{{if .AuthorPresent}}expanded{{else}}collapsed{{end}}">
+          {{sprite_icon (ternary .AuthorPresent "angle-down" "angle-right") (hash "rtl" (not .AuthorPresent))}}
+          {{l "label_additional_workflow_transitions_for_author"}}
+        </legend>
+        <div id="author_workflows" style="margin: 0.5em 0 0.5em 0;">
+          {{partial "workflows/form" (dict "table" .Author "statuses" .Statuses "total" .Total "width" .StatusWidth)}}
+        </div>
+      </fieldset>
+      {{if not .AuthorPresent}}{{javascript_tag "hideFieldset($('#author_workflows'))"}}{{end}}
+
+      <fieldset class="collapsible" style="padding: 0;">
+        <legend onclick="toggleFieldset(this);" class="icon icon-{{if .AssigneePresent}}expanded{{else}}collapsed{{end}}">
+          {{sprite_icon (ternary .AssigneePresent "angle-down" "angle-right") (hash "rtl" (not .AssigneePresent))}}
+          {{l "label_additional_workflow_transitions_for_assignee"}}
+        </legend>
+        <div id="assignee_workflows" style="margin: 0.5em 0 0.5em 0;">
+      {{partial "workflows/form" (dict "table" .Assignee "statuses" .Statuses "total" .Total "width" .StatusWidth)}}
+        </div>
+      </fieldset>
+      {{if not .AssigneePresent}}{{javascript_tag "hideFieldset($('#assignee_workflows'))"}}{{end}}
+    </div>
+    {{submit_tag (l "button_save")}}
+  {{end_form}}
+{{end}}

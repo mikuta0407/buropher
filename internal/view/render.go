@@ -224,10 +224,23 @@ func (r *Render) HTMLTitle() string {
 	var parts []string
 	for _, t := range title {
 		if rails.IsPresent(t) {
-			parts = append(parts, rails.ToS(t))
+			parts = append(parts, titleJoin(t))
 		}
 	}
 	return strings.Join(parts, " - ")
+}
+
+// titleJoin は Array#join(' - ') の要素の文字列化（ApplicationHelper#title は配列を 1 要素として
+// html_title に渡すため、入れ子の配列は空の要素も含めて " - " で連結される）。
+func titleJoin(t any) string {
+	if l, ok := t.([]any); ok {
+		parts := make([]string, len(l))
+		for i, e := range l {
+			parts[i] = titleJoin(e)
+		}
+		return strings.Join(parts, " - ")
+	}
+	return rails.ToS(t)
 }
 
 // BodyCSSClasses は Redmine の body_css_classes。

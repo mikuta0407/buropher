@@ -1,0 +1,13 @@
+{{$cf := .CustomField.CF}}
+{{title (list (l "label_custom_field_plural") "/custom_fields") (list (l $cf.Type.TypeName) (printf "/custom_fields?tab=%s" $cf.ClassName)) $cf.Name}}
+
+{{form_tag (printf "/custom_fields/%d/enumerations/%d" $cf.ID .Value.ID) (hash "method" "delete")}}
+<div class="box">
+<p><strong>{{l "text_enumeration_destroy_question" (hash "name" .Value.Name "count" .ObjectsCount)}}</strong></p>
+<p><label for='reassign_to_id'>{{l "text_enumeration_category_reassign_to"}}</label>
+{{select_tag "reassign_to_id" (safe_join (list (content_tag "option" (printf "--- %s ---" (l "actionview_instancetag_blank_option")) (hash "value" "")) (options_from_collection_for_select .Enumerations "id" "name" nil)) "")}}</p>
+</div>
+
+{{submit_tag (l "button_apply")}}
+{{link_to (l "button_cancel") (printf "/custom_fields/%d/enumerations" $cf.ID)}}
+{{end_form}}

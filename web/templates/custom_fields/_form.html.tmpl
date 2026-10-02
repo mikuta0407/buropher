@@ -1,0 +1,79 @@
+{{$f := .f}}
+{{$cf := assigns.CustomField}}
+{{$class := $cf.ClassName}}
+{{error_messages_for $cf}}
+
+<div class="splitcontent">
+<div class="splitcontentleft">
+<div class="box tabular">
+<p>{{$f.Select "field_format" (custom_field_formats_for_select $cf) (hash) (hash "disabled" (not $cf.IsNewRecord))}}</p>
+<p>{{$f.TextField "name" (hash "size" 50 "required" true)}}</p>
+<p>{{$f.TextArea "description" (hash "rows" 7)}}</p>
+
+{{if $cf.FormatInfo.MultipleSupported}}
+<p>
+  {{$f.CheckBox "multiple"}}
+  {{if and (not $cf.IsNewRecord) $cf.CF.Multiple}}
+  <em class="info">{{l "text_turning_multiple_off"}}</em>
+  {{end}}
+</p>
+{{end}}
+
+{{render_custom_field_format_partial $f $cf}}
+
+{{call_hook "view_custom_fields_form_upper_box"}}
+</div>
+<p class="mobile-hide">
+  {{if $cf.IsNewRecord}}
+    {{submit_tag (l "button_create")}}
+    {{submit_tag (l "button_create_and_continue") (hash "name" "continue")}}
+  {{else}}
+    {{submit_tag (l "button_save")}}
+  {{end}}
+</p>
+</div>
+
+<div class="splitcontentright">
+  <div class="box tabular">
+    <p>{{$f.CheckBox "is_required"}}</p>
+
+    {{if eq $class "UserCustomField"}}
+      <p>{{$f.CheckBox "visible"}}</p>
+    {{end}}
+
+    {{if eq $class "UserCustomField"}}
+      <p>{{$f.CheckBox "editable"}}</p>
+    {{end}}
+
+    {{if and (or (eq $class "IssueCustomField") (eq $class "UserCustomField") (eq $class "ProjectCustomField") (eq $class "VersionCustomField") (eq $class "GroupCustomField") (eq $class "TimeEntryCustomField")) $cf.FormatInfo.IsFilterSupported}}
+      <p>{{$f.CheckBox "is_filter"}}</p>
+    {{end}}
+
+    {{if and (or (eq $class "IssueCustomField") (eq $class "ProjectCustomField")) $cf.FormatInfo.SearchableSupported}}
+      <p>{{$f.CheckBox "searchable"}}</p>
+    {{end}}
+    {{call_hook "view_custom_fields_form_custom_field"}}
+  </div>
+
+  {{if or (eq $class "IssueCustomField") (eq $class "TimeEntryCustomField") (eq $class "ProjectCustomField") (eq $class "VersionCustomField")}}
+    {{partial "custom_fields/visibility_by_role_selector" (dict "f" $f)}}
+  {{end}}
+
+  {{if eq $class "IssueCustomField"}}
+    {{partial "custom_fields/visibility_by_tracker_selector" (dict "f" $f)}}
+
+    {{partial "custom_fields/visibility_by_project_selector" (dict "f" $f)}}
+  {{end}}
+</div>
+</div>
+
+<p class="mobile-show">
+  {{if $cf.IsNewRecord}}
+    {{submit_tag (l "button_create")}}
+    {{submit_tag (l "button_create_and_continue") (hash "name" "continue")}}
+  {{else}}
+    {{submit_tag (l "button_save")}}
+  {{end}}
+</p>
+
+{{$_ := include_calendar_headers_tags}}

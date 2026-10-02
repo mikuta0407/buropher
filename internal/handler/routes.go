@@ -21,4 +21,6 @@ func (a *App) Routes(r Router) {
 	a.routesRoles(r)
 	a.routesEnumerations(r)
 	a.routesPreviews(r)
+	a.routesCustomFields(r)
+	a.routesWorkflows(r)
 }

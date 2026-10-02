@@ -298,9 +298,11 @@ func (im *imp) importCustomFields() error {
 			maxL = n
 		}
 		im.st.customFields[id] = &cfInfo{ownerKind: owner, format: format, multiple: r.bool("multiple", false)}
-		if err := ins.add(id, owner, name, r.strNull("description", true), format, r.strNull("regexp", true), minL, maxL,
+		// description / regexp / default_value は Redmine で nil と "" が区別される（フォームの value 属性・API の null）ため
+		// 空文字列を NULL に変換しない。
+		if err := ins.add(id, owner, name, r.strNull("description", false), format, r.strNull("regexp", false), minL, maxL,
 			r.bool("is_required", false), r.bool("is_for_all", false), r.bool("is_filter", false), r.bool("searchable", false),
-			r.strNull("default_value", true), r.bool("editable", true), r.bool("visible", true), r.bool("multiple", false),
+			r.strNull("default_value", false), r.bool("editable", true), r.bool("visible", true), r.bool("multiple", false),
 			pos[id], pv, fs); err != nil {
 			return err
 		}
