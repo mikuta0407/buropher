@@ -1,8 +1,7 @@
-// Code generated from Rouge 4.7 lua/keywords.rb by mkphp.py (lua). DO NOT EDIT.
+// Code generated from Rouge 4.7 lua/keywords.rb by tools/textformat/mkrougewords.py. DO NOT EDIT.
 
 package highlight
 
-// luaBuiltins は Lua の組み込み関数名（すべてのモジュール）。
 var luaBuiltins = map[string]bool{
 	"_g":                    true,
 	"_version":              true,

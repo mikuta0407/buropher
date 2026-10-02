@@ -1,4 +1,4 @@
-// Code generated from Rouge 4.7 css.rb by mkwords.py. DO NOT EDIT.
+// Code generated from Rouge 4.7 css.rb by tools/textformat/mkrougewords.py. DO NOT EDIT.
 
 package highlight
 

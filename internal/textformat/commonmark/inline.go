@@ -1,7 +1,6 @@
 package commonmark
 
 import (
-	"strconv"
 	"strings"
 	"unicode"
 	"unicode/utf8"
@@ -796,5 +795,3 @@ func validateProtocol(protocol string, contents []byte, cursor int) bool {
 	}
 	return size-cursor+rewind >= len(protocol) && string(contents[cursor-rewind:cursor]) == protocol
 }
-
-var _ = strconv.Itoa

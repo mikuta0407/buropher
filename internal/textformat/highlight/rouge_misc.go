@@ -80,7 +80,7 @@ func init() {
 				}
 				st := &rstate{name: "fence:" + m2}
 				st.rules = []rrule{
-					ruleF(`^([ \t]*)(`+rubyRegexpEscapeNoop(m2)+`)`, func(c *rctx) {
+					ruleF(`^([ \t]*)(`+m2+`)`, func(c *rctx) {
 						c.pop()
 						c.token("", c.group(1))
 						c.token("p", c.group(2))
@@ -180,7 +180,3 @@ func init() {
 		return l
 	})
 }
-
-// rubyRegexpEscapeNoop はフェンス文字列（` や ~ の連続）をそのまま正規表現に埋め込む
-// （Rouge も #{m[2]} をエスケープせずに埋め込む）。
-func rubyRegexpEscapeNoop(s string) string { return s }

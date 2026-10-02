@@ -1076,8 +1076,3 @@ func isBodyStart(s string) bool {
 	}
 	return false
 }
-
-// ParseInto は文字列を解析し、得られたノードを返す（Nokogiri の文字列による replace/inner_html= 相当の簡易版）。
-func ParseInto(html string) []*Node {
-	return ParseFragment(html).Children()
-}

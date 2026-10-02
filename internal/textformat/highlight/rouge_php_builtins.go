@@ -1,8 +1,7 @@
-// Code generated from Rouge 4.7 php/keywords.rb by mkphp.py. DO NOT EDIT.
+// Code generated from Rouge 4.7 php/keywords.rb by tools/textformat/mkrougewords.py. DO NOT EDIT.
 
 package highlight
 
-// phpBuiltins は PHP の組み込み関数名（すべてのモジュール）。
 var phpBuiltins = map[string]bool{
 	"CommonMark\\Parse":                     true,
 	"CommonMark\\Render":                    true,

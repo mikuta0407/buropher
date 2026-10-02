@@ -1,4 +1,4 @@
-// Code generated from Rouge 4.7 apache/keywords.rb by mkapache.py. DO NOT EDIT.
+// Code generated from Rouge 4.7 apache/keywords.rb by tools/textformat/mkrougewords.py. DO NOT EDIT.
 
 package highlight
 

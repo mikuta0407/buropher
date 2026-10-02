@@ -3,8 +3,6 @@ package highlight
 import (
 	"strings"
 	"sync"
-
-	"github.com/dlclark/regexp2/v2"
 )
 
 // Rouge 4.7 の ruby.rb の移植。
@@ -363,5 +361,3 @@ func init() {
 		return l
 	})
 }
-
-var _ = regexp2.None

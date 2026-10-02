@@ -3,7 +3,6 @@ package htmldom
 import (
 	"strings"
 	"unicode"
-	"unicode/utf8"
 )
 
 // Render は Nokogiri の DocumentFragment#to_s（各子ノードの to_html の連結）相当。
@@ -31,7 +30,7 @@ func InnerHTML(n *Node) string {
 
 func isTextLike(n *Node) bool { return n.Type == TextNode }
 
-// parentNameIsP は libxml2 の「parent->name != NULL && parent->name[0] != 'p'」判定。
+// newlineAllowedIn は libxml2 の「parent->name != NULL && parent->name[0] != 'p'」判定。
 // 断片（名前なし）の場合は改行を入れない。
 func newlineAllowedIn(parent *Node) bool {
 	if parent == nil || parent.Type != ElementNode {
@@ -239,5 +238,3 @@ func isExtender(c rune) bool {
 	}
 	return (c >= 0x3031 && c <= 0x3035) || (c >= 0x309D && c <= 0x309E) || (c >= 0x30FC && c <= 0x30FE)
 }
-
-var _ = utf8.RuneError

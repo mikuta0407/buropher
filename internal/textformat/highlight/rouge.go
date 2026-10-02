@@ -458,12 +458,12 @@ func translateRegexp(p string) string {
 						sb.WriteRune('\\')
 						sb.WriteRune(n)
 					} else {
-						sb.WriteString(escapeClassBody(cls))
+						sb.WriteString(cls)
 					}
 				} else if neg {
-					sb.WriteString("[^" + escapeClassBody(cls) + "]")
+					sb.WriteString("[^" + cls + "]")
 				} else {
-					sb.WriteString("[" + escapeClassBody(cls) + "]")
+					sb.WriteString("[" + cls + "]")
 				}
 				continue
 			}
@@ -511,8 +511,6 @@ func translateRegexp(p string) string {
 	}
 	return sb.String()
 }
-
-func escapeClassBody(s string) string { return s }
 
 func posixClass(name string) string {
 	neg := strings.HasPrefix(name, "^")
