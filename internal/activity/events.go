@@ -158,7 +158,7 @@ func (l *Loader) Issues(ctx context.Context, cond string, args []any, order stri
 		ps[i] = pending{
 			ev: &Event{
 				Provider: ProviderIssue, ID: r.ID, Datetime: r.CreatedAt.Time, Title: r.title(),
-				Description: r.Description.String, URL: "/issues/" + itoa(r.ID), Type: typ, Group: "Issue:" + itoa(r.ID),
+				Description: r.Description.String, DescriptionNull: !r.Description.Valid, URL: "/issues/" + itoa(r.ID), Type: typ, Group: "Issue:" + itoa(r.ID),
 			},
 			projectID: r.ProjectID, authorID: r.AuthorID,
 		}
@@ -257,8 +257,8 @@ WHERE prop_key = 'status_id' AND journal_id IN (`+idList(jids)+`) ORDER BY id`);
 			ev: &Event{
 				Provider: ProviderJournal, ID: r.ID, Datetime: r.CreatedAt.Time,
 				Title:       is.TrackerName + " #" + itoa(is.ID) + status + ": " + is.Subject,
-				Description: r.Notes.String,
-				URL:         "/issues/" + itoa(is.ID) + "#change-" + itoa(r.ID), Type: typ, Group: "Issue:" + itoa(is.ID),
+				Description: r.Notes.String, DescriptionNull: !r.Notes.Valid,
+				URL: "/issues/" + itoa(is.ID) + "#change-" + itoa(r.ID), Type: typ, Group: "Issue:" + itoa(is.ID),
 			},
 			projectID: is.ProjectID, authorID: r.UserID,
 		})
@@ -414,7 +414,7 @@ FROM news INNER JOIN projects ON projects.id = news.project_id`+where(cond)+" "+
 		ps[i] = pending{
 			ev: &Event{
 				Provider: ProviderNews, ID: r.ID, Datetime: r.CreatedAt.Time, Title: r.Title,
-				Description: r.Description.String, URL: "/news/" + itoa(r.ID), Type: "news", Group: "News:" + itoa(r.ID),
+				Description: r.Description.String, DescriptionNull: !r.Description.Valid, URL: "/news/" + itoa(r.ID), Type: "news", Group: "News:" + itoa(r.ID),
 			},
 			projectID: r.ProjectID, authorID: r.AuthorID,
 		}
@@ -465,7 +465,7 @@ WHERE container_kind = 'document' AND container_id IN (`+idList(ids)+`) ORDER BY
 			ev: &Event{
 				Provider: ProviderDocument, ID: r.ID, Datetime: r.CreatedAt.Time,
 				Title:       l.l("label_document") + ": " + r.Title,
-				Description: r.Description.String, URL: "/documents/" + itoa(r.ID), Type: "document", Group: "Document:" + itoa(r.ID),
+				Description: r.Description.String, DescriptionNull: !r.Description.Valid, URL: "/documents/" + itoa(r.ID), Type: "document", Group: "Document:" + itoa(r.ID),
 			},
 			projectID: r.ProjectID, authorID: firstAuthor[r.ID],
 		}
@@ -494,8 +494,8 @@ func (l *Loader) Attachments(ctx context.Context, from, cond string, args []any,
 		ps[i] = pending{
 			ev: &Event{
 				Provider: ProviderAttachment, ID: r.ID, Datetime: r.CreatedAt.Time, Title: r.Filename,
-				Description: r.Description.String,
-				URL:         "/attachments/" + itoa(r.ID) + "/" + escapeSegment(r.Filename), Type: "attachment",
+				Description: r.Description.String, DescriptionNull: !r.Description.Valid,
+				URL: "/attachments/" + itoa(r.ID) + "/" + escapeSegment(r.Filename), Type: "attachment",
 				Group: "Attachment:" + itoa(r.ID),
 			},
 			projectID: nullInt(r.ProjectID), authorID: r.AuthorID,
@@ -534,7 +534,7 @@ FROM wiki_page_versions LEFT JOIN wiki_pages ON wiki_pages.id = wiki_page_versio
 			ev: &Event{
 				Provider: ProviderWikiContentVersion, ID: r.ID, Datetime: r.UpdatedAt.Time,
 				Title:       l.l("label_wiki_edit") + ": " + r.Title.String + " (#" + itoa(r.Version) + ")",
-				Description: r.Comments.String,
+				Description: r.Comments.String, DescriptionNull: !r.Comments.Valid,
 				URL: "/projects/" + escapeSegment(r.ProjectIdent.String) + "/wiki/" + escapeSegment(r.Title.String) +
 					"/" + itoa(r.Version),
 				Type: "wiki-page", Group: "WikiPage:" + itoa(r.PageID),
@@ -569,9 +569,9 @@ FROM `+WikiPageFrom+where(cond)+" "+order, args...); err != nil {
 			ev: &Event{
 				Provider: ProviderWikiPage, ID: r.ID, Datetime: r.CreatedAt.Time,
 				Title:       l.l("label_wiki") + ": " + r.Title,
-				Description: r.Text.String,
-				URL:         "/projects/" + escapeSegment(r.ProjectIdent) + "/wiki/" + escapeSegment(r.Title),
-				Type:        "wiki-page", Group: "WikiPage:" + itoa(r.ID),
+				Description: r.Text.String, DescriptionNull: !r.Text.Valid,
+				URL:  "/projects/" + escapeSegment(r.ProjectIdent) + "/wiki/" + escapeSegment(r.Title),
+				Type: "wiki-page", Group: "WikiPage:" + itoa(r.ID),
 			},
 			projectID: r.ProjectID,
 		}
@@ -620,7 +620,7 @@ FROM messages INNER JOIN boards ON boards.id = messages.board_id
 		ps[i] = pending{
 			ev: &Event{
 				Provider: ProviderMessage, ID: r.ID, Datetime: r.CreatedAt.Time,
-				Title: r.BoardName + ": " + r.Subject, Description: r.Content.String, URL: url, Type: typ, Group: group,
+				Title: r.BoardName + ": " + r.Subject, Description: r.Content.String, DescriptionNull: !r.Content.Valid, URL: url, Type: typ, Group: group,
 			},
 			projectID: r.ProjectID, authorID: nullInt(r.AuthorID),
 		}
@@ -711,7 +711,7 @@ FROM time_entries INNER JOIN projects ON projects.id = time_entries.project_id`+
 		ps[i] = pending{
 			ev: &Event{
 				Provider: ProviderTimeEntry, ID: r.ID, Datetime: r.CreatedAt.Time,
-				Title: hours + " (" + related + ")", Description: r.Comments.String, URL: url, Type: "time-entry", Group: group,
+				Title: hours + " (" + related + ")", Description: r.Comments.String, DescriptionNull: !r.Comments.Valid, URL: url, Type: "time-entry", Group: group,
 			},
 			projectID: r.ProjectID, authorID: r.UserID,
 		}
@@ -739,7 +739,7 @@ FROM projects`+where(cond)+" "+order, args...); err != nil {
 		ps[i] = pending{
 			ev: &Event{
 				Provider: ProviderProject, ID: r.ID, Datetime: r.CreatedAt.Time,
-				Title: l.l("label_project") + ": " + r.Name, Description: r.Description.String,
+				Title: l.l("label_project") + ": " + r.Name, Description: r.Description.String, DescriptionNull: !r.Description.Valid,
 				URL: "/projects/" + escapeSegment(r.Identifier), Type: "project", Group: "Project:" + itoa(r.ID),
 			},
 			projectID: r.ID,

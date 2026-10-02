@@ -102,6 +102,8 @@ type Event struct {
 	Title string
 	// Description は event_description。
 	Description string
+	// DescriptionNull は event_description が nil（API で null を出す）。
+	DescriptionNull bool
 	// Author は event_author（*domain.User / string（リポジトリのコミッター）/ nil）。
 	Author any
 	// URL は event_url（パスのみ。アンカー・クエリを含む）。
