@@ -43,7 +43,9 @@ func (a *App) RegisterDiscordHooks() {
 	a.Helpers.AddHook("view_my_account_preferences", a.discordPreferencesHook)
 }
 
-func (a *App) discordConfig() notify.DiscordConfig { return notify.DiscordSettings(a.Settings, a.Secrets) }
+func (a *App) discordConfig() notify.DiscordConfig {
+	return notify.DiscordSettings(a.Settings, a.Secrets)
+}
 
 // discordRedirectURI は OAuth2 のリダイレクト URL（Setting.protocol / host_name から作る）。
 func (a *App) discordRedirectURI() string {
