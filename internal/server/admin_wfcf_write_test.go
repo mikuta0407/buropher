@@ -35,10 +35,10 @@ func TestWorkflowsUpdate(t *testing.T) {
 	}
 	res, _ := adminSubmit(t, c, ts, http.MethodPatch, "/workflows/update", url.Values{
 		"role_id[]": {"2"}, "tracker_id[]": {"1"},
-		"transitions[4][5][always]": {"1"},
-		"transitions[1][2][always]": {"0"},
-		"transitions[1][3][always]": {"no_change"},
-		"transitions[3][1][author]": {"1"},
+		"transitions[4][5][always]":   {"1"},
+		"transitions[1][2][always]":   {"0"},
+		"transitions[1][3][always]":   {"no_change"},
+		"transitions[3][1][author]":   {"1"},
 		"transitions[3][1][assignee]": {"1"},
 	})
 	if res.StatusCode != 302 || !strings.HasSuffix(res.Header.Get("Location"), "/workflows/edit") {
