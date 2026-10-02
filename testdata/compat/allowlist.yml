@@ -97,3 +97,13 @@ entries:
   - case: "settings_admin/admin_info__admin"
     reason: "admin#info は意図的に buropher のバージョン・Go のバージョン・DB アダプタ等を表示する（Redmine の Ruby / Rails / ImageMagick の確認項目は持たない）。レイアウトと CSS クラスは同じ"
     ignore: true
+
+  # ---- account_auth / auth_sources（buropher 拡張: OIDC 認証方式）
+  - case: "auth_sources*/*auth_sources__admin"
+    reason: "buropher 拡張: 認証方式の一覧に「新しい OpenID Connect プロバイダ」のリンク（class buropher-extra）を追加している"
+    lines:
+      - '^\s*<a class="icon icon-add buropher-extra" href="/auth_sources/new\?type=AuthSourceOidc">New OpenID Connect provider</a>$'
+  - case: "auth_sources*/g0*_index__admin"
+    reason: "buropher 拡張: 認証方式の一覧に「新しい OpenID Connect プロバイダ」のリンク（class buropher-extra）を追加している"
+    lines:
+      - '^\s*<a class="icon icon-add buropher-extra" href="/auth_sources/new\?type=AuthSourceOidc">New OpenID Connect provider</a>$'

@@ -1,0 +1,64 @@
+# アカウント・認証（パスワード再発行・自己登録・2 要素認証）の互換シナリオ（GET のみ）。
+# 共用の参照環境（3998）に対して実行してよい。状態を変えるケースは account_auth_write.yml。
+name: account_auth
+
+users:
+  admin: {login: admin, password: admin}
+  jsmith: {login: jsmith, password: jsmith}
+  dlopper: {login: dlopper, password: foo}
+
+normalize:
+  mask_text_selectors:
+    - "#footer"
+  strip_selectors:
+    - "#project-jump"
+    # time_zone_select の Casablanca の基準オフセットは評価時刻で変わる（my_calendar_reports.yml 参照）
+    - "#pref_time_zone"
+
+requests:
+  # ---- ログイン・パスワード再発行・登録（未ログイン）
+  - path: /login
+    users: [anonymous]
+  - path: /login?back_url=%2Fprojects
+    users: [anonymous]
+  - path: /account/lost_password
+    users: [anonymous]
+  - id: lost_password_unknown_token
+    path: /account/lost_password?token=0123456789abcdef0123456789abcdef01234567
+    users: [anonymous]
+  - id: lost_password_bad_token
+    path: /account/lost_password?token=../../x
+    users: [anonymous]
+  - path: /account/register
+    users: [anonymous]
+  - path: /account/activate
+    users: [anonymous]
+  - path: /account/activate?token=0123456789abcdef0123456789abcdef01234567
+    users: [anonymous]
+  - path: /account/activation_email
+    users: [anonymous]
+  # ---- 2 要素認証のログイン 2 段目（twofa_session が無ければホームへ）
+  - path: /account/twofa/confirm
+    users: [anonymous, jsmith]
+  - path: /account/twofa
+    users: [anonymous]
+  # ---- ログイン済みでのアクセス
+  - path: /login
+    users: [jsmith]
+  - path: /account/lost_password
+    users: [jsmith]
+  - path: /account/register
+    users: [jsmith]
+  # ---- 2 要素認証の設定画面
+  - path: /my/twofa/select_scheme
+    users: [anonymous, jsmith, admin]
+  # /my/twofa/totp/deactivate/confirm は 2 要素認証が無効なユーザーでは Redmine が 500（for_user が nil）になるため対象外
+  - path: /my/twofa/foo/activate/confirm
+    users: [jsmith]
+  - path: /my/account
+    users: [jsmith, dlopper]
+  # ---- 管理画面のユーザー編集（2 要素認証の欄）
+  - path: /users/2/edit
+    users: [admin]
+  - path: /users/1/edit
+    users: [admin]

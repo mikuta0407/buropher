@@ -175,15 +175,18 @@ func (a *App) TwofaDeactivate(c *Req) {
 
 // TwofaAdminDeactivate は twofa#admin_deactivate（管理者による他ユーザーの 2 要素認証の解除）。
 func (a *App) TwofaAdminDeactivate(c *Req) {
+	// User.find の ActiveRecord::RecordNotFound は rescue されない（public/404.html）
 	id, ok := c.Params().IntStrict("user_id")
 	if !ok {
-		c.Render404("")
+		c.renderPublic404()
+		c.Halt()
 		return
 	}
 	user, err := repository.GetUser(c.Ctx(), a.DB, id)
 	if err != nil {
 		if errors.Is(err, repository.ErrNotFound) {
-			c.Render404("")
+			c.renderPublic404()
+			c.Halt()
 		} else {
 			a.serverError(c, err)
 		}

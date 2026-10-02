@@ -1,0 +1,292 @@
+# アカウント・認証の状態を変える互換シナリオ（パスワード再発行・自己登録の各方式・パスワード期限・
+# 2 要素認証の必須化・管理者による 2 要素認証の解除）。
+# 参照は専用インスタンスで実行前に reset すること:
+#   COMPAT_REF_DIR=_reference/ref-auth COMPAT_REF_PORT=4023 tools/compat/redmine-ref.sh start
+#   go run ./tools/compat diff -ref http://127.0.0.1:4023 -cand http://127.0.0.1:4123 \
+#     -reset-ref 'COMPAT_REF_DIR=... COMPAT_REF_PORT=4023 tools/compat/redmine-ref.sh reset' \
+#     -reset-cand 'BUROPHER_CAND_PORT=4123 BUROPHER_CAND_DIR=... tools/compat/buropher-cand.sh reset' \
+#     testdata/compat/scenarios/account_auth_write.yml
+# メールで届くトークン（再発行・有効化）や TOTP のコードを使う流れは internal/server/account_auth_test.go で比較する。
+# ケースは記述順に実行され、前のケースの結果に依存する。
+name: account_auth_write
+
+users:
+  admin: {login: admin, password: admin}
+  jsmith: {login: jsmith, password: jsmith}
+  dlopper: {login: dlopper, password: foo}
+  rhill: {login: rhill, password: foo}
+
+normalize:
+  mask_text_selectors:
+    - "#footer"
+  strip_selectors:
+    - "#project-jump"
+    - "#pref_time_zone"
+
+requests:
+  # ---- パスワード再発行
+  - id: lost_password_unknown
+    path: /account/lost_password
+    method: POST
+    user: anonymous
+    csrf: true
+    form: {mail: "nobody@example.net"}
+  - id: lost_password_unknown_next
+    path: /login
+    user: anonymous
+    csrf: true
+  - id: lost_password_locked
+    path: /account/lost_password
+    method: POST
+    user: anonymous
+    csrf: true
+    form: {mail: "dlopper2@somenet.foo"}
+  - id: lost_password_locked_next
+    path: /account/lost_password
+    user: anonymous
+    csrf: true
+  - id: lost_password_sent
+    path: /account/lost_password
+    method: POST
+    user: anonymous
+    csrf: true
+    expect_status: 302
+    form: {mail: "JSMITH@somenet.foo"}
+  - id: lost_password_sent_next
+    path: /login
+    user: anonymous
+    csrf: true
+
+  # ---- 自己登録（既定: 管理者による手動有効化）
+  - id: register_invalid
+    path: /account/register
+    method: POST
+    user: anonymous
+    csrf: true
+    form:
+      user[login]: "jsmith"
+      user[password]: "x"
+      user[password_confirmation]: "y"
+      user[firstname]: ""
+      user[lastname]: "Doe"
+      user[mail]: "bad"
+      user[language]: "en"
+      pref[hide_mail]: "0"
+      user[custom_field_values][4]: "abc"
+  - id: register_manual
+    path: /account/register
+    method: POST
+    user: anonymous
+    csrf: true
+    expect_status: 302
+    form:
+      user[login]: "newbie"
+      user[password]: "newbie123"
+      user[password_confirmation]: "newbie123"
+      user[firstname]: "New"
+      user[lastname]: "Bie"
+      user[mail]: "newbie@example.net"
+      user[language]: "en"
+      pref[hide_mail]: "1"
+  - id: register_manual_next
+    path: /login
+    user: anonymous
+    csrf: true
+  - id: login_pending
+    path: /login
+    method: POST
+    user: anonymous
+    csrf: true
+    form: {username: "newbie", password: "newbie123"}
+  - id: login_pending_next
+    path: /login
+    user: anonymous
+    csrf: true
+  - id: users_registered
+    path: /users?status=2
+    user: admin
+
+  # ---- メールによる有効化
+  - id: settings_email_activation
+    path: /settings/edit?tab=authentication
+    method: POST
+    user: admin
+    expect_status: 302
+    form: {"settings[self_registration]": "1"}
+  - id: register_email
+    path: /account/register
+    method: POST
+    user: anonymous
+    csrf: true
+    expect_status: 302
+    form:
+      user[login]: "emailact"
+      user[password]: "emailact1"
+      user[password_confirmation]: "emailact1"
+      user[firstname]: "Email"
+      user[lastname]: "Act"
+      user[mail]: "emailact@example.net"
+      user[language]: "en"
+  - id: register_email_next
+    path: /login
+    user: anonymous
+    csrf: true
+  - id: login_not_activated
+    path: /login
+    method: POST
+    user: anonymous
+    csrf: true
+    form: {username: "emailact", password: "emailact1"}
+  - id: login_not_activated_next
+    path: /login
+    user: anonymous
+    csrf: true
+  - id: activation_email_resend
+    path: /account/activation_email
+    user: anonymous
+    csrf: true
+  - id: activation_email_resend_next
+    path: /login
+    user: anonymous
+    csrf: true
+  - id: activation_email_again
+    path: /account/activation_email
+    user: anonymous
+    csrf: true
+
+  # ---- 自動有効化（登録直後にログイン）
+  - id: settings_auto_activation
+    path: /settings/edit?tab=authentication
+    method: POST
+    user: admin
+    expect_status: 302
+    form: {"settings[self_registration]": "3", "settings[show_custom_fields_on_registration]": "0"}
+  - id: register_form_required_cf_only
+    path: /account/register
+    user: anonymous
+    csrf: true
+  - id: register_auto
+    path: /account/register
+    method: POST
+    user: anonymous
+    csrf: true
+    expect_status: 302
+    form:
+      user[login]: "autouser"
+      user[password]: "autouser1"
+      user[password_confirmation]: "autouser1"
+      user[firstname]: "Auto"
+      user[lastname]: "User"
+      user[mail]: "autouser@example.net"
+      user[language]: "en"
+  - id: register_auto_next
+    path: /my/account
+    user: anonymous
+    csrf: true
+
+  # ---- 登録・再発行の無効化
+  - id: settings_disable
+    path: /settings/edit?tab=authentication
+    method: POST
+    user: admin
+    expect_status: 302
+    form: {"settings[self_registration]": "0", "settings[lost_password]": "0"}
+  - id: register_disabled
+    path: /account/register
+    user: jsmith
+  - id: lost_password_disabled
+    path: /account/lost_password
+    user: jsmith
+  - id: settings_enable_lost_password
+    path: /settings/edit?tab=authentication
+    method: POST
+    user: admin
+    expect_status: 302
+    form: {"settings[lost_password]": "1"}
+
+  # ---- 次回ログイン時にパスワード変更
+  - id: users_must_change
+    path: /users/3
+    method: POST
+    user: admin
+    expect_status: 302
+    form: {_method: "patch", "user[must_change_passwd]": "1"}
+  - id: must_change_my_page
+    path: /my/page
+    user: dlopper
+  - id: must_change_projects
+    path: /projects
+    user: dlopper
+  - id: must_change_password_form
+    path: /my/password
+    user: dlopper
+
+  # ---- パスワードの有効期限
+  - id: settings_password_max_age
+    path: /settings/edit?tab=authentication
+    method: POST
+    user: admin
+    expect_status: 302
+    form: {"settings[password_max_age]": "7"}
+  - id: expired_my_page
+    path: /my/page
+    user: jsmith
+  - id: expired_password_form
+    path: /my/password
+    user: jsmith
+  - id: settings_password_max_age_off
+    path: /settings/edit?tab=authentication
+    method: POST
+    user: admin
+    expect_status: 302
+    form: {"settings[password_max_age]": "0"}
+
+  # ---- 2 要素認証の必須化（TOTP の鍵は乱数のため画面は QR・鍵を伏せる）
+  - id: settings_twofa_required
+    path: /settings/edit?tab=authentication
+    method: POST
+    user: admin
+    expect_status: 302
+    form: {"settings[twofa]": "2"}
+  - id: twofa_required_my_page
+    path: /my/page
+    user: rhill
+  - id: twofa_required_confirm
+    path: /my/twofa/totp/activate/confirm
+    user: rhill
+    normalize:
+      mask_attrs:
+        - {selector: "img#twofa_code", attr: src}
+      mask_text_selectors:
+        - "div.tabular p code"
+  - id: twofa_required_select
+    path: /my/twofa/select_scheme
+    user: rhill
+  # 有効化前のコード送信は、トークン取得用の / が 2 要素認証の設定画面へリダイレクトされるため対象外（Go のテストで確認）
+  - id: twofa_required_projects
+    path: /projects
+    user: rhill
+
+  # ---- 管理者による解除: 自分自身は 403、存在しないユーザーは public/404.html
+  # （2 要素認証が無効なユーザーの解除は Redmine が 500 になるため対象外）
+  - id: admin_deactivate_self
+    path: /users/1/twofa/deactivate
+    method: POST
+    user: admin
+    form: {_dummy: "1"}
+  - id: admin_deactivate_missing
+    path: /users/999/twofa/deactivate
+    method: POST
+    user: admin
+    form: {_dummy: "1"}
+
+  # ---- 2 要素認証の無効化
+  - id: settings_twofa_disabled
+    path: /settings/edit?tab=authentication
+    method: POST
+    user: admin
+    expect_status: 302
+    form: {"settings[twofa]": "0"}
+  - id: twofa_disabled_select
+    path: /my/twofa/select_scheme
+    user: jsmith
