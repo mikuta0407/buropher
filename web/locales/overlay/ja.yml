@@ -10,6 +10,7 @@ ja:
       label_linked_identities: "連携アカウント"
       label_link_identity: "アカウントを連携"
       button_link_with: "%{provider} と連携"
+      button_reauthenticate_with: "%{provider} で確認"
       button_unlink: "連携解除"
       field_provider: "プロバイダ"
       field_preset: "プリセット"

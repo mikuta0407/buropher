@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"strconv"
 	"net/url"
 	"slices"
 	"sort"
@@ -9,6 +10,7 @@ import (
 	"time"
 
 	"github.com/mikuta0407/buropher/internal/httpx"
+	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/view"
 )
 
@@ -216,6 +218,8 @@ func (a *App) renderSudoForm(c *Req, original *httpx.Params) {
 		"Method":         method,
 		"OriginalFields": hashToHiddenFields(original),
 		"Action":         c.R.URL.Path,
+		// buropher 拡張: 外部 ID（OIDC）と連携しているユーザーは IdP での再認証でも sudo を有効にできる
+		"SSOReauth": a.sudoSSOButtons(c),
 	}
 	if httpx.Negotiate(c.R, "html", "js") == "js" {
 		c.Render("sudo_mode/new", data, RenderOptions{Format: "js", Layout: view.NoLayout})
@@ -227,4 +231,34 @@ func (a *App) renderSudoForm(c *Req, original *httpx.Params) {
 		return
 	}
 	c.Render("sudo_mode/new", data)
+}
+
+// sudoSSOButtons は sudo モードの再認証に使える OIDC 認証方式のボタン（連携が無ければ nil）。
+// 再認証後は back_url（GET なら現在の URL、それ以外は Referer）へ戻る。元のフォームの送信内容は引き継がない。
+func (a *App) sudoSSOButtons(c *Req) []ssoButton {
+	ids, err := repository.UserIdentities(c.Ctx(), a.DB, c.User.ID)
+	if err != nil || len(ids) == 0 {
+		return nil
+	}
+	back := "/my/account"
+	if c.R.Method == http.MethodGet {
+		back = c.R.URL.RequestURI()
+	} else if ref := c.R.Header.Get("Referer"); ref != "" {
+		if v, ok := httpx.ValidateBackURL(c.R, ref, ""); ok {
+			back = v
+		}
+	}
+	var out []ssoButton
+	for _, rec := range a.oidcSources(c) {
+		for _, id := range ids {
+			if id.Provider == oidcProviderKey(rec) {
+				out = append(out, ssoButton{
+					Label: c.L("buropher.sso.button_reauthenticate_with", map[string]any{"provider": rec.Name}),
+					URL:   "/auth/oidc/" + strconv.FormatInt(rec.ID, 10) + "/start?mode=sudo&back_url=" + url.QueryEscape(back),
+				})
+				break
+			}
+		}
+	}
+	return out
 }

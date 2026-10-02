@@ -15,3 +15,11 @@
   </div>
   {{submit_tag (l "button_submit")}}
 {{end_form}}
+{{if .SSOReauth}}
+{{/* buropher 拡張: OIDC での再認証（連携している外部 ID があるときだけ表示） */}}
+<p class="sso-reauth">
+{{range $b := .SSOReauth}}
+  {{link_to $b.Label $b.URL (hash "class" "button")}}
+{{end}}
+</p>
+{{end}}

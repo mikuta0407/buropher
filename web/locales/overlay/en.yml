@@ -12,6 +12,7 @@ en:
       label_linked_identities: "Linked accounts"
       label_link_identity: "Link an account"
       button_link_with: "Link with %{provider}"
+      button_reauthenticate_with: "Confirm with %{provider}"
       button_unlink: "Unlink"
       field_provider: "Provider"
       field_preset: "Preset"

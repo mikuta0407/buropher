@@ -2,6 +2,9 @@ package server_test
 
 import (
 	"context"
+	"time"
+
+	"github.com/go-chi/chi/v5"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -11,6 +14,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/auth/oidc/oidctest"
 	"github.com/mikuta0407/buropher/internal/auth/totp"
 	"github.com/mikuta0407/buropher/internal/db"
+	"github.com/mikuta0407/buropher/internal/handler"
 )
 
 // このファイルは OIDC シングルサインオン（buropher 拡張）の端から端までのテスト。
@@ -27,10 +31,10 @@ type ssoEnv struct {
 }
 
 // newSSOEnv はフィクスチャのサーバ・IdP・OIDC 認証方式（id は ssoEnv.id）を用意する。
-func newSSOEnv(t *testing.T, form url.Values) *ssoEnv {
+func newSSOEnv(t *testing.T, form url.Values, extra ...func(a *handler.App, r chi.Router)) *ssoEnv {
 	t.Helper()
 	myFreezeClock(t)
-	ts, d := newFixtureServer(t)
+	ts, d := newFixtureServer(t, extra...)
 	idp := oidctest.New()
 	t.Cleanup(idp.Close)
 	e := &ssoEnv{t: t, ts: ts, d: d, idp: idp, adm: login(t, ts, "admin", "admin")}
@@ -479,5 +483,46 @@ func TestOIDCEntraPresetForm(t *testing.T) {
 		"auth_source[name]": {"Entra"}, "auth_source[preset]": {"entra"}, "auth_source[tenant]": {"contoso.onmicrosoft.com"}, "auth_source[client_id]": {"abc"}})
 	if res.StatusCode != 302 {
 		t.Fatalf("entra create: %d", res.StatusCode)
+	}
+}
+
+// TestOIDCSudoReauth は sudo モードのパスワード再入力の代わりに IdP での再認証（prompt=login）で sudo を有効にできることを確認する。
+func TestOIDCSudoReauth(t *testing.T) {
+	var app *handler.App
+	e := newSSOEnv(t, nil, func(a *handler.App, _ chi.Router) { a.SudoMode = true; app = a })
+	if err := app.Settings.Set(context.Background(), "autologin", "7"); err != nil {
+		t.Fatal(err)
+	}
+	// dlopper の外部 ID を連携しておく
+	if _, err := e.d.Exec(context.Background(), `INSERT INTO user_identities (user_id, provider, auth_source_id, subject, created_at) VALUES (3, ?, ?, 'dl-sub', ?)`,
+		"oidc:"+e.id, e.id, db.NewTime(time.Now())); err != nil {
+		t.Fatal(err)
+	}
+	// 自動ログインで始まったセッションは sudo の時刻を持たない
+	tmp := newClient(t)
+	_, page := get(t, tmp, e.ts.URL+"/login")
+	post(t, tmp, e.ts.URL+"/login", url.Values{"authenticity_token": {csrfToken(t, page)}, "username": {"dlopper"}, "password": {"foo"}, "autologin": {"1"}})
+	u, _ := url.Parse(e.ts.URL)
+	c := newClient(t)
+	for _, ck := range tmp.Jar.Cookies(u) {
+		if ck.Name == "autologin" {
+			c.Jar.SetCookies(u, []*http.Cookie{ck})
+		}
+	}
+	_, body := get(t, c, e.ts.URL+"/my/account/destroy")
+	if !strings.Contains(body, "sudo-form") || !strings.Contains(body, "/auth/oidc/"+e.id+"/start?mode=sudo&amp;back_url=%2Fmy%2Faccount%2Fdestroy") {
+		t.Fatalf("sudo form with re-auth button:\n%s", body)
+	}
+	e.idp.SetClaims(map[string]any{"sub": "dl-sub"})
+	res := e.ssoLogin(c, "?mode=sudo&back_url=%2Fmy%2Faccount%2Fdestroy")
+	if !strings.HasSuffix(res.Header.Get("Location"), "/my/account/destroy") {
+		t.Fatalf("sudo reauth redirect: %s", res.Header.Get("Location"))
+	}
+	if e.idp.LastAuthorize.Get("prompt") != "login" {
+		t.Fatalf("prompt: %v", e.idp.LastAuthorize)
+	}
+	_, body = get(t, c, e.ts.URL+"/my/account/destroy")
+	if strings.Contains(body, "sudo-form") {
+		t.Fatal("sudo should be active after re-authentication")
 	}
 }
