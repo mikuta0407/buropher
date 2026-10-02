@@ -3,8 +3,10 @@ package assets
 import (
 	"io/fs"
 	"path"
+	"regexp"
 	"sort"
 	"strings"
+	"sync"
 )
 
 // Theme は Redmine::Themes::Theme 相当（アセット関連部分のみ）。
@@ -24,7 +26,39 @@ type Theme struct {
 
 	fsys fs.FS  // テーマディレクトリを含む FS
 	dir  string // fsys 内のテーマディレクトリ
+
+	iconsMu sync.Mutex
+	icons   map[string][]string // スプライト名 → アイコン名（Theme#icons のキャッシュ）
 }
+
+var reIconID = regexp.MustCompile(`id=['"]icon--([^'"]+)['"]`)
+
+// Icons は Theme#icons（images/<sprite>.svg に含まれる id="icon--<名前>" の一覧）。
+// テーマのファイルはパイプラインの構築時に固定されるため、結果はテーマごとにキャッシュする。
+func (t *Theme) Icons(sprite string) []string {
+	if !t.HasImage(sprite + ".svg") {
+		return nil
+	}
+	t.iconsMu.Lock()
+	defer t.iconsMu.Unlock()
+	if v, ok := t.icons[sprite]; ok {
+		return v
+	}
+	var names []string
+	if b, err := fs.ReadFile(t.fsys, path.Join(t.dir, "images", sprite+".svg")); err == nil {
+		for _, m := range reIconID.FindAllSubmatch(b, -1) {
+			names = append(names, string(m[1]))
+		}
+	}
+	if t.icons == nil {
+		t.icons = map[string][]string{}
+	}
+	t.icons[sprite] = names
+	return names
+}
+
+// HasIcon は Theme#icons(sprite).include?(name)。
+func (t *Theme) HasIcon(sprite, name string) bool { return contains(t.Icons(sprite), name) }
 
 // AssetPrefix は "themes/<id>/"。
 func (t *Theme) AssetPrefix() string { return "themes/" + t.ID + "/" }

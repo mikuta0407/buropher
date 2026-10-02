@@ -21,6 +21,8 @@ type Config struct {
 	Discord Discord `toml:"discord"`
 	Auth    Auth    `toml:"auth"`
 	PDF     PDF     `toml:"pdf"`
+	// Web は画面まわり（外部テーマ等）の設定。
+	Web Web `toml:"web"`
 	// DevAssetsDir が空でなければ embed ではなくディスクからアセット/テンプレートを読む（開発用）。
 	DevWebDir string `toml:"dev_web_dir"`
 }
@@ -138,6 +140,13 @@ type PDF struct {
 	Fonts map[string]string `toml:"fonts"`
 }
 
+// Web は画面まわりの設定。
+type Web struct {
+	// ThemesDir は外部テーマのディレクトリ（Redmine の Rails.root/themes 相当。直下に
+	// <テーマ>/stylesheets/application.css を持つ）。空なら同梱テーマ（classic / alternate）のみ。
+	ThemesDir string `toml:"themes_dir"`
+}
+
 func Default() *Config {
 	return &Config{
 		Server:   Server{Addr: ":3000"},
@@ -170,6 +179,7 @@ func Load(path string) (*Config, error) {
 		"BUROPHER_SMTP_AUTH":        &c.Mail.SMTP.Authentication,
 		"BUROPHER_DISCORD_API_BASE": &c.Discord.APIBase,
 		"BUROPHER_PDF_FONT_DIR":     &c.PDF.FontDir,
+		"BUROPHER_THEMES_DIR":       &c.Web.ThemesDir,
 	}
 	for k, p := range env {
 		if v, ok := os.LookupEnv(k); ok {

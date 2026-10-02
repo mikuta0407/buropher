@@ -343,8 +343,7 @@ func (d *Deps) assetPath(source string) string {
 	return d.Assets.AssetPath(source)
 }
 
-// spriteIcon は IconsHelper#sprite_icon。
-// TODO(themes): テーマ独自のアイコンスプライト（Theme#icons）は未対応。
+// spriteIcon は IconsHelper#sprite_icon（スプライトの選択は sprite_source）。
 func (d *Deps) spriteIcon(p *Page, name string, label any, opts *rails.Hash) html {
 	if opts == nil {
 		opts = rails.NewHash()
@@ -360,6 +359,9 @@ func (d *Deps) spriteIcon(p *Page, name string, label any, opts *rails.Hash) htm
 	source := sprite + ".svg"
 	if plugin := opts.Get("plugin"); truthy(plugin) {
 		source = "plugin_assets/" + rails.ToS(plugin) + "/" + sprite + ".svg"
+	} else if t := d.currentTheme(p); t != nil && t.HasIcon(sprite, name) {
+		// テーマが同名のアイコンを持てばテーマのスプライトを使う
+		source = t.ImagePath(sprite + ".svg")
 	}
 	css := "s" + size + " icon-svg"
 	if rails.ToS(opts.Get("style")) == "filled" {
