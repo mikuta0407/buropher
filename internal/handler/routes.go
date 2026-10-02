@@ -16,4 +16,9 @@ type Router = chi.Router
 func (a *App) Routes(r Router) {
 	a.routesWelcome(r)
 	a.routesAccount(r)
+	a.routesContextMenus(r)
+	a.routesUsers(r)
+	a.routesPrincipalMemberships(r)
+	a.routesEmailAddresses(r)
+	a.routesGroups(r)
 }

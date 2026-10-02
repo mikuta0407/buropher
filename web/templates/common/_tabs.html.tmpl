@@ -1,0 +1,25 @@
+{{$default := ""}}
+
+<div class="tabs">
+  <ul>
+  {{range $tab := .tabs}}
+    {{$action := get_tab_action $tab}}
+    <li>{{tab_link $tab $.selected_tab}}</li>
+    {{$default = cond (eq $tab.Name $.selected_tab) $action $default}}
+  {{end}}
+  </ul>
+  <div class="tabs-buttons" style="display:none;">
+    <button class="tab-left icon-only" type="button" onclick="moveTabLeft(this);">
+      {{sprite_icon "angle-left" (hash "rtl" true)}}
+    </button>
+    <button class="tab-right icon-only" type="button" onclick="moveTabRight(this);">
+      {{sprite_icon "angle-right" (hash "rtl" true)}}
+    </button>
+  </div>
+</div>
+
+{{range $tab := .tabs}}
+  {{if $tab.Partial}}{{content_tag "div" (partial $tab.Partial (dict "tab" $tab)) (hash "id" (printf "tab-content-%s" $tab.Name) "style" (tab_hidden_style $tab $.selected_tab) "class" "tab-content")}}{{end}}
+{{end}}
+
+{{if $default}}{{javascript_tag $default}}{{end}}

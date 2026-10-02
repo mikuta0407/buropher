@@ -1,0 +1,46 @@
+{{define "users/index#actions"}}
+    {{if .CanImport}}
+      {{link_to (sprite_icon "import" (l "button_import")) "/users/imports/new" (hash "class" "icon icon-import")}}
+    {{end}}
+{{end}}
+<div class="contextual">
+{{link_to (sprite_icon "add" (l "label_user_new")) "/users/new" (hash "class" "icon icon-add")}}
+  {{actions_dropdown (capture "users/index#actions")}}</div>
+
+<h2>{{l "label_user_plural"}}</h2>
+
+
+{{form_tag "/users" (hash "method" "get" "id" "query_form")}}
+  {{partial "users/query_form" (dict "query" .Query "can_save" .CanSaveQuery "errors" .QueryErrors)}}
+{{end_form}}
+
+{{if not .QueryErrors}}
+  {{if not .Users}}
+    <p class="nodata">{{l "label_no_data"}}</p>
+  {{else}}
+    {{.Query.Totals}}
+    {{partial "users/list" (dict "users" .Users "query" .Query)}}
+    <span class="pagination">{{pagination_links_full .Pages .Count}}</span>
+  {{end}}
+<p class="other-formats hide-when-print">{{l "label_export_to"}}    <span>{{link_to "CSV" (current_path_with_format "csv") (hash "class" "csv" "rel" "nofollow" "onclick" "showModal('csv-export-options', '350px'); return false;")}}</span>
+</p>
+  <div id="csv-export-options" style="display:none;">
+    <h3 class="title">{{l "label_export_options" (hash "export_format" "CSV")}}</h3>
+    {{form_tag "/users.csv" (hash "method" "get" "id" "csv-export-form")}}
+    {{.Query.HiddenFieldTags}}
+    {{hidden_field_tag "query_name" "_"}}
+    <p>
+      <label>{{radio_button_tag "c[]" "" true}} {{l "description_selected_columns"}}</label><br />
+      <label>{{radio_button_tag "c[]" "all_inline"}} {{l "description_all_columns"}}</label>
+    </p>
+    {{export_csv_encoding_select_tag}}
+    {{export_csv_separator_select_tag}}
+    <p class="buttons">
+      {{submit_tag (l "button_export") (hash "name" nil "onclick" "hideModal(this);" "data" (hash "disable_with" false))}}
+      {{link_to_function (l "button_cancel") "hideModal(this);"}}
+    </p>
+    {{end_form}}
+  </div>
+{{end}}
+
+{{html_title (l "label_user_plural")}}
