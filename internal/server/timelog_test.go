@@ -31,6 +31,18 @@ var timelogCases = []asCase{
 	{"admin", "/time_entries?set_filter=1&f[]=spent_on&op[spent_on]=%3E%3C&v[spent_on][]=2007-03-01&v[spent_on][]=2007-03-31&f[]=", "index_filter_admin.html"},
 	{"admin", "/time_entries?per_page=2&page=2", "index_page2_admin.html"},
 	{"admin", "/time_entries?set_filter=1&f[]=hours&op[hours]=%3E%3D&v[hours][]=1000", "index_empty_admin.html"},
+	// レポート
+	{"admin", "/time_entries/report", "report_admin.html"},
+	{"admin", "/time_entries/report?criteria[]=project&criteria[]=user&columns=month", "report_project_user_admin.html"},
+	{"jsmith", "/projects/ecookbook/time_entries/report?criteria[]=activity&criteria[]=issue&criteria[]=user&columns=week", "report_3_week_jsmith.html"},
+	{"admin", "/projects/ecookbook/time_entries/report?criteria[]=version&criteria[]=status&columns=year", "report_version_year_admin.html"},
+	{"admin", "/time_entries/report?criteria[]=tracker&criteria[]=category&columns=day&set_filter=1&f[]=spent_on&op[spent_on]=%3E%3C&v[spent_on][]=2007-03-20&v[spent_on][]=2007-04-30", "report_day_admin.html"},
+	{"admin", "/time_entries/report?criteria[]=cf_10&criteria[]=cf_7&criteria[]=cf_1", "report_cf_admin.html"},
+	{"dlopper", "/time_entries/report?criteria[]=project", "report_dlopper.html"},
+	{"admin", "/time_entries/report.csv?criteria[]=project&criteria[]=user&columns=month", "report_admin.csv"},
+	{"admin", "/time_entries.csv", "index_admin.csv"},
+	{"admin", "/time_entries.atom", "index_admin.atom"},
+	{"admin", "/projects/ecookbook/time_entries.csv?c[]=all_inline", "project_index_all_admin.csv"},
 	// フォーム
 	{"admin", "/time_entries/new", "new_admin.html"},
 	{"jsmith", "/projects/ecookbook/time_entries/new", "project_new_jsmith.html"},

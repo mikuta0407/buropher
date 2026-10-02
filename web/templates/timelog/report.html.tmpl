@@ -1,0 +1,73 @@
+<div class="contextual">
+{{if .CanLogTime}}{{link_to (sprite_icon "time-add" (l "button_log_time")) .NewTimeEntryPath (hash "class" "icon icon-time-add")}}{{end}}
+{{if .CanManageActivities}}{{link_to (sprite_icon "settings" (l "label_settings")) .SettingsActivitiesPath (hash "class" "icon icon-settings")}}{{end}}
+</div>
+
+<h2>{{.Title}}</h2>
+
+{{form_tag .ReportPath (hash "method" "get" "id" "query_form")}}
+  {{range $cr := .Report.Criteria}}
+    {{hidden_field_tag "criteria[]" $cr (hash "id" nil)}}
+  {{end}}
+  {{partial "timelog/date_range" .}}
+
+  <p><label for='columns'>{{l "label_details"}}</label>: {{select_tag "columns" (options_for_select .ColumnsOptions .Report.Columns) (hash "onchange" "this.form.submit();")}}
+
+  <label for='criterias'>{{l "button_add"}}</label>: {{select_tag "criteria[]" (options_for_select .CriteriaOptions) (hash "onchange" "this.form.submit();" "style" "width: 200px" "disabled" .CriteriaDisabled "id" "criterias")}}
+     {{link_to (sprite_icon "reload" (l "button_clear")) .ClearURL (hash "class" "icon icon-reload")}}</p>
+  {{if .Encoding}}{{hidden_field_tag "encoding" .Encoding}}{{end}}
+{{end_form}}
+
+{{if .Valid}}
+{{if .Report.Criteria}}
+{{if not .Report.Hours}}
+<p class="nodata">{{l "label_no_data"}}</p>
+{{else}}
+<div class="autoscroll">
+<table class="list" id="time-report">
+<thead>
+<tr>
+{{range $h := .CriteriaHeads}}
+  <th>{{$h}}</th>
+{{end}}
+{{range $p := .Report.Periods}}
+  <th class="period" style="width:{{$.ColumnsWidth}}%;">{{$p}}</th>
+{{end}}
+  <th class="total" style="width:{{.ColumnsWidth}}%;">{{l "label_total_time"}}</th>
+</tr>
+</thead>
+<tbody>
+{{.ReportBody}}</tbody>
+</table>
+</div>
+
+<p class="other-formats hide-when-print">{{l "label_export_to"}}  <span>{{link_to "CSV" .CSVURL (hash "class" "csv" "rel" "nofollow" "onclick" "showModal('csv-export-options', '330px'); return false;")}}</span>
+</p>{{end}}<div id="csv-export-options" style="display: none;">
+  <h3 class="title">{{l "label_export_options" (hash "export_format" "CSV")}}</h3>
+  {{export_csv_encoding_select_tag}}
+  {{export_csv_separator_select_tag}}
+  <p class="buttons">
+    {{submit_tag (l "button_export") (hash "name" nil "id" "csv-export-button")}}
+    {{submit_tag (l "button_cancel") (hash "name" nil "onclick" "hideModal(this);" "type" "button")}}
+  </p>
+</div>
+{{end}}
+{{end}}
+
+{{content_for "sidebar" .Sidebar}}
+
+{{html_title .Title (l "label_report")}}
+
+
+{{define "timelog/report#js"}}
+
+$(document).ready(function(){
+  $('input#csv-export-button').click(function(){
+    $('form input#encoding').val($('select#encoding option:selected').val());
+    $('form#query_form').attr('action', '{{.ReportPath}}.csv').submit();
+    $('form#query_form').attr('action', '{{.ReportPath}}');
+    hideModal(this);
+  });
+});
+{{end}}
+{{javascript_tag (capture "timelog/report#js") -}}

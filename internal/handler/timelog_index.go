@@ -317,7 +317,7 @@ func (a *App) teIndexHTML(c *Req, q *query.Query) {
 		a.teQueryFailed(c, err)
 		return
 	}
-	data := a.teCommonData(c, q, qv)
+	data := a.teCommonData(c, q, qv, teTimeEntriesPath(c.Project))
 	if qv.Valid {
 		count, err := q.Count(ctx)
 		if err != nil {
@@ -391,7 +391,7 @@ func (a *App) teIndexHTML(c *Req, q *query.Query) {
 }
 
 // teCommonData は index / report 共通の値（右上のリンク・クエリフォーム・サイドバー）。
-func (a *App) teCommonData(c *Req, q *query.Query, qv *queryView) map[string]any {
+func (a *App) teCommonData(c *Req, q *query.Query, qv *queryView, listPath string) map[string]any {
 	data := map[string]any{"qv": qv, "Valid": qv.Valid}
 	data["CanLogTime"] = c.allowedToGloballyOrProject("log_time", c.Project)
 	var issueID *int64
@@ -416,7 +416,7 @@ func (a *App) teCommonData(c *Req, q *query.Query, qv *queryView) map[string]any
 	// content_for :sidebar（render :partial => 'timelog/sidebar'）。空白のみなら Rails の capture は
 	// ブロックの戻り値（最後の改行）になる
 	data["Sidebar"] = template.HTML("\n")
-	if sidebar, err := a.sidebarQueriesHTML(c, query.KindTimeEntry, q, teTimeEntriesPath(c.Project)); err != nil {
+	if sidebar, err := a.sidebarQueriesHTML(c, query.KindTimeEntry, q, listPath); err != nil {
 		a.logger().Error("sidebar queries", "err", err)
 	} else if sidebar != "" {
 		data["Sidebar"] = "  " + sidebar + "\n\n"
