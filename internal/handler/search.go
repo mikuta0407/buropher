@@ -10,6 +10,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/apibuilder"
 	"github.com/mikuta0407/buropher/internal/authz"
 	"github.com/mikuta0407/buropher/internal/domain"
+	"github.com/mikuta0407/buropher/internal/helper"
 	"github.com/mikuta0407/buropher/internal/httpx"
 	"github.com/mikuta0407/buropher/internal/i18n"
 	"github.com/mikuta0407/buropher/internal/pagination"
@@ -18,7 +19,6 @@ import (
 	"github.com/mikuta0407/buropher/internal/settings"
 	"github.com/mikuta0407/buropher/internal/view"
 	"github.com/mikuta0407/buropher/internal/view/rails"
-	"github.com/mikuta0407/buropher/internal/helper"
 )
 
 // SearchController（app/controllers/search_controller.rb）。

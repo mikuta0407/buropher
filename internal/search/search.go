@@ -206,5 +206,3 @@ func idList(ids []int64) string {
 	}
 	return strings.Join(parts, ",")
 }
-
-
