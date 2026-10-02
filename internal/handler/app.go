@@ -1,8 +1,3 @@
-// Package handler は Redmine のコントローラ（app/controllers）の移植。
-//
-// ApplicationController の before_action（session_expiration, user_setup,
-// check_if_login_required, set_localization, check_password_change, check_twofa_activation）は
-// App.Handle でルートごとに適用する。各アクションは *Req（コントローラのインスタンス相当）を受け取る。
 package handler
 
 import (
