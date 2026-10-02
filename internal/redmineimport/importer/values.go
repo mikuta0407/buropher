@@ -176,7 +176,9 @@ func (c *tzconv) toUTC(wall time.Time) time.Time {
 		if len(c.nonSample) < maxSamples {
 			c.nonSample = append(c.nonSample, wall.Format("2006-01-02 15:04:05"))
 		}
-		return time.Date(wall.Year(), wall.Month(), wall.Day(), wall.Hour(), wall.Minute(), wall.Second(), wall.Nanosecond(), c.loc).UTC()
+		// 欠落区間の前のオフセットで解釈する(= 時計を進める。Ruby の Time.local と同じ)
+		_, before := time.Unix(u-2*86400, 0).In(c.loc).Zone()
+		return time.Unix(u-int64(before), ns).UTC()
 	case 1:
 		return time.Unix(cands[0], ns).UTC()
 	}
