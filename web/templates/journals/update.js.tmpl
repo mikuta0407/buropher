@@ -1,0 +1,22 @@
+{{if .Destroyed}}
+  $("#change-{{.ID}}").remove();
+{{else}}
+  $("#change-{{.ID}}").attr('class', '{{.J.CSSClasses}}');
+  $("#change-{{.ID}} .journal-actions").html('{{j (.J.Actions .ReplyLinks)}}');
+  $("#journal-{{.ID}}-private_notes").replaceWith('{{j .J.PrivateNotesIndicator}}');
+  $("#journal-{{.ID}}-notes").replaceWith('{{j .J.NotesHTML}}');
+  $("#journal-{{.ID}}-notes").show();
+  $("#journal-{{.ID}}-form").remove();
+  var journal_header = $("#change-{{.ID}}>div.note>h4.journal-header>.journal-info");
+  var journal_updated_info = journal_header.find("span.update-info");
+  if (journal_updated_info.length > 0) {
+    journal_updated_info.replaceWith('{{j .J.UpdateInfo}}');
+  } else {
+    journal_header.append('{{j .J.UpdateInfo}}');
+  }
+  setupWikiTableSortableHeader();
+  setupCopyButtonsToPreElements();
+  setupHoverTooltips();
+{{end}}
+
+{{call_hook "view_journals_update_js_bottom"}}

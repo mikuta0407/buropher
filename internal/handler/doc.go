@@ -151,12 +151,17 @@
 //
 // # 規約: ウォッチャー
 //
-//   - WatchersController（watchers.go）は object_type（issue / news / board / message / wiki / wiki_page /
-//     enabled_module）で対象を引き、watchers.watchable_kind に対応付ける（enabled_module → project_module）。
-//     チケットの API（POST /issues/:id/watchers, DELETE /issues/:id/watchers/:user_id）も同じアクション。
-//   - 画面の watcher_link は helper の content_watcher_link "<object_type>" id（本人とそのグループのウォッチを見る）、
-//     サイドバーは watchers/_watched（dict "object_type" "id" "project"）。作成時の add_author_as_watcher は
-//     repository.AddWatcher(ctx, tx, kind, id, userID)。
+//   - WatchersController（watchers.go）は 1 つで、ウォッチ対象の種類は registerWatchable で object_type ごとに登録する
+//     （issue / wiki / wiki_page / news / board / message / enabled_module）。watchableType は Load（id → 対象と project）・
+//     Visible（visible?(user)。nil なら visible? を持たないモデルとして project.visible? / valid_watcher? = true）・
+//     SetWatcher（nil なら watchers テーブルを直接更新）・WatchersPartial（サイドバーの部分テンプレート）を持つ。
+//     watchable.Type は object_type（権限名・CSS・URL）、watchable.Kind は watchers.watchable_kind
+//     （enabled_module → project_module）。チケットの API（POST /issues/:id/watchers,
+//     DELETE /issues/:id/watchers/:user_id）も同じアクション。
+//   - 画面の watcher_link は helper の watcher_link "<object_type>" id（Watcher.any_watched? と同じく直接のウォッチのみ）。
+//     JS 応答（watchers/_set_watcher）は handler の watcherLink（複数オブジェクトの bulk に対応）。
+//   - サイドバーは共通の watchers/_watchers（dict "object_type" "id" "project"）。チケットだけはビューモデルを使う
+//     issues/_watchers。作成時の add_author_as_watcher は repository.AddWatcher(ctx, tx, kind, id, userID)。
 //
 // # 規約: メール通知のフック
 //

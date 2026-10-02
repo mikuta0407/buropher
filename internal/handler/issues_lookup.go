@@ -51,6 +51,8 @@ type issueLookup struct {
 	relations  map[int64]*repository.IssueRelation
 	vVisible   map[int64]bool
 	ie         *issues.Env
+	// apiTimeProjectSet は API の spent_hours の表示判定に @project（c.Project）を使う（create の 201 応答）。
+	apiTimeProjectSet bool
 }
 
 func (a *App) newIssueLookup(c *Req) *issueLookup {

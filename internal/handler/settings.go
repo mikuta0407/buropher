@@ -382,7 +382,9 @@ func (v *settingsView) BlankOption() string {
 }
 
 // ProjectListDisplayTypes は ProjectQuery.new(Setting.project_list_defaults).available_display_types。
-func (v *settingsView) ProjectListDisplayTypes() []string { return v.ProjectQuery.Q.AvailableDisplayTypes() }
+func (v *settingsView) ProjectListDisplayTypes() []string {
+	return v.ProjectQuery.Q.AvailableDisplayTypes()
+}
 
 func (v *settingsView) globalQueryOptions(kind string) ([]any, error) {
 	qs, err := repository.GlobalQueryOptions(v.c.Ctx(), v.a.DB, kind)
@@ -399,10 +401,14 @@ func (v *settingsView) globalQueryOptions(kind string) ([]any, error) {
 }
 
 // DefaultGlobalProjectQueryOptions は default_global_project_query_options。
-func (v *settingsView) DefaultGlobalProjectQueryOptions() ([]any, error) { return v.globalQueryOptions("project") }
+func (v *settingsView) DefaultGlobalProjectQueryOptions() ([]any, error) {
+	return v.globalQueryOptions("project")
+}
 
 // DefaultGlobalIssueQueryOptions は default_global_issue_query_options。
-func (v *settingsView) DefaultGlobalIssueQueryOptions() ([]any, error) { return v.globalQueryOptions("issue") }
+func (v *settingsView) DefaultGlobalIssueQueryOptions() ([]any, error) {
+	return v.globalQueryOptions("issue")
+}
 
 // NotificationOptions は User.valid_notification_options.collect {|o| [l(o.last), o.first.to_s]}（グローバル：selected を除く）。
 func (v *settingsView) NotificationOptions() []any {
@@ -593,16 +599,22 @@ func (v *settingsView) GravatarDefault() string { return v.a.Settings.String("gr
 func (v *settingsView) SelfRegistration() bool { return v.a.Settings.Bool("self_registration") }
 
 // MailHandlerAPIEnabled は Setting.mail_handler_api_enabled?。
-func (v *settingsView) MailHandlerAPIEnabled() bool { return v.a.Settings.Bool("mail_handler_api_enabled") }
+func (v *settingsView) MailHandlerAPIEnabled() bool {
+	return v.a.Settings.Bool("mail_handler_api_enabled")
+}
 
 // SysAPIEnabled は Setting.sys_api_enabled?。
 func (v *settingsView) SysAPIEnabled() bool { return v.a.Settings.Bool("sys_api_enabled") }
 
 // CommitLogtimeEnabled は Setting.commit_logtime_enabled?。
-func (v *settingsView) CommitLogtimeEnabled() bool { return v.a.Settings.Bool("commit_logtime_enabled") }
+func (v *settingsView) CommitLogtimeEnabled() bool {
+	return v.a.Settings.Bool("commit_logtime_enabled")
+}
 
 // ProjectListDisplayType は Setting.project_list_display_type。
-func (v *settingsView) ProjectListDisplayType() string { return v.a.Settings.String("project_list_display_type") }
+func (v *settingsView) ProjectListDisplayType() string {
+	return v.a.Settings.String("project_list_display_type")
+}
 
 // AvatarServerURL は Redmine::Configuration['avatar_server_url']。
 func (v *settingsView) AvatarServerURL() string { return "https://www.gravatar.com" }

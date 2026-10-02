@@ -1,14 +1,15 @@
-{{$kind := .kind}}
-{{if allowed_to (printf "add_%s_watchers" $kind) current_project}}
+{{/* watchers/_watchers（ウォッチャーのサイドバー。object_type・id・project を受け取る。チケットはグループ・削除ルートの都合で issues/_watchers を使う） */ -}}
+{{$type := .object_type}}{{$pr := .project -}}
+{{if user_allowed_to (printf "add_%s_watchers" $type) $pr}}
 <div class="contextual">
-{{link_to (l "button_add") (printf "/watchers/new?object_id=%d&object_type=%s" .id $kind) (hash "remote" true "method" "get")}}
+{{link_to (l "button_add") (printf "/watchers/new?object_id=%d&object_type=%s" .id $type) (hash "remote" true "method" "get")}}
 </div>
 {{end}}
 
-{{if allowed_to (printf "view_%s_watchers" $kind) current_project}}
-<h3>{{l (printf "label_%s_watchers" $kind)}} ({{len (watcher_users $kind .id)}})</h3>
+{{if user_allowed_to (printf "view_%s_watchers" $type) $pr}}
+<h3>{{l (printf "label_%s_watchers" $type)}} ({{content_watcher_count $type .id}})</h3>
 
-{{watchers_list $kind .id}}
+{{content_watchers_list $type .id $pr}}
 {{else}}
-<h3>{{l (printf "label_%s_watchers" $kind)}}</h3>
+<h3>{{l (printf "label_%s_watchers" $type)}}</h3>
 {{end}}

@@ -1,0 +1,609 @@
+status: 200
+content-type: text/html
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>New issue - eCookbook - Redmine</title>
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta content="Redmine" name="description">
+    <meta content="issue,bug,tracker" name="keywords">
+    <meta content="authenticity_token" name="csrf-param">
+    <meta content="{{CSRF}}" name="csrf-token">
+    <link href="/assets/favicon-DIGEST.ico" rel="shortcut icon" type="image/x-icon">
+    <link href="/assets/jquery/jquery-ui-1.13.2-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/tribute-5.1.3-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/application-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/responsive-DIGEST.css" media="all" rel="stylesheet">
+    <script data-turbo-track="reload" type="importmap">{
+  "imports": {
+    "@rails/request.js": "/assets/requestjs-DIGEST.js",
+    "application": "/assets/application-DIGEST.js",
+    "@hotwired/stimulus": "/assets/stimulus.min-DIGEST.js",
+    "@hotwired/stimulus-loading": "/assets/stimulus-loading-DIGEST.js",
+    "turndown": "/assets/turndown-DIGEST.js",
+    "controllers/api_key_copy_controller": "/assets/controllers/api_key_copy_controller-DIGEST.js",
+    "controllers/application": "/assets/controllers/application-DIGEST.js",
+    "controllers": "/assets/controllers/index-DIGEST.js",
+    "controllers/list_autofill_controller": "/assets/controllers/list_autofill_controller-DIGEST.js",
+    "controllers/quote_reply_controller": "/assets/controllers/quote_reply_controller-DIGEST.js",
+    "controllers/sticky_issue_header_controller": "/assets/controllers/sticky_issue_header_controller-DIGEST.js"
+  }
+}</script>
+    <link href="/assets/requestjs-DIGEST.js" rel="modulepreload">
+    <link href="/assets/application-DIGEST.js" rel="modulepreload">
+    <link href="/assets/stimulus.min-DIGEST.js" rel="modulepreload">
+    <link href="/assets/stimulus-loading-DIGEST.js" rel="modulepreload">
+    <link href="/assets/turndown-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/api_key_copy_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/application-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/index-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/list_autofill_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/quote_reply_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/sticky_issue_header_controller-DIGEST.js" rel="modulepreload">
+    <script type="module">import "application"</script>
+    <script src="/assets/jquery-3.7.1-ui-1.13.3-DIGEST.js"></script>
+    <script src="/assets/rails-ujs-DIGEST.js"></script>
+    <script src="/assets/tribute-5.1.3.min-DIGEST.js"></script>
+    <script src="/assets/application-legacy-DIGEST.js"></script>
+    <script src="/assets/responsive-DIGEST.js"></script>
+    <script>//<![CDATA[
+$(window).on('load', function(){ warnLeavingUnsaved('The current page contains unsaved text that will be lost if you leave this page.'); });
+//]]></script>
+    <script>//<![CDATA[
+rm = window.rm || {};rm.I18n = rm.I18n || {};rm.I18n = Object.freeze({buttonCopy: 'Copy'});
+//]]></script>
+    <script>//<![CDATA[
+rm = window.rm || {};rm.AutoComplete = rm.AutoComplete || {};rm.AutoComplete.dataSources = JSON.parse('{"issues":"/issues/auto_complete?project_id=ecookbook\u0026q=","wiki_pages":"/wiki_pages/auto_complete?project_id=ecookbook\u0026q="}');
+//]]></script>
+    <script src="/assets/jstoolbar/jstoolbar-DIGEST.js"></script>
+    <script src="/assets/jstoolbar/common_mark-DIGEST.js"></script>
+    <script src="/assets/jstoolbar/lang/jstoolbar-en-DIGEST.js"></script>
+    <script>//<![CDATA[
+var wikiImageMimeTypes = ["image/gif","image/jpeg","image/png","image/tiff","image/webp","image/x-ms-bmp"];var userHlLanguages = ["c","cpp","csharp","css","diff","go","groovy","html","java","javascript","objc","perl","php","python","r","ruby","sass","scala","shell","sql","swift","xml","yaml"];
+//]]></script>
+    <link href="/assets/jstoolbar-DIGEST.css" media="screen" rel="stylesheet">
+    <script>//<![CDATA[
+var datepickerOptions={dateFormat: 'yy-mm-dd', firstDay: 0, showOn: 'button', buttonImageOnly: true, buttonImage: '/assets/calendar-DIGEST.png', showButtonPanel: true, showWeek: true, showOtherMonths: true, selectOtherMonths: true, changeMonth: true, changeYear: true, beforeShow: beforeShowDatePicker};
+//]]></script>
+    <script src="/assets/attachments-DIGEST.js"></script>
+    <meta content="noindex,follow,noarchive" name="robots">
+  </head>
+  <body class="project-ecookbook has-main-menu controller-issues action-new avatars-off" data-text-formatting="common_mark">
+    <div id="wrapper">
+      <div class="flyout-menu js-flyout-menu">
+        <div class="flyout-menu__search">
+          <form accept-charset="UTF-8" action="/projects/ecookbook/search" method="get" name="form-RANDOM">
+            <input autocomplete="off" name="issues" type="hidden" value="1">
+            <label class="search-magnifier search-magnifier--flyout" for="flyout-search">
+              <svg aria-hidden="true" class="s18 icon-svg">
+                <use href="/assets/icons-DIGEST.svg#icon--search"></use>
+              </svg>
+              <span class="icon-label hidden">Search</span>
+            </label>
+            <input class="small js-search-input" id="flyout-search" name="q" placeholder="Search" type="text">
+          </form>
+        </div>
+        <div class="flyout-menu__avatar">
+          <a href="/users/2">
+            <span class="avatar-color-2 s40 avatar" role="img">JS</span>
+          </a>
+          <a class="user active" href="/users/2">jsmith</a>
+        </div>
+        <h3>Project</h3>
+        <span class="js-project-menu"></span>
+        <h3>General</h3>
+        <span class="js-general-menu"></span>
+        <span class="js-sidebar flyout-menu__sidebar"></span>
+        <h3>Profile</h3>
+        <span class="js-profile-menu"></span>
+      </div>
+      <div id="top-menu">
+        <div id="account">
+          <ul>
+            <li>
+              <a class="my-account" href="/my/account">My account</a>
+            </li>
+            <li>
+              <a class="logout" data-method="post" href="/logout" rel="nofollow">Sign out</a>
+            </li>
+          </ul>
+        </div>
+        <div id="loggedas">
+          Logged in as
+          <a class="user active" href="/users/2">jsmith</a>
+        </div>
+        <ul>
+          <li>
+            <a class="home" href="/">Home</a>
+          </li>
+          <li>
+            <a class="my-page" href="/my/page">My page</a>
+          </li>
+          <li>
+            <a class="projects" href="/projects">Projects</a>
+          </li>
+          <li>
+            <a class="help" href="https://www.redmine.org/guide" rel="noopener" target="_blank">Help</a>
+          </li>
+        </ul>
+      </div>
+      <div id="header">
+        <a class="mobile-toggle-button js-flyout-menu-toggle-button" href="#"></a>
+        <div id="quick-search">
+          <form accept-charset="UTF-8" action="/projects/ecookbook/search" method="get" name="form-RANDOM">
+            <input autocomplete="off" name="scope" type="hidden" value="subprojects">
+            <input autocomplete="off" name="issues" type="hidden" value="1">
+            <label for="q">
+              <a accesskey="4" href="/projects/ecookbook/search?scope=subprojects">Search</a>
+              :
+            </label>
+            <input accesskey="f" class="small" data-auto-complete="true" id="q" name="q" size="20" type="text">
+          </form>
+        </div>
+        <h1>
+          <span class="current-project">eCookbook</span>
+        </h1>
+        <div class="tabs" id="main-menu">
+          <ul>
+            <li>
+              <a class="new-object" href="#" id="new-object" onclick="toggleNewObjectDropdown(); return false;">+</a>
+              <ul class="menu-children">
+                <li>
+                  <a accesskey="7" class="new-issue-sub" href="/projects/ecookbook/issues/new">New issue</a>
+                </li>
+                <li>
+                  <a class="new-issue-category" href="/projects/ecookbook/issue_categories/new">New category</a>
+                </li>
+                <li>
+                  <a class="new-version" href="/projects/ecookbook/versions/new">New version</a>
+                </li>
+                <li>
+                  <a class="new-timelog" href="/projects/ecookbook/time_entries/new">Log time</a>
+                </li>
+                <li>
+                  <a class="new-news" href="/projects/ecookbook/news/new">Add news</a>
+                </li>
+                <li>
+                  <a class="new-document" href="/projects/ecookbook/documents/new">New document</a>
+                </li>
+                <li>
+                  <a class="new-wiki-page" href="/projects/ecookbook/wiki/new">New wiki page</a>
+                </li>
+                <li>
+                  <a class="new-file" href="/projects/ecookbook/files/new">New file</a>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <a class="overview" href="/projects/ecookbook">Overview</a>
+            </li>
+            <li>
+              <a class="activity" href="/projects/ecookbook/activity">Activity</a>
+            </li>
+            <li>
+              <a class="roadmap" href="/projects/ecookbook/roadmap">Roadmap</a>
+            </li>
+            <li>
+              <a class="issues selected" href="/projects/ecookbook/issues">Issues</a>
+            </li>
+            <li>
+              <a class="time-entries" href="/projects/ecookbook/time_entries">Spent time</a>
+            </li>
+            <li>
+              <a class="gantt" href="/projects/ecookbook/issues/gantt">Gantt</a>
+            </li>
+            <li>
+              <a class="calendar" href="/projects/ecookbook/issues/calendar">Calendar</a>
+            </li>
+            <li>
+              <a class="news" href="/projects/ecookbook/news">News</a>
+            </li>
+            <li>
+              <a class="documents" href="/projects/ecookbook/documents">Documents</a>
+            </li>
+            <li>
+              <a class="wiki" href="/projects/ecookbook/wiki">Wiki</a>
+            </li>
+            <li>
+              <a class="boards" href="/projects/ecookbook/boards">Forums</a>
+            </li>
+            <li>
+              <a class="files" href="/projects/ecookbook/files">Files</a>
+            </li>
+            <li>
+              <a class="repository" href="/projects/ecookbook/repository">Repository</a>
+            </li>
+            <li>
+              <a class="settings" href="/projects/ecookbook/settings">Settings</a>
+            </li>
+          </ul>
+          <div class="tabs-buttons" style="display:none;">
+            <button class="tab-left icon-only" onclick="moveTabLeft(this); return false;">
+              <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
+                <use href="/assets/icons-DIGEST.svg#icon--angle-left"></use>
+              </svg>
+            </button>
+            <button class="tab-right icon-only" onclick="moveTabRight(this); return false;">
+              <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
+                <use href="/assets/icons-DIGEST.svg#icon--angle-right"></use>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="nosidebar" id="main">
+        <div id="sidebar">
+          <div id="sidebar-wrapper"></div>
+        </div>
+        <div id="content">
+          <div class="flash notice" id="flash_notice">
+            <svg aria-hidden="true" class="s18 icon-svg">
+              <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+            </svg>
+            Issue
+            <a href="/issues/16" title="Continue me">#16</a>
+            created.
+          </div>
+          <h2>New issue</h2>
+          <form accept-charset="UTF-8" action="/projects/ecookbook/issues" class="new_issue" enctype="multipart/form-data" id="issue-form" method="post" name="issue-form-RANDOM">
+            <input autocomplete="off" name="authenticity_token" type="hidden" value="{{CSRF}}">
+            <div class="box tabular">
+              <div id="all_attributes">
+                <input autocomplete="off" id="form_update_triggered_by" name="form_update_triggered_by" type="hidden" value="">
+                <p id="issue_is_private_wrap">
+                  <input autocomplete="off" name="issue[is_private]" type="hidden" value="0">
+                  <input id="issue_is_private" name="issue[is_private]" type="checkbox" value="1">
+                  <label class="inline" for="issue_is_private" id="issue_is_private_label">Private</label>
+                </p>
+                <p>
+                  <label for="issue_project_id">
+                    Project
+                    <span class="required">*</span>
+                  </label>
+                  <select id="issue_project_id" name="issue[project_id]" onchange="updateIssueFrom(&#39;/projects/ecookbook/issues/new.js&#39;, this)">
+                    <option selected="selected" value="1">eCookbook</option>
+                    <option value="5">» Private child of eCookbook</option>
+                    <option value="3">» eCookbook Subproject 1</option>
+                  </select>
+                </p>
+                <p>
+                  <label for="issue_tracker_id">
+                    Tracker
+                    <span class="required">*</span>
+                  </label>
+                  <select id="issue_tracker_id" name="issue[tracker_id]" onchange="updateIssueFrom(&#39;/projects/ecookbook/issues/new.js&#39;, this)" title="Description for Feature request tracker">
+                    <option value="1">Bug</option>
+                    <option selected="selected" value="2">Feature request</option>
+                    <option value="3">Support request</option>
+                  </select>
+                  <a class="icon-only icon-help" href="#" onclick="showModal(&#39;trackers_description&#39;, &#39;500px&#39;); return false;" title="View all trackers description">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--help"></use>
+                    </svg>
+                    <span class="icon-label">View all trackers description</span>
+                  </a>
+                </p>
+                <div class="modal" id="trackers_description">
+                  <h3 class="title">Trackers description</h3>
+                  <dl>
+                    <dt>
+                      <a href="#" onclick="selectTracker(&#39;1&#39;); return false;" title="Select tracker">Bug</a>
+                    </dt>
+                    <dd>Description for Bug tracker</dd>
+                    <dt>
+                      <a href="#" onclick="selectTracker(&#39;2&#39;); return false;" title="Select tracker">Feature request</a>
+                    </dt>
+                    <dd>Description for Feature request tracker</dd>
+                  </dl>
+                </div>
+                <script>//<![CDATA[
+
+  function selectTracker(id) {
+    var target = $('#issue_tracker_id');
+    target.attr("selected", false);
+    target.find('option[value="' + id + '"]').prop('selected', true);
+    target.trigger('change');
+    hideModal('#trackers_description h3');
+  }
+
+//]]></script>
+                <p>
+                  <label for="issue_subject">
+                    Subject
+                    <span class="required">*</span>
+                  </label>
+                  <input id="issue_subject" maxlength="255" name="issue[subject]" size="80" type="text" value="">
+                </p>
+                <p>
+                  <label for="issue_description">Description</label>
+                  <span id="issue_description_and_toolbar">
+                    <textarea accesskey="e" class="wiki-edit" cols="60" data-action="beforeinput-&gt;list-autofill#handleBeforeInput" data-auto-complete="true" data-controller="list-autofill" data-list-autofill-text-formatting-param="common_mark" id="issue_description" name="issue[description]" rows="10"></textarea>
+                  </span>
+                </p>
+                <script>//<![CDATA[
+var wikiToolbar = new jsToolBar(document.getElementById('issue_description')); wikiToolbar.setHelpLink('/help/wiki_syntax'); wikiToolbar.setPreviewUrl('/issues/preview?project_id=ecookbook'); wikiToolbar.draw();
+//]]></script>
+                <div class="attributes" id="attributes">
+                  <div class="splitcontent">
+                    <div class="splitcontentleft">
+                      <p>
+                        <label for="issue_status_id">
+                          Status
+                          <span class="required">*</span>
+                        </label>
+                        <select id="issue_status_id" name="issue[status_id]" onchange="updateIssueFrom(&#39;/projects/ecookbook/issues/new.js&#39;, this)" title="Description for New issue status">
+                          <option selected="selected" value="1">New</option>
+                          <option value="3">Resolved</option>
+                        </select>
+                        <a class="icon-only icon-help" href="#" onclick="showModal(&#39;issue_statuses_description&#39;, &#39;500px&#39;); return false;" title="View all issue statuses description">
+                          <svg aria-hidden="true" class="s18 icon-svg">
+                            <use href="/assets/icons-DIGEST.svg#icon--help"></use>
+                          </svg>
+                          <span class="icon-label">View all issue statuses description</span>
+                        </a>
+                      </p>
+                      <div class="modal" id="issue_statuses_description">
+                        <h3 class="title">Issue statuses description</h3>
+                        <dl>
+                          <dt>
+                            <a href="#" onclick="selectIssueStatus(&#39;1&#39;); return false;" title="Select issue status">New</a>
+                          </dt>
+                          <dd>Description for New issue status</dd>
+                          <dt>
+                            <a href="#" onclick="selectIssueStatus(&#39;3&#39;); return false;" title="Select issue status">Resolved</a>
+                          </dt>
+                          <dd>Description for Resolved issue status</dd>
+                        </dl>
+                      </div>
+                      <script>//<![CDATA[
+
+  function selectIssueStatus(id) {
+    var target = $('#issue_status_id');
+    target.attr("selected", false);
+    target.find('option[value="' + id + '"]').prop('selected', true);
+    target.trigger('change');
+    hideModal('#issue_statuses_description h3');
+  }
+
+//]]></script>
+                      <input autocomplete="off" name="was_default_status" type="hidden" value="1">
+                      <p>
+                        <label for="issue_priority_id">
+                          Priority
+                          <span class="required">*</span>
+                        </label>
+                        <select id="issue_priority_id" name="issue[priority_id]">
+                          <option value="4">Low</option>
+                          <option selected="selected" value="5">Normal</option>
+                          <option value="6">High</option>
+                          <option value="7">Urgent</option>
+                          <option value="8">Immediate</option>
+                        </select>
+                      </p>
+                      <p>
+                        <label for="issue_assigned_to_id">Assignee</label>
+                        <select id="issue_assigned_to_id" name="issue[assigned_to_id]">
+                          <option label=" " value=""></option>
+                          <option value="2">&lt;&lt; me &gt;&gt;</option>
+                          <option value="3">Dave Lopper</option>
+                          <option value="2">John Smith</option>
+                        </select>
+                        <a class="assign-to-me-link" data-id="2" href="#">Assign to me</a>
+                      </p>
+                      <p>
+                        <label for="issue_category_id">Category</label>
+                        <select id="issue_category_id" name="issue[category_id]" onchange="updateIssueFrom(&#39;/projects/ecookbook/issues/new.js&#39;, this)">
+                          <option label=" " value=""></option>
+                          <option value="1">Printing</option>
+                          <option value="2">Recipes</option>
+                        </select>
+                        <a class="icon-only icon-add" data-method="get" data-remote="true" href="/projects/ecookbook/issue_categories/new" tabindex="200" title="New category">
+                          <svg aria-hidden="true" class="s18 icon-svg">
+                            <use href="/assets/icons-DIGEST.svg#icon--add"></use>
+                          </svg>
+                          <span class="icon-label">New category</span>
+                        </a>
+                      </p>
+                      <p>
+                        <label for="issue_fixed_version_id">Target version</label>
+                        <select id="issue_fixed_version_id" name="issue[fixed_version_id]">
+                          <option label=" " value=""></option>
+                          <optgroup label="eCookbook">
+                            <option value="3">2.0</option>
+                          </optgroup>
+                          <optgroup label="eCookbook Subproject 1">
+                            <option value="4">2.0</option>
+                          </optgroup>
+                          <optgroup label="Private child of eCookbook">
+                            <option value="6">Private Version of public subproject</option>
+                          </optgroup>
+                          <optgroup label="OnlineStore">
+                            <option value="7">Systemwide visible version</option>
+                          </optgroup>
+                        </select>
+                        <a class="icon-only icon-add" data-method="get" data-remote="true" href="/projects/ecookbook/versions/new" tabindex="200" title="New version">
+                          <svg aria-hidden="true" class="s18 icon-svg">
+                            <use href="/assets/icons-DIGEST.svg#icon--add"></use>
+                          </svg>
+                          <span class="icon-label">New version</span>
+                        </a>
+                      </p>
+                    </div>
+                    <div class="splitcontentright">
+                      <p id="parent_issue">
+                        <label for="issue_parent_issue_id">Parent task</label>
+                        <input id="issue_parent_issue_id" name="issue[parent_issue_id]" onchange="updateIssueFrom(&#39;/projects/ecookbook/issues/new.js&#39;, this)" size="10" type="text">
+                      </p>
+                      <script>//<![CDATA[
+observeAutocompleteField('issue_parent_issue_id', '/issues/auto_complete?project_id=ecookbook&scope=tree&status=o')
+//]]></script>
+                      <p id="start_date_area">
+                        <label for="issue_start_date">Start date</label>
+                        <input id="issue_start_date" max="9999-12-31" name="issue[start_date]" size="10" type="date" value="2026-01-15">
+                        <script>//<![CDATA[
+$(function() { $('#issue_start_date').addClass('date').datepickerFallback(datepickerOptions); });
+//]]></script>
+                      </p>
+                      <p id="due_date_area">
+                        <label for="issue_due_date">Due date</label>
+                        <input id="issue_due_date" max="9999-12-31" name="issue[due_date]" size="10" type="date">
+                        <script>//<![CDATA[
+$(function() { $('#issue_due_date').addClass('date').datepickerFallback(datepickerOptions); });
+//]]></script>
+                      </p>
+                      <p>
+                        <label for="issue_estimated_hours">Estimated time</label>
+                        <input id="issue_estimated_hours" name="issue[estimated_hours]" placeholder="h:mm" size="6" type="text" value="">
+                        Hours
+                      </p>
+                      <p>
+                        <label for="issue_done_ratio">% Done</label>
+                        <select id="issue_done_ratio" name="issue[done_ratio]">
+                          <option selected="selected" value="0">0 %</option>
+                          <option value="10">10 %</option>
+                          <option value="20">20 %</option>
+                          <option value="30">30 %</option>
+                          <option value="40">40 %</option>
+                          <option value="50">50 %</option>
+                          <option value="60">60 %</option>
+                          <option value="70">70 %</option>
+                          <option value="80">80 %</option>
+                          <option value="90">90 %</option>
+                          <option value="100">100 %</option>
+                        </select>
+                      </p>
+                    </div>
+                  </div>
+                  <div class="splitcontent">
+                    <div class="splitcontentleft">
+                      <p>
+                        <label for="issue_custom_field_values_6">
+                          <span>Float field</span>
+                        </label>
+                        <input class="float_cf cf_6" id="issue_custom_field_values_6" name="issue[custom_field_values][6]" type="text" value="">
+                      </p>
+                    </div>
+                    <div class="splitcontentright">
+                      <p>
+                        <label for="issue_custom_field_values_8">
+                          <span>Custom date</span>
+                        </label>
+                        <input class="date_cf cf_8" id="issue_custom_field_values_8" max="9999-12-31" name="issue[custom_field_values][8]" size="10" type="date" value="">
+                        <script>//<![CDATA[
+$(function() { $('#issue_custom_field_values_8').addClass('date').datepickerFallback(datepickerOptions); });
+//]]></script>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <script>//<![CDATA[
+rm = window.rm || {};rm.AutoComplete = rm.AutoComplete || {};rm.AutoComplete.dataSources = JSON.parse('{"issues":"/issues/auto_complete?project_id=ecookbook\u0026q=","wiki_pages":"/wiki_pages/auto_complete?project_id=ecookbook\u0026q="}');
+//]]></script>
+                <script>//<![CDATA[
+rm.AutoComplete.dataSources = Object.assign(rm.AutoComplete.dataSources, JSON.parse('{"users":"/watchers/autocomplete_for_mention?object_type=issue\u0026project_id=ecookbook\u0026q="}'));
+//]]></script>
+                <script>//<![CDATA[
+
+$(document).ready(function(){
+  $("#issue_tracker_id, #issue_status_id").each(function(){
+    $(this).val($(this).find("option[selected=selected]").val());
+  });
+  $(".assign-to-me-link").click(function(event){
+    event.preventDefault();
+    var element = $(event.target);
+    $('#issue_assigned_to_id').val(element.data('id'));
+    element.hide();
+  });
+  $('#issue_assigned_to_id').change(function(event){
+    var assign_to_me_link = $(".assign-to-me-link");
+
+    if (assign_to_me_link.length > 0) {
+      var user_id = $(event.target).val();
+      var current_user_id = assign_to_me_link.data('id');
+
+      if (user_id == current_user_id) {
+        assign_to_me_link.hide();
+      } else {
+        assign_to_me_link.show();
+      }
+    }
+  });
+});
+
+//]]></script>
+              </div>
+              <p id="attachments_form">
+                <label>Files</label>
+                <span class="attachments_form">
+                  <span class="attachments_icons hidden">
+                    <svg aria-hidden="true" class="s18 icon-svg svg-del">
+                      <use href="/assets/icons-DIGEST.svg#icon--del"></use>
+                    </svg>
+                    <svg aria-hidden="true" class="s16 icon-svg svg-attachment">
+                      <use href="/assets/icons-DIGEST.svg#icon--attachment"></use>
+                    </svg>
+                    <svg aria-hidden="true" class="s16 icon-svg svg-loader">
+                      <use href="/assets/icons-DIGEST.svg#icon--loader"></use>
+                    </svg>
+                    <svg aria-hidden="true" class="s16 icon-svg svg-hourglass">
+                      <use href="/assets/icons-DIGEST.svg#icon--hourglass"></use>
+                    </svg>
+                  </span>
+                  <span class="attachments_fields"></span>
+                  <span class="add_attachment" style="">
+                    <input class="file_selector filedrop" data-description="true" data-description-placeholder="Optional description" data-max-concurrent-uploads="2" data-max-file-size="5242880" data-max-file-size-message="This file cannot be uploaded because it exceeds the maximum allowed file size (5 MB)" data-max-number-of-files-message="This file cannot be uploaded because it exceeds the maximum number of files that can be attached simultaneously (10)" data-param="attachments" data-upload-path="/uploads.js" multiple="multiple" name="attachments[dummy][file]" onchange="addInputFiles(this);" type="file">
+                    (Maximum size: 5 MB)
+                  </span>
+                </span>
+              </p>
+              <div id="watchers_form_container">
+                <input autocomplete="off" id="issue_watcher_user_ids_" name="issue[watcher_user_ids][]" type="hidden" value="">
+                <p id="watchers_form">
+                  <label>Watchers</label>
+                  <span id="watchers_inputs">
+                    <label class="floating" id="issue_watcher_user_ids_3">
+                      <input name="issue[watcher_user_ids][]" type="checkbox" value="3">
+                      Dave Lopper
+                    </label>
+                    <label class="floating" id="issue_watcher_user_ids_2">
+                      <input name="issue[watcher_user_ids][]" type="checkbox" value="2">
+                      John Smith
+                    </label>
+                  </span>
+                  <span class="search_for_watchers">
+                    <a class="icon icon-add-bullet" data-method="get" data-remote="true" href="/watchers/new?project_id=ecookbook">
+                      <svg aria-hidden="true" class="s12 icon-svg">
+                        <use href="/assets/icons-DIGEST.svg#icon--add"></use>
+                      </svg>
+                      <span class="icon-label">Search for watchers to add</span>
+                    </a>
+                  </span>
+                </p>
+              </div>
+            </div>
+            <input data-disable-with="Create" name="commit" type="submit" value="Create">
+            <input data-disable-with="Create and add another" name="continue" type="submit" value="Create and add another">
+          </form>
+          <div style="clear:both;"></div>
+        </div>
+      </div>
+      <div id="footer">MASKED</div>
+      <div id="ajax-indicator" style="display:none;">
+        <span class="icon">
+          <svg aria-hidden="true" class="s18 icon-svg svg-loader">
+            <use href="/assets/icons-DIGEST.svg#icon--loader"></use>
+          </svg>
+          <span class="icon-label">Loading...</span>
+        </span>
+      </div>
+      <div id="ajax-modal" style="display:none;"></div>
+      <div id="icon-copy-source" style="display: none;">
+        <svg aria-hidden="true" class="s18 icon-svg">
+          <use href="/assets/icons-DIGEST.svg#icon--"></use>
+        </svg>
+      </div>
+    </div>
+  </body>
+</html>

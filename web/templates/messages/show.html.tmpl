@@ -3,7 +3,7 @@
 
 <div data-controller="quote-reply">
   <div class="contextual">
-    {{content_watcher_link "message" $topic.ID}}
+    {{watcher_link "message" $topic.ID}}
     {{if .CanReply}}{{quote_reply_button (printf "/boards/%d/topics/quote/%d.js" $board.ID $topic.ID) false}}{{end}}
     {{if .Editable}}{{link_to (sprite_icon "edit" (l "button_edit")) (printf "/boards/%d/topics/%d/edit" $board.ID $topic.ID) (hash "class" "icon icon-edit")}}{{end}}
     {{if .Destroyable}}{{link_to (sprite_icon "del" (l "button_delete")) (printf "/boards/%d/topics/%d/destroy" $board.ID $topic.ID) (hash "method" "post" "data" (hash "confirm" (l "text_are_you_sure")) "class" "icon icon-del")}}{{end}}
@@ -71,7 +71,7 @@
 {{define "messages/show#sidebar"}}
   {{if (assigns).ShowWatchers}}
     <div id="watchers">
-      {{partial "watchers/watched" (dict "object_type" "message" "id" (assigns).Topic.ID "project" current_project)}}
+      {{partial "watchers/watchers" (dict "object_type" "message" "id" (assigns).Topic.ID "project" current_project)}}
     </div>
   {{end}}
 {{end}}

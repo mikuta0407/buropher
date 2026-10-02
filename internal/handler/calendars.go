@@ -36,7 +36,6 @@ func (a *App) routesCalendars(r Router) {
 	a.Handle(r, http.MethodGet, "/issues/calendar", CalendarsController, "show", a.CalendarsShow, FindOptionalProject())
 }
 
-
 // calendarRetrieveIssueQuery は QueriesHelper#retrieve_query(IssueQuery, true)。
 func (a *App) calendarRetrieveIssueQuery(c *Req) (*query.Query, *query.Env, error) {
 	env, err := query.NewEnv(c.Ctx(), a.DB, c.User, a.Settings)

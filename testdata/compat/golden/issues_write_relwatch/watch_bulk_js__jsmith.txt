@@ -1,0 +1,5 @@
+status: 200
+content-type: text/javascript
+
+$(".issue-bulk-watcher").each(function(){$(this).replaceWith("<a class=\"issue-bulk-watcher icon icon-fav\" data-remote=\"true\" rel=\"nofollow\" data-method=\"delete\" href=\"/watchers/watch?object_id%5B%5D=1&amp;object_id%5B%5D=3&amp;object_type=issue\"><svg class=\"s18 icon-svg\" aria-hidden=\"true\"><use href=\"/assets/icons-DIGEST.svg#icon--unwatch\"><\/use><\/svg><span class=\"icon-label\">Unwatch<\/span><\/a>")});
+$('#watchers').html('<div class=\"contextual\">\n<a data-remote=\"true\" data-method=\"get\" href=\"/watchers/new?object_id=1&amp;object_type=issue\">Add<\/a>\n<\/div>\n\n<h3>Watchers (1)<\/h3>\n\n<ul class=\"watchers\"><li class=\"user-2\"><span role=\"img\" class=\"avatar-color-2 s16 avatar\">JS<\/span><a class=\"user active user\" href=\"/users/2\">John Smith<\/a> <a class=\"delete icon-only icon-del\" title=\"Delete\" data-remote=\"true\" rel=\"nofollow\" data-method=\"delete\" href=\"/issues/1/watchers/2\"><svg class=\"s18 icon-svg\" aria-hidden=\"true\"><use href=\"/assets/icons-DIGEST.svg#icon--del\"><\/use><\/svg><span class=\"icon-label\">Delete<\/span><\/a><\/li><\/ul>\n');

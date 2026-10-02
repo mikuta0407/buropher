@@ -1,20 +1,20 @@
-{{$watchables := .watchables}}{{$first := .first}}{{$has := .has_watchables -}}
-<h3 class="title">{{if $has}}{{l (printf "permission_add_%s_watchers" $first.Type)}}{{else}}{{l "permission_add_issue_watchers"}}{{end}}</h3>
+{{$a := .}}
+<h3 class="title">{{$a.Title}}</h3>
 
-{{form_tag (ternary $has "/watchers" "/watchers/append") (hash "remote" true "method" "post" "id" "new-watcher-form" "authenticity_token" true)}}
+{{/* Redmine は embed_authenticity_token_in_remote_forms が nil のため remote の form_tag にもトークンが入る */}}{{form_tag $a.FormURL (hash "remote" true "method" "post" "id" "new-watcher-form" "authenticity_token" true)}}
 
-  {{if $has}}
-    {{hidden_field_tag "object_type" $first.Type}}
-    {{range $w := $watchables}}
+  {{if $a.Watchables}}
+    {{hidden_field_tag "object_type" $a.ObjectType}}
+    {{range $w := $a.Watchables}}
       {{hidden_field_tag "object_id[]" $w.ID}}
     {{end}}
   {{end}}
-  {{if current_project}}{{hidden_field_tag "project_id" current_project.ID}}{{end}}
+  {{if $a.Project}}{{hidden_field_tag "project_id" $a.Project.ID}}{{end}}
 
   <p>{{label_tag "user_search" (l "label_user_search")}}{{text_field_tag "user_search" nil}}</p>
-  {{javascript_tag (printf "observeSearchfield(\n          'user_search',\n          'users_for_watcher',\n          '%s'\n         )" (j .autocomplete_url))}}
+  {{javascript_tag (printf "observeSearchfield(\n          'user_search',\n          'users_for_watcher',\n          '%s'\n         )" (j $a.AutocompleteURL))}}
   <div id="users_for_watcher">
-    {{watcher_principals_check_box_tags "watcher[user_ids][]" .users}}
+    {{principals_check_box_tags "watcher[user_ids][]" $a.Users}}
   </div>
 
   <p class="buttons">

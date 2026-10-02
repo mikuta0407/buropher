@@ -1,0 +1,7 @@
+$('#relations').html('{{j (partial "issues/relations" (dict "V" .V))}}');
+{{if .Saved}}
+  $('#relation_delay').val('');
+  $('#relation_issue_to_id').val('');
+{{end}}
+$('#new-relation-form').show();
+$('#relation_issue_to_id').focus();

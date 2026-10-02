@@ -1,0 +1,272 @@
+# チケットの関連（IssueRelationsController）・ウォッチャー（WatchersController）・自動補完
+# （AutoCompletesController#issues）の互換シナリオ。状態を変えるため参照は専用インスタンスで実行前に reset すること。
+# ケースは記述順に実行され、前のケースの結果に依存する。
+# Rails は XHR 以外の GET .js を拒否するため、.js / XHR のケースには X-Requested-With と Accept を付ける。
+name: issues_write_relwatch
+
+users:
+  admin: {login: admin, password: admin}
+  jsmith: {login: jsmith, password: jsmith}
+  dlopper: {login: dlopper, password: foo}
+
+normalize:
+  mask_text_selectors:
+    - "#footer"
+  regex:
+    # .js 応答の中のフォーム名の乱数部と CSRF トークン（escape_javascript 済み）
+    - {pattern: '-[0-9a-f]{8}(\\" method=)', replace: '-RANDOM$1'}
+    - {pattern: 'authenticity_token\\" value=\\"[A-Za-z0-9_-]+\\"', replace: 'authenticity_token\" value=\"TOKEN\"'}
+
+requests:
+  # ---- 参照系（GET） ----
+  - path: /watchers/new.js?object_type=issue&object_id=1
+    users: [admin, jsmith]
+    format: text
+    headers: {X-Requested-With: XMLHttpRequest}
+  - path: /watchers/new.js?object_type=issue&object_id[]=1&object_id[]=6
+    users: [admin]
+    format: text
+    headers: {X-Requested-With: XMLHttpRequest}
+  - path: /watchers/new.js?project_id=ecookbook
+    users: [admin]
+    format: text
+    headers: {X-Requested-With: XMLHttpRequest}
+  - path: /watchers/new.js?object_type=wiki_page&object_id=1
+    users: [admin]
+    format: text
+    headers: {X-Requested-With: XMLHttpRequest}
+  - path: /watchers/new.js
+    users: [admin]
+    format: text
+    headers: {X-Requested-With: XMLHttpRequest}
+  - path: /watchers/autocomplete_for_user?project_id=5
+    users: [admin]
+    headers: {X-Requested-With: XMLHttpRequest}
+  - path: /watchers/autocomplete_for_user?object_type=issue&object_id[]=1&project_id=ecookbook&q=jo
+    users: [admin]
+    headers: {X-Requested-With: XMLHttpRequest}
+  - path: /watchers/autocomplete_for_mention?object_type=issue&object_id=1&q=
+    users: [jsmith]
+    headers: {X-Requested-With: XMLHttpRequest}
+  - path: /issues/auto_complete?q=
+    users: [admin, anonymous]
+  - path: /issues/auto_complete?q=%2313
+    users: [admin]
+  - path: /issues/auto_complete?q=issue&project_id=ecookbook
+    users: [admin]
+  - path: /issues/auto_complete?project_id=subproject1&scope=tree
+    users: [admin]
+  - path: /issues/auto_complete?project_id=ecookbook&scope=descendants&status=o
+    users: [admin]
+  - path: /issues/auto_complete?project_id=ecookbook&status=c&issue_id=8
+    users: [jsmith]
+  - path: /issues/2/relations.json
+    users: [jsmith, anonymous]
+  - path: /issues/2/relations.xml
+    users: [admin]
+  - path: /relations/1.json
+    users: [admin]
+  - path: /relations/2.xml
+    users: [anonymous]
+
+  # ---- 関連の作成（JS: 複数・エラーあり） ----
+  - id: relation_create_js_bulk
+    path: /issues/1/relations
+    method: POST
+    user: admin
+    format: text
+    headers:
+      X-Requested-With: XMLHttpRequest
+      Accept: "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01"
+    form: {"relation[issue_to_id]": "2, #3,foo,1", "relation[relation_type]": "blocked", "relation[delay]": ""}
+  # 成功のみ（precedes と遅延）
+  - id: relation_create_js_precedes
+    path: /issues/1/relations
+    method: POST
+    user: admin
+    format: text
+    headers:
+      X-Requested-With: XMLHttpRequest
+      Accept: "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01"
+    form: {"relation[issue_to_id]": "7", "relation[relation_type]": "precedes", "relation[delay]": "2"}
+  # html はリダイレクト
+  - id: relation_create_html
+    path: /issues/2/relations
+    method: POST
+    user: admin
+    form: {"relation[issue_to_id]": "7", "relation[relation_type]": "relates"}
+    expect_status: 302
+  - path: /issues/1
+    users: [admin]
+    id: issue_1_after_relations
+  - path: /issues/2
+    users: [admin]
+    id: issue_2_after_relations
+
+  # ---- 関連の削除 ----
+  - id: relation_destroy_js
+    path: /relations/2
+    method: DELETE
+    user: admin
+    format: text
+    headers:
+      X-Requested-With: XMLHttpRequest
+      Accept: "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01"
+    form: {"issue_id": "2"}
+  - id: relation_destroy_html
+    path: /relations/1
+    method: DELETE
+    user: admin
+    form: {"issue_id": "10"}
+    expect_status: 302
+  - path: /issues/10
+    users: [admin]
+    id: issue_10_after_destroy
+
+  # ---- 関連の API ----
+  - id: relation_api_create
+    path: /issues/3/relations.json
+    method: POST
+    user: jsmith
+    auth: basic
+    content_type: application/json
+    body: '{"relation":{"issue_to_id":7,"relation_type":"relates"}}'
+    expect_status: 201
+  - id: relation_api_create_invalid
+    path: /issues/3/relations.json
+    method: POST
+    user: jsmith
+    auth: basic
+    content_type: application/json
+    body: '{"relation":{"issue_to_id":8,"relation_type":"foo"}}'
+    expect_status: 422
+  - id: relation_api_create_xml_taken
+    path: /issues/3/relations.xml
+    method: POST
+    user: jsmith
+    auth: basic
+    content_type: application/json
+    body: '{"relation":{"issue_to_id":7,"relation_type":"relates"}}'
+    expect_status: 422
+  - path: /issues/3/relations.json
+    users: [jsmith]
+    id: issue_3_relations_after_api
+  - id: relation_api_destroy
+    path: /relations/3.json
+    method: DELETE
+    user: jsmith
+    auth: basic
+    expect_status: 204
+  - path: /issues/3.json?include=relations,journals
+    users: [admin]
+    id: issue_3_json_after_api
+
+  # ---- ウォッチ / ウォッチ解除 ----
+  - id: watch_js
+    path: /watchers/watch
+    method: POST
+    user: admin
+    format: text
+    headers:
+      X-Requested-With: XMLHttpRequest
+      Accept: "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01"
+    form: {"object_type": "issue", "object_id": "1"}
+  - id: unwatch_js
+    path: /watchers/watch
+    method: DELETE
+    user: admin
+    format: text
+    headers:
+      X-Requested-With: XMLHttpRequest
+      Accept: "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01"
+    form: {"object_type": "issue", "object_id": "1"}
+  - id: watch_bulk_js
+    path: /watchers/watch
+    method: POST
+    user: jsmith
+    format: text
+    headers:
+      X-Requested-With: XMLHttpRequest
+      Accept: "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01"
+    form: {"object_type": "issue", "object_id[]": ["1", "3"]}
+  - id: watch_wiki_page_js
+    path: /watchers/watch
+    method: POST
+    user: admin
+    format: text
+    headers:
+      X-Requested-With: XMLHttpRequest
+      Accept: "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01"
+    form: {"object_type": "wiki_page", "object_id": "2"}
+  - id: watch_missing
+    path: /watchers/watch
+    method: POST
+    user: admin
+    format: text
+    headers:
+      X-Requested-With: XMLHttpRequest
+    form: {"object_type": "issue", "object_id": "999"}
+    expect_status: 404
+
+  # ---- ウォッチャーの追加・削除（モーダル） ----
+  - id: watchers_create_js
+    path: /watchers
+    method: POST
+    user: admin
+    format: text
+    headers:
+      X-Requested-With: XMLHttpRequest
+      Accept: "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01"
+    form: {"object_type": "issue", "object_id[]": "1", "watcher[user_ids][]": ["3", "10"]}
+  - id: watchers_destroy_js
+    path: /watchers
+    method: DELETE
+    user: admin
+    format: text
+    headers:
+      X-Requested-With: XMLHttpRequest
+      Accept: "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01"
+    form: {"object_type": "issue", "object_id": "1", "user_id": "3"}
+  - id: watchers_destroy_forbidden
+    path: /watchers
+    method: DELETE
+    user: dlopper
+    format: text
+    headers:
+      X-Requested-With: XMLHttpRequest
+    form: {"object_type": "issue", "object_id": "1", "user_id": "10"}
+    expect_status: 403
+  - id: watchers_append_js
+    path: /watchers/append
+    method: POST
+    user: admin
+    format: text
+    headers:
+      X-Requested-With: XMLHttpRequest
+      Accept: "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01"
+    form: {"project_id": "ecookbook", "watcher[user_ids][]": ["3", "2"]}
+  - path: /issues/1
+    users: [admin]
+    id: issue_1_after_watchers
+
+  # ---- ウォッチャーの API ----
+  - id: watchers_api_create
+    path: /issues/1/watchers.json
+    method: POST
+    user: jsmith
+    auth: basic
+    content_type: application/json
+    body: '{"user_id":3}'
+    expect_status: 204
+  - path: /issues/1.json?include=watchers
+    users: [admin]
+    id: issue_1_watchers_after_api_create
+  - id: watchers_api_destroy
+    path: /issues/1/watchers/3.xml
+    method: DELETE
+    user: jsmith
+    auth: basic
+    expect_status: 204
+  - path: /issues/1.xml?include=watchers
+    users: [admin]
+    id: issue_1_watchers_after_api_destroy

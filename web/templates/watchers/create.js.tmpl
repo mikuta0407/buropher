@@ -1,6 +1,6 @@
 $('#ajax-modal').html(
-  '{{j (partial "watchers/new" .Locals)}}');
+  '{{j (partial "watchers/new" .)}}');
 
-{{if .Single}}
-  {{partial "watchers/set_watcher" .}}
+{{if .SetWatcher}}
+  {{partial "watchers/set_watcher" .SetWatcher}}
 {{end}}

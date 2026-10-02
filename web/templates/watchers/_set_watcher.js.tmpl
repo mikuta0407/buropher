@@ -1,3 +1,3 @@
-{{$selector := printf ".%s" .CSS}}
-$("{{$selector}}").each(function(){$(this).replaceWith("{{j (content_watcher_link .First.Type .First.ID)}}")});
-$('#watchers').html('{{j (partial "watchers/watched" (dict "object_type" .First.Type "id" .First.ID "project" .First.Project))}}');
+{{$selector := .Selector}}
+$("{{$selector}}").each(function(){$(this).replaceWith("{{j .WatcherLink}}")});
+$('#watchers').html('{{j (partial .WatchersPartial .WatchersLocals)}}');

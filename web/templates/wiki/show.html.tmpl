@@ -100,7 +100,7 @@
   {{partial "wiki/sidebar" .}}
   {{if .ShowWatchers}}
     <div id="watchers">
-      {{partial "watchers/watchers" (dict "kind" "wiki_page" "id" .Page.ID)}}
+      {{partial "watchers/watchers" (dict "object_type" "wiki_page" "id" .Page.ID "project" current_project)}}
     </div>
   {{end}}
 {{end}}
