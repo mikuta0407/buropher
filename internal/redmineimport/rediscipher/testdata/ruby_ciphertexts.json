@@ -1,0 +1,27 @@
+[
+  {
+    "key": "secret",
+    "plain": "password",
+    "cipher": "aes-256-cbc:pqpo49Hczr46erH7RDC94Q==--DuJKv+942Aj5ecoapoPf+g=="
+  },
+  {
+    "key": "secret",
+    "plain": "パスワード日本語",
+    "cipher": "aes-256-cbc:sHSShrRcmI1PxsnRqyx5My7gH8vg3soe6an4hRAlaNA=--W1x+YTkdx6w4962rck4N/w=="
+  },
+  {
+    "key": "my cipher key",
+    "plain": "0123456789abcdef",
+    "cipher": "aes-256-cbc:YTmgtkSQ3l1gGujvuJ06z9PG/EIXBSVJiMYQebs5Lz4=--7fY9oZMRygPRTU9+9LlcIg=="
+  },
+  {
+    "key": "k",
+    "plain": "JBSWY3DPEHPK3PXP",
+    "cipher": "aes-256-cbc:E4c94JUeIxUiGaDRTjHMD4Hmxe6ZnMuqj9dWkYMcN4w=--i+aV2x/N03VMMh+FDgzfgw=="
+  },
+  {
+    "key": "長い鍵🔑",
+    "plain": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "cipher": "aes-256-cbc:0ZtQct7667Ry8Ge3tNzTPiDFmT9aJsaNLFXNfDsplyQ0gZOTWgCSes7M56UVgyhglPMLnevrOSwmYHgrQFSD/18l+4kCdlmau8XewANVeVRyekt5vo55RHcMfTa6jy+/XIrC4jXdlmEKFLxZePiWGA==--U7ldbUgb6RHmTUHl+ce0jw=="
+  }
+]
