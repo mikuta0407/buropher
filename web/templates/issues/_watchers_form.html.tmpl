@@ -1,0 +1,11 @@
+{{$F := .F}}{{if $F.ShowWatchersForm -}}
+  {{hidden_field_tag "issue[watcher_user_ids][]" ""}}
+  <p id="watchers_form"><label>{{l "label_issue_watchers"}}</label>
+  <span id="watchers_inputs">
+    {{$F.WatchersCheckboxes}}
+  </span>
+  <span class="search_for_watchers">
+  {{link_to (sprite_icon "add" (l "label_search_for_watchers") (hash "size" 12)) $F.SearchWatchersURL (hash "class" "icon icon-add-bullet" "remote" true "method" "get")}}
+  </span>
+  </p>
+{{end}}

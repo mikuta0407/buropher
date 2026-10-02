@@ -1,0 +1,13 @@
+status: 200
+content-type: application/xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<relations type="array">
+  <relation>
+    <id>2</id>
+    <issue_id>2</issue_id>
+    <issue_to_id>3</issue_to_id>
+    <relation_type>relates</relation_type>
+    <delay/>
+  </relation>
+</relations>

@@ -1,7 +1,7 @@
 {{$pr := current_project -}}
 <div class="contextual">
 {{if .CanManage}}{{link_to (sprite_icon "add" (l "label_news_new")) (news_index_path $pr) (hash "class" "icon icon-add add-news-link" "onclick" "showAndScrollTo(\"add-news\", \"news_title\"); return false;")}}{{end}}
-{{if and $pr logged}}{{content_watcher_link "enabled_module" .ModuleID}}{{end}}
+{{if and $pr logged}}{{watcher_link "enabled_module" .ModuleID}}{{end}}
 </div>
 
 <div id="add-news" style="display:none;">

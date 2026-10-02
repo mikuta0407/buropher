@@ -1,0 +1,1437 @@
+status: 200
+content-type: text/html
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Feature request #2: Add ingredients categories - eCookbook - Redmine</title>
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta content="Redmine" name="description">
+    <meta content="issue,bug,tracker" name="keywords">
+    <meta content="authenticity_token" name="csrf-param">
+    <meta content="{{CSRF}}" name="csrf-token">
+    <link href="/assets/favicon-DIGEST.ico" rel="shortcut icon" type="image/x-icon">
+    <link href="/assets/jquery/jquery-ui-1.13.2-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/tribute-5.1.3-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/application-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/responsive-DIGEST.css" media="all" rel="stylesheet">
+    <script data-turbo-track="reload" type="importmap">{
+  "imports": {
+    "@rails/request.js": "/assets/requestjs-DIGEST.js",
+    "application": "/assets/application-DIGEST.js",
+    "@hotwired/stimulus": "/assets/stimulus.min-DIGEST.js",
+    "@hotwired/stimulus-loading": "/assets/stimulus-loading-DIGEST.js",
+    "turndown": "/assets/turndown-DIGEST.js",
+    "controllers/api_key_copy_controller": "/assets/controllers/api_key_copy_controller-DIGEST.js",
+    "controllers/application": "/assets/controllers/application-DIGEST.js",
+    "controllers": "/assets/controllers/index-DIGEST.js",
+    "controllers/list_autofill_controller": "/assets/controllers/list_autofill_controller-DIGEST.js",
+    "controllers/quote_reply_controller": "/assets/controllers/quote_reply_controller-DIGEST.js",
+    "controllers/sticky_issue_header_controller": "/assets/controllers/sticky_issue_header_controller-DIGEST.js"
+  }
+}</script>
+    <link href="/assets/requestjs-DIGEST.js" rel="modulepreload">
+    <link href="/assets/application-DIGEST.js" rel="modulepreload">
+    <link href="/assets/stimulus.min-DIGEST.js" rel="modulepreload">
+    <link href="/assets/stimulus-loading-DIGEST.js" rel="modulepreload">
+    <link href="/assets/turndown-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/api_key_copy_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/application-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/index-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/list_autofill_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/quote_reply_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/sticky_issue_header_controller-DIGEST.js" rel="modulepreload">
+    <script type="module">import "application"</script>
+    <script src="/assets/jquery-3.7.1-ui-1.13.3-DIGEST.js"></script>
+    <script src="/assets/rails-ujs-DIGEST.js"></script>
+    <script src="/assets/tribute-5.1.3.min-DIGEST.js"></script>
+    <script src="/assets/application-legacy-DIGEST.js"></script>
+    <script src="/assets/responsive-DIGEST.js"></script>
+    <script>//<![CDATA[
+$(window).on('load', function(){ warnLeavingUnsaved('The current page contains unsaved text that will be lost if you leave this page.'); });
+//]]></script>
+    <script>//<![CDATA[
+rm = window.rm || {};rm.I18n = rm.I18n || {};rm.I18n = Object.freeze({buttonCopy: 'Copy'});
+//]]></script>
+    <script>//<![CDATA[
+rm = window.rm || {};rm.AutoComplete = rm.AutoComplete || {};rm.AutoComplete.dataSources = JSON.parse('{"issues":"/issues/auto_complete?project_id=ecookbook\u0026q=","wiki_pages":"/wiki_pages/auto_complete?project_id=ecookbook\u0026q="}');
+//]]></script>
+    <script src="/assets/jstoolbar/jstoolbar-DIGEST.js"></script>
+    <script src="/assets/jstoolbar/common_mark-DIGEST.js"></script>
+    <script src="/assets/jstoolbar/lang/jstoolbar-en-DIGEST.js"></script>
+    <script>//<![CDATA[
+var wikiImageMimeTypes = ["image/gif","image/jpeg","image/png","image/tiff","image/webp","image/x-ms-bmp"];var userHlLanguages = ["c","cpp","csharp","css","diff","go","groovy","html","java","javascript","objc","perl","php","python","r","ruby","sass","scala","shell","sql","swift","xml","yaml"];
+//]]></script>
+    <link href="/assets/jstoolbar-DIGEST.css" media="screen" rel="stylesheet">
+    <script>//<![CDATA[
+var datepickerOptions={dateFormat: 'yy-mm-dd', firstDay: 0, showOn: 'button', buttonImageOnly: true, buttonImage: '/assets/calendar-DIGEST.png', showButtonPanel: true, showWeek: true, showOtherMonths: true, selectOtherMonths: true, changeMonth: true, changeYear: true, beforeShow: beforeShowDatePicker};
+//]]></script>
+    <script src="/assets/attachments-DIGEST.js"></script>
+    <link href="{{BASE}}/issues/2.atom?key=KEY" rel="alternate" title="eCookbook - Feature request #2: Add ingredients categories" type="application/atom+xml">
+    <script src="/assets/context_menu-DIGEST.js"></script>
+    <link href="/assets/context_menu-DIGEST.css" media="screen" rel="stylesheet">
+  </head>
+  <body class="project-ecookbook has-main-menu controller-issues action-show avatars-off" data-text-formatting="common_mark">
+    <div id="wrapper">
+      <div class="flyout-menu js-flyout-menu">
+        <div class="flyout-menu__search">
+          <form accept-charset="UTF-8" action="/projects/ecookbook/search" method="get" name="form-RANDOM">
+            <input autocomplete="off" name="issues" type="hidden" value="1">
+            <label class="search-magnifier search-magnifier--flyout" for="flyout-search">
+              <svg aria-hidden="true" class="s18 icon-svg">
+                <use href="/assets/icons-DIGEST.svg#icon--search"></use>
+              </svg>
+              <span class="icon-label hidden">Search</span>
+            </label>
+            <input class="small js-search-input" id="flyout-search" name="q" placeholder="Search" type="text">
+          </form>
+        </div>
+        <div class="flyout-menu__avatar">
+          <a href="/users/1">
+            <span class="avatar-color-1 s40 avatar" role="img">RA</span>
+          </a>
+          <a class="user active" href="/users/1">admin</a>
+        </div>
+        <h3>Project</h3>
+        <span class="js-project-menu"></span>
+        <h3>General</h3>
+        <span class="js-general-menu"></span>
+        <span class="js-sidebar flyout-menu__sidebar"></span>
+        <h3>Profile</h3>
+        <span class="js-profile-menu"></span>
+      </div>
+      <div id="top-menu">
+        <div id="account">
+          <ul>
+            <li>
+              <a class="my-account" href="/my/account">My account</a>
+            </li>
+            <li>
+              <a class="logout" data-method="post" href="/logout" rel="nofollow">Sign out</a>
+            </li>
+          </ul>
+        </div>
+        <div id="loggedas">
+          Logged in as
+          <a class="user active" href="/users/1">admin</a>
+        </div>
+        <ul>
+          <li>
+            <a class="home" href="/">Home</a>
+          </li>
+          <li>
+            <a class="my-page" href="/my/page">My page</a>
+          </li>
+          <li>
+            <a class="projects" href="/projects">Projects</a>
+          </li>
+          <li>
+            <a class="administration" href="/admin">Administration</a>
+          </li>
+          <li>
+            <a class="help" href="https://www.redmine.org/guide" rel="noopener" target="_blank">Help</a>
+          </li>
+        </ul>
+      </div>
+      <div id="header">
+        <a class="mobile-toggle-button js-flyout-menu-toggle-button" href="#"></a>
+        <div id="quick-search">
+          <form accept-charset="UTF-8" action="/projects/ecookbook/search" method="get" name="form-RANDOM">
+            <input autocomplete="off" name="scope" type="hidden" value="subprojects">
+            <input autocomplete="off" name="issues" type="hidden" value="1">
+            <label for="q">
+              <a accesskey="4" href="/projects/ecookbook/search?scope=subprojects">Search</a>
+              :
+            </label>
+            <input accesskey="f" class="small" data-auto-complete="true" id="q" name="q" size="20" type="text">
+          </form>
+          <div class="drdn" id="project-jump">
+            <span class="drdn-trigger">eCookbook</span>
+            <div class="drdn-content">
+              <div class="quick-search">
+                <svg aria-hidden="true" class="s18 icon-svg">
+                  <use href="/assets/icons-DIGEST.svg#icon--search"></use>
+                </svg>
+                <input autocomplete="off" class="autocomplete" data-automcomplete-url="/projects/autocomplete.js?jump=issues" id="projects-quick-search" name="q" type="text" value="">
+              </div>
+              <div class="drdn-items projects selection">
+                <strong>Bookmarks</strong>
+                <a class="selected" href="/projects/ecookbook?jump=issues" title="eCookbook">
+                  <span style="padding-inline-start:0px;">eCookbook</span>
+                </a>
+                <a href="/projects/private-child?jump=issues" title="Private child of eCookbook">
+                  <span style="padding-inline-start:16px;">Private child of eCookbook</span>
+                </a>
+                <strong>All Projects</strong>
+                <a href="/projects/private-child?jump=issues" title="Private child of eCookbook">
+                  <span style="padding-inline-start:0px;">Private child of eCookbook</span>
+                </a>
+              </div>
+              <div class="drdn-items all-projects selection">
+                <a href="/projects?jump=issues">All Projects</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <h1>
+          <span class="current-project">eCookbook</span>
+        </h1>
+        <div class="tabs" id="main-menu">
+          <ul>
+            <li>
+              <a class="new-object" href="#" id="new-object" onclick="toggleNewObjectDropdown(); return false;">+</a>
+              <ul class="menu-children">
+                <li>
+                  <a accesskey="7" class="new-issue-sub" href="/projects/ecookbook/issues/new">New issue</a>
+                </li>
+                <li>
+                  <a class="new-issue-category" href="/projects/ecookbook/issue_categories/new">New category</a>
+                </li>
+                <li>
+                  <a class="new-version" href="/projects/ecookbook/versions/new">New version</a>
+                </li>
+                <li>
+                  <a class="new-timelog" href="/projects/ecookbook/time_entries/new">Log time</a>
+                </li>
+                <li>
+                  <a class="new-news" href="/projects/ecookbook/news/new">Add news</a>
+                </li>
+                <li>
+                  <a class="new-document" href="/projects/ecookbook/documents/new">New document</a>
+                </li>
+                <li>
+                  <a class="new-wiki-page" href="/projects/ecookbook/wiki/new">New wiki page</a>
+                </li>
+                <li>
+                  <a class="new-file" href="/projects/ecookbook/files/new">New file</a>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <a class="overview" href="/projects/ecookbook">Overview</a>
+            </li>
+            <li>
+              <a class="activity" href="/projects/ecookbook/activity">Activity</a>
+            </li>
+            <li>
+              <a class="roadmap" href="/projects/ecookbook/roadmap">Roadmap</a>
+            </li>
+            <li>
+              <a class="issues selected" href="/projects/ecookbook/issues">Issues</a>
+            </li>
+            <li>
+              <a class="time-entries" href="/projects/ecookbook/time_entries">Spent time</a>
+            </li>
+            <li>
+              <a class="gantt" href="/projects/ecookbook/issues/gantt">Gantt</a>
+            </li>
+            <li>
+              <a class="calendar" href="/projects/ecookbook/issues/calendar">Calendar</a>
+            </li>
+            <li>
+              <a class="news" href="/projects/ecookbook/news">News</a>
+            </li>
+            <li>
+              <a class="documents" href="/projects/ecookbook/documents">Documents</a>
+            </li>
+            <li>
+              <a class="wiki" href="/projects/ecookbook/wiki">Wiki</a>
+            </li>
+            <li>
+              <a class="boards" href="/projects/ecookbook/boards">Forums</a>
+            </li>
+            <li>
+              <a class="files" href="/projects/ecookbook/files">Files</a>
+            </li>
+            <li>
+              <a class="repository" href="/projects/ecookbook/repository">Repository</a>
+            </li>
+            <li>
+              <a class="settings" href="/projects/ecookbook/settings">Settings</a>
+            </li>
+          </ul>
+          <div class="tabs-buttons" style="display:none;">
+            <button class="tab-left icon-only" onclick="moveTabLeft(this); return false;">
+              <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
+                <use href="/assets/icons-DIGEST.svg#icon--angle-left"></use>
+              </svg>
+            </button>
+            <button class="tab-right icon-only" onclick="moveTabRight(this); return false;">
+              <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
+                <use href="/assets/icons-DIGEST.svg#icon--angle-right"></use>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="collapsiblesidebar" id="main">
+        <script>//<![CDATA[
+$('#main.collapsiblesidebar').collapsibleSidebar();
+//]]></script>
+        <div id="sidebar">
+          <div id="sidebar-switch-panel" style="visibility: hidden;">
+            <a class="" href="#" id="sidebar-switch-button">
+              <svg aria-hidden="true" class="s20 icon-svg icon-rtl">
+                <use href="/assets/icons-DIGEST.svg#icon--chevrons-right"></use>
+              </svg>
+            </a>
+          </div>
+          <script>//<![CDATA[
+$('#sidebar-switch-panel').css('visibility', 'visible');
+//]]></script>
+          <div id="sidebar-wrapper">
+            <h3>Custom queries</h3>
+            <ul class="queries">
+              <li>
+                <a class="query" data-disable-with="Multiple custom fields query" href="/projects/ecookbook/issues?query_id=1" title="Description for Multiple custom fields query">Multiple custom fields query</a>
+              </li>
+              <li>
+                <a class="query" data-disable-with="Open issues by priority and tracker" href="/projects/ecookbook/issues?query_id=5" title="Description for Open issues by priority and tracker">Open issues by priority and tracker</a>
+              </li>
+              <li>
+                <a class="query" data-disable-with="Open issues grouped by list custom field" href="/projects/ecookbook/issues?query_id=9" title="Description for Open issues grouped by list custom field">Open issues grouped by list custom field</a>
+              </li>
+              <li>
+                <a class="query" data-disable-with="Open issues grouped by tracker" href="/projects/ecookbook/issues?query_id=6" title="Description for Open issues grouped by tracker">Open issues grouped by tracker</a>
+              </li>
+              <li>
+                <a class="query" data-disable-with="Public query for all projects" href="/projects/ecookbook/issues?query_id=4" title="Description for Public query for all projects">Public query for all projects</a>
+              </li>
+            </ul>
+            <div id="watchers">
+              <div class="contextual">
+                <a data-method="get" data-remote="true" href="/watchers/new?object_id=2&amp;object_type=issue">Add</a>
+              </div>
+              <h3>Watchers (2)</h3>
+              <ul class="watchers">
+                <li class="user-3">
+                  <span class="avatar-color-3 s16 avatar" role="img">DL</span>
+                  <a class="user active user" href="/users/3">Dave Lopper</a>
+                  <a class="delete icon-only icon-del" data-method="delete" data-remote="true" href="/issues/2/watchers/3" rel="nofollow" title="Delete">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--del"></use>
+                    </svg>
+                    <span class="icon-label">Delete</span>
+                  </a>
+                </li>
+                <li class="user-1">
+                  <span class="avatar-color-1 s16 avatar" role="img">RA</span>
+                  <a class="user active user" href="/users/1">Redmine Admin</a>
+                  <a class="delete icon-only icon-del" data-method="delete" data-remote="true" href="/issues/2/watchers/1" rel="nofollow" title="Delete">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--del"></use>
+                    </svg>
+                    <span class="icon-label">Delete</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div id="content">
+          <div class="contextual">
+            <a accesskey="e" class="icon icon-edit" href="/issues/2/edit" onclick="showAndScrollTo(&#34;update&#34;, &#34;issue_notes&#34;); return false;">
+              <svg aria-hidden="true" class="s18 icon-svg">
+                <use href="/assets/icons-DIGEST.svg#icon--edit"></use>
+              </svg>
+              <span class="icon-label">Edit</span>
+            </a>
+            <a class="icon icon-time-add" href="/issues/2/time_entries/new">
+              <svg aria-hidden="true" class="s18 icon-svg">
+                <use href="/assets/icons-DIGEST.svg#icon--time-add"></use>
+              </svg>
+              <span class="icon-label">Log time</span>
+            </a>
+            <a class="issue-2-watcher icon icon-fav" data-method="delete" data-remote="true" href="/watchers/watch?object_id=2&amp;object_type=issue" rel="nofollow">
+              <svg aria-hidden="true" class="s18 icon-svg">
+                <use href="/assets/icons-DIGEST.svg#icon--unwatch"></use>
+              </svg>
+              <span class="icon-label">Unwatch</span>
+            </a>
+            <a class="icon icon-copy" href="/projects/ecookbook/issues/2/copy">
+              <svg aria-hidden="true" class="s18 icon-svg">
+                <use href="/assets/icons-DIGEST.svg#icon--copy"></use>
+              </svg>
+              <span class="icon-label">Copy</span>
+            </a>
+            <span class="drdn">
+              <span class="drdn-trigger">
+                <span class="icon-only icon-actions" title="Actions">
+                  <svg aria-hidden="true" class="s18 icon-svg">
+                    <use href="/assets/icons-DIGEST.svg#icon--3-bullets"></use>
+                  </svg>
+                  <span class="icon-label">Actions</span>
+                </span>
+              </span>
+              <div class="drdn-content">
+                <div class="drdn-items">
+                  <a class="icon icon-copy-link" data-clipboard-text="{{BASE}}/issues/2" href="#" onclick="copyDataClipboardTextToClipboard(this);; return false;">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--copy-link"></use>
+                    </svg>
+                    <span class="icon-label">Copy link</span>
+                  </a>
+                  <a class="icon icon-del" data-confirm="Are you sure you want to delete the selected issue(s)?" data-method="delete" href="/issues/2" rel="nofollow">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--del"></use>
+                    </svg>
+                    <span class="icon-label">Delete issue</span>
+                  </a>
+                </div>
+              </div>
+            </span>
+          </div>
+          <h2 class="inline-block">Feature request #2</h2>
+          <span class="badge badge-status-open">open</span>
+          <div class="issue tracker-2 status-2 priority-7 priority-high2 details">
+            <div class="avatar-with-child">
+              <span class="avatar-color-2 s50 avatar" role="img" title="Author: John Smith">JS</span>
+            </div>
+            <div data-controller="sticky-issue-header">
+              <div class="subject" data-sticky-issue-header-target="original">
+                <div>
+                  <h3>Add ingredients categories</h3>
+                </div>
+              </div>
+              <div class="issue" data-sticky-issue-header-target="stickyHeader" id="sticky-issue-header">
+                <span class="issue-heading">Feature request #2:</span>
+                <span class="subject">Add ingredients categories</span>
+              </div>
+            </div>
+            <div class="reaction">
+              <span class="reaction-button-wrapper" data-reaction-button-id="reaction_issue_2">
+                <a class="icon reaction-button" data-method="post" data-remote="true" href="/reactions?object_id=2&amp;object_type=Issue" rel="nofollow">
+                  <svg aria-hidden="true" class="s18 icon-svg">
+                    <use href="/assets/icons-DIGEST.svg#icon--thumb-up"></use>
+                  </svg>
+                </a>
+              </span>
+            </div>
+            <p class="author">
+              Added by
+              <a class="user active" href="/users/2">John Smith</a>
+              <a href="/projects/ecookbook/activity?from=2006-07-19" title="07/19/2006 07:04 PM">over 19 years</a>
+              ago. Updated
+              <a href="/projects/ecookbook/activity?from=2026-01-15" title="01/15/2026 12:00 PM">less than a minute</a>
+              ago.
+            </p>
+            <div class="attributes">
+              <div class="splitcontent">
+                <div class="splitcontentleft">
+                  <div class="status attribute">
+                    <div class="label">Status:</div>
+                    <div class="value">Assigned</div>
+                  </div>
+                  <div class="priority attribute">
+                    <div class="label">Priority:</div>
+                    <div class="value">Urgent</div>
+                  </div>
+                  <div class="assigned-to attribute">
+                    <div class="label">Assignee:</div>
+                    <div class="value">-</div>
+                  </div>
+                  <div class="category attribute">
+                    <div class="label">Category:</div>
+                    <div class="value">-</div>
+                  </div>
+                  <div class="fixed-version attribute">
+                    <div class="label">Target version:</div>
+                    <div class="value">
+                      <a href="/versions/2" title="02/04/2026">1.0</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="splitcontentleft">
+                  <div class="start-date attribute">
+                    <div class="label">Start date:</div>
+                    <div class="value">01/13/2026</div>
+                  </div>
+                  <div class="due-date attribute">
+                    <div class="label">Due date:</div>
+                    <div class="value"></div>
+                  </div>
+                  <div class="progress attribute">
+                    <div class="label">% Done:</div>
+                    <div class="value">
+                      <table class="progress progress-30">
+                        <tbody>
+                          <tr>
+                            <td class="closed" style="width: 30%;" title="30%"></td>
+                            <td class="todo" style="width: 70%;"></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <p class="percent">30%</p>
+                    </div>
+                  </div>
+                  <div class="estimated-hours attribute">
+                    <div class="label">Estimated time:</div>
+                    <div class="value">0:30 h</div>
+                  </div>
+                </div>
+              </div>
+              <div class="splitcontent">
+                <div class="splitcontentleft">
+                  <div class="float_cf cf_6 attribute">
+                    <div class="label">
+                      <span>Float field</span>
+                      :
+                    </div>
+                    <div class="value">2.05</div>
+                  </div>
+                </div>
+                <div class="splitcontentleft">
+                  <div class="date_cf cf_8 attribute">
+                    <div class="label">
+                      <span>Custom date</span>
+                      :
+                    </div>
+                    <div class="value"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <hr>
+            <div class="description" data-controller="quote-reply">
+              <div class="contextual">
+                <a class="icon icon-quote" data-action="quote-reply#quote" data-quote-reply-text-formatting-param="common_mark" data-quote-reply-url-param="/issues/2/quoted" href="#">
+                  <svg aria-hidden="true" class="s18 icon-svg icon-svg-filled">
+                    <use href="/assets/icons-DIGEST.svg#icon--quote-filled"></use>
+                  </svg>
+                  <span class="icon-label">Quote</span>
+                </a>
+              </div>
+              <p>
+                <strong>Description</strong>
+              </p>
+              <div class="wiki" data-quote-reply-target="content" id="issue_description_wiki">
+                <p>Ingredients of the recipe should be classified by categories</p>
+              </div>
+            </div>
+            <hr>
+            <p>
+              <strong>Files</strong>
+            </p>
+            <div class="attachments">
+              <div class="contextual">
+                <a class="icon-only icon-edit" href="/attachments/issues/2/edit" title="Edit attached files">
+                  <svg aria-hidden="true" class="s18 icon-svg">
+                    <use href="/assets/icons-DIGEST.svg#icon--edit"></use>
+                  </svg>
+                  <span class="icon-label">Edit attached files</span>
+                </a>
+                <a class="icon-only icon-download" href="/attachments/issues/2/download" title="Download all files">
+                  <svg aria-hidden="true" class="s18 icon-svg">
+                    <use href="/assets/icons-DIGEST.svg#icon--download"></use>
+                  </svg>
+                  <span class="icon-label">Download all files</span>
+                </a>
+              </div>
+              <table>
+                <tbody>
+                  <tr>
+                    <td>
+                      <a class="icon icon-attachment" href="/attachments/4">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--attachment"></use>
+                        </svg>
+                        <span class="icon-label">source.rb</span>
+                      </a>
+                      <span class="size">(153 Bytes)</span>
+                      <a class="icon-only icon-download" href="/attachments/download/4/source.rb" title="Download">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--download"></use>
+                        </svg>
+                        <span class="icon-label">source.rb</span>
+                      </a>
+                    </td>
+                    <td>This is a Ruby source file</td>
+                    <td>
+                      <span class="author">John Smith, 07/19/2006 07:07 PM</span>
+                    </td>
+                    <td>
+                      <a class="delete icon-only icon-del" data-confirm="Are you sure?" data-method="delete" href="/attachments/4" rel="nofollow" title="Delete">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--del"></use>
+                        </svg>
+                        <span class="icon-label">Delete</span>
+                      </a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a class="icon icon-attachment" href="/attachments/10">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--attachment"></use>
+                        </svg>
+                        <span class="icon-label">picture.jpg</span>
+                      </a>
+                      <span class="size">(452 Bytes)</span>
+                      <a class="icon-only icon-download" href="/attachments/download/10/picture.jpg" title="Download">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--download"></use>
+                        </svg>
+                        <span class="icon-label">picture.jpg</span>
+                      </a>
+                    </td>
+                    <td></td>
+                    <td>
+                      <span class="author">John Smith, 07/19/2006 07:07 PM</span>
+                    </td>
+                    <td>
+                      <a class="delete icon-only icon-del" data-confirm="Are you sure?" data-method="delete" href="/attachments/10" rel="nofollow" title="Delete">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--del"></use>
+                        </svg>
+                        <span class="icon-label">Delete</span>
+                      </a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="thumbnails">
+                <div class="thumbnail" title="picture.jpg">
+                  <a href="/attachments/10">
+                    <img alt="picture.jpg" loading="lazy" src="/attachments/thumbnail/10/200" srcset="/attachments/thumbnail/10/200 2x" style="max-width: 100px; max-height: 100px;">
+                  </a>
+                </div>
+              </div>
+            </div>
+            <hr>
+            <div class="" id="issue_tree">
+              <div class="contextual">
+                <a href="/projects/ecookbook/issues/new?back_url=%2Fissues%2F2&amp;issue%5Bparent_issue_id%5D=2&amp;issue%5Btracker_id%5D=2">Add</a>
+              </div>
+              <p>
+                <strong>Subtasks</strong>
+              </p>
+              <form accept-charset="UTF-8" action="/issues/2" data-cm-url="/issues/context_menu" method="post" name="form-RANDOM">
+                <input autocomplete="off" name="authenticity_token" type="hidden" value="{{CSRF}}">
+                <div class="subtasks-wrapper"></div>
+              </form>
+            </div>
+            <hr>
+            <div class="" id="relations">
+              <div class="contextual">
+                <a href="#" onclick="$(&#39;#new-relation-form&#39;).toggle(); $(&#39;#relation_issue_to_id:visible&#39;).focus(); return false;">Add</a>
+              </div>
+              <p>
+                <strong>Related issues</strong>
+                <span class="issues-stat">
+                  <span class="badge badge-issues-count">
+                    <a href="/issues?issue_id=3&amp;set_filter=true&amp;status_id=%2A">1</a>
+                  </span>
+                  (
+                  <span class="open">
+                    <a href="/issues?issue_id=3&amp;set_filter=true&amp;status_id=o">1 open</a>
+                  </span>
+                  —
+                  <span class="closed">0 closed</span>
+                  )
+                </span>
+              </p>
+              <form accept-charset="UTF-8" action="/issues/2" data-cm-url="/issues/context_menu" method="post" name="form-RANDOM">
+                <input autocomplete="off" name="authenticity_token" type="hidden" value="{{CSRF}}">
+                <div class="relation-issues-wrapper">
+                  <table class="list issues odd-even">
+                    <tbody>
+                      <tr class="issue hascontextmenu issue tracker-1 status-1 priority-4 priority-lowest overdue behind-schedule rel-relates" id="relation-2">
+                        <td class="checkbox">
+                          <input name="ids[]" type="checkbox" value="3">
+                        </td>
+                        <td class="subject">
+                          Related to
+                          <a class="issue tracker-1 status-1 priority-4 priority-lowest overdue behind-schedule" href="/issues/3">Bug #3</a>
+                          : Error 281 when updating a recipe
+                        </td>
+                        <td class="status">New</td>
+                        <td class="assigned_to">
+                          <a class="user active" href="/users/3">Dave Lopper</a>
+                        </td>
+                        <td class="start_date">12/31/2025</td>
+                        <td class="due_date">01/10/2026</td>
+                        <td class="done_ratio">
+                          <table class="progress progress-0">
+                            <tbody>
+                              <tr>
+                                <td class="todo" style="width: 100%;"></td>
+                              </tr>
+                            </tbody>
+                          </table>
+                          <p class="percent"></p>
+                        </td>
+                        <td class="buttons">
+                          <a class="icon-only icon-link-break" data-confirm="Are you sure?" data-method="delete" data-remote="true" href="/relations/2?issue_id=2" rel="nofollow" title="Delete relation">
+                            <svg aria-hidden="true" class="s18 icon-svg">
+                              <use href="/assets/icons-DIGEST.svg#icon--link-break"></use>
+                            </svg>
+                            <span class="icon-label">Delete relation</span>
+                          </a>
+                          <a class="icon-only icon-actions js-contextmenu" href="#" title="Actions">
+                            <svg aria-hidden="true" class="s18 icon-svg">
+                              <use href="/assets/icons-DIGEST.svg#icon--3-bullets"></use>
+                            </svg>
+                            <span class="icon-label">Actions</span>
+                          </a>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </form>
+              <form accept-charset="UTF-8" action="/issues/2/relations" class="new_relation" data-remote="true" id="new-relation-form" method="post" name="new-relation-form-RANDOM" style="display: none;">
+                <p>
+                  <select id="relation_relation_type" name="relation[relation_type]" onchange="setPredecessorFieldsVisibility();">
+                    <option selected="selected" value="relates">Related to</option>
+                    <option value="duplicates">Is duplicate of</option>
+                    <option value="duplicated">Has duplicate</option>
+                    <option value="blocks">Blocks</option>
+                    <option value="blocked">Blocked by</option>
+                    <option value="precedes">Precedes</option>
+                    <option value="follows">Follows</option>
+                    <option value="copied_to">Copied to</option>
+                    <option value="copied_from">Copied from</option>
+                  </select>
+                  Issue #
+                  <input id="relation_issue_to_id" name="relation[issue_to_id]" size="10" type="text" value="">
+                  <span id="predecessor_fields" style="display:none;">
+                    Delay:
+                    <input id="relation_delay" name="relation[delay]" size="3" type="text">
+                    days
+                  </span>
+                  <input data-disable-with="Add" name="commit" type="submit" value="Add">
+                  <a href="#" onclick="$(&#34;#new-relation-form&#34;).hide();; return false;">Cancel</a>
+                  <em class="info">Multiple values allowed (comma separated).</em>
+                </p>
+                <script>//<![CDATA[
+multipleAutocompleteField('relation_issue_to_id', '/issues/auto_complete?issue_id=2&project_id=ecookbook')
+//]]></script>
+                <script>//<![CDATA[
+setPredecessorFieldsVisibility();
+//]]></script>
+              </form>
+            </div>
+          </div>
+          <div class="journals" id="history">
+            <div class="tabs">
+              <ul>
+                <li>
+                  <a class="selected" href="/issues/2?tab=history" id="tab-history" onclick="showIssueHistory(&#34;history&#34;, this.href); return false;">History</a>
+                </li>
+                <li>
+                  <a href="/issues/2?tab=notes" id="tab-notes" onclick="showIssueHistory(&#34;notes&#34;, this.href); return false;">Notes</a>
+                </li>
+                <li>
+                  <a href="/issues/2?tab=properties" id="tab-properties" onclick="showIssueHistory(&#34;properties&#34;, this.href); return false;">Property changes</a>
+                </li>
+              </ul>
+              <div class="tabs-buttons" style="display:none;">
+                <button class="tab-left icon-only" onclick="moveTabLeft(this);" type="button">
+                  <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
+                    <use href="/assets/icons-DIGEST.svg#icon--angle-left"></use>
+                  </svg>
+                </button>
+                <button class="tab-right icon-only" onclick="moveTabRight(this);" type="button">
+                  <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
+                    <use href="/assets/icons-DIGEST.svg#icon--angle-right"></use>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="tab-content" id="tab-content-history">
+              <div class="journal has-notes has-details" data-controller="quote-reply" id="change-3">
+                <div class="note" id="note-1">
+                  <h4 class="journal-header">
+                    <span class="journal-info">
+                      <span class="avatar-color-2 s24 avatar" role="img">JS</span>
+                      Updated by
+                      <a class="user active" href="/users/2">John Smith</a>
+                      <a href="/projects/ecookbook/activity?from=2026-01-14" title="01/14/2026 12:00 AM">1 day</a>
+                      ago
+                      <span class="" id="journal-3-private_notes"></span>
+                    </span>
+                    <span class="journal-meta">
+                      <span class="journal-actions">
+                        <span class="reaction-button-wrapper" data-reaction-button-id="reaction_journal_3">
+                          <a class="icon reaction-button" data-method="post" data-remote="true" href="/reactions?object_id=3&amp;object_type=Journal" rel="nofollow">
+                            <svg aria-hidden="true" class="s18 icon-svg">
+                              <use href="/assets/icons-DIGEST.svg#icon--thumb-up"></use>
+                            </svg>
+                          </a>
+                        </span>
+                        <a class="icon-only icon-quote" data-action="quote-reply#quote" data-quote-reply-text-formatting-param="common_mark" data-quote-reply-url-param="/issues/2/quoted?journal_id=3&amp;journal_indice=1" href="#" title="Quote">
+                          <svg aria-hidden="true" class="s18 icon-svg icon-svg-filled">
+                            <use href="/assets/icons-DIGEST.svg#icon--quote-filled"></use>
+                          </svg>
+                          <span class="icon-label hidden">Quote</span>
+                        </a>
+                        <a class="icon-only icon-edit" data-method="get" data-remote="true" href="/journals/3/edit" title="Edit">
+                          <svg aria-hidden="true" class="s18 icon-svg">
+                            <use href="/assets/icons-DIGEST.svg#icon--edit"></use>
+                          </svg>
+                          <span class="icon-label">Edit</span>
+                        </a>
+                        <span class="drdn">
+                          <span class="drdn-trigger">
+                            <span class="icon-only icon-actions" title="Actions">
+                              <svg aria-hidden="true" class="s18 icon-svg">
+                                <use href="/assets/icons-DIGEST.svg#icon--3-bullets"></use>
+                              </svg>
+                              <span class="icon-label">Actions</span>
+                            </span>
+                          </span>
+                          <div class="drdn-content">
+                            <div class="drdn-items">
+                              <a class="icon icon-copy-link" data-clipboard-text="{{BASE}}/issues/2#note-1" href="#" onclick="copyDataClipboardTextToClipboard(this);; return false;">
+                                <svg aria-hidden="true" class="s18 icon-svg">
+                                  <use href="/assets/icons-DIGEST.svg#icon--copy-link"></use>
+                                </svg>
+                                <span class="icon-label">Copy link</span>
+                              </a>
+                              <a class="icon icon-del" data-confirm="Are you sure?" data-method="put" data-remote="true" href="/journals/3?journal%5Bnotes%5D=" rel="nofollow">
+                                <svg aria-hidden="true" class="s18 icon-svg">
+                                  <use href="/assets/icons-DIGEST.svg#icon--del"></use>
+                                </svg>
+                                <span class="icon-label">Delete</span>
+                              </a>
+                            </div>
+                          </div>
+                        </span>
+                      </span>
+                      <a class="journal-link" href="#note-1">#1</a>
+                    </span>
+                  </h4>
+                  <div class="journal-content">
+                    <ul class="journal-details">
+                      <li>
+                        <strong>Description</strong>
+                        updated (
+                        <a href="/journals/3/diff?detail_id=4" title="View differences">diff</a>
+                        )
+                      </li>
+                      <li>
+                        <strong>Searchable field</strong>
+                        changed from
+                        <i>Old value</i>
+                        to
+                        <i>New value</i>
+                      </li>
+                      <li>
+                        <strong>File</strong>
+                        <a href="/attachments/4">source.rb</a>
+                        <a class="icon-only icon-download" href="/attachments/download/4/source.rb" title="Download">
+                          <svg aria-hidden="true" class="s18 icon-svg">
+                            <use href="/assets/icons-DIGEST.svg#icon--download"></use>
+                          </svg>
+                          <span class="icon-label">source.rb</span>
+                        </a>
+                        added
+                      </li>
+                    </ul>
+                    <div class="wiki journal-note" data-quote-reply-target="content" id="journal-3-notes">
+                      <p>
+                        A comment with inline image: !picture.jpg! and a reference to
+                        <a class="issue tracker-1 status-1 priority-7 priority-high2 behind-schedule" href="/issues/1" title="Bug: Cannot print recipes (New)">#1</a>
+                        and
+                        <a class="changeset" href="/projects/ecookbook/repository/10/revisions/2" title="This commit fixes #1, #2 and references #1 &amp; #3">r2</a>
+                        .
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="journal has-notes has-details" data-controller="quote-reply" id="change-7">
+                <div class="note" id="note-2">
+                  <h4 class="journal-header">
+                    <span class="journal-info">
+                      <span class="avatar-color-1 s24 avatar" role="img">RA</span>
+                      Updated by
+                      <a class="user active" href="/users/1">Redmine Admin</a>
+                      <a href="/projects/ecookbook/activity?from=2026-01-15" title="01/15/2026 12:00 PM">less than a minute</a>
+                      ago
+                      <span class="" id="journal-7-private_notes"></span>
+                    </span>
+                    <span class="journal-meta">
+                      <span class="journal-actions">
+                        <span class="reaction-button-wrapper" data-reaction-button-id="reaction_journal_7">
+                          <a class="icon reaction-button" data-method="post" data-remote="true" href="/reactions?object_id=7&amp;object_type=Journal" rel="nofollow">
+                            <svg aria-hidden="true" class="s18 icon-svg">
+                              <use href="/assets/icons-DIGEST.svg#icon--thumb-up"></use>
+                            </svg>
+                          </a>
+                        </span>
+                        <a class="icon-only icon-quote" data-action="quote-reply#quote" data-quote-reply-text-formatting-param="common_mark" data-quote-reply-url-param="/issues/2/quoted?journal_id=7&amp;journal_indice=2" href="#" title="Quote">
+                          <svg aria-hidden="true" class="s18 icon-svg icon-svg-filled">
+                            <use href="/assets/icons-DIGEST.svg#icon--quote-filled"></use>
+                          </svg>
+                          <span class="icon-label hidden">Quote</span>
+                        </a>
+                        <a class="icon-only icon-edit" data-method="get" data-remote="true" href="/journals/7/edit" title="Edit">
+                          <svg aria-hidden="true" class="s18 icon-svg">
+                            <use href="/assets/icons-DIGEST.svg#icon--edit"></use>
+                          </svg>
+                          <span class="icon-label">Edit</span>
+                        </a>
+                        <span class="drdn">
+                          <span class="drdn-trigger">
+                            <span class="icon-only icon-actions" title="Actions">
+                              <svg aria-hidden="true" class="s18 icon-svg">
+                                <use href="/assets/icons-DIGEST.svg#icon--3-bullets"></use>
+                              </svg>
+                              <span class="icon-label">Actions</span>
+                            </span>
+                          </span>
+                          <div class="drdn-content">
+                            <div class="drdn-items">
+                              <a class="icon icon-copy-link" data-clipboard-text="{{BASE}}/issues/2#note-2" href="#" onclick="copyDataClipboardTextToClipboard(this);; return false;">
+                                <svg aria-hidden="true" class="s18 icon-svg">
+                                  <use href="/assets/icons-DIGEST.svg#icon--copy-link"></use>
+                                </svg>
+                                <span class="icon-label">Copy link</span>
+                              </a>
+                              <a class="icon icon-del" data-confirm="Are you sure?" data-method="put" data-remote="true" href="/journals/7?journal%5Bnotes%5D=" rel="nofollow">
+                                <svg aria-hidden="true" class="s18 icon-svg">
+                                  <use href="/assets/icons-DIGEST.svg#icon--del"></use>
+                                </svg>
+                                <span class="icon-label">Delete</span>
+                              </a>
+                            </div>
+                          </div>
+                        </span>
+                      </span>
+                      <a class="journal-link" href="#note-2">#2</a>
+                    </span>
+                  </h4>
+                  <div class="journal-content">
+                    <ul class="journal-details">
+                      <li>
+                        <strong>Assignee</strong>
+                        deleted (
+                        <del>
+                          <i>Dave Lopper</i>
+                        </del>
+                        )
+                      </li>
+                      <li>
+                        <strong>Priority</strong>
+                        changed from
+                        <i>Normal</i>
+                        to
+                        <i>Urgent</i>
+                      </li>
+                    </ul>
+                    <div class="wiki journal-note" data-quote-reply-target="content" id="journal-7-notes">
+                      <p>Bulk editing</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <script>//<![CDATA[
+showIssueHistory("history", this.href)
+//]]></script>
+          </div>
+          <div style="clear: both;"></div>
+          <div class="contextual">
+            <a class="icon icon-edit" href="/issues/2/edit" onclick="showAndScrollTo(&#34;update&#34;, &#34;issue_notes&#34;); return false;">
+              <svg aria-hidden="true" class="s18 icon-svg">
+                <use href="/assets/icons-DIGEST.svg#icon--edit"></use>
+              </svg>
+              <span class="icon-label">Edit</span>
+            </a>
+            <a class="icon icon-time-add" href="/issues/2/time_entries/new">
+              <svg aria-hidden="true" class="s18 icon-svg">
+                <use href="/assets/icons-DIGEST.svg#icon--time-add"></use>
+              </svg>
+              <span class="icon-label">Log time</span>
+            </a>
+            <a class="issue-2-watcher icon icon-fav" data-method="delete" data-remote="true" href="/watchers/watch?object_id=2&amp;object_type=issue" rel="nofollow">
+              <svg aria-hidden="true" class="s18 icon-svg">
+                <use href="/assets/icons-DIGEST.svg#icon--unwatch"></use>
+              </svg>
+              <span class="icon-label">Unwatch</span>
+            </a>
+            <a class="icon icon-copy" href="/projects/ecookbook/issues/2/copy">
+              <svg aria-hidden="true" class="s18 icon-svg">
+                <use href="/assets/icons-DIGEST.svg#icon--copy"></use>
+              </svg>
+              <span class="icon-label">Copy</span>
+            </a>
+            <span class="drdn">
+              <span class="drdn-trigger">
+                <span class="icon-only icon-actions" title="Actions">
+                  <svg aria-hidden="true" class="s18 icon-svg">
+                    <use href="/assets/icons-DIGEST.svg#icon--3-bullets"></use>
+                  </svg>
+                  <span class="icon-label">Actions</span>
+                </span>
+              </span>
+              <div class="drdn-content">
+                <div class="drdn-items">
+                  <a class="icon icon-copy-link" data-clipboard-text="{{BASE}}/issues/2" href="#" onclick="copyDataClipboardTextToClipboard(this);; return false;">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--copy-link"></use>
+                    </svg>
+                    <span class="icon-label">Copy link</span>
+                  </a>
+                  <a class="icon icon-del" data-confirm="Are you sure you want to delete the selected issue(s)?" data-method="delete" href="/issues/2" rel="nofollow">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--del"></use>
+                    </svg>
+                    <span class="icon-label">Delete issue</span>
+                  </a>
+                </div>
+              </div>
+            </span>
+          </div>
+          <div style="clear: both;"></div>
+          <div id="update" style="display:none;">
+            <h3>Edit</h3>
+            <form accept-charset="UTF-8" action="/issues/2" class="edit_issue" enctype="multipart/form-data" id="issue-form" method="post" name="issue-form-RANDOM">
+              <input autocomplete="off" name="_method" type="hidden" value="patch">
+              <input autocomplete="off" name="authenticity_token" type="hidden" value="{{CSRF}}">
+              <div class="box">
+                <fieldset class="tabular">
+                  <legend>Change properties</legend>
+                  <div id="all_attributes">
+                    <input autocomplete="off" id="form_update_triggered_by" name="form_update_triggered_by" type="hidden" value="">
+                    <p id="issue_is_private_wrap">
+                      <input autocomplete="off" name="issue[is_private]" type="hidden" value="0">
+                      <input id="issue_is_private" name="issue[is_private]" type="checkbox" value="1">
+                      <label class="inline" for="issue_is_private" id="issue_is_private_label">Private</label>
+                    </p>
+                    <p>
+                      <label for="issue_project_id">
+                        Project
+                        <span class="required">*</span>
+                      </label>
+                      <select id="issue_project_id" name="issue[project_id]" onchange="updateIssueFrom(&#39;/issues/2/edit.js&#39;, this)">
+                        <option selected="selected" value="1">eCookbook</option>
+                        <option value="5">» Private child of eCookbook</option>
+                        <option value="3">» eCookbook Subproject 1</option>
+                        <option value="2">OnlineStore</option>
+                      </select>
+                    </p>
+                    <p>
+                      <label for="issue_tracker_id">
+                        Tracker
+                        <span class="required">*</span>
+                      </label>
+                      <select id="issue_tracker_id" name="issue[tracker_id]" onchange="updateIssueFrom(&#39;/issues/2/edit.js&#39;, this)" title="Description for Feature request tracker">
+                        <option value="1">Bug</option>
+                        <option selected="selected" value="2">Feature request</option>
+                        <option value="3">Support request</option>
+                      </select>
+                      <a class="icon-only icon-help" href="#" onclick="showModal(&#39;trackers_description&#39;, &#39;500px&#39;); return false;" title="View all trackers description">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--help"></use>
+                        </svg>
+                        <span class="icon-label">View all trackers description</span>
+                      </a>
+                    </p>
+                    <div class="modal" id="trackers_description">
+                      <h3 class="title">Trackers description</h3>
+                      <dl>
+                        <dt>
+                          <a href="#" onclick="selectTracker(&#39;1&#39;); return false;" title="Select tracker">Bug</a>
+                        </dt>
+                        <dd>Description for Bug tracker</dd>
+                        <dt>
+                          <a href="#" onclick="selectTracker(&#39;2&#39;); return false;" title="Select tracker">Feature request</a>
+                        </dt>
+                        <dd>Description for Feature request tracker</dd>
+                      </dl>
+                    </div>
+                    <script>//<![CDATA[
+
+  function selectTracker(id) {
+    var target = $('#issue_tracker_id');
+    target.attr("selected", false);
+    target.find('option[value="' + id + '"]').prop('selected', true);
+    target.trigger('change');
+    hideModal('#trackers_description h3');
+  }
+
+//]]></script>
+                    <p>
+                      <label for="issue_subject">
+                        Subject
+                        <span class="required">*</span>
+                      </label>
+                      <input id="issue_subject" maxlength="255" name="issue[subject]" size="80" type="text" value="Add ingredients categories">
+                    </p>
+                    <p>
+                      <label for="issue_description">Description</label>
+                      <span id="issue_description_and_toolbar" style="display:none">
+                        <textarea class="wiki-edit" cols="60" data-action="beforeinput-&gt;list-autofill#handleBeforeInput" data-auto-complete="true" data-controller="list-autofill" data-list-autofill-text-formatting-param="common_mark" id="issue_description" name="issue[description]" rows="10">Ingredients of the recipe should be classified by categories</textarea>
+                      </span>
+                      <a class="icon icon-edit" href="#" onclick="$(this).hide(); $(&#34;#issue_description_and_toolbar&#34;).show(); return false;">
+                        <span>
+                          <svg aria-hidden="true" class="s18 icon-svg">
+                            <use href="/assets/icons-DIGEST.svg#icon--edit"></use>
+                          </svg>
+                          <span class="icon-label">Edit</span>
+                        </span>
+                      </a>
+                    </p>
+                    <script>//<![CDATA[
+var wikiToolbar = new jsToolBar(document.getElementById('issue_description')); wikiToolbar.setHelpLink('/help/wiki_syntax'); wikiToolbar.setPreviewUrl('/issues/preview?issue_id=2&project_id=ecookbook'); wikiToolbar.draw();
+//]]></script>
+                    <div class="attributes" id="attributes">
+                      <div class="splitcontent">
+                        <div class="splitcontentleft">
+                          <p>
+                            <label for="issue_status_id">
+                              Status
+                              <span class="required">*</span>
+                            </label>
+                            <select id="issue_status_id" name="issue[status_id]" onchange="updateIssueFrom(&#39;/issues/2/edit.js&#39;, this)" title="Description for Assigned issue status">
+                              <option value="1">New</option>
+                              <option selected="selected" value="2">Assigned</option>
+                              <option value="3">Resolved</option>
+                              <option value="4">Feedback</option>
+                              <option value="5">Closed</option>
+                              <option value="6">Rejected</option>
+                            </select>
+                            <a class="icon-only icon-help" href="#" onclick="showModal(&#39;issue_statuses_description&#39;, &#39;500px&#39;); return false;" title="View all issue statuses description">
+                              <svg aria-hidden="true" class="s18 icon-svg">
+                                <use href="/assets/icons-DIGEST.svg#icon--help"></use>
+                              </svg>
+                              <span class="icon-label">View all issue statuses description</span>
+                            </a>
+                          </p>
+                          <div class="modal" id="issue_statuses_description">
+                            <h3 class="title">Issue statuses description</h3>
+                            <dl>
+                              <dt>
+                                <a href="#" onclick="selectIssueStatus(&#39;1&#39;); return false;" title="Select issue status">New</a>
+                              </dt>
+                              <dd>Description for New issue status</dd>
+                              <dt>
+                                <a href="#" onclick="selectIssueStatus(&#39;2&#39;); return false;" title="Select issue status">Assigned</a>
+                              </dt>
+                              <dd>Description for Assigned issue status</dd>
+                              <dt>
+                                <a href="#" onclick="selectIssueStatus(&#39;3&#39;); return false;" title="Select issue status">Resolved</a>
+                              </dt>
+                              <dd>Description for Resolved issue status</dd>
+                            </dl>
+                          </div>
+                          <script>//<![CDATA[
+
+  function selectIssueStatus(id) {
+    var target = $('#issue_status_id');
+    target.attr("selected", false);
+    target.find('option[value="' + id + '"]').prop('selected', true);
+    target.trigger('change');
+    hideModal('#issue_statuses_description h3');
+  }
+
+//]]></script>
+                          <p>
+                            <label for="issue_priority_id">
+                              Priority
+                              <span class="required">*</span>
+                            </label>
+                            <select id="issue_priority_id" name="issue[priority_id]">
+                              <option value="4">Low</option>
+                              <option value="5">Normal</option>
+                              <option value="6">High</option>
+                              <option selected="selected" value="7">Urgent</option>
+                              <option value="8">Immediate</option>
+                            </select>
+                          </p>
+                          <p>
+                            <label for="issue_assigned_to_id">Assignee</label>
+                            <select id="issue_assigned_to_id" name="issue[assigned_to_id]">
+                              <option label=" " value=""></option>
+                              <optgroup label="Author / Previous assignee">
+                                <option value="2">John Smith</option>
+                                <option value="3">Dave Lopper</option>
+                              </optgroup>
+                              <optgroup label="Users">
+                                <option value="3">Dave Lopper</option>
+                                <option value="2">John Smith</option>
+                              </optgroup>
+                            </select>
+                          </p>
+                          <p>
+                            <label for="issue_category_id">Category</label>
+                            <select id="issue_category_id" name="issue[category_id]">
+                              <option label=" " value=""></option>
+                              <option value="1">Printing</option>
+                              <option value="2">Recipes</option>
+                            </select>
+                            <a class="icon-only icon-add" data-method="get" data-remote="true" href="/projects/ecookbook/issue_categories/new" tabindex="200" title="New category">
+                              <svg aria-hidden="true" class="s18 icon-svg">
+                                <use href="/assets/icons-DIGEST.svg#icon--add"></use>
+                              </svg>
+                              <span class="icon-label">New category</span>
+                            </a>
+                          </p>
+                          <p>
+                            <label for="issue_fixed_version_id">Target version</label>
+                            <select id="issue_fixed_version_id" name="issue[fixed_version_id]">
+                              <option label=" " value=""></option>
+                              <optgroup label="eCookbook">
+                                <option selected="selected" value="2">1.0</option>
+                                <option value="3">2.0</option>
+                              </optgroup>
+                              <optgroup label="eCookbook Subproject 1">
+                                <option value="4">2.0</option>
+                              </optgroup>
+                              <optgroup label="Private child of eCookbook">
+                                <option value="6">Private Version of public subproject</option>
+                              </optgroup>
+                              <optgroup label="OnlineStore">
+                                <option value="7">Systemwide visible version</option>
+                              </optgroup>
+                            </select>
+                            <a class="icon-only icon-add" data-method="get" data-remote="true" href="/projects/ecookbook/versions/new" tabindex="200" title="New version">
+                              <svg aria-hidden="true" class="s18 icon-svg">
+                                <use href="/assets/icons-DIGEST.svg#icon--add"></use>
+                              </svg>
+                              <span class="icon-label">New version</span>
+                            </a>
+                          </p>
+                        </div>
+                        <div class="splitcontentright">
+                          <p id="parent_issue">
+                            <label for="issue_parent_issue_id">Parent task</label>
+                            <input id="issue_parent_issue_id" name="issue[parent_issue_id]" onchange="updateIssueFrom(&#39;/issues/2/edit.js&#39;, this)" size="10" type="text">
+                          </p>
+                          <script>//<![CDATA[
+observeAutocompleteField('issue_parent_issue_id', '/issues/auto_complete?issue_id=2&project_id=ecookbook&scope=tree&status=o')
+//]]></script>
+                          <p id="start_date_area">
+                            <label for="issue_start_date">Start date</label>
+                            <input id="issue_start_date" max="9999-12-31" name="issue[start_date]" size="10" type="date" value="2026-01-13">
+                            <script>//<![CDATA[
+$(function() { $('#issue_start_date').addClass('date').datepickerFallback(datepickerOptions); });
+//]]></script>
+                          </p>
+                          <p id="due_date_area">
+                            <label for="issue_due_date">Due date</label>
+                            <input id="issue_due_date" max="9999-12-31" name="issue[due_date]" size="10" type="date">
+                            <script>//<![CDATA[
+$(function() { $('#issue_due_date').addClass('date').datepickerFallback(datepickerOptions); });
+//]]></script>
+                          </p>
+                          <p>
+                            <label for="issue_estimated_hours">Estimated time</label>
+                            <input id="issue_estimated_hours" name="issue[estimated_hours]" placeholder="h:mm" size="6" type="text" value="0:30">
+                            Hours
+                          </p>
+                          <p>
+                            <label for="issue_done_ratio">% Done</label>
+                            <select id="issue_done_ratio" name="issue[done_ratio]">
+                              <option value="0">0 %</option>
+                              <option value="10">10 %</option>
+                              <option value="20">20 %</option>
+                              <option selected="selected" value="30">30 %</option>
+                              <option value="40">40 %</option>
+                              <option value="50">50 %</option>
+                              <option value="60">60 %</option>
+                              <option value="70">70 %</option>
+                              <option value="80">80 %</option>
+                              <option value="90">90 %</option>
+                              <option value="100">100 %</option>
+                            </select>
+                          </p>
+                        </div>
+                      </div>
+                      <div class="splitcontent">
+                        <div class="splitcontentleft">
+                          <p>
+                            <label for="issue_custom_field_values_6">
+                              <span>Float field</span>
+                            </label>
+                            <input class="float_cf cf_6" id="issue_custom_field_values_6" name="issue[custom_field_values][6]" type="text" value="2.05">
+                          </p>
+                        </div>
+                        <div class="splitcontentright">
+                          <p>
+                            <label for="issue_custom_field_values_8">
+                              <span>Custom date</span>
+                            </label>
+                            <input class="date_cf cf_8" id="issue_custom_field_values_8" max="9999-12-31" name="issue[custom_field_values][8]" size="10" type="date">
+                            <script>//<![CDATA[
+$(function() { $('#issue_custom_field_values_8').addClass('date').datepickerFallback(datepickerOptions); });
+//]]></script>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <script>//<![CDATA[
+rm = window.rm || {};rm.AutoComplete = rm.AutoComplete || {};rm.AutoComplete.dataSources = JSON.parse('{"issues":"/issues/auto_complete?project_id=ecookbook\u0026q=","wiki_pages":"/wiki_pages/auto_complete?project_id=ecookbook\u0026q="}');
+//]]></script>
+                    <script>//<![CDATA[
+rm.AutoComplete.dataSources = Object.assign(rm.AutoComplete.dataSources, JSON.parse('{"users":"/watchers/autocomplete_for_mention?object_id=2\u0026object_type=issue\u0026project_id=ecookbook\u0026q="}'));
+//]]></script>
+                    <script>//<![CDATA[
+
+$(document).ready(function(){
+  $("#issue_tracker_id, #issue_status_id").each(function(){
+    $(this).val($(this).find("option[selected=selected]").val());
+  });
+  $(".assign-to-me-link").click(function(event){
+    event.preventDefault();
+    var element = $(event.target);
+    $('#issue_assigned_to_id').val(element.data('id'));
+    element.hide();
+  });
+  $('#issue_assigned_to_id').change(function(event){
+    var assign_to_me_link = $(".assign-to-me-link");
+
+    if (assign_to_me_link.length > 0) {
+      var user_id = $(event.target).val();
+      var current_user_id = assign_to_me_link.data('id');
+
+      if (user_id == current_user_id) {
+        assign_to_me_link.hide();
+      } else {
+        assign_to_me_link.show();
+      }
+    }
+  });
+});
+
+//]]></script>
+                  </div>
+                </fieldset>
+                <fieldset class="tabular" id="log_time">
+                  <legend>Log time</legend>
+                  <div class="splitcontent">
+                    <div class="splitcontentleft">
+                      <p>
+                        <label for="time_entry_hours">Spent time</label>
+                        <input id="time_entry_hours" name="time_entry[hours]" placeholder="h:mm" size="6" type="text" value="">
+                        Hours
+                      </p>
+                    </div>
+                    <div class="splitcontentright">
+                      <p>
+                        <label for="time_entry_activity_id">Activity</label>
+                        <select id="time_entry_activity_id" name="time_entry[activity_id]">
+                          <option value="9">Design</option>
+                          <option selected="selected" value="10">Development</option>
+                          <option value="11">QA</option>
+                        </select>
+                      </p>
+                    </div>
+                  </div>
+                  <p>
+                    <label for="time_entry_comments">Comment</label>
+                    <input id="time_entry_comments" name="time_entry[comments]" size="60" type="text">
+                  </p>
+                  <p>
+                    <label for="time_entry_custom_field_values_10">
+                      <span>Overtime</span>
+                    </label>
+                    <select class="bool_cf cf_10" id="time_entry_custom_field_values_10" name="time_entry[custom_field_values][10]">
+                      <option value=""></option>
+                      <option value="1">Yes</option>
+                      <option selected="selected" value="0">No</option>
+                    </select>
+                  </p>
+                </fieldset>
+                <fieldset id="add_notes">
+                  <legend>Notes</legend>
+                  <textarea class="wiki-edit" cols="60" data-action="beforeinput-&gt;list-autofill#handleBeforeInput" data-auto-complete="true" data-controller="list-autofill" data-list-autofill-text-formatting-param="common_mark" id="issue_notes" name="issue[notes]" rows="10"></textarea>
+                  <script>//<![CDATA[
+var wikiToolbar = new jsToolBar(document.getElementById('issue_notes')); wikiToolbar.setHelpLink('/help/wiki_syntax'); wikiToolbar.setPreviewUrl('/issues/preview?issue_id=2&project_id=ecookbook'); wikiToolbar.draw();
+//]]></script>
+                  <input autocomplete="off" name="issue[private_notes]" type="hidden" value="0">
+                  <input id="issue_private_notes" name="issue[private_notes]" type="checkbox" value="1">
+                  <label for="issue_private_notes">Private notes</label>
+                </fieldset>
+                <fieldset id="add_attachments">
+                  <legend>Files</legend>
+                  <div class="contextual">
+                    <a href="#" onclick="$(&#39;#existing-attachments&#39;).toggle(); return false;">Edit attached files</a>
+                  </div>
+                  <div id="existing-attachments" style="display:none;">
+                    <span class="existing-attachment">
+                      <svg aria-hidden="true" class="s12 icon-svg">
+                        <use href="/assets/icons-DIGEST.svg#icon--attachment"></use>
+                      </svg>
+                      <input class="icon icon-attachment filename" disabled="disabled" id="" name="" type="text" value="source.rb">
+                      <label>
+                        <input class="deleted_attachment" name="issue[deleted_attachment_ids][]" type="checkbox" value="4">
+                        Delete
+                      </label>
+                    </span>
+                    <span class="existing-attachment">
+                      <svg aria-hidden="true" class="s12 icon-svg">
+                        <use href="/assets/icons-DIGEST.svg#icon--attachment"></use>
+                      </svg>
+                      <input class="icon icon-attachment filename" disabled="disabled" id="" name="" type="text" value="picture.jpg">
+                      <label>
+                        <input class="deleted_attachment" name="issue[deleted_attachment_ids][]" type="checkbox" value="10">
+                        Delete
+                      </label>
+                    </span>
+                    <hr>
+                  </div>
+                  <div id="new-attachments" style="display:inline-block;">
+                    <span class="attachments_form">
+                      <span class="attachments_icons hidden">
+                        <svg aria-hidden="true" class="s18 icon-svg svg-del">
+                          <use href="/assets/icons-DIGEST.svg#icon--del"></use>
+                        </svg>
+                        <svg aria-hidden="true" class="s16 icon-svg svg-attachment">
+                          <use href="/assets/icons-DIGEST.svg#icon--attachment"></use>
+                        </svg>
+                        <svg aria-hidden="true" class="s16 icon-svg svg-loader">
+                          <use href="/assets/icons-DIGEST.svg#icon--loader"></use>
+                        </svg>
+                        <svg aria-hidden="true" class="s16 icon-svg svg-hourglass">
+                          <use href="/assets/icons-DIGEST.svg#icon--hourglass"></use>
+                        </svg>
+                      </span>
+                      <span class="attachments_fields"></span>
+                      <span class="add_attachment" style="">
+                        <input class="file_selector filedrop" data-description="true" data-description-placeholder="Optional description" data-max-concurrent-uploads="2" data-max-file-size="5242880" data-max-file-size-message="This file cannot be uploaded because it exceeds the maximum allowed file size (5 MB)" data-max-number-of-files-message="This file cannot be uploaded because it exceeds the maximum number of files that can be attached simultaneously (10)" data-param="attachments" data-upload-path="/uploads.js" multiple="multiple" name="attachments[dummy][file]" onchange="addInputFiles(this);" type="file">
+                        (Maximum size: 5 MB)
+                      </span>
+                    </span>
+                  </div>
+                </fieldset>
+              </div>
+              <input autocomplete="off" id="issue_lock_version" name="issue[lock_version]" type="hidden" value="4">
+              <input autocomplete="off" id="last_journal_id" name="last_journal_id" type="hidden" value="7">
+              <input data-disable-with="Submit" name="commit" type="submit" value="Submit">
+              <a href="/issues/2" onclick="$(&#39;#update&#39;).hide(); return false;">Cancel</a>
+            </form>
+          </div>
+          <p class="other-formats hide-when-print">
+            Also available in:
+            <span>
+              <a class="pdf" href="/issues/2.pdf" rel="nofollow">PDF</a>
+            </span>
+            <span>
+              <a class="atom" href="/issues/2.atom?key=KEY" rel="nofollow">Atom</a>
+            </span>
+          </p>
+          <div style="clear:both;"></div>
+        </div>
+      </div>
+      <div id="footer">MASKED</div>
+      <div id="ajax-indicator" style="display:none;">
+        <span class="icon">
+          <svg aria-hidden="true" class="s18 icon-svg svg-loader">
+            <use href="/assets/icons-DIGEST.svg#icon--loader"></use>
+          </svg>
+          <span class="icon-label">Loading...</span>
+        </span>
+      </div>
+      <div id="ajax-modal" style="display:none;"></div>
+      <div id="icon-copy-source" style="display: none;">
+        <svg aria-hidden="true" class="s18 icon-svg">
+          <use href="/assets/icons-DIGEST.svg#icon--"></use>
+        </svg>
+      </div>
+    </div>
+  </body>
+</html>

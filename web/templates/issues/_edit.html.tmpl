@@ -1,7 +1,8 @@
 {{$v := .V}}{{$F := .F}}
 {{$f := labelled_form_for "issue" $F.Model (hash "url" $F.FormURL "html" (hash "id" "issue-form" "multipart" true))}}
 {{$f.Open}}
-    {{error_messages_for_list nil}}
+    {{error_messages_for_list $F.ErrorMessages}}
+    {{if $F.Conflict}}{{partial "issues/conflict" (dict "V" $v "F" $F)}}{{end}}
     <div class="box">
     {{if $v.M.AttributesEditable}}
         <fieldset class="tabular"><legend>{{l "label_change_properties"}}</legend>
@@ -46,13 +47,13 @@
       <fieldset id="add_attachments"><legend>{{l "label_attachment_plural"}}</legend>
         {{if $F.ExistingAttachments}}
         <div class="contextual">{{link_to (l "label_edit_attachments") "#" (hash "onclick" "$('#existing-attachments').toggle(); return false;")}}</div>
-        <div id="existing-attachments" style="display:none;">
+        <div id="existing-attachments" style="{{$F.ExistingAttachmentsStyle}}">
           {{range $attachment := $F.ExistingAttachments}}
           <span class="existing-attachment">
             {{sprite_icon "attachment" (hash "size" 12)}}
             {{text_field_tag "" $attachment.Filename (hash "class" "icon icon-attachment filename" "disabled" true)}}
             <label>
-              {{check_box_tag "issue[deleted_attachment_ids][]" $attachment.ID false (hash "id" nil "class" "deleted_attachment")}} {{l "button_delete"}}
+              {{check_box_tag "issue[deleted_attachment_ids][]" $attachment.ID ($F.AttachmentDeleted $attachment.ID) (hash "id" nil "class" "deleted_attachment")}} {{l "button_delete"}}
             </label>
           </span>
           {{end}}
@@ -61,7 +62,7 @@
         {{end}}
 
         <div id="new-attachments" style="display:inline-block;">
-          {{partial "attachments/form" (dict "F" $F)}}
+          {{partial "attachments/form" (dict "F" $F "saved_attachments" $F.SavedAttachments)}}
         </div>
       </fieldset>
     {{end}}
@@ -70,7 +71,7 @@
     {{$f.HiddenField "lock_version"}}
     {{hidden_field_tag "last_journal_id" $F.LastJournalID}}
     {{submit_tag (l "button_submit")}}
-    {{link_to (l "button_cancel") (printf "/issues/%d" $v.Issue.ID) (hash "onclick" "$('#update').hide(); return false;")}}
+    {{link_to (l "button_cancel") (printf "/issues/%d" $v.Issue.ID) (hash "onclick" $F.CancelOnclick)}}
     {{if $v.PrevIssueID}}{{hidden_field_tag "prev_issue_id" $v.PrevIssueID}}{{end}}
     {{if $v.NextIssueID}}{{hidden_field_tag "next_issue_id" $v.NextIssueID}}{{end}}
     {{if $v.IssuePosition}}{{hidden_field_tag "issue_position" $v.IssuePosition}}{{end}}

@@ -40,6 +40,7 @@ func (a *App) Routes(r Router) {
 	a.routesWiki(r)
 	a.routesWikis(r)
 	a.routesIssues(r)
+	a.routesIssuesWrite(r)
 	a.routesJournals(r)
 	a.routesVersions(r)
 	a.routesMy(r)
@@ -55,7 +56,9 @@ func (a *App) Routes(r Router) {
 	a.routesFiles(r)
 	a.routesBoards(r)
 	a.routesMessages(r)
-	a.routesWatchers(r)
 	a.routesAttachmentsMore(r)
 	a.routesReactions(r)
+	a.routesIssueRelationsAndWatchers(r)
+	a.routesIssuesBulk(r)
+	a.routesJournalsWrite(r)
 }

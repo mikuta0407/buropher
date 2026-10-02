@@ -1,4 +1,4 @@
 {{range $user := .Users}}
-  $("#issue_watcher_user_ids_{{principal_id $user}}").remove();
+  $("#issue_watcher_user_ids_{{$user.ID}}").remove();
 {{end}}
-$('#watchers_inputs').append('{{j (watchers_checkboxes .Users)}}');
+$('#watchers_inputs').append('{{j .Checkboxes}}');

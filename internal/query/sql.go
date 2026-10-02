@@ -523,3 +523,10 @@ func containsHan(s string) bool {
 	}
 	return false
 }
+
+// TokenizedLikeCondition は Query.tokenized_like_conditions(col, value)（全語 AND の部分一致）を
+// プレースホルダ付きの SQL 断片と引数で返す（Issue.like 等、Query の外で使う）。
+func TokenizedLikeCondition(d db.Dialect, col, value string) (string, []any) {
+	f := tokenizedLike(d, col, value, containsOpts{})
+	return f.SQL, f.Args
+}

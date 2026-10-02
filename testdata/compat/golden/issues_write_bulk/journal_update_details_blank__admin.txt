@@ -1,0 +1,21 @@
+status: 200
+content-type: text/javascript
+
+  $("#change-1").attr('class', 'journal has-details');
+  $("#change-1 .journal-actions").html('<span class=\"reaction-button-wrapper\" data-reaction-button-id=\"reaction_journal_1\"><a class=\"icon reaction-button has-reactions\" title=\"John Smith\" data-remote=\"true\" rel=\"nofollow\" data-method=\"post\" href=\"/reactions?object_id=1&amp;object_type=Journal\"><svg class=\"s18 icon-svg\" aria-hidden=\"true\"><use href=\"/assets/icons-DIGEST.svg#icon--thumb-up\"><\/use><\/svg><span class=\"icon-label\">1<\/span><\/a><\/span><span class=\"drdn\"><span class=\"drdn-trigger\"><span class=\"icon-only icon-actions\" title=\"Actions\"><svg class=\"s18 icon-svg\" aria-hidden=\"true\"><use href=\"/assets/icons-DIGEST.svg#icon--3-bullets\"><\/use><\/svg><span class=\"icon-label\">Actions<\/span><\/span><\/span><div class=\"drdn-content\"><div class=\"drdn-items\"><a href=\"#\" onclick=\"copyDataClipboardTextToClipboard(this);; return false;\" class=\"icon icon-copy-link\" data-clipboard-text=\"{{BASE}}/issues/1#note-1\"><svg class=\"s18 icon-svg\" aria-hidden=\"true\"><use href=\"/assets/icons-DIGEST.svg#icon--copy-link\"><\/use><\/svg><span class=\"icon-label\">Copy link<\/span><\/a><\/div><\/div><\/span>');
+  $("#journal-1-private_notes").replaceWith('<span id=\"journal-1-private_notes\" class=\"\"><\/span>');
+  $("#journal-1-notes").replaceWith('<div id=\"journal-1-notes\" class=\"wiki journal-note\" data-quote-reply-target=\"content\"><\/div>');
+  $("#journal-1-notes").show();
+  $("#journal-1-form").remove();
+  var journal_header = $("#change-1>div.note>h4.journal-header>.journal-info");
+  var journal_updated_info = journal_header.find("span.update-info");
+  if (journal_updated_info.length > 0) {
+    journal_updated_info.replaceWith('<span title=\"01/15/2026 12:00 PM by Redmine Admin\" class=\"update-info\">· Edited<\/span>');
+  } else {
+    journal_header.append('<span title=\"01/15/2026 12:00 PM by Redmine Admin\" class=\"update-info\">· Edited<\/span>');
+  }
+  setupWikiTableSortableHeader();
+  setupCopyButtonsToPreElements();
+  setupHoverTooltips();
+
+
