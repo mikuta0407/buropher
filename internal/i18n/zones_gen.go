@@ -3,7 +3,7 @@
 package i18n
 
 // timeZones は ActiveSupport::TimeZone.all と同じ順序（基準 UTC オフセット → 名前）の一覧。
-// UTCOffset は生成時点の tzinfo の base_utc_offset（秒）。
+// UTCOffset は 2026-01-15 12:00:00 UTC 時点の tzinfo の base_utc_offset（秒）。
 var timeZones = []TimeZone{
 	{Name: "International Date Line West", Identifier: "Etc/GMT+12", UTCOffset: -43200},
 	{Name: "American Samoa", Identifier: "Pacific/Pago_Pago", UTCOffset: -39600},
@@ -40,7 +40,6 @@ var timeZones = []TimeZone{
 	{Name: "Mid-Atlantic", Identifier: "Atlantic/South_Georgia", UTCOffset: -7200},
 	{Name: "Azores", Identifier: "Atlantic/Azores", UTCOffset: -3600},
 	{Name: "Cape Verde Is.", Identifier: "Atlantic/Cape_Verde", UTCOffset: -3600},
-	{Name: "Casablanca", Identifier: "Africa/Casablanca", UTCOffset: 0},
 	{Name: "Edinburgh", Identifier: "Europe/London", UTCOffset: 0},
 	{Name: "Lisbon", Identifier: "Europe/Lisbon", UTCOffset: 0},
 	{Name: "London", Identifier: "Europe/London", UTCOffset: 0},
@@ -53,6 +52,7 @@ var timeZones = []TimeZone{
 	{Name: "Bratislava", Identifier: "Europe/Bratislava", UTCOffset: 3600},
 	{Name: "Brussels", Identifier: "Europe/Brussels", UTCOffset: 3600},
 	{Name: "Budapest", Identifier: "Europe/Budapest", UTCOffset: 3600},
+	{Name: "Casablanca", Identifier: "Africa/Casablanca", UTCOffset: 3600},
 	{Name: "Copenhagen", Identifier: "Europe/Copenhagen", UTCOffset: 3600},
 	{Name: "Dublin", Identifier: "Europe/Dublin", UTCOffset: 3600},
 	{Name: "Ljubljana", Identifier: "Europe/Ljubljana", UTCOffset: 3600},

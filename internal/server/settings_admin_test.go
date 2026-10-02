@@ -38,9 +38,6 @@ func compareSettingsGolden(t *testing.T, name, got, base string, edit ...func(st
 		s = strings.ReplaceAll(s, "127.0.0.1:3998", "{{HOST}}")
 		// 共用の参照環境の「最近使ったプロジェクト」は他のテストの GET で変わるため比較しない
 		s = reRecentlyUsed.ReplaceAllString(s, "<strong>All Projects</strong>")
-		// Casablanca の基準オフセットは tzdata の版で異なる（参照環境は +01:00、buropher の表は +00:00）
-		s = strings.ReplaceAll(s, "<option value=\"Casablanca\">(GMT+00:00) Casablanca</option>\n", "")
-		s = strings.ReplaceAll(s, "<option value=\"Casablanca\">(GMT+01:00) Casablanca</option>\n", "")
 		return strings.ReplaceAll(s, host, "{{HOST}}")
 	}}, edit...)
 	compareGoldenDir(t, "testdata/settings_admin/", name, got, base, edits...)
