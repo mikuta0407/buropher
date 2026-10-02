@@ -1,0 +1,38 @@
+status: 200
+content-type: application/json
+
+{
+  "versions": [
+    {
+      "id": 5,
+      "project": {
+        "id": 2,
+        "name": "OnlineStore"
+      },
+      "name": "Alpha",
+      "description": "Private Alpha",
+      "status": "open",
+      "due_date": "2006-07-01",
+      "sharing": "none",
+      "wiki_page_title": null,
+      "created_on": "2006-07-19T19:00:07Z",
+      "updated_on": "2006-07-19T19:00:07Z"
+    },
+    {
+      "id": 7,
+      "project": {
+        "id": 2,
+        "name": "OnlineStore"
+      },
+      "name": "Systemwide visible version",
+      "description": null,
+      "status": "open",
+      "due_date": null,
+      "sharing": "system",
+      "wiki_page_title": null,
+      "created_on": "2006-07-19T19:00:07Z",
+      "updated_on": "2006-07-19T19:00:07Z"
+    }
+  ],
+  "total_count": 2
+}

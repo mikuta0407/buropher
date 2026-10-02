@@ -1,0 +1,22 @@
+status: 200
+content-type: application/json
+
+{
+  "version": {
+    "id": 9,
+    "project": {
+      "id": 1,
+      "name": "eCookbook"
+    },
+    "name": "4.0",
+    "description": "via api",
+    "status": "closed",
+    "due_date": null,
+    "sharing": "none",
+    "wiki_page_title": null,
+    "estimated_hours": 0.0,
+    "spent_hours": 0.0,
+    "created_on": "TIMESTAMP",
+    "updated_on": "TIMESTAMP"
+  }
+}

@@ -1,5 +1,5 @@
 {{$sb := .sb}}
-{{form_tag request_path (hash "id" "status_by_form") -}}
+{{form_tag $sb.FormPath (hash "id" "status_by_form") -}}
 <fieldset>
 <legend>
 {{raw (l "label_issues_by" (hash "value" (select_tag "status_by" $sb.Options (hash "id" "status_by_select" "data" (hash "remote" true "method" "post" "url" $sb.URL)))))}}

@@ -500,7 +500,8 @@ func (a *App) versionShowData(c *Req, v *domain.Version) (map[string]any, error)
 		}
 		data["StatusBy"] = sb
 	}
-	data["TxtURL"] = "/versions/" + strconv.FormatInt(v.ID, 10) + ".txt"
+	data["FormPath"] = versionFormPath(c)
+	data["TxtURL"] = versionFormPath(c) + ".txt"
 	if q := c.R.URL.RawQuery; q != "" {
 		data["TxtURL"] = data["TxtURL"].(string) + "?" + railsToQuery(c.R.URL.Query())
 	}
@@ -540,9 +541,7 @@ func (a *App) versionsShowText(c *Req, v *domain.Version) {
 		a.internalError(c, "version text", err)
 		return
 	}
-	// fixed_issues.visible の既定の並び（Issue のスコープに order は無いが、参照環境では
-	// visible の JOIN により結果がトラッカー等の順になることがある）
-	list = versionTextOrder(list)
+	// fixed_issues.visible は順序指定なし（参照環境の SQLite は fixed_version_id の索引順 = id 順）
 	parts := []string{"# " + v.Name}
 	if v.EffectiveDate != nil {
 		parts = append(parts, c.Loc.FormatDate(*v.EffectiveDate))
@@ -561,15 +560,6 @@ func (a *App) versionsShowText(c *Req, v *domain.Version) {
 	c.W.WriteHeader(http.StatusOK)
 	_, _ = c.W.Write([]byte(body))
 	c.Halt()
-}
-
-// versionTextOrder は参照環境（SQLite）での fixed_issues.visible の並び（projects を JOIN した
-// 結果の走査順）を再現する: プロジェクト id、チケット id の降順。
-// TODO(versions): SQLite の実行計画に依存するため、条件が変わると一致しないことがある。
-func versionTextOrder(list []*repository.VersionIssue) []*repository.VersionIssue {
-	out := slices.Clone(list)
-	slices.SortStableFunc(out, func(x, y *repository.VersionIssue) int { return cmpInt64(y.ID, x.ID) })
-	return out
 }
 
 // ---------------------------------------------------------------- status_by
@@ -1032,10 +1022,6 @@ func (a *App) versionsCreateJS(c *Req, created *domain.Version) {
 
 // versionOptionsForSelect は version_options_for_select(versions, selected)（プロジェクトごとにグループ化）。
 func (a *App) versionOptionsForSelect(c *Req, versions []*domain.Version, selected *domain.Version) (template.HTML, error) {
-	if selected != nil && !slices.ContainsFunc(versions, func(v *domain.Version) bool { return v.ID == selected.ID }) {
-		versions = append(versions, selected)
-	}
-	slices.SortStableFunc(versions, domain.CompareVersions)
 	type group struct {
 		project *domain.Project
 		opts    []any
@@ -1394,4 +1380,13 @@ func versionsRoutingError(c *Req) {
 		c.W.WriteHeader(http.StatusNotFound)
 		_, _ = c.W.Write(b)
 	}
+}
+
+// versionFormPath は url_for({})（現在のパスから .format を除いたもの）。
+func versionFormPath(c *Req) string {
+	p := c.R.URL.Path
+	if f := httpx.PathParams(c.R).String("format"); f != "" {
+		p = strings.TrimSuffix(p, "."+f)
+	}
+	return p
 }

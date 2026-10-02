@@ -34,7 +34,9 @@ env_run() {
 start() {
   [ -f "$WORK/db/pristine.db" ] || prepare
   build
-  env_run nohup "$BIN" serve > "$WORK/serve.log" 2>&1 &
+  # $! が buropher 自身の pid になるよう、関数（サブシェル）ではなく nohup env で直接起動する
+  nohup env BUROPHER_DB_DSN=$WORK/db/buropher.db BUROPHER_ATTACHMENTS_PATH=$WORK/files BUROPHER_SECRET_KEY=compat-secret \
+    BUROPHER_ADDR=127.0.0.1:$PORT BUROPHER_FAKE_NOW=$FROZEN TZ=UTC "$BIN" serve > "$WORK/serve.log" 2>&1 &
   echo $! > "$PIDFILE"
   for _ in $(seq 50); do curl -sf "http://127.0.0.1:$PORT/healthz" >/dev/null && { echo "buropher candidate on http://127.0.0.1:$PORT"; return; }; sleep 0.2; done
   echo "failed to start; see $WORK/serve.log" >&2; exit 1

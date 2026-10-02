@@ -1,0 +1,22 @@
+status: 200
+content-type: application/json
+
+{
+  "version": {
+    "id": 2,
+    "project": {
+      "id": 1,
+      "name": "eCookbook"
+    },
+    "name": "1.0",
+    "description": "Stable release",
+    "status": "locked",
+    "due_date": "2026-02-04",
+    "sharing": "none",
+    "wiki_page_title": "ECookBookV1",
+    "estimated_hours": 0.5,
+    "spent_hours": 0.0,
+    "created_on": "2006-07-19T19:00:33Z",
+    "updated_on": "2006-07-19T19:00:33Z"
+  }
+}
