@@ -1,0 +1,5 @@
+Project,Date,Created,Week,Author,User,Activity,Issue,Tracker,Parent task,Status,Category,Target version,Comment,Hours,Overtime,Searchable field,Database,Float field,Custom date,Project 1 cf,Development status
+eCookbook Subproject 1,04/22/2007,04/22/2007 10:20 AM,16,Redmine Admin,Redmine Admin,Development,"","","","","","",Time spent on a subproject,7.65,"","","","","","",""
+eCookbook,04/21/2007,04/21/2007 10:20 AM,16,Redmine Admin,Redmine Admin,Design,Bug #3: Error 281 when updating a recipe,Bug,"",New,"","","",1.00,"",125,MySQL,11.65,"","",Stable
+eCookbook,03/23/2007,03/23/2007 11:54 AM,12,John Smith,John Smith,Design,Bug #1: Cannot print recipes,Bug,"",New,Printing,"",My hours,4.25,"",125,"",2.10,12/01/2009,"",Stable
+eCookbook,03/12/2007,03/23/2007 01:11 PM,11,Redmine Admin,Redmine Admin,Design,Bug #1: Cannot print recipes,Bug,"",New,Printing,"","",150.00,"",125,"",2.10,12/01/2009,"",Stable

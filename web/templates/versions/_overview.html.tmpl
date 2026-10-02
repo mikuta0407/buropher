@@ -1,0 +1,30 @@
+{{$o := .o}}
+<div class="version-overview">
+{{if $o.Completed}}
+  <p>{{$o.CompletedDate}}</p>
+{{else if $o.DueDate}}
+  <p><strong>{{$o.DueWords}}</strong> ({{$o.DueDate}})</p>
+{{end}}
+
+<p>{{$o.Description}}</p>
+{{if $o.HasCustomFields}}
+<ul>
+  {{range $cv := $o.CustomValues}}
+    <li><span class="label">{{$cv.Name}}:</span> {{$cv.Formatted}}</li>
+  {{end}}
+</ul>
+{{end}}
+
+{{if $o.HasIssues}}
+    {{$o.ProgressBar}}
+    <p class="progress-info">
+      {{$o.IssuesLink}}
+      &nbsp;
+      ({{$o.ClosedLink}}
+      &#8212;
+      {{$o.OpenLink}})
+    </p>
+{{else}}
+    <p class="progress-info">{{l "label_roadmap_no_issues"}}</p>
+{{end}}
+</div>

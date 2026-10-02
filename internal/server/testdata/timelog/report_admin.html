@@ -1,0 +1,246 @@
+<title>Spent time - Report - Redmine</title>
+----
+<!-- page specific tags -->
+<script>
+//<![CDATA[
+var datepickerOptions={dateFormat: 'yy-mm-dd', firstDay: 0, showOn: 'button', buttonImageOnly: true, buttonImage: '/assets/calendar-DIGEST.png', showButtonPanel: true, showWeek: true, showOtherMonths: true, selectOtherMonths: true, changeMonth: true, changeYear: true, beforeShow: beforeShowDatePicker};
+//]]>
+</script></head>
+----
+<div id="main" class="nosidebar">
+  
+    <div id="sidebar">
+        <div id="sidebar-wrapper">
+          
+
+          
+        </div>
+    </div>
+
+    <div id="content">
+        
+        <div class="contextual">
+<a class="icon icon-time-add" href="/time_entries/new"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--time-add"></use></svg><span class="icon-label">Log time</span></a>
+
+</div>
+
+<h2>Spent time</h2>
+
+<form id="query_form" action="/time_entries/report" accept-charset="UTF-8" name="query_form-RANDOM" method="get">
+  <input type="hidden" name="set_filter" id="set_filter" value="1" autocomplete="off" />
+<input type="hidden" name="type" id="query_type" value="TimeEntryQuery" disabled="disabled" autocomplete="off" />
+<input type="hidden" name="sort" value="spent_on:desc" autocomplete="off" />
+
+<div id="query_form_with_buttons" class="hide-when-print">
+<div id="query_form_content">
+  <fieldset id="filters" class="collapsible ">
+    <legend onclick="toggleFieldset(this);" class="icon icon-expanded">
+      <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--angle-down"></use></svg>
+      Filters
+    </legend>
+    <div style="">
+      <script>
+//<![CDATA[
+
+var operatorLabels = {"=":"is","!":"is not","o":"open","c":"closed","!*":"none","*":"any","\u003e=":"\u003e=","\u003c=":"\u003c=","\u003e\u003c":"between","\u003ct+":"in less than","\u003et+":"in more than","\u003e\u003ct+":"in the next","t+":"in","nd":"tomorrow","t":"today","ld":"yesterday","nw":"next week","w":"this week","lw":"last week","l2w":"last 2 weeks","nm":"next month","m":"this month","lm":"last month","y":"this year","\u003et-":"less than days ago","\u003ct-":"more than days ago","\u003e\u003ct-":"in the past","t-":"days ago","~":"contains","!~":"doesn't contain","*~":"contains any of","^":"starts with","$":"ends with","=p":"any issues in project","=!p":"any issues not in project","!p":"no issues in project","*o":"any open issues","!o":"no open issues","ev":"has been","!ev":"has never been","cf":"changed from"};
+var operatorByType = {"list":["=","!"],"list_with_history":["=","!","ev","!ev","cf"],"list_status":["o","=","!","ev","!ev","cf","c","*"],"list_optional":["=","!","!*","*"],"list_optional_with_history":["=","!","ev","!ev","cf","!*","*"],"list_subprojects":["*","!*","=","!"],"date":["=","\u003e=","\u003c=","\u003e\u003c","\u003ct+","\u003et+","\u003e\u003ct+","t+","nd","t","ld","nw","w","lw","l2w","nm","m","lm","y","\u003et-","\u003ct-","\u003e\u003ct-","t-","!*","*"],"date_past":["=","\u003e=","\u003c=","\u003e\u003c","\u003et-","\u003ct-","\u003e\u003ct-","t-","t","ld","w","lw","l2w","m","lm","y","!*","*"],"string":["~","*~","=","!~","!","^","$","!*","*"],"text":["~","*~","!~","^","$","!*","*"],"search":["~","*~","!~"],"integer":["=","\u003e=","\u003c=","\u003e\u003c","!*","*"],"float":["=","\u003e=","\u003c=","\u003e\u003c","!*","*"],"relation":["=","!","=p","=!p","!p","*o","!o","!*","*"],"tree":["=","~","!*","*"]};
+var availableFilters = {"spent_on":{"type":"date_past","name":"Date","values":null},"project_id":{"type":"list","name":"Project","remote":true},"issue_id":{"type":"tree","name":"Issue","values":null},"issue.tracker_id":{"type":"list","name":"Issue's Tracker","remote":true},"issue.parent_id":{"type":"tree","name":"Issue's Parent task","values":null},"issue.status_id":{"type":"list","name":"Issue's Status","remote":true},"issue.fixed_version_id":{"type":"list","name":"Issue's Target version","remote":true},"issue.subject":{"type":"text","name":"Issue's Subject","values":null},"user_id":{"type":"list_optional","name":"User","remote":true},"user.group":{"type":"list_optional","name":"User's Group","remote":true},"user.role":{"type":"list_optional","name":"User's Role","remote":true},"author_id":{"type":"list_optional","name":"Author","remote":true},"activity_id":{"type":"list","name":"Activity","values":[["Design","9"],["Development","10"],["QA","11"],["Inactive Activity","14"]]},"project.status":{"type":"list","name":"Project's Status","remote":true},"comments":{"type":"text","name":"Comment","values":null},"hours":{"type":"float","name":"Hours","values":null},"project.cf_3":{"type":"list_optional","name":"Project's Development status","remote":true},"issue.cf_2":{"type":"string","name":"Issue's Searchable field","values":null},"issue.cf_1":{"type":"list_optional","name":"Issue's Database","remote":true},"issue.cf_9":{"type":"date","name":"Issue's Project 1 cf","values":null}};
+var labelDayPlural = "days";
+
+var filtersUrl = "\/queries\/filter?type=TimeEntryQuery";
+
+$(document).ready(function(){
+  initFilters();
+  addFilter("spent_on", "*", []);
+});
+
+//]]>
+</script>
+<div id="filters-table">
+</div>
+
+<div class="add-filter">
+<label for="add_filter_select">Add filter</label>
+<select id="add_filter_select"><option value=""></option>
+<option value="project_id">Project</option>
+<option value="issue_id">Issue</option>
+<option value="user_id">User</option>
+<option value="author_id">Author</option>
+<option value="activity_id">Activity</option>
+<option value="hours">Hours</option>
+<option value="spent_on">Date</option><optgroup label="Text"><option value="comments">Comment</option></optgroup><optgroup label="Issue"><option value="issue.tracker_id">Issue&#39;s Tracker</option>
+<option value="issue.parent_id">Issue&#39;s Parent task</option>
+<option value="issue.status_id">Issue&#39;s Status</option>
+<option value="issue.fixed_version_id">Issue&#39;s Target version</option>
+<option value="issue.subject">Issue&#39;s Subject</option>
+<option value="issue.cf_2">Issue&#39;s Searchable field</option>
+<option value="issue.cf_1">Issue&#39;s Database</option>
+<option value="issue.cf_9">Issue&#39;s Project 1 cf</option></optgroup><optgroup label="User"><option value="user.group">User&#39;s Group</option>
+<option value="user.role">User&#39;s Role</option></optgroup><optgroup label="Project"><option value="project.status">Project&#39;s Status</option>
+<option value="project.cf_3">Project&#39;s Development status</option></optgroup></select>
+</div>
+
+<input type="hidden" name="f[]" id="f_" value="" autocomplete="off" />
+
+    </div>
+  </fieldset>
+
+    <fieldset id="options" class="collapsible collapsed">
+      <legend onclick="toggleFieldset(this);" class="icon icon-collapsed">
+        <svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--angle-right"></use></svg>
+        Options
+      </legend>
+        <div class="hidden">
+          <div id="list-definition" class="">
+            <div>
+              <div class="field">Columns</div>
+              
+<div class="query-columns">
+      <label for="available_c">Available Columns</label>
+      <select name="available_columns[]" id="available_c" multiple="multiple" size="10" ondblclick="moveOptions(this.form.available_c, this.form.selected_c);"><option value="created_on">Created</option>
+<option value="tweek">Week</option>
+<option value="author">Author</option>
+<option value="issue.tracker">Tracker</option>
+<option value="issue.parent">Parent task</option>
+<option value="issue.status">Status</option>
+<option value="issue.category">Category</option>
+<option value="issue.fixed_version">Target version</option>
+<option value="cf_10">Overtime</option>
+<option value="issue.cf_2">Searchable field</option>
+<option value="issue.cf_1">Database</option>
+<option value="issue.cf_6">Float field</option>
+<option value="issue.cf_8">Custom date</option>
+<option value="issue.cf_9">Project 1 cf</option>
+<option value="project.cf_3">Development status</option></select>
+</div>
+<div class="buttons">
+      <button type="button" class="move-right" onclick="moveOptions(this.form.available_c, this.form.selected_c);"><svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--arrow-narrow-right"></use></svg></button>
+      <button type="button" class="move-left" onclick="moveOptions(this.form.selected_c, this.form.available_c);"><svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--arrow-narrow-left"></use></svg></button>
+</div>
+<div class="query-columns">
+      <label for="selected_c">Selected Columns</label>
+      <select name="c[]" id="selected_c" multiple="multiple" size="10" ondblclick="moveOptions(this.form.selected_c, this.form.available_c);"><option value="project">Project</option>
+<option value="spent_on">Date</option>
+<option value="user">User</option>
+<option value="activity">Activity</option>
+<option value="issue">Issue</option>
+<option value="comments">Comment</option>
+<option value="hours">Hours</option></select>
+</div>
+<div class="buttons">
+      <button type="button" onclick="moveOptionTop(this.form.selected_c);">&#8648;</button>
+      <button type="button" onclick="moveOptionUp(this.form.selected_c);">&#8593;</button>
+      <button type="button" onclick="moveOptionDown(this.form.selected_c);">&#8595;</button>
+      <button type="button" onclick="moveOptionBottom(this.form.selected_c);">&#8650;</button>
+</div>
+
+<script>
+//<![CDATA[
+
+$(document).ready(function(){
+  $('.query-columns').closest('form').submit(function(){
+    $('#selected_c option:not(:disabled)').prop('selected', true);
+  });
+});
+
+//]]>
+</script>
+            </div>
+            <div>
+              <div class="field"><label for='group_by'>Group results by</label></div>
+              <div><select name="group_by" id="group_by"><option value=""></option>
+<option value="project">Project</option>
+<option value="spent_on">Date</option>
+<option value="user">User</option>
+<option value="activity">Activity</option>
+<option value="issue">Issue</option>
+<option value="cf_10">Overtime</option></select></div>
+            </div>
+            <div>
+              <div class="field">Totals</div>
+              <div><label class="inline"><input type="checkbox" name="t[]" value="hours" checked="checked" /> Hours</label><input type="hidden" name="t[]" id="t_" value="" autocomplete="off" /></div>
+            </div>
+        </div>
+      </div>
+    </fieldset>
+</div>
+
+<p class="buttons">
+  <a href="#" onclick="$(&quot;#query_form&quot;).submit(); return false;" class="icon icon-checked"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--checked"></use></svg><span class="icon-label">Apply</span></a>
+  <a class="icon icon-reload" href="/time_entries/report?set_filter=1&amp;sort="><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--reload"></use></svg><span class="icon-label">Clear</span></a>
+      <a href="#" onclick="$(&#39;#query_type&#39;).prop(&#39;disabled&#39;,false);$(&#39;#query_form&#39;).attr(&#39;action&#39;, &#39;/queries/new&#39;).submit(); return false;" class="icon icon-save"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--save"></use></svg><span class="icon-label">Save custom query</span></a>
+</p>
+</div>
+
+
+
+<script>
+//<![CDATA[
+
+$(function ($) {
+  $('input[name=display_type]').change(function (e) {
+    if ($("#display_type_list").is(':checked')) {
+      $('table#list-definition').show();
+    } else {
+      $('table#list-definition').hide();
+    }
+
+  })
+});
+
+
+//]]>
+</script>
+
+<div class="tabs hide-when-print">
+<ul>
+    <li><a href="/time_entries">Details</a></li>
+    <li><a class="selected" href="/time_entries/report">Report</a></li>
+</ul>
+</div>
+
+
+  <p><label for='columns'>Details</label>: <select name="columns" id="columns" onchange="this.form.submit();"><option value="year">Year</option>
+<option selected="selected" value="month">Month</option>
+<option value="week">Week</option>
+<option value="day">Days</option></select>
+
+  <label for='criterias'>Add</label>: <select name="criteria[]" id="criterias" onchange="this.form.submit();" style="width: 200px"><option value=""></option>
+<option value="project">Project</option>
+<option value="status">Status</option>
+<option value="version">Version</option>
+<option value="category">Category</option>
+<option value="user">User</option>
+<option value="tracker">Tracker</option>
+<option value="activity">Activity</option>
+<option value="issue">Issue</option>
+<option value="cf_10">Overtime</option>
+<option value="cf_3">Development status</option>
+<option value="cf_1">Database</option>
+<option value="cf_7">Billable</option></select>
+     <a class="icon icon-reload" href="/time_entries/report"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--reload"></use></svg><span class="icon-label">Clear</span></a></p>
+  <input type="hidden" name="encoding" id="encoding" value="ISO-8859-1" autocomplete="off" />
+</form>
+
+
+
+
+<script>
+//<![CDATA[
+
+$(document).ready(function(){
+  $('input#csv-export-button').click(function(){
+    $('form input#encoding').val($('select#encoding option:selected').val());
+    $('form#query_form').attr('action', '/time_entries/report.csv').submit();
+    $('form#query_form').attr('action', '/time_entries/report');
+    hideModal(this);
+  });
+});
+
+//]]>
+</script>
+        
+        <div style="clear:both;"></div>
+    </div>
+</div>
+<div id="footer">

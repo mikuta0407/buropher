@@ -1,0 +1,35 @@
+status: 200
+content-type: application/json
+
+{
+  "time_entry": {
+    "id": 2,
+    "project": {
+      "id": 1,
+      "name": "eCookbook"
+    },
+    "issue": {
+      "id": 1
+    },
+    "user": {
+      "id": 1,
+      "name": "Redmine Admin"
+    },
+    "activity": {
+      "id": 9,
+      "name": "Design"
+    },
+    "hours": 12.5,
+    "comments": "api update",
+    "spent_on": "2007-03-12",
+    "created_on": "TIMESTAMP",
+    "updated_on": "TIMESTAMP",
+    "custom_fields": [
+      {
+        "id": 10,
+        "name": "Overtime",
+        "value": null
+      }
+    ]
+  }
+}

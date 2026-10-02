@@ -1,0 +1,7 @@
+status: 200
+content-type: text/csv
+
+"",New,Assigned,Resolved,Feedback,Closed,Rejected,open,closed,Total
+Bug,9,0,0,0,3,0,9,3,12
+Feature request,0,1,0,0,0,0,1,0,1
+Support request,0,0,0,0,0,0,0,0,0

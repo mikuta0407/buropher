@@ -1,0 +1,119 @@
+{{$v := .V}}
+<h2>{{l "label_bulk_edit_selected_time_entries"}}</h2>
+
+{{if $v.FailedMessage}}
+<div id="errorExplanation">
+  {{notice_icon "error"}}
+  <span>
+    {{$v.FailedMessage}}
+  </span>
+  <ul>
+  {{range $m := $v.Unsaved}}
+    <li>{{$m}}</li>
+  {{end}}
+  </ul>
+</div>
+{{end}}
+
+<ul id="bulk-selection">
+{{range $e := $v.Entries}}
+  {{content_tag "li" (link_to $e.Label (printf "/time_entries/%d/edit" $e.ID))}}
+{{end}}
+</ul>
+
+{{form_tag "/time_entries/bulk_update" (hash "id" "bulk_edit_form")}}
+{{range $e := $v.Entries}}{{hidden_field_tag "ids[]" $e.ID (hash "id" nil)}}{{end}}
+<div class="box tabular">
+  <div>
+    <p>
+      <label>{{l "field_project"}}</label>
+      {{select_tag "time_entry[project_id]" $v.ProjectOptions (hash "onchange" "updateBulkEditFrom('/time_entries/bulk_edit.js')")}}
+    </p>
+    <p>
+      <label for="time_entry_issue_id">{{l "field_issue"}}</label>
+      <input size="6" type="text" name="time_entry[issue_id]" id="time_entry_issue_id" />
+      <label class="inline">{{check_box_tag "time_entry[issue_id]" "none" $v.IssueNone (hash "id" nil "data" (hash "disables" "#time_entry_issue_id"))}}{{l "button_clear"}}</label>
+      <span id="time_entry_issue"></span>
+    </p>
+
+    <p>
+      <label for="time_entry_spent_on">{{l "field_spent_on"}}</label>
+      <input max="9999-12-31" size="10"{{if $v.SpentOn}} value="{{$v.SpentOn}}"{{end}} type="date" name="time_entry[spent_on]" id="time_entry_spent_on" />{{calendar_for "time_entry_spent_on"}}
+    </p>
+
+    <p>
+      <label for="time_entry_hours">{{l "field_hours"}}</label>
+      <input size="6"{{if $v.Hours}} value="{{$v.Hours}}"{{end}} type="text" name="time_entry[hours]" id="time_entry_hours" />
+    </p>
+
+    {{if $v.Activities}}
+    <p>
+      <label for="time_entry_activity_id">{{l "field_activity"}}</label>
+      {{select_tag "time_entry[activity_id]" $v.ActivityOptions}}
+    </p>
+    {{end}}
+
+    <p>
+      <label for="time_entry_comments">{{l "field_comments"}}</label>
+      <input size="100"{{if $v.Comments}} value="{{$v.Comments}}"{{end}} type="text" name="time_entry[comments]" id="time_entry_comments" />
+    </p>
+
+    {{range $tag := $v.CustomFields}}
+      <p>
+        {{$tag}}
+      </p>
+      {{""}}
+    {{end}}
+
+    {{call_hook "view_time_entries_bulk_edit_details_bottom"}}
+  </div>
+</div>
+
+<p>{{submit_tag (l "button_submit")}}</p>
+{{end_form}}
+
+{{define "timelog/bulk_edit#js"}}
+
+  $(document).ready(function(){
+    $('#time_entry_project_id').change(function(){
+      <!-- $('#time_entry_issue_id').val(''); -->
+      $('#time_entry_issue').text('');
+    });
+  });
+
+  {{if .Autocomplete}}
+    observeAutocompleteField('time_entry_issue_id',
+      function(request, callback) {
+        var url = '{{j "/issues/auto_complete"}}';
+        var data = {
+          term: request.term
+        };
+        var project_id;
+        {{if .ProjectID}}
+          project_id = '{{.ProjectID}}';
+        {{end}}
+
+        current_project_id = $('#time_entry_project_id').val();
+        if(current_project_id === ''){
+          data['project_id'] = project_id;
+        } else {
+          data['project_id'] = current_project_id;
+        }
+
+        $.get(url, data, null, 'json')
+          .done(function(data){
+            callback(data);
+          })
+          .fail(function(jqXHR, status, error){
+            callback([]);
+          });
+      },
+      {
+        select: function(event, ui, data) {
+          $('#time_entry_issue').text(ui.item.label);
+        }
+      }
+    );
+  {{end}}
+{{end}}
+{{javascript_tag (capture "timelog/bulk_edit#js" $v) -}}

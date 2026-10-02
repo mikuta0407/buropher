@@ -1,0 +1,10 @@
+status: 200
+content-type: text/javascript
+
+$('#api-access-key').html('APIKEY').toggle();
+
+if ($('#api-access-key').is(':visible')) {
+  $('.api-key-actions .copy-api-key-link').show();
+} else {
+  $('.api-key-actions .copy-api-key-link').hide();
+}

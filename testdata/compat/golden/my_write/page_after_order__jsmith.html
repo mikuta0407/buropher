@@ -1,0 +1,1256 @@
+status: 200
+content-type: text/html
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>My page - Redmine</title>
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta content="Redmine" name="description">
+    <meta content="issue,bug,tracker" name="keywords">
+    <meta content="authenticity_token" name="csrf-param">
+    <meta content="{{CSRF}}" name="csrf-token">
+    <link href="/assets/favicon-DIGEST.ico" rel="shortcut icon" type="image/x-icon">
+    <link href="/assets/jquery/jquery-ui-1.13.2-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/tribute-5.1.3-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/application-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/responsive-DIGEST.css" media="all" rel="stylesheet">
+    <script data-turbo-track="reload" type="importmap">{
+  "imports": {
+    "@rails/request.js": "/assets/requestjs-DIGEST.js",
+    "application": "/assets/application-DIGEST.js",
+    "@hotwired/stimulus": "/assets/stimulus.min-DIGEST.js",
+    "@hotwired/stimulus-loading": "/assets/stimulus-loading-DIGEST.js",
+    "turndown": "/assets/turndown-DIGEST.js",
+    "controllers/api_key_copy_controller": "/assets/controllers/api_key_copy_controller-DIGEST.js",
+    "controllers/application": "/assets/controllers/application-DIGEST.js",
+    "controllers": "/assets/controllers/index-DIGEST.js",
+    "controllers/list_autofill_controller": "/assets/controllers/list_autofill_controller-DIGEST.js",
+    "controllers/quote_reply_controller": "/assets/controllers/quote_reply_controller-DIGEST.js",
+    "controllers/sticky_issue_header_controller": "/assets/controllers/sticky_issue_header_controller-DIGEST.js"
+  }
+}</script>
+    <link href="/assets/requestjs-DIGEST.js" rel="modulepreload">
+    <link href="/assets/application-DIGEST.js" rel="modulepreload">
+    <link href="/assets/stimulus.min-DIGEST.js" rel="modulepreload">
+    <link href="/assets/stimulus-loading-DIGEST.js" rel="modulepreload">
+    <link href="/assets/turndown-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/api_key_copy_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/application-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/index-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/list_autofill_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/quote_reply_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/sticky_issue_header_controller-DIGEST.js" rel="modulepreload">
+    <script type="module">import "application"</script>
+    <script src="/assets/jquery-3.7.1-ui-1.13.3-DIGEST.js"></script>
+    <script src="/assets/rails-ujs-DIGEST.js"></script>
+    <script src="/assets/tribute-5.1.3.min-DIGEST.js"></script>
+    <script src="/assets/application-legacy-DIGEST.js"></script>
+    <script src="/assets/responsive-DIGEST.js"></script>
+    <script>//<![CDATA[
+$(window).on('load', function(){ warnLeavingUnsaved('The current page contains unsaved text that will be lost if you leave this page.'); });
+//]]></script>
+    <script>//<![CDATA[
+rm = window.rm || {};rm.I18n = rm.I18n || {};rm.I18n = Object.freeze({buttonCopy: 'Copy'});
+//]]></script>
+    <script>//<![CDATA[
+rm = window.rm || {};rm.AutoComplete = rm.AutoComplete || {};rm.AutoComplete.dataSources = JSON.parse('{"issues":"/issues/auto_complete?q=","wiki_pages":"/wiki_pages/auto_complete?q="}');
+//]]></script>
+    <link href="/issues.atom?c%5B%5D=project&amp;c%5B%5D=tracker&amp;c%5B%5D=status&amp;c%5B%5D=subject&amp;f%5B%5D=status_id&amp;f%5B%5D=watcher_id&amp;f%5B%5D=project.status&amp;key=KEY&amp;op%5Bproject.status%5D=%3D&amp;op%5Bstatus_id%5D=o&amp;op%5Bwatcher_id%5D=%3D&amp;set_filter=1&amp;sort=updated_on%3Adesc&amp;v%5Bproject.status%5D%5B%5D=1&amp;v%5Bstatus_id%5D%5B%5D=&amp;v%5Bwatcher_id%5D%5B%5D=me" rel="alternate" title="Watched issues" type="application/atom+xml">
+    <link href="/issues.atom?c%5B%5D=project&amp;c%5B%5D=tracker&amp;c%5B%5D=status&amp;c%5B%5D=subject&amp;f%5B%5D=status_id&amp;f%5B%5D=assigned_to_id&amp;f%5B%5D=project.status&amp;key=KEY&amp;op%5Bassigned_to_id%5D=%3D&amp;op%5Bproject.status%5D=%3D&amp;op%5Bstatus_id%5D=o&amp;set_filter=1&amp;sort=priority%3Adesc%2Cupdated_on%3Adesc&amp;v%5Bassigned_to_id%5D%5B%5D=me&amp;v%5Bproject.status%5D%5B%5D=1&amp;v%5Bstatus_id%5D%5B%5D=" rel="alternate" title="Issues assigned to me" type="application/atom+xml">
+    <link href="/issues.atom?c%5B%5D=project&amp;c%5B%5D=tracker&amp;c%5B%5D=status&amp;c%5B%5D=subject&amp;f%5B%5D=status_id&amp;f%5B%5D=author_id&amp;f%5B%5D=project.status&amp;key=KEY&amp;op%5Bauthor_id%5D=%3D&amp;op%5Bproject.status%5D=%3D&amp;op%5Bstatus_id%5D=o&amp;set_filter=1&amp;sort=updated_on%3Adesc&amp;v%5Bauthor_id%5D%5B%5D=me&amp;v%5Bproject.status%5D%5B%5D=1&amp;v%5Bstatus_id%5D%5B%5D=" rel="alternate" title="Reported issues" type="application/atom+xml">
+    <script src="/assets/context_menu-DIGEST.js"></script>
+    <link href="/assets/context_menu-DIGEST.css" media="screen" rel="stylesheet">
+  </head>
+  <body class="controller-my action-page avatars-off" data-text-formatting="common_mark">
+    <div id="wrapper">
+      <div class="flyout-menu js-flyout-menu">
+        <div class="flyout-menu__search">
+          <form accept-charset="UTF-8" action="/search" method="get" name="form-RANDOM">
+            <label class="search-magnifier search-magnifier--flyout" for="flyout-search">
+              <svg aria-hidden="true" class="s18 icon-svg">
+                <use href="/assets/icons-DIGEST.svg#icon--search"></use>
+              </svg>
+              <span class="icon-label hidden">Search</span>
+            </label>
+            <input class="small js-search-input" id="flyout-search" name="q" placeholder="Search" type="text">
+          </form>
+        </div>
+        <div class="flyout-menu__avatar">
+          <a href="/users/2">
+            <span class="avatar-color-2 s40 avatar" role="img">JS</span>
+          </a>
+          <a class="user active" href="/users/2">jsmith</a>
+        </div>
+        <h3>General</h3>
+        <span class="js-general-menu"></span>
+        <span class="js-sidebar flyout-menu__sidebar"></span>
+        <h3>Profile</h3>
+        <span class="js-profile-menu"></span>
+      </div>
+      <div id="top-menu">
+        <div id="account">
+          <ul>
+            <li>
+              <a class="my-account" href="/my/account">My account</a>
+            </li>
+            <li>
+              <a class="logout" data-method="post" href="/logout" rel="nofollow">Sign out</a>
+            </li>
+          </ul>
+        </div>
+        <div id="loggedas">
+          Logged in as
+          <a class="user active" href="/users/2">jsmith</a>
+        </div>
+        <ul>
+          <li>
+            <a class="home" href="/">Home</a>
+          </li>
+          <li>
+            <a class="my-page" href="/my/page">My page</a>
+          </li>
+          <li>
+            <a class="projects" href="/projects">Projects</a>
+          </li>
+          <li>
+            <a class="help" href="https://www.redmine.org/guide" rel="noopener" target="_blank">Help</a>
+          </li>
+        </ul>
+      </div>
+      <div id="header">
+        <a class="mobile-toggle-button js-flyout-menu-toggle-button" href="#"></a>
+        <div id="quick-search">
+          <form accept-charset="UTF-8" action="/search" method="get" name="form-RANDOM">
+            <input autocomplete="off" name="scope" type="hidden">
+            <label for="q">
+              <a accesskey="4" href="/search">Search</a>
+              :
+            </label>
+            <input accesskey="f" class="small" data-auto-complete="true" id="q" name="q" size="20" type="text">
+          </form>
+        </div>
+        <h1>Redmine</h1>
+      </div>
+      <div class="nosidebar" id="main">
+        <div id="sidebar">
+          <div id="sidebar-wrapper"></div>
+        </div>
+        <div id="content">
+          <div class="contextual">
+            <form accept-charset="UTF-8" action="/my/add_block" data-remote="true" id="block-form" method="post" name="block-form-RANDOM">
+              <input autocomplete="off" name="authenticity_token" type="hidden" value="{{CSRF}}">
+              <label for="block-select">Add</label>
+              :
+              <select id="block-select" name="block" onchange="$(&#39;#block-form&#39;).submit();">
+                <option></option>
+                <option disabled="disabled">Issues assigned to me</option>
+                <option disabled="disabled">Reported issues</option>
+                <option value="issuesupdatedbyme">Updated issues</option>
+                <option disabled="disabled">Watched issues</option>
+                <option value="issuequery__2">Issues</option>
+                <option value="news">Latest news</option>
+                <option value="calendar">Calendar</option>
+                <option disabled="disabled">Documents</option>
+                <option disabled="disabled">Spent time</option>
+                <option disabled="disabled">Activity</option>
+              </select>
+            </form>
+          </div>
+          <h2>My page</h2>
+          <div class="splitcontent" id="my-page">
+            <div class="block-receiver splitcontenttop" id="list-top">
+              <div class="mypage-box" id="block-issueswatched">
+                <div class="contextual">
+                  <span class="icon-only icon-sort-handle sort-handle" title="Move">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--reorder"></use>
+                    </svg>
+                    <span class="icon-label"></span>
+                  </span>
+                  <a class="icon-only icon-close" data-method="post" data-remote="true" href="/my/remove_block?block=issueswatched" rel="nofollow" title="Delete">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--close"></use>
+                    </svg>
+                    <span class="icon-label">Delete</span>
+                  </a>
+                </div>
+                <div class="contextual">
+                  <a class="icon-only icon-settings" href="#" onclick="$(&#39;#issueswatched-settings&#39;).toggle();; return false;" title="Options">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--settings"></use>
+                    </svg>
+                    <span class="icon-label">Options</span>
+                  </a>
+                </div>
+                <h3>
+                  <a href="/issues?c%5B%5D=project&amp;c%5B%5D=tracker&amp;c%5B%5D=status&amp;c%5B%5D=subject&amp;f%5B%5D=status_id&amp;f%5B%5D=watcher_id&amp;f%5B%5D=project.status&amp;op%5Bproject.status%5D=%3D&amp;op%5Bstatus_id%5D=o&amp;op%5Bwatcher_id%5D=%3D&amp;set_filter=1&amp;sort=updated_on%3Adesc&amp;v%5Bproject.status%5D%5B%5D=1&amp;v%5Bstatus_id%5D%5B%5D=&amp;v%5Bwatcher_id%5D%5B%5D=me">Watched issues</a>
+                  (0)
+                </h3>
+                <div id="issueswatched-settings" style="display:none;">
+                  <form accept-charset="UTF-8" action="/my/page" data-remote="true" method="post" name="form-RANDOM">
+                    <input autocomplete="off" name="authenticity_token" type="hidden" value="{{CSRF}}">
+                    <div id="list-definition">
+                      <div class="box">
+                        <div class="query-columns">
+                          <label for="available_settings_issueswatched_columns">Available Columns</label>
+                          <select id="available_settings_issueswatched_columns" multiple="multiple" name="available_columns[]" ondblclick="moveOptions(this.form.available_settings_issueswatched_columns, this.form.selected_settings_issueswatched_columns);" size="10">
+                            <option value="parent">Parent task</option>
+                            <option value="parent.subject">Parent task subject</option>
+                            <option value="priority">Priority</option>
+                            <option value="author">Author</option>
+                            <option value="assigned_to">Assignee</option>
+                            <option value="watcher_users">Watchers</option>
+                            <option value="updated_on">Updated</option>
+                            <option value="category">Category</option>
+                            <option value="fixed_version">Target version</option>
+                            <option value="start_date">Start date</option>
+                            <option value="due_date">Due date</option>
+                            <option value="estimated_hours">Estimated time</option>
+                            <option value="estimated_remaining_hours">Estimated remaining time</option>
+                            <option value="total_estimated_hours">Total estimated time</option>
+                            <option value="spent_hours">Spent time</option>
+                            <option value="total_spent_hours">Total spent time</option>
+                            <option value="done_ratio">% Done</option>
+                            <option value="created_on">Created</option>
+                            <option value="closed_on">Closed</option>
+                            <option value="last_updated_by">Last updated by</option>
+                            <option value="relations">Related issues</option>
+                            <option value="attachments">Files</option>
+                            <option value="cf_2">Searchable field</option>
+                            <option value="cf_1">Database</option>
+                            <option value="cf_6">Float field</option>
+                            <option value="cf_8">Custom date</option>
+                            <option value="cf_9">Project 1 cf</option>
+                            <option value="is_private">Private</option>
+                          </select>
+                        </div>
+                        <div class="buttons">
+                          <button class="move-right" onclick="moveOptions(this.form.available_settings_issueswatched_columns, this.form.selected_settings_issueswatched_columns);" type="button">
+                            <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
+                              <use href="/assets/icons-DIGEST.svg#icon--arrow-narrow-right"></use>
+                            </svg>
+                          </button>
+                          <button class="move-left" onclick="moveOptions(this.form.selected_settings_issueswatched_columns, this.form.available_settings_issueswatched_columns);" type="button">
+                            <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
+                              <use href="/assets/icons-DIGEST.svg#icon--arrow-narrow-left"></use>
+                            </svg>
+                          </button>
+                        </div>
+                        <div class="query-columns">
+                          <label for="selected_settings_issueswatched_columns">Selected Columns</label>
+                          <select id="selected_settings_issueswatched_columns" multiple="multiple" name="settings[issueswatched][columns][]" ondblclick="moveOptions(this.form.selected_settings_issueswatched_columns, this.form.available_settings_issueswatched_columns);" size="10">
+                            <option value="project">Project</option>
+                            <option value="tracker">Tracker</option>
+                            <option value="status">Status</option>
+                            <option value="subject">Subject</option>
+                          </select>
+                        </div>
+                        <div class="buttons">
+                          <button onclick="moveOptionTop(this.form.selected_settings_issueswatched_columns);" type="button">⇈</button>
+                          <button onclick="moveOptionUp(this.form.selected_settings_issueswatched_columns);" type="button">↑</button>
+                          <button onclick="moveOptionDown(this.form.selected_settings_issueswatched_columns);" type="button">↓</button>
+                          <button onclick="moveOptionBottom(this.form.selected_settings_issueswatched_columns);" type="button">⇊</button>
+                        </div>
+                        <script>//<![CDATA[
+
+$(document).ready(function(){
+  $('.query-columns').closest('form').submit(function(){
+    $('#selected_settings_issueswatched_columns option:not(:disabled)').prop('selected', true);
+  });
+});
+
+//]]></script>
+                      </div>
+                    </div>
+                    <p>
+                      <input data-disable-with="Save" name="commit" type="submit" value="Save">
+                      <a href="#" onclick="$(&#39;#issueswatched-settings&#39;).toggle();; return false;">Cancel</a>
+                    </p>
+                  </form>
+                </div>
+                <p class="nodata">No data to display</p>
+              </div>
+              <div class="mypage-box" id="block-activity">
+                <div class="contextual">
+                  <span class="icon-only icon-sort-handle sort-handle" title="Move">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--reorder"></use>
+                    </svg>
+                    <span class="icon-label"></span>
+                  </span>
+                  <a class="icon-only icon-close" data-method="post" data-remote="true" href="/my/remove_block?block=activity" rel="nofollow" title="Delete">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--close"></use>
+                    </svg>
+                    <span class="icon-label">Delete</span>
+                  </a>
+                </div>
+                <h3>
+                  <a href="/activity?from=2026-01-15&amp;user_id=2">Activity</a>
+                </h3>
+                <div id="activity">
+                  <h3>Today</h3>
+                  <dl>
+                    <dt class="issue icon icon-issue me">
+                      <svg aria-hidden="true" class="s18 icon-svg">
+                        <use href="/assets/icons-DIGEST.svg#icon--issue"></use>
+                      </svg>
+                      <span class="avatar-color-2 s24 avatar" role="img">JS</span>
+                      <span class="time">11:59 AM</span>
+                      <span class="project">Private child of eCookbook</span>
+                      <a href="/issues/6">Bug #6 (New): Issue of a private subproject</a>
+                    </dt>
+                    <dd class="">
+                      <span class="description">This is an issue of a private subproject of cookbook</span>
+                      <span class="author">
+                        <a class="user active" href="/users/2">John Smith</a>
+                      </span>
+                    </dd>
+                    <dt class="issue icon icon-issue me">
+                      <svg aria-hidden="true" class="s18 icon-svg">
+                        <use href="/assets/icons-DIGEST.svg#icon--issue"></use>
+                      </svg>
+                      <span class="avatar-color-2 s24 avatar" role="img">JS</span>
+                      <span class="time">11:59 AM</span>
+                      <span class="project">Private child of eCookbook</span>
+                      <a href="/issues/9">Bug #9 (New): Blocked Issue</a>
+                    </dt>
+                    <dd class="">
+                      <span class="description">This is an issue that is blocked by issue</span>
+                      <span class="author">
+                        <a class="user active" href="/users/2">John Smith</a>
+                      </span>
+                    </dd>
+                    <dt class="issue icon icon-issue me">
+                      <svg aria-hidden="true" class="s18 icon-svg">
+                        <use href="/assets/icons-DIGEST.svg#icon--issue"></use>
+                      </svg>
+                      <span class="avatar-color-2 s24 avatar" role="img">JS</span>
+                      <span class="time">11:59 AM</span>
+                      <span class="project">Private child of eCookbook</span>
+                      <a href="/issues/10">Bug #10 (New): Issue Doing the Blocking</a>
+                    </dt>
+                    <dd class="">
+                      <span class="description">This is an issue that blocks issue</span>
+                      <span class="author">
+                        <a class="user active" href="/users/2">John Smith</a>
+                      </span>
+                    </dd>
+                  </dl>
+                  <h3>01/14/2026</h3>
+                  <dl>
+                    <dt class="issue-note icon icon-issue-note me">
+                      <svg aria-hidden="true" class="s18 icon-svg">
+                        <use href="/assets/icons-DIGEST.svg#icon--issue-note"></use>
+                      </svg>
+                      <span class="avatar-color-2 s24 avatar" role="img">JS</span>
+                      <span class="time">12:00 AM</span>
+                      <span class="project">eCookbook</span>
+                      <a href="/issues/1#change-2">Bug #1: Cannot print recipes</a>
+                    </dt>
+                    <dd class="">
+                      <span class="description">Some notes with Redmine links: #2, r2.</span>
+                      <span class="author">
+                        <a class="user active" href="/users/2">John Smith</a>
+                      </span>
+                    </dd>
+                    <dt class="issue-note icon icon-issue-note me">
+                      <svg aria-hidden="true" class="s18 icon-svg">
+                        <use href="/assets/icons-DIGEST.svg#icon--issue-note"></use>
+                      </svg>
+                      <span class="avatar-color-2 s24 avatar" role="img">JS</span>
+                      <span class="time">12:00 AM</span>
+                      <span class="project">eCookbook</span>
+                      <a href="/issues/2#change-3">Feature request #2: Add ingredients categories</a>
+                    </dt>
+                    <dd class="">
+                      <span class="description">A comment with inline image: !picture.jpg! and a reference to #1 and r2.</span>
+                      <span class="author">
+                        <a class="user active" href="/users/2">John Smith</a>
+                      </span>
+                    </dd>
+                    <dt class="issue-note icon icon-issue-note me">
+                      <svg aria-hidden="true" class="s18 icon-svg">
+                        <use href="/assets/icons-DIGEST.svg#icon--issue-note"></use>
+                      </svg>
+                      <span class="avatar-color-2 s24 avatar" role="img">JS</span>
+                      <span class="time">12:00 AM</span>
+                      <span class="project">eCookbook Subproject 1</span>
+                      <a href="/issues/14#change-5">Bug #14: Private issue on public project</a>
+                    </dt>
+                    <dd class="">
+                      <span class="description">A comment on a private issue.</span>
+                      <span class="author">
+                        <a class="user active" href="/users/2">John Smith</a>
+                      </span>
+                    </dd>
+                  </dl>
+                  <h3>01/12/2026</h3>
+                  <dl>
+                    <dt class="issue-closed icon icon-issue-closed me">
+                      <svg aria-hidden="true" class="s18 icon-svg">
+                        <use href="/assets/icons-DIGEST.svg#icon--issue-closed"></use>
+                      </svg>
+                      <span class="avatar-color-2 s24 avatar" role="img">JS</span>
+                      <span class="time">12:00 PM</span>
+                      <span class="project">eCookbook</span>
+                      <a href="/issues/11">Bug #11 (Closed): Closed issue on a closed version</a>
+                    </dt>
+                    <dd class="">
+                      <span class="description"></span>
+                      <span class="author">
+                        <a class="user active" href="/users/2">John Smith</a>
+                      </span>
+                    </dd>
+                  </dl>
+                  <h3>01/10/2026</h3>
+                  <dl>
+                    <dt class="issue icon icon-issue me">
+                      <svg aria-hidden="true" class="s18 icon-svg">
+                        <use href="/assets/icons-DIGEST.svg#icon--issue"></use>
+                      </svg>
+                      <span class="avatar-color-2 s24 avatar" role="img">JS</span>
+                      <span class="time">12:00 PM</span>
+                      <span class="project">OnlineStore</span>
+                      <a href="/issues/4">Bug #4 (New): Issue on project 2</a>
+                    </dt>
+                    <dd class="">
+                      <span class="description">Issue on project 2</span>
+                      <span class="author">
+                        <a class="user active" href="/users/2">John Smith</a>
+                      </span>
+                    </dd>
+                    <dt class="issue icon icon-issue me">
+                      <svg aria-hidden="true" class="s18 icon-svg">
+                        <use href="/assets/icons-DIGEST.svg#icon--issue"></use>
+                      </svg>
+                      <span class="avatar-color-2 s24 avatar" role="img">JS</span>
+                      <span class="time">12:00 PM</span>
+                      <span class="project">eCookbook Subproject 1</span>
+                      <a href="/issues/5">Bug #5 (New): Subproject issue</a>
+                    </dt>
+                    <dd class="">
+                      <span class="description">This is an issue on a cookbook subproject</span>
+                      <span class="author">
+                        <a class="user active" href="/users/2">John Smith</a>
+                      </span>
+                    </dd>
+                    <dt class="issue icon icon-issue me">
+                      <svg aria-hidden="true" class="s18 icon-svg">
+                        <use href="/assets/icons-DIGEST.svg#icon--issue"></use>
+                      </svg>
+                      <span class="avatar-color-2 s24 avatar" role="img">JS</span>
+                      <span class="time">12:00 PM</span>
+                      <span class="project">eCookbook Subproject 1</span>
+                      <a href="/issues/13">Bug #13 (New): Subproject issue two</a>
+                    </dt>
+                    <dd class="">
+                      <span class="description">This is a second issue on a cookbook subproject</span>
+                      <span class="author">
+                        <a class="user active" href="/users/2">John Smith</a>
+                      </span>
+                    </dd>
+                  </dl>
+                </div>
+              </div>
+              <div class="mypage-box" id="block-documents">
+                <div class="contextual">
+                  <span class="icon-only icon-sort-handle sort-handle" title="Move">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--reorder"></use>
+                    </svg>
+                    <span class="icon-label"></span>
+                  </span>
+                  <a class="icon-only icon-close" data-method="post" data-remote="true" href="/my/remove_block?block=documents" rel="nofollow" title="Delete">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--close"></use>
+                    </svg>
+                    <span class="icon-label">Delete</span>
+                  </a>
+                </div>
+                <h3>Documents</h3>
+                <div id="document-list">
+                  <div class="document-item document-3">
+                    <h4 class="title">
+                      <a href="/documents/3">An other document 2</a>
+                    </h4>
+                    <div class="updated_on">
+                      <em>03/05/2007 02:08 PM</em>
+                    </div>
+                    <div class="wiki description"></div>
+                  </div>
+                  <div class="document-item document-2">
+                    <h4 class="title">
+                      <a href="/documents/2">An other document</a>
+                    </h4>
+                    <div class="updated_on">
+                      <em>02/12/2007 02:08 PM</em>
+                    </div>
+                    <div class="wiki description"></div>
+                  </div>
+                  <div class="document-item document-1">
+                    <h4 class="title">
+                      <a href="/documents/1">Test document</a>
+                    </h4>
+                    <div class="updated_on">
+                      <em>02/12/2007 02:08 PM</em>
+                    </div>
+                    <div class="wiki description">
+                      <p>Document description</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="mypage-box" id="block-issuequery__1">
+                <div class="contextual">
+                  <span class="icon-only icon-sort-handle sort-handle" title="Move">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--reorder"></use>
+                    </svg>
+                    <span class="icon-label"></span>
+                  </span>
+                  <a class="icon-only icon-close" data-method="post" data-remote="true" href="/my/remove_block?block=issuequery__1" rel="nofollow" title="Delete">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--close"></use>
+                    </svg>
+                    <span class="icon-label">Delete</span>
+                  </a>
+                </div>
+                <h3>Issues</h3>
+                <div id="issuequery__1-settings">
+                  <form accept-charset="UTF-8" action="/my/page" data-remote="true" method="post" name="form-RANDOM">
+                    <input autocomplete="off" name="authenticity_token" type="hidden" value="{{CSRF}}">
+                    <div class="box">
+                      <p>
+                        <label>
+                          Custom query
+                          <select id="settings_issuequery__1_query_id" name="settings[issuequery__1][query_id]">
+                            <option></option>
+                            <option value="1">Multiple custom fields query</option>
+                            <option value="5">Open issues by priority and tracker</option>
+                            <option value="9">Open issues grouped by list custom field</option>
+                            <option value="6">Open issues grouped by tracker</option>
+                            <option value="8">Private query for project 2</option>
+                            <option value="4">Public query for all projects</option>
+                            <option value="7">Public query for project 2</option>
+                          </select>
+                        </label>
+                      </p>
+                    </div>
+                    <p>
+                      <input data-disable-with="Save" name="commit" type="submit" value="Save">
+                    </p>
+                  </form>
+                </div>
+              </div>
+              <div class="mypage-box" id="block-issuequery">
+                <div class="contextual">
+                  <span class="icon-only icon-sort-handle sort-handle" title="Move">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--reorder"></use>
+                    </svg>
+                    <span class="icon-label"></span>
+                  </span>
+                  <a class="icon-only icon-close" data-method="post" data-remote="true" href="/my/remove_block?block=issuequery" rel="nofollow" title="Delete">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--close"></use>
+                    </svg>
+                    <span class="icon-label">Delete</span>
+                  </a>
+                </div>
+                <h3>Issues</h3>
+                <div id="issuequery-settings">
+                  <form accept-charset="UTF-8" action="/my/page" data-remote="true" method="post" name="form-RANDOM">
+                    <input autocomplete="off" name="authenticity_token" type="hidden" value="{{CSRF}}">
+                    <div class="box">
+                      <p>
+                        <label>
+                          Custom query
+                          <select id="settings_issuequery_query_id" name="settings[issuequery][query_id]">
+                            <option></option>
+                            <option value="1">Multiple custom fields query</option>
+                            <option value="5">Open issues by priority and tracker</option>
+                            <option value="9">Open issues grouped by list custom field</option>
+                            <option value="6">Open issues grouped by tracker</option>
+                            <option value="8">Private query for project 2</option>
+                            <option value="4">Public query for all projects</option>
+                            <option value="7">Public query for project 2</option>
+                          </select>
+                        </label>
+                      </p>
+                    </div>
+                    <p>
+                      <input data-disable-with="Save" name="commit" type="submit" value="Save">
+                    </p>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <div class="block-receiver splitcontentleft" id="list-left">
+              <div class="mypage-box" id="block-timelog">
+                <div class="contextual">
+                  <span class="icon-only icon-sort-handle sort-handle" title="Move">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--reorder"></use>
+                    </svg>
+                    <span class="icon-label"></span>
+                  </span>
+                  <a class="icon-only icon-close" data-method="post" data-remote="true" href="/my/remove_block?block=timelog" rel="nofollow" title="Delete">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--close"></use>
+                    </svg>
+                    <span class="icon-label">Delete</span>
+                  </a>
+                </div>
+                <div class="contextual">
+                  <a class="icon-only icon-settings" href="#" onclick="$(&#39;#timelog-settings&#39;).toggle();; return false;" title="Options">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--settings"></use>
+                    </svg>
+                    <span class="icon-label">Options</span>
+                  </a>
+                </div>
+                <h3>
+                  <a href="/time_entries?user_id=me">Spent time</a>
+                  (last 7 days: 0:00 h)
+                  <a class="icon-only icon-add" href="/time_entries/new" title="Log time">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--time-add"></use>
+                    </svg>
+                    <span class="icon-label">Log time</span>
+                  </a>
+                </h3>
+                <div id="timelog-settings" style="display:none;">
+                  <form accept-charset="UTF-8" action="/my/page" data-remote="true" method="post" name="form-RANDOM">
+                    <input autocomplete="off" name="authenticity_token" type="hidden" value="{{CSRF}}">
+                    <div class="box">
+                      <p>
+                        <label>
+                          Show:
+                          <input id="settings_timelog_days" name="settings[timelog][days]" size="6" type="text" value="7">
+                          days
+                        </label>
+                      </p>
+                    </div>
+                    <p>
+                      <input data-disable-with="Save" name="commit" type="submit" value="Save">
+                      <a href="#" onclick="$(&#39;#timelog-settings&#39;).toggle();; return false;">Cancel</a>
+                    </p>
+                  </form>
+                </div>
+                <p class="nodata">No data to display</p>
+              </div>
+              <div class="mypage-box" id="block-issuesassignedtome">
+                <div class="contextual">
+                  <span class="icon-only icon-sort-handle sort-handle" title="Move">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--reorder"></use>
+                    </svg>
+                    <span class="icon-label"></span>
+                  </span>
+                  <a class="icon-only icon-close" data-method="post" data-remote="true" href="/my/remove_block?block=issuesassignedtome" rel="nofollow" title="Delete">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--close"></use>
+                    </svg>
+                    <span class="icon-label">Delete</span>
+                  </a>
+                </div>
+                <div class="contextual">
+                  <a class="icon-only icon-settings" href="#" onclick="$(&#39;#issuesassignedtome-settings&#39;).toggle();; return false;" title="Options">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--settings"></use>
+                    </svg>
+                    <span class="icon-label">Options</span>
+                  </a>
+                </div>
+                <h3>
+                  <a href="/issues?c%5B%5D=project&amp;c%5B%5D=tracker&amp;c%5B%5D=status&amp;c%5B%5D=subject&amp;f%5B%5D=status_id&amp;f%5B%5D=assigned_to_id&amp;f%5B%5D=project.status&amp;op%5Bassigned_to_id%5D=%3D&amp;op%5Bproject.status%5D=%3D&amp;op%5Bstatus_id%5D=o&amp;set_filter=1&amp;sort=priority%3Adesc%2Cupdated_on%3Adesc&amp;v%5Bassigned_to_id%5D%5B%5D=me&amp;v%5Bproject.status%5D%5B%5D=1&amp;v%5Bstatus_id%5D%5B%5D=">Issues assigned to me</a>
+                  (1)
+                </h3>
+                <div id="issuesassignedtome-settings" style="display:none;">
+                  <form accept-charset="UTF-8" action="/my/page" data-remote="true" method="post" name="form-RANDOM">
+                    <input autocomplete="off" name="authenticity_token" type="hidden" value="{{CSRF}}">
+                    <div id="list-definition">
+                      <div class="box">
+                        <div class="query-columns">
+                          <label for="available_settings_issuesassignedtome_columns">Available Columns</label>
+                          <select id="available_settings_issuesassignedtome_columns" multiple="multiple" name="available_columns[]" ondblclick="moveOptions(this.form.available_settings_issuesassignedtome_columns, this.form.selected_settings_issuesassignedtome_columns);" size="10">
+                            <option value="parent">Parent task</option>
+                            <option value="parent.subject">Parent task subject</option>
+                            <option value="priority">Priority</option>
+                            <option value="author">Author</option>
+                            <option value="assigned_to">Assignee</option>
+                            <option value="watcher_users">Watchers</option>
+                            <option value="updated_on">Updated</option>
+                            <option value="category">Category</option>
+                            <option value="fixed_version">Target version</option>
+                            <option value="start_date">Start date</option>
+                            <option value="due_date">Due date</option>
+                            <option value="estimated_hours">Estimated time</option>
+                            <option value="estimated_remaining_hours">Estimated remaining time</option>
+                            <option value="total_estimated_hours">Total estimated time</option>
+                            <option value="spent_hours">Spent time</option>
+                            <option value="total_spent_hours">Total spent time</option>
+                            <option value="done_ratio">% Done</option>
+                            <option value="created_on">Created</option>
+                            <option value="closed_on">Closed</option>
+                            <option value="last_updated_by">Last updated by</option>
+                            <option value="relations">Related issues</option>
+                            <option value="attachments">Files</option>
+                            <option value="cf_2">Searchable field</option>
+                            <option value="cf_1">Database</option>
+                            <option value="cf_6">Float field</option>
+                            <option value="cf_8">Custom date</option>
+                            <option value="cf_9">Project 1 cf</option>
+                            <option value="is_private">Private</option>
+                          </select>
+                        </div>
+                        <div class="buttons">
+                          <button class="move-right" onclick="moveOptions(this.form.available_settings_issuesassignedtome_columns, this.form.selected_settings_issuesassignedtome_columns);" type="button">
+                            <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
+                              <use href="/assets/icons-DIGEST.svg#icon--arrow-narrow-right"></use>
+                            </svg>
+                          </button>
+                          <button class="move-left" onclick="moveOptions(this.form.selected_settings_issuesassignedtome_columns, this.form.available_settings_issuesassignedtome_columns);" type="button">
+                            <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
+                              <use href="/assets/icons-DIGEST.svg#icon--arrow-narrow-left"></use>
+                            </svg>
+                          </button>
+                        </div>
+                        <div class="query-columns">
+                          <label for="selected_settings_issuesassignedtome_columns">Selected Columns</label>
+                          <select id="selected_settings_issuesassignedtome_columns" multiple="multiple" name="settings[issuesassignedtome][columns][]" ondblclick="moveOptions(this.form.selected_settings_issuesassignedtome_columns, this.form.available_settings_issuesassignedtome_columns);" size="10">
+                            <option value="project">Project</option>
+                            <option value="tracker">Tracker</option>
+                            <option value="status">Status</option>
+                            <option value="subject">Subject</option>
+                          </select>
+                        </div>
+                        <div class="buttons">
+                          <button onclick="moveOptionTop(this.form.selected_settings_issuesassignedtome_columns);" type="button">⇈</button>
+                          <button onclick="moveOptionUp(this.form.selected_settings_issuesassignedtome_columns);" type="button">↑</button>
+                          <button onclick="moveOptionDown(this.form.selected_settings_issuesassignedtome_columns);" type="button">↓</button>
+                          <button onclick="moveOptionBottom(this.form.selected_settings_issuesassignedtome_columns);" type="button">⇊</button>
+                        </div>
+                        <script>//<![CDATA[
+
+$(document).ready(function(){
+  $('.query-columns').closest('form').submit(function(){
+    $('#selected_settings_issuesassignedtome_columns option:not(:disabled)').prop('selected', true);
+  });
+});
+
+//]]></script>
+                      </div>
+                    </div>
+                    <p>
+                      <input data-disable-with="Save" name="commit" type="submit" value="Save">
+                      <a href="#" onclick="$(&#39;#issuesassignedtome-settings&#39;).toggle();; return false;">Cancel</a>
+                    </p>
+                  </form>
+                </div>
+                <form accept-charset="UTF-8" action="/my/page" data-cm-url="/issues/context_menu" method="post" name="form-RANDOM">
+                  <input autocomplete="off" name="authenticity_token" type="hidden" value="{{CSRF}}">
+                  <input autocomplete="off" name="back_url" type="hidden" value="/my/page">
+                  <input autocomplete="off" name="c[]" type="hidden" value="id">
+                  <input autocomplete="off" name="c[]" type="hidden" value="project">
+                  <input autocomplete="off" name="c[]" type="hidden" value="tracker">
+                  <input autocomplete="off" name="c[]" type="hidden" value="status">
+                  <input autocomplete="off" name="c[]" type="hidden" value="subject">
+                  <div class="autoscroll">
+                    <table class="list issues odd-even sort-by-priority sort-desc">
+                      <thead>
+                        <tr>
+                          <th class="checkbox hide-when-print">
+                            <input class="toggle-selection" id="check_all" name="check_all" title="Check all / Uncheck all" type="checkbox" value="">
+                          </th>
+                          <th class="id">
+                            <a data-method="post" data-remote="true" href="/my/page?settings%5Bissuesassignedtome%5D%5Bsort%5D=id%3Adesc%2Cpriority%3Adesc%2Cupdated_on%3Adesc" rel="nofollow" title="Sort by &#34;#&#34;">#</a>
+                          </th>
+                          <th class="project">
+                            <a data-method="post" data-remote="true" href="/my/page?settings%5Bissuesassignedtome%5D%5Bsort%5D=project%2Cpriority%3Adesc%2Cupdated_on%3Adesc" rel="nofollow" title="Sort by &#34;Project&#34;">Project</a>
+                          </th>
+                          <th class="tracker">
+                            <a data-method="post" data-remote="true" href="/my/page?settings%5Bissuesassignedtome%5D%5Bsort%5D=tracker%2Cpriority%3Adesc%2Cupdated_on%3Adesc" rel="nofollow" title="Sort by &#34;Tracker&#34;">Tracker</a>
+                          </th>
+                          <th class="status">
+                            <a data-method="post" data-remote="true" href="/my/page?settings%5Bissuesassignedtome%5D%5Bsort%5D=status%2Cpriority%3Adesc%2Cupdated_on%3Adesc" rel="nofollow" title="Sort by &#34;Status&#34;">Status</a>
+                          </th>
+                          <th class="subject">
+                            <a data-method="post" data-remote="true" href="/my/page?settings%5Bissuesassignedtome%5D%5Bsort%5D=subject%2Cpriority%3Adesc%2Cupdated_on%3Adesc" rel="nofollow" title="Sort by &#34;Subject&#34;">Subject</a>
+                          </th>
+                          <th class="buttons hide-when-print"></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr class="hascontextmenu odd issue tracker-1 status-1 priority-4 priority-lowest created-by-me assigned-to-me" id="issue-4">
+                          <td class="checkbox hide-when-print">
+                            <input name="ids[]" type="checkbox" value="4">
+                          </td>
+                          <td class="id">
+                            <a href="/issues/4">4</a>
+                          </td>
+                          <td class="project">
+                            <a href="/projects/onlinestore">OnlineStore</a>
+                          </td>
+                          <td class="tracker">Bug</td>
+                          <td class="status">New</td>
+                          <td class="subject">
+                            <a href="/issues/4">Issue on project 2</a>
+                          </td>
+                          <td class="buttons hide-when-print">
+                            <a class="icon-only icon-actions js-contextmenu" href="#" title="Actions">
+                              <svg aria-hidden="true" class="s18 icon-svg">
+                                <use href="/assets/icons-DIGEST.svg#icon--3-bullets"></use>
+                              </svg>
+                              <span class="icon-label">Actions</span>
+                            </a>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div class="block-receiver splitcontentright" id="list-right">
+              <div class="mypage-box" id="block-issuesreportedbyme">
+                <div class="contextual">
+                  <span class="icon-only icon-sort-handle sort-handle" title="Move">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--reorder"></use>
+                    </svg>
+                    <span class="icon-label"></span>
+                  </span>
+                  <a class="icon-only icon-close" data-method="post" data-remote="true" href="/my/remove_block?block=issuesreportedbyme" rel="nofollow" title="Delete">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--close"></use>
+                    </svg>
+                    <span class="icon-label">Delete</span>
+                  </a>
+                </div>
+                <div class="contextual">
+                  <a class="icon-only icon-settings" href="#" onclick="$(&#39;#issuesreportedbyme-settings&#39;).toggle();; return false;" title="Options">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--settings"></use>
+                    </svg>
+                    <span class="icon-label">Options</span>
+                  </a>
+                </div>
+                <h3>
+                  <a href="/issues?c%5B%5D=project&amp;c%5B%5D=tracker&amp;c%5B%5D=status&amp;c%5B%5D=subject&amp;f%5B%5D=status_id&amp;f%5B%5D=author_id&amp;f%5B%5D=project.status&amp;op%5Bauthor_id%5D=%3D&amp;op%5Bproject.status%5D=%3D&amp;op%5Bstatus_id%5D=o&amp;set_filter=1&amp;sort=updated_on%3Adesc&amp;v%5Bauthor_id%5D%5B%5D=me&amp;v%5Bproject.status%5D%5B%5D=1&amp;v%5Bstatus_id%5D%5B%5D=">Reported issues</a>
+                  (11)
+                </h3>
+                <div id="issuesreportedbyme-settings" style="display:none;">
+                  <form accept-charset="UTF-8" action="/my/page" data-remote="true" method="post" name="form-RANDOM">
+                    <input autocomplete="off" name="authenticity_token" type="hidden" value="{{CSRF}}">
+                    <div id="list-definition">
+                      <div class="box">
+                        <div class="query-columns">
+                          <label for="available_settings_issuesreportedbyme_columns">Available Columns</label>
+                          <select id="available_settings_issuesreportedbyme_columns" multiple="multiple" name="available_columns[]" ondblclick="moveOptions(this.form.available_settings_issuesreportedbyme_columns, this.form.selected_settings_issuesreportedbyme_columns);" size="10">
+                            <option value="parent">Parent task</option>
+                            <option value="parent.subject">Parent task subject</option>
+                            <option value="priority">Priority</option>
+                            <option value="author">Author</option>
+                            <option value="assigned_to">Assignee</option>
+                            <option value="watcher_users">Watchers</option>
+                            <option value="updated_on">Updated</option>
+                            <option value="category">Category</option>
+                            <option value="fixed_version">Target version</option>
+                            <option value="start_date">Start date</option>
+                            <option value="due_date">Due date</option>
+                            <option value="estimated_hours">Estimated time</option>
+                            <option value="estimated_remaining_hours">Estimated remaining time</option>
+                            <option value="total_estimated_hours">Total estimated time</option>
+                            <option value="spent_hours">Spent time</option>
+                            <option value="total_spent_hours">Total spent time</option>
+                            <option value="done_ratio">% Done</option>
+                            <option value="created_on">Created</option>
+                            <option value="closed_on">Closed</option>
+                            <option value="last_updated_by">Last updated by</option>
+                            <option value="relations">Related issues</option>
+                            <option value="attachments">Files</option>
+                            <option value="cf_2">Searchable field</option>
+                            <option value="cf_1">Database</option>
+                            <option value="cf_6">Float field</option>
+                            <option value="cf_8">Custom date</option>
+                            <option value="cf_9">Project 1 cf</option>
+                            <option value="is_private">Private</option>
+                          </select>
+                        </div>
+                        <div class="buttons">
+                          <button class="move-right" onclick="moveOptions(this.form.available_settings_issuesreportedbyme_columns, this.form.selected_settings_issuesreportedbyme_columns);" type="button">
+                            <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
+                              <use href="/assets/icons-DIGEST.svg#icon--arrow-narrow-right"></use>
+                            </svg>
+                          </button>
+                          <button class="move-left" onclick="moveOptions(this.form.selected_settings_issuesreportedbyme_columns, this.form.available_settings_issuesreportedbyme_columns);" type="button">
+                            <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
+                              <use href="/assets/icons-DIGEST.svg#icon--arrow-narrow-left"></use>
+                            </svg>
+                          </button>
+                        </div>
+                        <div class="query-columns">
+                          <label for="selected_settings_issuesreportedbyme_columns">Selected Columns</label>
+                          <select id="selected_settings_issuesreportedbyme_columns" multiple="multiple" name="settings[issuesreportedbyme][columns][]" ondblclick="moveOptions(this.form.selected_settings_issuesreportedbyme_columns, this.form.available_settings_issuesreportedbyme_columns);" size="10">
+                            <option value="project">Project</option>
+                            <option value="tracker">Tracker</option>
+                            <option value="status">Status</option>
+                            <option value="subject">Subject</option>
+                          </select>
+                        </div>
+                        <div class="buttons">
+                          <button onclick="moveOptionTop(this.form.selected_settings_issuesreportedbyme_columns);" type="button">⇈</button>
+                          <button onclick="moveOptionUp(this.form.selected_settings_issuesreportedbyme_columns);" type="button">↑</button>
+                          <button onclick="moveOptionDown(this.form.selected_settings_issuesreportedbyme_columns);" type="button">↓</button>
+                          <button onclick="moveOptionBottom(this.form.selected_settings_issuesreportedbyme_columns);" type="button">⇊</button>
+                        </div>
+                        <script>//<![CDATA[
+
+$(document).ready(function(){
+  $('.query-columns').closest('form').submit(function(){
+    $('#selected_settings_issuesreportedbyme_columns option:not(:disabled)').prop('selected', true);
+  });
+});
+
+//]]></script>
+                      </div>
+                    </div>
+                    <p>
+                      <input data-disable-with="Save" name="commit" type="submit" value="Save">
+                      <a href="#" onclick="$(&#39;#issuesreportedbyme-settings&#39;).toggle();; return false;">Cancel</a>
+                    </p>
+                  </form>
+                </div>
+                <form accept-charset="UTF-8" action="/my/page" data-cm-url="/issues/context_menu" method="post" name="form-RANDOM">
+                  <input autocomplete="off" name="authenticity_token" type="hidden" value="{{CSRF}}">
+                  <input autocomplete="off" name="back_url" type="hidden" value="/my/page">
+                  <input autocomplete="off" name="c[]" type="hidden" value="id">
+                  <input autocomplete="off" name="c[]" type="hidden" value="project">
+                  <input autocomplete="off" name="c[]" type="hidden" value="tracker">
+                  <input autocomplete="off" name="c[]" type="hidden" value="status">
+                  <input autocomplete="off" name="c[]" type="hidden" value="subject">
+                  <div class="autoscroll">
+                    <table class="list issues odd-even sort-by-updated-on sort-desc">
+                      <thead>
+                        <tr>
+                          <th class="checkbox hide-when-print">
+                            <input class="toggle-selection" id="check_all" name="check_all" title="Check all / Uncheck all" type="checkbox" value="">
+                          </th>
+                          <th class="id">
+                            <a data-method="post" data-remote="true" href="/my/page?settings%5Bissuesreportedbyme%5D%5Bsort%5D=id%3Adesc%2Cupdated_on%3Adesc" rel="nofollow" title="Sort by &#34;#&#34;">#</a>
+                          </th>
+                          <th class="project">
+                            <a data-method="post" data-remote="true" href="/my/page?settings%5Bissuesreportedbyme%5D%5Bsort%5D=project%2Cupdated_on%3Adesc" rel="nofollow" title="Sort by &#34;Project&#34;">Project</a>
+                          </th>
+                          <th class="tracker">
+                            <a data-method="post" data-remote="true" href="/my/page?settings%5Bissuesreportedbyme%5D%5Bsort%5D=tracker%2Cupdated_on%3Adesc" rel="nofollow" title="Sort by &#34;Tracker&#34;">Tracker</a>
+                          </th>
+                          <th class="status">
+                            <a data-method="post" data-remote="true" href="/my/page?settings%5Bissuesreportedbyme%5D%5Bsort%5D=status%2Cupdated_on%3Adesc" rel="nofollow" title="Sort by &#34;Status&#34;">Status</a>
+                          </th>
+                          <th class="subject">
+                            <a data-method="post" data-remote="true" href="/my/page?settings%5Bissuesreportedbyme%5D%5Bsort%5D=subject%2Cupdated_on%3Adesc" rel="nofollow" title="Sort by &#34;Subject&#34;">Subject</a>
+                          </th>
+                          <th class="buttons hide-when-print"></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr class="hascontextmenu even issue tracker-1 status-1 priority-5 priority-default behind-schedule created-by-me" id="issue-10">
+                          <td class="checkbox hide-when-print">
+                            <input name="ids[]" type="checkbox" value="10">
+                          </td>
+                          <td class="id">
+                            <a href="/issues/10">10</a>
+                          </td>
+                          <td class="project">
+                            <a href="/projects/private-child">Private child of eCookbook</a>
+                          </td>
+                          <td class="tracker">Bug</td>
+                          <td class="status">New</td>
+                          <td class="subject">
+                            <a href="/issues/10">Issue Doing the Blocking</a>
+                          </td>
+                          <td class="buttons hide-when-print">
+                            <a class="icon-only icon-actions js-contextmenu" href="#" title="Actions">
+                              <svg aria-hidden="true" class="s18 icon-svg">
+                                <use href="/assets/icons-DIGEST.svg#icon--3-bullets"></use>
+                              </svg>
+                              <span class="icon-label">Actions</span>
+                            </a>
+                          </td>
+                        </tr>
+                        <tr class="hascontextmenu odd issue tracker-1 status-1 priority-5 priority-default behind-schedule created-by-me" id="issue-9">
+                          <td class="checkbox hide-when-print">
+                            <input name="ids[]" type="checkbox" value="9">
+                          </td>
+                          <td class="id">
+                            <a href="/issues/9">9</a>
+                          </td>
+                          <td class="project">
+                            <a href="/projects/private-child">Private child of eCookbook</a>
+                          </td>
+                          <td class="tracker">Bug</td>
+                          <td class="status">New</td>
+                          <td class="subject">
+                            <a href="/issues/9">Blocked Issue</a>
+                          </td>
+                          <td class="buttons hide-when-print">
+                            <a class="icon-only icon-actions js-contextmenu" href="#" title="Actions">
+                              <svg aria-hidden="true" class="s18 icon-svg">
+                                <use href="/assets/icons-DIGEST.svg#icon--3-bullets"></use>
+                              </svg>
+                              <span class="icon-label">Actions</span>
+                            </a>
+                          </td>
+                        </tr>
+                        <tr class="hascontextmenu even issue tracker-1 status-1 priority-4 priority-lowest behind-schedule created-by-me" id="issue-6">
+                          <td class="checkbox hide-when-print">
+                            <input name="ids[]" type="checkbox" value="6">
+                          </td>
+                          <td class="id">
+                            <a href="/issues/6">6</a>
+                          </td>
+                          <td class="project">
+                            <a href="/projects/private-child">Private child of eCookbook</a>
+                          </td>
+                          <td class="tracker">Bug</td>
+                          <td class="status">New</td>
+                          <td class="subject">
+                            <a href="/issues/6">Issue of a private subproject</a>
+                          </td>
+                          <td class="buttons hide-when-print">
+                            <a class="icon-only icon-actions js-contextmenu" href="#" title="Actions">
+                              <svg aria-hidden="true" class="s18 icon-svg">
+                                <use href="/assets/icons-DIGEST.svg#icon--3-bullets"></use>
+                              </svg>
+                              <span class="icon-label">Actions</span>
+                            </a>
+                          </td>
+                        </tr>
+                        <tr class="hascontextmenu odd issue tracker-1 status-1 priority-4 priority-lowest behind-schedule created-by-me" id="issue-1">
+                          <td class="checkbox hide-when-print">
+                            <input name="ids[]" type="checkbox" value="1">
+                          </td>
+                          <td class="id">
+                            <a href="/issues/1">1</a>
+                          </td>
+                          <td class="project">
+                            <a href="/projects/ecookbook">eCookbook</a>
+                          </td>
+                          <td class="tracker">Bug</td>
+                          <td class="status">New</td>
+                          <td class="subject">
+                            <a href="/issues/1">Cannot print recipes</a>
+                          </td>
+                          <td class="buttons hide-when-print">
+                            <a class="icon-only icon-actions js-contextmenu" href="#" title="Actions">
+                              <svg aria-hidden="true" class="s18 icon-svg">
+                                <use href="/assets/icons-DIGEST.svg#icon--3-bullets"></use>
+                              </svg>
+                              <span class="icon-label">Actions</span>
+                            </a>
+                          </td>
+                        </tr>
+                        <tr class="hascontextmenu even issue tracker-1 status-1 priority-4 priority-lowest created-by-me" id="issue-13">
+                          <td class="checkbox hide-when-print">
+                            <input name="ids[]" type="checkbox" value="13">
+                          </td>
+                          <td class="id">
+                            <a href="/issues/13">13</a>
+                          </td>
+                          <td class="project">
+                            <a href="/projects/subproject1">eCookbook Subproject 1</a>
+                          </td>
+                          <td class="tracker">Bug</td>
+                          <td class="status">New</td>
+                          <td class="subject">
+                            <a href="/issues/13">Subproject issue two</a>
+                          </td>
+                          <td class="buttons hide-when-print">
+                            <a class="icon-only icon-actions js-contextmenu" href="#" title="Actions">
+                              <svg aria-hidden="true" class="s18 icon-svg">
+                                <use href="/assets/icons-DIGEST.svg#icon--3-bullets"></use>
+                              </svg>
+                              <span class="icon-label">Actions</span>
+                            </a>
+                          </td>
+                        </tr>
+                        <tr class="hascontextmenu odd issue tracker-1 status-1 priority-4 priority-lowest created-by-me" id="issue-5">
+                          <td class="checkbox hide-when-print">
+                            <input name="ids[]" type="checkbox" value="5">
+                          </td>
+                          <td class="id">
+                            <a href="/issues/5">5</a>
+                          </td>
+                          <td class="project">
+                            <a href="/projects/subproject1">eCookbook Subproject 1</a>
+                          </td>
+                          <td class="tracker">Bug</td>
+                          <td class="status">New</td>
+                          <td class="subject">
+                            <a href="/issues/5">Subproject issue</a>
+                          </td>
+                          <td class="buttons hide-when-print">
+                            <a class="icon-only icon-actions js-contextmenu" href="#" title="Actions">
+                              <svg aria-hidden="true" class="s18 icon-svg">
+                                <use href="/assets/icons-DIGEST.svg#icon--3-bullets"></use>
+                              </svg>
+                              <span class="icon-label">Actions</span>
+                            </a>
+                          </td>
+                        </tr>
+                        <tr class="hascontextmenu even issue tracker-1 status-1 priority-4 priority-lowest created-by-me assigned-to-me" id="issue-4">
+                          <td class="checkbox hide-when-print">
+                            <input name="ids[]" type="checkbox" value="4">
+                          </td>
+                          <td class="id">
+                            <a href="/issues/4">4</a>
+                          </td>
+                          <td class="project">
+                            <a href="/projects/onlinestore">OnlineStore</a>
+                          </td>
+                          <td class="tracker">Bug</td>
+                          <td class="status">New</td>
+                          <td class="subject">
+                            <a href="/issues/4">Issue on project 2</a>
+                          </td>
+                          <td class="buttons hide-when-print">
+                            <a class="icon-only icon-actions js-contextmenu" href="#" title="Actions">
+                              <svg aria-hidden="true" class="s18 icon-svg">
+                                <use href="/assets/icons-DIGEST.svg#icon--3-bullets"></use>
+                              </svg>
+                              <span class="icon-label">Actions</span>
+                            </a>
+                          </td>
+                        </tr>
+                        <tr class="hascontextmenu odd issue tracker-1 status-1 priority-5 priority-default behind-schedule created-by-me" id="issue-7">
+                          <td class="checkbox hide-when-print">
+                            <input name="ids[]" type="checkbox" value="7">
+                          </td>
+                          <td class="id">
+                            <a href="/issues/7">7</a>
+                          </td>
+                          <td class="project">
+                            <a href="/projects/ecookbook">eCookbook</a>
+                          </td>
+                          <td class="tracker">Bug</td>
+                          <td class="status">New</td>
+                          <td class="subject">
+                            <a href="/issues/7">Issue due today</a>
+                          </td>
+                          <td class="buttons hide-when-print">
+                            <a class="icon-only icon-actions js-contextmenu" href="#" title="Actions">
+                              <svg aria-hidden="true" class="s18 icon-svg">
+                                <use href="/assets/icons-DIGEST.svg#icon--3-bullets"></use>
+                              </svg>
+                              <span class="icon-label">Actions</span>
+                            </a>
+                          </td>
+                        </tr>
+                        <tr class="hascontextmenu even issue tracker-1 status-1 priority-5 priority-default private created-by-me" id="issue-14">
+                          <td class="checkbox hide-when-print">
+                            <input name="ids[]" type="checkbox" value="14">
+                          </td>
+                          <td class="id">
+                            <a href="/issues/14">14</a>
+                          </td>
+                          <td class="project">
+                            <a href="/projects/subproject1">eCookbook Subproject 1</a>
+                          </td>
+                          <td class="tracker">Bug</td>
+                          <td class="status">New</td>
+                          <td class="subject">
+                            <a href="/issues/14">Private issue on public project</a>
+                          </td>
+                          <td class="buttons hide-when-print">
+                            <a class="icon-only icon-actions js-contextmenu" href="#" title="Actions">
+                              <svg aria-hidden="true" class="s18 icon-svg">
+                                <use href="/assets/icons-DIGEST.svg#icon--3-bullets"></use>
+                              </svg>
+                              <span class="icon-label">Actions</span>
+                            </a>
+                          </td>
+                        </tr>
+                        <tr class="hascontextmenu odd issue tracker-2 status-2 priority-5 priority-default created-by-me" id="issue-2">
+                          <td class="checkbox hide-when-print">
+                            <input name="ids[]" type="checkbox" value="2">
+                          </td>
+                          <td class="id">
+                            <a href="/issues/2">2</a>
+                          </td>
+                          <td class="project">
+                            <a href="/projects/ecookbook">eCookbook</a>
+                          </td>
+                          <td class="tracker">Feature request</td>
+                          <td class="status">Assigned</td>
+                          <td class="subject">
+                            <a href="/issues/2">Add ingredients categories</a>
+                          </td>
+                          <td class="buttons hide-when-print">
+                            <a class="icon-only icon-actions js-contextmenu" href="#" title="Actions">
+                              <svg aria-hidden="true" class="s18 icon-svg">
+                                <use href="/assets/icons-DIGEST.svg#icon--3-bullets"></use>
+                              </svg>
+                              <span class="icon-label">Actions</span>
+                            </a>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          <script>//<![CDATA[
+
+$(document).ready(function(){
+  $('#block-select').val('');
+  $('.block-receiver').sortable({
+    connectWith: '.block-receiver',
+    tolerance: 'pointer',
+    handle: '.sort-handle',
+    start: function(event, ui){$(this).parent().addClass('dragging');},
+    stop: function(event, ui){$(this).parent().removeClass('dragging');},
+    update: function(event, ui){
+      // trigger the call on the list that receives the block only
+      if ($(this).find(ui.item).length > 0) {
+        $.ajax({
+          url: "/my/order_blocks",
+          type: 'post',
+          data: {
+            'group': $(this).attr('id').replace(/^list-/, ''),
+            'blocks': $.map($(this).children(), function(el){return $(el).attr('id').replace(/^block-/, '');})
+          }
+        });
+      }
+    }
+  });
+});
+
+//]]></script>
+          <div style="clear:both;"></div>
+        </div>
+      </div>
+      <div id="footer">MASKED</div>
+      <div id="ajax-indicator" style="display:none;">
+        <span class="icon">
+          <svg aria-hidden="true" class="s18 icon-svg svg-loader">
+            <use href="/assets/icons-DIGEST.svg#icon--loader"></use>
+          </svg>
+          <span class="icon-label">Loading...</span>
+        </span>
+      </div>
+      <div id="ajax-modal" style="display:none;"></div>
+      <div id="icon-copy-source" style="display: none;">
+        <svg aria-hidden="true" class="s18 icon-svg">
+          <use href="/assets/icons-DIGEST.svg#icon--"></use>
+        </svg>
+      </div>
+    </div>
+  </body>
+</html>

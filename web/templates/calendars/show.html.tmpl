@@ -1,0 +1,73 @@
+<h2>{{if eq .Query.ID 0}}{{l "label_calendar"}}{{else}}{{.Query.Name}}{{end}}</h2>
+{{if and (ne .Query.ID 0) (present .Query.Description)}}{{content_tag "p" .Query.Description (hash "class" "subtitle")}}{{end}}
+
+{{form_tag .FormAction (hash "method" "get" "id" "query_form")}}
+{{hidden_field_tag "set_filter" "1"}}
+{{hidden_field_tag "calendar" "1"}}
+
+<div id="query_form_with_buttons" class="hide-when-print">
+<div id="query_form_content">
+  <fieldset id="filters" class="collapsible {{if ne .Query.ID 0}}collapsed{{end}}">
+    <legend onclick="toggleFieldset(this);" class="icon icon-{{if eq .Query.ID 0}}expanded{{else}}collapsed{{end}}">
+      {{if eq .Query.ID 0}}{{sprite_icon "angle-down" (hash "rtl" false)}}{{else}}{{sprite_icon "angle-right" (hash "rtl" true)}}{{end}}
+      {{l "label_filter_plural"}}
+    </legend>
+    <div style="{{if ne .Query.ID 0}}display: none;{{end}}">
+      {{partial "calendars/query_filters" (dict "query" .QueryView "filters_url" .FiltersURL)}}
+    </div>
+  </fieldset>
+</div>
+
+<span class="contextual pagination">
+  <ul class="pages">
+    <li class="previous page">
+      {{.PrevLink}}
+    </li><li class="next page">
+      {{.NextLink}}
+    </li>
+  </ul>
+</span>
+
+<p class="buttons">
+  {{label_tag "month" (l "label_month")}}
+  {{.MonthSelect}}
+  {{label_tag "year" (l "label_year")}}
+  {{.YearSelect}}
+
+  {{link_to_function (sprite_icon "checked" (l "button_apply")) "$(\"#query_form\").submit()" (hash "class" "icon icon-checked")}}
+  {{link_to (sprite_icon "reload" (l "button_clear")) .ClearURL (hash "class" "icon icon-reload")}}
+  {{if .CanSave}}
+    {{link_to_function (sprite_icon "save" (capitalize (l "button_save_object" (hash "object_name" (l "label_query"))))) (printf "$('#query_form').attr('action', '%s').submit();" .NewQueryPath) (hash "class" "icon icon-save")}}
+  {{end}}
+  {{if .Editable}}
+    {{link_to (sprite_icon "edit" (capitalize (l "button_edit_object" (hash "object_name" (l "label_query"))))) .EditQueryURL (hash "class" "icon icon-edit")}}
+    {{link_to (sprite_icon "del" (capitalize (l "button_delete_object" (hash "object_name" (l "label_query"))))) .QueryURL (hash "method" "delete" "data" (hash "confirm" (l "text_are_you_sure")) "class" "icon icon-del")}}
+  {{end}}
+</p>
+</div>
+{{end_form}}
+
+{{render_error_messages .Errors}}
+{{if not .Errors}}
+{{partial "common/calendar" (dict "calendar" .Calendar)}}
+
+{{call_hook "view_calendars_show_bottom"}}
+
+<p class="legend cal">
+  <span class="starting">{{sprite_icon "bullet-go" (l "text_tip_issue_begin_day") (hash "rtl" true)}}</span>
+  <span class="ending">{{sprite_icon "bullet-end" (l "text_tip_issue_end_day") (hash "rtl" true)}}</span>
+  <span class="starting ending">{{sprite_icon "bullet-go-end" (l "text_tip_issue_begin_end_day")}}</span>
+</p>
+{{end}}
+
+{{define "calendars/show#sidebar"}}
+    {{call_hook "view_issues_sidebar_issues_bottom"}}
+{{call_hook "view_issues_sidebar_planning_bottom"}}
+
+{{.Sidebar}}
+{{call_hook "view_issues_sidebar_queries_bottom"}}
+
+{{end}}
+{{content_for "sidebar" (capture "calendars/show#sidebar")}}
+
+{{html_title (l "label_calendar")}}

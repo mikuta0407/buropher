@@ -1,0 +1,113 @@
+# バージョン（VersionsController: ロードマップ・詳細・フォーム・API）の参照系の互換シナリオ。
+# 工数（TimelogController）は timelog.yml。状態を変えないので共用の参照環境（3998）に流してよい。
+name: time_versions
+
+users:
+  admin: {login: admin, password: admin}
+  dlopper: {login: dlopper, password: foo}
+
+normalize:
+  mask_text_selectors:
+    - "#footer"
+  # 共用の参照環境では閲覧で変わるプロジェクトジャンプボックス（最近使ったプロジェクト）
+  strip_selectors:
+    - "#project-jump"
+  regex:
+    - {pattern: '-[0-9a-f]{8}(\\" method=)', replace: '-RANDOM$1'}
+
+requests:
+  # ロードマップ
+  - path: /projects/ecookbook/roadmap
+    users: [anonymous, admin, jsmith, dlopper]
+  - path: /projects/ecookbook/roadmap?completed=1
+    users: [admin]
+  - path: /projects/ecookbook/roadmap?completed=
+    users: [admin]
+  - path: /projects/ecookbook/roadmap?tracker_ids[]=&tracker_ids[]=1&with_subprojects=0
+    users: [admin]
+  - path: /projects/ecookbook/roadmap?tracker_ids=2/3
+    users: [admin]
+  - path: /projects/ecookbook/roadmap?tracker_ids[]=
+    users: [admin]
+  - path: /projects/ecookbook/versions
+    users: [admin]
+  - path: /projects/onlinestore/roadmap
+    users: [admin, jsmith]
+  - path: /projects/subproject1/roadmap
+    users: [admin, jsmith, anonymous]
+  - path: /projects/private-child/roadmap
+    users: [admin, jsmith]
+  - path: /projects/unknown/roadmap
+    users: [admin]
+  - path: /projects/ecookbook/roadmap.json
+    users: [admin]
+  # 詳細
+  - path: /versions/1
+    users: [admin]
+  - path: /versions/2
+    users: [anonymous, admin, jsmith, dlopper]
+  - path: /versions/3
+    users: [admin, jsmith]
+  - path: /versions/4
+    users: [admin]
+  - path: /versions/5
+    users: [admin, jsmith]
+  - path: /versions/6
+    users: [admin, jsmith]
+  - path: /versions/7
+    users: [admin, anonymous]
+  - path: /versions/999
+    users: [admin]
+  - path: /versions/2?status_by=status
+    users: [admin]
+  - path: /versions/2?status_by=priority
+    users: [admin]
+  - path: /versions/2?status_by=author
+    users: [admin]
+  - path: /versions/2?status_by=assigned_to
+    users: [admin]
+  - path: /versions/2?status_by=category
+    users: [admin]
+  - path: /versions/2.txt
+    users: [admin]
+    format: text
+  - path: /versions/3.txt
+    users: [admin]
+    format: text
+  # フォーム
+  - path: /projects/ecookbook/versions/new
+    users: [admin, jsmith, dlopper, anonymous]
+  - path: /projects/subproject1/versions/new
+    users: [admin, jsmith]
+  - path: /projects/ecookbook/versions/new?version[name]=X&version[sharing]=system&version[effective_date]=2026-03-01&version[default_project_version]=1
+    users: [admin, jsmith]
+  - path: /versions/2/edit
+    users: [admin, jsmith, dlopper]
+  - path: /versions/4/edit
+    users: [admin, jsmith]
+  - path: /versions/7/edit
+    users: [admin]
+  - id: versions_new_js__admin
+    path: /projects/ecookbook/versions/new.js
+    user: admin
+    format: text
+    headers: {X-Requested-With: XMLHttpRequest}
+  # API
+  - path: /projects/ecookbook/versions.json
+    users: [admin, jsmith, anonymous]
+  - path: /projects/ecookbook/versions.xml
+    users: [admin]
+  - path: /projects/subproject1/versions.json
+    users: [jsmith]
+  - path: /projects/onlinestore/versions.json
+    users: [admin, jsmith]
+  - path: /versions/2.json
+    users: [admin, jsmith, dlopper, anonymous]
+  - path: /versions/2.xml
+    users: [admin]
+  - path: /versions/3.json
+    users: [anonymous]
+  - path: /versions/7.json
+    users: [admin, anonymous]
+  - path: /versions/999.json
+    users: [admin]

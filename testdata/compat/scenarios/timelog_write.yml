@@ -1,0 +1,343 @@
+# 工数（TimelogController）の作成・更新・一括更新・削除と REST API の書き込みの互換シナリオ。
+# 状態を変えるため、共用の参照環境（3998）ではなく専用の参照インスタンスに対して、
+# 参照・候補とも実行前に reset して流すこと（-reset-ref / -reset-cand）。
+# ケースは記述順に依存する（作成した id 6 以降の工数を後続で使う）。
+name: timelog_write
+
+users:
+  admin: {login: admin, password: admin}
+  dlopper: {login: dlopper, password: foo}
+
+normalize:
+  mask_text_selectors:
+    - "#footer"
+  regex:
+    - {pattern: '-[0-9a-f]{8}(\\" method=)', replace: '-RANDOM$1'}
+  mask_timestamps: true
+
+requests:
+  # ---- 作成（検証エラー） ----
+  - id: create_blank
+    path: /time_entries
+    method: POST
+    user: admin
+    form:
+      time_entry[project_id]: ""
+      time_entry[issue_id]: ""
+      time_entry[spent_on]: ""
+      time_entry[hours]: ""
+      time_entry[comments]: ""
+      time_entry[activity_id]: ""
+      time_entry[custom_field_values][10]: ""
+  - id: create_invalid_values
+    path: /time_entries
+    method: POST
+    user: admin
+    form:
+      time_entry[project_id]: "1"
+      time_entry[issue_id]: "999"
+      time_entry[spent_on]: "2026-13-45"
+      time_entry[hours]: "abc"
+      time_entry[comments]: "x"
+      time_entry[activity_id]: "14"
+  - id: create_negative_hours_other_project_issue
+    path: /time_entries
+    method: POST
+    user: admin
+    form:
+      time_entry[project_id]: "3"
+      time_entry[issue_id]: "1"
+      time_entry[spent_on]: "2026-01-10"
+      time_entry[hours]: "-1"
+      time_entry[activity_id]: "9"
+  - id: create_future_date
+    path: /projects/ecookbook/time_entries
+    method: POST
+    user: jsmith
+    form:
+      project_id: ecookbook
+      time_entry[issue_id]: ""
+      time_entry[spent_on]: "2027-01-01"
+      time_entry[comments]: ""
+      time_entry[hours]: "1"
+      time_entry[activity_id]: "9"
+  - id: create_other_user_denied
+    path: /time_entries
+    method: POST
+    user: dlopper
+    form:
+      time_entry[project_id]: "1"
+      time_entry[user_id]: "2"
+      time_entry[spent_on]: "2026-01-10"
+      time_entry[hours]: "1"
+      time_entry[activity_id]: "9"
+  - id: create_forbidden_project
+    path: /time_entries
+    method: POST
+    user: dlopper
+    form:
+      time_entry[project_id]: "2"
+      time_entry[spent_on]: "2026-01-10"
+      time_entry[hours]: "1"
+      time_entry[activity_id]: "9"
+  # ---- 作成 ----
+  - id: create_ok
+    path: /time_entries
+    method: POST
+    user: jsmith
+    form:
+      time_entry[project_id]: "1"
+      time_entry[issue_id]: "1"
+      time_entry[spent_on]: "2026-01-10"
+      time_entry[hours]: "1:30"
+      time_entry[comments]: "Created by jsmith"
+      time_entry[activity_id]: "9"
+      time_entry[custom_field_values][10]: "1"
+    expect_status: 302
+  - id: create_ok_list
+    path: /projects/ecookbook/time_entries
+    user: jsmith
+  - id: create_continue_project
+    path: /time_entries
+    method: POST
+    user: jsmith
+    form:
+      project_id: ecookbook
+      time_entry[issue_id]: "3"
+      time_entry[spent_on]: "2026-01-11"
+      time_entry[hours]: "2h30"
+      time_entry[comments]: "continue"
+      time_entry[activity_id]: "10"
+      continue: "Create and add another"
+      back_url: /projects/ecookbook/time_entries
+    expect_status: 302
+  - id: create_continue_issue
+    path: /time_entries
+    method: POST
+    user: admin
+    form:
+      issue_id: "1"
+      time_entry[issue_id]: "1"
+      time_entry[spent_on]: "2026-01-12"
+      time_entry[hours]: "0.75"
+      time_entry[activity_id]: "11"
+      time_entry[user_id]: "3"
+      time_entry[comments]: ""
+      continue: "Create and add another"
+    expect_status: 302
+  - id: create_continue_global
+    path: /time_entries
+    method: POST
+    user: admin
+    form:
+      time_entry[project_id]: "3"
+      time_entry[issue_id]: ""
+      time_entry[spent_on]: "2026-01-13"
+      time_entry[hours]: "3"
+      time_entry[activity_id]: "10"
+      time_entry[comments]: ""
+      continue: "Create and add another"
+    expect_status: 302
+  - id: create_back_url
+    path: /time_entries
+    method: POST
+    user: admin
+    form:
+      time_entry[project_id]: "1"
+      time_entry[spent_on]: "2026-01-14"
+      time_entry[hours]: "0.5"
+      time_entry[activity_id]: "9"
+      time_entry[comments]: ""
+      back_url: /projects/ecookbook/time_entries?issue_id=1
+    expect_status: 302
+  # ---- フォームの更新（XHR） ----
+  - id: new_js_project
+    path: /time_entries/new.js
+    method: POST
+    user: admin
+    headers: {X-Requested-With: XMLHttpRequest}
+    form:
+      time_entry[project_id]: "3"
+      time_entry[issue_id]: ""
+  - id: new_js_issue
+    path: /time_entries/new.js
+    method: POST
+    user: jsmith
+    headers: {X-Requested-With: XMLHttpRequest}
+    form:
+      time_entry[project_id]: "1"
+      time_entry[issue_id]: "2"
+  - id: edit_js
+    path: /time_entries/1/edit.js
+    method: PATCH
+    user: admin
+    headers: {X-Requested-With: XMLHttpRequest}
+    form:
+      time_entry[project_id]: "1"
+      time_entry[issue_id]: "3"
+  # ---- 更新 ----
+  - id: update_invalid
+    path: /time_entries/1
+    method: PATCH
+    user: jsmith
+    form:
+      time_entry[hours]: ""
+      time_entry[spent_on]: "foo"
+  - id: update_ok
+    path: /time_entries/1
+    method: PATCH
+    user: jsmith
+    form:
+      time_entry[hours]: "5"
+      time_entry[comments]: "Updated"
+      time_entry[issue_id]: "3"
+      time_entry[custom_field_values][10]: "0"
+      back_url: /time_entries
+    expect_status: 302
+  - id: update_ok_list
+    path: /time_entries?set_filter=1&c[]=project&c[]=spent_on&c[]=user&c[]=activity&c[]=issue&c[]=comments&c[]=hours&c[]=cf_10
+    user: admin
+  - id: update_denied
+    path: /time_entries/1
+    method: PATCH
+    user: dlopper
+    form:
+      time_entry[hours]: "6"
+  - id: edit_after_update
+    path: /time_entries/1/edit
+    user: admin
+  # ---- API ----
+  - id: api_create_json
+    path: /time_entries.json
+    method: POST
+    user: admin
+    body: '{"time_entry": {"issue_id": 2, "hours": 2.25, "activity_id": 9, "spent_on": "2026-01-09", "comments": "api", "custom_fields": [{"id": 10, "value": "1"}]}}'
+    content_type: application/json
+  - id: api_create_json_project
+    path: /projects/ecookbook/time_entries.json
+    method: POST
+    user: jsmith
+    body: '{"time_entry": {"project_id": 1, "hours": "1h", "activity_id": 10, "comments": ""}}'
+    content_type: application/json
+  - id: api_create_json_invalid
+    path: /time_entries.json
+    method: POST
+    user: admin
+    body: '{"time_entry": {"project_id": 1, "hours": 0, "activity_id": 99, "spent_on": "x"}}'
+    content_type: application/json
+  - id: api_create_xml
+    path: /time_entries.xml
+    method: POST
+    user: admin
+    body: '<?xml version="1.0"?><time_entry><project_id>3</project_id><hours>4</hours><activity_id>10</activity_id><spent_on>2026-01-08</spent_on><comments>xml</comments></time_entry>'
+    content_type: application/xml
+  - id: api_update_json
+    path: /time_entries/2.json
+    method: PUT
+    user: admin
+    body: '{"time_entry": {"hours": 12.5, "comments": "api update"}}'
+    content_type: application/json
+  - id: api_update_json_invalid
+    path: /time_entries/2.json
+    method: PUT
+    user: admin
+    body: '{"time_entry": {"hours": -2, "issue_id": 99}}'
+    content_type: application/json
+  - id: api_update_denied
+    path: /time_entries/2.json
+    method: PUT
+    user: dlopper
+    body: '{"time_entry": {"hours": 1}}'
+    content_type: application/json
+  - id: api_show_updated
+    path: /time_entries/2.json
+    user: admin
+  # ---- 一括更新 ----
+  - id: bulk_update_activity
+    path: /time_entries/bulk_update
+    method: POST
+    user: admin
+    form:
+      ids[]: ["1", "2"]
+      time_entry[activity_id]: "10"
+      time_entry[custom_field_values][10]: "__none__"
+    expect_status: 302
+  - id: bulk_update_invalid
+    path: /time_entries/bulk_update
+    method: POST
+    user: admin
+    form:
+      ids[]: ["1", "3", "4"]
+      time_entry[hours]: "-3"
+      time_entry[issue_id]: "none"
+  - id: bulk_update_project
+    path: /time_entries/bulk_update?back_url=%2Fprojects%2Fsubproject1%2Ftime_entries
+    method: POST
+    user: admin
+    form:
+      ids[]: ["3"]
+      time_entry[project_id]: "3"
+      time_entry[issue_id]: "none"
+      time_entry[spent_on]: "2026-01-05"
+    expect_status: 302
+  - id: bulk_edit_js
+    path: /time_entries/bulk_edit.js
+    method: POST
+    user: admin
+    headers: {X-Requested-With: XMLHttpRequest}
+    normalize:
+      regex:
+        - {pattern: 'authenticity_token\\" value=\\"[^\\]+', replace: 'TOKEN'}
+    form:
+      ids[]: ["1", "2"]
+      time_entry[project_id]: "3"
+  - id: bulk_update_denied
+    path: /time_entries/bulk_update
+    method: POST
+    user: dlopper
+    form:
+      ids[]: ["1"]
+      time_entry[hours]: "1"
+  - id: after_bulk_list
+    path: /time_entries.json?limit=100
+    user: admin
+  # ---- 削除 ----
+  - id: destroy_single
+    path: /time_entries/5
+    method: DELETE
+    user: admin
+    form: {_dummy: "1"}
+    headers: {Referer: "http://127.0.0.1/projects/ecookbook/time_entries"}
+  - id: destroy_bulk
+    path: /time_entries/destroy?ids[]=1&ids[]=2&back_url=%2Ftime_entries%3Fsort%3Dhours
+    method: DELETE
+    user: admin
+    form: {_dummy: "1"}
+    expect_status: 302
+  - id: destroy_denied
+    path: /time_entries/3
+    method: DELETE
+    user: dlopper
+    form: {_dummy: "1"}
+  - id: destroy_missing
+    path: /time_entries/999
+    method: DELETE
+    user: admin
+    form: {_dummy: "1"}
+  - id: api_destroy
+    path: /time_entries/4.json
+    method: DELETE
+    user: admin
+  - id: api_destroy_missing
+    path: /time_entries/999.json
+    method: DELETE
+    user: admin
+  - id: final_list
+    path: /time_entries
+    user: admin
+  - id: final_json
+    path: /time_entries.json?limit=100
+    user: admin
+  - id: final_report
+    path: /time_entries/report?criteria[]=project&criteria[]=user&criteria[]=activity&columns=month
+    user: admin

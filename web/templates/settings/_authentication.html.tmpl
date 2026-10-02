@@ -1,0 +1,49 @@
+{{$v := assigns}}
+{{form_tag "/settings/edit?tab=authentication"}}
+
+<div class="box tabular settings">
+<p>{{setting_select "login_required" (list (list (l "label_login_required_yes") "1") (list (l "label_login_required_no") "0"))}}
+  <em class="info">{{raw (l "text_login_required_html" (hash "anonymous_role_path" (h $v.AnonymousRolePath)))}}</em>
+</p>
+
+<p>{{setting_select "autologin" (x_days_options 1 7 30 365)}}</p>
+
+<p>{{setting_select "self_registration" (list (list (l "label_disabled") "0") (list (l "label_registration_activation_by_email") "1") (list (l "label_registration_manual_activation") "2") (list (l "label_registration_automatic_activation") "3")) (hash "onchange" "if (this.value != '0') { $('#settings_show_custom_fields_on_registration').removeAttr('disabled'); } else { $('#settings_show_custom_fields_on_registration').attr('disabled', true); }")}}</p>
+
+<p>{{setting_check_box "show_custom_fields_on_registration" (hash "disabled" (not $v.SelfRegistration))}}</p>
+
+<p>{{setting_text_field "password_min_length" (hash "size" 6)}}</p>
+
+<p>{{setting_multiselect "password_required_char_classes" $v.PasswordCharClassOptions (hash "inline" true)}}</p>
+
+<p>
+  {{setting_select "password_max_age" (x_days_options 7 30 60 90 180 365)}}
+</p>
+
+<p>{{setting_check_box "lost_password"}}</p>
+
+<p>
+  {{setting_select "twofa" $v.TwofaOptions -}}
+  <em class="info">
+    {{raw (l "twofa_hint_disabled_html" (hash "label" (l "label_disabled"))) -}}<br/>
+    {{raw (l "twofa_hint_optional_html" (hash "label" (l "label_optional"))) -}}<br/>
+    {{raw (l "twofa_hint_required_administrators_html" (hash "label" (l "label_required_administrators"))) -}}<br/>
+    {{raw (l "twofa_hint_required_html" (hash "label" (l "label_required_lower"))) -}}
+  </em>
+</p>
+
+</div>
+
+<fieldset class="box">
+  <legend>{{l "label_session_expiration"}}</legend>
+
+  <div class="tabular settings">
+    <p>{{setting_select "session_lifetime" (session_lifetime_options)}}</p>
+    <p>{{setting_select "session_timeout" (session_timeout_options)}}</p>
+  </div>
+
+  <p><em class="info">{{l "text_session_expiration_settings"}}</em></p>
+</fieldset>
+
+{{submit_tag (l "button_save")}}
+{{end_form}}

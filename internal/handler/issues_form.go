@@ -16,8 +16,8 @@ import (
 	"github.com/mikuta0407/buropher/internal/customfield"
 	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/helper"
-	"github.com/mikuta0407/buropher/internal/issues"
 	"github.com/mikuta0407/buropher/internal/repository"
+	"github.com/mikuta0407/buropher/internal/timelog"
 	"github.com/mikuta0407/buropher/internal/view/rails"
 )
 
@@ -178,15 +178,13 @@ type timeEntryFormModel struct {
 	ActivityID any
 	Activities []*domain.Enumeration
 	CFValues   []*issueCFValue
-	// TE は入力値を代入済みの @time_entry（update の検証エラー時の再表示。nil なら新規の既定値）。
-	TE *issues.TimeEntry
-	// Params は params[:time_entry]。
-	Params *issues.TimeEntryParams
+	// TE は入力値を代入済みの @time_entry（edit / update。nil なら新規の既定値）。
+	TE *timelog.Entry
 }
 
-// setInput は @time_entry.safe_attributes = params[:time_entry] の結果をフォームに反映する。
-func (t *timeEntryFormModel) setInput(te *issues.TimeEntry, p *issues.TimeEntryParams) {
-	t.TE, t.Params = te, p
+// setInput は @time_entry（safe_attributes = params[:time_entry] の結果）をフォームに反映する。
+func (t *timeEntryFormModel) setInput(te *timelog.Entry) {
+	t.TE = te
 	if te == nil {
 		return
 	}
@@ -195,7 +193,7 @@ func (t *timeEntryFormModel) setInput(te *issues.TimeEntry, p *issues.TimeEntryP
 		t.ActivityID = *te.ActivityID
 	}
 	for _, v := range t.CFValues {
-		if vals, ok := te.CustomFieldValues[v.CF.ID]; ok {
+		if vals, ok := te.CFValues[v.CF.ID]; ok {
 			v.Values = vals
 		}
 	}
@@ -247,13 +245,16 @@ func (t *timeEntryFormModel) Send(method string) (any, bool) {
 		}
 		return nil, true
 	case "hours_before_type_cast":
-		if t.TE != nil && t.Params != nil && t.Params.Hours != nil {
-			return *t.Params.Hours, true
+		if t.TE != nil && t.TE.HoursBeforeTypeCast != nil {
+			return t.TE.HoursBeforeTypeCast, true
+		}
+		if t.TE != nil && t.TE.Hours != nil {
+			return *t.TE.Hours, true
 		}
 		return nil, true
 	case "comments":
-		if t.Params != nil && t.Params.Comments != nil {
-			return *t.Params.Comments, true
+		if t.TE != nil && t.TE.Comments != nil {
+			return *t.TE.Comments, true
 		}
 		return nil, true
 	case "activity_id":
@@ -264,10 +265,10 @@ func (t *timeEntryFormModel) Send(method string) (any, bool) {
 
 // ErrorsOn は errors[attr]。
 func (t *timeEntryFormModel) ErrorsOn(attr string) []string {
-	if t.TE == nil {
+	if t.TE == nil || t.TE.Errors == nil {
 		return nil
 	}
-	return t.TE.Errors.On(attr)
+	return t.TE.Errors.Messages(t.l.c.Loc, attr)
 }
 
 // ActivityOptions は activity_collection_for_select_options(@time_entry)。
@@ -738,7 +739,7 @@ func (f *issueEditForm) HoursFieldOptions(size int, required bool, value *float6
 // （検証エラーが無ければ format_hours(hours)、あれば入力値のまま）。
 func (f *issueEditForm) TimeEntryHoursOptions() *rails.Hash {
 	t := f.TimeEntry
-	if t != nil && t.TE != nil && len(t.TE.Errors.On("hours")) > 0 {
+	if t != nil && t.TE != nil && t.TE.Errors.Include("hours") {
 		return rails.NewHash("size", 6, "label", rails.Symbol("label_spent_time"))
 	}
 	h := rails.NewHash("placeholder", "h:mm", "size", 6, "label", rails.Symbol("label_spent_time"))

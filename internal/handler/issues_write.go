@@ -18,6 +18,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/httpx"
 	"github.com/mikuta0407/buropher/internal/issues"
 	"github.com/mikuta0407/buropher/internal/repository"
+	"github.com/mikuta0407/buropher/internal/timelog"
 	"github.com/mikuta0407/buropher/internal/view/rails"
 )
 
@@ -93,24 +94,14 @@ func plainIssueParam(key string, v any) any {
 	return v
 }
 
-// timeEntryParamsOf は params[:time_entry]（無ければ nil）。
-func timeEntryParamsOf(p *httpx.Params) *issues.TimeEntryParams {
-	if p == nil {
-		return nil
-	}
-	tp := &issues.TimeEntryParams{}
-	str := func(k string) *string {
-		if s, ok := p.StringOK(k); ok {
-			return &s
-		}
-		return nil
-	}
-	tp.Hours, tp.Comments, tp.ActivityID = str("hours"), str("comments"), str("activity_id")
-	if cf := p.Map("custom_field_values"); cf != nil {
-		tp.CustomFields = map[string]any{}
-		cf.Each(func(k string, v any) { tp.CustomFields[k] = plainIssueParam(k, v) })
-	}
-	return tp
+// timeEntryParamsPresent は params[:time_entry][:hours].present? || params[:time_entry][:comments].present?。
+func timeEntryParamsPresent(p *httpx.Params) bool {
+	return p != nil && (rails.IsPresent(p.String("hours")) || rails.IsPresent(p.String("comments")))
+}
+
+// timelogEnv は User.current の工数の Env。
+func (a *App) timelogEnv(c *Req) *timelog.Env {
+	return &timelog.Env{Q: a.DB, Settings: a.Settings, User: c.User, Az: c.Authz(), Loc: c.Loc, Now: a.now}
 }
 
 // attachmentsParam は params[:attachments] || (params[:issue] && params[:issue][:uploads])。
@@ -582,9 +573,10 @@ func (a *App) redirectAfterCreate(c *Req, iss *issues.Issue) {
 type issueEditState struct {
 	env *issues.Env
 	iss *issues.Issue
-	// te / teParams は @time_entry と params[:time_entry]。
-	te       *issues.TimeEntry
-	teParams *issues.TimeEntryParams
+	// tl / te / teParams は工数の Env・@time_entry・params[:time_entry]。
+	tl       *timelog.Env
+	te       *timelog.Entry
+	teParams *httpx.Params
 	allowed  []*domain.IssueStatus
 	saved    *attachments.SaveResult
 
@@ -603,10 +595,24 @@ func (a *App) updateIssueFromParams(c *Req) *issueEditState {
 		return nil
 	}
 	st := &issueEditState{env: env, iss: iss}
-	st.teParams = timeEntryParamsOf(c.Params().Map("time_entry"))
-	if st.te, err = env.NewTimeEntry(ctx, iss, st.teParams); err != nil {
+	// @time_entry = TimeEntry.new(:issue => @issue, :project => @issue.project)
+	st.tl = a.timelogEnv(c)
+	st.teParams = c.Params().Map("time_entry")
+	p, err := env.ProjectOf(ctx, iss)
+	if err != nil {
+		a.internalError(c, "project", err)
+		return nil
+	}
+	issueID := iss.ID
+	if st.te, err = st.tl.New(ctx, p, &issueID); err != nil {
 		a.internalError(c, "time entry", err)
 		return nil
+	}
+	if st.teParams != nil {
+		if err := st.tl.SafeAssign(ctx, st.te, st.teParams, c.User); err != nil {
+			a.internalError(c, "time entry", err)
+			return nil
+		}
 	}
 	if _, err := env.InitJournal(ctx, iss, c.User, ""); err != nil {
 		a.internalError(c, "init journal", err)
@@ -653,11 +659,11 @@ func (a *App) editFormData(c *Req, st *issueEditState) (map[string]any, *issueLo
 	f := a.newIssueEditForm(c, l, v)
 	f.saved = st.saved
 	if f.TimeEntry != nil {
-		f.TimeEntry.setInput(st.te, st.teParams)
+		f.TimeEntry.setInput(st.te)
 	}
 	f.ErrorMessages = st.iss.Errors.FullMessages(c.Loc.L)
 	if st.te != nil {
-		f.ErrorMessages = append(f.ErrorMessages, st.te.Errors.FullMessages(c.Loc.L)...)
+		f.ErrorMessages = append(f.ErrorMessages, st.te.Errors.FullMessages(c.Loc)...)
 	}
 	f.Conflict = st.conflict
 	for _, j := range st.conflictJournals {
@@ -803,7 +809,7 @@ func (a *App) saveIssueWithChildRecords(c *Req, st *issueEditState, res *attachm
 	if err != nil {
 		return false, nil, err
 	}
-	logTime := st.teParams.Present() && c.AllowedTo(domain.Perm("log_time"), p)
+	logTime := timeEntryParamsPresent(st.teParams) && c.AllowedTo(domain.Perm("log_time"), p)
 	var saved bool
 	var sres *issues.SaveResult
 	err = a.DB.WithTx(ctx, func(tx *db.Tx) error {
@@ -811,19 +817,20 @@ func (a *App) saveIssueWithChildRecords(c *Req, st *issueEditState, res *attachm
 		var extra []domain.ValidationError
 		if logTime {
 			te := st.te
-			te.ProjectID, te.IssueID = iss.ProjectID, iss.ID
-			te.AuthorID, te.UserID = c.User.ID, c.User.ID
-			te.SpentOn = a.newIssueLookup(c).userToday()
-			te.AssignParams(st.teParams)
-			ok, err := env.ValidateTimeEntry(ctx, te, iss)
+			pid, iid, uid := iss.ProjectID, iss.ID, c.User.ID
+			te.ProjectID, te.IssueID, te.AuthorID = &pid, &iid, &uid
+			te.SetUser(c.User)
+			today := st.tl.Today()
+			te.SpentOn = &today
+			tl := st.tl.WithQ(tx)
+			if err := tl.SafeAssign(ctx, te, st.teParams, c.User); err != nil {
+				return err
+			}
+			ok, err := tl.Save(ctx, te)
 			if err != nil {
 				return err
 			}
-			if ok {
-				if err := env.InsertTimeEntry(ctx, te); err != nil {
-					return err
-				}
-			} else {
+			if !ok {
 				// has_many :time_entries の関連の検証（validate_collection_association）
 				extra = append(extra, domain.ValidationError{Attr: "time_entries", Key: "invalid"})
 			}

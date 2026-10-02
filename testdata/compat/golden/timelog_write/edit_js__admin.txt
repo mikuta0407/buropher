@@ -1,0 +1,5 @@
+status: 200
+content-type: text/javascript
+
+$('#time_entry_activity_id').html('<option selected=\"selected\" value=\"9\">Design<\/option>\n<option value=\"10\">Development<\/option>\n<option value=\"11\">QA<\/option>');
+$('#time_entry_issue').html('<a class=\"issue tracker-1 status-1 priority-4 priority-lowest overdue behind-schedule\" href=\"/issues/3\">Bug #3<\/a>: Error 281 when updating a recipe');

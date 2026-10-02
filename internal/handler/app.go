@@ -17,6 +17,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/attachments"
 	"github.com/mikuta0407/buropher/internal/authz"
 	"github.com/mikuta0407/buropher/internal/clock"
+	"github.com/mikuta0407/buropher/internal/crypto/secretbox"
 	"github.com/mikuta0407/buropher/internal/db"
 	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/helper"
@@ -52,6 +53,10 @@ type App struct {
 	AttachmentStore *attachments.Store
 	// Notifier はチケットの通知（issue_add / issue_edit）の配送先（nil ならログ出力のみ。issues_env.go）。
 	Notifier issues.Notifier
+	// Secrets は DB に保存する秘密値（LDAP の account_password 等）の暗号化器（server.secret_key 由来）。
+	Secrets *secretbox.Box
+	// Version は buropher のバージョン（admin/info に表示する。空なら "dev"）。
+	Version string
 }
 
 func (a *App) now() time.Time {

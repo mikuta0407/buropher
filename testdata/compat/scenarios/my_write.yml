@@ -1,0 +1,322 @@
+# マイページ・個人設定の状態を変える互換シナリオ（MyController: add_block / remove_block / order_blocks /
+# update_page / account / password / reset_atom_key / reset_api_key / destroy）。
+# 参照は専用インスタンスで実行前に reset すること:
+#   COMPAT_REF_DIR=_reference/ref-my COMPAT_REF_PORT=4020 tools/compat/redmine-ref.sh start
+#   go run ./tools/compat diff -ref http://127.0.0.1:4020 -cand http://127.0.0.1:4120 \
+#     -reset-ref 'COMPAT_REF_DIR=... COMPAT_REF_PORT=4020 tools/compat/redmine-ref.sh reset' \
+#     -reset-cand 'BUROPHER_CAND_PORT=4120 BUROPHER_CAND_DIR=... tools/compat/buropher-cand.sh reset' \
+#     testdata/compat/scenarios/my_write.yml
+# ケースは記述順に実行され、前のケースの結果に依存する。
+name: my_write
+
+users:
+  admin: {login: admin, password: admin}
+  jsmith: {login: jsmith, password: jsmith}
+  dlopper: {login: dlopper, password: foo}
+  rhill: {login: rhill, password: foo}
+  miscuser8: {login: miscuser8, password: foo}
+
+normalize:
+  mask_text_selectors:
+    - "#footer"
+  strip_selectors:
+    - "#project-jump"
+    # time_zone_select の Casablanca の基準オフセットは評価時刻で変わる（my_calendar_reports.yml 参照）
+    - "#pref_time_zone"
+  regex:
+    - {pattern: '[0-9a-f]{40}', replace: 'KEY40'}
+    # JS 応答（テキスト）内の CSRF トークンとフォーム名
+    - {pattern: 'name=\\"authenticity_token\\" value=\\"[^\\"]*\\"', replace: 'name=\\"authenticity_token\\" value=\\"CSRF\\"'}
+    - {pattern: 'form-[0-9a-f]{8}', replace: 'form-RANDOM'}
+
+requests:
+  # ---- ブロックの追加（XHR は add_block.js）
+  - id: add_news_js
+    path: /my/add_block
+    method: POST
+    user: jsmith
+    form: {block: news}
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, */*; q=0.01"}
+    expect_status: 200
+  - id: add_issuequery_js
+    path: /my/add_block
+    method: POST
+    user: jsmith
+    form: {block: issuequery}
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, */*; q=0.01"}
+  - id: add_issuequery_1_js
+    path: /my/add_block
+    method: POST
+    user: jsmith
+    form: {block: issuequery__1}
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, */*; q=0.01"}
+  - id: add_issuequery_again_js
+    path: /my/add_block
+    method: POST
+    user: jsmith
+    form: {block: issuequery}
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, */*; q=0.01"}
+  - id: add_bogus
+    path: /my/add_block
+    method: POST
+    user: jsmith
+    form: {block: bogus}
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, */*; q=0.01"}
+    expect_status: 422
+  - id: add_calendar_html
+    path: /my/add_block
+    method: POST
+    user: jsmith
+    form: {block: calendar}
+    expect_status: 302
+  - id: add_documents_js
+    path: /my/add_block
+    method: POST
+    user: jsmith
+    form: {block: documents}
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, */*; q=0.01"}
+  - id: add_timelog_js
+    path: /my/add_block
+    method: POST
+    user: jsmith
+    form: {block: timelog}
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, */*; q=0.01"}
+  - id: add_activity_js
+    path: /my/add_block
+    method: POST
+    user: jsmith
+    form: {block: activity}
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, */*; q=0.01"}
+  - id: add_watched_js
+    path: /my/add_block
+    method: POST
+    user: jsmith
+    form: {block: issueswatched}
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, */*; q=0.01"}
+  - id: add_updated_js
+    path: /my/add_block
+    method: POST
+    user: jsmith
+    form: {block: IssuesUpdatedByMe}
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, */*; q=0.01"}
+  - path: /my/page
+    id: page_after_add
+    users: [jsmith]
+
+  # ---- ブロックの削除・並べ替え
+  - id: remove_news_js
+    path: /my/remove_block
+    method: POST
+    user: jsmith
+    form: {block: news}
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, */*; q=0.01"}
+  - id: remove_calendar_html
+    path: /my/remove_block
+    method: POST
+    user: jsmith
+    form: {block: calendar}
+    expect_status: 302
+  - id: order_left
+    path: /my/order_blocks
+    method: POST
+    user: jsmith
+    form: {group: left, "blocks[]": [timelog, issuesassignedtome, unknown]}
+    expect_status: 200
+  - id: order_invalid_group
+    path: /my/order_blocks
+    method: POST
+    user: jsmith
+    form: {group: bottom, "blocks[]": [activity]}
+  - path: /my/page
+    id: page_after_order
+    users: [jsmith]
+
+  # ---- ブロックの設定（update_page.js）
+  - id: settings_query
+    path: /my/page
+    method: POST
+    user: jsmith
+    form: {"settings[issuequery][query_id]": "5"}
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, */*; q=0.01"}
+  - id: settings_query_grouped
+    path: /my/page
+    method: POST
+    user: jsmith
+    form: {"settings[issuequery__1][query_id]": "6"}
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, */*; q=0.01"}
+  - id: settings_columns
+    path: /my/page
+    method: POST
+    user: jsmith
+    form: {"settings[issuesassignedtome][columns][]": [tracker, subject, priority, assigned_to, due_date, done_ratio, updated_on, fixed_version, estimated_hours, author, category, start_date, created_on, is_private]}
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, */*; q=0.01"}
+  - id: settings_sort
+    path: "/my/page?settings%5Bissueswatched%5D%5Bsort%5D=subject%2Cupdated_on%3Adesc"
+    method: POST
+    user: jsmith
+    form: {dummy: "1"}
+    expect_status: 200
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, */*; q=0.01"}
+  - id: settings_timelog
+    path: /my/page
+    method: POST
+    user: jsmith
+    form: {"settings[timelog][days]": "400"}
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, */*; q=0.01"}
+  - id: settings_unknown
+    path: /my/page
+    method: POST
+    user: jsmith
+    form: {"settings[nonexistent][days]": "3"}
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, */*; q=0.01"}
+  - id: add_issuequery_2
+    path: /my/add_block
+    method: POST
+    user: jsmith
+    form: {block: issuequery__2}
+    expect_status: 302
+  - id: settings_query_project
+    path: /my/page
+    method: POST
+    user: jsmith
+    form: {"settings[issuequery__2][query_id]": "7", "settings[issuequery__2][columns][]": [project, subject, parent, parent.subject, spent_hours, total_spent_hours, last_updated_by, watcher_users, relations, attachments, estimated_remaining_hours, total_estimated_hours, closed_on, description, last_notes]}
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, */*; q=0.01"}
+  - id: settings_reported_columns
+    path: /my/page
+    method: POST
+    user: jsmith
+    form: {"settings[issuesreportedbyme][columns][]": [subject, parent, spent_hours, total_spent_hours, last_updated_by, watcher_users, relations, attachments, cf_1, cf_2, cf_6, cf_8, cf_9, description], "settings[issuesreportedbyme][sort]": "id"}
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, */*; q=0.01"}
+  - path: /my/page
+    id: page_after_settings
+    users: [jsmith]
+  - id: settings_query_admin
+    path: /my/add_block
+    method: POST
+    user: admin
+    form: {block: issuequery}
+    expect_status: 302
+  - id: settings_query_admin_grouped
+    path: /my/page
+    method: POST
+    user: admin
+    form: {"settings[issuequery][query_id]": "9", "settings[issuequery][columns][]": [project, tracker, status, subject, cf_1]}
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, */*; q=0.01"}
+  - path: /my/page
+    id: page_admin_after_settings
+    users: [admin]
+  - id: anonymous_add_block
+    path: /my/add_block
+    method: POST
+    user: anonymous
+    form: {block: news}
+
+  # ---- 個人設定（account）
+  - id: account_update
+    path: /my/account
+    method: PUT
+    user: dlopper
+    form: {"user[firstname]": "Dave2", "user[lastname]": "Lopper2", "user[mail]": "dave2@somenet.foo", "user[language]": "fr", "user[mail_notification]": "only_assigned", "user[custom_field_values][4]": "0123", "pref[hide_mail]": "0", "pref[comments_sorting]": "desc", "pref[textarea_font]": "monospace", "pref[recently_used_projects]": "5", "pref[history_default_tab]": "notes", "pref[no_self_notified]": "0", "pref[auto_watch_on][]": ["", "issue_created"], "pref[warn_on_leaving_unsaved]": "0", "pref[toolbar_language_options]": "ruby, go"}
+    expect_status: 302
+  - path: /my/account
+    id: account_after_update
+    users: [dlopper]
+  - id: account_invalid
+    path: /my/account
+    method: PUT
+    user: dlopper
+    form: {"user[firstname]": "", "user[mail]": "invalid", "user[language]": "en"}
+    expect_status: 200
+  - id: account_api_update
+    path: /my/account.json
+    method: PUT
+    user: rhill
+    auth: basic
+    body: '{"user": {"firstname": "Robert2"}, "pref": {"comments_sorting": "desc"}}'
+    content_type: application/json
+    expect_status: 204
+  - id: account_api_invalid
+    path: /my/account.json
+    method: PUT
+    user: rhill
+    auth: basic
+    body: '{"user": {"lastname": ""}}'
+    content_type: application/json
+    expect_status: 422
+  - path: /my/account.json
+    id: account_api_after
+    users: [rhill]
+
+  # ---- パスワード変更
+  - id: password_wrong_current
+    path: /my/password
+    method: POST
+    user: rhill
+    form: {password: wrong, new_password: newpassword1, new_password_confirmation: newpassword1}
+  - id: password_same
+    path: /my/password
+    method: POST
+    user: rhill
+    form: {password: foo, new_password: foo, new_password_confirmation: foo}
+  - id: password_mismatch
+    path: /my/password
+    method: POST
+    user: rhill
+    form: {password: foo, new_password: newpassword1, new_password_confirmation: newpassword2}
+  - id: password_too_short
+    path: /my/password
+    method: POST
+    user: rhill
+    form: {password: foo, new_password: short, new_password_confirmation: short}
+  - id: password_success
+    path: /my/password
+    method: POST
+    user: rhill
+    form: {password: foo, new_password: newpassword1, new_password_confirmation: newpassword1}
+    expect_status: 302
+  - path: /my/account
+    id: account_after_password
+    users: [rhill]
+
+  # ---- フィード・API キーの再生成
+  - id: reset_atom_key
+    path: /my/atom_key
+    method: POST
+    user: jsmith
+    form: {dummy: "1"}
+    expect_status: 302
+  - id: reset_api_key
+    path: /my/api_key
+    method: POST
+    user: jsmith
+    form: {dummy: "1"}
+    expect_status: 302
+  - path: /my/account
+    id: account_after_reset_keys
+    users: [jsmith]
+
+  # ---- アカウント削除
+  - path: /my/account/destroy
+    id: destroy_confirm
+    users: [miscuser8]
+  - id: destroy_without_confirm
+    path: /my/account/destroy
+    method: POST
+    user: miscuser8
+    form: {dummy: "1"}
+    expect_status: 200
+  - id: destroy_admin_only
+    path: /my/account/destroy
+    method: POST
+    user: admin
+    form: {confirm: "1"}
+    expect_status: 302
+  - id: destroy_with_confirm
+    path: /my/account/destroy
+    method: POST
+    user: miscuser8
+    form: {confirm: "1"}
+    expect_status: 302
+  - path: /users/8
+    id: destroyed_user
+    users: [admin]
