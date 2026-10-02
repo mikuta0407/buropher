@@ -1,0 +1,439 @@
+status: 200
+content-type: text/html
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>eCookbook - Redmine</title>
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta content="Redmine" name="description">
+    <meta content="issue,bug,tracker" name="keywords">
+    <meta content="authenticity_token" name="csrf-param">
+    <meta content="{{CSRF}}" name="csrf-token">
+    <link href="/assets/favicon-DIGEST.ico" rel="shortcut icon" type="image/x-icon">
+    <link href="/assets/jquery/jquery-ui-1.13.2-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/tribute-5.1.3-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/application-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/responsive-DIGEST.css" media="all" rel="stylesheet">
+    <script data-turbo-track="reload" type="importmap">{
+  "imports": {
+    "@rails/request.js": "/assets/requestjs-DIGEST.js",
+    "application": "/assets/application-DIGEST.js",
+    "@hotwired/stimulus": "/assets/stimulus.min-DIGEST.js",
+    "@hotwired/stimulus-loading": "/assets/stimulus-loading-DIGEST.js",
+    "turndown": "/assets/turndown-DIGEST.js",
+    "controllers/api_key_copy_controller": "/assets/controllers/api_key_copy_controller-DIGEST.js",
+    "controllers/application": "/assets/controllers/application-DIGEST.js",
+    "controllers": "/assets/controllers/index-DIGEST.js",
+    "controllers/list_autofill_controller": "/assets/controllers/list_autofill_controller-DIGEST.js",
+    "controllers/quote_reply_controller": "/assets/controllers/quote_reply_controller-DIGEST.js",
+    "controllers/sticky_issue_header_controller": "/assets/controllers/sticky_issue_header_controller-DIGEST.js"
+  }
+}</script>
+    <link href="/assets/requestjs-DIGEST.js" rel="modulepreload">
+    <link href="/assets/application-DIGEST.js" rel="modulepreload">
+    <link href="/assets/stimulus.min-DIGEST.js" rel="modulepreload">
+    <link href="/assets/stimulus-loading-DIGEST.js" rel="modulepreload">
+    <link href="/assets/turndown-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/api_key_copy_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/application-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/index-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/list_autofill_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/quote_reply_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/sticky_issue_header_controller-DIGEST.js" rel="modulepreload">
+    <script type="module">import "application"</script>
+    <script src="/assets/jquery-3.7.1-ui-1.13.3-DIGEST.js"></script>
+    <script src="/assets/rails-ujs-DIGEST.js"></script>
+    <script src="/assets/tribute-5.1.3.min-DIGEST.js"></script>
+    <script src="/assets/application-legacy-DIGEST.js"></script>
+    <script src="/assets/responsive-DIGEST.js"></script>
+    <script>//<![CDATA[
+$(window).on('load', function(){ warnLeavingUnsaved('The current page contains unsaved text that will be lost if you leave this page.'); });
+//]]></script>
+    <script>//<![CDATA[
+rm = window.rm || {};rm.I18n = rm.I18n || {};rm.I18n = Object.freeze({buttonCopy: 'Copy'});
+//]]></script>
+    <script>//<![CDATA[
+rm = window.rm || {};rm.AutoComplete = rm.AutoComplete || {};rm.AutoComplete.dataSources = JSON.parse('{"issues":"/issues/auto_complete?project_id=ecookbook\u0026q=","wiki_pages":"/wiki_pages/auto_complete?project_id=ecookbook\u0026q="}');
+//]]></script>
+    <script src="/assets/chart.min-DIGEST.js"></script>
+  </head>
+  <body class="project-ecookbook has-main-menu controller-reports action-issue_report_details avatars-off" data-text-formatting="common_mark">
+    <div id="wrapper">
+      <div class="flyout-menu js-flyout-menu">
+        <div class="flyout-menu__search">
+          <form accept-charset="UTF-8" action="/projects/ecookbook/search" method="get" name="form-RANDOM">
+            <label class="search-magnifier search-magnifier--flyout" for="flyout-search">
+              <svg aria-hidden="true" class="s18 icon-svg">
+                <use href="/assets/icons-DIGEST.svg#icon--search"></use>
+              </svg>
+              <span class="icon-label hidden">Search</span>
+            </label>
+            <input class="small js-search-input" id="flyout-search" name="q" placeholder="Search" type="text">
+          </form>
+        </div>
+        <div class="flyout-menu__avatar">
+          <a href="/users/2">
+            <span class="avatar-color-2 s40 avatar" role="img">JS</span>
+          </a>
+          <a class="user active" href="/users/2">jsmith</a>
+        </div>
+        <h3>Project</h3>
+        <span class="js-project-menu"></span>
+        <h3>General</h3>
+        <span class="js-general-menu"></span>
+        <span class="js-sidebar flyout-menu__sidebar"></span>
+        <h3>Profile</h3>
+        <span class="js-profile-menu"></span>
+      </div>
+      <div id="top-menu">
+        <div id="account">
+          <ul>
+            <li>
+              <a class="my-account" href="/my/account">My account</a>
+            </li>
+            <li>
+              <a class="logout" data-method="post" href="/logout" rel="nofollow">Sign out</a>
+            </li>
+          </ul>
+        </div>
+        <div id="loggedas">
+          Logged in as
+          <a class="user active" href="/users/2">jsmith</a>
+        </div>
+        <ul>
+          <li>
+            <a class="home" href="/">Home</a>
+          </li>
+          <li>
+            <a class="my-page" href="/my/page">My page</a>
+          </li>
+          <li>
+            <a class="projects" href="/projects">Projects</a>
+          </li>
+          <li>
+            <a class="help" href="https://www.redmine.org/guide" rel="noopener" target="_blank">Help</a>
+          </li>
+        </ul>
+      </div>
+      <div id="header">
+        <a class="mobile-toggle-button js-flyout-menu-toggle-button" href="#"></a>
+        <div id="quick-search">
+          <form accept-charset="UTF-8" action="/projects/ecookbook/search" method="get" name="form-RANDOM">
+            <input autocomplete="off" name="scope" type="hidden" value="subprojects">
+            <label for="q">
+              <a accesskey="4" href="/projects/ecookbook/search?scope=subprojects">Search</a>
+              :
+            </label>
+            <input accesskey="f" class="small" data-auto-complete="true" id="q" name="q" size="20" type="text">
+          </form>
+        </div>
+        <h1>
+          <span class="current-project">eCookbook</span>
+        </h1>
+        <div class="tabs" id="main-menu">
+          <ul>
+            <li>
+              <a class="new-object" href="#" id="new-object" onclick="toggleNewObjectDropdown(); return false;">+</a>
+              <ul class="menu-children">
+                <li>
+                  <a accesskey="7" class="new-issue-sub" href="/projects/ecookbook/issues/new">New issue</a>
+                </li>
+                <li>
+                  <a class="new-issue-category" href="/projects/ecookbook/issue_categories/new">New category</a>
+                </li>
+                <li>
+                  <a class="new-version" href="/projects/ecookbook/versions/new">New version</a>
+                </li>
+                <li>
+                  <a class="new-timelog" href="/projects/ecookbook/time_entries/new">Log time</a>
+                </li>
+                <li>
+                  <a class="new-news" href="/projects/ecookbook/news/new">Add news</a>
+                </li>
+                <li>
+                  <a class="new-document" href="/projects/ecookbook/documents/new">New document</a>
+                </li>
+                <li>
+                  <a class="new-wiki-page" href="/projects/ecookbook/wiki/new">New wiki page</a>
+                </li>
+                <li>
+                  <a class="new-file" href="/projects/ecookbook/files/new">New file</a>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <a class="overview" href="/projects/ecookbook">Overview</a>
+            </li>
+            <li>
+              <a class="activity" href="/projects/ecookbook/activity">Activity</a>
+            </li>
+            <li>
+              <a class="roadmap" href="/projects/ecookbook/roadmap">Roadmap</a>
+            </li>
+            <li>
+              <a class="issues selected" href="/projects/ecookbook/issues">Issues</a>
+            </li>
+            <li>
+              <a class="time-entries" href="/projects/ecookbook/time_entries">Spent time</a>
+            </li>
+            <li>
+              <a class="gantt" href="/projects/ecookbook/issues/gantt">Gantt</a>
+            </li>
+            <li>
+              <a class="calendar" href="/projects/ecookbook/issues/calendar">Calendar</a>
+            </li>
+            <li>
+              <a class="news" href="/projects/ecookbook/news">News</a>
+            </li>
+            <li>
+              <a class="documents" href="/projects/ecookbook/documents">Documents</a>
+            </li>
+            <li>
+              <a class="wiki" href="/projects/ecookbook/wiki">Wiki</a>
+            </li>
+            <li>
+              <a class="boards" href="/projects/ecookbook/boards">Forums</a>
+            </li>
+            <li>
+              <a class="files" href="/projects/ecookbook/files">Files</a>
+            </li>
+            <li>
+              <a class="repository" href="/projects/ecookbook/repository">Repository</a>
+            </li>
+            <li>
+              <a class="settings" href="/projects/ecookbook/settings">Settings</a>
+            </li>
+          </ul>
+          <div class="tabs-buttons" style="display:none;">
+            <button class="tab-left icon-only" onclick="moveTabLeft(this); return false;">
+              <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
+                <use href="/assets/icons-DIGEST.svg#icon--angle-left"></use>
+              </svg>
+            </button>
+            <button class="tab-right icon-only" onclick="moveTabRight(this); return false;">
+              <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
+                <use href="/assets/icons-DIGEST.svg#icon--angle-right"></use>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="nosidebar" id="main">
+        <div id="sidebar">
+          <div id="sidebar-wrapper"></div>
+        </div>
+        <div id="content">
+          <h2>
+            <a href="/projects/ecookbook/issues/report">Reports</a>
+            »
+          </h2>
+          <h3>Assignee</h3>
+          <table class="list issue-report-detailed">
+            <thead>
+              <tr>
+                <th></th>
+                <th>New</th>
+                <th>Assigned</th>
+                <th>Resolved</th>
+                <th>Feedback</th>
+                <th>Closed</th>
+                <th>Rejected</th>
+                <th>
+                  <strong>open</strong>
+                </th>
+                <th>
+                  <strong>closed</strong>
+                </th>
+                <th>
+                  <strong>Total</strong>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="name">
+                  <a href="/projects/ecookbook/issues?assigned_to_id=3&amp;set_filter=1">Dave Lopper</a>
+                </td>
+                <td>
+                  <a href="/projects/ecookbook/issues?assigned_to_id=3&amp;set_filter=1&amp;status_id=1">1</a>
+                </td>
+                <td>
+                  <a href="/projects/ecookbook/issues?assigned_to_id=3&amp;set_filter=1&amp;status_id=2">1</a>
+                </td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>
+                  <a href="/projects/ecookbook/issues?assigned_to_id=3&amp;set_filter=1&amp;status_id=o">2</a>
+                </td>
+                <td>-</td>
+                <td>
+                  <a href="/projects/ecookbook/issues?assigned_to_id=3&amp;set_filter=1&amp;status_id=%2A">2</a>
+                </td>
+              </tr>
+              <tr>
+                <td class="name">
+                  <a href="/projects/ecookbook/issues?assigned_to_id=2&amp;set_filter=1">John Smith</a>
+                </td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td class="name">
+                  <a href="/projects/ecookbook/issues?assigned_to_id=%21%2A&amp;set_filter=1">[none]</a>
+                </td>
+                <td>
+                  <a href="/projects/ecookbook/issues?assigned_to_id=%21%2A&amp;set_filter=1&amp;status_id=1">8</a>
+                </td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>
+                  <a href="/projects/ecookbook/issues?assigned_to_id=%21%2A&amp;set_filter=1&amp;status_id=5">3</a>
+                </td>
+                <td>-</td>
+                <td>
+                  <a href="/projects/ecookbook/issues?assigned_to_id=%21%2A&amp;set_filter=1&amp;status_id=o">8</a>
+                </td>
+                <td>
+                  <a href="/projects/ecookbook/issues?assigned_to_id=%21%2A&amp;set_filter=1&amp;status_id=c">3</a>
+                </td>
+                <td>
+                  <a href="/projects/ecookbook/issues?assigned_to_id=%21%2A&amp;set_filter=1&amp;status_id=%2A">11</a>
+                </td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr class="total">
+                <td>Total</td>
+                <td>9</td>
+                <td>1</td>
+                <td>0</td>
+                <td>0</td>
+                <td>3</td>
+                <td>0</td>
+                <td>10</td>
+                <td>3</td>
+                <td>13</td>
+              </tr>
+            </tfoot>
+          </table>
+          <p class="other-formats hide-when-print">
+            Also available in:
+            <span>
+              <a class="csv" href="/projects/ecookbook/issues/report/assigned_to.csv" onclick="showModal(&#39;csv-export-options&#39;, &#39;330px&#39;); return false;" rel="nofollow">CSV</a>
+            </span>
+          </p>
+          <div id="csv-export-options" style="display: none;">
+            <h3 class="title">CSV export options</h3>
+            <form accept-charset="UTF-8" action="/projects/ecookbook/issues/report/assigned_to.csv" id="csv-export-form" method="get" name="csv-export-form-RANDOM">
+              <p>
+                <label>
+                  Encoding
+                  <select id="encoding" name="encoding">
+                    <option selected="selected" value="UTF-8">UTF-8</option>
+                    <option value="ISO-8859-1">ISO-8859-1</option>
+                  </select>
+                </label>
+              </p>
+              <p>
+                <label>
+                  Field separator
+                  <select id="field_separator" name="field_separator">
+                    <option selected="selected" value=",">Comma</option>
+                    <option value=";">Semicolon</option>
+                  </select>
+                </label>
+              </p>
+              <p class="buttons">
+                <input onclick="hideModal(this);" type="submit" value="Export">
+                <a href="#" onclick="hideModal(this);; return false;">Cancel</a>
+              </p>
+            </form>
+          </div>
+          <div class="issue-report-graph hide-when-print">
+            <canvas id="issues_by_assigned_to"></canvas>
+          </div>
+          <div class="issue-report-graph hide-when-print">
+            <canvas id="issues_by_status"></canvas>
+          </div>
+          <script>//<![CDATA[
+
+  function renderChart(canvas_id, title, chartData){
+    var backgroundColors = ['rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(255, 206, 86, 0.2)', 'rgba(75, 192, 192, 0.2)', 'rgba(153, 102, 255, 0.2)', 'rgba(255, 159, 64, 0.2)'];
+    var borderColors = ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)', 'rgba(255, 206, 86, 1)', 'rgba(75, 192, 192, 1)', 'rgba(153, 102, 255, 1)', 'rgba(255, 159, 64, 1)'];
+    for (var i = 0; i < chartData.datasets.length; i++) {
+      chartData.datasets[i].backgroundColor = backgroundColors[i % backgroundColors.length];
+      chartData.datasets[i].borderColor = borderColors[i % borderColors.length];
+      chartData.datasets[i].borderWidth = 1;
+    }
+    new Chart($(canvas_id), {
+      type: 'bar',
+      data: chartData,
+      options: {
+        indexAxis: 'y',
+        elements: {
+          bar: {borderWidth: 2}
+        },
+        responsive: true,
+        plugins: {
+          legend: {position: 'right'},
+          title: {
+            display: true,
+            text: title
+          }
+        },
+        scales: {
+          yAxis: {stacked: true},
+          xAxis: {stacked: true, ticks: {precision: 0}}
+        }
+      }
+    });
+  }
+  $(document).ready(function(){
+    var chartData1 = {
+      labels: ["Dave Lopper","John Smith","[none] "],
+      datasets: [{"label":"New","hidden":false,"data":[1,0,8]},{"label":"Assigned","hidden":false,"data":[1,0,0]},{"label":"Resolved","hidden":false,"data":[0,0,0]},{"label":"Feedback","hidden":false,"data":[0,0,0]},{"label":"Closed","hidden":true,"data":[0,0,3]},{"label":"Rejected","hidden":true,"data":[0,0,0]}]
+    };
+    var chartData2 = {
+      labels: ["New","Assigned","Resolved","Feedback","Closed","Rejected"],
+      datasets: [{"label":"Dave Lopper","data":[1,1,0,0,0,0]},{"label":"John Smith","data":[0,0,0,0,0,0]},{"label":"[none] ","data":[8,0,0,0,3,0]}]
+    };
+    renderChart("#issues_by_assigned_to", "Issues by Assignee", chartData1);
+    renderChart("#issues_by_status", "Issues by Status", chartData2);
+  });
+
+//]]></script>
+          <br>
+          <a href="/projects/ecookbook/issues/report">Back</a>
+          <div style="clear:both;"></div>
+        </div>
+      </div>
+      <div id="footer">MASKED</div>
+      <div id="ajax-indicator" style="display:none;">
+        <span class="icon">
+          <svg aria-hidden="true" class="s18 icon-svg svg-loader">
+            <use href="/assets/icons-DIGEST.svg#icon--loader"></use>
+          </svg>
+          <span class="icon-label">Loading...</span>
+        </span>
+      </div>
+      <div id="ajax-modal" style="display:none;"></div>
+      <div id="icon-copy-source" style="display: none;">
+        <svg aria-hidden="true" class="s18 icon-svg">
+          <use href="/assets/icons-DIGEST.svg#icon--"></use>
+        </svg>
+      </div>
+    </div>
+  </body>
+</html>

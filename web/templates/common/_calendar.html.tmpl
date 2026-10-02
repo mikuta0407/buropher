@@ -1,0 +1,45 @@
+{{/* common/_calendar.html.erb。locals: calendar（*calendar.Calendar） */}}
+{{$cal := .calendar}}
+{{form_tag request_path (hash "data" (hash "cm_url" "/issues/context_menu")) -}}
+{{hidden_field_tag "back_url" (or $cal.BackURL request_path) (hash "id" nil)}}
+<ul class="cal">
+  <li scope="col" title="{{l "label_week"}}" class="calhead week-number"></li>
+  {{range $i := $cal.DayHeaders}}
+    <li scope="col" class="calhead">{{$cal.DayName $i}}</li>
+  {{end}}
+  {{range $week := $cal.Weeks}}
+    <li class='week-number'>
+      <span class="label-week">{{l "label_week"}}</span> {{$cal.WeekNumber (index $week 0)}}
+    </li>
+    {{range $day := $week}}
+    <li class="{{$cal.DayCSSClasses $day}} calbody">
+      <p class="day-num">{{$day.Day}}
+        <span class="abbr-day">({{$cal.AbbrDayName $day}})</span>
+      </p>
+      {{range $e := $cal.EventsOn $day}}
+        {{if $e.IsIssue}}
+          {{$starting := $cal.Starting $e $day}}
+          {{$ending := $cal.Ending $e $day}}
+          {{content_tag_open "div" (hash "class" ($cal.IssueDivClass $e $day))}}
+            {{if $e.OtherProject current_project}}{{$e.ProjectName}} -{{end}}
+            {{if and $starting (not $ending)}}{{sprite_icon "bullet-go" (hash "rtl" true)}}{{end}}
+            {{if and $ending (not $starting)}}{{sprite_icon "bullet-end" (hash "rtl" true)}}{{end}}
+            {{if and $starting $ending}}{{sprite_icon "bullet-go-end"}}{{end}}
+            {{$e.LinkShort}}
+            <span class="tip">{{$e.Link}}<br /><br /><strong>{{raw (l "field_project")}}</strong>: {{link_to_project $e.Project}}<br /><strong>{{raw (l "field_status")}}</strong>: {{$e.StatusName}}{{if $e.Closed}} ({{$cal.FormatDate $e.ClosedOn}}){{end}}<br /><strong>{{raw (l "field_start_date")}}</strong>: {{$cal.FormatDate $e.StartDate}}<br /><strong>{{raw (l "field_due_date")}}</strong>: {{$cal.FormatDate $e.DueDate}}<br /><strong>{{raw (l "field_assigned_to")}}</strong>: {{if $e.AssignedTo}}{{avatar $e.AssignedTo (hash "size" "13" "title" (l "field_assigned_to"))}}{{else}}{{$e.AssignedToAvatar}}{{end}} {{$e.AssignedToName}}<br /><strong>{{raw (l "field_priority")}}</strong>: {{$e.PriorityName}}</span>
+            {{check_box_tag "ids[]" $e.ID false (hash "style" "display:none;" "id" nil)}}
+          {{end_tag "div"}}
+        {{else}}
+          <span class="icon icon-package">
+            {{sprite_icon "package"}}
+            {{if $e.OtherProject current_project}}{{$e.ProjectName}} -{{end}}
+            {{link_to ($e.VersionLabel current_project) (printf "/versions/%d" $e.ID) (hash "title" ($cal.FormatDate $e.DueDate))}}
+          </span>
+        {{end}}
+      {{end}}
+    </li>
+    {{end}}
+  {{end}}
+</ul>
+{{end_form}}
+{{context_menu}}
