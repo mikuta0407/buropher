@@ -30,22 +30,23 @@ func newParser() parser.Parser {
 			util.Prioritized(parser.NewFencedCodeBlockParser(), 700),
 			util.Prioritized(&alertParser{}, 790),
 			util.Prioritized(parser.NewBlockquoteParser(), 800),
-			util.Prioritized(parser.NewHTMLBlockParser(), 900),
+			util.Prioritized(newHTMLBlockParser(), 900),
 			util.Prioritized(parser.NewParagraphParser(), 1000),
 		),
 		parser.WithInlineParsers(
 			util.Prioritized(&bracketTracker{}, 1),
 			util.Prioritized(&footnoteRefParser{}, 50),
+			util.Prioritized(&codeSpanGuard{}, 99),
 			util.Prioritized(parser.NewCodeSpanParser(), 100),
 			util.Prioritized(parser.NewLinkParser(), 200),
 			util.Prioritized(parser.NewAutoLinkParser(), 300),
 			util.Prioritized(parser.NewRawHTMLParser(), 400),
-			util.Prioritized(parser.NewEmphasisParser(), 500),
+			util.Prioritized(&emphasisParser{}, 500),
 			util.Prioritized(&strikeParser{}, 500),
 			util.Prioritized(&urlAutolinkParser{}, 600),
 			util.Prioritized(&wwwAutolinkParser{}, 600),
 		),
-		parser.WithParagraphTransformers(parser.DefaultParagraphTransformers()...),
+		parser.WithParagraphTransformers(util.Prioritized(refDefTransformer{}, 100)),
 		parser.WithASTTransformers(
 			util.Prioritized(&normalizer{}, 100),
 		),
@@ -173,7 +174,7 @@ func rewindText(parent ast.Node, source []byte, pos, rewind int) {
 // '*' '_' '~' の直後のものは正規化時に処理する。
 type wwwAutolinkParser struct{}
 
-func (p *wwwAutolinkParser) Trigger() []byte { return []byte{' ', '('} }
+func (p *wwwAutolinkParser) Trigger() []byte { return []byte{' ', '(', '\\'} }
 
 func (p *wwwAutolinkParser) Parse(parent ast.Node, block text.Reader, pc parser.Context) ast.Node {
 	if withinBrackets(parent, pc) {
@@ -184,6 +185,12 @@ func (p *wwwAutolinkParser) Parse(parent ast.Node, block text.Reader, pc parser.
 	switch {
 	case isSpace(line[0]) || line[0] == '(':
 		consume = 1
+	case line[0] == '\\':
+		// comrak は直前の生の文字を見るため、"\*www." なども対象になる
+		if len(line) < 2 || bytes.IndexByte([]byte("*_~("), line[1]) < 0 {
+			return nil
+		}
+		consume = 2
 	case line[0] == 'w':
 		// 行頭、または強調等の区切り（* _ ~）の直後のみ（comrak の WWW_DELIMS）
 		l, pos := block.Position()
@@ -207,7 +214,7 @@ func (p *wwwAutolinkParser) Parse(parent ast.Node, block text.Reader, pc parser.
 		return nil
 	}
 	if consume > 0 {
-		ast.MergeOrAppendTextSegment(parent, seg.WithStop(seg.Start+1))
+		ast.MergeOrAppendTextSegment(parent, seg.WithStop(seg.Start+consume))
 	}
 	block.Advance(consume + linkEnd)
 	t := string(rest[:linkEnd])
@@ -613,6 +620,10 @@ func (p *tableParser) Open(parent ast.Node, reader text.Reader, pc parser.Contex
 	if lines.Len() == 1 && para.HasBlankPreviousLines() {
 		// 段落の直前の空行を表に引き継ぐ（リストの tight 判定用。Close で反映する）
 		table.SetAttributeString("cm-blank-before", true)
+	}
+	if lines.Len() > 1 {
+		// comrak では見出し行より前の部分は finalize されない段落になる（refdef.go）
+		para.SetAttributeString("cm-no-refdefs", true)
 	}
 	lines.SetSliced(0, lines.Len()-1)
 	_ = seg

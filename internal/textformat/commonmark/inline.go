@@ -1,6 +1,7 @@
 package commonmark
 
 import (
+	"bytes"
 	"strings"
 	"unicode"
 	"unicode/utf8"
@@ -197,10 +198,26 @@ func convertInline(parent, c ast.Node, src []byte) {
 		parent.ReplaceChild(parent, c, &Str{Value: string(n.Value)})
 	case *ast.CodeSpan:
 		var sb strings.Builder
+		block := parent
+		for block != nil && block.Type() != ast.TypeBlock {
+			block = block.Parent()
+		}
+		prevStop := -1
 		for t := n.FirstChild(); t != nil; t = t.NextSibling() {
 			if tt, ok := t.(*ast.Text); ok {
 				v := tt.Segment.Value(src)
+				if block != nil && prevStop > 0 && bytes.IndexByte(src[prevStop-1:tt.Segment.Start], '\n') >= 0 {
+					// 怠惰な継続行の行頭空白は comrak ではコードスパンに残る
+					sb.WriteString(lazyLineIndent(block, tt.Segment.Start, src))
+				}
 				sb.Write(v)
+				prevStop = tt.Segment.Stop
+			}
+		}
+		if block != nil && prevStop > 0 && src[prevStop-1] == '\n' {
+			// 閉じのバッククォートが次の行の先頭にある場合
+			if i := bytes.IndexByte(src[prevStop:], '`'); i >= 0 {
+				sb.WriteString(lazyLineIndent(block, prevStop+i, src))
 			}
 		}
 		lit := strings.ReplaceAll(sb.String(), "\r\n", " ")

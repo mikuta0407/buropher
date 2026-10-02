@@ -12,7 +12,7 @@ import (
 )
 
 // knownDiffs は Redmine 本体と出力が一致しないことが分かっているエントリ
-// （理由は testdata/KNOWN_DIFFS.md を参照）。
+// （理由は testdata/known_diffs.txt を参照）。
 var knownDiffs = loadKnownDiffs()
 
 func loadKnownDiffs() map[string]bool {
@@ -57,7 +57,16 @@ func TestFixtures(t *testing.T) {
 		}
 		failed = append(failed, e.Name)
 		if !knownDiffs[e.Name] {
-			t.Errorf("%s:\ninput: %q\nwant:  %q\ngot:   %q", e.Name, e.Input, want, got)
+			if os.Getenv("CM_SHORT") != "" {
+				i := 0
+				for i < len(want) && i < len(got) && want[i] == got[i] {
+					i++
+				}
+				lo := max(0, i-60)
+				t.Errorf("%s:\ninput: %q\nwant: …%q\ngot:  …%q", e.Name, e.Input, want[lo:min(len(want), i+80)], got[lo:min(len(got), i+80)])
+			} else {
+				t.Errorf("%s:\ninput: %q\nwant:  %q\ngot:   %q", e.Name, e.Input, want, got)
+			}
 		}
 	}
 	sort.Strings(failed)
