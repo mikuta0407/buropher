@@ -1,0 +1,45 @@
+<div id="main" class="nosidebar">
+  
+    <div id="sidebar">
+        <div id="sidebar-wrapper">
+          
+          
+        </div>
+    </div>
+
+    <div id="content">
+        
+        
+
+<h2>Another page</h2>
+
+
+
+<form class="edit_wiki_page" id="edit_wiki_page" action="/projects/ecookbook/wiki/Another_page/rename" accept-charset="UTF-8" name="edit_wiki_page-8158253d" method="post"><input type="hidden" name="authenticity_token" value="bwcHxSylA-V6flxYzKOvcnol0jwE4M0VsZ8rHRD1LbNhGQK4MGr6cdzaKrURmk9m13km32vq6am6Z9uBbG74mg" autocomplete="off" />
+<div class="box tabular">
+<p><label for="wiki_page_title">Title<span class="required"> *</span></label><input size="100" type="text" value="Another_page" name="wiki_page[title]" id="wiki_page_title" /></p>
+<p><label for="wiki_page_is_start_page">Start page</label><input name="wiki_page[is_start_page]" type="hidden" value="0" autocomplete="off" /><input type="checkbox" value="1" name="wiki_page[is_start_page]" id="wiki_page_is_start_page" /></p>
+<p><label for="wiki_page_redirect_existing_links">Redirect existing links</label><input name="wiki_page[redirect_existing_links]" type="hidden" value="0" autocomplete="off" /><input type="checkbox" value="1" checked="checked" name="wiki_page[redirect_existing_links]" id="wiki_page_redirect_existing_links" /></p>
+<p><label for="wiki_page_wiki_id">Project</label><select name="wiki_page[wiki_id]" id="wiki_page_wiki_id"><option value="1" selected="selected">eCookbook</option><option value="2">OnlineStore</option></select></p>
+<p><label for="wiki_page_parent_id">Parent page</label><select name="wiki_page[parent_id]" id="wiki_page_parent_id"><option value=""></option><option value="1">CookBook documentation</option><option value="4">&nbsp;&nbsp;&#187; Page with an inline image</option><option value="11">Page with sections</option><option value="10">Этика менеджмента</option></select></p>
+
+</div>
+<input type="submit" name="commit" value="Rename" data-disable-with="Rename" />
+</form>
+<script>
+//<![CDATA[
+
+$('#wiki_page_wiki_id').change(function() {
+  $.ajax({
+    url: '/projects/1/wiki/Another_page/rename.js',
+    type: 'get',
+    data: { 'wiki_page[wiki_id]': $('#wiki_page_wiki_id').val() }
+  });
+});
+
+//]]>
+</script>
+        
+        <div style="clear:both;"></div>
+    </div>
+</div>

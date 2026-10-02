@@ -133,6 +133,9 @@
 //   - 可視性（Attachment#visible?）は c.AttachmentVisible(att)。ダウンロードの Content-Disposition は
 //     httpx.ContentDisposition（send_file / send_data と同じ書式）。
 //   - 添付フォーム（attachments/_form）の JS は POST /uploads.js（attachments#upload）を呼ぶ。
+//   - Wiki は保存を AttachmentSaver（wiki_support.go。既定は Store.AttachFiles）経由で行い、表示は
+//     repository.ContainerAttachmentList と attachments/_links（helper の link_to_attachments）だけを使う。
+//     共通の添付基盤を差し替えるときは NewWikiAttachmentSaver を合わせる。
 //
 // # 規約: 互換テスト
 //

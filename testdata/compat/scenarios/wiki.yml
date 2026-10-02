@@ -124,6 +124,10 @@ requests:
     headers: {X-Requested-With: XMLHttpRequest}
   - path: /projects/ecookbook/wiki/destroy
     users: [admin, jsmith, anonymous]
+  - path: /projects/ecookbook/wiki/Another_page/rename.js?wiki_page%5Bwiki_id%5D=2
+    users: [admin]
+    headers: {X-Requested-With: XMLHttpRequest}
+    id: wiki_rename_js
 
   # ---- エクスポート ----
   - path: /projects/ecookbook/wiki/CookBook_documentation.txt
@@ -136,6 +140,14 @@ requests:
     users: [admin]
   - path: /projects/ecookbook/wiki/export.html
     users: [admin, anonymous]
+  - path: /projects/ecookbook/wiki/CookBook_documentation.pdf
+    users: [anonymous]
+  - path: /projects/ecookbook/wiki/CookBook_documentation.pdf
+    users: [admin]
+    skip: "PDF 出力（Redmine::Export::PDF）は未実装"
+  - path: /projects/ecookbook/wiki/export.pdf
+    users: [admin]
+    skip: "PDF 出力（Redmine::Export::PDF）は未実装"
 
   # ---- API ----
   - path: /projects/ecookbook/wiki/index.json

@@ -1,0 +1,8 @@
+status: 200
+content-type: text/plain
+
+h1. CookBook documentation
+
+{{child_pages}}
+
+Some updated [[documentation]] here with gzipped history

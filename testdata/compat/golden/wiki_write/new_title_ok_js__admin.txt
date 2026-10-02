@@ -1,0 +1,4 @@
+status: 200
+content-type: text/javascript
+
+window.location = "/projects/ecookbook/wiki/Brand_new_page"

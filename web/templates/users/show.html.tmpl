@@ -1,3 +1,6 @@
+{{define "users/show#header_tags"}}
+  {{auto_discovery_link_tag "atom" .ActivityFeedURL}}
+{{end}}
 {{$u := .User}}
 <div class="contextual">
 {{if and admin $u.Logged}}{{link_to (sprite_icon "edit" (l "button_edit")) (printf "/users/%d/edit" $u.ID) (hash "class" "icon icon-edit")}}{{end}}
@@ -105,6 +108,14 @@
 
 <div class="splitcontentright">
 
+{{if .EventsByDay}}
+<h3>{{link_to (l "label_activity") .ActivityURL}}</h3>
+{{partial "activities/activities" (dict "events_by_day" .EventsByDay)}}
+
+<p class="other-formats hide-when-print">{{l "label_export_to"}}  <span>{{link_to "Atom" .ActivityAtomURL (hash "class" "atom" "rel" "nofollow")}}</span>
+</p>
+{{content_for "header_tags" (capture "users/show#header_tags")}}
+{{end}}
 {{call_hook "view_account_right_bottom"}}
 </div>
 </div>
