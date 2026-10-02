@@ -1,0 +1,35 @@
+{{$q := .query}}
+<div class="contextual">
+  {{link_to_function (sprite_icon "settings" (l "label_options")) (printf "$('#%s-settings').toggle();" .block) (hash "class" "icon-only icon-settings" "title" (l "label_options"))}}
+</div>
+
+<h3>
+  {{if $q.Project}}{{printf "%s |" $q.Project.Name}}{{end}}
+  {{link_to $q.Name ($q.IssuesPath "" "")}}
+  ({{$q.Count}})
+</h3>
+
+<div id="{{.block}}-settings" style="display:none;">
+  {{form_tag "/my/page" (hash "remote" true)}}
+    <div id="list-definition">
+      <div class="box">
+        {{partial "my/query_columns" (dict "query" $q "tag_name" (printf "%s[]" $q.ColumnsTagName) "tag_id" $q.ColumnsTagID)}}
+      </div>
+    </div>
+    <p>
+      {{submit_tag (l "button_save")}}
+      {{link_to_function (l "button_cancel") (printf "$('#%s-settings').toggle();" .block)}}
+    </p>
+  {{end_form}}
+</div>
+
+{{if $q.Issues}}
+  {{partial "my/issue_list" (dict "query" $q)}}
+{{else}}
+  <p class="nodata">{{l "label_no_data"}}</p>
+{{end}}
+
+{{define "my/blocks/_issues#header_tags"}}
+{{auto_discovery_link_tag "atom" (.query.IssuesPath "atom" .atom_key) (hash "title" .query.Name)}}
+{{end}}
+{{content_for "header_tags" (capture "my/blocks/_issues#header_tags" .)}}

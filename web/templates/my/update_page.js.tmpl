@@ -1,0 +1,3 @@
+{{range $b := .Blocks}}
+  $("#block-{{$b.Block}}").replaceWith("{{j (partial "my/blocks" (dict "blocks" $b.Views))}}");
+{{end}}

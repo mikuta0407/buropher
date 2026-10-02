@@ -726,19 +726,8 @@ func (a *App) WatchersAppend(c *Req) {
 		c.Halt()
 		return
 	}
-	c.Render("watchers/append", map[string]any{"Users": users, "Checkboxes": watchersCheckboxes(c, users)},
+	c.Render("watchers/append", map[string]any{"Users": users, "Checkboxes": watchersCheckboxes(a.newIssueLookup(c), users, func(int64) bool { return true })},
 		RenderOptions{Format: "js"})
-}
-
-// watchersCheckboxes は WatchersHelper#watchers_checkboxes(nil, users, true)。
-func watchersCheckboxes(c *Req, users []*domain.User) template.HTML {
-	var s string
-	for _, u := range users {
-		tag := rails.CheckBoxTag("issue[watcher_user_ids][]", u.ID, true, rails.NewHash("id", nil))
-		s += string(rails.ContentTag("label", template.HTML(string(tag)+" "+string(rails.H(helper.PrincipalUserName(c.Page(), u)))),
-			rails.NewHash("id", "issue_watcher_user_ids_"+strconv.FormatInt(u.ID, 10), "class", "floating")))
-	}
-	return template.HTML(s)
 }
 
 // WatchersDestroy は watchers#destroy。

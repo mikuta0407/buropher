@@ -8,8 +8,6 @@ import (
 	"regexp"
 	"strings"
 	"testing"
-
-	"github.com/mikuta0407/buropher/internal/db"
 )
 
 // チケットの関連（IssueRelationsController）・ウォッチャー（WatchersController）・自動補完
@@ -65,15 +63,6 @@ func compareRelWatch(t *testing.T, name, got string) {
 	if w != g {
 		t.Errorf("%s mismatch\n--- want\n%s\n--- got\n%s", name, w, g)
 	}
-}
-
-func countRows(t *testing.T, d *db.DB, query string, args ...any) int {
-	t.Helper()
-	var n int
-	if err := d.Get(t.Context(), &n, query, args...); err != nil {
-		t.Fatal(err)
-	}
-	return n
 }
 
 // TestWatchersReadMatchesRedmine はウォッチャー追加モーダル・候補一覧・メンション候補が参照と一致することを確認する。

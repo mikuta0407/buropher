@@ -1,0 +1,5 @@
+status: 200
+content-type: text/javascript
+
+$('#time_entry_activity_id').html('<option value=\"9\">Design<\/option>\n<option selected=\"selected\" value=\"10\">Development<\/option>\n<option value=\"11\">QA<\/option>');
+$('#time_entry_issue').html('');

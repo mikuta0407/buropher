@@ -1,0 +1,29 @@
+{{$v := assigns}}
+{{form_tag "/settings/edit?tab=users"}}
+
+  <div class="box tabular settings">
+    <p>{{setting_text_field "max_additional_emails" (hash "size" 6)}}</p>
+
+    <p>{{setting_text_area "email_domains_allowed"}}
+    <em class="info">{{l "text_comma_separated"}} {{l "label_example"}}: example.com, example.org</em></p>
+
+    <p>{{setting_text_area "email_domains_denied"}}
+    <em class="info">{{l "text_comma_separated"}} {{l "label_example"}}: .example.com, foo.example.org, example.net</em></p>
+
+    <p>{{setting_check_box "unsubscribe"}}</p>
+  </div>
+
+  <fieldset class="box">
+    <legend>{{l "label_default_values_for_new_users"}}</legend>
+
+    <div class="tabular settings">
+      <p>{{setting_check_box "default_users_hide_mail" (hash "label" (sym "field_hide_mail"))}}</p>
+      <p>{{setting_select "default_notification_option" $v.NotificationOptions}}</p>
+      <p>{{setting_check_box "default_users_no_self_notified" (hash "label" (sym "label_user_mail_no_self_notified"))}}</p>
+      <p>{{setting_select "default_users_time_zone" (time_zone_options) (hash "label" (sym "field_time_zone") "blank" (sym "label_none"))}}</p>
+      <p>{{setting_multiselect "default_users_auto_watch_on" $v.AutoWatchOnOptions (hash "label" (sym "label_auto_watch_on"))}}</p>
+    </div>
+  </fieldset>
+
+  {{submit_tag (l "button_save")}}
+{{end_form}}

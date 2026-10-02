@@ -1,0 +1,59 @@
+{{$v := assigns}}
+{{form_tag "/settings/edit?tab=display"}}
+
+<div class="box tabular settings">
+<p>{{setting_select "ui_theme" $v.ThemeOptions (hash "blank" (sym "label_default") "label" (sym "label_theme"))}}</p>
+
+<p>{{setting_select "default_language" (lang_options_for_select false)}}</p>
+
+<p>{{setting_check_box "force_default_language_for_anonymous"}}</p>
+
+<p>{{setting_check_box "force_default_language_for_loggedin"}}</p>
+
+<p>{{setting_select "start_of_week" $v.StartOfWeekOptions (hash "blank" (sym "label_language_based"))}}</p>
+<p>{{setting_select "date_format" $v.DateFormatOptions (hash "blank" (sym "label_language_based"))}}</p>
+
+<p>{{setting_select "time_format" $v.TimeFormatOptions (hash "blank" (sym "label_language_based"))}}</p>
+
+<p>{{setting_select "timespan_format" $v.TimespanFormatOptions (hash "blank" false)}}</p>
+
+<p>{{setting_select "user_format" $v.UserFormatOptions}}</p>
+
+<p>{{setting_check_box "gravatar_enabled" (hash "data" (hash "enables" "#settings_gravatar_default"))}}
+<em class="info">{{raw (l "text_avatar_server_config_html" (hash "url" (h $v.AvatarServerURL)))}}</em></p>
+
+<p>
+  {{setting_select "gravatar_default" (gravatar_default_setting_options) (hash "blank" (sym "label_none"))}}
+  <em class="{{if eq $v.GravatarDefault "initials"}}info{{else}}hidden{{end}}">
+    {{raw (l "text_setting_gravatar_default_initials_html")}}
+  </em>
+</p>
+
+<p>{{setting_check_box "thumbnails_enabled" (hash "data" (hash "enables" "#settings_thumbnails_size"))}}</p>
+
+<p>{{setting_text_field "thumbnails_size" (hash "size" 6)}}</p>
+
+<p>{{setting_select "new_item_menu_tab" $v.NewItemMenuTabOptions}}</p>
+
+<p>{{setting_check_box "wiki_tablesort_enabled"}}</p>
+</div>
+
+{{submit_tag (l "button_save")}}
+{{end_form}}
+
+{{define "settings/_display#js"}}
+
+  $('#settings_gravatar_default').on('change', function(e){
+  const gravatar_default = e.target.value;
+  const em = e.target.parentElement.getElementsByTagName('em')[0];
+
+  if (gravatar_default === 'initials') {
+    em.classList.remove('hidden');
+    em.classList.add('info');
+  } else {
+    em.classList.add('hidden');
+    em.classList.remove('info');
+  }
+  });
+{{end}}
+{{javascript_tag (capture "settings/_display#js" .) -}}

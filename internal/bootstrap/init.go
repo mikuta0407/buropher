@@ -191,3 +191,34 @@ func loadDefaultData(ctx context.Context, tx *db.Tx, p *defaultdata.Plan, builti
 	}
 	return st.Set(ctx, "default_projects_tracker_ids", ids)
 }
+
+// ErrDataAlreadyLoaded は Redmine::DefaultData::DataAlreadyLoaded（既に設定データがある）。
+var ErrDataAlreadyLoaded = errors.New("Some configuration data is already loaded.")
+
+// LoadDefaultData は Redmine::DefaultData::Loader.load(lang)（管理画面の「既定の設定をロード」）。
+// 組込みロール・プリンシパルは作成済みであること（buropher init / Redmine からの移行で作られる）。
+// 既にロール・トラッカー・ステータス・列挙・クエリのいずれかがあれば ErrDataAlreadyLoaded。
+// lang は呼び出し側で有効な言語に解決しておく（set_language_if_valid）。
+// 呼び出し側は投入後に設定のキャッシュを読み直すこと（default_projects_tracker_ids を更新するため）。
+func LoadDefaultData(ctx context.Context, d *db.DB, lang string) error {
+	empty, err := repository.NoConfigurationData(ctx, d)
+	if err != nil {
+		return err
+	}
+	if !empty {
+		return ErrDataAlreadyLoaded
+	}
+	bundle := i18n.Default()
+	l := func(key string) string { return bundle.T(lang, key, nil) }
+	return d.WithTx(ctx, func(tx *db.Tx) error {
+		roleIDs := map[int]int64{}
+		for _, b := range []int{1, 2} {
+			var id int64
+			if err := tx.Get(ctx, &id, `SELECT id FROM roles WHERE builtin = ?`, b); err != nil {
+				return fmt.Errorf("builtin role %d: %w", b, err)
+			}
+			roleIDs[b] = id
+		}
+		return loadDefaultData(ctx, tx, defaultdata.Build(l, true), roleIDs)
+	})
+}

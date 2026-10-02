@@ -331,9 +331,10 @@ func (q *Query) AsParams() url.Values {
 
 // SessionState は session[:<kind>_query] の内容 (呼び出し側がセッションに保存する)。
 type SessionState struct {
-	ID             int64             `json:"id,omitempty"`
-	ProjectID      *int64            `json:"project_id"`
-	Filters        []SessionFilter   `json:"filters,omitempty"`
+	ID        int64  `json:"id,omitempty"`
+	ProjectID *int64 `json:"project_id"`
+	// Filters は nil（未設定）と空（明示的にフィルタなし）を区別するため omitempty にしない
+	Filters        []SessionFilter   `json:"filters"`
 	GroupBy        string            `json:"group_by,omitempty"`
 	ColumnNames    []string          `json:"column_names,omitempty"`
 	TotalableNames []string          `json:"totalable_names,omitempty"`

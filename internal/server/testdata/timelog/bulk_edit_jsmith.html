@@ -1,0 +1,132 @@
+<title>eCookbook - Redmine</title>
+----
+<!-- page specific tags -->
+<script>
+//<![CDATA[
+var datepickerOptions={dateFormat: 'yy-mm-dd', firstDay: 0, showOn: 'button', buttonImageOnly: true, buttonImage: '/assets/calendar-DIGEST.png', showButtonPanel: true, showWeek: true, showOtherMonths: true, selectOtherMonths: true, changeMonth: true, changeYear: true, beforeShow: beforeShowDatePicker};
+//]]>
+</script></head>
+----
+<div id="main" class="nosidebar">
+  
+    <div id="sidebar">
+        <div id="sidebar-wrapper">
+          
+          
+        </div>
+    </div>
+
+    <div id="content">
+        
+        <h2>Bulk edit selected time entries</h2>
+
+
+<ul id="bulk-selection">
+  <li><a href="/time_entries/1/edit">03/23/2007 - eCookbook: 4:15 hours (John Smith)</a></li>
+  <li><a href="/time_entries/2/edit">03/12/2007 - eCookbook: 150:00 hours (Redmine Admin)</a></li>
+</ul>
+
+<form id="bulk_edit_form" action="/time_entries/bulk_update" accept-charset="UTF-8" name="bulk_edit_form-RANDOM" method="post"><input type="hidden" name="authenticity_token" value="{{CSRF}}" autocomplete="off" />
+<input type="hidden" name="ids[]" value="1" autocomplete="off" /><input type="hidden" name="ids[]" value="2" autocomplete="off" />
+<div class="box tabular">
+  <div>
+    <p>
+      <label>Project</label>
+      <select name="time_entry[project_id]" id="time_entry_project_id" onchange="updateBulkEditFrom(&#39;/time_entries/bulk_edit.js&#39;)"><option value="">(No change)</option><option value="1">eCookbook</option><option value="3">&nbsp;&nbsp;&#187; eCookbook Subproject 1</option></select>
+    </p>
+    <p>
+      <label for="time_entry_issue_id">Issue</label>
+      <input size="6" type="text" name="time_entry[issue_id]" id="time_entry_issue_id" />
+      <label class="inline"><input type="checkbox" name="time_entry[issue_id]" value="none" data-disables="#time_entry_issue_id" />Clear</label>
+      <span id="time_entry_issue"></span>
+    </p>
+
+    <p>
+      <label for="time_entry_spent_on">Date</label>
+      <input max="9999-12-31" size="10" type="date" name="time_entry[spent_on]" id="time_entry_spent_on" /><script>
+//<![CDATA[
+$(function() { $('#time_entry_spent_on').addClass('date').datepickerFallback(datepickerOptions); });
+//]]>
+</script>
+    </p>
+
+    <p>
+      <label for="time_entry_hours">Hours</label>
+      <input size="6" type="text" name="time_entry[hours]" id="time_entry_hours" />
+    </p>
+
+    <p>
+      <label for="time_entry_activity_id">Activity</label>
+      <select name="time_entry[activity_id]" id="time_entry_activity_id"><option value="">(No change)</option><option value="9">Design</option>
+<option value="10">Development</option>
+<option value="11">QA</option></select>
+    </p>
+
+    <p>
+      <label for="time_entry_comments">Comment</label>
+      <input size="100" type="text" name="time_entry[comments]" id="time_entry_comments" />
+    </p>
+
+      <p>
+        <label>Overtime</label>
+        <select name="time_entry[custom_field_values][10]" id="time_entry_custom_field_values_10" class="bool_cf cf_10"><option value="">(No change)</option>
+<option value="__none__">none</option>
+<option value="1">Yes</option>
+<option value="0">No</option></select>
+      </p>
+      
+
+    
+  </div>
+</div>
+
+<p><input type="submit" name="commit" value="Submit" data-disable-with="Submit" /></p>
+</form>
+<script>
+//<![CDATA[
+
+  $(document).ready(function(){
+    $('#time_entry_project_id').change(function(){
+      <!-- $('#time_entry_issue_id').val(''); -->
+      $('#time_entry_issue').text('');
+    });
+  });
+
+    observeAutocompleteField('time_entry_issue_id',
+      function(request, callback) {
+        var url = '/issues/auto_complete';
+        var data = {
+          term: request.term
+        };
+        var project_id;
+          project_id = '1';
+
+        current_project_id = $('#time_entry_project_id').val();
+        if(current_project_id === ''){
+          data['project_id'] = project_id;
+        } else {
+          data['project_id'] = current_project_id;
+        }
+
+        $.get(url, data, null, 'json')
+          .done(function(data){
+            callback(data);
+          })
+          .fail(function(jqXHR, status, error){
+            callback([]);
+          });
+      },
+      {
+        select: function(event, ui, data) {
+          $('#time_entry_issue').text(ui.item.label);
+        }
+      }
+    );
+
+//]]>
+</script>
+        
+        <div style="clear:both;"></div>
+    </div>
+</div>
+<div id="footer">

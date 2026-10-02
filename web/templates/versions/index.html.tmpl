@@ -1,0 +1,59 @@
+<div class="contextual">
+  {{if .Manage}}{{link_to (sprite_icon "add" (l "label_version_new")) (printf "/projects/%s/versions/new" current_project.Identifier) (hash "class" "icon icon-add")}}{{end}}
+  {{actions_dropdown (capture "versions/index#actions" .)}}</div>
+{{define "versions/index#actions"}}
+
+  {{if .SettingsAllowed}}{{link_to (sprite_icon "settings" (l "label_settings")) (printf "/projects/%s/settings/versions" current_project.Identifier) (hash "class" "icon icon-settings")}}{{end}}
+{{end}}
+
+<h2>{{l "label_roadmap"}}</h2>
+
+{{if not .Versions}}
+  <p class="nodata">{{l "label_no_data"}}</p>
+{{else}}
+  <div id="roadmap">
+  {{range $version := .Versions}}
+  <article class="version-article {{$version.CSSClasses}}">
+    {{if $version.Editable}}
+      <div class="contextual">
+        {{link_to (sprite_icon "edit" (l "button_edit")) (printf "/versions/%d/edit" $version.ID) (hash "title" (l "button_edit") "class" "icon-only icon-edit")}}
+      </div>
+    {{end}}
+    <header>
+      <h3 class="icon icon-package version inline-flex">
+        {{sprite_icon "package"}}
+        {{$version.Link}}
+      </h3>
+      <span class="badge badge-status-{{$version.Status}}">{{l (printf "version_status_%s" $version.Status)}}</span>
+    </header>
+    {{partial "versions/overview" (dict "o" $version.Overview)}}
+    {{$version.WikiHTML}}
+    {{if $version.Issues}}
+      {{form_tag (printf "/projects/%s/roadmap" current_project.Identifier) (hash "data" (hash "cm_url" "/issues/context_menu")) -}}
+        <table class="list related-issues">
+        <caption>{{l "label_related_issues"}}</caption>
+        {{range $issue := $version.Issues}}
+          <tr class="hascontextmenu {{$issue.CSS}}">
+            <td class="checkbox">{{check_box_tag "ids[]" $issue.ID false (hash "id" nil)}}</td>
+            <td class="assigned_to">{{if $issue.Assignee}}{{avatar $issue.Assignee (hash "size" 16 "title" (printf "%s: %s" (l "field_assigned_to") (user_name $issue.Assignee)))}}{{end}}</td>
+            <td class="subject">{{$issue.Link}}</td>
+            <td class="buttons hide-when-print">{{link_to_context_menu}}</td>
+          </tr>
+        {{end}}
+        </table>
+      {{end_form}}
+    {{end}}
+    {{""}}
+  </article>
+  {{end}}
+  </div>
+{{end}}
+
+{{define "versions/index#sidebar"}}
+  {{partial "versions/sidebar" assigns}}
+{{end}}
+{{content_for "sidebar" (capture "versions/index#sidebar")}}
+
+{{html_title (l "label_roadmap")}}
+
+{{context_menu}}

@@ -204,7 +204,9 @@ func (qv *queryView) AvailableFiltersJSON() (template.HTML, error) {
 }
 
 // LabelDayPluralJSON は raw_json l(:label_day_plural)。
-func (qv *queryView) LabelDayPluralJSON() template.HTML { return queryRawJSON(qv.c.L("label_day_plural")) }
+func (qv *queryView) LabelDayPluralJSON() template.HTML {
+	return queryRawJSON(qv.c.L("label_day_plural"))
+}
 
 // FiltersURLJSON は raw_json queries_filter_path(:project_id => @query.project.try(:id), :type => @query.type)。
 func (qv *queryView) FiltersURLJSON() template.HTML {

@@ -1,0 +1,66 @@
+<div class="contextual">
+  {{link_to_function (sprite_icon "settings" (l "label_options")) "$('#timelog-settings').toggle();" (hash "class" "icon-only icon-settings" "title" (l "label_options"))}}
+</div>
+
+<h3>
+  {{link_to (l "label_spent_time") "/time_entries?user_id=me"}}
+  ({{l "label_last_n_days" .days}}: {{.total}})
+  {{if .can_log_time}}{{link_to (sprite_icon "time-add" (l "button_log_time")) "/time_entries/new" (hash "class" "icon-only icon-add" "title" (l "button_log_time"))}}{{end}}
+</h3>
+
+
+<div id="timelog-settings" style="display:none;">
+  {{form_tag "/my/page" (hash "remote" true)}}
+    <div class="box">
+      <p>
+      <label>
+        {{l "button_show"}}:
+        {{text_field_tag "settings[timelog][days]" .days (hash "size" 6)}}
+        {{l "label_day_plural"}}
+      </label>
+      </p>
+    </div>
+    <p>
+      {{submit_tag (l "button_save")}}
+      {{link_to_function (l "button_cancel") "$('#timelog-settings').toggle();"}}
+    </p>
+  {{end_form}}
+</div>
+
+{{if .entries_by_day}}
+{{form_tag request_path (hash "data" (hash "cm_url" "/time_entries/context_menu"))}}
+<table class="list time-entries odd-even">
+<thead><tr>
+<th>{{l "field_activity"}}</th>
+<th>{{l "label_project"}}</th>
+<th>{{l "field_comments"}}</th>
+<th>{{l "field_hours"}}</th>
+<th></th>
+</tr></thead>
+<tbody>
+{{range $day := .entries_by_day}}
+  <tr class="odd">
+    <td><strong>{{$day.Label}}</strong></td>
+    <td colspan="2"></td>
+    <td class="hours"><em>{{$day.Hours}}</em></td>
+    <td></td>
+  </tr>
+  {{range $entry := $day.Entries}}
+  <tr id="time-entry-{{$entry.ID}}" class="time-entry hascontextmenu">
+    <td class="activity">
+      {{check_box_tag "ids[]" $entry.ID false (hash "style" "display:none;" "id" nil)}}
+      {{$entry.ActivityName}}
+    </td>
+    <td class="subject">{{$entry.ProjectName}} {{$entry.IssueLink}}</td>
+    <td class="comments">{{$entry.Comments}}</td>
+    <td class="hours">{{$entry.HoursHTML}}</td>
+    <td class="buttons">{{link_to_context_menu}}</td>
+  </tr>
+  {{end}}
+{{end}}
+</tbody>
+</table>
+{{end_form}}
+{{else}}
+  <p class="nodata">{{l "label_no_data"}}</p>
+{{end}}

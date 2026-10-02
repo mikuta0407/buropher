@@ -1,0 +1,8 @@
+<h2>{{l "label_administration"}}</h2>
+
+<div id="admin-index">
+  {{if .NoConfigurationData}}{{partial "admin/no_data" (dict)}}{{end}}
+  {{partial "admin/menu" (dict)}}
+</div>
+
+{{html_title (l "label_administration") -}}

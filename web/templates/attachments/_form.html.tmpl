@@ -9,6 +9,20 @@
     {{sprite_icon "hourglass" (hash "icon_only" true "size" 16 "css_class" "svg-hourglass")}}
   </span>
   <span class="attachments_fields">
+  {{range $i, $attachment := .saved_attachments}}
+      <span id="attachments_p{{$i}}">
+        {{sprite_icon "attachment" (hash "icon_only" true "size" 16 "css_class" "svg-attachment")}}
+        {{text_field_tag (printf "%s[p%d][filename]" $param $i) $attachment.Filename (hash "class" "filename")}}
+        {{if $attachment.ContainerID}}
+          {{link_to (sprite_icon "del" (l "button_delete") (hash "icon_only" true)) "#" (hash "onclick" "$(this).closest('.attachments_form').find('.add_attachment').show(); $(this).parent().remove(); return false;" "class" "icon-only icon-del")}}
+          {{hidden_field_tag (printf "%s[p%d][id]" $param $i) $attachment.ID}}
+        {{else}}
+          {{text_field_tag (printf "%s[p%d][description]" $param $i) $attachment.Description (hash "maxlength" 255 "placeholder" (l "label_optional_description") "class" "description")}}
+          {{link_to (sprite_icon "del" (l "button_delete") (hash "icon_only" true)) (printf "/attachments/%d.js?attachment_id=p%d" $attachment.ID $i) (hash "method" "delete" "remote" true "class" "icon-only icon-del remove-upload")}}
+          {{hidden_field_tag (printf "%s[p%d][token]" $param $i) $attachment.Token}}
+        {{end}}
+      </span>
+  {{end}}
   </span>
   <span class="add_attachment" style="">
     {{file_field_tag (printf "%s[dummy][file]" $param) (hash "id" nil "class" "file_selector filedrop" "multiple" true "onchange" "addInputFiles(this);" "data" (hash "max_number_of_files_message" (l "error_attachments_too_many" (hash "max_number_of_files" 10)) "max_file_size" $maxSize "max_file_size_message" (l "error_attachment_too_big" (hash "max_size" (number_to_human_size $maxSize))) "max_concurrent_uploads" 2 "upload_path" "/uploads.js" "param" $param "description" true "description_placeholder" (l "label_optional_description")))}}

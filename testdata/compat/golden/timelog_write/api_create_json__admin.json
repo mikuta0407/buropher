@@ -1,0 +1,36 @@
+status: 201
+content-type: application/json
+location: {{BASE}}/time_entries/12
+
+{
+  "time_entry": {
+    "id": 12,
+    "project": {
+      "id": 1,
+      "name": "eCookbook"
+    },
+    "issue": {
+      "id": 2
+    },
+    "user": {
+      "id": 1,
+      "name": "Redmine Admin"
+    },
+    "activity": {
+      "id": 9,
+      "name": "Design"
+    },
+    "hours": 2.25,
+    "comments": "api",
+    "spent_on": "2026-01-09",
+    "created_on": "TIMESTAMP",
+    "updated_on": "TIMESTAMP",
+    "custom_fields": [
+      {
+        "id": 10,
+        "name": "Overtime",
+        "value": "1"
+      }
+    ]
+  }
+}

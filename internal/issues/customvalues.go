@@ -43,7 +43,8 @@ func (iss *Issue) setCustomFieldDefault() bool {
 }
 
 func defaultValue(cf *customfield.CustomField) *string {
-	if cf.DefaultValue == nil || *cf.DefaultValue == "" {
+	// Redmine は value ||= custom_field.default_value なので空文字列の既定値も "" として入る
+	if cf.DefaultValue == nil {
 		return nil
 	}
 	s := *cf.DefaultValue

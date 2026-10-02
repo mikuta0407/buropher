@@ -1,0 +1,86 @@
+<div class="mypage-box" id="block-timelog"><div class="contextual"><span class="icon-only icon-sort-handle sort-handle" title="Move"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--reorder"></use></svg><span class="icon-label"></span></span><a class="icon-only icon-close" title="Delete" data-remote="true" rel="nofollow" data-method="post" href="/my/remove_block?block=timelog"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--close"></use></svg><span class="icon-label">Delete</span></a></div><div class="contextual">
+  <a href="#" onclick="$(&#39;#timelog-settings&#39;).toggle();; return false;" class="icon-only icon-settings" title="Options"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--settings"></use></svg><span class="icon-label">Options</span></a>
+</div>
+
+<h3>
+  <a href="/time_entries?user_id=me">Spent time</a>
+  (last 7 days: 4:15 h)
+  <a class="icon-only icon-add" title="Log time" href="/time_entries/new"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--time-add"></use></svg><span class="icon-label">Log time</span></a>
+</h3>
+
+
+<div id="timelog-settings" style="display:none;">
+  <form action="/my/page" accept-charset="UTF-8" data-remote="true" name="form-RANDOM" method="post"><input type="hidden" name="authenticity_token" value="{{CSRF}}" autocomplete="off" />
+    <div class="box">
+      <p>
+      <label>
+        Show:
+        <input type="text" name="settings[timelog][days]" id="settings_timelog_days" value="7" size="6" />
+        days
+      </label>
+      </p>
+    </div>
+    <p>
+      <input type="submit" name="commit" value="Save" data-disable-with="Save" />
+      <a href="#" onclick="$(&#39;#timelog-settings&#39;).toggle();; return false;">Cancel</a>
+    </p>
+</form></div>
+
+<form data-cm-url="/time_entries/context_menu" action="/my/page" accept-charset="UTF-8" name="form-RANDOM" method="post"><input type="hidden" name="authenticity_token" value="{{CSRF}}" autocomplete="off" />
+<table class="list time-entries odd-even">
+<thead><tr>
+<th>Activity</th>
+<th>Project</th>
+<th>Comment</th>
+<th>Hours</th>
+<th></th>
+</tr></thead>
+<tbody>
+  <tr class="odd">
+    <td><strong>Today</strong></td>
+    <td colspan="2"></td>
+    <td class="hours"><em><span class="hours hours-int">2</span><span class="hours hours-dec">:30</span></em></td>
+    <td></td>
+  </tr>
+  <tr id="time-entry-6" class="time-entry hascontextmenu">
+    <td class="activity">
+      <input type="checkbox" name="ids[]" value="6" style="display:none;" />
+      Design
+    </td>
+    <td class="subject">eCookbook  - <a class="issue tracker-1 status-1 priority-4 priority-lowest behind-schedule created-by-me" href="/issues/1">Bug #1</a>: Cannot print recipes</td>
+    <td class="comments">Test &lt;comment&gt;</td>
+    <td class="hours"><span class="hours hours-int">2</span><span class="hours hours-dec">:30</span></td>
+    <td class="buttons"><a title="Actions" class="icon-only icon-actions js-contextmenu " href="#"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--3-bullets"></use></svg><span class="icon-label">Actions</span></a></td>
+  </tr>
+  <tr class="odd">
+    <td><strong>01/13/2026</strong></td>
+    <td colspan="2"></td>
+    <td class="hours"><em><span class="hours hours-int">1</span><span class="hours hours-dec">:45</span></em></td>
+    <td></td>
+  </tr>
+  <tr id="time-entry-7" class="time-entry hascontextmenu">
+    <td class="activity">
+      <input type="checkbox" name="ids[]" value="7" style="display:none;" />
+      Design
+    </td>
+    <td class="subject">eCookbook </td>
+    <td class="comments">Project work</td>
+    <td class="hours"><span class="hours hours-int">0</span><span class="hours hours-dec">:45</span></td>
+    <td class="buttons"><a title="Actions" class="icon-only icon-actions js-contextmenu " href="#"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--3-bullets"></use></svg><span class="icon-label">Actions</span></a></td>
+  </tr>
+  <tr id="time-entry-8" class="time-entry hascontextmenu">
+    <td class="activity">
+      <input type="checkbox" name="ids[]" value="8" style="display:none;" />
+      Development
+    </td>
+    <td class="subject">eCookbook  - <a class="issue tracker-1 status-1 priority-4 priority-lowest overdue behind-schedule created-by-me" href="/issues/3">Bug #3</a>: Error 281 when updating a recipe</td>
+    <td class="comments"></td>
+    <td class="hours"><span class="hours hours-int">1</span><span class="hours hours-dec">:00</span></td>
+    <td class="buttons"><a title="Actions" class="icon-only icon-actions js-contextmenu " href="#"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--3-bullets"></use></svg><span class="icon-label">Actions</span></a></td>
+  </tr>
+</tbody>
+</table>
+</form></div>
+  </div>
+  <div id="list-left" class="block-receiver splitcontentleft">
+    <div class="mypage-box" id="block-issuesassignedtome">
