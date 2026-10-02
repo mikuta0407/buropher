@@ -1,0 +1,211 @@
+# バージョン（VersionsController）の作成・更新・削除・close_completed・status_by の互換シナリオ。
+# 状態を変えるため、共用の参照環境（3998）ではなく専用の参照インスタンスに対して、
+# 参照・候補とも実行前に reset して流すこと（-reset-ref / -reset-cand）。
+# ケースは記述順に依存する（作成した id 8 以降のバージョンを後続で使う）。
+name: time_versions_write
+
+users:
+  admin: {login: admin, password: admin}
+  dlopper: {login: dlopper, password: foo}
+
+normalize:
+  mask_text_selectors:
+    - "#footer"
+  regex:
+    - {pattern: '-[0-9a-f]{8}(\\" method=)', replace: '-RANDOM$1'}
+  mask_timestamps: true
+
+requests:
+  # ---- 作成 ----
+  - id: create_blank
+    path: /projects/ecookbook/versions
+    method: POST
+    user: admin
+    form:
+      version[name]: ""
+      version[effective_date]: "2026-02-30"
+      version[sharing]: "none"
+  - id: create_taken_bad_date
+    path: /projects/ecookbook/versions
+    method: POST
+    user: admin
+    form:
+      version[name]: "1.0"
+      version[effective_date]: "foo"
+      version[description]: "x"
+  - id: create_no_params
+    path: /projects/ecookbook/versions
+    method: POST
+    user: admin
+  - id: create_ok
+    path: /projects/ecookbook/versions
+    method: POST
+    user: admin
+    form:
+      version[name]: "3.0"
+      version[description]: "Next"
+      version[effective_date]: "2026-01-10"
+      version[wiki_page_title]: "CookBook_documentation"
+      version[sharing]: "descendants"
+      version[default_project_version]: "1"
+    expect_status: 302
+  - id: create_ok_flash
+    path: /projects/ecookbook/roadmap?completed=1
+    user: admin
+  - id: create_jsmith_system
+    path: /projects/ecookbook/versions?back_url=%2Fprojects%2Fecookbook%2Froadmap
+    method: POST
+    user: jsmith
+    form:
+      version[name]: "4.0"
+      version[sharing]: "system"
+    expect_status: 302
+  - id: create_js_invalid
+    path: /projects/ecookbook/versions.js
+    method: POST
+    user: admin
+    format: text
+    headers: {X-Requested-With: XMLHttpRequest}
+    form:
+      version[name]: ""
+  - id: create_js_ok
+    path: /projects/ecookbook/versions.js
+    method: POST
+    user: admin
+    format: text
+    headers: {X-Requested-With: XMLHttpRequest}
+    form:
+      version[name]: "5.0"
+  - id: create_api_json
+    path: /projects/ecookbook/versions.json
+    method: POST
+    user: admin
+    body: '{"version": {"name": "6.0", "status": "locked", "due_date": "2026-05-01", "sharing": "tree"}}'
+    content_type: application/json
+  - id: create_api_json_invalid
+    path: /projects/ecookbook/versions.json
+    method: POST
+    user: admin
+    body: '{"version": {"name": "6.0", "status": "foo"}}'
+    content_type: application/json
+  - id: create_api_xml
+    path: /projects/onlinestore/versions.xml
+    method: POST
+    user: admin
+    body: '<?xml version="1.0"?><version><name>Beta</name><description>XML</description></version>'
+    content_type: application/xml
+  - id: create_dlopper_forbidden
+    path: /projects/ecookbook/versions
+    method: POST
+    user: dlopper
+    form:
+      version[name]: "nope"
+  - id: g01_roadmap
+    path: /projects/ecookbook/roadmap
+    user: admin
+  - id: g02_versions_json
+    path: /projects/ecookbook/versions.json
+    user: admin
+  - id: g03_version_8
+    path: /versions/8
+    user: admin
+  - id: g04_version_8_json
+    path: /versions/8.json
+    user: admin
+  # ---- 更新 ----
+  - id: update_invalid
+    path: /versions/8
+    method: PATCH
+    user: admin
+    form:
+      version[name]: ""
+      version[status]: "closed"
+  - id: update_ok
+    path: /versions/8
+    method: PATCH
+    user: admin
+    form:
+      version[name]: "3.0.1"
+      version[status]: "locked"
+      version[effective_date]: ""
+      version[sharing]: "system"
+    expect_status: 302
+  - id: update_ok_flash
+    path: /versions/8
+    user: admin
+  - id: update_sharing_narrow
+    path: /versions/4
+    method: PUT
+    user: admin
+    form:
+      version[sharing]: "none"
+  - id: update_sharing_narrow_check
+    path: /versions/4.json
+    user: admin
+  - id: update_api
+    path: /versions/9.json
+    method: PUT
+    user: admin
+    body: '{"version": {"description": "via api", "status": "closed"}}'
+    content_type: application/json
+  - id: update_api_invalid
+    path: /versions/9.json
+    method: PUT
+    user: admin
+    body: '{"version": {"name": "1.0"}}'
+    content_type: application/json
+  - id: update_api_check
+    path: /versions/9.json
+    user: admin
+  # ---- status_by ----
+  - id: status_by_js
+    path: /versions/2/status_by.js
+    method: POST
+    user: admin
+    format: text
+    headers: {X-Requested-With: XMLHttpRequest}
+    form:
+      status_by: "assigned_to"
+  - id: status_by_html
+    path: /versions/2/status_by
+    method: POST
+    user: admin
+    form:
+      status_by: "priority"
+  # ---- close_completed ----
+  - id: close_completed
+    form: {dummy: "1"}
+    path: /projects/ecookbook/versions/close_completed
+    method: PUT
+    user: admin
+    expect_status: 302
+  - id: close_completed_check
+    path: /projects/ecookbook/versions.json
+    user: admin
+  # ---- 削除 ----
+  - id: destroy_in_use
+    form: {dummy: "1"}
+    path: /versions/2
+    method: DELETE
+    user: admin
+    expect_status: 302
+  - id: destroy_in_use_flash
+    path: /projects/ecookbook/roadmap
+    user: admin
+  - id: destroy_api_in_use
+    path: /versions/2.json
+    method: DELETE
+    user: admin
+  - id: destroy_ok
+    form: {dummy: "1"}
+    path: /versions/3?back_url=%2Fprojects%2Fecookbook%2Froadmap
+    method: DELETE
+    user: admin
+    expect_status: 302
+  - id: destroy_api
+    path: /versions/9.xml
+    method: DELETE
+    user: admin
+  - id: destroy_check
+    path: /projects/ecookbook/versions.json
+    user: admin
