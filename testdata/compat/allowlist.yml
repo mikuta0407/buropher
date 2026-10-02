@@ -30,11 +30,6 @@ entries:
     reason: "フィクスチャのカスタム値 true（SQLite に 't' で保存）はインポートで '1' に正規化される（作業分類タブの選択状態）"
     lines:
       - '^\s*<option (selected="selected" )?value="1">Yes</option>$'
-  # ---- admin_users（ユーザー・グループ） ----
-  - case: "admin_users/*"
-    reason: "time_zone_select の Casablanca の基準オフセットは internal/i18n/zones_gen.go の生成時点の値（+00:00）で、参照（固定時刻 2026-01-15）は +01:00。並び位置も変わる。zones_gen.go を参照時刻で再生成すれば解消する"
-    lines:
-      - '^\s*<option value="Casablanca">\(GMT\+0[01]:00\) Casablanca</option>$'
 
   # ---- wiki ----
   - case: "wiki*/*"
@@ -85,7 +80,7 @@ entries:
     lines:
       - '^\s*<description(/>|></description>)$'
   - case: "settings_admin*/*settings*"
-    reason: "buropher は SCM として Git のみ対応する（D-15）ため、設定画面のリポジトリタブの SCM 表には Git の行だけを出す。Casablanca の基準オフセットは admin_users と同じ理由（zones_gen.go の生成時点の値）"
+    reason: "buropher は SCM として Git のみ対応する（D-15）ため、設定画面のリポジトリタブの SCM 表には Git の行だけを出す"
     lines:
       - '^\s*</?(tr|td|label)>$'
       - '^\s*<td class="scm_name">$'
@@ -93,7 +88,15 @@ entries:
       - '^\s*<input (checked="checked" )?name="settings\[enabled_scm\]\[\]" type="checkbox" value="(Subversion|Mercurial|Cvs|Bazaar|Filesystem)">$'
       - '^\s*(Subversion|Mercurial|Cvs|Bazaar|Filesystem|svn|hg|cvs|bzr)$'
       - '^\s*<span class="icon icon-(ok|error)"></span>$'
-      - '^\s*<option value="Casablanca">\(GMT\+0[01]:00\) Casablanca</option>$'
+  - case: "smoke/settings__admin"
+    reason: "settings_admin と同じ（SCM は Git のみ。D-15）"
+    lines:
+      - '^\s*</?(tr|td|label)>$'
+      - '^\s*<td class="scm_name">$'
+      - '^\s*<td></td>$'
+      - '^\s*<input (checked="checked" )?name="settings\[enabled_scm\]\[\]" type="checkbox" value="(Subversion|Mercurial|Cvs|Bazaar|Filesystem)">$'
+      - '^\s*(Subversion|Mercurial|Cvs|Bazaar|Filesystem|svn|hg|cvs|bzr)$'
+      - '^\s*<span class="icon icon-(ok|error)"></span>$'
   - case: "settings_admin/admin_info__admin"
     reason: "admin#info は意図的に buropher のバージョン・Go のバージョン・DB アダプタ等を表示する（Redmine の Ruby / Rails / ImageMagick の確認項目は持たない）。レイアウトと CSS クラスは同じ"
     ignore: true

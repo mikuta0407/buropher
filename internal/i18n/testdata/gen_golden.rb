@@ -222,8 +222,15 @@ cases << {'fn' => 'languages_options', 'locale' => 'en', 'args' => [], 'want' =>
 end
 
 # ---- タイムゾーン ----
-cases << {'fn' => 'time_zones', 'locale' => 'en', 'args' => [],
-          'want' => ActiveSupport::TimeZone.all.map { |z| [z.to_s, z.name, z.tzinfo.identifier] }}
+# 基準オフセットは評価時刻で変わる（Africa/Casablanca 等）ため、zones_gen.go（gen_timezones.rb）と同じく
+# 互換テストの固定時刻で評価して並べ直す。
+require 'active_support/testing/time_helpers'
+Object.new.extend(ActiveSupport::Testing::TimeHelpers).instance_eval do
+  travel_to(Time.parse(ENV['COMPAT_FROZEN_TIME'].presence || '2026-01-15 12:00:00 UTC')) do
+    cases << {'fn' => 'time_zones', 'locale' => 'en', 'args' => [],
+              'want' => ActiveSupport::TimeZone.all.sort.map { |z| [z.to_s, z.name, z.tzinfo.identifier] }}
+  end
+end
 
 # 差分を見やすくするため 1 ケース 1 行で出力する
 File.write(File.join(OUT, 'golden.json'),

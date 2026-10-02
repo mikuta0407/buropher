@@ -24,6 +24,13 @@ prepare() {
   env_run "$BIN" migrate >/dev/null
   env_run "$BIN" redmine import --quiet "$WORK/db/dump.tar.zst" >/dev/null
   cp "$WORK/db/buropher.db" "$WORK/db/pristine.db"
+  rm -rf "$WORK/db/pristine-files"; cp -a "$WORK/files" "$WORK/db/pristine-files"
+}
+
+# restore_files は添付ファイルを import 直後の状態に戻す（削除系のシナリオがファイルを消すため）。
+restore_files() {
+  [ -d "$WORK/db/pristine-files" ] || return 0
+  rm -rf "$WORK/files"; cp -a "$WORK/db/pristine-files" "$WORK/files"
 }
 
 env_run() {
@@ -59,7 +66,7 @@ case "${1:-}" in
   start) start ;;
   stop) stop ;;
   restart) stop; start ;;
-  reset) stop; [ -f "$WORK/db/pristine.db" ] || prepare; cp "$WORK/db/pristine.db" "$WORK/db/buropher.db"; rm -f "$WORK/db/buropher.db-wal" "$WORK/db/buropher.db-shm"; start ;;
+  reset) stop; [ -f "$WORK/db/pristine.db" ] || prepare; cp "$WORK/db/pristine.db" "$WORK/db/buropher.db"; rm -f "$WORK/db/buropher.db-wal" "$WORK/db/buropher.db-shm"; restore_files; start ;;
   prepare) stop; prepare ;;
   status) [ -f "$PIDFILE" ] && kill -0 "$(cat "$PIDFILE")" 2>/dev/null && echo running || echo stopped ;;
   *) echo "usage: $0 start|stop|restart|reset|prepare|status" >&2; exit 2 ;;

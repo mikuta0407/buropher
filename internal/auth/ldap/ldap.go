@@ -22,6 +22,7 @@ import (
 	"net"
 	"strconv"
 	"strings"
+	"sync"
 	"syscall"
 	"time"
 
@@ -98,7 +99,10 @@ func (s *Source) timeout() time.Duration {
 type session struct {
 	s        *Source
 	deadline time.Time
-	conns    []*goldap.Conn
+	// mu は conns / closed を守る（期限切れ時は run が f の実行中に close を呼ぶ）。
+	mu     sync.Mutex
+	conns  []*goldap.Conn
+	closed bool
 }
 
 func (s *Source) newSession() *session {
@@ -106,9 +110,23 @@ func (s *Source) newSession() *session {
 }
 
 func (ss *session) close() {
+	ss.mu.Lock()
+	defer ss.mu.Unlock()
+	ss.closed = true
 	for _, c := range ss.conns {
 		c.Close()
 	}
+}
+
+// track は開いた接続を登録する。既に close 済み（期限切れ）ならその場で閉じる。
+func (ss *session) track(conn *goldap.Conn) {
+	ss.mu.Lock()
+	defer ss.mu.Unlock()
+	if ss.closed {
+		conn.Close()
+		return
+	}
+	ss.conns = append(ss.conns, conn)
 }
 
 func (ss *session) remaining() time.Duration {
@@ -181,7 +199,7 @@ func (ss *session) dial() (*goldap.Conn, error) {
 	if err != nil {
 		return nil, err
 	}
-	ss.conns = append(ss.conns, conn)
+	ss.track(conn)
 	conn.SetTimeout(ss.remaining())
 	if !s.TLS && s.StartTLS {
 		if err := conn.StartTLS(tc); err != nil {

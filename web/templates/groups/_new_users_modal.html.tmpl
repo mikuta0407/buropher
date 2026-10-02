@@ -1,6 +1,6 @@
 <h3 class="title">{{l "label_user_new"}}</h3>
 
-{{form_tag (printf "/groups/%d/users" (assigns).Group.ID) (hash "class" "edit_group" "id" (printf "edit_group_%d" (assigns).Group.ID) "remote" true "method" "post")}}
+{{form_tag (printf "/groups/%d/users" (assigns).Group.ID) (hash "class" "edit_group" "id" (printf "edit_group_%d" (assigns).Group.ID) "remote" true "method" "post" "authenticity_token" false)}}
   {{partial "groups/new_users_form"}}
   <p class="buttons">
     {{submit_tag (l "button_add")}}

@@ -1,6 +1,6 @@
 <h3 class="title">{{l "label_add_projects"}}</h3>
 
-{{form_tag (printf "%s/memberships" (assigns).PrincipalBase) (hash "method" "post" "remote" true)}}
+{{form_tag (printf "%s/memberships" (assigns).PrincipalBase) (hash "method" "post" "remote" true "authenticity_token" false)}}
   {{partial "principal_memberships/new_form"}}
   <p class="buttons">
     {{submit_tag (l "button_add") (hash "name" nil)}}
