@@ -1,0 +1,45 @@
+{{$a := assigns}}
+{{$p := current_project}}
+
+{{if admin}}
+  <div class="contextual">{{link_to (sprite_icon "settings" (l "label_administration")) "/users" (hash "class" "icon icon-settings")}}</div>
+{{end}}
+<p>{{link_to (sprite_icon "add" (l "label_member_new")) (printf "/projects/%s/memberships/new" $p.Identifier) (hash "remote" true "class" "icon icon-add")}}</p>
+
+{{if $a.Members}}
+<table class="list members">
+  <thead>
+    <tr>
+      <th>{{l "label_user"}} / {{l "label_group"}}</th>
+      <th>{{l "label_role_plural"}}</th>
+      <th></th>
+      {{call_hook "view_projects_settings_members_table_header"}}
+    </tr>
+  </thead>
+  <tbody>
+  {{range $member := $a.Members}}
+  <tr id="member-{{$member.Member.ID}}" class="member">
+  <td class="name">
+    <span class="icon">
+      {{if $member.Principal}}
+        {{principal_icon $member.MemberPrincipal}}
+        {{link_to_principal_user $member.MemberPrincipal}}
+      {{end}}
+    </span>
+  </td>
+  <td class="roles">
+    <span id="member-{{$member.Member.ID}}-roles">{{$member.RoleNames}}</span>
+    <div id="member-{{$member.Member.ID}}-form"></div>
+  </td>
+  <td class="buttons">
+      {{link_to (sprite_icon "edit" (l "button_edit")) (printf "/memberships/%d/edit" $member.Member.ID) (hash "remote" true "class" "icon icon-edit")}}
+      {{if $member.Deletable}}{{delete_link (printf "/memberships/%d" $member.Member.ID) (hash "remote" true "data" (ternary $member.ConfirmOwn (hash "confirm" (l "text_own_membership_delete_confirmation")) (hash)))}}{{end}}
+  </td>
+  {{call_hook "view_projects_settings_members_table_row"}}
+  </tr>
+{{end}}
+  </tbody>
+</table>
+{{else}}
+<p class="nodata">{{l "label_no_data"}}</p>
+{{end}}

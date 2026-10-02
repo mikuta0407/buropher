@@ -78,6 +78,8 @@ type Page struct {
 	MenuItem string
 	// DefaultSearchScope は controller.default_search_scope（空なら nil）。
 	DefaultSearchScope string
+	// NewRecordProject は @project が未保存のプロジェクト（projects#new / create / copy）。
+	NewRecordProject bool
 	// Question は @question（検索語）。
 	Question string
 	// DB はヘルパーがデータを読むための接続（nil ならデータを要する部分は空になる）。
@@ -97,6 +99,8 @@ type Page struct {
 	calendarHeadersIncluded bool
 	// contextMenuIncluded は context_menu の @context_menu_included。
 	contextMenuIncluded bool
+	// wikiFormatterHeadsIncluded は heads_for_wiki_formatter の @heads_for_wiki_formatter_included。
+	wikiFormatterHeadsIncluded bool
 }
 
 // Params は Rails の params。

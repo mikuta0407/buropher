@@ -1,12 +1,15 @@
 package helper
 
 import (
+	"encoding/json"
 	"html/template"
 	"net/url"
 	"regexp"
+	"slices"
 	"strconv"
 	"strings"
 	ttemplate "text/template"
+	"time"
 
 	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/menu"
@@ -76,6 +79,49 @@ func (d *Deps) projectsFuncs(r *view.Render, pg func() *Page) ttemplate.FuncMap 
 			}
 			return ""
 		},
+		// wikitoolbar_for は Redmine::WikiFormatting::*::Helper#wikitoolbar_for。
+		"wikitoolbar_for": func(fieldID string, args ...any) html {
+			preview := "/preview/text"
+			if len(args) > 0 {
+				preview = rails.ToS(args[0])
+			}
+			return d.wikitoolbarFor(r, pg(), fieldID, preview)
+		},
+		// list_autofill_data_attributes は ApplicationHelper#list_autofill_data_attributes。
+		"list_autofill_data_attributes": func() *rails.Hash {
+			p := pg()
+			tf := p.setting("text_formatting")
+			if strings.TrimSpace(tf) == "" {
+				return rails.NewHash()
+			}
+			return rails.NewHash("controller", "list-autofill", "action", "beforeinput->list-autofill#handleBeforeInput",
+				"list_autofill_text_formatting_param", tf)
+		},
+		// format_date_ptr は format_date(date)（nil なら nil）。
+		"format_date_ptr": func(t *time.Time) any {
+			if t == nil {
+				return nil
+			}
+			return formatDate(pg(), *t)
+		},
+		// nil_if_blank は値が空なら nil（text_field_tag の value 省略用）。
+		"nil_if_blank": func(v any) any {
+			if strings.TrimSpace(rails.ToS(v)) == "" {
+				return nil
+			}
+			return v
+		},
+		// scm_name は Repository::<SCM>.scm_name。
+		"scm_name": func(scm string) string {
+			if n, ok := scmNames[scm]; ok {
+				return n
+			}
+			return scm
+		},
+		// custom_field_tag は CustomFieldsHelper#custom_field_tag(prefix, custom_value)。
+		"custom_field_tag": func(prefix string, v *domain.CustomFieldValue) html { return customFieldTag(pg(), prefix, v) },
+		// has_id は ids.include?(id)。
+		"has_id": func(ids []int64, id int64) bool { return slices.Contains(ids, id) },
 		// capitalize は String#capitalize（先頭を大文字、残りを小文字）。
 		"capitalize": func(s any) string { return RubyCapitalize(rails.ToS(s)) },
 		// error_messages_for_list は error_messages_for（エラーメッセージの配列を渡す版）。
@@ -90,6 +136,14 @@ func (d *Deps) projectsFuncs(r *view.Render, pg func() *Page) ttemplate.FuncMap 
 			return d.linkToPrincipalHTML(pg(), v, optHash(args))
 		},
 		"principal_icon": func(v any) html { return d.principalIconHTML(pg(), v) },
+		// link_to_principal_user は link_to_user(principal)（ユーザーならリンク、それ以外は名前）。
+		"link_to_principal_user": func(v any) html {
+			p := pg()
+			if u, _ := principalOf(v); u != nil {
+				return d.linkToUser(p, u, rails.NewHash())
+			}
+			return rails.H(PrincipalName(p, v))
+		},
 		// principal_links は _members_box の
 		// principals.collect{|p| link_to_principal(p, :class => p.is_a?(Group) ? 'icon icon-group' : nil)}.join(", ")。
 		"principal_links": func(ps []*repository.MemberPrincipal) html {
@@ -140,8 +194,13 @@ func (d *Deps) projectsFuncs(r *view.Render, pg func() *Page) ttemplate.FuncMap 
 			return d.renderProjectsForJumpBox(pg(), &JumpBox{Projects: projects}, selected)
 		},
 		"format_object": func(v any) any { return formatObjectHTML(pg(), v) },
+		// tracker_name_tag は TrackersHelper#tracker_name_tag。
 		"tracker_name_tag": func(t *domain.Tracker) html {
-			return rails.ContentTag("span", t.Name, rails.NewHash("title", t.DescriptionString()))
+			var title, css any
+			if d := t.DescriptionString(); strings.TrimSpace(d) != "" {
+				title, css = d, "field-description"
+			}
+			return rails.ContentTag("span", t.Name, rails.NewHash("class", css, "title", title))
 		},
 		"custom_field_name_tag": func(cf *domain.CustomFieldInfo) html {
 			var title, css any
@@ -287,6 +346,42 @@ func (d *Deps) bookmarkLinkHTML(p *Page, pr *domain.Project) html {
 		rails.NewHash("remote", true, "method", method, "class", css))
 }
 
+// defaultToolbarLanguageOptions は UserPreference::DEFAULT_TOOLBAR_LANGUAGE_OPTIONS。
+var defaultToolbarLanguageOptions = []string{"c", "cpp", "csharp", "css", "diff", "go", "groovy", "html", "java", "javascript",
+	"objc", "perl", "php", "python", "r", "ruby", "sass", "scala", "shell", "sql", "swift", "xml", "yaml"}
+
+// wikitoolbarFor は wikitoolbar_for（common_mark / textile。text_formatting が空なら何も出さない）。
+// TODO(dedupe): テキスト整形（プレビュー）の移植で同じヘルパーを実装する場合はそちらに統合する。
+// TODO: pref.toolbar_language_options（未移植）を反映する。
+func (d *Deps) wikitoolbarFor(r *view.Render, p *Page, fieldID, preview string) html {
+	tf := p.setting("text_formatting")
+	if tf != "common_mark" && tf != "textile" {
+		return ""
+	}
+	if r != nil && !p.wikiFormatterHeadsIncluded {
+		p.wikiFormatterHeadsIncluded = true
+		lang := "en"
+		if p.Loc != nil {
+			lang = strings.ToLower(p.Loc.Lang)
+		}
+		langJSON, _ := json.Marshal(defaultToolbarLanguageOptions)
+		tags := d.jsInclude("jstoolbar/jstoolbar") + d.jsInclude("jstoolbar/"+tf) + d.jsInclude("jstoolbar/lang/jstoolbar-"+lang) +
+			rails.JavascriptTag(`var wikiImageMimeTypes = ["image/gif","image/jpeg","image/png","image/tiff","image/webp","image/x-ms-bmp"];`+
+				"var userHlLanguages = "+string(langJSON)+";", nil) +
+			d.stylesheetLinkTag(p, "jstoolbar")
+		r.ContentFor("header_tags", tags)
+	}
+	js := "var wikiToolbar = new jsToolBar(document.getElementById('" + fieldID + "')); " +
+		"wikiToolbar.setHelpLink('" + rails.EscapeJavascriptString("/help/wiki_syntax") + "'); " +
+		"wikiToolbar.setPreviewUrl('" + rails.EscapeJavascriptString(preview) + "'); "
+	if tf == "common_mark" {
+		js += "wikiToolbar.draw();"
+	} else {
+		js += "wikiToolbar.draw();"
+	}
+	return rails.JavascriptTag(js, nil)
+}
+
 // RubyCapitalize は String#capitalize。
 func RubyCapitalize(s string) string {
 	if s == "" {
@@ -349,9 +444,15 @@ func (d *Deps) RenderProjectsForJumpBox(p *Page, jb *JumpBox, selected *domain.P
 	return d.renderProjectsForJumpBox(p, jb, selected)
 }
 
+// scmNames は repositories.scm → Repository::<SCM>.scm_name。
+var scmNames = map[string]string{
+	"subversion": "Subversion", "git": "Git", "mercurial": "Mercurial",
+	"cvs": "CVS", "bazaar": "Bazaar", "filesystem": "Filesystem",
+}
+
 var bracketsRe = regexp.MustCompile(`[\[\]]+`)
 
-var safeSchemeRe =regexp.MustCompile(`^([a-zA-Z][a-zA-Z0-9+.\-]*):`)
+var safeSchemeRe = regexp.MustCompile(`^([a-zA-Z][a-zA-Z0-9+.\-]*):`)
 
 // URIWithSafeScheme は ApplicationHelper#uri_with_safe_scheme?（スキームなし、または
 // Setting / 既定の安全なスキーム http, https, ftp, mailto, なし）。

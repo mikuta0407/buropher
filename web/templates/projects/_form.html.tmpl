@@ -1,0 +1,70 @@
+  {{define "projects/_form#header_tags"}}
+    {{javascript_include_tag "project_identifier"}}
+  {{end}}
+  {{define "projects/_form#js"}}
+
+    $(document).ready(function() {
+      $("#project_inherit_members").change(function(){
+        if (!$(this).is(':checked')) {
+          if (!confirm("{{j (l "text_own_membership_delete_confirmation")}}")) {
+            $("#project_inherit_members").attr("checked", true);
+          }
+        }
+      });
+    });
+  {{end}}
+{{$f := .f}}
+{{$project := (assigns).Project}}
+{{error_messages_for $project.Errors}}
+
+<div class="box tabular">
+<!--[form:project]-->
+<p>{{$f.TextField "name" (hash "required" true "size" 60)}}</p>
+
+<p>{{$f.TextArea "description" (hash "rows" 8 "class" "wiki-edit" "data" list_autofill_data_attributes)}}</p>
+<p>{{$f.TextField "identifier" (hash "required" true "size" 60 "disabled" $project.IdentifierFrozen "maxlength" 100)}}
+{{if not $project.IdentifierFrozen}}
+  <em class="info">{{l "text_length_between" (hash "min" 1 "max" 100)}} {{raw (l "text_project_identifier_info")}}</em>
+{{end}}</p>
+<p>{{$f.TextField "homepage" (hash "size" 60)}}</p>
+<p>
+  {{$f.CheckBox "is_public" (hash "disabled" (not $project.SafeIsPublic))}}
+  <em class="info">{{if login_required}}{{l "text_project_is_public_non_member"}}{{else}}{{l "text_project_is_public_anonymous"}}{{end}}</em>
+</p>
+
+{{if (assigns).ParentSelect}}
+    <p>{{label_tag "project_parent_id" (l "field_parent")}}{{(assigns).ParentSelect}}</p>
+{{end}}
+
+{{if $project.SafeInheritMembers}}
+<p>{{$f.CheckBox "inherit_members"}}</p>
+{{end}}
+
+{{wikitoolbar_for "project_description"}}
+
+{{range $value := $project.VisibleCFValues}}
+  <p>{{custom_field_tag_with_label "project" $value}}</p>
+{{end}}
+{{call_hook "view_projects_form"}}
+</div>
+
+{{if $project.SafeModules}}
+<fieldset class="box tabular" id="project_modules"><legend>{{toggle_checkboxes_link "#project_modules input[type=\"checkbox\"]"}}{{l "label_module_plural"}}</legend>
+{{range $m := (assigns).Modules}}
+    <label class="floating">
+    {{check_box_tag "project[enabled_module_names][]" $m.Name ($project.HasModule $m.Name) (hash "id" (printf "project_enabled_module_names_%s" $m.Name))}}
+    {{$m.Label}}
+    </label>
+{{end}}
+{{hidden_field_tag "project[enabled_module_names][]" ""}}
+</fieldset>
+{{end}}
+<!--[eoform:project]-->
+
+{{if not $project.IdentifierFrozen}}
+  {{content_for "header_tags" (capture "projects/_form#header_tags")}}
+{{end}}
+
+{{if (assigns).ConfirmInheritMembers}}
+  {{javascript_tag (capture "projects/_form#js" .) -}}
+{{end}}

@@ -1,0 +1,23 @@
+{{define "projects/settings/_boards#js"}}
+
+  $(function() { $("div.sort-level").positionedItems(); });
+{{end}}
+{{$a := assigns}}
+{{$p := current_project}}
+{{if $a.CanManageBoards}}
+<p>{{link_to (sprite_icon "add" (l "label_board_new")) (printf "/projects/%s/boards/new" $p.Identifier) (hash "class" "icon icon-add")}}</p>
+{{end}}
+
+{{if $a.Boards}}
+<div class="table-list boards">
+  <div class="table-list-header">
+    <div class="table-list-cell">{{l "label_board"}}</div>
+  </div>
+  {{partial "projects/settings/boards_level" (dict "nodes" $a.BoardsTree "project" $p "manage" $a.CanManageBoards) -}}
+</div>
+
+{{javascript_tag (capture "projects/settings/_boards#js" .) -}}
+
+{{else}}
+<p class="nodata">{{l "label_no_data"}}</p>
+{{end}}

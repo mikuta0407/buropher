@@ -130,6 +130,8 @@ type Req struct {
 	ArchivedProject *domain.Project
 	// Question は @question。
 	Question string
+	// NewRecordProject は @project が未保存のプロジェクト（メニューの判定に使う）。
+	NewRecordProject bool
 
 	cfg    *actionConfig
 	authz  *authz.Authorizer

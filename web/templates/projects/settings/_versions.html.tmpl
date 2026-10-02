@@ -1,0 +1,63 @@
+{{$a := assigns}}
+{{$p := current_project}}
+{{if $a.Versions}}
+  <div class="contextual">
+    {{link_to (sprite_icon "lock" (l "label_close_versions")) (printf "/projects/%s/versions/close_completed" $p.Identifier) (hash "class" "icon icon-locked" "method" "put")}}
+  </div>
+{{end}}
+<p>
+  {{if $a.CanManageVersions}}{{link_to (sprite_icon "add" (l "label_version_new")) (printf "/projects/%s/versions/new?back_url=" $p.Identifier) (hash "class" "icon icon-add")}}{{end}}
+</p>
+
+{{form_tag (printf "/projects/%s/settings/versions" $p.Identifier) (hash "method" "get")}}
+<fieldset><legend>{{l "label_filter_plural"}}</legend>
+<label for='status'>{{l "field_status"}}:</label>
+{{select_tag "version_status" (options_for_select $a.VersionStatusOptions $a.VersionStatus) (hash "onchange" "this.form.submit(); return false;")}}
+<label for='name'>{{l "label_version"}}:</label>
+{{text_field_tag "version_name" (nil_if_blank $a.VersionName) (hash "size" 30)}}
+{{submit_tag (l "button_apply") (hash "name" nil)}}
+{{link_to (sprite_icon "reload" (l "button_clear")) (printf "/projects/%s/settings/versions" $p.Identifier) (hash "class" "icon icon-reload")}}
+</fieldset>
+{{end_form}}
+&nbsp;
+
+{{if $a.Versions}}
+<table class="list versions">
+  <thead><tr>
+    <th>{{l "label_version"}}</th>
+    <th>{{l "field_default_version"}}</th>
+    <th>{{l "field_effective_date"}}</th>
+    <th>{{l "field_description"}}</th>
+    <th>{{l "field_status"}}</th>
+    <th>{{l "field_sharing"}}</th>
+    <th>{{l "label_wiki_page"}}</th>
+    <th style="width:15%"></th>
+    </tr></thead>
+  <tbody>
+{{range $version := $a.Versions}}
+    <tr class="version {{$version.Status}} {{if $version.Shared}}shared{{end}}">
+    <td class="name">
+      <span class="{{if $version.Shared}}icon{{end}}">
+        {{if $version.Shared}}{{sprite_icon "link"}}{{end}}
+        {{link_to_if $version.Visible $version.Label (printf "/versions/%d" $version.ID) (hash "title" (format_date_ptr $version.EffectiveDate))}}
+      </span>
+    </td>
+    <td class="tick">{{checked_image $version.IsDefault}}</td>
+    <td class="date">{{format_date_ptr $version.EffectiveDate}}</td>
+    <td class="description">{{$version.Description}}</td>
+    <td class="status">{{$version.StatusLabel}}</td>
+    <td class="sharing">{{$version.SharingLabel}}</td>
+    <td>{{$version.WikiLink}}</td>
+    <td class="buttons">
+      {{if and (not $version.Shared) $a.CanManageVersions}}
+        {{link_to (sprite_icon "edit" (l "button_edit")) (printf "/versions/%d/edit" $version.ID) (hash "class" "icon icon-edit")}}
+        {{delete_link (printf "/versions/%d" $version.ID)}}
+      {{end}}
+     </td>
+    </tr>
+{{end}}
+    </tbody>
+</table>
+{{else}}
+<p class="nodata">{{l "label_no_data"}}</p>
+{{end}}

@@ -1,0 +1,17 @@
+{{$manage := .manage}}
+{{$p := .project}}
+<div class="sort-level">{{range $n := .nodes}}<div>
+  <div class="table-list-row">
+    <div class="table-list-cell name" style="padding-left: {{$n.PaddingLeft}}px">
+      {{link_to $n.Board.Name (printf "/projects/%s/boards/%d" $p.Identifier $n.Board.ID)}}
+    </div>
+    <div class="table-list-cell description">{{$n.Board.Description}}</div>
+    <div class="table-list-cell buttons">
+    {{if $manage}}
+      {{reorder_handle (printf "/projects/%s/boards/%d" $p.Identifier $n.Board.ID) "board"}}
+      {{link_to (sprite_icon "edit" (l "button_edit")) (printf "/projects/%s/boards/%d/edit" $p.Identifier $n.Board.ID) (hash "class" "icon icon-edit")}}
+      {{delete_link (printf "/projects/%s/boards/%d" $p.Identifier $n.Board.ID)}}
+    {{end}}
+    </div>
+  </div>
+{{if $n.Children}}{{partial "projects/settings/boards_level" (dict "nodes" $n.Children "project" $p "manage" $manage)}}{{end}}</div>{{end}}</div>
