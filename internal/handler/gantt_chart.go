@@ -72,7 +72,7 @@ type ganttChart struct {
 	// MaxRows は max_rows（hasMaxRows が偽なら nil = 無制限）。
 	MaxRows    int
 	hasMaxRows bool
-	Truncated bool
+	Truncated  bool
 
 	query      *query.Query
 	today      time.Time
