@@ -1,0 +1,79 @@
+{{$v := .V}}{{$F := .F}}
+{{$f := labelled_fields_for "issue" $F.Model}}
+
+<div class="splitcontent">
+<div class="splitcontentleft">
+{{if $F.ShowStatusSelect}}
+<p>
+  {{$f.Select "status_id" $F.StatusOptions (hash "required" true) (hash "onchange" $F.UpdateFormOnchange "title" $F.StatusTitle)}}
+  {{if $F.StatusesWithDescription}}{{content_tag "a" (sprite_icon "help" (l "label_open_issue_statuses_description")) (hash "class" "icon-only icon-help" "title" (l "label_open_issue_statuses_description") "onclick" "showModal('issue_statuses_description', '500px'); return false;" "href" "#")}}{{end}}
+  {{if $F.TransitionWarning}}
+    <span class="icon-only icon-warning" title="{{$F.TransitionWarning}}">{{sprite_icon "warning" (l "notice_issue_not_closable_by_open_tasks")}}</span>
+  {{end}}
+</p>
+{{partial "issues/issue_status_description" (dict "issue_statuses" $F.StatusesWithDescription)}}
+{{if $F.WasDefaultStatus}}{{hidden_field_tag "was_default_status" $v.Issue.StatusID (hash "id" nil)}}{{end}}
+{{else}}
+<p><label>{{l "field_status"}}</label> {{$v.M.Status.Name}}</p>
+{{end}}
+
+{{if $v.M.SafeAttribute "priority_id"}}
+<p>{{$f.Select "priority_id" $F.PriorityOptions (hash "required" true)}}</p>
+{{end}}
+
+{{if $v.M.SafeAttribute "assigned_to_id"}}
+<p>
+  {{$f.Select "assigned_to_id" $F.AssigneeOptions (hash "include_blank" true "required" ($v.M.RequiredAttribute "assigned_to_id"))}}
+  {{if $F.ShowAssignToMe}}
+    <a class="{{$F.AssignToMeClass}}" href="#" data-id="{{current_user.ID}}">{{l "label_assign_to_me"}}</a>
+  {{end}}
+</p>
+{{end}}
+
+{{if and ($v.M.SafeAttribute "category_id") $F.CategoryOptions}}
+<p>{{$f.Select "category_id" $F.CategoryOptions (hash "include_blank" true "required" ($v.M.RequiredAttribute "category_id")) (hash "onchange" nil)}}
+{{if $v.M.CanManageCategories}}{{link_to (sprite_icon "add" (l "label_issue_category_new")) (printf "/projects/%s/issue_categories/new" $v.M.Project.Identifier) (hash "remote" true "method" "get" "title" (l "label_issue_category_new") "tabindex" 200 "class" "icon-only icon-add")}}{{end}}</p>
+{{end}}
+
+{{if and ($v.M.SafeAttribute "fixed_version_id") $F.HasAssignableVersions}}
+<p>{{$f.Select "fixed_version_id" $F.VersionOptions (hash "include_blank" true "required" ($v.M.RequiredAttribute "fixed_version_id"))}}
+{{if $v.M.CanManageVersions}}{{link_to (sprite_icon "add" (l "label_version_new")) (printf "/projects/%s/versions/new" $v.M.Project.Identifier) (hash "remote" true "method" "get" "title" (l "label_version_new") "tabindex" 200 "class" "icon-only icon-add")}}{{end}}
+</p>
+{{end}}
+</div>
+
+<div class="splitcontentright">
+{{if $v.M.SafeAttribute "parent_issue_id"}}
+<p id="parent_issue">{{$f.TextField "parent_issue_id" (hash "size" 10 "required" ($v.M.RequiredAttribute "parent_issue_id") "onchange" $F.UpdateFormOnchange)}}</p>
+{{javascript_tag $F.ParentAutocompleteJS}}
+{{end}}
+
+{{if $v.M.SafeAttribute "start_date"}}
+<p id="start_date_area">
+  {{$f.DateField "start_date" (hash "size" 10 "required" ($v.M.RequiredAttribute "start_date"))}}
+  {{calendar_for "issue_start_date"}}
+</p>
+{{end}}
+
+{{if $v.M.SafeAttribute "due_date"}}
+<p id="due_date_area">
+  {{$f.DateField "due_date" (hash "size" 10 "required" ($v.M.RequiredAttribute "due_date"))}}
+  {{calendar_for "issue_due_date"}}
+</p>
+{{end}}
+
+{{if $v.M.SafeAttribute "estimated_hours"}}
+<p>{{$f.TextField "estimated_hours" ($F.HoursFieldOptions 6 ($v.M.RequiredAttribute "estimated_hours") $F.EstimatedHours)}} {{l "field_hours"}}</p>
+{{end}}
+
+{{if and ($v.M.SafeAttribute "done_ratio") $F.UseFieldForDoneRatio}}
+<p>{{$f.Select "done_ratio" $F.DoneRatioOptions (hash "required" ($v.M.RequiredAttribute "done_ratio"))}}</p>
+{{end}}
+</div>
+</div>
+
+{{if $v.M.SafeAttribute "custom_field_values"}}
+{{partial "issues/form_custom_fields" (dict "F" $F)}}
+{{end}}
+
+{{$_ := include_calendar_headers_tags}}

@@ -1,0 +1,21 @@
+{{range $changeset := .Changesets}}
+  <div id="changeset-{{$changeset.ID}}" class="changeset journal">
+    <h4 class="journal-header">
+        <span class="journal-info">
+          {{avatar $changeset.User (hash "size" "24")}}
+          {{authoring $changeset.CommittedAt.Time $changeset.Author (hash "label" "label_added_time_by")}}
+        </span>
+    </h4>
+    <div class="journal-content">
+      <p>
+        {{$changeset.ProjectPrefix}}
+        {{$changeset.RevisionLink}}
+        {{$changeset.DiffLink}}
+      </p>
+      <div class="wiki changeset-comments">
+        {{$changeset.Comments}}
+      </div>
+    </div>
+  </div>
+  {{call_hook "view_issues_history_changeset_bottom"}}
+{{end}}

@@ -1,0 +1,35 @@
+status: 200
+content-type: application/atom+xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Redmine: Details of all changes</title>
+  <link href="{{BASE}}/issues/changes.atom" rel="self"/>
+  <link href="{{BASE}}/" rel="alternate"/>
+  <id>{{BASE}}/</id>
+  <sprite_icon>{{BASE}}/assets/favicon-DIGEST.ico</sprite_icon>
+  <updated>2026-01-14T00:00:00Z</updated>
+  <author>
+    <name>Redmine</name>
+  </author>
+  <entry>
+    <title>eCookbook - Bug #1: Cannot print recipes</title>
+    <link href="{{BASE}}/issues/1" rel="alternate"/>
+    <id>{{BASE}}/issues/1?journal_id=2</id>
+    <updated>2026-01-14T00:00:00Z</updated>
+    <author>
+      <name>John Smith</name>
+    </author>
+    <content type="html">&#xA;&lt;ul&gt;&lt;/ul&gt;&lt;p&gt;Some notes with Redmine links: &lt;a class=&#34;issue tracker-2 status-2 priority-5 priority-default&#34; title=&#34;Feature request: Add ingredients categories (Assigned)&#34; href=&#34;{{BASE}}/issues/2&#34;&gt;#2&lt;/a&gt;, &lt;a class=&#34;changeset&#34; title=&#34;This commit fixes #1, #2 and references #1 &amp;amp; #3&#34; href=&#34;{{BASE}}/projects/ecookbook/repository/10/revisions/2&#34;&gt;r2&lt;/a&gt;.&lt;/p&gt;    </content>
+  </entry>
+  <entry>
+    <title>eCookbook - Bug #1: Cannot print recipes</title>
+    <link href="{{BASE}}/issues/1" rel="alternate"/>
+    <id>{{BASE}}/issues/1?journal_id=1</id>
+    <updated>2026-01-13T00:00:00Z</updated>
+    <author>
+      <name>Redmine Admin</name>
+    </author>
+    <content type="html">&#xA;&lt;ul&gt;&lt;li&gt;&lt;strong&gt;Status&lt;/strong&gt; changed from &lt;i&gt;New&lt;/i&gt; to &lt;i&gt;Assigned&lt;/i&gt;&lt;/li&gt;&lt;li&gt;&lt;strong&gt;% Done&lt;/strong&gt; changed from &lt;i&gt;40&lt;/i&gt; to &lt;i&gt;30&lt;/i&gt;&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Journal notes&lt;/p&gt;    </content>
+  </entry>
+</feed>

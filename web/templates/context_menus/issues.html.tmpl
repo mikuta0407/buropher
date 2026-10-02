@@ -1,0 +1,154 @@
+{{$cm := .CM}}
+<ul>
+  {{call_hook "view_issues_context_menu_start"}}
+
+  {{if $cm.Issue}}
+    <li>{{$cm.EditLink}}</li>
+  {{else}}
+    <li>{{$cm.EditLink}}</li>
+  {{end}}
+
+  {{if $cm.AllowedStatuses}}
+  <li class="folder">
+    <a href="#" class="submenu">{{l "field_status"}}</a>
+    <span class="icon-only">{{sprite_icon "angle-right" (hash "rtl" true)}}</span>
+    <ul>
+    {{range $s := $cm.AllowedStatuses}}
+        <li>
+          {{$cm.StatusLink $s}}
+        </li>
+    {{end}}
+    </ul>
+  </li>
+  {{end}}
+
+  {{if $cm.Trackers}}
+  <li class="folder">
+    <a href="#" class="submenu">{{l "field_tracker"}}</a>
+    <span class="icon-only">{{sprite_icon "angle-right" (hash "rtl" true)}}</span>
+    <ul>
+    {{range $t := $cm.Trackers}}
+        <li>{{$cm.TrackerLink $t}}</li>
+    {{end}}
+    </ul>
+  </li>
+  {{end}}
+
+  {{if and ($cm.Safe "priority_id") $cm.Priorities}}
+  <li class="folder">
+    <a href="#" class="submenu">{{l "field_priority"}}</a>
+    <span class="icon-only">{{sprite_icon "angle-right" (hash "rtl" true)}}</span>
+    <ul>
+    {{range $p := $cm.Priorities}}
+        <li>{{$cm.PriorityLink $p}}</li>
+    {{end}}
+    </ul>
+  </li>
+  {{end}}
+
+  {{if and ($cm.Safe "fixed_version_id") $cm.Versions}}
+  <li class="folder">
+    <a href="#" class="submenu">{{l "field_fixed_version"}}</a>
+    <span class="icon-only">{{sprite_icon "angle-right" (hash "rtl" true)}}</span>
+    <ul>
+    {{range $v := $cm.Versions}}
+        <li>{{$cm.VersionLink $v}}</li>
+    {{end}}
+        <li>{{$cm.VersionNoneLink}}</li>
+    </ul>
+  </li>
+  {{end}}
+
+  {{if and ($cm.Safe "assigned_to_id") $cm.Assignables}}
+  <li class="folder">
+    <a href="#" class="submenu">{{l "field_assigned_to"}}</a>
+    <span class="icon-only">{{sprite_icon "angle-right" (hash "rtl" true)}}</span>
+    <ul>
+    {{if $cm.AssignToMe}}
+        <li>{{$cm.MeLink}}</li>
+    {{end}}
+    {{range $u := $cm.Assignables}}
+        <li>{{$cm.AssigneeLink $u}}</li>
+    {{end}}
+        <li>{{$cm.NobodyLink}}</li>
+    </ul>
+  </li>
+  {{end}}
+
+  {{if and ($cm.Safe "category_id") $cm.Categories}}
+  <li class="folder">
+    <a href="#" class="submenu">{{l "field_category"}}</a>
+    <span class="icon-only">{{sprite_icon "angle-right" (hash "rtl" true)}}</span>
+    <ul>
+    {{range $c := $cm.Categories}}
+        <li>{{$cm.CategoryLink $c}}</li>
+    {{end}}
+        <li>{{$cm.CategoryNoneLink}}</li>
+    </ul>
+  </li>
+  {{end}}
+
+  {{if $cm.ShowDoneRatio}}
+  <li class="folder">
+    <a href="#" class="submenu">{{l "field_done_ratio"}}</a>
+    <span class="icon-only">{{sprite_icon "angle-right" (hash "rtl" true)}}</span>
+    <ul>
+    {{range $link := $cm.DoneRatioLinks}}
+        <li>{{$link}}</li>
+    {{end}}
+    </ul>
+  </li>
+  {{end}}
+
+  {{range $f := $cm.CustomFields}}
+    <li class="folder {{$f.CF.CSSClasses}}">
+      <a href="#" class="submenu">{{$f.CF.Name}}</a>
+      <span class="icon-only">{{sprite_icon "angle-right" (hash "rtl" true)}}</span>
+      <ul>
+      {{range $o := $f.Options}}
+        <li>{{$cm.CustomFieldLink $f.CF $o.Label ($cm.OptionValue $o)}}</li>
+      {{end}}
+      {{if not $f.CF.IsRequired}}
+        <li>{{$cm.CustomFieldLink $f.CF (l "label_none") "__none__"}}</li>
+      {{end}}
+      </ul>
+    </li>
+  {{end}}
+
+{{if $cm.CanAddWatchers}}
+  <li class="folder">
+    <a href="#" class="submenu">{{l "label_issue_watchers"}}</a>
+    <span class="icon-only">{{sprite_icon "angle-right" (hash "rtl" true)}}</span>
+    <ul>
+      <li>{{$cm.AddWatchersLink}}</li>
+    </ul>
+  </li>
+{{end}}
+
+{{if $cm.Logged}}
+  <li>{{$cm.WatcherLink}}</li>
+{{end}}
+
+{{if not $cm.Issue}}
+  <li>{{$cm.FilterLink}}</li>
+{{end}}
+
+{{if $cm.Issue}}
+  {{if $cm.CanLogTime}}
+  <li>{{$cm.LogTimeLink}}</li>
+  {{end}}
+  {{if $cm.CanAddSubtask}}
+  <li>{{$cm.AddSubtaskLink}}</li>
+  {{end}}
+  <li>{{$cm.CopyURLLink}}</li>
+  <li>{{$cm.CopyLink}}</li>
+{{else}}
+  <li>{{$cm.CopyURLLink}}</li>
+  <li>{{$cm.CopyLink}}</li>
+{{end}}
+  {{if $cm.IncludeDelete}}
+    <li>{{$cm.DeleteLink}}</li>
+  {{end}}
+
+  {{call_hook "view_issues_context_menu_end"}}
+</ul>

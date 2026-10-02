@@ -1,0 +1,15 @@
+{{$v := .V}}
+<div class="contextual">
+  {{if $v.CanManageSubtasks}}{{link_to (l "button_add") $v.NewSubtaskURL}}{{end}}
+</div>
+
+<p>
+  <strong>{{l "label_subtask_plural"}}</strong>
+  {{$v.DescendantsStats}}
+</p>
+
+{{form_tag request_path (hash "data" (hash "cm_url" "/issues/context_menu"))}}
+  <div class="subtasks-wrapper">
+    {{$v.DescendantsTree}}
+  </div>
+{{end_form}}

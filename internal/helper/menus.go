@@ -52,6 +52,7 @@ type menuEnv struct {
 var _ menu.Env = menuEnv{}
 
 func (e menuEnv) L(key string) string { return e.p.l(key) }
+
 func (e menuEnv) LOrHumanize(name, prefix string) string {
 	if e.p.Loc == nil {
 		return rails.Humanize(name)

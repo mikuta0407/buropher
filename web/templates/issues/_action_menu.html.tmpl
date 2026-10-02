@@ -1,0 +1,8 @@
+{{$v := .V}}
+<div class="contextual">
+{{if $v.M.Editable}}{{link_to (sprite_icon "edit" (l "button_edit")) $v.EditPath (hash "onclick" "showAndScrollTo(\"update\", \"issue_notes\"); return false;" "class" "icon icon-edit " "accesskey" (accesskey "edit"))}}{{end}}
+{{if $v.M.TimeLoggable}}{{link_to (sprite_icon "time-add" (l "button_log_time")) (printf "/issues/%d/time_entries/new" $v.Issue.ID) (hash "class" "icon icon-time-add ")}}{{end}}
+{{$v.WatcherLink}}
+{{if $v.CanCopy}}{{link_to (sprite_icon "copy" (l "button_copy")) $v.CopyPath (hash "class" "icon icon-copy ")}}{{end}}
+{{$v.ActionsDropdown}}
+</div>

@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/mikuta0407/buropher/internal/customfield"
+	"github.com/mikuta0407/buropher/internal/db"
 )
 
 // ColumnKind は QueryColumn のサブクラス。
@@ -138,6 +139,10 @@ func (q *Query) timestampToDate(column string) string {
 	}
 	return tsDateSQL(q.env.dialect().Name(), column, tz)
 }
+
+// timestampGroupable は TimestampQueryColumn#groupable?（Redmine::Database.timestamp_to_date が
+// SQLite では nil を返すため、SQLite では日時の列でグループ化できない）。
+func (q *Query) timestampGroupable() bool { return q.env.dialect().Name() != db.SQLite }
 
 // AvailableColumns は available_columns。
 func (q *Query) AvailableColumns(ctx context.Context) ([]*Column, error) {

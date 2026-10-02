@@ -1,0 +1,18 @@
+status: 200
+content-type: text/csv
+
+﻿#;Subject;Database;Searchable field;Float field;Custom date
+14;Private issue on public project;"";"";"";""
+13;Subproject issue two;"";"";"";""
+12;Closed issue on a locked version;"";"";"";""
+11;Closed issue on a closed version;"";"";"";""
+10;Issue Doing the Blocking;"";"";"";""
+9;Blocked Issue;"";"";"";""
+8;Closed issue;"";"";"";""
+7;Issue due today;"";this is a stringforcustomfield search;;""
+6;Issue of a private subproject;"";"";"";""
+5;Subproject issue;"";"";-7.60;""
+4;Issue on project 2;"";"";"";""
+3;Error 281 when updating a recipe;MySQL;125;11.65;""
+2;Add ingredients categories;"";"";2.05;""
+1;Cannot print recipes;"";125;2.10;12/01/2009

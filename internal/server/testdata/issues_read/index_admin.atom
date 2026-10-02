@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Redmine: Issues</title>
+  <link rel="self" href="{{BASE}}/issues.atom?f%5B%5D=status_id&amp;op%5Bstatus_id%5D=%2A&amp;set_filter=1&amp;sort=id"/>
+  <link rel="alternate" href="{{BASE}}/issues?f%5B%5D=status_id&amp;op%5Bstatus_id%5D=%2A&amp;set_filter=1&amp;sort=id"/>
+  <id>{{BASE}}/</id>
+  <icon>{{BASE}}/assets/favicon-0e291875.ico</icon>
+  <updated>2026-01-15T11:59:00Z</updated>
+  <author>
+    <name>Redmine</name>
+  </author>
+  <generator uri="https://www.redmine.org/">
+Redmine  </generator>
+  <entry>
+    <title>Private child of eCookbook - Bug #6 (New): Issue of a private subproject</title>
+    <link rel="alternate" href="{{BASE}}/issues/6"/>
+    <id>{{BASE}}/issues/6</id>
+    <updated>2026-01-15T11:59:00Z</updated>
+    <author>
+      <name>John Smith</name>
+    </author>
+    <content type="html">
+&lt;p&gt;This is an issue of a private subproject of cookbook&lt;/p&gt;    </content>
+  </entry>
+  <entry>
+    <title>Private child of eCookbook - Bug #9 (New): Blocked Issue</title>
+    <link rel="alternate" href="{{BASE}}/issues/9"/>
+    <id>{{BASE}}/issues/9</id>
+    <updated>2026-01-15T11:59:00Z</updated>
+    <author>
+      <name>John Smith</name>
+    </author>
+    <content type="html">
+&lt;p&gt;This is an issue that is blocked by issue&lt;/p&gt;    </content>
+  </entry>
+  <entry>
+    <title>Private child of eCookbook - Bug #10 (New): Issue Doing the Blocking</title>
+    <link rel="alternate" href="{{BASE}}/issues/10"/>
+    <id>{{BASE}}/issues/10</id>
+    <updated>2026-01-15T11:59:00Z</updated>
+    <author>
+      <name>John Smith</name>
+    </author>
+    <content type="html">
+&lt;p&gt;This is an issue that blocks issue&lt;/p&gt;    </content>
+  </entry>
+  <entry>
+    <title>eCookbook - Bug #1 (New): Cannot print recipes</title>
+    <link rel="alternate" href="{{BASE}}/issues/1"/>
+    <id>{{BASE}}/issues/1</id>
+    <updated>2026-01-12T12:00:00Z</updated>
+    <author>
+      <name>John Smith</name>
+    </author>
+    <content type="html">
+&lt;p&gt;Unable to print recipes&lt;/p&gt;    </content>
+  </entry>
+  <entry>
+    <title>eCookbook - Bug #11 (Closed): Closed issue on a closed version</title>
+    <link rel="alternate" href="{{BASE}}/issues/11"/>
+    <id>{{BASE}}/issues/11</id>
+    <updated>2026-01-12T12:00:00Z</updated>
+    <author>
+      <name>John Smith</name>
+    </author>
+    <content type="html">
+    </content>
+  </entry>
+  <entry>
+    <title>eCookbook - Bug #12 (Closed): Closed issue on a locked version</title>
+    <link rel="alternate" href="{{BASE}}/issues/12"/>
+    <id>{{BASE}}/issues/12</id>
+    <updated>2026-01-12T12:00:00Z</updated>
+    <author>
+      <name>Dave Lopper</name>
+      <email>dlopper@somenet.foo</email>
+    </author>
+    <content type="html">
+    </content>
+  </entry>
+  <entry>
+    <title>OnlineStore - Bug #4 (New): Issue on project 2</title>
+    <link rel="alternate" href="{{BASE}}/issues/4"/>
+    <id>{{BASE}}/issues/4</id>
+    <updated>2026-01-10T12:00:00Z</updated>
+    <author>
+      <name>John Smith</name>
+    </author>
+    <content type="html">
+&lt;p&gt;Issue on project 2&lt;/p&gt;    </content>
+  </entry>
+  <entry>
+    <title>eCookbook Subproject 1 - Bug #5 (New): Subproject issue</title>
+    <link rel="alternate" href="{{BASE}}/issues/5"/>
+    <id>{{BASE}}/issues/5</id>
+    <updated>2026-01-10T12:00:00Z</updated>
+    <author>
+      <name>John Smith</name>
+    </author>
+    <content type="html">
+&lt;p&gt;This is an issue on a cookbook subproject&lt;/p&gt;    </content>
+  </entry>
+  <entry>
+    <title>eCookbook Subproject 1 - Bug #13 (New): Subproject issue two</title>
+    <link rel="alternate" href="{{BASE}}/issues/13"/>
+    <id>{{BASE}}/issues/13</id>
+    <updated>2026-01-10T12:00:00Z</updated>
+    <author>
+      <name>John Smith</name>
+    </author>
+    <content type="html">
+&lt;p&gt;This is a second issue on a cookbook subproject&lt;/p&gt;    </content>
+  </entry>
+  <entry>
+    <title>eCookbook - Bug #7 (New): Issue due today</title>
+    <link rel="alternate" href="{{BASE}}/issues/7"/>
+    <id>{{BASE}}/issues/7</id>
+    <updated>2026-01-05T12:00:00Z</updated>
+    <author>
+      <name>John Smith</name>
+    </author>
+    <content type="html">
+&lt;p&gt;This is an issue that is due today&lt;/p&gt;    </content>
+  </entry>
+  <entry>
+    <title>eCookbook - Bug #8 (Closed): Closed issue</title>
+    <link rel="alternate" href="{{BASE}}/issues/8"/>
+    <id>{{BASE}}/issues/8</id>
+    <updated>2026-01-05T12:00:00Z</updated>
+    <author>
+      <name>John Smith</name>
+    </author>
+    <content type="html">
+&lt;p&gt;This is a closed issue.&lt;/p&gt;    </content>
+  </entry>
+  <entry>
+    <title>eCookbook Subproject 1 - Bug #14 (New): Private issue on public project</title>
+    <link rel="alternate" href="{{BASE}}/issues/14"/>
+    <id>{{BASE}}/issues/14</id>
+    <updated>2025-12-31T12:00:00Z</updated>
+    <author>
+      <name>John Smith</name>
+    </author>
+    <content type="html">
+&lt;p&gt;This is a private issue&lt;/p&gt;    </content>
+  </entry>
+  <entry>
+    <title>eCookbook - Bug #3 (New): Error 281 when updating a recipe</title>
+    <link rel="alternate" href="{{BASE}}/issues/3"/>
+    <id>{{BASE}}/issues/3</id>
+    <updated>2006-07-19T19:07:27Z</updated>
+    <author>
+      <name>John Smith</name>
+    </author>
+    <content type="html">
+&lt;p&gt;Error 281 is encountered when saving a recipe&lt;/p&gt;    </content>
+  </entry>
+  <entry>
+    <title>eCookbook - Feature request #2 (Assigned): Add ingredients categories</title>
+    <link rel="alternate" href="{{BASE}}/issues/2"/>
+    <id>{{BASE}}/issues/2</id>
+    <updated>2006-07-19T19:04:21Z</updated>
+    <author>
+      <name>John Smith</name>
+    </author>
+    <content type="html">
+&lt;p&gt;Ingredients of the recipe should be classified by categories&lt;/p&gt;    </content>
+  </entry>
+</feed>

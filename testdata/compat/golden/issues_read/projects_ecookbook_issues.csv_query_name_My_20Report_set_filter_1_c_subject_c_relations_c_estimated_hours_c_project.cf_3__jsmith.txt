@@ -1,0 +1,14 @@
+status: 200
+content-type: text/csv
+
+#,Subject,Related issues,Estimated time
+14,Private issue on public project,"",""
+13,Subproject issue two,"",""
+10,Issue Doing the Blocking,Blocks #9,""
+9,Blocked Issue,Blocked by #10,""
+7,Issue due today,"",""
+6,Issue of a private subproject,"",""
+5,Subproject issue,"",2.00
+3,Error 281 when updating a recipe,Related to #2,1.00
+2,Add ingredients categories,Related to #3,0.50
+1,Cannot print recipes,"",200.00

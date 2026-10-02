@@ -1,0 +1,78 @@
+{{$v := .V}}{{$F := .F}}
+{{$f := labelled_form_for "issue" $F.Model (hash "url" $F.FormURL "html" (hash "id" "issue-form" "multipart" true))}}
+{{$f.Open}}
+    {{error_messages_for_list nil}}
+    <div class="box">
+    {{if $v.M.AttributesEditable}}
+        <fieldset class="tabular"><legend>{{l "label_change_properties"}}</legend>
+        <div id="all_attributes">
+        {{partial "issues/form" (dict "V" $v "F" $F "f" $f)}}
+        </div>
+        </fieldset>
+    {{end}}
+    {{if and $v.M.TimeLoggable $F.TimeEntry}}
+        <fieldset class="tabular" id="log_time"><legend>{{l "button_log_time"}}</legend>
+        {{$te := labelled_fields_for "time_entry" $F.TimeEntry}}
+        <div class="splitcontent">
+        <div class="splitcontentleft">
+        <p>{{$te.TextField "hours" $F.TimeEntryHoursOptions}} {{l "field_hours"}}</p>
+        </div>
+        <div class="splitcontentright">
+        <p>{{$te.Select "activity_id" $F.TimeEntry.ActivityOptions}}</p>
+        </div>
+        </div>
+        <p>{{$te.TextField "comments" (hash "size" 60)}}</p>
+        {{range $tag := $F.TimeEntry.CustomFieldTags $F}}
+          <p>{{$tag}}</p>
+        {{end}}
+    </fieldset>
+    {{end}}
+    {{if $v.M.NotesAddable}}
+      <fieldset id="add_notes"><legend>{{l "field_notes"}}</legend>
+      {{$f.TextArea "notes" (hash "cols" 60 "rows" 10 "class" "wiki-edit" "data" $F.ListAutofillData "no_label" true)}}
+      {{wikitoolbar_for "issue_notes" $F.NotesPreviewURL}}
+
+      {{if $v.M.SafeAttribute "private_notes"}}
+      {{$f.CheckBox "private_notes" (hash "no_label" true)}} <label for="issue_private_notes">{{l "field_private_notes"}}</label>
+      {{end}}
+
+      {{call_hook "view_issues_edit_notes_bottom"}}
+      </fieldset>
+    {{end}}
+    {{if $F.ShowWatcherDataSources}}
+      {{$F.WatchersDataSourcesJS}}
+    {{end}}
+    {{if $v.M.AttachmentsAddable}}
+      <fieldset id="add_attachments"><legend>{{l "label_attachment_plural"}}</legend>
+        {{if $F.ExistingAttachments}}
+        <div class="contextual">{{link_to (l "label_edit_attachments") "#" (hash "onclick" "$('#existing-attachments').toggle(); return false;")}}</div>
+        <div id="existing-attachments" style="display:none;">
+          {{range $attachment := $F.ExistingAttachments}}
+          <span class="existing-attachment">
+            {{sprite_icon "attachment" (hash "size" 12)}}
+            {{text_field_tag "" $attachment.Filename (hash "class" "icon icon-attachment filename" "disabled" true)}}
+            <label>
+              {{check_box_tag "issue[deleted_attachment_ids][]" $attachment.ID false (hash "id" nil "class" "deleted_attachment")}} {{l "button_delete"}}
+            </label>
+          </span>
+          {{end}}
+          <hr />
+        </div>
+        {{end}}
+
+        <div id="new-attachments" style="display:inline-block;">
+          {{partial "attachments/form" (dict "F" $F)}}
+        </div>
+      </fieldset>
+    {{end}}
+    </div>
+
+    {{$f.HiddenField "lock_version"}}
+    {{hidden_field_tag "last_journal_id" $F.LastJournalID}}
+    {{submit_tag (l "button_submit")}}
+    {{link_to (l "button_cancel") (printf "/issues/%d" $v.Issue.ID) (hash "onclick" "$('#update').hide(); return false;")}}
+    {{if $v.PrevIssueID}}{{hidden_field_tag "prev_issue_id" $v.PrevIssueID}}{{end}}
+    {{if $v.NextIssueID}}{{hidden_field_tag "next_issue_id" $v.NextIssueID}}{{end}}
+    {{if $v.IssuePosition}}{{hidden_field_tag "issue_position" $v.IssuePosition}}{{end}}
+    {{if $v.IssueCount}}{{hidden_field_tag "issue_count" $v.IssueCount}}{{end}}
+{{end_form}}
