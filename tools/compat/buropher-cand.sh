@@ -40,7 +40,12 @@ start() {
   echo "failed to start; see $WORK/serve.log" >&2; exit 1
 }
 
-stop() { [ -f "$PIDFILE" ] && kill "$(cat "$PIDFILE")" 2>/dev/null || true; rm -f "$PIDFILE"; }
+# PIDFILE はシェル関数（env_run）を起動したサブシェルの pid のことがあるため、同じバイナリの serve も止める
+stop() {
+  [ -f "$PIDFILE" ] && kill "$(cat "$PIDFILE")" 2>/dev/null || true; rm -f "$PIDFILE"
+  pkill -f "^$BIN serve\$" 2>/dev/null || true
+  for _ in $(seq 25); do pgrep -f "^$BIN serve\$" >/dev/null || break; sleep 0.2; done
+}
 
 case "${1:-}" in
   start) start ;;
