@@ -1,0 +1,102 @@
+status: 200
+location: 
+
+<title>Redmine</title>
+----
+<!-- page specific tags -->
+</head>
+----
+<div id="main" class="nosidebar">
+  
+    <div id="sidebar">
+        <div id="sidebar-wrapper">
+          
+          
+        </div>
+    </div>
+
+    <div id="content">
+        
+        <h2>Register</h2>
+
+<form class="new_user" id="new_user" action="/account/register" accept-charset="UTF-8" name="new_user-RANDOM" method="post"><input type="hidden" name="authenticity_token" value="{{CSRF}}" autocomplete="off" />
+
+
+<div class="box tabular">
+  <p><label for="user_login">Login<span class="required"> *</span></label><input size="25" type="text" value="" name="user[login]" id="user_login" /></p>
+
+  <p><label for="user_password">Password<span class="required"> *</span></label><input size="25" type="password" name="user[password]" id="user_password" />
+  <em class="info">Must be at least 8 characters long.</em>
+  </p>
+  <p><label for="user_password_confirmation">Confirmation<span class="required"> *</span></label><input size="25" type="password" name="user[password_confirmation]" id="user_password_confirmation" /></p>
+
+<p><label for="user_firstname">First name<span class="required"> *</span></label><input type="text" value="" name="user[firstname]" id="user_firstname" /></p>
+<p><label for="user_lastname">Last name<span class="required"> *</span></label><input type="text" value="" name="user[lastname]" id="user_lastname" /></p>
+<p><label for="user_mail">Email<span class="required"> *</span></label><input type="text" name="user[mail]" id="user_mail" /></p>
+
+<p><label for="pref_hide_mail">Hide my email address</label><input name="pref[hide_mail]" type="hidden" value="0" autocomplete="off" /><input type="checkbox" value="1" checked="checked" name="pref[hide_mail]" id="pref_hide_mail" /></p>
+
+
+<p><label for="user_language">Language</label><select name="user[language]" id="user_language"><option value="">(auto)</option>
+<option value="sq">Albanian (Shqip)</option>
+<option value="ar">Arabic (عربي)</option>
+<option value="az">Azerbaijani (Azeri)</option>
+<option value="eu">Basque (Euskara)</option>
+<option value="bs">Bosnian (Bosanski)</option>
+<option value="bg">Bulgarian (Български)</option>
+<option value="ca">Catalan (Català)</option>
+<option value="zh">Chinese/Simplified (简体中文)</option>
+<option value="zh-TW">Chinese/Traditional (繁體中文)</option>
+<option value="hr">Croatian (Hrvatski)</option>
+<option value="cs">Czech (Čeština)</option>
+<option value="da">Danish (Dansk)</option>
+<option value="nl">Dutch (Nederlands)</option>
+<option selected="selected" value="en">English</option>
+<option value="en-GB">English (British)</option>
+<option value="et">Estonian (Eesti)</option>
+<option value="fi">Finnish (Suomi)</option>
+<option value="fr">French (Français)</option>
+<option value="gl">Galician (Galego)</option>
+<option value="de">German (Deutsch)</option>
+<option value="el">Greek (Ελληνικά)</option>
+<option value="he">Hebrew (עברית)</option>
+<option value="hu">Hungarian (Magyar)</option>
+<option value="id">Indonesian (Bahasa Indonesia)</option>
+<option value="it">Italian (Italiano)</option>
+<option value="ja">Japanese (日本語)</option>
+<option value="ko">Korean (한국어)</option>
+<option value="lv">Latvian (Latviešu)</option>
+<option value="lt">Lithuanian (lietuvių)</option>
+<option value="mk">Macedonian (Македонски)</option>
+<option value="mn">Mongolian (Монгол)</option>
+<option value="no">Norwegian (Norsk bokmål)</option>
+<option value="fa">Persian (فارسی)</option>
+<option value="pl">Polish (Polski)</option>
+<option value="pt">Portuguese (Português)</option>
+<option value="pt-BR">Portuguese/Brazil (Português/Brasil)</option>
+<option value="ro">Romanian (Română)</option>
+<option value="ru">Russian (Русский)</option>
+<option value="sr-YU">Serbian (Srpski)</option>
+<option value="sr">Serbian Cyrillic (Српски)</option>
+<option value="sk">Slovak (Slovenčina)</option>
+<option value="sl">Slovene (Slovenščina)</option>
+<option value="es">Spanish (Español)</option>
+<option value="es-PA">Spanish/Panama (Español/Panamá)</option>
+<option value="sv">Swedish (Svenska)</option>
+<option value="ta-IN">Tamil (தமிழ்)</option>
+<option value="th">Thai (ไทย)</option>
+<option value="tr">Turkish (Türkçe)</option>
+<option value="uk">Ukrainian (Українська)</option>
+<option value="vi">Vietnamese (Tiếng Việt)</option></select></p>
+
+  <p><label for="user_custom_field_values_4"><span>Phone number</span></label><input type="text" name="user[custom_field_values][4]" id="user_custom_field_values_4" value="" class="string_cf cf_4" /></p>
+  <p><label for="user_custom_field_values_5"><span>Money</span></label><input type="text" name="user[custom_field_values][5]" id="user_custom_field_values_5" value="" class="float_cf cf_5" /></p>
+</div>
+
+<input type="submit" name="commit" value="Submit" data-disable-with="Submit" />
+</form>
+        
+        <div style="clear:both;"></div>
+    </div>
+</div>
+<div id="footer">

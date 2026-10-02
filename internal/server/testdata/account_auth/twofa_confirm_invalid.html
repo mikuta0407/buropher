@@ -1,0 +1,37 @@
+status: 200
+location: 
+
+<title>Redmine</title>
+----
+<!-- page specific tags -->
+</head>
+----
+<div id="main" class="nosidebar">
+  
+    <div id="sidebar">
+        <div id="sidebar-wrapper">
+          
+          
+        </div>
+    </div>
+
+    <div id="content">
+        <div class="flash error" id="flash_error"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--warning"></use></svg>Code is invalid or outdated.</div>
+        <div id="login-form">
+
+  <h3>Two-factor authentication</h3>
+  <p>Please enter your two-factor authentication code.</p>
+
+  <form id="twofa_form" onsubmit="return keepAnchorOnSignIn(this);" action="/account/twofa" accept-charset="UTF-8" name="twofa_form-RANDOM" method="post"><input type="hidden" name="authenticity_token" value="{{CSRF}}" autocomplete="off" />
+
+    <label for="twofa_code">
+      Code          </label>
+    <input type="text" name="twofa_code" id="twofa_code" tabindex="1" autocomplete="one-time-code" autofocus="autofocus" />
+    <input type="submit" name="submit_otp" value="Login" tabindex="2" id="login-submit" data-disable-with="Login" /></form>
+</div>
+
+        
+        <div style="clear:both;"></div>
+    </div>
+</div>
+<div id="footer">

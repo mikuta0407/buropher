@@ -1,0 +1,100 @@
+status: 200
+location: 
+
+<title>Redmine</title>
+----
+<!-- page specific tags -->
+</head>
+----
+<div id="main" class="collapsiblesidebar">
+  <script>
+//<![CDATA[
+$('#main.collapsiblesidebar').collapsibleSidebar();
+//]]>
+</script>
+    <div id="sidebar">
+          <div id="sidebar-switch-panel" style="visibility: hidden;">
+            <a id="sidebar-switch-button" class="" href="#">
+              <svg class="s20 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--chevrons-right"></use></svg></a>
+          </div>
+          <script>
+//<![CDATA[
+$('#sidebar-switch-panel').css('visibility', 'visible');
+//]]>
+</script>
+        <div id="sidebar-wrapper">
+          <h3>My account</h3>
+
+<p>Login: <strong><a class="user active" href="/users/2">jsmith</a></strong><br />
+Created: 07/19/2006 05:32 PM</p>
+
+  <p><a class="icon icon-del" href="/my/account/destroy"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--del"></use></svg><span class="icon-label">Delete my account</span></a></p>
+
+<h4>Atom access key</h4>
+
+<p>
+Atom access key created less than a minute ago
+(<a rel="nofollow" data-method="post" href="/my/atom_key">Reset</a>)
+</p>
+
+<h4>API access key</h4>
+<div data-controller="api-key-copy">
+  <div class="api-key-actions">
+    <a data-remote="true" href="/my/api_key">Show</a>
+    <a class="copy-api-key-link icon icon-only"
+       title="Copy"
+       aria-label="Copy"
+       href="#"
+       role="button"
+       tabindex="0"
+       style="display: none;"
+       data-action="click->api-key-copy#copy">
+      <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--copy"></use></svg>
+    </a>
+  </div>
+  <pre id='api-access-key' class='autoscroll' data-api-key-copy-target="apiKey"></pre>
+  <script>
+//<![CDATA[
+$('#api-access-key').hide();
+//]]>
+</script>
+  <p>
+  Missing an API access key
+  (<a rel="nofollow" data-method="post" href="/my/api_key">Reset</a>)
+  </p>
+</div>
+
+
+          
+        </div>
+    </div>
+
+    <div id="content">
+        <div class="flash notice" id="flash_notice"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--checked"></use></svg>Your backup codes have been generated.</div>
+        <h2>Two-factor authentication backup codes</h2>
+
+<div class="splitcontentleft">
+  <div class="box">
+    <p>Use these codes instead of a one-time password should you not have access to your second factor. Each code can only be used once. It is recommended to print and store them in a safe place.</p>
+    <ul class="twofa_backup_codes">
+      <li><code>BACKUPCODE</code></li>
+      <li><code>BACKUPCODE</code></li>
+      <li><code>BACKUPCODE</code></li>
+      <li><code>BACKUPCODE</code></li>
+      <li><code>BACKUPCODE</code></li>
+      <li><code>BACKUPCODE</code></li>
+      <li><code>BACKUPCODE</code></li>
+      <li><code>BACKUPCODE</code></li>
+      <li><code>BACKUPCODE</code></li>
+      <li><code>BACKUPCODE</code></li>
+    </ul>
+    <p><em class="info">Backup codes generated 01/15/2026 12:00 PM.</em></p>
+  </div>
+</div>
+
+
+        
+        <div style="clear:both;"></div>
+    </div>
+</div>
+<div id="footer">

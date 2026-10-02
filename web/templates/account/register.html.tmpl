@@ -21,6 +21,7 @@
 <p>{{$f.TextField "lastname" (hash "required" true)}}</p>
 <p>{{$f.TextField "mail" (hash "required" true)}}</p>
 {{$pf := labelled_fields_for "pref" .User.Pref}}
+
 <p>{{$pf.CheckBox "hide_mail"}}</p>
 
 

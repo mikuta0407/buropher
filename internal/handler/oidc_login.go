@@ -256,10 +256,10 @@ func (a *App) OIDCCallback(c *Req) {
 	}
 	// back_url と autologin をパラメータに戻す（successful_authentication が使う）
 	if b := str("back_url"); b != "" {
-		p.Set("back_url", b)
+		httpx.BodyParams(c.R).Set("back_url", b)
 	}
 	if v := str("autologin"); v != "" {
-		p.Set("autologin", v)
+		httpx.BodyParams(c.R).Set("autologin", v)
 	}
 	switch str("mode") {
 	case "link":

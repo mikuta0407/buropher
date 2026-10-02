@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/mikuta0407/buropher/internal/domain"
+	"github.com/mikuta0407/buropher/internal/httpx"
 	"github.com/mikuta0407/buropher/internal/repository"
 )
 
@@ -59,13 +60,14 @@ func (a *App) accountTwofaSetup(c *Req) {
 		c.Redirect("/")
 		return
 	}
-	// back_url と autologin をパラメータに戻す
+	// back_url と autologin をパラメータに戻す（c.Params() は呼び出しごとに作り直されるため、
+	// リクエスト中保持される request_parameters に入れる）
 	p := c.Params()
 	if !p.Has("back_url") && s.Has("twofa_back_url") {
-		p.Set("back_url", s.Get("twofa_back_url"))
+		httpx.BodyParams(c.R).Set("back_url", s.Get("twofa_back_url"))
 	}
 	if !p.Has("autologin") && s.Has("twofa_autologin") {
-		p.Set("autologin", s.Get("twofa_autologin"))
+		httpx.BodyParams(c.R).Set("autologin", s.Get("twofa_autologin"))
 	}
 	a.setLocalization(c, user)
 	t, err := a.twofaFor(c, user)
