@@ -53,6 +53,7 @@ var order = []string{
 	"projects", "enabled_modules", "projects_trackers", "versions", "issue_categories",
 	"roles", "members", "member_roles", "issues", "workflows", "watchers",
 	"news", "user_preferences", "wikis", "boards", "repositories",
+	"custom_fields", "custom_fields_trackers", "custom_fields_projects", "custom_values",
 }
 
 var defs = map[string]fixtureDef{
@@ -72,13 +73,17 @@ var defs = map[string]fixtureDef{
 	"member_roles":      {deps: []string{"members", "roles"}, tables: []string{"member_roles"}, load: loadMemberRoles},
 	"issues": {deps: []string{"projects", "trackers", "issue_statuses", "enumerations", "users", "issue_categories", "versions"},
 		tables: []string{"issues"}, load: loadIssues},
-	"workflows":        {deps: []string{"trackers", "roles", "issue_statuses"}, tables: []string{"workflow_transitions"}, load: loadWorkflows},
-	"watchers":         {deps: []string{"users"}, tables: []string{"watchers"}, load: loadWatchers},
-	"news":             {deps: []string{"projects", "users"}, tables: []string{"news"}, load: loadNews},
-	"user_preferences": {deps: []string{"users", "projects"}, load: loadUserPreferences},
-	"wikis":            {deps: []string{"projects"}, tables: []string{"wikis"}, load: loadWikis},
-	"boards":           {deps: []string{"projects"}, tables: []string{"boards"}, load: loadBoards},
-	"repositories":     {deps: []string{"projects"}, tables: []string{"repositories"}, load: loadRepositories},
+	"workflows":              {deps: []string{"trackers", "roles", "issue_statuses"}, tables: []string{"workflow_transitions"}, load: loadWorkflows},
+	"watchers":               {deps: []string{"users"}, tables: []string{"watchers"}, load: loadWatchers},
+	"news":                   {deps: []string{"projects", "users"}, tables: []string{"news"}, load: loadNews},
+	"user_preferences":       {deps: []string{"users", "projects"}, load: loadUserPreferences},
+	"wikis":                  {deps: []string{"projects"}, tables: []string{"wikis"}, load: loadWikis},
+	"boards":                 {deps: []string{"projects"}, tables: []string{"boards"}, load: loadBoards},
+	"repositories":           {deps: []string{"projects"}, tables: []string{"repositories"}, load: loadRepositories},
+	"custom_fields":          {tables: []string{"custom_fields"}, load: loadCustomFields},
+	"custom_fields_trackers": {deps: []string{"custom_fields", "trackers"}, load: loadCustomFieldsTrackers},
+	"custom_fields_projects": {deps: []string{"custom_fields", "projects"}, load: loadCustomFieldsProjects},
+	"custom_values":          {deps: []string{"custom_fields"}, tables: []string{"custom_values"}, load: loadCustomValues},
 }
 
 // Supported は変換に対応しているフィクスチャ名を投入順で返す。

@@ -2,6 +2,8 @@ package testfixtures
 
 import (
 	"embed"
+	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"regexp"
 	"sort"
@@ -51,6 +53,15 @@ func readFixture(name string, now time.Time) ([]row, error) {
 		r := row{label: label, cols: map[string]*string{}}
 		for j := 0; j+1 < len(m.Content); j += 2 {
 			k, v := m.Content[j].Value, m.Content[j+1]
+			if v.Kind == yaml.SequenceNode {
+				// 配列（custom_fields.possible_values など）は JSON の文字列配列として渡す
+				js, err := sequenceJSON(v)
+				if err != nil {
+					return nil, fmt.Errorf("testfixtures: %s.%s.%s: %w", name, label, k, err)
+				}
+				r.cols[k] = &js
+				continue
+			}
 			if v.Kind != yaml.ScalarNode {
 				return nil, fmt.Errorf("testfixtures: %s.%s.%s: non-scalar value", name, label, k)
 			}
@@ -72,6 +83,27 @@ func readFixture(name string, now time.Time) ([]row, error) {
 		return rows[i].label < rows[j].label
 	})
 	return rows, nil
+}
+
+// sequenceJSON は YAML のスカラー配列を JSON の文字列配列にする（!binary は base64 を復号する）。
+func sequenceJSON(n *yaml.Node) (string, error) {
+	vals := []string{}
+	for _, e := range n.Content {
+		if e.Kind != yaml.ScalarNode {
+			return "", fmt.Errorf("nested sequence is not supported")
+		}
+		v := e.Value
+		if e.Tag == "!binary" || e.Tag == "!!binary" {
+			b, err := base64.StdEncoding.DecodeString(strings.Join(strings.Fields(v), ""))
+			if err != nil {
+				return "", err
+			}
+			v = string(b)
+		}
+		vals = append(vals, v)
+	}
+	b, err := json.Marshal(vals)
+	return string(b), err
 }
 
 func (r row) id() (int64, bool) {
