@@ -1,0 +1,68 @@
+{{$v := .Version}}
+<div class="contextual">
+{{if .Manage}}{{link_to (sprite_icon "edit" (l "button_edit")) (printf "/versions/%d/edit" $v.ID) (hash "class" "icon icon-edit")}}{{end}}
+{{.WikiEditLink}}
+{{if .DeletePath}}{{delete_link .DeletePath}}{{end}}
+{{.NewIssueLink}}
+{{""}}
+</div>
+
+<div id="roadmap" class="{{$v.CSSClasses}}">
+  <h2 class="inline-flex">{{$v.Name}}</h2>
+  <span class="badge badge-status-{{$v.Status}}">{{l (printf "version_status_%s" $v.Status)}}</span>
+
+{{partial "versions/overview" (dict "o" .Overview)}}
+{{.WikiHTML}}
+
+<div id="version-summary">
+{{if .TimeTracking}}
+<fieldset class="time-tracking"><legend>{{l "label_time_tracking"}}</legend>
+<table>
+<tr>
+    <th>{{l "field_estimated_hours"}}</th>
+    <td class="total-hours">{{.TimeTracking.EstimatedLink}}</td>
+</tr>
+<tr>
+  <th>{{l "field_estimated_remaining_hours"}}</th>
+  <td class="total-hours">
+    {{.TimeTracking.RemainingLink}}
+  </td>
+</tr>
+{{if .TimeTracking.SpentLink}}
+<tr>
+    <th>{{l "label_spent_time"}}</th>
+    <td class="total-hours">{{.TimeTracking.SpentLink}}</td>
+</tr>
+{{end}}
+</table>
+</fieldset>
+{{end}}
+
+<div id="status_by">
+{{if .StatusBy}}{{partial "versions/issue_counts" (dict "sb" .StatusBy)}}{{end}}
+</div>
+</div>
+
+{{if .Issues}}
+{{form_tag request_path (hash "data" (hash "cm_url" "/issues/context_menu")) -}}
+  <table class="list related-issues">
+  <caption>{{l "label_related_issues"}}</caption>
+  {{range $issue := .Issues}}
+    <tr class="hascontextmenu {{$issue.CSS}}">
+      <td class="checkbox">{{check_box_tag "ids[]" $issue.ID false (hash "id" nil)}}</td>
+      <td class="assigned_to">{{if $issue.Assignee}}{{avatar $issue.Assignee (hash "size" 16 "title" (printf "%s: %s" (l "field_assigned_to") (user_name $issue.Assignee)))}}{{end}}</td>
+      <td class="subject">{{$issue.Link}}</td>
+      <td class="buttons hide-when-print">{{link_to_context_menu}}</td>
+    </tr>
+  {{end}}
+  </table>
+{{end_form}}
+{{context_menu}}
+{{end}}
+</div>
+
+<p class="other-formats hide-when-print">{{l "label_export_to"}}  <span>{{link_to "TXT" .TxtURL (hash "class" "txt" "rel" "nofollow")}}</span>
+</p>
+{{""}}
+
+{{html_title $v.Name}}
