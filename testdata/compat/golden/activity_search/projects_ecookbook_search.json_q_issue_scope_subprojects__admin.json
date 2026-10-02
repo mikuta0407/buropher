@@ -1,0 +1,122 @@
+status: 200
+content-type: application/json
+
+{
+  "results": [
+    {
+      "id": 10,
+      "title": "Bug #10 (New): Issue Doing the Blocking",
+      "type": "issue",
+      "url": "{{BASE}}/issues/10",
+      "description": "This is an issue that blocks issue",
+      "datetime": "2026-01-15T11:59:00Z"
+    },
+    {
+      "id": 9,
+      "title": "Bug #9 (New): Blocked Issue",
+      "type": "issue",
+      "url": "{{BASE}}/issues/9",
+      "description": "This is an issue that is blocked by issue",
+      "datetime": "2026-01-15T11:59:00Z"
+    },
+    {
+      "id": 6,
+      "title": "Bug #6 (New): Issue of a private subproject",
+      "type": "issue",
+      "url": "{{BASE}}/issues/6",
+      "description": "This is an issue of a private subproject of cookbook",
+      "datetime": "2026-01-15T11:59:00Z"
+    },
+    {
+      "id": 12,
+      "title": "Bug #12 (Closed): Closed issue on a locked version",
+      "type": "issue-closed",
+      "url": "{{BASE}}/issues/12",
+      "description": null,
+      "datetime": "2026-01-12T12:00:00Z"
+    },
+    {
+      "id": 11,
+      "title": "Bug #11 (Closed): Closed issue on a closed version",
+      "type": "issue-closed",
+      "url": "{{BASE}}/issues/11",
+      "description": null,
+      "datetime": "2026-01-12T12:00:00Z"
+    },
+    {
+      "id": 13,
+      "title": "Bug #13 (New): Subproject issue two",
+      "type": "issue",
+      "url": "{{BASE}}/issues/13",
+      "description": "This is a second issue on a cookbook subproject",
+      "datetime": "2026-01-10T12:00:00Z"
+    },
+    {
+      "id": 5,
+      "title": "Bug #5 (New): Subproject issue",
+      "type": "issue",
+      "url": "{{BASE}}/issues/5",
+      "description": "This is an issue on a cookbook subproject",
+      "datetime": "2026-01-10T12:00:00Z"
+    },
+    {
+      "id": 8,
+      "title": "Bug #8 (Closed): Closed issue",
+      "type": "issue-closed",
+      "url": "{{BASE}}/issues/8",
+      "description": "This is a closed issue.",
+      "datetime": "2026-01-05T12:00:00Z"
+    },
+    {
+      "id": 7,
+      "title": "Bug #7 (New): Issue due today",
+      "type": "issue",
+      "url": "{{BASE}}/issues/7",
+      "description": "This is an issue that is due today",
+      "datetime": "2026-01-05T12:00:00Z"
+    },
+    {
+      "id": 14,
+      "title": "Bug #14 (New): Private issue on public project",
+      "type": "issue",
+      "url": "{{BASE}}/issues/14",
+      "description": "This is a private issue",
+      "datetime": "2025-12-31T12:00:00Z"
+    },
+    {
+      "id": 110,
+      "title": "Revision 11: This commit references an issue and a [[wiki]] page",
+      "type": "changeset",
+      "url": "{{BASE}}/projects/ecookbook/repository/10/revisions/11",
+      "description": "Refs #2",
+      "datetime": "2025-04-07T19:00:00Z"
+    },
+    {
+      "id": 107,
+      "title": "Revision 8: This commits references an issue.",
+      "type": "changeset",
+      "url": "{{BASE}}/projects/ecookbook/repository/10/revisions/8",
+      "description": "Refs #2",
+      "datetime": "2007-09-10T19:04:35Z"
+    },
+    {
+      "id": 103,
+      "title": "Revision 4: A commit with an issue id of an other project",
+      "type": "changeset",
+      "url": "{{BASE}}/projects/ecookbook/repository/10/revisions/4",
+      "description": "IssueID 4 2",
+      "datetime": "2007-04-12T13:14:44Z"
+    },
+    {
+      "id": 102,
+      "title": "Revision 3: A commit with wrong issue ids",
+      "type": "changeset",
+      "url": "{{BASE}}/projects/ecookbook/repository/10/revisions/3",
+      "description": "IssueID #666 #3",
+      "datetime": "2007-04-12T13:14:44Z"
+    }
+  ],
+  "total_count": 14,
+  "offset": 0,
+  "limit": 25
+}

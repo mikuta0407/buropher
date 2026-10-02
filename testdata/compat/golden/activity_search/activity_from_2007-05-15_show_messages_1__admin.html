@@ -1,0 +1,362 @@
+status: 200
+content-type: text/html
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Activity - Redmine</title>
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta content="Redmine" name="description">
+    <meta content="issue,bug,tracker" name="keywords">
+    <meta content="authenticity_token" name="csrf-param">
+    <meta content="{{CSRF}}" name="csrf-token">
+    <link href="/assets/favicon-DIGEST.ico" rel="shortcut icon" type="image/x-icon">
+    <link href="/assets/jquery/jquery-ui-1.13.2-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/tribute-5.1.3-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/application-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/responsive-DIGEST.css" media="all" rel="stylesheet">
+    <script data-turbo-track="reload" type="importmap">{
+  "imports": {
+    "@rails/request.js": "/assets/requestjs-DIGEST.js",
+    "application": "/assets/application-DIGEST.js",
+    "@hotwired/stimulus": "/assets/stimulus.min-DIGEST.js",
+    "@hotwired/stimulus-loading": "/assets/stimulus-loading-DIGEST.js",
+    "turndown": "/assets/turndown-DIGEST.js",
+    "controllers/api_key_copy_controller": "/assets/controllers/api_key_copy_controller-DIGEST.js",
+    "controllers/application": "/assets/controllers/application-DIGEST.js",
+    "controllers": "/assets/controllers/index-DIGEST.js",
+    "controllers/list_autofill_controller": "/assets/controllers/list_autofill_controller-DIGEST.js",
+    "controllers/quote_reply_controller": "/assets/controllers/quote_reply_controller-DIGEST.js",
+    "controllers/sticky_issue_header_controller": "/assets/controllers/sticky_issue_header_controller-DIGEST.js"
+  }
+}</script>
+    <link href="/assets/requestjs-DIGEST.js" rel="modulepreload">
+    <link href="/assets/application-DIGEST.js" rel="modulepreload">
+    <link href="/assets/stimulus.min-DIGEST.js" rel="modulepreload">
+    <link href="/assets/stimulus-loading-DIGEST.js" rel="modulepreload">
+    <link href="/assets/turndown-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/api_key_copy_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/application-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/index-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/list_autofill_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/quote_reply_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/sticky_issue_header_controller-DIGEST.js" rel="modulepreload">
+    <script type="module">import "application"</script>
+    <script src="/assets/jquery-3.7.1-ui-1.13.3-DIGEST.js"></script>
+    <script src="/assets/rails-ujs-DIGEST.js"></script>
+    <script src="/assets/tribute-5.1.3.min-DIGEST.js"></script>
+    <script src="/assets/application-legacy-DIGEST.js"></script>
+    <script src="/assets/responsive-DIGEST.js"></script>
+    <script>//<![CDATA[
+$(window).on('load', function(){ warnLeavingUnsaved('The current page contains unsaved text that will be lost if you leave this page.'); });
+//]]></script>
+    <script>//<![CDATA[
+rm = window.rm || {};rm.I18n = rm.I18n || {};rm.I18n = Object.freeze({buttonCopy: 'Copy'});
+//]]></script>
+    <script>//<![CDATA[
+rm = window.rm || {};rm.AutoComplete = rm.AutoComplete || {};rm.AutoComplete.dataSources = JSON.parse('{"issues":"/issues/auto_complete?q=","wiki_pages":"/wiki_pages/auto_complete?q="}');
+//]]></script>
+    <link href="{{BASE}}/activity.atom?key=KEY&amp;show_messages=1" rel="alternate" title="ATOM" type="application/atom+xml">
+    <script>//<![CDATA[
+var datepickerOptions={dateFormat: 'yy-mm-dd', firstDay: 0, showOn: 'button', buttonImageOnly: true, buttonImage: '/assets/calendar-DIGEST.png', showButtonPanel: true, showWeek: true, showOtherMonths: true, selectOtherMonths: true, changeMonth: true, changeYear: true, beforeShow: beforeShowDatePicker};
+//]]></script>
+  </head>
+  <body class="has-main-menu controller-activities action-index avatars-off" data-text-formatting="common_mark">
+    <div id="wrapper">
+      <div class="flyout-menu js-flyout-menu">
+        <div class="flyout-menu__search">
+          <form accept-charset="UTF-8" action="/search" method="get" name="form-RANDOM">
+            <label class="search-magnifier search-magnifier--flyout" for="flyout-search">
+              <svg aria-hidden="true" class="s18 icon-svg">
+                <use href="/assets/icons-DIGEST.svg#icon--search"></use>
+              </svg>
+              <span class="icon-label hidden">Search</span>
+            </label>
+            <input class="small js-search-input" id="flyout-search" name="q" placeholder="Search" type="text">
+          </form>
+        </div>
+        <div class="flyout-menu__avatar">
+          <a href="/users/1">
+            <span class="avatar-color-1 s40 avatar" role="img">RA</span>
+          </a>
+          <a class="user active" href="/users/1">admin</a>
+        </div>
+        <h3>Project</h3>
+        <span class="js-project-menu"></span>
+        <h3>General</h3>
+        <span class="js-general-menu"></span>
+        <span class="js-sidebar flyout-menu__sidebar"></span>
+        <h3>Profile</h3>
+        <span class="js-profile-menu"></span>
+      </div>
+      <div id="top-menu">
+        <div id="account">
+          <ul>
+            <li>
+              <a class="my-account" href="/my/account">My account</a>
+            </li>
+            <li>
+              <a class="logout" data-method="post" href="/logout" rel="nofollow">Sign out</a>
+            </li>
+          </ul>
+        </div>
+        <div id="loggedas">
+          Logged in as
+          <a class="user active" href="/users/1">admin</a>
+        </div>
+        <ul>
+          <li>
+            <a class="home" href="/">Home</a>
+          </li>
+          <li>
+            <a class="my-page" href="/my/page">My page</a>
+          </li>
+          <li>
+            <a class="projects" href="/projects">Projects</a>
+          </li>
+          <li>
+            <a class="administration" href="/admin">Administration</a>
+          </li>
+          <li>
+            <a class="help" href="https://www.redmine.org/guide" rel="noopener" target="_blank">Help</a>
+          </li>
+        </ul>
+      </div>
+      <div id="header">
+        <a class="mobile-toggle-button js-flyout-menu-toggle-button" href="#"></a>
+        <div id="quick-search">
+          <form accept-charset="UTF-8" action="/search" method="get" name="form-RANDOM">
+            <input autocomplete="off" name="scope" type="hidden">
+            <label for="q">
+              <a accesskey="4" href="/search">Search</a>
+              :
+            </label>
+            <input accesskey="f" class="small" data-auto-complete="true" id="q" name="q" size="20" type="text">
+          </form>
+        </div>
+        <h1>Redmine</h1>
+        <div class="tabs" id="main-menu">
+          <ul>
+            <li>
+              <a class="projects" href="/projects">Projects</a>
+            </li>
+            <li>
+              <a class="activity selected" href="/activity">Activity</a>
+            </li>
+            <li>
+              <a class="issues" href="/issues">Issues</a>
+            </li>
+            <li>
+              <a class="time-entries" href="/time_entries">Spent time</a>
+            </li>
+            <li>
+              <a class="gantt" href="/issues/gantt">Gantt</a>
+            </li>
+            <li>
+              <a class="calendar" href="/issues/calendar">Calendar</a>
+            </li>
+            <li>
+              <a class="news" href="/news">News</a>
+            </li>
+          </ul>
+          <div class="tabs-buttons" style="display:none;">
+            <button class="tab-left icon-only" onclick="moveTabLeft(this); return false;">
+              <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
+                <use href="/assets/icons-DIGEST.svg#icon--angle-left"></use>
+              </svg>
+            </button>
+            <button class="tab-right icon-only" onclick="moveTabRight(this); return false;">
+              <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
+                <use href="/assets/icons-DIGEST.svg#icon--angle-right"></use>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="collapsiblesidebar" id="main">
+        <script>//<![CDATA[
+$('#main.collapsiblesidebar').collapsibleSidebar();
+//]]></script>
+        <div id="sidebar">
+          <div id="sidebar-switch-panel" style="visibility: hidden;">
+            <a class="" href="#" id="sidebar-switch-button">
+              <svg aria-hidden="true" class="s20 icon-svg icon-rtl">
+                <use href="/assets/icons-DIGEST.svg#icon--chevrons-right"></use>
+              </svg>
+            </a>
+          </div>
+          <script>//<![CDATA[
+$('#sidebar-switch-panel').css('visibility', 'visible');
+//]]></script>
+          <div id="sidebar-wrapper">
+            <form accept-charset="UTF-8" action="/activity" id="activity_scope_form" method="get" name="activity_scope_form-RANDOM">
+              <h3>Activity</h3>
+              <p>
+                10 days up to
+                <input id="from" max="9999-12-31" name="from" size="10" type="date" value="2007-05-15">
+                <script>//<![CDATA[
+$(function() { $('#from').addClass('date').datepickerFallback(datepickerOptions); });
+//]]></script>
+              </p>
+              <p>
+                User
+                <select id="user_id" name="user_id">
+                  <option label=" " value=""></option>
+                  <option value="1">&lt;&lt; me &gt;&gt;</option>
+                  <option value="3">Dave Lopper</option>
+                  <option value="2">John Smith</option>
+                  <option value="1">Redmine Admin</option>
+                  <option value="8">User Misc</option>
+                </select>
+              </p>
+              <ul>
+                <li>
+                  <input id="show_issues" name="show_issues" type="checkbox" value="1">
+                  <label for="show_issues">
+                    <a href="/activity?from=2007-05-15&amp;show_issues=1">Issues</a>
+                  </label>
+                </li>
+                <li>
+                  <input id="show_changesets" name="show_changesets" type="checkbox" value="1">
+                  <label for="show_changesets">
+                    <a href="/activity?from=2007-05-15&amp;show_changesets=1">Changesets</a>
+                  </label>
+                </li>
+                <li>
+                  <input id="show_news" name="show_news" type="checkbox" value="1">
+                  <label for="show_news">
+                    <a href="/activity?from=2007-05-15&amp;show_news=1">News</a>
+                  </label>
+                </li>
+                <li>
+                  <input id="show_documents" name="show_documents" type="checkbox" value="1">
+                  <label for="show_documents">
+                    <a href="/activity?from=2007-05-15&amp;show_documents=1">Documents</a>
+                  </label>
+                </li>
+                <li>
+                  <input id="show_files" name="show_files" type="checkbox" value="1">
+                  <label for="show_files">
+                    <a href="/activity?from=2007-05-15&amp;show_files=1">Files</a>
+                  </label>
+                </li>
+                <li>
+                  <input id="show_wiki_edits" name="show_wiki_edits" type="checkbox" value="1">
+                  <label for="show_wiki_edits">
+                    <a href="/activity?from=2007-05-15&amp;show_wiki_edits=1">Wiki edits</a>
+                  </label>
+                </li>
+                <li>
+                  <input checked="checked" id="show_messages" name="show_messages" type="checkbox" value="1">
+                  <label for="show_messages">
+                    <a href="/activity?from=2007-05-15&amp;show_messages=1">Messages</a>
+                  </label>
+                </li>
+                <li>
+                  <input id="show_time_entries" name="show_time_entries" type="checkbox" value="1">
+                  <label for="show_time_entries">
+                    <a href="/activity?from=2007-05-15&amp;show_time_entries=1">Spent time</a>
+                  </label>
+                </li>
+              </ul>
+              <p>
+                <input class="button-small" data-disable-with="Apply" name="submit" type="submit" value="Apply">
+              </p>
+            </form>
+          </div>
+        </div>
+        <div id="content">
+          <h2>Activity</h2>
+          <p class="subtitle">From 05/06/2007 to 05/15/2007</p>
+          <div id="activity">
+            <h3>05/12/2007</h3>
+            <dl>
+              <dt class="reply icon icon-reply">
+                <svg aria-hidden="true" class="s18 icon-svg">
+                  <use href="/assets/icons-DIGEST.svg#icon--comments"></use>
+                </svg>
+                <span class="avatar-color-2 s24 avatar" role="img">JS</span>
+                <span class="time">03:18 PM</span>
+                <span class="project">eCookbook</span>
+                <a href="/boards/1/topics/1?r=3#message-3">Help: RE: First post</a>
+              </dt>
+              <dd class="">
+                <span class="description">An other reply</span>
+                <span class="author">
+                  <a class="user active" href="/users/2">John Smith</a>
+                </span>
+              </dd>
+              <dt class="reply icon icon-reply grouped me">
+                <svg aria-hidden="true" class="s18 icon-svg">
+                  <use href="/assets/icons-DIGEST.svg#icon--comments"></use>
+                </svg>
+                <span class="avatar-color-1 s24 avatar" role="img">RA</span>
+                <span class="time">03:18 PM</span>
+                <span class="project">eCookbook</span>
+                <a href="/boards/1/topics/1?r=2#message-2">Help: First reply</a>
+              </dt>
+              <dd class="grouped">
+                <span class="description">Reply to the first post</span>
+                <span class="author">
+                  <a class="user active" href="/users/1">Redmine Admin</a>
+                </span>
+              </dd>
+              <dt class="message icon icon-message grouped me">
+                <svg aria-hidden="true" class="s18 icon-svg">
+                  <use href="/assets/icons-DIGEST.svg#icon--comment"></use>
+                </svg>
+                <span class="avatar-color-1 s24 avatar" role="img">RA</span>
+                <span class="time">03:15 PM</span>
+                <span class="project">eCookbook</span>
+                <a href="/boards/1/topics/1">Help: First post</a>
+              </dt>
+              <dd class="grouped">
+                <span class="description">
+                  This is the very first post
+                  <br>
+                  in the forum
+                </span>
+                <span class="author">
+                  <a class="user active" href="/users/1">Redmine Admin</a>
+                </span>
+              </dd>
+            </dl>
+          </div>
+          <span class="pagination">
+            <ul class="pages">
+              <li class="previous page">
+                <a accesskey="p" href="/activity?from=2007-05-05&amp;show_messages=1" title="From 04/26/2007 to 05/05/2007">« Previous</a>
+              </li>
+              <li class="next page">
+                <a accesskey="n" href="/activity?from=2007-05-25&amp;show_messages=1" title="From 05/16/2007 to 05/25/2007">Next »</a>
+              </li>
+            </ul>
+          </span>
+          <p class="other-formats hide-when-print">
+            Also available in:
+            <span>
+              <a class="atom" href="/activity.atom?key=KEY&amp;show_messages=1" rel="nofollow">Atom</a>
+            </span>
+          </p>
+          <div style="clear:both;"></div>
+        </div>
+      </div>
+      <div id="footer">MASKED</div>
+      <div id="ajax-indicator" style="display:none;">
+        <span class="icon">
+          <svg aria-hidden="true" class="s18 icon-svg svg-loader">
+            <use href="/assets/icons-DIGEST.svg#icon--loader"></use>
+          </svg>
+          <span class="icon-label">Loading...</span>
+        </span>
+      </div>
+      <div id="ajax-modal" style="display:none;"></div>
+      <div id="icon-copy-source" style="display: none;">
+        <svg aria-hidden="true" class="s18 icon-svg">
+          <use href="/assets/icons-DIGEST.svg#icon--"></use>
+        </svg>
+      </div>
+    </div>
+  </body>
+</html>

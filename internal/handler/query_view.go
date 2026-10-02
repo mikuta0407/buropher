@@ -78,8 +78,8 @@ func (qv *queryView) Caption(col *query.Column) string { return col.CaptionText(
 
 // ---------------------------------------------------------------- _filters
 
-// qvRawJSON は raw_json（to_json の / を \/ に置き換える）。
-func qvRawJSON(v any) template.HTML {
+// queryRawJSON は raw_json（to_json の / を \/ に置き換える）。
+func queryRawJSON(v any) template.HTML {
 	var buf bytes.Buffer
 	enc := json.NewEncoder(&buf)
 	_ = enc.Encode(v)
@@ -146,7 +146,7 @@ func (qv *queryView) OperatorLabelsJSON() template.HTML {
 	for _, op := range query.Operators {
 		o.set(op.Op, labels[op.Op])
 	}
-	return qvRawJSON(o)
+	return queryRawJSON(o)
 }
 
 // OperatorByTypeJSON は raw_json Query.operators_by_filter_type。
@@ -155,49 +155,56 @@ func (qv *queryView) OperatorByTypeJSON() template.HTML {
 	for _, t := range operatorFilterTypes {
 		o.set(t, query.OperatorsByFilterType[t])
 	}
-	return qvRawJSON(o)
+	return queryRawJSON(o)
 }
 
 // AvailableFiltersJSON は raw_json query.available_filters_as_json。
 func (qv *queryView) AvailableFiltersJSON() (template.HTML, error) {
-	keys, m, err := qv.Q.AvailableFiltersAsJSON(qv.ctx)
-	if err != nil {
-		return "", err
-	}
 	af, err := qv.Q.AvailableFilters(qv.ctx)
 	if err != nil {
 		return "", err
 	}
 	o := &orderedJSON{}
-	for _, k := range keys {
-		j := m[k]
+	for _, def := range af.Defs() {
 		f := &orderedJSON{}
-		f.set("type", j.Type)
-		f.set("name", j.Name)
-		if j.Remote {
+		f.set("type", def.Type)
+		f.set("name", def.Name)
+		if def.Remote {
 			f.set("remote", true)
 		}
-		if def := af.Get(k); qv.Q.HasFilter(k) || def == nil || !def.Remote {
-			switch {
-			case j.Values == nil:
+		if qv.Q.HasFilter(def.Field) || !def.Remote {
+			vals, err := def.LoadValues(qv.ctx)
+			if err != nil {
+				return "", err
+			}
+			if vals == nil {
 				f.set("values", nil)
-			case j.Plain:
-				arr := make([]string, len(j.Values))
-				for i, v := range j.Values {
-					arr[i] = v[0]
+			} else if def.CustomField != nil && def.CustomField.FieldFormat == "list" {
+				// ListFormat#possible_values_options は文字列の配列（[label, value] ではない）
+				arr := make([]string, len(vals))
+				for i, v := range vals {
+					arr[i] = v.Value
 				}
 				f.set("values", arr)
-			default:
-				f.set("values", j.Values)
+			} else {
+				arr := make([][]string, len(vals))
+				for i, v := range vals {
+					if v.Group != "" {
+						arr[i] = []string{v.Label, v.Value, v.Group}
+					} else {
+						arr[i] = []string{v.Label, v.Value}
+					}
+				}
+				f.set("values", arr)
 			}
 		}
-		o.set(k, f)
+		o.set(def.Field, f)
 	}
-	return qvRawJSON(o), nil
+	return queryRawJSON(o), nil
 }
 
 // LabelDayPluralJSON は raw_json l(:label_day_plural)。
-func (qv *queryView) LabelDayPluralJSON() template.HTML { return qvRawJSON(qv.c.L("label_day_plural")) }
+func (qv *queryView) LabelDayPluralJSON() template.HTML { return queryRawJSON(qv.c.L("label_day_plural")) }
 
 // FiltersURLJSON は raw_json queries_filter_path(:project_id => @query.project.try(:id), :type => @query.type)。
 func (qv *queryView) FiltersURLJSON() template.HTML {
@@ -206,7 +213,7 @@ func (qv *queryView) FiltersURLJSON() template.HTML {
 		v.Set("project_id", strconv.FormatInt(qv.Q.Project.ID, 10))
 	}
 	v.Set("type", qv.Type)
-	return qvRawJSON("/queries/filter?" + v.Encode())
+	return queryRawJSON("/queries/filter?" + v.Encode())
 }
 
 // filterLine は addFilter の 1 行。
@@ -224,7 +231,7 @@ func (qv *queryView) FilterLines() []filterLine {
 		if vals == nil {
 			vals = []string{}
 		}
-		out = append(out, filterLine{Field: k, Operator: qvRawJSON(qv.Q.OperatorFor(k)), Values: qvRawJSON(vals)})
+		out = append(out, filterLine{Field: k, Operator: queryRawJSON(qv.Q.OperatorFor(k)), Values: queryRawJSON(vals)})
 	}
 	return out
 }

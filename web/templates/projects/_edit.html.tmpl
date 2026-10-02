@@ -1,0 +1,5 @@
+{{$project := (assigns).Project}}
+{{$f := labelled_form_for "" $project (hash "url" (printf "/projects/%s" $project.ToParamPath) "html" (hash "multipart" true))}}{{$f.Open}}
+{{partial "projects/form" (dict "f" $f)}}
+{{submit_tag (l "button_save")}}
+{{end_form}}

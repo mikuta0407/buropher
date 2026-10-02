@@ -1,0 +1,83 @@
+{{$lv := .list}}
+{{$lv.Totals}}
+{{form_tag $lv.FormAction (hash "data" (hash "cm_url" $lv.CMURL)) -}}
+{{hidden_field_tag "back_url" $lv.BackURL (hash "id" nil)}}
+<div class="autoscroll">
+<table class="list projects odd-even {{$lv.QV.CSSClasses}}">
+<thead>
+  <tr>
+    {{if $lv.AdminList}}
+      <th class="checkbox hide-when-print">
+        {{check_box_tag "check_all" "" false (hash "class" "toggle-selection" "title" (printf "%s / %s" (l "button_check_all") (l "button_uncheck_all")))}}
+      </th>
+    {{end}}
+    {{range $column := $lv.Columns}}
+      {{$lv.QV.ColumnHeader $column}}
+    {{end}}
+    {{if $lv.AdminList}}
+      <th></th>
+    {{end}}
+  </tr>
+</thead>
+<tbody>
+{{range $row := $lv.Rows}}
+  {{if $row.GroupName}}
+    {{reset_cycle}}
+    <tr class="group open">
+      <td colspan="{{len $lv.Columns}}">
+        <span class="expander icon icon-expanded" onclick="toggleRowGroup(this);">{{sprite_icon "angle-down"}}</span>
+        <span class="name">{{$row.GroupName}}</span>
+        {{if $row.GroupCount}}
+        <span class="count">{{$row.GroupCount}}</span>
+        {{end}}
+        <span class="totals">{{$row.GroupTotals}}</span>
+        {{link_to_function (printf "%s/%s" (l "button_collapse_all") (l "button_expand_all")) "toggleAllRowGroups(this)" (hash "class" "toggle-all")}}
+      </td>
+      {{if $lv.AdminList}}
+        <td></td>
+      {{end}}
+    </tr>
+  {{end}}
+  <tr id="project-{{$row.Project.ID}}" class="{{cycle "odd" "even"}} hascontextmenu {{$row.RowClass}}">
+    {{if $lv.AdminList}}
+      {{if not $row.Project.ScheduledForDeletion}}
+        <td class="checkbox hide-when-print">{{check_box_tag "ids[]" $row.Project.ID false (hash "id" nil)}}</td>
+      {{else}}
+        <td class="checkbox hide-when-print"></td>
+      {{end}}
+    {{end}}
+    {{range $cell := $row.Cells}}
+    {{content_tag "td" $cell.Content (hash "class" $cell.CSS)}}
+    {{end}}
+    {{if $lv.AdminList}}
+      {{if not $row.Project.ScheduledForDeletion}}
+        <td class="buttons">{{link_to_context_menu}}</td>
+      {{else}}
+        <td class="buttons"></td>
+      {{end}}
+    {{end}}
+  </tr>
+{{end}}
+</tbody>
+</table>
+</div>
+{{end_form -}}
+<span class="pagination">{{$lv.Pagination}}</span>
+
+<div id="csv-export-options" style="display:none;">
+  <h3 class="title">{{l "label_export_options" (hash "export_format" "CSV")}}</h3>
+  {{form_tag "/projects.csv" (hash "method" "get" "id" "csv-export-form")}}
+  {{$lv.CSVHidden}}
+  <p>
+    <label>{{radio_button_tag "c[]" "" true}} {{l "description_selected_columns"}}</label><br />
+    <label>{{radio_button_tag "c[]" "all_inline"}} {{l "description_all_columns"}}</label>
+  </p>
+  {{export_csv_encoding_select_tag}}
+  {{export_csv_separator_select_tag}}
+  <p class="buttons">
+    {{submit_tag (l "button_export") (hash "name" nil "onclick" "hideModal(this);" "data" (hash "disable_with" false))}}
+    {{link_to_function (l "button_cancel") "hideModal(this);"}}
+  </p>
+  {{end_form}}
+</div>
+{{if $lv.AdminList}}{{context_menu}}{{end}}

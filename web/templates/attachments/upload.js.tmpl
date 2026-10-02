@@ -1,0 +1,14 @@
+var fileSpan = $('#attachments_{{j .AttachmentID}}');
+{{if .NewRecord}}
+  fileSpan.hide();
+  alert("{{j .ErrorMessages}}");
+{{else}}
+fileSpan.find('input.token').val('{{j .Token}}');
+fileSpan.find('a.remove-upload')
+  .attr({
+    "data-remote": true,
+    "data-method": 'delete',
+    href: '{{j .AttachmentPath}}'
+  })
+  .off('click');
+{{end}}

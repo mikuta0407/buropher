@@ -1,0 +1,25 @@
+{{$page := .Page}}
+{{wiki_page_breadcrumb .Ancestors}}
+
+<h2>{{.OriginalTitle}}</h2>
+
+{{error_messages_for .Form}}
+
+{{$f := labelled_form_for "wiki_page" .Form (hash "as" "wiki_page" "url" (printf "%s/rename" (wiki_page_path current_project .OriginalPageTitle)) "html" (hash "method" "post"))}}
+{{$f.Open}}
+<div class="box tabular">
+<p>{{$f.TextField "title" (hash "required" true "size" 100)}}</p>
+{{if .CanManage}}
+<p>{{$f.CheckBox "is_start_page" (hash "label" (sym "field_start_page") "disabled" .StartPageDisabled)}}</p>
+{{end}}
+<p>{{$f.CheckBox "redirect_existing_links"}}</p>
+{{if .CanMove}}
+<p>{{$f.Select "wiki_id" (wiki_project_options .WikiOptions) (hash "label" (sym "label_project"))}}</p>
+{{end}}
+<p>{{$f.Select "parent_id" (safe_concat (content_tag "option" "" (hash "value" "")) (wiki_page_options_for_select .ParentOptions.Pages .ParentOptions.Selected)) (hash "label" (sym "field_parent_title"))}}</p>
+
+</div>
+{{submit_tag (l "button_rename")}}
+{{end_form}}
+
+{{javascript_tag (printf "\n$('#wiki_page_wiki_id').change(function() {\n  $.ajax({\n    url: '%s',\n    type: 'get',\n    data: { 'wiki_page[wiki_id]': $('#wiki_page_wiki_id').val() }\n  });\n});\n" (printf "/projects/%d/wiki/%s/rename.js" .Wiki.ID (url_segment .OriginalPageTitle))) -}}

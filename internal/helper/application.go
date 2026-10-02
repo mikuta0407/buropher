@@ -40,7 +40,7 @@ func (d *Deps) RequestFuncs(r *view.Render) ttemplate.FuncMap {
 		},
 		"param_blank": func(key string) bool { return httpx.IsBlank(pg().Params().String(key)) },
 		"question": func() any {
-			if q := pg().Question; q != "" {
+			if q := pg().Question; q != "" || pg().QuestionSet {
 				return q
 			}
 			return nil
@@ -712,6 +712,9 @@ func (d *Deps) renderProjectJumpBox(p *Page) html {
 	text := ""
 	if p.Project != nil && p.Project.ID != 0 {
 		text = p.Project.Name
+		if p.ProjectNameWas != "" {
+			text = p.ProjectNameWas
+		}
 	}
 	if text == "" {
 		text = p.l("label_jump_to_a_project")
@@ -722,7 +725,7 @@ func (d *Deps) renderProjectJumpBox(p *Page) html {
 	q := rails.TextFieldTag("q", "", rails.NewHash("id", "projects-quick-search", "class", "autocomplete",
 		"data", rails.NewHash("automcomplete_url", u), "autocomplete", "off"))
 	var allClass any
-	if p.Project == nil && p.MainMenu {
+	if p.Project == nil && !p.NewRecordProject && p.MainMenu {
 		allClass = "selected"
 	}
 	all := rails.LinkTo(p.l("label_project_all"), "/projects?jump="+item, rails.NewHash("class", allClass))

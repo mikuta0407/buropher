@@ -14,6 +14,7 @@ import (
 	"github.com/go-chi/chi/v5"
 
 	"github.com/mikuta0407/buropher/internal/assets"
+	"github.com/mikuta0407/buropher/internal/attachments"
 	"github.com/mikuta0407/buropher/internal/authz"
 	"github.com/mikuta0407/buropher/internal/clock"
 	"github.com/mikuta0407/buropher/internal/db"
@@ -46,6 +47,8 @@ type App struct {
 	AutologinCookiePath string
 	// AutologinCookieSecure は autologin_cookie_secure（nil ならリクエストが HTTPS のとき）。
 	AutologinCookieSecure *bool
+	// AttachmentStore は添付ファイルの保存先（Attachment.storage_path。doc.go の「規約: 添付ファイル」）。
+	AttachmentStore *attachments.Store
 }
 
 func (a *App) now() time.Time {
@@ -130,6 +133,15 @@ type Req struct {
 	ArchivedProject *domain.Project
 	// Question は @question。
 	Question string
+	// NewRecordProject は @project が未保存のプロジェクト（メニューの判定に使う）。
+	NewRecordProject bool
+	// NewProjectName / NewProjectIdentifier は未保存の @project の name / identifier
+	// （html_title と body_css_classes に使う）。
+	NewProjectName, NewProjectIdentifier string
+	// ProjectNameWas は @project.name_was（保存に失敗した場合のジャンプボックスの表示名）。
+	ProjectNameWas string
+	// QuestionSet は @question が nil でない（空文字列でも検索欄に value="" を出す）。
+	QuestionSet bool
 	// Attachments は @attachments（find_attachments が読み込む未紐付けの添付。プレビューで使う）。
 	Attachments []*repository.RefAttachment
 

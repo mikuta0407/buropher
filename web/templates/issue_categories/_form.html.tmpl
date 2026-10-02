@@ -1,0 +1,8 @@
+{{$f := .f}}
+{{$category := (assigns).Category}}
+{{error_messages_for $category.Errors}}
+
+<div class="box tabular">
+<p>{{$f.TextField "name" (hash "size" 60 "required" true)}}</p>
+<p>{{$f.Select "assigned_to_id" (assigns).AssigneeOptions (hash "include_blank" true)}}</p>
+</div>

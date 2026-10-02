@@ -1,0 +1,28 @@
+<h3 class="title">{{l "label_wiki_page_new"}}</h3>
+
+{{$a := assigns}}
+{{$f := labelled_form_for "page" $a.Form (hash "as" "page" "url" (printf "/projects/%s/wiki/new" (project_param current_project)) "method" "post" "remote" true)}}
+{{$f.Open}}
+
+  {{render_error_messages $a.Errors}}
+
+  <div class="box tabular">
+    <p>
+      {{$f.TextField "title" (hash "name" "title" "size" 60 "required" true)}}
+      <em class="info">{{l "text_unallowed_characters"}}: , . / ? ; : |</em>
+    </p>
+    <p>
+    {{if $a.ParentPr}}
+      <label class="inline">
+        {{check_box_tag "parent" $a.Parent true}}
+        {{l "field_parent_title"}}: {{$a.Parent}}
+      </label>
+    {{end}}
+    </p>
+  </div>
+
+  <p class="buttons">
+    {{submit_tag (l "label_next") (hash "name" nil)}}
+    {{link_to_function (l "button_cancel") "hideModal(this);"}}
+  </p>
+{{end_form}}

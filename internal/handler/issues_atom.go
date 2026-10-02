@@ -17,7 +17,6 @@ import (
 	"github.com/mikuta0407/buropher/internal/query"
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/textformat/redmine"
-	"github.com/mikuta0407/buropher/internal/view/rails"
 )
 
 // xmlMarkup は Builder::XmlMarkup（indent 2）の最小限の移植。
@@ -64,9 +63,6 @@ func (x *xmlMarkup) block(name string, fn func(), attrs ...[2]string) {
 func (x *xmlMarkup) text(s string) { x.b.WriteString(httpx.XMLEscapeText(s)) }
 
 func sp(s string) *string { return &s }
-
-// xmlschema は TimeWithZone#xmlschema（UTC の記録時刻は "Z"）。
-func xmlschema(t time.Time) string { return t.UTC().Format("2006-01-02T15:04:05Z") }
 
 // xmlschemaLocal は Time.now.xmlschema（サーバのローカル時刻。UTC でも "+00:00" になる）。
 func xmlschemaLocal(t time.Time) string { return t.In(time.Local).Format("2006-01-02T15:04:05-07:00") }
@@ -164,12 +160,6 @@ func (a *App) renderIssuesIndexAtom(c *Req, q *query.Query) {
 		}
 	}, [2]string{"xmlns", "http://www.w3.org/2005/Atom"})
 	c.renderAtom(x)
-}
-
-// truncateSingleLineRaw は truncate_single_line_raw(string, length)。
-func truncateSingleLineRaw(s string, n int) string {
-	t := rails.StringTruncate(s, n, "", nil)
-	return strings.Join(strings.FieldsFunc(t, func(r rune) bool { return r == '\r' || r == '\n' }), " ")
 }
 
 // authorMail は author.mail（表示しない設定なら ""）。

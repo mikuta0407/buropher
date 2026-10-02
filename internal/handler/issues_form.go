@@ -142,7 +142,7 @@ type timeEntryFormModel struct {
 // newTimeEntryFormModel は TimeEntry.new(:issue => @issue, :project => @issue.project)。
 func (a *App) newTimeEntryFormModel(l *issueLookup, m *issueModel) *timeEntryFormModel {
 	t := &timeEntryFormModel{l: l, m: m}
-	acts, err := repository.ProjectActivities(l.ctx, a.DB, m.Project.ID)
+	acts, err := repository.ProjectActivities(l.ctx, a.DB, m.Project.ID, false)
 	l.fail(err)
 	t.Activities = acts
 	for _, e := range acts {

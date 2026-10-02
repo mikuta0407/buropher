@@ -500,7 +500,7 @@ func (q *Query) customFieldFilterValues(ctx context.Context, cf *customfield.Cus
 	case "list":
 		out := make([]Option, len(cf.PossibleValues))
 		for i, v := range cf.PossibleValues {
-			out[i] = Option{Label: v, Value: v, Plain: true}
+			out[i] = Option{Label: v, Value: v}
 		}
 		return out, nil
 	case "bool":
@@ -572,8 +572,6 @@ type FilterJSON struct {
 	Name   string     `json:"name"`
 	Remote bool       `json:"remote,omitempty"`
 	Values [][]string `json:"values,omitempty"`
-	// Plain は values が文字列の配列 (list 書式のカスタムフィールド) で、各要素の先頭だけを出す。
-	Plain bool `json:"-"`
 }
 
 // AvailableFiltersAsJSON は available_filters_as_json (フィルタ UI 用)。
@@ -613,7 +611,6 @@ func (q *Query) AvailableFiltersAsJSON(ctx context.Context) ([]string, map[strin
 					}
 				}
 				j.Values = make([][]string, len(vals))
-				j.Plain = len(vals) > 0 && vals[0].Plain
 				for i, o := range vals {
 					if o.Group != "" {
 						j.Values[i] = []string{o.Label, o.Value, o.Group}

@@ -23,8 +23,8 @@ func (d *Deps) AssetPath(source string) string { return d.assetPath(source) }
 // LinkToProject は link_to_project(project)。
 func LinkToProject(p *domain.Project) template.HTML { return linkToProject(p, rails.NewHash(), nil) }
 
-// PrincipalName は Principal#to_s（User は user_format の名前、匿名・組込グループは翻訳名、グループは名前）。
-func PrincipalName(p *Page, u *domain.User) string {
+// PrincipalUserName は Principal#to_s（domain.User で表したプリンシパル。User は user_format の名前、匿名・組込グループは翻訳名、グループは名前）。
+func PrincipalUserName(p *Page, u *domain.User) string {
 	if u == nil {
 		return ""
 	}
@@ -45,7 +45,7 @@ func (d *Deps) LinkToPrincipal(p *Page, u *domain.User, class string) template.H
 		return ""
 	}
 	if u.Kind.IsGroup() {
-		name := PrincipalName(p, u)
+		name := PrincipalUserName(p, u)
 		css := "group"
 		if class != "" {
 			css += " " + class

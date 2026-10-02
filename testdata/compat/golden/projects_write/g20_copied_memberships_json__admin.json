@@ -1,0 +1,61 @@
+status: 200
+content-type: application/json
+
+{
+  "memberships": [
+    {
+      "id": 23,
+      "project": {
+        "id": 11,
+        "name": "Copied"
+      },
+      "user": {
+        "id": 2,
+        "name": "John Smith"
+      },
+      "roles": [
+        {
+          "id": 1,
+          "name": "Manager"
+        }
+      ]
+    },
+    {
+      "id": 24,
+      "project": {
+        "id": 11,
+        "name": "Copied"
+      },
+      "user": {
+        "id": 3,
+        "name": "Dave Lopper"
+      },
+      "roles": [
+        {
+          "id": 2,
+          "name": "Developer"
+        }
+      ]
+    },
+    {
+      "id": 25,
+      "project": {
+        "id": 11,
+        "name": "Copied"
+      },
+      "user": {
+        "id": 5,
+        "name": "Dave2 Lopper2"
+      },
+      "roles": [
+        {
+          "id": 2,
+          "name": "Developer"
+        }
+      ]
+    }
+  ],
+  "total_count": 3,
+  "offset": 0,
+  "limit": 25
+}

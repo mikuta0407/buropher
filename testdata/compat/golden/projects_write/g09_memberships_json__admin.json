@@ -1,0 +1,91 @@
+status: 200
+content-type: application/json
+
+{
+  "memberships": [
+    {
+      "id": 18,
+      "project": {
+        "id": 7,
+        "name": "zeta renamed"
+      },
+      "user": {
+        "id": 2,
+        "name": "John Smith"
+      },
+      "roles": [
+        {
+          "id": 1,
+          "name": "Manager"
+        },
+        {
+          "id": 2,
+          "name": "Developer"
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "project": {
+        "id": 7,
+        "name": "zeta renamed"
+      },
+      "user": {
+        "id": 3,
+        "name": "Dave Lopper"
+      },
+      "roles": [
+        {
+          "id": 1,
+          "name": "Manager"
+        },
+        {
+          "id": 2,
+          "name": "Developer"
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "project": {
+        "id": 7,
+        "name": "zeta renamed"
+      },
+      "user": {
+        "id": 8,
+        "name": "User Misc"
+      },
+      "roles": [
+        {
+          "id": 3,
+          "name": "Reporter"
+        },
+        {
+          "id": 3,
+          "name": "Reporter",
+          "inherited": true
+        }
+      ]
+    },
+    {
+      "id": 21,
+      "project": {
+        "id": 7,
+        "name": "zeta renamed"
+      },
+      "group": {
+        "id": 11,
+        "name": "B Team"
+      },
+      "roles": [
+        {
+          "id": 3,
+          "name": "Reporter"
+        }
+      ]
+    }
+  ],
+  "total_count": 4,
+  "offset": 0,
+  "limit": 25
+}

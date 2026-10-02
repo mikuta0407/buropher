@@ -14,8 +14,6 @@ type Option struct {
 	Value string
 	// Group は 3 番目の要素 (ユーザのステータス・バージョンのステータス等)。空なら 2 要素。
 	Group string
-	// Plain は値が [label, value] ではなく文字列そのもの (list 書式のカスタムフィールドの possible_values)。
-	Plain bool
 }
 
 // FilterDef は QueryFilter (利用可能なフィルタの定義)。

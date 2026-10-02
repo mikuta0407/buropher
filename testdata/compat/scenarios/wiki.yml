@@ -1,0 +1,174 @@
+# Wiki（WikiController / WikisController）の互換シナリオ（GET のみ）。
+# 共有の参照 Redmine（3998）に対して実行するため、状態を変えるリクエストは wiki_write.yml に置く。
+# 共有の参照ではブックマーク・最近使ったプロジェクトが他のテストで変わるので、ジャンプボックスは比較しない。
+name: wiki
+
+users:
+  admin: {login: admin, password: admin}
+  jsmith: {login: jsmith, password: jsmith}
+  dlopper: {login: dlopper, password: foo}
+
+normalize:
+  mask_text_selectors:
+    - "#footer"
+  strip_selectors:
+    - "#project-jump"
+  regex:
+    # JS 応答（new.js）内のフォーム名の乱数部
+    - {pattern: 'new_page-[0-9a-f]{8}', replace: 'new_page-RANDOM'}
+
+requests:
+  # ---- 表示 ----
+  - path: /projects/ecookbook/wiki
+    users: [anonymous, admin, jsmith, dlopper]
+  - path: /projects/ecookbook/wiki/CookBook_documentation
+    users: [anonymous, admin, jsmith]
+  - path: /projects/ecookbook/wiki/Another_page
+    users: [anonymous, admin]
+  - path: /projects/ecookbook/wiki/another_page
+    users: [admin]
+  - path: /projects/ecookbook/wiki/Page_with_sections
+    users: [admin, dlopper]
+  - path: /projects/ecookbook/wiki/Page_with_an_inline_image
+    users: [admin]
+  - path: /projects/ecookbook/wiki/Child_1
+    users: [admin]
+  - path: /projects/ecookbook/wiki/Child_1_1
+    users: [admin]
+  - path: /projects/ecookbook/wiki/%D0%AD%D1%82%D0%B8%D0%BA%D0%B0_%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82%D0%B0
+    users: [admin]
+  - path: /projects/onlinestore/wiki
+    users: [anonymous, admin, jsmith]
+  - path: /projects/onlinestore/wiki/Parent_page
+    users: [admin]
+  - path: /projects/onlinestore/wiki/Child_page_1
+    users: [admin]
+  # 存在しないページ（編集権限があれば編集フォーム、無ければ 404）
+  - path: /projects/ecookbook/wiki/Unknown_page
+    users: [anonymous, admin, jsmith, dlopper]
+  - path: /projects/ecookbook/wiki/Unknown_page?parent=Another_page
+    users: [admin]
+  - path: /projects/ecookbook/wiki/sidebar
+    users: [admin]
+  # Wiki の無いプロジェクト・存在しないプロジェクト
+  - path: /projects/subproject1/wiki
+    users: [admin]
+  - path: /projects/nonexistent/wiki
+    users: [admin]
+
+  # ---- 版 ----
+  - path: /projects/ecookbook/wiki/CookBook_documentation/1
+    users: [admin, anonymous]
+  - path: /projects/ecookbook/wiki/CookBook_documentation/2
+    users: [admin]
+  - path: /projects/ecookbook/wiki/CookBook_documentation/3
+    users: [admin]
+  - path: /projects/ecookbook/wiki/CookBook_documentation?version=2
+    users: [admin]
+  - path: /projects/ecookbook/wiki/CookBook_documentation/99
+    users: [admin]
+  - path: /projects/ecookbook/wiki/CookBook_documentation/history
+    users: [anonymous, admin, jsmith]
+  - path: /projects/ecookbook/wiki/Another_page/history
+    users: [admin]
+  - path: /projects/ecookbook/wiki/CookBook_documentation/diff
+    users: [admin]
+  - path: /projects/ecookbook/wiki/CookBook_documentation/diff?version=3&version_from=1
+    users: [admin]
+  - path: /projects/ecookbook/wiki/CookBook_documentation/2/diff
+    users: [admin]
+  - path: /projects/ecookbook/wiki/CookBook_documentation/1/diff
+    users: [admin]
+  - path: /projects/ecookbook/wiki/CookBook_documentation/2/annotate
+    users: [admin]
+  - path: /projects/ecookbook/wiki/CookBook_documentation/3/annotate
+    users: [admin, anonymous]
+  - path: /projects/ecookbook/wiki/CookBook_documentation/99/annotate
+    users: [admin]
+
+  # ---- 索引 ----
+  - path: /projects/ecookbook/wiki/index
+    users: [anonymous, admin, jsmith]
+  - path: /projects/ecookbook/wiki/date_index
+    users: [anonymous, admin]
+  - path: /projects/onlinestore/wiki/index
+    users: [admin]
+
+  # ---- 編集系フォーム（GET） ----
+  - path: /projects/ecookbook/wiki/Another_page/edit
+    users: [anonymous, admin, jsmith, dlopper]
+  - path: /projects/ecookbook/wiki/CookBook_documentation/edit
+    users: [admin, jsmith, dlopper]
+  - path: /projects/ecookbook/wiki/Page_with_sections/edit?section=2
+    users: [admin]
+  - path: /projects/ecookbook/wiki/Page_with_sections/edit?section=10
+    users: [admin]
+  - path: /projects/ecookbook/wiki/CookBook_documentation/edit?version=1
+    users: [admin]
+  - path: /projects/ecookbook/wiki/New_page/edit
+    users: [admin]
+  - path: /projects/ecookbook/wiki/Another_page/rename
+    users: [admin, jsmith, dlopper]
+  - path: /projects/ecookbook/wiki/CookBook_documentation/rename
+    users: [admin]
+  - path: /projects/ecookbook/wiki/Child_1/rename
+    users: [admin]
+  - path: /projects/ecookbook/wiki/new
+    users: [admin, anonymous]
+  - path: /projects/ecookbook/wiki/new?parent=Another_page
+    users: [admin]
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript"}
+    id: wiki_new_js_parent
+  - path: /projects/ecookbook/wiki/new.js
+    users: [admin]
+    headers: {X-Requested-With: XMLHttpRequest}
+  - path: /projects/ecookbook/wiki/destroy
+    users: [admin, jsmith, anonymous]
+  - path: /projects/ecookbook/wiki/Another_page/rename.js?wiki_page%5Bwiki_id%5D=2
+    users: [admin]
+    headers: {X-Requested-With: XMLHttpRequest}
+    id: wiki_rename_js
+
+  # ---- エクスポート ----
+  - path: /projects/ecookbook/wiki/CookBook_documentation.txt
+    users: [admin, anonymous]
+  - path: /projects/ecookbook/wiki/CookBook_documentation.html
+    users: [admin]
+  - path: /projects/ecookbook/wiki/CookBook_documentation/2.txt
+    users: [admin]
+  - path: /projects/ecookbook/wiki/export
+    users: [admin]
+  - path: /projects/ecookbook/wiki/export.html
+    users: [admin, anonymous]
+  - path: /projects/ecookbook/wiki/CookBook_documentation.pdf
+    users: [anonymous]
+  - path: /projects/ecookbook/wiki/CookBook_documentation.pdf
+    users: [admin]
+    skip: "PDF 出力（Redmine::Export::PDF）は未実装"
+  - path: /projects/ecookbook/wiki/export.pdf
+    users: [admin]
+    skip: "PDF 出力（Redmine::Export::PDF）は未実装"
+
+  # ---- API ----
+  - path: /projects/ecookbook/wiki/index.json
+    users: [admin, anonymous]
+  - path: /projects/ecookbook/wiki/index.xml
+    users: [admin]
+  - path: /projects/ecookbook/wiki/CookBook_documentation.json
+    users: [admin, anonymous]
+  - path: /projects/ecookbook/wiki/CookBook_documentation.xml
+    users: [admin]
+  - path: /projects/ecookbook/wiki/CookBook_documentation.json?include=attachments
+    users: [admin]
+  - path: /projects/ecookbook/wiki/CookBook_documentation.xml?include=attachments
+    users: [admin]
+  - path: /projects/ecookbook/wiki/CookBook_documentation/2.json
+    users: [admin]
+  - path: /projects/ecookbook/wiki/CookBook_documentation/2.xml
+    users: [admin]
+  - path: /projects/ecookbook/wiki/Child_1.json
+    users: [admin]
+  - path: /projects/ecookbook/wiki/Unknown_page.json
+    users: [admin]
+  - path: /projects/onlinestore/wiki/index.json
+    users: [anonymous, admin]

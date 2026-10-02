@@ -1,0 +1,12 @@
+<h2>{{l "label_confirmation"}}</h2>
+
+<div class="warning">
+  <p><strong>{{current_project.Name}}</strong><br />{{l "text_wiki_destroy_confirmation"}}</p>
+</div>
+
+{{form_tag (printf "/projects/%s/wiki/destroy" (project_param current_project))}}
+  {{hidden_field_tag "confirm" 1}}
+  {{submit_tag (l "button_delete")}}
+  {{link_to (l "button_cancel") (back_link_url)}}
+{{end_form}}
+

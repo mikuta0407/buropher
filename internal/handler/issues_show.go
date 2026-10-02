@@ -447,7 +447,11 @@ func (v *issueShowView) AttributesRows() template.HTML {
 func (l *issueLookup) projectCategories(projectID int64) []*repository.IssueCategory {
 	cs, err := repository.ProjectIssueCategories(l.ctx, l.a.DB, projectID)
 	l.fail(err)
-	return cs
+	out := make([]*repository.IssueCategory, len(cs))
+	for i, c := range cs {
+		out[i] = &repository.IssueCategory{ID: c.ID, ProjectID: c.ProjectID, Name: c.Name, AssignedToID: c.AssignedToID}
+	}
+	return out
 }
 
 // dueDateDistanceInWords は due_date_distance_in_words(date)。

@@ -24,6 +24,9 @@ func (c *Req) Page() *helper.Page {
 		MainMenu:           c.Controller.MainMenu,
 		DefaultSearchScope: c.Controller.DefaultSearchScope,
 		Question:           c.Question,
+		NewRecordProject:   c.NewRecordProject,
+		ProjectNameWas:     c.ProjectNameWas,
+		QuestionSet:        c.QuestionSet,
 		DB:                 a.DB,
 		Now:                a.now,
 		Logger:             a.logger(),
@@ -76,6 +79,9 @@ func (c *Req) ViewContext() *view.Context {
 		ctx.Project = c.Project
 		ctx.ProjectName = c.Project.Name
 		ctx.ProjectIdentifier = c.Project.Identifier
+	} else if c.NewRecordProject {
+		ctx.ProjectName = c.NewProjectName
+		ctx.ProjectIdentifier = c.NewProjectIdentifier
 	}
 	if t := a.Helpers.CurrentTheme(page); t != nil {
 		ctx.Theme = t.Name
@@ -131,6 +137,12 @@ func (c *Req) Render(name string, data any, opts ...RenderOptions) {
 	format := o.Format
 	if format == "" {
 		format = "html"
+	}
+	if format == "js" && (c.R.Method == http.MethodGet || c.R.Method == http.MethodHead) && !httpx.IsXHR(c.R) {
+		// ActionController::RequestForgeryProtection#verify_same_origin_request:
+		// XHR でない GET への JavaScript 応答は InvalidCrossOriginRequest（422、本文なし）
+		httpx.HeadAs(c.W, c.R, http.StatusUnprocessableEntity, "html")
+		return
 	}
 	httpx.SetContentType(c.W, format, true)
 	if httpx.ShouldVaryAccept(c.R) && c.W.Header().Get("Vary") == "" {

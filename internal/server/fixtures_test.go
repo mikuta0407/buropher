@@ -48,6 +48,7 @@ func newFixtureServer(t *testing.T, extra ...func(a *handler.App, r chi.Router))
 	}
 	cfg := config.Default()
 	cfg.Server.SecretKey = "test-secret"
+	cfg.Storage.AttachmentsPath = t.TempDir()
 	opts := server.Options{TempDir: t.TempDir(), Now: func() time.Time { return frozenTime }}
 	if len(extra) > 0 {
 		opts.ExtraRoutes = extra[0]

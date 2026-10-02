@@ -139,8 +139,8 @@ func IssueAncestorIDs(hierPath string) []int64 {
 
 // ---------------------------------------------------------------- プリンシパル
 
-// PrincipalsByIDs は id のプリンシパル（ユーザー・グループとも。グループは Principal 部分のみ）。
-func PrincipalsByIDs(ctx context.Context, q db.Queryer, ids []int64) (map[int64]*domain.User, error) {
+// PrincipalsAsUsersByIDs は id のプリンシパル（ユーザー・グループとも domain.User で返す。グループは Principal 部分のみ）。
+func PrincipalsAsUsersByIDs(ctx context.Context, q db.Queryer, ids []int64) (map[int64]*domain.User, error) {
 	out := make(map[int64]*domain.User, len(ids))
 	for _, chunk := range chunkIDs(uniqIDs(ids)) {
 		query, args, err := db.In(userSelect+` WHERE p.id IN (?)`, chunk)
@@ -215,13 +215,6 @@ func IssueCategoriesByIDs(ctx context.Context, q db.Queryer, ids []int64) (map[i
 		}
 	}
 	return out, nil
-}
-
-// ProjectIssueCategories は project.issue_categories（name 順）。
-func ProjectIssueCategories(ctx context.Context, q db.Queryer, projectID int64) ([]*IssueCategory, error) {
-	var rows []*IssueCategory
-	err := q.Select(ctx, &rows, `SELECT id, project_id, name, assigned_to_id FROM issue_categories WHERE project_id = ? ORDER BY name, id`, projectID)
-	return rows, err
 }
 
 // Version は versions の行。
@@ -542,24 +535,6 @@ JOIN principals ON principals.id = reactions.user_id
 WHERE reactions.reactable_kind = ? AND reactions.reactable_id = ? AND principals.kind = 'user' AND (`+condOr(cond)+`)
 ORDER BY reactions.id DESC`, kind, id)
 	return rows, err
-}
-
-// ProjectActivities は project.activities（共有の有効な作業分類のうちプロジェクトで上書きされていないもの +
-// プロジェクト別の有効な分類。position 順）。
-func ProjectActivities(ctx context.Context, q db.Queryer, projectID int64) ([]*domain.Enumeration, error) {
-	t := q.Dialect().BoolLiteral(true)
-	var rows []enumerationRow
-	if err := q.Select(ctx, &rows, enumerationSelect(domain.EnumTimeEntryActivity)+`
-WHERE (project_id IS NULL OR project_id = ?) AND active = `+t+`
-AND id NOT IN (SELECT parent_id FROM time_entry_activities WHERE project_id = ? AND parent_id IS NOT NULL)
-ORDER BY position, id`, projectID, projectID); err != nil {
-		return nil, err
-	}
-	out := make([]*domain.Enumeration, len(rows))
-	for i := range rows {
-		out[i] = rows[i].enumeration(domain.EnumTimeEntryActivity)
-	}
-	return out, nil
 }
 
 // TimeEntryCustomFieldIDs は TimeEntryCustomField の id（position 順）。

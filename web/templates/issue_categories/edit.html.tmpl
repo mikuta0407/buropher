@@ -1,0 +1,6 @@
+<h2>{{l "label_issue_category"}}</h2>
+
+{{$f := labelled_form_for "issue_category" .Category (hash "as" "issue_category" "url" (printf "/issue_categories/%d" .Category.ID) "html" (hash "method" "put"))}}{{$f.Open}}
+{{partial "issue_categories/form" (dict "f" $f)}}
+{{submit_tag (l "button_save")}}
+{{end_form}}

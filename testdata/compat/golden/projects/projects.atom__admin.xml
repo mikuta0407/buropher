@@ -1,0 +1,58 @@
+status: 200
+content-type: application/atom+xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Redmine: Latest projects</title>
+  <link href="{{BASE}}/projects.atom" rel="self"/>
+  <link href="{{BASE}}/projects" rel="alternate"/>
+  <id>{{BASE}}/</id>
+  <icon>{{BASE}}/assets/favicon-DIGEST.ico</icon>
+  <updated>2006-07-19T17:15:51Z</updated>
+  <author>
+    <name>Redmine</name>
+  </author>
+  <generator uri="https://www.redmine.org/">&#xA;Redmine  </generator>
+  <entry>
+    <title>Private child of eCookbook - Project: Private child of eCookbook</title>
+    <link href="{{BASE}}/projects/private-child" rel="alternate"/>
+    <id>{{BASE}}/projects/private-child</id>
+    <updated>2006-07-19T17:15:51Z</updated>
+    <content type="html">&#xA;&lt;p&gt;This is a private subproject of a public project&lt;/p&gt;    </content>
+  </entry>
+  <entry>
+    <title>Child of private child - Project: Child of private child</title>
+    <link href="{{BASE}}/projects/project6" rel="alternate"/>
+    <id>{{BASE}}/projects/project6</id>
+    <updated>2006-07-19T17:15:51Z</updated>
+    <content type="html">&#xA;&lt;p&gt;This is a public subproject of a private project&lt;/p&gt;    </content>
+  </entry>
+  <entry>
+    <title>eCookbook Subproject 2 - Project: eCookbook Subproject 2</title>
+    <link href="{{BASE}}/projects/subproject2" rel="alternate"/>
+    <id>{{BASE}}/projects/subproject2</id>
+    <updated>2006-07-19T17:15:51Z</updated>
+    <content type="html">&#xA;&lt;p&gt;eCookbook Subproject 2&lt;/p&gt;    </content>
+  </entry>
+  <entry>
+    <title>eCookbook Subproject 1 - Project: eCookbook Subproject 1</title>
+    <link href="{{BASE}}/projects/subproject1" rel="alternate"/>
+    <id>{{BASE}}/projects/subproject1</id>
+    <updated>2006-07-19T17:15:21Z</updated>
+    <content type="html">&#xA;&lt;p&gt;eCookBook Subproject 1&lt;/p&gt;    </content>
+  </entry>
+  <entry>
+    <title>OnlineStore - Project: OnlineStore</title>
+    <link href="{{BASE}}/projects/onlinestore" rel="alternate"/>
+    <id>{{BASE}}/projects/onlinestore</id>
+    <updated>2006-07-19T17:14:19Z</updated>
+    <content type="html">&#xA;&lt;p&gt;E-commerce web site&lt;/p&gt;    </content>
+  </entry>
+  <entry>
+    <title>eCookbook - Project: eCookbook</title>
+    <link href="{{BASE}}/projects/ecookbook" rel="alternate"/>
+    <id>{{BASE}}/projects/ecookbook</id>
+    <updated>2006-07-19T17:13:59Z</updated>
+    <content type="html">&#xA;&lt;p&gt;Recipes management application&lt;/p&gt;    </content>
+  </entry>
+</feed>

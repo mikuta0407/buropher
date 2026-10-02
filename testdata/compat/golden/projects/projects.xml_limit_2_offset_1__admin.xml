@@ -1,0 +1,42 @@
+status: 200
+content-type: application/xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<projects limit="2" offset="1" total_count="6" type="array">
+  <project>
+    <id>5</id>
+    <name>Private child of eCookbook</name>
+    <identifier>private-child</identifier>
+    <description>This is a private subproject of a public project</description>
+    <homepage/>
+    <parent id="1" name="eCookbook"/>
+    <status>1</status>
+    <is_public>false</is_public>
+    <inherit_members>false</inherit_members>
+    <custom_fields type="array">
+      <custom_field id="3" name="Development status">
+        <value/>
+      </custom_field>
+    </custom_fields>
+    <created_on>2006-07-19T17:15:51Z</created_on>
+    <updated_on>2006-07-19T17:17:07Z</updated_on>
+  </project>
+  <project>
+    <id>6</id>
+    <name>Child of private child</name>
+    <identifier>project6</identifier>
+    <description>This is a public subproject of a private project</description>
+    <homepage/>
+    <parent id="5" name="Private child of eCookbook"/>
+    <status>1</status>
+    <is_public>true</is_public>
+    <inherit_members>false</inherit_members>
+    <custom_fields type="array">
+      <custom_field id="3" name="Development status">
+        <value/>
+      </custom_field>
+    </custom_fields>
+    <created_on>2006-07-19T17:15:51Z</created_on>
+    <updated_on>2006-07-19T17:17:07Z</updated_on>
+  </project>
+</projects>

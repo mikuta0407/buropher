@@ -1,14 +1,14 @@
-{{$v := .V}}
-{{if $v.CanAddWatchers}}
+{{$kind := .kind}}
+{{if allowed_to (printf "add_%s_watchers" $kind) current_project}}
 <div class="contextual">
-{{link_to (l "button_add") (printf "/watchers/new?object_id=%d&object_type=issue" $v.Issue.ID) (hash "remote" true "method" "get")}}
+{{link_to (l "button_add") (printf "/watchers/new?object_id=%d&object_type=%s" .id $kind) (hash "remote" true "method" "get")}}
 </div>
 {{end}}
 
-{{if $v.CanViewWatchers}}
-<h3>{{l "label_issue_watchers"}} ({{$v.WatcherCount}})</h3>
+{{if allowed_to (printf "view_%s_watchers" $kind) current_project}}
+<h3>{{l (printf "label_%s_watchers" $kind)}} ({{len (watcher_users $kind .id)}})</h3>
 
-{{with $items := $v.WatcherItems}}<ul class="watchers">{{range $w := $items}}<li class="user-{{$w.User.ID}}">{{if $w.IsUser}}{{avatar $w.User (hash "size" "16")}}{{end}}{{$w.Link}}{{$w.Warning}}{{if $w.Delete}} {{$w.Delete}}{{end}}</li>{{end}}</ul>{{end}}
+{{watchers_list $kind .id}}
 {{else}}
-<h3>{{l "label_issue_watchers"}}</h3>
+<h3>{{l (printf "label_%s_watchers" $kind)}}</h3>
 {{end}}

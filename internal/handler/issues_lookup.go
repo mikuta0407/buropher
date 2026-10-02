@@ -144,7 +144,7 @@ func (l *issueLookup) preloadPrincipals(ids []int64) {
 	if len(miss) == 0 {
 		return
 	}
-	m, err := repository.PrincipalsByIDs(l.ctx, l.a.DB, miss)
+	m, err := repository.PrincipalsAsUsersByIDs(l.ctx, l.a.DB, miss)
 	l.fail(err)
 	for _, id := range miss {
 		l.principals[id] = m[id]
@@ -420,7 +420,7 @@ func (l *issueLookup) linkToPrincipal(u *domain.User) template.HTML {
 	return l.a.Helpers.LinkToPrincipal(l.page, u, "")
 }
 
-func (l *issueLookup) principalName(u *domain.User) string { return helper.PrincipalName(l.page, u) }
+func (l *issueLookup) principalName(u *domain.User) string { return helper.PrincipalUserName(l.page, u) }
 
 // linkToVersion は link_to_version(version)。
 func (l *issueLookup) linkToVersion(v *repository.Version) template.HTML {

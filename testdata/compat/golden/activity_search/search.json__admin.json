@@ -1,0 +1,9 @@
+status: 200
+content-type: application/json
+
+{
+  "results": [],
+  "total_count": null,
+  "offset": 0,
+  "limit": 25
+}

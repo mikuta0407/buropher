@@ -1,0 +1,206 @@
+<title>Activity - Redmine</title>
+----
+<!-- page specific tags -->
+<link rel="alternate" type="application/atom+xml" title="ATOM" href="{{BASE}}/activity.atom?key=KEY&amp;show_documents=1&amp;show_files=1&amp;show_issues=1&amp;show_news=1" />
+<script>
+//<![CDATA[
+var datepickerOptions={dateFormat: 'yy-mm-dd', firstDay: 0, showOn: 'button', buttonImageOnly: true, buttonImage: '/assets/calendar-DIGEST.png', showButtonPanel: true, showWeek: true, showOtherMonths: true, selectOtherMonths: true, changeMonth: true, changeYear: true, beforeShow: beforeShowDatePicker};
+//]]>
+</script></head>
+----
+<div id="main" class="collapsiblesidebar">
+  <script>
+//<![CDATA[
+$('#main.collapsiblesidebar').collapsibleSidebar();
+//]]>
+</script>
+    <div id="sidebar">
+          <div id="sidebar-switch-panel" style="visibility: hidden;">
+            <a id="sidebar-switch-button" class="" href="#">
+              <svg class="s20 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--chevrons-right"></use></svg></a>
+          </div>
+          <script>
+//<![CDATA[
+$('#sidebar-switch-panel').css('visibility', 'visible');
+//]]>
+</script>
+        <div id="sidebar-wrapper">
+          <form id="activity_scope_form" action="/activity" accept-charset="UTF-8" name="activity_scope_form-RANDOM" method="get">
+<h3>Activity</h3>
+<p>
+  10 days up to <input type="date" name="from" id="from" value="2006-07-25" max="9999-12-31" size="10" />
+  <script>
+//<![CDATA[
+$(function() { $('#from').addClass('date').datepickerFallback(datepickerOptions); });
+//]]>
+</script>
+</p>
+<p>
+  User
+  <select name="user_id" id="user_id"><option value="" label=" "></option><option value="1">&lt;&lt; me &gt;&gt;</option>
+<option value="3">Dave Lopper</option>
+<option value="2">John Smith</option>
+<option value="1">Redmine Admin</option>
+<option value="8">User Misc</option></select>
+</p>
+<ul>
+  <li>
+    <input type="checkbox" name="show_issues" id="show_issues" value="1" checked="checked" />
+    <label for="show_issues">
+      <a href="/activity?from=2006-07-25&amp;show_issues=1">Issues</a>
+    </label>
+  </li>
+  <li>
+    <input type="checkbox" name="show_changesets" id="show_changesets" value="1" />
+    <label for="show_changesets">
+      <a href="/activity?from=2006-07-25&amp;show_changesets=1">Changesets</a>
+    </label>
+  </li>
+  <li>
+    <input type="checkbox" name="show_news" id="show_news" value="1" checked="checked" />
+    <label for="show_news">
+      <a href="/activity?from=2006-07-25&amp;show_news=1">News</a>
+    </label>
+  </li>
+  <li>
+    <input type="checkbox" name="show_documents" id="show_documents" value="1" checked="checked" />
+    <label for="show_documents">
+      <a href="/activity?from=2006-07-25&amp;show_documents=1">Documents</a>
+    </label>
+  </li>
+  <li>
+    <input type="checkbox" name="show_files" id="show_files" value="1" checked="checked" />
+    <label for="show_files">
+      <a href="/activity?from=2006-07-25&amp;show_files=1">Files</a>
+    </label>
+  </li>
+  <li>
+    <input type="checkbox" name="show_wiki_edits" id="show_wiki_edits" value="1" />
+    <label for="show_wiki_edits">
+      <a href="/activity?from=2006-07-25&amp;show_wiki_edits=1">Wiki edits</a>
+    </label>
+  </li>
+  <li>
+    <input type="checkbox" name="show_messages" id="show_messages" value="1" />
+    <label for="show_messages">
+      <a href="/activity?from=2006-07-25&amp;show_messages=1">Messages</a>
+    </label>
+  </li>
+  <li>
+    <input type="checkbox" name="show_time_entries" id="show_time_entries" value="1" />
+    <label for="show_time_entries">
+      <a href="/activity?from=2006-07-25&amp;show_time_entries=1">Spent time</a>
+    </label>
+  </li>
+</ul>
+<p><input type="submit" name="submit" value="Apply" class="button-small" data-disable-with="Apply" /></p>
+</form>
+          
+        </div>
+    </div>
+
+    <div id="content">
+        
+        <h2>Activity</h2>
+
+<p class="subtitle">From 07/16/2006 to 07/25/2006</p>
+
+<div id="activity">
+<h3>07/19/2006</h3>
+<dl>
+  <dt class="news icon icon-news  ">
+  <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--news"></use></svg>
+  <span role="img" class="avatar-color-2 s24 avatar">JS</span>
+  <span class="time">08:42 PM</span>
+  <span class="project">OnlineStore</span>
+  <a href="/news/3">News on a private project</a>
+  </dt>
+  <dd class=""><span class="description">This is a private news</span>
+  <span class="author"><a class="user active" href="/users/2">John Smith</a></span></dd>
+  <dt class="news icon icon-news  ">
+  <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--news"></use></svg>
+  <span role="img" class="avatar-color-2 s24 avatar">JS</span>
+  <span class="time">08:42 PM</span>
+  <span class="project">eCookbook</span>
+  <a href="/news/2">100,000 downloads for eCookbook</a>
+  </dt>
+  <dd class=""><span class="description">eCookbook 1.0 have downloaded 100,000 times</span>
+  <span class="author"><a class="user active" href="/users/2">John Smith</a></span></dd>
+  <dt class="news icon icon-news  ">
+  <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--news"></use></svg>
+  <span role="img" class="avatar-color-2 s24 avatar">JS</span>
+  <span class="time">08:40 PM</span>
+  <span class="project">eCookbook</span>
+  <a href="/news/1">eCookbook first release !</a>
+  </dt>
+  <dd class=""><span class="description">eCookbook 1.0 has been released.<br>Visit http://ecookbook.somenet.foo/</span>
+  <span class="author"><a class="user active" href="/users/2">John Smith</a></span></dd>
+  <dt class="attachment icon icon-attachment  ">
+  <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--attachment"></use></svg>
+  <span role="img" class="avatar-color-2 s24 avatar">JS</span>
+  <span class="time">07:07 PM</span>
+  <span class="project">eCookbook</span>
+  <a href="/attachments/12/version_file.zip">version_file.zip</a>
+  </dt>
+  <dd class=""><span class="description"></span>
+  <span class="author"><a class="user active" href="/users/2">John Smith</a></span></dd>
+  <dt class="attachment icon icon-attachment  ">
+  <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--attachment"></use></svg>
+  <span role="img" class="avatar-color-2 s24 avatar">JS</span>
+  <span class="time">07:07 PM</span>
+  <span class="project">eCookbook</span>
+  <a href="/attachments/9/version_file.zip">version_file.zip</a>
+  </dt>
+  <dd class=""><span class="description"></span>
+  <span class="author"><a class="user active" href="/users/2">John Smith</a></span></dd>
+  <dt class="attachment icon icon-attachment  ">
+  <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--attachment"></use></svg>
+  <span role="img" class="avatar-color-2 s24 avatar">JS</span>
+  <span class="time">07:07 PM</span>
+  <span class="project">eCookbook</span>
+  <a href="/attachments/8/project_file.zip">project_file.zip</a>
+  </dt>
+  <dd class=""><span class="description"></span>
+  <span class="author"><a class="user active" href="/users/2">John Smith</a></span></dd>
+  <dt class="issue icon icon-issue  ">
+  <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--issue"></use></svg>
+  <span role="img" class="avatar-color-2 s24 avatar">JS</span>
+  <span class="time">07:07 PM</span>
+  <span class="project">eCookbook</span>
+  <a href="/issues/3">Bug #3 (New): Error 281 when updating a recipe</a>
+  </dt>
+  <dd class=""><span class="description">Error 281 is encountered when saving a recipe</span>
+  <span class="author"><a class="user active" href="/users/2">John Smith</a></span></dd>
+  <dt class="issue icon icon-issue  ">
+  <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--issue"></use></svg>
+  <span role="img" class="avatar-color-2 s24 avatar">JS</span>
+  <span class="time">07:04 PM</span>
+  <span class="project">eCookbook</span>
+  <a href="/issues/2">Feature request #2 (Assigned): Add ingredients categories</a>
+  </dt>
+  <dd class=""><span class="description">Ingredients of the recipe should be classified by categories</span>
+  <span class="author"><a class="user active" href="/users/2">John Smith</a></span></dd>
+</dl>
+</div>
+
+
+
+<span class="pagination">
+  <ul class="pages">
+    <li class="previous page">
+<a title="From 07/06/2006 to 07/15/2006" accesskey="p" href="/activity?from=2006-07-15&amp;show_documents=1&amp;show_files=1&amp;show_issues=1&amp;show_news=1">« Previous</a>
+    </li><li class="next page">
+<a title="From 07/26/2006 to 08/04/2006" accesskey="n" href="/activity?from=2006-08-04&amp;show_documents=1&amp;show_files=1&amp;show_issues=1&amp;show_news=1">Next »</a></li>
+  </ul>
+</span>
+&nbsp;
+<p class="other-formats hide-when-print">Also available in:  <span><a class="atom" rel="nofollow" href="/activity.atom?key=KEY&amp;show_documents=1&amp;show_files=1&amp;show_issues=1&amp;show_news=1">Atom</a></span>
+</p>
+
+
+
+        
+        <div style="clear:both;"></div>
+    </div>
+</div>
+<div id="footer">

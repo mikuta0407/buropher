@@ -1,0 +1,28 @@
+status: 200
+content-type: application/json
+
+{
+  "project": {
+    "id": 7,
+    "name": "zeta project",
+    "identifier": "new-project",
+    "description": "A new project",
+    "homepage": "http://example.net/",
+    "parent": {
+      "id": 1,
+      "name": "eCookbook"
+    },
+    "status": 1,
+    "is_public": true,
+    "inherit_members": true,
+    "custom_fields": [
+      {
+        "id": 3,
+        "name": "Development status",
+        "value": "Beta"
+      }
+    ],
+    "created_on": "TIMESTAMP",
+    "updated_on": "TIMESTAMP"
+  }
+}

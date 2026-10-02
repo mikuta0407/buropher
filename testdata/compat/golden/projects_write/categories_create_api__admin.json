@@ -1,0 +1,14 @@
+status: 201
+content-type: application/json
+location: /issue_categories/6
+
+{
+  "issue_category": {
+    "id": 6,
+    "project": {
+      "id": 7,
+      "name": "zeta renamed"
+    },
+    "name": "Frontend"
+  }
+}

@@ -1,0 +1,30 @@
+<h2>{{l "label_project_new"}}</h2>
+
+{{$f := labelled_form_for "" .Project (hash "url" (printf "/projects/%s/copy" (param "id")))}}{{$f.Open}}
+{{partial "projects/form" (dict "f" $f)}}
+
+<fieldset class="box tabular"><legend>{{toggle_checkboxes_link ".box input[type=\"checkbox\"][name=\"only[]\"]"}}{{l "button_copy"}}</legend>
+  <label class="block">{{check_box_tag "only[]" "members" true (hash "id" nil)}} {{l "label_member_plural"}} ({{.CopyCounts.Members}})</label>
+  <label class="block">{{check_box_tag "only[]" "versions" true (hash "id" nil)}} {{l "label_version_and_files" .CopyCounts.Versions}}</label>
+  <label class="block">{{check_box_tag "only[]" "issue_categories" true (hash "id" nil)}} {{l "label_issue_category_plural"}} ({{.CopyCounts.IssueCategories}})</label>
+  <label class="block">{{check_box_tag "only[]" "issues" true (hash "id" nil)}} {{l "label_issue_plural"}} ({{.CopyCounts.Issues}})</label>
+  <label class="block">{{check_box_tag "only[]" "queries" true (hash "id" nil)}} {{l "label_query_plural"}} ({{.CopyCounts.Queries}})</label>
+  <label class="block">{{check_box_tag "only[]" "documents" true (hash "id" nil)}} {{l "label_document_plural"}} ({{.CopyCounts.Documents}})</label>
+  <label class="block">{{check_box_tag "only[]" "boards" true (hash "id" nil)}} {{l "label_board_plural"}} ({{.CopyCounts.Boards}})</label>
+  <label class="block">{{check_box_tag "only[]" "wiki" true (hash "id" nil)}} {{l "label_wiki_page_plural"}} ({{.CopyCounts.WikiPages}})</label>
+  {{call_hook "view_projects_copy_only_items"}}
+  {{hidden_field_tag "only[]" ""}}
+  <br />
+  <label class="block">{{check_box_tag "notifications" 1 .Notifications}} {{l "label_project_copy_notifications"}}</label>
+</fieldset>
+
+{{range $id := .Project.TrackerIDs}}
+  {{hidden_field_tag "project[tracker_ids][]" $id}}
+{{end}}
+
+{{range $id := .Project.IssueCustomFieldIDs}}
+  {{hidden_field_tag "project[issue_custom_field_ids][]" $id}}
+{{end}}
+
+{{submit_tag (l "button_copy")}}
+{{end_form}}

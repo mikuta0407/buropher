@@ -1,0 +1,19 @@
+<div id="activity">
+{{range $day := .events_by_day}}
+<h3>{{format_activity_day $day.Day}}</h3>
+<dl>
+{{range $row := $day.Events}}
+{{$e := $row.E}}
+  <dt class="{{$e.Type}} icon icon-{{$e.Type}} {{if $row.InGroup}}grouped{{end}} {{if activity_event_is_me $e}}me{{end}}">
+  {{activity_event_type_icon $e.Type}}
+  {{avatar $e.Author}}
+  <span class="time">{{format_time $e.Datetime false}}</span>
+  {{if not (and current_project (same_project current_project $e.Project))}}{{content_tag "span" (project_name $e.Project) (hash "class" "project")}}{{end}}
+  {{link_to (format_activity_title $e.Title) $e.URL}}
+  </dt>
+  <dd class="{{if $row.InGroup}}grouped{{end}}"><span class="description">{{format_activity_description $e.Description}}</span>
+  <span class="author">{{link_to_user $e.Author}}</span></dd>
+{{end}}
+</dl>
+{{end}}
+</div>
