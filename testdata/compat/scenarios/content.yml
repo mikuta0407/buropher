@@ -208,3 +208,52 @@ requests:
     users: [admin]
   - path: /attachments/issues/999/edit
     users: [admin]
+
+  # ---- 権限・XHR・その他
+  - path: /projects/onlinestore/news
+    id: projects_onlinestore_news_dlopper
+    users: [dlopper]
+  - path: /projects/onlinestore/documents
+    id: projects_onlinestore_documents_dlopper
+    users: [dlopper]
+  - path: /projects/onlinestore/boards/3
+    users: [anonymous, jsmith]
+  - path: /boards/3/topics/7
+    users: [anonymous, jsmith, admin]
+  - path: /projects/onlinestore/files
+    id: projects_onlinestore_files_admin
+    users: [admin]
+  - path: /projects/ecookbook/news
+    id: projects_ecookbook_news_xhr
+    users: [admin]
+    headers: {X-Requested-With: XMLHttpRequest, Accept: text/html}
+  - path: /projects/ecookbook/documents
+    id: projects_ecookbook_documents_xhr
+    users: [admin]
+    headers: {X-Requested-With: XMLHttpRequest, Accept: text/html}
+  - path: /projects/ecookbook/files
+    id: projects_ecookbook_files_xhr
+    users: [admin]
+    headers: {X-Requested-With: XMLHttpRequest, Accept: text/html}
+  - path: /boards/1/topics/1
+    id: boards_1_topics_1_xhr
+    users: [admin]
+    headers: {X-Requested-With: XMLHttpRequest, Accept: text/html}
+  - path: /projects/subproject1/news
+    users: [anonymous, admin]
+  - path: /projects/private-child/news
+    users: [anonymous, admin]
+  - path: /projects/ecookbook/boards/1.atom
+    id: projects_ecookbook_boards_1_atom_admin
+    users: [admin]
+  - path: /projects/onlinestore/boards.atom
+    users: [anonymous]
+  - path: /news.csv
+    users: [admin]
+  - path: /watchers/new?object_type=message&object_id=1
+    id: watchers_new_html
+    users: [admin]
+  - path: /watchers/autocomplete_for_mention?project_id=ecookbook&q=j
+    users: [jsmith]
+  - path: /watchers/autocomplete_for_user?project_id=ecookbook
+    users: [admin]
