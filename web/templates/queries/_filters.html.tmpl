@@ -1,0 +1,29 @@
+{{$qv := .qv}}
+{{define "queries/_filters#js"}}
+
+var operatorLabels = {{.qv.OperatorLabelsJSON}};
+var operatorByType = {{.qv.OperatorByTypeJSON}};
+var availableFilters = {{.qv.AvailableFiltersJSON}};
+var labelDayPlural = {{.qv.LabelDayPluralJSON}};
+
+var filtersUrl = {{.qv.FiltersURLJSON}};
+
+$(document).ready(function(){
+  initFilters();
+  {{range $f := .qv.FilterLines}}
+  addFilter("{{$f.Field}}", {{$f.Operator}}, {{$f.Values}});
+  {{end}}
+});
+{{end}}
+{{javascript_tag (capture "queries/_filters#js" .) -}}
+
+<div id="filters-table">
+</div>
+
+<div class="add-filter">
+{{label_tag "add_filter_select" (l "label_filter_add")}}
+{{select_tag "add_filter_select" $qv.FilterOptions (hash "name" nil)}}
+</div>
+
+{{hidden_field_tag "f[]" ""}}
+{{$_ := include_calendar_headers_tags}}
