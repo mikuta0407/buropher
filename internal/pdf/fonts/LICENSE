@@ -1,8 +1,7 @@
 The files in this directory are gzip-compressed copies of the DejaVu fonts
 (version 2.37, https://dejavu-fonts.github.io/):
 
-  DejaVuSans.ttf.gz, DejaVuSans-Bold.ttf.gz, DejaVuSans-Oblique.ttf.gz,
-  DejaVuSansMono.ttf.gz
+  DejaVuSans.ttf.gz, DejaVuSans-Bold.ttf.gz, DejaVuSansMono.ttf.gz
 
 They are embedded in buropher only to render PDF exports. The fonts are
 unmodified and distributed under the license below.

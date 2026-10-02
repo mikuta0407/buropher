@@ -94,19 +94,21 @@ func (f *face) sfntFor(st string) *sfnt.Font {
 	return s
 }
 
-// style は s に最も近い、この書体が持つスタイルと、太字を合成するかを返す。
-func (f *face) style(s string) (actual string, synthBold bool) {
+// style は s に最も近い、この書体が持つスタイルと、太字・斜体を合成するかを返す。
+func (f *face) style(s string) (actual string, synthBold, synthItalic bool) {
 	bold := strings.Contains(s, "B")
 	italic := strings.Contains(s, "I")
 	switch {
+	case bold && italic && f.files["BI"] != nil:
+		return "BI", false, false
 	case bold && f.files["B"] != nil:
-		return "B", false
+		return "B", false, italic
 	case bold:
-		return "", true
+		return "", true, italic
 	case italic && f.files["I"] != nil:
-		return "I", false
+		return "I", false, false
 	}
-	return "", false
+	return "", false, italic
 }
 
 // FontSet は読み込んだフォントの集合（アプリ全体で共有し、並行に使える）。
@@ -151,7 +153,7 @@ func (fs *FontSet) load() {
 		logger = slog.Default()
 	}
 	embeddedOnce.Do(func() {
-		embeddedSans = mustEmbeddedFace("dejavu", map[string]string{"": "DejaVuSans.ttf.gz", "B": "DejaVuSans-Bold.ttf.gz", "I": "DejaVuSans-Oblique.ttf.gz"})
+		embeddedSans = mustEmbeddedFace("dejavu", map[string]string{"": "DejaVuSans.ttf.gz", "B": "DejaVuSans-Bold.ttf.gz"})
 		embeddedMono = mustEmbeddedFace("dejavumono", map[string]string{"": "DejaVuSansMono.ttf.gz"})
 	})
 	fs.cjk = map[string]*face{}

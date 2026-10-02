@@ -260,6 +260,7 @@ type run struct {
 	face   *face
 	style  string
 	synth  bool
+	italic bool
 	text   string
 	widthM float64 // em 単位の幅の合計
 }
@@ -328,8 +329,8 @@ func (d *Doc) runs(s string, ts TextStyle) []run {
 		}
 		if cur == nil || cur.face != f {
 			flush()
-			st, synth := f.style(ts.Style)
-			cur = &run{face: f, style: st, synth: synth}
+			st, synth, italic := f.style(ts.Style)
+			cur = &run{face: f, style: st, synth: synth, italic: italic}
 		}
 		b.WriteRune(r)
 		cur.widthM += d.m.advance(f, cur.style, r)
@@ -385,7 +386,15 @@ func (d *Doc) drawText(x, y float64, s string, ts TextStyle) float64 {
 			d.f.SetLineWidth(ts.sizeMM() * 0.04)
 			d.f.SetTextRenderingMode(2)
 		}
+		if r.italic {
+			// 斜体のフォントが無ければ傾けて描く
+			d.f.TransformBegin()
+			d.f.TransformSkewX(12, x, y)
+		}
 		d.f.Text(x, y, r.text)
+		if r.italic {
+			d.f.TransformEnd()
+		}
 		if r.synth {
 			d.f.SetTextRenderingMode(0)
 			d.f.SetLineWidth(d.lineWidth)
