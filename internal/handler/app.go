@@ -52,6 +52,8 @@ type App struct {
 	AttachmentStore *attachments.Store
 	// Secrets は DB に保存する秘密値（LDAP の account_password 等）の暗号化器（server.secret_key 由来）。
 	Secrets *secretbox.Box
+	// Version は buropher のバージョン（admin/info に表示する。空なら "dev"）。
+	Version string
 }
 
 func (a *App) now() time.Time {

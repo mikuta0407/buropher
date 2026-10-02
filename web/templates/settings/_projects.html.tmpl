@@ -1,0 +1,39 @@
+{{$v := assigns}}
+{{form_tag "/settings/edit?tab=projects"}}
+
+<div class="box tabular settings">
+<p>{{setting_check_box "default_projects_public"}}</p>
+
+<p>{{setting_multiselect "default_projects_modules" $v.ProjectModuleOptions}}</p>
+
+<p>{{setting_multiselect "default_projects_tracker_ids" $v.TrackerOptions}}</p>
+
+<p>{{setting_check_box "sequential_project_identifiers"}}</p>
+
+<p>{{setting_select "new_project_user_role_id" $v.GivableRoleOptions (hash "blank" $v.BlankOption)}}</p>
+</div>
+
+<fieldset class="box">
+  <legend>{{l "setting_project_list_defaults"}}</legend>
+  <p>
+    <label>{{l "label_display_type"}}</label>
+    {{range $t := $v.ProjectListDisplayTypes}}
+      {{radio_button_tag "settings[project_list_display_type]" $t (eq $v.ProjectListDisplayType $t) (hash "id" (printf "setting_project_list_display_type_%s" $t))}}
+      {{content_tag "label" (l (printf "label_display_type_%s" $t)) (hash "for" (printf "settings_project_list_display_type_%s" $t) "class" "inline")}}
+    {{end}}
+  </p>
+  <div id="list-definition">
+    <div>
+      {{partial "queries/columns" (dict "qv" $v.ProjectQuery "tag_name" "settings[project_list_defaults][column_names][]")}}
+    </div>
+  </div>
+
+  <p>
+    <label>{{l "label_default_query"}}</label>
+    {{setting_select "default_project_query" $v.DefaultGlobalProjectQueryOptions (hash "label" false)}}
+  </p>
+</fieldset>
+
+
+{{submit_tag (l "button_save")}}
+{{end_form}}
