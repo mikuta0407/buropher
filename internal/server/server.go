@@ -33,6 +33,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/helper"
 	"github.com/mikuta0407/buropher/internal/httpx"
 	"github.com/mikuta0407/buropher/internal/i18n"
+	"github.com/mikuta0407/buropher/internal/issues"
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/settings"
 	"github.com/mikuta0407/buropher/internal/view"
@@ -60,6 +61,8 @@ type Options struct {
 	TempDir string
 	// ExtraRoutes はテスト用の追加ルート（App.Routes の後に同じミドルウェアの下で登録する）。
 	ExtraRoutes func(a *handler.App, r chi.Router)
+	// Notifier はチケット通知の配送先（nil ならログ出力のみ）。
+	Notifier issues.Notifier
 }
 
 // ErrNotInitialized は DB が未初期化（buropher init 未実行）。
@@ -121,7 +124,7 @@ func New(cfg *config.Config, d *db.DB, opts ...Options) (*Server, error) {
 	errs := &httpx.ErrorRenderer{}
 	app := &handler.App{
 		DB: d, Settings: st, Bundle: i18n.Default(), Assets: ap, Views: views, Helpers: helpers,
-		Errors: errs, Logger: o.Logger, Now: o.Now, FormNameSuffix: o.FormNameSuffix,
+		Errors: errs, Logger: o.Logger, Now: o.Now, FormNameSuffix: o.FormNameSuffix, Notifier: o.Notifier,
 	}
 	app.AttachmentStore = &attachments.Store{Root: cfg.Storage.AttachmentsPath, Settings: st, Now: o.Now, Logger: o.Logger}
 	errs.Page = app.ErrorPage()

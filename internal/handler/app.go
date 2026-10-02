@@ -22,6 +22,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/helper"
 	"github.com/mikuta0407/buropher/internal/httpx"
 	"github.com/mikuta0407/buropher/internal/i18n"
+	"github.com/mikuta0407/buropher/internal/issues"
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/settings"
 	"github.com/mikuta0407/buropher/internal/view"
@@ -49,6 +50,8 @@ type App struct {
 	AutologinCookieSecure *bool
 	// AttachmentStore は添付ファイルの保存先（Attachment.storage_path。doc.go の「規約: 添付ファイル」）。
 	AttachmentStore *attachments.Store
+	// Notifier はチケットの通知（issue_add / issue_edit）の配送先（nil ならログ出力のみ。issues_env.go）。
+	Notifier issues.Notifier
 }
 
 func (a *App) now() time.Time {
