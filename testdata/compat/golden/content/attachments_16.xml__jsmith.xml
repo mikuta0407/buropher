@@ -1,0 +1,15 @@
+status: 200
+content-type: application/xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<attachment>
+  <id>16</id>
+  <filename>testfile.png</filename>
+  <filesize>2654</filesize>
+  <content_type>image/png</content_type>
+  <description/>
+  <content_url>{{BASE}}/attachments/download/16/testfile.png</content_url>
+  <thumbnail_url>{{BASE}}/attachments/thumbnail/16</thumbnail_url>
+  <author id="2" name="John Smith"/>
+  <created_on>2010-11-23T07:14:50Z</created_on>
+</attachment>

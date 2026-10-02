@@ -1,0 +1,11 @@
+status: 200
+content-type: text/javascript
+
+(() => {
+  const button = $('[data-reaction-button-id=reaction_message_1]');
+
+  removeHoverTooltips(button);
+  button.html($('<span class=\"reaction-button-wrapper\" data-reaction-button-id=\"reaction_message_1\"><a class=\"icon reaction-button reacted has-reactions\" title=\"Dave Lopper\" data-remote=\"true\" rel=\"nofollow\" data-method=\"delete\" href=\"/reactions/12?object_id=1&amp;object_type=Message\"><svg class=\"s18 icon-svg icon-svg-filled\" aria-hidden=\"true\"><use href=\"/assets/icons-DIGEST.svg#icon--thumb-up-filled\"><\/use><\/svg><span class=\"icon-label\">1<\/span><\/a><\/span>').children());
+  setupHoverTooltips(button);
+})();
+

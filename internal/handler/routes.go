@@ -48,4 +48,13 @@ func (a *App) Routes(r Router) {
 	a.routesSettings(r)
 	a.routesAdmin(r)
 	a.routesAuthSources(r)
+	a.routesNews(r)
+	a.routesComments(r)
+	a.routesDocuments(r)
+	a.routesFiles(r)
+	a.routesBoards(r)
+	a.routesMessages(r)
+	a.routesWatchers(r)
+	a.routesAttachmentsMore(r)
+	a.routesReactions(r)
 }

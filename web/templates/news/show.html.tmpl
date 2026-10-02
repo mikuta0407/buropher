@@ -1,0 +1,74 @@
+{{$pr := current_project}}{{$news := .News.News -}}
+{{breadcrumb (link_to (l "label_news_plural") (news_index_path $pr))}}
+<div class="contextual">
+{{content_watcher_link "news" $news.ID}}
+{{if .CanManage}}{{link_to (sprite_icon "edit" (l "button_edit")) (printf "/news/%d/edit" $news.ID) (hash "class" "icon icon-edit" "accesskey" (accesskey "edit") "onclick" "$(\"#edit-news\").show(); return false;")}}{{end}}
+{{if .CanManage}}{{delete_link (news_path $news)}}{{end}}
+</div>
+
+<h2>{{avatar $news.Author}} {{$news.Title}}</h2>
+
+{{if authorize_for "news" "edit"}}
+<div id="edit-news" style="display:none;">
+{{$f := labelled_form_for "news" .News (hash "url" (news_path $news) "html" (hash "id" "news-form" "multipart" true "method" "put"))}}{{$f.Open}}
+{{partial "news/form" (dict "f" $f)}}
+{{submit_tag (l "button_save")}}
+{{link_to (l "button_cancel") "#" (hash "onclick" "$(\"#edit-news\").hide(); return false;")}}
+{{end_form}}
+</div>
+{{end}}
+
+<div class="news">
+  <div class="reaction">
+    {{reaction_button "news" $news.ID}}
+  </div>
+  <p>{{if present $news.Summary}}<em>{{$news.Summary}}</em><br />{{end}}
+  <span class="author">{{authoring $news.CreatedAt $news.Author}}</span></p>
+  <div class="wiki">
+  {{textilizable $news.Description (hash "object" (news_text_object $news))}}
+  </div>
+  {{link_to_attachments "news" $news.ID .Attachments (hash "editable" .CanManage "deletable" .CanManage)}}
+</div>
+<br />
+
+<div id="comments" class="journals">
+<h3 class="comments">{{l "label_comment_plural"}}</h3>
+{{if and .Commentable (ge (len .Comments) 3)}}
+  <p>{{toggle_link (l "label_comment_add") "add_comment_form" (hash "focus" "comment_comments" "scroll" "comment_comments")}}</p>
+{{end}}
+{{range $comment := .Comments}}
+    <div class="message reply journal" id="message-{{$comment.ID}}">
+      <h4 class="reply-header journal-header">
+        <span class="journal-info">
+          {{avatar $comment.Author}}
+          {{authoring $comment.CreatedAt $comment.Author}}
+        </span>
+        <span class="journal-meta">
+          {{reaction_button "comment" $comment.ID}}
+          {{link_to_if_authorized (sprite_icon "del" (l "button_delete")) "comments" "destroy" (printf "/news/%d/comments/%d" $news.ID $comment.ID) (hash "data" (hash "confirm" (l "text_are_you_sure")) "method" "delete" "title" (l "button_delete") "class" "icon-only icon-del")}}
+        </span>
+      </h4>
+      <div class="wiki journal-content">
+        {{textilizable $comment.Content}}
+      </div>
+    </div>
+{{end}}
+</div>
+
+{{if .Commentable}}
+<p>{{toggle_link (l "label_comment_add") "add_comment_form" (hash "focus" "comment_comments")}}</p>
+{{form_tag (printf "/news/%d/comments" $news.ID) (hash "id" "add_comment_form" "style" "display:none;")}}
+<div class="box">
+    {{comment_text_area "comment" "comments" "" (hash "cols" 80 "rows" 15 "class" "wiki-edit" "data" (merge_hash (hash "auto_complete" true) list_autofill_data_attributes))}}
+    {{wikitoolbar_for "comment_comments" (news_preview_path $pr $news)}}
+</div>
+<p>{{submit_tag (l "button_add")}}</p>
+{{end_form}}
+{{end}}
+
+{{html_title $news.Title -}}
+
+{{define "news/show#header_tags"}}
+  {{stylesheet_link_tag "scm"}}
+{{end}}
+{{content_for "header_tags" (capture "news/show#header_tags")}}

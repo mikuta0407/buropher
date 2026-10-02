@@ -1,0 +1,70 @@
+{{$pr := current_project}}{{$board := .Board -}}
+{{board_breadcrumb $board.Project .Ancestors nil}}
+
+<div class="contextual">
+{{if .CanAdd}}{{link_to (sprite_icon "add" (l "label_message_new")) (printf "/boards/%d/topics/new" $board.ID) (hash "class" "icon icon-add" "onclick" "showAndScrollTo(\"add-message\", \"message_subject\"); return false;")}}{{end}}
+{{content_watcher_link "board" $board.ID}}
+{{if .ManageBoards}}{{link_to_if_authorized (sprite_icon "settings" (l "label_settings")) "projects" "settings" (printf "/projects/%s/settings/boards" $pr.Identifier) (hash "class" "icon icon-settings")}}{{end}}
+
+</div>
+
+<div id="add-message" style="display:none;">
+{{if .CanAdd}}
+<h2>{{link_to $board.Name (printf "/projects/%s/boards/%d" $pr.Identifier $board.ID)}} &#187; {{l "label_message_new"}}</h2>
+{{$f := form_for "" .Message (hash "url" (printf "/boards/%d/topics/new" $board.ID) "html" (hash "multipart" true "id" "message-form"))}}{{$f.Open}}
+  {{partial "messages/form" (dict "f" $f "replying" false)}}
+  <p>{{submit_tag (l "button_create")}}
+  {{link_to (l "button_cancel") "#" (hash "onclick" "$(\"#add-message\").hide(); return false;")}}</p>
+{{end_form}}
+{{end}}
+</div>
+
+<h2>{{$board.Name}}</h2>
+<p class="subtitle">{{$board.Description}}</p>
+
+{{if .Topics}}
+<table class="list messages">
+  <thead><tr>
+    <th>{{l "field_subject"}}</th>
+    <th>{{l "field_author"}}</th>
+    {{sort_header_tag .Sort "created_on" (hash "caption" (l "field_created_on"))}}
+    {{sort_header_tag .Sort "replies" (hash "caption" (l "label_reply_plural"))}}
+    {{sort_header_tag .Sort "updated_on" (hash "caption" (l "label_message_last"))}}
+  </tr></thead>
+  <tbody>
+  {{range $topic := .Topics}}
+    <tr id="message-{{$topic.ID}}" class="message {{if $topic.Sticky}}sticky{{end}} {{if $topic.Locked}}locked{{end}}">
+      <td class="subject">
+        <span class="{{if or $topic.Sticky $topic.Locked}}icon{{end}}">
+          {{if $topic.Sticky}}{{sprite_icon "arrow-right"}}{{end}}
+          {{if $topic.Locked}}{{sprite_icon "lock"}}{{end}}
+          {{link_to $topic.Subject (printf "/boards/%d/topics/%d" $board.ID $topic.ID)}}
+        </span>
+      </td>
+      <td class="author">{{link_to_user $topic.Author}}</td>
+      <td class="created_on">{{format_time $topic.CreatedAt}}</td>
+      <td class="reply-count">{{$topic.RepliesCount}}</td>
+      <td class="last_message">
+        {{if $topic.LastReply}}
+        {{authoring $topic.LastReply.CreatedAt $topic.LastReply.Author}}<br />
+        {{link_to_message $topic.LastReply}}
+        {{end}}
+      </td>
+    </tr>
+  {{end}}
+  </tbody>
+</table>
+<span class="pagination">{{pagination_links_full .Pages .TopicCount}}</span>
+{{else}}
+<p class="nodata">{{l "label_no_data"}}</p>
+{{end}}
+
+{{other_formats_open -}}
+  {{other_format_link "Atom" (board_atom_path .AtomPath .AtomKey false)}}
+{{other_formats_close -}}
+
+{{html_title $board.Name}}
+{{define "boards/show#header_tags"}}
+    {{auto_discovery_link_tag "atom" (board_atom_path (assigns).AtomPath (assigns).AtomKey true) (hash "title" (printf "%s: %s" current_project.Name (assigns).Board.Name))}}
+{{end}}
+{{content_for "header_tags" (capture "boards/show#header_tags")}}

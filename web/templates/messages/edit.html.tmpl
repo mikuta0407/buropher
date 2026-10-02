@@ -1,0 +1,8 @@
+{{board_breadcrumb current_project (assigns).Ancestors .Board}}
+
+<h2>{{avatar .Topic.Author}}{{.Topic.Subject}}</h2>
+
+{{$f := form_for "" .Message (hash "as" "message" "url" (printf "/boards/%d/topics/%d/edit" .Board.ID .Message.ID) "html" (hash "multipart" true "id" "message-form" "method" "post"))}}{{$f.Open}}
+  {{partial "messages/form" (dict "f" $f "replying" .Replying)}}
+  {{submit_tag (l "button_save")}}
+{{end_form}}

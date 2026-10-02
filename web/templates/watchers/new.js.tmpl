@@ -1,0 +1,4 @@
+$('#ajax-modal').html(
+  '{{j (partial "watchers/new" .Locals)}}');
+showModal('ajax-modal', '400px');
+$('#ajax-modal').addClass('new-watcher');

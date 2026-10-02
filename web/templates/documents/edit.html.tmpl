@@ -1,0 +1,8 @@
+<h2>{{l "label_document"}}</h2>
+
+{{$f := labelled_form_for "" .Document (hash "url" (printf "/documents/%d" .Document.ID) "html" (hash "multipart" true))}}{{$f.Open}}
+  {{partial "documents/form" (dict "f" $f)}}
+  <p>{{submit_tag (l "button_save")}}</p>
+{{end_form}}
+
+

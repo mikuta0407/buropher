@@ -1,0 +1,432 @@
+status: 200
+content-type: text/html
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Files - eCookbook - Redmine</title>
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta content="Redmine" name="description">
+    <meta content="issue,bug,tracker" name="keywords">
+    <meta content="authenticity_token" name="csrf-param">
+    <meta content="{{CSRF}}" name="csrf-token">
+    <link href="/assets/favicon-DIGEST.ico" rel="shortcut icon" type="image/x-icon">
+    <link href="/assets/jquery/jquery-ui-1.13.2-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/tribute-5.1.3-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/application-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/responsive-DIGEST.css" media="all" rel="stylesheet">
+    <script data-turbo-track="reload" type="importmap">{
+  "imports": {
+    "@rails/request.js": "/assets/requestjs-DIGEST.js",
+    "application": "/assets/application-DIGEST.js",
+    "@hotwired/stimulus": "/assets/stimulus.min-DIGEST.js",
+    "@hotwired/stimulus-loading": "/assets/stimulus-loading-DIGEST.js",
+    "turndown": "/assets/turndown-DIGEST.js",
+    "controllers/api_key_copy_controller": "/assets/controllers/api_key_copy_controller-DIGEST.js",
+    "controllers/application": "/assets/controllers/application-DIGEST.js",
+    "controllers": "/assets/controllers/index-DIGEST.js",
+    "controllers/list_autofill_controller": "/assets/controllers/list_autofill_controller-DIGEST.js",
+    "controllers/quote_reply_controller": "/assets/controllers/quote_reply_controller-DIGEST.js",
+    "controllers/sticky_issue_header_controller": "/assets/controllers/sticky_issue_header_controller-DIGEST.js"
+  }
+}</script>
+    <link href="/assets/requestjs-DIGEST.js" rel="modulepreload">
+    <link href="/assets/application-DIGEST.js" rel="modulepreload">
+    <link href="/assets/stimulus.min-DIGEST.js" rel="modulepreload">
+    <link href="/assets/stimulus-loading-DIGEST.js" rel="modulepreload">
+    <link href="/assets/turndown-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/api_key_copy_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/application-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/index-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/list_autofill_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/quote_reply_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/sticky_issue_header_controller-DIGEST.js" rel="modulepreload">
+    <script type="module">import "application"</script>
+    <script src="/assets/jquery-3.7.1-ui-1.13.3-DIGEST.js"></script>
+    <script src="/assets/rails-ujs-DIGEST.js"></script>
+    <script src="/assets/tribute-5.1.3.min-DIGEST.js"></script>
+    <script src="/assets/application-legacy-DIGEST.js"></script>
+    <script src="/assets/responsive-DIGEST.js"></script>
+    <script>//<![CDATA[
+$(window).on('load', function(){ warnLeavingUnsaved('The current page contains unsaved text that will be lost if you leave this page.'); });
+//]]></script>
+    <script>//<![CDATA[
+rm = window.rm || {};rm.I18n = rm.I18n || {};rm.I18n = Object.freeze({buttonCopy: 'Copy'});
+//]]></script>
+    <script>//<![CDATA[
+rm = window.rm || {};rm.AutoComplete = rm.AutoComplete || {};rm.AutoComplete.dataSources = JSON.parse('{"issues":"/issues/auto_complete?project_id=ecookbook\u0026q=","wiki_pages":"/wiki_pages/auto_complete?project_id=ecookbook\u0026q="}');
+//]]></script>
+  </head>
+  <body class="project-ecookbook has-main-menu controller-files action-index avatars-off" data-text-formatting="common_mark">
+    <div id="wrapper">
+      <div class="flyout-menu js-flyout-menu">
+        <div class="flyout-menu__search">
+          <form accept-charset="UTF-8" action="/projects/ecookbook/search" method="get" name="form-RANDOM">
+            <label class="search-magnifier search-magnifier--flyout" for="flyout-search">
+              <svg aria-hidden="true" class="s18 icon-svg">
+                <use href="/assets/icons-DIGEST.svg#icon--search"></use>
+              </svg>
+              <span class="icon-label hidden">Search</span>
+            </label>
+            <input class="small js-search-input" id="flyout-search" name="q" placeholder="Search" type="text">
+          </form>
+        </div>
+        <div class="flyout-menu__avatar">
+          <a href="/users/1">
+            <span class="avatar-color-1 s40 avatar" role="img">RA</span>
+          </a>
+          <a class="user active" href="/users/1">admin</a>
+        </div>
+        <h3>Project</h3>
+        <span class="js-project-menu"></span>
+        <h3>General</h3>
+        <span class="js-general-menu"></span>
+        <span class="js-sidebar flyout-menu__sidebar"></span>
+        <h3>Profile</h3>
+        <span class="js-profile-menu"></span>
+      </div>
+      <div id="top-menu">
+        <div id="account">
+          <ul>
+            <li>
+              <a class="my-account" href="/my/account">My account</a>
+            </li>
+            <li>
+              <a class="logout" data-method="post" href="/logout" rel="nofollow">Sign out</a>
+            </li>
+          </ul>
+        </div>
+        <div id="loggedas">
+          Logged in as
+          <a class="user active" href="/users/1">admin</a>
+        </div>
+        <ul>
+          <li>
+            <a class="home" href="/">Home</a>
+          </li>
+          <li>
+            <a class="my-page" href="/my/page">My page</a>
+          </li>
+          <li>
+            <a class="projects" href="/projects">Projects</a>
+          </li>
+          <li>
+            <a class="administration" href="/admin">Administration</a>
+          </li>
+          <li>
+            <a class="help" href="https://www.redmine.org/guide" rel="noopener" target="_blank">Help</a>
+          </li>
+        </ul>
+      </div>
+      <div id="header">
+        <a class="mobile-toggle-button js-flyout-menu-toggle-button" href="#"></a>
+        <div id="quick-search">
+          <form accept-charset="UTF-8" action="/projects/ecookbook/search" method="get" name="form-RANDOM">
+            <input autocomplete="off" name="scope" type="hidden" value="subprojects">
+            <label for="q">
+              <a accesskey="4" href="/projects/ecookbook/search?scope=subprojects">Search</a>
+              :
+            </label>
+            <input accesskey="f" class="small" data-auto-complete="true" id="q" name="q" size="20" type="text">
+          </form>
+          <div class="drdn" id="project-jump">
+            <span class="drdn-trigger">eCookbook</span>
+            <div class="drdn-content">
+              <div class="quick-search">
+                <svg aria-hidden="true" class="s18 icon-svg">
+                  <use href="/assets/icons-DIGEST.svg#icon--search"></use>
+                </svg>
+                <input autocomplete="off" class="autocomplete" data-automcomplete-url="/projects/autocomplete.js?jump=files" id="projects-quick-search" name="q" type="text" value="">
+              </div>
+              <div class="drdn-items projects selection">
+                <strong>Bookmarks</strong>
+                <a class="selected" href="/projects/ecookbook?jump=files" title="eCookbook">
+                  <span style="padding-inline-start:0px;">eCookbook</span>
+                </a>
+                <a href="/projects/private-child?jump=files" title="Private child of eCookbook">
+                  <span style="padding-inline-start:16px;">Private child of eCookbook</span>
+                </a>
+                <strong>All Projects</strong>
+                <a href="/projects/private-child?jump=files" title="Private child of eCookbook">
+                  <span style="padding-inline-start:0px;">Private child of eCookbook</span>
+                </a>
+              </div>
+              <div class="drdn-items all-projects selection">
+                <a href="/projects?jump=files">All Projects</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <h1>
+          <span class="current-project">eCookbook</span>
+        </h1>
+        <div class="tabs" id="main-menu">
+          <ul>
+            <li>
+              <a class="new-object" href="#" id="new-object" onclick="toggleNewObjectDropdown(); return false;">+</a>
+              <ul class="menu-children">
+                <li>
+                  <a accesskey="7" class="new-issue-sub" href="/projects/ecookbook/issues/new">New issue</a>
+                </li>
+                <li>
+                  <a class="new-issue-category" href="/projects/ecookbook/issue_categories/new">New category</a>
+                </li>
+                <li>
+                  <a class="new-version" href="/projects/ecookbook/versions/new">New version</a>
+                </li>
+                <li>
+                  <a class="new-timelog" href="/projects/ecookbook/time_entries/new">Log time</a>
+                </li>
+                <li>
+                  <a class="new-news" href="/projects/ecookbook/news/new">Add news</a>
+                </li>
+                <li>
+                  <a class="new-document" href="/projects/ecookbook/documents/new">New document</a>
+                </li>
+                <li>
+                  <a class="new-wiki-page" href="/projects/ecookbook/wiki/new">New wiki page</a>
+                </li>
+                <li>
+                  <a class="new-file" href="/projects/ecookbook/files/new">New file</a>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <a class="overview" href="/projects/ecookbook">Overview</a>
+            </li>
+            <li>
+              <a class="activity" href="/projects/ecookbook/activity">Activity</a>
+            </li>
+            <li>
+              <a class="roadmap" href="/projects/ecookbook/roadmap">Roadmap</a>
+            </li>
+            <li>
+              <a class="issues" href="/projects/ecookbook/issues">Issues</a>
+            </li>
+            <li>
+              <a class="time-entries" href="/projects/ecookbook/time_entries">Spent time</a>
+            </li>
+            <li>
+              <a class="gantt" href="/projects/ecookbook/issues/gantt">Gantt</a>
+            </li>
+            <li>
+              <a class="calendar" href="/projects/ecookbook/issues/calendar">Calendar</a>
+            </li>
+            <li>
+              <a class="news" href="/projects/ecookbook/news">News</a>
+            </li>
+            <li>
+              <a class="documents" href="/projects/ecookbook/documents">Documents</a>
+            </li>
+            <li>
+              <a class="wiki" href="/projects/ecookbook/wiki">Wiki</a>
+            </li>
+            <li>
+              <a class="boards" href="/projects/ecookbook/boards">Forums</a>
+            </li>
+            <li>
+              <a class="files selected" href="/projects/ecookbook/files">Files</a>
+            </li>
+            <li>
+              <a class="repository" href="/projects/ecookbook/repository">Repository</a>
+            </li>
+            <li>
+              <a class="settings" href="/projects/ecookbook/settings">Settings</a>
+            </li>
+          </ul>
+          <div class="tabs-buttons" style="display:none;">
+            <button class="tab-left icon-only" onclick="moveTabLeft(this); return false;">
+              <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
+                <use href="/assets/icons-DIGEST.svg#icon--angle-left"></use>
+              </svg>
+            </button>
+            <button class="tab-right icon-only" onclick="moveTabRight(this); return false;">
+              <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
+                <use href="/assets/icons-DIGEST.svg#icon--angle-right"></use>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="nosidebar" id="main">
+        <div id="sidebar">
+          <div id="sidebar-wrapper"></div>
+        </div>
+        <div id="content">
+          <div class="contextual">
+            <a class="icon icon-add" href="/projects/ecookbook/files/new">
+              <svg aria-hidden="true" class="s18 icon-svg">
+                <use href="/assets/icons-DIGEST.svg#icon--add"></use>
+              </svg>
+              <span class="icon-label">New file</span>
+            </a>
+          </div>
+          <h2>Files</h2>
+          <div class="autoscroll">
+            <table class="list files">
+              <thead>
+                <tr>
+                  <th title="Sort by &#34;File&#34;">
+                    <a href="/projects/ecookbook/files?sort=filename%2Ccreated_on%3Adesc">
+                      <svg aria-hidden="true" class="s18 icon-svg">
+                        <use href="/assets/icons-DIGEST.svg#icon--"></use>
+                      </svg>
+                      <span class="icon-label">File</span>
+                    </a>
+                  </th>
+                  <th title="Sort by &#34;Date&#34;">
+                    <a class="sort desc icon icon-sorted-asc" href="/projects/ecookbook/files?sort=created_on%2Cfilename">
+                      <svg aria-hidden="true" class="s18 icon-svg">
+                        <use href="/assets/icons-DIGEST.svg#icon--angle-down"></use>
+                      </svg>
+                      <span class="icon-label">Date</span>
+                    </a>
+                  </th>
+                  <th title="Sort by &#34;Size&#34;">
+                    <a href="/projects/ecookbook/files?sort=size%3Adesc%2Ccreated_on%3Adesc%2Cfilename">
+                      <svg aria-hidden="true" class="s18 icon-svg">
+                        <use href="/assets/icons-DIGEST.svg#icon--"></use>
+                      </svg>
+                      <span class="icon-label">Size</span>
+                    </a>
+                  </th>
+                  <th title="Sort by &#34;D/L&#34;">
+                    <a href="/projects/ecookbook/files?sort=downloads%3Adesc%2Ccreated_on%3Adesc%2Cfilename">
+                      <svg aria-hidden="true" class="s18 icon-svg">
+                        <use href="/assets/icons-DIGEST.svg#icon--"></use>
+                      </svg>
+                      <span class="icon-label">D/L</span>
+                    </a>
+                  </th>
+                  <th>Checksum</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="file">
+                  <td class="filename">
+                    <a href="/attachments/22" title="unknown type">redmine_logo.ai.unknown</a>
+                  </td>
+                  <td class="created_on">04/30/2019 12:23 AM</td>
+                  <td class="filesize">4.88 KB</td>
+                  <td class="downloads">0</td>
+                  <td class="digest">SHA256: 68d90c016f0806d88234a6f16530fdf0b7f1d2481354798f1a5fd165dca6b04f</td>
+                  <td class="buttons">
+                    <a class="icon-only icon-download" href="/attachments/download/22/redmine_logo.ai.unknown" title="Download">
+                      <svg aria-hidden="true" class="s18 icon-svg">
+                        <use href="/assets/icons-DIGEST.svg#icon--download"></use>
+                      </svg>
+                      <span class="icon-label">redmine_logo.ai.unknown</span>
+                    </a>
+                    <a class="icon-only icon-del" data-confirm="Are you sure?" data-method="delete" href="/attachments/22" rel="nofollow">
+                      <svg aria-hidden="true" class="s18 icon-svg">
+                        <use href="/assets/icons-DIGEST.svg#icon--del"></use>
+                      </svg>
+                      <span class="icon-label">Delete</span>
+                    </a>
+                  </td>
+                </tr>
+                <tr class="file">
+                  <td class="filename">
+                    <a href="/attachments/8">project_file.zip</a>
+                  </td>
+                  <td class="created_on">07/19/2006 07:07 PM</td>
+                  <td class="filesize">320 Bytes</td>
+                  <td class="downloads">0</td>
+                  <td class="digest">MD5: b91e08d0cf966d5c6ff411bd8c4cc3a2</td>
+                  <td class="buttons">
+                    <a class="icon-only icon-download" href="/attachments/download/8/project_file.zip" title="Download">
+                      <svg aria-hidden="true" class="s18 icon-svg">
+                        <use href="/assets/icons-DIGEST.svg#icon--download"></use>
+                      </svg>
+                      <span class="icon-label">project_file.zip</span>
+                    </a>
+                    <a class="icon-only icon-del" data-confirm="Are you sure?" data-method="delete" href="/attachments/8" rel="nofollow">
+                      <svg aria-hidden="true" class="s18 icon-svg">
+                        <use href="/assets/icons-DIGEST.svg#icon--del"></use>
+                      </svg>
+                      <span class="icon-label">Delete</span>
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <th colspan="6">
+                    <a class="icon icon-package" href="/versions/1">
+                      <svg aria-hidden="true" class="s18 icon-svg">
+                        <use href="/assets/icons-DIGEST.svg#icon--package"></use>
+                      </svg>
+                      <span class="icon-label">0.1</span>
+                    </a>
+                  </th>
+                </tr>
+                <tr class="file">
+                  <td class="filename">
+                    <a href="/attachments/9">version_file.zip</a>
+                  </td>
+                  <td class="created_on">07/19/2006 07:07 PM</td>
+                  <td class="filesize">452 Bytes</td>
+                  <td class="downloads">0</td>
+                  <td class="digest">MD5: b91e08d0cf966d5c6ff411bd8c4cc3a2</td>
+                  <td class="buttons">
+                    <a class="icon-only icon-download" href="/attachments/download/9/version_file.zip" title="Download">
+                      <svg aria-hidden="true" class="s18 icon-svg">
+                        <use href="/assets/icons-DIGEST.svg#icon--download"></use>
+                      </svg>
+                      <span class="icon-label">version_file.zip</span>
+                    </a>
+                    <a class="icon-only icon-del" data-confirm="Are you sure?" data-method="delete" href="/attachments/9" rel="nofollow">
+                      <svg aria-hidden="true" class="s18 icon-svg">
+                        <use href="/assets/icons-DIGEST.svg#icon--del"></use>
+                      </svg>
+                      <span class="icon-label">Delete</span>
+                    </a>
+                  </td>
+                </tr>
+                <tr class="file">
+                  <td class="filename">
+                    <a href="/attachments/12">version_file.zip</a>
+                  </td>
+                  <td class="created_on">07/19/2006 07:07 PM</td>
+                  <td class="filesize">452 Bytes</td>
+                  <td class="downloads">0</td>
+                  <td class="digest">MD5: b91e08d0cf966d5c6ff411bd8c4cc3a2</td>
+                  <td class="buttons">
+                    <a class="icon-only icon-download" href="/attachments/download/12/version_file.zip" title="Download">
+                      <svg aria-hidden="true" class="s18 icon-svg">
+                        <use href="/assets/icons-DIGEST.svg#icon--download"></use>
+                      </svg>
+                      <span class="icon-label">version_file.zip</span>
+                    </a>
+                    <a class="icon-only icon-del" data-confirm="Are you sure?" data-method="delete" href="/attachments/12" rel="nofollow">
+                      <svg aria-hidden="true" class="s18 icon-svg">
+                        <use href="/assets/icons-DIGEST.svg#icon--del"></use>
+                      </svg>
+                      <span class="icon-label">Delete</span>
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div style="clear:both;"></div>
+        </div>
+      </div>
+      <div id="footer">MASKED</div>
+      <div id="ajax-indicator" style="display:none;">
+        <span class="icon">
+          <svg aria-hidden="true" class="s18 icon-svg svg-loader">
+            <use href="/assets/icons-DIGEST.svg#icon--loader"></use>
+          </svg>
+          <span class="icon-label">Loading...</span>
+        </span>
+      </div>
+      <div id="ajax-modal" style="display:none;"></div>
+      <div id="icon-copy-source" style="display: none;">
+        <svg aria-hidden="true" class="s18 icon-svg">
+          <use href="/assets/icons-DIGEST.svg#icon--"></use>
+        </svg>
+      </div>
+    </div>
+  </body>
+</html>

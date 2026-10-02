@@ -1,0 +1,27 @@
+# ニュース・文書・ファイル・フォーラム・添付の画面の日本語表示（Accept-Language: ja）。
+name: content_ja
+
+headers: {Accept-Language: ja}
+
+users:
+  jsmith: {login: jsmith, password: jsmith}
+
+normalize:
+  mask_text_selectors:
+    - "#footer"
+
+requests:
+  - path: /projects/ecookbook/news
+    users: [anonymous]
+  - path: /news/1
+    users: [anonymous]
+  - path: /projects/ecookbook/documents?sort_by=date
+    users: [anonymous]
+  - path: /projects/ecookbook/files
+    users: [anonymous]
+  - path: /projects/ecookbook/boards/1
+    users: [anonymous]
+  - path: /boards/1/topics/1
+    users: [anonymous]
+  - path: /attachments/16
+    users: [anonymous]

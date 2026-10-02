@@ -1,0 +1,21 @@
+{{$link := .download_link}}{{$kind := .kind}}{{$path := .path}}
+
+{{if present $path}}
+
+  {{if eq $kind "video"}}
+    {{content_tag_open "video" (hash "class" "filecontent" "src" $path "controls" true)}}
+      {{partial "common/no_preview" (dict "download_link" $link)}}
+    {{end_tag "video"}}
+  {{else if eq $kind "audio"}}
+    {{content_tag_open "audio" (hash "class" "filecontent" "src" $path "controls" true)}}
+      {{partial "common/no_preview" (dict "download_link" $link)}}
+    {{end_tag "audio"}}
+  {{else}}
+    {{partial "common/no_preview" (dict "download_link" $link)}}
+   {{end}}
+
+{{else}}
+
+  {{partial "common/no_preview" (dict "download_link" $link)}}
+
+{{end}}

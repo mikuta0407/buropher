@@ -1,0 +1,6 @@
+<h2>{{l "label_board_new"}}</h2>
+
+{{$f := labelled_form_for "" .Board (hash "url" (printf "/projects/%s/boards" current_project.Identifier))}}{{$f.Open}}
+  {{partial "boards/form" (dict "f" $f)}}
+  {{submit_tag (l "button_create")}}
+{{end_form}}

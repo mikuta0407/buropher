@@ -136,6 +136,32 @@
 //   - Wiki は保存を AttachmentSaver（wiki_support.go。既定は Store.AttachFiles）経由で行い、表示は
 //     repository.ContainerAttachmentList と attachments/_links（helper の link_to_attachments）だけを使う。
 //     共通の添付基盤を差し替えるときは NewWikiAttachmentSaver を合わせる。
+//   - AttachmentsController の残りのアクション（attachments_more.go）: show（テキストはシンタックスハイライト、
+//     Markdown / Textile は書式変換、画像、.diff / .patch は internal/unifieddiff による inline / sbs 表示、その他は
+//     common/_other）、thumbnail（a.AttachmentStore.Thumbnail(att, size)。純 Go の縮小で ThumbnailsRoot に
+//     "#{digest}_#{filesize}_#{size}.thumb" を保存。PDF は生成せず 404）、update（API のみ）、destroy（チケットの
+//     添付は issues.Env の InitJournal / JournalizeAttachment / SaveJournal でジャーナルに記録）、edit_all /
+//     update_all / download_all（/attachments/<object_type>/<id>/...）。
+//   - コンテナごとの表示・編集・削除の権限（attachments_visible? / attachments_editable? / attachments_deletable?）は
+//     a.containerAttachmentsPermitted(c, ct, "edit" | "delete")、link_to_attachment_container は a.containerLink。
+//     current_menu_item はコンテナの種類で決まり（c.setAttachmentMenuItem）、コンテナが無ければ nil
+//     （helper.NoMenuItem。ジャンプボックスのリンクに jump を付けない）。
+//   - 再表示するフォームに保存済み（トークン付き）の添付を出すときは attachments/_form に
+//     (dict "saved_attachments" res.Files) を渡す（container.saved_attachments）。
+//
+// # 規約: ウォッチャー
+//
+//   - WatchersController（watchers.go）は object_type（issue / news / board / message / wiki / wiki_page /
+//     enabled_module）で対象を引き、watchers.watchable_kind に対応付ける（enabled_module → project_module）。
+//     チケットの API（POST /issues/:id/watchers, DELETE /issues/:id/watchers/:user_id）も同じアクション。
+//   - 画面の watcher_link は helper の content_watcher_link "<object_type>" id（本人とそのグループのウォッチを見る）、
+//     サイドバーは watchers/_watched（dict "object_type" "id" "project"）。作成時の add_author_as_watcher は
+//     repository.AddWatcher(ctx, tx, kind, id, userID)。
+//
+// # 規約: メール通知のフック
+//
+//   - メール送信は未実装。ニュース・文書・ファイル・メッセージの作成時は a.notify(c, setting_event, mailer_action, obj)
+//     を呼び、Setting.notified_events に含まれていれば SetContentNotifier で設定した Notifier に渡す（既定は何もしない）。
 //
 // # 規約: 互換テスト
 //

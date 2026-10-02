@@ -1,0 +1,10 @@
+{{$f := .f}}{{$board := (assigns).Board -}}
+{{error_messages_for $board}}
+
+<div class="box tabular">
+<p>{{$f.TextField "name" (hash "required" true)}}</p>
+<p>{{$f.TextField "description" (hash "required" true "size" 80)}}</p>
+{{if $board.ValidParents}}
+<p>{{$f.Select "parent_id" (boards_options_for_select $board.ValidParents) (hash "include_blank" true "label" (sym "field_board_parent"))}}</p>
+{{end}}
+</div>

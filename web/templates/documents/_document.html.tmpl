@@ -1,0 +1,8 @@
+<div class="document-item document-{{.document.ID}}">
+  <h4 class="title">{{link_to .document.Title (printf "/documents/%d" .document.ID)}}</h4>
+  <div class="updated_on"><em>{{format_time .document.UpdatedOn}}</em></div>
+
+  <div class="wiki description">
+    {{textilizable (truncate_lines .document.Description) (hash "object" (document_text_object .document))}}
+  </div>
+</div>

@@ -1,0 +1,312 @@
+status: 200
+content-type: text/html
+
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <title>Help - eCookbook - Redmine</title>
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta content="Redmine" name="description">
+    <meta content="issue,bug,tracker" name="keywords">
+    <meta content="authenticity_token" name="csrf-param">
+    <meta content="{{CSRF}}" name="csrf-token">
+    <link href="/assets/favicon-DIGEST.ico" rel="shortcut icon" type="image/x-icon">
+    <link href="/assets/jquery/jquery-ui-1.13.2-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/tribute-5.1.3-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/application-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/responsive-DIGEST.css" media="all" rel="stylesheet">
+    <script data-turbo-track="reload" type="importmap">{
+  "imports": {
+    "@rails/request.js": "/assets/requestjs-DIGEST.js",
+    "application": "/assets/application-DIGEST.js",
+    "@hotwired/stimulus": "/assets/stimulus.min-DIGEST.js",
+    "@hotwired/stimulus-loading": "/assets/stimulus-loading-DIGEST.js",
+    "turndown": "/assets/turndown-DIGEST.js",
+    "controllers/api_key_copy_controller": "/assets/controllers/api_key_copy_controller-DIGEST.js",
+    "controllers/application": "/assets/controllers/application-DIGEST.js",
+    "controllers": "/assets/controllers/index-DIGEST.js",
+    "controllers/list_autofill_controller": "/assets/controllers/list_autofill_controller-DIGEST.js",
+    "controllers/quote_reply_controller": "/assets/controllers/quote_reply_controller-DIGEST.js",
+    "controllers/sticky_issue_header_controller": "/assets/controllers/sticky_issue_header_controller-DIGEST.js"
+  }
+}</script>
+    <link href="/assets/requestjs-DIGEST.js" rel="modulepreload">
+    <link href="/assets/application-DIGEST.js" rel="modulepreload">
+    <link href="/assets/stimulus.min-DIGEST.js" rel="modulepreload">
+    <link href="/assets/stimulus-loading-DIGEST.js" rel="modulepreload">
+    <link href="/assets/turndown-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/api_key_copy_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/application-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/index-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/list_autofill_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/quote_reply_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/sticky_issue_header_controller-DIGEST.js" rel="modulepreload">
+    <script type="module">import "application"</script>
+    <script src="/assets/jquery-3.7.1-ui-1.13.3-DIGEST.js"></script>
+    <script src="/assets/rails-ujs-DIGEST.js"></script>
+    <script src="/assets/tribute-5.1.3.min-DIGEST.js"></script>
+    <script src="/assets/application-legacy-DIGEST.js"></script>
+    <script src="/assets/responsive-DIGEST.js"></script>
+    <script>//<![CDATA[
+$(window).on('load', function(){ warnLeavingUnsaved('このページから移動すると、保存されていないデータが失われます。'); });
+//]]></script>
+    <script>//<![CDATA[
+rm = window.rm || {};rm.I18n = rm.I18n || {};rm.I18n = Object.freeze({buttonCopy: 'コピー'});
+//]]></script>
+    <script>//<![CDATA[
+rm = window.rm || {};rm.AutoComplete = rm.AutoComplete || {};rm.AutoComplete.dataSources = JSON.parse('{"issues":"/issues/auto_complete?project_id=ecookbook\u0026q=","wiki_pages":"/wiki_pages/auto_complete?project_id=ecookbook\u0026q="}');
+//]]></script>
+    <link href="{{BASE}}/projects/ecookbook/boards/1.atom" rel="alternate" title="eCookbook: Help" type="application/atom+xml">
+  </head>
+  <body class="project-ecookbook has-main-menu controller-boards action-show avatars-off" data-text-formatting="common_mark">
+    <div id="wrapper">
+      <div class="flyout-menu js-flyout-menu">
+        <div class="flyout-menu__search">
+          <form accept-charset="UTF-8" action="/projects/ecookbook/search" method="get" name="form-RANDOM">
+            <input autocomplete="off" name="messages" type="hidden" value="1">
+            <label class="search-magnifier search-magnifier--flyout" for="flyout-search">
+              <svg aria-hidden="true" class="s18 icon-svg">
+                <use href="/assets/icons-DIGEST.svg#icon--search"></use>
+              </svg>
+              <span class="icon-label hidden">検索</span>
+            </label>
+            <input class="small js-search-input" id="flyout-search" name="q" placeholder="検索" type="text">
+          </form>
+        </div>
+        <h3>プロジェクト</h3>
+        <span class="js-project-menu"></span>
+        <h3>全般</h3>
+        <span class="js-general-menu"></span>
+        <span class="js-sidebar flyout-menu__sidebar"></span>
+        <h3>プロフィール</h3>
+        <span class="js-profile-menu"></span>
+      </div>
+      <div id="top-menu">
+        <div id="account">
+          <ul>
+            <li>
+              <a class="login" href="/login">ログイン</a>
+            </li>
+            <li>
+              <a class="register" href="/account/register">登録する</a>
+            </li>
+          </ul>
+        </div>
+        <ul>
+          <li>
+            <a class="home" href="/">ホーム</a>
+          </li>
+          <li>
+            <a class="projects" href="/projects">プロジェクト</a>
+          </li>
+          <li>
+            <a class="help" href="https://www.redmine.org/guide" rel="noopener" target="_blank">ヘルプ</a>
+          </li>
+        </ul>
+      </div>
+      <div id="header">
+        <a class="mobile-toggle-button js-flyout-menu-toggle-button" href="#"></a>
+        <div id="quick-search">
+          <form accept-charset="UTF-8" action="/projects/ecookbook/search" method="get" name="form-RANDOM">
+            <input autocomplete="off" name="scope" type="hidden" value="subprojects">
+            <input autocomplete="off" name="messages" type="hidden" value="1">
+            <label for="q">
+              <a accesskey="4" href="/projects/ecookbook/search?scope=subprojects">検索</a>
+              :
+            </label>
+            <input accesskey="f" class="small" data-auto-complete="true" id="q" name="q" size="20" type="text">
+          </form>
+          <div class="drdn" id="project-jump">
+            <span class="drdn-trigger">eCookbook</span>
+            <div class="drdn-content">
+              <div class="quick-search">
+                <svg aria-hidden="true" class="s18 icon-svg">
+                  <use href="/assets/icons-DIGEST.svg#icon--search"></use>
+                </svg>
+                <input autocomplete="off" class="autocomplete" data-automcomplete-url="/projects/autocomplete.js?jump=boards" id="projects-quick-search" name="q" type="text" value="">
+              </div>
+              <div class="drdn-items projects selection"></div>
+              <div class="drdn-items all-projects selection">
+                <a href="/projects?jump=boards">全プロジェクト</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <h1>
+          <span class="current-project">eCookbook</span>
+        </h1>
+        <div class="tabs" id="main-menu">
+          <ul>
+            <li>
+              <a class="overview" href="/projects/ecookbook">概要</a>
+            </li>
+            <li>
+              <a class="activity" href="/projects/ecookbook/activity">活動</a>
+            </li>
+            <li>
+              <a class="roadmap" href="/projects/ecookbook/roadmap">ロードマップ</a>
+            </li>
+            <li>
+              <a class="issues" href="/projects/ecookbook/issues">チケット</a>
+            </li>
+            <li>
+              <a class="time-entries" href="/projects/ecookbook/time_entries">作業時間</a>
+            </li>
+            <li>
+              <a class="gantt" href="/projects/ecookbook/issues/gantt">ガントチャート</a>
+            </li>
+            <li>
+              <a class="calendar" href="/projects/ecookbook/issues/calendar">カレンダー</a>
+            </li>
+            <li>
+              <a class="news" href="/projects/ecookbook/news">ニュース</a>
+            </li>
+            <li>
+              <a class="documents" href="/projects/ecookbook/documents">文書</a>
+            </li>
+            <li>
+              <a class="wiki" href="/projects/ecookbook/wiki">Wiki</a>
+            </li>
+            <li>
+              <a class="boards selected" href="/projects/ecookbook/boards">フォーラム</a>
+            </li>
+            <li>
+              <a class="files" href="/projects/ecookbook/files">ファイル</a>
+            </li>
+            <li>
+              <a class="repository" href="/projects/ecookbook/repository">リポジトリ</a>
+            </li>
+          </ul>
+          <div class="tabs-buttons" style="display:none;">
+            <button class="tab-left icon-only" onclick="moveTabLeft(this); return false;">
+              <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
+                <use href="/assets/icons-DIGEST.svg#icon--angle-left"></use>
+              </svg>
+            </button>
+            <button class="tab-right icon-only" onclick="moveTabRight(this); return false;">
+              <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
+                <use href="/assets/icons-DIGEST.svg#icon--angle-right"></use>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="nosidebar" id="main">
+        <div id="sidebar">
+          <div id="sidebar-wrapper"></div>
+        </div>
+        <div id="content">
+          <p class="breadcrumb">
+            <a href="/projects/ecookbook/boards">フォーラム</a>
+            »
+          </p>
+          <div class="contextual"></div>
+          <div id="add-message" style="display:none;"></div>
+          <h2>Help</h2>
+          <p class="subtitle">Help board</p>
+          <table class="list messages">
+            <thead>
+              <tr>
+                <th>題名</th>
+                <th>作成者</th>
+                <th title="並べ替え &#34;作成日&#34;">
+                  <a href="/projects/ecookbook/boards/1?sort=created_on%2Cupdated_on%3Adesc">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--"></use>
+                    </svg>
+                    <span class="icon-label">作成日</span>
+                  </a>
+                </th>
+                <th title="並べ替え &#34;返答&#34;">
+                  <a href="/projects/ecookbook/boards/1?sort=replies%2Cupdated_on%3Adesc">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--"></use>
+                    </svg>
+                    <span class="icon-label">返答</span>
+                  </a>
+                </th>
+                <th title="並べ替え &#34;最新のメッセージ&#34;">
+                  <a class="sort desc icon icon-sorted-asc" href="/projects/ecookbook/boards/1?sort=updated_on">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--angle-down"></use>
+                    </svg>
+                    <span class="icon-label">最新のメッセージ</span>
+                  </a>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="message" id="message-4">
+                <td class="subject">
+                  <span class="">
+                    <a href="/boards/1/topics/4">Post 2</a>
+                  </span>
+                </td>
+                <td class="author"></td>
+                <td class="created_on">2007/08/12 15:15</td>
+                <td class="reply-count">2</td>
+                <td class="last_message">
+                  <a class="user active" href="/users/3">Dave Lopper</a>
+                  さんが
+                  <a href="/projects/ecookbook/activity?from=2026-01-13" title="2026/01/13 00:00">3日</a>
+                  前に追加
+                  <br>
+                  <a href="/boards/1/topics/4?r=6#message-6">RE: post 2</a>
+                </td>
+              </tr>
+              <tr class="message" id="message-1">
+                <td class="subject">
+                  <span class="">
+                    <a href="/boards/1/topics/1">First post</a>
+                  </span>
+                </td>
+                <td class="author">
+                  <a class="user active" href="/users/1">Redmine Admin</a>
+                </td>
+                <td class="created_on">2007/05/12 15:15</td>
+                <td class="reply-count">2</td>
+                <td class="last_message">
+                  <a class="user active" href="/users/2">John Smith</a>
+                  さんが
+                  <a href="/projects/ecookbook/activity?from=2007-05-12" title="2007/05/12 15:18">18年以上</a>
+                  前に追加
+                  <br>
+                  <a href="/boards/1/topics/1?r=3#message-3">RE: First post</a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <span class="pagination">
+            <ul class="pages"></ul>
+            <span>
+              <span class="items">(1-2/2)</span>
+            </span>
+          </span>
+          <p class="other-formats hide-when-print">
+            他の形式にエクスポート:
+            <span>
+              <a class="atom" href="/projects/ecookbook/boards/1.atom" rel="nofollow">Atom</a>
+            </span>
+          </p>
+          <div style="clear:both;"></div>
+        </div>
+      </div>
+      <div id="footer">MASKED</div>
+      <div id="ajax-indicator" style="display:none;">
+        <span class="icon">
+          <svg aria-hidden="true" class="s18 icon-svg svg-loader">
+            <use href="/assets/icons-DIGEST.svg#icon--loader"></use>
+          </svg>
+          <span class="icon-label">ロード中...</span>
+        </span>
+      </div>
+      <div id="ajax-modal" style="display:none;"></div>
+      <div id="icon-copy-source" style="display: none;">
+        <svg aria-hidden="true" class="s18 icon-svg">
+          <use href="/assets/icons-DIGEST.svg#icon--"></use>
+        </svg>
+      </div>
+    </div>
+  </body>
+</html>

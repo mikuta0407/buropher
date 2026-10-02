@@ -1,0 +1,8 @@
+status: 422
+content-type: application/xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<errors type="array">
+  <error>Title cannot be blank</error>
+  <error>Description cannot be blank</error>
+</errors>

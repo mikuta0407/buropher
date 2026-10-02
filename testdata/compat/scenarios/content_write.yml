@@ -1,0 +1,523 @@
+# ニュース・コメント・文書・ファイル・フォーラム・メッセージ・ウォッチャー・添付の状態を変える互換シナリオ。
+# 参照は専用インスタンスで実行前に reset すること:
+#   COMPAT_REF_DIR=_reference/ref-content COMPAT_REF_PORT=4018 tools/compat/redmine-ref.sh start
+#   go run ./tools/compat diff -ref http://127.0.0.1:4018 -cand http://127.0.0.1:4118 \
+#     -reset-ref 'COMPAT_REF_DIR=... COMPAT_REF_PORT=4018 tools/compat/redmine-ref.sh reset' \
+#     -reset-cand 'BUROPHER_CAND_PORT=4118 BUROPHER_CAND_DIR=... tools/compat/buropher-cand.sh reset' \
+#     -run '^content_write/'
+# ケースは記述順に実行され、前のケースの結果に依存する（作成したニュース id 4・5、添付 id 25 以降など）。
+name: content_write
+
+users:
+  admin: {login: admin, password: admin}
+  jsmith: {login: jsmith, password: jsmith}
+  dlopper: {login: dlopper, password: foo}
+
+normalize:
+  mask_text_selectors:
+    - "#footer"
+  # JS 応答の文字列に埋め込まれた CSRF トークンとフォームの name 属性の乱数部
+  regex:
+    - {pattern: 'value=\\"[A-Za-z0-9_-]{40,}\\"', replace: 'value=\"TOKEN\"'}
+    - {pattern: 'new-watcher-form-[0-9a-f]{8}', replace: 'new-watcher-form-RANDOM'}
+
+requests:
+  # ---- ニュース ----
+  - id: news_create_invalid
+    path: /projects/ecookbook/news
+    method: POST
+    user: jsmith
+    form: {"news[title]": "", "news[summary]": "s", "news[description]": ""}
+  - id: news_create_too_long
+    path: /projects/ecookbook/news
+    method: POST
+    user: jsmith
+    form: {"news[title]": "0123456789012345678901234567890123456789012345678901234567890123456789", "news[description]": "d"}
+  - id: upload_for_news
+    path: /uploads.json?filename=hello.txt
+    method: POST
+    user: jsmith
+    content_type: application/octet-stream
+    body: 'hello world'
+  - id: news_create_invalid_with_upload
+    path: /projects/ecookbook/news
+    method: POST
+    user: jsmith
+    form: {"news[title]": "", "news[description]": "d", "attachments[1][token]": "25.b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9", "attachments[1][description]": "readme"}
+  - id: news_create
+    path: /projects/ecookbook/news
+    method: POST
+    user: jsmith
+    form: {"news[title]": "New release", "news[summary]": "Summary text", "news[description]": "Released *today* with #1", "attachments[1][token]": "25.b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9", "attachments[1][description]": "readme"}
+    expect_status: 302
+  - path: /projects/ecookbook/news
+    id: news_index_after_create
+    users: [jsmith]
+  - path: /news/4
+    id: news_show_after_create
+    users: [jsmith, admin]
+  - path: /news/4.json?include=attachments
+    id: news_api_after_create
+    users: [admin]
+  - id: news_create_cross_project
+    path: /news
+    method: POST
+    user: admin
+    form: {"news[title]": "Cross project", "news[description]": "Body", "project_id": "2", "cross_project": "1"}
+    expect_status: 302
+  - path: /news
+    id: news_global_after_cross
+    users: [admin]
+  - id: news_create_cross_project_missing
+    path: /news
+    method: POST
+    user: admin
+    form: {"news[title]": "No project", "news[description]": "Body"}
+  - id: news_update_invalid
+    path: /news/1
+    method: PUT
+    user: jsmith
+    form: {"news[title]": "", "news[description]": "x"}
+  - id: news_update
+    path: /news/1
+    method: PATCH
+    user: jsmith
+    form: {"news[title]": "Updated title", "news[summary]": "", "news[description]": "Updated description"}
+    expect_status: 302
+  - path: /news/1
+    id: news_show_after_update
+    users: [jsmith]
+  - id: news_update_denied
+    path: /news/1
+    method: PUT
+    user: dlopper
+    form: {"news[title]": "x"}
+
+  # ---- コメント ----
+  - id: comment_create
+    path: /news/1/comments
+    method: POST
+    user: dlopper
+    form: {"comment[comments]": "A new comment from dlopper"}
+    expect_status: 302
+  - id: comment_create_empty
+    path: /news/1/comments
+    method: POST
+    user: dlopper
+    form: {"comment[comments]": ""}
+  - path: /news/1
+    id: news_show_after_comment
+    users: [dlopper]
+  - id: comment_destroy
+    path: /news/1/comments/2
+    method: DELETE
+    user: jsmith
+    expect_status: 302
+    form: {_dummy: "1"}
+  - id: comment_destroy_missing
+    path: /news/1/comments/999
+    method: DELETE
+    user: jsmith
+    form: {_dummy: "1"}
+  - id: comment_destroy_denied
+    path: /news/1/comments/1
+    method: DELETE
+    user: dlopper
+    form: {_dummy: "1"}
+  - path: /news/1
+    id: news_show_after_comment_destroy
+    users: [jsmith]
+
+  # ---- ニュースの API ----
+  - id: news_api_create
+    path: /projects/ecookbook/news.json
+    method: POST
+    user: jsmith
+    content_type: application/json
+    body: '{"news":{"title":"API news","summary":"api summary","description":"API description"}}'
+  - id: news_api_create_invalid
+    path: /projects/ecookbook/news.json
+    method: POST
+    user: jsmith
+    content_type: application/json
+    body: '{"news":{"title":""}}'
+  - id: news_api_create_xml_invalid
+    path: /projects/ecookbook/news.xml
+    method: POST
+    user: jsmith
+    content_type: application/xml
+    body: '<?xml version="1.0"?><news><title></title></news>'
+  - id: news_api_update
+    path: /news/2.json
+    method: PUT
+    user: jsmith
+    content_type: application/json
+    body: '{"news":{"title":"API updated"}}'
+  - path: /projects/ecookbook/news.json
+    id: news_api_index_after
+    users: [jsmith]
+  - id: news_api_destroy
+    path: /news/2.json
+    method: DELETE
+    user: jsmith
+    form: {_dummy: "1"}
+  - id: news_destroy
+    path: /news/4
+    method: DELETE
+    user: jsmith
+    expect_status: 302
+    form: {_dummy: "1"}
+  - path: /projects/ecookbook/news
+    id: news_index_after_destroy
+    users: [jsmith]
+
+  # ---- 文書 ----
+  - id: document_create_invalid
+    path: /projects/ecookbook/documents
+    method: POST
+    user: jsmith
+    form: {"document[category_id]": "2", "document[title]": "", "document[description]": "d"}
+  - id: upload_for_document
+    path: /uploads.json?filename=doc.txt
+    method: POST
+    user: jsmith
+    content_type: application/octet-stream
+    body: 'document body'
+  - id: document_create
+    path: /projects/ecookbook/documents
+    method: POST
+    user: jsmith
+    form: {"document[category_id]": "2", "document[title]": "Guide", "document[description]": "A *guide*", "attachments[1][token]": "26.21e251f136ac7d866c371c2b426d4bc4b2821470a82e8b20a703b32a3c939136"}
+    expect_status: 302
+  - path: /projects/ecookbook/documents
+    id: documents_after_create
+    users: [jsmith]
+  - path: /projects/ecookbook/documents?sort_by=date
+    id: documents_date_after_create
+    users: [jsmith]
+  - path: /documents/4
+    id: document_show_after_create
+    users: [jsmith]
+  - id: document_update_invalid
+    path: /documents/4
+    method: PATCH
+    user: jsmith
+    form: {"document[title]": ""}
+  - id: document_update
+    path: /documents/4
+    method: PATCH
+    user: jsmith
+    form: {"document[title]": "Guide v2", "document[category_id]": "3"}
+    expect_status: 302
+  - id: upload_for_document_add
+    path: /uploads.json?filename=more.txt
+    method: POST
+    user: jsmith
+    content_type: application/octet-stream
+    body: 'more content'
+  - id: document_add_attachment
+    path: /documents/4/add_attachment
+    method: POST
+    user: jsmith
+    form: {"attachments[1][token]": "27.2c2316737c9313956dfc0083da3a2a62ce259f66484f3e26440f0d1b02dd4128"}
+    expect_status: 302
+  - path: /documents/4
+    id: document_show_after_update
+    users: [jsmith]
+  - id: document_destroy
+    path: /documents/4
+    method: DELETE
+    user: jsmith
+    expect_status: 302
+    form: {_dummy: "1"}
+  - path: /projects/ecookbook/documents
+    id: documents_after_destroy
+    users: [jsmith]
+
+  # ---- ファイル ----
+  - id: files_create_without_file
+    path: /projects/ecookbook/files
+    method: POST
+    user: jsmith
+    form: {"version_id": "2"}
+  - id: upload_for_file
+    path: /uploads.json?filename=release.zip
+    method: POST
+    user: jsmith
+    content_type: application/octet-stream
+    body: 'zip content'
+  - id: files_create
+    path: /projects/ecookbook/files
+    method: POST
+    user: jsmith
+    form: {"version_id": "2", "attachments[1][token]": "28.554f3f497395d59fc12389d51b5fb7208248425e0dbad975db3f08132f58dbed", "attachments[1][description]": "release"}
+  - path: /projects/ecookbook/files
+    id: files_after_create
+    users: [jsmith]
+  - id: files_api_create_bad
+    path: /projects/ecookbook/files.json
+    method: POST
+    user: jsmith
+    content_type: application/json
+    body: '{"file":{"token":"999.abc"}}'
+  - id: upload_for_file_api
+    path: /uploads.json?filename=api.txt
+    method: POST
+    user: jsmith
+    content_type: application/octet-stream
+    body: 'api file'
+  - id: files_api_create
+    path: /projects/ecookbook/files.json
+    method: POST
+    user: jsmith
+    content_type: application/json
+    body: '{"file":{"token":"29.12de8110f4d42d02f6cebfa52994a52f4628d24e15a774392e330aff373d10c8","version_id":"3","filename":"api2.txt","description":"via api"}}'
+  - path: /projects/ecookbook/files.xml
+    id: files_api_index_after_create
+    users: [jsmith]
+
+  # ---- フォーラム ----
+  - id: board_create_invalid
+    path: /projects/ecookbook/boards
+    method: POST
+    user: jsmith
+    form: {"board[name]": "", "board[description]": ""}
+  - id: board_create
+    path: /projects/ecookbook/boards
+    method: POST
+    user: jsmith
+    form: {"board[name]": "Announcements", "board[description]": "Project announcements", "board[parent_id]": "1"}
+    expect_status: 302
+  - path: /projects/ecookbook/boards
+    id: boards_after_create
+    users: [jsmith]
+  - id: board_update
+    path: /projects/ecookbook/boards/2
+    method: PUT
+    user: jsmith
+    form: {"board[name]": "Discussions", "board[description]": "Talk"}
+    expect_status: 302
+  - path: /projects/ecookbook/boards/4/edit
+    id: board_edit_new
+    users: [jsmith]
+
+  # ---- メッセージ ----
+  - id: message_create_invalid
+    path: /boards/1/topics/new
+    method: POST
+    user: jsmith
+    form: {"message[subject]": "", "message[content]": ""}
+  - id: message_create
+    path: /boards/1/topics/new
+    method: POST
+    user: jsmith
+    form: {"message[subject]": "New topic", "message[content]": "Topic *content*", "message[sticky]": "1"}
+    expect_status: 302
+  - path: /boards/1/topics/8
+    id: topic_after_create
+    users: [jsmith]
+  - path: /projects/ecookbook/boards/1
+    id: board_after_create
+    users: [jsmith]
+  - id: message_reply
+    path: /boards/1/topics/8/replies
+    method: POST
+    user: dlopper
+    form: {"reply[subject]": "RE: New topic", "reply[content]": "A reply"}
+    expect_status: 302
+  - id: message_reply_invalid
+    path: /boards/1/topics/8/replies
+    method: POST
+    user: dlopper
+    form: {"reply[subject]": "", "reply[content]": ""}
+  - path: /boards/1/topics/8
+    id: topic_after_reply
+    users: [jsmith]
+  - id: message_edit_post
+    path: /boards/1/topics/8/edit
+    method: POST
+    user: jsmith
+    form: {"message[subject]": "Edited topic", "message[content]": "Edited", "message[locked]": "1", "message[sticky]": "0"}
+    expect_status: 302
+  - path: /boards/1/topics/8
+    id: topic_after_edit
+    users: [jsmith, dlopper]
+  - id: message_edit_denied
+    path: /boards/1/topics/8/edit
+    method: POST
+    user: dlopper
+    form: {"message[subject]": "Hijack", "message[content]": "x"}
+  - id: message_reply_locked
+    path: /boards/1/topics/8/replies
+    method: POST
+    user: dlopper
+    form: {"reply[subject]": "RE", "reply[content]": "locked?"}
+  - id: message_move
+    path: /boards/1/topics/8/edit
+    method: POST
+    user: jsmith
+    form: {"message[subject]": "Moved topic", "message[content]": "Edited", "message[board_id]": "2"}
+  - path: /projects/ecookbook/boards
+    id: boards_after_move
+    users: [jsmith]
+  - id: message_destroy_reply
+    path: /boards/2/topics/9/destroy
+    method: POST
+    user: jsmith
+    form: {_dummy: "1"}
+  - id: message_destroy_topic
+    path: /boards/2/topics/8/destroy
+    method: POST
+    user: jsmith
+    form: {_dummy: "1"}
+  - path: /projects/ecookbook/boards/2
+    id: board2_after_destroy
+    users: [jsmith]
+  - id: board_destroy
+    path: /projects/ecookbook/boards/4
+    method: DELETE
+    user: jsmith
+    expect_status: 302
+    form: {_dummy: "1"}
+  - path: /projects/ecookbook/boards
+    id: boards_after_destroy
+    users: [jsmith]
+
+  # ---- ウォッチャー ----
+  - id: watch_news
+    path: /watchers/watch?object_type=news&object_id=1
+    method: POST
+    user: dlopper
+    headers: {X-Requested-With: XMLHttpRequest, Accept: text/javascript}
+    form: {_dummy: "1"}
+  - id: watch_board_html
+    path: /watchers/watch?object_type=board&object_id=1
+    method: POST
+    user: dlopper
+    form: {_dummy: "1"}
+  - id: unwatch_news
+    path: /watchers/watch?object_type=news&object_id=1
+    method: DELETE
+    user: dlopper
+    headers: {X-Requested-With: XMLHttpRequest, Accept: text/javascript}
+    form: {_dummy: "1"}
+  - id: watch_unknown
+    path: /watchers/watch?object_type=foo&object_id=1
+    method: POST
+    user: dlopper
+    form: {_dummy: "1"}
+  - id: watch_anonymous
+    path: /watchers/watch?object_type=news&object_id=1
+    method: POST
+    user: anonymous
+    form: {_dummy: "1"}
+  - id: watchers_new_js
+    path: /watchers/new?object_type=message&object_id=1
+    user: admin
+    headers: {X-Requested-With: XMLHttpRequest, Accept: text/javascript}
+  - id: watchers_create_js
+    path: /watchers
+    method: POST
+    user: admin
+    form: {"object_type": "message", "object_id[]": "1", "watcher[user_ids][]": ["3", "8"]}
+    headers: {X-Requested-With: XMLHttpRequest, Accept: text/javascript}
+  - path: /boards/1/topics/1
+    id: topic_after_watchers_create
+    users: [admin]
+  - id: watchers_destroy_js
+    path: /watchers?object_type=message&object_id=1&user_id=3
+    method: DELETE
+    user: admin
+    headers: {X-Requested-With: XMLHttpRequest, Accept: text/javascript}
+    form: {_dummy: "1"}
+  - id: watchers_autocomplete
+    path: /watchers/autocomplete_for_user?object_type=message&object_id=1&q=jo
+    user: admin
+
+  # ---- 添付 ----
+  - id: attachment_update_api
+    path: /attachments/4.json
+    method: PATCH
+    user: jsmith
+    content_type: application/json
+    body: '{"attachment":{"filename":"renamed.rb","description":"Renamed"}}'
+  - path: /attachments/4.json
+    id: attachment_show_after_update
+    users: [jsmith]
+  - id: attachments_update_all
+    path: /attachments/documents/1
+    method: PATCH
+    user: jsmith
+    form: {"attachments[2][filename]": "doc2.txt", "attachments[2][description]": "Doc", "attachments[11][filename]": "pic.jpg"}
+  - path: /documents/1
+    id: document_after_update_all
+    users: [jsmith]
+  - id: attachments_update_all_invalid
+    path: /attachments/documents/1
+    method: PATCH
+    user: jsmith
+    form: {"attachments[2][filename]": ""}
+  - id: attachment_destroy_project_file
+    path: /attachments/8
+    method: DELETE
+    user: jsmith
+    form: {_dummy: "1"}
+  - path: /projects/ecookbook/files
+    id: files_after_attachment_destroy
+    users: [jsmith]
+  - id: attachment_destroy_api
+    path: /attachments/13.json
+    method: DELETE
+    user: admin
+    form: {_dummy: "1"}
+  - id: attachment_destroy_denied
+    path: /attachments/22
+    method: DELETE
+    user: dlopper
+    form: {_dummy: "1"}
+
+  # ---- リアクション ----
+  - id: reaction_create_news
+    path: /reactions?object_type=News&object_id=1
+    method: POST
+    user: jsmith
+    headers: {X-Requested-With: XMLHttpRequest, Accept: text/javascript}
+    form: {_dummy: "1"}
+  - id: reaction_create_message
+    path: /reactions?object_type=Message&object_id=1
+    method: POST
+    user: dlopper
+    headers: {X-Requested-With: XMLHttpRequest, Accept: text/javascript}
+    form: {_dummy: "1"}
+  - id: reaction_destroy_news
+    path: /reactions/7?object_type=News&object_id=1
+    method: DELETE
+    user: admin
+    headers: {X-Requested-With: XMLHttpRequest, Accept: text/javascript}
+    form: {_dummy: "1"}
+  - id: reaction_create_bad_type
+    path: /reactions?object_type=Project&object_id=1
+    method: POST
+    user: jsmith
+    form: {_dummy: "1"}
+  - id: reaction_create_html
+    path: /reactions?object_type=News&object_id=1
+    method: POST
+    user: jsmith
+    form: {_dummy: "1"}
+  - path: /news/1
+    id: news_after_reactions
+    users: [jsmith]
+
+  # ---- プレビュー ----
+  - id: message_preview
+    path: /boards/1/topics/preview
+    method: POST
+    user: jsmith
+    form: {"text": "Preview of *message* with [[CookBook documentation]]", "id": "1"}
+  - id: message_preview_empty
+    path: /boards/1/topics/preview
+    method: POST
+    user: jsmith
+    form: {"_dummy": "1"}
+

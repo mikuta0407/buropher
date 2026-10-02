@@ -1,0 +1,11 @@
+status: 200
+content-type: text/javascript
+
+(() => {
+  const button = $('[data-reaction-button-id=reaction_news_1]');
+
+  removeHoverTooltips(button);
+  button.html($('<span class=\"reaction-button-wrapper\" data-reaction-button-id=\"reaction_news_1\"><a class=\"icon reaction-button reacted has-reactions\" title=\"John Smith and Redmine Admin\" data-remote=\"true\" rel=\"nofollow\" data-method=\"delete\" href=\"/reactions/11?object_id=1&amp;object_type=News\"><svg class=\"s18 icon-svg icon-svg-filled\" aria-hidden=\"true\"><use href=\"/assets/icons-DIGEST.svg#icon--thumb-up-filled\"><\/use><\/svg><span class=\"icon-label\">2<\/span><\/a><\/span>').children());
+  setupHoverTooltips(button);
+})();
+

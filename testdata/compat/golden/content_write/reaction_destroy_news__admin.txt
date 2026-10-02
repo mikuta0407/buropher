@@ -1,0 +1,11 @@
+status: 200
+content-type: text/javascript
+
+(() => {
+  const button = $('[data-reaction-button-id=reaction_news_1]');
+
+  removeHoverTooltips(button);
+  button.html($('<span class=\"reaction-button-wrapper\" data-reaction-button-id=\"reaction_news_1\"><a class=\"icon reaction-button has-reactions\" title=\"John Smith\" data-remote=\"true\" rel=\"nofollow\" data-method=\"post\" href=\"/reactions?object_id=1&amp;object_type=News\"><svg class=\"s18 icon-svg\" aria-hidden=\"true\"><use href=\"/assets/icons-DIGEST.svg#icon--thumb-up\"><\/use><\/svg><span class=\"icon-label\">1<\/span><\/a><\/span>').children());
+  setupHoverTooltips(button);
+})();
+

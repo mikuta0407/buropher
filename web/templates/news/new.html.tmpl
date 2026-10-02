@@ -1,0 +1,6 @@
+<h2>{{l "label_news_new"}}</h2>
+
+{{$f := labelled_form_for "" .News (hash "url" (news_index_path current_project) "html" (hash "id" "news-form" "multipart" true))}}{{$f.Open}}
+  {{partial "news/form" (dict "f" $f)}}
+  {{submit_tag (l "button_create")}}
+{{end_form}}

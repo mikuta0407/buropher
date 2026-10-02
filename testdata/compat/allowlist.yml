@@ -97,3 +97,9 @@ entries:
   - case: "settings_admin/admin_info__admin"
     reason: "admin#info は意図的に buropher のバージョン・Go のバージョン・DB アダプタ等を表示する（Redmine の Ruby / Rails / ImageMagick の確認項目は持たない）。レイアウトと CSS クラスは同じ"
     ignore: true
+
+  # ---- content（ニュース・文書・ファイル・フォーラム・添付）
+  - case: "content*/attachments_issues_14_edit__*"
+    reason: "フィクスチャの attachments.description の空文字はインポートで NULL に正規化されるため、空の説明欄に value=\"\" が付かない"
+    lines:
+      - '^\s*<input id="attachments_\d+_description" name="attachments\[\d+\]\[description\]" placeholder="Optional description" size="80" type="text"( value="")?>$'

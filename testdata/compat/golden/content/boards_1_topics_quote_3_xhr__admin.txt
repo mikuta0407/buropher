@@ -1,0 +1,7 @@
+status: 200
+content-type: text/javascript
+
+$('#message_subject').val("RE: First post");
+$('#message_content').val("John Smith wrote in message#3:\n> An other reply\n\n");
+showAndScrollTo("reply", "message_content");
+$('#message_content').scrollTop = $('#message_content').scrollHeight - $('#message_content').clientHeight;

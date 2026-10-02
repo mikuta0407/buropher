@@ -1,0 +1,11 @@
+status: 200
+content-type: application/json
+
+[
+  {
+    "firstname": "John",
+    "lastname": "Smith",
+    "name": "John Smith",
+    "login": "jsmith"
+  }
+]

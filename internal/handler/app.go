@@ -393,7 +393,10 @@ func (a *App) requireLogin(c *Req) bool {
 			c.Redirect(signin)
 		}
 	case format == "atom" || format == "pdf" || format == "csv":
-		c.Redirect(signin)
+		// redirect_to の応答の Content-Type はリクエストの形式（application/atom+xml など）
+		c.W.Header().Set("Location", httpx.RedirectLocation(c.R, signin))
+		httpx.SetContentType(c.W, format, true)
+		c.W.WriteHeader(http.StatusFound)
 	case format == "xml" || format == "json":
 		if a.Settings.Bool("rest_api_enabled") && c.cfg.acceptAPIAuth {
 			c.W.Header().Set("WWW-Authenticate", `Basic realm="Redmine API"`)

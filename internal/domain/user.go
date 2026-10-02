@@ -190,6 +190,8 @@ type News struct {
 	AuthorID      int64
 	CommentsCount int
 	CreatedAt     time.Time
+	// SummaryNull は summary が NULL（API で null を出す。空文字列とは区別する）。
+	SummaryNull bool
 
 	Project *Project
 	Author  *User
