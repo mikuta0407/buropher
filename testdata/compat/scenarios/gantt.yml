@@ -1,0 +1,88 @@
+# ガントチャート（GanttsController#show）。すべて GET。
+# 参照環境は共有でリセットしないため、閲覧で変わる状態（最近使ったプロジェクト・ブックマーク）が出る
+# プロジェクトジャンプボックスは比較から外す。
+# gantts#show は zoom / months を個人設定（gantt_zoom / gantt_months）に保存し、パラメータが無いときに使う。
+# 各ユーザーの最初と最後の要求で zoom=2&months=6（既定値）を明示し、未設定の候補側と同じ状態に揃える。
+# retrieve_query は session[:issue_query] を使うため、各要求は set_filter / query_id 付きか、
+# セッションに何も無い状態で始まる順に並べる。
+name: gantt
+
+users:
+  admin: {login: admin, password: admin}
+  jsmith: {login: jsmith, password: jsmith}
+  dlopper: {login: dlopper, password: foo}
+
+normalize:
+  mask_text_selectors:
+    - "#footer"
+  strip_selectors:
+    - "#project-jump"
+
+requests:
+  # ---- 個人設定を既定値に揃える
+  - path: /issues/gantt?zoom=2&months=6
+    users: [admin, jsmith, dlopper]
+  # ---- 全体
+  - path: /issues/gantt
+    users: [anonymous, admin, jsmith, dlopper]
+  - path: /issues/gantt?zoom=1&months=3
+    users: [admin, jsmith]
+  - path: /issues/gantt?year=2006&month=1&months=24&zoom=1&set_filter=1&f[]=status_id&op[status_id]=*
+    users: [admin, jsmith, anonymous]
+  - path: /issues/gantt?query_id=5
+    users: [admin, jsmith]
+  - path: /issues/gantt?query_id=3
+    users: [dlopper, jsmith]
+  - path: /issues/gantt?query_id=999
+    users: [admin]
+  - path: /issues/gantt?set_filter=1&f[]=start_date&op[start_date]=%3E%3C&v[start_date][]=foo
+    users: [admin]
+  - path: /issues/gantt?months=30&month=13&year=abc
+    users: [admin]
+  - path: /issues/gantt?months=24&zoom=9&year=2025&month=0
+    users: [admin]
+  - path: /issues/gantt?set_filter=1&f[]=assigned_to_id&op[assigned_to_id]==&v[assigned_to_id][]=me&zoom=3&months=2
+    users: [dlopper]
+  - path: /issues/gantt.pdf
+    users: [admin]
+    skip: "TODO(pdf): Gantt#to_pdf は未対応（候補は 406）"
+  # ---- プロジェクト
+  - path: /projects/ecookbook/issues/gantt?set_filter=1&zoom=2&months=6
+    users: [anonymous, admin, jsmith, dlopper]
+  - path: /projects/ecookbook/issues/gantt?zoom=3&months=2&month=12&year=2025
+    users: [admin, jsmith]
+  - path: /projects/ecookbook/issues/gantt?zoom=4&months=1
+    users: [admin, anonymous]
+  - path: /projects/ecookbook/issues/gantt
+    users: [admin]
+  - path: /projects/ecookbook/issues/gantt?year=2006&month=7&months=12&zoom=2&set_filter=1&f[]=status_id&op[status_id]=*
+    users: [admin, dlopper]
+  - path: /projects/ecookbook/issues/gantt?set_filter=1&f[]=status_id&op[status_id]=*&query[draw_selected_columns]=1&query[draw_progress_line]=1&query[draw_relations]=0&c[]=project&c[]=status&c[]=done_ratio&c[]=fixed_version&c[]=parent&c[]=parent.subject&c[]=cf_2&c[]=estimated_hours&c[]=spent_hours&c[]=relations&c[]=subject
+    id: project_gantt_options
+    users: [admin, jsmith]
+  - path: /projects/ecookbook/issues/gantt?query_id=1
+    users: [admin]
+  - path: /projects/ecookbook/issues/gantt?query_id=2
+    users: [dlopper, jsmith]
+  - path: /projects/onlinestore/issues/gantt?set_filter=1
+    users: [anonymous, admin, jsmith, dlopper]
+  - path: /projects/onlinestore/issues/gantt?query_id=7
+    users: [jsmith]
+  - path: /projects/subproject1/issues/gantt?year=2006&month=1&months=24&set_filter=1&f[]=status_id&op[status_id]=*
+    users: [admin]
+  - path: /projects/private-child/issues/gantt?set_filter=1
+    users: [anonymous, admin, jsmith]
+  - path: /projects/unknown/issues/gantt
+    users: [admin]
+  - path: /projects/ecookbook/issues/gantt.pdf?zoom=2&months=6
+    users: [jsmith]
+    skip: "TODO(pdf): Gantt#to_pdf は未対応（候補は 406）"
+  # ---- XHR（layout なし）
+  - path: /projects/ecookbook/issues/gantt?set_filter=1&zoom=2&months=6
+    id: project_gantt_xhr
+    users: [admin]
+    headers: {X-Requested-With: XMLHttpRequest}
+  # ---- 個人設定を既定値に戻す
+  - path: /issues/gantt?zoom=2&months=6
+    id: gantt_reset_pref
+    users: [admin, jsmith, dlopper]

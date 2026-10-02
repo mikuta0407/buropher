@@ -121,9 +121,15 @@
     {{content_tag_open "div" (hash "style" $.ColumnContainerStyle "class" (printf "gantt_%s_container gantt_selected_column_container" $col.Name))}}
       {{content_tag "div" "" (hash "style" $.ColumnHdrStyle1 "class" "gantt_hdr")}}
       {{content_tag "div" (content_tag "p" $col.Caption (hash "class" "gantt_hdr_selected_column_name")) (hash "style" $.ColumnHdrStyle2 "class" "gantt_hdr")}}
+{{if $col.Content}}
       {{content_tag_open "div" (hash "class" (printf "gantt_%s gantt_selected_column_content" $col.Name))}}
         {{$col.Content}}
       {{end_tag "div"}}
+{{else}}
+      {{/* 空白だけのブロックは capture が "\n" を返す */}}
+      {{content_tag_open "div" (hash "class" (printf "gantt_%s gantt_selected_column_content" $col.Name))}}
+      {{end_tag "div"}}
+{{end}}
     {{end_tag "div"}}
   </td>
 {{end}}
@@ -154,10 +160,8 @@
 </span>
 
 <p class="other-formats hide-when-print">{{l "label_export_to"}}  <span>{{link_to "PDF" .PDFURL (hash "class" "pdf" "rel" "nofollow")}}</span>
-
-</p>
-{{end}}
-
+  
+</p>{{end}}
 {{define "gantts/show#sidebar"}}
   {{partial "issues/sidebar" .}}
 {{end}}
@@ -187,5 +191,4 @@
     resizableSubjectColumn();
   });
 {{end}}
-{{javascript_tag (capture "gantts/show#js")}}
-{{context_menu}}
+{{javascript_tag (capture "gantts/show#js")}}{{context_menu}}
