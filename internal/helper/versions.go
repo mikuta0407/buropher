@@ -5,4 +5,6 @@ package helper
 import "html/template"
 
 // VersionTextilizable は textilizable(text)（バージョンの wiki ページの本文）。
-func (d *Deps) VersionTextilizable(p *Page, text string) template.HTML { return d.textilizable(p, text) }
+func (d *Deps) VersionTextilizable(p *Page, text string) template.HTML {
+	return d.textilizable(p, text)
+}

@@ -40,7 +40,15 @@ start() {
   echo "failed to start; see $WORK/serve.log" >&2; exit 1
 }
 
-stop() { [ -f "$PIDFILE" ] && kill "$(cat "$PIDFILE")" 2>/dev/null || true; rm -f "$PIDFILE"; }
+# stop は終了を待つ（終了前に DB を差し替えると、旧プロセスが閉じるときに WAL を書き戻して状態が残るため）。
+stop() {
+  if [ -f "$PIDFILE" ]; then
+    pid=$(cat "$PIDFILE")
+    kill "$pid" 2>/dev/null || true
+    for _ in $(seq 100); do kill -0 "$pid" 2>/dev/null || break; sleep 0.1; done
+  fi
+  rm -f "$PIDFILE"
+}
 
 case "${1:-}" in
   start) start ;;

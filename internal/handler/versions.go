@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"html/template"
+	"io/fs"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -22,6 +23,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/view"
 	"github.com/mikuta0407/buropher/internal/view/rails"
+	"github.com/mikuta0407/buropher/web"
 )
 
 // VersionsController（app/controllers/versions_controller.rb）。menu_item :roadmap。
@@ -117,8 +119,8 @@ type roadmapVersion struct {
 func (a *App) VersionsIndex(c *Req) {
 	ctx := c.Ctx()
 	if strings.Contains(c.R.URL.Path, "/roadmap.") {
-		// get 'roadmap', :format => false
-		c.Render404("")
+		// get 'roadmap', :format => false（ルーティングエラー）
+		versionsRoutingError(c)
 		return
 	}
 	switch httpx.Negotiate(c.R, "html", "json", "xml") {
@@ -385,10 +387,10 @@ func (c *Req) allowedToActionIn(ctrl, action string, p *domain.Project) bool {
 // VersionsShow は versions#show（html / api / txt）。
 func (a *App) VersionsShow(c *Req) {
 	v := c.version()
-	switch httpx.Negotiate(c.R, "html", "json", "xml", "txt") {
+	switch httpx.Negotiate(c.R, "html", "json", "xml", "text") {
 	case "json", "xml":
 		a.renderVersionShowAPI(c, v, 0)
-	case "txt":
+	case "text":
 		a.versionsShowText(c, v)
 	case "html":
 		a.renderVersionShow(c, v, "show")
@@ -402,6 +404,10 @@ func (a *App) renderVersionShow(c *Req, v *domain.Version, action string) {
 	if err != nil {
 		a.internalError(c, "version show", err)
 		return
+	}
+	if action == "status_by" {
+		// status_by は @issues を読み込まずに show を描画する
+		delete(data, "Issues")
 	}
 	c.Render("versions/show", data)
 }
@@ -587,7 +593,7 @@ func (a *App) VersionsStatusBy(c *Req) {
 			a.internalError(c, "status_by", err)
 			return
 		}
-		c.Render("versions/status_by", map[string]any{"Version": m, "StatusBy": sb}, RenderOptions{Layout: view.NoLayout})
+		c.Render("versions/status_by", map[string]any{"Version": m, "StatusBy": sb}, RenderOptions{Layout: view.NoLayout, Format: "js"})
 		return
 	}
 	a.renderVersionShow(c, v, "status_by")
@@ -728,12 +734,12 @@ func parseVersionDate(s string) *time.Time {
 }
 
 // assign は safe_attributes = params[:version]（allowed_sharings に無い sharing は無視する）。
-func (f *versionForm) assign(c *Req, p *httpx.Params) {
+func (f *versionForm) assign(c *Req, p *httpx.Params, checkSharing bool) {
 	if p == nil {
 		return
 	}
 	v := f.V
-	if s, ok := p.StringOK("sharing"); ok && !slices.Contains(f.AllowedSharings, s) {
+	if s, ok := p.StringOK("sharing"); ok && checkSharing && !slices.Contains(f.AllowedSharings, s) {
 		p = p.Except("sharing")
 	}
 	if s, ok := p.StringOK("name"); ok {
@@ -924,7 +930,7 @@ func (a *App) versionFormData(c *Req, f *versionForm) (map[string]any, error) {
 	for _, s := range versionStatuses {
 		statusOpts = append(statusOpts, []any{c.L("version_status_" + s), s})
 	}
-	for _, s := range f.AllowedSharings {
+	for _, s := range a.allowedSharings(c, f.V, f.Project) {
 		sharingOpts = append(sharingOpts, []any{c.L("label_version_sharing_" + s), s})
 	}
 	return map[string]any{
@@ -958,7 +964,7 @@ func (a *App) VersionsNew(c *Req) {
 		a.internalError(c, "new version", err)
 		return
 	}
-	f.assign(c, c.Params().Map("version"))
+	f.assign(c, c.Params().Map("version"), false)
 	if httpx.Negotiate(c.R, "html", "js") == "js" {
 		a.renderVersionForm(c, "versions/new", f, RenderOptions{Layout: view.NoLayout, Format: "js"})
 		return
@@ -973,7 +979,7 @@ func (a *App) VersionsCreate(c *Req) {
 		a.internalError(c, "new version", err)
 		return
 	}
-	f.assign(c, c.Params().Map("version"))
+	f.assign(c, c.Params().Map("version"), true)
 	if err := a.validateVersion(c, f); err != nil {
 		a.internalError(c, "validate version", err)
 		return
@@ -1094,7 +1100,7 @@ func (a *App) VersionsUpdate(c *Req) {
 		a.internalError(c, "edit version", err)
 		return
 	}
-	f.assign(c, attrs)
+	f.assign(c, attrs, true)
 	if err := a.validateVersion(c, f); err != nil {
 		a.internalError(c, "validate version", err)
 		return
@@ -1363,4 +1369,29 @@ func (a *App) renderVersionShowAPI(c *Req, v *domain.Version, status int) {
 			b.Value("updated_on", v.UpdatedAt)
 		})
 	})
+}
+
+// versionsRoutingError は一致するルートが無いときの Rails の 404 応答（ActionDispatch::ShowExceptions。
+// json / xml は {status, error}、それ以外は public/404.html）。
+func versionsRoutingError(c *Req) {
+	c.Halt()
+	switch httpx.Format(c.R) {
+	case "json":
+		c.W.Header().Set("Content-Type", "application/json; charset=utf-8")
+		c.W.WriteHeader(http.StatusNotFound)
+		_, _ = c.W.Write([]byte(`{"status":404,"error":"Not Found"}`))
+	case "xml":
+		c.W.Header().Set("Content-Type", "application/xml; charset=utf-8")
+		c.W.WriteHeader(http.StatusNotFound)
+		_, _ = c.W.Write([]byte("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<hash>\n  <status type=\"integer\">404</status>\n  <error>Not Found</error>\n</hash>\n"))
+	default:
+		b, err := fs.ReadFile(web.Public(), "404.html")
+		if err != nil {
+			http.NotFound(c.W, c.R)
+			return
+		}
+		c.W.Header().Set("Content-Type", "text/html; charset=utf-8")
+		c.W.WriteHeader(http.StatusNotFound)
+		_, _ = c.W.Write(b)
+	}
 }
