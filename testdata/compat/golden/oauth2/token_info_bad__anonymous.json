@@ -3,6 +3,6 @@ content-type: application/json
 
 {
   "error": "invalid_token",
-  "error_description": "Il token di accesso non è valido",
+  "error_description": "The access token is invalid",
   "state": "unauthorized"
 }

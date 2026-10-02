@@ -152,6 +152,46 @@ requests:
       code_challenge: E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM
       code_challenge_method: S256
     capture: {code: 'code=([A-Za-z0-9_-]+)'}
+  - id: approve_fragment
+    path: /oauth/authorize
+    method: POST
+    user: jsmith
+    form:
+      client_id: ${uid}
+      redirect_uri: http://127.0.0.1:12345/cb?keep=1
+      state: f1
+      response_type: code
+      response_mode: fragment
+      scope: view_issues
+  - id: approve_form_post
+    path: /oauth/authorize
+    method: POST
+    user: jsmith
+    form:
+      client_id: ${uid}
+      redirect_uri: http://127.0.0.1:12345/cb
+      state: fp
+      response_type: code
+      response_mode: form_post
+      scope: view_issues
+  - id: deny_form_post
+    path: /oauth/authorize
+    method: DELETE
+    user: jsmith
+    form:
+      client_id: ${uid}
+      redirect_uri: http://127.0.0.1:12345/cb
+      state: fp2
+      response_type: code
+      response_mode: form_post
+  - id: deny_token_fragment
+    path: /oauth/authorize
+    method: DELETE
+    user: jsmith
+    form:
+      client_id: ${uid}
+      redirect_uri: http://127.0.0.1:12345/cb
+      response_type: token
   - id: approve_invalid_scope
     path: /oauth/authorize
     method: POST

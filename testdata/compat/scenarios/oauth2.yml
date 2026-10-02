@@ -31,6 +31,14 @@ requests:
     path: /oauth/applications/999/edit
     users: [admin]
 
+  # JSON 形式（Doorkeeper のコントローラは accept_api_auth しないため API 認証は使えない）
+  - id: applications_json
+    path: /oauth/applications.json
+    users: [admin, anonymous]
+  - id: authorized_applications_json
+    path: /oauth/authorized_applications.json
+    users: [jsmith, anonymous]
+
   # 認可済みアプリケーション（マイアカウント）。サイドバーの API / Atom キーの有無は共用環境の状態に依存するため
   # 比較しない（oauth2_write.yml で確認する）
   - path: /oauth/authorized_applications
@@ -44,10 +52,10 @@ requests:
     users: [jsmith, anonymous]
   - id: authorize_bad_client
     path: /oauth/authorize?client_id=unknown&redirect_uri=http%3A%2F%2F127.0.0.1%2Fcb&response_type=code
-    users: [jsmith, miscuser8]
+    users: [jsmith]
   - id: authorize_native
     path: /oauth/authorize/native?code=abcdef
-    users: [jsmith, miscuser8, anonymous]
+    users: [jsmith, anonymous]
 
   # トークン情報（Bearer なし・不正なトークン）
   - id: token_info_none
@@ -92,3 +100,12 @@ requests:
     path: /projects.json?access_token=invalid-token&limit=1
     users: [anonymous]
     auth: none
+
+  # it のユーザー。トークンエンドポイント（ActionController::API）は I18n.locale を設定しないため、
+  # Redmine では直前のリクエストのロケールが残る（buropher は常に en）。そのため最後に置く。
+  - id: authorize_bad_client_it
+    path: /oauth/authorize?client_id=unknown&redirect_uri=http%3A%2F%2F127.0.0.1%2Fcb&response_type=code
+    users: [miscuser8]
+  - id: authorize_native_it
+    path: /oauth/authorize/native?code=abcdef
+    users: [miscuser8]
