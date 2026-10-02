@@ -370,7 +370,7 @@ func GlobalQueryOptions(ctx context.Context, q db.Queryer, kind string) ([]domai
 // ---------------------------------------------------------------- 認証方式
 
 // ListAuthSources は AuthSource.all（id 順）。Searchable は AuthSourceLdap#searchable?
-// （account が設定され "$login" を含まない）。
+// （account が "$login" を含まず、attr_login / firstname / lastname / mail がすべて設定されている）。
 func ListAuthSources(ctx context.Context, q db.Queryer) ([]domain.AuthSource, error) {
 	var rows []struct {
 		ID     int64  `db:"id"`
@@ -386,8 +386,13 @@ func ListAuthSources(ctx context.Context, q db.Queryer) ([]domain.AuthSource, er
 		var cfg map[string]any
 		_ = json.Unmarshal([]byte(r.Config), &cfg)
 		acc, _ := cfg["account"].(string)
-		out[i] = domain.AuthSource{ID: r.ID, Kind: r.Kind, Name: r.Name,
-			Searchable: r.Kind == "ldap" && acc != "" && !strings.Contains(acc, "$login")}
+		searchable := r.Kind == "ldap" && !strings.Contains(acc, "$login")
+		for _, k := range []string{"attr_login", "attr_firstname", "attr_lastname", "attr_mail"} {
+			if v, _ := cfg[k].(string); strings.TrimSpace(v) == "" {
+				searchable = false
+			}
+		}
+		out[i] = domain.AuthSource{ID: r.ID, Kind: r.Kind, Name: r.Name, Searchable: searchable}
 	}
 	return out, nil
 }

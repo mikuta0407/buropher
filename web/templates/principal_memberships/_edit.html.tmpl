@@ -1,6 +1,6 @@
 {{$a := assigns}}
 {{$m := $a.Membership}}
-{{form_tag (printf "%s/memberships/%d" $a.PrincipalBase $m.Member.ID) (hash "method" "put" "remote" $a.XHR "class" "edit_membership" "id" (printf "edit_membership_%d" $m.Member.ID))}}
+{{form_tag (printf "%s/memberships/%d" $a.PrincipalBase $m.Member.ID) (hash "method" "put" "remote" $a.XHR "class" "edit_membership" "id" "edit_membership")}}
   <p>
   {{range $role := $a.Roles}}
     <label class="block">

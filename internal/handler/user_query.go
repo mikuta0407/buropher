@@ -21,6 +21,12 @@ const userQuerySessionKey = "user_query"
 
 type defaultStatusKey struct{}
 
+// userQuerySessionData は session[:user_query] に保存する内容。
+type userQuerySessionData struct {
+	State      *query.SessionState `json:"state"`
+	HasFilters bool                `json:"has_filters"`
+}
+
 // retrieveUserQuery は retrieve_query(UserQuery, use_session)。
 func (a *App) retrieveUserQuery(c *Req, useSession bool) (*query.Query, *query.Env, error) {
 	env, err := query.NewEnv(c.Ctx(), a.DB, c.User, a.Settings)
@@ -33,9 +39,13 @@ func (a *App) retrieveUserQuery(c *Req, useSession bool) (*query.Query, *query.E
 	s := c.Session()
 	if useSession && s != nil {
 		if raw := s.GetString(userQuerySessionKey); raw != "" {
-			var st query.SessionState
-			if json.Unmarshal([]byte(raw), &st) == nil {
-				sess = &st
+			var w userQuerySessionData
+			if json.Unmarshal([]byte(raw), &w) == nil && w.State != nil {
+				sess = w.State
+				// SessionState の filters は omitempty のため、空のフィルタを明示的に戻す
+				if w.HasFilters && sess.Filters == nil {
+					sess.Filters = []query.SessionFilter{}
+				}
 			}
 		}
 	}
@@ -62,7 +72,7 @@ func (a *App) retrieveUserQuery(c *Req, useSession bool) (*query.Query, *query.E
 		} else {
 			delete(newSess.Extra, "default_status")
 		}
-		b, _ := json.Marshal(newSess)
+		b, _ := json.Marshal(userQuerySessionData{State: newSess, HasFilters: newSess.Filters != nil})
 		s.Set(userQuerySessionKey, string(b))
 	}
 	if defaultStatus {
@@ -95,6 +105,8 @@ type userQueryView struct {
 	cvs map[int64][]principalCustomValue
 	// srcs は auth_source.name 列のための認証方式名。
 	srcs map[int64]string
+	// csv は CSV 出力（csv_value）用の値にする。
+	csv bool
 }
 
 func (v *userQueryView) inlineColumns() []*query.Column {
@@ -437,8 +449,24 @@ func (v *userQueryView) Value(col *query.Column, u *domain.User) string {
 		}
 		return c.Loc.FormatTime(*u.PasswordChangedAt, true)
 	case "status":
-		return itoa(int64(u.Status))
+		// UserQueriesHelper#user_status_label
+		switch u.Status {
+		case domain.StatusActive:
+			return c.L("status_active")
+		case domain.StatusRegistered:
+			return c.L("status_registered")
+		case domain.StatusLocked:
+			return c.L("status_locked")
+		}
+		return ""
 	case "twofa_scheme":
+		if v.csv {
+			// UserQueriesHelper#twofa_scheme_label
+			if u.TwofaScheme == "" {
+				return c.L("label_disabled")
+			}
+			return c.L("twofa__" + u.TwofaScheme + "__name")
+		}
 		return u.TwofaScheme
 	case "auth_source.name":
 		if u.AuthSourceID == nil {

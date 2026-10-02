@@ -128,7 +128,7 @@ func (m *userModel) Mail() string { return m.mail }
 func (m *userModel) NewRecord() bool { return m.newRecord }
 
 // Pref はフォームビルダ用の User#pref。
-func (m *userModel) Pref() *prefModel { return &prefModel{m.pref, m.notification} }
+func (m *userModel) Pref() *prefModel { return &prefModel{m.pref, m.notification, m.loc} }
 
 // MailNotification は User#mail_notification。
 func (m *userModel) MailNotification() string { return m.notification.MailNotification }
@@ -141,13 +141,16 @@ func (m *userModel) GroupIDs() []int64 { return m.groupIDs }
 
 // prefModel は labelled_fields_for :pref, @user.pref のモデル。
 type prefModel struct {
-	p *domain.UserPreferenceDetail
-	n *domain.UserNotification
+	p   *domain.UserPreferenceDetail
+	n   *domain.UserNotification
+	loc *i18n.Localizer
 }
 
 func (m *prefModel) ParamKey() string { return "pref" }
 
-func (m *prefModel) HumanAttributeName(attr string) string { return "" }
+func (m *prefModel) HumanAttributeName(attr string) string {
+	return validation.HumanAttributeName(m.loc, "user_preference", attr)
+}
 
 // Send は UserPreference の属性参照。
 func (m *prefModel) Send(method string) (any, bool) {
@@ -158,6 +161,11 @@ func (m *prefModel) Send(method string) (any, bool) {
 	case "time_zone":
 		return p.TimeZone, true
 	case "comments_sorting":
+		// user_preferences.comments_sorting は NOT NULL で、未設定（Redmine の nil）と "asc" を区別できない。
+		// インポートしたデータの大半は未設定なので "asc" は nil として扱う（どちらも先頭の選択肢が表示される）。
+		if p.CommentsSorting == "asc" || p.CommentsSorting == "" {
+			return nil, true
+		}
 		return p.CommentsSorting, true
 	case "warn_on_leaving_unsaved":
 		return p.WarnOnLeavingUnsaved, true
@@ -195,6 +203,8 @@ func (m *prefModel) AutoWatchOn() []string { return m.p.AutoWatchOn }
 // newPreference は UserPreference.new の既定値（Setting.default_users_*）。
 func (a *App) newPreference(userID int64) *domain.UserPreferenceDetail {
 	p := &domain.UserPreferenceDetail{UserPreference: *domain.DefaultUserPreference(userID)}
+	// comments_sorting は UserPreference.new では未設定（nil）
+	p.CommentsSorting = ""
 	p.HideMail = a.Settings.Bool("default_users_hide_mail")
 	p.TimeZone = a.Settings.String("default_users_time_zone")
 	if v := a.Settings.Get("default_users_auto_watch_on"); v == nil {

@@ -166,9 +166,16 @@ func (r *membershipRow) RoleEditable(roleID int64) bool { return !r.Member.HasIn
 // RoleInheritance は render_role_inheritance(membership, role)（無ければ ""）。
 func (r *membershipRow) RoleInheritance(roleID int64) string { return r.Inheritance[roleID] }
 
+// sortRowsByProject は sorted_by_project（projects.lft 順）。
+func sortRowsByProject(rows []*membershipRow, ns map[int64]repository.NestedSetValue) {
+	sort.SliceStable(rows, func(i, j int) bool {
+		return ns[rows[i].Member.ProjectID].Lft < ns[rows[j].Member.ProjectID].Lft
+	})
+}
+
 // membershipRows は principal.memberships（アーカイブされていないプロジェクト）をプロジェクトのツリー順に返す。
 // projCond が空でなければ Project.visible_condition で絞る。
-func (a *App) membershipRows(c *Req, principalID int64, projCond string) ([]*membershipRow, error) {
+func (a *App) membershipRows(c *Req, principalID int64, projCond string, sortByProject bool) ([]*membershipRow, error) {
 	ctx := c.Ctx()
 	members, err := repository.Memberships(ctx, a.DB, principalID)
 	if err != nil {
@@ -200,9 +207,9 @@ func (a *App) membershipRows(c *Req, principalID int64, projCond string) ([]*mem
 		}
 		rows = append(rows, row)
 	}
-	sort.SliceStable(rows, func(i, j int) bool {
-		return ns[rows[i].Member.ProjectID].Lft < ns[rows[j].Member.ProjectID].Lft
-	})
+	if sortByProject {
+		sortRowsByProject(rows, ns)
+	}
 	return rows, nil
 }
 
@@ -215,6 +222,7 @@ func (a *App) setTreeLevels(c *Req, rows []*membershipRow) error {
 	if err != nil {
 		return err
 	}
+	sortRowsByProject(rows, ns)
 	anc, err := repository.ProjectAncestors(c.Ctx(), a.DB, rows[0].Project.ID)
 	if err != nil {
 		return err
@@ -295,7 +303,7 @@ func (a *App) membershipRow(c *Req, m *domain.Member) (*membershipRow, error) {
 
 // membershipsData は principal_memberships/_index に必要な assigns。
 func (a *App) membershipsData(c *Req, p *principalRef) (map[string]any, error) {
-	rows, err := a.membershipRows(c, p.ID(), "")
+	rows, err := a.membershipRows(c, p.ID(), "", true)
 	if err != nil {
 		return nil, err
 	}

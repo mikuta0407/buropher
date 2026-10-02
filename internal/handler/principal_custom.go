@@ -90,7 +90,8 @@ func (a *App) principalCustomValuesByID(c *Req, ownerKind string, ids []int64, v
 				if cv.Values == nil {
 					cv.Values = []string{}
 				}
-			} else if len(raw) > 0 && raw[0].Valid {
+			} else if len(raw) > 0 {
+				// 行があれば値（インポートで '' は NULL になるため NULL も "" として扱う）
 				s := raw[0].String
 				cv.Value = &s
 			}
@@ -110,7 +111,8 @@ func (a *App) newPrincipalCustomValues(c *Req, ownerKind string) ([]principalCus
 	var out []principalCustomValue
 	for _, f := range fields {
 		cv := principalCustomValue{Field: f}
-		if f.DefaultValue.Valid {
+		{
+			// CustomValue#initialize: value ||= custom_field.default_value（'' は NULL で保存される）
 			s := f.DefaultValue.String
 			if f.Multiple {
 				if s != "" {

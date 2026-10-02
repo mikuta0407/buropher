@@ -86,7 +86,15 @@ type groupModel struct {
 	c            *Req
 }
 
-func (m *groupModel) ParamKey() string                     { return "group" }
+func (m *groupModel) ParamKey() string {
+	switch m.Kind {
+	case domain.KindGroupAnonymous:
+		return "group_anonymous"
+	case domain.KindGroupNonMember:
+		return "group_non_member"
+	}
+	return "group"
+}
 func (m *groupModel) Persisted() bool                      { return !m.newRecord }
 func (m *groupModel) ToParam() string                      { return itoa(m.ID) }
 func (m *groupModel) ValidationErrors() *validation.Errors { return m.errors }
@@ -297,7 +305,7 @@ func (a *App) GroupsShow(c *Req) {
 	if httpx.IsAPIRequest(c.R) {
 		var rows []*membershipRow
 		if c.IncludeInAPIResponse("memberships") {
-			if rows, err = a.membershipRows(c, g.ID, ""); err != nil {
+			if rows, err = a.membershipRows(c, g.ID, "", false); err != nil {
 				a.serverError(c, err)
 				return
 			}
@@ -367,7 +375,7 @@ func (a *App) groupFormData(c *Req, m *groupModel) (map[string]any, error) {
 		}
 		tabs = append(tabs, helper.Tab{Name: "memberships", Partial: "groups/memberships", Label: "label_project_plural"})
 		data["Tabs"] = tabs
-		rows, err := a.membershipRows(c, m.ID, "")
+		rows, err := a.membershipRows(c, m.ID, "", true)
 		if err != nil {
 			return nil, err
 		}
@@ -426,7 +434,7 @@ func (a *App) GroupsCreate(c *Req) {
 			users, _ := repository.GroupUsers(c.Ctx(), a.DB, m.ID)
 			var rows []*membershipRow
 			if c.IncludeInAPIResponse("memberships") {
-				rows, _ = a.membershipRows(c, m.ID, "")
+				rows, _ = a.membershipRows(c, m.ID, "", false)
 			}
 			cv, _ := a.principalCustomValuesByID(c, "group", []int64{m.ID}, true)
 			a.renderGroupShowAPI(c, m.Group, users, rows, cv[m.ID], http.StatusCreated)

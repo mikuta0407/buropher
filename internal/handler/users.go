@@ -164,6 +164,7 @@ func (a *App) UsersIndex(c *Req) {
 			a.serverError(c, err)
 			return
 		}
+		view.csv = true
 		a.sendUsersCSV(c, view, users)
 	default:
 		limit := c.PerPageOption()
@@ -313,12 +314,13 @@ func (a *App) UsersShow(c *Req) {
 		a.serverError(c, err)
 		return
 	}
-	memberships, err := a.membershipRows(c, u.ID, projCond)
+	memberships, err := a.membershipRows(c, u.ID, projCond, false)
 	if err != nil {
 		a.serverError(c, err)
 		return
 	}
-	if err := a.setTreeLevels(c, memberships); err != nil {
+	tree := append([]*membershipRow(nil), memberships...)
+	if err := a.setTreeLevels(c, tree); err != nil {
 		a.serverError(c, err)
 		return
 	}
@@ -398,7 +400,7 @@ func (a *App) UsersShow(c *Req) {
 		"CustomValues":  cfs[u.ID],
 		"Counts":        counts,
 		"AssignedToIDs": strings.Join(assignedParam, "|"),
-		"Memberships":   memberships,
+		"Memberships":   tree,
 		"Groups":        groups,
 		// TODO(activity): Redmine::Activity::Fetcher による最近の活動（events_by_day）
 		"EventsByDay": nil,
@@ -641,12 +643,13 @@ func (a *App) userFormData(c *Req, m *userModel) (map[string]any, error) {
 	})
 	data["Groups"] = groups
 	if !m.newRecord {
-		rows, err := a.membershipRows(c, m.ID, "")
+		rows, err := a.membershipRows(c, m.ID, "", true)
 		if err != nil {
 			return nil, err
 		}
 		data["Memberships"] = rows
 		data["Principal"] = m.User
+		data["PrincipalBase"] = "/users/" + itoa(m.ID)
 		tabs := []helper.Tab{
 			{Name: "general", Partial: "users/general", Label: "label_general"},
 			{Name: "memberships", Partial: "users/memberships", Label: "label_project_plural"},
