@@ -1,0 +1,30 @@
+{{title (l "label_confirmation")}}
+
+{{form_tag (printf "/projects/%s" .ProjectToDestroy.Identifier) (hash "method" "delete")}}
+<div class="warning">
+<p><strong>{{.ProjectToDestroy.Name}}</strong></p>
+
+<p>
+{{l "text_project_destroy_confirmation"}}
+{{if .DescendantNames}}
+  <br />
+  {{raw (l "text_subprojects_destroy_warning" (content_tag "strong" .DescendantsText))}}
+{{end}}
+</p>
+
+<p>
+  {{l "text_project_destroy_enter_identifier" (hash "identifier" .ProjectToDestroy.Identifier)}}
+</p>
+
+<p>
+  <label for="confirm">{{l "field_identifier"}}</label>
+  {{text_field_tag "confirm"}}
+</p>
+
+</div>
+
+<p>
+  {{submit_tag (l "button_delete")}}
+  {{link_to (l "button_cancel") (ternary admin "/admin/projects" "/projects")}}
+</p>
+{{end_form}}

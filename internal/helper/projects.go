@@ -64,7 +64,7 @@ func (d *Deps) projectsFuncs(r *view.Render, pg func() *Page) ttemplate.FuncMap 
 		"link_to_context_menu": func() html {
 			p := pg()
 			return rails.LinkTo(d.spriteIcon(p, "3-bullets", p.l("button_actions"), nil), "#",
-				rails.NewHash("title", p.l("button_actions"), "class", "icon-only icon-actions js-contextmenu"))
+				rails.NewHash("title", p.l("button_actions"), "class", "icon-only icon-actions js-contextmenu "))
 		},
 		// context_menu は ApplicationHelper#context_menu（header_tags に context_menu の JS / CSS を 1 回だけ追加）。
 		"context_menu": func() html {
@@ -120,6 +120,54 @@ func (d *Deps) projectsFuncs(r *view.Render, pg func() *Page) ttemplate.FuncMap 
 		},
 		// custom_field_tag は CustomFieldsHelper#custom_field_tag(prefix, custom_value)。
 		"custom_field_tag": func(prefix string, v *domain.CustomFieldValue) html { return customFieldTag(pg(), prefix, v) },
+		// principals_check_box_tags は ApplicationHelper#principals_check_box_tags(name, principals)。
+		"principals_check_box_tags": func(name string, list []*repository.MemberPrincipal) html {
+			p := pg()
+			var s strings.Builder
+			for _, m := range list {
+				var id int64
+				var icon html
+				if m.User != nil {
+					id = m.User.ID
+					icon = d.avatar(r, p, m.User, rails.NewHash("size", 16))
+				}
+				if m.Group != nil {
+					id = m.Group.ID
+				}
+				if icon == "" {
+					cls := "group"
+					if m.Group != nil {
+						cls = strings.ToLower(m.Group.Kind.RedmineType())
+					} else if m.User != nil {
+						cls = strings.ToLower(m.User.Kind.RedmineType())
+					}
+					icon = rails.ContentTag("span", d.principalIconHTML(p, m), rails.NewHash("class", "name icon icon-"+cls))
+				}
+				s.WriteString(string(rails.ContentTag("label",
+					rails.CheckBoxTag(name, id, false, rails.NewHash("id", nil))+icon+rails.H(PrincipalName(p, m)), nil)))
+			}
+			return html(s.String())
+		},
+		// context_menu_link は ContextMenusHelper#context_menu_link。
+		"context_menu_link": func(name any, url string, args ...any) html {
+			opts := optHash(args).Clone()
+			cls := rails.ToS(opts.Get("class"))
+			if truthy(opts.Get("selected")) {
+				cls += " icon-checked disabled"
+				opts.Set("disabled", true)
+			}
+			opts.Delete("selected")
+			if truthy(opts.Get("disabled")) {
+				opts.Delete("method")
+				opts.Delete("data")
+				opts.Set("onclick", "return false;")
+				cls += " disabled"
+				url = "#"
+			}
+			opts.Delete("disabled")
+			opts.Set("class", cls)
+			return rails.LinkTo(name, url, opts)
+		},
 		// has_id は ids.include?(id)。
 		"has_id": func(ids []int64, id int64) bool { return slices.Contains(ids, id) },
 		// capitalize は String#capitalize（先頭を大文字、残りを小文字）。

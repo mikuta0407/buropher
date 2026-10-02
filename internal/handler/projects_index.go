@@ -643,7 +643,7 @@ func (a *App) projectCSVValue(c *Req, pc *projectCellContext, col *query.Column,
 				return parent.Name
 			}
 		}
-		return ""
+		return csvNil
 	case "short_description":
 		return shortDescription(p.Description)
 	case "homepage":

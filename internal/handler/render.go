@@ -132,6 +132,12 @@ func (c *Req) Render(name string, data any, opts ...RenderOptions) {
 	if format == "" {
 		format = "html"
 	}
+	if format == "js" && (c.R.Method == http.MethodGet || c.R.Method == http.MethodHead) && !httpx.IsXHR(c.R) {
+		// ActionController::RequestForgeryProtection#verify_same_origin_request:
+		// XHR でない GET への JavaScript 応答は InvalidCrossOriginRequest（422、本文なし）
+		httpx.HeadAs(c.W, c.R, http.StatusUnprocessableEntity, "html")
+		return
+	}
 	httpx.SetContentType(c.W, format, true)
 	if httpx.ShouldVaryAccept(c.R) && c.W.Header().Get("Vary") == "" {
 		c.W.Header().Add("Vary", "Accept")

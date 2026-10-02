@@ -1,0 +1,25 @@
+{{$qv := .QueryView}}
+<div class="contextual">
+{{link_to (sprite_icon "add" (l "label_project_new")) "/projects/new" (hash "class" "icon icon-add")}}
+</div>
+
+<h2>{{if $qv.NewRecord}}{{l "label_project_plural"}}{{else}}{{$qv.Q.Name}}{{end}}</h2>
+{{if and (not $qv.NewRecord) (present $qv.Q.Description)}}{{content_tag "p" $qv.Q.Description (hash "class" "subtitle")}}{{end}}
+
+{{form_tag "/admin/projects" (hash "method" "get" "id" "query_form")}}
+{{partial "queries/query_form" (dict "qv" $qv)}}
+{{end_form}}
+
+{{if $qv.Valid}}
+  {{if .Projects}}
+    {{partial "projects/list" (dict "list" .List)}}
+  {{else}}
+    <p class="nodata">{{l "label_no_data"}}</p>
+  {{end}}
+{{end}}
+
+{{define "admin/projects#sidebar"}}
+  {{.SidebarQueries}}
+  {{call_hook "view_admin_projects_sidebar_queries_bottom"}}
+{{end}}
+{{content_for "sidebar" (capture "admin/projects#sidebar")}}

@@ -21,4 +21,8 @@ func (a *App) Routes(r Router) {
 	a.routesRoles(r)
 	a.routesEnumerations(r)
 	a.routesProjects(r)
+	a.routesMembers(r)
+	a.routesProjectEnumerations(r)
+	a.routesIssueCategories(r)
+	a.routesAdminProjects(r)
 }

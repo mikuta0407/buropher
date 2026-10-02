@@ -187,6 +187,10 @@ func (r *Render) Capture(name string, data any) (template.HTML, error) {
 
 // ContentFor はスロットに内容を追加する（html_safe でない値はエスケープされる）。
 func (r *Render) ContentFor(name string, content any) {
+	// ActionView#capture は空白だけのブロックを nil にするため、content_for は何も追加しない
+	if !rails.IsPresent(rails.ToS(content)) {
+		return
+	}
 	b := r.slots[name]
 	if b == nil {
 		b = &strings.Builder{}

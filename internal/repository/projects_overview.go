@@ -311,3 +311,24 @@ func UserProjectsAll(ctx context.Context, q db.Queryer, userID int64) ([]*domain
 	return LoadProjects(ctx, q, `projects.status <> `+strconv.Itoa(domain.ProjectStatusArchived)+
 		` AND projects.id IN (SELECT project_id FROM members WHERE principal_id = ?)`, userID)
 }
+
+// ProjectEnabledModules は project.enabled_modules（id 順）。
+func ProjectEnabledModules(ctx context.Context, q db.Queryer, projectID int64) ([]domain.EnabledModule, error) {
+	var rows []struct {
+		ID   int64  `db:"id"`
+		Name string `db:"name"`
+	}
+	if err := q.Select(ctx, &rows, `SELECT id, name FROM project_modules WHERE project_id = ? ORDER BY id`, projectID); err != nil {
+		return nil, err
+	}
+	out := make([]domain.EnabledModule, len(rows))
+	for i, r := range rows {
+		out[i] = domain.EnabledModule{ID: r.ID, ProjectID: projectID, Name: r.Name}
+	}
+	return out, nil
+}
+
+// MemberOfMemberRole は member_roles.id のメンバー（継承元の判定に使う）。
+func MemberOfMemberRole(ctx context.Context, q db.Queryer, memberRoleID int64) (*domain.Member, error) {
+	return oneMember(loadMembers(ctx, q, `m.id IN (SELECT member_id FROM member_roles WHERE id = ?)`, memberRoleID))
+}
