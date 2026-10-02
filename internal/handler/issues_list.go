@@ -528,7 +528,7 @@ func (l *issueLookup) cfEnv(cf *customfield.CustomField) *customfield.Env {
 }
 
 // formatCustomValue は format_object(custom_value, html)（値は 1 件）。
-func (l *issueLookup) formatCustomValue(cf *customfield.CustomField, value string, customized *customfield.Customized, html bool) any {
+func (l *issueLookup) formatCustomValue(cf *customfield.CustomField, value any, customized *customfield.Customized, html bool) any {
 	env := l.cfEnv(cf)
 	f := cf.Format().FormattedValue(env, cf, value, customized, html)
 	switch x := f.(type) {

@@ -76,3 +76,6 @@ func (p *Page) L(key string, args ...any) string { return p.l(key, args...) }
 
 // Admin は User.current.admin?。
 func (p *Page) Admin() bool { return p.admin() }
+
+// LinkToContextMenu は link_to_context_menu。
+func (d *Deps) LinkToContextMenu(p *Page) template.HTML { return d.issuesLinkToContextMenu(p) }

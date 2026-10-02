@@ -657,5 +657,21 @@ WHERE custom_fields.owner_kind = 'issue' AND custom_fields.visible = `+q.Dialect
 	return out, nil
 }
 
+// ReactionRow は reactions の行。
+type ReactionRow struct {
+	ID     int64 `db:"id"`
+	UserID int64 `db:"user_id"`
+}
+
+// ReactionsFor は Reaction.visible(user).for_reactable(object).order(id: :desc)（cond は principals を参照する可視条件）。
+func ReactionsFor(ctx context.Context, q db.Queryer, kind string, id int64, cond string) ([]*ReactionRow, error) {
+	var rows []*ReactionRow
+	err := q.Select(ctx, &rows, `SELECT reactions.id, reactions.user_id FROM reactions
+JOIN principals ON principals.id = reactions.user_id
+WHERE reactions.reactable_kind = ? AND reactions.reactable_id = ? AND principals.kind = 'user' AND (`+condOr(cond)+`)
+ORDER BY reactions.id DESC`, kind, id)
+	return rows, err
+}
+
 // unused guard
 var _ = time.Time{}
