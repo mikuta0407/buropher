@@ -83,7 +83,8 @@ func (h adminH) title(args ...any) html {
 			titles = append(titles, rails.ToS(args[i]))
 		}
 	}
-	h.r.AddTitle(titles...)
+	// html_title args.reverse.map {...}（配列 1 つを渡す）
+	h.r.AddTitle(titles)
 	return rails.ContentTag("h2", html(strings.Join(parts, " &#187; ")), nil)
 }
 
@@ -277,16 +278,18 @@ func (h adminH) errorMessagesFor(objects ...any) html {
 			msgs = append(msgs, m.FullErrorMessages()...)
 		}
 	}
-	return RenderErrorMessages(msgs)
+	return h.d.RenderErrorMessages(msgs)
 }
 
 // RenderErrorMessages は render_error_messages(errors)。
-func RenderErrorMessages(msgs []string) template.HTML {
+func (d *Deps) RenderErrorMessages(msgs []string) template.HTML {
 	if len(msgs) == 0 {
 		return ""
 	}
 	var b strings.Builder
-	b.WriteString("<div id='errorExplanation'><ul>\n")
+	b.WriteString("<div id='errorExplanation'>\n")
+	b.WriteString(string(d.noticeIcon(&Page{}, "error")))
+	b.WriteString("<ul>\n")
 	for _, m := range msgs {
 		b.WriteString("<li>" + string(rails.H(m)) + "</li>\n")
 	}

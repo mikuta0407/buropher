@@ -41,7 +41,8 @@ type Request struct {
 	// 省略時は .json/.xml などの API 形式なら basic、それ以外は session。
 	Auth string `yaml:"auth"`
 	// Form は application/x-www-form-urlencoded で送るフィールド（session 認証時は CSRF トークンを自動付与）。
-	Form map[string]string `yaml:"form"`
+	// 値に YAML のシーケンスを書くと同じ名前で複数回送る（"tracker_ids[]": ["1", ""]）。
+	Form FormValues `yaml:"form"`
 	// Body は生のリクエストボディ（ContentType と併用）。
 	Body        string            `yaml:"body"`
 	ContentType string            `yaml:"content_type"`
@@ -74,7 +75,7 @@ type Case struct {
 	Path      string
 	Format    normalize.Format
 	Auth      string
-	Form      map[string]string
+	Form      FormValues
 	Body      string
 	CType     string
 	Headers   map[string]string
@@ -252,4 +253,33 @@ func (f *File) Cases() ([]Case, error) {
 		}
 	}
 	return out, nil
+}
+
+// FormValues はフォームのフィールド（値はスカラーまたはスカラーのシーケンス）。
+type FormValues map[string][]string
+
+// UnmarshalYAML はスカラー値を 1 要素、シーケンスを複数要素として読む。
+func (f *FormValues) UnmarshalYAML(n *yaml.Node) error {
+	if n.Kind != yaml.MappingNode {
+		return fmt.Errorf("form: mapping expected (line %d)", n.Line)
+	}
+	out := FormValues{}
+	for i := 0; i+1 < len(n.Content); i += 2 {
+		k, v := n.Content[i].Value, n.Content[i+1]
+		switch v.Kind {
+		case yaml.ScalarNode:
+			out[k] = []string{v.Value}
+		case yaml.SequenceNode:
+			for _, e := range v.Content {
+				if e.Kind != yaml.ScalarNode {
+					return fmt.Errorf("form %s: scalar sequence expected (line %d)", k, e.Line)
+				}
+				out[k] = append(out[k], e.Value)
+			}
+		default:
+			return fmt.Errorf("form %s: scalar or sequence expected (line %d)", k, v.Line)
+		}
+	}
+	*f = out
+	return nil
 }
