@@ -42,6 +42,9 @@ tools/compat/redmine-ref.sh setup --force   # 作り直し
 - アセットは public/assets（プリコンパイル済み）を Rails が配信（`RAILS_SERVE_STATIC_FILES=1`）。
 - ログ: `_reference/redmine-fixtures/log/compat-server.out`, `production.log`。
 - 3999 で動いている `redmine-migrated` インスタンスには触れない。
+- サブパス配置の確認: `COMPAT_REF_RELATIVE_URL_ROOT=/redmine`（参照。`COMPAT_REF_DIR`/`COMPAT_REF_PORT` で別インスタンスに）と
+  `BUROPHER_RELATIVE_URL_ROOT=/redmine`（候補）で起動し、`-ref http://127.0.0.1:<port>/redmine -cand http://127.0.0.1:<port>/redmine`
+  のようにベース URL にプレフィックスを含めて `diff` する。
 
 ### fixtures のユーザー
 

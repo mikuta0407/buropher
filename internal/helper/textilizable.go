@@ -47,7 +47,7 @@ func (d *Deps) WikiRenderer(p *Page) *redmine.Renderer {
 	if p.BaseURL != "" {
 		r.BaseURL = p.BaseURL
 	} else if p.Request != nil {
-		r.BaseURL = httpx.RequestBaseURL(p.Request)
+		r.BaseURL = httpx.RequestRootURL(p.Request)
 	}
 	if p.DB != nil {
 		az := p.authorizer()

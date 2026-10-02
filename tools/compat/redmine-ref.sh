@@ -18,6 +18,8 @@
 #   COMPAT_REF_PORT      ポート（既定: 3998）
 #   COMPAT_FROZEN_TIME   fixtures の ERB 評価時刻かつサーバの固定時刻（既定: 2026-01-15 12:00:00 UTC）
 #                        空文字にするとサーバ時刻は固定しない（fixtures 投入時は既定値を使用）。
+#   COMPAT_REF_RELATIVE_URL_ROOT  サブパス配置で起動する（例: /redmine）。RAILS_RELATIVE_URL_ROOT を設定し、
+#                        config.ru を map 付きに差し替える（Redmine wiki の推奨構成）。既定は空（ルート配置）。
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -45,6 +47,8 @@ PORT="${COMPAT_REF_PORT:-3998}"
 FROZEN_DEFAULT="2026-01-15 12:00:00 UTC"
 FROZEN="${COMPAT_FROZEN_TIME-$FROZEN_DEFAULT}"
 BUNDLE="${BUNDLE:-bundle3.3}"
+RELROOT="${COMPAT_REF_RELATIVE_URL_ROOT:-}"
+RELROOT="${RELROOT%/}"
 PIDFILE="$DIR/tmp/pids/compat-server.pid"
 LOGFILE="$DIR/log/compat-server.out"
 
@@ -52,6 +56,24 @@ export RAILS_ENV=production
 export TZ=UTC
 export LANG=C.UTF-8
 export RAILS_SERVE_STATIC_FILES=1
+if [[ -n "$RELROOT" ]]; then
+  export RAILS_RELATIVE_URL_ROOT="$RELROOT"
+fi
+
+# write_config_ru はサブパス配置なら config.ru を map 付きにする（ルート配置ならコピー元のまま）。
+write_config_ru() {
+  if [[ -n "$RELROOT" ]]; then
+    cat > "$DIR/config.ru" <<'RUBY'
+# compat: サブパス配置（COMPAT_REF_RELATIVE_URL_ROOT）
+require_relative 'config/environment'
+map ActionController::Base.config.relative_url_root || '/' do
+  run Rails.application
+end
+RUBY
+  else
+    cp "$SRC/config.ru" "$DIR/config.ru"
+  fi
+}
 
 log() { echo "[redmine-ref] $*" >&2; }
 
@@ -109,7 +131,8 @@ do_start() {
     return 0
   fi
   do_setup
-  log "起動: http://127.0.0.1:$PORT (frozen time: ${FROZEN:-なし})"
+  write_config_ru
+  log "起動: http://127.0.0.1:$PORT$RELROOT (frozen time: ${FROZEN:-なし})"
   rm -f "$DIR/tmp/pids/server.pid"
   # bundle exec は exec で ruby に置き換わるので $! がそのままサーバの pid になる
   cd "$DIR"
@@ -120,7 +143,7 @@ do_start() {
   # 起動待ち
   local i
   for i in $(seq 1 120); do
-    if curl -fsS -o /dev/null "http://127.0.0.1:$PORT/login" 2>/dev/null; then
+    if curl -fsS -o /dev/null "http://127.0.0.1:$PORT$RELROOT/login" 2>/dev/null; then
       log "起動完了 (pid $(cat "$PIDFILE"))"
       return 0
     fi
@@ -184,5 +207,5 @@ case "$cmd" in
   reset) do_reset ;;
   status) do_status ;;
   logs) tail -f "$LOGFILE" ;;
-  *) sed -n '2,22p' "$0" | sed 's/^# \{0,1\}//'; exit 2 ;;
+  *) sed -n '2,24p' "$0" | sed 's/^# \{0,1\}//'; exit 2 ;;
 esac

@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/rand"
 	"fmt"
+	"github.com/mikuta0407/buropher/internal/urlroot"
 	"net"
 	"net/http"
 	"net/netip"
@@ -265,6 +266,12 @@ func RequestHostWithPort(r *http.Request) string {
 // RequestBaseURL は request.base_url（"https://example.com:8080"）を返す。
 func RequestBaseURL(r *http.Request) string {
 	return RequestScheme(r) + "://" + RequestHostWithPort(r)
+}
+
+// RequestRootURL は request.base_url + script_name（relative_url_root）を返す。
+// アプリ内のパス（ルートを含まない "/issues/1" 等）を連結して完全 URL にする基点。
+func RequestRootURL(r *http.Request) string {
+	return RequestBaseURL(r) + urlroot.Get()
 }
 
 // URLOptions は Setting.host_name / protocol から作る URL 生成オプション（Mailer.default_url_options）。

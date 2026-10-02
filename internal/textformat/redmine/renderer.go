@@ -129,7 +129,7 @@ type Renderer struct {
 	UserFormat string
 	// IconsPath は asset_path("icons.svg")（空なら "/assets/icons.svg"）。
 	IconsPath string
-	// BaseURL は only_path: false のときの "http://host"（末尾スラッシュなし）。
+	// BaseURL は only_path: false のときの "http://host" + script_name（relative_url_root。末尾スラッシュなし）。
 	BaseURL string
 	// Now は現在時刻（nil なら clock.Now）。
 	Now func() time.Time

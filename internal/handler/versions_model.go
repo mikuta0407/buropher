@@ -23,6 +23,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/issues"
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/textformat/redmine"
+	"github.com/mikuta0407/buropher/internal/urlroot"
 	"github.com/mikuta0407/buropher/internal/view/rails"
 )
 
@@ -680,7 +681,7 @@ func (vc *versionCtx) linkToNewIssue(v *versionModel, p *domain.Project) (templa
 		return "", nil
 	}
 	u := "/projects/" + p.Identifier + "/issues/new?" + railsToQuery(url.Values{
-		"back_url":                {"/versions/" + strconv.FormatInt(v.ID, 10)},
+		"back_url":                {urlroot.Path("/versions/" + strconv.FormatInt(v.ID, 10))},
 		"issue[fixed_version_id]": {strconv.FormatInt(v.ID, 10)},
 		"issue[tracker_id]":       {strconv.FormatInt(trackerID, 10)},
 	})

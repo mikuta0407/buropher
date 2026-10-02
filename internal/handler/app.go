@@ -28,6 +28,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/pdf"
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/settings"
+	"github.com/mikuta0407/buropher/internal/urlroot"
 	"github.com/mikuta0407/buropher/internal/view"
 )
 
@@ -402,8 +403,17 @@ func parseQvalues(value string) []string {
 	return out
 }
 
+// routePath は relative_url_root を除いたリクエストパス（Rails の path_info。ルート判定に使う）。
+// r.URL.Path はルートを含む（request.path と同じ）ので、リンク生成にはそちらを使う。
+func routePath(r *http.Request) string {
+	p, _ := urlroot.Strip(r.URL.Path)
+	return p
+}
+
 // OriginalURL は request.original_url。
-func OriginalURL(r *http.Request) string { return httpx.RequestBaseURL(r) + r.URL.RequestURI() }
+func OriginalURL(r *http.Request) string {
+	return httpx.RequestBaseURL(r) + urlroot.Path(r.URL.RequestURI())
+}
 
 // requireLogin は ApplicationController#require_login。
 func (a *App) requireLogin(c *Req) bool {
@@ -415,7 +425,7 @@ func (a *App) requireLogin(c *Req) bool {
 		back = OriginalURL(c.R)
 	} else {
 		// TODO: url_for(controller:, action:, id:, project_id:) の正確な再現
-		back = httpx.RequestBaseURL(c.R) + c.R.URL.Path
+		back = httpx.RequestBaseURL(c.R) + urlroot.Path(c.R.URL.Path)
 	}
 	signin := "/login?back_url=" + url.QueryEscape(back)
 	switch format := httpx.Format(c.R); {

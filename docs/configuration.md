@@ -31,7 +31,8 @@ Every key is optional; without any configuration buropher listens on `:3000` and
 | Key | Env | Default | Description |
 |---|---|---|---|
 | `addr` | `BUROPHER_ADDR` | `:3000` | Listen address (`host:port`). |
-| `base_url` | `BUROPHER_BASE_URL` | `""` | Public URL without trailing slash (e.g. `https://tracker.example.com`). Used to build OIDC redirect URIs; when empty, the scheme and host of the request are used (honouring `X-Forwarded-*` from trusted proxies). A trailing `/` is removed. Sub-path deployment (`https://example.com/redmine`) is **not** supported. |
+| `base_url` | `BUROPHER_BASE_URL` | `""` | Public URL without trailing slash (e.g. `https://tracker.example.com`). Used to build OIDC redirect URIs; when empty, the scheme and host of the request are used (honouring `X-Forwarded-*` from trusted proxies). A trailing `/` is removed. Give only scheme and host; the sub-path comes from `relative_url_root` (a `base_url` that already ends with the sub-path is accepted as well). |
+| `relative_url_root` | `BUROPHER_RELATIVE_URL_ROOT` | `""` | Sub-path to serve buropher under, like Redmine's `RAILS_RELATIVE_URL_ROOT` (e.g. `/redmine`). Empty = served at the root of the host. See [Sub-path deployment](#sub-path-deployment). |
 | `secret_key` | `BUROPHER_SECRET_KEY` | `""` | Key for session cookies, CSRF tokens and encryption of stored secrets (TOTP keys, LDAP bind passwords, repository passwords, OIDC and Discord client secrets). If empty, a random key is generated on first start and stored in `<data dir>/secret_key` (`<data dir>` is the directory of the SQLite database file, or `./data` otherwise). Changing it logs everyone out and makes stored secrets undecryptable. |
 
 ### `[database]`
@@ -134,6 +135,35 @@ See [pdf.md](pdf.md).
 | `BUROPHER_ADMIN_PASSWORD` | `buropher init` | Default for `-admin-password`. |
 | `REDMINE_CIPHER_KEY` | `buropher redmine import` | Default for `--cipher-key`. |
 | `TZ` | all | Server local time zone (reminder schedule, log timestamps). User-facing times use the user's or the default time zone setting. |
+
+## Sub-path deployment
+
+`server.relative_url_root` (env `BUROPHER_RELATIVE_URL_ROOT`) serves buropher under a sub-path,
+e.g. `https://example.com/redmine/`, the same way Redmine does with `RAILS_RELATIVE_URL_ROOT`
+(`config.relative_url_root` plus `map` in `config.ru`):
+
+```toml
+[server]
+relative_url_root = "/redmine"
+```
+
+- buropher expects the **full** request path including the prefix (`/redmine/issues/1`). Configure
+  the reverse proxy to pass the path through unchanged (do not strip the prefix). Requests outside the
+  prefix get a plain `404 Not Found: <path>` like Rack::URLMap; the health check is
+  `/redmine/healthz`.
+- Every generated URL carries the prefix: links, form actions, redirects (`Location`), API
+  `Location` headers and `content_url`, Atom feeds, asset URLs (`/redmine/assets/...`), and URLs
+  embedded in JavaScript (autocomplete, context menu, preview, ...).
+- The session cookie and the autologin cookie use the prefix as their `Path` (Redmine's
+  `relative_url_root || '/'`).
+- `back_url` values must start with the prefix (same validation as Redmine).
+- Links in e-mails and the Discord redirect URI use *Administration > Settings > General* "Host name
+  and path", exactly like Redmine's `Mailer.default_url_options`: include the sub-path there
+  (e.g. `example.com/redmine`). The settings page shows the guessed value with the prefix.
+- The prefix must not collide with a top-level Redmine route (`/projects`, `/issues`, `/admin`, ...).
+- Links written by users in wiki text (e.g. `"text":/foo`) are left unchanged, as in Redmine.
+
+See [install.md](install.md#sub-path-behind-a-reverse-proxy) for proxy examples.
 
 ## Application settings relevant to operators
 

@@ -7,6 +7,8 @@ package menu
 import (
 	"html/template"
 	"strings"
+
+	"github.com/mikuta0407/buropher/internal/urlroot"
 )
 
 // Project はメニュー描画に必要なプロジェクト情報。
@@ -290,7 +292,7 @@ func linkTo(label template.HTML, url string, attrs []Attr) string {
 		}
 		out = append(out, Attr{"data-method", method})
 	}
-	out = append(out, Attr{"href", url})
+	out = append(out, Attr{"href", urlroot.Path(url)})
 	var b strings.Builder
 	b.WriteString("<a")
 	for _, a := range out {

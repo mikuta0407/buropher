@@ -26,6 +26,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/textformat/redmine"
 	"github.com/mikuta0407/buropher/internal/unifieddiff"
+	"github.com/mikuta0407/buropher/internal/urlroot"
 	"github.com/mikuta0407/buropher/internal/validation"
 	"github.com/mikuta0407/buropher/internal/view/rails"
 )
@@ -415,7 +416,7 @@ func (a *App) AttachmentsShow(c *Req) {
 		case att.IsAudio():
 			data["MediaKind"] = "audio"
 		}
-		data["DownloadURL"] = httpx.RequestBaseURL(c.R) + downloadNamedAttachmentPath(att)
+		data["DownloadURL"] = httpx.RequestBaseURL(c.R) + urlroot.Path(downloadNamedAttachmentPath(att))
 	}
 	c.Render("attachments/show", data)
 }

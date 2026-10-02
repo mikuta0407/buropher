@@ -22,6 +22,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/query"
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/textformat/redmine"
+	"github.com/mikuta0407/buropher/internal/urlroot"
 	"github.com/mikuta0407/buropher/internal/view"
 	"github.com/mikuta0407/buropher/internal/view/rails"
 )
@@ -495,7 +496,7 @@ func (v *bulkEditView) ParamIs(name, value string) bool {
 
 // OnchangeJS は updateBulkEditFrom('/issues/bulk_edit.js')。
 func (v *bulkEditView) OnchangeJS() string {
-	return "updateBulkEditFrom('" + rails.EscapeJavascriptString("/issues/bulk_edit.js") + "')"
+	return "updateBulkEditFrom('" + rails.EscapeJavascriptString(urlroot.Path("/issues/bulk_edit.js")) + "')"
 }
 
 func noChangeOption(l *issueLookup) template.HTML {
@@ -669,7 +670,7 @@ func (v *bulkEditView) Project() *domain.Project { return v.l.c.Project }
 func (v *bulkEditView) ParentAutocompleteJS() string {
 	u := "/issues/auto_complete?" + helper.ToQuery(rails.NewHash("project_id", v.l.c.Project.Identifier,
 		"scope", v.l.a.Settings.String("cross_project_subtasks")))
-	return "observeAutocompleteField('issue_parent_issue_id', '" + rails.EscapeJavascriptString(u) + "')"
+	return "observeAutocompleteField('issue_parent_issue_id', '" + rails.EscapeJavascriptString(urlroot.Path(u)) + "')"
 }
 
 // ShowDoneRatio は @safe_attributes.include?('done_ratio') && Issue.use_field_for_done_ratio?。
@@ -809,7 +810,7 @@ func (v *bulkEditView) ShowWatchersDataSources() bool {
 func (v *bulkEditView) WatchersDataSourcesJS() template.HTML {
 	u := "/watchers/autocomplete_for_mention?" + helper.ToQuery(rails.NewHash("object_id", v.IDs(), "object_type", "issue", "q", ""))
 	return rails.JavascriptTag("rm.AutoComplete.dataSources = Object.assign(rm.AutoComplete.dataSources, JSON.parse('"+
-		jsonForJS(map[string]string{"users": u})+"'));", nil)
+		jsonForJS(map[string]string{"users": urlroot.Path(u)})+"'));", nil)
 }
 
 // FieldsCleared は @values_by_custom_field の表示（"name (n)" を ", " で連結）。
@@ -1086,11 +1087,11 @@ func (a *App) renderIssuesDestroy(c *Req, rows []*query.IssueRow, hours float64)
 	}
 	if c.Project != nil {
 		v.AutoComplete = "observeAutocompleteField('reassign_to_id', '" +
-			rails.EscapeJavascriptString("/issues/auto_complete?"+helper.ToQuery(rails.NewHash("project_id", c.Project.Identifier))) + "')"
+			rails.EscapeJavascriptString(urlroot.Path("/issues/auto_complete?"+helper.ToQuery(rails.NewHash("project_id", c.Project.Identifier)))) + "')"
 	}
 	// form_tag({}, :method => :delete) の action は現在のルート（/issues/:id または /issues）
 	action := "/issues"
-	if id := c.Params().String("id"); id != "" && strings.HasPrefix(c.R.URL.Path, "/issues/") {
+	if id := c.Params().String("id"); id != "" && strings.HasPrefix(routePath(c.R), "/issues/") {
 		action = "/issues/" + id
 	}
 	c.Render("issues/destroy", map[string]any{"D": v, "Action": action})

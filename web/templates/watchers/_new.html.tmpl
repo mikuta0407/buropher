@@ -12,7 +12,7 @@
   {{if $a.Project}}{{hidden_field_tag "project_id" $a.Project.ID}}{{end}}
 
   <p>{{label_tag "user_search" (l "label_user_search")}}{{text_field_tag "user_search" nil}}</p>
-  {{javascript_tag (printf "observeSearchfield(\n          'user_search',\n          'users_for_watcher',\n          '%s'\n         )" (j $a.AutocompleteURL))}}
+  {{javascript_tag (printf "observeSearchfield(\n          'user_search',\n          'users_for_watcher',\n          '%s'\n         )" (j (url_path $a.AutocompleteURL)))}}
   <div id="users_for_watcher">
     {{principals_check_box_tags "watcher[user_ids][]" $a.Users}}
   </div>

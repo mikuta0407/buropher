@@ -12,6 +12,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/helper"
 	"github.com/mikuta0407/buropher/internal/httpx"
 	"github.com/mikuta0407/buropher/internal/repository"
+	"github.com/mikuta0407/buropher/internal/urlroot"
 	"github.com/mikuta0407/buropher/internal/view"
 	"github.com/mikuta0407/buropher/internal/view/rails"
 )
@@ -265,7 +266,7 @@ func (a *App) IssueCategoriesCreate(c *Req) {
 				return
 			}
 			// :location => issue_category_path(@category)（相対パス）
-			c.W.Header().Set("Location", "/issue_categories/"+strconv.FormatInt(f.ID, 10))
+			c.W.Header().Set("Location", urlroot.Path("/issue_categories/"+strconv.FormatInt(f.ID, 10)))
 			c.renderAPIRoot(el, nil, http.StatusCreated)
 		default:
 			c.unknownFormat()

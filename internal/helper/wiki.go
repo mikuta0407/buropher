@@ -10,6 +10,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/authz"
 	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/textformat/redmine"
+	"github.com/mikuta0407/buropher/internal/urlroot"
 	"github.com/mikuta0407/buropher/internal/view"
 	"github.com/mikuta0407/buropher/internal/view/rails"
 )
@@ -360,8 +361,8 @@ func (d *Deps) wikitoolbarFor(r *view.Render, p *Page, fieldID, previewURL strin
 	}
 	d.headsForWikiFormatter(r, p, included)
 	return rails.JavascriptTag("var wikiToolbar = new jsToolBar(document.getElementById('"+fieldID+"')); "+
-		"wikiToolbar.setHelpLink('"+rails.EscapeJavascriptString("/help/wiki_syntax")+"'); "+
-		"wikiToolbar.setPreviewUrl('"+rails.EscapeJavascriptString(previewURL)+"'); "+
+		"wikiToolbar.setHelpLink('"+rails.EscapeJavascriptString(urlroot.Path("/help/wiki_syntax"))+"'); "+
+		"wikiToolbar.setPreviewUrl('"+rails.EscapeJavascriptString(urlroot.Path(previewURL))+"'); "+
 		"wikiToolbar.draw();", nil)
 }
 
@@ -412,7 +413,7 @@ func updateDataSourcesForAutoComplete(sources *rails.Hash) html {
 		if i > 0 {
 			b.WriteString(",")
 		}
-		b.WriteString(rails.ToJSON(e.Key) + ":" + rails.ToJSON(rails.ToS(e.Value)))
+		b.WriteString(rails.ToJSON(e.Key) + ":" + rails.ToJSON(urlroot.Path(rails.ToS(e.Value))))
 	}
 	b.WriteString("}")
 	return rails.JavascriptTag("rm.AutoComplete.dataSources = Object.assign(rm.AutoComplete.dataSources, JSON.parse('"+b.String()+"'));", nil)

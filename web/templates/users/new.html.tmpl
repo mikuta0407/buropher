@@ -17,7 +17,7 @@
 {{end}}
 {{define "users/new#autocomplete"}}
 
-    observeAutocompleteField('user_login', '{{j "/auth_sources/autocomplete_for_new_user"}}', {
+    observeAutocompleteField('user_login', '{{j (url_path "/auth_sources/autocomplete_for_new_user")}}', {
       select: function(event, ui) {
         $('input#user_firstname').val(ui.item.firstname);
         $('input#user_lastname').val(ui.item.lastname);

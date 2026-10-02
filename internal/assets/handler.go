@@ -41,7 +41,9 @@ func (p *Pipeline) serveHTTP(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		return
 	}
-	reqPath := strings.TrimPrefix(r.URL.Path, p.prefix+"/")
+	// サブパス配置では r.URL.Path は relative_url_root を含む
+	reqPath := strings.TrimPrefix(r.URL.Path, p.urlRoot)
+	reqPath = strings.TrimPrefix(reqPath, p.prefix+"/")
 	reqPath = strings.TrimPrefix(reqPath, "/")
 	logical, digest := ExtractPathAndDigest(reqPath)
 	a, ok := p.Lookup(logical)

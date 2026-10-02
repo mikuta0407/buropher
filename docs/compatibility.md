@@ -39,7 +39,7 @@ Every accepted difference is listed with a reason in
 | Wiki history | Redmine's `wiki_contents` and `wiki_content_versions` are merged into one history table. If they disagree for the same version (only seen in test fixtures), the current content wins. |
 | Time zone list | The UTC offsets shown in the time zone selector come from the generated zone table and can lag behind tzdata changes for a few zones. |
 | Configuration | `config/configuration.yml`, `database.yml` and environment files are replaced by one TOML file plus environment variables ([configuration.md](configuration.md)). |
-| Deployment | No sub-path deployment (`relative_url_root`); serve buropher at the root of a host name. |
+| Deployment | Sub-path deployment is supported with `server.relative_url_root` (Redmine's `RAILS_RELATIVE_URL_ROOT`); see [configuration.md](configuration.md#sub-path-deployment). |
 | Rake tasks | Replaced by subcommands: `buropher reminders` (`redmine:send_reminders`), `buropher jobs run`, built-in schedulers for reminders and `fetch_changesets`. Other rake tasks (e.g. LDAP sync, attachment digest updates, plugin tasks) have no equivalent. |
 | Sessions | Login sessions are not migrated from Redmine; users log in again once. |
 

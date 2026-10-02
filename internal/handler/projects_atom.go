@@ -10,6 +10,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/helper"
 	"github.com/mikuta0407/buropher/internal/httpx"
 	"github.com/mikuta0407/buropher/internal/query"
+	"github.com/mikuta0407/buropher/internal/urlroot"
 )
 
 // このファイルは projects#index の Atom（render_feed + common/feed.atom.builder）。
@@ -41,11 +42,11 @@ func (a *App) renderProjectsAtom(c *Req, q *query.Query) {
 			altQ[k] = v
 		}
 	}
-	self := base + "/projects.atom"
+	self := base + urlroot.Path("/projects.atom")
 	if s := railsToQuery(selfQ); s != "" {
 		self += "?" + s
 	}
-	alt := base + "/projects"
+	alt := base + urlroot.Path("/projects")
 	if s := railsToQuery(altQ); s != "" {
 		alt += "?" + s
 	}
@@ -55,12 +56,12 @@ func (a *App) renderProjectsAtom(c *Req, q *query.Query) {
 	b.WriteString("  <title>" + atomTextEscaper.Replace(truncateSingleLine(title, 300)) + "</title>\n")
 	b.WriteString(`  <link rel="self" href="` + atomAttrEscaper.Replace(self) + `"/>` + "\n")
 	b.WriteString(`  <link rel="alternate" href="` + atomAttrEscaper.Replace(alt) + `"/>` + "\n")
-	b.WriteString("  <id>" + atomTextEscaper.Replace(base+"/") + "</id>\n")
+	b.WriteString("  <id>" + atomTextEscaper.Replace(base+urlroot.Path("/")) + "</id>\n")
 	icon := "/favicon.ico"
 	if a.Assets != nil {
 		icon = a.Assets.AssetPath("favicon.ico")
 	}
-	b.WriteString("  <icon>" + atomTextEscaper.Replace(base+icon) + "</icon>\n")
+	b.WriteString("  <icon>" + atomTextEscaper.Replace(base+urlroot.Path(icon)) + "</icon>\n")
 	updated := a.now()
 	if len(ps) > 0 {
 		updated = ps[0].CreatedAt
@@ -69,7 +70,7 @@ func (a *App) renderProjectsAtom(c *Req, q *query.Query) {
 	b.WriteString("  <author>\n    <name>" + atomTextEscaper.Replace(a.Settings.String("app_title")) + "</name>\n  </author>\n")
 	b.WriteString(`  <generator uri="` + helper.AppURL + `">` + "\n" + helper.AppName + "  </generator>\n")
 	for _, p := range ps {
-		u := base + "/projects/" + p.Identifier
+		u := base + urlroot.Path("/projects/"+p.Identifier)
 		b.WriteString("  <entry>\n")
 		b.WriteString("    <title>" + atomTextEscaper.Replace(truncateSingleLine(p.Name+" - "+c.L("label_project")+": "+p.Name, 300)) + "</title>\n")
 		b.WriteString(`    <link rel="alternate" href="` + atomAttrEscaper.Replace(u) + `"/>` + "\n")

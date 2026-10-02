@@ -17,6 +17,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/i18n"
 	"github.com/mikuta0407/buropher/internal/query"
 	"github.com/mikuta0407/buropher/internal/repository"
+	"github.com/mikuta0407/buropher/internal/urlroot"
 	"github.com/mikuta0407/buropher/internal/view"
 	"github.com/mikuta0407/buropher/internal/view/rails"
 )
@@ -549,7 +550,7 @@ func (cm *issueContextMenu) CopyURLLink() template.HTML {
 	for _, id := range cm.IDs {
 		idsS = append(idsS, strconv.FormatInt(id, 10))
 	}
-	u := httpx.RequestBaseURL(cm.l.c.R) + issuesPath(cm.l.c.Project) + "?" + helper.ToQuery(rails.NewHash("set_filter", 1, "status_id", "*", "issue_id", strings.Join(idsS, ",")))
+	u := httpx.RequestBaseURL(cm.l.c.R) + urlroot.Path(issuesPath(cm.l.c.Project)+"?"+helper.ToQuery(rails.NewHash("set_filter", 1, "status_id", "*", "issue_id", strings.Join(idsS, ","))))
 	return cm.l.copyObjectURLLink(u)
 }
 

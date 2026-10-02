@@ -18,6 +18,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/helper"
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/timelog"
+	"github.com/mikuta0407/buropher/internal/urlroot"
 	"github.com/mikuta0407/buropher/internal/view/rails"
 )
 
@@ -303,7 +304,7 @@ func (t *timeEntryFormModel) CustomFieldTags(f *issueEditForm) []template.HTML {
 
 // UpdateFormPath は update_issue_form_path(@project, @issue)（escape_javascript 済みの onchange 用）。
 func (f *issueEditForm) UpdateFormOnchange() string {
-	return "updateIssueFrom('" + rails.EscapeJavascriptString(f.updateFormPath()) + "', this)"
+	return "updateIssueFrom('" + rails.EscapeJavascriptString(urlroot.Path(f.updateFormPath())) + "', this)"
 }
 
 // updateFormPath は update_issue_form_path(@project, @issue)。
@@ -692,7 +693,7 @@ func (f *issueEditForm) ParentAutocompleteJS() string {
 	}
 	u := "/issues/auto_complete?" + helper.ToQuery(rails.NewHash("issue_id", issueID, "project_id", f.m.Project.Identifier,
 		"scope", f.l.a.Settings.String("cross_project_subtasks"), "status", status))
-	return "observeAutocompleteField('issue_parent_issue_id', '" + rails.EscapeJavascriptString(u) + "')"
+	return "observeAutocompleteField('issue_parent_issue_id', '" + rails.EscapeJavascriptString(urlroot.Path(u)) + "')"
 }
 
 // UseFieldForDoneRatio は Issue.use_field_for_done_ratio?。
@@ -913,7 +914,7 @@ func (f *issueEditForm) WatchersDataSourcesJS() template.HTML {
 	u := "/watchers/autocomplete_for_mention?" + helper.ToQuery(rails.NewHash("object_id", objectID, "object_type", "issue",
 		"project_id", f.m.Project.Identifier, "q", ""))
 	return rails.JavascriptTag("rm.AutoComplete.dataSources = Object.assign(rm.AutoComplete.dataSources, JSON.parse('"+
-		jsonForJS(map[string]string{"users": u})+"'));", nil)
+		jsonForJS(map[string]string{"users": urlroot.Path(u)})+"'));", nil)
 }
 
 // LastJournalID は params[:last_journal_id] || @issue.last_journal_id。

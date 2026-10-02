@@ -76,6 +76,20 @@
 //     c.Render403 は @project を nil にする（render_403 と同じ）。
 //   - render / redirect 後は return する（Render・Redirect は c.Halt() 済み）。
 //
+// # 規約: サブパス配置（relative_url_root）
+//
+// config の server.relative_url_root（例 "/redmine"）は internal/urlroot がプロセス全体で保持する。
+// Go コード・テンプレートではパスをルートなし（"/issues/1"）で書き、出力する箇所で urlroot.Path を通す:
+//
+//   - link_to / button_to / form_tag / form_for の url、menu のリンク、タグの href・src・action・formaction と
+//     名前に url を含む data-*（data-cm-url 等）・"-path" で終わる data-* は rails 側で自動的に前置される。
+//     c.Redirect（Location）も httpx.RedirectLocation が前置する。
+//   - それ以外（JavaScript 文字列・JSON・onclick・生の HTML 属性・back_url の値・手で組む Location）は
+//     urlroot.Path(p)、テンプレートでは {{url_path "/x"}} を明示的に通す。
+//   - 完全 URL は httpx.RequestBaseURL(r) + urlroot.Path(p)（または httpx.RequestRootURL(r) + p）。
+//   - r.URL.Path / RequestURI はルートを含む（request.path と同じ）。ルート判定には routePath(r) を使う。
+//   - urlroot.Path は冪等（ルートで始まるパスはそのまま）なので、リクエスト由来のパスを通しても二重にならない。
+//
 // # 規約: flash とリダイレクト
 //
 //   - flash[:notice] = l(:notice_successful_update) は c.Flash().Set("notice", c.L("notice_successful_update"))、

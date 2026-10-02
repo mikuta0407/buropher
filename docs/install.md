@@ -133,9 +133,8 @@ After switching to HTTPS:
   used for links in e-mails and the Discord redirect URI,
 - raise the proxy's request body limit to at least the attachment size limit.
 
-**Sub-paths are not supported**: serve buropher at the root of a host name
-(`https://tracker.example.com/`), not under `https://example.com/redmine/`. Redmine's
-`relative_url_root` has no equivalent yet.
+To serve buropher under a sub-path instead of the root of a host name, see
+[Sub-path behind a reverse proxy](#sub-path-behind-a-reverse-proxy).
 
 ### nginx
 
@@ -176,6 +175,56 @@ tracker.example.com {
 ```
 
 Caddy obtains certificates automatically and sets the `X-Forwarded-*` headers.
+
+### Sub-path behind a reverse proxy
+
+To serve buropher at `https://example.com/redmine/` (Redmine's `RAILS_RELATIVE_URL_ROOT`), set the
+sub-path in the config (or `BUROPHER_RELATIVE_URL_ROOT=/redmine`):
+
+```toml
+[server]
+relative_url_root = "/redmine"
+base_url = "https://example.com"   # scheme and host only (for OIDC redirect URIs)
+```
+
+and set *Administration > Settings > General* "Host name and path" to `example.com/redmine` so
+that e-mail links include the sub-path. buropher expects the proxy to forward the **full path,
+including `/redmine`** (do not strip the prefix):
+
+nginx (note: no trailing slash or URI part on `proxy_pass`, so the path is passed unchanged):
+
+```nginx
+location /redmine/ {
+    proxy_pass http://127.0.0.1:3000;
+    proxy_set_header Host              $host;
+    proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_read_timeout 300s;
+}
+location = /redmine { return 301 /redmine/; }
+```
+
+Caddy (`handle`, not `handle_path`, which would strip the prefix):
+
+```caddy
+example.com {
+    handle /redmine* {
+        reverse_proxy 127.0.0.1:3000
+    }
+}
+```
+
+Apache httpd:
+
+```apache
+ProxyPass        /redmine http://127.0.0.1:3000/redmine
+ProxyPassReverse /redmine http://127.0.0.1:3000/redmine
+RequestHeader set X-Forwarded-Proto "https"
+```
+
+If your proxy can only forward with the prefix stripped, re-add it in the proxy (e.g. nginx
+`proxy_pass http://127.0.0.1:3000/redmine/;` inside `location /redmine/`). The health check is
+`http://127.0.0.1:3000/redmine/healthz`.
 
 ## 5. Backups
 

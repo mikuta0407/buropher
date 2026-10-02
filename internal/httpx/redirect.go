@@ -5,6 +5,8 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/mikuta0407/buropher/internal/urlroot"
 )
 
 var (
@@ -15,9 +17,10 @@ var (
 // RedirectLocation は Rails の _compute_redirect_to_location 相当:
 // スキーム付き・"//" 始まりはそのまま、それ以外（パス）は request.protocol + host_with_port を前置する。
 // NUL・CR・LF は除去する。
+// "/" で始まるアプリ内パスには relative_url_root を前置する（urlroot.Path。既に含むパスはそのまま）。
 func RedirectLocation(r *http.Request, location string) string {
 	if !absoluteLocationRe.MatchString(location) {
-		location = RequestBaseURL(r) + location
+		location = RequestBaseURL(r) + urlroot.Path(location)
 	}
 	location = strings.NewReplacer("\x00", "", "\r", "", "\n", "").Replace(location)
 	// Rails は残りの制御文字があると UnsafeRedirectError にする。ここでは除去する。
@@ -232,8 +235,11 @@ var (
 //   - スキーム・ホスト・ポートが指定されていればリクエストと一致すること
 //   - スキームと authority を除いた結果が "/" + 非 "/" 文字（または "/" のみ）で始まること
 //   - /login, /account/register, /account/lost_password を含むものは不可
-//   - relativeURLRoot が設定されていればそれで始まること
+//   - relativeURLRoot が設定されていればそれで始まること（空なら urlroot.Get() を使う）
 func ValidateBackURL(r *http.Request, backURL, relativeURLRoot string) (string, bool) {
+	if relativeURLRoot == "" {
+		relativeURLRoot = urlroot.Get()
+	}
 	if strings.TrimSpace(backURL) == "" {
 		return "", false
 	}

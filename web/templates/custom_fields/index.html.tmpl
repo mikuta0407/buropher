@@ -1,5 +1,5 @@
 <div class="contextual">
-{{link_to_function (sprite_icon "add" (l "label_custom_field_new")) "location.href = '/custom_fields/new?tab=' + encodeURIComponent(($('.tabs a.selected').attr('id')||'').split('tab-').pop())" (hash "class" "icon icon-add")}}
+{{link_to_function (sprite_icon "add" (l "label_custom_field_new")) (printf "location.href = '%s?tab=' + encodeURIComponent(($('.tabs a.selected').attr('id')||'').split('tab-').pop())" (url_path "/custom_fields/new")) (hash "class" "icon icon-add")}}
 </div>
 
 {{title (l "label_custom_field_plural")}}

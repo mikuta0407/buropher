@@ -14,6 +14,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/httpx"
 	"github.com/mikuta0407/buropher/internal/repository"
+	"github.com/mikuta0407/buropher/internal/urlroot"
 )
 
 // このファイルは OIDC シングルサインオン（buropher 拡張）のログイン処理。
@@ -114,11 +115,15 @@ func (a *App) oidcConfig(c *Req, rec *domain.AuthSourceRecord) oidc.Config {
 }
 
 // externalURL は外部から見た絶対 URL（server.base_url があればそれ、なければリクエストのスキームとホスト）。
+// path には relative_url_root を前置する（server.base_url が既にルートで終わっていれば前置しない）。
 func (a *App) externalURL(c *Req, path string) string {
 	if a.BaseURL != "" {
-		return a.BaseURL + path
+		if root := urlroot.Get(); root != "" && strings.HasSuffix(a.BaseURL, root) {
+			return a.BaseURL + path
+		}
+		return a.BaseURL + urlroot.Path(path)
 	}
-	return httpx.RequestBaseURL(c.R) + path
+	return httpx.RequestBaseURL(c.R) + urlroot.Path(path)
 }
 
 // oidcProvider は認証方式のプロバイダ（ディスカバリ結果はキャッシュする）。

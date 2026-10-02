@@ -21,6 +21,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/query"
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/textformat/redmine"
+	"github.com/mikuta0407/buropher/internal/urlroot"
 	"github.com/mikuta0407/buropher/internal/view/rails"
 )
 
@@ -725,7 +726,7 @@ func (v *issueShowView) NewSubtaskURL() string {
 		h.Get("issue").(*rails.Hash).Set("tracker_id", m.Row.TrackerID)
 	}
 	if v.l.c.Controller.Name == "issues" && v.l.c.Action == "show" {
-		h.Set("back_url", "/issues/"+strconv.FormatInt(m.Row.ID, 10))
+		h.Set("back_url", urlroot.Path("/issues/"+strconv.FormatInt(m.Row.ID, 10)))
 	}
 	return "/projects/" + m.Project.Identifier + "/issues/new?" + helper.ToQuery(h)
 }
@@ -888,7 +889,7 @@ func (v *issueShowView) DescendantsTree() template.HTML {
 		var buttons template.HTML
 		if manage {
 			u := "/issues/" + strconv.FormatInt(child.ID, 10) + "?" + helper.ToQuery(rails.NewHash(
-				"back_url", "/issues/"+strconv.FormatInt(v.M.Row.ID, 10), "issue", rails.NewHash("parent_issue_id", ""), "no_flash", "1"))
+				"back_url", urlroot.Path("/issues/"+strconv.FormatInt(v.M.Row.ID, 10)), "issue", rails.NewHash("parent_issue_id", ""), "no_flash", "1"))
 			buttons = rails.LinkTo(l.icon("link-break", l.L("label_delete_link_to_subtask")), u,
 				rails.NewHash("method", "put", "data", rails.NewHash("confirm", l.L("text_are_you_sure")),
 					"title", l.L("label_delete_link_to_subtask"), "class", "icon-only icon-link-break"))
@@ -984,7 +985,7 @@ func (r *relationFormModel) Send(method string) (any, bool) {
 
 // AutoCompleteRelationURL は auto_complete_issues_path(:project_id => @project, :issue_id => @issue)。
 func (v *issueShowView) AutoCompleteRelationURL() string {
-	return "/issues/auto_complete?issue_id=" + strconv.FormatInt(v.M.Row.ID, 10) + "&project_id=" + url.QueryEscape(v.M.Project.Identifier)
+	return urlroot.Path("/issues/auto_complete?issue_id=" + strconv.FormatInt(v.M.Row.ID, 10) + "&project_id=" + url.QueryEscape(v.M.Project.Identifier))
 }
 
 // ---------------------------------------------------------------- アクションメニュー
@@ -1193,11 +1194,11 @@ func (v *issueShowView) HistoryTabs() []helper.Tab {
 	}
 	if v.CanViewTime && v.M.SpentHours() > 0 {
 		tabs = append(tabs, helper.Tab{Name: "time_entries", Label: "label_time_entry_plural", Remote: true,
-			Onclick: "getRemoteTab('time_entries', '/issues/" + id + "/tab/time_entries', '/issues/" + id + "?tab=time_entries')"})
+			Onclick: "getRemoteTab('time_entries', '" + urlroot.Path("/issues/"+id+"/tab/time_entries") + "', '" + urlroot.Path("/issues/"+id+"?tab=time_entries") + "')"})
 	}
 	if v.HasChangesets {
 		tabs = append(tabs, helper.Tab{Name: "changesets", Label: "label_associated_revisions", Remote: true,
-			Onclick: "getRemoteTab('changesets', '/issues/" + id + "/tab/changesets', '/issues/" + id + "?tab=changesets')"})
+			Onclick: "getRemoteTab('changesets', '" + urlroot.Path("/issues/"+id+"/tab/changesets") + "', '" + urlroot.Path("/issues/"+id+"?tab=changesets") + "')"})
 	}
 	_ = l
 	return tabs
@@ -1249,7 +1250,7 @@ func (v *issueShowView) CanEditNotes() bool {
 
 // AtomURL は auto_discovery_link_tag(:atom, {:format => 'atom', :key => User.current.atom_key})。
 func (v *issueShowView) AtomURL() string {
-	u := httpx.RequestBaseURL(v.l.c.R) + "/issues/" + strconv.FormatInt(v.M.Row.ID, 10) + ".atom"
+	u := httpx.RequestBaseURL(v.l.c.R) + urlroot.Path("/issues/"+strconv.FormatInt(v.M.Row.ID, 10)+".atom")
 	if v.AtomKey != "" {
 		u += "?key=" + v.AtomKey
 	}

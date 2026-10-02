@@ -11,6 +11,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/helper"
 	"github.com/mikuta0407/buropher/internal/httpx"
 	"github.com/mikuta0407/buropher/internal/query"
+	"github.com/mikuta0407/buropher/internal/urlroot"
 	"github.com/mikuta0407/buropher/internal/view"
 	"github.com/mikuta0407/buropher/internal/view/rails"
 )
@@ -182,7 +183,7 @@ func (a *App) ganttViewData(c *Req, g *ganttChart, q *query.Query, qv *queryView
 	data["Editable"] = qv.Editable
 	data["EditQueryURL"] = "/queries/" + strconv.FormatInt(q.ID, 10) + "/edit?gantt=1"
 	data["QueryURL"] = "/queries/" + strconv.FormatInt(q.ID, 10) + "?gantt=1"
-	data["BackURL"] = helper.URLWithQuery(path, reqParams)
+	data["BackURL"] = urlroot.Path(helper.URLWithQuery(path, reqParams))
 	data["DrawTypesJSON"] = ganttDrawTypesJSON()
 	data["UnavailableColumns"] = strings.Join(ganttUnavailableColumns, ",")
 

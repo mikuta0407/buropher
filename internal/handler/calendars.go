@@ -19,6 +19,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/settings"
 	"github.com/mikuta0407/buropher/internal/textformat/redmine"
+	"github.com/mikuta0407/buropher/internal/urlroot"
 	"github.com/mikuta0407/buropher/internal/view"
 	"github.com/mikuta0407/buropher/internal/view/rails"
 	"github.com/mikuta0407/buropher/web"
@@ -325,14 +326,14 @@ func (a *App) CalendarsShow(c *Req) {
 		"Calendar":     cal,
 		"Errors":       errMsgs,
 		"FormAction":   formAction,
-		"FiltersURL":   filtersURL,
+		"FiltersURL":   urlroot.Path(filtersURL),
 		"PrevLink":     monthLink("« "+pname, py, pm, "p"),
 		"NextLink":     monthLink(nname+" »", ny, nm, "n"),
 		"MonthSelect":  selectMonthHTML(c, month),
 		"YearSelect":   selectYearHTML(year),
 		"ClearURL":     clearURL,
 		"CanSave":      canSave,
-		"NewQueryPath": newQueryPath,
+		"NewQueryPath": urlroot.Path(newQueryPath),
 		"Editable":     editable,
 		"EditQueryURL": "/queries/" + strconv.FormatInt(q.ID, 10) + "/edit?calendar=1",
 		"QueryURL":     "/queries/" + strconv.FormatInt(q.ID, 10) + "?calendar=1",

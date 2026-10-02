@@ -13,6 +13,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/httpx"
 	"github.com/mikuta0407/buropher/internal/query"
 	"github.com/mikuta0407/buropher/internal/repository"
+	"github.com/mikuta0407/buropher/internal/urlroot"
 )
 
 // renderIssuesIndexAPI は IssuesController#index の format.api。
@@ -177,9 +178,9 @@ func (l *issueLookup) renderAPIAttachment(b apibuilder.Builder, at *repository.R
 		b.Value("filesize", at.Filesize)
 		b.Value("content_type", strOrNil(at.ContentType))
 		b.Value("description", strOrNil(at.Description))
-		b.Value("content_url", base+"/attachments/download/"+itoaID(at.ID)+"/"+url.PathEscape(at.Filename))
+		b.Value("content_url", base+urlroot.Path("/attachments/download/"+itoaID(at.ID)+"/"+url.PathEscape(at.Filename)))
 		if attachmentThumbnailable(at) {
-			b.Value("thumbnail_url", base+"/attachments/thumbnail/"+itoaID(at.ID))
+			b.Value("thumbnail_url", base+urlroot.Path("/attachments/thumbnail/"+itoaID(at.ID)))
 		}
 		if u := l.principal(at.AuthorID); u != nil {
 			b.Attrs("author", apibuilder.A("id", u.ID, "name", l.principalName(u)))

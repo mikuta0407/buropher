@@ -22,6 +22,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/httpx"
 	"github.com/mikuta0407/buropher/internal/issues"
 	"github.com/mikuta0407/buropher/internal/repository"
+	"github.com/mikuta0407/buropher/internal/urlroot"
 	"github.com/mikuta0407/buropher/internal/view"
 	"github.com/mikuta0407/buropher/internal/view/rails"
 	"github.com/mikuta0407/buropher/web"
@@ -448,7 +449,7 @@ func (a *App) versionShowData(c *Req, v *domain.Version) (map[string]any, error)
 		}
 	}
 	if manage {
-		data["DeletePath"] = "/versions/" + strconv.FormatInt(v.ID, 10) + "?back_url=" + url.QueryEscape("/projects/"+m.Project.Identifier+"/roadmap")
+		data["DeletePath"] = "/versions/" + strconv.FormatInt(v.ID, 10) + "?back_url=" + url.QueryEscape(urlroot.Path("/projects/"+m.Project.Identifier+"/roadmap"))
 	}
 	newIssue, err := vc.linkToNewIssue(m, c.Project)
 	if err != nil {
@@ -964,7 +965,7 @@ func (a *App) VersionsCreate(c *Req) {
 		case "js":
 			a.versionsCreateJS(c, f.V)
 		case "json", "xml":
-			c.W.Header().Set("Location", httpx.RequestBaseURL(c.R)+"/versions/"+strconv.FormatInt(f.V.ID, 10))
+			c.W.Header().Set("Location", httpx.RequestBaseURL(c.R)+urlroot.Path("/versions/"+strconv.FormatInt(f.V.ID, 10)))
 			a.renderVersionShowAPI(c, f.V, http.StatusCreated)
 		default:
 			c.Flash().SetNotice(c.L("notice_successful_create"))

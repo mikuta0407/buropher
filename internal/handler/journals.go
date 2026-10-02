@@ -16,6 +16,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/query"
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/textdiff"
+	"github.com/mikuta0407/buropher/internal/urlroot"
 )
 
 // JournalsController（menu_item :issues）。
@@ -114,7 +115,7 @@ func (a *App) JournalsIndex(c *Req) {
 	} else {
 		title += ": " + q.Name
 	}
-	self := httpx.RequestBaseURL(c.R) + "/issues/changes.atom"
+	self := httpx.RequestBaseURL(c.R) + urlroot.Path("/issues/changes.atom")
 	if k := c.AtomKey(); k != "" {
 		self += "?key=" + k
 	}

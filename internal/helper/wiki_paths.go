@@ -9,6 +9,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/httpx"
 	"github.com/mikuta0407/buropher/internal/textformat/redmine"
+	"github.com/mikuta0407/buropher/internal/urlroot"
 	"github.com/mikuta0407/buropher/internal/view"
 	"github.com/mikuta0407/buropher/internal/view/rails"
 )
@@ -101,7 +102,7 @@ func init() {
 				}
 				u += "show_wiki_edits=1"
 				if full && pg().Request != nil {
-					return httpx.RequestBaseURL(pg().Request) + u
+					return httpx.RequestBaseURL(pg().Request) + urlroot.Path(u)
 				}
 				return u
 			},

@@ -38,6 +38,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/pdf"
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/settings"
+	"github.com/mikuta0407/buropher/internal/urlroot"
 	"github.com/mikuta0407/buropher/internal/view"
 	"github.com/mikuta0407/buropher/web"
 )
@@ -46,6 +47,7 @@ import (
 type Server struct {
 	cfg      *config.Config
 	router   chi.Router
+	handler  http.Handler
 	assets   *assets.Pipeline
 	app      *handler.App
 	sessions *httpx.SessionManager
@@ -104,6 +106,8 @@ func New(cfg *config.Config, d *db.DB, opts ...Options) (*Server, error) {
 		o = opts[0]
 	}
 	ctx := context.Background()
+	// サブパス配置（relative_url_root）はプロセス全体の設定（Rails と同じ）。パス生成はすべて urlroot.Path を通る。
+	urlroot.Set(cfg.Server.RelativeURLRoot)
 	st, err := settings.New(ctx, repository.SettingsStore{DB: d})
 	if err != nil {
 		return nil, fmt.Errorf("load settings: %w", err)
@@ -147,12 +151,18 @@ func New(cfg *config.Config, d *db.DB, opts ...Options) (*Server, error) {
 	if b, err := fs.ReadFile(web.Public(), "500.html"); err == nil {
 		handler.InternalErrorPage = b
 	}
+	if root := urlroot.Get(); root != "" {
+		// Redmine の autologin_cookie_path の既定（relative_url_root || '/'）
+		app.AutologinCookiePath = root
+	}
 	sessions := &httpx.SessionManager{
-		Store:  repository.SessionStore{DB: d},
-		Secret: secret,
-		Policy: app.SessionPolicy,
-		Now:    o.Now,
-		Logger: o.Logger,
+		// session_store の :path => config.relative_url_root || '/'
+		CookiePath: urlroot.Get(),
+		Store:      repository.SessionStore{DB: d},
+		Secret:     secret,
+		Policy:     app.SessionPolicy,
+		Now:        o.Now,
+		Logger:     o.Logger,
 	}
 	s := &Server{cfg: cfg, assets: ap, app: app, sessions: sessions}
 	if s.queue, s.notify, err = setupNotify(cfg, d, app, o); err != nil {
@@ -177,11 +187,41 @@ func New(cfg *config.Config, d *db.DB, opts ...Options) (*Server, error) {
 		}
 	})
 	s.router = r
+	s.handler = mountRelativeURLRoot(r)
 	return s, nil
 }
 
 // Handler は http.Handler を返す。
-func (s *Server) Handler() http.Handler { return s.router }
+func (s *Server) Handler() http.Handler { return s.handler }
+
+// mountRelativeURLRoot はサブパス配置（relative_url_root）のとき、ルートで始まるリクエストだけを
+// ルートを除いたパスでルーティングする（Redmine の config.ru の map relative_url_root 相当）。
+// r.URL.Path はルートを含んだまま（Rails の request.path = script_name + path_info と同じ）にし、
+// chi のルーティングに使うパス（RoutePath）だけを差し替える。ルート外のパスは Rack::URLMap と同じ
+// 404（text/plain "Not Found: <path>"）を返す。
+func mountRelativeURLRoot(next chi.Router) http.Handler {
+	if urlroot.Get() == "" {
+		return next
+	}
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		path := r.URL.Path
+		if r.URL.RawPath != "" {
+			path = r.URL.RawPath
+		}
+		rest, ok := urlroot.Strip(path)
+		if !ok {
+			w.Header().Set("Content-Type", "text/plain")
+			w.Header().Set("X-Cascade", "pass")
+			w.WriteHeader(http.StatusNotFound)
+			_, _ = w.Write([]byte("Not Found: " + r.URL.Path))
+			return
+		}
+		rctx := chi.NewRouteContext()
+		rctx.Routes = next
+		rctx.RoutePath = rest
+		next.ServeHTTP(w, r.WithContext(context.WithValue(r.Context(), chi.RouteCtxKey, rctx)))
+	})
+}
 
 // Assets はアセットパイプライン（テンプレートのヘルパー用）を返す。
 func (s *Server) Assets() *assets.Pipeline { return s.assets }
@@ -192,7 +232,7 @@ func (s *Server) App() *handler.App { return s.app }
 // newAssets は embed（開発時は DevWebDir/assets）からアセットパイプラインを作る。
 // 外部テーマ（config の web.themes_dir）は ExtraThemes として読み込み、同梱テーマと同じくダイジェスト付き URL で配信する。
 func newAssets(cfg *config.Config) (*assets.Pipeline, error) {
-	var opts assets.Options
+	opts := assets.Options{RelativeURLRoot: cfg.Server.RelativeURLRoot}
 	if cfg.Web.ThemesDir != "" {
 		if fi, err := os.Stat(cfg.Web.ThemesDir); err != nil || !fi.IsDir() {
 			return nil, fmt.Errorf("config: web.themes_dir %q is not a directory", cfg.Web.ThemesDir)
@@ -299,7 +339,7 @@ func healthz(d *db.DB) http.HandlerFunc {
 // Run は ctx がキャンセルされるまでサーバを動かす。
 func (s *Server) Run(ctx context.Context) error {
 	s.runWorkers(ctx)
-	srv := &http.Server{Addr: s.cfg.Server.Addr, Handler: s.router, ReadHeaderTimeout: 10 * time.Second}
+	srv := &http.Server{Addr: s.cfg.Server.Addr, Handler: s.handler, ReadHeaderTimeout: 10 * time.Second}
 	errc := make(chan error, 1)
 	s.startSCMFetcher(ctx)
 	go func() {

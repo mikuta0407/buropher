@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # 互換テストの候補側: 参照 Redmine と同じフィクスチャ DB を export → import した buropher を起動する。
 #   tools/compat/buropher-cand.sh start|stop|restart|reset|status  (既定ポート 3100)
+#   BUROPHER_RELATIVE_URL_ROOT を設定するとサブパス配置（例: /redmine）で起動する（環境変数はそのまま serve に渡る）。
 # 参照側（tools/compat/redmine-ref.sh）と同じ固定時刻・TZ で動かす。
 set -euo pipefail
 ROOT=$(cd "$(dirname "$0")/../.." && pwd)
@@ -45,7 +46,7 @@ start() {
   nohup env BUROPHER_DB_DSN=$WORK/db/buropher.db BUROPHER_ATTACHMENTS_PATH=$WORK/files BUROPHER_SECRET_KEY=compat-secret \
     BUROPHER_ADDR=127.0.0.1:$PORT BUROPHER_FAKE_NOW=$FROZEN TZ=UTC "$BIN" serve > "$WORK/serve.log" 2>&1 &
   echo $! > "$PIDFILE"
-  for _ in $(seq 50); do curl -sf "http://127.0.0.1:$PORT/healthz" >/dev/null && { echo "buropher candidate on http://127.0.0.1:$PORT"; return; }; sleep 0.2; done
+  for _ in $(seq 50); do curl -sf "http://127.0.0.1:$PORT${BUROPHER_RELATIVE_URL_ROOT:-}/healthz" >/dev/null && { echo "buropher candidate on http://127.0.0.1:$PORT${BUROPHER_RELATIVE_URL_ROOT:-}"; return; }; sleep 0.2; done
   echo "failed to start; see $WORK/serve.log" >&2; exit 1
 }
 

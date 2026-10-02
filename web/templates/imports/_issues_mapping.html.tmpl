@@ -19,7 +19,7 @@
 
   $('#fields-mapping').on('change', '#import_mapping_project_id, #import_mapping_tracker', function(){
     $.ajax({
-      url: '{{print "/imports/" .Filename "/mapping.js"}}',
+      url: '{{url_path (print "/imports/" .Filename "/mapping.js")}}',
       type: 'post',
       data: $('#import-form').serialize()
     });

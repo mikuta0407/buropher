@@ -22,4 +22,4 @@
 {{submit_tag (l "button_rename")}}
 {{end_form}}
 
-{{javascript_tag (printf "\n$('#wiki_page_wiki_id').change(function() {\n  $.ajax({\n    url: '%s',\n    type: 'get',\n    data: { 'wiki_page[wiki_id]': $('#wiki_page_wiki_id').val() }\n  });\n});\n" (printf "/projects/%d/wiki/%s/rename.js" .Wiki.ID (url_segment .OriginalPageTitle))) -}}
+{{javascript_tag (printf "\n$('#wiki_page_wiki_id').change(function() {\n  $.ajax({\n    url: '%s',\n    type: 'get',\n    data: { 'wiki_page[wiki_id]': $('#wiki_page_wiki_id').val() }\n  });\n});\n" (url_path (printf "/projects/%d/wiki/%s/rename.js" .Wiki.ID (url_segment .OriginalPageTitle)))) -}}

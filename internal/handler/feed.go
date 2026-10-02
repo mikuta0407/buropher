@@ -12,6 +12,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/httpx"
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/settings"
+	"github.com/mikuta0407/buropher/internal/urlroot"
 	"github.com/mikuta0407/buropher/internal/view/rails"
 )
 
@@ -54,10 +55,10 @@ func (a *App) renderFeed(c *Req, items []*activity.Event, title string) {
 	b.WriteString(`<?xml version="1.0" encoding="UTF-8"?>` + "\n")
 	b.WriteString(`<feed xmlns="http://www.w3.org/2005/Atom">` + "\n")
 	b.WriteString("  <title>" + xmlText(truncateSingleLineRaw(title, 300)) + "</title>\n")
-	b.WriteString(`  <link rel="self" href="` + xmlAttr(base+helper.URLWithQuery(path+".atom", qp)) + `"/>` + "\n")
-	b.WriteString(`  <link rel="alternate" href="` + xmlAttr(base+helper.URLWithQuery(path, qp.Except("format", "key"))) + `"/>` + "\n")
-	b.WriteString("  <id>" + xmlText(base+"/") + "</id>\n")
-	b.WriteString("  <icon>" + xmlText(base+"/"+strings.TrimLeft(a.Helpers.FaviconPath(page), "/")) + "</icon>\n")
+	b.WriteString(`  <link rel="self" href="` + xmlAttr(base+urlroot.Path(helper.URLWithQuery(path+".atom", qp))) + `"/>` + "\n")
+	b.WriteString(`  <link rel="alternate" href="` + xmlAttr(base+urlroot.Path(helper.URLWithQuery(path, qp.Except("format", "key")))) + `"/>` + "\n")
+	b.WriteString("  <id>" + xmlText(base+urlroot.Path("/")) + "</id>\n")
+	b.WriteString("  <icon>" + xmlText(base+urlroot.Path("/"+strings.TrimLeft(a.Helpers.FaviconPath(page), "/"))) + "</icon>\n")
 	updated := a.now()
 	if len(items) > 0 {
 		updated = items[0].Datetime
@@ -66,7 +67,7 @@ func (a *App) renderFeed(c *Req, items []*activity.Event, title string) {
 	b.WriteString("  <author>\n    <name>" + xmlText(a.Settings.String("app_title")) + "</name>\n  </author>\n")
 	b.WriteString(`  <generator uri="` + xmlAttr(helper.AppURL) + `">` + "\n" + xmlText(helper.AppName) + "  </generator>\n")
 	for _, e := range items {
-		url := base + e.URL
+		url := base + urlroot.Path(e.URL)
 		b.WriteString("  <entry>\n")
 		t := e.Title
 		if !(c.Project != nil && e.Project != nil && c.Project.ID == e.Project.ID) && !(c.Project == nil && e.Project == nil) {

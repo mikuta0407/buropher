@@ -7,6 +7,8 @@ import (
 	"strings"
 
 	"github.com/BurntSushi/toml"
+
+	"github.com/mikuta0407/buropher/internal/urlroot"
 )
 
 type Config struct {
@@ -33,6 +35,9 @@ type Config struct {
 type Server struct {
 	Addr    string `toml:"addr"`
 	BaseURL string `toml:"base_url"`
+	// RelativeURLRoot はサブパス配置のルート（Rails の RAILS_RELATIVE_URL_ROOT 相当。例 "/redmine"）。
+	// 空ならルート配置。リバースプロキシはプレフィックスを含むパスのまま転送すること。
+	RelativeURLRoot string `toml:"relative_url_root"`
 	// SecretKey はセッション・CSRF・暗号化に使う。
 	SecretKey string `toml:"secret_key"`
 }
@@ -204,6 +209,7 @@ func Load(path string) (*Config, error) {
 	env := map[string]*string{
 		"BUROPHER_ADDR":               &c.Server.Addr,
 		"BUROPHER_BASE_URL":           &c.Server.BaseURL,
+		"BUROPHER_RELATIVE_URL_ROOT":  &c.Server.RelativeURLRoot,
 		"BUROPHER_SECRET_KEY":         &c.Server.SecretKey,
 		"BUROPHER_DB_DRIVER":          &c.Database.Driver,
 		"BUROPHER_DB_DSN":             &c.Database.DSN,
@@ -235,5 +241,6 @@ func Load(path string) (*Config, error) {
 		c.Auth.SudoMode = v == "1" || strings.EqualFold(v, "true")
 	}
 	c.Server.BaseURL = strings.TrimRight(c.Server.BaseURL, "/")
+	c.Server.RelativeURLRoot = urlroot.Normalize(c.Server.RelativeURLRoot)
 	return c, nil
 }

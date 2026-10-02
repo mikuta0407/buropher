@@ -18,6 +18,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/pagination"
 	"github.com/mikuta0407/buropher/internal/query"
 	"github.com/mikuta0407/buropher/internal/repository"
+	"github.com/mikuta0407/buropher/internal/urlroot"
 	"github.com/mikuta0407/buropher/internal/view"
 	"github.com/mikuta0407/buropher/internal/view/rails"
 )
@@ -422,7 +423,7 @@ func (a *App) UsersShow(c *Req) {
 		"ActivityAtomURL": helper.URLWithQuery("/activity.atom", atomParams),
 		// url_for(:controller => 'activities', :action => 'index', :user_id => @user, :format => :atom, :key => ...)
 		// は :id => nil を指定しないため現在のパスパラメータ id が残り /projects/:id/activity.atom になる（Redmine と同じ）
-		"ActivityFeedURL": httpx.RequestBaseURL(c.R) + helper.URLWithQuery("/projects/"+url.PathEscape(c.Params().String("id"))+"/activity.atom", atomParams),
+		"ActivityFeedURL": httpx.RequestBaseURL(c.R) + urlroot.Path(helper.URLWithQuery("/projects/"+url.PathEscape(c.Params().String("id"))+"/activity.atom", atomParams)),
 	})
 }
 
@@ -735,7 +736,7 @@ func (a *App) UsersCreate(c *Req) {
 			a.deliverAccountInformation(c, m)
 		}
 		if httpx.IsAPIRequest(c.R) {
-			c.W.Header().Set("Location", httpx.RequestBaseURL(c.R)+"/users/"+itoa(m.ID))
+			c.W.Header().Set("Location", httpx.RequestBaseURL(c.R)+urlroot.Path("/users/"+itoa(m.ID)))
 			u, err := repository.GetUser(c.Ctx(), a.DB, m.ID)
 			if err != nil {
 				a.serverError(c, err)
