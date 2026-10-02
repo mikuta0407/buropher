@@ -28,6 +28,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/assets"
 	"github.com/mikuta0407/buropher/internal/attachments"
 	"github.com/mikuta0407/buropher/internal/config"
+	"github.com/mikuta0407/buropher/internal/crypto/secretbox"
 	"github.com/mikuta0407/buropher/internal/db"
 	"github.com/mikuta0407/buropher/internal/handler"
 	"github.com/mikuta0407/buropher/internal/helper"
@@ -60,6 +61,8 @@ type Options struct {
 	TempDir string
 	// ExtraRoutes はテスト用の追加ルート（App.Routes の後に同じミドルウェアの下で登録する）。
 	ExtraRoutes func(a *handler.App, r chi.Router)
+	// Version は buropher のバージョン（admin/info に表示する）。
+	Version string
 }
 
 // ErrNotInitialized は DB が未初期化（buropher init 未実行）。
@@ -121,7 +124,10 @@ func New(cfg *config.Config, d *db.DB, opts ...Options) (*Server, error) {
 	errs := &httpx.ErrorRenderer{}
 	app := &handler.App{
 		DB: d, Settings: st, Bundle: i18n.Default(), Assets: ap, Views: views, Helpers: helpers,
-		Errors: errs, Logger: o.Logger, Now: o.Now, FormNameSuffix: o.FormNameSuffix,
+		Errors: errs, Logger: o.Logger, Now: o.Now, FormNameSuffix: o.FormNameSuffix, Version: o.Version,
+	}
+	if box, err := secretbox.New(string(secret)); err == nil {
+		app.Secrets = box
 	}
 	app.AttachmentStore = &attachments.Store{Root: cfg.Storage.AttachmentsPath, Settings: st, Now: o.Now, Logger: o.Logger}
 	errs.Page = app.ErrorPage()

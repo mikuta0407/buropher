@@ -57,13 +57,19 @@ func (a *App) authenticateUser(c *Req) { a.passwordAuthentication(c) }
 // passwordAuthentication は AccountController#password_authentication。
 func (a *App) passwordAuthentication(c *Req) {
 	p := c.Params()
-	user, err := a.tryToLogin(c, p.String("username"), p.String("password"), false)
+	user, unsaved, err := a.tryToLoginBang(c, p.String("username"), p.String("password"), false)
 	if err != nil {
-		a.logger().Error("authentication", "err", err)
+		// rescue AuthSourceException => e（login アクション）: render_error :message => e.message
+		a.logger().Error("An error occurred when authenticating "+p.String("username"), "err", err)
 		c.RenderError(http.StatusInternalServerError, err.Error())
 		return
 	}
 	switch {
+	case unsaved != nil:
+		// onthefly_creation_failed: Redmine は session[:auth_source_registration] を設定して account/register を描画する。
+		// TODO(register): 登録画面（account#register）が未実装のため、資格情報エラーとして扱う。
+		a.logger().Warn("on-the-fly user creation failed", "login", unsaved.Login, "errors", unsaved.errors.FullMessages(c.Loc))
+		a.invalidCredentials(c)
 	case user == nil:
 		a.invalidCredentials(c)
 	case user.Active():

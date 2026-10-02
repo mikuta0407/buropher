@@ -1,0 +1,32 @@
+{{$v := assigns}}
+{{form_tag "/settings/edit?tab=timelog"}}
+
+<div class="box tabular settings">
+<p>{{setting_multiselect "timelog_required_fields" (list (list (l "field_issue") "issue_id") (list (l "field_comments") "comments"))}}</p>
+
+<p>{{setting_text_field "timelog_max_hours_per_day" (hash "size" 6)}}</p>
+
+<p>{{setting_check_box "timelog_accept_0_hours"}}</p>
+
+<p>{{setting_check_box "timelog_accept_future_dates"}}</p>
+
+<p>{{setting_check_box "timelog_accept_closed_issues"}}</p>
+</div>
+
+<fieldset class="box">
+  <legend>{{l "setting_time_entry_list_defaults"}}</legend>
+
+  {{hidden_field_tag "settings[time_entry_list_defaults][column_names][]" ""}}
+  <div id="list-definition">
+    <div>
+      {{partial "queries/columns" (dict "qv" $v.TimeEntryQuery "tag_name" "settings[time_entry_list_defaults][column_names][]")}}
+    </div>
+  </div>
+  <p>
+    <label>{{l "label_total_plural"}}</label>
+    {{$v.TimeEntryTotalsTags}}
+  </p>
+</fieldset>
+
+{{submit_tag (l "button_save")}}
+{{end_form}}

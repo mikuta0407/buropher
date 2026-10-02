@@ -88,7 +88,7 @@ func serve(args []string) error {
 	if err := server.CheckInitialized(ctx, d); err != nil {
 		return err
 	}
-	srv, err := server.New(cfg, d)
+	srv, err := server.New(cfg, d, server.Options{Version: version})
 	if err != nil {
 		return err
 	}

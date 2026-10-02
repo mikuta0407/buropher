@@ -45,4 +45,7 @@ func (a *App) Routes(r Router) {
 	a.routesMy(r)
 	a.routesCalendars(r)
 	a.routesReports(r)
+	a.routesSettings(r)
+	a.routesAdmin(r)
+	a.routesAuthSources(r)
 }

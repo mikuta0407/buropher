@@ -43,6 +43,7 @@ start() {
 }
 
 # stop は終了を待つ（終了前に DB を差し替えると、旧プロセスが閉じるときに WAL を書き戻して状態が残るため）。
+# PIDFILE はサブシェルの pid のことがあるため、同じバイナリの serve も止める。
 stop() {
   if [ -f "$PIDFILE" ]; then
     pid=$(cat "$PIDFILE")
@@ -50,6 +51,8 @@ stop() {
     for _ in $(seq 100); do kill -0 "$pid" 2>/dev/null || break; sleep 0.1; done
   fi
   rm -f "$PIDFILE"
+  pkill -f "^$BIN serve\$" 2>/dev/null || true
+  for _ in $(seq 50); do pgrep -f "^$BIN serve\$" >/dev/null || break; sleep 0.2; done
 }
 
 case "${1:-}" in

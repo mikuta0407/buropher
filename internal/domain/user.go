@@ -108,9 +108,7 @@ func (u *User) PasswordExpired(now time.Time, maxAgeDays int) bool {
 	return changed.Before(now.AddDate(0, 0, -maxAgeDays))
 }
 
-// ChangePasswordAllowed は User#change_password_allowed?。
-// 外部認証 (LDAP 等) のパスワード変更は未対応のため、認証元があれば false とする。
-// TODO(auth): AuthSource#allow_password_changes?。
+// ChangePasswordAllowed は User#change_password_allowed?（認証方式のユーザーは AuthSource#allow_password_changes? = false）。
 func (u *User) ChangePasswordAllowed() bool { return u.AuthSourceID == nil }
 
 // MustChangePasswordNow は User#must_change_password?。
