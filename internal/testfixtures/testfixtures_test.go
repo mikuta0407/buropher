@@ -61,7 +61,7 @@ func TestLoadAll(t *testing.T) {
 			"project_modules": 26, "members": 10, "member_roles": 12, "roles": 5, "issues": 14,
 			"issue_priorities": 6, "time_entry_activities": 4, "document_categories": 4, "trackers": 3,
 			"workflow_transitions": 276,
-			"custom_fields": 10, "custom_fields_projects": 1, "custom_fields_trackers": 10, "custom_values": 17,
+			"custom_fields":        10, "custom_fields_projects": 1, "custom_fields_trackers": 10, "custom_values": 17,
 			"issue_journals": 5, "issue_journal_details": 6, "time_entries": 5, "queries": 12, "issue_relations": 2,
 			"attachments": 24, "user_preferences": 3, "user_project_bookmarks": 2,
 		}
