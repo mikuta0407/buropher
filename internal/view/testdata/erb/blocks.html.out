@@ -1,0 +1,27 @@
+<head>
+<title>Issues - World &lt;&amp;&gt; &quot;q&quot; &#39;a&#39; - Redmine</title>
+<!-- page specific tags -->
+  <link rel="alternate" href="/x" />
+<script>1</script>
+</head>
+<p>true false</p>
+<div id="search">
+    <form action="/search" accept-charset="UTF-8" name="form-abcd1234" method="get">
+    <input type="hidden" name="scope" value="x" autocomplete="off" />
+    <input type="text" name="q" id="q" value="World &lt;&amp;&gt; &quot;q&quot; &#39;a&#39;" size="20" class="small" />
+</form></div>
+<form id="f" action="/issues/1" accept-charset="UTF-8" name="f-abcd1234" method="post"><input type="hidden" name="_method" value="patch" autocomplete="off" /><input type="hidden" name="authenticity_token" value="TOKEN" autocomplete="off" />
+<p><input type="submit" name="commit" value="Save" data-disable-with="Save" /></p>
+</form>after
+<div class="box">
+  <a class="icon" href="/x?a=1&amp;b=2">World &lt;&amp;&gt; &quot;q&quot; &#39;a&#39;</a>
+</div><span class="odd">a</span>
+<span class="even">b&lt;</span>
+<span class="odd">c</span>
+<script>
+//<![CDATA[
+$('#x').hide();
+//]]>
+</script>
+<select name="status" id="status"><option value="" label=" "></option><option value="1">Open</option>
+<option selected="selected" value="2">Closed</option></select>

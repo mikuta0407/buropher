@@ -1,0 +1,44 @@
+<ul>
+<% items.each do |item| %>
+  <li><%= item %></li>
+<% end %>
+</ul>
+<% if flag %>
+    <p>yes</p>
+<% else %>
+    <p>no</p>
+<% end %>
+<div><% if flag %>inline<% end %></div>
+  <%= name %>
+  <%= name -%>
+after
+<%# comment line %>
+  <% if flag %>
+indented-with-trailing-space
+  <% end %>
+<% empty.each do |x| %><%= x %><% end %>
+text <% if flag %>mid<% end %> text
+<%= "a" %><% if flag %>
+b
+<% end %>
+	<% if flag %>
+tab-indented
+	<% end %>
+
+<% if !flag %>
+never
+<% end %>
+<table>
+  <% items.each_with_index do |item, i| %>
+  <tr class="<%= i.even? ? 'odd' : 'even' %>">
+    <td><%= item %></td>
+  </tr>
+  <% end %>
+</table>
+<%= name %> <%= name %>
+<% x = 1 %>
+<p><%= x %></p>
+<% if flag %><% if flag %>
+double
+<% end %><% end %>
+end

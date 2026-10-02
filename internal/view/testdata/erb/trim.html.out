@@ -1,0 +1,33 @@
+<ul>
+  <li>a</li>
+  <li>b&lt;</li>
+  <li>c</li>
+</ul>
+    <p>yes</p>
+<div>inline</div>
+  World &lt;&amp;&gt; &quot;q&quot; &#39;a&#39;
+  World &lt;&amp;&gt; &quot;q&quot; &#39;a&#39;after
+indented-with-trailing-space
+
+text mid text
+a
+b
+tab-indented
+
+<table>
+  <tr class="odd">
+    <td>a</td>
+  </tr>
+  <tr class="even">
+    <td>b&lt;</td>
+  </tr>
+  <tr class="odd">
+    <td>c</td>
+  </tr>
+</table>
+World &lt;&amp;&gt; &quot;q&quot; &#39;a&#39; World &lt;&amp;&gt; &quot;q&quot; &#39;a&#39;
+<p>1</p>
+
+double
+
+end

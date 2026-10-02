@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="{{current_language}}">
+<head>
+<title>{{html_title}}</title>
+{{csrf_meta_tags}}
+<!-- page specific tags -->
+{{yield "header_tags" -}}
+</head>
+<body class="{{body_css_classes}}">
+{{if has_content_for "sidebar"}}
+<div id="sidebar">{{yield "sidebar"}}</div>
+{{end}}
+<div id="content">
+{{render_flash_messages}}
+{{yield}}
+</div>
+</body>
+</html>

@@ -1,0 +1,31 @@
+{
+  "issue_new": {
+    "name": "issue", "persisted": false, "id": null,
+    "attrs": {"subject": null, "is_private": false, "status_id": null, "start_date": null, "description": null,
+              "estimated_hours": null, "watcher_user_ids": [], "lock_version": 0},
+    "errors": {}
+  },
+  "issue_saved": {
+    "name": "issue", "persisted": true, "id": 5,
+    "attrs": {"subject": "Fix \"bug\" <now> & 'then'", "is_private": true, "status_id": 5, "start_date": "2024-03-01",
+              "description": "line1\nline2 <b>", "estimated_hours": null, "watcher_user_ids": [1], "lock_version": 3},
+    "errors": {}
+  },
+  "issue_err": {
+    "name": "issue", "persisted": false, "id": null,
+    "attrs": {"subject": "", "is_private": false, "status_id": null, "start_date": null, "description": null,
+              "estimated_hours": null, "watcher_user_ids": [], "lock_version": 0},
+    "errors": {"subject": ["cannot be blank"], "status_id": ["is invalid"]}
+  },
+  "issue_newline": {
+    "name": "issue", "persisted": false, "id": null,
+    "attrs": {"subject": null, "is_private": false, "status_id": null, "start_date": null, "description": "\nstarts with newline",
+              "estimated_hours": null, "watcher_user_ids": [], "lock_version": 0},
+    "errors": {}
+  },
+  "user_new": {
+    "name": "user", "persisted": false, "id": null,
+    "attrs": {"password": "secret", "admin": false, "mail": "a@b.c", "age": 30},
+    "errors": {}
+  }
+}

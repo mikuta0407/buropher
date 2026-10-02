@@ -1,0 +1,11 @@
+{
+  "name": "World <&> \"q\" 'a'",
+  "items": ["a", "b<", "c"],
+  "flag": true,
+  "empty": [],
+  "num": 42,
+  "nilv": null,
+  "float": 1.5,
+  "plus": "1+1=2",
+  "html_safe": "<b>bold</b>"
+}
