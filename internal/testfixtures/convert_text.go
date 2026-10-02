@@ -11,7 +11,7 @@ import (
 func loadDocuments(c *loadCtx, rows []row) error {
 	for _, r := range rows {
 		if err := c.exec(`INSERT INTO documents (id, project_id, category_id, title, description, created_at) VALUES (?, ?, ?, ?, ?, ?)`,
-			r.int("id", 0), r.int("project_id", 0), r.int("category_id", 0), r.str("title"), r.nstr("description"),
+			r.int("id", 0), r.int("project_id", 0), r.int("category_id", 0), r.str("title"), r.text("description", nil),
 			ts(c, r, "created_on")); err != nil {
 			return err
 		}
@@ -25,7 +25,7 @@ func loadMessages(c *loadCtx, rows []row) error {
 	for _, r := range rows {
 		if err := c.exec(`INSERT INTO messages (id, board_id, parent_id, subject, content, author_id, replies_count, last_reply_id,
   locked, sticky, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-			r.int("id", 0), r.int("board_id", 0), r.nint("parent_id"), r.str("subject"), r.nstr("content"), r.nint("author_id"),
+			r.int("id", 0), r.int("board_id", 0), r.nint("parent_id"), r.str("subject"), r.text("content", nil), r.nint("author_id"),
 			r.int("replies_count", 0), r.nint("last_reply_id"), r.bool("locked", false), r.int("sticky", 0) > 0,
 			ts(c, r, "created_on"), ts(c, r, "updated_on")); err != nil {
 			return err
@@ -52,7 +52,7 @@ func loadComments(c *loadCtx, rows []row) error {
 			continue
 		}
 		if err := c.exec(`INSERT INTO news_comments (id, news_id, author_id, content, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)`,
-			r.int("id", 0), r.int("commented_id", 0), r.int("author_id", 0), r.nstr("content"),
+			r.int("id", 0), r.int("commented_id", 0), r.int("author_id", 0), r.text("content", nil),
 			ts(c, r, "created_on"), ts(c, r, "updated_on")); err != nil {
 			return err
 		}
@@ -83,7 +83,7 @@ func loadWikiContentVersions(c *loadCtx, rows []row) error {
 		}
 		page, ver := r.int("page_id", 0), r.int("version", 0)
 		if err := c.exec(`INSERT INTO wiki_page_versions (id, page_id, version, author_id, text, comments, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-			r.int("id", 0), page, ver, r.nint("author_id"), r.str("data"), r.nstr("comments"), ts(c, r, "updated_on")); err != nil {
+			r.int("id", 0), page, ver, r.nint("author_id"), r.str("data"), r.text("comments", ""), ts(c, r, "updated_on")); err != nil {
 			return err
 		}
 		if err := c.exec(`UPDATE wiki_pages SET current_version = ? WHERE id = ? AND current_version < ?`, ver, page, ver); err != nil {
@@ -105,7 +105,7 @@ func loadWikiContents(c *loadCtx, rows []row) error {
 		}
 		if n > 0 {
 			if err := c.exec(`UPDATE wiki_page_versions SET author_id = ?, text = ?, comments = ?, updated_at = ? WHERE page_id = ? AND version = ?`,
-				r.nint("author_id"), r.str("text"), r.nstr("comments"), ts(c, r, "updated_on"), page, ver); err != nil {
+				r.nint("author_id"), r.str("text"), r.text("comments", ""), ts(c, r, "updated_on"), page, ver); err != nil {
 				return err
 			}
 		} else {
@@ -115,7 +115,7 @@ func loadWikiContents(c *loadCtx, rows []row) error {
 				return err
 			}
 			if err := c.exec(`INSERT INTO wiki_page_versions (id, page_id, version, author_id, text, comments, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-				next, page, ver, r.nint("author_id"), r.str("text"), r.nstr("comments"), ts(c, r, "updated_on")); err != nil {
+				next, page, ver, r.nint("author_id"), r.str("text"), r.text("comments", ""), ts(c, r, "updated_on")); err != nil {
 				return err
 			}
 		}
@@ -153,8 +153,8 @@ func loadAttachments(c *loadCtx, rows []row) error {
 		}
 		if err := c.exec(`INSERT INTO attachments (id, container_kind, container_id, filename, disk_directory, disk_filename, filesize,
   content_type, digest, digest_algo, downloads, author_id, description, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-			r.int("id", 0), kind, cid, r.str("filename"), r.nstr("disk_directory"), r.str("disk_filename"), r.int("filesize", 0),
-			r.nstr("content_type"), digest, algo, r.int("downloads", 0), r.int("author_id", 0), r.nstr("description"),
+			r.int("id", 0), kind, cid, r.str("filename"), r.text("disk_directory", nil), r.str("disk_filename"), r.int("filesize", 0),
+			r.text("content_type", nil), digest, algo, r.int("downloads", 0), r.int("author_id", 0), r.text("description", nil),
 			ts(c, r, "created_on")); err != nil {
 			return err
 		}

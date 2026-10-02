@@ -110,7 +110,7 @@ func (im *imp) importProjects() error {
 			im.st.projectDefaultQuery[id] = q
 		}
 		im.st.projects[id] = parent[id]
-		if err := ins.add(id, nullIfZero(parent[id]), r.str("name"), ident, r.strNull("description", true), r.strNull("homepage", true),
+		if err := ins.add(id, nullIfZero(parent[id]), r.str("name"), ident, r.strNull("description", false), r.strNull("homepage", false),
 			// 兄弟順は旧 lft の大小で保持する (position = lft。兄弟内の順序だけが意味を持つ)
 			r.bool("is_public", true), status, r.bool("inherit_members", false), r.intOr("lft", 0), nil, assignee, nil,
 			im.tsOr(t, id, r, "created_on", "updated_on"), im.tsOr(t, id, r, "updated_on", "created_on")); err != nil {
@@ -488,8 +488,8 @@ func (im *imp) importVersions() error {
 		}
 		name := names.take(t, id, p, r.str("name"), "Version %d")
 		im.st.versions[id] = p
-		return ins.add(id, p, name, r.strNull("description", true), im.dateNull(t, id, r, "effective_date"),
-			r.strNull("wiki_page_title", true), status, sharing, im.tsOr(t, id, r, "created_on", "updated_on"), im.tsOr(t, id, r, "updated_on", "created_on"))
+		return ins.add(id, p, name, r.strNull("description", false), im.dateNull(t, id, r, "effective_date"),
+			r.strNull("wiki_page_title", false), status, sharing, im.tsOr(t, id, r, "created_on", "updated_on"), im.tsOr(t, id, r, "updated_on", "created_on"))
 	})
 	if err != nil {
 		return err

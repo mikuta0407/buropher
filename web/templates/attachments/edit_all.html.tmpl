@@ -19,7 +19,7 @@
     <tr id="attachment-{{$attachment.ID}}">
       <td>{{text_field_tag (printf "attachments[%d][filename]" $attachment.ID) $attachment.Filename (hash "size" 40)}}</td>
       <td>
-        {{text_field_tag (printf "attachments[%d][description]" $attachment.ID) (presence $attachment.Description) (hash "size" 80 "placeholder" (l "label_optional_description"))}}
+        {{text_field_tag (printf "attachments[%d][description]" $attachment.ID) $attachment.DescriptionValue (hash "size" 80 "placeholder" (l "label_optional_description"))}}
       </td>
     </tr>
   {{end}}

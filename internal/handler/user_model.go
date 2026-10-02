@@ -383,7 +383,7 @@ func (m *userModel) assignPref(p *httpx.Params) {
 		pr.HideMail = castBoolAny(v)
 	}
 	if v, ok := get("time_zone"); ok {
-		pr.TimeZone = httpx.ValueString(v)
+		pr.TimeZone, pr.TimeZoneNull = httpx.ValueString(v), false
 	}
 	if v, ok := get("comments_sorting"); ok {
 		pr.CommentsSorting = httpx.ValueString(v)

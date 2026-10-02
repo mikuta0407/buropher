@@ -79,7 +79,7 @@ vr, err := verify.Verify(ctx, db, "export.tar.zst", verify.Options{FilesDir: "..
 | 日時 | naive 値をマニフェストの `source.timezone` で解釈して UTC へ。DST の曖昧な時刻は**早い方**、存在しない時刻は欠落前のオフセットで解釈(= 時計を進める、Ruby の `Time.local` と同じ)。件数とサンプルを警告に出す。日付のみ(`2026-01-13`)は 0 時とみなす |
 | 日時の欠損 | NOT NULL 列が NULL/解釈不能なら関連列(created ↔ updated)→ インポート時刻の順で補完して `repaired` に記録。NULL 許容列の不正値は NULL |
 | 真偽値 | `1/0`、`t/f`、`true/false`、`yes/no` を受理。NULL は列の既定値 |
-| `'' → NULL` | schema.md の方針の列(homepage, language, time_zone, notes, description, regexp, default_value, summary, custom_values.value, disk_directory, content_type, digest, repositories.login/root_url/identifier など)。`issue_journal_details` の値は変換しない |
+| 空文字列 | **Redmine の値をそのまま保持**(`''` は `''`、NULL は NULL。docs/schema.md 決定 10 / D-17)。例外はドメイン列への正規化で `''` が値として成り立たない列のみ: `twofa_scheme`(CHECK)、`mail_notification`(`''`/未知 → NULL = 既定)、`repositories.identifier`(既定リポジトリの空 → NULL。一意索引が `IS NOT NULL` 部分索引のため)、リポジトリ・チェンジセットの任意文字列(`root_url` `login` `path_encoding` `log_encoding` `scmid` `from_path` `from_revision` `revision` `branch`)、OAuth の `code_challenge(_method)` `refresh_token`、digest(長さ不正は NULL) |
 | 不正 UTF-8 | Latin-1 とみなして UTF-8 へ変換 |
 | 必須参照の欠損 | 作成者系(author_id, user_id, journals.user_id 等)→ 匿名ユーザー。マスタ(tracker/status/priority/activity/document category)→ 既定値。所有者(project, issue, board, wiki …)の欠損 → 行を破棄 |
 | 任意参照の欠損 | NULL(assigned_to, category, fixed_version, updated_by, changesets.user_id …) |
@@ -95,7 +95,7 @@ vr, err := verify.Verify(ctx, db, "export.tar.zst", verify.Options{FilesDir: "..
 |---|---|---|
 | settings | settings / legacy_settings | `settings.yml` にある名前のみ settings。serialized は YAML → JSON、それ以外は **JSON 文字列**(int 項目も文字列のまま: `internal/settings` が非シリアライズ値を文字列で扱うため。付録 A の「int は number」から変更)。未知・廃止・プラグインの設定と YAML が読めない値は legacy_settings へ原文退避。同名の重複は ID 最小を採用。updated_on NULL はインポート時刻 |
 | auth_sources | auth_sources | `AuthSourceLdap` のみ(他は破棄、参照ユーザーの auth_source_id は NULL)。kind `ldap`、`config` JSON(`host` `port` `account` `base_dn` `filter` `timeout` `tls` `verify_peer` `attr_login` `attr_firstname` `attr_lastname` `attr_mail`、値のないキーは省略)、`account_password` → `secret`(§6)。enabled=true、position は行順、created/updated はインポート時刻 |
-| users | principals / user_accounts | type → kind(未知の type は破棄、NULL はログインがあれば User)。組込(匿名ユーザー・組込グループ)の 2 行目以降は user / group に変換。グループ系は lastname → `name`(firstname/lastname は空)。status 0〜3 以外は既定値。user_accounts は User / AnonymousUser のみ: `password_hash` = `redmine-sha1$<salt>$<hash>`(salt 空なら `redmine-sha1-nosalt$$<hash>`、空なら NULL、匿名ユーザーは常に NULL)、language `''`→NULL、存在しない auth_source → NULL、twofa_scheme `totp` 以外は 2FA リセット、TOTP 鍵は §6(復元できなければ 2FA リセット)。匿名ユーザー・組込グループがなければ作成 |
+| users | principals / user_accounts | type → kind(未知の type は破棄、NULL はログインがあれば User)。組込(匿名ユーザー・組込グループ)の 2 行目以降は user / group に変換。グループ系は lastname → `name`(firstname/lastname は空)。status 0〜3 以外は既定値。user_accounts は User / AnonymousUser のみ: `password_hash` = `redmine-sha1$<salt>$<hash>`(salt 空なら `redmine-sha1-nosalt$$<hash>`、空なら NULL、匿名ユーザーは常に NULL)、language はそのまま、存在しない auth_source → NULL、twofa_scheme `totp` 以外は 2FA リセット、TOTP 鍵は §6(復元できなければ 2FA リセット)。匿名ユーザー・組込グループがなければ作成 |
 | email_addresses | email_addresses | ユーザー不在・空・重複(大文字小文字無視)を破棄。既定アドレスが複数なら 2 つ目以降を解除、0 件なら最古を既定に |
 | groups_users | group_users | group 側は kind=group(組込グループ不可)、user 側は kind=user のみ |
 | tokens | tokens / twofa_backup_codes | `api` `feeds` は常に、`autologin` は設定 `autologin`(日数)が正で期限内のみ、`recovery` `register` は 1 日以内のみ(基準は `Options.Now`)。`session` `twofa_session` は破棄(全員再ログイン)。`twofa_backup_code` は値の SHA-256 hex を twofa_backup_codes へ |
@@ -105,7 +105,7 @@ vr, err := verify.Verify(ctx, db, "export.tar.zst", verify.Options{FilesDir: "..
 | issue_statuses / trackers | 同名 | position NULL は末尾に採番。default_done_ratio 範囲外 → NULL。trackers.default_status_id 不在 → 先頭ステータス。fields_bits → `disabled_core_fields`(CORE_FIELDS 順、bit 10 以上は無視して記録) |
 | enumerations | issue_priorities / document_categories / time_entry_activities | type で振り分け(`Enumeration` 等の異常な type は破棄)。優先度・文書カテゴリの project_id/parent_id は無視。活動のプロジェクト上書きは: プロジェクト不在 → 破棄(工数は親活動へ付け替え)、親が不正 → 無効なシステム活動として残す。position_name は再計算 |
 | roles | roles / role_permissions / role_permission_trackers | name 空は `Role <id>`。builtin の重複・不正値は 0。visibility 不正値は既定値。permissions は Redmine と同じ正規表現 `:([a-z0-9_]+)` で抽出し、`internal/permission` にない権限は破棄して記録。settings の `permissions_all_trackers[perm] == '0'` → all_trackers=false、`permissions_tracker_ids[perm]` の存在するトラッカーを role_permission_trackers へ。default_time_entry_activity_id は活動の取り込み後に設定 |
-| projects | projects / project_closure | lft/rgt は使わず parent_id から閉包(自己行 depth 0 を含む)。identifier NULL → `project-<id>`、status 不正 → 1、homepage/description `''`→NULL。default_version_id / default_issue_query_id は後段で UPDATE(不在なら NULL) |
+| projects | projects / project_closure | lft/rgt は使わず parent_id から閉包(自己行 depth 0 を含む)。identifier NULL → `project-<id>`、status 不正 → 1。homepage/description はそのまま(`''` と NULL を区別)。default_version_id / default_issue_query_id は後段で UPDATE(不在なら NULL) |
 | enabled_modules | project_modules | project_id NULL・未知のモジュール名・重複を破棄。ID 保持(ニュースのウォッチャ用) |
 | custom_fields | custom_fields (+ enumerations, 3 結合表) | 未知の type・field_format は破棄。possible_values → JSON 文字列配列(空要素除去)。format_store → `format_settings` JSON。**値は Redmine の表現(文字列)のまま**で、`user_role` / `version_status` の空要素だけ除去(付録 A の型正規化は行わない: 利用側がフォーム値と同じ表現を期待できるように) |
 | members / member_roles | 同名 | プリンシパル・プロジェクト不在、重複を破棄。member_roles の inherited_from が存在しない行は(連鎖的に)破棄 |
@@ -113,7 +113,7 @@ vr, err := verify.Verify(ctx, db, "export.tar.zst", verify.Options{FilesDir: "..
 | workflows | workflow_transitions / workflow_field_rules | old_status_id 0 → NULL(新規)。field_name が数字 → custom_field_id(不在なら破棄)、コアフィールド名以外は破棄。rule は readonly/required のみ |
 | issues | issues | 2 パス: 1 周目で親子関係(不在・循環を修正)、2 周目で root_id / hier_path(`%010d/` の連結、自身を含む)を計算して挿入。プロジェクト不在 → 破棄。done_ratio は 0〜100 に丸める |
 | issue_relations | 同名 | 逆向き型(duplicated / blocked / follows / copied_from)は from/to を入れ替えて正方向へ、relates は from < to に。自己関係・正規化後の重複は破棄 |
-| journals / journal_details | issue_journals / issue_journal_details | journalized_type=Issue のみ。notes `''`→NULL。details の値は変換しない。cf は prop_key を custom_field_id に(数字でなければ破棄)、未知の property は破棄 |
+| journals / journal_details | issue_journals / issue_journal_details | journalized_type=Issue のみ。notes はそのまま。details の値は変換しない。cf は prop_key を custom_field_id に(数字でなければ破棄)、未知の property は破棄 |
 | time_entries | 同名 | author_id NULL・不在 → user_id。活動不在 → 親活動または既定活動。tyear/tmonth/tweek(ISO 週)は spent_on から再計算 |
 | documents / news / comments | documents / news / news_comments | category_id 0/不在 → 既定カテゴリ(is_default、なければ先頭)。news.project_id NULL は破棄。comments は commented_type=News のみ。comments_count は再計算 |
 | boards / messages | 同名 | board の親は同一プロジェクトのみ。メッセージは 2 階層に正規化(返信への返信はトピックへ付け替え)。sticky(整数)/ locked(NULL)→ bool。カウンタ・last_message_id / last_reply_id は再計算 |
@@ -123,7 +123,7 @@ vr, err := verify.Verify(ctx, db, "export.tar.zst", verify.Options{FilesDir: "..
 | repositories | 同名 | type → scm、extra_info YAML → JSON、password は §6、identifier `''`→NULL・重複は改名、既定リポジトリはプロジェクトに 1 つ |
 | changesets / changes / changeset_parents / changesets_issues | changesets / changeset_files / … | (repository, revision) の重複・孤児を破棄。commit_date はそのまま(ローカル日付) |
 | queries / queries_roles | 同名 | type → kind。user_id 0 → NULL(システムクエリ)、存在しないユーザー → 匿名ユーザー(Redmine のユーザー削除と同じ)、存在しないプロジェクトのクエリは破棄。filters は挿入順を保った JSON オブジェクト、column_names は文字列配列、sort_criteria は `[[列, 向き], ...]`、options の `totalable_names` / `display_type` は専用列、残りは `options` |
-| custom_values | 同名 | customized_type → kind(`User`/`Group` は principal、`IssuePriority` 等は enumeration も受理)。カスタムフィールドの所有種別と整合しない行・参照先不在は破棄。値は `''`→NULL、bool の `t/f/true/false` → `1/0`、int/float/progressbar の前後空白除去 |
+| custom_values | 同名 | customized_type → kind(`User`/`Group` は principal、`IssuePriority` 等は enumeration も受理)。カスタムフィールドの所有種別と整合しない行・参照先不在は破棄。値の `''` と NULL はそのまま、bool の `t/f/true/false` → `1/0`、int/float/progressbar の前後空白除去 |
 | attachments | 同名 | container_type → container_kind(未知は破棄、コンテナ不在は破棄、type/id の片方だけ空なら未紐付け扱い)。digest は長さで sha256(64)/ md5(32)、それ以外は NULL |
 | watchers / reactions | 同名 | 種別変換(`EnabledModule` → project_module)、参照先不在・user NULL・重複を破棄。reactions はユーザー(user_accounts)のみ |
 | oauth_* | 同名 | アプリは全件(uid 重複は破棄)。grant は未失効かつ期限内のみ。access token は未失効で、期限切れでも refresh_token があれば残す |
