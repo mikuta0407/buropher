@@ -1,0 +1,2206 @@
+[
+  {
+    "name": "db:settings.value[default_projects_tracker_ids]",
+    "yaml": "---\n- '1'\n- '2'\n- '3'\n",
+    "expected": [
+      "1",
+      "2",
+      "3"
+    ]
+  },
+  {
+    "name": "db:settings.value[notified_events]",
+    "yaml": "---\n- issue_added\n- issue_updated\n",
+    "expected": [
+      "issue_added",
+      "issue_updated"
+    ]
+  },
+  {
+    "name": "db:settings.value[commit_update_keywords]",
+    "yaml": "---\n- keywords: fixes\n  status_id: '3'\n",
+    "expected": [
+      {
+        "$hash": [
+          [
+            "keywords",
+            "fixes"
+          ],
+          [
+            "status_id",
+            "3"
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "name": "db:settings.value[issue_list_default_columns]",
+    "yaml": "---\n- tracker\n- status\n- priority\n- subject\n- assigned_to\n- updated_on\n",
+    "expected": [
+      "tracker",
+      "status",
+      "priority",
+      "subject",
+      "assigned_to",
+      "updated_on"
+    ]
+  },
+  {
+    "name": "db:settings.value[enabled_scm]",
+    "yaml": "---\n- Subversion\n- Git\n",
+    "expected": [
+      "Subversion",
+      "Git"
+    ]
+  },
+  {
+    "name": "db:user_preferences.others[1]",
+    "yaml": "---\n:no_self_notified: '1'\n:auto_watch_on:\n- issue_created\n- issue_contributed_to\n:my_page_layout:\n  left:\n  - issuesassignedtome\n  right:\n  - issuesreportedbyme\n:my_page_settings:\n  issuesassignedtome:\n    :columns:\n    - subject\n    :sort: id\n:comments_sorting: desc\n",
+    "expected": {
+      "$hash": [
+        [
+          "no_self_notified",
+          "1"
+        ],
+        [
+          "auto_watch_on",
+          [
+            "issue_created",
+            "issue_contributed_to"
+          ]
+        ],
+        [
+          "my_page_layout",
+          {
+            "$hash": [
+              [
+                "left",
+                [
+                  "issuesassignedtome"
+                ]
+              ],
+              [
+                "right",
+                [
+                  "issuesreportedbyme"
+                ]
+              ]
+            ]
+          }
+        ],
+        [
+          "my_page_settings",
+          {
+            "$hash": [
+              [
+                "issuesassignedtome",
+                {
+                  "$hash": [
+                    [
+                      "columns",
+                      [
+                        "subject"
+                      ]
+                    ],
+                    [
+                      "sort",
+                      "id"
+                    ]
+                  ]
+                }
+              ]
+            ]
+          }
+        ],
+        [
+          "comments_sorting",
+          "desc"
+        ]
+      ]
+    }
+  },
+  {
+    "name": "db:user_preferences.others[2]",
+    "yaml": "---\n:no_self_notified: '1'\n:my_page_layout:\n  top:\n  - issuesassignedtome\n:recently_used_project_ids: '1'\n:bookmarked_project_ids: '1'\n:gantt_zoom: 2\n:my_page_settings: {}\n",
+    "expected": {
+      "$hash": [
+        [
+          "no_self_notified",
+          "1"
+        ],
+        [
+          "my_page_layout",
+          {
+            "$hash": [
+              [
+                "top",
+                [
+                  "issuesassignedtome"
+                ]
+              ]
+            ]
+          }
+        ],
+        [
+          "recently_used_project_ids",
+          "1"
+        ],
+        [
+          "bookmarked_project_ids",
+          "1"
+        ],
+        [
+          "gantt_zoom",
+          2
+        ],
+        [
+          "my_page_settings",
+          {
+            "$hash": [
+
+            ]
+          }
+        ]
+      ]
+    }
+  },
+  {
+    "name": "db:queries.filters[1]",
+    "yaml": "---\nstatus_id:\n  :operator: o\n  :values:\n  - ''\nassigned_to_id:\n  :operator: \"=\"\n  :values:\n  - me\nproject.status:\n  :operator: \"=\"\n  :values:\n  - '1'\n",
+    "expected": {
+      "$hash": [
+        [
+          "status_id",
+          {
+            "$hash": [
+              [
+                "operator",
+                "o"
+              ],
+              [
+                "values",
+                [
+                  ""
+                ]
+              ]
+            ]
+          }
+        ],
+        [
+          "assigned_to_id",
+          {
+            "$hash": [
+              [
+                "operator",
+                "="
+              ],
+              [
+                "values",
+                [
+                  "me"
+                ]
+              ]
+            ]
+          }
+        ],
+        [
+          "project.status",
+          {
+            "$hash": [
+              [
+                "operator",
+                "="
+              ],
+              [
+                "values",
+                [
+                  "1"
+                ]
+              ]
+            ]
+          }
+        ]
+      ]
+    }
+  },
+  {
+    "name": "db:queries.filters[2]",
+    "yaml": "---\nstatus_id:\n  :operator: o\n  :values:\n  - ''\nauthor_id:\n  :operator: \"=\"\n  :values:\n  - me\nproject.status:\n  :operator: \"=\"\n  :values:\n  - '1'\n",
+    "expected": {
+      "$hash": [
+        [
+          "status_id",
+          {
+            "$hash": [
+              [
+                "operator",
+                "o"
+              ],
+              [
+                "values",
+                [
+                  ""
+                ]
+              ]
+            ]
+          }
+        ],
+        [
+          "author_id",
+          {
+            "$hash": [
+              [
+                "operator",
+                "="
+              ],
+              [
+                "values",
+                [
+                  "me"
+                ]
+              ]
+            ]
+          }
+        ],
+        [
+          "project.status",
+          {
+            "$hash": [
+              [
+                "operator",
+                "="
+              ],
+              [
+                "values",
+                [
+                  "1"
+                ]
+              ]
+            ]
+          }
+        ]
+      ]
+    }
+  },
+  {
+    "name": "db:queries.filters[3]",
+    "yaml": "---\nstatus_id:\n  :operator: o\n  :values:\n  - ''\nupdated_by:\n  :operator: \"=\"\n  :values:\n  - me\nproject.status:\n  :operator: \"=\"\n  :values:\n  - '1'\n",
+    "expected": {
+      "$hash": [
+        [
+          "status_id",
+          {
+            "$hash": [
+              [
+                "operator",
+                "o"
+              ],
+              [
+                "values",
+                [
+                  ""
+                ]
+              ]
+            ]
+          }
+        ],
+        [
+          "updated_by",
+          {
+            "$hash": [
+              [
+                "operator",
+                "="
+              ],
+              [
+                "values",
+                [
+                  "me"
+                ]
+              ]
+            ]
+          }
+        ],
+        [
+          "project.status",
+          {
+            "$hash": [
+              [
+                "operator",
+                "="
+              ],
+              [
+                "values",
+                [
+                  "1"
+                ]
+              ]
+            ]
+          }
+        ]
+      ]
+    }
+  },
+  {
+    "name": "db:queries.filters[4]",
+    "yaml": "---\nstatus_id:\n  :operator: o\n  :values:\n  - ''\nwatcher_id:\n  :operator: \"=\"\n  :values:\n  - me\nproject.status:\n  :operator: \"=\"\n  :values:\n  - '1'\n",
+    "expected": {
+      "$hash": [
+        [
+          "status_id",
+          {
+            "$hash": [
+              [
+                "operator",
+                "o"
+              ],
+              [
+                "values",
+                [
+                  ""
+                ]
+              ]
+            ]
+          }
+        ],
+        [
+          "watcher_id",
+          {
+            "$hash": [
+              [
+                "operator",
+                "="
+              ],
+              [
+                "values",
+                [
+                  "me"
+                ]
+              ]
+            ]
+          }
+        ],
+        [
+          "project.status",
+          {
+            "$hash": [
+              [
+                "operator",
+                "="
+              ],
+              [
+                "values",
+                [
+                  "1"
+                ]
+              ]
+            ]
+          }
+        ]
+      ]
+    }
+  },
+  {
+    "name": "db:queries.filters[5]",
+    "yaml": "---\nstatus:\n  :operator: \"=\"\n  :values:\n  - '1'\nid:\n  :operator: \"=\"\n  :values:\n  - mine\n",
+    "expected": {
+      "$hash": [
+        [
+          "status",
+          {
+            "$hash": [
+              [
+                "operator",
+                "="
+              ],
+              [
+                "values",
+                [
+                  "1"
+                ]
+              ]
+            ]
+          }
+        ],
+        [
+          "id",
+          {
+            "$hash": [
+              [
+                "operator",
+                "="
+              ],
+              [
+                "values",
+                [
+                  "mine"
+                ]
+              ]
+            ]
+          }
+        ]
+      ]
+    }
+  },
+  {
+    "name": "db:queries.filters[6]",
+    "yaml": "---\nstatus:\n  :operator: \"=\"\n  :values:\n  - '1'\nid:\n  :operator: \"=\"\n  :values:\n  - bookmarks\n",
+    "expected": {
+      "$hash": [
+        [
+          "status",
+          {
+            "$hash": [
+              [
+                "operator",
+                "="
+              ],
+              [
+                "values",
+                [
+                  "1"
+                ]
+              ]
+            ]
+          }
+        ],
+        [
+          "id",
+          {
+            "$hash": [
+              [
+                "operator",
+                "="
+              ],
+              [
+                "values",
+                [
+                  "bookmarks"
+                ]
+              ]
+            ]
+          }
+        ]
+      ]
+    }
+  },
+  {
+    "name": "db:queries.filters[7]",
+    "yaml": "---\nspent_on:\n  :operator: \"*\"\n  :values:\n  - ''\nuser_id:\n  :operator: \"=\"\n  :values:\n  - me\n",
+    "expected": {
+      "$hash": [
+        [
+          "spent_on",
+          {
+            "$hash": [
+              [
+                "operator",
+                "*"
+              ],
+              [
+                "values",
+                [
+                  ""
+                ]
+              ]
+            ]
+          }
+        ],
+        [
+          "user_id",
+          {
+            "$hash": [
+              [
+                "operator",
+                "="
+              ],
+              [
+                "values",
+                [
+                  "me"
+                ]
+              ]
+            ]
+          }
+        ]
+      ]
+    }
+  },
+  {
+    "name": "db:queries.filters[8]",
+    "yaml": "---\nstatus_id:\n  :operator: o\n  :values:\n  - ''\ntracker_id:\n  :operator: \"=\"\n  :values:\n  - '1'\n  - '2'\n",
+    "expected": {
+      "$hash": [
+        [
+          "status_id",
+          {
+            "$hash": [
+              [
+                "operator",
+                "o"
+              ],
+              [
+                "values",
+                [
+                  ""
+                ]
+              ]
+            ]
+          }
+        ],
+        [
+          "tracker_id",
+          {
+            "$hash": [
+              [
+                "operator",
+                "="
+              ],
+              [
+                "values",
+                [
+                  "1",
+                  "2"
+                ]
+              ]
+            ]
+          }
+        ]
+      ]
+    }
+  },
+  {
+    "name": "db:queries.filters[9]",
+    "yaml": "---\nstatus_id:\n  :operator: o\n  :values:\n  - ''\nassigned_to_id:\n  :operator: \"=\"\n  :values:\n  - me\n",
+    "expected": {
+      "$hash": [
+        [
+          "status_id",
+          {
+            "$hash": [
+              [
+                "operator",
+                "o"
+              ],
+              [
+                "values",
+                [
+                  ""
+                ]
+              ]
+            ]
+          }
+        ],
+        [
+          "assigned_to_id",
+          {
+            "$hash": [
+              [
+                "operator",
+                "="
+              ],
+              [
+                "values",
+                [
+                  "me"
+                ]
+              ]
+            ]
+          }
+        ]
+      ]
+    }
+  },
+  {
+    "name": "db:queries.filters[10]",
+    "yaml": "---\nspent_on:\n  :operator: lm\n  :values:\n  - ''\n",
+    "expected": {
+      "$hash": [
+        [
+          "spent_on",
+          {
+            "$hash": [
+              [
+                "operator",
+                "lm"
+              ],
+              [
+                "values",
+                [
+                  ""
+                ]
+              ]
+            ]
+          }
+        ]
+      ]
+    }
+  },
+  {
+    "name": "db:queries.column_names[8]",
+    "yaml": "---\n- :tracker\n- :status\n- :subject\n- :assigned_to\n",
+    "expected": [
+      {
+        "$sym": "tracker"
+      },
+      {
+        "$sym": "status"
+      },
+      {
+        "$sym": "subject"
+      },
+      {
+        "$sym": "assigned_to"
+      }
+    ]
+  },
+  {
+    "name": "db:queries.column_names[9]",
+    "yaml": "---\n- :tracker\n- :subject\n- :cf_3\n- :spent_hours\n",
+    "expected": [
+      {
+        "$sym": "tracker"
+      },
+      {
+        "$sym": "subject"
+      },
+      {
+        "$sym": "cf_3"
+      },
+      {
+        "$sym": "spent_hours"
+      }
+    ]
+  },
+  {
+    "name": "db:queries.sort_criteria[1]",
+    "yaml": "---\n- - priority\n  - desc\n- - updated_on\n  - desc\n",
+    "expected": [
+      [
+        "priority",
+        "desc"
+      ],
+      [
+        "updated_on",
+        "desc"
+      ]
+    ]
+  },
+  {
+    "name": "db:queries.sort_criteria[2]",
+    "yaml": "---\n- - updated_on\n  - desc\n",
+    "expected": [
+      [
+        "updated_on",
+        "desc"
+      ]
+    ]
+  },
+  {
+    "name": "db:queries.sort_criteria[3]",
+    "yaml": "---\n- - updated_on\n  - desc\n",
+    "expected": [
+      [
+        "updated_on",
+        "desc"
+      ]
+    ]
+  },
+  {
+    "name": "db:queries.sort_criteria[4]",
+    "yaml": "---\n- - updated_on\n  - desc\n",
+    "expected": [
+      [
+        "updated_on",
+        "desc"
+      ]
+    ]
+  },
+  {
+    "name": "db:queries.sort_criteria[7]",
+    "yaml": "---\n- - spent_on\n  - desc\n",
+    "expected": [
+      [
+        "spent_on",
+        "desc"
+      ]
+    ]
+  },
+  {
+    "name": "db:queries.sort_criteria[8]",
+    "yaml": "---\n- - priority\n  - desc\n- - id\n  - asc\n",
+    "expected": [
+      [
+        "priority",
+        "desc"
+      ],
+      [
+        "id",
+        "asc"
+      ]
+    ]
+  },
+  {
+    "name": "db:queries.sort_criteria[9]",
+    "yaml": "---\n- - priority\n  - desc\n- - id\n  - asc\n",
+    "expected": [
+      [
+        "priority",
+        "desc"
+      ],
+      [
+        "id",
+        "asc"
+      ]
+    ]
+  },
+  {
+    "name": "db:queries.options[7]",
+    "yaml": "---\n:totalable_names:\n- :hours\n",
+    "expected": {
+      "$hash": [
+        [
+          "totalable_names",
+          [
+            {
+              "$sym": "hours"
+            }
+          ]
+        ]
+      ]
+    }
+  },
+  {
+    "name": "db:queries.options[8]",
+    "yaml": "---\n:totalable_names:\n- :estimated_hours\n:draw_relations: '0'\n",
+    "expected": {
+      "$hash": [
+        [
+          "totalable_names",
+          [
+            {
+              "$sym": "estimated_hours"
+            }
+          ]
+        ],
+        [
+          "draw_relations",
+          "0"
+        ]
+      ]
+    }
+  },
+  {
+    "name": "db:queries.options[9]",
+    "yaml": "---\n:totalable_names:\n- :estimated_hours\n:draw_relations: '0'\n",
+    "expected": {
+      "$hash": [
+        [
+          "totalable_names",
+          [
+            {
+              "$sym": "estimated_hours"
+            }
+          ]
+        ],
+        [
+          "draw_relations",
+          "0"
+        ]
+      ]
+    }
+  },
+  {
+    "name": "db:roles.permissions[1]",
+    "yaml": "---\n- :view_issues\n- :add_issues\n- :add_issue_notes\n- :save_queries\n- :view_gantt\n- :view_calendar\n- :view_time_entries\n- :view_news\n- :comment_news\n- :view_documents\n- :view_wiki_pages\n- :view_wiki_edits\n- :view_messages\n- :add_messages\n- :view_files\n- :browse_repository\n- :view_changesets\n",
+    "expected": [
+      {
+        "$sym": "view_issues"
+      },
+      {
+        "$sym": "add_issues"
+      },
+      {
+        "$sym": "add_issue_notes"
+      },
+      {
+        "$sym": "save_queries"
+      },
+      {
+        "$sym": "view_gantt"
+      },
+      {
+        "$sym": "view_calendar"
+      },
+      {
+        "$sym": "view_time_entries"
+      },
+      {
+        "$sym": "view_news"
+      },
+      {
+        "$sym": "comment_news"
+      },
+      {
+        "$sym": "view_documents"
+      },
+      {
+        "$sym": "view_wiki_pages"
+      },
+      {
+        "$sym": "view_wiki_edits"
+      },
+      {
+        "$sym": "view_messages"
+      },
+      {
+        "$sym": "add_messages"
+      },
+      {
+        "$sym": "view_files"
+      },
+      {
+        "$sym": "browse_repository"
+      },
+      {
+        "$sym": "view_changesets"
+      }
+    ]
+  },
+  {
+    "name": "db:roles.permissions[2]",
+    "yaml": "---\n- :view_issues\n- :view_gantt\n- :view_calendar\n- :view_time_entries\n- :view_news\n- :view_documents\n- :view_wiki_pages\n- :view_wiki_edits\n- :view_messages\n- :view_files\n- :browse_repository\n- :view_changesets\n",
+    "expected": [
+      {
+        "$sym": "view_issues"
+      },
+      {
+        "$sym": "view_gantt"
+      },
+      {
+        "$sym": "view_calendar"
+      },
+      {
+        "$sym": "view_time_entries"
+      },
+      {
+        "$sym": "view_news"
+      },
+      {
+        "$sym": "view_documents"
+      },
+      {
+        "$sym": "view_wiki_pages"
+      },
+      {
+        "$sym": "view_wiki_edits"
+      },
+      {
+        "$sym": "view_messages"
+      },
+      {
+        "$sym": "view_files"
+      },
+      {
+        "$sym": "browse_repository"
+      },
+      {
+        "$sym": "view_changesets"
+      }
+    ]
+  },
+  {
+    "name": "db:roles.permissions[3]",
+    "yaml": "---\n- :add_project\n- :edit_project\n- :close_project\n- :delete_project\n- :select_project_publicity\n- :select_project_modules\n- :manage_members\n- :manage_versions\n- :add_subprojects\n- :manage_public_queries\n- :save_queries\n- :view_issues\n- :add_issues\n- :edit_issues\n- :edit_own_issues\n- :copy_issues\n- :manage_issue_relations\n- :manage_subtasks\n- :set_issues_private\n- :set_own_issues_private\n- :add_issue_notes\n- :edit_issue_notes\n- :edit_own_issue_notes\n- :view_private_notes\n- :set_notes_private\n- :delete_issues\n- :view_issue_watchers\n- :add_issue_watchers\n- :delete_issue_watchers\n- :import_issues\n- :manage_categories\n- :view_time_entries\n- :log_time\n- :edit_time_entries\n- :edit_own_time_entries\n- :manage_project_activities\n- :log_time_for_other_users\n- :import_time_entries\n- :view_news\n- :manage_news\n- :comment_news\n- :view_documents\n- :add_documents\n- :edit_documents\n- :delete_documents\n- :view_files\n- :manage_files\n- :view_wiki_pages\n- :view_wiki_edits\n- :export_wiki_pages\n- :edit_wiki_pages\n- :rename_wiki_pages\n- :delete_wiki_pages\n- :delete_wiki_pages_attachments\n- :view_wiki_page_watchers\n- :add_wiki_page_watchers\n- :delete_wiki_page_watchers\n- :protect_wiki_pages\n- :manage_wiki\n- :view_changesets\n- :browse_repository\n- :commit_access\n- :manage_related_issues\n- :manage_repository\n- :view_messages\n- :add_messages\n- :edit_messages\n- :edit_own_messages\n- :delete_messages\n- :delete_own_messages\n- :view_message_watchers\n- :add_message_watchers\n- :delete_message_watchers\n- :manage_boards\n- :view_calendar\n- :view_gantt\n",
+    "expected": [
+      {
+        "$sym": "add_project"
+      },
+      {
+        "$sym": "edit_project"
+      },
+      {
+        "$sym": "close_project"
+      },
+      {
+        "$sym": "delete_project"
+      },
+      {
+        "$sym": "select_project_publicity"
+      },
+      {
+        "$sym": "select_project_modules"
+      },
+      {
+        "$sym": "manage_members"
+      },
+      {
+        "$sym": "manage_versions"
+      },
+      {
+        "$sym": "add_subprojects"
+      },
+      {
+        "$sym": "manage_public_queries"
+      },
+      {
+        "$sym": "save_queries"
+      },
+      {
+        "$sym": "view_issues"
+      },
+      {
+        "$sym": "add_issues"
+      },
+      {
+        "$sym": "edit_issues"
+      },
+      {
+        "$sym": "edit_own_issues"
+      },
+      {
+        "$sym": "copy_issues"
+      },
+      {
+        "$sym": "manage_issue_relations"
+      },
+      {
+        "$sym": "manage_subtasks"
+      },
+      {
+        "$sym": "set_issues_private"
+      },
+      {
+        "$sym": "set_own_issues_private"
+      },
+      {
+        "$sym": "add_issue_notes"
+      },
+      {
+        "$sym": "edit_issue_notes"
+      },
+      {
+        "$sym": "edit_own_issue_notes"
+      },
+      {
+        "$sym": "view_private_notes"
+      },
+      {
+        "$sym": "set_notes_private"
+      },
+      {
+        "$sym": "delete_issues"
+      },
+      {
+        "$sym": "view_issue_watchers"
+      },
+      {
+        "$sym": "add_issue_watchers"
+      },
+      {
+        "$sym": "delete_issue_watchers"
+      },
+      {
+        "$sym": "import_issues"
+      },
+      {
+        "$sym": "manage_categories"
+      },
+      {
+        "$sym": "view_time_entries"
+      },
+      {
+        "$sym": "log_time"
+      },
+      {
+        "$sym": "edit_time_entries"
+      },
+      {
+        "$sym": "edit_own_time_entries"
+      },
+      {
+        "$sym": "manage_project_activities"
+      },
+      {
+        "$sym": "log_time_for_other_users"
+      },
+      {
+        "$sym": "import_time_entries"
+      },
+      {
+        "$sym": "view_news"
+      },
+      {
+        "$sym": "manage_news"
+      },
+      {
+        "$sym": "comment_news"
+      },
+      {
+        "$sym": "view_documents"
+      },
+      {
+        "$sym": "add_documents"
+      },
+      {
+        "$sym": "edit_documents"
+      },
+      {
+        "$sym": "delete_documents"
+      },
+      {
+        "$sym": "view_files"
+      },
+      {
+        "$sym": "manage_files"
+      },
+      {
+        "$sym": "view_wiki_pages"
+      },
+      {
+        "$sym": "view_wiki_edits"
+      },
+      {
+        "$sym": "export_wiki_pages"
+      },
+      {
+        "$sym": "edit_wiki_pages"
+      },
+      {
+        "$sym": "rename_wiki_pages"
+      },
+      {
+        "$sym": "delete_wiki_pages"
+      },
+      {
+        "$sym": "delete_wiki_pages_attachments"
+      },
+      {
+        "$sym": "view_wiki_page_watchers"
+      },
+      {
+        "$sym": "add_wiki_page_watchers"
+      },
+      {
+        "$sym": "delete_wiki_page_watchers"
+      },
+      {
+        "$sym": "protect_wiki_pages"
+      },
+      {
+        "$sym": "manage_wiki"
+      },
+      {
+        "$sym": "view_changesets"
+      },
+      {
+        "$sym": "browse_repository"
+      },
+      {
+        "$sym": "commit_access"
+      },
+      {
+        "$sym": "manage_related_issues"
+      },
+      {
+        "$sym": "manage_repository"
+      },
+      {
+        "$sym": "view_messages"
+      },
+      {
+        "$sym": "add_messages"
+      },
+      {
+        "$sym": "edit_messages"
+      },
+      {
+        "$sym": "edit_own_messages"
+      },
+      {
+        "$sym": "delete_messages"
+      },
+      {
+        "$sym": "delete_own_messages"
+      },
+      {
+        "$sym": "view_message_watchers"
+      },
+      {
+        "$sym": "add_message_watchers"
+      },
+      {
+        "$sym": "delete_message_watchers"
+      },
+      {
+        "$sym": "manage_boards"
+      },
+      {
+        "$sym": "view_calendar"
+      },
+      {
+        "$sym": "view_gantt"
+      }
+    ]
+  },
+  {
+    "name": "db:roles.permissions[4]",
+    "yaml": "---\n- :manage_versions\n- :manage_categories\n- :view_issues\n- :add_issues\n- :edit_issues\n- :view_private_notes\n- :set_notes_private\n- :manage_issue_relations\n- :manage_subtasks\n- :add_issue_notes\n- :save_queries\n- :view_gantt\n- :view_calendar\n- :log_time\n- :view_time_entries\n- :view_news\n- :comment_news\n- :view_documents\n- :view_wiki_pages\n- :view_wiki_edits\n- :edit_wiki_pages\n- :delete_wiki_pages\n- :view_messages\n- :add_messages\n- :edit_own_messages\n- :view_files\n- :manage_files\n- :browse_repository\n- :view_changesets\n- :commit_access\n- :manage_related_issues\n",
+    "expected": [
+      {
+        "$sym": "manage_versions"
+      },
+      {
+        "$sym": "manage_categories"
+      },
+      {
+        "$sym": "view_issues"
+      },
+      {
+        "$sym": "add_issues"
+      },
+      {
+        "$sym": "edit_issues"
+      },
+      {
+        "$sym": "view_private_notes"
+      },
+      {
+        "$sym": "set_notes_private"
+      },
+      {
+        "$sym": "manage_issue_relations"
+      },
+      {
+        "$sym": "manage_subtasks"
+      },
+      {
+        "$sym": "add_issue_notes"
+      },
+      {
+        "$sym": "save_queries"
+      },
+      {
+        "$sym": "view_gantt"
+      },
+      {
+        "$sym": "view_calendar"
+      },
+      {
+        "$sym": "log_time"
+      },
+      {
+        "$sym": "view_time_entries"
+      },
+      {
+        "$sym": "view_news"
+      },
+      {
+        "$sym": "comment_news"
+      },
+      {
+        "$sym": "view_documents"
+      },
+      {
+        "$sym": "view_wiki_pages"
+      },
+      {
+        "$sym": "view_wiki_edits"
+      },
+      {
+        "$sym": "edit_wiki_pages"
+      },
+      {
+        "$sym": "delete_wiki_pages"
+      },
+      {
+        "$sym": "view_messages"
+      },
+      {
+        "$sym": "add_messages"
+      },
+      {
+        "$sym": "edit_own_messages"
+      },
+      {
+        "$sym": "view_files"
+      },
+      {
+        "$sym": "manage_files"
+      },
+      {
+        "$sym": "browse_repository"
+      },
+      {
+        "$sym": "view_changesets"
+      },
+      {
+        "$sym": "commit_access"
+      },
+      {
+        "$sym": "manage_related_issues"
+      }
+    ]
+  },
+  {
+    "name": "db:roles.permissions[5]",
+    "yaml": "---\n- :view_issues\n- :add_issues\n- :add_issue_notes\n- :save_queries\n- :view_gantt\n- :view_calendar\n- :log_time\n- :view_time_entries\n- :view_news\n- :comment_news\n- :view_documents\n- :view_wiki_pages\n- :view_wiki_edits\n- :view_messages\n- :add_messages\n- :edit_own_messages\n- :view_files\n- :browse_repository\n- :view_changesets\n",
+    "expected": [
+      {
+        "$sym": "view_issues"
+      },
+      {
+        "$sym": "add_issues"
+      },
+      {
+        "$sym": "add_issue_notes"
+      },
+      {
+        "$sym": "save_queries"
+      },
+      {
+        "$sym": "view_gantt"
+      },
+      {
+        "$sym": "view_calendar"
+      },
+      {
+        "$sym": "log_time"
+      },
+      {
+        "$sym": "view_time_entries"
+      },
+      {
+        "$sym": "view_news"
+      },
+      {
+        "$sym": "comment_news"
+      },
+      {
+        "$sym": "view_documents"
+      },
+      {
+        "$sym": "view_wiki_pages"
+      },
+      {
+        "$sym": "view_wiki_edits"
+      },
+      {
+        "$sym": "view_messages"
+      },
+      {
+        "$sym": "add_messages"
+      },
+      {
+        "$sym": "edit_own_messages"
+      },
+      {
+        "$sym": "view_files"
+      },
+      {
+        "$sym": "browse_repository"
+      },
+      {
+        "$sym": "view_changesets"
+      }
+    ]
+  },
+  {
+    "name": "db:roles.settings[4]",
+    "yaml": "---\npermissions_all_trackers:\n  view_issues: '0'\npermissions_tracker_ids:\n  view_issues:\n  - 1\n  - 2\n",
+    "expected": {
+      "$hash": [
+        [
+          "permissions_all_trackers",
+          {
+            "$hash": [
+              [
+                "view_issues",
+                "0"
+              ]
+            ]
+          }
+        ],
+        [
+          "permissions_tracker_ids",
+          {
+            "$hash": [
+              [
+                "view_issues",
+                [
+                  1,
+                  2
+                ]
+              ]
+            ]
+          }
+        ]
+      ]
+    }
+  },
+  {
+    "name": "db:custom_fields.possible_values[1]",
+    "yaml": "---\n- A\n- B\n",
+    "expected": [
+      "A",
+      "B"
+    ]
+  },
+  {
+    "name": "db:custom_fields.possible_values[3]",
+    "yaml": "---\n- 赤\n- 緑\n- 青\n",
+    "expected": [
+      "赤",
+      "緑",
+      "青"
+    ]
+  },
+  {
+    "name": "db:custom_fields.format_store[1]",
+    "yaml": "---\nedit_tag_style: check_box\n",
+    "expected": {
+      "$hash": [
+        [
+          "edit_tag_style",
+          "check_box"
+        ]
+      ]
+    }
+  },
+  {
+    "name": "db:custom_fields.format_store[2]",
+    "yaml": "---\ntext_formatting: full\nurl_pattern: http://x/%value%\n",
+    "expected": {
+      "$hash": [
+        [
+          "text_formatting",
+          "full"
+        ],
+        [
+          "url_pattern",
+          "http://x/%value%"
+        ]
+      ]
+    }
+  },
+  {
+    "name": "db:custom_fields.format_store[4]",
+    "yaml": "---\nedit_tag_style: check_box\n",
+    "expected": {
+      "$hash": [
+        [
+          "edit_tag_style",
+          "check_box"
+        ]
+      ]
+    }
+  },
+  {
+    "name": "db:custom_fields.format_store[5]",
+    "yaml": "---\nuser_role:\n- '3'\n",
+    "expected": {
+      "$hash": [
+        [
+          "user_role",
+          [
+            "3"
+          ]
+        ]
+      ]
+    }
+  },
+  {
+    "name": "db:repositories.extra_info[1]",
+    "yaml": "---\nextra_report_last_commit: '1'\n",
+    "expected": {
+      "$hash": [
+        [
+          "extra_report_last_commit",
+          "1"
+        ]
+      ]
+    }
+  },
+  {
+    "name": "gen:symbol_hash",
+    "yaml": "---\n:a: 1\nb: :c\n:d:\n- :e\n- f\nnil:\n",
+    "expected": {
+      "$hash": [
+        [
+          "a",
+          1
+        ],
+        [
+          "b",
+          {
+            "$sym": "c"
+          }
+        ],
+        [
+          "d",
+          [
+            {
+              "$sym": "e"
+            },
+            "f"
+          ]
+        ],
+        [
+          "nil",
+          null
+        ]
+      ]
+    }
+  },
+  {
+    "name": "gen:hwia",
+    "yaml": "--- !ruby/hash:ActiveSupport::HashWithIndifferentAccess\nx: 1\n\"y\": !ruby/hash:ActiveSupport::HashWithIndifferentAccess\n  z:\n  - 1\n  - 2\n",
+    "expected": {
+      "$hash": [
+        [
+          "x",
+          1
+        ],
+        [
+          "y",
+          {
+            "$hash": [
+              [
+                "z",
+                [
+                  1,
+                  2
+                ]
+              ]
+            ]
+          }
+        ]
+      ]
+    }
+  },
+  {
+    "name": "gen:ac_parameters",
+    "yaml": "--- !ruby/object:ActionController::Parameters\nparameters: !ruby/hash:ActiveSupport::HashWithIndifferentAccess\n  f: !ruby/hash:ActiveSupport::HashWithIndifferentAccess\n    status_id: !ruby/hash:ActiveSupport::HashWithIndifferentAccess\n      operator: o\n      values:\n      - ''\n  c:\n  - tracker\npermitted: false\n",
+    "expected": {
+      "$hash": [
+        [
+          "f",
+          {
+            "$hash": [
+              [
+                "status_id",
+                {
+                  "$hash": [
+                    [
+                      "operator",
+                      "o"
+                    ],
+                    [
+                      "values",
+                      [
+                        ""
+                      ]
+                    ]
+                  ]
+                }
+              ]
+            ]
+          }
+        ],
+        [
+          "c",
+          [
+            "tracker"
+          ]
+        ]
+      ]
+    }
+  },
+  {
+    "name": "gen:binary_utf8",
+    "yaml": "--- !binary |-\n  44Kw44Or44O844OX\n",
+    "expected": "グループ"
+  },
+  {
+    "name": "gen:binary_latin1",
+    "yaml": "--- !binary |-\n  Y2Fm6Q==\n",
+    "expected": "café"
+  },
+  {
+    "name": "gen:quoted_specials",
+    "yaml": "---\n- 'yes'\n- 'no'\n- 'on'\n- 'off'\n- 'true'\n- 'null'\n- \"~\"\n- ''\n- \" lead\"\n- '1,000'\n- '12:30'\n- \":foo\"\n- '0755'\n- '0x1F'\n- 1e5\n- '1.5'\n- \".5\"\n- '2026-10-03'\n- '2026-10-03 12:00:00'\n- \"-\"\n- \"- x\"\n- \"#c\"\n- 'a: b'\n- \"@x\"\n- |-\n  multi\n  line\n- \"tab\\tch\"\n",
+    "expected": [
+      "yes",
+      "no",
+      "on",
+      "off",
+      "true",
+      "null",
+      "~",
+      "",
+      " lead",
+      "1,000",
+      "12:30",
+      ":foo",
+      "0755",
+      "0x1F",
+      "1e5",
+      "1.5",
+      ".5",
+      "2026-10-03",
+      "2026-10-03 12:00:00",
+      "-",
+      "- x",
+      "#c",
+      "a: b",
+      "@x",
+      "multi\nline",
+      "tab\tch"
+    ]
+  },
+  {
+    "name": "gen:numbers",
+    "yaml": "---\n- 0\n- -1\n- 42\n- 4611686018427387904\n- 1180591620717411303424\n- 1.0\n- -2.5\n- 1.0e+20\n- 3.14159\n- .inf\n- -.inf\n",
+    "expected": [
+      0,
+      -1,
+      42,
+      4611686018427387904,
+      "1180591620717411303424",
+      {
+        "$float": "1"
+      },
+      {
+        "$float": "-2.5"
+      },
+      {
+        "$float": "1.0e+20"
+      },
+      {
+        "$float": "3.14159"
+      },
+      {
+        "$float": "+Inf"
+      },
+      {
+        "$float": "-Inf"
+      }
+    ]
+  },
+  {
+    "name": "gen:time",
+    "yaml": "--- 2026-10-03 12:34:56.789000000 +09:00\n",
+    "expected": {
+      "$time": "2026-10-03T12:34:56.789000000+09:00"
+    }
+  },
+  {
+    "name": "gen:time_utc",
+    "yaml": "--- 2026-01-02 03:04:05.000000000 Z\n",
+    "expected": {
+      "$time": "2026-01-02T03:04:05.000000000+00:00"
+    }
+  },
+  {
+    "name": "gen:date",
+    "yaml": "--- 2026-10-03\n",
+    "expected": {
+      "$date": "2026-10-03"
+    }
+  },
+  {
+    "name": "gen:twz",
+    "yaml": "--- !ruby/object:ActiveSupport::TimeWithZone\nutc: 2026-10-03 03:34:56.789000000 Z\nzone: !ruby/object:ActiveSupport::TimeZone\n  name: Asia/Tokyo\ntime: 2026-10-03 12:34:56.789000000 Z\n",
+    "expected": {
+      "$time": "2026-10-03T03:34:56.789000000+00:00"
+    }
+  },
+  {
+    "name": "gen:set",
+    "yaml": "--- !ruby/object:Set\nhash:\n  a: true\n  b: true\n",
+    "expected": [
+      "a",
+      "b"
+    ]
+  },
+  {
+    "name": "gen:bigdecimal",
+    "yaml": "--- !ruby/object:BigDecimal 18:0.125e2\n",
+    "expected": {
+      "$float": "12.5"
+    }
+  },
+  {
+    "name": "gen:unicode",
+    "yaml": "---\n日本語キー: \"テスト \\U0001F389\"\n:ラベル: ユニコード\n",
+    "expected": {
+      "$hash": [
+        [
+          "日本語キー",
+          "テスト 🎉"
+        ],
+        [
+          "ラベル",
+          "ユニコード"
+        ]
+      ]
+    }
+  },
+  {
+    "name": "gen:nested",
+    "yaml": "---\n:queries:\n- :filters:\n    cf_1:\n      :operator: \"=\"\n      :values:\n      - '1'\n",
+    "expected": {
+      "$hash": [
+        [
+          "queries",
+          [
+            {
+              "$hash": [
+                [
+                  "filters",
+                  {
+                    "$hash": [
+                      [
+                        "cf_1",
+                        {
+                          "$hash": [
+                            [
+                              "operator",
+                              "="
+                            ],
+                            [
+                              "values",
+                              [
+                                "1"
+                              ]
+                            ]
+                          ]
+                        }
+                      ]
+                    ]
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      ]
+    }
+  },
+  {
+    "name": "gen:shared_ref",
+    "yaml": "---\na: &1\n- x\n- \"y\"\nb: *1\n",
+    "expected": {
+      "$hash": [
+        [
+          "a",
+          [
+            "x",
+            "y"
+          ]
+        ],
+        [
+          "b",
+          [
+            "x",
+            "y"
+          ]
+        ]
+      ]
+    }
+  },
+  {
+    "name": "gen:empty",
+    "yaml": "---\nh: {}\na: []\ns: ''\n",
+    "expected": {
+      "$hash": [
+        [
+          "h",
+          {
+            "$hash": [
+
+            ]
+          }
+        ],
+        [
+          "a",
+          [
+
+          ]
+        ],
+        [
+          "s",
+          ""
+        ]
+      ]
+    }
+  },
+  {
+    "name": "gen:bools",
+    "yaml": "---\n- true\n- false\n-\n",
+    "expected": [
+      true,
+      false,
+      null
+    ]
+  },
+  {
+    "name": "gen:long_text",
+    "yaml": "--- |-\n  aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n  bbbbbbbbbb\n",
+    "expected": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\nbbbbbbbbbb"
+  },
+  {
+    "name": "gen:string_with_ivar",
+    "yaml": "--- str\n",
+    "expected": "str"
+  },
+  {
+    "name": "gen:symbol_quoted",
+    "yaml": "--- :foo bar\n",
+    "expected": {
+      "$sym": "foo bar"
+    }
+  },
+  {
+    "name": "gen:symbol_colon",
+    "yaml": "--- ::x\n",
+    "expected": {
+      "$sym": ":x"
+    }
+  },
+  {
+    "name": "gen:empty_symbol_str",
+    "yaml": "--- \":\"\n",
+    "expected": ":"
+  },
+  {
+    "name": "hand:plain_bools",
+    "yaml": "--- [yes, No, ON, off, TRUE, false, y, n, Yes]\n",
+    "expected": [
+      true,
+      false,
+      true,
+      false,
+      true,
+      false,
+      "y",
+      "n",
+      true
+    ]
+  },
+  {
+    "name": "hand:plain_nulls",
+    "yaml": "--- [~, null, Null, NULL, '']\n",
+    "expected": [
+      null,
+      null,
+      null,
+      null,
+      ""
+    ]
+  },
+  {
+    "name": "hand:plain_ints",
+    "yaml": "--- [1_000, 1,000, 0x1f, 0b101, 0755, -42, +7, 0]\n",
+    "expected": [
+      1000,
+      1,
+      0,
+      31,
+      5,
+      493,
+      -42,
+      7,
+      0
+    ]
+  },
+  {
+    "name": "hand:plain_sexagesimal",
+    "yaml": "--- [1:30, 1:30:15, 1:30.5]\n",
+    "expected": [
+      5400,
+      5415,
+      {
+        "$float": "5430"
+      }
+    ]
+  },
+  {
+    "name": "hand:plain_floats",
+    "yaml": "--- [1.5, .5, -1.25, 1.0e+5, 1_000.5, .inf, -.Inf, 1.]\n",
+    "expected": [
+      {
+        "$float": "1.5"
+      },
+      {
+        "$float": "0.5"
+      },
+      {
+        "$float": "-1.25"
+      },
+      {
+        "$float": "100000"
+      },
+      {
+        "$float": "1000.5"
+      },
+      {
+        "$float": "+Inf"
+      },
+      {
+        "$float": "-Inf"
+      },
+      {
+        "$float": "1"
+      }
+    ]
+  },
+  {
+    "name": "hand:plain_dates",
+    "yaml": "--- [2026-10-03, 2026-1-2, 2026-02-30]\n",
+    "expected": [
+      {
+        "$date": "2026-10-03"
+      },
+      {
+        "$date": "2026-01-02"
+      },
+      "2026-02-30"
+    ]
+  },
+  {
+    "name": "hand:plain_times",
+    "yaml": "--- [2026-10-03 12:00:00 +09:00, 2026-10-03T12:00:00Z, 2026-10-03 12:00:00.5, 2026-10-03t01:02:03-05]\n",
+    "expected": [
+      {
+        "$time": "2026-10-03T12:00:00.000000000+09:00"
+      },
+      {
+        "$time": "2026-10-03T12:00:00.000000000+00:00"
+      },
+      {
+        "$time": "2026-10-03T12:00:00.500000000+00:00"
+      },
+      {
+        "$time": "2026-10-03T01:02:03.000000000-05:00"
+      }
+    ]
+  },
+  {
+    "name": "hand:plain_symbols",
+    "yaml": "---\n- :foo\n- ':notsym'\n- :\"quoted sym\"\n- :'single'\n- :a:b\n",
+    "expected": [
+      {
+        "$sym": "foo"
+      },
+      ":notsym",
+      {
+        "$sym": "quoted sym"
+      },
+      {
+        "$sym": "single"
+      },
+      {
+        "$sym": "a:b"
+      }
+    ]
+  },
+  {
+    "name": "hand:plain_strings",
+    "yaml": "--- [hello world, abc, '123', \"456\", 1.2.3, 12abc, Yesterday, nothing, -foo, .foo]\n",
+    "expected": [
+      "hello world",
+      "abc",
+      "123",
+      "456",
+      "1.2.3",
+      "12abc",
+      "Yesterday",
+      "nothing",
+      "-foo",
+      ".foo"
+    ]
+  },
+  {
+    "name": "hand:ruby_symbol_tags",
+    "yaml": "--- [!ruby/symbol foo, !ruby/sym bar, !ruby/string baz, !str 123, !!str 456]\n",
+    "expected": [
+      {
+        "$sym": "foo"
+      },
+      {
+        "$sym": "bar"
+      },
+      "baz",
+      "123",
+      "456"
+    ]
+  },
+  {
+    "name": "hand:legacy_hwia",
+    "yaml": "--- !ruby/hash:ActiveSupport::HashWithIndifferentAccess\nurl_pattern: ''\nedit_tag_style: check_box\nuser_role:\n- ''\n- '3'\n",
+    "expected": {
+      "$hash": [
+        [
+          "url_pattern",
+          ""
+        ],
+        [
+          "edit_tag_style",
+          "check_box"
+        ],
+        [
+          "user_role",
+          [
+            "",
+            "3"
+          ]
+        ]
+      ]
+    }
+  },
+  {
+    "name": "hand:legacy_ac_parameters",
+    "yaml": "--- !ruby/hash-with-ivars:ActionController::Parameters\nelements:\n  status_id: !ruby/hash-with-ivars:ActionController::Parameters\n    elements:\n      operator: o\n      values:\n      - ''\n    ivars:\n      :@permitted: false\n  tracker_id:\n    operator: \"=\"\n    values:\n    - '1'\nivars:\n  :@permitted: false\n",
+    "expected": {
+      "$hash": [
+        [
+          "status_id",
+          {
+            "$hash": [
+              [
+                "operator",
+                "o"
+              ],
+              [
+                "values",
+                [
+                  ""
+                ]
+              ]
+            ]
+          }
+        ],
+        [
+          "tracker_id",
+          {
+            "$hash": [
+              [
+                "operator",
+                "="
+              ],
+              [
+                "values",
+                [
+                  "1"
+                ]
+              ]
+            ]
+          }
+        ]
+      ]
+    }
+  },
+  {
+    "name": "hand:merge_keys",
+    "yaml": "---\nbase: &b\n  a: 1\n  b: 2\nderived:\n  <<: *b\n  b: 3\n  c: 4\n",
+    "expected": {
+      "$hash": [
+        [
+          "base",
+          {
+            "$hash": [
+              [
+                "a",
+                1
+              ],
+              [
+                "b",
+                2
+              ]
+            ]
+          }
+        ],
+        [
+          "derived",
+          {
+            "$hash": [
+              [
+                "a",
+                1
+              ],
+              [
+                "b",
+                3
+              ],
+              [
+                "c",
+                4
+              ]
+            ]
+          }
+        ]
+      ]
+    }
+  },
+  {
+    "name": "hand:binary_tag",
+    "yaml": "--- !binary |-\n  44OG44K544OI\n",
+    "expected": "テスト"
+  },
+  {
+    "name": "hand:binary_list",
+    "yaml": "---\n- !binary |-\n  5pel5pys6Kqe\n- plain\n",
+    "expected": [
+      "日本語",
+      "plain"
+    ]
+  },
+  {
+    "name": "hand:explicit_types",
+    "yaml": "--- [!!int '12', !!float '1.5', !!null '', !!bool 'yes', !!binary 'YWJj']\n",
+    "expected": [
+      12,
+      {
+        "$float": "1.5"
+      },
+      null,
+      true,
+      "abc"
+    ]
+  },
+  {
+    "name": "hand:flow_mapping",
+    "yaml": "--- {a: 1, b: [x, y], 'c': {d: e}}\n",
+    "expected": {
+      "$hash": [
+        [
+          "a",
+          1
+        ],
+        [
+          "b",
+          [
+            "x",
+            "y"
+          ]
+        ],
+        [
+          "c",
+          {
+            "$hash": [
+              [
+                "d",
+                "e"
+              ]
+            ]
+          }
+        ]
+      ]
+    }
+  },
+  {
+    "name": "hand:document_end",
+    "yaml": "--- foo\n...\n",
+    "expected": "foo"
+  },
+  {
+    "name": "hand:scalar_only",
+    "yaml": "--- 42\n",
+    "expected": 42
+  },
+  {
+    "name": "hand:int_keys",
+    "yaml": "---\n1: one\n2: two\n",
+    "expected": {
+      "$hash": [
+        [
+          "1",
+          "one"
+        ],
+        [
+          "2",
+          "two"
+        ]
+      ]
+    }
+  },
+  {
+    "name": "hand:dup_keys",
+    "yaml": "---\na: 1\nb: 2\na: 3\n",
+    "expected": {
+      "$hash": [
+        [
+          "a",
+          3
+        ],
+        [
+          "b",
+          2
+        ]
+      ]
+    }
+  },
+  {
+    "name": "hand:block_scalars",
+    "yaml": "---\nlit: |\n  line1\n  yes\nfold: >\n  a\n  b\n",
+    "expected": {
+      "$hash": [
+        [
+          "lit",
+          "line1\nyes\n"
+        ],
+        [
+          "fold",
+          "a b\n"
+        ]
+      ]
+    }
+  },
+  {
+    "name": "hand:set_tag",
+    "yaml": "--- !!set\na: \nb: \n",
+    "expected": {
+      "$hash": [
+        [
+          "a",
+          null
+        ],
+        [
+          "b",
+          null
+        ]
+      ]
+    }
+  },
+  {
+    "name": "hand:ruby_object_generic",
+    "yaml": "--- !ruby/object:OpenStruct\ntable:\n  :name: x\n",
+    "expected": {
+      "$hash": [
+        [
+          "table",
+          {
+            "$hash": [
+              [
+                "name",
+                "x"
+              ]
+            ]
+          }
+        ]
+      ]
+    }
+  },
+  {
+    "name": "hand:unicode_plain",
+    "yaml": "--- [日本語, テスト, ü, 12時]\n",
+    "expected": [
+      "日本語",
+      "テスト",
+      "ü",
+      "12時"
+    ]
+  }
+]
