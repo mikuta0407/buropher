@@ -135,7 +135,21 @@ func (d *Deps) RequestFuncs(r *view.Render) ttemplate.FuncMap {
 	for k, v := range d.mastersFuncs(r, pg) {
 		fm[k] = v
 	}
+	// 機能別のファイルで registerFuncs により追加された関数（並列開発での衝突を避けるため）
+	for _, f := range extraFuncs {
+		for k, v := range f(d, r, pg) {
+			fm[k] = v
+		}
+	}
 	return fm
+}
+
+// extraFuncs は registerFuncs で登録された追加のテンプレート関数群。
+var extraFuncs []func(d *Deps, r *view.Render, pg func() *Page) ttemplate.FuncMap
+
+// registerFuncs は機能別ファイルのテンプレート関数を RequestFuncs に追加する（init で呼ぶ）。
+func registerFuncs(f func(d *Deps, r *view.Render, pg func() *Page) ttemplate.FuncMap) {
+	extraFuncs = append(extraFuncs, f)
 }
 
 // Funcs は名前だけが必要な関数（Render 外で使うものはない）。将来の拡張用。
@@ -514,7 +528,7 @@ func defaultSearchProjectScope(pg *Page, p *domain.Project) any {
 
 // accessKeys は Redmine::AccessKeys::ACCESSKEYS。
 var accessKeys = map[string]string{
-	"edit": "e", "preview": "r", "quick_search": "f", "search": "4", "new_issue": "7",
+	"edit": "e", "preview": "r", "quick_search": "f", "search": "4", "new_issue": "7", "previous": "p", "next": "n",
 }
 
 // accesskey は ApplicationHelper#accesskey（同じキーは 1 ページで 1 度だけ返す）。

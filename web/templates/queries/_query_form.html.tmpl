@@ -1,0 +1,94 @@
+{{$qv := .qv}}
+{{hidden_field_tag "set_filter" "1"}}
+{{hidden_field_tag "type" $qv.Type (hash "disabled" true "id" "query_type")}}
+{{$qv.HiddenSortTag}}
+
+<div id="query_form_with_buttons" class="hide-when-print">
+<div id="query_form_content">
+  <fieldset id="filters" class="collapsible {{if not $qv.NewRecord}}collapsed{{end}}">
+    <legend onclick="toggleFieldset(this);" class="icon icon-{{if $qv.NewRecord}}expanded{{else}}collapsed{{end}}">
+      {{sprite_icon (ternary $qv.NewRecord "angle-down" "angle-right") (hash "rtl" (not $qv.NewRecord))}}
+      {{l "label_filter_plural"}}
+    </legend>
+    <div style="{{if not $qv.NewRecord}}display: none;{{end}}">
+      {{partial "queries/filters" (dict "qv" $qv)}}
+    </div>
+  </fieldset>
+
+  {{if $qv.HasAvailableColumns}}
+    <fieldset id="options" class="collapsible collapsed">
+      <legend onclick="toggleFieldset(this);" class="icon icon-collapsed">
+        {{sprite_icon "angle-right" (hash "rtl" true)}}
+        {{l "label_options"}}
+      </legend>
+        <div class="hidden">
+          {{if $qv.MultipleDisplayTypes}}
+          <div>
+            <div class="field"><label for='display_type'>{{l "label_display_type"}}</label></div>
+            {{$qv.DisplayTypeTags}}
+          </div>
+          {{end}}
+          <div id="list-definition" class="{{if not $qv.IsList}}hidden{{end}}">
+          {{if $qv.HasAvailableColumns}}
+            <div>
+              <div class="field">{{l "field_column_names"}}</div>
+              {{partial "queries/columns" (dict "qv" $qv "tag_name" "c[]")}}
+            </div>
+          {{end}}
+          {{if $qv.HasGroupableColumns}}
+            <div>
+              <div class="field"><label for='group_by'>{{l "field_group_by"}}</label></div>
+              <div>{{$qv.GroupBySelectTag}}</div>
+            </div>
+          {{end}}
+          {{if $qv.HasAvailableBlockColumns}}
+            <div>
+              <div class="field">{{l "button_show"}}</div>
+              <div>{{$qv.BlockColumnsTags}}</div>
+            </div>
+          {{end}}
+          {{if $qv.HasAvailableTotalableColumns}}
+            <div>
+              <div class="field">{{l "label_total_plural"}}</div>
+              <div>{{$qv.TotalableColumnsTags}}</div>
+            </div>
+          {{end}}
+        </div>
+      </div>
+    </fieldset>
+  {{end}}
+</div>
+
+<p class="buttons">
+  {{link_to_function (sprite_icon "checked" (l "button_apply")) "$(\"#query_form\").submit()" (hash "class" "icon icon-checked")}}
+  {{link_to (sprite_icon "reload" (l "button_clear")) $qv.ClearPath (hash "class" "icon icon-reload")}}
+  {{if $qv.NewRecord}}
+    {{if $qv.CanSave}}
+      {{link_to_function (sprite_icon "save" (capitalize (l "button_save_object" (hash "object_name" (l "label_query"))))) $qv.SaveQueryOnClick (hash "class" "icon icon-save")}}
+    {{end}}
+  {{else}}
+    {{if $qv.Editable}}
+      {{link_to (sprite_icon "edit" (capitalize (l "button_edit_object" (hash "object_name" (l "label_query"))))) $qv.EditQueryPath (hash "class" "icon icon-edit")}}
+      {{delete_link $qv.QueryPath (hash "button_name" (capitalize (l "button_delete_object" (hash "object_name" (l "label_query")))))}}
+    {{end}}
+  {{end}}
+</p>
+</div>
+
+{{error_messages_for_list $qv.ErrorMessages}}
+
+{{define "queries/_query_form#js"}}
+
+$(function ($) {
+  $('input[name=display_type]').change(function (e) {
+    if ($("#display_type_list").is(':checked')) {
+      $('table#list-definition').show();
+    } else {
+      $('table#list-definition').hide();
+    }
+
+  })
+});
+
+{{end}}
+{{javascript_tag (capture "queries/_query_form#js" .) -}}

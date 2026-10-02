@@ -1,0 +1,90 @@
+# チケットの参照系（issues#index / show、journals#index / diff、context_menus#issues）の互換シナリオ。
+# GET のみ（共有の参照インスタンスを reset せずに流せる）。
+name: issues_read
+
+users:
+  admin: {login: admin, password: admin}
+  jsmith: {login: jsmith, password: jsmith}
+  dlopper: {login: dlopper, password: foo}
+
+normalize:
+  mask_text_selectors:
+    - "#footer"
+  # 最近使ったプロジェクト（共有の参照インスタンスの利用履歴に依存する）
+  strip_selectors:
+    - "#project-jump"
+
+requests:
+  # ---- 一覧（グローバル） ----
+  - path: /issues
+    users: [anonymous, admin, jsmith, dlopper]
+  - path: /issues?set_filter=1
+    users: [admin]
+  - path: /issues?set_filter=1&f[]=status_id&op[status_id]=*&sort=id
+    users: [admin]
+  - path: /issues?set_filter=1&f[]=status_id&op[status_id]=c
+    users: [admin]
+  - path: /issues?set_filter=1&sort=priority:desc,id
+    users: [admin]
+  - path: /issues?set_filter=1&sort=subject,id:desc
+    users: [jsmith]
+  - path: /issues?set_filter=1&group_by=project
+    users: [admin]
+  - path: /issues?set_filter=1&group_by=tracker&f[]=status_id&op[status_id]=*
+    users: [admin]
+  - path: /issues?set_filter=1&group_by=assigned_to&f[]=status_id&op[status_id]=*
+    users: [admin]
+  - path: /issues?set_filter=1&group_by=status&t[]=estimated_hours&t[]=spent_hours&f[]=status_id&op[status_id]=*
+    users: [admin]
+  - path: /issues?set_filter=1&c[]=project&c[]=tracker&c[]=subject&c[]=author&c[]=category&c[]=fixed_version&c[]=start_date&c[]=due_date&c[]=estimated_hours&c[]=done_ratio&c[]=created_on&c[]=closed_on&f[]=status_id&op[status_id]=*
+    users: [admin]
+  - path: /issues?set_filter=1&c[]=subject&c[]=parent&c[]=parent.subject&c[]=relations&c[]=attachments&c[]=watcher_users&c[]=last_updated_by&c[]=spent_hours&c[]=total_spent_hours&c[]=total_estimated_hours&c[]=estimated_remaining_hours&f[]=status_id&op[status_id]=*
+    users: [admin]
+  - path: /issues?set_filter=1&c[]=subject&c[]=cf_1&c[]=cf_2&c[]=cf_6&c[]=cf_8&c[]=cf_9&c[]=is_private&f[]=status_id&op[status_id]=*
+    users: [admin]
+  - path: /issues?set_filter=1&c[]=subject&c[]=description&c[]=last_notes&f[]=status_id&op[status_id]=*
+    users: [admin]
+  - path: /issues?set_filter=1&c[]=subject&c[]=project.cf_3&f[]=status_id&op[status_id]=*
+    users: [admin]
+  - path: /issues?set_filter=1&f[]=tracker_id&op[tracker_id]==&v[tracker_id][]=2
+    users: [admin]
+  - path: /issues?set_filter=1&f[]=subject&op[subject]=~&v[subject][]=issue
+    users: [jsmith]
+  - path: /issues?set_filter=1&f[]=assigned_to_id&op[assigned_to_id]==&v[assigned_to_id][]=me
+    users: [dlopper]
+  - path: /issues?set_filter=1&f[]=status_id&op[status_id]=*&per_page=2
+    users: [admin]
+  - path: /issues?set_filter=1&f[]=status_id&op[status_id]=*&per_page=2&page=3
+    users: [admin]
+  - path: /issues?set_filter=1&f[]=subject&op[subject]=~&v[subject][]=nothingmatches
+    users: [admin]
+  - path: /issues?set_filter=1&f[]=due_date&op[due_date]=%3E%3C&v[due_date][]=foo
+    users: [admin]
+  - path: /issues?query_id=1
+    users: [admin, jsmith]
+  - path: /issues?query_id=5
+    users: [admin]
+  - path: /issues?query_id=999
+    users: [admin]
+  - path: /issues?set_filter=1&f[]=status_id&op[status_id]=*&c[]=subject&c[]=project&group_by=project&sort=id
+    users: [jsmith]
+
+  # ---- 一覧（プロジェクト） ----
+  - path: /projects/ecookbook/issues
+    users: [anonymous, admin, jsmith, dlopper]
+  - path: /projects/ecookbook/issues?set_filter=1&f[]=status_id&op[status_id]=*&group_by=category
+    users: [admin]
+  - path: /projects/ecookbook/issues?set_filter=1&f[]=status_id&op[status_id]=*&group_by=fixed_version
+    users: [admin]
+  - path: /projects/ecookbook/issues?set_filter=1&f[]=status_id&op[status_id]=*&group_by=cf_1&c[]=subject&c[]=cf_1
+    users: [admin]
+  - path: /projects/subproject1/issues
+    users: [admin]
+  - path: /projects/onlinestore/issues
+    users: [anonymous, jsmith]
+  - path: /projects/private-child/issues
+    users: [anonymous, dlopper]
+  - path: /projects/nonexistent/issues
+    users: [admin, anonymous]
+  - path: /projects/ecookbook/issues?query_id=3
+    users: [jsmith]
