@@ -49,6 +49,12 @@ func (c *Req) head(status int) {
 	c.Halt()
 }
 
+// unknownFormat は respond_to に一致する形式がない場合（ActionController::UnknownFormat → 406、本文なし）。
+func (c *Req) unknownFormat() {
+	httpx.HeadAs(c.W, c.R, http.StatusNotAcceptable, "html")
+	c.Halt()
+}
+
 // formModel はフォームビルダ（labelled_form_for）に渡すモデルの共通部分。
 // ParamKey / Persisted / ToParam / ErrorsOn / HumanAttributeName を実装する。
 type formModel struct {
@@ -182,7 +188,7 @@ func csvRow(b *bytes.Buffer, sep string, fields []string) {
 		if i > 0 {
 			b.WriteString(sep)
 		}
-		if strings.ContainsAny(f, sep+"\"\r\n") {
+		if f == "" || strings.ContainsAny(f, sep+"\"\r\n") {
 			b.WriteString(`"` + strings.ReplaceAll(f, `"`, `""`) + `"`)
 		} else {
 			b.WriteString(f)
@@ -192,8 +198,12 @@ func csvRow(b *bytes.Buffer, sep string, fields []string) {
 }
 
 // sendCSV は Redmine::Export::CSV.generate の出力（encoding / field_separator パラメータ、UTF-8 なら BOM）を送る。
-func (c *Req) sendCSV(filename string, rows [][]string) {
-	sep := c.Params().String("field_separator")
+// withSeparatorParam が偽なら field_separator パラメータを使わない（generate に encoding だけを渡す出力）。
+func (c *Req) sendCSV(filename string, rows [][]string, withSeparatorParam bool) {
+	sep := ""
+	if withSeparatorParam {
+		sep = c.Params().String("field_separator")
+	}
 	if sep == "" {
 		sep = c.L("general_csv_separator")
 	}

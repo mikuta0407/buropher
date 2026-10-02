@@ -16,9 +16,11 @@ entries:
       - '^\s*<a href="/projects/onlinestore\?jump=[a-z_]+" title="OnlineStore">$'
       - '^\s*<span style="padding-inline-start:0px;">OnlineStore</span>$'
       - '^\s*</a>$'
-  - case: "admin_masters/trackers_*"
-    reason: "プロジェクトのチェックボックスのツリー順（docs/schema.md 17: 兄弟は名前のバイト順）"
+  - case: "admin_masters*/*trackers_*"
+    reason: "プロジェクトのチェックボックス・削除不可のプロジェクト一覧の並び（docs/schema.md 17: 兄弟は名前のバイト順）"
     lines:
+      - '^\s*<a href="/projects/onlinestore/issues\?[^"]*">OnlineStore</a>$'
+      - '^\s*,$'
       - '^\s*<input (checked="checked" )?name="tracker\[project_ids\]\[\]" type="checkbox" value="2">$'
       - '^\s*OnlineStore$'
       - '^\s*</?label>$'
@@ -34,7 +36,7 @@ entries:
     reason: "ロールの権限の保存順を持たない（role_permissions に順序列がない）ため API では AccessControl の定義順で出す"
     lines:
       - '^\s*<permission>[a-z_]+</permission>$'
-  - case: "admin_masters/enumerations_*"
+  - case: "admin_masters*/*enumerations_*"
     reason: "フィクスチャのカスタム値 true（SQLite に 't' で保存）はインポートで '1' に正規化される"
     lines:
       - '^\s*<option (selected="selected" )?value="1">Yes</option>$'

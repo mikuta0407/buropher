@@ -210,7 +210,7 @@ func (a *App) IssueStatusesIndex(c *Req) {
 	case "xml", "json":
 		a.renderIssueStatusesAPI(c, statuses)
 	default:
-		c.head(http.StatusNotAcceptable)
+		c.unknownFormat()
 	}
 }
 

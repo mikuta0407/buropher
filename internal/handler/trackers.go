@@ -296,7 +296,7 @@ func (a *App) TrackersIndex(c *Req) {
 		}
 		a.renderTrackersAPI(c, trackers, statuses)
 	default:
-		c.head(http.StatusNotAcceptable)
+		c.unknownFormat()
 	}
 }
 

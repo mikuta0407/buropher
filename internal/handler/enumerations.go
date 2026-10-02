@@ -303,7 +303,7 @@ func (a *App) EnumerationsIndex(c *Req) {
 		}
 		a.renderEnumerationsAPI(c, kind, es)
 	default:
-		c.head(http.StatusNotAcceptable)
+		c.unknownFormat()
 	}
 }
 

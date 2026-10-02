@@ -97,8 +97,13 @@ func newRoleForm(c *Req, r *domain.Role) *roleForm {
 	return f
 }
 
-// DisplayName は Role#name（組込ロールは翻訳名）。
-func (f *roleForm) DisplayName() string { return f.displayName }
+// DisplayName は Role#name（組込ロールは翻訳名、それ以外は現在の名前）。
+func (f *roleForm) DisplayName() string {
+	if f.IsBuiltin() {
+		return f.displayName
+	}
+	return f.Name
+}
 
 // ManagesRole は @role.managed_roles.include?(role)。
 func (f *roleForm) ManagesRole(id int64) bool { return slices.Contains(f.ManagedRoleIDs, id) }
@@ -409,7 +414,7 @@ func (a *App) RolesIndex(c *Req) {
 		}
 		a.renderRolesAPI(c, roles)
 	default:
-		c.head(http.StatusNotAcceptable)
+		c.unknownFormat()
 	}
 }
 
@@ -428,7 +433,7 @@ func (a *App) RolesShow(c *Req) {
 	case "xml", "json":
 		a.renderRoleAPI(c, c.local(ctxRole).(*domain.Role))
 	default:
-		c.head(http.StatusNotAcceptable)
+		c.unknownFormat()
 	}
 }
 
@@ -604,7 +609,7 @@ func (a *App) RolesPermissions(c *Req) {
 		return
 	case "html":
 	default:
-		c.head(http.StatusNotAcceptable)
+		c.unknownFormat()
 		return
 	}
 	selected := map[int64]bool{}
@@ -690,5 +695,6 @@ func (a *App) sendPermissionsCSV(c *Req, roles []*roleItem, perms []*permission.
 			rows = append(rows, row)
 		}
 	}
-	c.sendCSV("permissions.csv", rows)
+	// permissions_to_csv は Redmine::Export::CSV.generate(:encoding => params[:encoding]) のみ（区切り文字は既定）
+	c.sendCSV("permissions.csv", rows, false)
 }
