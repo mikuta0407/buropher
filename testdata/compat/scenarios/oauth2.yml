@@ -1,0 +1,111 @@
+# OAuth2 プロバイダ（Doorkeeper）の読み取り専用の互換シナリオ。
+# 共用の参照環境（3998。OAuth アプリケーションは無い状態）に対して GET だけを行う。
+# 書き込みを伴うフロー（アプリケーションの作成 → 認可 → トークン → API → リフレッシュ → 失効）は oauth2_write.yml。
+name: oauth2
+
+users:
+  admin: {login: admin, password: admin}
+  jsmith: {login: jsmith, password: jsmith}
+  # 言語が it のユーザー（doorkeeper-i18n の訳）
+  miscuser8: {login: miscuser8, password: foo}
+
+headers: {Accept-Language: en}
+
+normalize:
+  mask_text_selectors:
+    - "#footer"
+  # 共用の参照環境は他のシナリオで「最近使ったプロジェクト」が変わるため、ジャンプボックスの一覧は比較しない
+  strip_selectors:
+    - "#project-jump .drdn-items.projects"
+
+requests:
+  # 管理画面: アプリケーション
+  - path: /oauth/applications
+    users: [admin, jsmith, anonymous]
+  - path: /oauth/applications/new
+    users: [admin, jsmith]
+  - id: applications_999
+    path: /oauth/applications/999
+    users: [admin]
+  - id: applications_999_edit
+    path: /oauth/applications/999/edit
+    users: [admin]
+
+  # JSON 形式（Doorkeeper のコントローラは accept_api_auth しないため API 認証は使えない）
+  - id: applications_json
+    path: /oauth/applications.json
+    users: [admin, anonymous]
+  - id: authorized_applications_json
+    path: /oauth/authorized_applications.json
+    users: [jsmith, anonymous]
+
+  # 認可済みアプリケーション（マイアカウント）。サイドバーの API / Atom キーの有無は共用環境の状態に依存するため
+  # 比較しない（oauth2_write.yml で確認する）
+  - path: /oauth/authorized_applications
+    users: [admin, jsmith, anonymous]
+    normalize:
+      strip_selectors: ["#sidebar"]
+
+  # 認可画面のエラー（事前認可の検証）
+  - id: authorize_no_params
+    path: /oauth/authorize
+    users: [jsmith, anonymous]
+  - id: authorize_bad_client
+    path: /oauth/authorize?client_id=unknown&redirect_uri=http%3A%2F%2F127.0.0.1%2Fcb&response_type=code
+    users: [jsmith]
+  - id: authorize_native
+    path: /oauth/authorize/native?code=abcdef
+    users: [jsmith, anonymous]
+
+  # トークン情報（Bearer なし・不正なトークン）
+  - id: token_info_none
+    path: /oauth/token/info
+    users: [anonymous]
+    auth: none
+    format: json
+  - id: token_info_bad
+    path: /oauth/token/info
+    users: [anonymous]
+    auth: none
+    format: json
+    headers: {Authorization: "Bearer invalid-token"}
+  - id: token_info_param
+    path: /oauth/token/info?access_token=invalid-token
+    users: [anonymous]
+    auth: none
+    format: json
+
+  # ルートの無いもの（GET /oauth/token、introspection は無効）
+  - id: token_get
+    path: /oauth/token
+    users: [anonymous]
+    auth: none
+  - id: revoke_get
+    path: /oauth/revoke
+    users: [anonymous]
+    auth: none
+
+  # API: 見つからないトークンは無視されて匿名になる
+  - id: api_bad_bearer_current
+    path: /users/current.json
+    users: [anonymous]
+    auth: none
+    headers: {Authorization: "Bearer invalid-token"}
+  - id: api_bad_bearer_issues
+    path: /issues.json?limit=2
+    users: [anonymous]
+    auth: none
+    headers: {Authorization: "Bearer invalid-token"}
+  - id: api_bad_access_token_param
+    path: /projects.json?access_token=invalid-token&limit=1
+    users: [anonymous]
+    auth: none
+
+  # it のユーザー。トークンエンドポイント（ActionController::API）は I18n.locale を設定しないため、
+  # Redmine では直前のリクエストのロケールが残る（buropher は常に en）。そのため最後に置く。
+  - id: authorize_bad_client_it
+    path: /oauth/authorize?client_id=unknown&redirect_uri=http%3A%2F%2F127.0.0.1%2Fcb&response_type=code
+    users: [miscuser8]
+  - id: authorize_native_it
+    path: /oauth/authorize/native?code=abcdef
+    users: [miscuser8]

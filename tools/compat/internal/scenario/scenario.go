@@ -89,6 +89,9 @@ type Request struct {
 	// グループが無ければ一致全体）。変数は以降のリクエストの Path / Form / Body で ${name} として使える
 	// （参照・候補それぞれで別々に保持する）。
 	Capture map[string]string `yaml:"capture"`
+	// CaptureBody はレスポンス本文から変数を取り出す（Capture と同じ形式。一致しなければ変数を消す）。
+	// 変数はヘッダーの値（Authorization: Bearer ${token} など）でも展開される。
+	CaptureBody map[string]string `yaml:"capture_body"`
 }
 
 // File はシナリオファイル全体。
@@ -123,6 +126,8 @@ type Case struct {
 	Files map[string]string
 	// Capture は変数名 → Location ヘッダに適用する正規表現。
 	Capture map[string]string
+	// CaptureBody は変数名 → 本文に適用する正規表現。
+	CaptureBody map[string]string
 }
 
 // Load はシナリオファイルを読み込む。拡張子 .txt は簡易形式として扱う。
@@ -284,24 +289,25 @@ func (f *File) Cases() ([]Case, error) {
 				headers[k] = v
 			}
 			out = append(out, Case{
-				Scenario:  f.Name,
-				ID:        id,
-				User:      u,
-				Cred:      cred,
-				Method:    method,
-				Path:      r.Path,
-				Format:    r.Format,
-				Auth:      auth,
-				Form:      r.Form,
-				Body:      r.Body,
-				CType:     r.ContentType,
-				Headers:   headers,
-				Expect:    r.ExpectStatus,
-				Normalize: f.Normalize.Merge(r.Normalize),
-				Skip:      r.Skip,
-				CSRF:      r.CSRF,
-				Files:     r.Files,
-				Capture:   r.Capture,
+				Scenario:    f.Name,
+				ID:          id,
+				User:        u,
+				Cred:        cred,
+				Method:      method,
+				Path:        r.Path,
+				Format:      r.Format,
+				Auth:        auth,
+				Form:        r.Form,
+				Body:        r.Body,
+				CType:       r.ContentType,
+				Headers:     headers,
+				Expect:      r.ExpectStatus,
+				Normalize:   f.Normalize.Merge(r.Normalize),
+				Skip:        r.Skip,
+				CSRF:        r.CSRF,
+				Files:       r.Files,
+				Capture:     r.Capture,
+				CaptureBody: r.CaptureBody,
 			})
 		}
 	}

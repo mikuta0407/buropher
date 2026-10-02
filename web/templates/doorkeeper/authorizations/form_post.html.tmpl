@@ -1,0 +1,15 @@
+<header class="page-header">
+  <h1>{{l "doorkeeper.authorizations.form_post.title"}}</h1>
+</header>
+
+{{form_tag .RedirectURI (hash "method" "post" "name" "redirect_form" "authenticity_token" false)}}
+  {{range $kv := .Fields}}
+    {{hidden_field_tag (index $kv 0) (index $kv 1)}}
+  {{end}}
+{{end_form}}
+
+<script>
+  window.onload = function () {
+    document.forms['redirect_form'].submit();
+  };
+</script>

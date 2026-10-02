@@ -1,0 +1,49 @@
+{{$app := .App -}}
+<div class="contextual">
+{{link_to (sprite_icon "edit" (l "doorkeeper.applications.buttons.edit")) (printf "/oauth/applications/%d/edit" $app.ID) (hash "accesskey" (accesskey "edit") "class" "icon icon-edit")}}
+{{link_to (sprite_icon "del" (l "doorkeeper.applications.buttons.destroy")) (printf "/oauth/applications/%d" $app.ID) (hash "data" (hash "confirm" (l "doorkeeper.applications.confirmations.destroy")) "method" "delete" "class" "icon icon-del")}}
+</div>
+
+{{title (list (l "label_oauth_application_plural") "/oauth/applications") $app.Name}}
+
+<div class="box">
+  <h3 class="icon icon-passwd">{{sprite_icon "key" (l "label_information_plural")}}</h3>
+  <p>
+    <span class="label">{{call .T "doorkeeper.applications.show.application_id"}}:</span>
+    <code>{{$app.UID}}</code>
+  </p>
+  <p>
+    <span class="label">{{call .T "doorkeeper.applications.show.secret"}}:</span>
+    <code>
+      {{if .Secret}}{{.Secret}}{{else}}{{call .T "doorkeeper.applications.show.secret_hashed"}}{{end}}
+    </code>
+    {{if .Secret}}
+       <strong>{{l "text_oauth_copy_secret_now"}}</strong>
+    {{end}}
+  </p>
+  <p>
+    <span class="label">{{call .T "doorkeeper.applications.show.scopes"}}:</span>
+    <code>{{.ScopeLabels}}</code>
+  </p>
+</div>
+
+<h3>{{call .T "doorkeeper.applications.show.callback_urls"}}</h3>
+
+<div class="autoscroll">
+<table class="list">
+  <thead><tr>
+    <th>{{call .T "doorkeeper.applications.show.callback_url"}}</th>
+    <th></th>
+  </tr></thead>
+  <tbody>
+  {{range $u := .RedirectURIs}}
+    <tr class="{{cycle "odd" "even"}}">
+      <td class="name"><span>{{$u.URI}}</span></td>
+      <td class="buttons">
+        {{link_to (sprite_icon "shield-check" (l "doorkeeper.applications.buttons.authorize")) $u.AuthorizeURL (hash "class" "icon icon-authorize" "target" "_blank")}}
+      </td>
+    </tr>
+  {{end}}
+  </tbody>
+</table>
+</div>

@@ -1,0 +1,31 @@
+{{title (list (l "label_my_account") "/my/account") (l "label_oauth_authorized_application_plural")}}
+
+{{if .Applications}}
+<div class="autoscroll">
+<table class="list">
+  <thead><tr>
+    <th>{{l "doorkeeper.authorized_applications.index.application"}}</th>
+    <th>{{l "doorkeeper.authorized_applications.index.created_at"}}</th>
+    <th></th>
+  </tr></thead>
+  <tbody>
+  {{range $app := .Applications}}
+    <tr id="application_{{$app.ID}}" class="{{cycle "odd" "even"}}">
+      <td class="name"><span>{{$app.Name}}</span></td>
+      <td >{{format_date $app.CreatedAt}}</td>
+      <td class="buttons">
+        {{link_to (sprite_icon "del" (l "doorkeeper.authorized_applications.buttons.revoke")) (printf "/oauth/authorized_applications/%d" $app.ID) (hash "data" (hash "confirm" (l "doorkeeper.authorized_applications.confirmations.revoke")) "method" "delete" "class" "icon icon-del")}}
+      </td>
+    </tr>
+  {{end}}
+  </tbody>
+</table>
+</div>
+{{else}}
+  <p class="nodata">{{l "label_no_data"}}</p>
+{{end}}
+
+{{define "doorkeeper/authorized_applications/index#sidebar"}}
+{{partial "my/sidebar"}}
+{{end}}
+{{content_for "sidebar" (capture "doorkeeper/authorized_applications/index#sidebar")}}

@@ -1,0 +1,11 @@
+status: 200
+content-type: application/json
+
+{
+  "access_token": "TOKEN",
+  "token_type": "Bearer",
+  "expires_in": 7200,
+  "refresh_token": "TOKEN",
+  "scope": "view_issues",
+  "created_at": 1768478400
+}
