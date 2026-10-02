@@ -1,0 +1,32 @@
+{{$a := assigns}}
+{{$name := .tab.Name}}
+<table class="list custom_fields">
+  <thead><tr>
+    <th>{{l "field_name"}}</th>
+    <th>{{l "field_field_format"}}</th>
+    <th>{{l "field_is_required"}}</th>
+    {{if eq $name "IssueCustomField"}}
+      <th>{{l "field_is_for_all"}}</th>
+      <th>{{l "label_used_by"}}</th>
+    {{end}}
+    <th></th>
+  </tr></thead>
+  <tbody>
+  {{range $cf := index $a.CustomFieldsByType $name}}
+    <tr>
+      <td class="name">{{link_to $cf.Name (printf "/custom_fields/%d/edit" $cf.ID)}}</td>
+      <td>{{l (custom_field_format_label $cf)}}</td>
+      <td>{{checked_image $cf.IsRequired}}</td>
+      {{if eq $name "IssueCustomField"}}
+      <td>{{checked_image $cf.IsForAll}}</td>
+      <td>{{if not $cf.IsForAll}}{{l "label_x_projects" (hash "count" (index $a.ProjectsCount $cf.ID))}}{{end}}</td>
+      {{end}}
+      <td class="buttons">
+        {{reorder_handle (printf "/custom_fields/%d" $cf.ID) "custom_field"}}
+        {{link_to_function (sprite_icon "copy" (l "button_copy")) (printf "location.href = '/custom_fields/new?copy=%d&type=' + encodeURIComponent(($('.tabs a.selected').attr('id')||'').split('tab-').pop())" $cf.ID) (hash "class" "icon icon-copy")}}
+        {{delete_link (printf "/custom_fields/%d" $cf.ID)}}
+      </td>
+    </tr>
+  {{end}}
+  </tbody>
+</table>

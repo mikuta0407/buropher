@@ -1,0 +1,3 @@
+{{partial "custom_fields/formats/regexp" (dict "f" .f "custom_field" .custom_field)}}
+<p>{{.f.TextField "url_pattern" (hash "size" 50 "label" (sym "field_url"))}}</p>
+<p>{{.f.TextField "default_value"}}</p>

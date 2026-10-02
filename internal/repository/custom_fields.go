@@ -264,12 +264,51 @@ func MaxCustomFieldPosition(ctx context.Context, q db.Queryer, owner string) (in
 	return n, err
 }
 
-// ShiftCustomFieldPositions は acts_as_positioned の位置の詰め・空け:
-// owner_kind 内で position が [from, to] の範囲の行を delta だけずらす（exceptID は除く）。
-func ShiftCustomFieldPositions(ctx context.Context, q db.Queryer, owner string, from, to, delta int, exceptID int64) error {
-	_, err := q.Exec(ctx, `UPDATE custom_fields SET position = position + ? WHERE owner_kind = ? AND position >= ? AND position <= ? AND id <> ?`,
-		delta, owner, from, to, exceptID)
+// InsertCustomFieldPosition は acts_as_positioned#insert_position（同じ種類で position 以降を 1 つ後ろへ）。
+func InsertCustomFieldPosition(ctx context.Context, q db.Queryer, owner string, position int, id int64) error {
+	_, err := q.Exec(ctx, `UPDATE custom_fields SET position = position + 1 WHERE owner_kind = ? AND position >= ? AND id <> ?`, owner, position, id)
 	return err
+}
+
+// RemoveCustomFieldPosition は acts_as_positioned#remove_position（以前の position 以降を 1 つ前へ）。
+func RemoveCustomFieldPosition(ctx context.Context, q db.Queryer, owner string, previous int, id int64) error {
+	_, err := q.Exec(ctx, `UPDATE custom_fields SET position = position - 1 WHERE owner_kind = ? AND position >= ? AND id <> ?`, owner, previous, id)
+	return err
+}
+
+// ShiftCustomFieldPositions は acts_as_positioned#shift_positions（[min, max] の他の行を offset ずらし、
+// 更新件数が max - min でなければ reset_positions_in_list で 1 から振り直す）。
+func ShiftCustomFieldPositions(ctx context.Context, q db.Queryer, owner string, id int64, from, to int) error {
+	offset := 1
+	if from > to {
+		offset = 1
+	} else if from < to {
+		offset = -1
+	} else {
+		offset = 0
+	}
+	lo, hi := min(from, to), max(from, to)
+	res, err := q.Exec(ctx, `UPDATE custom_fields SET position = position + ? WHERE owner_kind = ? AND id <> ? AND position BETWEEN ? AND ?`,
+		offset, owner, id, lo, hi)
+	if err != nil {
+		return err
+	}
+	n, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if int(n) != hi-lo {
+		var ids []int64
+		if err := q.Select(ctx, &ids, `SELECT id FROM custom_fields WHERE owner_kind = ? ORDER BY position, id`, owner); err != nil {
+			return err
+		}
+		for i, rid := range ids {
+			if _, err := q.Exec(ctx, `UPDATE custom_fields SET position = ? WHERE id = ?`, i+1, rid); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
 }
 
 // DeleteCustomField はカスタムフィールドと値を削除する（has_many :custom_values, :dependent => :delete_all。

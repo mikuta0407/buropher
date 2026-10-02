@@ -318,11 +318,10 @@ func (h adminH) includeCalendarHeadersTags() string {
 		"selectOtherMonths: true, changeMonth: true, changeYear: true, "+
 		"beforeShow: beforeShowDatePicker};", nil)
 	locale := ctx.Locale
-	if p.Loc != nil {
-		if v := p.Loc.LRaw("jquery.locale"); v != nil {
-			if s, ok := v.(string); ok && s != "" {
-				locale = s
-			}
+	if p.Loc != nil && p.Loc.Bundle != nil {
+		// l('jquery.locale', :default => current_language.to_s)
+		if s, ok := p.Loc.Bundle.Lookup(p.Loc.Lang, "jquery.locale").(string); ok && s != "" {
+			locale = s
 		}
 	}
 	if locale != "en" && locale != "" {

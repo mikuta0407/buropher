@@ -1,0 +1,9 @@
+{{$cf := assigns.CustomField}}
+<fieldset class="box"><legend>{{toggle_checkboxes_link "#custom_field_project_ids input[type=checkbox]:enabled"}}{{l "label_project_plural"}}</legend>
+  <p>{{.f.CheckBox "is_for_all" (hash "data" (hash "disables" "#custom_field_project_ids input"))}}</p>
+
+  <div id="custom_field_project_ids">
+    {{custom_field_project_nested_lists assigns.Projects $cf}}
+    {{hidden_field_tag "custom_field[project_ids][]" "" (hash "id" nil)}}
+  </div>
+</fieldset>

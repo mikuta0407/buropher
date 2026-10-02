@@ -1,0 +1,9 @@
+<p>
+  <label for="custom_field_min_length">{{l "label_min_max_length"}}</label>
+  {{.f.TextField "min_length" (hash "size" 5 "no_label" true)}} - 
+  {{.f.TextField "max_length" (hash "size" 5 "no_label" true)}}
+</p>
+<p>
+  {{.f.TextField "regexp" (hash "size" 50)}}
+  <em class="info">{{l "text_regexp_info"}}</em>
+</p>
