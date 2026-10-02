@@ -1,0 +1,13 @@
+<h2>{{.Title}}</h2>
+
+{{form_tag "/imports" (hash "multipart" true)}}
+  {{hidden_field_tag "type" .Type}}
+  {{hidden_field_tag "project_id" .ProjectIDParam}}
+  <fieldset class="box">
+    <legend>{{l "label_select_file_to_import"}} (CSV)</legend>
+    <p>
+      {{file_field_tag "file"}}
+    </p>
+  </fieldset>
+  <p>{{submit_tag (raw (print (l "label_next") " &#187;")) (hash "name" nil)}}</p>
+{{end_form}}

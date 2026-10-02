@@ -1,0 +1,25 @@
+<table id="saved-items" class="list">
+  <thead>
+  <tr>
+    <th>{{l "field_login"}}</th>
+    <th>{{l "field_firstname"}}</th>
+    <th>{{l "field_lastname"}}</th>
+    <th>{{l "field_mail"}}</th>
+    <th>{{l "field_admin"}}</th>
+    <th>{{l "field_status"}}</th>
+  </tr>
+  </thead>
+  <tbody>
+  {{range $row := .rows}}
+  {{$user := $row.user}}
+  <tr>
+    <td>{{avatar $user (hash "size" "13")}} {{link_to $user.Login (print "/users/" $user.ID "/edit")}}</td>
+    <td>{{$user.Firstname}}</td>
+    <td>{{$user.Lastname}}</td>
+    <td>{{mail_to $user.Mail}}</td>
+    <td>{{checked_image $user.IsAdmin}}</td>
+    <td>{{$row.status}}</td>
+  </tr>
+  {{end}}
+  </tbody>
+</table>

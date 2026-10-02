@@ -1,0 +1,20 @@
+<fieldset class="box tabular">
+  <legend>{{l "label_fields_mapping"}}</legend>
+  <div id="fields-mapping">
+    {{partial "imports/time_entries_fields_mapping" .}}
+  </div>
+</fieldset>
+
+{{define "imports/_time_entries_mapping#js"}}
+
+$(document).ready(function() {
+  $('#fields-mapping').on('change', '#import_mapping_project_id', function(){
+    $.ajax({
+      url: '{{print "/imports/" .Filename "/mapping.js"}}',
+      type: 'post',
+      data: $('#import-form').serialize()
+    });
+  });
+});
+{{end}}
+{{javascript_tag (capture "imports/_time_entries_mapping#js" .) -}}

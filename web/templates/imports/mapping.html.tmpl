@@ -1,0 +1,35 @@
+<h2>{{.Title}}</h2>
+
+{{form_tag (print "/imports/" .Filename "/mapping") (hash "id" "import-form")}}
+  {{partial (print "imports/" .Prefix "_mapping") (assigns)}}
+
+  <fieldset class="box">
+    <legend>{{l "label_file_content_preview"}}</legend>
+
+    <div class="autoscroll">
+      <table class="sample-data">
+      {{range $row := .FirstRows}}
+        <tr>
+          {{range $c := $row}}{{content_tag "td" $c}}{{end}}
+        </tr>
+      {{end}}
+      </table>
+    </div>
+  </fieldset>
+
+  <p>
+    {{button_tag (print "« " (l "label_previous")) (hash "name" "previous")}}
+    {{submit_tag (l "button_import")}}
+  </p>
+{{end_form}}
+
+{{define "imports/mapping#js"}}
+
+$(document).ready(function() {
+  $('#import-form').submit(function(){
+    $('#import-details').show().addClass('ajax-loading');
+    $('#import-progress').progressbar({value: 0, max: {{.TotalItemsOrZero}}});
+  });
+});
+{{end}}
+{{javascript_tag (capture "imports/mapping#js") -}}

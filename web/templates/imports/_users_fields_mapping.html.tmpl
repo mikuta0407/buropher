@@ -1,0 +1,54 @@
+{{$i := .Import}}
+<div class="splitcontent">
+  <div class="splitcontentleft">
+  <p>
+    <label for="import_mapping_login">{{l "field_login"}}</label>
+    {{$i.MappingSelectTag "login" (hash "required" true)}}
+  </p>
+  <p>
+    <label for="import_mapping_firstname">{{l "field_firstname"}}</label>
+    {{$i.MappingSelectTag "firstname" (hash "required" true)}}
+  </p>
+  <p>
+    <label for="import_mapping_lastname">{{l "field_lastname"}}</label>
+    {{$i.MappingSelectTag "lastname" (hash "required" true)}}
+  </p>
+  <p>
+    <label for="import_mapping_mail">{{l "field_mail"}}</label>
+    {{$i.MappingSelectTag "mail" nil}}
+  </p>
+  <p>
+    <label for="import_mapping_language">{{l "field_language"}}</label>
+    {{$i.MappingSelectTag "language" nil}}
+  </p>
+  <p>
+    <label for="import_mapping_admin">{{l "field_admin"}}</label>
+    {{$i.MappingSelectTag "admin" nil}}
+  </p>
+  <p>
+    <label for="import_mapping_auth_source_id">{{l "field_auth_source"}}</label>
+    {{$i.MappingSelectTag "auth_source" nil}}
+  </p>
+  <p>
+    <label for="import_mapping_password">{{l "field_password"}}</label>
+    {{$i.MappingSelectTag "password" nil}}
+  </p>
+  <p>
+    <label for="import_mapping_must_change_passwd">{{l "field_must_change_passwd"}}</label>
+    {{$i.MappingSelectTag "must_change_passwd" nil}}
+  </p>
+  <p>
+    <label for="import_mapping_status">{{l "field_status"}}</label>
+    {{$i.MappingSelectTag "status" nil}}
+  </p>
+  </div>
+
+  <div class="splitcontentright">
+  {{range $field := .CustomFields}}
+    <p>
+      <label for="import_mapping_cf_{{$field.ID}}">{{$field.Name}}</label>
+      {{$i.MappingSelectTag (print "cf_" $field.ID) (hash "required" $field.IsRequired)}}
+    </p>
+  {{end}}
+  </div>
+</div>
