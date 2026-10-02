@@ -259,7 +259,9 @@ func TestIssueImport(t *testing.T) {
 			t.Fatalf("issues = %d (%v)", len(ids), importItemMessages(t, d, id))
 		}
 		red4, red3, red2, red1, blue1, blue2, blue3, blue4, green := ids[0], ids[1], ids[2], ids[3], ids[4], ids[5], ids[6], ids[7], ids[8]
-		parent := func(id int64) int64 { return queryInt(t, d, `SELECT COALESCE(parent_id, 0) FROM issues WHERE id = ?`, id) }
+		parent := func(id int64) int64 {
+			return queryInt(t, d, `SELECT COALESCE(parent_id, 0) FROM issues WHERE id = ?`, id)
+		}
 		rel := func(from, to, delay int64) bool {
 			return queryInt(t, d, `SELECT COUNT(*) FROM issue_relations WHERE issue_from_id = ? AND issue_to_id = ? AND delay = ? AND relation_type = 'precedes'`, from, to, delay) == 1
 		}
