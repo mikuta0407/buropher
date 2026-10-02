@@ -29,7 +29,7 @@ __restrict thread _thread __thread typename _typename __typename`
 	cID = `[a-zA-Z_][a-zA-Z0-9_]*`
 )
 
-func buildC(tag string, keywords, keywordsType, reserved map[string]bool) *rlexer {
+func buildC(tag string, keywords, keywordsType, reserved, builtins map[string]bool) *rlexer {
 	l := &rlexer{tag: tag}
 	l.start = func(c *rctx) { c.push("bol") }
 	l.state("expr_bol",
@@ -79,6 +79,8 @@ func buildC(tag string, keywords, keywordsType, reserved map[string]bool) *rlexe
 				c.token("kt")
 			case reserved[name]:
 				c.token("kr")
+			case builtins[name]:
+				c.token("nb")
 			default:
 				c.token("n")
 			}
@@ -146,7 +148,7 @@ func buildC(tag string, keywords, keywordsType, reserved map[string]bool) *rlexe
 
 func init() {
 	registerRouge("c", func() *rlexer {
-		return buildC("c", wordset(cKeywords), wordset(cKeywordsType), wordset(cReserved))
+		return buildC("c", wordset(cKeywords), wordset(cKeywordsType), wordset(cReserved), nil)
 	})
 	registerRouge("cpp", func() *rlexer {
 		l := buildC("cpp",
@@ -160,7 +162,7 @@ alignas alignof decltype noexcept static_assert
 thread_local try`),
 			wordset(cKeywordsType+` bool`),
 			wordset(cReserved+` __virtual_inheritance __uuidof __super __single_inheritance
-__multiple_inheritance __interface __event`))
+__multiple_inheritance __interface __event`), nil)
 		const dq = `\d('?\d)*`
 		l.prependRules("root",
 			rule(`(?:__offload|__blockingoffload|__outer)\b`, "kp"),
