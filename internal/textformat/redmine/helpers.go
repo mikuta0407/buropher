@@ -251,6 +251,8 @@ type LinkToIssueOptions struct {
 	NoSubject bool // :subject => false
 	Project   bool // :project => true
 	Truncate  int  // :truncate
+	// FullURL は :only_path => false（既定は相対パス。textilizable の only_path には従わない）。
+	FullURL bool
 }
 
 // LinkToIssue は link_to_issue(issue, options)。
@@ -271,7 +273,11 @@ func (r *Renderer) LinkToIssue(is *Issue, o LinkToIssueOptions) template.HTML {
 			subject = rails.StringTruncate(subject, o.Truncate, "", nil)
 		}
 	}
-	s := string(rails.LinkTo(text, r.issueURL(is.ID, ""), rails.NewHash("class", r.IssueCSSClasses(is), "title", title)))
+	u := "/issues/" + strconv.FormatInt(is.ID, 10)
+	if o.FullURL {
+		u = r.BaseURL + u
+	}
+	s := string(rails.LinkTo(text, u, rails.NewHash("class", r.IssueCSSClasses(is), "title", title)))
 	if hasSubject {
 		s += h(": " + subject)
 	}

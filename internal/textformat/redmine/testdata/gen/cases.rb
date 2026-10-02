@@ -513,5 +513,94 @@ realistic_md.each_with_index do |t, i|
   end
 end
 
+# ---------------------------------------------------------------- extra: 境界ケース
+extra = [
+  # Wiki リンクのエスケープ・特殊文字
+  '[[CookBook documentation#Ünicode heading]]', '[[Ä page]]', '[[Page with spaces/slash]]',
+  '[[ecookbook:Another_page#Anchor|Text]]', '[[onlinestore:]]', '[[Unknown:Page]]',
+  '[[eCookbook:CookBook documentation]]', '[[ecookbook:|Home]]', '[[#Some anchor|<b>bold</b>]]',
+  '[[Page "quoted" & <tag>]]', '[[Этика менеджмента]]', '[[Page#a b c]]', '[[Page_with_sections#Heading-1]]',
+  '![[CookBook documentation]]', '[[a|b|c]]', "[[multi\nline]]", '[[ Spaced ]]', '[[page?x=1]]',
+  # Redmine リンクの境界
+  '#1#note-1', '##1-1', '#note-3', '#note', 'rnote', '#1x', '#1/', '#1_', '#1-', '(#1)', '-#1', ',#1', '>#1',
+  'x#1', '#1:', '#1;', '#1!', '#1?', "#1\n#2", 'ecookbook:#1', 'onlinestore:#4', 'unknown:#1',
+  'ecookbook:r1', 'onlinestore:r1', 'ecookbook:document:"Test document"', 'ecookbook:version:1.0',
+  'onlinestore:version:"Alpha"', 'version#7', 'version:"Systemwide visible version"', 'version#3',
+  'source:"some file"', 'source:some/file@BRANCH', 'source:some/file@a b', 'export:"a b"',
+  'source:ecookbook|foo', 'commit:691322', 'commit:deadbeef', 'onlinestore:source:x',
+  'message#1', 'message#2', 'message#99', 'forum#1', 'forum:"Help"', 'news#2', 'news#3', 'news:Unknown',
+  'document#2', 'document#3', 'project#2', 'project#5', 'project:onlinestore', 'project:"Private child of eCookbook"',
+  'user#1', 'user#3', 'user#4', 'user#5', 'user#7', 'user#8', 'user:admin', 'user:"jsmith"', '@admin', '@someone',
+  '@dlopper2', '@rhill,', '@jsmith!', '@ jsmith', '@', 'attachment:error281.txt', 'attachment:ERROR281.TXT',
+  'attachment:"error281.txt"', 'attachment:unknown.txt', '!#1', '!r1', '!document#1', '!@jsmith', '!user:jsmith',
+  '<a href="#">#1</a> #1', "<a href=\"#\">\n#1</a>", '<code>#1</code> #1', '<pre>#1</pre> #2',
+  # マクロの境界
+  '{{hello_world("a, b", c)}}', '{{hello_world(""quoted"")}}', '{{hello_world( x , y )}}', '{{HELLO_WORLD}}',
+  "{{hello_world\n\n}}", "{{macro_list(x)\nblock\n}}", '!{{hello_world}}', '{{unknown_macro}}', '{{macro(0)}}',
+  '{{issue}}', '{{issue(abc)}}', '{{issue( 3)}}', '{{issue(3abc)}}', '{{issue(1, project=yes)}}',
+  '{{thumbnail}}', '{{thumbnail(error281.txt, size=abc)}}', '{{thumbnail(error281.txt, size=0)}}',
+  '{{recent_pages(limit=0, days=8000)}}', '{{recent_pages(limit=-1, days=8000)}}', '{{recent_pages(days=abc)}}',
+  '{{child_pages(Unknown)}}', '{{child_pages(onlinestore:Start_page)}}', '{{include}}', '{{include(onlinestore:Start_page)}}',
+  "<pre>{{hello_world}}</pre>", "{{collapse\n#1 and [[Wiki]]\n}}", "{{collapse(A, B)\n{{hello_world}}\n}}",
+  # 見出し
+  "h1. Ünïcödé 日本語\n\nh2. A\n\nh2. A-2\n\nh2. A\n\nh3. <notextile>x</notextile>", "h1. [[Wiki]] #1 r1\n\n{{>toc}}",
+  "{{toc}}\n\nh5. five\n\nh6. six", "{{toc}}\n\nh2. two\n\nh1. one\n\nh4. four",
+]
+extra_md = [
+  "# Ünïcödé 日本語\n\n## A\n\n## A-2\n\n## A\n\n{{<toc}}", "# [[Wiki]] #1\n\n{{toc}}",
+  "Setext\n======\n\nSub\n---\n\n{{toc}}", "| #1 | r1 |\n|---|---|\n| @jsmith | [[Wiki]] |",
+  "```\n#1 {{hello_world}}\n```\n\n`#2` #3", "<div>#1</div>\n\n<span>@jsmith</span>",
+  "[#1](/issues/1) and [r1](http://x/r1) [[Wiki|x]]", "* #1\n  * r1\n    * @jsmith",
+  "Text with trailing #1.\nNext line #2, #3; #4!", "<img src=\"logo.gif\"> ![x](logo.gif)",
+]
+extra.each_with_index do |t, i|
+  [['anon', 'anonymous', 'ecookbook'], ['admin', 'admin', 'onlinestore'], ['jsmith', 'jsmith', '']].each do |n, u, pr|
+    add("extra/tx/#{i}-#{n}", t, user: u, project: pr, object: {'type' => 'issue', 'id' => 3})
+  end
+  add("extra/md/#{i}", t, formatting: 'common_mark', user: 'dlopper', project: 'ecookbook')
+end
+extra_md.each_with_index do |t, i|
+  [['anon', 'anonymous'], ['admin', 'admin']].each do |n, u|
+    add("extra/md2/#{i}-#{n}", t, formatting: 'common_mark', user: u, object: {'type' => 'wiki_content', 'id' => 1})
+  end
+end
+
+# only_path: false
+full = ['#1 r1 [[Wiki]] document#1 version#2 news#1 forum#1 message#5 project#1 @jsmith attachment:error281.txt source:/a@52#L1',
+        "{{thumbnail(logo.gif)}} {{issue(1)}} !logo.gif!", '[[Another page#x]] commit:691322a8eb01e11fd7']
+full.each_with_index do |t, i|
+  add("extra/full/#{i}", t, user: 'admin', object: {'type' => 'issue', 'id' => 1}, options: {'only_path' => false})
+end
+add('extra/full/wiki', "!logo.gif! [[New page]]", user: 'admin', object: {'type' => 'wiki_content', 'id' => 4}, options: {'only_path' => false})
+
+# NullFormatter / formatting false
+null = ['a *link*: http://www.example.net/', "line1\nline2\n\npara #1 r1", '<b>x</b> & "y" \'z\' @jsmith',
+        "[[Wiki]] {{hello_world}}\n\n\n\nfoo@bar.com", "{{toc}}\n\nh1. Title", 'http://a.b/c?x=1&y=2 www.redmine.org']
+null.each_with_index do |t, i|
+  add("extra/null/#{i}", t, formatting: '', user: 'jsmith')
+  add("extra/noformat/#{i}", t, user: 'jsmith', options: {'formatting' => false})
+end
+
+# edit_section_links / wiki_links 組み合わせ
+sect_tx = "h1. One\n\ntext\n\nh2. Two [[Wiki]]\n\n<pre>\nh2. no\n</pre>\n\nh3. Three\n\n{{toc}}"
+sect_md = "# One\n\ntext\n\n## Two [[Wiki]]\n\n```\n## no\n```\n\n### Three\n\n{{toc}}"
+add('extra/sect/tx', sect_tx, user: 'admin', object: {'type' => 'wiki_content', 'id' => 1},
+    options: {'edit_section_links' => {'project_id' => 'ecookbook', 'id' => 'CookBook_documentation'}})
+add('extra/sect/md', sect_md, formatting: 'common_mark', user: 'admin', object: {'type' => 'wiki_content', 'id' => 1},
+    options: {'edit_section_links' => {'project_id' => 'ecookbook', 'id' => 'CookBook_documentation'}})
+add('extra/sect/anchor', sect_tx, user: 'admin', object: {'type' => 'wiki_content', 'id' => 1},
+    options: {'wiki_links' => 'anchor'})
+add('extra/sect/local', sect_md, formatting: 'common_mark', user: 'admin', object: {'type' => 'wiki_content', 'id' => 1},
+    options: {'wiki_links' => 'local', 'headings' => false})
+
+# 各オブジェクトの添付・hello_world
+objs = [['issue', 2], ['journal', 1], ['journal', 2], ['wiki_content', 2], ['wiki_content', 11], ['news', 1],
+        ['message', 1], ['document', 1], ['version', 1], ['project', 1], ['project', 2]]
+objs.each do |type, id|
+  t = "{{hello_world(x)}} attachment:logo.gif !logo.gif! {{thumbnail(logo.gif)}} [[Child 1]] #note-1"
+  add("extra/obj/#{type}-#{id}-tx", t, user: 'admin', project: '', object: {'type' => type, 'id' => id})
+  add("extra/obj/#{type}-#{id}-md", t, formatting: 'common_mark', user: 'jsmith', project: '', object: {'type' => type, 'id' => id})
+end
+
 File.write(out, JSON.pretty_generate($cases) + "\n")
 puts "#{$cases.size} cases"

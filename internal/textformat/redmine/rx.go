@@ -54,10 +54,16 @@ func rangeTableClass(t *unicode.RangeTable) string {
 	return b.String()
 }
 
-func rx(p string) *regexp2.Regexp   { return regexp2.MustCompile(p, regexp2.Multiline) }
-func rxm(p string) *regexp2.Regexp  { return regexp2.MustCompile(p, regexp2.Multiline|regexp2.Singleline) }
-func rxi(p string) *regexp2.Regexp  { return regexp2.MustCompile(p, regexp2.Multiline|regexp2.IgnoreCase) }
-func rxmi(p string) *regexp2.Regexp { return regexp2.MustCompile(p, regexp2.Multiline|regexp2.Singleline|regexp2.IgnoreCase) }
+func rx(p string) *regexp2.Regexp { return regexp2.MustCompile(p, regexp2.Multiline) }
+func rxm(p string) *regexp2.Regexp {
+	return regexp2.MustCompile(p, regexp2.Multiline|regexp2.Singleline)
+}
+func rxi(p string) *regexp2.Regexp {
+	return regexp2.MustCompile(p, regexp2.Multiline|regexp2.IgnoreCase)
+}
+func rxmi(p string) *regexp2.Regexp {
+	return regexp2.MustCompile(p, regexp2.Multiline|regexp2.Singleline|regexp2.IgnoreCase)
+}
 
 // md は Ruby の MatchData 相当。
 type md struct{ m *regexp2.Match }

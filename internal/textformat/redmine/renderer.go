@@ -53,10 +53,13 @@ func (o *Object) isWikiContent() bool {
 	return o != nil && (o.Kind == "wiki_content" || o.Kind == "wiki_content_version") && o.Page != nil
 }
 
-// project は obj.respond_to?(:project) ? obj.project : nil。
+// project は obj.respond_to?(:project) ? obj.project : nil（Project#project は self）。
 func (o *Object) project() *domain.Project {
-	if o == nil || o.Kind == "project" {
+	if o == nil {
 		return nil
+	}
+	if o.Kind == "project" {
+		return o.Self
 	}
 	return o.Project
 }
