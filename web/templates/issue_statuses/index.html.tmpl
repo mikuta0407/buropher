@@ -1,0 +1,48 @@
+<div class="contextual">
+{{link_to (sprite_icon "add" (l "label_issue_status_new")) "/issue_statuses/new" (hash "class" "icon icon-add")}}
+{{if .UseStatusForDoneRatio}}{{link_to (sprite_icon "table-multiple" (l "label_update_issue_done_ratios")) "/issue_statuses/update_issue_done_ratio" (hash "class" "icon icon-multiple" "method" "post" "data" (hash "confirm" (l "text_are_you_sure")))}}{{end}}
+</div>
+
+<h2>{{l "label_issue_status_plural"}}</h2>
+
+<table class="list issue_statuses">
+  <thead><tr>
+  <th>{{l "field_status"}}</th>
+  {{if .UseStatusForDoneRatio}}
+  <th>{{l "field_done_ratio"}}</th>
+  {{end}}
+  <th>{{l "field_is_closed"}}</th>
+  <th>{{l "field_description"}}</th>
+  <th></th>
+  <th></th>
+  </tr></thead>
+  <tbody>
+{{range $status := .IssueStatuses}}
+  <tr>
+  <td class="name">{{link_to $status.Name (printf "/issue_statuses/%d/edit" $status.ID)}}</td>
+  {{if $.UseStatusForDoneRatio}}
+  <td>{{if $status.DefaultDoneRatio}}{{deref $status.DefaultDoneRatio}}{{end}}</td>
+  {{end}}
+  <td>{{checked_image $status.IsClosed}}</td>
+  <td class="description">{{$status.DescriptionString}}</td>
+  <td>
+    {{if not (index $.WorkflowStatuses $status.ID)}}
+      <span class="icon icon-warning">
+        {{sprite_icon "warning" (l "text_status_no_workflow")}} ({{link_to (l "button_edit") "/workflows/edit?used_statuses_only=0"}})
+      </span>
+    {{end}}
+  </td>
+  <td class="buttons">
+    {{reorder_handle (printf "/issue_statuses/%d" $status.ID) "issue_status"}}
+    {{delete_link (printf "/issue_statuses/%d" $status.ID)}}
+  </td>
+  </tr>
+{{end}}
+  </tbody>
+</table>
+
+{{html_title (l "label_issue_status_plural") -}}
+
+{{javascript_tag `
+  $(function() { $("table.issue_statuses tbody").positionedItems(); });
+`}}

@@ -1,0 +1,71 @@
+{{title (list (l "label_tracker_plural") "/trackers") (l "field_summary")}}
+
+{{if .Trackers}}
+  {{form_tag "/trackers/fields"}}
+    <div class="autoscroll">
+    <table class="list tracker-summary">
+    <thead>
+      <tr>
+        <th></th>
+        {{range $tracker := .Trackers}}
+        <th>
+          {{toggle_checkboxes_link (printf "input.tracker-%d" $tracker.ID)}}
+          {{$tracker.Name}}
+        </th>
+        {{end}}
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="group open">
+        <td colspan="{{add (len .Trackers) 1}}">
+          <span class="expander icon icon-expanded" onclick="toggleRowGroup(this);">{{sprite_icon "angle-down"}}</span>
+          {{l "field_core_fields"}}
+        </td>
+      </tr>
+      {{range $field := .CoreFields}}
+      <tr>
+        {{$fieldName := $field.Label}}
+        <td class="name">
+          {{toggle_checkboxes_link (printf "input.core-field-%s" $field.Name)}}
+          {{$fieldName}}
+        </td>
+        {{range $tracker := $.Trackers}}
+        <td title="{{printf "%s: %s" $tracker.Name $fieldName}}">
+          {{check_box_tag (printf "trackers[%d][core_fields][]" $tracker.ID) $field.Name ($tracker.CoreFieldEnabled $field.Name) (hash "class" (printf "tracker-%d core-field-%s" $tracker.ID $field.Name) "id" nil)}}
+        </td>
+        {{end}}
+      </tr>
+      {{end}}
+      {{if .CustomFields}}
+        <tr class="group open">
+          <td colspan="{{add (len .Trackers) 1}}">
+            <span class="expander icon icon-expanded" onclick="toggleRowGroup(this);">{{sprite_icon "angle-down"}}</span>
+            {{l "label_custom_field_plural"}}
+          </td>
+        </tr>
+        {{range $field := .CustomFields}}
+        <tr>
+          <td class="name">
+            {{toggle_checkboxes_link (printf "input.custom-field-%d" $field.ID)}}
+            {{$field.Name}}
+          </td>
+          {{range $tracker := $.Trackers}}
+          <td title="{{printf "%s: %s" $tracker.Name $field.Name}}">
+            {{check_box_tag (printf "trackers[%d][custom_field_ids][]" $tracker.ID) $field.ID ($tracker.HasCustomField $field.ID) (hash "class" (printf "tracker-%d custom-field-%d" $tracker.ID $field.ID) "id" nil)}}
+          </td>
+          {{end}}
+        </tr>
+        {{end}}
+      {{end}}
+    </tbody>
+    </table>
+    </div>
+    <p>{{submit_tag (l "button_save")}}</p>
+    {{range $tracker := .Trackers}}
+      {{hidden_field_tag (printf "trackers[%d][core_fields][]" $tracker.ID) ""}}
+      {{hidden_field_tag (printf "trackers[%d][custom_field_ids][]" $tracker.ID) ""}}
+    {{end}}
+  {{end_form}}
+{{else}}
+  <p class="nodata">{{l "label_no_data"}}</p>
+{{end}}

@@ -1,0 +1,38 @@
+<h2>{{l "label_enumerations"}}</h2>
+
+{{range $group := .Groups}}
+<h3>{{l $group.OptionName}}</h3>
+
+
+<p>{{link_to (sprite_icon "add" (l "label_enumeration_new")) (printf "/enumerations/new?type=%s" $group.Kind) (hash "class" "icon icon-add")}}</p>
+
+{{if $group.Enumerations}}
+<table class="list enumerations"><thead>
+<tr>
+    <th>{{l "field_name"}}</th>
+    <th>{{l "field_is_default"}}</th>
+    <th>{{l "field_active"}}</th>
+    <th></th>
+</tr></thead>
+{{range $enumeration := $group.Enumerations}}
+<tr>
+    <td class="name">{{link_to $enumeration.Name (printf "/enumerations/%d/edit" $enumeration.ID)}}</td>
+    <td class="tick">{{checked_image $enumeration.IsDefault}}</td>
+    <td class="tick">{{checked_image $enumeration.Active}}</td>
+    <td class="buttons">
+      {{reorder_handle (printf "/enumerations/%d" $enumeration.ID) "enumeration"}}
+      {{delete_link (printf "/enumerations/%d" $enumeration.ID)}}
+    </td>
+</tr>
+{{end}}
+</table>
+{{else}}
+<p class="nodata">{{l "label_no_data"}}</p>
+{{end}}
+{{end}}
+
+{{html_title (l "label_enumerations") -}}
+
+{{javascript_tag `
+  $(function() { $("table.enumerations tbody").positionedItems(); });
+`}}

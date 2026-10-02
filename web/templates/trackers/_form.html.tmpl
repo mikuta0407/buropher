@@ -1,0 +1,55 @@
+{{$f := .f}}{{$tracker := (assigns).Tracker -}}
+{{error_messages_for $tracker.Errors}}
+
+<div class="splitcontent">
+<div class="splitcontentleft">
+<div class="box tabular">
+<!--[form:tracker]-->
+<p>{{$f.TextField "name" (hash "required" true)}}</p>
+<p>{{$f.Select "default_status_id" (assigns).StatusOptions (hash "include_blank" (not $tracker.HasDefaultStatus) "required" true)}}
+</p>
+<p>{{$f.CheckBox "is_in_roadmap"}}</p>
+<p>{{$f.TextArea "description" (hash "rows" 4)}}</p>
+<p>
+  <label>{{l "field_core_fields"}}</label>
+  {{range $field := (assigns).CoreFields}}
+  <label class="block">
+    {{check_box_tag "tracker[core_fields][]" $field.Name ($tracker.CoreFieldEnabled $field.Name) (hash "id" nil)}}
+    {{$field.Label}}
+  </label>
+  {{end}}
+</p>
+{{hidden_field_tag "tracker[core_fields][]" ""}}
+
+{{if (assigns).IssueCustomFields}}
+<p>
+  <label>{{l "label_custom_field_plural"}}</label>
+  {{range $field := (assigns).IssueCustomFields}}
+    <label class="block">
+      {{check_box_tag "tracker[custom_field_ids][]" $field.ID ($tracker.HasCustomField $field.ID) (hash "id" nil)}}
+      {{$field.Name}}
+    </label>
+  {{end}}
+</p>
+{{hidden_field_tag "tracker[custom_field_ids][]" ""}}
+{{end}}
+
+{{if and (not $tracker.Persisted) (assigns).CopyTrackers}}
+<p><label for="copy_workflow_from">{{l "label_copy_workflow_from"}}</label>
+{{select_tag "copy_workflow_from" (safe_join (list (content_tag "option") (options_from_collection_for_select (assigns).CopyTrackers "id" "name" (assigns).CopyWorkflowFrom)) "")}}</p>
+{{end}}
+<!--[eoform:tracker]-->
+</div>
+{{submit_tag (l (ternary $tracker.Persisted "button_save" "button_create")) (hash "class" "mobile-hide")}}
+</div>
+
+<div class="splitcontentright">
+{{if (assigns).Projects}}
+<fieldset class="box" id="tracker_project_ids"><legend>{{toggle_checkboxes_link "#tracker_project_ids input[type=checkbox]"}}{{l "label_project_plural"}}</legend>
+{{render_project_nested_check_boxes "tracker[project_ids][]" (assigns).Projects $tracker.ProjectIDs}}
+{{hidden_field_tag "tracker[project_ids][]" "" (hash "id" nil)}}
+</fieldset>
+{{end}}
+</div>
+</div>
+{{submit_tag (l (ternary $tracker.Persisted "button_save" "button_create")) (hash "class" "mobile-show")}}

@@ -23,7 +23,7 @@ import (
 // 名前収集のためダミーの Render でも呼ばれるので、ここでは Page を参照しない（関数内で遅延参照する）。
 func (d *Deps) RequestFuncs(r *view.Render) ttemplate.FuncMap {
 	pg := func() *Page { return PageOf(r) }
-	return ttemplate.FuncMap{
+	fm := ttemplate.FuncMap{
 		// --- Setting / User.current ---
 		"setting":        func(name string) string { return pg().setting(name) },
 		"setting_bool":   func(name string) bool { return pg().settingBool(name) },
@@ -132,6 +132,10 @@ func (d *Deps) RequestFuncs(r *view.Render) ttemplate.FuncMap {
 		"format_date":  func(t time.Time) string { return formatDate(pg(), t) },
 		"url_for_atom": func(path string, key string) string { return atomURL(pg(), path, key) },
 	}
+	for k, v := range d.mastersFuncs(r, pg) {
+		fm[k] = v
+	}
+	return fm
 }
 
 // Funcs は名前だけが必要な関数（Render 外で使うものはない）。将来の拡張用。

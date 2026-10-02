@@ -1,0 +1,5 @@
+{{title (list (l "label_tracker_plural") "/trackers") (l "label_tracker_new")}}
+
+{{$f := labelled_form_for "" .Tracker (hash "url" "/trackers")}}{{$f.Open}}
+{{partial "trackers/form" (dict "f" $f)}}
+{{end_form}}

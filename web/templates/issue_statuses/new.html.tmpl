@@ -1,0 +1,6 @@
+{{title (list (l "label_issue_status_plural") "/issue_statuses") (l "label_issue_status_new")}}
+
+{{$f := labelled_form_for "" .IssueStatus (hash "url" "/issue_statuses")}}{{$f.Open}}
+  {{partial "issue_statuses/form" (dict "f" $f)}}
+  {{submit_tag (l "button_create")}}
+{{end_form}}

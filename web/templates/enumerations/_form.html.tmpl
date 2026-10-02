@@ -1,0 +1,12 @@
+{{$f := .f}}{{$enumeration := (assigns).Enumeration -}}
+{{error_messages_for $enumeration.Errors}}
+
+<div class="box tabular">
+  <p>{{$f.TextField "name"}}</p>
+  <p>{{$f.CheckBox "active"}}</p>
+  <p>{{$f.CheckBox "is_default"}}</p>
+
+  {{range $value := $enumeration.CustomFieldValues}}
+    <p>{{custom_field_tag_with_label "enumeration" $value}}</p>
+  {{end}}
+</div>

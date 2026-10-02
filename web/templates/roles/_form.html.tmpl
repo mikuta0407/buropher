@@ -1,0 +1,105 @@
+{{$f := .f}}{{$role := (assigns).Role -}}
+{{error_messages_for $role.Errors}}
+
+<div class="box tabular">
+  {{if not $role.IsBuiltin}}
+    <p>{{$f.TextField "name" (hash "required" true)}}</p>
+    <p>{{$f.CheckBox "assignable"}}</p>
+  {{end}}
+
+  {{if not $role.IsAnonymous}}
+    <p class="view_issues_shown">{{$f.Select "issues_visibility" (assigns).IssuesVisibilityOptions}}</p>
+  {{end}}
+
+  {{if not $role.IsAnonymous}}
+    <p class="view_time_entries_shown">{{$f.Select "time_entries_visibility" (assigns).TimeEntriesVisibilityOptions}}</p>
+  {{end}}
+
+  <p>{{$f.Select "users_visibility" (assigns).UsersVisibilityOptions}}</p>
+
+  {{if not $role.IsBuiltin}}
+    <p class="manage_members_shown">
+      <label>{{l "label_member_management"}}</label>
+      <label class="block">
+        {{radio_button_tag "role[all_roles_managed]" 1 $role.AllRolesManaged (hash "id" "role_all_roles_managed_on" "data" (hash "disables" ".role_managed_role input"))}}
+        {{l "label_member_management_all_roles"}}
+      </label>
+      <label class="block">
+        {{radio_button_tag "role[all_roles_managed]" 0 (not $role.AllRolesManaged) (hash "id" "role_all_roles_managed_off" "data" (hash "enables" ".role_managed_role input"))}}
+        {{l "label_member_management_selected_roles_only"}}:
+      </label>
+      {{range $r := (assigns).GivableRoles}}
+        <label class="block role_managed_role" style="padding-left:2em;">
+          {{check_box_tag "role[managed_role_ids][]" $r.ID ($role.ManagesRole $r.ID) (hash "id" nil)}}
+          {{$r.Name}}
+        </label>
+      {{end}}
+      {{hidden_field_tag "role[managed_role_ids][]" ""}}
+    </p>
+  {{end}}
+
+  {{if not $role.IsAnonymous}}
+    <p>{{$f.Select "default_time_entry_activity_id" (options_from_collection_for_select (assigns).Activities "id" "name" $role.DefaultActivityID) (hash "include_blank" (l "label_none"))}}</p>
+  {{end}}
+
+  {{if and (not $role.Persisted) (assigns).CopyRoles}}
+    <p><label for="copy_workflow_from">{{l "label_copy_workflow_from"}}</label>
+    {{select_tag "copy_workflow_from" (safe_join (list (content_tag "option") (options_from_collection_for_select (assigns).CopyRoles "id" "name" (assigns).CopyWorkflowFrom)) "")}}</p>
+  {{end}}
+</div>
+
+<h3>{{l "label_permissions"}}</h3>
+<div class="box tabular" id="permissions">
+{{range $g := (assigns).PermissionGroups}}
+    <fieldset id="{{$g.ID}}"><legend>{{toggle_checkboxes_link (printf "#%s input" $g.ID)}}{{$g.Label}}</legend>
+    {{range $p := $g.Permissions}}
+        <label class="floating">
+        {{check_box_tag "role[permissions][]" $p.Name ($role.HasPermission $p.Name) (hash "id" (printf "role_permissions_%s" $p.Name) "data" (hash "shows" (printf ".%s_shown" $p.Name)))}}
+        {{l_or_humanize $p.Name "permission_"}}
+        </label>
+    {{end}}
+    </fieldset>
+{{end}}
+<br />{{check_all_links "permissions"}}
+{{hidden_field_tag "role[permissions][]" ""}}
+</div>
+
+<div id="role-permissions-trackers" class="view_issues_shown">
+<h3>{{l "label_issue_tracking"}}</h3>
+{{$permissions := (assigns).TrackerPermissions}}
+
+<div class="autoscroll">
+<table class="list">
+  <thead>
+    <tr>
+      <th>{{l "label_tracker"}}</th>
+      {{range $permission := $permissions}}
+      <th class="{{$permission}}_shown">{{l (printf "permission_%s" $permission)}}</th>
+      {{end}}
+  </thead>
+  <tbody>
+    <tr class='permissions-all-trackers'>
+      <td class="name">{{toggle_checkboxes_link `tr.permissions-all-trackers input[type="checkbox"]`}}<b>{{l "label_tracker_all"}}</b></td>
+      {{range $permission := $permissions}}
+      <td class="{{$permission}}_shown">
+        {{hidden_field_tag (printf "role[permissions_all_trackers][%s]" $permission) "0" (hash "id" nil)}}
+        {{check_box_tag (printf "role[permissions_all_trackers][%s]" $permission) "1" ($role.PermissionsAllTrackers $permission) (hash "class" (printf "%s_shown" $permission) "data" (hash "disables" (printf ".%s_tracker" $permission)))}}
+      </td>
+      {{end}}
+    </tr>
+    {{range $tracker := (assigns).Trackers}}
+    <tr class="permissions-tracker-{{$tracker.ID}}">
+      <td class="name">{{toggle_checkboxes_link (printf "tr.permissions-tracker-%d input:enabled" $tracker.ID)}}{{$tracker.Name}}</td>
+      {{range $permission := $permissions}}
+      <td class="{{$permission}}_shown">{{check_box_tag (printf "role[permissions_tracker_ids][%s][]" $permission) $tracker.ID ($role.PermissionsTrackerIDsInclude $permission $tracker.ID) (hash "class" (printf "%s_tracker" $permission) "id" (printf "role_permissions_tracker_ids_add_issues_%d" $tracker.ID))}}</td>
+      {{end}}
+    </tr>
+    {{end}}
+  </tbody>
+</table>
+</div>
+
+{{range $permission := $permissions}}
+  {{hidden_field_tag (printf "role[permissions_tracker_ids][%s][]" $permission) ""}}
+{{end}}
+</div>

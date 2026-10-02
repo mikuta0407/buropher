@@ -1,0 +1,119 @@
+# 管理画面のマスタ（ロール・トラッカー・チケットのステータス・列挙）の互換シナリオ。
+# 前半は GET のみ、後半は作成・更新・削除（状態を変える）を含むため、参照側は専用インスタンスで
+# 実行前に reset すること（README の -reset-ref / -reset-cand）。
+name: admin_masters
+
+users:
+  admin: {login: admin, password: admin}
+  jsmith: {login: jsmith, password: jsmith}
+
+normalize:
+  mask_text_selectors:
+    - "#footer"
+
+requests:
+  # ---- 権限 ----
+  - path: /roles
+    users: [anonymous, jsmith]
+  - path: /trackers
+    users: [anonymous, jsmith]
+  - path: /issue_statuses
+    users: [jsmith]
+  - path: /enumerations
+    users: [anonymous, jsmith]
+  - path: /roles/new
+    users: [jsmith]
+
+  # ---- ロール ----
+  - path: /roles
+    users: [admin]
+  - path: /roles/new
+    users: [admin]
+  - path: /roles/new?copy=1
+    users: [admin]
+  - path: /roles/new?copy=4
+    users: [admin]
+  - path: /roles/1/edit
+    users: [admin]
+  - path: /roles/2/edit
+    users: [admin]
+  - path: /roles/4/edit
+    users: [admin]
+  - path: /roles/5/edit
+    users: [admin]
+  - path: /roles/999/edit
+    users: [admin]
+  - path: /roles/permissions
+    users: [admin]
+  - path: /roles/permissions?ids[]=1&ids[]=5
+    users: [admin]
+  - path: /roles.json
+    users: [admin, jsmith]
+  - path: /roles.xml
+    users: [admin]
+  - path: /roles/1.json
+    users: [admin]
+  - path: /roles/4.xml
+    users: [admin]
+
+  # ---- トラッカー ----
+  - path: /trackers
+    users: [admin]
+  - path: /trackers/new
+    users: [admin]
+  - path: /trackers/new?copy=1
+    users: [admin]
+  - path: /trackers/1/edit
+    users: [admin]
+  - path: /trackers/3/edit
+    users: [admin]
+  - path: /trackers/fields
+    users: [admin]
+  - path: /trackers.json
+    users: [admin, jsmith]
+  - path: /trackers.xml
+    users: [admin]
+
+  # ---- ステータス ----
+  - path: /issue_statuses
+    users: [admin]
+  - path: /issue_statuses/new
+    users: [admin]
+  - path: /issue_statuses/1/edit
+    users: [admin]
+  - path: /issue_statuses/5/edit
+    users: [admin]
+  - path: /issue_statuses.json
+    users: [admin, jsmith]
+  - path: /issue_statuses.xml
+    users: [admin]
+
+  # ---- 列挙 ----
+  - path: /enumerations
+    users: [admin]
+  - path: /enumerations/new?type=IssuePriority
+    users: [admin]
+  - path: /enumerations/new?type=TimeEntryActivity
+    users: [admin]
+  - path: /enumerations/new?type=DocumentCategory
+    users: [admin]
+  - path: /enumerations/new?type=Foo
+    users: [admin]
+  - path: /enumerations/1/edit
+    users: [admin]
+  - path: /enumerations/4/edit
+    users: [admin]
+  - path: /enumerations/9/edit
+    users: [admin]
+  - path: /enumerations/10/edit
+    users: [admin]
+  - path: /enumerations/issue_priorities.json
+    users: [admin, jsmith]
+  - path: /enumerations/time_entry_activities.json
+    users: [admin]
+  - path: /enumerations/time_entry_activities.xml
+    users: [admin]
+  - path: /enumerations/document_categories.xml
+    users: [admin]
+  - path: /enumerations/foo.json
+    users: [admin]
