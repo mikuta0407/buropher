@@ -1,0 +1,951 @@
+[
+  {
+    "name": "view_project",
+    "module": null,
+    "actions": [
+      "projects/show",
+      "projects/bookmark",
+      "activities/index"
+    ],
+    "public": true,
+    "require": null,
+    "read": true
+  },
+  {
+    "name": "search_project",
+    "module": null,
+    "actions": [
+      "search/index"
+    ],
+    "public": true,
+    "require": null,
+    "read": true
+  },
+  {
+    "name": "add_project",
+    "module": null,
+    "actions": [
+      "projects/new",
+      "projects/create"
+    ],
+    "public": false,
+    "require": "loggedin",
+    "read": false
+  },
+  {
+    "name": "edit_project",
+    "module": null,
+    "actions": [
+      "projects/settings",
+      "projects/edit",
+      "projects/update"
+    ],
+    "public": false,
+    "require": "member",
+    "read": false
+  },
+  {
+    "name": "close_project",
+    "module": null,
+    "actions": [
+      "projects/close",
+      "projects/reopen"
+    ],
+    "public": false,
+    "require": "member",
+    "read": true
+  },
+  {
+    "name": "delete_project",
+    "module": null,
+    "actions": [
+      "projects/destroy"
+    ],
+    "public": false,
+    "require": "member",
+    "read": true
+  },
+  {
+    "name": "select_project_publicity",
+    "module": null,
+    "actions": [
+
+    ],
+    "public": false,
+    "require": "member",
+    "read": false
+  },
+  {
+    "name": "select_project_modules",
+    "module": null,
+    "actions": [
+      "projects/modules"
+    ],
+    "public": false,
+    "require": "member",
+    "read": false
+  },
+  {
+    "name": "view_members",
+    "module": null,
+    "actions": [
+      "members/index",
+      "members/show"
+    ],
+    "public": true,
+    "require": null,
+    "read": true
+  },
+  {
+    "name": "manage_members",
+    "module": null,
+    "actions": [
+      "projects/settings",
+      "members/index",
+      "members/show",
+      "members/new",
+      "members/create",
+      "members/edit",
+      "members/update",
+      "members/destroy",
+      "members/autocomplete"
+    ],
+    "public": false,
+    "require": "member",
+    "read": false
+  },
+  {
+    "name": "manage_versions",
+    "module": null,
+    "actions": [
+      "projects/settings",
+      "versions/new",
+      "versions/create",
+      "versions/edit",
+      "versions/update",
+      "versions/close_completed",
+      "versions/destroy"
+    ],
+    "public": false,
+    "require": "member",
+    "read": false
+  },
+  {
+    "name": "add_subprojects",
+    "module": null,
+    "actions": [
+      "projects/new",
+      "projects/create"
+    ],
+    "public": false,
+    "require": "member",
+    "read": false
+  },
+  {
+    "name": "manage_public_queries",
+    "module": null,
+    "actions": [
+      "queries/new",
+      "queries/create",
+      "queries/edit",
+      "queries/update",
+      "queries/destroy"
+    ],
+    "public": false,
+    "require": "member",
+    "read": false
+  },
+  {
+    "name": "save_queries",
+    "module": null,
+    "actions": [
+      "queries/new",
+      "queries/create",
+      "queries/edit",
+      "queries/update",
+      "queries/destroy"
+    ],
+    "public": false,
+    "require": "loggedin",
+    "read": false
+  },
+  {
+    "name": "view_issues",
+    "module": "issue_tracking",
+    "actions": [
+      "issues/index",
+      "issues/show",
+      "issues/issue_tab",
+      "auto_complete/issues",
+      "context_menus/issues",
+      "versions/index",
+      "versions/show",
+      "versions/status_by",
+      "journals/index",
+      "journals/diff",
+      "queries/index",
+      "reports/issue_report",
+      "reports/issue_report_details"
+    ],
+    "public": false,
+    "require": null,
+    "read": true
+  },
+  {
+    "name": "add_issues",
+    "module": "issue_tracking",
+    "actions": [
+      "issues/new",
+      "issues/create",
+      "attachments/upload"
+    ],
+    "public": false,
+    "require": null,
+    "read": false
+  },
+  {
+    "name": "edit_issues",
+    "module": "issue_tracking",
+    "actions": [
+      "issues/edit",
+      "issues/update",
+      "issues/bulk_edit",
+      "issues/bulk_update",
+      "journals/new",
+      "attachments/upload"
+    ],
+    "public": false,
+    "require": null,
+    "read": false
+  },
+  {
+    "name": "edit_own_issues",
+    "module": "issue_tracking",
+    "actions": [
+      "issues/edit",
+      "issues/update",
+      "issues/bulk_edit",
+      "issues/bulk_update",
+      "journals/new",
+      "attachments/upload"
+    ],
+    "public": false,
+    "require": null,
+    "read": false
+  },
+  {
+    "name": "copy_issues",
+    "module": "issue_tracking",
+    "actions": [
+      "issues/new",
+      "issues/create",
+      "issues/bulk_edit",
+      "issues/bulk_update",
+      "attachments/upload"
+    ],
+    "public": false,
+    "require": null,
+    "read": false
+  },
+  {
+    "name": "manage_issue_relations",
+    "module": "issue_tracking",
+    "actions": [
+      "issue_relations/index",
+      "issue_relations/show",
+      "issue_relations/create",
+      "issue_relations/destroy"
+    ],
+    "public": false,
+    "require": null,
+    "read": false
+  },
+  {
+    "name": "manage_subtasks",
+    "module": "issue_tracking",
+    "actions": [
+
+    ],
+    "public": false,
+    "require": null,
+    "read": false
+  },
+  {
+    "name": "set_issues_private",
+    "module": "issue_tracking",
+    "actions": [
+
+    ],
+    "public": false,
+    "require": null,
+    "read": false
+  },
+  {
+    "name": "set_own_issues_private",
+    "module": "issue_tracking",
+    "actions": [
+
+    ],
+    "public": false,
+    "require": "loggedin",
+    "read": false
+  },
+  {
+    "name": "add_issue_notes",
+    "module": "issue_tracking",
+    "actions": [
+      "issues/edit",
+      "issues/update",
+      "journals/new",
+      "attachments/upload"
+    ],
+    "public": false,
+    "require": null,
+    "read": false
+  },
+  {
+    "name": "edit_issue_notes",
+    "module": "issue_tracking",
+    "actions": [
+      "journals/edit",
+      "journals/update"
+    ],
+    "public": false,
+    "require": "loggedin",
+    "read": false
+  },
+  {
+    "name": "edit_own_issue_notes",
+    "module": "issue_tracking",
+    "actions": [
+      "journals/edit",
+      "journals/update"
+    ],
+    "public": false,
+    "require": "loggedin",
+    "read": false
+  },
+  {
+    "name": "view_private_notes",
+    "module": "issue_tracking",
+    "actions": [
+
+    ],
+    "public": false,
+    "require": "member",
+    "read": true
+  },
+  {
+    "name": "set_notes_private",
+    "module": "issue_tracking",
+    "actions": [
+
+    ],
+    "public": false,
+    "require": "member",
+    "read": false
+  },
+  {
+    "name": "delete_issues",
+    "module": "issue_tracking",
+    "actions": [
+      "issues/destroy"
+    ],
+    "public": false,
+    "require": "member",
+    "read": false
+  },
+  {
+    "name": "view_issue_watchers",
+    "module": "issue_tracking",
+    "actions": [
+
+    ],
+    "public": false,
+    "require": null,
+    "read": true
+  },
+  {
+    "name": "add_issue_watchers",
+    "module": "issue_tracking",
+    "actions": [
+      "watchers/new",
+      "watchers/create",
+      "watchers/append",
+      "watchers/autocomplete_for_user",
+      "watchers/autocomplete_for_mention"
+    ],
+    "public": false,
+    "require": null,
+    "read": false
+  },
+  {
+    "name": "delete_issue_watchers",
+    "module": "issue_tracking",
+    "actions": [
+      "watchers/destroy"
+    ],
+    "public": false,
+    "require": null,
+    "read": false
+  },
+  {
+    "name": "import_issues",
+    "module": "issue_tracking",
+    "actions": [
+
+    ],
+    "public": false,
+    "require": null,
+    "read": false
+  },
+  {
+    "name": "manage_categories",
+    "module": "issue_tracking",
+    "actions": [
+      "projects/settings",
+      "issue_categories/index",
+      "issue_categories/show",
+      "issue_categories/new",
+      "issue_categories/create",
+      "issue_categories/edit",
+      "issue_categories/update",
+      "issue_categories/destroy"
+    ],
+    "public": false,
+    "require": "member",
+    "read": false
+  },
+  {
+    "name": "view_time_entries",
+    "module": "time_tracking",
+    "actions": [
+      "timelog/index",
+      "timelog/report",
+      "timelog/show"
+    ],
+    "public": false,
+    "require": null,
+    "read": true
+  },
+  {
+    "name": "log_time",
+    "module": "time_tracking",
+    "actions": [
+      "timelog/new",
+      "timelog/create"
+    ],
+    "public": false,
+    "require": "loggedin",
+    "read": false
+  },
+  {
+    "name": "edit_time_entries",
+    "module": "time_tracking",
+    "actions": [
+      "timelog/edit",
+      "timelog/update",
+      "timelog/destroy",
+      "timelog/bulk_edit",
+      "timelog/bulk_update"
+    ],
+    "public": false,
+    "require": "member",
+    "read": false
+  },
+  {
+    "name": "edit_own_time_entries",
+    "module": "time_tracking",
+    "actions": [
+      "timelog/edit",
+      "timelog/update",
+      "timelog/destroy",
+      "timelog/bulk_edit",
+      "timelog/bulk_update"
+    ],
+    "public": false,
+    "require": "loggedin",
+    "read": false
+  },
+  {
+    "name": "manage_project_activities",
+    "module": "time_tracking",
+    "actions": [
+      "projects/settings",
+      "project_enumerations/update",
+      "project_enumerations/destroy"
+    ],
+    "public": false,
+    "require": "member",
+    "read": false
+  },
+  {
+    "name": "log_time_for_other_users",
+    "module": "time_tracking",
+    "actions": [
+      "require/member"
+    ],
+    "public": false,
+    "require": null,
+    "read": false
+  },
+  {
+    "name": "import_time_entries",
+    "module": "time_tracking",
+    "actions": [
+
+    ],
+    "public": false,
+    "require": null,
+    "read": false
+  },
+  {
+    "name": "view_news",
+    "module": "news",
+    "actions": [
+      "news/index",
+      "news/show"
+    ],
+    "public": false,
+    "require": null,
+    "read": true
+  },
+  {
+    "name": "manage_news",
+    "module": "news",
+    "actions": [
+      "news/new",
+      "news/create",
+      "news/edit",
+      "news/update",
+      "news/destroy",
+      "comments/destroy",
+      "attachments/upload"
+    ],
+    "public": false,
+    "require": "member",
+    "read": false
+  },
+  {
+    "name": "comment_news",
+    "module": "news",
+    "actions": [
+      "comments/create"
+    ],
+    "public": false,
+    "require": null,
+    "read": false
+  },
+  {
+    "name": "view_documents",
+    "module": "documents",
+    "actions": [
+      "documents/index",
+      "documents/show",
+      "documents/download"
+    ],
+    "public": false,
+    "require": null,
+    "read": true
+  },
+  {
+    "name": "add_documents",
+    "module": "documents",
+    "actions": [
+      "documents/new",
+      "documents/create",
+      "documents/add_attachment",
+      "attachments/upload"
+    ],
+    "public": false,
+    "require": "loggedin",
+    "read": false
+  },
+  {
+    "name": "edit_documents",
+    "module": "documents",
+    "actions": [
+      "documents/edit",
+      "documents/update",
+      "documents/add_attachment",
+      "attachments/upload"
+    ],
+    "public": false,
+    "require": "loggedin",
+    "read": false
+  },
+  {
+    "name": "delete_documents",
+    "module": "documents",
+    "actions": [
+      "documents/destroy"
+    ],
+    "public": false,
+    "require": "loggedin",
+    "read": false
+  },
+  {
+    "name": "view_files",
+    "module": "files",
+    "actions": [
+      "files/index",
+      "versions/download"
+    ],
+    "public": false,
+    "require": null,
+    "read": true
+  },
+  {
+    "name": "manage_files",
+    "module": "files",
+    "actions": [
+      "files/new",
+      "files/create",
+      "attachments/upload"
+    ],
+    "public": false,
+    "require": "loggedin",
+    "read": false
+  },
+  {
+    "name": "view_wiki_pages",
+    "module": "wiki",
+    "actions": [
+      "wiki/index",
+      "wiki/show",
+      "wiki/special",
+      "wiki/date_index",
+      "auto_complete/wiki_pages"
+    ],
+    "public": false,
+    "require": null,
+    "read": true
+  },
+  {
+    "name": "view_wiki_edits",
+    "module": "wiki",
+    "actions": [
+      "wiki/history",
+      "wiki/diff",
+      "wiki/annotate"
+    ],
+    "public": false,
+    "require": null,
+    "read": true
+  },
+  {
+    "name": "export_wiki_pages",
+    "module": "wiki",
+    "actions": [
+      "wiki/export"
+    ],
+    "public": false,
+    "require": null,
+    "read": true
+  },
+  {
+    "name": "edit_wiki_pages",
+    "module": "wiki",
+    "actions": [
+      "wiki/new",
+      "wiki/edit",
+      "wiki/update",
+      "wiki/preview",
+      "wiki/add_attachment",
+      "attachments/upload"
+    ],
+    "public": false,
+    "require": null,
+    "read": false
+  },
+  {
+    "name": "rename_wiki_pages",
+    "module": "wiki",
+    "actions": [
+      "wiki/rename"
+    ],
+    "public": false,
+    "require": "member",
+    "read": false
+  },
+  {
+    "name": "delete_wiki_pages",
+    "module": "wiki",
+    "actions": [
+      "wiki/destroy",
+      "wiki/destroy_version"
+    ],
+    "public": false,
+    "require": "member",
+    "read": false
+  },
+  {
+    "name": "delete_wiki_pages_attachments",
+    "module": "wiki",
+    "actions": [
+
+    ],
+    "public": false,
+    "require": null,
+    "read": false
+  },
+  {
+    "name": "view_wiki_page_watchers",
+    "module": "wiki",
+    "actions": [
+
+    ],
+    "public": false,
+    "require": null,
+    "read": true
+  },
+  {
+    "name": "add_wiki_page_watchers",
+    "module": "wiki",
+    "actions": [
+      "watchers/new",
+      "watchers/create",
+      "watchers/autocomplete_for_user",
+      "watchers/autocomplete_for_mention"
+    ],
+    "public": false,
+    "require": null,
+    "read": false
+  },
+  {
+    "name": "delete_wiki_page_watchers",
+    "module": "wiki",
+    "actions": [
+      "watchers/destroy"
+    ],
+    "public": false,
+    "require": null,
+    "read": false
+  },
+  {
+    "name": "protect_wiki_pages",
+    "module": "wiki",
+    "actions": [
+      "wiki/protect"
+    ],
+    "public": false,
+    "require": "member",
+    "read": false
+  },
+  {
+    "name": "manage_wiki",
+    "module": "wiki",
+    "actions": [
+      "wikis/destroy",
+      "wiki/rename"
+    ],
+    "public": false,
+    "require": "member",
+    "read": false
+  },
+  {
+    "name": "view_changesets",
+    "module": "repository",
+    "actions": [
+      "repositories/show",
+      "repositories/revisions",
+      "repositories/revision"
+    ],
+    "public": false,
+    "require": null,
+    "read": true
+  },
+  {
+    "name": "browse_repository",
+    "module": "repository",
+    "actions": [
+      "repositories/show",
+      "repositories/browse",
+      "repositories/entry",
+      "repositories/raw",
+      "repositories/annotate",
+      "repositories/changes",
+      "repositories/diff",
+      "repositories/stats",
+      "repositories/graph"
+    ],
+    "public": false,
+    "require": null,
+    "read": true
+  },
+  {
+    "name": "commit_access",
+    "module": "repository",
+    "actions": [
+
+    ],
+    "public": false,
+    "require": null,
+    "read": false
+  },
+  {
+    "name": "manage_related_issues",
+    "module": "repository",
+    "actions": [
+      "repositories/add_related_issue",
+      "repositories/remove_related_issue"
+    ],
+    "public": false,
+    "require": null,
+    "read": false
+  },
+  {
+    "name": "manage_repository",
+    "module": "repository",
+    "actions": [
+      "projects/settings",
+      "repositories/new",
+      "repositories/create",
+      "repositories/edit",
+      "repositories/update",
+      "repositories/committers",
+      "repositories/destroy",
+      "repositories/fetch_changesets"
+    ],
+    "public": false,
+    "require": "member",
+    "read": false
+  },
+  {
+    "name": "view_messages",
+    "module": "boards",
+    "actions": [
+      "boards/index",
+      "boards/show",
+      "messages/show"
+    ],
+    "public": false,
+    "require": null,
+    "read": true
+  },
+  {
+    "name": "add_messages",
+    "module": "boards",
+    "actions": [
+      "messages/new",
+      "messages/reply",
+      "messages/quote",
+      "attachments/upload"
+    ],
+    "public": false,
+    "require": null,
+    "read": false
+  },
+  {
+    "name": "edit_messages",
+    "module": "boards",
+    "actions": [
+      "messages/edit",
+      "attachments/upload"
+    ],
+    "public": false,
+    "require": "member",
+    "read": false
+  },
+  {
+    "name": "edit_own_messages",
+    "module": "boards",
+    "actions": [
+      "messages/edit",
+      "attachments/upload"
+    ],
+    "public": false,
+    "require": "loggedin",
+    "read": false
+  },
+  {
+    "name": "delete_messages",
+    "module": "boards",
+    "actions": [
+      "messages/destroy"
+    ],
+    "public": false,
+    "require": "member",
+    "read": false
+  },
+  {
+    "name": "delete_own_messages",
+    "module": "boards",
+    "actions": [
+      "messages/destroy"
+    ],
+    "public": false,
+    "require": "loggedin",
+    "read": false
+  },
+  {
+    "name": "view_message_watchers",
+    "module": "boards",
+    "actions": [
+
+    ],
+    "public": false,
+    "require": null,
+    "read": true
+  },
+  {
+    "name": "add_message_watchers",
+    "module": "boards",
+    "actions": [
+      "watchers/new",
+      "watchers/create",
+      "watchers/autocomplete_for_user",
+      "watchers/autocomplete_for_mention"
+    ],
+    "public": false,
+    "require": null,
+    "read": false
+  },
+  {
+    "name": "delete_message_watchers",
+    "module": "boards",
+    "actions": [
+      "watchers/destroy"
+    ],
+    "public": false,
+    "require": null,
+    "read": false
+  },
+  {
+    "name": "manage_boards",
+    "module": "boards",
+    "actions": [
+      "projects/settings",
+      "boards/new",
+      "boards/create",
+      "boards/edit",
+      "boards/update",
+      "boards/destroy"
+    ],
+    "public": false,
+    "require": "member",
+    "read": false
+  },
+  {
+    "name": "view_calendar",
+    "module": "calendar",
+    "actions": [
+      "calendars/show",
+      "calendars/update"
+    ],
+    "public": false,
+    "require": null,
+    "read": true
+  },
+  {
+    "name": "view_gantt",
+    "module": "gantt",
+    "actions": [
+      "gantts/show",
+      "gantts/update"
+    ],
+    "public": false,
+    "require": null,
+    "read": true
+  }
+]
