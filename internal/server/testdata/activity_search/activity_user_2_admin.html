@@ -1,0 +1,241 @@
+<title>Activity - John Smith - Redmine</title>
+----
+<!-- page specific tags -->
+<link rel="alternate" type="application/atom+xml" title="ATOM" href="{{BASE}}/activity.atom?key=KEY&amp;user_id=2" />
+<script>
+//<![CDATA[
+var datepickerOptions={dateFormat: 'yy-mm-dd', firstDay: 0, showOn: 'button', buttonImageOnly: true, buttonImage: '/assets/calendar-DIGEST.png', showButtonPanel: true, showWeek: true, showOtherMonths: true, selectOtherMonths: true, changeMonth: true, changeYear: true, beforeShow: beforeShowDatePicker};
+//]]>
+</script></head>
+----
+<div id="main" class="collapsiblesidebar">
+  <script>
+//<![CDATA[
+$('#main.collapsiblesidebar').collapsibleSidebar();
+//]]>
+</script>
+    <div id="sidebar">
+          <div id="sidebar-switch-panel" style="visibility: hidden;">
+            <a id="sidebar-switch-button" class="" href="#">
+              <svg class="s20 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--chevrons-right"></use></svg></a>
+          </div>
+          <script>
+//<![CDATA[
+$('#sidebar-switch-panel').css('visibility', 'visible');
+//]]>
+</script>
+        <div id="sidebar-wrapper">
+          <form id="activity_scope_form" action="/activity" accept-charset="UTF-8" name="activity_scope_form-RANDOM" method="get">
+<h3>Activity</h3>
+<p>
+  10 days up to <input type="date" name="from" id="from" value="2026-01-15" max="9999-12-31" size="10" />
+  <script>
+//<![CDATA[
+$(function() { $('#from').addClass('date').datepickerFallback(datepickerOptions); });
+//]]>
+</script>
+</p>
+<p>
+  User
+  <select name="user_id" id="user_id"><option value="" label=" "></option><option value="1">&lt;&lt; me &gt;&gt;</option>
+<option value="3">Dave Lopper</option>
+<option selected="selected" value="2">John Smith</option>
+<option value="1">Redmine Admin</option>
+<option value="8">User Misc</option></select>
+</p>
+<ul>
+  <li>
+    <input type="checkbox" name="show_issues" id="show_issues" value="1" checked="checked" />
+    <label for="show_issues">
+      <a href="/activity?show_issues=1&amp;user_id=2">Issues</a>
+    </label>
+  </li>
+  <li>
+    <input type="checkbox" name="show_changesets" id="show_changesets" value="1" checked="checked" />
+    <label for="show_changesets">
+      <a href="/activity?show_changesets=1&amp;user_id=2">Changesets</a>
+    </label>
+  </li>
+  <li>
+    <input type="checkbox" name="show_news" id="show_news" value="1" checked="checked" />
+    <label for="show_news">
+      <a href="/activity?show_news=1&amp;user_id=2">News</a>
+    </label>
+  </li>
+  <li>
+    <input type="checkbox" name="show_documents" id="show_documents" value="1" checked="checked" />
+    <label for="show_documents">
+      <a href="/activity?show_documents=1&amp;user_id=2">Documents</a>
+    </label>
+  </li>
+  <li>
+    <input type="checkbox" name="show_files" id="show_files" value="1" checked="checked" />
+    <label for="show_files">
+      <a href="/activity?show_files=1&amp;user_id=2">Files</a>
+    </label>
+  </li>
+  <li>
+    <input type="checkbox" name="show_wiki_edits" id="show_wiki_edits" value="1" checked="checked" />
+    <label for="show_wiki_edits">
+      <a href="/activity?show_wiki_edits=1&amp;user_id=2">Wiki edits</a>
+    </label>
+  </li>
+  <li>
+    <input type="checkbox" name="show_messages" id="show_messages" value="1" checked="checked" />
+    <label for="show_messages">
+      <a href="/activity?show_messages=1&amp;user_id=2">Messages</a>
+    </label>
+  </li>
+  <li>
+    <input type="checkbox" name="show_time_entries" id="show_time_entries" value="1" checked="checked" />
+    <label for="show_time_entries">
+      <a href="/activity?show_time_entries=1&amp;user_id=2">Spent time</a>
+    </label>
+  </li>
+</ul>
+<p><input type="submit" name="submit" value="Apply" class="button-small" data-disable-with="Apply" /></p>
+</form>
+          
+        </div>
+    </div>
+
+    <div id="content">
+        
+        <h2><a class="user active" href="/users/2">John Smith</a>'s activity</h2>
+
+<p class="subtitle">From 01/06/2026 to 01/15/2026</p>
+
+<div id="activity">
+<h3>Today</h3>
+<dl>
+  <dt class="issue icon icon-issue  ">
+  <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--issue"></use></svg>
+  <span role="img" class="avatar-color-2 s24 avatar">JS</span>
+  <span class="time">11:59 AM</span>
+  <span class="project">Private child of eCookbook</span>
+  <a href="/issues/10">Bug #10 (New): Issue Doing the Blocking</a>
+  </dt>
+  <dd class=""><span class="description">This is an issue that blocks issue</span>
+  <span class="author"><a class="user active" href="/users/2">John Smith</a></span></dd>
+  <dt class="issue icon icon-issue  ">
+  <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--issue"></use></svg>
+  <span role="img" class="avatar-color-2 s24 avatar">JS</span>
+  <span class="time">11:59 AM</span>
+  <span class="project">Private child of eCookbook</span>
+  <a href="/issues/9">Bug #9 (New): Blocked Issue</a>
+  </dt>
+  <dd class=""><span class="description">This is an issue that is blocked by issue</span>
+  <span class="author"><a class="user active" href="/users/2">John Smith</a></span></dd>
+  <dt class="issue icon icon-issue  ">
+  <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--issue"></use></svg>
+  <span role="img" class="avatar-color-2 s24 avatar">JS</span>
+  <span class="time">11:59 AM</span>
+  <span class="project">Private child of eCookbook</span>
+  <a href="/issues/6">Bug #6 (New): Issue of a private subproject</a>
+  </dt>
+  <dd class=""><span class="description">This is an issue of a private subproject of cookbook</span>
+  <span class="author"><a class="user active" href="/users/2">John Smith</a></span></dd>
+</dl>
+<h3>01/14/2026</h3>
+<dl>
+  <dt class="issue-note icon icon-issue-note  ">
+  <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--issue-note"></use></svg>
+  <span role="img" class="avatar-color-2 s24 avatar">JS</span>
+  <span class="time">12:00 AM</span>
+  <span class="project">eCookbook Subproject 1</span>
+  <a href="/issues/14#change-5">Bug #14: Private issue on public project</a>
+  </dt>
+  <dd class=""><span class="description">A comment on a private issue.</span>
+  <span class="author"><a class="user active" href="/users/2">John Smith</a></span></dd>
+  <dt class="issue-note icon icon-issue-note  ">
+  <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--issue-note"></use></svg>
+  <span role="img" class="avatar-color-2 s24 avatar">JS</span>
+  <span class="time">12:00 AM</span>
+  <span class="project">eCookbook</span>
+  <a href="/issues/2#change-3">Feature request #2: Add ingredients categories</a>
+  </dt>
+  <dd class=""><span class="description">A comment with inline image: !picture.jpg! and a reference to #1 and r2.</span>
+  <span class="author"><a class="user active" href="/users/2">John Smith</a></span></dd>
+  <dt class="issue-note icon icon-issue-note  ">
+  <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--issue-note"></use></svg>
+  <span role="img" class="avatar-color-2 s24 avatar">JS</span>
+  <span class="time">12:00 AM</span>
+  <span class="project">eCookbook</span>
+  <a href="/issues/1#change-2">Bug #1: Cannot print recipes</a>
+  </dt>
+  <dd class=""><span class="description">Some notes with Redmine links: #2, r2.</span>
+  <span class="author"><a class="user active" href="/users/2">John Smith</a></span></dd>
+</dl>
+<h3>01/12/2026</h3>
+<dl>
+  <dt class="issue-closed icon icon-issue-closed  ">
+  <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--issue-closed"></use></svg>
+  <span role="img" class="avatar-color-2 s24 avatar">JS</span>
+  <span class="time">12:00 PM</span>
+  <span class="project">eCookbook</span>
+  <a href="/issues/11">Bug #11 (Closed): Closed issue on a closed version</a>
+  </dt>
+  <dd class=""><span class="description"></span>
+  <span class="author"><a class="user active" href="/users/2">John Smith</a></span></dd>
+  <dt class="issue icon icon-issue  ">
+  <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--issue"></use></svg>
+  <span role="img" class="avatar-color-2 s24 avatar">JS</span>
+  <span class="time">12:00 PM</span>
+  <span class="project">eCookbook</span>
+  <a href="/issues/1">Bug #1 (New): Cannot print recipes</a>
+  </dt>
+  <dd class=""><span class="description">Unable to print recipes</span>
+  <span class="author"><a class="user active" href="/users/2">John Smith</a></span></dd>
+</dl>
+<h3>01/10/2026</h3>
+<dl>
+  <dt class="issue icon icon-issue  ">
+  <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--issue"></use></svg>
+  <span role="img" class="avatar-color-2 s24 avatar">JS</span>
+  <span class="time">12:00 PM</span>
+  <span class="project">eCookbook Subproject 1</span>
+  <a href="/issues/13">Bug #13 (New): Subproject issue two</a>
+  </dt>
+  <dd class=""><span class="description">This is a second issue on a cookbook subproject</span>
+  <span class="author"><a class="user active" href="/users/2">John Smith</a></span></dd>
+  <dt class="issue icon icon-issue  ">
+  <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--issue"></use></svg>
+  <span role="img" class="avatar-color-2 s24 avatar">JS</span>
+  <span class="time">12:00 PM</span>
+  <span class="project">eCookbook Subproject 1</span>
+  <a href="/issues/5">Bug #5 (New): Subproject issue</a>
+  </dt>
+  <dd class=""><span class="description">This is an issue on a cookbook subproject</span>
+  <span class="author"><a class="user active" href="/users/2">John Smith</a></span></dd>
+  <dt class="issue icon icon-issue  ">
+  <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--issue"></use></svg>
+  <span role="img" class="avatar-color-2 s24 avatar">JS</span>
+  <span class="time">12:00 PM</span>
+  <span class="project">OnlineStore</span>
+  <a href="/issues/4">Bug #4 (New): Issue on project 2</a>
+  </dt>
+  <dd class=""><span class="description">Issue on project 2</span>
+  <span class="author"><a class="user active" href="/users/2">John Smith</a></span></dd>
+</dl>
+</div>
+
+
+
+<span class="pagination">
+  <ul class="pages">
+    <li class="previous page">
+<a title="From 12/27/2025 to 01/05/2026" accesskey="p" href="/activity?from=2026-01-05&amp;user_id=2">« Previous</a>
+    </li>
+  </ul>
+</span>
+&nbsp;
+<p class="other-formats hide-when-print">Also available in:  <span><a class="atom" rel="nofollow" href="/activity.atom?key=KEY&amp;user_id=2">Atom</a></span>
+</p>
+
+
+
+        
+        <div style="clear:both;"></div>
+    </div>
+</div>
+<div id="footer">
