@@ -1,0 +1,12 @@
+status: 200
+content-type: text/csv
+
+﻿Login;First name;Last name;Email;Administrator;Created;Updated;Last sign in;Password last changed;Status;Authentication mode;Two-factor authentication scheme;Phone number;Money
+admin;Redmine;Admin;admin@somenet.foo;Yes;07/19/2006 05:12 PM;07/19/2006 08:57 PM;01/15/2026 12:00 PM;"";active;"";disabled;"";""
+dlopper;Dave;Lopper;dlopper@somenet.foo;No;07/19/2006 05:33 PM;07/19/2006 05:33 PM;"";"";active;"";disabled;"";""
+dlopper2;Dave2;Lopper2;dlopper2@somenet.foo;No;07/19/2006 05:33 PM;07/19/2006 05:33 PM;"";"";locked;"";disabled;"";""
+jsmith;John;Smith;jsmith@somenet.foo;No;07/19/2006 05:32 PM;07/19/2006 08:42 PM;01/15/2026 12:00 PM;"";active;"";disabled;01 42 50 00 00;""
+miscuser8;User;Misc;miscuser8@foo.bar;No;07/19/2006 05:33 PM;07/19/2006 05:33 PM;"";"";active;"";disabled;"";""
+miscuser9;User;Misc;miscuser9@foo.bar;No;07/19/2006 05:33 PM;07/19/2006 05:33 PM;"";"";active;"";disabled;"";""
+rhill;Robert;Hill;rhill@somenet.foo;No;07/19/2006 05:34 PM;07/19/2006 05:34 PM;"";"";active;"";disabled;01 23 45 67 89;""
+someone;Some;One;someone@foo.bar;No;07/19/2006 05:33 PM;07/19/2006 05:33 PM;"";"";active;"";disabled;"";""

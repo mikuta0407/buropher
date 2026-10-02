@@ -1,0 +1,31 @@
+{{/* queries/_columns.html.erb（tag_name = "c[]"） */}}
+{{$_ := include_calendar_headers_tags}}
+
+<div class="query-columns">
+      {{label_tag "available_c" (l "description_available_columns")}}
+      {{select_tag "available_columns" .query.AvailableColumnsOptions (hash "id" "available_c" "multiple" true "size" 10 "ondblclick" "moveOptions(this.form.available_c, this.form.selected_c);")}}
+</div>
+<div class="buttons">
+      <button type="button" class="move-right" onclick="moveOptions(this.form.available_c, this.form.selected_c);">{{sprite_icon "arrow-narrow-right" (hash "rtl" true)}}</button>
+      <button type="button" class="move-left" onclick="moveOptions(this.form.selected_c, this.form.available_c);">{{sprite_icon "arrow-narrow-left" (hash "rtl" true)}}</button>
+</div>
+<div class="query-columns">
+      {{label_tag "selected_c" (l "description_selected_columns")}}
+      {{select_tag "c[]" .query.SelectedColumnsOptions (hash "id" "selected_c" "multiple" true "size" 10 "ondblclick" "moveOptions(this.form.selected_c, this.form.available_c);")}}
+</div>
+<div class="buttons">
+      <button type="button" onclick="moveOptionTop(this.form.selected_c);">&#8648;</button>
+      <button type="button" onclick="moveOptionUp(this.form.selected_c);">&#8593;</button>
+      <button type="button" onclick="moveOptionDown(this.form.selected_c);">&#8595;</button>
+      <button type="button" onclick="moveOptionBottom(this.form.selected_c);">&#8650;</button>
+</div>
+
+{{define "users/_query_columns#js"}}
+
+$(document).ready(function(){
+  $('.query-columns').closest('form').submit(function(){
+    $('#selected_c option:not(:disabled)').prop('selected', true);
+  });
+});
+{{end}}
+{{javascript_tag (capture "users/_query_columns#js" .)}}

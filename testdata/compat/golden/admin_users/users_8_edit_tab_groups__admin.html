@@ -1,0 +1,938 @@
+status: 200
+content-type: text/html
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>miscuser8 - Users - Redmine</title>
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta content="Redmine" name="description">
+    <meta content="issue,bug,tracker" name="keywords">
+    <meta content="authenticity_token" name="csrf-param">
+    <meta content="{{CSRF}}" name="csrf-token">
+    <link href="/assets/favicon-DIGEST.ico" rel="shortcut icon" type="image/x-icon">
+    <link href="/assets/jquery/jquery-ui-1.13.2-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/tribute-5.1.3-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/application-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/responsive-DIGEST.css" media="all" rel="stylesheet">
+    <script data-turbo-track="reload" type="importmap">{
+  "imports": {
+    "@rails/request.js": "/assets/requestjs-DIGEST.js",
+    "application": "/assets/application-DIGEST.js",
+    "@hotwired/stimulus": "/assets/stimulus.min-DIGEST.js",
+    "@hotwired/stimulus-loading": "/assets/stimulus-loading-DIGEST.js",
+    "turndown": "/assets/turndown-DIGEST.js",
+    "controllers/api_key_copy_controller": "/assets/controllers/api_key_copy_controller-DIGEST.js",
+    "controllers/application": "/assets/controllers/application-DIGEST.js",
+    "controllers": "/assets/controllers/index-DIGEST.js",
+    "controllers/list_autofill_controller": "/assets/controllers/list_autofill_controller-DIGEST.js",
+    "controllers/quote_reply_controller": "/assets/controllers/quote_reply_controller-DIGEST.js",
+    "controllers/sticky_issue_header_controller": "/assets/controllers/sticky_issue_header_controller-DIGEST.js"
+  }
+}</script>
+    <link href="/assets/requestjs-DIGEST.js" rel="modulepreload">
+    <link href="/assets/application-DIGEST.js" rel="modulepreload">
+    <link href="/assets/stimulus.min-DIGEST.js" rel="modulepreload">
+    <link href="/assets/stimulus-loading-DIGEST.js" rel="modulepreload">
+    <link href="/assets/turndown-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/api_key_copy_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/application-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/index-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/list_autofill_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/quote_reply_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/sticky_issue_header_controller-DIGEST.js" rel="modulepreload">
+    <script type="module">import "application"</script>
+    <script src="/assets/jquery-3.7.1-ui-1.13.3-DIGEST.js"></script>
+    <script src="/assets/rails-ujs-DIGEST.js"></script>
+    <script src="/assets/tribute-5.1.3.min-DIGEST.js"></script>
+    <script src="/assets/application-legacy-DIGEST.js"></script>
+    <script src="/assets/responsive-DIGEST.js"></script>
+    <script>//<![CDATA[
+$(window).on('load', function(){ warnLeavingUnsaved('The current page contains unsaved text that will be lost if you leave this page.'); });
+//]]></script>
+    <script>//<![CDATA[
+rm = window.rm || {};rm.I18n = rm.I18n || {};rm.I18n = Object.freeze({buttonCopy: 'Copy'});
+//]]></script>
+    <script>//<![CDATA[
+rm = window.rm || {};rm.AutoComplete = rm.AutoComplete || {};rm.AutoComplete.dataSources = JSON.parse('{"issues":"/issues/auto_complete?q=","wiki_pages":"/wiki_pages/auto_complete?q="}');
+//]]></script>
+  </head>
+  <body class="controller-users action-edit avatars-off" data-text-formatting="common_mark">
+    <div id="wrapper">
+      <div class="flyout-menu js-flyout-menu">
+        <div class="flyout-menu__search">
+          <form accept-charset="UTF-8" action="/search" method="get" name="form-RANDOM">
+            <label class="search-magnifier search-magnifier--flyout" for="flyout-search">
+              <svg aria-hidden="true" class="s18 icon-svg">
+                <use href="/assets/icons-DIGEST.svg#icon--search"></use>
+              </svg>
+              <span class="icon-label hidden">Search</span>
+            </label>
+            <input class="small js-search-input" id="flyout-search" name="q" placeholder="Search" type="text">
+          </form>
+        </div>
+        <div class="flyout-menu__avatar">
+          <a href="/users/1">
+            <span class="avatar-color-1 s40 avatar" role="img">RA</span>
+          </a>
+          <a class="user active" href="/users/1">admin</a>
+        </div>
+        <h3>General</h3>
+        <span class="js-general-menu"></span>
+        <span class="js-sidebar flyout-menu__sidebar"></span>
+        <h3>Profile</h3>
+        <span class="js-profile-menu"></span>
+      </div>
+      <div id="top-menu">
+        <div id="account">
+          <ul>
+            <li>
+              <a class="my-account" href="/my/account">My account</a>
+            </li>
+            <li>
+              <a class="logout" data-method="post" href="/logout" rel="nofollow">Sign out</a>
+            </li>
+          </ul>
+        </div>
+        <div id="loggedas">
+          Logged in as
+          <a class="user active" href="/users/1">admin</a>
+        </div>
+        <ul>
+          <li>
+            <a class="home" href="/">Home</a>
+          </li>
+          <li>
+            <a class="my-page" href="/my/page">My page</a>
+          </li>
+          <li>
+            <a class="projects" href="/projects">Projects</a>
+          </li>
+          <li>
+            <a class="administration" href="/admin">Administration</a>
+          </li>
+          <li>
+            <a class="help" href="https://www.redmine.org/guide" rel="noopener" target="_blank">Help</a>
+          </li>
+        </ul>
+      </div>
+      <div id="header">
+        <a class="mobile-toggle-button js-flyout-menu-toggle-button" href="#"></a>
+        <div id="quick-search">
+          <form accept-charset="UTF-8" action="/search" method="get" name="form-RANDOM">
+            <input autocomplete="off" name="scope" type="hidden">
+            <label for="q">
+              <a accesskey="4" href="/search">Search</a>
+              :
+            </label>
+            <input accesskey="f" class="small" data-auto-complete="true" id="q" name="q" size="20" type="text">
+          </form>
+          <div class="drdn" id="project-jump">
+            <span class="drdn-trigger">Jump to a project...</span>
+            <div class="drdn-content">
+              <div class="quick-search">
+                <svg aria-hidden="true" class="s18 icon-svg">
+                  <use href="/assets/icons-DIGEST.svg#icon--search"></use>
+                </svg>
+                <input autocomplete="off" class="autocomplete" data-automcomplete-url="/projects/autocomplete.js?jump=users" id="projects-quick-search" name="q" type="text" value="">
+              </div>
+              <div class="drdn-items projects selection">
+                <strong>Bookmarks</strong>
+                <a href="/projects/ecookbook?jump=users" title="eCookbook">
+                  <span style="padding-inline-start:0px;">eCookbook</span>
+                </a>
+                <a href="/projects/private-child?jump=users" title="Private child of eCookbook">
+                  <span style="padding-inline-start:16px;">Private child of eCookbook</span>
+                </a>
+                <strong>All Projects</strong>
+                <a href="/projects/private-child?jump=users" title="Private child of eCookbook">
+                  <span style="padding-inline-start:0px;">Private child of eCookbook</span>
+                </a>
+              </div>
+              <div class="drdn-items all-projects selection">
+                <a href="/projects?jump=users">All Projects</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <h1>Redmine</h1>
+      </div>
+      <div class="collapsiblesidebar" id="main">
+        <script>//<![CDATA[
+$('#main.collapsiblesidebar').collapsibleSidebar();
+//]]></script>
+        <div id="sidebar">
+          <div id="sidebar-switch-panel" style="visibility: hidden;">
+            <a class="" href="#" id="sidebar-switch-button">
+              <svg aria-hidden="true" class="s20 icon-svg icon-rtl">
+                <use href="/assets/icons-DIGEST.svg#icon--chevrons-right"></use>
+              </svg>
+            </a>
+          </div>
+          <script>//<![CDATA[
+$('#sidebar-switch-panel').css('visibility', 'visible');
+//]]></script>
+          <div id="sidebar-wrapper">
+            <h3>Administration</h3>
+            <div id="admin-menu">
+              <ul>
+                <li>
+                  <a class="icon icon-projects projects" href="/admin/projects">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--projects"></use>
+                    </svg>
+                    <span class="icon-label">Projects</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-user users selected" href="/users">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--user"></use>
+                    </svg>
+                    <span class="icon-label">Users</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-group groups" href="/groups">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--group"></use>
+                    </svg>
+                    <span class="icon-label">Groups</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-roles roles" href="/roles">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--roles"></use>
+                    </svg>
+                    <span class="icon-label">Roles and permissions</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-issue trackers" href="/trackers">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--issue"></use>
+                    </svg>
+                    <span class="icon-label">Trackers</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-issue-edit issue-statuses" href="/issue_statuses">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--issue-edit"></use>
+                    </svg>
+                    <span class="icon-label">Issue statuses</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-workflows workflows" href="/workflows/edit">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--workflows"></use>
+                    </svg>
+                    <span class="icon-label">Workflow</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-custom-fields custom-fields" href="/custom_fields">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--custom-fields"></use>
+                    </svg>
+                    <span class="icon-label">Custom fields</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-list enumerations" href="/enumerations">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--list"></use>
+                    </svg>
+                    <span class="icon-label">Enumerations</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-settings settings" href="/settings">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--settings"></use>
+                    </svg>
+                    <span class="icon-label">Settings</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-server-authentication ldap-authentication" href="/auth_sources">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--server-authentication"></use>
+                    </svg>
+                    <span class="icon-label">LDAP authentication</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-applications applications" href="/oauth/applications">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--apps"></use>
+                    </svg>
+                    <span class="icon-label">Applications</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-plugins plugins" href="/admin/plugins">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--plugins"></use>
+                    </svg>
+                    <span class="icon-label">Plugins</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-help info" href="/admin/info">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--help"></use>
+                    </svg>
+                    <span class="icon-label">Information</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div id="content">
+          <div class="contextual">
+            <a class="icon icon-user" href="/users/8">
+              <svg aria-hidden="true" class="s18 icon-svg">
+                <use href="/assets/icons-DIGEST.svg#icon--user"></use>
+              </svg>
+              <span class="icon-label">Profile</span>
+            </a>
+            <a class="icon icon-email-add" data-remote="true" href="/users/8/email_addresses">
+              <svg aria-hidden="true" class="s18 icon-svg">
+                <use href="/assets/icons-DIGEST.svg#icon--email"></use>
+              </svg>
+              <span class="icon-label">Emails</span>
+            </a>
+            <a class="icon icon-lock" data-method="put" href="/users/8?user%5Bstatus%5D=3" rel="nofollow">
+              <svg aria-hidden="true" class="s18 icon-svg">
+                <use href="/assets/icons-DIGEST.svg#icon--lock"></use>
+              </svg>
+              <span class="icon-label">Lock</span>
+            </a>
+            <a class="icon icon-del" data-confirm="Are you sure?" data-method="delete" href="/users/8" rel="nofollow">
+              <svg aria-hidden="true" class="s18 icon-svg">
+                <use href="/assets/icons-DIGEST.svg#icon--del"></use>
+              </svg>
+              <span class="icon-label">Delete</span>
+            </a>
+          </div>
+          <h2>
+            <a href="/users">Users</a>
+            »
+            <span class="avatar-color-0 s24 avatar" role="img">UM</span>
+            miscuser8
+          </h2>
+          <div class="tabs">
+            <ul>
+              <li>
+                <a href="/users/8/edit?tab=general" id="tab-general" onclick="showTab(&#39;general&#39;, this.href); return false;">General</a>
+              </li>
+              <li>
+                <a class="selected" href="/users/8/edit?tab=groups" id="tab-groups" onclick="showTab(&#39;groups&#39;, this.href); return false;">Groups</a>
+              </li>
+              <li>
+                <a href="/users/8/edit?tab=memberships" id="tab-memberships" onclick="showTab(&#39;memberships&#39;, this.href); return false;">Projects</a>
+              </li>
+            </ul>
+            <div class="tabs-buttons" style="display:none;">
+              <button class="tab-left icon-only" onclick="moveTabLeft(this);" type="button">
+                <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
+                  <use href="/assets/icons-DIGEST.svg#icon--angle-left"></use>
+                </svg>
+              </button>
+              <button class="tab-right icon-only" onclick="moveTabRight(this);" type="button">
+                <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
+                  <use href="/assets/icons-DIGEST.svg#icon--angle-right"></use>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div class="tab-content" id="tab-content-general" style="display:none">
+            <form accept-charset="UTF-8" action="/users/8" class="edit_user" enctype="multipart/form-data" id="edit_user_8" method="post" name="edit_user_8-RANDOM">
+              <input autocomplete="off" name="_method" type="hidden" value="patch">
+              <input autocomplete="off" name="authenticity_token" type="hidden" value="{{CSRF}}">
+              <div id="user_form">
+                <div class="splitcontent">
+                  <div class="splitcontentleft">
+                    <fieldset class="box tabular">
+                      <legend>Information</legend>
+                      <p>
+                        <label for="user_login">
+                          Login
+                          <span class="required">*</span>
+                        </label>
+                        <input id="user_login" name="user[login]" size="25" type="text" value="miscuser8">
+                      </p>
+                      <p>
+                        <label for="user_firstname">
+                          First name
+                          <span class="required">*</span>
+                        </label>
+                        <input id="user_firstname" name="user[firstname]" type="text" value="User">
+                      </p>
+                      <p>
+                        <label for="user_lastname">
+                          Last name
+                          <span class="required">*</span>
+                        </label>
+                        <input id="user_lastname" name="user[lastname]" type="text" value="Misc">
+                      </p>
+                      <p>
+                        <label for="user_mail">
+                          Email
+                          <span class="required">*</span>
+                        </label>
+                        <input id="user_mail" name="user[mail]" type="text" value="miscuser8@foo.bar">
+                      </p>
+                      <p>
+                        <label for="user_language">Language</label>
+                        <select id="user_language" name="user[language]">
+                          <option value="">(auto)</option>
+                          <option value="sq">Albanian (Shqip)</option>
+                          <option value="ar">Arabic (عربي)</option>
+                          <option value="az">Azerbaijani (Azeri)</option>
+                          <option value="eu">Basque (Euskara)</option>
+                          <option value="bs">Bosnian (Bosanski)</option>
+                          <option value="bg">Bulgarian (Български)</option>
+                          <option value="ca">Catalan (Català)</option>
+                          <option value="zh">Chinese/Simplified (简体中文)</option>
+                          <option value="zh-TW">Chinese/Traditional (繁體中文)</option>
+                          <option value="hr">Croatian (Hrvatski)</option>
+                          <option value="cs">Czech (Čeština)</option>
+                          <option value="da">Danish (Dansk)</option>
+                          <option value="nl">Dutch (Nederlands)</option>
+                          <option value="en">English</option>
+                          <option value="en-GB">English (British)</option>
+                          <option value="et">Estonian (Eesti)</option>
+                          <option value="fi">Finnish (Suomi)</option>
+                          <option value="fr">French (Français)</option>
+                          <option value="gl">Galician (Galego)</option>
+                          <option value="de">German (Deutsch)</option>
+                          <option value="el">Greek (Ελληνικά)</option>
+                          <option value="he">Hebrew (עברית)</option>
+                          <option value="hu">Hungarian (Magyar)</option>
+                          <option value="id">Indonesian (Bahasa Indonesia)</option>
+                          <option selected="selected" value="it">Italian (Italiano)</option>
+                          <option value="ja">Japanese (日本語)</option>
+                          <option value="ko">Korean (한국어)</option>
+                          <option value="lv">Latvian (Latviešu)</option>
+                          <option value="lt">Lithuanian (lietuvių)</option>
+                          <option value="mk">Macedonian (Македонски)</option>
+                          <option value="mn">Mongolian (Монгол)</option>
+                          <option value="no">Norwegian (Norsk bokmål)</option>
+                          <option value="fa">Persian (فارسی)</option>
+                          <option value="pl">Polish (Polski)</option>
+                          <option value="pt">Portuguese (Português)</option>
+                          <option value="pt-BR">Portuguese/Brazil (Português/Brasil)</option>
+                          <option value="ro">Romanian (Română)</option>
+                          <option value="ru">Russian (Русский)</option>
+                          <option value="sr-YU">Serbian (Srpski)</option>
+                          <option value="sr">Serbian Cyrillic (Српски)</option>
+                          <option value="sk">Slovak (Slovenčina)</option>
+                          <option value="sl">Slovene (Slovenščina)</option>
+                          <option value="es">Spanish (Español)</option>
+                          <option value="es-PA">Spanish/Panama (Español/Panamá)</option>
+                          <option value="sv">Swedish (Svenska)</option>
+                          <option value="ta-IN">Tamil (தமிழ்)</option>
+                          <option value="th">Thai (ไทย)</option>
+                          <option value="tr">Turkish (Türkçe)</option>
+                          <option value="uk">Ukrainian (Українська)</option>
+                          <option value="vi">Vietnamese (Tiếng Việt)</option>
+                        </select>
+                      </p>
+                      <p>
+                        <label for="user_custom_field_values_4">
+                          <span>Phone number</span>
+                        </label>
+                        <input class="string_cf cf_4" id="user_custom_field_values_4" name="user[custom_field_values][4]" type="text">
+                      </p>
+                      <p>
+                        <label for="user_custom_field_values_5">
+                          <span>Money</span>
+                        </label>
+                        <input class="float_cf cf_5" id="user_custom_field_values_5" name="user[custom_field_values][5]" type="text">
+                      </p>
+                      <p>
+                        <label for="user_admin">Administrator</label>
+                        <input autocomplete="off" name="user[admin]" type="hidden" value="0">
+                        <input id="user_admin" name="user[admin]" type="checkbox" value="1">
+                      </p>
+                    </fieldset>
+                    <fieldset class="box tabular">
+                      <legend>Authentication</legend>
+                      <p>
+                        <label for="user_auth_source_id">Authentication mode</label>
+                        <select id="user_auth_source_id" name="user[auth_source_id]" onchange="if (this.value==&#39;&#39;) {$(&#39;#password_fields&#39;).show();} else {$(&#39;#password_fields&#39;).hide();}">
+                          <option selected="selected" value="">Internal</option>
+                          <option value="1">LDAP test server</option>
+                        </select>
+                      </p>
+                      <div id="password_fields" style="">
+                        <p>
+                          <label for="user_password">Password</label>
+                          <input id="user_password" name="user[password]" size="25" type="password">
+                          <em class="info">Must be at least 8 characters long.</em>
+                        </p>
+                        <p>
+                          <label for="user_password_confirmation">Confirmation</label>
+                          <input id="user_password_confirmation" name="user[password_confirmation]" size="25" type="password">
+                        </p>
+                        <p>
+                          <label for="user_generate_password">Generate password</label>
+                          <input autocomplete="off" name="user[generate_password]" type="hidden" value="0">
+                          <input id="user_generate_password" name="user[generate_password]" type="checkbox" value="1">
+                        </p>
+                        <p>
+                          <label for="user_must_change_passwd">Must change password at next logon</label>
+                          <input autocomplete="off" name="user[must_change_passwd]" type="hidden" value="0">
+                          <input id="user_must_change_passwd" name="user[must_change_passwd]" type="checkbox" value="1">
+                        </p>
+                      </div>
+                      <p>
+                        <label>Two-factor authentication</label>
+                        Not activated
+                      </p>
+                    </fieldset>
+                    <p class="mobile-hide">
+                      <input data-disable-with="Save" name="commit" type="submit" value="Save">
+                    </p>
+                  </div>
+                  <div class="splitcontentright">
+                    <fieldset class="box">
+                      <legend>Email notifications</legend>
+                      <p>
+                        <label class="hidden-for-sighted" for="user_mail_notification">Mail notification settings</label>
+                        <select id="user_mail_notification" name="user[mail_notification]" onchange="if (this.value == &#34;selected&#34;) {$(&#34;#notified-projects&#34;).show();} else {$(&#34;#notified-projects&#34;).hide();}">
+                          <option value="all">For any event on all my projects</option>
+                          <option value="selected">For any event on the selected projects only...</option>
+                          <option selected="selected" value="only_my_events">Only for things I watch or I&#39;m involved in</option>
+                          <option value="only_assigned">Only for things I watch or I am assigned to</option>
+                          <option value="only_owner">Only for things I watch or I am the owner of</option>
+                          <option value="none">No events</option>
+                        </select>
+                      </p>
+                      <fieldset id="notified-projects" style="display:none;">
+                        <legend>
+                          <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;#notified-projects input[type=checkbox]&#39;); return false;" title="Check all / Uncheck all">
+                            <svg aria-hidden="true" class="s18 icon-svg">
+                              <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                            </svg>
+                            <span class="icon-label"></span>
+                          </a>
+                          Projects
+                        </legend>
+                        <ul class="projects root">
+                          <li class="root">
+                            <div class="root">
+                              <label>
+                                <input name="user[notified_project_ids][]" type="checkbox" value="5">
+                                Private child of eCookbook
+                              </label>
+                            </div>
+                          </li>
+                          <li class="root">
+                            <div class="root">
+                              <label>
+                                <input name="user[notified_project_ids][]" type="checkbox" value="2">
+                                OnlineStore
+                              </label>
+                            </div>
+                          </li>
+                        </ul>
+                        <input autocomplete="off" id="user_notified_project_ids_" name="user[notified_project_ids][]" type="hidden" value="">
+                        <p>
+                          <em class="info">
+                            For unselected projects, you will only receive notifications about things you watch or you&#39;re involved in (eg. issues you&#39;re the author or assignee).
+                          </em>
+                        </p>
+                      </fieldset>
+                      <p>
+                        <input autocomplete="off" name="pref[notify_about_high_priority_issues]" type="hidden" value="0">
+                        <input id="pref_notify_about_high_priority_issues" name="pref[notify_about_high_priority_issues]" type="checkbox" value="1">
+                        <label for="pref_notify_about_high_priority_issues">
+                          Also notify me about issues with a priority of
+                          <em>high</em>
+                          or higher
+                        </label>
+                      </p>
+                      <p>
+                        <input autocomplete="off" name="pref[no_self_notified]" type="hidden" value="0">
+                        <input checked="checked" id="pref_no_self_notified" name="pref[no_self_notified]" type="checkbox" value="1">
+                        <label for="pref_no_self_notified">I don&#39;t want to be notified of changes that I make myself</label>
+                      </p>
+                    </fieldset>
+                    <fieldset class="box">
+                      <legend>Auto watch</legend>
+                      <input autocomplete="off" name="pref[auto_watch_on][]" type="hidden" value="">
+                      <p>
+                        <input checked="checked" id="pref_auto_watch_on_issue_created" name="pref[auto_watch_on][]" type="checkbox" value="issue_created">
+                        <label for="pref_auto_watch_on_issue_created">Issues I created</label>
+                      </p>
+                      <p>
+                        <input checked="checked" id="pref_auto_watch_on_issue_contributed_to" name="pref[auto_watch_on][]" type="checkbox" value="issue_contributed_to">
+                        <label for="pref_auto_watch_on_issue_contributed_to">Issues I contributed to</label>
+                      </p>
+                    </fieldset>
+                    <fieldset class="box tabular">
+                      <legend>Preferences</legend>
+                      <p>
+                        <label for="pref_hide_mail">Hide my email address</label>
+                        <input autocomplete="off" name="pref[hide_mail]" type="hidden" value="0">
+                        <input checked="checked" id="pref_hide_mail" name="pref[hide_mail]" type="checkbox" value="1">
+                      </p>
+                      <p>
+                        <label for="pref_time_zone">Time zone</label>
+                        <select id="pref_time_zone" name="pref[time_zone]">
+                          <option label=" " value=""></option>
+                          <option value="International Date Line West">(GMT-12:00) International Date Line West</option>
+                          <option value="American Samoa">(GMT-11:00) American Samoa</option>
+                          <option value="Midway Island">(GMT-11:00) Midway Island</option>
+                          <option value="Hawaii">(GMT-10:00) Hawaii</option>
+                          <option value="Alaska">(GMT-09:00) Alaska</option>
+                          <option value="Pacific Time (US &amp; Canada)">(GMT-08:00) Pacific Time (US &amp; Canada)</option>
+                          <option value="Tijuana">(GMT-08:00) Tijuana</option>
+                          <option value="Arizona">(GMT-07:00) Arizona</option>
+                          <option value="Mazatlan">(GMT-07:00) Mazatlan</option>
+                          <option value="Mountain Time (US &amp; Canada)">(GMT-07:00) Mountain Time (US &amp; Canada)</option>
+                          <option value="Central America">(GMT-06:00) Central America</option>
+                          <option value="Central Time (US &amp; Canada)">(GMT-06:00) Central Time (US &amp; Canada)</option>
+                          <option value="Chihuahua">(GMT-06:00) Chihuahua</option>
+                          <option value="Guadalajara">(GMT-06:00) Guadalajara</option>
+                          <option value="Mexico City">(GMT-06:00) Mexico City</option>
+                          <option value="Monterrey">(GMT-06:00) Monterrey</option>
+                          <option value="Saskatchewan">(GMT-06:00) Saskatchewan</option>
+                          <option value="Bogota">(GMT-05:00) Bogota</option>
+                          <option value="Eastern Time (US &amp; Canada)">(GMT-05:00) Eastern Time (US &amp; Canada)</option>
+                          <option value="Indiana (East)">(GMT-05:00) Indiana (East)</option>
+                          <option value="Lima">(GMT-05:00) Lima</option>
+                          <option value="Quito">(GMT-05:00) Quito</option>
+                          <option value="Atlantic Time (Canada)">(GMT-04:00) Atlantic Time (Canada)</option>
+                          <option value="Caracas">(GMT-04:00) Caracas</option>
+                          <option value="Georgetown">(GMT-04:00) Georgetown</option>
+                          <option value="La Paz">(GMT-04:00) La Paz</option>
+                          <option value="Puerto Rico">(GMT-04:00) Puerto Rico</option>
+                          <option value="Santiago">(GMT-04:00) Santiago</option>
+                          <option value="Newfoundland">(GMT-03:30) Newfoundland</option>
+                          <option value="Brasilia">(GMT-03:00) Brasilia</option>
+                          <option value="Buenos Aires">(GMT-03:00) Buenos Aires</option>
+                          <option value="Montevideo">(GMT-03:00) Montevideo</option>
+                          <option value="Mid-Atlantic">(GMT-02:00) Mid-Atlantic</option>
+                          <option value="Azores">(GMT-01:00) Azores</option>
+                          <option value="Cape Verde Is.">(GMT-01:00) Cape Verde Is.</option>
+                          <option value="Edinburgh">(GMT+00:00) Edinburgh</option>
+                          <option value="Lisbon">(GMT+00:00) Lisbon</option>
+                          <option value="London">(GMT+00:00) London</option>
+                          <option value="Monrovia">(GMT+00:00) Monrovia</option>
+                          <option value="UTC">(GMT+00:00) UTC</option>
+                          <option value="Amsterdam">(GMT+01:00) Amsterdam</option>
+                          <option value="Belgrade">(GMT+01:00) Belgrade</option>
+                          <option value="Berlin">(GMT+01:00) Berlin</option>
+                          <option value="Bern">(GMT+01:00) Bern</option>
+                          <option value="Bratislava">(GMT+01:00) Bratislava</option>
+                          <option value="Brussels">(GMT+01:00) Brussels</option>
+                          <option value="Budapest">(GMT+01:00) Budapest</option>
+                          <option value="Casablanca">(GMT+01:00) Casablanca</option>
+                          <option value="Copenhagen">(GMT+01:00) Copenhagen</option>
+                          <option value="Dublin">(GMT+01:00) Dublin</option>
+                          <option value="Ljubljana">(GMT+01:00) Ljubljana</option>
+                          <option value="Madrid">(GMT+01:00) Madrid</option>
+                          <option value="Paris">(GMT+01:00) Paris</option>
+                          <option value="Prague">(GMT+01:00) Prague</option>
+                          <option value="Rome">(GMT+01:00) Rome</option>
+                          <option value="Sarajevo">(GMT+01:00) Sarajevo</option>
+                          <option value="Skopje">(GMT+01:00) Skopje</option>
+                          <option value="Stockholm">(GMT+01:00) Stockholm</option>
+                          <option value="Vienna">(GMT+01:00) Vienna</option>
+                          <option value="Warsaw">(GMT+01:00) Warsaw</option>
+                          <option value="West Central Africa">(GMT+01:00) West Central Africa</option>
+                          <option value="Zagreb">(GMT+01:00) Zagreb</option>
+                          <option value="Zurich">(GMT+01:00) Zurich</option>
+                          <option value="Athens">(GMT+02:00) Athens</option>
+                          <option value="Bucharest">(GMT+02:00) Bucharest</option>
+                          <option value="Cairo">(GMT+02:00) Cairo</option>
+                          <option value="Harare">(GMT+02:00) Harare</option>
+                          <option value="Helsinki">(GMT+02:00) Helsinki</option>
+                          <option value="Jerusalem">(GMT+02:00) Jerusalem</option>
+                          <option value="Kaliningrad">(GMT+02:00) Kaliningrad</option>
+                          <option value="Pretoria">(GMT+02:00) Pretoria</option>
+                          <option value="Riga">(GMT+02:00) Riga</option>
+                          <option value="Sofia">(GMT+02:00) Sofia</option>
+                          <option value="Tallinn">(GMT+02:00) Tallinn</option>
+                          <option value="Vilnius">(GMT+02:00) Vilnius</option>
+                          <option value="Baghdad">(GMT+03:00) Baghdad</option>
+                          <option value="Istanbul">(GMT+03:00) Istanbul</option>
+                          <option value="Kuwait">(GMT+03:00) Kuwait</option>
+                          <option value="Minsk">(GMT+03:00) Minsk</option>
+                          <option value="Moscow">(GMT+03:00) Moscow</option>
+                          <option value="Nairobi">(GMT+03:00) Nairobi</option>
+                          <option value="Riyadh">(GMT+03:00) Riyadh</option>
+                          <option value="St. Petersburg">(GMT+03:00) St. Petersburg</option>
+                          <option value="Volgograd">(GMT+03:00) Volgograd</option>
+                          <option value="Tehran">(GMT+03:30) Tehran</option>
+                          <option value="Abu Dhabi">(GMT+04:00) Abu Dhabi</option>
+                          <option value="Baku">(GMT+04:00) Baku</option>
+                          <option value="Muscat">(GMT+04:00) Muscat</option>
+                          <option value="Samara">(GMT+04:00) Samara</option>
+                          <option value="Tbilisi">(GMT+04:00) Tbilisi</option>
+                          <option value="Yerevan">(GMT+04:00) Yerevan</option>
+                          <option value="Kabul">(GMT+04:30) Kabul</option>
+                          <option value="Almaty">(GMT+05:00) Almaty</option>
+                          <option value="Astana">(GMT+05:00) Astana</option>
+                          <option value="Ekaterinburg">(GMT+05:00) Ekaterinburg</option>
+                          <option value="Islamabad">(GMT+05:00) Islamabad</option>
+                          <option value="Karachi">(GMT+05:00) Karachi</option>
+                          <option value="Tashkent">(GMT+05:00) Tashkent</option>
+                          <option value="Chennai">(GMT+05:30) Chennai</option>
+                          <option value="Kolkata">(GMT+05:30) Kolkata</option>
+                          <option value="Mumbai">(GMT+05:30) Mumbai</option>
+                          <option value="New Delhi">(GMT+05:30) New Delhi</option>
+                          <option value="Sri Jayawardenepura">(GMT+05:30) Sri Jayawardenepura</option>
+                          <option value="Kathmandu">(GMT+05:45) Kathmandu</option>
+                          <option value="Dhaka">(GMT+06:00) Dhaka</option>
+                          <option value="Urumqi">(GMT+06:00) Urumqi</option>
+                          <option value="Bangkok">(GMT+07:00) Bangkok</option>
+                          <option value="Hanoi">(GMT+07:00) Hanoi</option>
+                          <option value="Jakarta">(GMT+07:00) Jakarta</option>
+                          <option value="Krasnoyarsk">(GMT+07:00) Krasnoyarsk</option>
+                          <option value="Novosibirsk">(GMT+07:00) Novosibirsk</option>
+                          <option value="Beijing">(GMT+08:00) Beijing</option>
+                          <option value="Chongqing">(GMT+08:00) Chongqing</option>
+                          <option value="Hong Kong">(GMT+08:00) Hong Kong</option>
+                          <option value="Irkutsk">(GMT+08:00) Irkutsk</option>
+                          <option value="Kuala Lumpur">(GMT+08:00) Kuala Lumpur</option>
+                          <option value="Perth">(GMT+08:00) Perth</option>
+                          <option value="Singapore">(GMT+08:00) Singapore</option>
+                          <option value="Taipei">(GMT+08:00) Taipei</option>
+                          <option value="Ulaanbaatar">(GMT+08:00) Ulaanbaatar</option>
+                          <option value="Osaka">(GMT+09:00) Osaka</option>
+                          <option value="Sapporo">(GMT+09:00) Sapporo</option>
+                          <option value="Seoul">(GMT+09:00) Seoul</option>
+                          <option value="Tokyo">(GMT+09:00) Tokyo</option>
+                          <option value="Yakutsk">(GMT+09:00) Yakutsk</option>
+                          <option value="Adelaide">(GMT+09:30) Adelaide</option>
+                          <option value="Darwin">(GMT+09:30) Darwin</option>
+                          <option value="Brisbane">(GMT+10:00) Brisbane</option>
+                          <option value="Canberra">(GMT+10:00) Canberra</option>
+                          <option value="Guam">(GMT+10:00) Guam</option>
+                          <option value="Hobart">(GMT+10:00) Hobart</option>
+                          <option value="Melbourne">(GMT+10:00) Melbourne</option>
+                          <option value="Port Moresby">(GMT+10:00) Port Moresby</option>
+                          <option value="Sydney">(GMT+10:00) Sydney</option>
+                          <option value="Vladivostok">(GMT+10:00) Vladivostok</option>
+                          <option value="Magadan">(GMT+11:00) Magadan</option>
+                          <option value="New Caledonia">(GMT+11:00) New Caledonia</option>
+                          <option value="Solomon Is.">(GMT+11:00) Solomon Is.</option>
+                          <option value="Srednekolymsk">(GMT+11:00) Srednekolymsk</option>
+                          <option value="Auckland">(GMT+12:00) Auckland</option>
+                          <option value="Fiji">(GMT+12:00) Fiji</option>
+                          <option value="Kamchatka">(GMT+12:00) Kamchatka</option>
+                          <option value="Marshall Is.">(GMT+12:00) Marshall Is.</option>
+                          <option value="Wellington">(GMT+12:00) Wellington</option>
+                          <option value="Chatham Is.">(GMT+12:45) Chatham Is.</option>
+                          <option value="Nuku&#39;alofa">(GMT+13:00) Nuku&#39;alofa</option>
+                          <option value="Samoa">(GMT+13:00) Samoa</option>
+                          <option value="Tokelau Is.">(GMT+13:00) Tokelau Is.</option>
+                        </select>
+                      </p>
+                      <p>
+                        <label for="pref_comments_sorting">Display comments</label>
+                        <select id="pref_comments_sorting" name="pref[comments_sorting]">
+                          <option value="asc">In chronological order</option>
+                          <option value="desc">In reverse chronological order</option>
+                        </select>
+                      </p>
+                      <p>
+                        <label for="pref_warn_on_leaving_unsaved">Warn me when leaving a page with unsaved text</label>
+                        <input autocomplete="off" name="pref[warn_on_leaving_unsaved]" type="hidden" value="0">
+                        <input checked="checked" id="pref_warn_on_leaving_unsaved" name="pref[warn_on_leaving_unsaved]" type="checkbox" value="1">
+                      </p>
+                      <p>
+                        <label for="pref_textarea_font">Font used for text areas</label>
+                        <select id="pref_textarea_font" name="pref[textarea_font]">
+                          <option selected="selected" value="">Default font</option>
+                          <option value="monospace">Monospaced font</option>
+                          <option value="proportional">Proportional font</option>
+                        </select>
+                      </p>
+                      <p>
+                        <label for="pref_recently_used_projects">Number of recently used projects in jump box</label>
+                        <input id="pref_recently_used_projects" name="pref[recently_used_projects]" size="2" type="text" value="3">
+                      </p>
+                      <p>
+                        <label for="pref_history_default_tab">Issue&#39;s history default tab</label>
+                        <select id="pref_history_default_tab" name="pref[history_default_tab]">
+                          <option value="notes">Notes</option>
+                          <option value="history">History</option>
+                          <option value="properties">Property changes</option>
+                          <option value="time_entries">Spent time</option>
+                          <option value="changesets">Associated revisions</option>
+                          <option value="last_tab_visited">Last visited tab</option>
+                        </select>
+                      </p>
+                      <p>
+                        <label for="pref_toolbar_language_options">Code highlighting toolbar languages</label>
+                        <textarea id="pref_toolbar_language_options" name="pref[toolbar_language_options]" rows="4">c,cpp,csharp,css,diff,go,groovy,html,java,javascript,objc,perl,php,python,r,ruby,sass,scala,shell,sql,swift,xml,yaml</textarea>
+                      </p>
+                      <p>
+                        <label for="pref_default_issue_query">Default issue query</label>
+                        <select id="pref_default_issue_query" name="pref[default_issue_query]">
+                          <option value="">none</option>
+                          <optgroup label="For all users">
+                            <option value="4">Public query for all projects</option>
+                            <option value="5">Open issues by priority and tracker</option>
+                            <option value="6">Open issues grouped by tracker</option>
+                            <option value="9">Open issues grouped by list custom field</option>
+                          </optgroup>
+                          <optgroup label="For this user"></optgroup>
+                        </select>
+                      </p>
+                      <p>
+                        <label for="pref_default_project_query">Default project query</label>
+                        <select id="pref_default_project_query" name="pref[default_project_query]">
+                          <option value="">none</option>
+                          <optgroup label="For all users">
+                            <option value="11">Projects as list</option>
+                          </optgroup>
+                          <optgroup label="For this user"></optgroup>
+                        </select>
+                      </p>
+                    </fieldset>
+                  </div>
+                </div>
+              </div>
+              <div style="clear:left;"></div>
+              <script>//<![CDATA[
+
+$(document).ready(function(){
+  $('#user_generate_password').change(function(){
+    var passwd = $('#user_password, #user_password_confirmation');
+    if ($(this).is(':checked')){
+      passwd.val('').attr('disabled', true);
+    }else{
+      passwd.removeAttr('disabled');
+    }
+  }).trigger('change');
+});
+
+//]]></script>
+              <p>
+                <label>
+                  <input id="send_information" name="send_information" type="checkbox" value="1">
+                  Send account information to the user
+                </label>
+              </p>
+              <p class="mobile-show">
+                <input data-disable-with="Save" name="commit" type="submit" value="Save">
+              </p>
+            </form>
+          </div>
+          <div class="tab-content" id="tab-content-groups">
+            <form accept-charset="UTF-8" action="/users/8" method="post" name="form-RANDOM">
+              <input autocomplete="off" name="_method" type="hidden" value="put">
+              <input autocomplete="off" name="authenticity_token" type="hidden" value="{{CSRF}}">
+              <div class="box">
+                <div id="user_group_ids">
+                  <label>
+                    <input checked="checked" name="user[group_ids][]" type="checkbox" value="10">
+                    A Team
+                  </label>
+                  <br>
+                  <label>
+                    <input checked="checked" name="user[group_ids][]" type="checkbox" value="11">
+                    B Team
+                  </label>
+                  <br>
+                  <input autocomplete="off" id="user_group_ids_" name="user[group_ids][]" type="hidden" value="">
+                </div>
+                <p>
+                  <a href="#" onclick="checkAll(&#39;user_group_ids&#39;, true); return false;">Check all</a>
+                  |
+                  <a href="#" onclick="checkAll(&#39;user_group_ids&#39;, false); return false;">Uncheck all</a>
+                </p>
+              </div>
+              <input data-disable-with="Save" name="commit" type="submit" value="Save">
+            </form>
+          </div>
+          <div class="tab-content" id="tab-content-memberships" style="display:none">
+            <p>
+              <a class="icon icon-add" data-remote="true" href="/users/8/memberships/new">
+                <svg aria-hidden="true" class="s18 icon-svg">
+                  <use href="/assets/icons-DIGEST.svg#icon--add"></use>
+                </svg>
+                <span class="icon-label">Add projects</span>
+              </a>
+            </p>
+            <table class="list memberships">
+              <thead>
+                <tr>
+                  <th>Project</th>
+                  <th>Roles</th>
+                  <th style="width:15%"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="class" id="member-7">
+                  <td class="project name">
+                    <a href="/projects/private-child">Private child of eCookbook</a>
+                  </td>
+                  <td class="roles">
+                    <span id="member-7-roles">Manager, Developer</span>
+                    <div id="member-7-form"></div>
+                  </td>
+                  <td class="buttons">
+                    <a class="icon icon-edit" data-remote="true" href="/users/8/memberships/7/edit">
+                      <svg aria-hidden="true" class="s18 icon-svg">
+                        <use href="/assets/icons-DIGEST.svg#icon--edit"></use>
+                      </svg>
+                      <span class="icon-label">Edit</span>
+                    </a>
+                  </td>
+                </tr>
+                <tr class="class" id="member-10">
+                  <td class="project name">
+                    <a href="/projects/onlinestore">OnlineStore</a>
+                  </td>
+                  <td class="roles">
+                    <span id="member-10-roles">Developer</span>
+                    <div id="member-10-form"></div>
+                  </td>
+                  <td class="buttons">
+                    <a class="icon icon-edit" data-remote="true" href="/users/8/memberships/10/edit">
+                      <svg aria-hidden="true" class="s18 icon-svg">
+                        <use href="/assets/icons-DIGEST.svg#icon--edit"></use>
+                      </svg>
+                      <span class="icon-label">Edit</span>
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <script>//<![CDATA[
+showTab('groups', this.href)
+//]]></script>
+          <div style="clear:both;"></div>
+        </div>
+      </div>
+      <div id="footer">MASKED</div>
+      <div id="ajax-indicator" style="display:none;">
+        <span class="icon">
+          <svg aria-hidden="true" class="s18 icon-svg svg-loader">
+            <use href="/assets/icons-DIGEST.svg#icon--loader"></use>
+          </svg>
+          <span class="icon-label">Loading...</span>
+        </span>
+      </div>
+      <div id="ajax-modal" style="display:none;"></div>
+      <div id="icon-copy-source" style="display: none;">
+        <svg aria-hidden="true" class="s18 icon-svg">
+          <use href="/assets/icons-DIGEST.svg#icon--"></use>
+        </svg>
+      </div>
+    </div>
+  </body>
+</html>

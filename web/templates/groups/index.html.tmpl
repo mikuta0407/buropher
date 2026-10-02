@@ -1,0 +1,39 @@
+<div class="contextual">
+{{link_to (sprite_icon "add" (l "label_group_new")) "/groups/new" (hash "class" "icon icon-add")}}
+</div>
+
+{{title (l "label_group_plural")}}
+
+{{form_tag "/groups" (hash "method" "get")}}
+<fieldset><legend>{{l "label_filter_plural"}}</legend>
+  <label for='name'>{{l "label_group"}}:</label>
+  {{text_field_tag "name" (param "name") (hash "size" 30)}}
+  {{submit_tag (l "button_apply") (hash "class" "small" "name" nil)}}
+  {{link_to (sprite_icon "reload" (l "button_clear")) "/groups" (hash "class" "icon icon-reload")}}
+  </fieldset>
+{{end_form}}
+&nbsp;
+
+{{if .Groups}}
+<div class="autoscroll">
+<table class="list groups">
+  <thead><tr>
+  <th>{{l "label_group"}}</th>
+  <th>{{l "label_user_plural"}}</th>
+  <th></th>
+  </tr></thead>
+  <tbody>
+{{range $g := .Groups}}
+  <tr id="group-{{$g.ID}}" class="{{if $g.Builtin}}builtin{{end}}">
+    <td class="name">{{link_to (group_name $g) (printf "/groups/%d/edit" $g.ID)}}</td>
+    <td class="user_count">{{if not $g.Builtin}}{{index_or_zero $.UserCounts $g.ID}}{{end}}</td>
+    <td class="buttons">{{if not $g.Builtin}}{{delete_link (printf "/groups/%d" $g.ID)}}{{end}}</td>
+  </tr>
+{{end}}
+  </tbody>
+</table>
+</div>
+<span class="pagination">{{pagination_links_full .Pages .Count}}</span>
+{{else}}
+<p class="nodata">{{l "label_no_data"}}</p>
+{{end}}

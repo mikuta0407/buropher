@@ -1,0 +1,9 @@
+{{if .Destroyed}}
+  $("#member-{{.Membership.Member.ID}}").remove();
+{{else if not .ErrorsText}}
+  $("#member-{{.Membership.Member.ID}}-form").empty();
+  $("#member-{{.Membership.Member.ID}}-roles").html("{{j .Membership.RolesText}}").show();
+  $("#member-{{.Membership.Member.ID}}").effect("highlight");
+{{else}}
+  alert('{{raw (j (l "notice_failed_to_save_members" (hash "errors" .ErrorsText)))}}');
+{{end}}

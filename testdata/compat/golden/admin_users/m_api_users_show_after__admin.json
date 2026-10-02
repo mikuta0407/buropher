@@ -1,0 +1,32 @@
+status: 200
+content-type: application/json
+
+{
+  "user": {
+    "id": 4,
+    "login": "rhill",
+    "admin": false,
+    "firstname": "Robert",
+    "lastname": "Hilly",
+    "mail": "rhill@somenet.foo",
+    "created_on": "2006-07-19T17:34:07Z",
+    "updated_on": "2026-01-15T12:00:00Z",
+    "last_login_on": null,
+    "passwd_changed_on": null,
+    "twofa_scheme": null,
+    "api_key": "MASKED",
+    "status": 1,
+    "custom_fields": [
+      {
+        "id": 4,
+        "name": "Phone number",
+        "value": "01 23 45 67 89"
+      },
+      {
+        "id": 5,
+        "name": "Money",
+        "value": null
+      }
+    ]
+  }
+}

@@ -1,0 +1,33 @@
+{{form_tag (request_path) (hash "data" (hash "cm_url" "/users/context_menu")) -}}
+{{hidden_field_tag "back_url" (assigns).BackURL (hash "id" nil)}}
+<div class="autoscroll">
+<table class="list odd-even users">
+<thead>
+  <tr>
+    <th class="checkbox hide-when-print">
+      {{check_box_tag "check_all" "" false (hash "class" "toggle-selection" "title" (printf "%s / %s" (l "button_check_all") (l "button_uncheck_all")))}}
+    </th>
+    {{range $col := .query.Columns}}
+      {{$.query.ColumnHeader $col}}
+    {{end}}
+    <th></th>
+  </tr>
+</thead>
+<tbody>
+{{range $user := .users}}
+  <tr id="user-{{$user.ID}}" class="hascontextmenu {{cycle "odd" "even"}} {{$user.CSSClasses}}">
+    <td class="checkbox hide-when-print">{{check_box_tag "ids[]" $user.ID false (hash "id" nil)}}</td>
+    {{range $col := $.query.Columns}}
+        {{$.query.Cell $col $user}}
+    {{end}}
+    <td class="buttons">
+      {{link_to_context_menu}}
+    </td>
+  </tr>
+{{end}}
+</tbody>
+</table>
+</div>
+{{end_form}}
+
+{{context_menu}}

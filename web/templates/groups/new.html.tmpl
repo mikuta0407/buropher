@@ -1,0 +1,10 @@
+{{title (list (l "label_group_plural") "/groups") (l "label_group_new")}}
+
+{{$f := labelled_form_for "group" .Group (hash "url" "/groups" "html" (hash "multipart" true))}}
+{{$f.Open}}
+{{partial "groups/form" (dict "f" $f)}}
+<p>
+  {{$f.Submit (l "button_create")}}
+  {{$f.Submit (l "button_create_and_continue") (hash "name" "continue")}}
+</p>
+{{end_form}}

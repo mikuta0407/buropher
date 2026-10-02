@@ -1,0 +1,26 @@
+{{$a := assigns}}
+{{$u := $a.User}}
+<p>
+{{label_tag "user_mail_notification" (l "description_user_mail_notification") (hash "class" "hidden-for-sighted")}}
+{{select_tag "user[mail_notification]" (options_for_select $a.MailOptions $u.MailNotification) (hash "onchange" "if (this.value == \"selected\") {$(\"#notified-projects\").show();} else {$(\"#notified-projects\").hide();}")}}
+</p>
+{{content_tag_open "fieldset" (hash "id" "notified-projects" "style" (cond (eq $u.MailNotification "selected") "" "display:none;"))}}
+  <legend>{{toggle_checkboxes_link "#notified-projects input[type=checkbox]"}}{{l "label_project_plural"}}</legend>
+  {{render_project_nested_lists $a.Projects "users/notified_project" (dict "ids" $u.NotifiedProjectIDs)}}
+  {{hidden_field_tag "user[notified_project_ids][]" ""}}
+  <p><em class="info">{{l "text_user_mail_option"}}</em></p>
+{{end_tag "fieldset"}}
+
+{{$pf := fields_for "pref" $u.Pref}}
+
+
+{{if $a.HighPriority}}
+<p>
+  {{$pf.CheckBox "notify_about_high_priority_issues"}}
+  <label for="pref_notify_about_high_priority_issues">{{raw (l "label_user_mail_notify_about_high_priority_issues_html" (hash "prio" (h $a.HighPriority)))}}</label>
+</p>
+{{end}}
+<p>
+  {{$pf.CheckBox "no_self_notified"}}
+  <label for="pref_no_self_notified">{{l "label_user_mail_no_self_notified"}}</label>
+</p>

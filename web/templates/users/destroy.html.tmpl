@@ -1,0 +1,18 @@
+{{title (l "label_confirmation")}}
+
+{{form_tag (printf "/users/%d" .User.ID) (hash "method" "delete")}}
+<div class="warning">
+  <p><strong>{{user_name .User}} ({{.User.Login}})</strong></p>
+
+  <p>{{l "text_user_destroy_confirmation" (hash "login" .User.Login)}}</p>
+
+  <p>
+    <label for="confirm">{{l "field_login"}}</label>
+    {{text_field_tag "confirm"}}
+  </p>
+</div>
+
+{{submit_tag (l "button_delete")}}
+{{end_form}}
+{{if not .User.Locked}}{{button_to (l "button_lock") (printf "/users/bulk_lock?%s" (to_query (hash "ids" (list .User.ID)))) (hash "method" "post" "class" "btn" "name" "lock")}}{{end}}
+{{link_to (l "button_cancel") "/users"}}

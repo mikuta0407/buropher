@@ -1,0 +1,468 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Users - Redmine</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Redmine" />
+<meta name="keywords" content="issue,bug,tracker" />
+<meta name="csrf-param" content="authenticity_token" />
+<meta name="csrf-token" content="{{CSRF}}" />
+<link rel="shortcut icon" type="image/x-icon" href="/assets/favicon-DIGEST.ico" />
+<link rel="stylesheet" href="/assets/jquery/jquery-ui-1.13.2-DIGEST.css" media="all" />
+<link rel="stylesheet" href="/assets/tribute-5.1.3-DIGEST.css" media="all" />
+<link rel="stylesheet" href="/assets/application-DIGEST.css" media="all" />
+<link rel="stylesheet" href="/assets/responsive-DIGEST.css" media="all" />
+
+<script type="importmap" data-turbo-track="reload">{
+  "imports": {
+    "@rails/request.js": "/assets/requestjs-DIGEST.js",
+    "application": "/assets/application-DIGEST.js",
+    "@hotwired/stimulus": "/assets/stimulus.min-DIGEST.js",
+    "@hotwired/stimulus-loading": "/assets/stimulus-loading-DIGEST.js",
+    "turndown": "/assets/turndown-DIGEST.js",
+    "controllers/api_key_copy_controller": "/assets/controllers/api_key_copy_controller-DIGEST.js",
+    "controllers/application": "/assets/controllers/application-DIGEST.js",
+    "controllers": "/assets/controllers/index-DIGEST.js",
+    "controllers/list_autofill_controller": "/assets/controllers/list_autofill_controller-DIGEST.js",
+    "controllers/quote_reply_controller": "/assets/controllers/quote_reply_controller-DIGEST.js",
+    "controllers/sticky_issue_header_controller": "/assets/controllers/sticky_issue_header_controller-DIGEST.js"
+  }
+}</script>
+<link rel="modulepreload" href="/assets/requestjs-DIGEST.js">
+<link rel="modulepreload" href="/assets/application-DIGEST.js">
+<link rel="modulepreload" href="/assets/stimulus.min-DIGEST.js">
+<link rel="modulepreload" href="/assets/stimulus-loading-DIGEST.js">
+<link rel="modulepreload" href="/assets/turndown-DIGEST.js">
+<link rel="modulepreload" href="/assets/controllers/api_key_copy_controller-DIGEST.js">
+<link rel="modulepreload" href="/assets/controllers/application-DIGEST.js">
+<link rel="modulepreload" href="/assets/controllers/index-DIGEST.js">
+<link rel="modulepreload" href="/assets/controllers/list_autofill_controller-DIGEST.js">
+<link rel="modulepreload" href="/assets/controllers/quote_reply_controller-DIGEST.js">
+<link rel="modulepreload" href="/assets/controllers/sticky_issue_header_controller-DIGEST.js">
+<script type="module">import "application"</script>
+<script src="/assets/jquery-3.7.1-ui-1.13.3-DIGEST.js"></script>
+<script src="/assets/rails-ujs-DIGEST.js"></script>
+<script src="/assets/tribute-5.1.3.min-DIGEST.js"></script><script src="/assets/application-legacy-DIGEST.js"></script>
+<script src="/assets/responsive-DIGEST.js"></script>
+<script>
+//<![CDATA[
+$(window).on('load', function(){ warnLeavingUnsaved('The current page contains unsaved text that will be lost if you leave this page.'); });
+//]]>
+</script>
+
+<script>
+//<![CDATA[
+rm = window.rm || {};rm.I18n = rm.I18n || {};rm.I18n = Object.freeze({buttonCopy: 'Copy'});
+//]]>
+</script>
+<script>
+//<![CDATA[
+rm = window.rm || {};rm.AutoComplete = rm.AutoComplete || {};rm.AutoComplete.dataSources = JSON.parse('{"issues":"/issues/auto_complete?q=","wiki_pages":"/wiki_pages/auto_complete?q="}');
+//]]>
+</script>
+
+<!-- page specific tags -->
+<script>
+//<![CDATA[
+var datepickerOptions={dateFormat: 'yy-mm-dd', firstDay: 0, showOn: 'button', buttonImageOnly: true, buttonImage: '/assets/calendar-DIGEST.png', showButtonPanel: true, showWeek: true, showOtherMonths: true, selectOtherMonths: true, changeMonth: true, changeYear: true, beforeShow: beforeShowDatePicker};
+//]]>
+</script><script src="/assets/context_menu-DIGEST.js"></script><link rel="stylesheet" href="/assets/context_menu-DIGEST.css" media="screen" /></head>
+<body class="controller-users action-index avatars-off" data-text-formatting="common_mark">
+
+<div id="wrapper">
+
+<div class="flyout-menu js-flyout-menu">
+
+        <div class="flyout-menu__search">
+            <form action="/search" accept-charset="UTF-8" name="form-RANDOM" method="get">
+            
+            <label class="search-magnifier search-magnifier--flyout" for="flyout-search"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--search"></use></svg><span class="icon-label hidden">Search</span></label>
+            <input type="text" name="q" id="flyout-search" class="small js-search-input" placeholder="Search" />
+</form>        </div>
+
+        <div class="flyout-menu__avatar">
+          <a href="/users/1"><span role="img" class="avatar-color-1 s40 avatar">RA</span></a>
+          <a class="user active" href="/users/1">admin</a>
+        </div>
+
+
+    <h3>General</h3>
+    <span class="js-general-menu"></span>
+
+    <span class="js-sidebar flyout-menu__sidebar"></span>
+
+    <h3>Profile</h3>
+    <span class="js-profile-menu"></span>
+
+</div>
+
+
+<div id="top-menu">
+    <div id="account">
+        <ul><li><a class="my-account" href="/my/account">My account</a></li><li><a class="logout" rel="nofollow" data-method="post" href="/logout">Sign out</a></li></ul>    </div>
+    <div id="loggedas">Logged in as <a class="user active" href="/users/1">admin</a></div>
+    <ul><li><a class="home" href="/">Home</a></li><li><a class="my-page" href="/my/page">My page</a></li><li><a class="projects" href="/projects">Projects</a></li><li><a class="administration" href="/admin">Administration</a></li><li><a target="_blank" rel="noopener" class="help" href="https://www.redmine.org/guide">Help</a></li></ul></div>
+
+<div id="header">
+
+    <a href="#" class="mobile-toggle-button js-flyout-menu-toggle-button"></a>
+
+    <div id="quick-search">
+        <form action="/search" accept-charset="UTF-8" name="form-RANDOM" method="get">
+        <input type="hidden" name="scope" autocomplete="off" />
+        
+        <label for='q'>
+          <a accesskey="4" href="/search">Search</a>:
+        </label>
+        <input type="text" name="q" id="q" size="20" class="small" accesskey="f" data-auto-complete="true" />
+</form>        <div id="project-jump" class="drdn"><span class="drdn-trigger">Jump to a project...</span><div class="drdn-content"><div class="quick-search"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--search"></use></svg><input type="text" name="q" id="projects-quick-search" value="" class="autocomplete" data-automcomplete-url="/projects/autocomplete.js?jump=users" autocomplete="off" /></div><div class="drdn-items projects selection"><strong>Bookmarks</strong><a title="eCookbook" href="/projects/ecookbook?jump=users"><span style="padding-inline-start:0px;">eCookbook</span></a><a title="Private child of eCookbook" href="/projects/private-child?jump=users"><span style="padding-inline-start:16px;">Private child of eCookbook</span></a><strong>All Projects</strong><a title="Private child of eCookbook" href="/projects/private-child?jump=users"><span style="padding-inline-start:0px;">Private child of eCookbook</span></a></div><div class="drdn-items all-projects selection"><a href="/projects?jump=users">All Projects</a></div></div></div>
+    </div>
+
+    <h1>Redmine</h1>
+
+</div>
+
+<div id="main" class="collapsiblesidebar">
+  <script>
+//<![CDATA[
+$('#main.collapsiblesidebar').collapsibleSidebar();
+//]]>
+</script>
+    <div id="sidebar">
+          <div id="sidebar-switch-panel" style="visibility: hidden;">
+            <a id="sidebar-switch-button" class="" href="#">
+              <svg class="s20 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--chevrons-right"></use></svg></a>
+          </div>
+          <script>
+//<![CDATA[
+$('#sidebar-switch-panel').css('visibility', 'visible');
+//]]>
+</script>
+        <div id="sidebar-wrapper">
+          
+    <h3>Administration</h3>
+    <div id="admin-menu">
+  <ul><li><a class="icon icon-projects projects" href="/admin/projects"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--projects"></use></svg><span class="icon-label">Projects</span></a></li><li><a class="icon icon-user users selected" href="/users"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--user"></use></svg><span class="icon-label">Users</span></a></li><li><a class="icon icon-group groups" href="/groups"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--group"></use></svg><span class="icon-label">Groups</span></a></li><li><a class="icon icon-roles roles" href="/roles"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--roles"></use></svg><span class="icon-label">Roles and permissions</span></a></li><li><a class="icon icon-issue trackers" href="/trackers"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--issue"></use></svg><span class="icon-label">Trackers</span></a></li><li><a class="icon icon-issue-edit issue-statuses" href="/issue_statuses"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--issue-edit"></use></svg><span class="icon-label">Issue statuses</span></a></li><li><a class="icon icon-workflows workflows" href="/workflows/edit"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--workflows"></use></svg><span class="icon-label">Workflow</span></a></li><li><a class="icon icon-custom-fields custom-fields" href="/custom_fields"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--custom-fields"></use></svg><span class="icon-label">Custom fields</span></a></li><li><a class="icon icon-list enumerations" href="/enumerations"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--list"></use></svg><span class="icon-label">Enumerations</span></a></li><li><a class="icon icon-settings settings" href="/settings"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--settings"></use></svg><span class="icon-label">Settings</span></a></li><li><a class="icon icon-server-authentication ldap-authentication" href="/auth_sources"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--server-authentication"></use></svg><span class="icon-label">LDAP authentication</span></a></li><li><a class="icon icon-applications applications" href="/oauth/applications"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--apps"></use></svg><span class="icon-label">Applications</span></a></li><li><a class="icon icon-plugins plugins" href="/admin/plugins"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--plugins"></use></svg><span class="icon-label">Plugins</span></a></li><li><a class="icon icon-help info" href="/admin/info"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--help"></use></svg><span class="icon-label">Information</span></a></li></ul>
+</div>
+
+
+          
+        </div>
+    </div>
+
+    <div id="content">
+        
+        <div class="contextual">
+<a class="icon icon-add" href="/users/new"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--add"></use></svg><span class="icon-label">New user</span></a>
+  <span class="drdn"><span class="drdn-trigger"><span class="icon-only icon-actions" title="Actions"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--3-bullets"></use></svg><span class="icon-label">Actions</span></span></span><div class="drdn-content"><div class="drdn-items">
+      <a class="icon icon-import" href="/users/imports/new"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--import"></use></svg><span class="icon-label">Import</span></a>
+</div></div></span></div>
+
+<h2>Users</h2>
+
+
+<form id="query_form" action="/users" accept-charset="UTF-8" name="query_form-RANDOM" method="get">
+  <input type="hidden" name="set_filter" id="set_filter" value="1" autocomplete="off" />
+<input type="hidden" name="type" id="query_type" value="UserQuery" disabled="disabled" autocomplete="off" />
+<input type="hidden" name="sort" value="login" autocomplete="off" />
+
+<div id="query_form_with_buttons" class="hide-when-print">
+<div id="query_form_content">
+  <fieldset id="filters" class="collapsible ">
+    <legend onclick="toggleFieldset(this);" class="icon icon-expanded">
+      <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--angle-down"></use></svg>
+      Filters
+    </legend>
+    <div style="">
+      <script>
+//<![CDATA[
+
+var operatorLabels = {"=":"is","!":"is not","o":"open","c":"closed","!*":"none","*":"any","\u003e=":"\u003e=","\u003c=":"\u003c=","\u003e\u003c":"between","\u003ct+":"in less than","\u003et+":"in more than","\u003e\u003ct+":"in the next","t+":"in","nd":"tomorrow","t":"today","ld":"yesterday","nw":"next week","w":"this week","lw":"last week","l2w":"last 2 weeks","nm":"next month","m":"this month","lm":"last month","y":"this year","\u003et-":"less than days ago","\u003ct-":"more than days ago","\u003e\u003ct-":"in the past","t-":"days ago","~":"contains","!~":"doesn't contain","*~":"contains any of","^":"starts with","$":"ends with","=p":"any issues in project","=!p":"any issues not in project","!p":"no issues in project","*o":"any open issues","!o":"no open issues","ev":"has been","!ev":"has never been","cf":"changed from"};
+var operatorByType = {"list":["=","!"],"list_with_history":["=","!","ev","!ev","cf"],"list_status":["o","=","!","ev","!ev","cf","c","*"],"list_optional":["=","!","!*","*"],"list_optional_with_history":["=","!","ev","!ev","cf","!*","*"],"list_subprojects":["*","!*","=","!"],"date":["=","\u003e=","\u003c=","\u003e\u003c","\u003ct+","\u003et+","\u003e\u003ct+","t+","nd","t","ld","nw","w","lw","l2w","nm","m","lm","y","\u003et-","\u003ct-","\u003e\u003ct-","t-","!*","*"],"date_past":["=","\u003e=","\u003c=","\u003e\u003c","\u003et-","\u003ct-","\u003e\u003ct-","t-","t","ld","w","lw","l2w","m","lm","y","!*","*"],"string":["~","*~","=","!~","!","^","$","!*","*"],"text":["~","*~","!~","^","$","!*","*"],"search":["~","*~","!~"],"integer":["=","\u003e=","\u003c=","\u003e\u003c","!*","*"],"float":["=","\u003e=","\u003c=","\u003e\u003c","!*","*"],"relation":["=","!","=p","=!p","!p","*o","!o","!*","*"],"tree":["=","~","!*","*"]};
+var availableFilters = {"status":{"type":"list_optional","name":"Status","remote":true,"values":[["active","1"],["registered","2"],["locked","3"]]},"auth_source_id":{"type":"list_optional","name":"Authentication mode","remote":true},"is_member_of_group":{"type":"list_optional","name":"Member of group","remote":true},"twofa_scheme":{"type":"list_optional","name":"Two-factor authentication scheme","remote":true},"name":{"type":"text","name":"Name, email or login","values":null},"login":{"type":"string","name":"Login","values":null},"firstname":{"type":"string","name":"First name","values":null},"lastname":{"type":"string","name":"Last name","values":null},"mail":{"type":"string","name":"Email","values":null},"created_on":{"type":"date_past","name":"Created","values":null},"last_login_on":{"type":"date_past","name":"Last sign in","values":null},"admin":{"type":"list","name":"Administrator","values":[["yes","1"],["no","0"]]}};
+var labelDayPlural = "days";
+
+var filtersUrl = "\/queries\/filter?type=UserQuery";
+
+$(document).ready(function(){
+  initFilters();
+  addFilter("status", "=", [1]);
+});
+
+//]]>
+</script>
+<div id="filters-table">
+</div>
+
+<div class="add-filter">
+<label for="add_filter_select">Add filter</label>
+<select id="add_filter_select"><option value=""></option>
+<option value="status">Status</option>
+<option value="auth_source_id">Authentication mode</option>
+<option value="is_member_of_group">Member of group</option>
+<option value="twofa_scheme">Two-factor authentication scheme</option>
+<option value="admin">Administrator</option><optgroup label="Text"><option value="name">Name, email or login</option>
+<option value="login">Login</option>
+<option value="firstname">First name</option>
+<option value="lastname">Last name</option>
+<option value="mail">Email</option></optgroup><optgroup label="Date"><option value="created_on">Created</option>
+<option value="last_login_on">Last sign in</option></optgroup></select>
+</div>
+
+<input type="hidden" name="f[]" id="f_" value="" autocomplete="off" />
+
+    </div>
+  </fieldset>
+
+    <fieldset id="options" class="collapsible collapsed">
+      <legend onclick="toggleFieldset(this);" class="icon icon-collapsed">
+        <svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--angle-right"></use></svg>
+        Options
+      </legend>
+        <div class="hidden">
+          <div id="list-definition" class="">
+            <div>
+              <div class="field">Columns</div>
+              
+<div class="query-columns">
+      <label for="available_c">Available Columns</label>
+      <select name="available_columns[]" id="available_c" multiple="multiple" size="10" ondblclick="moveOptions(this.form.available_c, this.form.selected_c);"><option value="updated_on">Updated</option>
+<option value="passwd_changed_on">Password last changed</option>
+<option value="status">Status</option>
+<option value="auth_source.name">Authentication mode</option>
+<option value="twofa_scheme">Two-factor authentication scheme</option>
+<option value="cf_4">Phone number</option>
+<option value="cf_5">Money</option></select>
+</div>
+<div class="buttons">
+      <button type="button" class="move-right" onclick="moveOptions(this.form.available_c, this.form.selected_c);"><svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--arrow-narrow-right"></use></svg></button>
+      <button type="button" class="move-left" onclick="moveOptions(this.form.selected_c, this.form.available_c);"><svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--arrow-narrow-left"></use></svg></button>
+</div>
+<div class="query-columns">
+      <label for="selected_c">Selected Columns</label>
+      <select name="c[]" id="selected_c" multiple="multiple" size="10" ondblclick="moveOptions(this.form.selected_c, this.form.available_c);"><option value="login">Login</option>
+<option value="firstname">First name</option>
+<option value="lastname">Last name</option>
+<option value="mail">Email</option>
+<option value="admin">Administrator</option>
+<option value="created_on">Created</option>
+<option value="last_login_on">Last sign in</option></select>
+</div>
+<div class="buttons">
+      <button type="button" onclick="moveOptionTop(this.form.selected_c);">&#8648;</button>
+      <button type="button" onclick="moveOptionUp(this.form.selected_c);">&#8593;</button>
+      <button type="button" onclick="moveOptionDown(this.form.selected_c);">&#8595;</button>
+      <button type="button" onclick="moveOptionBottom(this.form.selected_c);">&#8650;</button>
+</div>
+
+<script>
+//<![CDATA[
+
+$(document).ready(function(){
+  $('.query-columns').closest('form').submit(function(){
+    $('#selected_c option:not(:disabled)').prop('selected', true);
+  });
+});
+
+//]]>
+</script>
+            </div>
+            <div>
+              <div class="field">Totals</div>
+              <div><label class="inline"><input type="checkbox" name="t[]" value="cf_5" /> Money</label><input type="hidden" name="t[]" id="t_" value="" autocomplete="off" /></div>
+            </div>
+        </div>
+      </div>
+    </fieldset>
+</div>
+
+<p class="buttons">
+  <a href="#" onclick="$(&quot;#query_form&quot;).submit(); return false;" class="icon icon-checked"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--checked"></use></svg><span class="icon-label">Apply</span></a>
+  <a class="icon icon-reload" href="/users?set_filter=1&amp;sort="><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--reload"></use></svg><span class="icon-label">Clear</span></a>
+      <a href="#" onclick="$(&#39;#query_type&#39;).prop(&#39;disabled&#39;,false);$(&#39;#query_form&#39;).attr(&#39;action&#39;, &#39;/queries/new&#39;).submit(); return false;" class="icon icon-save"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--save"></use></svg><span class="icon-label">Save custom query</span></a>
+</p>
+</div>
+
+
+
+<script>
+//<![CDATA[
+
+$(function ($) {
+  $('input[name=display_type]').change(function (e) {
+    if ($("#display_type_list").is(':checked')) {
+      $('table#list-definition').show();
+    } else {
+      $('table#list-definition').hide();
+    }
+
+  })
+});
+
+
+//]]>
+</script>
+</form>
+    
+    <form data-cm-url="/users/context_menu" action="/users" accept-charset="UTF-8" name="form-RANDOM" method="post"><input type="hidden" name="authenticity_token" value="{{CSRF}}" autocomplete="off" /><input type="hidden" name="back_url" value="/users" autocomplete="off" />
+<div class="autoscroll">
+<table class="list odd-even users">
+<thead>
+  <tr>
+    <th class="checkbox hide-when-print">
+      <input type="checkbox" name="check_all" id="check_all" value="" class="toggle-selection" title="Check all / Uncheck all" />
+    </th>
+      <th class="login"><a title="Sort by &quot;Login&quot;" class="sort asc icon icon-sorted-desc" href="/users?sort=login%3Adesc"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--angle-up"></use></svg><span class="icon-label">Login</span></a></th>
+      <th class="firstname"><a title="Sort by &quot;First name&quot;" href="/users?sort=firstname%2Clogin">First name</a></th>
+      <th class="lastname"><a title="Sort by &quot;Last name&quot;" href="/users?sort=lastname%2Clogin">Last name</a></th>
+      <th class="mail"><a title="Sort by &quot;Email&quot;" href="/users?sort=mail%2Clogin">Email</a></th>
+      <th class="admin"><a title="Sort by &quot;Administrator&quot;" href="/users?sort=admin%2Clogin">Administrator</a></th>
+      <th class="created_on"><a title="Sort by &quot;Created&quot;" href="/users?sort=created_on%2Clogin">Created</a></th>
+      <th class="last_login_on"><a title="Sort by &quot;Last sign in&quot;" href="/users?sort=last_login_on%2Clogin">Last sign in</a></th>
+    <th></th>
+  </tr>
+</thead>
+<tbody>
+  <tr id="user-1" class="hascontextmenu odd user active">
+    <td class="checkbox hide-when-print"><input type="checkbox" name="ids[]" value="1" /></td>
+        <td class="login"><a href="/users/1/edit">admin</a></td>
+        <td class="firstname">Redmine</td>
+        <td class="lastname">Admin</td>
+        <td class="mail">admin@somenet.foo</td>
+        <td class="admin">Yes</td>
+        <td class="created_on">07/19/2006 05:12 PM</td>
+        <td class="last_login_on">01/15/2026 12:00 PM</td>
+    <td class="buttons">
+      <a title="Actions" class="icon-only icon-actions js-contextmenu " href="#"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--3-bullets"></use></svg><span class="icon-label">Actions</span></a>
+    </td>
+  </tr>
+  <tr id="user-3" class="hascontextmenu even user active">
+    <td class="checkbox hide-when-print"><input type="checkbox" name="ids[]" value="3" /></td>
+        <td class="login"><a href="/users/3/edit">dlopper</a></td>
+        <td class="firstname">Dave</td>
+        <td class="lastname">Lopper</td>
+        <td class="mail">dlopper@somenet.foo</td>
+        <td class="admin">No</td>
+        <td class="created_on">07/19/2006 05:33 PM</td>
+        <td class="last_login_on"></td>
+    <td class="buttons">
+      <a title="Actions" class="icon-only icon-actions js-contextmenu " href="#"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--3-bullets"></use></svg><span class="icon-label">Actions</span></a>
+    </td>
+  </tr>
+  <tr id="user-2" class="hascontextmenu odd user active">
+    <td class="checkbox hide-when-print"><input type="checkbox" name="ids[]" value="2" /></td>
+        <td class="login"><a href="/users/2/edit">jsmith</a></td>
+        <td class="firstname">John</td>
+        <td class="lastname">Smith</td>
+        <td class="mail">jsmith@somenet.foo</td>
+        <td class="admin">No</td>
+        <td class="created_on">07/19/2006 05:32 PM</td>
+        <td class="last_login_on">07/19/2006 08:42 PM</td>
+    <td class="buttons">
+      <a title="Actions" class="icon-only icon-actions js-contextmenu " href="#"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--3-bullets"></use></svg><span class="icon-label">Actions</span></a>
+    </td>
+  </tr>
+  <tr id="user-8" class="hascontextmenu even user active">
+    <td class="checkbox hide-when-print"><input type="checkbox" name="ids[]" value="8" /></td>
+        <td class="login"><a href="/users/8/edit">miscuser8</a></td>
+        <td class="firstname">User</td>
+        <td class="lastname">Misc</td>
+        <td class="mail">miscuser8@foo.bar</td>
+        <td class="admin">No</td>
+        <td class="created_on">07/19/2006 05:33 PM</td>
+        <td class="last_login_on"></td>
+    <td class="buttons">
+      <a title="Actions" class="icon-only icon-actions js-contextmenu " href="#"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--3-bullets"></use></svg><span class="icon-label">Actions</span></a>
+    </td>
+  </tr>
+  <tr id="user-9" class="hascontextmenu odd user active">
+    <td class="checkbox hide-when-print"><input type="checkbox" name="ids[]" value="9" /></td>
+        <td class="login"><a href="/users/9/edit">miscuser9</a></td>
+        <td class="firstname">User</td>
+        <td class="lastname">Misc</td>
+        <td class="mail">miscuser9@foo.bar</td>
+        <td class="admin">No</td>
+        <td class="created_on">07/19/2006 05:33 PM</td>
+        <td class="last_login_on"></td>
+    <td class="buttons">
+      <a title="Actions" class="icon-only icon-actions js-contextmenu " href="#"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--3-bullets"></use></svg><span class="icon-label">Actions</span></a>
+    </td>
+  </tr>
+  <tr id="user-4" class="hascontextmenu even user active">
+    <td class="checkbox hide-when-print"><input type="checkbox" name="ids[]" value="4" /></td>
+        <td class="login"><a href="/users/4/edit">rhill</a></td>
+        <td class="firstname">Robert</td>
+        <td class="lastname">Hill</td>
+        <td class="mail">rhill@somenet.foo</td>
+        <td class="admin">No</td>
+        <td class="created_on">07/19/2006 05:34 PM</td>
+        <td class="last_login_on"></td>
+    <td class="buttons">
+      <a title="Actions" class="icon-only icon-actions js-contextmenu " href="#"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--3-bullets"></use></svg><span class="icon-label">Actions</span></a>
+    </td>
+  </tr>
+  <tr id="user-7" class="hascontextmenu odd user active">
+    <td class="checkbox hide-when-print"><input type="checkbox" name="ids[]" value="7" /></td>
+        <td class="login"><a href="/users/7/edit">someone</a></td>
+        <td class="firstname">Some</td>
+        <td class="lastname">One</td>
+        <td class="mail">someone@foo.bar</td>
+        <td class="admin">No</td>
+        <td class="created_on">07/19/2006 05:33 PM</td>
+        <td class="last_login_on"></td>
+    <td class="buttons">
+      <a title="Actions" class="icon-only icon-actions js-contextmenu " href="#"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--3-bullets"></use></svg><span class="icon-label">Actions</span></a>
+    </td>
+  </tr>
+</tbody>
+</table>
+</div>
+</form>
+
+
+    <span class="pagination"><ul class="pages"></ul><span><span class="items">(1-7/7)</span> </span></span>
+<p class="other-formats hide-when-print">Also available in:    <span><a class="csv" rel="nofollow" onclick="showModal(&#39;csv-export-options&#39;, &#39;350px&#39;); return false;" href="/users.csv">CSV</a></span>
+</p>
+  <div id="csv-export-options" style="display:none;">
+    <h3 class="title">CSV export options</h3>
+    <form id="csv-export-form" action="/users.csv" accept-charset="UTF-8" name="csv-export-form-RANDOM" method="get">
+    <input type="hidden" name="set_filter" value="1" autocomplete="off" /><input type="hidden" name="f[]" value="status" autocomplete="off" /><input type="hidden" name="op[status]" value="=" autocomplete="off" /><input type="hidden" name="v[status][]" value="1" autocomplete="off" /><input type="hidden" name="c[]" value="login" autocomplete="off" /><input type="hidden" name="c[]" value="firstname" autocomplete="off" /><input type="hidden" name="c[]" value="lastname" autocomplete="off" /><input type="hidden" name="c[]" value="mail" autocomplete="off" /><input type="hidden" name="c[]" value="admin" autocomplete="off" /><input type="hidden" name="c[]" value="created_on" autocomplete="off" /><input type="hidden" name="c[]" value="last_login_on" autocomplete="off" /><input type="hidden" name="sort" value="login" autocomplete="off" />
+    <input type="hidden" name="query_name" id="query_name" value="_" autocomplete="off" />
+    <p>
+      <label><input type="radio" name="c[]" id="c__" value="" checked="checked" /> Selected Columns</label><br />
+      <label><input type="radio" name="c[]" id="c__all_inline" value="all_inline" /> All Columns</label>
+    </p>
+    <p><label>Encoding <select name="encoding" id="encoding"><option selected="selected" value="UTF-8">UTF-8</option>
+<option value="ISO-8859-1">ISO-8859-1</option></select></label></p>
+    <p><label>Field separator <select name="field_separator" id="field_separator"><option selected="selected" value=",">Comma</option>
+<option value=";">Semicolon</option></select></label></p>
+    <p class="buttons">
+      <input type="submit" value="Export" onclick="hideModal(this);" />
+      <a href="#" onclick="hideModal(this);; return false;">Cancel</a>
+    </p>
+</form>  </div>
+
+
+        
+        <div style="clear:both;"></div>
+    </div>
+</div>
+<div id="footer">
+    Powered by <a target="_blank" rel="noopener" href="https://www.redmine.org/">Redmine</a> &copy; 2006-2026 Jean-Philippe Lang
+</div>
+
+<div id="ajax-indicator" style="display:none;">
+  <span class="icon">
+    <svg class="s18 icon-svg svg-loader" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--loader"></use></svg><span class="icon-label">Loading...</span>
+  </span>
+</div>
+<div id="ajax-modal" style="display:none;"></div>
+<div id="icon-copy-source" style="display: none;"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--"></use></svg></div>
+
+</div>
+
+</body>
+</html>
+

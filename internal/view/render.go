@@ -69,6 +69,10 @@ func newRailsView(ctx *Context) *rails.View {
 	}
 	v.FormName = func(base string) string { return base + "-" + ctx.formNameSuffix() }
 	v.Translate = func(key string) string { return ctx.translate(key) }
+	// Rails 5 以降の既定値（config.action_view.embed_authenticity_token_in_remote_forms = false）:
+	// remote: true の form_tag には authenticity_token を埋め込まない
+	embed := false
+	v.EmbedAuthenticityTokenInRemoteForms = &embed
 	return v
 }
 
