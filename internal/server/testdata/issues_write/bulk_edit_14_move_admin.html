@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Redmine</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Redmine" />
+<meta name="keywords" content="issue,bug,tracker" />
+<meta name="csrf-param" content="authenticity_token" />
+<meta name="csrf-token" content="xDWDItEtM2zN8yc0LZ7h4V-k00UMNtdUiw0N8FOtECJk0Uxhke5pIvKztDQJ-qg7zwWKiD_xADWNqTMaRfleWg" />
+<link rel="shortcut icon" type="image/x-icon" href="/assets/favicon-0e291875.ico" />
+<link rel="stylesheet" href="/assets/jquery/jquery-ui-1.13.2-70e53573.css" media="all" />
+<link rel="stylesheet" href="/assets/tribute-5.1.3-c23a7bf2.css" media="all" />
+<link rel="stylesheet" href="/assets/application-6dc0ec44.css" media="all" />
+<link rel="stylesheet" href="/assets/responsive-194751d3.css" media="all" />
+
+<script type="importmap" data-turbo-track="reload">{
+  "imports": {
+    "@rails/request.js": "/assets/requestjs-64720317.js",
+    "application": "/assets/application-20c5ac24.js",
+    "@hotwired/stimulus": "/assets/stimulus.min-7ea3d58b.js",
+    "@hotwired/stimulus-loading": "/assets/stimulus-loading-25917588.js",
+    "turndown": "/assets/turndown-93630580.js",
+    "controllers/api_key_copy_controller": "/assets/controllers/api_key_copy_controller-75f835b3.js",
+    "controllers/application": "/assets/controllers/application-fab29967.js",
+    "controllers": "/assets/controllers/index-dfefe98d.js",
+    "controllers/list_autofill_controller": "/assets/controllers/list_autofill_controller-5f013171.js",
+    "controllers/quote_reply_controller": "/assets/controllers/quote_reply_controller-3e6a21f7.js",
+    "controllers/sticky_issue_header_controller": "/assets/controllers/sticky_issue_header_controller-18502bbe.js"
+  }
+}</script>
+<link rel="modulepreload" href="/assets/requestjs-64720317.js">
+<link rel="modulepreload" href="/assets/application-20c5ac24.js">
+<link rel="modulepreload" href="/assets/stimulus.min-7ea3d58b.js">
+<link rel="modulepreload" href="/assets/stimulus-loading-25917588.js">
+<link rel="modulepreload" href="/assets/turndown-93630580.js">
+<link rel="modulepreload" href="/assets/controllers/api_key_copy_controller-75f835b3.js">
+<link rel="modulepreload" href="/assets/controllers/application-fab29967.js">
+<link rel="modulepreload" href="/assets/controllers/index-dfefe98d.js">
+<link rel="modulepreload" href="/assets/controllers/list_autofill_controller-5f013171.js">
+<link rel="modulepreload" href="/assets/controllers/quote_reply_controller-3e6a21f7.js">
+<link rel="modulepreload" href="/assets/controllers/sticky_issue_header_controller-18502bbe.js">
+<script type="module">import "application"</script>
+<script src="/assets/jquery-3.7.1-ui-1.13.3-3ca148b8.js"></script>
+<script src="/assets/rails-ujs-3de06f48.js"></script>
+<script src="/assets/tribute-5.1.3.min-6c16c47a.js"></script><script src="/assets/application-legacy-54b0807d.js"></script>
+<script src="/assets/responsive-aa0cdb6f.js"></script>
+<script>
+//<![CDATA[
+$(window).on('load', function(){ warnLeavingUnsaved('The current page contains unsaved text that will be lost if you leave this page.'); });
+//]]>
+</script>
+
+<script>
+//<![CDATA[
+rm = window.rm || {};rm.I18n = rm.I18n || {};rm.I18n = Object.freeze({buttonCopy: 'Copy'});
+//]]>
+</script>
+<script>
+//<![CDATA[
+rm = window.rm || {};rm.AutoComplete = rm.AutoComplete || {};rm.AutoComplete.dataSources = JSON.parse('{"issues":"/issues/auto_complete?q=","wiki_pages":"/wiki_pages/auto_complete?q="}');
+//]]>
+</script>
+
+<!-- page specific tags -->
+<script>
+//<![CDATA[
+var datepickerOptions={dateFormat: 'yy-mm-dd', firstDay: 0, showOn: 'button', buttonImageOnly: true, buttonImage: '/assets/calendar-503585d1.png', showButtonPanel: true, showWeek: true, showOtherMonths: true, selectOtherMonths: true, changeMonth: true, changeYear: true, beforeShow: beforeShowDatePicker};
+//]]>
+</script><script src="/assets/jstoolbar/jstoolbar-d7c21366.js"></script><script src="/assets/jstoolbar/common_mark-8a9a868d.js"></script><script src="/assets/jstoolbar/lang/jstoolbar-en-85c9edfe.js"></script><script>
+//<![CDATA[
+var wikiImageMimeTypes = ["image/gif","image/jpeg","image/png","image/tiff","image/webp","image/x-ms-bmp"];var userHlLanguages = ["c","cpp","csharp","css","diff","go","groovy","html","java","javascript","objc","perl","php","python","r","ruby","sass","scala","shell","sql","swift","xml","yaml"];
+//]]>
+</script><link rel="stylesheet" href="/assets/jstoolbar-57267577.css" media="screen" /></head>
+<body class="has-main-menu controller-issues action-bulk_edit avatars-off" data-text-formatting="common_mark">
+
+<div id="wrapper">
+
+<div class="flyout-menu js-flyout-menu">
+
+        <div class="flyout-menu__search">
+            <form action="/search" accept-charset="UTF-8" name="form-fc4d9289" method="get">
+            <input type="hidden" name="issues" value="1" autocomplete="off" />
+            <label class="search-magnifier search-magnifier--flyout" for="flyout-search"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--search"></use></svg><span class="icon-label hidden">Search</span></label>
+            <input type="text" name="q" id="flyout-search" class="small js-search-input" placeholder="Search" />
+</form>        </div>
+
+        <div class="flyout-menu__avatar">
+          <a href="/users/1"><span role="img" class="avatar-color-1 s40 avatar">RA</span></a>
+          <a class="user active" href="/users/1">admin</a>
+        </div>
+
+        <h3>Project</h3>
+        <span class="js-project-menu"></span>
+
+    <h3>General</h3>
+    <span class="js-general-menu"></span>
+
+    <span class="js-sidebar flyout-menu__sidebar"></span>
+
+    <h3>Profile</h3>
+    <span class="js-profile-menu"></span>
+
+</div>
+
+
+<div id="top-menu">
+    <div id="account">
+        <ul><li><a class="my-account" href="/my/account">My account</a></li><li><a class="logout" rel="nofollow" data-method="post" href="/logout">Sign out</a></li></ul>    </div>
+    <div id="loggedas">Logged in as <a class="user active" href="/users/1">admin</a></div>
+    <ul><li><a class="home" href="/">Home</a></li><li><a class="my-page" href="/my/page">My page</a></li><li><a class="projects" href="/projects">Projects</a></li><li><a class="administration" href="/admin">Administration</a></li><li><a target="_blank" rel="noopener" class="help" href="https://www.redmine.org/guide">Help</a></li></ul></div>
+
+<div id="header">
+
+    <a href="#" class="mobile-toggle-button js-flyout-menu-toggle-button"></a>
+
+    <div id="quick-search">
+        <form action="/search" accept-charset="UTF-8" name="form-a0d60313" method="get">
+        <input type="hidden" name="scope" autocomplete="off" />
+        <input type="hidden" name="issues" value="1" autocomplete="off" />
+        <label for='q'>
+          <a accesskey="4" href="/search">Search</a>:
+        </label>
+        <input type="text" name="q" id="q" size="20" class="small" accesskey="f" data-auto-complete="true" />
+</form>        <div id="project-jump" class="drdn"><span class="drdn-trigger">Jump to a project...</span><div class="drdn-content"><div class="quick-search"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--search"></use></svg><input type="text" name="q" id="projects-quick-search" value="" class="autocomplete" data-automcomplete-url="/projects/autocomplete.js?jump=issues" autocomplete="off" /></div><div class="drdn-items projects selection"><strong>Bookmarks</strong><a title="eCookbook" href="/projects/ecookbook?jump=issues"><span style="padding-inline-start:0px;">eCookbook</span></a><a title="Private child of eCookbook" href="/projects/private-child?jump=issues"><span style="padding-inline-start:16px;">Private child of eCookbook</span></a><strong>Recently used</strong><a title="eCookbook Subproject 1" href="/projects/subproject1?jump=issues"><span style="padding-inline-start:0px;">eCookbook Subproject 1</span></a><a title="OnlineStore" href="/projects/onlinestore?jump=issues"><span style="padding-inline-start:0px;">OnlineStore</span></a><strong>All Projects</strong><a title="Private child of eCookbook" href="/projects/private-child?jump=issues"><span style="padding-inline-start:0px;">Private child of eCookbook</span></a></div><div class="drdn-items all-projects selection"><a class="selected" href="/projects?jump=issues">All Projects</a></div></div></div>
+    </div>
+
+    <h1>Redmine</h1>
+
+    <div id="main-menu" class="tabs">
+        <ul><li><a class="projects" href="/projects">Projects</a></li><li><a class="activity" href="/activity">Activity</a></li><li><a class="issues selected" href="/issues">Issues</a></li><li><a class="time-entries" href="/time_entries">Spent time</a></li><li><a class="gantt" href="/issues/gantt">Gantt</a></li><li><a class="calendar" href="/issues/calendar">Calendar</a></li><li><a class="news" href="/news">News</a></li></ul>
+        <div class="tabs-buttons" style="display:none;">
+            <button class="tab-left icon-only" onclick="moveTabLeft(this); return false;">
+              <svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--angle-left"></use></svg>
+            </button>
+            <button class="tab-right icon-only" onclick="moveTabRight(this); return false;">
+              <svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--angle-right"></use></svg>
+            </button>
+        </div>
+    </div>
+</div>
+
+<div id="main" class="nosidebar">
+  
+    <div id="sidebar">
+        <div id="sidebar-wrapper">
+          
+          
+        </div>
+    </div>
+
+    <div id="content">
+        
+        <h2>Bulk edit selected issues</h2>
+
+
+<ul id="bulk-selection">
+  <li><a class="issue tracker-1 status-1 priority-4 priority-lowest behind-schedule" href="/issues/1">Bug #1</a>: Cannot print recipes</li>
+  <li><a class="issue tracker-1 status-1 priority-4 priority-lowest" href="/issues/4">Bug #4</a>: Issue on project 2</li>
+</ul>
+
+<form id="bulk_edit_form" action="/issues/bulk_update" accept-charset="UTF-8" name="bulk_edit_form-6c63c7ac" method="post"><input type="hidden" name="authenticity_token" value="dMb-pjqJAlQqjZeeKB0bi7Bs7V6pli9ZkmUHBRzhouTUIjHlekpYGhXNBJ4MeVJRIM20k5pR-DiUwTnvCrXsnA" autocomplete="off" />
+<input type="hidden" name="ids[]" value="1" autocomplete="off" />
+<input type="hidden" name="ids[]" value="4" autocomplete="off" />
+<div class="box tabular">
+<fieldset class="attributes">
+<legend>Change properties</legend>
+
+<div class="splitcontent">
+<div class="splitcontentleft">
+<p>
+  <label for="issue_project_id">Project</label>
+  <select name="issue[project_id]" id="issue_project_id" onchange="updateBulkEditFrom(&#39;/issues/bulk_edit.js&#39;)"><option value="">(No change)</option><option value="1">eCookbook</option><option value="5">&nbsp;&nbsp;&#187; Private child of eCookbook</option><option value="3">&nbsp;&nbsp;&#187; eCookbook Subproject 1</option><option value="2" selected="selected">OnlineStore</option></select>
+</p>
+<p>
+  <label for="issue_tracker_id">Tracker</label>
+  <select name="issue[tracker_id]" id="issue_tracker_id" onchange="updateBulkEditFrom(&#39;/issues/bulk_edit.js&#39;)"><option value="">(No change)</option><option value="1">Bug</option>
+<option selected="selected" value="2">Feature request</option>
+<option value="3">Support request</option></select>
+</p>
+<p>
+  <label for='issue_status_id'>Status</label>
+  <select name="issue[status_id]" id="issue_status_id" onchange="updateBulkEditFrom(&#39;/issues/bulk_edit.js&#39;)"><option value="">(No change)</option><option value="1">New</option>
+<option value="2">Assigned</option>
+<option selected="selected" value="3">Resolved</option>
+<option value="4">Feedback</option>
+<option value="5">Closed</option>
+<option value="6">Rejected</option></select>
+</p>
+
+<p>
+  <label for='issue_priority_id'>Priority</label>
+  <select name="issue[priority_id]" id="issue_priority_id"><option value="">(No change)</option><option value="4">Low</option>
+<option value="5">Normal</option>
+<option value="6">High</option>
+<option value="7">Urgent</option>
+<option value="8">Immediate</option></select>
+</p>
+
+<p>
+  <label for='issue_assigned_to_id'>Assignee</label>
+  <select name="issue[assigned_to_id]" id="issue_assigned_to_id"><option value="">(No change)</option><option value="none" selected="selected">nobody</option><option value="2">John Smith</option><option value="8">User Misc</option></select>
+</p>
+
+<p>
+  <label for='issue_category_id'>Category</label>
+  <select name="issue[category_id]" id="issue_category_id"><option value="">(No change)</option><option value="none">none</option><option value="4">Printing</option>
+<option value="3">Stock management</option></select>
+</p>
+
+<p>
+  <label for='issue_fixed_version_id'>Target version</label>
+  <select name="issue[fixed_version_id]" id="issue_fixed_version_id"><option value="">(No change)</option><option value="none">none</option><option value="5">Alpha</option>
+<option value="7">Systemwide visible version</option></select>
+</p>
+
+
+
+
+</div>
+
+<div class="splitcontentright">
+<p>
+  <label for='issue_is_private'>Private</label>
+  <select name="issue[is_private]" id="issue_is_private"><option value="">(No change)</option><option value="1">Yes</option><option value="0">No</option></select>
+</p>
+
+
+<p>
+  <label for='issue_start_date'>Start date</label>
+  <input type="date" name="issue[start_date]" id="issue_start_date" value="none" max="9999-12-31" size="10" /><script>
+//<![CDATA[
+$(function() { $('#issue_start_date').addClass('date').datepickerFallback(datepickerOptions); });
+//]]>
+</script>
+  <label class="inline"><input type="checkbox" name="issue[start_date]" value="none" data-disables="#issue_start_date" checked="checked" />Clear</label>
+</p>
+
+<p>
+  <label for='issue_due_date'>Due date</label>
+  <input type="date" name="issue[due_date]" id="issue_due_date" max="9999-12-31" size="10" /><script>
+//<![CDATA[
+$(function() { $('#issue_due_date').addClass('date').datepickerFallback(datepickerOptions); });
+//]]>
+</script>
+  <label class="inline"><input type="checkbox" name="issue[due_date]" value="none" data-disables="#issue_due_date" />Clear</label>
+</p>
+
+<p>
+  <label for='issue_estimated_hours'>Estimated time</label>
+  <input type="text" name="issue[estimated_hours]" id="issue_estimated_hours" size="10" />
+  <label class="inline"><input type="checkbox" name="issue[estimated_hours]" value="none" data-disables="#issue_estimated_hours" />Clear</label>
+</p>
+
+<p>
+  <label for='issue_done_ratio'>% Done</label>
+  <select name="issue[done_ratio]" id="issue_done_ratio"><option value="">(No change)</option>
+<option value="0">0 %</option>
+<option value="10">10 %</option>
+<option value="20">20 %</option>
+<option value="30">30 %</option>
+<option value="40">40 %</option>
+<option value="50">50 %</option>
+<option value="60">60 %</option>
+<option value="70">70 %</option>
+<option value="80">80 %</option>
+<option value="90">90 %</option>
+<option value="100">100 %</option></select>
+</p>
+</div>
+</div>
+
+
+<div class="splitcontent">
+  <div class="splitcontentleft">
+     <p>
+       <label>Float field</label>
+       <input type="text" name="issue[custom_field_values][6]" id="issue_custom_field_values_6" class="float_cf cf_6" /><label class="inline"><input type="checkbox" name="issue[custom_field_values][6]" value="__none__" data-disables="#issue_custom_field_values_6" />Clear</label>
+     </p>
+       </div><div class="splitcontentright">
+     <p>
+       <label>Custom date</label>
+       <input type="date" name="issue[custom_field_values][8]" id="issue_custom_field_values_8" max="9999-12-31" class="date_cf cf_8" size="10" /><script>
+//<![CDATA[
+$(function() { $('#issue_custom_field_values_8').addClass('date').datepickerFallback(datepickerOptions); });
+//]]>
+</script><label class="inline"><input type="checkbox" name="issue[custom_field_values][8]" value="__none__" data-disables="#issue_custom_field_values_8" />Clear</label>
+     </p>
+  </div>
+</div>
+
+
+</fieldset>
+
+<fieldset>
+<legend>Notes</legend>
+<textarea name="notes" id="notes" cols="60" rows="10" class="wiki-edit" data-auto-complete="true" data-controller="list-autofill" data-action="beforeinput-&gt;list-autofill#handleBeforeInput" data-list-autofill-text-formatting-param="common_mark">
+</textarea>
+<script>
+//<![CDATA[
+var wikiToolbar = new jsToolBar(document.getElementById('notes')); wikiToolbar.setHelpLink('/help/wiki_syntax'); wikiToolbar.setPreviewUrl('/preview/text'); wikiToolbar.draw();
+//]]>
+</script>
+
+  <script>
+//<![CDATA[
+rm.AutoComplete.dataSources = Object.assign(rm.AutoComplete.dataSources, JSON.parse('{"users":"/watchers/autocomplete_for_mention?object_id%5B%5D=1\u0026object_id%5B%5D=4\u0026object_type=issue\u0026q="}'));
+//]]>
+</script>
+
+  <label class="inline">
+  	<input type="checkbox" name="issue[private_notes]" id="issue_private_notes" value="1" />
+  	Private notes
+  </label>
+</fieldset>
+</div>
+
+<div class="flash warning">
+  <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--warning"></use></svg>
+  Changes will result in the automatic deletion of values from one or more fields on the selected objects:<br />
+  <span>Searchable field (1)</span>
+</div>
+
+<p>
+    <input type="submit" name="commit" value="Move" data-disable-with="Move" />
+    <input type="submit" name="follow" value="Move and follow" data-disable-with="Move and follow" />
+</p>
+
+</form>
+<script>
+//<![CDATA[
+
+$(window).on('load', function(){
+  $(document).on('change', 'input[data-disables]', function(){
+    if ($(this).prop('checked')){
+      $($(this).data('disables')).attr('disabled', true).val('');
+    } else {
+      $($(this).data('disables')).attr('disabled', false);
+    }
+  });
+});
+$(document).ready(function(){
+  $('input[data-disables]').trigger('change');
+});
+
+//]]>
+</script>
+        
+        <div style="clear:both;"></div>
+    </div>
+</div>
+<div id="footer">
+    Powered by <a target="_blank" rel="noopener" href="https://www.redmine.org/">Redmine</a> &copy; 2006-2026 Jean-Philippe Lang
+</div>
+
+<div id="ajax-indicator" style="display:none;">
+  <span class="icon">
+    <svg class="s18 icon-svg svg-loader" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--loader"></use></svg><span class="icon-label">Loading...</span>
+  </span>
+</div>
+<div id="ajax-modal" style="display:none;"></div>
+<div id="icon-copy-source" style="display: none;"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--"></use></svg></div>
+
+</div>
+
+</body>
+</html>

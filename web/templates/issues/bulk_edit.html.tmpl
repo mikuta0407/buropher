@@ -1,0 +1,247 @@
+{{$b := .B}}
+<h2>{{$b.Heading}}</h2>
+
+{{if $b.ShowErrors}}
+<div id="errorExplanation">
+  {{notice_icon "error"}}
+  <span>
+    {{$b.FailedMessage}}
+  </span>
+  <ul>
+  {{range $message := $b.ErrorMessages}}
+    <li>{{$message}}</li>
+  {{end}}
+  </ul>
+</div>
+{{end}}
+
+<ul id="bulk-selection">
+{{range $link := $b.IssueLinks}}
+  {{content_tag "li" $link}}
+{{end}}
+</ul>
+
+{{form_tag "/issues/bulk_update" (hash "id" "bulk_edit_form")}}
+{{range $i, $id := $b.IDs}}{{if $i}}
+{{end}}{{hidden_field_tag "ids[]" $id (hash "id" nil)}}{{end}}
+<div class="box tabular">
+<fieldset class="attributes">
+<legend>{{l "label_change_properties"}}</legend>
+
+<div class="splitcontent">
+<div class="splitcontentleft">
+{{if $b.AllowedProjects}}
+<p>
+  <label for="issue_project_id">{{l "field_project"}}</label>
+  {{select_tag "issue[project_id]" $b.ProjectOptions (hash "onchange" $b.OnchangeJS)}}
+</p>
+{{end}}
+<p>
+  <label for="issue_tracker_id">{{l "field_tracker"}}</label>
+  {{select_tag "issue[tracker_id]" $b.TrackerOptions (hash "onchange" $b.OnchangeJS)}}
+</p>
+{{if $b.AvailableStatuses}}
+<p>
+  <label for='issue_status_id'>{{l "field_status"}}</label>
+  {{select_tag "issue[status_id]" $b.StatusOptions (hash "onchange" $b.OnchangeJS)}}
+</p>
+{{end}}
+
+{{if $b.Safe "priority_id"}}
+<p>
+  <label for='issue_priority_id'>{{l "field_priority"}}</label>
+  {{select_tag "issue[priority_id]" $b.PriorityOptions}}
+</p>
+{{end}}
+
+{{if $b.Safe "assigned_to_id"}}
+<p>
+  <label for='issue_assigned_to_id'>{{l "field_assigned_to"}}</label>
+  {{select_tag "issue[assigned_to_id]" $b.AssigneeOptions}}
+</p>
+{{end}}
+
+{{if $b.Safe "category_id"}}
+<p>
+  <label for='issue_category_id'>{{l "field_category"}}</label>
+  {{select_tag "issue[category_id]" $b.CategoryOptions}}
+</p>
+{{end}}
+
+{{if $b.Safe "fixed_version_id"}}
+<p>
+  <label for='issue_fixed_version_id'>{{l "field_fixed_version"}}</label>
+  {{select_tag "issue[fixed_version_id]" $b.VersionOptions}}
+</p>
+{{end}}
+
+{{if $b.ShowLinkCopy}}
+<p>
+  <label for='link_copy'>{{l "label_link_copied_issue"}}</label>
+  {{hidden_field_tag "link_copy" "0"}}
+  {{check_box_tag "link_copy" "1" $b.LinkCopyChecked}}
+</p>
+{{end}}
+
+{{if $b.ShowCopyOptions}}
+<p>
+  <label>{{l "button_copy"}}</label>
+  {{if $b.AttachmentsPresent}}
+    <label class="block">
+      {{hidden_field_tag "copy_attachments" "0"}}
+      {{check_box_tag "copy_attachments" "1" ($b.CopyChecked "copy_attachments")}}
+      {{l "label_attachment_plural"}}
+    </label>
+  {{end}}
+  {{if $b.SubtasksPresent}}
+    <label class="block">
+      {{hidden_field_tag "copy_subtasks" "0"}}
+      {{check_box_tag "copy_subtasks" "1" ($b.CopyChecked "copy_subtasks")}}
+      {{l "label_subtask_plural"}}
+    </label>
+  {{end}}
+  {{if $b.WatchersPresent}}
+    <label class="block">
+      {{hidden_field_tag "copy_watchers" "0"}}
+      {{check_box_tag "copy_watchers" "1" ($b.CopyChecked "copy_watchers")}}
+      {{l "label_issue_watchers"}}
+    </label>
+  {{end}}
+</p>
+{{end}}
+
+{{call_hook "view_issues_bulk_edit_details_bottom"}}
+</div>
+
+<div class="splitcontentright">
+{{if $b.Safe "is_private"}}
+<p>
+  <label for='issue_is_private'>{{l "field_is_private"}}</label>
+  {{select_tag "issue[is_private]" $b.IsPrivateOptions}}
+</p>
+{{end}}
+
+{{if and ($b.Safe "parent_issue_id") $b.Project}}
+<p>
+  <label for='issue_parent_issue_id'>{{l "field_parent_issue"}}</label>
+  {{text_field_tag "issue[parent_issue_id]" "" (hash "size" 10 "value" ($b.Param "parent_issue_id"))}}
+  <label class="inline">{{check_box_tag "issue[parent_issue_id]" "none" ($b.ParamIs "parent_issue_id" "none") (hash "id" nil "data" (hash "disables" "#issue_parent_issue_id"))}}{{l "button_clear"}}</label>
+</p>
+{{javascript_tag $b.ParentAutocompleteJS}}
+{{end}}
+
+{{if $b.Safe "start_date"}}
+<p>
+  <label for='issue_start_date'>{{l "field_start_date"}}</label>
+  {{date_field_tag "issue[start_date]" "" (hash "value" ($b.Param "start_date") "size" 10)}}{{calendar_for "issue_start_date"}}
+  <label class="inline">{{check_box_tag "issue[start_date]" "none" ($b.ParamIs "start_date" "none") (hash "id" nil "data" (hash "disables" "#issue_start_date"))}}{{l "button_clear"}}</label>
+</p>
+{{end}}
+
+{{if $b.Safe "due_date"}}
+<p>
+  <label for='issue_due_date'>{{l "field_due_date"}}</label>
+  {{date_field_tag "issue[due_date]" "" (hash "value" ($b.Param "due_date") "size" 10)}}{{calendar_for "issue_due_date"}}
+  <label class="inline">{{check_box_tag "issue[due_date]" "none" ($b.ParamIs "due_date" "none") (hash "id" nil "data" (hash "disables" "#issue_due_date"))}}{{l "button_clear"}}</label>
+</p>
+{{end}}
+
+{{if $b.Safe "estimated_hours"}}
+<p>
+  <label for='issue_estimated_hours'>{{l "field_estimated_hours"}}</label>
+  {{text_field_tag "issue[estimated_hours]" "" (hash "value" ($b.Param "estimated_hours") "size" 10)}}
+  <label class="inline">{{check_box_tag "issue[estimated_hours]" "none" ($b.ParamIs "estimated_hours" "none") (hash "id" nil "data" (hash "disables" "#issue_estimated_hours"))}}{{l "button_clear"}}</label>
+</p>
+{{end}}
+
+{{if $b.ShowDoneRatio}}
+<p>
+  <label for='issue_done_ratio'>{{l "field_done_ratio"}}</label>
+  {{select_tag "issue[done_ratio]" $b.DoneRatioOptions}}
+</p>
+{{end}}
+</div>
+</div>
+
+{{$half := $b.HalfCustomFields}}
+{{if $half}}
+<div class="splitcontent">
+  <div class="splitcontentleft">
+   {{range $row := $half}}
+     <p>
+       <label>{{$row.CF.Name}}</label>
+       {{$row.Tag}}
+     </p>
+     {{if $row.SplitHere}}
+       </div><div class="splitcontentright">
+     {{end}}
+   {{end}}
+  </div>
+</div>
+{{end}}
+
+{{range $row := $b.FullCustomFields}}
+  <p>
+    <label>{{$row.CF.Name}}</label>
+    {{$row.Tag}}
+  </p>
+  {{if $row.Toolbar}}{{wikitoolbar_for $row.FieldID $b.CFPreviewURL}}{{end}}
+{{end}}
+
+</fieldset>
+
+<fieldset>
+<legend>{{l "field_notes"}}</legend>
+{{text_area_tag "notes" $b.Notes (hash "cols" 60 "rows" 10 "class" "wiki-edit" "data" $b.NotesData)}}
+{{wikitoolbar_for "notes" "/preview/text"}}
+
+{{if $b.ShowWatchersDataSources}}
+  {{$b.WatchersDataSourcesJS}}
+{{end}}
+
+{{if $b.Safe "private_notes"}}
+  <label class="inline">
+  	{{check_box_tag "issue[private_notes]" 1 false}}
+  	{{l "field_private_notes"}}
+  </label>
+{{end}}
+</fieldset>
+</div>
+
+{{if $b.ValuesByCF}}
+<div class="flash warning">
+  {{notice_icon "warning"}}
+  {{l "warning_fields_cleared_on_bulk_edit"}}:<br />
+  {{$b.FieldsCleared}}
+</div>
+{{end}}
+
+<p>
+  {{if $b.Copy}}
+    {{hidden_field_tag "copy" "1"}}
+    {{submit_tag (l "button_copy")}}
+    {{submit_tag (l "button_copy_and_follow") (hash "name" "follow")}}
+  {{else if $b.TargetProject}}
+    {{submit_tag (l "button_move")}}
+    {{submit_tag (l "button_move_and_follow") (hash "name" "follow")}}
+  {{else}}
+    {{submit_tag (l "button_submit")}}
+  {{end}}
+</p>
+
+{{end_form}}
+
+{{javascript_tag `
+$(window).on('load', function(){
+  $(document).on('change', 'input[data-disables]', function(){
+    if ($(this).prop('checked')){
+      $($(this).data('disables')).attr('disabled', true).val('');
+    } else {
+      $($(this).data('disables')).attr('disabled', false);
+    }
+  });
+});
+$(document).ready(function(){
+  $('input[data-disables]').trigger('change');
+});
+`}}
