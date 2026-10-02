@@ -35,10 +35,80 @@ func (n *normalizer) Transform(doc *ast.Document, reader text.Reader, pc parser.
 			c = next
 		}
 	}
+	removeLinkRefDefs(doc)
 	walkBlocks(doc)
 	fixTableCellPipes(doc)
 	processFootnotes(doc)
 	postprocessText(doc, false)
+}
+
+// removeLinkRefDefs はリンク参照定義ノードを取り除き、それによって
+// 子が減ったリストの tight/loose を goldmark と同じ規則で再判定する
+// （comrak では参照定義だけの段落は finalize 時に消えるため、リストの判定に影響しない）。
+func removeLinkRefDefs(n ast.Node) {
+	for c := n.FirstChild(); c != nil; {
+		next := c.NextSibling()
+		if _, ok := c.(*ast.LinkReferenceDefinition); ok {
+			if item, ok := n.(*ast.ListItem); ok {
+				if list, ok := item.Parent().(*ast.List); ok && !list.IsTight {
+					// 直前の子が空行で終わり、後続がある場合は cmark でも loose のまま
+					if c.HasBlankPreviousLines() && c.PreviousSibling() != nil &&
+						(item.NextSibling() != nil || c.NextSibling() != nil) {
+						list.SetAttributeString("cm-keep-loose", true)
+					}
+					list.SetAttributeString("cm-recheck-tight", true)
+				}
+			}
+			n.RemoveChild(n, c)
+		} else {
+			removeLinkRefDefs(c)
+		}
+		c = next
+	}
+	if list, ok := n.(*ast.List); ok {
+		if v, ok := list.AttributeString("cm-recheck-tight"); ok && v == true {
+			if _, keep := list.AttributeString("cm-keep-loose"); !keep {
+				recheckTight(list)
+			}
+		}
+	}
+}
+
+func recheckTight(list *ast.List) {
+	tight := true
+	for c := list.FirstChild(); c != nil && tight; c = c.NextSibling() {
+		if c.FirstChild() != nil && c.FirstChild() != c.LastChild() {
+			for c1 := c.FirstChild().NextSibling(); c1 != nil; c1 = c1.NextSibling() {
+				if c1.HasBlankPreviousLines() {
+					tight = false
+					break
+				}
+			}
+		}
+		if c != list.FirstChild() && c.HasBlankPreviousLines() {
+			tight = false
+		}
+	}
+	if !tight {
+		return
+	}
+	list.IsTight = true
+	for item := list.FirstChild(); item != nil; item = item.NextSibling() {
+		for gc := item.FirstChild(); gc != nil; {
+			next := gc.NextSibling()
+			if p, ok := gc.(*ast.Paragraph); ok {
+				tb := ast.NewTextBlock()
+				tb.SetLines(p.Lines())
+				for x := p.FirstChild(); x != nil; {
+					nx := x.NextSibling()
+					tb.AppendChild(tb, x)
+					x = nx
+				}
+				item.ReplaceChild(item, p, tb)
+			}
+			gc = next
+		}
+	}
 }
 
 // trimLineEnds は行末（ソフト改行・空白 2 つによるハード改行）直前の空白を取り除く。

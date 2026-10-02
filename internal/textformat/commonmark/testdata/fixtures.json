@@ -2624,6 +2624,667 @@
       "expected": "<div class=\"markdown-alert markdown-alert-note\">\n<p class=\"markdown-alert-title\"><svg class=\"s18 icon-svg\" aria-hidden=\"true\"><use href=\"/assets/icons-a9735328.svg#icon--help\"></use></svg><span class=\"icon-label\">Note</span></p>\n<p>See<sup><a href=\"#fn-a\">1</a></sup>.</p>\n</div>\n \n<ol>\n<li>\n<p>alert footnote <a href=\"#fnref-a\" aria-label=\"Back to reference 1\">↩</a></p>\n</li>\n</ol>\n "
     },
     {
+      "name": "doc-release-notes",
+      "input": "# Release 5.0.0\n\n## Features\n\n* Added **dark mode** (#1234)\n* Improved [search](/search?q=foo&scope=all)\n  * Faster indexing\n  * Better ranking\n\n## Bug fixes\n\n1. Fixed crash when `nil` is passed — see r4567\n2. Fixed ~~old~~ new behaviour\n\n> [!WARNING]\n> Database migration required:\n> ```\n> bundle exec rake db:migrate RAILS_ENV=production\n> ```\n\n| Version | Date       | Notes |\n|---------|:----------:|------:|\n| 5.0.0   | 2024-01-01 | major |\n| 4.2.1   | 2023-06-15 | patch |\n\nThanks to @alice and user:bob@example.com!\n",
+      "expected": "<h1>Release 5.0.0</h1>\n<h2>Features</h2>\n<ul>\n<li>Added <strong>dark mode</strong> (#1234)</li>\n<li>Improved <a href=\"/search?q=foo&amp;scope=all\">search</a>\n<ul>\n<li>Faster indexing</li>\n<li>Better ranking</li>\n</ul>\n</li>\n</ul>\n<h2>Bug fixes</h2>\n<ol>\n<li>Fixed crash when <code>nil</code> is passed — see r4567</li>\n<li>Fixed <del>old</del> new behaviour</li>\n</ol>\n<div class=\"markdown-alert markdown-alert-warning\">\n<p class=\"markdown-alert-title\"><svg class=\"s18 icon-svg\" aria-hidden=\"true\"><use href=\"/assets/icons-a9735328.svg#icon--warning\"></use></svg><span class=\"icon-label\">Warning</span></p>\n<p>Database migration required:</p>\n<pre><code>bundle exec rake db:migrate RAILS_ENV=production\n</code></pre>\n</div>\n<table>\n<thead>\n<tr>\n<th>Version</th>\n<th align=\"center\">Date</th>\n<th align=\"right\">Notes</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>5.0.0</td>\n<td align=\"center\">2024-01-01</td>\n<td align=\"right\">major</td>\n</tr>\n<tr>\n<td>4.2.1</td>\n<td align=\"center\">2023-06-15</td>\n<td align=\"right\">patch</td>\n</tr>\n</tbody>\n</table>\n<p>Thanks to @alice and user:bob@example.com!</p>"
+    },
+    {
+      "name": "doc-bug-report",
+      "input": "**Environment:**\n- Redmine version: 6.1.2.stable\n- Ruby version: 3.3.0-p0 (2023-12-25) [x86_64-linux]\n- Database adapter: PostgreSQL\n\n**Steps:**\n\n1. Go to `/projects/foo/issues/new`\n2. Fill in the form:\n   - Subject: `<script>alert(1)</script>`\n   - Description: see attachment:screenshot@2x.png\n3. Click *Create*\n\n**Log:**\n\n```\nStarted POST \"/projects/foo/issues\" for 127.0.0.1 at 2024-01-01 12:00:00 +0900\nProcessing by IssuesController#create as HTML\nCompleted 500 Internal Server Error in 42ms\n```\n\n```ruby\n# app/models/issue.rb:123\ndef foo\n  bar.baz # => NoMethodError\nend\n```\n\nExpected <b>no</b> error. Actual: 500.\n",
+      "expected": "<p><strong>Environment:</strong></p>\n<ul>\n<li>Redmine version: 6.1.2.stable</li>\n<li>Ruby version: 3.3.0-p0 (2023-12-25) [x86_64-linux]</li>\n<li>Database adapter: PostgreSQL</li>\n</ul>\n<p><strong>Steps:</strong></p>\n<ol>\n<li>Go to <code>/projects/foo/issues/new</code>\n</li>\n<li>Fill in the form:\n<ul>\n<li>Subject: <code>&lt;script&gt;alert(1)&lt;/script&gt;</code>\n</li>\n<li>Description: see attachment:screenshot@2x.png</li>\n</ul>\n</li>\n<li>Click <em>Create</em>\n</li>\n</ol>\n<p><strong>Log:</strong></p>\n<pre><code>Started POST \"/projects/foo/issues\" for 127.0.0.1 at 2024-01-01 12:00:00 +0900\nProcessing by IssuesController#create as HTML\nCompleted 500 Internal Server Error in 42ms\n</code></pre>\n<pre><code class=\"ruby syntaxhl\" data-language=\"ruby\"><span class=\"c1\"># app/models/issue.rb:123</span>\n<span class=\"k\">def</span> <span class=\"nf\">foo</span>\n  <span class=\"n\">bar</span><span class=\"p\">.</span><span class=\"nf\">baz</span> <span class=\"c1\"># =&gt; NoMethodError</span>\n<span class=\"k\">end</span>\n</code></pre>\n<p>Expected <b>no</b> error. Actual: 500.</p>"
+    },
+    {
+      "name": "doc-japanese-wiki",
+      "input": "# 開発環境の構築手順\n\nこのページでは、**ローカル開発環境**の構築手順を説明します。\n\n## 前提条件\n\n| ソフトウェア | バージョン | 備考 |\n|:--|:--:|--:|\n| Ruby | 3.3 | rbenv 推奨 |\n| PostgreSQL | 16 | Docker でも可 |\n\n## 手順\n\n1. リポジトリをクローンする\n   ```bash\n   git clone https://github.com/example/repo.git\n   cd repo\n   ```\n2. 依存関係をインストールする（`bundle install`）\n3. 設定ファイル `config/database.yml` を編集する\n\n> [!NOTE]\n> 詳細は [[開発ガイド]] を参照してください。\n\n> [!IMPORTANT] 注意事項\n> 本番環境では**絶対に**実行しないでください。\n\n脚注のテスト[^1]です。\n\n[^1]: 脚注の内容です。\n",
+      "expected": "<h1>開発環境の構築手順</h1>\n<p>このページでは、<strong>ローカル開発環境</strong>の構築手順を説明します。</p>\n<h2>前提条件</h2>\n<table>\n<thead>\n<tr>\n<th align=\"left\">ソフトウェア</th>\n<th align=\"center\">バージョン</th>\n<th align=\"right\">備考</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td align=\"left\">Ruby</td>\n<td align=\"center\">3.3</td>\n<td align=\"right\">rbenv 推奨</td>\n</tr>\n<tr>\n<td align=\"left\">PostgreSQL</td>\n<td align=\"center\">16</td>\n<td align=\"right\">Docker でも可</td>\n</tr>\n</tbody>\n</table>\n<h2>手順</h2>\n<ol>\n<li>リポジトリをクローンする\n<pre><code class=\"bash syntaxhl\" data-language=\"bash\">git clone https://github.com/example/repo.git\n<span class=\"nb\">cd </span>repo\n</code></pre>\n</li>\n<li>依存関係をインストールする（<code>bundle install</code>）</li>\n<li>設定ファイル <code>config/database.yml</code> を編集する</li>\n</ol>\n<div class=\"markdown-alert markdown-alert-note\">\n<p class=\"markdown-alert-title\"><svg class=\"s18 icon-svg\" aria-hidden=\"true\"><use href=\"/assets/icons-a9735328.svg#icon--help\"></use></svg><span class=\"icon-label\">Note</span></p>\n<p>詳細は [[開発ガイド]] を参照してください。</p>\n</div>\n<div class=\"markdown-alert markdown-alert-important\">\n<p class=\"markdown-alert-title\"><svg class=\"s18 icon-svg\" aria-hidden=\"true\"><use href=\"/assets/icons-a9735328.svg#icon--message-report\"></use></svg><span class=\"icon-label\">注意事項</span></p>\n<p>本番環境では<strong>絶対に</strong>実行しないでください。</p>\n</div>\n<p>脚注のテスト<sup><a href=\"#fn-1\" id=\"fnref-1\">1</a></sup>です。</p>\n \n<ol>\n<li id=\"fn-1\">\n<p>脚注の内容です。 <a href=\"#fnref-1\" aria-label=\"Back to reference 1\">↩</a></p>\n</li>\n</ol>\n "
+    },
+    {
+      "name": "doc-meeting-notes",
+      "input": "Meeting 2024-01-15\n==================\n\nAttendees: Alice, Bob, Carol\n\nAgenda\n------\n\n- [x] Review last week's action items\n- [ ] Discuss release schedule\n  - [ ] QA sign-off\n  - [x] Docs updated\n- [ ] AOB\n\nNotes\n-----\n\nBob: \"We need to fix #42 before release.\"\nCarol: agreed &mdash; also ##43 & ###44?\n\nNext meeting: *2024-01-22 10:00 JST*\n",
+      "expected": "<h1>Meeting 2024-01-15</h1>\n<p>Attendees: Alice, Bob, Carol</p>\n<h2>Agenda</h2>\n<ul class=\"contains-task-list\">\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" checked disabled> Review last week's action items</li>\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" disabled> Discuss release schedule\n<ul class=\"contains-task-list\">\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" disabled> QA sign-off</li>\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" checked disabled> Docs updated</li>\n</ul>\n</li>\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" disabled> AOB</li>\n</ul>\n<h2>Notes</h2>\n<p>Bob: \"We need to fix #42 before release.\"<br>\nCarol: agreed — also ##43 &amp; ###44?</p>\n<p>Next meeting: <em>2024-01-22 10:00 JST</em></p>"
+    },
+    {
+      "name": "doc-api-doc",
+      "input": "## GET /issues.json\n\nParameters:\n\n| name | type | description |\n|------|------|-------------|\n| `project_id` | integer | Project ID |\n| `status_id` | string | `open`, `closed`, `*` |\n| `limit` | integer | max 100 |\n\nResponse:\n\n```json\n{\n  \"issues\": [\n    {\"id\": 1, \"subject\": \"Example\", \"done_ratio\": 0}\n  ],\n  \"total_count\": 1\n}\n```\n\nSee <https://www.redmine.org/projects/redmine/wiki/Rest_Issues> for details.\n",
+      "expected": "<h2>GET /issues.json</h2>\n<p>Parameters:</p>\n<table>\n<thead>\n<tr>\n<th>name</th>\n<th>type</th>\n<th>description</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td><code>project_id</code></td>\n<td>integer</td>\n<td>Project ID</td>\n</tr>\n<tr>\n<td><code>status_id</code></td>\n<td>string</td>\n<td>\n<code>open</code>, <code>closed</code>, <code>*</code>\n</td>\n</tr>\n<tr>\n<td><code>limit</code></td>\n<td>integer</td>\n<td>max 100</td>\n</tr>\n</tbody>\n</table>\n<p>Response:</p>\n<pre><code class=\"json syntaxhl\" data-language=\"json\"><span class=\"p\">{</span><span class=\"w\">\n  </span><span class=\"nl\">\"issues\"</span><span class=\"p\">:</span><span class=\"w\"> </span><span class=\"p\">[</span><span class=\"w\">\n    </span><span class=\"p\">{</span><span class=\"nl\">\"id\"</span><span class=\"p\">:</span><span class=\"w\"> </span><span class=\"mi\">1</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"nl\">\"subject\"</span><span class=\"p\">:</span><span class=\"w\"> </span><span class=\"s2\">\"Example\"</span><span class=\"p\">,</span><span class=\"w\"> </span><span class=\"nl\">\"done_ratio\"</span><span class=\"p\">:</span><span class=\"w\"> </span><span class=\"mi\">0</span><span class=\"p\">}</span><span class=\"w\">\n  </span><span class=\"p\">],</span><span class=\"w\">\n  </span><span class=\"nl\">\"total_count\"</span><span class=\"p\">:</span><span class=\"w\"> </span><span class=\"mi\">1</span><span class=\"w\">\n</span><span class=\"p\">}</span><span class=\"w\">\n</span></code></pre>\n<p>See <a href=\"https://www.redmine.org/projects/redmine/wiki/Rest_Issues\" class=\"external\">https://www.redmine.org/projects/redmine/wiki/Rest_Issues</a> for details.</p>"
+    },
+    {
+      "name": "doc-mixed-html",
+      "input": "<div style=\"text-align: center; color: #333; font-size: 14px\">\n<h2>Centered title</h2>\n<p>Paragraph with <a href=\"https://example.com\" target=\"_blank\">external link</a>.</p>\n</div>\n\n<details>\n<summary>Click to expand</summary>\n\n- hidden list\n- with `code`\n\n</details>\n\n<table>\n  <thead>\n    <tr><th>A</th><th>B</th></tr>\n  </thead>\n  <tbody>\n    <tr><td>1</td><td>2</td></tr>\n  </tbody>\n</table>\n",
+      "expected": "<div style=\"text-align: center; color: #333; font-size: 14px\">\n<h2>Centered title</h2>\n<p>Paragraph with <a href=\"https://example.com\" target=\"_blank\" class=\"external\" rel=\"noopener\">external link</a>.</p>\n</div>\n<details>\n<summary>Click to expand</summary>\n<ul>\n<li>hidden list</li>\n<li>with <code>code</code>\n</li>\n</ul>\n</details>\n<table>\n  <thead>\n    <tr>\n<th>A</th>\n<th>B</th>\n</tr>\n  </thead>\n  <tbody>\n    <tr>\n<td>1</td>\n<td>2</td>\n</tr>\n  </tbody>\n</table>"
+    },
+    {
+      "name": "doc-long-code",
+      "input": "```python\nimport os\nimport sys\n\n\ndef main(argv):\n    \"\"\"Docstring.\"\"\"\n    for i, arg in enumerate(argv):\n        print(f\"{i}: {arg}\")\n    return 0\n\n\nif __name__ == \"__main__\":\n    sys.exit(main(sys.argv))\n```\n",
+      "expected": "<pre><code class=\"python syntaxhl\" data-language=\"python\"><span class=\"kn\">import</span> <span class=\"n\">os</span>\n<span class=\"kn\">import</span> <span class=\"n\">sys</span>\n\n\n<span class=\"k\">def</span> <span class=\"nf\">main</span><span class=\"p\">(</span><span class=\"n\">argv</span><span class=\"p\">):</span>\n    <span class=\"sh\">\"\"\"</span><span class=\"s\">Docstring.</span><span class=\"sh\">\"\"\"</span>\n    <span class=\"k\">for</span> <span class=\"n\">i</span><span class=\"p\">,</span> <span class=\"n\">arg</span> <span class=\"ow\">in</span> <span class=\"nf\">enumerate</span><span class=\"p\">(</span><span class=\"n\">argv</span><span class=\"p\">):</span>\n        <span class=\"nf\">print</span><span class=\"p\">(</span><span class=\"sa\">f</span><span class=\"sh\">\"</span><span class=\"si\">{</span><span class=\"n\">i</span><span class=\"si\">}</span><span class=\"s\">: </span><span class=\"si\">{</span><span class=\"n\">arg</span><span class=\"si\">}</span><span class=\"sh\">\"</span><span class=\"p\">)</span>\n    <span class=\"k\">return</span> <span class=\"mi\">0</span>\n\n\n<span class=\"k\">if</span> <span class=\"n\">__name__</span> <span class=\"o\">==</span> <span class=\"sh\">\"</span><span class=\"s\">__main__</span><span class=\"sh\">\"</span><span class=\"p\">:</span>\n    <span class=\"n\">sys</span><span class=\"p\">.</span><span class=\"nf\">exit</span><span class=\"p\">(</span><span class=\"nf\">main</span><span class=\"p\">(</span><span class=\"n\">sys</span><span class=\"p\">.</span><span class=\"n\">argv</span><span class=\"p\">))</span>\n</code></pre>"
+    },
+    {
+      "name": "doc-sql",
+      "input": "```sql\nSELECT i.id, i.subject, s.name AS status\nFROM issues i\nJOIN issue_statuses s ON s.id = i.status_id\nWHERE i.project_id = 1 AND s.is_closed = false\nORDER BY i.updated_on DESC\nLIMIT 25;\n```\n",
+      "expected": "<pre><code class=\"sql syntaxhl\" data-language=\"sql\"><span class=\"k\">SELECT</span> <span class=\"n\">i</span><span class=\"p\">.</span><span class=\"n\">id</span><span class=\"p\">,</span> <span class=\"n\">i</span><span class=\"p\">.</span><span class=\"n\">subject</span><span class=\"p\">,</span> <span class=\"n\">s</span><span class=\"p\">.</span><span class=\"n\">name</span> <span class=\"k\">AS</span> <span class=\"n\">status</span>\n<span class=\"k\">FROM</span> <span class=\"n\">issues</span> <span class=\"n\">i</span>\n<span class=\"k\">JOIN</span> <span class=\"n\">issue_statuses</span> <span class=\"n\">s</span> <span class=\"k\">ON</span> <span class=\"n\">s</span><span class=\"p\">.</span><span class=\"n\">id</span> <span class=\"o\">=</span> <span class=\"n\">i</span><span class=\"p\">.</span><span class=\"n\">status_id</span>\n<span class=\"k\">WHERE</span> <span class=\"n\">i</span><span class=\"p\">.</span><span class=\"n\">project_id</span> <span class=\"o\">=</span> <span class=\"mi\">1</span> <span class=\"k\">AND</span> <span class=\"n\">s</span><span class=\"p\">.</span><span class=\"n\">is_closed</span> <span class=\"o\">=</span> <span class=\"k\">false</span>\n<span class=\"k\">ORDER</span> <span class=\"k\">BY</span> <span class=\"n\">i</span><span class=\"p\">.</span><span class=\"n\">updated_on</span> <span class=\"k\">DESC</span>\n<span class=\"k\">LIMIT</span> <span class=\"mi\">25</span><span class=\"p\">;</span>\n</code></pre>"
+    },
+    {
+      "name": "html-p-autoclose",
+      "input": "<p>one\n<p>two\n<div>three</div>\n",
+      "expected": "<p>one\n</p><p>two\n</p><div>three</div>"
+    },
+    {
+      "name": "html-li-autoclose",
+      "input": "<ul>\n<li>a\n<li>b\n</ul>\n<ol><li>x<li>y</ol>\n",
+      "expected": "<ul>\n<li>a\n</li>\n<li>b\n</li>\n</ul>\n<ol>\n<li>x</li>\n<li>y</li>\n</ol>"
+    },
+    {
+      "name": "html-dl-autoclose",
+      "input": "<dl><dt>t1<dd>d1<dt>t2<dd>d2</dl>\n",
+      "expected": "<dl>\n<dt>t1</dt>\n<dd>d1</dd>\n<dt>t2</dt>\n<dd>d2</dd>\n</dl>"
+    },
+    {
+      "name": "html-table-autoclose",
+      "input": "<table><tr><td>1<td>2<tr><td>3</table>\n<table><thead><tr><th>h<tbody><tr><td>b</table>\n",
+      "expected": "<table>\n<tr>\n<td>1</td>\n<td>2</td>\n</tr>\n<tr><td>3</td></tr>\n</table>\n<table>\n<thead><tr><th>h</th></tr></thead>\n<tbody><tr><td>b</td></tr></tbody>\n</table>"
+    },
+    {
+      "name": "html-inline-block-mix",
+      "input": "<b><p>bold para</p></b>\n<span><div>div in span</div></span>\n",
+      "expected": "<p><b></b></p><p>bold para</p><br>\n<span><div>div in span</div></span>"
+    },
+    {
+      "name": "html-headings-in-p",
+      "input": "<p>text <h3>heading</h3> more</p>\n",
+      "expected": "<p>text </p><h3>heading</h3> more"
+    },
+    {
+      "name": "html-nested-a",
+      "input": "<a href=\"http://a.example.com\">outer <a href=\"http://b.example.com\">inner</a> tail</a>\n",
+      "expected": "<p><a href=\"http://a.example.com\" class=\"external\">outer </a><a href=\"http://b.example.com\" class=\"external\">inner</a> tail</p>"
+    },
+    {
+      "name": "html-attr-no-value",
+      "input": "<input type=\"checkbox\" class=\"task-list-item-checkbox\" checked> <div itemscope>x</div> <td nowrap>c</td>\n",
+      "expected": "<p><input type=\"checkbox\" class=\"task-list-item-checkbox\" checked> </p><div itemscope>x</div> c"
+    },
+    {
+      "name": "html-attr-dup",
+      "input": "<span title=\"a\" title=\"b\" class=\"c\" class=\"d\">dup</span>\n",
+      "expected": "<p><span title=\"a\">dup</span></p>"
+    },
+    {
+      "name": "html-attr-unquoted",
+      "input": "<a href=http://x.example.com/a?b=c title=t>u</a> <img src=a.png alt=b>\n",
+      "expected": "<p>&lt;a href=<a href=\"http://x.example.com/a?b=c\" class=\"external\">http://x.example.com/a?b=c</a> title=t&gt;u <img src=\"a.png\" alt=\"b\"></p>"
+    },
+    {
+      "name": "html-attr-weird-chars",
+      "input": "<span title=\"a<b>c\" data-x='y\"z'>w</span> <a href=\"http://x.example.com/?a=<b>\">lt</a>\n",
+      "expected": "<p><span title=\"a&lt;b&gt;c\">w</span> <a href=\"http://x.example.com/?a=&lt;b&gt;\" class=\"external\">lt</a></p>"
+    },
+    {
+      "name": "html-attr-newline",
+      "input": "<span\n  title=\"multi\"\n  class=\"x\">nl</span>\n",
+      "expected": "<p><span title=\"multi\">nl</span></p>"
+    },
+    {
+      "name": "html-entity-in-attr",
+      "input": "<a href=\"http://x.example.com/?q=caf&eacute;&amp;x=&#x41;&unknown;\">ent</a>\n",
+      "expected": "<p><a href=\"http://x.example.com/?q=caf%C3%A9&amp;x=A&amp;unknown;\">ent</a></p>"
+    },
+    {
+      "name": "html-comment-weird",
+      "input": "a <!--> b <!---> c <!-- -- --> d <!-- x --!> e\n",
+      "expected": "<p>a  b  c  d &lt;!-- x --!&gt; e</p>"
+    },
+    {
+      "name": "html-bogus-comment",
+      "input": "a <!x> b <! > c\n",
+      "expected": "<p>a &lt;!x&gt; b &lt;! &gt; c</p>"
+    },
+    {
+      "name": "html-lt-variants",
+      "input": "a <1 b < c <> d </ e </> f <_x> g <:y>\n",
+      "expected": "<p>a &lt;1 b &lt; c &lt;&gt; d &lt;/ e &lt;/&gt; f &lt;_x&gt; g &lt;:y&gt;</p>"
+    },
+    {
+      "name": "html-pi-inline",
+      "input": "a <?xml version=\"1.0\"?> b <?pi?> c\n",
+      "expected": "<p>a <?xml version=\"1.0\"?> b <?pi ?> c</p>"
+    },
+    {
+      "name": "html-cdata-inline",
+      "input": "a <![CDATA[ <b>x</b> ]]> b\n",
+      "expected": "<p>a x ]]&gt; b</p>"
+    },
+    {
+      "name": "html-script-unclosed",
+      "input": "<script>\nvar x = \"</div>\";\n",
+      "expected": "&lt;script&gt;\nvar x = \"\";"
+    },
+    {
+      "name": "html-style-in-p",
+      "input": "para <style>p{color:red}</style> after\n",
+      "expected": "<p>para &lt;style&gt;p{color:red}&lt;/style&gt; after</p>"
+    },
+    {
+      "name": "html-textarea-content",
+      "input": "<textarea><b>not bold</b></textarea>\n",
+      "expected": "&lt;textarea&gt;<b>not bold</b>&lt;/textarea&gt;"
+    },
+    {
+      "name": "html-title-in-body",
+      "input": "<title>Title</title> body text\n",
+      "expected": "&lt;title&gt;Title&lt;/title&gt; body text"
+    },
+    {
+      "name": "html-head-tags",
+      "input": "<head><meta charset=\"utf-8\"></head><body><p>body</p></body>\n",
+      "expected": "<p>body</p>"
+    },
+    {
+      "name": "html-body-start",
+      "input": "<body><p>starts with body</p></body>",
+      "expected": "<p>starts with body</p>"
+    },
+    {
+      "name": "html-html-tag",
+      "input": "<html><p>inside html</p></html>\n",
+      "expected": "<p>inside html</p>"
+    },
+    {
+      "name": "html-frameset",
+      "input": "<frameset><frame src=\"x\"></frameset> after\n",
+      "expected": " after"
+    },
+    {
+      "name": "html-noscript",
+      "input": "<noscript>no js</noscript> after\n",
+      "expected": "<p>no js after</p>"
+    },
+    {
+      "name": "html-xmp-listing",
+      "input": "<xmp><b>raw</b></xmp> <listing>l</listing>\n",
+      "expected": "<p>&lt;xmp&gt;<b>raw</b>&lt;/xmp&gt; </p>l"
+    },
+    {
+      "name": "html-unknown-nested-block",
+      "input": "<section><article><p>deep</p></article></section>\n",
+      "expected": "  <p>deep</p>  "
+    },
+    {
+      "name": "html-figure-caption",
+      "input": "<figure><img src=\"a.png\"><figcaption>Cap <b>bold</b></figcaption></figure>\n",
+      "expected": "<figure><img src=\"a.png\"><figcaption>Cap <b>bold</b></figcaption></figure>"
+    },
+    {
+      "name": "html-ruby-full",
+      "input": "<ruby>東京<rp>(</rp><rt>とうきょう</rt><rp>)</rp></ruby>\n",
+      "expected": "<p><ruby>東京<rp>(</rp><rt>とうきょう</rt><rp>)</rp></ruby></p>"
+    },
+    {
+      "name": "html-kbd-samp-var",
+      "input": "<kbd><kbd>Ctrl</kbd>+<kbd>S</kbd></kbd> <samp>out</samp> <var>x</var>\n",
+      "expected": "<p><kbd><kbd>Ctrl</kbd>+<kbd>S</kbd></kbd> <samp>out</samp> <var>x</var></p>"
+    },
+    {
+      "name": "html-hn-h7-h8",
+      "input": "<h7>seven</h7> <h8>eight</h8> <h9>nine</h9>\n",
+      "expected": "<p><h7>seven</h7> <h8>eight</h8> nine</p>"
+    },
+    {
+      "name": "html-wbr-bdo",
+      "input": "long<wbr>word <bdo dir=\"rtl\">rtl</bdo> <bdi>bdi</bdi>\n",
+      "expected": "<p>long<wbr>word <bdo dir=\"rtl\">rtl</bdo> bdi</wbr></p>"
+    },
+    {
+      "name": "html-mark-small",
+      "input": "<mark>m</mark> <small>s</small> <big>b</big> <tt>t</tt>\n",
+      "expected": "<p><mark>m</mark> <small>s</small> b <tt>t</tt></p>"
+    },
+    {
+      "name": "html-pre-nested-tags",
+      "input": "<pre><b>bold</b>\n<i>italic</i>\n  indented</pre>\n",
+      "expected": "<pre><b>bold</b>\n<i>italic</i>\n  indented</pre>"
+    },
+    {
+      "name": "html-pre-entities",
+      "input": "<pre>&lt;tag&gt; &amp; &quot;</pre>\n",
+      "expected": "<pre>&lt;tag&gt; &amp; \"</pre>"
+    },
+    {
+      "name": "html-whitespace-between-blocks",
+      "input": "<div>a</div>   <div>b</div>\n<p>c</p>\n   <p>d</p>\n",
+      "expected": "<div>a</div>   <div>b</div>\n<p>c</p>\n   <p>d</p>"
+    },
+    {
+      "name": "html-controls-in-attr",
+      "input": "<span title=\"a\u0001b\u0007c\">ctrl</span>\n",
+      "expected": "<p><span title=\"abc\">ctrl</span></p>"
+    },
+    {
+      "name": "html-nul-in-text",
+      "input": "a\u0000b <b>c\u0000d</b>",
+      "mode": "sanitize",
+      "expected": "a b <b>c d</b>"
+    },
+    {
+      "name": "html-long-attr-name",
+      "input": "<span abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdef=\"x\" title=\"t\">long</span>",
+      "mode": "sanitize",
+      "expected": "<span title=\"t\">long</span>"
+    },
+    {
+      "name": "html-sanitize-whitespace-only",
+      "input": "",
+      "mode": "sanitize",
+      "expected": ""
+    },
+    {
+      "name": "html-sanitize-text-only",
+      "input": "just text",
+      "mode": "sanitize",
+      "expected": "just text"
+    },
+    {
+      "name": "html-sanitize-nested-remove",
+      "input": "<section><header><h1>t</h1></header><nav><a href=\"/x\">x</a></nav></section>",
+      "mode": "sanitize",
+      "expected": "  <h1>t</h1>  <a href=\"/x\">x</a>  "
+    },
+    {
+      "name": "html-sanitize-script-in-p",
+      "input": "<p>a<script>b</script>c</p>",
+      "mode": "sanitize",
+      "expected": "<p>ac</p>"
+    },
+    {
+      "name": "html-sanitize-iframe-text",
+      "input": "<iframe>text<b>bold</b></iframe>",
+      "mode": "sanitize",
+      "expected": "text<b>bold</b>"
+    },
+    {
+      "name": "html-sanitize-style-attr-variants",
+      "input": "<p style=\"color:red;color:blue\">a</p><p style=\"  \">b</p><p style=\"font: 12px/1.5 'Helvetica Neue', Arial\">c</p><p style=\"background-color: rgb(1, 2, 3)\">d</p><p style=\"color: red !important;; margin: 0\">e</p>",
+      "mode": "sanitize",
+      "expected": "<p style=\"color:red;color:blue\">a</p><p>b</p><p style=\"font: 12px/1.5 'Helvetica Neue', Arial\">c</p><p style=\"background-color: rgb(1, 2, 3)\">d</p><p style=\"color: red !important; margin: 0\">e</p>"
+    },
+    {
+      "name": "html-sanitize-css-escapes",
+      "input": "<p style=\"color: \\72 ed\">a</p><p style=\"width: calc(100% - 10px)\">b</p><p style=\"font-family: &quot;A&quot;\">c</p>",
+      "mode": "sanitize",
+      "expected": "<p style=\"color: \\72 ed\">a</p><p style=\"width: calc(100% - 10px)\">b</p><p style='font-family: \"A\"'>c</p>"
+    },
+    {
+      "name": "html-sanitize-css-url",
+      "input": "<p style=\"background-color: red; border: url(x)\">a</p><p style=\"border-style: solid; background: url('a')\">b</p>",
+      "mode": "sanitize",
+      "expected": "<p style=\"background-color: red; \">a</p><p style=\"border-style: solid; \">b</p>"
+    },
+    {
+      "name": "html-sanitize-css-at",
+      "input": "<p style=\"@import url(x); color: red\">a</p><p style=\"color: red; @media print { color: blue }\">b</p>",
+      "mode": "sanitize",
+      "expected": "<p style=\" color: red\">a</p><p style=\"color: red; \">b</p>"
+    },
+    {
+      "name": "html-sanitize-css-comment",
+      "input": "<p style=\"color/**/: red\">a</p><p style=\"/* c */color: red\">b</p><p style=\"color: red /* unterminated\">c</p>",
+      "mode": "sanitize",
+      "expected": "<p style=\"color: red\">a</p><p style=\"color: red\">b</p><p style=\"color: red \">c</p>"
+    },
+    {
+      "name": "html-sanitize-css-hack",
+      "input": "<p style=\"*color: red; _width: 1px; color: blue\">a</p>",
+      "mode": "sanitize",
+      "expected": "<p style=\"  color: blue\">a</p>"
+    },
+    {
+      "name": "html-sanitize-css-newlines",
+      "input": "<p style=\"color:\r\n red;\r\nwidth:\\f1px\">a</p>",
+      "mode": "sanitize",
+      "expected": "<p style=\"color:\n red;\nwidth:\\f1px\">a</p>"
+    },
+    {
+      "name": "html-sanitize-css-important",
+      "input": "<p style=\"color: red ! important\">a</p><p style=\"color: red!IMPORTANT\">b</p>",
+      "mode": "sanitize",
+      "expected": "<p style=\"color: red ! important\">a</p><p style=\"color: red!IMPORTANT\">b</p>"
+    },
+    {
+      "name": "html-sanitize-css-unicode",
+      "input": "<p style=\"font-family: 'メイリオ', sans-serif\">a</p>",
+      "mode": "sanitize",
+      "expected": "<p style=\"font-family: 'メイリオ', sans-serif\">a</p>"
+    },
+    {
+      "name": "html-sanitize-css-expression",
+      "input": "<p style=\"width: ex/**/pression(alert(1))\">a</p><p style=\"color: expression\">b</p><p style=\"font-family: expression\">c</p>",
+      "mode": "sanitize",
+      "expected": "<p>a</p><p style=\"color: expression\">b</p><p style=\"font-family: expression\">c</p>"
+    },
+    {
+      "name": "html-sanitize-href-variants",
+      "input": "<a href=\"HTTP://X.EXAMPLE.COM\">u</a><a href=\"//proto.relative/x\">p</a><a href=\"?q\">q</a><a href=\"#\">h</a><a href=\"javascript\">j</a><a href=\"mailto:\">m</a><a href=\"tel:123\">t</a><a href=\"data\">d</a>",
+      "mode": "sanitize",
+      "expected": "<a href=\"HTTP://X.EXAMPLE.COM\" class=\"external\">u</a><a href=\"//proto.relative/x\">p</a><a href=\"?q\">q</a><a href=\"#\">h</a><a href=\"javascript\">j</a><a href=\"mailto:\">m</a><a href=\"tel:123\" class=\"external\">t</a><a href=\"data\">d</a>"
+    },
+    {
+      "name": "html-sanitize-href-entities",
+      "input": "<a href=\"&#106;avascript&#58;x\">e1</a><a href=\"jav&#x09;ascript:x\">e2</a><a href=\"&#x20;javascript:x\">e3</a><a href=\"javascript&colon;x\">e4</a>",
+      "mode": "sanitize",
+      "expected": "<a>e1</a><a>e2</a><a>e3</a><a href=\"javascript&amp;colon;x\">e4</a>"
+    },
+    {
+      "name": "html-sanitize-href-nonascii",
+      "input": "<a href=\"http://x.example.com/ä?ö=ü#ß\">n</a><a href=\"ä:x\">s</a>",
+      "mode": "sanitize",
+      "expected": "<a href=\"http://x.example.com/%C3%A4?%C3%B6=%C3%BC#%C3%9F\">n</a><a>s</a>"
+    },
+    {
+      "name": "html-sanitize-img-src",
+      "input": "<img src=\"HTTPS://x.example.com/a.png\"><img src=\"//x.example.com/b.png\"><img src=\"ftp://x/c.png\"><img src=\"c d.png\"><img src=\"javascript:x\"><img src=\" /e.png \">",
+      "mode": "sanitize",
+      "expected": "<img src=\"HTTPS://x.example.com/a.png\"><img src=\"//x.example.com/b.png\"><img><img src=\"c%20d.png\"><img><img src=\"/e.png\">"
+    },
+    {
+      "name": "html-sanitize-cite",
+      "input": "<blockquote cite=\"javascript:x\">a</blockquote><q cite=\"mailto:x\">b</q><del cite=\" http://x \">c</del>",
+      "mode": "sanitize",
+      "expected": "<blockquote>a</blockquote><q>b</q><del cite=\"http://x\">c</del>"
+    },
+    {
+      "name": "html-sanitize-name-attr",
+      "input": "<a name=\"a b&quot;c\">x</a><p name=\"n\">y</p><img name=\"i\" src=\"a.png\">",
+      "mode": "sanitize",
+      "expected": "<a name=\"a%20b%22c\">x</a><p>y</p><img src=\"a.png\">"
+    },
+    {
+      "name": "html-sanitize-action",
+      "input": "<div action=\"a b\" title=\"t\">x</div>",
+      "mode": "sanitize",
+      "expected": "<div action=\"a%20b\" title=\"t\">x</div>"
+    },
+    {
+      "name": "html-sanitize-li-in-table",
+      "input": "<table><tr><td><li>li in td</li></td></tr></table>",
+      "mode": "sanitize",
+      "expected": "<table><tr><td>li in td</td></tr></table>"
+    },
+    {
+      "name": "html-sanitize-tr-in-ul",
+      "input": "<ul><li><tr><td>x</td></tr></li></ul>",
+      "mode": "sanitize",
+      "expected": "<ul><li>x</li></ul>"
+    },
+    {
+      "name": "html-sanitize-input-children",
+      "input": "<input type=\"text\">after<input type=\"checkbox\" class=\"task-list-item-checkbox\">",
+      "mode": "sanitize",
+      "expected": "after<input type=\"checkbox\" class=\"task-list-item-checkbox\">"
+    },
+    {
+      "name": "html-sanitize-code-classes",
+      "input": "<code class=\"language-ruby extra\">a</code><code class=\"language-\">b</code><code class=\" language-ruby\">c</code><code class=\"LANGUAGE-ruby\">d</code>",
+      "mode": "sanitize",
+      "expected": "<code>a</code><code>b</code><code>c</code><code>d</code>"
+    },
+    {
+      "name": "html-sanitize-div-classes",
+      "input": "<div class=\"markdown-alert markdown-alert-NOTE\">a</div><div class=\"markdown-alert  markdown-alert-note\">b</div><div class=\"markdown-alert markdown-alert-note x\">c</div><div class=\"markdown-alert markdown-alert-x1\">d</div>",
+      "mode": "sanitize",
+      "expected": "<div>a</div><div>b</div><div>c</div><div>d</div>"
+    },
+    {
+      "name": "html-sanitize-li-ids",
+      "input": "<ol><li id=\"fn-12\">a</li><li id=\"fn-1x\">b</li><li id=\"fn-\">c</li><li class=\"task-list-item other\">d</li></ol>",
+      "mode": "sanitize",
+      "expected": "<ol>\n<li id=\"fn-12\">a</li>\n<li>b</li>\n<li>c</li>\n<li>d</li>\n</ol>"
+    },
+    {
+      "name": "html-sanitize-a-ids",
+      "input": "<a id=\"fnref-1-2-3\">a</a><a id=\"fnref-1-2\">b</a><a id=\"fnref-\">c</a><a id=\"fnref-a\">d</a>",
+      "mode": "sanitize",
+      "expected": "<a>a</a><a id=\"fnref-1-2\">b</a><a>c</a><a>d</a>"
+    },
+    {
+      "name": "html-sanitize-external-classes",
+      "input": "<a href=\"http://x.example.com\" class=\"external\">a</a><a href=\"mailto:a@b.c\" class=\"foo\">b</a><a href=\"foo:bar\">c</a><a href=\"http:x\">d</a><a href=\"a:b:c\">e</a>",
+      "mode": "sanitize",
+      "expected": "<a href=\"http://x.example.com\" class=\"external\">a</a><a href=\"mailto:a@b.c\" class=\"email\">b</a><a href=\"foo:bar\" class=\"external\">c</a><a href=\"http:x\" class=\"external\">d</a><a href=\"a:b:c\" class=\"external\">e</a>"
+    },
+    {
+      "name": "html-sanitize-target-variants",
+      "input": "<a href=\"http://x.example.com\" target=\"_blank\" rel=\"noopener\">a</a><a href=\"http://x.example.com\" target=\"\">b</a><a href=\"/local\" target=\"_blank\">c</a><a href=\"ftp://x\" target=\"_blank\" rel=\"  a  b \">d</a>",
+      "mode": "sanitize",
+      "expected": "<a href=\"http://x.example.com\" target=\"_blank\" rel=\"noopener noopener\" class=\"external\">a</a><a href=\"http://x.example.com\" target=\"\" class=\"external\">b</a><a href=\"/local\" target=\"_blank\">c</a><a href=\"ftp://x\" target=\"_blank\" rel=\"a b noopener\" class=\"external\">d</a>"
+    },
+    {
+      "name": "html-sanitize-format-mixed",
+      "input": "<div><span>a</span><p>b</p>text<p>c</p></div><table><tbody><tr><td>x</td><td>y</td></tr></tbody></table>",
+      "mode": "sanitize",
+      "expected": "<div>\n<span>a</span><p>b</p>text<p>c</p>\n</div><table><tbody><tr>\n<td>x</td>\n<td>y</td>\n</tr></tbody></table>"
+    },
+    {
+      "name": "html-sanitize-empty-block-children",
+      "input": "<ul><li></li><li><ul><li>x</li></ul></li></ul><blockquote><blockquote>q</blockquote></blockquote>",
+      "mode": "sanitize",
+      "expected": "<ul>\n<li>\n<li><ul><li>x</li></ul></li>\n</ul><blockquote><blockquote>q</blockquote></blockquote>"
+    },
+    {
+      "name": "html-sanitize-pre-in-li",
+      "input": "<ul><li><pre>code</pre></li><li><p>p</p><p>q</p></li></ul>",
+      "mode": "sanitize",
+      "expected": "<ul>\n<li><pre>code</pre></li>\n<li>\n<p>p</p>\n<p>q</p>\n</li>\n</ul>"
+    },
+    {
+      "name": "html-sanitize-details-summary",
+      "input": "<details><summary>a</summary>b<div>c</div></details>",
+      "mode": "sanitize",
+      "expected": "<details><summary>a</summary>b<div>c</div></details>"
+    },
+    {
+      "name": "html-sanitize-h-in-li",
+      "input": "<ol><li><h1>t</h1>text</li></ol>",
+      "mode": "sanitize",
+      "expected": "<ol><li>\n<h1>t</h1>text</li></ol>"
+    },
+    {
+      "name": "inline-emphasis-links",
+      "input": "*[em link](http://x.example.com)* [*link em*](http://x.example.com) **[a](b) and [c](d)**\n",
+      "expected": "<p><em><a href=\"http://x.example.com\" class=\"external\">em link</a></em> <a href=\"http://x.example.com\" class=\"external\"><em>link em</em></a> <strong><a href=\"b\">a</a> and <a href=\"d\">c</a></strong></p>"
+    },
+    {
+      "name": "inline-code-in-link",
+      "input": "[`code` link](http://x.example.com) `[not link](x)`\n",
+      "expected": "<p><a href=\"http://x.example.com\" class=\"external\"><code>code</code> link</a> <code>[not link](x)</code></p>"
+    },
+    {
+      "name": "inline-html-in-link",
+      "input": "[<b>bold</b> link](http://x.example.com) <a href=\"http://x.example.com\">*md in a*</a>\n",
+      "expected": "<p><a href=\"http://x.example.com\" class=\"external\"><b>bold</b> link</a> <a href=\"http://x.example.com\" class=\"external\"><em>md in a</em></a></p>"
+    },
+    {
+      "name": "inline-autolink-in-emphasis",
+      "input": "**see www.example.com** _visit http://x.example.com_ ~~old www.old.com~~\n",
+      "expected": "<p><strong>see <a href=\"http://www.example.com\" class=\"external\">www.example.com</a></strong> <em>visit http://x.example.com</em> <del>old <a href=\"http://www.old.com\" class=\"external\">www.old.com</a></del></p>"
+    },
+    {
+      "name": "inline-email-in-emphasis",
+      "input": "*mail a@b.cc* **x@y.zz**\n",
+      "expected": "<p><em>mail <a href=\"mailto:a@b.cc\" class=\"email\">a@b.cc</a></em> <strong><a href=\"mailto:x@y.zz\" class=\"email\">x@y.zz</a></strong></p>"
+    },
+    {
+      "name": "inline-entity-in-autolink",
+      "input": "http://x.example.com/&lt;tag&gt; www.example.com/&quot;q&quot;\n",
+      "expected": "<p><a href=\"http://x.example.com/&amp;lt;tag\" class=\"external\">http://x.example.com/&amp;lt;tag</a>&gt; <a href=\"http://www.example.com/&amp;quot;q\" class=\"external\">www.example.com/&amp;quot;q</a>\"</p>"
+    },
+    {
+      "name": "inline-www-after-paren-bracket",
+      "input": "(www.a.com) [www.b.com] {www.c.com} \"www.d.com\"\n",
+      "expected": "<p>(<a href=\"http://www.a.com\" class=\"external\">www.a.com</a>) [www.b.com] {www.c.com} \"www.d.com\"</p>"
+    },
+    {
+      "name": "inline-colon-text",
+      "input": "time: 10:30 ratio 1:2 http:not-a-link https:/x ftp:// mailto:x\n",
+      "expected": "<p>time: 10:30 ratio 1:2 http:not-a-link https:/x <a href=\"ftp://\" class=\"external\">ftp://</a> mailto:x</p>"
+    },
+    {
+      "name": "inline-many-colons",
+      "input": "a::b http:://x https:///y\n",
+      "expected": "<p>a::b http:://x <a href=\"https:///y\" class=\"external\">https:///y</a></p>"
+    },
+    {
+      "name": "inline-url-after-cjk",
+      "input": "日本語http://example.com/x 中文www.example.com テストuser@example.com\n",
+      "expected": "<p>日本語<a href=\"http://example.com/x\" class=\"external\">http://example.com/x</a> 中文www.example.com テスト<a href=\"mailto:user@example.com\" class=\"email\">user@example.com</a></p>"
+    },
+    {
+      "name": "inline-url-fullwidth-space",
+      "input": "URL　http://example.com/x　です\n",
+      "expected": "<p>URL　<a href=\"http://example.com/x%E3%80%80%E3%81%A7%E3%81%99\" class=\"external\">http://example.com/x　です</a></p>"
+    },
+    {
+      "name": "inline-hard-break-cjk",
+      "input": "一行目\\\n二行目\n三行目\n",
+      "expected": "<p>一行目<br>\n二行目<br>\n三行目</p>"
+    },
+    {
+      "name": "inline-tabs-text",
+      "input": "a\tb\t\tc\n",
+      "expected": "<p>a\tb\t\tc</p>"
+    },
+    {
+      "name": "inline-backslash-variants",
+      "input": "\\a \\1 \\  \\é \\\\a\n",
+      "expected": "<p>\\a \\1 \\  \\é <span>\\</span>a</p>"
+    },
+    {
+      "name": "inline-image-nested-link",
+      "input": "![alt [link](http://x.y)](img.png)\n",
+      "expected": "<p><img src=\"img.png\" alt=\"alt link\"></p>"
+    },
+    {
+      "name": "inline-link-ref-shortcut-case",
+      "input": "[Foo] [FOO] [foo]\n\n[foo]: http://foo.example.com\n",
+      "expected": "<p><a href=\"http://foo.example.com\" class=\"external\">Foo</a> <a href=\"http://foo.example.com\" class=\"external\">FOO</a> <a href=\"http://foo.example.com\" class=\"external\">foo</a></p>"
+    },
+    {
+      "name": "inline-link-ref-collapsed",
+      "input": "[foo][] [bar][]\n\n[foo]: /url1\n",
+      "expected": "<p><a href=\"/url1\">foo</a> [bar][]</p>"
+    },
+    {
+      "name": "inline-link-title-newline",
+      "input": "[a](http://x.y \"multi\nline title\")\n",
+      "expected": "<p><a href=\"http://x.y\" title=\"multi\nline title\" class=\"external\">a</a></p>"
+    },
+    {
+      "name": "inline-strike-single-double",
+      "input": "~a~ ~~b~~ ~a~~ ~~a~\n",
+      "expected": "<p><del>a</del> <del>b</del> ~a~~ ~~a~</p>"
+    },
+    {
+      "name": "inline-strike-intraword",
+      "input": "foo~bar~baz foo~~bar~~baz\n",
+      "expected": "<p>foo<del>bar</del>baz foo<del>bar</del>baz</p>"
+    },
+    {
+      "name": "inline-emphasis-mod3",
+      "input": "*foo**bar**baz* ***foo** bar* *foo**bar*\n",
+      "expected": "<p><em>foo<strong>bar</strong>baz</em> <em><strong>foo</strong> bar</em> <em>foo**bar</em></p>"
+    },
+    {
+      "name": "block-quote-in-list-lazy",
+      "input": "- > quote\ncontinued\n",
+      "expected": "<ul>\n<li>\n<blockquote>\n<p>quote<br>\ncontinued</p>\n</blockquote>\n</li>\n</ul>"
+    },
+    {
+      "name": "block-nested-lists-deep",
+      "input": "- 1\n  - 2\n    - 3\n      - 4\n        - 5\n",
+      "expected": "<ul>\n<li>1\n<ul>\n<li>2\n<ul>\n<li>3\n<ul>\n<li>4\n<ul>\n<li>5</li>\n</ul>\n</li>\n</ul>\n</li>\n</ul>\n</li>\n</ul>\n</li>\n</ul>"
+    },
+    {
+      "name": "block-ordered-big-start",
+      "input": "123456789. big\n",
+      "expected": "<ol start=\"123456789\">\n<li>big</li>\n</ol>"
+    },
+    {
+      "name": "block-ordered-interrupt",
+      "input": "para\n2. not a list\n",
+      "expected": "<p>para<br>\n2. not a list</p>"
+    },
+    {
+      "name": "block-indented-code-after-list",
+      "input": "- item\n\n      code?\n",
+      "expected": "<ul>\n<li>\n<p>item</p>\n<pre><code>code?\n</code></pre>\n</li>\n</ul>"
+    },
+    {
+      "name": "block-fence-in-quote-lazy",
+      "input": "> ```\ncode\n```\n",
+      "expected": "<blockquote>\n<pre><code></code></pre>\n</blockquote>\n<p>code</p>\n<pre><code></code></pre>"
+    },
+    {
+      "name": "block-html-in-list",
+      "input": "- <div>\n  html\n  </div>\n- after\n",
+      "expected": "<ul>\n<li>\n<div>\nhtml\n</div>\n</li>\n<li>after</li>\n</ul>"
+    },
+    {
+      "name": "block-setext-vs-list",
+      "input": "Text\n- - -\n",
+      "expected": "<p>Text</p>\n<hr>"
+    },
+    {
+      "name": "block-hr-interrupt-para",
+      "input": "para\n---\npara2\n***\n",
+      "expected": "<h2>para</h2>\n<p>para2</p>\n<hr>"
+    },
+    {
+      "name": "block-link-ref-def-in-list",
+      "input": "- [a]\n\n  [a]: http://a.example.com\n",
+      "expected": "<ul>\n<li><a href=\"http://a.example.com\" class=\"external\">a</a></li>\n</ul>"
+    },
+    {
+      "name": "block-heading-trailing-backslash",
+      "input": "# foo\\\n",
+      "expected": "<h1>foo\\</h1>"
+    },
+    {
+      "name": "block-tab-indented-list",
+      "input": "-\tfoo\n\n\tbar\n\n",
+      "expected": "<ul>\n<li>\n<p>foo</p>\n<p>bar</p>\n</li>\n</ul>"
+    },
+    {
+      "name": "block-alert-in-table-cell",
+      "input": "| a |\n|---|\n| > [!NOTE] |\n",
+      "expected": "<table>\n<thead>\n<tr>\n<th>a</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>&gt; [!NOTE]</td>\n</tr>\n</tbody>\n</table>"
+    },
+    {
+      "name": "block-footnote-in-list-item",
+      "input": "- item[^li]\n\n[^li]: list footnote\n",
+      "expected": "<ul>\n<li>item<sup><a href=\"#fn-li\">1</a></sup>\n</li>\n</ul>\n \n<ol>\n<li>\n<p>list footnote <a href=\"#fnref-li\" aria-label=\"Back to reference 1\">↩</a></p>\n</li>\n</ol>\n "
+    },
+    {
+      "name": "block-many-footnotes",
+      "input": "a[^1] b[^2] c[^3] d[^4] e[^5] f[^6] g[^7] h[^8] i[^9] j[^10]\n\n[^1]: 1\n[^2]: 2\n[^3]: 3\n[^4]: 4\n[^5]: 5\n[^6]: 6\n[^7]: 7\n[^8]: 8\n[^9]: 9\n[^10]: 10\n",
+      "expected": "<p>a<sup><a href=\"#fn-1\" id=\"fnref-1\">1</a></sup> b<sup><a href=\"#fn-2\" id=\"fnref-2\">2</a></sup> c<sup><a href=\"#fn-3\" id=\"fnref-3\">3</a></sup> d<sup><a href=\"#fn-4\" id=\"fnref-4\">4</a></sup> e<sup><a href=\"#fn-5\" id=\"fnref-5\">5</a></sup> f<sup><a href=\"#fn-6\" id=\"fnref-6\">6</a></sup> g<sup><a href=\"#fn-7\" id=\"fnref-7\">7</a></sup> h<sup><a href=\"#fn-8\" id=\"fnref-8\">8</a></sup> i<sup><a href=\"#fn-9\" id=\"fnref-9\">9</a></sup> j<sup><a href=\"#fn-10\" id=\"fnref-10\">10</a></sup></p>\n \n<ol>\n<li id=\"fn-1\">\n<p>1 <a href=\"#fnref-1\" aria-label=\"Back to reference 1\">↩</a></p>\n</li>\n<li id=\"fn-2\">\n<p>2 <a href=\"#fnref-2\" aria-label=\"Back to reference 2\">↩</a></p>\n</li>\n<li id=\"fn-3\">\n<p>3 <a href=\"#fnref-3\" aria-label=\"Back to reference 3\">↩</a></p>\n</li>\n<li id=\"fn-4\">\n<p>4 <a href=\"#fnref-4\" aria-label=\"Back to reference 4\">↩</a></p>\n</li>\n<li id=\"fn-5\">\n<p>5 <a href=\"#fnref-5\" aria-label=\"Back to reference 5\">↩</a></p>\n</li>\n<li id=\"fn-6\">\n<p>6 <a href=\"#fnref-6\" aria-label=\"Back to reference 6\">↩</a></p>\n</li>\n<li id=\"fn-7\">\n<p>7 <a href=\"#fnref-7\" aria-label=\"Back to reference 7\">↩</a></p>\n</li>\n<li id=\"fn-8\">\n<p>8 <a href=\"#fnref-8\" aria-label=\"Back to reference 8\">↩</a></p>\n</li>\n<li id=\"fn-9\">\n<p>9 <a href=\"#fnref-9\" aria-label=\"Back to reference 9\">↩</a></p>\n</li>\n<li id=\"fn-10\">\n<p>10 <a href=\"#fnref-10\" aria-label=\"Back to reference 10\">↩</a></p>\n</li>\n</ol>\n "
+    },
+    {
+      "name": "hb-doc-nohard",
+      "input": "# Title\nline1\nline2\n\n- a\n  b\n\n> q1\n> q2\n\n| t |\n|---|\n| c |\n",
+      "hardbreaks": false,
+      "expected": "<h1>Title</h1>\n<p>line1\nline2</p>\n<ul>\n<li>a\nb</li>\n</ul>\n<blockquote>\n<p>q1\nq2</p>\n</blockquote>\n<table>\n<thead>\n<tr>\n<th>t</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>c</td>\n</tr>\n</tbody>\n</table>"
+    },
+    {
+      "name": "hb-footnote-nohard",
+      "input": "Text[^1]\nmore\n\n[^1]: note\n    continued\n",
+      "hardbreaks": false,
+      "expected": "<p>Text<sup><a href=\"#fn-1\" id=\"fnref-1\">1</a></sup>\nmore</p>\n \n<ol>\n<li id=\"fn-1\">\n<p>note\ncontinued <a href=\"#fnref-1\" aria-label=\"Back to reference 1\">↩</a></p>\n</li>\n</ol>\n "
+    },
+    {
+      "name": "hb-alert-nohard",
+      "input": "> [!NOTE]\n> line1\n> line2\n",
+      "hardbreaks": false,
+      "expected": "<div class=\"markdown-alert markdown-alert-note\">\n<p class=\"markdown-alert-title\"><svg class=\"s18 icon-svg\" aria-hidden=\"true\"><use href=\"/assets/icons-a9735328.svg#icon--help\"></use></svg><span class=\"icon-label\">Note</span></p>\n<p>line1\nline2</p>\n</div>"
+    },
+    {
       "name": "spec-001-tabs",
       "input": "\tfoo\tbaz\t\tbim\n",
       "expected": "<pre><code>foo\tbaz\t\tbim\n</code></pre>"
@@ -6107,6 +6768,1806 @@
       "name": "gm-footnote-6",
       "input": "something[^fn:1]\n\nsomething[^fn:1]\n\nsomething[^fn:1]\n\n[^fn:1]: footnote text\n",
       "expected": "<p>something<sup><a href=\"#fn-fn:1\">1</a></sup></p>\n<p>something<sup><a href=\"#fn-fn:1\">1</a></sup></p>\n<p>something<sup><a href=\"#fn-fn:1\">1</a></sup></p>\n \n<ol>\n<li>\n<p>footnote text <a href=\"#fnref-fn:1\" aria-label=\"Back to reference 1\">↩</a> <a href=\"#fnref-fn:1-2\" aria-label=\"Back to reference 1-2\">↩<sup>2</sup></a> <a href=\"#fnref-fn:1-3\" aria-label=\"Back to reference 1-3\">↩<sup>3</sup></a></p>\n</li>\n</ol>\n "
+    },
+    {
+      "name": "comrak-autolink-001",
+      "input": "www.autolink.com\n",
+      "expected": "<p><a href=\"http://www.autolink.com\" class=\"external\">www.autolink.com</a></p>"
+    },
+    {
+      "name": "comrak-autolink-002",
+      "input": "<p><a href=\"http://www.autolink.com\">www.autolink.com</a></p>\n",
+      "expected": "<p><a href=\"http://www.autolink.com\" class=\"external\">www.autolink.com</a></p>"
+    },
+    {
+      "name": "comrak-autolink-003",
+      "input": "john@smith.com\n",
+      "expected": "<p><a href=\"mailto:john@smith.com\" class=\"email\">john@smith.com</a></p>"
+    },
+    {
+      "name": "comrak-autolink-004",
+      "input": "<p><a href=\"mailto:john@smith.com\">john@smith.com</a></p>\n",
+      "expected": "<p><a href=\"mailto:john@smith.com\" class=\"email\">john@smith.com</a></p>"
+    },
+    {
+      "name": "comrak-autolink-005",
+      "input": "https://google.com/search\nrdar://localhost.com/blah",
+      "expected": "<p><a href=\"https://google.com/search\" class=\"external\">https://google.com/search</a><br>\nrdar://localhost.com/blah</p>"
+    },
+    {
+      "name": "comrak-autolink-006",
+      "input": "<p><a href=\"https://google.com/search\">https://google.com/search</a>\nrdar://localhost.com/blah</p>\n",
+      "expected": "<p><a href=\"https://google.com/search\" class=\"external\">https://google.com/search</a>\nrdar://localhost.com/blah</p>"
+    },
+    {
+      "name": "comrak-autolink-007",
+      "input": "https://google.com/search\nhttps://www.google.com/maps",
+      "expected": "<p><a href=\"https://google.com/search\" class=\"external\">https://google.com/search</a><br>\n<a href=\"https://www.google.com/maps\" class=\"external\">https://www.google.com/maps</a></p>"
+    },
+    {
+      "name": "comrak-autolink-008",
+      "input": "<p><a href=\"https://google.com/search\">https://google.com/search</a>\n<a href=\"https://www.google.com/maps\">https://www.google.com/maps</a></p>\n",
+      "expected": "<p><a href=\"https://google.com/search\" class=\"external\">https://google.com/search</a>\n<a href=\"https://www.google.com/maps\" class=\"external\">https://www.google.com/maps</a></p>"
+    },
+    {
+      "name": "comrak-autolink-009",
+      "input": "@a.b.c@. x\n\nn@. x\n",
+      "expected": "<p>@a.b.c@. x</p>\n<p>n@. x</p>"
+    },
+    {
+      "name": "comrak-autolink-010",
+      "input": "<p>@a.b.c@. x</p>\n<p>n@. x</p>\n",
+      "expected": "<p>@a.b.c@. x</p>\n<p>n@. x</p>"
+    },
+    {
+      "name": "comrak-autolink-011",
+      "input": "http://www.pokemon.com/Pikachu_(Electric)",
+      "expected": "<p><a href=\"http://www.pokemon.com/Pikachu_(Electric)\" class=\"external\">http://www.pokemon.com/Pikachu_(Electric)</a></p>"
+    },
+    {
+      "name": "comrak-autolink-012",
+      "input": "<p><a href=\"http://www.pokemon.com/Pikachu_(Electric)\">http://www.pokemon.com/Pikachu_(Electric)</a></p>\n",
+      "expected": "<p><a href=\"http://www.pokemon.com/Pikachu_(Electric)\" class=\"external\">http://www.pokemon.com/Pikachu_(Electric)</a></p>"
+    },
+    {
+      "name": "comrak-autolink-013",
+      "input": "http://www.pokemon.com/Pikachu_((Electric)",
+      "expected": "<p><a href=\"http://www.pokemon.com/Pikachu_((Electric)\" class=\"external\">http://www.pokemon.com/Pikachu_((Electric)</a></p>"
+    },
+    {
+      "name": "comrak-autolink-014",
+      "input": "<p><a href=\"http://www.pokemon.com/Pikachu_((Electric)\">http://www.pokemon.com/Pikachu_((Electric)</a></p>\n",
+      "expected": "<p><a href=\"http://www.pokemon.com/Pikachu_((Electric)\" class=\"external\">http://www.pokemon.com/Pikachu_((Electric)</a></p>"
+    },
+    {
+      "name": "comrak-autolink-015",
+      "input": "http://www.pokemon.com/Pikachu_(Electric))",
+      "expected": "<p><a href=\"http://www.pokemon.com/Pikachu_(Electric)\" class=\"external\">http://www.pokemon.com/Pikachu_(Electric)</a>)</p>"
+    },
+    {
+      "name": "comrak-autolink-016",
+      "input": "<p><a href=\"http://www.pokemon.com/Pikachu_(Electric)\">http://www.pokemon.com/Pikachu_(Electric)</a>)</p>\n",
+      "expected": "<p><a href=\"http://www.pokemon.com/Pikachu_(Electric)\" class=\"external\">http://www.pokemon.com/Pikachu_(Electric)</a>)</p>"
+    },
+    {
+      "name": "comrak-autolink-017",
+      "input": "http://www.pokemon.com/Pikachu_((Electric))",
+      "expected": "<p><a href=\"http://www.pokemon.com/Pikachu_((Electric))\" class=\"external\">http://www.pokemon.com/Pikachu_((Electric))</a></p>"
+    },
+    {
+      "name": "comrak-autolink-018",
+      "input": "<p><a href=\"http://www.pokemon.com/Pikachu_((Electric))\">http://www.pokemon.com/Pikachu_((Electric))</a></p>\n",
+      "expected": "<p><a href=\"http://www.pokemon.com/Pikachu_((Electric))\" class=\"external\">http://www.pokemon.com/Pikachu_((Electric))</a></p>"
+    },
+    {
+      "name": "comrak-autolink-019",
+      "input": "http://example.com/[abc]]...\n",
+      "expected": "<p><a href=\"http://example.com/%5Babc%5D%5D\" class=\"external\">http://example.com/[abc]]</a>...</p>"
+    },
+    {
+      "name": "comrak-autolink-020",
+      "input": "<p><a href=\"http://example.com/%5Babc%5D%5D\">http://example.com/[abc]]</a>...</p>\n",
+      "expected": "<p><a href=\"http://example.com/%5Babc%5D%5D\" class=\"external\">http://example.com/[abc]]</a>...</p>"
+    },
+    {
+      "name": "comrak-autolink-021",
+      "input": "[https://foo.com]",
+      "expected": "<p>[https://foo.com]</p>"
+    },
+    {
+      "name": "comrak-autolink-022",
+      "input": "<p>[https://foo.com]</p>\n",
+      "expected": "<p>[https://foo.com]</p>"
+    },
+    {
+      "name": "comrak-autolink-023",
+      "input": "[[https://foo.com]]",
+      "expected": "<p>[[https://foo.com]]</p>"
+    },
+    {
+      "name": "comrak-autolink-024",
+      "input": "<p>[[https://foo.com]]</p>\n",
+      "expected": "<p>[[https://foo.com]]</p>"
+    },
+    {
+      "name": "comrak-autolink-025",
+      "input": "[[Foo|https://foo.com]]",
+      "expected": "<p>[[Foo|https://foo.com]]</p>"
+    },
+    {
+      "name": "comrak-autolink-026",
+      "input": "<p>[[Foo|https://foo.com]]</p>\n",
+      "expected": "<p>[[Foo|https://foo.com]]</p>"
+    },
+    {
+      "name": "comrak-autolink-027",
+      "input": "[<https://foo.com>]",
+      "expected": "<p>[<a href=\"https://foo.com\" class=\"external\">https://foo.com</a>]</p>"
+    },
+    {
+      "name": "comrak-autolink-028",
+      "input": "<p>[<a href=\"https://foo.com\">https://foo.com</a>]</p>\n",
+      "expected": "<p>[<a href=\"https://foo.com\" class=\"external\">https://foo.com</a>]</p>"
+    },
+    {
+      "name": "comrak-autolink-029",
+      "input": "<p>[[<a href=\"https://foo.com\">https://foo.com</a>]]</p>\n",
+      "expected": "<p>[[<a href=\"https://foo.com\" class=\"external\">https://foo.com</a>]]</p>"
+    },
+    {
+      "name": "comrak-autolink-030",
+      "input": "<p>[[Foo|<a href=\"https://foo.com\">https://foo.com</a>]]</p>\n",
+      "expected": "<p>[[Foo|<a href=\"https://foo.com\" class=\"external\">https://foo.com</a>]]</p>"
+    },
+    {
+      "name": "comrak-autolink-031",
+      "input": "[http://foo.com/](url)",
+      "expected": "<p><a href=\"url\">http://foo.com/</a></p>"
+    },
+    {
+      "name": "comrak-autolink-032",
+      "input": "<p><a href=\"url\">http://foo.com/</a></p>\n",
+      "expected": "<p><a href=\"url\">http://foo.com/</a></p>"
+    },
+    {
+      "name": "comrak-autolink-033",
+      "input": "[http://foo.com/](url",
+      "expected": "<p>[http://foo.com/](url</p>"
+    },
+    {
+      "name": "comrak-autolink-034",
+      "input": "<p>[http://foo.com/](url</p>\n",
+      "expected": "<p>[http://foo.com/](url</p>"
+    },
+    {
+      "name": "comrak-autolink-035",
+      "input": "[www.foo.com/](url)",
+      "expected": "<p><a href=\"url\">www.foo.com/</a></p>"
+    },
+    {
+      "name": "comrak-autolink-036",
+      "input": "<p><a href=\"url\">www.foo.com/</a></p>\n",
+      "expected": "<p><a href=\"url\">www.foo.com/</a></p>"
+    },
+    {
+      "name": "comrak-autolink-037",
+      "input": "{https://foo.com}",
+      "expected": "<p>{<a href=\"https://foo.com%7D\" class=\"external\">https://foo.com}</a></p>"
+    },
+    {
+      "name": "comrak-autolink-038",
+      "input": "<p>{<a href=\"https://foo.com\">https://foo.com</a>}</p>\n",
+      "expected": "<p>{<a href=\"https://foo.com\" class=\"external\">https://foo.com</a>}</p>"
+    },
+    {
+      "name": "comrak-autolink-039",
+      "input": "[this http://and.com that](url)",
+      "expected": "<p><a href=\"url\">this http://and.com that</a></p>"
+    },
+    {
+      "name": "comrak-autolink-040",
+      "input": "<p><a href=\"url\">this http://and.com that</a></p>\n",
+      "expected": "<p><a href=\"url\">this http://and.com that</a></p>"
+    },
+    {
+      "name": "comrak-autolink-041",
+      "input": "[this <http://and.com> that](url)",
+      "expected": "<p><a href=\"url\">this </a><a href=\"http://and.com\" class=\"external\">http://and.com</a> that</p>"
+    },
+    {
+      "name": "comrak-autolink-042",
+      "input": "{this http://and.com that}(url)",
+      "expected": "<p>{this <a href=\"http://and.com\" class=\"external\">http://and.com</a> that}(url)</p>"
+    },
+    {
+      "name": "comrak-autolink-043",
+      "input": "<p>{this <a href=\"http://and.com\">http://and.com</a> that}(url)</p>\n",
+      "expected": "<p>{this <a href=\"http://and.com\" class=\"external\">http://and.com</a> that}(url)</p>"
+    },
+    {
+      "name": "comrak-autolink-044",
+      "input": "[http://foo.com](url)\n[http://bar.com]\n\n[http://bar.com]: http://bar.com/extra",
+      "expected": "<p><a href=\"url\">http://foo.com</a><br>\n<a href=\"http://bar.com/extra\" class=\"external\">http://bar.com</a></p>"
+    },
+    {
+      "name": "comrak-autolink-045",
+      "input": "<p><a href=\"url\">http://foo.com</a>\n<a href=\"http://bar.com/extra\">http://bar.com</a></p>\n",
+      "expected": "<p><a href=\"url\">http://foo.com</a>\n<a href=\"http://bar.com/extra\" class=\"external\">http://bar.com</a></p>"
+    },
+    {
+      "name": "comrak-autolink-046",
+      "input": "<p><a href=\"http://example.com/%5Babc%5D\">http://example.com/[abc]</a>]...</p>\n",
+      "expected": "<p><a href=\"http://example.com/%5Babc%5D\" class=\"external\">http://example.com/[abc]</a>]...</p>"
+    },
+    {
+      "name": "comrak-autolink-047",
+      "input": "http://example.com/{abc}}...\n",
+      "expected": "<p><a href=\"http://example.com/%7Babc%7D%7D\" class=\"external\">http://example.com/{abc}}</a>...</p>"
+    },
+    {
+      "name": "comrak-autolink-048",
+      "input": "<p><a href=\"http://example.com/%7Babc%7D\">http://example.com/{abc}</a>}...</p>\n",
+      "expected": "<p><a href=\"http://example.com/%7Babc%7D\" class=\"external\">http://example.com/{abc}</a>}...</p>"
+    },
+    {
+      "name": "comrak-autolink-049",
+      "input": "http://example.com/(abc))...\n",
+      "expected": "<p><a href=\"http://example.com/(abc)\" class=\"external\">http://example.com/(abc)</a>)...</p>"
+    },
+    {
+      "name": "comrak-autolink-050",
+      "input": "<p><a href=\"http://example.com/(abc)\">http://example.com/(abc)</a>)...</p>\n",
+      "expected": "<p><a href=\"http://example.com/(abc)\" class=\"external\">http://example.com/(abc)</a>)...</p>"
+    },
+    {
+      "name": "comrak-autolink-051",
+      "input": "https://foo.com",
+      "expected": "<p><a href=\"https://foo.com\" class=\"external\">https://foo.com</a></p>"
+    },
+    {
+      "name": "comrak-autolink-052",
+      "input": "<p><a href=\"https://foo.com\">https://foo.com</a></p>\n",
+      "expected": "<p><a href=\"https://foo.com\" class=\"external\">https://foo.com</a></p>"
+    },
+    {
+      "name": "comrak-autolink-053",
+      "input": "smb:///Volumes/shared/foo.pdf",
+      "expected": "<p>smb:///Volumes/shared/foo.pdf</p>"
+    },
+    {
+      "name": "comrak-autolink-054",
+      "input": "<p><a href=\"smb:///Volumes/shared/foo.pdf\">smb:///Volumes/shared/foo.pdf</a></p>\n",
+      "expected": "<p><a href=\"smb:///Volumes/shared/foo.pdf\" class=\"external\">smb:///Volumes/shared/foo.pdf</a></p>"
+    },
+    {
+      "name": "comrak-autolink-055",
+      "input": "irc://irc.freenode.net/git",
+      "expected": "<p>irc://irc.freenode.net/git</p>"
+    },
+    {
+      "name": "comrak-autolink-056",
+      "input": "<p><a href=\"irc://irc.freenode.net/git\">irc://irc.freenode.net/git</a></p>\n",
+      "expected": "<p><a href=\"irc://irc.freenode.net/git\" class=\"external\">irc://irc.freenode.net/git</a></p>"
+    },
+    {
+      "name": "comrak-autolink-057",
+      "input": "rdar://localhost.com/blah",
+      "expected": "<p>rdar://localhost.com/blah</p>"
+    },
+    {
+      "name": "comrak-autolink-058",
+      "input": "<p><a href=\"rdar://localhost.com/blah\">rdar://localhost.com/blah</a></p>\n",
+      "expected": "<p><a href=\"rdar://localhost.com/blah\" class=\"external\">rdar://localhost.com/blah</a></p>"
+    },
+    {
+      "name": "comrak-autolink-059",
+      "input": "ab _cde_ f@g.ee h*ijklm* n",
+      "expected": "<p>ab <em>cde</em> <a href=\"mailto:f@g.ee\" class=\"email\">f@g.ee</a> h<em>ijklm</em> n</p>"
+    },
+    {
+      "name": "comrak-autolink-060",
+      "input": "ab ",
+      "expected": "<p>ab</p>"
+    },
+    {
+      "name": "comrak-autolink-061",
+      "input": " f@g.ee h",
+      "expected": "<p><a href=\"mailto:f@g.ee\" class=\"email\">f@g.ee</a> h</p>"
+    },
+    {
+      "name": "comrak-autolink-062",
+      "input": "mailto:f@g.ee",
+      "expected": "<p><a href=\"mailto:f@g.ee\" class=\"email\">mailto:f@g.ee</a></p>"
+    },
+    {
+      "name": "comrak-autolink-063",
+      "input": "f@g.ee",
+      "expected": "<p><a href=\"mailto:f@g.ee\" class=\"email\">f@g.ee</a></p>"
+    },
+    {
+      "name": "comrak-autolink-064",
+      "input": "See &lt;&lt;&lt;http://example.com/&gt;&gt;&gt;",
+      "expected": "<p>See &lt;&lt;&lt;<a href=\"http://example.com/\" class=\"external\">http://example.com/</a>&gt;&gt;&gt;</p>"
+    },
+    {
+      "name": "comrak-autolink-065",
+      "input": "<p>See &lt;&lt;&lt;<a href=\"http://example.com/\">http://example.com/</a>&gt;&gt;&gt;</p>\n",
+      "expected": "<p>See &lt;&lt;&lt;<a href=\"http://example.com/\" class=\"external\">http://example.com/</a>&gt;&gt;&gt;</p>"
+    },
+    {
+      "name": "comrak-autolink-066",
+      "input": "http://example.com/src/_mocks_/vscode.js",
+      "expected": "<p><a href=\"http://example.com/src/_mocks_/vscode.js\" class=\"external\">http://example.com/src/_mocks_/vscode.js</a></p>"
+    },
+    {
+      "name": "comrak-autolink-067",
+      "input": "<p><a href=\"http://example.com/src/_mocks_/vscode.js\">http://example.com/src/_mocks_/vscode.js</a></p>\n",
+      "expected": "<p><a href=\"http://example.com/src/_mocks_/vscode.js\" class=\"external\">http://example.com/src/_mocks_/vscode.js</a></p>"
+    },
+    {
+      "name": "comrak-autolink-068",
+      "input": "Here's an autolink: https://www.unicode.org/review/pri453/feedback.html#:~:text=Fri%20Jun%2024%2009:56:01%20CDT%202022 and another one https://www.unicode.org/review/pri453/feedback.html#:~:text=Fri%20Jun%2024%2009:56:01%20CDT%202022.",
+      "expected": "<p>Here's an autolink: <a href=\"https://www.unicode.org/review/pri453/feedback.html#:~:text=Fri%20Jun%2024%2009:56:01%20CDT%202022\" class=\"external\">https://www.unicode.org/review/pri453/feedback.html#:~:text=Fri%20Jun%2024%2009:56:01%20CDT%202022</a> and another one <a href=\"https://www.unicode.org/review/pri453/feedback.html#:~:text=Fri%20Jun%2024%2009:56:01%20CDT%202022\" class=\"external\">https://www.unicode.org/review/pri453/feedback.html#:~:text=Fri%20Jun%2024%2009:56:01%20CDT%202022</a>.</p>"
+    },
+    {
+      "name": "comrak-autolink-069",
+      "input": "<p>Here's an autolink: <a href=\"https://www.unicode.org/review/pri453/feedback.html#:~:text=Fri%20Jun%2024%2009:56:01%20CDT%202022\">https://www.unicode.org/review/pri453/feedback.html#:~:text=Fri%20Jun%2024%2009:56:01%20CDT%202022</a> and another one <a href=\"https://www.unicode.org/review/pri453/feedback.html#:~:text=Fri%20Jun%2024%2009:56:01%20CDT%202022\">https://www.unicode.org/review/pri453/feedback.html#:~:text=Fri%20Jun%2024%2009:56:01%20CDT%202022</a>.</p>\n",
+      "expected": "<p>Here's an autolink: <a href=\"https://www.unicode.org/review/pri453/feedback.html#:~:text=Fri%20Jun%2024%2009:56:01%20CDT%202022\" class=\"external\">https://www.unicode.org/review/pri453/feedback.html#:~:text=Fri%20Jun%2024%2009:56:01%20CDT%202022</a> and another one <a href=\"https://www.unicode.org/review/pri453/feedback.html#:~:text=Fri%20Jun%2024%2009:56:01%20CDT%202022\" class=\"external\">https://www.unicode.org/review/pri453/feedback.html#:~:text=Fri%20Jun%2024%2009:56:01%20CDT%202022</a>.</p>"
+    },
+    {
+      "name": "comrak-autolink-070",
+      "input": "https://www.wolframalpha.com/input/?i=x^2+(y-(x^2)^(1/3))^2=1",
+      "expected": "<p><a href=\"https://www.wolframalpha.com/input/?i=x%5E2+(y-(x%5E2)%5E(1/3))%5E2=1\" class=\"external\">https://www.wolframalpha.com/input/?i=x^2+(y-(x^2)^(1/3))^2=1</a></p>"
+    },
+    {
+      "name": "comrak-autolink-071",
+      "input": "<p><a href=\"https://www.wolframalpha.com/input/?i=x%5E2+(y-(x%5E2)%5E(1/3))%5E2=1\">https://www.wolframalpha.com/input/?i=x^2+(y-(x^2)^(1/3))^2=1</a></p>\n",
+      "expected": "<p><a href=\"https://www.wolframalpha.com/input/?i=x%5E2+(y-(x%5E2)%5E(1/3))%5E2=1\" class=\"external\">https://www.wolframalpha.com/input/?i=x^2+(y-(x^2)^(1/3))^2=1</a></p>"
+    },
+    {
+      "name": "comrak-autolink-072",
+      "input": "![http://inline.com/image](http://inline.com/image)",
+      "expected": "<p><img src=\"http://inline.com/image\" alt=\"http://inline.com/image\"></p>"
+    },
+    {
+      "name": "comrak-autolink-073",
+      "input": "<p><img src=\"http://inline.com/image\" alt=\"http://inline.com/image\" /></p>\n",
+      "expected": "<p><img src=\"http://inline.com/image\" alt=\"http://inline.com/image\"></p>"
+    },
+    {
+      "name": "comrak-autolink-074",
+      "input": "Underscores not allowed in host name www.xxx.yyy._zzz",
+      "expected": "<p>Underscores not allowed in host name www.xxx.yyy._zzz</p>"
+    },
+    {
+      "name": "comrak-autolink-075",
+      "input": "<p>Underscores not allowed in host name www.xxx.yyy._zzz</p>\n",
+      "expected": "<p>Underscores not allowed in host name www.xxx.yyy._zzz</p>"
+    },
+    {
+      "name": "comrak-autolink-076",
+      "input": "://-",
+      "expected": "<p>://-</p>"
+    },
+    {
+      "name": "comrak-autolink-077",
+      "input": "<p><a href=\"://-\">://-</a></p>\n",
+      "expected": "<p><a>://-</a></p>"
+    },
+    {
+      "name": "comrak-autolink-078",
+      "input": "we://w",
+      "expected": "<p>we://w</p>"
+    },
+    {
+      "name": "comrak-autolink-079",
+      "input": "<p><a href=\"we://w\">we://w</a></p>\n",
+      "expected": "<p><a href=\"we://w\" class=\"external\">we://w</a></p>"
+    },
+    {
+      "name": "comrak-autolink-080",
+      "input": "a  www.com  x\n",
+      "expected": "<p>a  <a href=\"http://www.com\" class=\"external\">www.com</a>  x</p>"
+    },
+    {
+      "name": "comrak-autolink-081",
+      "input": "b  https://www.com  y\n",
+      "expected": "<p>b  <a href=\"https://www.com\" class=\"external\">https://www.com</a>  y</p>"
+    },
+    {
+      "name": "comrak-autolink-082",
+      "input": "c  foo@www.com  z\n",
+      "expected": "<p>c  <a href=\"mailto:foo@www.com\" class=\"email\">foo@www.com</a>  z</p>"
+    },
+    {
+      "name": "comrak-autolink-083",
+      "input": "a  ",
+      "expected": "<p>a</p>"
+    },
+    {
+      "name": "comrak-autolink-084",
+      "input": "http://www.com",
+      "expected": "<p><a href=\"http://www.com\" class=\"external\">http://www.com</a></p>"
+    },
+    {
+      "name": "comrak-autolink-085",
+      "input": "  x",
+      "expected": "<p>x</p>"
+    },
+    {
+      "name": "comrak-autolink-086",
+      "input": "b  ",
+      "expected": "<p>b</p>"
+    },
+    {
+      "name": "comrak-autolink-087",
+      "input": "https://www.com",
+      "expected": "<p><a href=\"https://www.com\" class=\"external\">https://www.com</a></p>"
+    },
+    {
+      "name": "comrak-autolink-088",
+      "input": "  y",
+      "expected": "<p>y</p>"
+    },
+    {
+      "name": "comrak-autolink-089",
+      "input": "c  ",
+      "expected": "<p>c</p>"
+    },
+    {
+      "name": "comrak-autolink-090",
+      "input": "mailto:foo@www.com",
+      "expected": "<p><a href=\"mailto:foo@www.com\" class=\"email\">mailto:foo@www.com</a></p>"
+    },
+    {
+      "name": "comrak-autolink-091",
+      "input": "foo@www.com",
+      "expected": "<p><a href=\"mailto:foo@www.com\" class=\"email\">foo@www.com</a></p>"
+    },
+    {
+      "name": "comrak-autolink-092",
+      "input": "  z",
+      "expected": "<p>z</p>"
+    },
+    {
+      "name": "comrak-autolink-093",
+      "input": "scyther@pokemon.com/beedrill@pokemon.com",
+      "expected": "<p><a href=\"mailto:scyther@pokemon.com\" class=\"email\">scyther@pokemon.com</a>/<a href=\"mailto:beedrill@pokemon.com\" class=\"email\">beedrill@pokemon.com</a></p>"
+    },
+    {
+      "name": "comrak-autolink-094",
+      "input": "mailto:scyther@pokemon.com",
+      "expected": "<p><a href=\"mailto:scyther@pokemon.com\" class=\"email\">mailto:scyther@pokemon.com</a></p>"
+    },
+    {
+      "name": "comrak-autolink-095",
+      "input": "scyther@pokemon.com",
+      "expected": "<p><a href=\"mailto:scyther@pokemon.com\" class=\"email\">scyther@pokemon.com</a></p>"
+    },
+    {
+      "name": "comrak-autolink-096",
+      "input": "mailto:beedrill@pokemon.com",
+      "expected": "<p><a href=\"mailto:beedrill@pokemon.com\" class=\"email\">mailto:beedrill@pokemon.com</a></p>"
+    },
+    {
+      "name": "comrak-autolink-097",
+      "input": "beedrill@pokemon.com",
+      "expected": "<p><a href=\"mailto:beedrill@pokemon.com\" class=\"email\">beedrill@pokemon.com</a></p>"
+    },
+    {
+      "name": "comrak-autolink-098",
+      "input": "scyther@pokemon.com--beedrill@pokemon.com",
+      "expected": "<p>scyther@pokemon.com--beedrill@pokemon.com</p>"
+    },
+    {
+      "name": "comrak-autolink-099",
+      "input": "[Contact user@example.com for help](http://support.example.com)",
+      "expected": "<p><a href=\"http://support.example.com\" class=\"external\">Contact user@example.com for help</a></p>"
+    },
+    {
+      "name": "comrak-autolink-100",
+      "input": "<p><a href=\"http://support.example.com\">Contact user@example.com for help</a></p>\n",
+      "expected": "<p><a href=\"http://support.example.com\" class=\"external\">Contact user@example.com for help</a></p>"
+    },
+    {
+      "name": "comrak-autolink-101",
+      "input": "[Visit https://www.example.com](http://example.com)",
+      "expected": "<p><a href=\"http://example.com\" class=\"external\">Visit https://www.example.com</a></p>"
+    },
+    {
+      "name": "comrak-autolink-102",
+      "input": "<p><a href=\"http://example.com\">Visit https://www.example.com</a></p>\n",
+      "expected": "<p><a href=\"http://example.com\" class=\"external\">Visit https://www.example.com</a></p>"
+    },
+    {
+      "name": "comrak-autolink-103",
+      "input": "[Check out www.example.com](http://example.com)",
+      "expected": "<p><a href=\"http://example.com\" class=\"external\">Check out www.example.com</a></p>"
+    },
+    {
+      "name": "comrak-autolink-104",
+      "input": "<p><a href=\"http://example.com\">Check out www.example.com</a></p>\n",
+      "expected": "<p><a href=\"http://example.com\" class=\"external\">Check out www.example.com</a></p>"
+    },
+    {
+      "name": "comrak-autolink-105",
+      "input": "![Contact user@example.com](image.png)",
+      "expected": "<p><img src=\"image.png\" alt=\"Contact user@example.com\"></p>"
+    },
+    {
+      "name": "comrak-autolink-106",
+      "input": "<p><img src=\"image.png\" alt=\"Contact user@example.com\" /></p>\n",
+      "expected": "<p><img src=\"image.png\" alt=\"Contact user@example.com\"></p>"
+    },
+    {
+      "name": "comrak-autolink-107",
+      "input": "![Visit https://www.example.com](image.png)",
+      "expected": "<p><img src=\"image.png\" alt=\"Visit https://www.example.com\"></p>"
+    },
+    {
+      "name": "comrak-autolink-108",
+      "input": "<p><img src=\"image.png\" alt=\"Visit https://www.example.com\" /></p>\n",
+      "expected": "<p><img src=\"image.png\" alt=\"Visit https://www.example.com\"></p>"
+    },
+    {
+      "name": "comrak-autolink-109",
+      "input": "![Check www.example.com](image.png)",
+      "expected": "<p><img src=\"image.png\" alt=\"Check www.example.com\"></p>"
+    },
+    {
+      "name": "comrak-autolink-110",
+      "input": "<p><img src=\"image.png\" alt=\"Check www.example.com\" /></p>\n",
+      "expected": "<p><img src=\"image.png\" alt=\"Check www.example.com\"></p>"
+    },
+    {
+      "name": "comrak-autolink-111",
+      "input": "[[http://example.com|Contact user@example.com]]",
+      "expected": "<p>[[http://example.com|Contact user@example.com]]</p>"
+    },
+    {
+      "name": "comrak-autolink-112",
+      "input": "<p><a href=\"http://example.com\" data-wikilink=\"true\">Contact user@example.com</a></p>\n",
+      "expected": "<p><a href=\"http://example.com\" class=\"external\">Contact user@example.com</a></p>"
+    },
+    {
+      "name": "comrak-autolink-113",
+      "input": "[[http://example.com|Visit https://www.example.com]]",
+      "expected": "<p>[[http://example.com|Visit https://www.example.com]]</p>"
+    },
+    {
+      "name": "comrak-autolink-114",
+      "input": "<p><a href=\"http://example.com\" data-wikilink=\"true\">Visit https://www.example.com</a></p>\n",
+      "expected": "<p><a href=\"http://example.com\" class=\"external\">Visit https://www.example.com</a></p>"
+    },
+    {
+      "name": "comrak-autolink-115",
+      "input": "[[Check www.example.com|http://example.com]]",
+      "expected": "<p>[[Check www.example.com|http://example.com]]</p>"
+    },
+    {
+      "name": "comrak-autolink-116",
+      "input": "<p><a href=\"http://example.com\" data-wikilink=\"true\">Check www.example.com</a></p>\n",
+      "expected": "<p><a href=\"http://example.com\" class=\"external\">Check www.example.com</a></p>"
+    },
+    {
+      "name": "comrak-autolink-117",
+      "input": "scoped https://[fe80::1ff:fe23:4567:890a%25eth2]",
+      "expected": "<p>scoped <a href=\"https://[fe80::1ff:fe23:4567:890a%25eth2]\">https://[fe80::1ff:fe23:4567:890a%25eth2]</a></p>"
+    },
+    {
+      "name": "comrak-autolink-118",
+      "input": "<p>scoped <a href=\"https://[fe80::1ff:fe23:4567:890a%25eth2]\">https://[fe80::1ff:fe23:4567:890a%25eth2]</a></p>\n",
+      "expected": "<p>scoped <a href=\"https://[fe80::1ff:fe23:4567:890a%25eth2]\">https://[fe80::1ff:fe23:4567:890a%25eth2]</a></p>"
+    },
+    {
+      "name": "comrak-autolink-119",
+      "input": "hi: nex://[fe80::1ff:fe23:4567:890a%25eth2]/z/x",
+      "expected": "<p>hi: nex://[fe80::1ff:fe23:4567:890a%25eth2]/z/x</p>"
+    },
+    {
+      "name": "comrak-autolink-120",
+      "input": "<p>hi: nex://[fe80::1ff:fe23:4567:890a%25eth2]/z/x</p>\n",
+      "expected": "<p>hi: nex://[fe80::1ff:fe23:4567:890a%25eth2]/z/x</p>"
+    },
+    {
+      "name": "comrak-autolink-121",
+      "input": "<p>hi: <a href=\"nex://[fe80::1ff:fe23:4567:890a%25eth2]/z/x\">nex://[fe80::1ff:fe23:4567:890a%25eth2]/z/x</a></p>\n",
+      "expected": "<p>hi: <a href=\"nex://[fe80::1ff:fe23:4567:890a%25eth2]/z/x\">nex://[fe80::1ff:fe23:4567:890a%25eth2]/z/x</a></p>"
+    },
+    {
+      "name": "comrak-table-001",
+      "input": "| a | b |\n|---|:-:|\n| c | d |\n",
+      "expected": "<table>\n<thead>\n<tr>\n<th>a</th>\n<th align=\"center\">b</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>c</td>\n<td align=\"center\">d</td>\n</tr>\n</tbody>\n</table>"
+    },
+    {
+      "name": "comrak-table-002",
+      "input": "<table>\n<thead>\n<tr>\n<th>a</th>\n<th align=\"center\">b</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>c</td>\n<td align=\"center\">d</td>\n</tr>\n</tbody>\n</table>\n",
+      "expected": "<table>\n<thead>\n<tr>\n<th>a</th>\n<th align=\"center\">b</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>c</td>\n<td align=\"center\">d</td>\n</tr>\n</tbody>\n</table>"
+    },
+    {
+      "name": "comrak-table-003",
+      "input": "123\n456\n| a | b |\n| ---| --- |\nd | e\n",
+      "expected": "<p>123<br>\n456</p>\n<table>\n<thead>\n<tr>\n<th>a</th>\n<th>b</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>d</td>\n<td>e</td>\n</tr>\n</tbody>\n</table>"
+    },
+    {
+      "name": "comrak-table-004",
+      "input": "<p>123\n456</p>\n<table>\n<thead>\n<tr>\n<th>a</th>\n<th>b</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>d</td>\n<td>e</td>\n</tr>\n</tbody>\n</table>\n",
+      "expected": "<p>123\n456</p>\n<table>\n<thead>\n<tr>\n<th>a</th>\n<th>b</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>d</td>\n<td>e</td>\n</tr>\n</tbody>\n</table>"
+    },
+    {
+      "name": "comrak-table-005",
+      "input": "a\n-b",
+      "expected": "<p>a<br>\n-b</p>"
+    },
+    {
+      "name": "comrak-table-006",
+      "input": "<p>a\n-b</p>\n",
+      "expected": "<p>a\n-b</p>"
+    },
+    {
+      "name": "comrak-table-007",
+      "input": "a\n-b\n-c",
+      "expected": "<p>a<br>\n-b<br>\n-c</p>"
+    },
+    {
+      "name": "comrak-table-008",
+      "input": "<p>a\n-b\n-c</p>\n",
+      "expected": "<p>a\n-b\n-c</p>"
+    },
+    {
+      "name": "comrak-table-009",
+      "input": "- p\n\n    |a|b|\n    |-|-|\n    |c|d|\n",
+      "expected": "<ul>\n<li>\n<p>p</p>\n<table>\n<thead>\n<tr>\n<th>a</th>\n<th>b</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>c</td>\n<td>d</td>\n</tr>\n</tbody>\n</table>\n</li>\n</ul>"
+    },
+    {
+      "name": "comrak-table-010",
+      "input": "<ul>\n<li>\n<p>p</p>\n<table>\n<thead>\n<tr>\n<th>a</th>\n<th>b</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>c</td>\n<td>d</td>\n</tr>\n</tbody>\n</table>\n</li>\n</ul>\n",
+      "expected": "<ul>\n<li>\n<p>p</p>\n<table>\n<thead>\n<tr>\n<th>a</th>\n<th>b</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>c</td>\n<td>d</td>\n</tr>\n</tbody>\n</table>\n</li>\n</ul>"
+    },
+    {
+      "name": "comrak-table-011",
+      "input": "- |a|b|\n  |-|-|\n  |c|d|\n",
+      "expected": "<ul>\n<li>\n<table>\n<thead>\n<tr>\n<th>a</th>\n<th>b</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>c</td>\n<td>d</td>\n</tr>\n</tbody>\n</table>\n</li>\n</ul>"
+    },
+    {
+      "name": "comrak-table-012",
+      "input": "<ul>\n<li>\n<table>\n<thead>\n<tr>\n<th>a</th>\n<th>b</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>c</td>\n<td>d</td>\n</tr>\n</tbody>\n</table>\n</li>\n</ul>\n",
+      "expected": "<ul>\n<li>\n<table>\n<thead>\n<tr>\n<th>a</th>\n<th>b</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>c</td>\n<td>d</td>\n</tr>\n</tbody>\n</table>\n</li>\n</ul>"
+    },
+    {
+      "name": "comrak-table-013",
+      "input": "> |a|b|\n> |-|-|\n> |c|d|\n",
+      "expected": "<blockquote>\n<table>\n<thead>\n<tr>\n<th>a</th>\n<th>b</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>c</td>\n<td>d</td>\n</tr>\n</tbody>\n</table>\n</blockquote>"
+    },
+    {
+      "name": "comrak-table-014",
+      "input": "<blockquote>\n<table>\n<thead>\n<tr>\n<th>a</th>\n<th>b</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>c</td>\n<td>d</td>\n</tr>\n</tbody>\n</table>\n</blockquote>\n",
+      "expected": "<blockquote>\n<table>\n<thead>\n<tr>\n<th>a</th>\n<th>b</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>c</td>\n<td>d</td>\n</tr>\n</tbody>\n</table>\n</blockquote>"
+    },
+    {
+      "name": "comrak-table-015",
+      "input": "123\n",
+      "expected": "<p>123</p>"
+    },
+    {
+      "name": "comrak-table-016",
+      "input": "456\n",
+      "expected": "<p>456</p>"
+    },
+    {
+      "name": "comrak-table-017",
+      "input": "| a | b |\n",
+      "expected": "<p>| a | b |</p>"
+    },
+    {
+      "name": "comrak-table-018",
+      "input": "| - | - |\n",
+      "expected": "<p>| - | - |</p>"
+    },
+    {
+      "name": "comrak-table-019",
+      "input": "| c | d |\n",
+      "expected": "<p>| c | d |</p>"
+    },
+    {
+      "name": "comrak-table-020",
+      "input": "123",
+      "expected": "<p>123</p>"
+    },
+    {
+      "name": "comrak-table-021",
+      "input": "456",
+      "expected": "<p>456</p>"
+    },
+    {
+      "name": "comrak-table-022",
+      "input": " 123\n",
+      "expected": "<p>123</p>"
+    },
+    {
+      "name": "comrak-table-023",
+      "input": "  456\n",
+      "expected": "<p>456</p>"
+    },
+    {
+      "name": "comrak-table-024",
+      "input": " | a | b |\n",
+      "expected": "<p>| a | b |</p>"
+    },
+    {
+      "name": "comrak-table-025",
+      "input": " | - | - |\n",
+      "expected": "<p>| - | - |</p>"
+    },
+    {
+      "name": "comrak-table-026",
+      "input": " | c | d |\n",
+      "expected": "<p>| c | d |</p>"
+    },
+    {
+      "name": "comrak-footnotes-001",
+      "input": "Here is a[^nowhere] footnote reference,[^1] and another.[^longnote]\n\nThis is another note.[^note] And footnote[^longnote] is referenced again.\n\n[^note]: Hi.\n\n[^1]: Here is the footnote.\n\n[^longnote]: Here's one with multiple blocks.\n\n    Subsequent paragraphs are indented.\n\n        code\n\nThis is regular content.\n\n[^unused]: This is not used.\n",
+      "expected": "<p>Here is a[^nowhere] footnote reference,<sup><a href=\"#fn-1\" id=\"fnref-1\">1</a></sup> and another.<sup><a href=\"#fn-longnote\">2</a></sup></p>\n<p>This is another note.<sup><a href=\"#fn-note\">3</a></sup> And footnote<sup><a href=\"#fn-longnote\">2</a></sup> is referenced again.</p>\n<p>This is regular content.</p>\n \n<ol>\n<li id=\"fn-1\">\n<p>Here is the footnote. <a href=\"#fnref-1\" aria-label=\"Back to reference 1\">↩</a></p>\n</li>\n<li>\n<p>Here's one with multiple blocks.</p>\n<p>Subsequent paragraphs are indented.</p>\n<pre><code>code\n</code></pre>\n<a href=\"#fnref-longnote\" aria-label=\"Back to reference 2\">↩</a> <a href=\"#fnref-longnote-2\" aria-label=\"Back to reference 2-2\">↩<sup>2</sup></a>\n</li>\n<li>\n<p>Hi. <a href=\"#fnref-note\" aria-label=\"Back to reference 3\">↩</a></p>\n</li>\n</ol>\n "
+    },
+    {
+      "name": "comrak-footnotes-002",
+      "input": "<p>Here is a[^nowhere] footnote reference,<sup class=\"footnote-ref\"><a href=\"#fn-1\" id=\"fnref-1\" data-footnote-ref>1</a></sup> and another.<sup class=\"footnote-ref\"><a href=\"#fn-longnote\" id=\"fnref-longnote\" data-footnote-ref>2</a></sup></p>\n<p>This is another note.<sup class=\"footnote-ref\"><a href=\"#fn-note\" id=\"fnref-note\" data-footnote-ref>3</a></sup> And footnote<sup class=\"footnote-ref\"><a href=\"#fn-longnote\" id=\"fnref-longnote-2\" data-footnote-ref>2</a></sup> is referenced again.</p>\n<p>This is regular content.</p>\n<section class=\"footnotes\" data-footnotes>\n<ol>\n<li id=\"fn-1\">\n<p>Here is the footnote. <a href=\"#fnref-1\" class=\"footnote-backref\" data-footnote-backref data-footnote-backref-idx=\"1\" aria-label=\"Back to reference 1\">↩</a></p>\n</li>\n<li id=\"fn-longnote\">\n<p>Here's one with multiple blocks.</p>\n<p>Subsequent paragraphs are indented.</p>\n<pre><code>code\n</code></pre>\n<a href=\"#fnref-longnote\" class=\"footnote-backref\" data-footnote-backref data-footnote-backref-idx=\"2\" aria-label=\"Back to reference 2\">↩</a> <a href=\"#fnref-longnote-2\" class=\"footnote-backref\" data-footnote-backref data-footnote-backref-idx=\"2-2\" aria-label=\"Back to reference 2-2\">↩<sup class=\"footnote-ref\">2</sup></a>\n</li>\n<li id=\"fn-note\">\n<p>Hi. <a href=\"#fnref-note\" class=\"footnote-backref\" data-footnote-backref data-footnote-backref-idx=\"3\" aria-label=\"Back to reference 3\">↩</a></p>\n</li>\n</ol>\n</section>\n",
+      "expected": "<p>Here is a[^nowhere] footnote reference,<sup><a href=\"#fn-1\" id=\"fnref-1\">1</a></sup> and another.<sup><a href=\"#fn-longnote\">2</a></sup></p>\n<p>This is another note.<sup><a href=\"#fn-note\">3</a></sup> And footnote<sup><a href=\"#fn-longnote\">2</a></sup> is referenced again.</p>\n<p>This is regular content.</p>\n \n<ol>\n<li id=\"fn-1\">\n<p>Here is the footnote. <a href=\"#fnref-1\" aria-label=\"Back to reference 1\">↩</a></p>\n</li>\n<li>\n<p>Here's one with multiple blocks.</p>\n<p>Subsequent paragraphs are indented.</p>\n<pre><code>code\n</code></pre>\n<a href=\"#fnref-longnote\" aria-label=\"Back to reference 2\">↩</a> <a href=\"#fnref-longnote-2\" aria-label=\"Back to reference 2-2\">↩<sup>2</sup></a>\n</li>\n<li>\n<p>Hi. <a href=\"#fnref-note\" aria-label=\"Back to reference 3\">↩</a></p>\n</li>\n</ol>\n "
+    },
+    {
+      "name": "comrak-footnotes-003",
+      "input": "Here's my footnote![^a]\n\n[^a]: Yep.\n",
+      "expected": "<p>Here's my footnote!<sup><a href=\"#fn-a\">1</a></sup></p>\n \n<ol>\n<li>\n<p>Yep. <a href=\"#fnref-a\" aria-label=\"Back to reference 1\">↩</a></p>\n</li>\n</ol>\n "
+    },
+    {
+      "name": "comrak-footnotes-004",
+      "input": "<p>Here's my footnote!<sup class=\"footnote-ref\"><a href=\"#fn-a\" id=\"fnref-a\" data-footnote-ref>1</a></sup></p>\n<section class=\"footnotes\" data-footnotes>\n<ol>\n<li id=\"fn-a\">\n<p>Yep. <a href=\"#fnref-a\" class=\"footnote-backref\" data-footnote-backref data-footnote-backref-idx=\"1\" aria-label=\"Back to reference 1\">↩</a></p>\n</li>\n</ol>\n</section>\n",
+      "expected": "<p>Here's my footnote!<sup><a href=\"#fn-a\">1</a></sup></p>\n \n<ol>\n<li>\n<p>Yep. <a href=\"#fnref-a\" aria-label=\"Back to reference 1\">↩</a></p>\n</li>\n</ol>\n "
+    },
+    {
+      "name": "comrak-footnotes-005",
+      "input": "A footnote in a paragraph[^1]\n\n| Column1   | Column2 |\n| --------- | ------- |\n| foot [^1] | note    |\n\n[^1]: a footnote\n",
+      "expected": "<p>A footnote in a paragraph<sup><a href=\"#fn-1\" id=\"fnref-1\">1</a></sup></p>\n<table>\n<thead>\n<tr>\n<th>Column1</th>\n<th>Column2</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>foot <sup><a href=\"#fn-1\" id=\"fnref-1-2\">1</a></sup>\n</td>\n<td>note</td>\n</tr>\n</tbody>\n</table>\n \n<ol>\n<li id=\"fn-1\">\n<p>a footnote <a href=\"#fnref-1\" aria-label=\"Back to reference 1\">↩</a> <a href=\"#fnref-1-2\" aria-label=\"Back to reference 1-2\">↩<sup>2</sup></a></p>\n</li>\n</ol>\n "
+    },
+    {
+      "name": "comrak-footnotes-006",
+      "input": "<p>A footnote in a paragraph<sup class=\"footnote-ref\"><a href=\"#fn-1\" id=\"fnref-1\" data-footnote-ref>1</a></sup></p>\n<table>\n<thead>\n<tr>\n<th>Column1</th>\n<th>Column2</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>foot <sup class=\"footnote-ref\"><a href=\"#fn-1\" id=\"fnref-1-2\" data-footnote-ref>1</a></sup></td>\n<td>note</td>\n</tr>\n</tbody>\n</table>\n<section class=\"footnotes\" data-footnotes>\n<ol>\n<li id=\"fn-1\">\n<p>a footnote <a href=\"#fnref-1\" class=\"footnote-backref\" data-footnote-backref data-footnote-backref-idx=\"1\" aria-label=\"Back to reference 1\">↩</a> <a href=\"#fnref-1-2\" class=\"footnote-backref\" data-footnote-backref data-footnote-backref-idx=\"1-2\" aria-label=\"Back to reference 1-2\">↩<sup class=\"footnote-ref\">2</sup></a></p>\n</li>\n</ol>\n</section>\n",
+      "expected": "<p>A footnote in a paragraph<sup><a href=\"#fn-1\" id=\"fnref-1\">1</a></sup></p>\n<table>\n<thead>\n<tr>\n<th>Column1</th>\n<th>Column2</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>foot <sup><a href=\"#fn-1\" id=\"fnref-1-2\">1</a></sup>\n</td>\n<td>note</td>\n</tr>\n</tbody>\n</table>\n \n<ol>\n<li id=\"fn-1\">\n<p>a footnote <a href=\"#fnref-1\" aria-label=\"Back to reference 1\">↩</a> <a href=\"#fnref-1-2\" aria-label=\"Back to reference 1-2\">↩<sup>2</sup></a></p>\n</li>\n</ol>\n "
+    },
+    {
+      "name": "comrak-footnotes-007",
+      "input": "Here is a footnote reference.[^1]\n\nHere is a longer footnote reference.[^ref]\n\ne = mc^2^.\n\n[^1]: Here is the footnote.\n[^ref]: Here is another footnote.\n",
+      "expected": "<p>Here is a footnote reference.<sup><a href=\"#fn-1\" id=\"fnref-1\">1</a></sup></p>\n<p>Here is a longer footnote reference.<sup><a href=\"#fn-ref\">2</a></sup></p>\n<p>e = mc^2^.</p>\n \n<ol>\n<li id=\"fn-1\">\n<p>Here is the footnote. <a href=\"#fnref-1\" aria-label=\"Back to reference 1\">↩</a></p>\n</li>\n<li>\n<p>Here is another footnote. <a href=\"#fnref-ref\" aria-label=\"Back to reference 2\">↩</a></p>\n</li>\n</ol>\n "
+    },
+    {
+      "name": "comrak-footnotes-008",
+      "input": "<p>Here is a footnote reference.<sup class=\"footnote-ref\"><a href=\"#fn-1\" id=\"fnref-1\" data-footnote-ref>1</a></sup></p>\n<p>Here is a longer footnote reference.<sup class=\"footnote-ref\"><a href=\"#fn-ref\" id=\"fnref-ref\" data-footnote-ref>2</a></sup></p>\n<p>e = mc<sup>2</sup>.</p>\n<section class=\"footnotes\" data-footnotes>\n<ol>\n<li id=\"fn-1\">\n<p>Here is the footnote. <a href=\"#fnref-1\" class=\"footnote-backref\" data-footnote-backref data-footnote-backref-idx=\"1\" aria-label=\"Back to reference 1\">↩</a></p>\n</li>\n<li id=\"fn-ref\">\n<p>Here is another footnote. <a href=\"#fnref-ref\" class=\"footnote-backref\" data-footnote-backref data-footnote-backref-idx=\"2\" aria-label=\"Back to reference 2\">↩</a></p>\n</li>\n</ol>\n</section>\n",
+      "expected": "<p>Here is a footnote reference.<sup><a href=\"#fn-1\" id=\"fnref-1\">1</a></sup></p>\n<p>Here is a longer footnote reference.<sup><a href=\"#fn-ref\">2</a></sup></p>\n<p>e = mc<sup>2</sup>.</p>\n \n<ol>\n<li id=\"fn-1\">\n<p>Here is the footnote. <a href=\"#fnref-1\" aria-label=\"Back to reference 1\">↩</a></p>\n</li>\n<li>\n<p>Here is another footnote. <a href=\"#fnref-ref\" aria-label=\"Back to reference 2\">↩</a></p>\n</li>\n</ol>\n "
+    },
+    {
+      "name": "comrak-footnotes-009",
+      "input": "Here is a footnote reference.[^😄ref]\n\n[^😄ref]: Here is the footnote.\n",
+      "expected": "<p>Here is a footnote reference.<sup><a href=\"#fn-%F0%9F%98%84ref\">1</a></sup></p>\n \n<ol>\n<li>\n<p>Here is the footnote. <a href=\"#fnref-%F0%9F%98%84ref\" aria-label=\"Back to reference 1\">↩</a></p>\n</li>\n</ol>\n "
+    },
+    {
+      "name": "comrak-footnotes-010",
+      "input": "<p>Here is a footnote reference.<sup class=\"footnote-ref\"><a href=\"#fn-%F0%9F%98%84ref\" id=\"fnref-%F0%9F%98%84ref\" data-footnote-ref>1</a></sup></p>\n<section class=\"footnotes\" data-footnotes>\n<ol>\n<li id=\"fn-%F0%9F%98%84ref\">\n<p>Here is the footnote. <a href=\"#fnref-%F0%9F%98%84ref\" class=\"footnote-backref\" data-footnote-backref data-footnote-backref-idx=\"1\" aria-label=\"Back to reference 1\">↩</a></p>\n</li>\n</ol>\n</section>\n",
+      "expected": "<p>Here is a footnote reference.<sup><a href=\"#fn-%F0%9F%98%84ref\">1</a></sup></p>\n \n<ol>\n<li>\n<p>Here is the footnote. <a href=\"#fnref-%F0%9F%98%84ref\" aria-label=\"Back to reference 1\">↩</a></p>\n</li>\n</ol>\n "
+    },
+    {
+      "name": "comrak-footnotes-011",
+      "input": "Here is a footnote reference.[^AB] and [^ab]\n\n[^aB]: Here is the footnote.\n",
+      "expected": "<p>Here is a footnote reference.<sup><a href=\"#fn-aB\">1</a></sup> and <sup><a href=\"#fn-aB\">1</a></sup></p>\n \n<ol>\n<li>\n<p>Here is the footnote. <a href=\"#fnref-aB\" aria-label=\"Back to reference 1\">↩</a> <a href=\"#fnref-aB-2\" aria-label=\"Back to reference 1-2\">↩<sup>2</sup></a></p>\n</li>\n</ol>\n "
+    },
+    {
+      "name": "comrak-footnotes-012",
+      "input": "<p>Here is a footnote reference.<sup class=\"footnote-ref\"><a href=\"#fn-aB\" id=\"fnref-aB\" data-footnote-ref>1</a></sup> and <sup class=\"footnote-ref\"><a href=\"#fn-aB\" id=\"fnref-aB-2\" data-footnote-ref>1</a></sup></p>\n<section class=\"footnotes\" data-footnotes>\n<ol>\n<li id=\"fn-aB\">\n<p>Here is the footnote. <a href=\"#fnref-aB\" class=\"footnote-backref\" data-footnote-backref data-footnote-backref-idx=\"1\" aria-label=\"Back to reference 1\">↩</a> <a href=\"#fnref-aB-2\" class=\"footnote-backref\" data-footnote-backref data-footnote-backref-idx=\"1-2\" aria-label=\"Back to reference 1-2\">↩<sup class=\"footnote-ref\">2</sup></a></p>\n</li>\n</ol>\n</section>\n",
+      "expected": "<p>Here is a footnote reference.<sup><a href=\"#fn-aB\">1</a></sup> and <sup><a href=\"#fn-aB\">1</a></sup></p>\n \n<ol>\n<li>\n<p>Here is the footnote. <a href=\"#fnref-aB\" aria-label=\"Back to reference 1\">↩</a> <a href=\"#fnref-aB-2\" aria-label=\"Back to reference 1-2\">↩<sup>2</sup></a></p>\n</li>\n</ol>\n "
+    },
+    {
+      "name": "comrak-footnotes-013",
+      "input": "Foo.[^_ab]\n\n[^_ab]: Here is the footnote.\n",
+      "expected": "<p>Foo.<sup><a href=\"#fn-_ab\">1</a></sup></p>\n \n<ol>\n<li>\n<p>Here is the footnote. <a href=\"#fnref-_ab\" aria-label=\"Back to reference 1\">↩</a></p>\n</li>\n</ol>\n "
+    },
+    {
+      "name": "comrak-footnotes-014",
+      "input": "<p>Foo.<sup class=\"footnote-ref\"><a href=\"#fn-_ab\" id=\"fnref-_ab\" data-footnote-ref>1</a></sup></p>\n<section class=\"footnotes\" data-footnotes>\n<ol>\n<li id=\"fn-_ab\">\n<p>Here is the footnote. <a href=\"#fnref-_ab\" class=\"footnote-backref\" data-footnote-backref data-footnote-backref-idx=\"1\" aria-label=\"Back to reference 1\">↩</a></p>\n</li>\n</ol>\n</section>\n",
+      "expected": "<p>Foo.<sup><a href=\"#fn-_ab\">1</a></sup></p>\n \n<ol>\n<li>\n<p>Here is the footnote. <a href=\"#fnref-_ab\" aria-label=\"Back to reference 1\">↩</a></p>\n</li>\n</ol>\n "
+    },
+    {
+      "name": "comrak-footnotes-015",
+      "input": "Foo.[^]\n\n[^]: Here is the footnote.\n",
+      "expected": "<p>Foo.[^]</p>\n<p>[^]: Here is the footnote.</p>"
+    },
+    {
+      "name": "comrak-footnotes-016",
+      "input": "<p>Foo.[^]</p>\n<p>[^]: Here is the footnote.</p>\n",
+      "expected": "<p>Foo.[^]</p>\n<p>[^]: Here is the footnote.</p>"
+    },
+    {
+      "name": "comrak-footnotes-017",
+      "input": "Foo.[^one two]\n\n[^one two]: Here is the footnote.\n",
+      "expected": "<p>Foo.[^one two]</p>\n<p>[^one two]: Here is the footnote.</p>"
+    },
+    {
+      "name": "comrak-footnotes-018",
+      "input": "<p>Foo.[^one two]</p>\n<p>[^one two]: Here is the footnote.</p>\n",
+      "expected": "<p>Foo.[^one two]</p>\n<p>[^one two]: Here is the footnote.</p>"
+    },
+    {
+      "name": "comrak-footnotes-019",
+      "input": "Foo[^**one**]\n[^**one**]: bar\n",
+      "expected": "<p>Foo<sup><a href=\"#fn-**one**\">1</a></sup></p>\n \n<ol>\n<li>\n<p>bar <a href=\"#fnref-**one**\" aria-label=\"Back to reference 1\">↩</a></p>\n</li>\n</ol>\n "
+    },
+    {
+      "name": "comrak-footnotes-020",
+      "input": "<p>Foo<sup class=\"footnote-ref\"><a href=\"#fn-**one**\" id=\"fnref-**one**\" data-footnote-ref>1</a></sup></p>\n<section class=\"footnotes\" data-footnotes>\n<ol>\n<li id=\"fn-**one**\">\n<p>bar <a href=\"#fnref-**one**\" class=\"footnote-backref\" data-footnote-backref data-footnote-backref-idx=\"1\" aria-label=\"Back to reference 1\">↩</a></p>\n</li>\n</ol>\n</section>\n",
+      "expected": "<p>Foo<sup><a href=\"#fn-**one**\">1</a></sup></p>\n \n<ol>\n<li>\n<p>bar <a href=\"#fnref-**one**\" aria-label=\"Back to reference 1\">↩</a></p>\n</li>\n</ol>\n "
+    },
+    {
+      "name": "comrak-footnotes-021",
+      "input": "Here is a footnote reference.[^1]\n",
+      "expected": "<p>Here is a footnote reference.[^1]</p>"
+    },
+    {
+      "name": "comrak-footnotes-022",
+      "input": "Here is a longer footnote reference.[^ref]\n",
+      "expected": "<p>Here is a longer footnote reference.[^ref]</p>"
+    },
+    {
+      "name": "comrak-footnotes-023",
+      "input": "[^1]: Here is the footnote.\n",
+      "expected": ""
+    },
+    {
+      "name": "comrak-footnotes-024",
+      "input": "[^ref]: Here is another footnote.\n",
+      "expected": ""
+    },
+    {
+      "name": "comrak-footnotes-025",
+      "input": "Here is a footnote reference.",
+      "expected": "<p>Here is a footnote reference.</p>"
+    },
+    {
+      "name": "comrak-footnotes-026",
+      "input": "Here is a longer footnote reference.",
+      "expected": "<p>Here is a longer footnote reference.</p>"
+    },
+    {
+      "name": "comrak-footnotes-027",
+      "input": "Here is the footnote.",
+      "expected": "<p>Here is the footnote.</p>"
+    },
+    {
+      "name": "comrak-footnotes-028",
+      "input": "Here is another footnote.",
+      "expected": "<p>Here is another footnote.</p>"
+    },
+    {
+      "name": "comrak-tasklist-001",
+      "input": "* [ ] Red\n* [x] Green\n* [ ] `Blue`\n* [!] Papayawhip\n<!-- end list -->\n1. [ ] Bird\n2. [ ] McHale\n3. [x] Parish\n<!-- end list -->\n* [ ] Red\n  * [x] Green\n    * [ ] Blue\n",
+      "expected": "<ul class=\"contains-task-list\">\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" disabled> Red</li>\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" checked disabled> Green</li>\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" disabled> <code>Blue</code>\n</li>\n<li>[!] Papayawhip</li>\n</ul>\n\n<ol>\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" disabled> Bird</li>\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" disabled> McHale</li>\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" checked disabled> Parish</li>\n</ol>\n\n<ul class=\"contains-task-list\">\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" disabled> Red\n<ul class=\"contains-task-list\">\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" checked disabled> Green\n<ul class=\"contains-task-list\">\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" disabled> Blue</li>\n</ul>\n</li>\n</ul>\n</li>\n</ul>"
+    },
+    {
+      "name": "comrak-tasklist-002",
+      "input": "<ul>\n<li><input type=\"checkbox\" disabled=\"\" /> Red</li>\n<li><input type=\"checkbox\" checked=\"\" disabled=\"\" /> Green</li>\n<li><input type=\"checkbox\" disabled=\"\" /> <code>Blue</code></li>\n<li><input type=\"checkbox\" checked=\"\" disabled=\"\" /> Papayawhip</li>\n</ul>\n<!-- end list -->\n<ol>\n<li><input type=\"checkbox\" disabled=\"\" /> Bird</li>\n<li><input type=\"checkbox\" disabled=\"\" /> McHale</li>\n<li><input type=\"checkbox\" checked=\"\" disabled=\"\" /> Parish</li>\n</ol>\n<!-- end list -->\n<ul>\n<li><input type=\"checkbox\" disabled=\"\" /> Red\n<ul>\n<li><input type=\"checkbox\" checked=\"\" disabled=\"\" /> Green\n<ul>\n<li><input type=\"checkbox\" disabled=\"\" /> Blue</li>\n</ul>\n</li>\n</ul>\n</li>\n</ul>\n",
+      "expected": "<ul>\n<li> Red</li>\n<li> Green</li>\n<li> <code>Blue</code>\n</li>\n<li> Papayawhip</li>\n</ul>\n\n<ol>\n<li> Bird</li>\n<li> McHale</li>\n<li> Parish</li>\n</ol>\n\n<ul>\n<li> Red\n<ul>\n<li> Green\n<ul>\n<li> Blue</li>\n</ul>\n</li>\n</ul>\n</li>\n</ul>"
+    },
+    {
+      "name": "comrak-tasklist-003",
+      "input": "* [ ] Red\n* [x] Green\n* [ ] Blue\n* [!] Papayawhip\n<!-- end list -->\n1. [ ] Bird\n2. [ ] McHale\n3. [x] Parish\n<!-- end list -->\n* [ ] Red\n  * [x] Green\n    * [ ] Blue\n",
+      "expected": "<ul class=\"contains-task-list\">\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" disabled> Red</li>\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" checked disabled> Green</li>\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" disabled> Blue</li>\n<li>[!] Papayawhip</li>\n</ul>\n\n<ol>\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" disabled> Bird</li>\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" disabled> McHale</li>\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" checked disabled> Parish</li>\n</ol>\n\n<ul class=\"contains-task-list\">\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" disabled> Red\n<ul class=\"contains-task-list\">\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" checked disabled> Green\n<ul class=\"contains-task-list\">\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" disabled> Blue</li>\n</ul>\n</li>\n</ul>\n</li>\n</ul>"
+    },
+    {
+      "name": "comrak-tasklist-004",
+      "input": "<ul class=\"contains-task-list\">\n<li class=\"task-list-item\"><input type=\"checkbox\" class=\"task-list-item-checkbox\" disabled=\"\" /> Red</li>\n<li class=\"task-list-item\"><input type=\"checkbox\" class=\"task-list-item-checkbox\" checked=\"\" disabled=\"\" /> Green</li>\n<li class=\"task-list-item\"><input type=\"checkbox\" class=\"task-list-item-checkbox\" disabled=\"\" /> Blue</li>\n<li class=\"task-list-item\"><input type=\"checkbox\" class=\"task-list-item-checkbox\" checked=\"\" disabled=\"\" /> Papayawhip</li>\n</ul>\n<!-- end list -->\n<ol class=\"contains-task-list\">\n<li class=\"task-list-item\"><input type=\"checkbox\" class=\"task-list-item-checkbox\" disabled=\"\" /> Bird</li>\n<li class=\"task-list-item\"><input type=\"checkbox\" class=\"task-list-item-checkbox\" disabled=\"\" /> McHale</li>\n<li class=\"task-list-item\"><input type=\"checkbox\" class=\"task-list-item-checkbox\" checked=\"\" disabled=\"\" /> Parish</li>\n</ol>\n<!-- end list -->\n<ul class=\"contains-task-list\">\n<li class=\"task-list-item\"><input type=\"checkbox\" class=\"task-list-item-checkbox\" disabled=\"\" /> Red\n<ul class=\"contains-task-list\">\n<li class=\"task-list-item\"><input type=\"checkbox\" class=\"task-list-item-checkbox\" checked=\"\" disabled=\"\" /> Green\n<ul class=\"contains-task-list\">\n<li class=\"task-list-item\"><input type=\"checkbox\" class=\"task-list-item-checkbox\" disabled=\"\" /> Blue</li>\n</ul>\n</li>\n</ul>\n</li>\n</ul>\n",
+      "expected": "<ul class=\"contains-task-list\">\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" disabled> Red</li>\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" checked disabled> Green</li>\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" disabled> Blue</li>\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" checked disabled> Papayawhip</li>\n</ul>\n\n<ol>\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" disabled> Bird</li>\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" disabled> McHale</li>\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" checked disabled> Parish</li>\n</ol>\n\n<ul class=\"contains-task-list\">\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" disabled> Red\n<ul class=\"contains-task-list\">\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" checked disabled> Green\n<ul class=\"contains-task-list\">\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" disabled> Blue</li>\n</ul>\n</li>\n</ul>\n</li>\n</ul>"
+    },
+    {
+      "name": "comrak-tasklist-005",
+      "input": "* [!] Red\n",
+      "expected": "<ul>\n<li>[!] Red</li>\n</ul>"
+    },
+    {
+      "name": "comrak-tasklist-006",
+      "input": "<ul>\n<li><input type=\"checkbox\" checked=\"\" disabled=\"\" /> Red</li>\n</ul>\n",
+      "expected": "<ul>\n<li> Red</li>\n</ul>"
+    },
+    {
+      "name": "comrak-tasklist-007",
+      "input": "<ul>\n<li>[!] Red</li>\n</ul>\n",
+      "expected": "<ul>\n<li>[!] Red</li>\n</ul>"
+    },
+    {
+      "name": "comrak-tasklist-008",
+      "input": "<ul class=\"contains-task-list\">\n<li class=\"task-list-item\"><input type=\"checkbox\" class=\"task-list-item-checkbox\" checked=\"\" disabled=\"\" /> Red</li>\n</ul>\n",
+      "expected": "<ul class=\"contains-task-list\">\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" checked disabled> Red</li>\n</ul>"
+    },
+    {
+      "name": "comrak-tasklist-009",
+      "input": "- [ ] List item 1\n- [ ] This list item is **bold**\n- [x] There is some `code` here\n",
+      "expected": "<ul class=\"contains-task-list\">\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" disabled> List item 1</li>\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" disabled> This list item is <strong>bold</strong>\n</li>\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" checked disabled> There is some <code>code</code> here</li>\n</ul>"
+    },
+    {
+      "name": "comrak-tasklist-010",
+      "input": "<ul>\n<li><input type=\"checkbox\" disabled=\"\" /> List item 1</li>\n<li><input type=\"checkbox\" disabled=\"\" /> This list item is <strong>bold</strong></li>\n<li><input type=\"checkbox\" checked=\"\" disabled=\"\" /> There is some <code>code</code> here</li>\n</ul>\n",
+      "expected": "<ul>\n<li> List item 1</li>\n<li> This list item is <strong>bold</strong>\n</li>\n<li> There is some <code>code</code> here</li>\n</ul>"
+    },
+    {
+      "name": "comrak-tasklist-011",
+      "input": "<ul class=\"contains-task-list\">\n<li class=\"task-list-item\"><input type=\"checkbox\" class=\"task-list-item-checkbox\" disabled=\"\" /> List item 1</li>\n<li class=\"task-list-item\"><input type=\"checkbox\" class=\"task-list-item-checkbox\" disabled=\"\" /> This list item is <strong>bold</strong></li>\n<li class=\"task-list-item\"><input type=\"checkbox\" class=\"task-list-item-checkbox\" checked=\"\" disabled=\"\" /> There is some <code>code</code> here</li>\n</ul>\n",
+      "expected": "<ul class=\"contains-task-list\">\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" disabled> List item 1</li>\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" disabled> This list item is <strong>bold</strong>\n</li>\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" checked disabled> There is some <code>code</code> here</li>\n</ul>"
+    },
+    {
+      "name": "comrak-tasklist-012",
+      "input": "- [ ] xy\n",
+      "expected": "<ul class=\"contains-task-list\">\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" disabled> xy</li>\n</ul>"
+    },
+    {
+      "name": "comrak-tasklist-013",
+      "input": "  - [x] zw\n",
+      "expected": "<ul class=\"contains-task-list\">\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" checked disabled> zw</li>\n</ul>"
+    },
+    {
+      "name": "comrak-tasklist-014",
+      "input": "[ ] xy",
+      "expected": "<p>[ ] xy</p>"
+    },
+    {
+      "name": "comrak-tasklist-015",
+      "input": "[x] zw",
+      "expected": "<p>[x] zw</p>"
+    },
+    {
+      "name": "comrak-alerts-001",
+      "input": "> [!note]\n> Pay attention\n",
+      "expected": "<div class=\"markdown-alert markdown-alert-note\">\n<p class=\"markdown-alert-title\"><svg class=\"s18 icon-svg\" aria-hidden=\"true\"><use href=\"/assets/icons-a9735328.svg#icon--help\"></use></svg><span class=\"icon-label\">Note</span></p>\n<p>Pay attention</p>\n</div>"
+    },
+    {
+      "name": "comrak-alerts-002",
+      "input": "<div class=\"markdown-alert markdown-alert-note\">\n<p class=\"markdown-alert-title\">Note</p>\n<p>Pay attention</p>\n</div>\n",
+      "expected": "<div class=\"markdown-alert markdown-alert-note\">\n<p class=\"markdown-alert-title\"><svg class=\"s18 icon-svg\" aria-hidden=\"true\"><use href=\"/assets/icons-a9735328.svg#icon--help\"></use></svg><span class=\"icon-label\">Note</span></p>\n<p>Pay attention</p>\n</div>"
+    },
+    {
+      "name": "comrak-alerts-003",
+      "input": ">>> [!note]\nPay attention\n>>>",
+      "expected": "<blockquote>\n<blockquote>\n<div class=\"markdown-alert markdown-alert-note\">\n<p class=\"markdown-alert-title\"><svg class=\"s18 icon-svg\" aria-hidden=\"true\"><use href=\"/assets/icons-a9735328.svg#icon--help\"></use></svg><span class=\"icon-label\">Note</span></p>\n</div>\n</blockquote>\n</blockquote>\n<p>Pay attention</p>\n<blockquote>\n<blockquote>\n<blockquote>\n</blockquote>\n</blockquote>\n</blockquote>"
+    },
+    {
+      "name": "comrak-alerts-004",
+      "input": "> [!note]\n",
+      "expected": "<div class=\"markdown-alert markdown-alert-note\">\n<p class=\"markdown-alert-title\"><svg class=\"s18 icon-svg\" aria-hidden=\"true\"><use href=\"/assets/icons-a9735328.svg#icon--help\"></use></svg><span class=\"icon-label\">Note</span></p>\n</div>"
+    },
+    {
+      "name": "comrak-alerts-005",
+      "input": "> Pay attention\n",
+      "expected": "<blockquote>\n<p>Pay attention</p>\n</blockquote>"
+    },
+    {
+      "name": "comrak-alerts-006",
+      "input": "Pay attention",
+      "expected": "<p>Pay attention</p>"
+    },
+    {
+      "name": "comrak-alerts-007",
+      "input": "- item one\n",
+      "expected": "<ul>\n<li>item one</li>\n</ul>"
+    },
+    {
+      "name": "comrak-alerts-008",
+      "input": "  > [!note]\n",
+      "expected": "<div class=\"markdown-alert markdown-alert-note\">\n<p class=\"markdown-alert-title\"><svg class=\"s18 icon-svg\" aria-hidden=\"true\"><use href=\"/assets/icons-a9735328.svg#icon--help\"></use></svg><span class=\"icon-label\">Note</span></p>\n</div>"
+    },
+    {
+      "name": "comrak-alerts-009",
+      "input": "  > Pay attention\n",
+      "expected": "<blockquote>\n<p>Pay attention</p>\n</blockquote>"
+    },
+    {
+      "name": "comrak-alerts-010",
+      "input": "item one",
+      "expected": "<p>item one</p>"
+    },
+    {
+      "name": "comrak-alerts-011",
+      "input": ">>> [!note]\n",
+      "expected": "<blockquote>\n<blockquote>\n<div class=\"markdown-alert markdown-alert-note\">\n<p class=\"markdown-alert-title\"><svg class=\"s18 icon-svg\" aria-hidden=\"true\"><use href=\"/assets/icons-a9735328.svg#icon--help\"></use></svg><span class=\"icon-label\">Note</span></p>\n</div>\n</blockquote>\n</blockquote>"
+    },
+    {
+      "name": "comrak-alerts-012",
+      "input": "Pay attention\n",
+      "expected": "<p>Pay attention</p>"
+    },
+    {
+      "name": "comrak-alerts-013",
+      "input": ">>>\n",
+      "expected": "<blockquote>\n<blockquote>\n<blockquote>\n</blockquote>\n</blockquote>\n</blockquote>"
+    },
+    {
+      "name": "comrak-strikethrough-001",
+      "input": "This is ~strikethrough~.\n\nAs is ~~this, okay~~?\n",
+      "expected": "<p>This is <del>strikethrough</del>.</p>\n<p>As is <del>this, okay</del>?</p>"
+    },
+    {
+      "name": "comrak-strikethrough-002",
+      "input": "<p>This is <del>strikethrough</del>.</p>\n<p>As is <del>this, okay</del>?</p>\n",
+      "expected": "<p>This is <del>strikethrough</del>.</p>\n<p>As is <del>this, okay</del>?</p>"
+    },
+    {
+      "name": "comrak-tagfilter-001",
+      "input": "hi <xmp> ok\n\n<xmp>\n",
+      "expected": "<p>hi &lt;xmp&gt; ok</p>\n&lt;xmp&gt;"
+    },
+    {
+      "name": "comrak-tagfilter-002",
+      "input": "<p>hi &lt;xmp> ok</p>\n&lt;xmp>\n",
+      "expected": "<p>hi &lt;xmp&gt; ok</p>\n&lt;xmp&gt;"
+    },
+    {
+      "name": "comrak-escaped_char_spans-001",
+      "input": "\\@user",
+      "expected": "<p><span>@</span>user</p>"
+    },
+    {
+      "name": "comrak-escaped_char_spans-002",
+      "input": "<p><span data-escaped-char>@</span>user</p>\n",
+      "expected": "<p><span>@</span>user</p>"
+    },
+    {
+      "name": "comrak-escaped_char_spans-003",
+      "input": "This\\@that",
+      "expected": "<p>This<span>@</span>that</p>"
+    },
+    {
+      "name": "comrak-escaped_char_spans-004",
+      "input": "<p>This<span data-escaped-char>@</span>that</p>\n",
+      "expected": "<p>This<span>@</span>that</p>"
+    },
+    {
+      "name": "comrak-escaped_char_spans-005",
+      "input": "<p>@user</p>\n",
+      "expected": "<p>@user</p>"
+    },
+    {
+      "name": "comrak-escaped_char_spans-006",
+      "input": "<p>This@that</p>\n",
+      "expected": "<p>This@that</p>"
+    },
+    {
+      "name": "comrak-regressions-001",
+      "input": "URI autolink: <https://www.pixiv.net>\n\nEmail autolink: <bill@microsoft.com>\n\n* Inline <em>tag</em> **ha**.\n* Inline <!-- comment --> **ha**.\n* Inline <? processing instruction ?> **ha**.\n* Inline <!DECLARATION OKAY> **ha**.\n* Inline <![CDATA[ok]ha **ha** ]]> **ha**.\n",
+      "expected": "<p>URI autolink: <a href=\"https://www.pixiv.net\" class=\"external\">https://www.pixiv.net</a></p>\n<p>Email autolink: <a href=\"mailto:bill@microsoft.com\" class=\"email\">bill@microsoft.com</a></p>\n<ul>\n<li>Inline <em>tag</em> <strong>ha</strong>.</li>\n<li>Inline  <strong>ha</strong>.</li>\n<li>Inline  processing instruction ?&gt; <strong>ha</strong>.</li>\n<li>Inline  <strong>ha</strong>.</li>\n<li>Inline  <strong>ha</strong>.</li>\n</ul>"
+    },
+    {
+      "name": "comrak-regressions-002",
+      "input": "<p>URI autolink: <a href=\"https://www.pixiv.net\">https://www.pixiv.net</a></p>\n<p>Email autolink: <a href=\"mailto:bill@microsoft.com\">bill@microsoft.com</a></p>\n<ul>\n<li>Inline <em>tag</em> <strong>ha</strong>.</li>\n<li>Inline <!-- comment --> <strong>ha</strong>.</li>\n<li>Inline <? processing instruction ?> <strong>ha</strong>.</li>\n<li>Inline <!DECLARATION OKAY> <strong>ha</strong>.</li>\n<li>Inline <![CDATA[ok]ha **ha** ]]> <strong>ha</strong>.</li>\n</ul>\n",
+      "expected": "<p>URI autolink: <a href=\"https://www.pixiv.net\" class=\"external\">https://www.pixiv.net</a></p>\n<p>Email autolink: <a href=\"mailto:bill@microsoft.com\" class=\"email\">bill@microsoft.com</a></p>\n<ul>\n<li>Inline <em>tag</em> <strong>ha</strong>.</li>\n<li>Inline  <strong>ha</strong>.</li>\n<li>Inline  processing instruction ?&gt; <strong>ha</strong>.</li>\n<li>Inline  <strong>ha</strong>.</li>\n<li>Inline  <strong>ha</strong>.</li>\n</ul>"
+    },
+    {
+      "name": "comrak-regressions-003",
+      "input": "[A]:\u001b\n\nX [A] Y\n",
+      "expected": "<p>[A]:</p>\n<p>X [A] Y</p>"
+    },
+    {
+      "name": "comrak-regressions-004",
+      "input": "<p>[A]:\u001b</p>\n<p>X [A] Y</p>\n",
+      "expected": "<p>[A]:</p>\n<p>X [A] Y</p>"
+    },
+    {
+      "name": "comrak-regressions-005",
+      "input": "[link](&#x6A&#x61&#x76&#x61&#x73&#x63&#x72&#x69&#x70&#x74&#x3A&#x61&#x6C&#x65&#x72&#x74&#x28&#x27&#x58&#x53&#x53&#x27&#x29)",
+      "expected": "<p><a href=\"&amp;#x6A&amp;#x61&amp;#x76&amp;#x61&amp;#x73&amp;#x63&amp;#x72&amp;#x69&amp;#x70&amp;#x74&amp;#x3A&amp;#x61&amp;#x6C&amp;#x65&amp;#x72&amp;#x74&amp;#x28&amp;#x27&amp;#x58&amp;#x53&amp;#x53&amp;#x27&amp;#x29\">link</a></p>"
+    },
+    {
+      "name": "comrak-regressions-006",
+      "input": "<p><a href=\"&amp;#x6A&amp;#x61&amp;#x76&amp;#x61&amp;#x73&amp;#x63&amp;#x72&amp;#x69&amp;#x70&amp;#x74&amp;#x3A&amp;#x61&amp;#x6C&amp;#x65&amp;#x72&amp;#x74&amp;#x28&amp;#x27&amp;#x58&amp;#x53&amp;#x53&amp;#x27&amp;#x29\">link</a></p>\n",
+      "expected": "<p><a href=\"&amp;#x6A&amp;#x61&amp;#x76&amp;#x61&amp;#x73&amp;#x63&amp;#x72&amp;#x69&amp;#x70&amp;#x74&amp;#x3A&amp;#x61&amp;#x6C&amp;#x65&amp;#x72&amp;#x74&amp;#x28&amp;#x27&amp;#x58&amp;#x53&amp;#x53&amp;#x27&amp;#x29\">link</a></p>"
+    },
+    {
+      "name": "comrak-regressions-007",
+      "input": "**bold*****bold+italic***",
+      "expected": "<p><strong>bold</strong><em><strong>bold+italic</strong></em></p>"
+    },
+    {
+      "name": "comrak-regressions-008",
+      "input": "<p><strong>bold</strong><em><strong>bold+italic</strong></em></p>\n",
+      "expected": "<p><strong>bold</strong><em><strong>bold+italic</strong></em></p>"
+    },
+    {
+      "name": "comrak-regressions-009",
+      "input": "#  #",
+      "expected": "<h1></h1>"
+    },
+    {
+      "name": "comrak-regressions-010",
+      "input": "<h1></h1>\n",
+      "expected": "<h1></h1>"
+    },
+    {
+      "name": "comrak-regressions-011",
+      "input": "<a+c:dd>",
+      "expected": "<p><a href=\"a+c:dd\" class=\"external\">a+c:dd</a></p>"
+    },
+    {
+      "name": "comrak-regressions-012",
+      "input": "<p><a href=\"a+c:dd\">a+c:dd</a></p>\n",
+      "expected": "<p><a href=\"a+c:dd\" class=\"external\">a+c:dd</a></p>"
+    },
+    {
+      "name": "comrak-regressions-013",
+      "input": "*text* [link](#section)",
+      "expected": "<p><em>text</em> <a href=\"#section\">link</a></p>"
+    },
+    {
+      "name": "comrak-regressions-014",
+      "input": "<p><em>text</em> <a href=\"#section\">link</a></p>\n",
+      "expected": "<p><em>text</em> <a href=\"#section\">link</a></p>"
+    },
+    {
+      "name": "comrak-regressions-015",
+      "input": "\n`Foo\n----\n`\n\n<a title=\"a lot\n---\nof dashes\"/>\n",
+      "expected": "<h2>`Foo</h2>\n<p>`</p>\n<h2>&lt;a title=\"a lot</h2>\n<p>of dashes\"/&gt;</p>"
+    },
+    {
+      "name": "comrak-regressions-016",
+      "input": "<h2>`Foo</h2>\n<p>`</p>\n<h2>&lt;a title=&quot;a lot</h2>\n<p>of dashes&quot;/&gt;</p>\n",
+      "expected": "<h2>`Foo</h2>\n<p>`</p>\n<h2>&lt;a title=\"a lot</h2>\n<p>of dashes\"/&gt;</p>"
+    },
+    {
+      "name": "comrak-regressions-017",
+      "input": "foo\u0000",
+      "expected": "<p>foo�</p>"
+    },
+    {
+      "name": "comrak-regressions-018",
+      "input": "<p>foo�</p>\n",
+      "expected": "<p>foo�</p>"
+    },
+    {
+      "name": "comrak-regressions-019",
+      "input": "foo\u0000ba",
+      "expected": "<p>foo�ba</p>"
+    },
+    {
+      "name": "comrak-regressions-020",
+      "input": "<p>foo�ba</p>\n",
+      "expected": "<p>foo�ba</p>"
+    },
+    {
+      "name": "comrak-regressions-021",
+      "input": "foo\u0000ba\u0000",
+      "expected": "<p>foo�ba�</p>"
+    },
+    {
+      "name": "comrak-regressions-022",
+      "input": "<p>foo�ba�</p>\n",
+      "expected": "<p>foo�ba�</p>"
+    },
+    {
+      "name": "comrak-regressions-023",
+      "input": "abc\ndef\n\nghi\n",
+      "expected": "<p>abc<br>\ndef</p>\n<p>ghi</p>"
+    },
+    {
+      "name": "comrak-regressions-024",
+      "input": "<p data-sourcepos=\"1:1-2:3\">abc\ndef</p>\n<p data-sourcepos=\"4:1-4:3\">ghi</p>\n",
+      "expected": "<p>abc\ndef</p>\n<p>ghi</p>"
+    },
+    {
+      "name": "comrak-regressions-025",
+      "input": ":x:",
+      "expected": "<p>:x:</p>"
+    },
+    {
+      "name": "comrak-regressions-026",
+      "input": "<p>❌</p>\n",
+      "expected": "<p>❌</p>"
+    },
+    {
+      "name": "comrak-regressions-027",
+      "input": "``\n",
+      "expected": "<p>``</p>"
+    },
+    {
+      "name": "comrak-regressions-028",
+      "input": "- ab\n",
+      "expected": "<ul>\n<li>ab</li>\n</ul>"
+    },
+    {
+      "name": "comrak-regressions-029",
+      "input": "- cdef\n",
+      "expected": "<ul>\n<li>cdef</li>\n</ul>"
+    },
+    {
+      "name": "comrak-regressions-030",
+      "input": "hello <https://example.com/fooo> world\nhello [foo](https://example.com) world\nhello [foo] world\nhello [bar][bar] world\nhello https://example.com/foo world\nhello www.example.com world\nhello foo@example.com world\n\n[foo]: https://example.com\n[bar]: https://example.com",
+      "expected": "<p>hello <a href=\"https://example.com/fooo\" class=\"external\">https://example.com/fooo</a> world<br>\nhello <a href=\"https://example.com\" class=\"external\">foo</a> world<br>\nhello <a href=\"https://example.com\" class=\"external\">foo</a> world<br>\nhello <a href=\"https://example.com\" class=\"external\">bar</a> world<br>\nhello <a href=\"https://example.com/foo\" class=\"external\">https://example.com/foo</a> world<br>\nhello <a href=\"http://www.example.com\" class=\"external\">www.example.com</a> world<br>\nhello <a href=\"mailto:foo@example.com\" class=\"email\">foo@example.com</a> world</p>"
+    },
+    {
+      "name": "comrak-regressions-031",
+      "input": "hello ",
+      "expected": "<p>hello</p>"
+    },
+    {
+      "name": "comrak-regressions-032",
+      "input": "https://example.com/fooo",
+      "expected": "<p><a href=\"https://example.com/fooo\" class=\"external\">https://example.com/fooo</a></p>"
+    },
+    {
+      "name": "comrak-regressions-033",
+      "input": " world",
+      "expected": "<p>world</p>"
+    },
+    {
+      "name": "comrak-regressions-034",
+      "input": "https://example.com",
+      "expected": "<p><a href=\"https://example.com\" class=\"external\">https://example.com</a></p>"
+    },
+    {
+      "name": "comrak-regressions-035",
+      "input": "https://example.com/foo",
+      "expected": "<p><a href=\"https://example.com/foo\" class=\"external\">https://example.com/foo</a></p>"
+    },
+    {
+      "name": "comrak-regressions-036",
+      "input": "http://www.example.com",
+      "expected": "<p><a href=\"http://www.example.com\" class=\"external\">http://www.example.com</a></p>"
+    },
+    {
+      "name": "comrak-regressions-037",
+      "input": "mailto:foo@example.com",
+      "expected": "<p><a href=\"mailto:foo@example.com\" class=\"email\">mailto:foo@example.com</a></p>"
+    },
+    {
+      "name": "comrak-regressions-038",
+      "input": "foo@example.com",
+      "expected": "<p><a href=\"mailto:foo@example.com\" class=\"email\">foo@example.com</a></p>"
+    },
+    {
+      "name": "comrak-core-001",
+      "input": "My **document**.\n\nIt's mine.\n\n> Yes.\n\n## Hi!\n\nOkay.\n",
+      "expected": "<p>My <strong>document</strong>.</p>\n<p>It's mine.</p>\n<blockquote>\n<p>Yes.</p>\n</blockquote>\n<h2>Hi!</h2>\n<p>Okay.</p>"
+    },
+    {
+      "name": "comrak-core-002",
+      "input": "<p>My <strong>document</strong>.</p>\n<p>It's mine.</p>\n<blockquote>\n<p>Yes.</p>\n</blockquote>\n<h2>Hi!</h2>\n<p>Okay.</p>\n",
+      "expected": "<p>My <strong>document</strong>.</p>\n<p>It's mine.</p>\n<blockquote>\n<p>Yes.</p>\n</blockquote>\n<h2>Hi!</h2>\n<p>Okay.</p>"
+    },
+    {
+      "name": "comrak-core-003",
+      "input": "``` rust yum\nfn main<'a>();\n```\n",
+      "expected": "<pre><code class=\"rust syntaxhl\" data-language=\"rust\"><span class=\"k\">fn</span> <span class=\"n\">main</span><span class=\"o\">&lt;</span><span class=\"nv\">'a</span><span class=\"o\">&gt;</span><span class=\"p\">();</span>\n</code></pre>"
+    },
+    {
+      "name": "comrak-core-004",
+      "input": "<pre><code class=\"language-rust\">fn main&lt;'a&gt;();\n</code></pre>\n",
+      "expected": "<pre><code class=\"rust syntaxhl\" data-language=\"rust\"><span class=\"k\">fn</span> <span class=\"n\">main</span><span class=\"o\">&lt;</span><span class=\"nv\">'a</span><span class=\"o\">&gt;</span><span class=\"p\">();</span>\n</code></pre>"
+    },
+    {
+      "name": "comrak-core-005",
+      "input": "2. Hello.\n3. Hi.\n",
+      "expected": "<ol start=\"2\">\n<li>Hello.</li>\n<li>Hi.</li>\n</ol>"
+    },
+    {
+      "name": "comrak-core-006",
+      "input": "<ol start=\"2\">\n<li>Hello.</li>\n<li>Hi.</li>\n</ol>\n",
+      "expected": "<ol start=\"2\">\n<li>Hello.</li>\n<li>Hi.</li>\n</ol>"
+    },
+    {
+      "name": "comrak-core-007",
+      "input": "- Hello.\n- Hi.\n",
+      "expected": "<ul>\n<li>Hello.</li>\n<li>Hi.</li>\n</ul>"
+    },
+    {
+      "name": "comrak-core-008",
+      "input": "<ul>\n<li>Hello.</li>\n<li>Hi.</li>\n</ul>\n",
+      "expected": "<ul>\n<li>Hello.</li>\n<li>Hi.</li>\n</ul>"
+    },
+    {
+      "name": "comrak-core-009",
+      "input": "---\n\n- - -\n\n\n_        _   _\n",
+      "expected": "<hr>\n<hr>\n<hr>"
+    },
+    {
+      "name": "comrak-core-010",
+      "input": "<hr />\n<hr />\n<hr />\n",
+      "expected": "<hr>\n<hr>\n<hr>"
+    },
+    {
+      "name": "comrak-core-011",
+      "input": "# h1\nfoo\n## h2\n",
+      "expected": "<h1>h1</h1>\n<p>foo</p>\n<h2>h2</h2>"
+    },
+    {
+      "name": "comrak-core-012",
+      "input": "<h1>h1</h1>\n<p>foo</p>\n<h2>h2</h2>\n",
+      "expected": "<h1>h1</h1>\n<p>foo</p>\n<h2>h2</h2>"
+    },
+    {
+      "name": "comrak-core-013",
+      "input": "# h1\n",
+      "expected": "<h1>h1</h1>"
+    },
+    {
+      "name": "comrak-core-014",
+      "input": "foo\n",
+      "expected": "<p>foo</p>"
+    },
+    {
+      "name": "comrak-core-015",
+      "input": "## h2\n",
+      "expected": "<h2>h2</h2>"
+    },
+    {
+      "name": "comrak-core-016",
+      "input": "Hi\n==\n\nOk\n-----\n",
+      "expected": "<h1>Hi</h1>\n<h2>Ok</h2>"
+    },
+    {
+      "name": "comrak-core-017",
+      "input": "<h1>Hi</h1>\n<h2>Ok</h2>\n",
+      "expected": "<h1>Hi</h1>\n<h2>Ok</h2>"
+    },
+    {
+      "name": "comrak-core-018",
+      "input": "Header\n",
+      "expected": "<p>Header</p>"
+    },
+    {
+      "name": "comrak-core-019",
+      "input": "---\n",
+      "expected": "<hr>"
+    },
+    {
+      "name": "comrak-core-020",
+      "input": "Header",
+      "expected": "<p>Header</p>"
+    },
+    {
+      "name": "comrak-core-021",
+      "input": "text text\n---",
+      "expected": "<h2>text text</h2>"
+    },
+    {
+      "name": "comrak-core-022",
+      "input": "<p>text text</p>\n<hr />\n",
+      "expected": "<p>text text</p>\n<hr>"
+    },
+    {
+      "name": "comrak-core-023",
+      "input": "![image](https://example.com/image.png \"this is an image\")\n",
+      "expected": "<p><img src=\"https://example.com/image.png\" alt=\"image\" title=\"this is an image\"></p>"
+    },
+    {
+      "name": "comrak-core-024",
+      "input": "<p><figure><img src=\"https://example.com/image.png\" alt=\"image\" title=\"this is an image\" /><figcaption>this is an image</figcaption></figure></p>\n",
+      "expected": "<p><figure><img src=\"https://example.com/image.png\" alt=\"image\" title=\"this is an image\"><figcaption>this is an image</figcaption></figure></p>"
+    },
+    {
+      "name": "comrak-core-025",
+      "input": "![image](https://example.com/image.png)\n",
+      "expected": "<p><img src=\"https://example.com/image.png\" alt=\"image\"></p>"
+    },
+    {
+      "name": "comrak-core-026",
+      "input": "<p><figure><img src=\"https://example.com/image.png\" alt=\"image\" /></figure></p>\n",
+      "expected": "<p><figure><img src=\"https://example.com/image.png\" alt=\"image\"></figure></p>"
+    },
+    {
+      "name": "comrak-core-027",
+      "input": "<script>\n*ok* </script> *ok*\n\n*ok*\n\n*ok*\n\n<pre x>\n*ok*\n</style>\n*ok*\n<style>\n*ok*\n</style>\n\n*ok*\n",
+      "expected": "&lt;script&gt;\n*ok* &lt;/script&gt; *ok*\n<p><em>ok</em></p>\n<p><em>ok</em></p>\n<pre>\n*ok*\n&lt;/style&gt;\n<p><em>ok</em></p>\n&lt;style&gt;\n*ok*\n&lt;/style&gt;\n<p><em>ok</em></p></pre>"
+    },
+    {
+      "name": "comrak-core-028",
+      "input": "<script>\n*ok* </script> *ok*\n<p><em>ok</em></p>\n<p><em>ok</em></p>\n<pre x>\n*ok*\n</style>\n<p><em>ok</em></p>\n<style>\n*ok*\n</style>\n<p><em>ok</em></p>\n",
+      "expected": "&lt;script&gt;\n*ok* &lt;/script&gt; *ok*\n<p><em>ok</em></p>\n<p><em>ok</em></p>\n<pre>\n*ok*\n&lt;/style&gt;\n<p><em>ok</em></p>\n&lt;style&gt;\n*ok*\n&lt;/style&gt;\n<p><em>ok</em></p></pre>"
+    },
+    {
+      "name": "comrak-core-029",
+      "input": "   <!-- abc\n\nok --> *hi*\n*hi*\n",
+      "expected": "    *hi*\n<p><em>hi</em></p>"
+    },
+    {
+      "name": "comrak-core-030",
+      "input": "   <!-- abc\n\nok --> *hi*\n<p><em>hi</em></p>\n",
+      "expected": "    *hi*\n<p><em>hi</em></p>"
+    },
+    {
+      "name": "comrak-core-031",
+      "input": " <? o\nk ?> *a*\n*a*\n",
+      "expected": "  o\nk ?&gt; *a*\n<p><em>a</em></p>"
+    },
+    {
+      "name": "comrak-core-032",
+      "input": " <? o\nk ?> *a*\n<p><em>a</em></p>\n",
+      "expected": "  o\nk ?&gt; *a*\n<p><em>a</em></p>"
+    },
+    {
+      "name": "comrak-core-033",
+      "input": "<!X >\nok\n<!X\num > h\nok\n",
+      "expected": "\n<p>ok</p>\n h\n<p>ok</p>"
+    },
+    {
+      "name": "comrak-core-034",
+      "input": "<!X >\n<p>ok</p>\n<!X\num > h\n<p>ok</p>\n",
+      "expected": "\n<p>ok</p>\n h\n<p>ok</p>"
+    },
+    {
+      "name": "comrak-core-035",
+      "input": "<![CDATA[\n\nhm >\n*ok*\n]]> *ok*\n*ok*\n",
+      "expected": "\n*ok*\n]]&gt; *ok*\n<p><em>ok</em></p>"
+    },
+    {
+      "name": "comrak-core-036",
+      "input": "<![CDATA[\n\nhm >\n*ok*\n]]> *ok*\n<p><em>ok</em></p>\n",
+      "expected": "\n*ok*\n]]&gt; *ok*\n<p><em>ok</em></p>"
+    },
+    {
+      "name": "comrak-core-037",
+      "input": " </table>\n*x*\n\nok\n\n<li\n*x*\n",
+      "expected": " \n*x*\n<p>ok</p>\n"
+    },
+    {
+      "name": "comrak-core-038",
+      "input": " </table>\n*x*\n<p>ok</p>\n<li\n*x*\n",
+      "expected": " \n*x*\n<p>ok</p>\n"
+    },
+    {
+      "name": "comrak-core-039",
+      "input": "<a b >\nok\n\n<a b=>\nok\n\n<a b \n<a b> c\nok\n",
+      "expected": "<a>\nok\n<p>&lt;a b=&gt;<br>\nok</p>\n<p>&lt;a b<br>\n<a> c<br>\nok</a></p></a>"
+    },
+    {
+      "name": "comrak-core-040",
+      "input": "<a b >\nok\n<p>&lt;a b=&gt;\nok</p>\n<p>&lt;a b\n<a b> c\nok</p>\n",
+      "expected": "<a>\nok\n<p>&lt;a b=&gt;\nok</p>\n<p>&lt;a b\n<a> c\nok</a></p></a>"
+    },
+    {
+      "name": "comrak-core-041",
+      "input": "<a b c=x d='y' z=\"f\" >\nok\n\nok\n",
+      "expected": "<a>\nok\n<p>ok</p></a>"
+    },
+    {
+      "name": "comrak-core-042",
+      "input": "<a b c=x d='y' z=\"f\" >\nok\n<p>ok</p>\n",
+      "expected": "<a>\nok\n<p>ok</p></a>"
+    },
+    {
+      "name": "comrak-core-043",
+      "input": "Some `code\\` yep.\n",
+      "expected": "<p>Some <code>code\\</code> yep.</p>"
+    },
+    {
+      "name": "comrak-core-044",
+      "input": "<p>Some <code>code\\</code> yep.</p>\n",
+      "expected": "<p>Some <code>code\\</code> yep.</p>"
+    },
+    {
+      "name": "comrak-core-045",
+      "input": "`\n`",
+      "expected": "<p><code> </code></p>"
+    },
+    {
+      "name": "comrak-core-046",
+      "input": "<p><code> </code></p>\n",
+      "expected": "<p><code> </code></p>"
+    },
+    {
+      "name": "comrak-core-047",
+      "input": ">\\\n A",
+      "expected": "<blockquote>\n<p><br>\nA</p>\n</blockquote>"
+    },
+    {
+      "name": "comrak-core-048",
+      "input": "<blockquote>\n<p><br />\nA</p>\n</blockquote>\n",
+      "expected": "<blockquote>\n<p><br>\nA</p>\n</blockquote>"
+    },
+    {
+      "name": "comrak-core-049",
+      "input": "> A\\\n> B",
+      "expected": "<blockquote>\n<p>A<br>\nB</p>\n</blockquote>"
+    },
+    {
+      "name": "comrak-core-050",
+      "input": "<blockquote>\n<p>A<br />\nB</p>\n</blockquote>\n",
+      "expected": "<blockquote>\n<p>A<br>\nB</p>\n</blockquote>"
+    },
+    {
+      "name": "comrak-core-051",
+      "input": "Some `code1`. More ``` code2 ```.\n",
+      "expected": "<p>Some <code>code1</code>. More <code>code2</code>.</p>"
+    },
+    {
+      "name": "comrak-core-052",
+      "input": "code1",
+      "expected": "<p>code1</p>"
+    },
+    {
+      "name": "comrak-core-053",
+      "input": "code2",
+      "expected": "<p>code2</p>"
+    },
+    {
+      "name": "comrak-core-054",
+      "input": "Some \\`fake code\\`.\n\nSome fake linebreaks:\\\nYes.\\\nSee?\n\nGa\\rbage.\n",
+      "expected": "<p>Some <span>`</span>fake code<span>`</span>.</p>\n<p>Some fake linebreaks:<br>\nYes.<br>\nSee?</p>\n<p>Ga\\rbage.</p>"
+    },
+    {
+      "name": "comrak-core-055",
+      "input": "<p>Some `fake code`.</p>\n<p>Some fake linebreaks:<br />\nYes.<br />\nSee?</p>\n<p>Ga\\rbage.</p>\n",
+      "expected": "<p>Some `fake code`.</p>\n<p>Some fake linebreaks:<br>\nYes.<br>\nSee?</p>\n<p>Ga\\rbage.</p>"
+    },
+    {
+      "name": "comrak-core-056",
+      "input": "This is &amp;, &copy;, &trade;, \\&trade;, &xyz;, &NotEqualTilde;.\n\n&#8734; &#x221e;\n",
+      "expected": "<p>This is &amp;, ©, ™, <span>&amp;</span>trade;, &amp;xyz;, ≂̸.</p>\n<p>∞ ∞</p>"
+    },
+    {
+      "name": "comrak-core-057",
+      "input": "<p>This is &amp;, ©, ™, &amp;trade;, &amp;xyz;, ≂̸.</p>\n<p>∞ ∞</p>\n",
+      "expected": "<p>This is &amp;, ©, ™, &amp;trade;, &amp;xyz;, ≂̸.</p>\n<p>∞ ∞</p>"
+    },
+    {
+      "name": "comrak-core-058",
+      "input": "Where are you [going](https://microsoft.com (today))?\n\n[Where am I?](/here)\n",
+      "expected": "<p>Where are you <a href=\"https://microsoft.com\" title=\"today\" class=\"external\">going</a>?</p>\n<p><a href=\"/here\">Where am I?</a></p>"
+    },
+    {
+      "name": "comrak-core-059",
+      "input": "<p>Where are you <a href=\"https://microsoft.com\" title=\"today\">going</a>?</p>\n<p><a href=\"/here\">Where am I?</a></p>\n",
+      "expected": "<p>Where are you <a href=\"https://microsoft.com\" title=\"today\" class=\"external\">going</a>?</p>\n<p><a href=\"/here\">Where am I?</a></p>"
+    },
+    {
+      "name": "comrak-core-060",
+      "input": "Where are you [going](#1\\.-link (today))?\n\n[Where am I?](/here)\n",
+      "expected": "<p>Where are you <a href=\"#1.-link\" title=\"today\">going</a>?</p>\n<p><a href=\"/here\">Where am I?</a></p>"
+    },
+    {
+      "name": "comrak-core-061",
+      "input": "<p>Where are you <a href=\"#1.-link\" title=\"today\">going</a>?</p>\n<p><a href=\"/here\">Where am I?</a></p>\n",
+      "expected": "<p>Where are you <a href=\"#1.-link\" title=\"today\">going</a>?</p>\n<p><a href=\"/here\">Where am I?</a></p>"
+    },
+    {
+      "name": "comrak-core-062",
+      "input": "[Link Text](\\\\\\\\)",
+      "expected": "<p><a href=\"%5C%5C\">Link Text</a></p>"
+    },
+    {
+      "name": "comrak-core-063",
+      "input": "<p><a href=\"%5C%5C\">Link Text</a></p>",
+      "expected": "<p><a href=\"%5C%5C\">Link Text</a></p>"
+    },
+    {
+      "name": "comrak-core-064",
+      "input": "[Link Text](\\\\\\\\\\\\\\\\\\\\)",
+      "expected": "<p><a href=\"%5C%5C%5C%5C%5C\">Link Text</a></p>"
+    },
+    {
+      "name": "comrak-core-065",
+      "input": "<p><a href=\"%5C%5C%5C%5C%5C\">Link Text</a></p>",
+      "expected": "<p><a href=\"%5C%5C%5C%5C%5C\">Link Text</a></p>"
+    },
+    {
+      "name": "comrak-core-066",
+      "input": "[Link Text](\\\\\\\\ (title))",
+      "expected": "<p><a href=\"%5C%5C\" title=\"title\">Link Text</a></p>"
+    },
+    {
+      "name": "comrak-core-067",
+      "input": "<p><a href=\"%5C%5C\" title=\"title\">Link Text</a></p>",
+      "expected": "<p><a href=\"%5C%5C\" title=\"title\">Link Text</a></p>"
+    },
+    {
+      "name": "comrak-core-068",
+      "input": "[Link Text](\\#)",
+      "expected": "<p><a href=\"#\">Link Text</a></p>"
+    },
+    {
+      "name": "comrak-core-069",
+      "input": "<p><a href=\"#\">Link Text</a></p>",
+      "expected": "<p><a href=\"#\">Link Text</a></p>"
+    },
+    {
+      "name": "comrak-core-070",
+      "input": "I am ![eating [things](/url)](http://i.imgur.com/QqK1vq7.png).\n",
+      "expected": "<p>I am <img src=\"http://i.imgur.com/QqK1vq7.png\" alt=\"eating things\">.</p>"
+    },
+    {
+      "name": "comrak-core-071",
+      "input": "<p>I am <img src=\"http://i.imgur.com/QqK1vq7.png\" alt=\"eating things\" />.</p>\n",
+      "expected": "<p>I am <img src=\"http://i.imgur.com/QqK1vq7.png\" alt=\"eating things\">.</p>"
+    },
+    {
+      "name": "comrak-core-072",
+      "input": "This [is] [legit], [very][honestly] legit.\n\n[legit]: ok\n[honestly]: sure \"hm\"\n",
+      "expected": "<p>This [is] <a href=\"ok\">legit</a>, <a href=\"sure\" title=\"hm\">very</a> legit.</p>"
+    },
+    {
+      "name": "comrak-core-073",
+      "input": "<p>This [is] <a href=\"ok\">legit</a>, <a href=\"sure\" title=\"hm\">very</a> legit.</p>\n",
+      "expected": "<p>This [is] <a href=\"ok\">legit</a>, <a href=\"sure\" title=\"hm\">very</a> legit.</p>"
+    },
+    {
+      "name": "comrak-core-074",
+      "input": "[ẞ]\n\n[SS]: /url\t\n",
+      "expected": "<p><a href=\"/url\">ẞ</a></p>"
+    },
+    {
+      "name": "comrak-core-075",
+      "input": "<p><a href=\"/url\">ẞ</a></p>\n",
+      "expected": "<p><a href=\"/url\">ẞ</a></p>"
+    },
+    {
+      "name": "comrak-core-076",
+      "input": "[data:image/png](data:image/png/x)\n\n[data:image/gif](data:image/gif/x)\n\n[data:image/jpeg](data:image/jpeg/x)\n\n[data:image/webp](data:image/webp/x)\n\n[data:malicious](data:malicious/x)\n\n[javascript:malicious](javascript:malicious)\n\n[vbscript:malicious](vbscript:malicious)\n\n[file:malicious](file:malicious)\n\n",
+      "expected": "<p><a>data:image/png</a></p>\n<p><a>data:image/gif</a></p>\n<p><a>data:image/jpeg</a></p>\n<p><a>data:image/webp</a></p>\n<p><a>data:malicious</a></p>\n<p><a>javascript:malicious</a></p>\n<p><a>vbscript:malicious</a></p>\n<p><a href=\"file:malicious\" class=\"external\">file:malicious</a></p>"
+    },
+    {
+      "name": "comrak-core-077",
+      "input": "<p><a href=\"data:image/png/x\">data:image/png</a></p>\n<p><a href=\"data:image/gif/x\">data:image/gif</a></p>\n<p><a href=\"data:image/jpeg/x\">data:image/jpeg</a></p>\n<p><a href=\"data:image/webp/x\">data:image/webp</a></p>\n<p><a href=\"\">data:malicious</a></p>\n<p><a href=\"\">javascript:malicious</a></p>\n<p><a href=\"\">vbscript:malicious</a></p>\n<p><a href=\"\">file:malicious</a></p>\n",
+      "expected": "<p><a>data:image/png</a></p>\n<p><a>data:image/gif</a></p>\n<p><a>data:image/jpeg</a></p>\n<p><a>data:image/webp</a></p>\n<p><a>data:malicious</a></p>\n<p><a>javascript:malicious</a></p>\n<p><a>vbscript:malicious</a></p>\n<p><a>file:malicious</a></p>"
+    },
+    {
+      "name": "comrak-core-078",
+      "input": "[a](\\ b)",
+      "expected": "<p>[a](\\ b)</p>"
+    },
+    {
+      "name": "comrak-core-079",
+      "input": "<p>[a](\\ b)</p>\n",
+      "expected": "<p>[a](\\ b)</p>"
+    },
+    {
+      "name": "comrak-core-080",
+      "input": "a\u0000b",
+      "expected": "<p>a�b</p>"
+    },
+    {
+      "name": "comrak-core-081",
+      "input": "<p>a�b</p>\n",
+      "expected": "<p>a�b</p>"
+    },
+    {
+      "name": "comrak-core-082",
+      "input": "a\u0000b\u0000c",
+      "expected": "<p>a�b�c</p>"
+    },
+    {
+      "name": "comrak-core-083",
+      "input": "<p>a�b�c</p>\n",
+      "expected": "<p>a�b�c</p>"
+    },
+    {
+      "name": "comrak-core-084",
+      "input": "a\u0000\nb",
+      "expected": "<p>a�<br>\nb</p>"
+    },
+    {
+      "name": "comrak-core-085",
+      "input": "<p>a�\nb</p>\n",
+      "expected": "<p>a�\nb</p>"
+    },
+    {
+      "name": "comrak-core-086",
+      "input": "a\u0000\r\nb",
+      "expected": "<p>a�<br>\nb</p>"
+    },
+    {
+      "name": "comrak-core-087",
+      "input": "a\r\n\u0000b",
+      "expected": "<p>a<br>\n�b</p>"
+    },
+    {
+      "name": "comrak-core-088",
+      "input": "<p>a\n�b</p>\n",
+      "expected": "<p>a\n�b</p>"
+    },
+    {
+      "name": "comrak-core-089",
+      "input": "[a](javascript:a) [b](Javascript:b) [c](jaVascript:c) [d](data:xyz) [e](Data:xyz) [f](vbscripT:f) [g](FILE:g)\n",
+      "expected": "<p><a>a</a> <a>b</a> <a>c</a> <a>d</a> <a>e</a> <a>f</a> <a href=\"FILE:g\" class=\"external\">g</a></p>"
+    },
+    {
+      "name": "comrak-core-090",
+      "input": "<p><a href=\"\">a</a> <a href=\"\">b</a> <a href=\"\">c</a> <a href=\"\">d</a> <a href=\"\">e</a> <a href=\"\">f</a> <a href=\"\">g</a></p>\n",
+      "expected": "<p><a>a</a> <a>b</a> <a>c</a> <a>d</a> <a>e</a> <a>f</a> <a>g</a></p>"
+    },
+    {
+      "name": "comrak-core-091",
+      "input": "[ABCD](/)\n",
+      "expected": "<p><a href=\"/\">ABCD</a></p>"
+    },
+    {
+      "name": "comrak-core-092",
+      "input": "ABCD",
+      "expected": "<p>ABCD</p>"
+    },
+    {
+      "name": "comrak-core-093",
+      "input": "[AB\nCD](/)\n",
+      "expected": "<p><a href=\"/\">AB<br>\nCD</a></p>"
+    },
+    {
+      "name": "comrak-core-094",
+      "input": "- A\n[![B](/B.png)](/B)\n",
+      "expected": "<ul>\n<li>A<br>\n<a href=\"/B\"><img src=\"/B.png\" alt=\"B\"></a>\n</li>\n</ul>"
+    },
+    {
+      "name": "comrak-core-095",
+      "input": "/B.png",
+      "expected": "<p>/B.png</p>"
+    },
+    {
+      "name": "comrak-core-096",
+      "input": "- A\n  [![B](/B.png)](/B)\n",
+      "expected": "<ul>\n<li>A<br>\n<a href=\"/B\"><img src=\"/B.png\" alt=\"B\"></a>\n</li>\n</ul>"
+    },
+    {
+      "name": "comrak-core-097",
+      "input": "- A\n   [![B](/B.png)](/B)\n",
+      "expected": "<ul>\n<li>A<br>\n<a href=\"/B\"><img src=\"/B.png\" alt=\"B\"></a>\n</li>\n</ul>"
+    },
+    {
+      "name": "comrak-core-098",
+      "input": "  A\n",
+      "expected": "<p>A</p>"
+    },
+    {
+      "name": "comrak-core-099",
+      "input": "   B\n",
+      "expected": "<p>B</p>"
+    },
+    {
+      "name": "comrak-core-100",
+      "input": "- A\n",
+      "expected": "<ul>\n<li>A</li>\n</ul>"
+    },
+    {
+      "name": "comrak-core-101",
+      "input": "-  C\n",
+      "expected": "<ul>\n<li>C</li>\n</ul>"
+    },
+    {
+      "name": "comrak-core-102",
+      "input": "_**this**_\n",
+      "expected": "<p><em><strong>this</strong></em></p>"
+    },
+    {
+      "name": "comrak-core-103",
+      "input": "**_this_**\n",
+      "expected": "<p><strong><em>this</em></strong></p>"
+    },
+    {
+      "name": "comrak-core-104",
+      "input": "___this___\n",
+      "expected": "<p><em><strong>this</strong></em></p>"
+    },
+    {
+      "name": "comrak-core-105",
+      "input": "***this***\n",
+      "expected": "<p><em><strong>this</strong></em></p>"
+    },
+    {
+      "name": "comrak-core-106",
+      "input": "test <http://[319:3cf0:dd1d:47b9:20c:29ff:fe2c:39be]/test>",
+      "expected": "<p>test <a href=\"http://[319:3cf0:dd1d:47b9:20c:29ff:fe2c:39be]/test\" class=\"external\">http://[319:3cf0:dd1d:47b9:20c:29ff:fe2c:39be]/test</a></p>"
+    },
+    {
+      "name": "comrak-core-107",
+      "input": "<p>test <a href=\"http://[319:3cf0:dd1d:47b9:20c:29ff:fe2c:39be]/test\">http://[319:3cf0:dd1d:47b9:20c:29ff:fe2c:39be]/test</a></p>\n",
+      "expected": "<p>test <a href=\"http://[319:3cf0:dd1d:47b9:20c:29ff:fe2c:39be]/test\" class=\"external\">http://[319:3cf0:dd1d:47b9:20c:29ff:fe2c:39be]/test</a></p>"
+    },
+    {
+      "name": "comrak-core-108",
+      "input": "[henwo](https://[2402:1f00:89aa:300::5%25eth0]:9443?target=<yes>)",
+      "expected": "<p><a href=\"https://[2402:1f00:89aa:300::5%25eth0]:9443?target=%3Cyes%3E\">henwo</a></p>"
+    },
+    {
+      "name": "comrak-core-109",
+      "input": "<p><a href=\"https://[2402:1f00:89aa:300::5%25eth0]:9443?target=%3Cyes%3E\">henwo</a></p>\n",
+      "expected": "<p><a href=\"https://[2402:1f00:89aa:300::5%25eth0]:9443?target=%3Cyes%3E\">henwo</a></p>"
     }
   ]
 }

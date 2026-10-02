@@ -387,21 +387,6 @@ func ExternalLinks(frag *htmldom.Node) {
 	}
 }
 
-// uriScheme は Ruby の URI.parse(url).scheme を近似する（解析失敗時は ""）。
-func uriScheme(s string) string {
-	if !rfc3986URI(s) {
-		return ""
-	}
-	return strings.ToLower(s[:strings.IndexByte(s, ':')])
-}
-
-// rfc3986URI は Ruby の URI::RFC3986_Parser が受理する文字列かを判定する。
-var reRFC3986 = regexp.MustCompile(`\A(?:[A-Za-z][A-Za-z0-9+\-.]*:(?:[A-Za-z0-9\-._~!$&'()*+,;=:@/?]|%[0-9A-Fa-f]{2})*(?:#(?:[A-Za-z0-9\-._~!$&'()*+,;=:@/?]|%[0-9A-Fa-f]{2})*)?)\z`)
-
-func rfc3986URI(s string) bool {
-	return reRFC3986.MatchString(s)
-}
-
 // HTML は Redmine::WikiFormatting::HtmlSanitizer.call（サニタイズ＋外部リンク処理）。
 func HTML(html string) string {
 	frag := htmldom.ParseFragment(html)
