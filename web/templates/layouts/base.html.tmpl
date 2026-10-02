@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="{{current_language}}">
+<head>
+<meta charset="utf-8" />
+<title>{{html_title}}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="{{app_name}}" />
+<meta name="keywords" content="issue,bug,tracker" />
+{{csrf_meta_tag}}
+{{favicon}}
+{{stylesheet_link_tag "jquery/jquery-ui-1.13.2" "tribute-5.1.3" "application" "responsive" (hash "media" "all")}}
+{{if eq (l "direction") "rtl"}}{{stylesheet_link_tag "rtl" (hash "media" "all")}}{{end}}
+{{javascript_importmap_tags}}
+{{javascript_heads}}
+{{heads_for_theme}}
+{{heads_for_i18n}}
+{{heads_for_auto_complete current_project}}
+{{call_hook "view_layouts_base_html_head"}}
+<!-- page specific tags -->
+{{yield "header_tags" -}}
+</head>
+<body class="{{body_css_classes}}" data-text-formatting="{{setting "text_formatting"}}">
+{{call_hook "view_layouts_base_body_top"}}
+<div id="wrapper">
+
+<div class="flyout-menu js-flyout-menu">
+
+    {{if or logged (not login_required)}}
+        <div class="flyout-menu__search">
+            {{form_tag (search_path (hash "id" current_project)) (hash "method" "get")}}
+            {{if default_search_scope}}{{hidden_field_tag default_search_scope 1 (hash "id" nil)}}{{end}}
+            {{label_tag "flyout-search" (sprite_icon "search" (l "label_search") (hash "icon_only" true)) (hash "class" "search-magnifier search-magnifier--flyout")}}
+            {{text_field_tag "q" question (hash "id" "flyout-search" "class" "small js-search-input" "placeholder" (l "label_search"))}}
+            {{end_form}}
+        </div>
+    {{end}}
+
+    {{if logged}}
+        <div class="flyout-menu__avatar">
+          {{link_to (avatar current_user (hash "size" "40")) (user_path current_user)}}
+          {{link_to_user current_user (hash "format" "username")}}
+        </div>
+    {{end}}
+
+    {{if display_main_menu current_project}}
+        <h3>{{l "label_project"}}</h3>
+        <span class="js-project-menu"></span>
+    {{end}}
+
+    <h3>{{l "label_general"}}</h3>
+    <span class="js-general-menu"></span>
+
+    <span class="js-sidebar flyout-menu__sidebar"></span>
+
+    <h3>{{l "label_profile"}}</h3>
+    <span class="js-profile-menu"></span>
+
+</div>
+
+
+<div id="top-menu">
+    <div id="account">
+        {{render_menu "account_menu" -}}
+    </div>
+    {{if logged}}{{content_tag "div" (raw (printf "%s %s" (l "label_logged_as") (link_to_user current_user (hash "format" "username")))) (hash "id" "loggedas")}}{{end}}
+    {{if or logged (not login_required)}}{{render_menu "top_menu"}}{{end -}}
+</div>
+
+<div id="header">
+
+    <a href="#" class="mobile-toggle-button js-flyout-menu-toggle-button"></a>
+
+    {{if or logged (not login_required)}}
+    <div id="quick-search">
+        {{form_tag (search_path (hash "id" current_project)) (hash "method" "get")}}
+        {{hidden_field_tag "scope" default_search_project_scope (hash "id" nil)}}
+        {{if default_search_scope}}{{hidden_field_tag default_search_scope 1 (hash "id" nil)}}{{end}}
+        <label for='q'>
+          {{link_to (l "label_search") (search_path (hash "id" current_project "scope" default_search_project_scope)) (hash "accesskey" (accesskey "search"))}}:
+        </label>
+        {{text_field_tag "q" question (hash "size" 20 "class" "small" "accesskey" (accesskey "quick_search") "data" (hash "auto_complete" true))}}
+        {{end_form}}
+        {{render_project_jump_box}}
+    </div>
+    {{end}}
+
+    <h1>{{page_header_title}}</h1>
+
+    {{if display_main_menu current_project}}
+    <div id="main-menu" class="tabs">
+        {{render_main_menu current_project}}
+        <div class="tabs-buttons" style="display:none;">
+            <button class="tab-left icon-only" onclick="moveTabLeft(this); return false;">
+              {{sprite_icon "angle-left" (hash "rtl" true)}}
+            </button>
+            <button class="tab-right icon-only" onclick="moveTabRight(this); return false;">
+              {{sprite_icon "angle-right" (hash "rtl" true)}}
+            </button>
+        </div>
+    </div>
+    {{end}}
+</div>
+
+<div id="main" class="{{if sidebar_content}}collapsiblesidebar{{else}}nosidebar{{end}}">
+  {{if sidebar_content}}{{javascript_tag "$('#main.collapsiblesidebar').collapsibleSidebar();"}}{{end}}
+    <div id="sidebar">
+        {{if sidebar_content}}
+          <div id="sidebar-switch-panel" style="visibility: hidden;">
+            <a id="sidebar-switch-button" class="" href="#">
+              {{sprite_icon "chevrons-right" (hash "size" 20 "rtl" true)}}</a>
+          </div>
+          {{javascript_tag "$('#sidebar-switch-panel').css('visibility', 'visible');"}}
+        {{end}}
+        <div id="sidebar-wrapper">
+          {{yield "sidebar"}}
+          {{view_layouts_base_sidebar_hook_response}}
+        </div>
+    </div>
+
+    <div id="content">
+        {{render_flash_messages}}
+        {{yield}}
+        {{call_hook "view_layouts_base_content"}}
+        <div style="clear:both;"></div>
+    </div>
+</div>
+<div id="footer">
+    Powered by {{link_to app_name app_url (hash "target" "_blank" "rel" "noopener")}} &copy; 2006-2026 Jean-Philippe Lang
+</div>
+
+<div id="ajax-indicator" style="display:none;">
+  <span class="icon">
+    {{sprite_icon "loader" (l "label_loading") (hash "css_class" "svg-loader")}}
+  </span>
+</div>
+<div id="ajax-modal" style="display:none;"></div>
+<div id="icon-copy-source" style="display: none;">{{sprite_icon ""}}</div>
+
+</div>
+{{call_hook "view_layouts_base_body_bottom"}}
+</body>
+</html>

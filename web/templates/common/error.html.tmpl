@@ -1,0 +1,16 @@
+<h2>{{.Status}}</h2>
+
+{{if present .Message}}
+  <p id="errorExplanation">
+    {{notice_icon "error"}}
+    {{.Message}}
+  </p>
+{{end}}
+
+{{if and .ArchivedProject admin}}
+  <p>{{link_to (sprite_icon "unlock" (l "button_unarchive")) .UnarchivePath (hash "method" "post" "class" "icon icon-unlock")}}</p>
+{{end}}
+
+<p><a href="javascript:history.back()">{{l "button_back"}}</a></p>
+
+{{html_title (to_s .Status)}}
