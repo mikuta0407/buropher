@@ -39,6 +39,10 @@ var (
 
 // autoLink は auto_link! (links_helper.rb:45-66): URL をリンクに置き換える
 func autoLink(text string) string {
+	// 高速化: 正規表現が必要とするリテラルを含まなければマッチしない
+	if !strings.Contains(text, "://") && !strings.Contains(text, "www.") {
+		return text
+	}
 	return gsub(reAutoLink, text, func(m md) string {
 		all, leading, proto, url, post := m.all(), m.s(1), m.s(2), m.s(3), m.s(6)
 		if matches(reLeadingA, leading) || matches(reLeadingImage, leading) {
@@ -75,6 +79,10 @@ func mailInLinkRe(mail string) *regexp2.Regexp {
 
 // autoMailto は auto_mailto! (links_helper.rb:69-82): メールアドレスをリンクに置き換える
 func autoMailto(text string) string {
+	// 高速化: 正規表現が必要とするリテラルを含まなければマッチしない
+	if !strings.Contains(text, "@") {
+		return text
+	}
 	orig := text
 	// 判定用の正規表現は "<a" を必須とするので、含まなければ判定を省略できる
 	hasA := strings.Contains(orig, "<a")
@@ -106,6 +114,10 @@ var (
 
 // restoreRedmineLinks は restore_redmine_links (links_helper.rb:84-108)
 func restoreRedmineLinks(html string) string {
+	// 高速化: 正規表現が必要とするリテラルを含まなければマッチしない
+	if !strings.Contains(html, "<a") && !strings.Contains(html, ":&quot;") {
+		return html
+	}
 	// wiki リンクを戻す 例: [[Foo]]
 	html = gsub(reRestoreWiki, html, func(m md) string { return "[[" + m.s(2) + "]]" })
 	// ダブルクォート付きの Redmine リンクを戻す 例: version:"1.0"

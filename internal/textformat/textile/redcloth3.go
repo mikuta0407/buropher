@@ -390,6 +390,10 @@ var (
 
 // block_textile_lists (redcloth3.rb:559-599): リストの解析
 func (rc *redcloth) blockTextileLists(text string) (string, bool) {
+	// 高速化: 正規表現が必要とするリテラルを含まなければマッチしない
+	if !strings.ContainsAny(text, "#*") {
+		return text, false
+	}
 	return gsubB(reLists, text, func(m md) string {
 		lines := splitStr(m.all(), "\n")
 		lastLine := -1
@@ -442,6 +446,10 @@ var (
 
 // block_textile_quotes (redcloth3.rb:604-622): > による引用ブロック
 func (rc *redcloth) blockTextileQuotes(text string) string {
+	// 高速化: 正規表現が必要とするリテラルを含まなければマッチしない
+	if !strings.Contains(text, ">") {
+		return text
+	}
 	return gsub(reQuotes, text, func(m md) string {
 		lines := splitStr(m.all(), "\n")
 		var quotes strings.Builder
@@ -474,6 +482,10 @@ var reCode = rx(`(` + reNW + `)@(?:\|(` + reW + `+?)\|)?(.+?)@(?=` + reNW + `)`)
 
 // inline_textile_code (redcloth3.rb:631-637): @code@
 func (rc *redcloth) inlineTextileCode(text string) string {
+	// 高速化: 正規表現が必要とするリテラルを含まなければマッチしない
+	if strings.Count(text, "@") < 2 {
+		return text
+	}
 	return gsub(reCode, text, func(m md) string {
 		before, code := m.s(1), m.s(3)
 		lang := ""
@@ -660,6 +672,10 @@ var reHTTP = rx(`^https?://`)
 
 // inline_textile_link (redcloth3.rb:828-854): "text":url 形式のリンク
 func (rc *redcloth) inlineTextileLink(text string) string {
+	// 高速化: 正規表現が必要とするリテラルを含まなければマッチしない
+	if !strings.Contains(text, "\":") {
+		return text
+	}
 	return gsub(reLink, text, func(m md) string {
 		all, pre, attsSrc, ltext, title, url, slash, post := m.s(1), m.s(2), m.s(3), m.s(4), m.opt(5), m.s(6), m.s(8), m.s(9)
 		if strings.Contains(ltext, "<br />") {
@@ -702,6 +718,10 @@ var reImage = rx(`(>|` + reS + `|^)` + // start of line?
 
 // inline_textile_image (redcloth3.rb:951-989): !image! 形式の画像
 func (rc *redcloth) inlineTextileImage(text string) string {
+	// 高速化: 正規表現が必要とするリテラルを含まなければマッチしない
+	if strings.Count(text, "!") < 2 {
+		return text
+	}
 	return gsub(reImage, text, func(m md) string {
 		stln, algn, attsSrc, url, title, href, hrefA1 := m.s(1), m.opt(2), m.s(3), m.s(4), m.opt(5), m.opt(6), m.s(7)
 		if title != nil {
@@ -791,6 +811,10 @@ var (
 
 // no_textile (redcloth3.rb:1010-1015)
 func noTextile(text string) string {
+	// 高速化: 正規表現が必要とするリテラルを含まなければマッチしない
+	if !strings.Contains(text, "==") {
+		return text
+	}
 	text = gsub(reNoTextile1, text, func(m md) string {
 		return m.s(1) + "<notextile>" + m.s(2) + "</notextile>" + m.s(3)
 	})
@@ -867,6 +891,10 @@ var reFootnoteRef = rx(`(?<=[` + wordIn + `\]])\[([0-9]+?)\](` + reS + `)?`)
 
 // footnote_ref (redcloth3.rb:1044-1047)
 func footnoteRef(text string) string {
+	// 高速化: 正規表現が必要とするリテラルを含まなければマッチしない
+	if !strings.Contains(text, "[") {
+		return text
+	}
 	return gsub(reFootnoteRef, text, func(m md) string {
 		return `<sup><a href="#fn` + m.s(1) + `">` + m.s(1) + `</a></sup>` + m.s(2)
 	})
@@ -1025,5 +1053,9 @@ var reHTMLComment = rx(`<!--[\s\S]*?-->`)
 
 // remove_html_comments (redcloth3.rb:1224-1226)
 func removeHTMLComments(text string) string {
+	// 高速化: 正規表現が必要とするリテラルを含まなければマッチしない
+	if !strings.Contains(text, "<!--") {
+		return text
+	}
 	return gsub(reHTMLComment, text, func(md) string { return "" })
 }
