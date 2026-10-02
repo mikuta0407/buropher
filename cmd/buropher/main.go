@@ -7,10 +7,13 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"io"
 	"log/slog"
 	"os"
 	"os/signal"
 	"path/filepath"
+	"runtime"
+	"runtime/debug"
 	"strings"
 	"syscall"
 
@@ -25,7 +28,43 @@ import (
 	"github.com/mikuta0407/buropher/internal/settings"
 )
 
-var version = "dev"
+// ビルド時に -ldflags "-X main.version=... -X main.commit=... -X main.date=..." で埋め込む。
+var (
+	version = "dev"
+	commit  = ""
+	date    = ""
+)
+
+// printVersion はバージョン・コミット・ビルド日時・Go のバージョンを表示する。
+// ldflags で埋め込まれていなければ、go build が記録した VCS 情報で補う。
+func printVersion(w io.Writer) {
+	c, d, modified := commit, date, false
+	if bi, ok := debug.ReadBuildInfo(); ok {
+		for _, s := range bi.Settings {
+			switch s.Key {
+			case "vcs.revision":
+				if c == "" {
+					c = s.Value
+				}
+			case "vcs.time":
+				if d == "" {
+					d = s.Value
+				}
+			case "vcs.modified":
+				modified = s.Value == "true" && commit == ""
+			}
+		}
+	}
+	if c == "" {
+		c = "unknown"
+	} else if modified {
+		c += "-dirty"
+	}
+	if d == "" {
+		d = "unknown"
+	}
+	fmt.Fprintf(w, "buropher %s\ncommit: %s\nbuilt: %s\ngo: %s %s/%s\n", version, c, d, runtime.Version(), runtime.GOOS, runtime.GOARCH)
+}
 
 func usage() {
 	fmt.Fprintf(os.Stderr, `usage: buropher <command> [options]
@@ -38,7 +77,7 @@ commands:
   setting   get or set a setting (setting get <name> / setting set <name> <value>)
   reminders send due date reminders (rake redmine:send_reminders: -days -tracker -project -users -version)
   jobs      run pending background jobs once (jobs run)
-  version   print version
+  version   print version, commit, build date and Go version
 `)
 }
 
@@ -65,7 +104,7 @@ func main() {
 	case "jobs":
 		err = jobsCmd(args)
 	case "version":
-		fmt.Println("buropher", version)
+		printVersion(os.Stdout)
 	default:
 		usage()
 		os.Exit(2)
