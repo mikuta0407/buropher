@@ -197,6 +197,9 @@ func redmineCmd(args []string) error {
 		return export.Main(args[1:])
 	default:
 		return fmt.Errorf("unknown redmine command %q", args[0])
+	}
+}
+
 // settingCmd は設定値の参照・変更（buropher setting get|set）。
 func settingCmd(args []string) error {
 	fs := flag.NewFlagSet("setting", flag.ExitOnError)
