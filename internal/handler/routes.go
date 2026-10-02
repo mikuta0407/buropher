@@ -64,4 +64,5 @@ func (a *App) Routes(r Router) {
 	a.routesJournalsWrite(r)
 	a.routesTwofa(r)
 	a.routesMyIdentities(r)
+	a.routesMailHandler(r)
 }
