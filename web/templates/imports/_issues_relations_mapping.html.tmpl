@@ -1,0 +1,61 @@
+{{$i := .Import}}
+<div class="splitcontent">
+  <div class="splitcontentleft">
+    <p>
+      <label for="import_mapping_unique_id">{{l "field_unique_id"}}</label>
+      {{$i.MappingSelectTag "unique_id" nil}}
+    </p>
+    <p>
+      <label for="import_mapping_parent_issue_id">{{l "field_parent_issue"}}</label>
+      {{$i.MappingSelectTag "parent_issue_id" nil}}
+    </p>
+
+    <p>
+      <label for="import_mapping_relation_duplicates">{{l "label_duplicates"}}</label>
+      {{$i.MappingSelectTag "relation_duplicates" nil}}
+    </p>
+
+    <p>
+      <label for="import_mapping_relation_duplicated">{{l "label_duplicated_by"}}</label>
+      {{$i.MappingSelectTag "relation_duplicated" nil}}
+    </p>
+
+    <p>
+      <label for="import_mapping_relation_blocks">{{l "label_blocks"}}</label>
+      {{$i.MappingSelectTag "relation_blocks" nil}}
+    </p>
+
+    <p>
+      <label for="import_mapping_relation_blocked">{{l "label_blocked_by"}}</label>
+      {{$i.MappingSelectTag "relation_blocked" nil}}
+    </p>
+  </div>
+
+  <div class="splitcontentright">
+    <p></p>
+    <p>
+      <label for="import_mapping_relation_relates">{{l "label_relates_to"}}</label>
+      {{$i.MappingSelectTag "relation_relates" nil}}
+    </p>
+
+    <p>
+      <label for="import_mapping_relation_precedes">{{l "label_precedes"}}</label>
+      {{$i.MappingSelectTag "relation_precedes" nil}}
+    </p>
+
+    <p>
+      <label for="import_mapping_relation_follows">{{l "label_follows"}}</label>
+      {{$i.MappingSelectTag "relation_follows" nil}}
+    </p>
+
+    <p>
+      <label for="import_mapping_relation_copied_to">{{l "label_copied_to"}}</label>
+      {{$i.MappingSelectTag "relation_copied_to" nil}}
+    </p>
+
+    <p>
+      <label for="import_mapping_relation_copied_from">{{l "label_copied_from"}}</label>
+      {{$i.MappingSelectTag "relation_copied_from" nil}}
+    </p>
+  </div>
+</div>

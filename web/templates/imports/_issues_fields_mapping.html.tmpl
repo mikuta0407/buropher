@@ -1,0 +1,83 @@
+{{$i := .Import}}
+<p>
+  <label for="import_mapping_project_id">{{l "label_project"}}</label>
+  {{select_tag "import_settings[mapping][project_id]" (project_tree_options_for_select .Projects .Project) (hash "id" "import_mapping_project_id")}}
+</p>
+<p>
+  <label for="import_mapping_tracker">{{l "field_tracker"}}</label>
+  {{$i.MappingSelectTag "tracker" (hash "required" true "values" .TrackerValues)}}
+</p>
+<p>
+  <label for="import_mapping_status">{{l "field_status"}}</label>
+  {{$i.MappingSelectTag "status" nil}}
+</p>
+
+<div class="splitcontent">
+<div class="splitcontentleft">
+<p>
+  <label for="import_mapping_subject">{{l "field_subject"}}</label>
+  {{$i.MappingSelectTag "subject" (hash "required" true)}}
+</p>
+<p>
+  <label for="import_mapping_description">{{l "field_description"}}</label>
+  {{$i.MappingSelectTag "description" nil}}
+</p>
+<p>
+  <label for="import_mapping_priority">{{l "field_priority"}}</label>
+  {{$i.MappingSelectTag "priority" nil}}
+</p>
+<p>
+  <label for="import_mapping_category">{{l "field_category"}}</label>
+  {{$i.MappingSelectTag "category" nil}}
+  {{if .CanManageCategories}}
+    <label class="block">
+      {{check_box_tag "import_settings[mapping][create_categories]" "1" .CreateCategories}}
+      {{l "label_create_missing_values"}}
+    </label>
+  {{end}}
+</p>
+<p>
+  <label for="import_mapping_assigned_to">{{l "field_assigned_to"}}</label>
+  {{$i.MappingSelectTag "assigned_to" nil}}
+</p>
+<p>
+  <label for="import_mapping_fixed_version">{{l "field_fixed_version"}}</label>
+  {{$i.MappingSelectTag "fixed_version" nil}}
+  {{if .CanManageVersions}}
+    <label class="block">
+      {{check_box_tag "import_settings[mapping][create_versions]" "1" .CreateVersions}}
+      {{l "label_create_missing_values"}}
+    </label>
+  {{end}}
+</p>
+</div>
+
+<div class="splitcontentright">
+<p>
+  <label for="import_mapping_is_private">{{l "field_is_private"}}</label>
+  {{$i.MappingSelectTag "is_private" nil}}
+</p>
+<p>
+  <label for="import_mapping_start_date">{{l "field_start_date"}}</label>
+  {{$i.MappingSelectTag "start_date" nil}}
+</p>
+<p>
+  <label for="import_mapping_due_date">{{l "field_due_date"}}</label>
+  {{$i.MappingSelectTag "due_date" nil}}
+</p>
+<p>
+  <label for="import_mapping_estimated_hours">{{l "field_estimated_hours"}}</label>
+  {{$i.MappingSelectTag "estimated_hours" nil}}
+</p>
+<p>
+  <label for="import_mapping_done_ratio">{{l "field_done_ratio"}}</label>
+  {{$i.MappingSelectTag "done_ratio" nil}}
+</p>
+{{range $field := .CustomFields}}
+  <p>
+    <label for="import_mapping_cf_{{$field.ID}}">{{$field.Name}}</label>
+    {{$i.MappingSelectTag (print "cf_" $field.ID) nil}}
+  </p>
+{{end}}
+</div>
+</div>

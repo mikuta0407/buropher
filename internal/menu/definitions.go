@@ -7,6 +7,18 @@ const HelpURL = "https://www.redmine.org/guide"
 
 func path(s string) func(Env, Project) string { return func(Env, Project) string { return s } }
 
+// recalledTypeURL は params[:type] を引き継ぐ URL（Env が RecalledType を実装していれば s + "/" + type）。
+func recalledTypeURL(s string) func(Env, Project) string {
+	return func(e Env, _ Project) string {
+		if r, ok := e.(interface{ RecalledType() string }); ok {
+			if t := r.RecalledType(); t != "" {
+				return s + "/" + t
+			}
+		}
+		return s
+	}
+}
+
 // projectPath はプロジェクト識別子を埋め込んだパスを返す（:param => :project_id / :id）。
 func projectPath(prefix, suffix string) func(Env, Project) string {
 	return func(_ Env, p Project) string {
@@ -115,6 +127,8 @@ func AdminMenu() *Menu {
 	add("workflows", "workflows", "edit", "/workflows/edit", "label_workflow", "workflows", "icon-workflows", false, nil)
 	add("custom_fields", "custom_fields", "index", "/custom_fields", "label_custom_field_plural", "custom-fields", "icon-custom-fields", false, nil)
 	add("enumerations", "enumerations", "index", "/enumerations", "", "list", "icon-list", false, nil)
+	// :type をルートの既定値に持つリクエスト（imports#new）では url_for の recall で /enumerations/:type になる
+	m.Find("enumerations").URL = recalledTypeURL("/enumerations")
 	add("settings", "settings", "index", "/settings", "", "settings", "icon-settings", false, nil)
 	add("ldap_authentication", "auth_sources", "index", "/auth_sources", "", "server-authentication", "icon-server-authentication", false, nil)
 	add("applications", "oauth2_applications", "index", "/oauth/applications", "doorkeeper.layouts.admin.nav.applications", "apps", "icon-applications", false,

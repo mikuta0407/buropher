@@ -1,0 +1,30 @@
+<h2>{{.Title}}</h2>
+
+{{form_tag (print "/imports/" .Filename "/settings") (hash "id" "import-form")}}
+  <fieldset class="box tabular">
+    <legend>{{l "label_options"}}</legend>
+    <p>
+      <label for="import_settings_separator">{{l "label_fields_separator"}}</label>
+      {{select_tag "import_settings[separator]" (options_for_select .SeparatorOptions (.Import.SettingValue "separator"))}}
+    </p>
+    <p>
+      <label for="import_settings_wrapper">{{l "label_fields_wrapper"}}</label>
+      {{select_tag "import_settings[wrapper]" (options_for_select .WrapperOptions (.Import.SettingValue "wrapper"))}}
+    </p>
+    <p>
+      <label for="import_settings_encoding">{{l "label_encoding"}}</label>
+      {{select_tag "import_settings[encoding]" (options_for_select .Encodings (.Import.SettingValue "encoding"))}}
+    </p>
+    <p>
+      <label for="import_settings_date_format">{{l "setting_date_format"}}</label>
+      {{select_tag "import_settings[date_format]" (options_for_select .DateFormats (.Import.SettingValue "date_format"))}}
+    </p>
+    <br>
+    <p>
+      <label for="import_settings_notifications">{{l "label_import_notifications"}}</label>
+      {{hidden_field_tag "import_settings[notifications]" "0" (hash "id" nil)}}
+      {{check_box_tag "import_settings[notifications]" "1" .Notifications}}
+    </p>
+  </fieldset>
+  <p>{{submit_tag (raw (print (l "label_next") " &#187;")) (hash "name" nil)}}</p>
+{{end_form}}

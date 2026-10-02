@@ -1,0 +1,26 @@
+<table id="saved-items" class="list">
+  <thead>
+  <tr>
+    <th>{{l "field_project"}}</th>
+    <th>{{l "field_user"}}</th>
+    <th>{{l "field_activity"}}</th>
+    <th>{{l "field_issue"}}</th>
+    <th>{{l "field_spent_on"}}</th>
+    <th>{{l "field_hours"}}</th>
+    <th>{{l "field_comments"}}</th>
+  </tr>
+  </thead>
+  <tbody>
+  {{range $te := .rows}}
+  <tr>
+    <td>{{if $te.Project}}{{link_to_project $te.Project (hash "jump" "time_entries")}}{{end}}</td>
+    <td>{{link_to_user $te.User}}</td>
+    <td>{{$te.Activity}}</td>
+    <td>{{$te.Issue}}</td>
+    <td>{{$te.SpentOn}}</td>
+    <td>{{$te.Hours}}</td>
+    <td>{{$te.Comments}}</td>
+  </tr>
+  {{end}}
+  </tbody>
+</table>

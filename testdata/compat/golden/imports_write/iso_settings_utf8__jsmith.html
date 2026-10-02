@@ -1,0 +1,316 @@
+status: 200
+content-type: text/html
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Redmine</title>
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta content="Redmine" name="description">
+    <meta content="issue,bug,tracker" name="keywords">
+    <meta content="authenticity_token" name="csrf-param">
+    <meta content="{{CSRF}}" name="csrf-token">
+    <link href="/assets/favicon-DIGEST.ico" rel="shortcut icon" type="image/x-icon">
+    <link href="/assets/jquery/jquery-ui-1.13.2-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/tribute-5.1.3-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/application-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/responsive-DIGEST.css" media="all" rel="stylesheet">
+    <script data-turbo-track="reload" type="importmap">{
+  "imports": {
+    "@rails/request.js": "/assets/requestjs-DIGEST.js",
+    "application": "/assets/application-DIGEST.js",
+    "@hotwired/stimulus": "/assets/stimulus.min-DIGEST.js",
+    "@hotwired/stimulus-loading": "/assets/stimulus-loading-DIGEST.js",
+    "turndown": "/assets/turndown-DIGEST.js",
+    "controllers/api_key_copy_controller": "/assets/controllers/api_key_copy_controller-DIGEST.js",
+    "controllers/application": "/assets/controllers/application-DIGEST.js",
+    "controllers": "/assets/controllers/index-DIGEST.js",
+    "controllers/list_autofill_controller": "/assets/controllers/list_autofill_controller-DIGEST.js",
+    "controllers/quote_reply_controller": "/assets/controllers/quote_reply_controller-DIGEST.js",
+    "controllers/sticky_issue_header_controller": "/assets/controllers/sticky_issue_header_controller-DIGEST.js"
+  }
+}</script>
+    <link href="/assets/requestjs-DIGEST.js" rel="modulepreload">
+    <link href="/assets/application-DIGEST.js" rel="modulepreload">
+    <link href="/assets/stimulus.min-DIGEST.js" rel="modulepreload">
+    <link href="/assets/stimulus-loading-DIGEST.js" rel="modulepreload">
+    <link href="/assets/turndown-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/api_key_copy_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/application-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/index-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/list_autofill_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/quote_reply_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/sticky_issue_header_controller-DIGEST.js" rel="modulepreload">
+    <script type="module">import "application"</script>
+    <script src="/assets/jquery-3.7.1-ui-1.13.3-DIGEST.js"></script>
+    <script src="/assets/rails-ujs-DIGEST.js"></script>
+    <script src="/assets/tribute-5.1.3.min-DIGEST.js"></script>
+    <script src="/assets/application-legacy-DIGEST.js"></script>
+    <script src="/assets/responsive-DIGEST.js"></script>
+    <script>//<![CDATA[
+$(window).on('load', function(){ warnLeavingUnsaved('The current page contains unsaved text that will be lost if you leave this page.'); });
+//]]></script>
+    <script>//<![CDATA[
+rm = window.rm || {};rm.I18n = rm.I18n || {};rm.I18n = Object.freeze({buttonCopy: 'Copy'});
+//]]></script>
+    <script>//<![CDATA[
+rm = window.rm || {};rm.AutoComplete = rm.AutoComplete || {};rm.AutoComplete.dataSources = JSON.parse('{"issues":"/issues/auto_complete?q=","wiki_pages":"/wiki_pages/auto_complete?q="}');
+//]]></script>
+  </head>
+  <body class="has-main-menu controller-imports action-settings avatars-off" data-text-formatting="common_mark">
+    <div id="wrapper">
+      <div class="flyout-menu js-flyout-menu">
+        <div class="flyout-menu__search">
+          <form accept-charset="UTF-8" action="/search" method="get" name="form-RANDOM">
+            <label class="search-magnifier search-magnifier--flyout" for="flyout-search">
+              <svg aria-hidden="true" class="s18 icon-svg">
+                <use href="/assets/icons-DIGEST.svg#icon--search"></use>
+              </svg>
+              <span class="icon-label hidden">Search</span>
+            </label>
+            <input class="small js-search-input" id="flyout-search" name="q" placeholder="Search" type="text">
+          </form>
+        </div>
+        <div class="flyout-menu__avatar">
+          <a href="/users/2">
+            <span class="avatar-color-2 s40 avatar" role="img">JS</span>
+          </a>
+          <a class="user active" href="/users/2">jsmith</a>
+        </div>
+        <h3>Project</h3>
+        <span class="js-project-menu"></span>
+        <h3>General</h3>
+        <span class="js-general-menu"></span>
+        <span class="js-sidebar flyout-menu__sidebar"></span>
+        <h3>Profile</h3>
+        <span class="js-profile-menu"></span>
+      </div>
+      <div id="top-menu">
+        <div id="account">
+          <ul>
+            <li>
+              <a class="my-account" href="/my/account">My account</a>
+            </li>
+            <li>
+              <a class="logout" data-method="post" href="/logout" rel="nofollow">Sign out</a>
+            </li>
+          </ul>
+        </div>
+        <div id="loggedas">
+          Logged in as
+          <a class="user active" href="/users/2">jsmith</a>
+        </div>
+        <ul>
+          <li>
+            <a class="home" href="/">Home</a>
+          </li>
+          <li>
+            <a class="my-page" href="/my/page">My page</a>
+          </li>
+          <li>
+            <a class="projects" href="/projects">Projects</a>
+          </li>
+          <li>
+            <a class="help" href="https://www.redmine.org/guide" rel="noopener" target="_blank">Help</a>
+          </li>
+        </ul>
+      </div>
+      <div id="header">
+        <a class="mobile-toggle-button js-flyout-menu-toggle-button" href="#"></a>
+        <div id="quick-search">
+          <form accept-charset="UTF-8" action="/search" method="get" name="form-RANDOM">
+            <input autocomplete="off" name="scope" type="hidden">
+            <label for="q">
+              <a accesskey="4" href="/search">Search</a>
+              :
+            </label>
+            <input accesskey="f" class="small" data-auto-complete="true" id="q" name="q" size="20" type="text">
+          </form>
+          <div class="drdn" id="project-jump">
+            <span class="drdn-trigger">Jump to a project...</span>
+            <div class="drdn-content">
+              <div class="quick-search">
+                <svg aria-hidden="true" class="s18 icon-svg">
+                  <use href="/assets/icons-DIGEST.svg#icon--search"></use>
+                </svg>
+                <input autocomplete="off" class="autocomplete" data-automcomplete-url="/projects/autocomplete.js?jump=issues" id="projects-quick-search" name="q" type="text" value="">
+              </div>
+              <div class="drdn-items projects selection">
+                <strong>Recently used</strong>
+                <a href="/projects/ecookbook?jump=issues" title="eCookbook">
+                  <span style="padding-inline-start:0px;">eCookbook</span>
+                </a>
+                <strong>All Projects</strong>
+                <a href="/projects/ecookbook?jump=issues" title="eCookbook">
+                  <span style="padding-inline-start:0px;">eCookbook</span>
+                </a>
+                <a href="/projects/private-child?jump=issues" title="Private child of eCookbook">
+                  <span style="padding-inline-start:16px;">Private child of eCookbook</span>
+                </a>
+                <a href="/projects/onlinestore?jump=issues" title="OnlineStore">
+                  <span style="padding-inline-start:0px;">OnlineStore</span>
+                </a>
+              </div>
+              <div class="drdn-items all-projects selection">
+                <a class="selected" href="/projects?jump=issues">All Projects</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <h1>Redmine</h1>
+        <div class="tabs" id="main-menu">
+          <ul>
+            <li>
+              <a class="projects" href="/projects">Projects</a>
+            </li>
+            <li>
+              <a class="activity" href="/activity">Activity</a>
+            </li>
+            <li>
+              <a class="issues selected" href="/issues">Issues</a>
+            </li>
+            <li>
+              <a class="time-entries" href="/time_entries">Spent time</a>
+            </li>
+            <li>
+              <a class="gantt" href="/issues/gantt">Gantt</a>
+            </li>
+            <li>
+              <a class="calendar" href="/issues/calendar">Calendar</a>
+            </li>
+            <li>
+              <a class="news" href="/news">News</a>
+            </li>
+          </ul>
+          <div class="tabs-buttons" style="display:none;">
+            <button class="tab-left icon-only" onclick="moveTabLeft(this); return false;">
+              <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
+                <use href="/assets/icons-DIGEST.svg#icon--angle-left"></use>
+              </svg>
+            </button>
+            <button class="tab-right icon-only" onclick="moveTabRight(this); return false;">
+              <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
+                <use href="/assets/icons-DIGEST.svg#icon--angle-right"></use>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="nosidebar" id="main">
+        <div id="sidebar">
+          <div id="sidebar-wrapper"></div>
+        </div>
+        <div id="content">
+          <div class="flash error" id="flash_error">
+            <svg aria-hidden="true" class="s18 icon-svg">
+              <use href="/assets/icons-DIGEST.svg#icon--warning"></use>
+            </svg>
+            The file is not a valid UTF-8 encoded file
+          </div>
+          <h2>Import issues</h2>
+          <form accept-charset="UTF-8" action="/imports/IMPORT/settings" id="import-form" method="post" name="import-form-RANDOM">
+            <input autocomplete="off" name="authenticity_token" type="hidden" value="{{CSRF}}">
+            <fieldset class="box tabular">
+              <legend>Options</legend>
+              <p>
+                <label for="import_settings_separator">Field separator</label>
+                <select id="import_settings_separator" name="import_settings[separator]">
+                  <option value=",">Comma</option>
+                  <option selected="selected" value=";">Semicolon</option>
+                </select>
+              </p>
+              <p>
+                <label for="import_settings_wrapper">Field wrapper</label>
+                <select id="import_settings_wrapper" name="import_settings[wrapper]">
+                  <option value="&#39;">Quote</option>
+                  <option selected="selected" value="&#34;">Double quote</option>
+                </select>
+              </p>
+              <p>
+                <label for="import_settings_encoding">Encoding</label>
+                <select id="import_settings_encoding" name="import_settings[encoding]">
+                  <option value="US-ASCII">US-ASCII</option>
+                  <option value="windows-1250">windows-1250</option>
+                  <option value="windows-1251">windows-1251</option>
+                  <option value="windows-1252">windows-1252</option>
+                  <option value="windows-1253">windows-1253</option>
+                  <option value="windows-1254">windows-1254</option>
+                  <option value="windows-1255">windows-1255</option>
+                  <option value="windows-1256">windows-1256</option>
+                  <option value="windows-1257">windows-1257</option>
+                  <option value="windows-1258">windows-1258</option>
+                  <option value="windows-31j">windows-31j</option>
+                  <option value="windows-874">windows-874</option>
+                  <option value="ISO-2022-JP">ISO-2022-JP</option>
+                  <option value="ISO-8859-1">ISO-8859-1</option>
+                  <option value="ISO-8859-2">ISO-8859-2</option>
+                  <option value="ISO-8859-3">ISO-8859-3</option>
+                  <option value="ISO-8859-4">ISO-8859-4</option>
+                  <option value="ISO-8859-5">ISO-8859-5</option>
+                  <option value="ISO-8859-6">ISO-8859-6</option>
+                  <option value="ISO-8859-7">ISO-8859-7</option>
+                  <option value="ISO-8859-8">ISO-8859-8</option>
+                  <option value="ISO-8859-9">ISO-8859-9</option>
+                  <option value="ISO-8859-13">ISO-8859-13</option>
+                  <option value="ISO-8859-15">ISO-8859-15</option>
+                  <option value="KOI8-R">KOI8-R</option>
+                  <option selected="selected" value="UTF-8">UTF-8</option>
+                  <option value="UTF-16">UTF-16</option>
+                  <option value="UTF-16BE">UTF-16BE</option>
+                  <option value="UTF-16LE">UTF-16LE</option>
+                  <option value="EUC-JP">EUC-JP</option>
+                  <option value="Shift_JIS">Shift_JIS</option>
+                  <option value="CP932">CP932</option>
+                  <option value="CP949">CP949</option>
+                  <option value="GB18030">GB18030</option>
+                  <option value="GBK">GBK</option>
+                  <option value="EUC-KR">EUC-KR</option>
+                  <option value="Big5">Big5</option>
+                  <option value="Big5-HKSCS">Big5-HKSCS</option>
+                  <option value="TIS-620">TIS-620</option>
+                </select>
+              </p>
+              <p>
+                <label for="import_settings_date_format">Date format</label>
+                <select id="import_settings_date_format" name="import_settings[date_format]">
+                  <option value="%Y-%m-%d">YYYY-MM-DD</option>
+                  <option value="%d/%m/%Y">DD/MM/YYYY</option>
+                  <option selected="selected" value="%m/%d/%Y">MM/DD/YYYY</option>
+                  <option value="%Y/%m/%d">YYYY/MM/DD</option>
+                  <option value="%d.%m.%Y">DD.MM.YYYY</option>
+                  <option value="%d-%m-%Y">DD-MM-YYYY</option>
+                </select>
+              </p>
+              <br>
+              <p>
+                <label for="import_settings_notifications">Send email notifications during the import</label>
+                <input autocomplete="off" name="import_settings[notifications]" type="hidden" value="0">
+                <input id="import_settings_notifications" name="import_settings[notifications]" type="checkbox" value="1">
+              </p>
+            </fieldset>
+            <p>
+              <input data-disable-with="Next »" type="submit" value="Next »">
+            </p>
+          </form>
+          <div style="clear:both;"></div>
+        </div>
+      </div>
+      <div id="footer">MASKED</div>
+      <div id="ajax-indicator" style="display:none;">
+        <span class="icon">
+          <svg aria-hidden="true" class="s18 icon-svg svg-loader">
+            <use href="/assets/icons-DIGEST.svg#icon--loader"></use>
+          </svg>
+          <span class="icon-label">Loading...</span>
+        </span>
+      </div>
+      <div id="ajax-modal" style="display:none;"></div>
+      <div id="icon-copy-source" style="display: none;">
+        <svg aria-hidden="true" class="s18 icon-svg">
+          <use href="/assets/icons-DIGEST.svg#icon--"></use>
+        </svg>
+      </div>
+    </div>
+  </body>
+</html>

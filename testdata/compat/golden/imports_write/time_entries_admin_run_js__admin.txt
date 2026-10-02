@@ -1,0 +1,7 @@
+status: 200
+content-type: text/javascript
+
+$('#import-progress').progressbar({value: 4});
+$('#progress-label').text("4 / 4");
+
+window.location.href='/imports/IMPORT';

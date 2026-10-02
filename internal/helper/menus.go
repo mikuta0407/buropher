@@ -180,7 +180,7 @@ func (p *Page) currentMenu(project *domain.Project) string {
 	if project != nil {
 		return "project_menu"
 	}
-	if p.MainMenu {
+	if p.MainMenu && !p.NoCurrentMenu {
 		return "application_menu"
 	}
 	return ""

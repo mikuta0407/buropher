@@ -1,0 +1,578 @@
+# CSV インポート（ImportsController）の互換シナリオ。インポートを作成・実行して DB を変えるため、
+# 専用の参照インスタンスで実行前に reset すること:
+#   COMPAT_REF_DIR=_reference/ref-import COMPAT_REF_PORT=4026 tools/compat/redmine-ref.sh start
+#   go run ./tools/compat diff -ref http://127.0.0.1:4026 -cand http://127.0.0.1:4126 \
+#     -reset-ref 'COMPAT_REF_DIR=... COMPAT_REF_PORT=4026 tools/compat/redmine-ref.sh reset' \
+#     -reset-cand 'BUROPHER_CAND_PORT=4126 BUROPHER_CAND_DIR=... tools/compat/buropher-cand.sh reset' \
+#     -run '^imports_write/'
+# インポートの URL（/imports/<32 桁の 16 進数>）は create の Location から capture して ${...} で使う。
+# ケースは記述順に実行され、前のケースの結果に依存する（作成したチケット id 15 以降など）。
+name: imports_write
+
+users:
+  admin: {login: admin, password: admin}
+  jsmith: {login: jsmith, password: jsmith}
+  dlopper: {login: dlopper, password: foo}
+
+normalize:
+  mask_text_selectors:
+    - "#footer"
+  regex:
+    # インポートのファイル名（Redmine::Utils.random_hex(16)）
+    - {pattern: '[0-9a-f]{32}', replace: 'IMPORT'}
+    # form_tag(:id => 'import-form') のランダムな name 属性
+    - {pattern: 'import-form-[0-9a-f]{8}', replace: 'import-form-RANDOM'}
+
+requests:
+  # ---- new（権限） ----
+  - id: issues_new
+    path: /issues/imports/new?project_id=ecookbook
+    users: [anonymous, admin, jsmith, dlopper]
+  - id: time_entries_new
+    path: /time_entries/imports/new
+    users: [anonymous, admin, jsmith]
+  - id: users_new
+    path: /users/imports/new
+    users: [admin, jsmith]
+  - id: show_unknown
+    path: /imports/0123456789abcdef0123456789abcdef
+    users: [jsmith]
+  - id: settings_unknown
+    path: /imports/xyz/settings
+    users: [jsmith]
+
+  # ---- create ----
+  - id: create_unknown_type
+    path: /imports
+    method: POST
+    user: jsmith
+    form: {type: "Foo"}
+  - id: create_base_type
+    path: /imports
+    method: POST
+    user: jsmith
+    form: {type: "Import"}
+  - id: create_without_file
+    path: /imports
+    method: POST
+    user: jsmith
+    form: {type: "IssueImport", project_id: "ecookbook"}
+  - id: create_users_forbidden
+    path: /imports
+    method: POST
+    user: jsmith
+    form: {type: "UserImport"}
+    files: {file: ../files/imports/import_users.csv}
+
+  # ---- チケット: 一通りの流れ ----
+  - id: issues_create
+    path: /imports
+    method: POST
+    user: jsmith
+    form: {type: "IssueImport", project_id: "ecookbook"}
+    files: {file: ../files/imports/import_issues.csv}
+    capture: {issues: '/imports/([0-9a-f]+)/settings'}
+  - id: issues_settings
+    path: /imports/${issues}/settings
+    users: [jsmith]
+  - id: issues_settings_other_user
+    path: /imports/${issues}/settings
+    users: [admin]
+  - id: issues_settings_post
+    path: /imports/${issues}/settings
+    method: POST
+    user: jsmith
+    form:
+      import_settings[separator]: ";"
+      import_settings[wrapper]: '"'
+      import_settings[encoding]: "UTF-8"
+      import_settings[date_format]: "%Y-%m-%d"
+      import_settings[notifications]: "0"
+  - id: issues_mapping
+    path: /imports/${issues}/mapping
+    users: [jsmith]
+  - id: issues_mapping_js
+    path: /imports/${issues}/mapping.js
+    method: POST
+    user: jsmith
+    headers: {X-Requested-With: XMLHttpRequest}
+    form:
+      import_settings[mapping][project_id]: "2"
+      import_settings[mapping][tracker]: "value:2"
+  - id: issues_mapping_previous
+    path: /imports/${issues}/mapping
+    method: POST
+    user: jsmith
+    form:
+      previous: ""
+      import_settings[mapping][project_id]: "1"
+  - id: issues_mapping_post
+    path: /imports/${issues}/mapping
+    method: POST
+    user: jsmith
+    form:
+      import_settings[mapping][project_id]: "1"
+      import_settings[mapping][tracker]: "13"
+      import_settings[mapping][subject]: "1"
+      import_settings[mapping][description]: "2"
+      import_settings[mapping][status]: "14"
+      import_settings[mapping][priority]: "0"
+      import_settings[mapping][start_date]: "3"
+      import_settings[mapping][due_date]: "4"
+      import_settings[mapping][parent_issue_id]: "5"
+      import_settings[mapping][is_private]: "6"
+      import_settings[mapping][done_ratio]: "7"
+      import_settings[mapping][cf_1]: "8"
+      import_settings[mapping][fixed_version]: "9"
+      import_settings[mapping][create_versions]: "1"
+      import_settings[mapping][category]: "10"
+      import_settings[mapping][create_categories]: "1"
+      import_settings[mapping][assigned_to]: "11"
+      import_settings[mapping][estimated_hours]: "12"
+  - id: issues_mapping_after
+    path: /imports/${issues}/mapping
+    users: [jsmith]
+  - id: issues_run
+    path: /imports/${issues}/run
+    users: [jsmith]
+  - id: issues_run_js
+    path: /imports/${issues}/run.js
+    method: POST
+    user: jsmith
+    headers: {X-Requested-With: XMLHttpRequest}
+    form: {x: "1"}
+
+  - id: issues_show
+    path: /imports/${issues}
+    users: [jsmith]
+  - id: issues_settings_finished
+    path: /imports/${issues}/settings
+    users: [jsmith]
+  - id: issue_15
+    path: /issues/15
+    users: [jsmith]
+  # 取り込んだチケットの内容は一覧で確認する（issues#show は対象バージョンのリンクの title と
+  # 子チケットの編集フォームのプロジェクト候補がインポートと無関係に参照と異なるため使わない）
+  - id: imported_issue_list
+    path: /issues?set_filter=1&status_id=*&sort=id:desc&c[]=project&c[]=tracker&c[]=status&c[]=priority&c[]=subject&c[]=assigned_to&c[]=category&c[]=fixed_version&c[]=start_date&c[]=due_date&c[]=estimated_hours&c[]=done_ratio&c[]=parent&c[]=is_private&c[]=cf_1&per_page=5
+    users: [jsmith]
+
+  # ---- チケット: unique id による親子・関連、max_items ごとの分割実行 ----
+  - id: subtasks_create
+    path: /imports
+    method: POST
+    user: jsmith
+    form: {type: "IssueImport"}
+    files: {file: ../files/imports/import_subtasks_with_unique_id.csv}
+    capture: {subtasks: '/imports/([0-9a-f]+)/settings'}
+  - id: subtasks_settings
+    path: /imports/${subtasks}/settings
+    users: [jsmith]
+  - id: subtasks_settings_post
+    path: /imports/${subtasks}/settings
+    method: POST
+    user: jsmith
+    form:
+      import_settings[separator]: ";"
+      import_settings[wrapper]: '"'
+      import_settings[encoding]: "UTF-8"
+      import_settings[date_format]: "%Y-%m-%d"
+  - id: subtasks_mapping
+    path: /imports/${subtasks}/mapping
+    users: [jsmith]
+  - id: subtasks_mapping_post
+    path: /imports/${subtasks}/mapping
+    method: POST
+    user: jsmith
+    form:
+      import_settings[mapping][project_id]: "1"
+      import_settings[mapping][unique_id]: "0"
+      import_settings[mapping][tracker]: "1"
+      import_settings[mapping][subject]: "2"
+      import_settings[mapping][parent_issue_id]: "3"
+      import_settings[mapping][relation_follows]: "4"
+  - id: subtasks_run_1
+    path: /imports/${subtasks}/run
+    method: POST
+    user: jsmith
+    form: {x: "1"}
+
+  - id: subtasks_run_page
+    path: /imports/${subtasks}/run
+    users: [jsmith]
+  - id: subtasks_run_2
+    path: /imports/${subtasks}/run
+    method: POST
+    user: jsmith
+    form: {x: "1"}
+
+  - id: subtasks_show
+    path: /imports/${subtasks}
+    users: [jsmith]
+  - id: subtasks_issue_list
+    path: /issues?set_filter=1&status_id=*&sort=id&c[]=subject&c[]=parent&c[]=relations&per_page=50
+    users: [jsmith]
+
+  # ---- チケット: 検証エラーと関連 ----
+  - id: invalid_create
+    path: /imports
+    method: POST
+    user: jsmith
+    form: {type: "IssueImport", project_id: "1"}
+    files: {file: ../files/imports/import_issues_with_relation_and_invalid_issues.csv}
+    capture: {invalid: '/imports/([0-9a-f]+)/settings'}
+  - id: invalid_settings_post
+    path: /imports/${invalid}/settings
+    method: POST
+    user: jsmith
+    form:
+      import_settings[separator]: ";"
+      import_settings[wrapper]: '"'
+      import_settings[encoding]: "UTF-8"
+  - id: invalid_mapping_post
+    path: /imports/${invalid}/mapping
+    method: POST
+    user: jsmith
+    form:
+      import_settings[mapping][project_id]: "1"
+      import_settings[mapping][tracker]: "1"
+      import_settings[mapping][subject]: "2"
+      import_settings[mapping][status]: "3"
+      import_settings[mapping][relation_relates]: "4"
+  - id: invalid_run
+    path: /imports/${invalid}/run
+    method: POST
+    user: jsmith
+    form: {x: "1"}
+
+  - id: invalid_show
+    path: /imports/${invalid}
+    users: [jsmith]
+
+  # ---- 日付の書式 ----
+  - id: dates_create
+    path: /imports
+    method: POST
+    user: jsmith
+    form: {type: "IssueImport", project_id: "1"}
+    files: {file: ../files/imports/import_dates.csv}
+    capture: {dates: '/imports/([0-9a-f]+)/settings'}
+  - id: dates_settings_post
+    path: /imports/${dates}/settings
+    method: POST
+    user: jsmith
+    form:
+      import_settings[separator]: ";"
+      import_settings[wrapper]: '"'
+      import_settings[encoding]: "UTF-8"
+      import_settings[date_format]: "%d/%m/%Y"
+  - id: dates_mapping
+    path: /imports/${dates}/mapping
+    users: [jsmith]
+  - id: dates_mapping_post
+    path: /imports/${dates}/mapping
+    method: POST
+    user: jsmith
+    form:
+      import_settings[mapping][project_id]: "1"
+      import_settings[mapping][tracker]: "value:1"
+      import_settings[mapping][subject]: "0"
+      import_settings[mapping][start_date]: "1"
+      import_settings[mapping][due_date]: "2"
+      import_settings[mapping][cf_8]: "3"
+  - id: dates_run
+    path: /imports/${dates}/run
+    method: POST
+    user: jsmith
+    form: {x: "1"}
+
+  - id: dates_show
+    path: /imports/${dates}
+    users: [jsmith]
+
+  # ---- 設定のエラー ----
+  - id: iso_create
+    path: /imports
+    method: POST
+    user: jsmith
+    form: {type: "IssueImport"}
+    files: {file: ../files/imports/import_iso8859-1.csv}
+    capture: {iso: '/imports/([0-9a-f]+)/settings'}
+  - id: iso_settings
+    path: /imports/${iso}/settings
+    users: [jsmith]
+  - id: iso_settings_utf8
+    path: /imports/${iso}/settings
+    method: POST
+    user: jsmith
+    form:
+      import_settings[separator]: ";"
+      import_settings[wrapper]: '"'
+      import_settings[encoding]: "UTF-8"
+  - id: iso_settings_latin1
+    path: /imports/${iso}/settings
+    method: POST
+    user: jsmith
+    form:
+      import_settings[separator]: ";"
+      import_settings[wrapper]: '"'
+      import_settings[encoding]: "ISO-8859-1"
+  - id: iso_mapping
+    path: /imports/${iso}/mapping
+    users: [jsmith]
+  - id: sjis_create
+    path: /imports
+    method: POST
+    user: jsmith
+    form: {type: "IssueImport"}
+    files: {file: ../files/imports/invalid-Shift_JIS.csv}
+    capture: {sjis: '/imports/([0-9a-f]+)/settings'}
+  - id: sjis_settings_post
+    path: /imports/${sjis}/settings
+    method: POST
+    user: jsmith
+    form:
+      import_settings[separator]: ";"
+      import_settings[wrapper]: '"'
+      import_settings[encoding]: "Shift_JIS"
+  - id: unclosed_create
+    path: /imports
+    method: POST
+    user: jsmith
+    form: {type: "IssueImport"}
+    files: {file: ../files/imports/unclosed_quoted_field.csv}
+    capture: {unclosed: '/imports/([0-9a-f]+)/settings'}
+  - id: unclosed_settings_post
+    path: /imports/${unclosed}/settings
+    method: POST
+    user: jsmith
+    form:
+      import_settings[separator]: ";"
+      import_settings[wrapper]: '"'
+      import_settings[encoding]: "US-ASCII"
+  - id: nodata_create
+    path: /imports
+    method: POST
+    user: jsmith
+    form: {type: "IssueImport"}
+    files: {file: ../files/imports/import_issues_no_data_row.csv}
+    capture: {nodata: '/imports/([0-9a-f]+)/settings'}
+  - id: nodata_settings
+    path: /imports/${nodata}/settings
+    users: [jsmith]
+  - id: nodata_settings_post
+    path: /imports/${nodata}/settings
+    method: POST
+    user: jsmith
+    form:
+      import_settings[separator]: ";"
+      import_settings[wrapper]: '"'
+      import_settings[encoding]: "ISO-8859-1"
+  - id: automap_create
+    path: /imports
+    method: POST
+    user: jsmith
+    form: {type: "IssueImport"}
+    files: {file: ../files/imports/import_issues_auto_mapping.csv}
+    capture: {automap: '/imports/([0-9a-f]+)/settings'}
+  - id: automap_settings_post
+    path: /imports/${automap}/settings
+    method: POST
+    user: jsmith
+    form:
+      import_settings[separator]: ";"
+      import_settings[wrapper]: '"'
+      import_settings[encoding]: "ISO-8859-1"
+  - id: automap_mapping
+    path: /imports/${automap}/mapping
+    users: [jsmith]
+  - id: single_quote_create
+    path: /imports
+    method: POST
+    user: jsmith
+    form: {type: "IssueImport"}
+    files: {file: ../files/imports/import_issues_single_quotation.csv}
+    capture: {single: '/imports/([0-9a-f]+)/settings'}
+  - id: single_quote_settings
+    path: /imports/${single}/settings
+    users: [jsmith]
+
+  # ---- 工数 ----
+  - id: time_entries_create
+    path: /imports
+    method: POST
+    user: jsmith
+    form: {type: "TimeEntryImport", project_id: "ecookbook"}
+    files: {file: ../files/imports/import_time_entries.csv}
+    capture: {te: '/imports/([0-9a-f]+)/settings'}
+  - id: time_entries_settings_post
+    path: /imports/${te}/settings
+    method: POST
+    user: jsmith
+    form:
+      import_settings[separator]: ";"
+      import_settings[wrapper]: '"'
+      import_settings[encoding]: "UTF-8"
+      import_settings[date_format]: "%Y-%m-%d"
+  - id: time_entries_mapping
+    path: /imports/${te}/mapping
+    users: [jsmith]
+  - id: time_entries_mapping_js
+    path: /imports/${te}/mapping.js
+    method: POST
+    user: jsmith
+    headers: {X-Requested-With: XMLHttpRequest}
+    form:
+      import_settings[mapping][project_id]: "3"
+  - id: time_entries_mapping_post
+    path: /imports/${te}/mapping
+    method: POST
+    user: jsmith
+    form:
+      import_settings[mapping][project_id]: "1"
+      import_settings[mapping][activity]: "5"
+      import_settings[mapping][issue_id]: "1"
+      import_settings[mapping][spent_on]: "2"
+      import_settings[mapping][hours]: "3"
+      import_settings[mapping][comments]: "4"
+      import_settings[mapping][cf_10]: "6"
+      import_settings[mapping][user]: "7"
+  - id: time_entries_run
+    path: /imports/${te}/run
+    method: POST
+    user: jsmith
+    form: {x: "1"}
+
+  - id: time_entries_show
+    path: /imports/${te}
+    users: [jsmith]
+  - id: time_entries_admin_create
+    path: /imports
+    method: POST
+    user: admin
+    form: {type: "TimeEntryImport"}
+    files: {file: ../files/imports/import_time_entries.csv}
+    capture: {te2: '/imports/([0-9a-f]+)/settings'}
+  - id: time_entries_admin_settings_post
+    path: /imports/${te2}/settings
+    method: POST
+    user: admin
+    form:
+      import_settings[separator]: ";"
+      import_settings[wrapper]: '"'
+      import_settings[encoding]: "UTF-8"
+      import_settings[date_format]: "%Y-%m-%d"
+  - id: time_entries_admin_mapping
+    path: /imports/${te2}/mapping
+    users: [admin]
+  - id: time_entries_admin_mapping_post
+    path: /imports/${te2}/mapping
+    method: POST
+    user: admin
+    form:
+      import_settings[mapping][project_id]: "1"
+      import_settings[mapping][activity]: "value:10"
+      import_settings[mapping][issue_id]: "1"
+      import_settings[mapping][spent_on]: "2"
+      import_settings[mapping][hours]: "3"
+      import_settings[mapping][comments]: "4"
+      import_settings[mapping][user]: "7"
+  - id: time_entries_admin_run_js
+    path: /imports/${te2}/run.js
+    method: POST
+    user: admin
+    headers: {X-Requested-With: XMLHttpRequest}
+    form: {x: "1"}
+
+  - id: time_entries_admin_show
+    path: /imports/${te2}
+    users: [admin]
+
+  # ---- ユーザー ----
+  - id: users_create
+    path: /imports
+    method: POST
+    user: admin
+    form: {type: "UserImport"}
+    files: {file: ../files/imports/import_users.csv}
+    capture: {users: '/imports/([0-9a-f]+)/settings'}
+  - id: users_settings
+    path: /imports/${users}/settings
+    users: [admin]
+  - id: users_settings_post
+    path: /imports/${users}/settings
+    method: POST
+    user: admin
+    form:
+      import_settings[separator]: ";"
+      import_settings[wrapper]: '"'
+      import_settings[encoding]: "UTF-8"
+      import_settings[date_format]: "%Y-%m-%d"
+      import_settings[notifications]: "0"
+  - id: users_mapping
+    path: /imports/${users}/mapping
+    users: [admin]
+  - id: users_mapping_post
+    path: /imports/${users}/mapping
+    method: POST
+    user: admin
+    form:
+      import_settings[mapping][login]: "1"
+      import_settings[mapping][firstname]: "2"
+      import_settings[mapping][lastname]: "3"
+      import_settings[mapping][mail]: "4"
+      import_settings[mapping][language]: "5"
+      import_settings[mapping][admin]: "6"
+      import_settings[mapping][auth_source]: "7"
+      import_settings[mapping][password]: "8"
+      import_settings[mapping][must_change_passwd]: "9"
+      import_settings[mapping][status]: "10"
+      import_settings[mapping][cf_4]: "11"
+  - id: users_run
+    path: /imports/${users}/run
+    users: [admin]
+  - id: users_run_post
+    path: /imports/${users}/run
+    method: POST
+    user: admin
+    form: {x: "1"}
+
+  - id: users_show
+    path: /imports/${users}
+    users: [admin]
+  - id: users_show_again_errors
+    path: /imports
+    method: POST
+    user: admin
+    form: {type: "UserImport"}
+    files: {file: ../files/imports/import_users.csv}
+    capture: {users2: '/imports/([0-9a-f]+)/settings'}
+  - id: users2_settings_post
+    path: /imports/${users2}/settings
+    method: POST
+    user: admin
+    form:
+      import_settings[separator]: ";"
+      import_settings[wrapper]: '"'
+      import_settings[encoding]: "UTF-8"
+  - id: users2_mapping_post
+    path: /imports/${users2}/mapping
+    method: POST
+    user: admin
+    form:
+      import_settings[mapping][login]: "1"
+      import_settings[mapping][firstname]: "2"
+      import_settings[mapping][lastname]: "3"
+      import_settings[mapping][mail]: "4"
+  - id: users2_run_post
+    path: /imports/${users2}/run
+    method: POST
+    user: admin
+    form: {x: "1"}
+
+  - id: users2_show
+    path: /imports/${users2}
+    users: [admin]
+  - id: users_list
+    path: /users?sort=id:desc
+    users: [admin]
