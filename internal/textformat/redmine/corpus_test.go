@@ -15,7 +15,6 @@ import (
 
 	"github.com/mikuta0407/buropher/internal/authz"
 	"github.com/mikuta0407/buropher/internal/db"
-	"github.com/mikuta0407/buropher/internal/db/dbtest"
 	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/testfixtures"
@@ -47,7 +46,19 @@ var (
 	fixtureOnce sync.Once
 	fixtureDB   *db.DB
 	fixtureErr  error
+	fixtureDir  string
 )
+
+func TestMain(m *testing.M) {
+	code := m.Run()
+	if fixtureDB != nil {
+		fixtureDB.Close()
+	}
+	if fixtureDir != "" {
+		os.RemoveAll(fixtureDir)
+	}
+	os.Exit(code)
+}
 
 // fixtureDatabase は公式フィクスチャを固定時刻で投入した DB（パッケージ内で共有。読み取り専用で使う）。
 func fixtureDatabase(t *testing.T) *db.DB {
@@ -58,6 +69,7 @@ func fixtureDatabase(t *testing.T) *db.DB {
 			fixtureErr = err
 			return
 		}
+		fixtureDir = dir
 		d, err := db.Open(context.Background(), string(db.SQLite), dir+"/test.db")
 		if err != nil {
 			fixtureErr = err
@@ -75,8 +87,6 @@ func fixtureDatabase(t *testing.T) *db.DB {
 	}
 	return fixtureDB
 }
-
-var _ = dbtest.New
 
 // testEnv は 1 ケース分の Renderer を作る。
 type testEnv struct {

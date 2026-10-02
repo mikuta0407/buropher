@@ -8,7 +8,6 @@ package redmine
 
 import (
 	"regexp"
-	"strings"
 
 	"github.com/mikuta0407/buropher/internal/i18n"
 )
@@ -61,5 +60,3 @@ func buildQuote(header, text, partialQuote string) string {
 	}
 	return header + reQuoteNewline.ReplaceAllString(quote, "\n> ") + "\n\n"
 }
-
-var _ = strings.TrimSpace

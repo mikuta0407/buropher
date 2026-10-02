@@ -9,7 +9,6 @@ package redmine
 import (
 	"fmt"
 	"html/template"
-	"net/url"
 	"regexp"
 	"strconv"
 	"strings"
@@ -304,16 +303,33 @@ func (r *Renderer) linkToAttachment(a *Attachment, class string) template.HTML {
 	return rails.LinkTo(a.Filename, r.attachmentURL(a), rails.NewHash("class", class))
 }
 
-// LinkToAttachment は link_to_attachment(attachment, text:, download:, class:)。
-func (r *Renderer) LinkToAttachment(a *Attachment, text string, download bool, htmlOpts *rails.Hash) template.HTML {
+// LinkToAttachmentOptions は link_to_attachment のオプション。
+type LinkToAttachmentOptions struct {
+	Text     string      // :text（空ならファイル名）
+	Icon     string      // :icon（sprite_icon(icon, text) をラベルにする）
+	Download bool        // :download
+	FullURL  bool        // :only_path => false
+	HTML     *rails.Hash // それ以外（class, title 等）
+}
+
+// LinkToAttachment は link_to_attachment(attachment, options)。
+func (r *Renderer) LinkToAttachment(a *Attachment, o LinkToAttachmentOptions) template.HTML {
+	text := o.Text
 	if text == "" {
 		text = a.Filename
 	}
-	u := r.attachmentURL(a)
-	if download {
-		u = r.downloadNamedAttachmentURL(a)
+	u := "/attachments/" + strconv.FormatInt(a.ID, 10)
+	if o.Download {
+		u = "/attachments/download/" + strconv.FormatInt(a.ID, 10) + "/" + escapeSegment(a.Filename)
 	}
-	return rails.LinkTo(text, u, htmlOpts)
+	if o.FullURL {
+		u = r.BaseURL + u
+	}
+	var label any = text
+	if o.Icon != "" {
+		label = r.spriteIcon(o.Icon, text, false)
+	}
+	return rails.LinkTo(label, u, o.HTML)
 }
 
 // latestAttach は Attachment.latest_attach（created_on, id の新しい順で大文字小文字を無視して一致するもの）。
@@ -455,6 +471,3 @@ func (r *Renderer) timeAgoInWords(t time.Time) string {
 	}
 	return r.Loc.Bundle.DistanceOfTimeInWords(r.Loc.Lang, t, r.now(), false)
 }
-
-// urlQueryEscape は未使用回避用（net/url の参照）。
-var _ = url.QueryEscape
