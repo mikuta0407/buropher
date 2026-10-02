@@ -35,7 +35,7 @@ func (a *App) IssuesIndex(c *Req) {
 	switch format {
 	case "html", "atom", "csv", "pdf", "json", "xml":
 	default:
-		c.RenderError(http.StatusNotAcceptable, "")
+		renderUnknownFormat(c)
 		return
 	}
 	useSession := format != "csv"
@@ -72,8 +72,15 @@ func (a *App) IssuesIndex(c *Req) {
 		a.renderIssuesIndexCSV(c, q)
 	case "pdf":
 		// TODO(pdf): PDF 出力は未対応
-		c.RenderError(http.StatusNotAcceptable, "")
+		renderUnknownFormat(c)
 	}
+}
+
+// renderUnknownFormat は ActionController::UnknownFormat（respond_to に無い形式。406、本文なし）。
+func renderUnknownFormat(c *Req) {
+	c.W.Header().Set("Content-Type", "text/html; charset=utf-8")
+	c.W.WriteHeader(http.StatusNotAcceptable)
+	c.Halt()
 }
 
 // renderIssuesIndexHTML は index.html（render :layout => !request.xhr?）。

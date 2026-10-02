@@ -1,0 +1,15 @@
+status: 200
+content-type: application/atom+xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Redmine: Details of all changes</title>
+  <link href="{{BASE}}/issues/changes.atom?key=KEY" rel="self"/>
+  <link href="{{BASE}}/" rel="alternate"/>
+  <id>{{BASE}}/</id>
+  <sprite_icon>{{BASE}}/assets/favicon-DIGEST.ico</sprite_icon>
+  <updated>2026-01-15T12:00:00+00:00</updated>
+  <author>
+    <name>Redmine</name>
+  </author>
+</feed>

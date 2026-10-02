@@ -160,38 +160,38 @@ func (qv *queryView) OperatorByTypeJSON() template.HTML {
 
 // AvailableFiltersJSON は raw_json query.available_filters_as_json。
 func (qv *queryView) AvailableFiltersJSON() (template.HTML, error) {
+	keys, m, err := qv.Q.AvailableFiltersAsJSON(qv.ctx)
+	if err != nil {
+		return "", err
+	}
 	af, err := qv.Q.AvailableFilters(qv.ctx)
 	if err != nil {
 		return "", err
 	}
 	o := &orderedJSON{}
-	for _, def := range af.Defs() {
+	for _, k := range keys {
+		j := m[k]
 		f := &orderedJSON{}
-		f.set("type", def.Type)
-		f.set("name", def.Name)
-		if def.Remote {
+		f.set("type", j.Type)
+		f.set("name", j.Name)
+		if j.Remote {
 			f.set("remote", true)
 		}
-		if qv.Q.HasFilter(def.Field) || !def.Remote {
-			vals, err := def.LoadValues(qv.ctx)
-			if err != nil {
-				return "", err
-			}
-			if vals == nil {
+		if def := af.Get(k); qv.Q.HasFilter(k) || def == nil || !def.Remote {
+			switch {
+			case j.Values == nil:
 				f.set("values", nil)
-			} else {
-				arr := make([][]string, len(vals))
-				for i, v := range vals {
-					if v.Group != "" {
-						arr[i] = []string{v.Label, v.Value, v.Group}
-					} else {
-						arr[i] = []string{v.Label, v.Value}
-					}
+			case j.Plain:
+				arr := make([]string, len(j.Values))
+				for i, v := range j.Values {
+					arr[i] = v[0]
 				}
 				f.set("values", arr)
+			default:
+				f.set("values", j.Values)
 			}
 		}
-		o.set(def.Field, f)
+		o.set(k, f)
 	}
 	return qvRawJSON(o), nil
 }

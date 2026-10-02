@@ -1,0 +1,698 @@
+status: 200
+content-type: text/html
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Bug #1: Cannot print recipes - eCookbook - Redmine</title>
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta content="Redmine" name="description">
+    <meta content="issue,bug,tracker" name="keywords">
+    <meta content="authenticity_token" name="csrf-param">
+    <meta content="{{CSRF}}" name="csrf-token">
+    <link href="/assets/favicon-DIGEST.ico" rel="shortcut icon" type="image/x-icon">
+    <link href="/assets/jquery/jquery-ui-1.13.2-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/tribute-5.1.3-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/application-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/responsive-DIGEST.css" media="all" rel="stylesheet">
+    <script data-turbo-track="reload" type="importmap">{
+  "imports": {
+    "@rails/request.js": "/assets/requestjs-DIGEST.js",
+    "application": "/assets/application-DIGEST.js",
+    "@hotwired/stimulus": "/assets/stimulus.min-DIGEST.js",
+    "@hotwired/stimulus-loading": "/assets/stimulus-loading-DIGEST.js",
+    "turndown": "/assets/turndown-DIGEST.js",
+    "controllers/api_key_copy_controller": "/assets/controllers/api_key_copy_controller-DIGEST.js",
+    "controllers/application": "/assets/controllers/application-DIGEST.js",
+    "controllers": "/assets/controllers/index-DIGEST.js",
+    "controllers/list_autofill_controller": "/assets/controllers/list_autofill_controller-DIGEST.js",
+    "controllers/quote_reply_controller": "/assets/controllers/quote_reply_controller-DIGEST.js",
+    "controllers/sticky_issue_header_controller": "/assets/controllers/sticky_issue_header_controller-DIGEST.js"
+  }
+}</script>
+    <link href="/assets/requestjs-DIGEST.js" rel="modulepreload">
+    <link href="/assets/application-DIGEST.js" rel="modulepreload">
+    <link href="/assets/stimulus.min-DIGEST.js" rel="modulepreload">
+    <link href="/assets/stimulus-loading-DIGEST.js" rel="modulepreload">
+    <link href="/assets/turndown-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/api_key_copy_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/application-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/index-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/list_autofill_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/quote_reply_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/sticky_issue_header_controller-DIGEST.js" rel="modulepreload">
+    <script type="module">import "application"</script>
+    <script src="/assets/jquery-3.7.1-ui-1.13.3-DIGEST.js"></script>
+    <script src="/assets/rails-ujs-DIGEST.js"></script>
+    <script src="/assets/tribute-5.1.3.min-DIGEST.js"></script>
+    <script src="/assets/application-legacy-DIGEST.js"></script>
+    <script src="/assets/responsive-DIGEST.js"></script>
+    <script>//<![CDATA[
+$(window).on('load', function(){ warnLeavingUnsaved('The current page contains unsaved text that will be lost if you leave this page.'); });
+//]]></script>
+    <script>//<![CDATA[
+rm = window.rm || {};rm.I18n = rm.I18n || {};rm.I18n = Object.freeze({buttonCopy: 'Copy'});
+//]]></script>
+    <script>//<![CDATA[
+rm = window.rm || {};rm.AutoComplete = rm.AutoComplete || {};rm.AutoComplete.dataSources = JSON.parse('{"issues":"/issues/auto_complete?project_id=ecookbook\u0026q=","wiki_pages":"/wiki_pages/auto_complete?project_id=ecookbook\u0026q="}');
+//]]></script>
+    <script src="/assets/jstoolbar/jstoolbar-DIGEST.js"></script>
+    <script src="/assets/jstoolbar/common_mark-DIGEST.js"></script>
+    <script src="/assets/jstoolbar/lang/jstoolbar-en-DIGEST.js"></script>
+    <script>//<![CDATA[
+var wikiImageMimeTypes = ["image/gif","image/jpeg","image/png","image/tiff","image/webp","image/x-ms-bmp"];var userHlLanguages = ["c","cpp","csharp","css","diff","go","groovy","html","java","javascript","objc","perl","php","python","r","ruby","sass","scala","shell","sql","swift","xml","yaml"];
+//]]></script>
+    <link href="/assets/jstoolbar-DIGEST.css" media="screen" rel="stylesheet">
+    <script src="/assets/attachments-DIGEST.js"></script>
+    <link href="{{BASE}}/issues/1.atom" rel="alternate" title="eCookbook - Bug #1: Cannot print recipes" type="application/atom+xml">
+    <script src="/assets/context_menu-DIGEST.js"></script>
+    <link href="/assets/context_menu-DIGEST.css" media="screen" rel="stylesheet">
+  </head>
+  <body class="project-ecookbook has-main-menu controller-issues action-show avatars-off" data-text-formatting="common_mark">
+    <div id="wrapper">
+      <div class="flyout-menu js-flyout-menu">
+        <div class="flyout-menu__search">
+          <form accept-charset="UTF-8" action="/projects/ecookbook/search" method="get" name="form-RANDOM">
+            <input autocomplete="off" name="issues" type="hidden" value="1">
+            <label class="search-magnifier search-magnifier--flyout" for="flyout-search">
+              <svg aria-hidden="true" class="s18 icon-svg">
+                <use href="/assets/icons-DIGEST.svg#icon--search"></use>
+              </svg>
+              <span class="icon-label hidden">Search</span>
+            </label>
+            <input class="small js-search-input" id="flyout-search" name="q" placeholder="Search" type="text">
+          </form>
+        </div>
+        <h3>Project</h3>
+        <span class="js-project-menu"></span>
+        <h3>General</h3>
+        <span class="js-general-menu"></span>
+        <span class="js-sidebar flyout-menu__sidebar"></span>
+        <h3>Profile</h3>
+        <span class="js-profile-menu"></span>
+      </div>
+      <div id="top-menu">
+        <div id="account">
+          <ul>
+            <li>
+              <a class="login" href="/login">Sign in</a>
+            </li>
+            <li>
+              <a class="register" href="/account/register">Register</a>
+            </li>
+          </ul>
+        </div>
+        <ul>
+          <li>
+            <a class="home" href="/">Home</a>
+          </li>
+          <li>
+            <a class="projects" href="/projects">Projects</a>
+          </li>
+          <li>
+            <a class="help" href="https://www.redmine.org/guide" rel="noopener" target="_blank">Help</a>
+          </li>
+        </ul>
+      </div>
+      <div id="header">
+        <a class="mobile-toggle-button js-flyout-menu-toggle-button" href="#"></a>
+        <div id="quick-search">
+          <form accept-charset="UTF-8" action="/projects/ecookbook/search" method="get" name="form-RANDOM">
+            <input autocomplete="off" name="scope" type="hidden" value="subprojects">
+            <input autocomplete="off" name="issues" type="hidden" value="1">
+            <label for="q">
+              <a accesskey="4" href="/projects/ecookbook/search?scope=subprojects">Search</a>
+              :
+            </label>
+            <input accesskey="f" class="small" data-auto-complete="true" id="q" name="q" size="20" type="text">
+          </form>
+        </div>
+        <h1>
+          <span class="current-project">eCookbook</span>
+        </h1>
+        <div class="tabs" id="main-menu">
+          <ul>
+            <li>
+              <a class="overview" href="/projects/ecookbook">Overview</a>
+            </li>
+            <li>
+              <a class="activity" href="/projects/ecookbook/activity">Activity</a>
+            </li>
+            <li>
+              <a class="roadmap" href="/projects/ecookbook/roadmap">Roadmap</a>
+            </li>
+            <li>
+              <a class="issues selected" href="/projects/ecookbook/issues">Issues</a>
+            </li>
+            <li>
+              <a class="time-entries" href="/projects/ecookbook/time_entries">Spent time</a>
+            </li>
+            <li>
+              <a class="gantt" href="/projects/ecookbook/issues/gantt">Gantt</a>
+            </li>
+            <li>
+              <a class="calendar" href="/projects/ecookbook/issues/calendar">Calendar</a>
+            </li>
+            <li>
+              <a class="news" href="/projects/ecookbook/news">News</a>
+            </li>
+            <li>
+              <a class="documents" href="/projects/ecookbook/documents">Documents</a>
+            </li>
+            <li>
+              <a class="wiki" href="/projects/ecookbook/wiki">Wiki</a>
+            </li>
+            <li>
+              <a class="boards" href="/projects/ecookbook/boards">Forums</a>
+            </li>
+            <li>
+              <a class="files" href="/projects/ecookbook/files">Files</a>
+            </li>
+            <li>
+              <a class="repository" href="/projects/ecookbook/repository">Repository</a>
+            </li>
+          </ul>
+          <div class="tabs-buttons" style="display:none;">
+            <button class="tab-left icon-only" onclick="moveTabLeft(this); return false;">
+              <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
+                <use href="/assets/icons-DIGEST.svg#icon--angle-left"></use>
+              </svg>
+            </button>
+            <button class="tab-right icon-only" onclick="moveTabRight(this); return false;">
+              <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
+                <use href="/assets/icons-DIGEST.svg#icon--angle-right"></use>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="collapsiblesidebar" id="main">
+        <script>//<![CDATA[
+$('#main.collapsiblesidebar').collapsibleSidebar();
+//]]></script>
+        <div id="sidebar">
+          <div id="sidebar-switch-panel" style="visibility: hidden;">
+            <a class="" href="#" id="sidebar-switch-button">
+              <svg aria-hidden="true" class="s20 icon-svg icon-rtl">
+                <use href="/assets/icons-DIGEST.svg#icon--chevrons-right"></use>
+              </svg>
+            </a>
+          </div>
+          <script>//<![CDATA[
+$('#sidebar-switch-panel').css('visibility', 'visible');
+//]]></script>
+          <div id="sidebar-wrapper">
+            <h3>Custom queries</h3>
+            <ul class="queries">
+              <li>
+                <a class="query" data-disable-with="Multiple custom fields query" href="/projects/ecookbook/issues?query_id=1" title="Description for Multiple custom fields query">Multiple custom fields query</a>
+              </li>
+              <li>
+                <a class="query" data-disable-with="Open issues by priority and tracker" href="/projects/ecookbook/issues?query_id=5" title="Description for Open issues by priority and tracker">Open issues by priority and tracker</a>
+              </li>
+              <li>
+                <a class="query" data-disable-with="Open issues grouped by list custom field" href="/projects/ecookbook/issues?query_id=9" title="Description for Open issues grouped by list custom field">Open issues grouped by list custom field</a>
+              </li>
+              <li>
+                <a class="query" data-disable-with="Open issues grouped by tracker" href="/projects/ecookbook/issues?query_id=6" title="Description for Open issues grouped by tracker">Open issues grouped by tracker</a>
+              </li>
+              <li>
+                <a class="query" data-disable-with="Public query for all projects" href="/projects/ecookbook/issues?query_id=4" title="Description for Public query for all projects">Public query for all projects</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div id="content">
+          <div class="contextual">
+            <a accesskey="e" class="icon icon-edit" href="/issues/1/edit" onclick="showAndScrollTo(&#34;update&#34;, &#34;issue_notes&#34;); return false;">
+              <svg aria-hidden="true" class="s18 icon-svg">
+                <use href="/assets/icons-DIGEST.svg#icon--edit"></use>
+              </svg>
+              <span class="icon-label">Edit</span>
+            </a>
+            <span class="drdn">
+              <span class="drdn-trigger">
+                <span class="icon-only icon-actions" title="Actions">
+                  <svg aria-hidden="true" class="s18 icon-svg">
+                    <use href="/assets/icons-DIGEST.svg#icon--3-bullets"></use>
+                  </svg>
+                  <span class="icon-label">Actions</span>
+                </span>
+              </span>
+              <div class="drdn-content">
+                <div class="drdn-items">
+                  <a class="icon icon-copy-link" data-clipboard-text="{{BASE}}/issues/1" href="#" onclick="copyDataClipboardTextToClipboard(this);; return false;">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--copy-link"></use>
+                    </svg>
+                    <span class="icon-label">Copy link</span>
+                  </a>
+                </div>
+              </div>
+            </span>
+          </div>
+          <h2 class="inline-block">Bug #1</h2>
+          <span class="badge badge-status-open">open</span>
+          <div class="issue tracker-1 status-1 priority-4 priority-lowest behind-schedule details">
+            <div class="next-prev-links contextual">
+              <a accesskey="p" href="/issues/2" title="#2">« Previous</a>
+              |
+              <span class="position">
+                <a href="/projects/ecookbook/issues?f%5B%5D=status_id&amp;op%5Bstatus_id%5D=o&amp;page=1&amp;per_page=25&amp;set_filter=1&amp;sort=id%3Adesc&amp;v%5Bstatus_id%5D%5B%5D=">6 of 6</a>
+              </span>
+              | Next »
+            </div>
+            <div class="avatar-with-child">
+              <span class="avatar-color-2 s50 avatar" role="img" title="Author: John Smith">JS</span>
+            </div>
+            <div data-controller="sticky-issue-header">
+              <div class="subject" data-sticky-issue-header-target="original">
+                <div>
+                  <h3>Cannot print recipes</h3>
+                </div>
+              </div>
+              <div class="issue" data-sticky-issue-header-target="stickyHeader" id="sticky-issue-header">
+                <span class="issue-heading">Bug #1:</span>
+                <span class="subject">Cannot print recipes</span>
+              </div>
+            </div>
+            <div class="reaction">
+              <span class="reaction-button-wrapper" data-reaction-button-id="reaction_issue_1">
+                <span class="icon reaction-button readonly has-reactions" title="Dave Lopper, John Smith, and Redmine Admin">
+                  <svg aria-hidden="true" class="s18 icon-svg">
+                    <use href="/assets/icons-DIGEST.svg#icon--thumb-up"></use>
+                  </svg>
+                  <span class="icon-label">3</span>
+                </span>
+              </span>
+            </div>
+            <p class="author">
+              Added by
+              <a class="user active" href="/users/2">John Smith</a>
+              <a href="/projects/ecookbook/activity?from=2026-01-12" title="01/12/2026 12:00 PM">3 days</a>
+              ago. Updated
+              <a href="/projects/ecookbook/activity?from=2026-01-14" title="01/14/2026 12:00 PM">1 day</a>
+              ago.
+            </p>
+            <div class="attributes">
+              <div class="splitcontent">
+                <div class="splitcontentleft">
+                  <div class="status attribute">
+                    <div class="label">Status:</div>
+                    <div class="value">New</div>
+                  </div>
+                  <div class="priority attribute">
+                    <div class="label">Priority:</div>
+                    <div class="value">Low</div>
+                  </div>
+                  <div class="assigned-to attribute">
+                    <div class="label">Assignee:</div>
+                    <div class="value">-</div>
+                  </div>
+                  <div class="category attribute">
+                    <div class="label">Category:</div>
+                    <div class="value">Printing</div>
+                  </div>
+                  <div class="fixed-version attribute">
+                    <div class="label">Target version:</div>
+                    <div class="value">-</div>
+                  </div>
+                </div>
+                <div class="splitcontentleft">
+                  <div class="start-date attribute">
+                    <div class="label">Start date:</div>
+                    <div class="value">01/14/2026</div>
+                  </div>
+                  <div class="due-date attribute">
+                    <div class="label">Due date:</div>
+                    <div class="value">01/25/2026 (Due in 10 days)</div>
+                  </div>
+                  <div class="progress attribute">
+                    <div class="label">% Done:</div>
+                    <div class="value">
+                      <table class="progress progress-0">
+                        <tbody>
+                          <tr>
+                            <td class="todo" style="width: 100%;"></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <p class="percent">0%</p>
+                    </div>
+                  </div>
+                  <div class="estimated-hours attribute">
+                    <div class="label">Estimated time:</div>
+                    <div class="value">200:00 h</div>
+                  </div>
+                  <div class="spent-time attribute">
+                    <div class="label">Spent time:</div>
+                    <div class="value">
+                      <a href="/projects/ecookbook/time_entries?issue_id=~1">154:15 h</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="splitcontent">
+                <div class="splitcontentleft">
+                  <div class="string_cf cf_2 attribute">
+                    <div class="label">
+                      <span>Searchable field</span>
+                      :
+                    </div>
+                    <div class="value">125</div>
+                  </div>
+                  <div class="list_cf cf_1 attribute">
+                    <div class="label">
+                      <span class="field-description" title="Select one of the databases">Database</span>
+                      :
+                    </div>
+                    <div class="value"></div>
+                  </div>
+                  <div class="float_cf cf_6 attribute">
+                    <div class="label">
+                      <span>Float field</span>
+                      :
+                    </div>
+                    <div class="value">2.10</div>
+                  </div>
+                </div>
+                <div class="splitcontentleft">
+                  <div class="date_cf cf_8 attribute">
+                    <div class="label">
+                      <span>Custom date</span>
+                      :
+                    </div>
+                    <div class="value">12/01/2009</div>
+                  </div>
+                  <div class="date_cf cf_9 attribute">
+                    <div class="label">
+                      <span>Project 1 cf</span>
+                      :
+                    </div>
+                    <div class="value"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <hr>
+            <div class="description" data-controller="quote-reply">
+              <div class="contextual">
+                <a class="icon icon-quote" data-action="quote-reply#quote" data-quote-reply-text-formatting-param="common_mark" data-quote-reply-url-param="/issues/1/quoted" href="#">
+                  <svg aria-hidden="true" class="s18 icon-svg icon-svg-filled">
+                    <use href="/assets/icons-DIGEST.svg#icon--quote-filled"></use>
+                  </svg>
+                  <span class="icon-label">Quote</span>
+                </a>
+              </div>
+              <p>
+                <strong>Description</strong>
+              </p>
+              <div class="wiki" data-quote-reply-target="content" id="issue_description_wiki">
+                <p>Unable to print recipes</p>
+              </div>
+            </div>
+          </div>
+          <div class="journals" id="history">
+            <div class="tabs">
+              <ul>
+                <li>
+                  <a class="selected" href="/issues/1?tab=history" id="tab-history" onclick="showIssueHistory(&#34;history&#34;, this.href); return false;">History</a>
+                </li>
+                <li>
+                  <a href="/issues/1?tab=notes" id="tab-notes" onclick="showIssueHistory(&#34;notes&#34;, this.href); return false;">Notes</a>
+                </li>
+                <li>
+                  <a href="/issues/1?tab=properties" id="tab-properties" onclick="showIssueHistory(&#34;properties&#34;, this.href); return false;">Property changes</a>
+                </li>
+                <li>
+                  <a href="/issues/1?tab=time_entries" id="tab-time_entries" onclick="getRemoteTab(&#39;time_entries&#39;, &#39;/issues/1/tab/time_entries&#39;, &#39;/issues/1?tab=time_entries&#39;); return false;">Spent time</a>
+                </li>
+              </ul>
+              <div class="tabs-buttons" style="display:none;">
+                <button class="tab-left icon-only" onclick="moveTabLeft(this);" type="button">
+                  <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
+                    <use href="/assets/icons-DIGEST.svg#icon--angle-left"></use>
+                  </svg>
+                </button>
+                <button class="tab-right icon-only" onclick="moveTabRight(this);" type="button">
+                  <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
+                    <use href="/assets/icons-DIGEST.svg#icon--angle-right"></use>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="tab-content" id="tab-content-history">
+              <div class="journal has-notes has-details" data-controller="quote-reply" id="change-1">
+                <div class="note" id="note-1">
+                  <h4 class="journal-header">
+                    <span class="journal-info">
+                      <span class="avatar-color-1 s24 avatar" role="img">RA</span>
+                      Updated by
+                      <a class="user active" href="/users/1">Redmine Admin</a>
+                      <a href="/projects/ecookbook/activity?from=2026-01-13" title="01/13/2026 12:00 AM">3 days</a>
+                      ago
+                      <span class="" id="journal-1-private_notes"></span>
+                      <span class="update-info" title="01/14/2026 12:00 AM by Redmine Admin">· Edited</span>
+                    </span>
+                    <span class="journal-meta">
+                      <span class="journal-actions">
+                        <span class="reaction-button-wrapper" data-reaction-button-id="reaction_journal_1">
+                          <span class="icon reaction-button readonly has-reactions" title="John Smith">
+                            <svg aria-hidden="true" class="s18 icon-svg">
+                              <use href="/assets/icons-DIGEST.svg#icon--thumb-up"></use>
+                            </svg>
+                            <span class="icon-label">1</span>
+                          </span>
+                        </span>
+                        <a class="icon-only icon-quote" data-action="quote-reply#quote" data-quote-reply-text-formatting-param="common_mark" data-quote-reply-url-param="/issues/1/quoted?journal_id=1&amp;journal_indice=1" href="#" title="Quote">
+                          <svg aria-hidden="true" class="s18 icon-svg icon-svg-filled">
+                            <use href="/assets/icons-DIGEST.svg#icon--quote-filled"></use>
+                          </svg>
+                          <span class="icon-label hidden">Quote</span>
+                        </a>
+                        <span class="drdn">
+                          <span class="drdn-trigger">
+                            <span class="icon-only icon-actions" title="Actions">
+                              <svg aria-hidden="true" class="s18 icon-svg">
+                                <use href="/assets/icons-DIGEST.svg#icon--3-bullets"></use>
+                              </svg>
+                              <span class="icon-label">Actions</span>
+                            </span>
+                          </span>
+                          <div class="drdn-content">
+                            <div class="drdn-items">
+                              <a class="icon icon-copy-link" data-clipboard-text="{{BASE}}/issues/1#note-1" href="#" onclick="copyDataClipboardTextToClipboard(this);; return false;">
+                                <svg aria-hidden="true" class="s18 icon-svg">
+                                  <use href="/assets/icons-DIGEST.svg#icon--copy-link"></use>
+                                </svg>
+                                <span class="icon-label">Copy link</span>
+                              </a>
+                            </div>
+                          </div>
+                        </span>
+                      </span>
+                      <a class="journal-link" href="#note-1">#1</a>
+                    </span>
+                  </h4>
+                  <div class="journal-content">
+                    <ul class="journal-details">
+                      <li>
+                        <strong>Status</strong>
+                        changed from
+                        <i>New</i>
+                        to
+                        <i>Assigned</i>
+                      </li>
+                      <li>
+                        <strong>% Done</strong>
+                        changed from
+                        <i>40</i>
+                        to
+                        <i>30</i>
+                      </li>
+                    </ul>
+                    <div class="wiki journal-note" data-quote-reply-target="content" id="journal-1-notes">
+                      <p>Journal notes</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="journal has-notes" data-controller="quote-reply" id="change-2">
+                <div class="note" id="note-2">
+                  <h4 class="journal-header">
+                    <span class="journal-info">
+                      <span class="avatar-color-2 s24 avatar" role="img">JS</span>
+                      Updated by
+                      <a class="user active" href="/users/2">John Smith</a>
+                      <a href="/projects/ecookbook/activity?from=2026-01-14" title="01/14/2026 12:00 AM">1 day</a>
+                      ago
+                      <span class="" id="journal-2-private_notes"></span>
+                    </span>
+                    <span class="journal-meta">
+                      <span class="journal-actions">
+                        <span class="reaction-button-wrapper" data-reaction-button-id="reaction_journal_2">
+                          <span class="icon reaction-button readonly">
+                            <svg aria-hidden="true" class="s18 icon-svg">
+                              <use href="/assets/icons-DIGEST.svg#icon--thumb-up"></use>
+                            </svg>
+                          </span>
+                        </span>
+                        <a class="icon-only icon-quote" data-action="quote-reply#quote" data-quote-reply-text-formatting-param="common_mark" data-quote-reply-url-param="/issues/1/quoted?journal_id=2&amp;journal_indice=2" href="#" title="Quote">
+                          <svg aria-hidden="true" class="s18 icon-svg icon-svg-filled">
+                            <use href="/assets/icons-DIGEST.svg#icon--quote-filled"></use>
+                          </svg>
+                          <span class="icon-label hidden">Quote</span>
+                        </a>
+                        <span class="drdn">
+                          <span class="drdn-trigger">
+                            <span class="icon-only icon-actions" title="Actions">
+                              <svg aria-hidden="true" class="s18 icon-svg">
+                                <use href="/assets/icons-DIGEST.svg#icon--3-bullets"></use>
+                              </svg>
+                              <span class="icon-label">Actions</span>
+                            </span>
+                          </span>
+                          <div class="drdn-content">
+                            <div class="drdn-items">
+                              <a class="icon icon-copy-link" data-clipboard-text="{{BASE}}/issues/1#note-2" href="#" onclick="copyDataClipboardTextToClipboard(this);; return false;">
+                                <svg aria-hidden="true" class="s18 icon-svg">
+                                  <use href="/assets/icons-DIGEST.svg#icon--copy-link"></use>
+                                </svg>
+                                <span class="icon-label">Copy link</span>
+                              </a>
+                            </div>
+                          </div>
+                        </span>
+                      </span>
+                      <a class="journal-link" href="#note-2">#2</a>
+                    </span>
+                  </h4>
+                  <div class="journal-content">
+                    <div class="wiki journal-note" data-quote-reply-target="content" id="journal-2-notes">
+                      <p>
+                        Some notes with Redmine links:
+                        <a class="issue tracker-2 status-2 priority-5 priority-default" href="/issues/2" title="Feature request: Add ingredients categories (Assigned)">#2</a>
+                        ,
+                        <a class="changeset" href="/projects/ecookbook/repository/10/revisions/2" title="This commit fixes #1, #2 and references #1 &amp; #3">r2</a>
+                        .
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="tab-content" id="tab-content-time_entries" style="display:none"></div>
+            <script>//<![CDATA[
+showIssueHistory("history", this.href)
+//]]></script>
+          </div>
+          <div style="clear: both;"></div>
+          <div class="contextual">
+            <a class="icon icon-edit" href="/issues/1/edit" onclick="showAndScrollTo(&#34;update&#34;, &#34;issue_notes&#34;); return false;">
+              <svg aria-hidden="true" class="s18 icon-svg">
+                <use href="/assets/icons-DIGEST.svg#icon--edit"></use>
+              </svg>
+              <span class="icon-label">Edit</span>
+            </a>
+            <span class="drdn">
+              <span class="drdn-trigger">
+                <span class="icon-only icon-actions" title="Actions">
+                  <svg aria-hidden="true" class="s18 icon-svg">
+                    <use href="/assets/icons-DIGEST.svg#icon--3-bullets"></use>
+                  </svg>
+                  <span class="icon-label">Actions</span>
+                </span>
+              </span>
+              <div class="drdn-content">
+                <div class="drdn-items">
+                  <a class="icon icon-copy-link" data-clipboard-text="{{BASE}}/issues/1" href="#" onclick="copyDataClipboardTextToClipboard(this);; return false;">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--copy-link"></use>
+                    </svg>
+                    <span class="icon-label">Copy link</span>
+                  </a>
+                </div>
+              </div>
+            </span>
+          </div>
+          <div style="clear: both;"></div>
+          <div id="update" style="display:none;">
+            <h3>Edit</h3>
+            <form accept-charset="UTF-8" action="/issues/1" class="edit_issue" enctype="multipart/form-data" id="issue-form" method="post" name="issue-form-RANDOM">
+              <input autocomplete="off" name="_method" type="hidden" value="patch">
+              <input autocomplete="off" name="authenticity_token" type="hidden" value="{{CSRF}}">
+              <div class="box">
+                <fieldset id="add_notes">
+                  <legend>Notes</legend>
+                  <textarea class="wiki-edit" cols="60" data-action="beforeinput-&gt;list-autofill#handleBeforeInput" data-auto-complete="true" data-controller="list-autofill" data-list-autofill-text-formatting-param="common_mark" id="issue_notes" name="issue[notes]" rows="10"></textarea>
+                  <script>//<![CDATA[
+var wikiToolbar = new jsToolBar(document.getElementById('issue_notes')); wikiToolbar.setHelpLink('/help/wiki_syntax'); wikiToolbar.setPreviewUrl('/issues/preview?issue_id=1&project_id=ecookbook'); wikiToolbar.draw();
+//]]></script>
+                </fieldset>
+                <fieldset id="add_attachments">
+                  <legend>Files</legend>
+                  <div id="new-attachments" style="display:inline-block;">
+                    <span class="attachments_form">
+                      <span class="attachments_icons hidden">
+                        <svg aria-hidden="true" class="s18 icon-svg svg-del">
+                          <use href="/assets/icons-DIGEST.svg#icon--del"></use>
+                        </svg>
+                        <svg aria-hidden="true" class="s16 icon-svg svg-attachment">
+                          <use href="/assets/icons-DIGEST.svg#icon--attachment"></use>
+                        </svg>
+                        <svg aria-hidden="true" class="s16 icon-svg svg-loader">
+                          <use href="/assets/icons-DIGEST.svg#icon--loader"></use>
+                        </svg>
+                        <svg aria-hidden="true" class="s16 icon-svg svg-hourglass">
+                          <use href="/assets/icons-DIGEST.svg#icon--hourglass"></use>
+                        </svg>
+                      </span>
+                      <span class="attachments_fields"></span>
+                      <span class="add_attachment" style="">
+                        <input class="file_selector filedrop" data-description="true" data-description-placeholder="Optional description" data-max-concurrent-uploads="2" data-max-file-size="5242880" data-max-file-size-message="This file cannot be uploaded because it exceeds the maximum allowed file size (5 MB)" data-max-number-of-files-message="This file cannot be uploaded because it exceeds the maximum number of files that can be attached simultaneously (10)" data-param="attachments" data-upload-path="/uploads.js" multiple="multiple" name="attachments[dummy][file]" onchange="addInputFiles(this);" type="file">
+                        (Maximum size: 5 MB)
+                      </span>
+                    </span>
+                  </div>
+                </fieldset>
+              </div>
+              <input autocomplete="off" id="issue_lock_version" name="issue[lock_version]" type="hidden" value="3">
+              <input autocomplete="off" id="last_journal_id" name="last_journal_id" type="hidden" value="2">
+              <input data-disable-with="Submit" name="commit" type="submit" value="Submit">
+              <a href="/issues/1" onclick="$(&#39;#update&#39;).hide(); return false;">Cancel</a>
+              <input autocomplete="off" id="prev_issue_id" name="prev_issue_id" type="hidden" value="2">
+              <input autocomplete="off" id="issue_position" name="issue_position" type="hidden" value="6">
+              <input autocomplete="off" id="issue_count" name="issue_count" type="hidden" value="6">
+            </form>
+          </div>
+          <p class="other-formats hide-when-print">
+            Also available in:
+            <span>
+              <a class="pdf" href="/issues/1.pdf" rel="nofollow">PDF</a>
+            </span>
+            <span>
+              <a class="atom" href="/issues/1.atom" rel="nofollow">Atom</a>
+            </span>
+          </p>
+          <div style="clear:both;"></div>
+        </div>
+      </div>
+      <div id="footer">MASKED</div>
+      <div id="ajax-indicator" style="display:none;">
+        <span class="icon">
+          <svg aria-hidden="true" class="s18 icon-svg svg-loader">
+            <use href="/assets/icons-DIGEST.svg#icon--loader"></use>
+          </svg>
+          <span class="icon-label">Loading...</span>
+        </span>
+      </div>
+      <div id="ajax-modal" style="display:none;"></div>
+      <div id="icon-copy-source" style="display: none;">
+        <svg aria-hidden="true" class="s18 icon-svg">
+          <use href="/assets/icons-DIGEST.svg#icon--"></use>
+        </svg>
+      </div>
+    </div>
+  </body>
+</html>

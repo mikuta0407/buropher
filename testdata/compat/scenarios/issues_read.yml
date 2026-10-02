@@ -69,6 +69,43 @@ requests:
   - path: /issues?set_filter=1&f[]=status_id&op[status_id]=*&c[]=subject&c[]=project&group_by=project&sort=id
     users: [jsmith]
 
+  - path: /issues?query_id=6
+    users: [admin, jsmith]
+  - path: /issues?query_id=9
+    users: [admin]
+  - path: /issues?query_id=3
+    users: [dlopper]
+  - path: /issues?query_id=4
+    users: [anonymous]
+  - path: /issues?set_filter=1&f[]=status_id&op[status_id]=*&group_by=cf_1&t[]=cf_6&t[]=estimated_hours&c[]=subject&c[]=cf_6&c[]=estimated_hours
+    users: [admin]
+  - path: /issues?set_filter=1&f[]=status_id&op[status_id]=*&group_by=priority&c[]=subject&c[]=description
+    users: [admin]
+  - path: /issues?set_filter=1&f[]=status_id&op[status_id]=*&group_by=is_private&c[]=subject&c[]=is_private
+    users: [admin]
+  - path: /issues?set_filter=1&f[]=status_id&op[status_id]=*&group_by=done_ratio&sort=done_ratio:desc
+    users: [admin]
+  - path: /issues?set_filter=1&f[]=status_id&op[status_id]=*&group_by=start_date
+    users: [admin]
+  - path: /issues?set_filter=1&f[]=status_id&op[status_id]=*&c[]=all_inline
+    users: [admin]
+  - path: /issues?set_filter=1&f[]=status_id&op[status_id]=*&sort=assigned_to,start_date:desc,id
+    users: [admin]
+  - path: /issues?set_filter=1&f[]=watcher_id&op[watcher_id]==&v[watcher_id][]=me
+    users: [admin, dlopper]
+  - path: /issues?set_filter=1&f[]=relates&op[relates]=*
+    users: [admin]
+  - path: /issues?set_filter=1&f[]=cf_1&op[cf_1]==&v[cf_1][]=MySQL&c[]=subject&c[]=cf_1
+    users: [admin]
+  - path: /issues
+    id: issues_xhr
+    users: [admin]
+    headers: {X-Requested-With: XMLHttpRequest}
+  - path: /issues?per_page=50
+    users: [admin]
+  - path: /issues?without_default=1
+    users: [admin]
+
   # ---- 一覧（プロジェクト） ----
   - path: /projects/ecookbook/issues
     users: [anonymous, admin, jsmith, dlopper]
@@ -87,6 +124,18 @@ requests:
   - path: /projects/nonexistent/issues
     users: [admin, anonymous]
   - path: /projects/ecookbook/issues?query_id=3
+    users: [jsmith]
+  - path: /projects/ecookbook/issues?query_id=1
+    users: [admin]
+  - path: /projects/ecookbook/issues?query_id=2
+    users: [dlopper, jsmith]
+  - path: /projects/onlinestore/issues?query_id=7
+    users: [jsmith]
+  - path: /projects/onlinestore/issues?query_id=1
+    users: [admin]
+  - path: /projects/ecookbook/issues?set_filter=1&f[]=status_id&op[status_id]=*&f[]=subproject_id&op[subproject_id]=!*
+    users: [admin]
+  - path: /projects/ecookbook/issues?set_filter=1&f[]=status_id&op[status_id]=*&group_by=assigned_to&t[]=spent_hours&c[]=subject&c[]=spent_hours&c[]=total_spent_hours
     users: [jsmith]
 
   # ---- 詳細 ----

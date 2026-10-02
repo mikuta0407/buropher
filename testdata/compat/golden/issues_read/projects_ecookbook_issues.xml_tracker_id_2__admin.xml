@@ -1,0 +1,37 @@
+status: 200
+content-type: application/xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<issues limit="25" offset="0" total_count="1" type="array">
+  <issue>
+    <id>2</id>
+    <project id="1" name="eCookbook"/>
+    <tracker id="2" name="Feature request"/>
+    <status id="2" is_closed="false" name="Assigned"/>
+    <priority id="5" name="Normal"/>
+    <author id="2" name="John Smith"/>
+    <assigned_to id="3" name="Dave Lopper"/>
+    <fixed_version id="2" name="1.0"/>
+    <subject>Add ingredients categories</subject>
+    <description>Ingredients of the recipe should be classified by categories</description>
+    <start_date>2026-01-13</start_date>
+    <due_date/>
+    <done_ratio>30</done_ratio>
+    <is_private>false</is_private>
+    <estimated_hours>0.5</estimated_hours>
+    <total_estimated_hours>0.5</total_estimated_hours>
+    <spent_hours>0.0</spent_hours>
+    <total_spent_hours>0.0</total_spent_hours>
+    <custom_fields type="array">
+      <custom_field id="6" name="Float field">
+        <value>2.05</value>
+      </custom_field>
+      <custom_field id="8" name="Custom date">
+        <value/>
+      </custom_field>
+    </custom_fields>
+    <created_on>2006-07-19T19:04:21Z</created_on>
+    <updated_on>2006-07-19T19:09:50Z</updated_on>
+    <closed_on/>
+  </issue>
+</issues>

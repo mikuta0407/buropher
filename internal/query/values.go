@@ -173,6 +173,17 @@ func (q *Query) subprojectValues(ctx context.Context) ([]Option, error) {
 WHERE pc.ancestor_id = ? AND pc.depth > 0 AND (`+cond+`) ORDER BY projects.id`, q.Project.ID); err != nil {
 		return nil, err
 	}
+	// project.descendants は lft 順
+	ns, err := q.nestedSet(ctx)
+	if err != nil {
+		return nil, err
+	}
+	slices.SortStableFunc(rows, func(a, b struct {
+		ID   int64  `db:"id"`
+		Name string `db:"name"`
+	}) int {
+		return ns[a.ID].Lft - ns[b.ID].Lft
+	})
 	out := make([]Option, len(rows))
 	for i, r := range rows {
 		out[i] = Option{Label: r.Name, Value: itoa(r.ID)}
@@ -489,7 +500,7 @@ func (q *Query) customFieldFilterValues(ctx context.Context, cf *customfield.Cus
 	case "list":
 		out := make([]Option, len(cf.PossibleValues))
 		for i, v := range cf.PossibleValues {
-			out[i] = Option{Label: v, Value: v}
+			out[i] = Option{Label: v, Value: v, Plain: true}
 		}
 		return out, nil
 	case "bool":
@@ -561,6 +572,8 @@ type FilterJSON struct {
 	Name   string     `json:"name"`
 	Remote bool       `json:"remote,omitempty"`
 	Values [][]string `json:"values,omitempty"`
+	// Plain は values が文字列の配列 (list 書式のカスタムフィールド) で、各要素の先頭だけを出す。
+	Plain bool `json:"-"`
 }
 
 // AvailableFiltersAsJSON は available_filters_as_json (フィルタ UI 用)。
@@ -600,6 +613,7 @@ func (q *Query) AvailableFiltersAsJSON(ctx context.Context) ([]string, map[strin
 					}
 				}
 				j.Values = make([][]string, len(vals))
+				j.Plain = len(vals) > 0 && vals[0].Plain
 				for i, o := range vals {
 					if o.Group != "" {
 						j.Values[i] = []string{o.Label, o.Value, o.Group}

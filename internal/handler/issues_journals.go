@@ -523,10 +523,10 @@ func (l *issueLookup) relationDetailValue(id string, noHTML, onlyPath bool) any 
 
 // ---------------------------------------------------------------- reactions / quote / copy link
 
-// copyObjectURLLink は copy_object_url_link(url)。
+// copyObjectURLLink は copy_object_url_link(url)（link_to_function なので href / onclick が先）。
 func (l *issueLookup) copyObjectURLLink(u string) template.HTML {
-	return rails.LinkTo(l.icon("copy-link", l.L("button_copy_link")), "#",
-		rails.NewHash("onclick", "copyDataClipboardTextToClipboard(this);; return false;", "class", "icon icon-copy-link",
+	return rails.ContentTag("a", l.icon("copy-link", l.L("button_copy_link")),
+		rails.NewHash("href", "#", "onclick", "copyDataClipboardTextToClipboard(this);; return false;", "class", "icon icon-copy-link",
 			"data", rails.NewHash("clipboard-text", u)))
 }
 

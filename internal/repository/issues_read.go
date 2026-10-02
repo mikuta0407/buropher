@@ -137,35 +137,6 @@ func IssueAncestorIDs(hierPath string) []int64 {
 	return out
 }
 
-// IssueSpentHours は Issue#spent_hours（cond は TimeEntry の可視条件。time_entries・projects を参照。空なら全件）。
-func IssueSpentHours(ctx context.Context, q db.Queryer, issueID int64, cond string) (float64, error) {
-	var v sql.NullFloat64
-	err := q.Get(ctx, &v, `SELECT SUM(time_entries.hours) FROM time_entries JOIN projects ON projects.id = time_entries.project_id
-WHERE time_entries.issue_id = ? AND (`+condOr(cond)+`)`, issueID)
-	return v.Float64, err
-}
-
-// IssueTotalSpentHours は Issue#total_spent_hours（自身と子孫）。
-func IssueTotalSpentHours(ctx context.Context, q db.Queryer, rootID int64, hierPath, cond string) (float64, error) {
-	var v sql.NullFloat64
-	err := q.Get(ctx, &v, `SELECT SUM(time_entries.hours) FROM time_entries JOIN projects ON projects.id = time_entries.project_id
-JOIN issues ON issues.id = time_entries.issue_id
-WHERE issues.root_id = ? AND issues.hier_path LIKE ? AND (`+condOr(cond)+`)`, rootID, hierPath+"%")
-	return v.Float64, err
-}
-
-// IssueTotalEstimatedHours は Issue#total_estimated_hours（自身と子孫の estimated_hours の和。全て nil なら nil）。
-func IssueTotalEstimatedHours(ctx context.Context, q db.Queryer, rootID int64, hierPath string) (*float64, error) {
-	var v sql.NullFloat64
-	if err := q.Get(ctx, &v, `SELECT SUM(estimated_hours) FROM issues WHERE root_id = ? AND hier_path LIKE ?`, rootID, hierPath+"%"); err != nil {
-		return nil, err
-	}
-	if !v.Valid {
-		return nil, nil
-	}
-	return &v.Float64, nil
-}
-
 // ---------------------------------------------------------------- プリンシパル
 
 // PrincipalsByIDs は id のプリンシパル（ユーザー・グループとも。グループは Principal 部分のみ）。
@@ -185,32 +156,6 @@ func PrincipalsByIDs(ctx context.Context, q db.Queryer, ids []int64) (map[int64]
 		}
 	}
 	return out, nil
-}
-
-// ProjectAssignablePrincipalIDs は project.assignable_users(tracker) の id（ロールの絞り込みは roleIDs。nil なら assignable な全ロール）。
-// withGroups は Setting.issue_group_assignment?。並びは呼び出し側で整える。
-func ProjectAssignablePrincipalIDs(ctx context.Context, q db.Queryer, projectID int64, roleIDs []int64, withGroups bool) ([]int64, error) {
-	kinds := "'user'"
-	if withGroups {
-		kinds = "'user', 'group'"
-	}
-	where := ""
-	var args []any
-	args = append(args, projectID)
-	if roleIDs != nil {
-		if len(roleIDs) == 0 {
-			return nil, nil
-		}
-		where = " AND roles.id IN (" + joinIDs(roleIDs) + ")"
-	}
-	var ids []int64
-	err := q.Select(ctx, &ids, `SELECT DISTINCT p.id FROM principals p
-JOIN members ON members.principal_id = p.id
-JOIN member_roles ON member_roles.member_id = members.id
-JOIN roles ON roles.id = member_roles.role_id
-WHERE p.status = 1 AND p.kind IN (`+kinds+`) AND members.project_id = ? AND roles.assignable = `+q.Dialect().BoolLiteral(true)+where+`
-ORDER BY p.id`, args...)
-	return ids, err
 }
 
 func joinIDs(ids []int64) string {
@@ -394,46 +339,6 @@ type IssueJournalDetail struct {
 const journalCols = `issue_journals.id, issue_journals.issue_id, issue_journals.user_id, issue_journals.notes, issue_journals.private_notes,
   issue_journals.created_at, issue_journals.updated_at, issue_journals.updated_by_id`
 
-// IssueJournals は issue.journals（created_at, id 順）と details（id 順）。
-func IssueJournals(ctx context.Context, q db.Queryer, issueID int64) ([]*IssueJournal, error) {
-	var js []*IssueJournal
-	if err := q.Select(ctx, &js, `SELECT `+journalCols+` FROM issue_journals WHERE issue_id = ? ORDER BY created_at, id`, issueID); err != nil {
-		return nil, err
-	}
-	if err := LoadJournalDetails(ctx, q, js); err != nil {
-		return nil, err
-	}
-	return js, nil
-}
-
-// JournalsByIDs は id のジャーナル（ids の順、details 付き）。
-func JournalsByIDs(ctx context.Context, q db.Queryer, ids []int64) ([]*IssueJournal, error) {
-	byID := map[int64]*IssueJournal{}
-	for _, chunk := range chunkIDs(uniqIDs(ids)) {
-		query, args, err := db.In(`SELECT `+journalCols+` FROM issue_journals WHERE id IN (?)`, chunk)
-		if err != nil {
-			return nil, err
-		}
-		var js []*IssueJournal
-		if err := q.Select(ctx, &js, query, args...); err != nil {
-			return nil, err
-		}
-		for _, j := range js {
-			byID[j.ID] = j
-		}
-	}
-	out := make([]*IssueJournal, 0, len(ids))
-	for _, id := range ids {
-		if j := byID[id]; j != nil {
-			out = append(out, j)
-		}
-	}
-	if err := LoadJournalDetails(ctx, q, out); err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // GetIssueJournal は Journal.find(id)（details 付き）。
 func GetIssueJournal(ctx context.Context, q db.Queryer, id int64) (*IssueJournal, error) {
 	var j IssueJournal
@@ -532,15 +437,6 @@ type IssueRelation struct {
 	Delay        *int   `db:"delay"`
 }
 
-// IssueRelations は issue.relations（relations_from + relations_to。Redmine の relations は
-// relations_from.to_a + relations_to.to_a の後 sort（IssueRelation#<=>）される）。
-func IssueRelations(ctx context.Context, q db.Queryer, issueID int64) ([]*IssueRelation, error) {
-	var rows []*IssueRelation
-	err := q.Select(ctx, &rows, `SELECT id, issue_from_id, issue_to_id, relation_type, delay FROM issue_relations
-WHERE issue_from_id = ? OR issue_to_id = ? ORDER BY id`, issueID, issueID)
-	return rows, err
-}
-
 // RelationsByIDs は id の関連。
 func RelationsByIDs(ctx context.Context, q db.Queryer, ids []int64) (map[int64]*IssueRelation, error) {
 	out := map[int64]*IssueRelation{}
@@ -558,13 +454,6 @@ func RelationsByIDs(ctx context.Context, q db.Queryer, ids []int64) (map[int64]*
 		}
 	}
 	return out, nil
-}
-
-// WatcherPrincipalIDs は watchable.watchers の principal_id（watchers.id 順）。
-func WatcherPrincipalIDs(ctx context.Context, q db.Queryer, kind string, id int64) ([]int64, error) {
-	var ids []int64
-	err := q.Select(ctx, &ids, `SELECT principal_id FROM watchers WHERE watchable_kind = ? AND watchable_id = ? ORDER BY id`, kind, id)
-	return ids, err
 }
 
 // ---------------------------------------------------------------- 作業時間・リビジョン
@@ -637,24 +526,6 @@ func LastJournalID(ctx context.Context, q db.Queryer, issueID int64) (*int64, er
 		return nil, nil
 	}
 	return &v.Int64, nil
-}
-
-// CustomFieldRoleIDs は visible = false のチケット CF の role_id（cf id → role id）。
-func HiddenIssueCustomFieldRoles(ctx context.Context, q db.Queryer) (map[int64][]int64, error) {
-	var rows []struct {
-		CFID   int64 `db:"custom_field_id"`
-		RoleID int64 `db:"role_id"`
-	}
-	if err := q.Select(ctx, &rows, `SELECT cfr.custom_field_id, cfr.role_id FROM custom_fields_roles cfr
-JOIN custom_fields ON custom_fields.id = cfr.custom_field_id
-WHERE custom_fields.owner_kind = 'issue' AND custom_fields.visible = `+q.Dialect().BoolLiteral(false)+` ORDER BY cfr.custom_field_id, cfr.role_id`); err != nil {
-		return nil, err
-	}
-	out := map[int64][]int64{}
-	for _, r := range rows {
-		out[r.CFID] = append(out[r.CFID], r.RoleID)
-	}
-	return out, nil
 }
 
 // ReactionRow は reactions の行。

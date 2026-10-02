@@ -6,7 +6,6 @@ package handler
 import (
 	"errors"
 	"html/template"
-	"net/http"
 	"net/url"
 	"slices"
 	"strconv"
@@ -60,9 +59,9 @@ func (a *App) IssuesShow(c *Req) {
 		a.issuesShowAtom(c)
 	case "pdf":
 		// TODO(pdf): PDF 出力は未対応
-		c.RenderError(http.StatusNotAcceptable, "")
+		renderUnknownFormat(c)
 	default:
-		c.RenderError(http.StatusNotAcceptable, "")
+		renderUnknownFormat(c)
 	}
 }
 

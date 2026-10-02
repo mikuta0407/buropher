@@ -1,0 +1,25 @@
+status: 200
+content-type: application/atom+xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Redmine: Details of all changes</title>
+  <link href="{{BASE}}/issues/changes.atom?key=KEY" rel="self"/>
+  <link href="{{BASE}}/" rel="alternate"/>
+  <id>{{BASE}}/</id>
+  <sprite_icon>{{BASE}}/assets/favicon-DIGEST.ico</sprite_icon>
+  <updated>2026-01-14T00:00:00Z</updated>
+  <author>
+    <name>Redmine</name>
+  </author>
+  <entry>
+    <title>Private child of eCookbook - Bug #6: Issue of a private subproject</title>
+    <link href="{{BASE}}/issues/6" rel="alternate"/>
+    <id>{{BASE}}/issues/6?journal_id=4</id>
+    <updated>2026-01-14T00:00:00Z</updated>
+    <author>
+      <name>Redmine Admin</name>
+    </author>
+    <content type="html">&#xA;&lt;ul&gt;&lt;li&gt;&lt;strong&gt;Target version&lt;/strong&gt; set to &lt;i&gt;Private Version of public subproject&lt;/i&gt;&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;A comment with a private version.&lt;/p&gt;    </content>
+  </entry>
+</feed>

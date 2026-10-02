@@ -230,6 +230,12 @@ func (l *issueLookup) groupValue(c *query.Column, r *query.IssueRow) (query.Grou
 		return query.GroupKey{Value: strconv.FormatInt(*id, 10)}
 	}
 	if c.CustomField != nil {
+		if r.CustomValues == nil {
+			// 列に CF が無いと preload されないので読み込む（Redmine は issue.custom_values を遅延読み込みする）
+			cv, err := repository.CustomValues(l.ctx, l.a.DB, "issue", r.ID)
+			l.fail(err)
+			r.CustomValues = cv
+		}
 		vals := r.CustomValues[c.CustomField.ID]
 		if !l.cfVisibleBy(c.CustomField, l.project(r.ProjectID)) || len(vals) == 0 {
 			return query.GroupKey{Null: true}, nil

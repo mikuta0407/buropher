@@ -1,0 +1,24 @@
+#,Project,Tracker,Parent task,Status,Priority,Subject,Author,Assignee,Updated,Category,Target version,Start date,Due date,Estimated time,Estimated remaining time,Total estimated time,Spent time,Total spent time,% Done,Created,Closed,Last updated by,Related issues,Files,Searchable field,Database,Float field,Custom date,Private,Description,Last notes
+14,eCookbook Subproject 1,Bug,"",New,Normal,Private issue on public project,John Smith,"",12/31/2025 12:00 PM,"","","","","",0,"",0.00,0.00,0,12/31/2025 12:00 PM,"",John Smith,"","private.diff
+testfile.png
+testfile.PNG
+test???.png
+Test???.PNG
+root_attachment.txt","","","","",Yes,This is a private issue,A comment on a private issue.
+13,eCookbook Subproject 1,Bug,"",New,Low,Subproject issue two,John Smith,"",01/13/2026 12:00 PM,"","","","","",0,"",0.00,0.00,0,01/10/2026 12:00 PM,"","","","","","","","",No,This is a second issue on a cookbook subproject,""
+12,eCookbook,Bug,"",Closed,Normal,Closed issue on a locked version,Dave Lopper,"",01/14/2026 12:00 PM,Printing,1.0,01/14/2026,"","",0,"",0.00,0.00,0,01/12/2026 12:00 PM,01/14/2026 12:00 PM,"","","","","","","",No,"",""
+11,eCookbook,Bug,"",Closed,Normal,Closed issue on a closed version,John Smith,"",01/14/2026 12:00 PM,Printing,0.1,01/14/2026,"","",0,"",0.00,0.00,0,01/12/2026 12:00 PM,01/14/2026 12:00 PM,"","","","","","","",No,"",""
+10,Private child of eCookbook,Bug,"",New,Normal,Issue Doing the Blocking,John Smith,"",01/15/2026 11:59 AM,"","",01/15/2026,01/16/2026,"",0,"",0.00,0.00,0,01/15/2026 11:59 AM,"","",Blocks #9,"","","","","",No,This is an issue that blocks issue,""
+9,Private child of eCookbook,Bug,"",New,Normal,Blocked Issue,John Smith,"",01/15/2026 11:59 AM,"","",01/15/2026,01/16/2026,"",0,"",0.00,0.00,0,01/15/2026 11:59 AM,"","",Blocked by #10,"","","","","",No,This is an issue that is blocked by issue,""
+8,eCookbook,Bug,"",Closed,Normal,Closed issue,John Smith,"",01/05/2026 12:00 PM,"","","","","",0,"",0.00,0.00,0,01/05/2026 12:00 PM,01/12/2026 12:00 PM,"","","","","","","",No,This is a closed issue.,""
+7,eCookbook,Bug,"",New,Normal,Issue due today,John Smith,"",01/05/2026 12:00 PM,"","",01/05/2026,01/15/2026,"",0,"",0.00,0.00,0,01/05/2026 12:00 PM,"","","","",this is a stringforcustomfield search,"",,"",No,This is an issue that is due today,""
+6,Private child of eCookbook,Bug,"",New,Low,Issue of a private subproject,John Smith,"",01/15/2026 11:59 AM,"","",01/15/2026,01/16/2026,"",0,"",0.00,0.00,0,01/15/2026 11:59 AM,"",Redmine Admin,"","","","","","",No,This is an issue of a private subproject of cookbook,A comment with a private version.
+5,eCookbook Subproject 1,Bug,"",New,Low,Subproject issue,John Smith,"",01/13/2026 12:00 PM,"","","","",2.00,2.00,2.00,0.00,0.00,0,01/10/2026 12:00 PM,"","","","","","",-7.60,"",No,This is an issue on a cookbook subproject,""
+4,OnlineStore,Bug,"",New,Low,Issue on project 2,John Smith,John Smith,01/13/2026 12:00 PM,"","","","","",0,"",0.00,0.00,0,01/10/2026 12:00 PM,"","","",archive.zip,"","","","",No,Issue on project 2,""
+3,eCookbook,Bug,"",New,Low,Error 281 when updating a recipe,John Smith,Dave Lopper,07/19/2006 07:07 PM,"","",12/31/2025,01/10/2026,1.00,1.00,1.00,1.00,1.00,0,07/19/2006 07:07 PM,"","",Related to #2,"error281.txt
+changeset_iso8859-1.diff
+archive.zip
+changeset_utf8.diff",125,MySQL,11.65,"",No,Error 281 is encountered when saving a recipe,""
+2,eCookbook,Feature request,"",Assigned,Normal,Add ingredients categories,John Smith,Dave Lopper,07/19/2006 07:09 PM,"",1.0,01/13/2026,"",0.50,0.35,0.50,0.00,0.00,30,07/19/2006 07:04 PM,"",John Smith,Related to #3,"source.rb
+picture.jpg","","",2.05,"",No,Ingredients of the recipe should be classified by categories,A comment with inline image: !picture.jpg! and a reference to #1 and r2.
+1,eCookbook,Bug,"",New,Low,Cannot print recipes,John Smith,"",01/14/2026 12:00 PM,Printing,"",01/14/2026,01/25/2026,200.00,200.00,200.00,154.25,154.25,0,01/12/2026 12:00 PM,"",John Smith,"","",125,"",2.10,12/01/2009,No,Unable to print recipes,"Some notes with Redmine links: #2, r2."
