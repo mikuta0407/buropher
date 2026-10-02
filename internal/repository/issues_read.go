@@ -537,6 +537,28 @@ ORDER BY reactions.id DESC`, kind, id)
 	return rows, err
 }
 
+// ReactionsForMany は ids の各オブジェクトについて ReactionsFor をまとめて行う（オブジェクト id → 行。id の降順）。
+func ReactionsForMany(ctx context.Context, q db.Queryer, kind string, ids []int64, cond string) (map[int64][]*ReactionRow, error) {
+	out := map[int64][]*ReactionRow{}
+	for _, chunk := range chunkIDs(uniqIDs(ids)) {
+		var rows []struct {
+			ReactionRow
+			ReactableID int64 `db:"reactable_id"`
+		}
+		if err := q.Select(ctx, &rows, `SELECT reactions.id, reactions.user_id, reactions.reactable_id FROM reactions
+JOIN principals ON principals.id = reactions.user_id
+WHERE reactions.reactable_kind = ? AND reactions.reactable_id IN (`+joinIDs(chunk)+`) AND principals.kind = 'user' AND (`+condOr(cond)+`)
+ORDER BY reactions.id DESC`, kind); err != nil {
+			return nil, err
+		}
+		for i := range rows {
+			r := rows[i].ReactionRow
+			out[rows[i].ReactableID] = append(out[rows[i].ReactableID], &r)
+		}
+	}
+	return out, nil
+}
+
 // TimeEntryCustomFieldIDs は TimeEntryCustomField の id（position 順）。
 func VisibleTimeEntryCustomFieldIDs(ctx context.Context, q db.Queryer) ([]int64, error) {
 	var ids []int64

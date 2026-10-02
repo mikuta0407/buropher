@@ -681,6 +681,16 @@ func (q *Query) projectsLftExpr(ctx context.Context, table string) (string, erro
 	return strings.ReplaceAll(q.nestedSetExpr, "%s", table), nil
 }
 
+// ProjectsLftOrder は "projects.lft ASC" 相当の ORDER BY 項目 (ツリー順)。
+// 結果の FROM に projects が結合されていること (IssueQuery の base_scope は結合している)。
+func (q *Query) ProjectsLftOrder(ctx context.Context) (string, error) {
+	e, err := q.projectsLftExpr(ctx, "projects")
+	if err != nil {
+		return "", err
+	}
+	return e + " ASC", nil
+}
+
 func unionStrings(a, b []string) []string {
 	out := slices.Clone(a)
 	for _, s := range b {

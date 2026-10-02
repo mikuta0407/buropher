@@ -15,6 +15,7 @@ import (
 	"errors"
 	"fmt"
 	"net/url"
+	"runtime"
 	"strings"
 	"time"
 
@@ -45,10 +46,37 @@ type Sqlizer = sq.Sqlizer
 // SQLite の既定 busy_timeout (ミリ秒)。
 const sqliteBusyTimeoutMS = 10000
 
+// SQLite の接続ごとのページキャッシュ (KiB) と mmap の上限 (バイト)。
+const (
+	sqliteCacheSizeKiB = 32 * 1024
+	sqliteMmapSize     = 256 << 20
+)
+
+// DefaultMaxIdleConns は接続プールに保持する待機接続の数 (CPU 数の 2 倍、最低 4)。
+// database/sql の既定 (2 本) では並行リクエストのたびに接続を作り直すことになり、
+// SQLite では接続ごとにスキーマの解析とプラグマの設定が、PostgreSQL では接続の確立が毎回かかる。
+//
+// 同時接続数の上限 (SetMaxOpenConns) は既定では設けない。1 リクエストがトランザクションを
+// 保持したまま別の接続で読み取ることがあり、上限を設けるとプール枯渇で詰まるおそれがあるため。
+// 必要なら設定 database.max_open_conns で指定する (SetMaxConns)。
+func DefaultMaxIdleConns() int { return max(4, 2*runtime.NumCPU()) }
+
+// SetMaxConns は同時接続数の上限を n にする (待機接続の数も n 以下に抑える)。n <= 0 なら何もしない。
+// インメモリ SQLite は 1 接続に固定されたままにする。
+func (d *DB) SetMaxConns(n int) {
+	if n <= 0 || d.memory {
+		return
+	}
+	d.x.SetMaxOpenConns(n)
+	d.x.SetMaxIdleConns(min(n, DefaultMaxIdleConns()))
+}
+
 // DB は sqlx.DB と Dialect をまとめたもの。
 type DB struct {
 	x       *sqlx.DB
 	dialect Dialect
+	// memory はインメモリ SQLite (接続を 1 本に固定している)。
+	memory bool
 }
 
 // Queryer は *DB と *Tx の共通インタフェース。リポジトリ層はこれを受け取る。
@@ -82,9 +110,11 @@ func Open(ctx context.Context, driver, dsn string) (*DB, error) {
 		return nil, err
 	}
 	var x *sqlx.DB
+	var memory bool
 	switch d.Name() {
 	case SQLite:
 		full, mem, err := sqliteDSN(dsn)
+		memory = mem
 		if err != nil {
 			return nil, err
 		}
@@ -95,6 +125,10 @@ func Open(ctx context.Context, driver, dsn string) (*DB, error) {
 		if mem {
 			// インメモリ DB は接続ごとに別 DB になるため 1 接続に固定する。
 			sdb.SetMaxOpenConns(1)
+		} else {
+			// WAL なので読み取りは複数接続で並行できる。書き込みは BEGIN IMMEDIATE と busy_timeout により
+			// SQLite のロックで直列化される。
+			sdb.SetMaxIdleConns(DefaultMaxIdleConns())
 		}
 		sdb.SetConnMaxIdleTime(5 * time.Minute)
 		x = sqlx.NewDb(sdb, "sqlite")
@@ -108,6 +142,7 @@ func Open(ctx context.Context, driver, dsn string) (*DB, error) {
 		}
 		cfg.RuntimeParams["timezone"] = "UTC"
 		sdb := stdlib.OpenDB(*cfg)
+		sdb.SetMaxIdleConns(DefaultMaxIdleConns())
 		sdb.SetConnMaxIdleTime(5 * time.Minute)
 		x = sqlx.NewDb(sdb, "pgx")
 	}
@@ -115,7 +150,7 @@ func Open(ctx context.Context, driver, dsn string) (*DB, error) {
 		x.Close()
 		return nil, fmt.Errorf("db: ping %s: %w", driver, err)
 	}
-	return &DB{x: x, dialect: d}, nil
+	return &DB{x: x, dialect: d, memory: memory}, nil
 }
 
 // sqliteDSN はパスまたは file: URI に接続ごとのプラグマを付与する。
@@ -140,9 +175,15 @@ func sqliteDSN(dsn string) (full string, memory bool, err error) {
 		"foreign_keys(1)",
 		fmt.Sprintf("busy_timeout(%d)", sqliteBusyTimeoutMS),
 		"synchronous(NORMAL)",
+		// 一時 B-tree (ORDER BY / GROUP BY / DISTINCT の作業領域) をメモリに置く
+		"temp_store(MEMORY)",
+		// ページキャッシュ (負値は KiB 単位)。既定の 2 MiB では大きな DB で再読み込みが多い
+		fmt.Sprintf("cache_size(%d)", -sqliteCacheSizeKiB),
 	}
 	if !memory {
-		pragmas = append(pragmas, "journal_mode(WAL)")
+		pragmas = append(pragmas, "journal_mode(WAL)",
+			// 読み取りを mmap で行い、read システムコールとページのコピーを減らす
+			fmt.Sprintf("mmap_size(%d)", sqliteMmapSize))
 	}
 	for _, p := range pragmas {
 		v.Add("_pragma", p)
@@ -167,22 +208,37 @@ func (d *DB) Dialect() Dialect { return d.dialect }
 func (d *DB) Ping(ctx context.Context) error { return d.x.PingContext(ctx) }
 
 func (d *DB) Exec(ctx context.Context, q string, args ...any) (Result, error) {
+	if statsEnabled.Load() {
+		defer traceQuery(time.Now(), q)
+	}
 	return d.x.ExecContext(ctx, d.dialect.Rebind(q), args...)
 }
 
 func (d *DB) Get(ctx context.Context, dest any, q string, args ...any) error {
+	if statsEnabled.Load() {
+		defer traceQuery(time.Now(), q)
+	}
 	return d.x.GetContext(ctx, dest, d.dialect.Rebind(q), args...)
 }
 
 func (d *DB) Select(ctx context.Context, dest any, q string, args ...any) error {
+	if statsEnabled.Load() {
+		defer traceQuery(time.Now(), q)
+	}
 	return d.x.SelectContext(ctx, dest, d.dialect.Rebind(q), args...)
 }
 
 func (d *DB) Query(ctx context.Context, q string, args ...any) (*sqlx.Rows, error) {
+	if statsEnabled.Load() {
+		defer traceQuery(time.Now(), q)
+	}
 	return d.x.QueryxContext(ctx, d.dialect.Rebind(q), args...)
 }
 
 func (d *DB) QueryRow(ctx context.Context, q string, args ...any) *sqlx.Row {
+	if statsEnabled.Load() {
+		defer traceQuery(time.Now(), q)
+	}
 	return d.x.QueryRowxContext(ctx, d.dialect.Rebind(q), args...)
 }
 
@@ -256,22 +312,37 @@ func (t *Tx) DeferConstraints(ctx context.Context) error {
 }
 
 func (t *Tx) Exec(ctx context.Context, q string, args ...any) (Result, error) {
+	if statsEnabled.Load() {
+		defer traceQuery(time.Now(), q)
+	}
 	return t.x.ExecContext(ctx, t.dialect.Rebind(q), args...)
 }
 
 func (t *Tx) Get(ctx context.Context, dest any, q string, args ...any) error {
+	if statsEnabled.Load() {
+		defer traceQuery(time.Now(), q)
+	}
 	return t.x.GetContext(ctx, dest, t.dialect.Rebind(q), args...)
 }
 
 func (t *Tx) Select(ctx context.Context, dest any, q string, args ...any) error {
+	if statsEnabled.Load() {
+		defer traceQuery(time.Now(), q)
+	}
 	return t.x.SelectContext(ctx, dest, t.dialect.Rebind(q), args...)
 }
 
 func (t *Tx) Query(ctx context.Context, q string, args ...any) (*sqlx.Rows, error) {
+	if statsEnabled.Load() {
+		defer traceQuery(time.Now(), q)
+	}
 	return t.x.QueryxContext(ctx, t.dialect.Rebind(q), args...)
 }
 
 func (t *Tx) QueryRow(ctx context.Context, q string, args ...any) *sqlx.Row {
+	if statsEnabled.Load() {
+		defer traceQuery(time.Now(), q)
+	}
 	return t.x.QueryRowxContext(ctx, t.dialect.Rebind(q), args...)
 }
 
@@ -318,4 +389,70 @@ func selectSQ(ctx context.Context, q Queryer, dest any, s Sqlizer) error {
 		return err
 	}
 	return q.Select(ctx, dest, query, args...)
+}
+
+// sqliteAnalysisLimit は ANALYZE が各インデックスで調べる行数の上限 (PRAGMA analysis_limit)。
+// 近似の統計でもプランの選択には十分で、大きなテーブルでも短時間で終わる。
+const sqliteAnalysisLimit = 1000
+
+// Optimize は SQLite の統計 (sqlite_stat1) を更新する。統計が無いとクエリプランナーが
+// 大きなテーブルで不適切な結合順を選ぶことがある (例: IN リストの代わりに全チケットを走査する)。
+//
+// ANALYZE は書き込みロックを取るので、テーブルごとに別の文 (別トランザクション) で実行し、
+// 他の書き込みを長く待たせないようにする。all が偽なら統計の無いテーブル (統計の無いインデックスを
+// 持つテーブルを含む) だけを対象にする。
+// PostgreSQL では autovacuum が統計を更新するので何もしない。
+func (d *DB) Optimize(ctx context.Context, all bool) error {
+	if d.dialect.Name() != SQLite || d.memory {
+		return nil
+	}
+	conn, err := d.x.Connx(ctx)
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+	var tables []string
+	if err := conn.SelectContext(ctx, &tables, `SELECT name FROM sqlite_schema WHERE type = 'table' AND name NOT LIKE 'sqlite\_%' ESCAPE '\' ORDER BY name`); err != nil {
+		return err
+	}
+	analyzed := map[string]bool{}
+	if !all {
+		// 統計のあるテーブルのうち、統計の無いインデックス (後から追加したもの) を持たないものは対象外
+		var done []struct {
+			Tbl string         `db:"tbl"`
+			Idx sql.NullString `db:"idx"`
+		}
+		// sqlite_stat1 は一度も ANALYZE していなければ存在しない
+		if err := conn.SelectContext(ctx, &done, `SELECT tbl, idx FROM sqlite_stat1`); err == nil {
+			hasStat := map[string]bool{}
+			for _, r := range done {
+				analyzed[r.Tbl] = true
+				hasStat[r.Tbl+"\x00"+r.Idx.String] = true
+			}
+			var idx []struct {
+				Tbl  string `db:"tbl_name"`
+				Name string `db:"name"`
+			}
+			if err := conn.SelectContext(ctx, &idx, `SELECT tbl_name, name FROM sqlite_schema WHERE type = 'index'`); err != nil {
+				return err
+			}
+			for _, i := range idx {
+				if analyzed[i.Tbl] && !hasStat[i.Tbl+"\x00"+i.Name] {
+					analyzed[i.Tbl] = false
+				}
+			}
+		}
+	}
+	if _, err := conn.ExecContext(ctx, fmt.Sprintf(`PRAGMA analysis_limit=%d`, sqliteAnalysisLimit)); err != nil {
+		return err
+	}
+	for _, t := range tables {
+		if analyzed[t] {
+			continue
+		}
+		if _, err := conn.ExecContext(ctx, `ANALYZE "`+strings.ReplaceAll(t, `"`, `""`)+`"`); err != nil {
+			return fmt.Errorf("db: analyze %s: %w", t, err)
+		}
+	}
+	return nil
 }

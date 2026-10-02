@@ -211,6 +211,9 @@ func (a *App) roadmapData(c *Req) (map[string]any, error) {
 		}
 	}
 	slices.SortStableFunc(uniq, domain.CompareVersions)
+	if err := vc.preload(uniq); err != nil {
+		return nil, err
+	}
 	models := make([]*versionModel, 0, len(uniq))
 	for _, v := range uniq {
 		m, err := vc.model(v)

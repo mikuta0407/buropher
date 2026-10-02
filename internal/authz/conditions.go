@@ -225,7 +225,21 @@ func (a *Authorizer) UserTrackerPermission(ctx context.Context, p *domain.Projec
 //   - 管理者: 全件 ("1=1")
 //   - メンバーシップのロール (無ければ組込ロール) に users_visibility = 'all' があれば有効な全件
 //   - それ以外: 有効なもののうち自身と可視プロジェクトのメンバー
+//
+// 結果はこの Authorizer (1 リクエスト) の間キャッシュする (ユーザー名のリンクごとに呼ばれるため)。
 func (a *Authorizer) PrincipalVisibleCondition(ctx context.Context) (string, error) {
+	if a.pvcLoaded {
+		return a.principalVisCond, nil
+	}
+	c, err := a.principalVisibleCondition(ctx)
+	if err != nil {
+		return "", err
+	}
+	a.principalVisCond, a.pvcLoaded = c, true
+	return c, nil
+}
+
+func (a *Authorizer) principalVisibleCondition(ctx context.Context) (string, error) {
 	if a.user.IsAdmin() {
 		return "1=1", nil
 	}

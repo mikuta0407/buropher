@@ -50,7 +50,11 @@ type issueLookup struct {
 	attachs    map[int64]*repository.ReadAttachment
 	relations  map[int64]*repository.IssueRelation
 	vVisible   map[int64]bool
-	ie         *issues.Env
+	// reactions は preloadReactions で読み込んだリアクション（種別 → オブジェクト id → 行）。
+	// 読み込み済みの id は reactionsLoaded に入る（リアクションが無い id は行が無い）。
+	reactions       map[string]map[int64][]*repository.ReactionRow
+	reactionsLoaded map[string]map[int64]bool
+	ie              *issues.Env
 	// apiTimeProjectSet は API の spent_hours の表示判定に @project（c.Project）を使う（create の 201 応答）。
 	apiTimeProjectSet bool
 }

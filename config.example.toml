@@ -30,6 +30,12 @@
 # env: BUROPHER_SECRET_KEY
 #secret_key = ""
 
+# Profiling (development / troubleshooting only): serve net/http/pprof and SQL statistics
+# (/debug/pprof/, /debug/sqlstats) on a separate listener. pprof_addr must be a loopback
+# address. env: BUROPHER_PPROF, BUROPHER_PPROF_ADDR
+#pprof = false
+#pprof_addr = "127.0.0.1:6060"
+
 [database]
 # "sqlite" or "postgres". env: BUROPHER_DB_DRIVER
 #driver = "sqlite"
@@ -38,6 +44,11 @@
 # e.g. "postgres://buropher:secret@localhost:5432/buropher?sslmode=disable".
 # env: BUROPHER_DB_DSN
 #dsn = "data/buropher.db"
+
+# Upper limit of open database connections (0 = unlimited). Idle connections are kept
+# for reuse either way. Set it to stay below PostgreSQL's max_connections when several
+# processes share a server. env: BUROPHER_DB_MAX_OPEN_CONNS
+#max_open_conns = 0
 
 [storage]
 # Attachment storage directory (Redmine's attachments_storage_path).
