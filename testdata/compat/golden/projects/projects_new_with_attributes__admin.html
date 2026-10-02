@@ -5,7 +5,7 @@ content-type: text/html
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Redmine</title>
+    <title>New project - abc - Redmine</title>
     <meta content="width=device-width, initial-scale=1" name="viewport">
     <meta content="Redmine" name="description">
     <meta content="issue,bug,tracker" name="keywords">
@@ -66,7 +66,7 @@ var wikiImageMimeTypes = ["image/gif","image/jpeg","image/png","image/tiff","ima
     <link href="/assets/jstoolbar-DIGEST.css" media="screen" rel="stylesheet">
     <script src="/assets/project_identifier-DIGEST.js"></script>
   </head>
-  <body class="has-main-menu controller-projects action-copy avatars-off" data-text-formatting="common_mark">
+  <body class="has-main-menu controller-projects action-new avatars-off" data-text-formatting="common_mark">
     <div id="wrapper">
       <div class="flyout-menu js-flyout-menu">
         <div class="flyout-menu__search">
@@ -200,7 +200,7 @@ var wikiImageMimeTypes = ["image/gif","image/jpeg","image/png","image/tiff","ima
         </div>
         <div id="content">
           <h2>New project</h2>
-          <form accept-charset="UTF-8" action="/projects/ecookbook/copy" class="new_project" id="new_project" method="post" name="new_project-RANDOM">
+          <form accept-charset="UTF-8" action="/projects" class="new_project" enctype="multipart/form-data" id="new_project" method="post" name="new_project-RANDOM">
             <input autocomplete="off" name="authenticity_token" type="hidden" value="{{CSRF}}">
             <div class="box tabular">
               <p>
@@ -208,11 +208,11 @@ var wikiImageMimeTypes = ["image/gif","image/jpeg","image/png","image/tiff","ima
                   Name
                   <span class="required">*</span>
                 </label>
-                <input id="project_name" name="project[name]" size="60" type="text" value="">
+                <input id="project_name" name="project[name]" size="60" type="text" value="abc">
               </p>
               <p>
                 <label for="project_description">Description</label>
-                <textarea class="wiki-edit" data-action="beforeinput-&gt;list-autofill#handleBeforeInput" data-controller="list-autofill" data-list-autofill-text-formatting-param="common_mark" id="project_description" name="project[description]" rows="8">Recipes management application</textarea>
+                <textarea class="wiki-edit" data-action="beforeinput-&gt;list-autofill#handleBeforeInput" data-controller="list-autofill" data-list-autofill-text-formatting-param="common_mark" id="project_description" name="project[description]" rows="8"></textarea>
               </p>
               <p>
                 <label for="project_identifier">
@@ -228,7 +228,7 @@ var wikiImageMimeTypes = ["image/gif","image/jpeg","image/png","image/tiff","ima
               </p>
               <p>
                 <label for="project_homepage">Homepage</label>
-                <input id="project_homepage" name="project[homepage]" size="60" type="text" value="http://ecookbook.somenet.foo/">
+                <input id="project_homepage" name="project[homepage]" size="60" type="text" value="">
               </p>
               <p>
                 <label for="project_is_public">Public</label>
@@ -243,7 +243,7 @@ var wikiImageMimeTypes = ["image/gif","image/jpeg","image/png","image/tiff","ima
                   <option value="1">eCookbook</option>
                   <option value="5">» Private child of eCookbook</option>
                   <option value="6">» Child of private child</option>
-                  <option value="3">» eCookbook Subproject 1</option>
+                  <option selected="selected" value="3">» eCookbook Subproject 1</option>
                   <option value="4">» eCookbook Subproject 2</option>
                   <option value="2">OnlineStore</option>
                 </select>
@@ -262,7 +262,7 @@ var wikiToolbar = new jsToolBar(document.getElementById('project_description'));
                 </label>
                 <select class="list_cf cf_3" id="project_custom_field_values_3" name="project[custom_field_values][3]">
                   <option value=""></option>
-                  <option selected="selected" value="Stable">Stable</option>
+                  <option value="Stable">Stable</option>
                   <option value="Beta">Beta</option>
                   <option value="Alpha">Alpha</option>
                   <option value="Planning">Planning</option>
@@ -321,60 +321,8 @@ var wikiToolbar = new jsToolBar(document.getElementById('project_description'));
               </label>
               <input autocomplete="off" id="project_enabled_module_names_" name="project[enabled_module_names][]" type="hidden" value="">
             </fieldset>
-            <fieldset class="box tabular">
-              <legend>
-                <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.box input[type=&#34;checkbox&#34;][name=&#34;only[]&#34;]&#39;); return false;" title="Check all / Uncheck all">
-                  <svg aria-hidden="true" class="s18 icon-svg">
-                    <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
-                  </svg>
-                  <span class="icon-label"></span>
-                </a>
-                Copy
-              </legend>
-              <label class="block">
-                <input checked="checked" name="only[]" type="checkbox" value="members">
-                Members (2)
-              </label>
-              <label class="block">
-                <input checked="checked" name="only[]" type="checkbox" value="versions">
-                Versions (3) and Files
-              </label>
-              <label class="block">
-                <input checked="checked" name="only[]" type="checkbox" value="issue_categories">
-                Issue categories (2)
-              </label>
-              <label class="block">
-                <input checked="checked" name="only[]" type="checkbox" value="issues">
-                Issues (7)
-              </label>
-              <label class="block">
-                <input checked="checked" name="only[]" type="checkbox" value="queries">
-                Custom queries (3)
-              </label>
-              <label class="block">
-                <input checked="checked" name="only[]" type="checkbox" value="documents">
-                Documents (3)
-              </label>
-              <label class="block">
-                <input checked="checked" name="only[]" type="checkbox" value="boards">
-                Forums (2)
-              </label>
-              <label class="block">
-                <input checked="checked" name="only[]" type="checkbox" value="wiki">
-                Wiki pages (8)
-              </label>
-              <input autocomplete="off" id="only_" name="only[]" type="hidden" value="">
-              <br>
-              <label class="block">
-                <input id="notifications" name="notifications" type="checkbox" value="1">
-                Send email notifications during the project copy
-              </label>
-            </fieldset>
-            <input autocomplete="off" id="project_tracker_ids_" name="project[tracker_ids][]" type="hidden" value="1">
-            <input autocomplete="off" id="project_tracker_ids_" name="project[tracker_ids][]" type="hidden" value="2">
-            <input autocomplete="off" id="project_tracker_ids_" name="project[tracker_ids][]" type="hidden" value="3">
-            <input autocomplete="off" id="project_issue_custom_field_ids_" name="project[issue_custom_field_ids][]" type="hidden" value="9">
-            <input data-disable-with="Copy" name="commit" type="submit" value="Copy">
+            <input data-disable-with="Create" name="commit" type="submit" value="Create">
+            <input data-disable-with="Create and add another" name="continue" type="submit" value="Create and add another">
           </form>
           <div style="clear:both;"></div>
         </div>

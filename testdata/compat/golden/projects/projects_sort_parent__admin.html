@@ -5,7 +5,7 @@ content-type: text/html
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Redmine</title>
+    <title>Projects - Redmine</title>
     <meta content="width=device-width, initial-scale=1" name="viewport">
     <meta content="Redmine" name="description">
     <meta content="issue,bug,tracker" name="keywords">
@@ -61,7 +61,7 @@ rm = window.rm || {};rm.AutoComplete = rm.AutoComplete || {};rm.AutoComplete.dat
 var datepickerOptions={dateFormat: 'yy-mm-dd', firstDay: 0, showOn: 'button', buttonImageOnly: true, buttonImage: '/assets/calendar-DIGEST.png', showButtonPanel: true, showWeek: true, showOtherMonths: true, selectOtherMonths: true, changeMonth: true, changeYear: true, beforeShow: beforeShowDatePicker};
 //]]></script>
   </head>
-  <body class="controller-admin action-projects avatars-off" data-text-formatting="common_mark">
+  <body class="has-main-menu controller-projects action-index avatars-off" data-text-formatting="common_mark">
     <div id="wrapper">
       <div class="flyout-menu js-flyout-menu">
         <div class="flyout-menu__search">
@@ -81,6 +81,8 @@ var datepickerOptions={dateFormat: 'yy-mm-dd', firstDay: 0, showOn: 'button', bu
           </a>
           <a class="user active" href="/users/1">admin</a>
         </div>
+        <h3>Project</h3>
+        <span class="js-project-menu"></span>
         <h3>General</h3>
         <span class="js-general-menu"></span>
         <span class="js-sidebar flyout-menu__sidebar"></span>
@@ -148,25 +150,55 @@ var datepickerOptions={dateFormat: 'yy-mm-dd', firstDay: 0, showOn: 'button', bu
                 <a href="/projects/private-child?jump=projects" title="Private child of eCookbook">
                   <span style="padding-inline-start:16px;">Private child of eCookbook</span>
                 </a>
-                <strong>Recently used</strong>
-                <a href="/projects/subproject1?jump=projects" title="eCookbook Subproject 1">
-                  <span style="padding-inline-start:0px;">eCookbook Subproject 1</span>
-                </a>
-                <a href="/projects/onlinestore?jump=projects" title="OnlineStore">
-                  <span style="padding-inline-start:0px;">OnlineStore</span>
-                </a>
                 <strong>All Projects</strong>
                 <a href="/projects/private-child?jump=projects" title="Private child of eCookbook">
                   <span style="padding-inline-start:0px;">Private child of eCookbook</span>
                 </a>
               </div>
               <div class="drdn-items all-projects selection">
-                <a href="/projects?jump=projects">All Projects</a>
+                <a class="selected" href="/projects?jump=projects">All Projects</a>
               </div>
             </div>
           </div>
         </div>
         <h1>Redmine</h1>
+        <div class="tabs" id="main-menu">
+          <ul>
+            <li>
+              <a class="projects selected" href="/projects">Projects</a>
+            </li>
+            <li>
+              <a class="activity" href="/activity">Activity</a>
+            </li>
+            <li>
+              <a class="issues" href="/issues">Issues</a>
+            </li>
+            <li>
+              <a class="time-entries" href="/time_entries">Spent time</a>
+            </li>
+            <li>
+              <a class="gantt" href="/issues/gantt">Gantt</a>
+            </li>
+            <li>
+              <a class="calendar" href="/issues/calendar">Calendar</a>
+            </li>
+            <li>
+              <a class="news" href="/news">News</a>
+            </li>
+          </ul>
+          <div class="tabs-buttons" style="display:none;">
+            <button class="tab-left icon-only" onclick="moveTabLeft(this); return false;">
+              <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
+                <use href="/assets/icons-DIGEST.svg#icon--angle-left"></use>
+              </svg>
+            </button>
+            <button class="tab-right icon-only" onclick="moveTabRight(this); return false;">
+              <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
+                <use href="/assets/icons-DIGEST.svg#icon--angle-right"></use>
+              </svg>
+            </button>
+          </div>
+        </div>
       </div>
       <div class="collapsiblesidebar" id="main">
         <script>//<![CDATA[
@@ -184,139 +216,38 @@ $('#main.collapsiblesidebar').collapsibleSidebar();
 $('#sidebar-switch-panel').css('visibility', 'visible');
 //]]></script>
           <div id="sidebar-wrapper">
-            <h3>Administration</h3>
-            <div id="admin-menu">
-              <ul>
-                <li>
-                  <a class="icon icon-projects projects selected" href="/admin/projects">
-                    <svg aria-hidden="true" class="s18 icon-svg">
-                      <use href="/assets/icons-DIGEST.svg#icon--projects"></use>
-                    </svg>
-                    <span class="icon-label">Projects</span>
-                  </a>
-                </li>
-                <li>
-                  <a class="icon icon-user users" href="/users">
-                    <svg aria-hidden="true" class="s18 icon-svg">
-                      <use href="/assets/icons-DIGEST.svg#icon--user"></use>
-                    </svg>
-                    <span class="icon-label">Users</span>
-                  </a>
-                </li>
-                <li>
-                  <a class="icon icon-group groups" href="/groups">
-                    <svg aria-hidden="true" class="s18 icon-svg">
-                      <use href="/assets/icons-DIGEST.svg#icon--group"></use>
-                    </svg>
-                    <span class="icon-label">Groups</span>
-                  </a>
-                </li>
-                <li>
-                  <a class="icon icon-roles roles" href="/roles">
-                    <svg aria-hidden="true" class="s18 icon-svg">
-                      <use href="/assets/icons-DIGEST.svg#icon--roles"></use>
-                    </svg>
-                    <span class="icon-label">Roles and permissions</span>
-                  </a>
-                </li>
-                <li>
-                  <a class="icon icon-issue trackers" href="/trackers">
-                    <svg aria-hidden="true" class="s18 icon-svg">
-                      <use href="/assets/icons-DIGEST.svg#icon--issue"></use>
-                    </svg>
-                    <span class="icon-label">Trackers</span>
-                  </a>
-                </li>
-                <li>
-                  <a class="icon icon-issue-edit issue-statuses" href="/issue_statuses">
-                    <svg aria-hidden="true" class="s18 icon-svg">
-                      <use href="/assets/icons-DIGEST.svg#icon--issue-edit"></use>
-                    </svg>
-                    <span class="icon-label">Issue statuses</span>
-                  </a>
-                </li>
-                <li>
-                  <a class="icon icon-workflows workflows" href="/workflows/edit">
-                    <svg aria-hidden="true" class="s18 icon-svg">
-                      <use href="/assets/icons-DIGEST.svg#icon--workflows"></use>
-                    </svg>
-                    <span class="icon-label">Workflow</span>
-                  </a>
-                </li>
-                <li>
-                  <a class="icon icon-custom-fields custom-fields" href="/custom_fields">
-                    <svg aria-hidden="true" class="s18 icon-svg">
-                      <use href="/assets/icons-DIGEST.svg#icon--custom-fields"></use>
-                    </svg>
-                    <span class="icon-label">Custom fields</span>
-                  </a>
-                </li>
-                <li>
-                  <a class="icon icon-list enumerations" href="/enumerations">
-                    <svg aria-hidden="true" class="s18 icon-svg">
-                      <use href="/assets/icons-DIGEST.svg#icon--list"></use>
-                    </svg>
-                    <span class="icon-label">Enumerations</span>
-                  </a>
-                </li>
-                <li>
-                  <a class="icon icon-settings settings" href="/settings">
-                    <svg aria-hidden="true" class="s18 icon-svg">
-                      <use href="/assets/icons-DIGEST.svg#icon--settings"></use>
-                    </svg>
-                    <span class="icon-label">Settings</span>
-                  </a>
-                </li>
-                <li>
-                  <a class="icon icon-server-authentication ldap-authentication" href="/auth_sources">
-                    <svg aria-hidden="true" class="s18 icon-svg">
-                      <use href="/assets/icons-DIGEST.svg#icon--server-authentication"></use>
-                    </svg>
-                    <span class="icon-label">LDAP authentication</span>
-                  </a>
-                </li>
-                <li>
-                  <a class="icon icon-applications applications" href="/oauth/applications">
-                    <svg aria-hidden="true" class="s18 icon-svg">
-                      <use href="/assets/icons-DIGEST.svg#icon--apps"></use>
-                    </svg>
-                    <span class="icon-label">Applications</span>
-                  </a>
-                </li>
-                <li>
-                  <a class="icon icon-plugins plugins" href="/admin/plugins">
-                    <svg aria-hidden="true" class="s18 icon-svg">
-                      <use href="/assets/icons-DIGEST.svg#icon--plugins"></use>
-                    </svg>
-                    <span class="icon-label">Plugins</span>
-                  </a>
-                </li>
-                <li>
-                  <a class="icon icon-help info" href="/admin/info">
-                    <svg aria-hidden="true" class="s18 icon-svg">
-                      <use href="/assets/icons-DIGEST.svg#icon--help"></use>
-                    </svg>
-                    <span class="icon-label">Information</span>
-                  </a>
-                </li>
-              </ul>
-            </div>
+            <h3>Custom queries</h3>
+            <ul class="queries">
+              <li>
+                <a class="query" data-disable-with="My bookmarks" href="/projects?query_id=12" title="Description for My bookmarks">My bookmarks</a>
+              </li>
+              <li>
+                <a class="query" data-disable-with="Projects as list" href="/projects?query_id=11" title="Description for Projects as list">Projects as list</a>
+              </li>
+            </ul>
           </div>
         </div>
         <div id="content">
           <div class="contextual">
+            <form accept-charset="UTF-8" action="/projects" method="get" name="form-RANDOM"></form>
             <a class="icon icon-add" href="/projects/new">
               <svg aria-hidden="true" class="s18 icon-svg">
                 <use href="/assets/icons-DIGEST.svg#icon--add"></use>
               </svg>
               <span class="icon-label">New project</span>
             </a>
+            <a class="icon icon-settings" href="/admin/projects">
+              <svg aria-hidden="true" class="s18 icon-svg">
+                <use href="/assets/icons-DIGEST.svg#icon--settings"></use>
+              </svg>
+              <span class="icon-label">Administration</span>
+            </a>
           </div>
           <h2>Projects</h2>
-          <form accept-charset="UTF-8" action="/admin/projects" id="query_form" method="get" name="query_form-RANDOM">
+          <form accept-charset="UTF-8" action="/projects" id="query_form" method="get" name="query_form-RANDOM">
             <input autocomplete="off" id="set_filter" name="set_filter" type="hidden" value="1">
-            <input autocomplete="off" disabled="disabled" id="query_type" name="type" type="hidden" value="ProjectAdminQuery">
-            <input autocomplete="off" name="sort" type="hidden" value="">
+            <input autocomplete="off" disabled="disabled" id="query_type" name="type" type="hidden" value="ProjectQuery">
+            <input autocomplete="off" name="sort" type="hidden" value="parent_id:desc,name">
             <div class="hide-when-print" id="query_form_with_buttons">
               <div id="query_form_content">
                 <fieldset class="collapsible" id="filters">
@@ -331,14 +262,14 @@ $('#sidebar-switch-panel').css('visibility', 'visible');
 
 var operatorLabels = {"=":"is","!":"is not","o":"open","c":"closed","!*":"none","*":"any","\u003e=":"\u003e=","\u003c=":"\u003c=","\u003e\u003c":"between","\u003ct+":"in less than","\u003et+":"in more than","\u003e\u003ct+":"in the next","t+":"in","nd":"tomorrow","t":"today","ld":"yesterday","nw":"next week","w":"this week","lw":"last week","l2w":"last 2 weeks","nm":"next month","m":"this month","lm":"last month","y":"this year","\u003et-":"less than days ago","\u003ct-":"more than days ago","\u003e\u003ct-":"in the past","t-":"days ago","~":"contains","!~":"doesn't contain","*~":"contains any of","^":"starts with","$":"ends with","=p":"any issues in project","=!p":"any issues not in project","!p":"no issues in project","*o":"any open issues","!o":"no open issues","ev":"has been","!ev":"has never been","cf":"changed from"};
 var operatorByType = {"list":["=","!"],"list_with_history":["=","!","ev","!ev","cf"],"list_status":["o","=","!","ev","!ev","cf","c","*"],"list_optional":["=","!","!*","*"],"list_optional_with_history":["=","!","ev","!ev","cf","!*","*"],"list_subprojects":["*","!*","=","!"],"date":["=","\u003e=","\u003c=","\u003e\u003c","\u003ct+","\u003et+","\u003e\u003ct+","t+","nd","t","ld","nw","w","lw","l2w","nm","m","lm","y","\u003et-","\u003ct-","\u003e\u003ct-","t-","!*","*"],"date_past":["=","\u003e=","\u003c=","\u003e\u003c","\u003et-","\u003ct-","\u003e\u003ct-","t-","t","ld","w","lw","l2w","m","lm","y","!*","*"],"string":["~","*~","=","!~","!","^","$","!*","*"],"text":["~","*~","!~","^","$","!*","*"],"search":["~","*~","!~"],"integer":["=","\u003e=","\u003c=","\u003e\u003c","!*","*"],"float":["=","\u003e=","\u003c=","\u003e\u003c","!*","*"],"relation":["=","!","=p","=!p","!p","*o","!o","!*","*"],"tree":["=","~","!*","*"]};
-var availableFilters = {"status":{"type":"list","name":"Status","remote":true,"values":[["active","1"],["closed","5"],["archived","9"],["scheduled for deletion","10"]]},"id":{"type":"list","name":"Project","remote":true},"name":{"type":"text","name":"Name","values":null},"description":{"type":"text","name":"Description","values":null},"parent_id":{"type":"list_subprojects","name":"Subproject of","remote":true},"is_public":{"type":"list","name":"Public","values":[["yes","1"],["no","0"]]},"created_on":{"type":"date_past","name":"Created","values":null},"updated_on":{"type":"date_past","name":"Updated","values":null},"cf_3":{"type":"list_optional","name":"Development status","remote":true}};
+var availableFilters = {"status":{"type":"list","name":"Status","remote":true,"values":[["active","1"],["closed","5"]]},"id":{"type":"list","name":"Project","remote":true},"name":{"type":"text","name":"Name","values":null},"description":{"type":"text","name":"Description","values":null},"parent_id":{"type":"list_subprojects","name":"Subproject of","remote":true},"is_public":{"type":"list","name":"Public","values":[["yes","1"],["no","0"]]},"created_on":{"type":"date_past","name":"Created","values":null},"updated_on":{"type":"date_past","name":"Updated","values":null},"cf_3":{"type":"list_optional","name":"Development status","remote":true}};
 var labelDayPlural = "days";
 
-var filtersUrl = "\/queries\/filter?type=ProjectAdminQuery";
+var filtersUrl = "\/queries\/filter?type=ProjectQuery";
 
 $(document).ready(function(){
   initFilters();
-  addFilter("status", "=", ["9"]);
+  addFilter("status", "=", ["1"]);
 });
 
 //]]></script>
@@ -373,6 +304,15 @@ $(document).ready(function(){
                     Options
                   </legend>
                   <div class="hidden">
+                    <div>
+                      <div class="field">
+                        <label for="display_type">Display results as</label>
+                      </div>
+                      <input id="display_type_board" name="display_type" type="radio" value="board">
+                      <label class="inline" for="display_type_board">Board</label>
+                      <input checked="checked" id="display_type_list" name="display_type" type="radio" value="list">
+                      <label class="inline" for="display_type_list">List</label>
+                    </div>
                     <div class="" id="list-definition">
                       <div>
                         <div class="field">Columns</div>
@@ -448,7 +388,7 @@ $(document).ready(function(){
                   </svg>
                   <span class="icon-label">Apply</span>
                 </a>
-                <a class="icon icon-reload" href="/admin/projects?set_filter=1&amp;sort=">
+                <a class="icon icon-reload" href="/projects?set_filter=1&amp;sort=">
                   <svg aria-hidden="true" class="s18 icon-svg">
                     <use href="/assets/icons-DIGEST.svg#icon--reload"></use>
                   </svg>
@@ -478,7 +418,188 @@ $(function ($) {
 
 //]]></script>
           </form>
-          <p class="nodata">No data to display</p>
+          <form accept-charset="UTF-8" action="/projects" data-cm-url="/admin/projects_context_menu" method="post" name="form-RANDOM">
+            <input autocomplete="off" name="authenticity_token" type="hidden" value="{{CSRF}}">
+            <input autocomplete="off" name="back_url" type="hidden" value="/projects?display_type=list&amp;set_filter=1&amp;sort=parent_id%3Adesc%2Cname">
+            <div class="autoscroll">
+              <table class="list projects odd-even sort-by-parent-id sort-desc">
+                <thead>
+                  <tr>
+                    <th class="name">
+                      <a href="/projects?display_type=list&amp;set_filter=1&amp;sort=name%2Cparent_id%3Adesc" title="Sort by &#34;Name&#34;">Name</a>
+                    </th>
+                    <th class="identifier">
+                      <a href="/projects?display_type=list&amp;set_filter=1&amp;sort=identifier%2Cparent_id%3Adesc%2Cname" title="Sort by &#34;Identifier&#34;">Identifier</a>
+                    </th>
+                    <th class="short_description">
+                      <a href="/projects?display_type=list&amp;set_filter=1&amp;sort=short_description%2Cparent_id%3Adesc%2Cname" title="Sort by &#34;Description&#34;">Description</a>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="odd hascontextmenu project root parent public" id="project-1">
+                    <td class="name">
+                      <a href="/projects/ecookbook">eCookbook</a>
+                      <span class="icon-only icon-bookmarked-project">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--bookmarked"></use>
+                        </svg>
+                        <span class="icon-label hidden">My bookmarks</span>
+                      </span>
+                    </td>
+                    <td class="identifier">ecookbook</td>
+                    <td class="short_description">
+                      <div class="wiki">
+                        <p>Recipes management application</p>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr class="even hascontextmenu project child parent idnt idnt-1" id="project-5">
+                    <td class="name">
+                      <a href="/projects/private-child">Private child of eCookbook</a>
+                      <span class="icon-only icon-user my-project">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--user"></use>
+                        </svg>
+                        <span class="icon-label hidden">My projects</span>
+                      </span>
+                      <span class="icon-only icon-bookmarked-project">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--bookmarked"></use>
+                        </svg>
+                        <span class="icon-label hidden">My bookmarks</span>
+                      </span>
+                    </td>
+                    <td class="identifier">private-child</td>
+                    <td class="short_description">
+                      <div class="wiki">
+                        <p>This is a private subproject of a public project</p>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr class="odd hascontextmenu project child leaf public idnt idnt-2" id="project-6">
+                    <td class="name">
+                      <a href="/projects/project6">Child of private child</a>
+                    </td>
+                    <td class="identifier">project6</td>
+                    <td class="short_description">
+                      <div class="wiki">
+                        <p>This is a public subproject of a private project</p>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr class="even hascontextmenu project child leaf public idnt idnt-1" id="project-3">
+                    <td class="name">
+                      <a href="/projects/subproject1">eCookbook Subproject 1</a>
+                    </td>
+                    <td class="identifier">subproject1</td>
+                    <td class="short_description">
+                      <div class="wiki">
+                        <p>eCookBook Subproject 1</p>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr class="odd hascontextmenu project child leaf public idnt idnt-1" id="project-4">
+                    <td class="name">
+                      <a href="/projects/subproject2">eCookbook Subproject 2</a>
+                    </td>
+                    <td class="identifier">subproject2</td>
+                    <td class="short_description">
+                      <div class="wiki">
+                        <p>eCookbook Subproject 2</p>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr class="even hascontextmenu project root leaf" id="project-2">
+                    <td class="name">
+                      <a href="/projects/onlinestore">OnlineStore</a>
+                    </td>
+                    <td class="identifier">onlinestore</td>
+                    <td class="short_description">
+                      <div class="wiki">
+                        <p>E-commerce web site</p>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </form>
+          <span class="pagination">
+            <ul class="pages"></ul>
+            <span>
+              <span class="items">(1-6/6)</span>
+            </span>
+          </span>
+          <div id="csv-export-options" style="display:none;">
+            <h3 class="title">CSV export options</h3>
+            <form accept-charset="UTF-8" action="/projects.csv" id="csv-export-form" method="get" name="csv-export-form-RANDOM">
+              <input autocomplete="off" name="set_filter" type="hidden" value="1">
+              <input autocomplete="off" name="f[]" type="hidden" value="status">
+              <input autocomplete="off" name="op[status]" type="hidden" value="=">
+              <input autocomplete="off" name="v[status][]" type="hidden" value="1">
+              <input autocomplete="off" name="c[]" type="hidden" value="name">
+              <input autocomplete="off" name="c[]" type="hidden" value="identifier">
+              <input autocomplete="off" name="c[]" type="hidden" value="short_description">
+              <input autocomplete="off" name="sort" type="hidden" value="parent_id:desc,name">
+              <p>
+                <label>
+                  <input checked="checked" id="c__" name="c[]" type="radio" value="">
+                  Selected Columns
+                </label>
+                <br>
+                <label>
+                  <input id="c__all_inline" name="c[]" type="radio" value="all_inline">
+                  All Columns
+                </label>
+              </p>
+              <p>
+                <label>
+                  Encoding
+                  <select id="encoding" name="encoding">
+                    <option selected="selected" value="UTF-8">UTF-8</option>
+                    <option value="ISO-8859-1">ISO-8859-1</option>
+                  </select>
+                </label>
+              </p>
+              <p>
+                <label>
+                  Field separator
+                  <select id="field_separator" name="field_separator">
+                    <option selected="selected" value=",">Comma</option>
+                    <option value=";">Semicolon</option>
+                  </select>
+                </label>
+              </p>
+              <p class="buttons">
+                <input onclick="hideModal(this);" type="submit" value="Export">
+                <a href="#" onclick="hideModal(this);; return false;">Cancel</a>
+              </p>
+            </form>
+          </div>
+          <p style="text-align:right;">
+            <span class="icon icon-user my-project">
+              <svg aria-hidden="true" class="s18 icon-svg">
+                <use href="/assets/icons-DIGEST.svg#icon--user"></use>
+              </svg>
+              <span class="icon-label">My projects</span>
+            </span>
+            <span class="icon icon-bookmarked-project">
+              <svg aria-hidden="true" class="s18 icon-svg">
+                <use href="/assets/icons-DIGEST.svg#icon--bookmarked"></use>
+              </svg>
+              <span class="icon-label">My bookmarks</span>
+            </span>
+          </p>
+          <p class="other-formats hide-when-print">
+            Also available in:
+            <span>
+              <a class="csv" href="/projects.csv?display_type=list&amp;set_filter=1&amp;sort=parent_id%3Adesc%2Cname" onclick="showModal(&#39;csv-export-options&#39;, &#39;350px&#39;); return false;" rel="nofollow">CSV</a>
+            </span>
+            <span>
+              <a class="atom" href="/projects.atom?key=KEY" rel="nofollow">Atom</a>
+            </span>
+          </p>
           <div style="clear:both;"></div>
         </div>
       </div>

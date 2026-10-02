@@ -385,11 +385,10 @@ func (a *App) projectDeletable(c *Req, p *domain.Project) (bool, error) {
 
 // ---------------------------------------------------------------- edit / bookmark / close / reopen / archive
 
-// ProjectsEdit は projects#edit（GET /projects/:id/edit）。Redmine 6.1 には edit ビューが無いため
-// ActionView::MissingTemplate となる（本番では 500 ではなく 406 相当）。設定画面へは誘導しない。
+// ProjectsEdit は projects#edit（GET /projects/:id/edit）。
 func (a *App) ProjectsEdit(c *Req) {
-	// TODO: Redmine では MissingTemplate（ActionController::MissingExactTemplate → 406）。
-	c.RenderError(http.StatusNotAcceptable, "")
+	// Redmine 6.1 には projects/edit ビューが無く ActionController::MissingExactTemplate（406、本文なし）
+	c.unknownFormat()
 }
 
 // ProjectsBookmark は projects#bookmark（POST / DELETE /projects/:id/bookmark）。

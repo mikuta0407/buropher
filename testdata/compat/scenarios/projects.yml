@@ -37,6 +37,30 @@ requests:
   - path: /projects?set_filter=1&f[]=status&op[status]=%3D&v[status][]=1&f[]=is_public&op[is_public]=%3D&v[is_public][]=0
     id: projects_filter_private__admin
     user: admin
+  - path: /projects?set_filter=1&f[]=id&op[id]=%3D&v[id][]=1&v[id][]=mine&display_type=list
+    id: projects_filter_id_mine
+    users: [admin]
+  - path: /projects?set_filter=1&f[]=parent_id&op[parent_id]=%3D&v[parent_id][]=1&display_type=board
+    id: projects_filter_parent_board
+    users: [admin]
+  - path: /projects?set_filter=1&f[]=name&op[name]=~&v[name][]=cook
+    id: projects_filter_name
+    users: [admin]
+  - path: /projects?set_filter=1&f[]=id&op[id]=%3D&v[id][]=bookmarks&display_type=list
+    id: projects_filter_bookmarks
+    users: [jsmith]
+  - path: /projects?set_filter=1&f[]=cf_3&op[cf_3]=%3D&v[cf_3][]=Stable&display_type=list&c[]=name&c[]=cf_3
+    id: projects_filter_cf
+    users: [admin]
+  - path: /projects?set_filter=1&display_type=list&group_by=cf_3&c[]=name&c[]=cf_3
+    id: projects_group_cf
+    users: [admin]
+  - path: /projects?set_filter=1&display_type=list&sort=parent_id:desc,name
+    id: projects_sort_parent
+    users: [admin]
+  - path: /projects?set_filter=1&f[]=created_on&op[created_on]=%3D&v[created_on][]=abc
+    id: projects_invalid_filter
+    users: [admin]
   - path: /projects?query_id=11
     users: [admin, jsmith]
   - path: /projects?query_id=12
@@ -76,6 +100,8 @@ requests:
     users: [admin]
   - path: /projects/ecookbook.json
     users: [admin, anonymous]
+  - path: /projects/ecookbook/edit
+    users: [admin]
   - path: /projects/ecookbook.xml
     users: [admin]
   - path: /projects/ecookbook.json?include=trackers,issue_categories,time_entry_activities,enabled_modules,issue_custom_fields
@@ -87,6 +113,11 @@ requests:
     users: [admin, jsmith, dlopper, anonymous]
   - path: /projects/new?parent_id=ecookbook
     users: [admin, jsmith]
+  - path: /projects/new?parent_id=99
+    users: [admin]
+  - path: /projects/new?project[parent_id]=3&project[name]=abc
+    id: projects_new_with_attributes
+    users: [admin]
   - path: /projects/ecookbook/settings
     users: [admin, jsmith, dlopper]
   - path: /projects/ecookbook/settings/members
@@ -97,6 +128,13 @@ requests:
   - path: /projects/onlinestore/settings
     users: [admin, jsmith]
   - path: /projects/private-child/settings/versions
+    users: [admin]
+  - path: /projects/ecookbook/settings/versions?version_status=closed
+    id: projects_settings_versions_closed
+    users: [admin]
+  - path: /projects/ecookbook/settings/activities
+    users: [jsmith]
+  - path: /projects/subproject1/settings/boards
     users: [admin]
   - path: /projects/ecookbook/copy
     users: [admin, jsmith]

@@ -155,7 +155,10 @@ func (a *App) renderProjectCopy(c *Req, f *projectForm, src *domain.Project) {
 	c.NewRecordProject = true
 	c.NewProjectName, c.NewProjectIdentifier = f.Project.Name, f.Project.Identifier
 	data, err := a.projectFormData(c, f)
-	if err != nil {
+	if errors.Is(err, errParentNotFound) {
+		c.renderPublic404()
+		return
+	} else if err != nil {
 		a.internalError(c, "project form", err)
 		return
 	}

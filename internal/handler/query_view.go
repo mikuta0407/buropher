@@ -179,6 +179,13 @@ func (qv *queryView) AvailableFiltersJSON() (template.HTML, error) {
 			}
 			if vals == nil {
 				f.set("values", nil)
+			} else if def.CustomField != nil && def.CustomField.FieldFormat == "list" {
+				// ListFormat#possible_values_options は文字列の配列（[label, value] ではない）
+				arr := make([]string, len(vals))
+				for i, v := range vals {
+					arr[i] = v.Value
+				}
+				f.set("values", arr)
 			} else {
 				arr := make([][]string, len(vals))
 				for i, v := range vals {

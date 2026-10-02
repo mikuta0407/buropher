@@ -20,6 +20,9 @@ import (
 // このファイルは Project のフォーム（projects/_form, new / create / update）:
 // safe_attributes=、バリデーション、allowed_parents、parent_project_select_tag、保存。
 
+// errParentNotFound は parent_project_select_tag の Project.find(parent_id) が見つからない。
+var errParentNotFound = errors.New("parent project not found")
+
 // projectIdentifierMaxLength は Project::IDENTIFIER_MAX_LENGTH。
 const projectIdentifierMaxLength = 100
 
@@ -506,10 +509,11 @@ func (a *App) parentProjectSelectTag(c *Req, f *projectForm) (template.HTML, err
 		} else if p, err := repository.FindProject(ctx, a.DB, paramParent); err == nil {
 			id := p.ID
 			selected = &id
-		} else if !errors.Is(err, repository.ErrNotFound) {
-			return "", err
+		} else if errors.Is(err, repository.ErrNotFound) {
+			// Project.find の ActiveRecord::RecordNotFound は rescue されない（public/404.html）
+			return "", errParentNotFound
 		} else {
-			selected = nil
+			return "", err
 		}
 	}
 	allowed, withNil, err := a.allowedParents(c, f)

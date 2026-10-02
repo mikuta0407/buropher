@@ -104,7 +104,10 @@ func (a *App) renderProjectNew(c *Req, f *projectForm) {
 	c.NewRecordProject = true
 	c.NewProjectName, c.NewProjectIdentifier = f.Project.Name, f.Project.Identifier
 	data, err := a.projectFormData(c, f)
-	if err != nil {
+	if errors.Is(err, errParentNotFound) {
+		c.renderPublic404()
+		return
+	} else if err != nil {
 		a.internalError(c, "project form", err)
 		return
 	}
@@ -332,7 +335,10 @@ func projectSettingsTabs(c *Req, p *domain.Project) []helper.Tab {
 // renderProjectSettings は projects/settings の描画（全タブのデータを読み込む）。
 func (a *App) renderProjectSettings(c *Req, f *projectForm) {
 	data, err := a.projectSettingsData(c, f)
-	if err != nil {
+	if errors.Is(err, errParentNotFound) {
+		c.renderPublic404()
+		return
+	} else if err != nil {
 		a.internalError(c, "project settings", err)
 		return
 	}
