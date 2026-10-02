@@ -1,0 +1,5 @@
+status: 200
+content-type: text/javascript
+
+$('#relation-2').remove();
+$(".issues-stat").replaceWith('<span class=\"issues-stat\"><span class=\"badge badge-issues-count\"><a href=\"/issues?issue_id=7%2C1&amp;set_filter=true&amp;status_id=%2A\">2<\/a><\/span> (<span class=\"open\"><a href=\"/issues?issue_id=7%2C1&amp;set_filter=true&amp;status_id=o\">2 open<\/a><\/span> &#8212; <span class=\"closed\">0 closed<\/span>)<\/span>')

@@ -1,0 +1,21 @@
+status: 200
+content-type: application/json
+
+{
+  "relations": [
+    {
+      "id": 7,
+      "issue_id": 3,
+      "issue_to_id": 7,
+      "relation_type": "relates",
+      "delay": null
+    },
+    {
+      "id": 4,
+      "issue_id": 3,
+      "issue_to_id": 1,
+      "relation_type": "blocks",
+      "delay": null
+    }
+  ]
+}

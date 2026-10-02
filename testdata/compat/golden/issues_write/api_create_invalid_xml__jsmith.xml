@@ -1,0 +1,7 @@
+status: 422
+content-type: application/xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<errors type="array">
+  <error>Subject cannot be blank</error>
+</errors>
