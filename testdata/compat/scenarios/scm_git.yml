@@ -59,6 +59,16 @@ requests:
     users: [admin]
   - path: /projects/subproject1/repository/12/browse/sources
     users: [admin]
+  - path: /projects/subproject1/repository/12?rev=latin-1-branch-%C3%9C-01
+    users: [admin]
+  - path: /projects/subproject1/repository/12/show/latin-1-dir?rev=latin-1-path-encoding
+    users: [admin]
+  - path: /projects/subproject1/repository/12/revisions/57ca437c/annotate/latin-1-dir/test-%C3%9C.txt
+    users: [admin]
+  - id: revisions_xhr
+    path: /projects/subproject1/repository/12/revisions?page=2
+    users: [admin]
+    headers: {X-Requested-With: XMLHttpRequest}
   - id: show_xhr_tree
     path: /projects/subproject1/repository/12/revisions/master-20120212/show/sources?depth=1&parent_id=abc
     users: [admin]
@@ -165,6 +175,15 @@ requests:
     form: {"issue_id": "999"}
   - id: revision_with_related_issue
     path: /projects/subproject1/repository/12/revisions/61b685fbe55ab05b5ac68402d5720c1a6ac973d1
+    users: [admin, anonymous]
+  - id: issue_with_changeset
+    path: /issues/5
+    users: [admin]
+  - id: issue_changesets_tab
+    path: /issues/5?tab=changesets
+    users: [admin]
+  - id: issue_with_changeset_json
+    path: /issues/5.json?include=changesets
     users: [admin]
   - id: remove_related_issue
     path: /projects/subproject1/repository/12/revisions/61b685fbe55ab05b5ac68402d5720c1a6ac973d1/issues/5.js

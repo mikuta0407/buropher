@@ -1,0 +1,4 @@
+status: 403
+content-type: text/plain
+
+Access denied. Repository management WS is disabled or key is invalid.

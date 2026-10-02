@@ -1,0 +1,75 @@
+status: 200
+content-type: application/json
+
+{
+  "issue": {
+    "id": 5,
+    "project": {
+      "id": 3,
+      "name": "eCookbook Subproject 1"
+    },
+    "tracker": {
+      "id": 1,
+      "name": "Bug"
+    },
+    "status": {
+      "id": 1,
+      "name": "New",
+      "is_closed": false
+    },
+    "priority": {
+      "id": 4,
+      "name": "Low"
+    },
+    "author": {
+      "id": 2,
+      "name": "John Smith"
+    },
+    "subject": "Subproject issue",
+    "description": "This is an issue on a cookbook subproject",
+    "start_date": null,
+    "due_date": null,
+    "done_ratio": 0,
+    "is_private": false,
+    "estimated_hours": 2.0,
+    "total_estimated_hours": 2.0,
+    "spent_hours": 0.0,
+    "total_spent_hours": 0.0,
+    "custom_fields": [
+      {
+        "id": 2,
+        "name": "Searchable field",
+        "value": null
+      },
+      {
+        "id": 1,
+        "name": "Database",
+        "value": null
+      },
+      {
+        "id": 6,
+        "name": "Float field",
+        "value": "-7.6"
+      },
+      {
+        "id": 8,
+        "name": "Custom date",
+        "value": null
+      }
+    ],
+    "created_on": "2026-01-10T12:00:00Z",
+    "updated_on": "2026-01-13T12:00:00Z",
+    "closed_on": null,
+    "changesets": [
+      {
+        "revision": "61b685fbe55ab05b5ac68402d5720c1a6ac973d1",
+        "user": {
+          "id": 2,
+          "name": "John Smith"
+        },
+        "comments": "2 files modified.",
+        "committed_on": "2007-12-14T15:15:51Z"
+      }
+    ]
+  }
+}

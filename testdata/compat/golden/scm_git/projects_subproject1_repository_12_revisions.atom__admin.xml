@@ -1,0 +1,166 @@
+status: 200
+content-type: application/atom+xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>eCookbook Subproject 1: Revisions</title>
+  <link href="{{BASE}}/projects/subproject1/repository/12/revisions.atom" rel="self"/>
+  <link href="{{BASE}}/projects/subproject1/repository/12/revisions" rel="alternate"/>
+  <id>{{BASE}}/</id>
+  <icon>{{BASE}}/assets/favicon-DIGEST.ico</icon>
+  <updated>2011-01-01T04:00:00Z</updated>
+  <author>
+    <name>Redmine</name>
+  </author>
+  <generator uri="https://www.redmine.org/">&#xA;Redmine  </generator>
+  <entry>
+    <title>Revision 2a682156: merge</title>
+    <link href="{{BASE}}/projects/subproject1/repository/12/revisions/2a682156a3b6e77a8bf9cd4590e8db757f3c6c78" rel="alternate"/>
+    <id>{{BASE}}/projects/subproject1/repository/12/revisions/2a682156a3b6e77a8bf9cd4590e8db757f3c6c78</id>
+    <updated>2011-01-01T04:00:00Z</updated>
+    <author>
+      <name>test20120208 </name>
+    </author>
+    <content type="html"/>
+  </entry>
+  <entry>
+    <title>Revision e2c5a89d: edit issue-8857/test01.txt</title>
+    <link href="{{BASE}}/projects/subproject1/repository/12/revisions/e2c5a89d1dea8fd0eda4eb8c96465a66e9849f39" rel="alternate"/>
+    <id>{{BASE}}/projects/subproject1/repository/12/revisions/e2c5a89d1dea8fd0eda4eb8c96465a66e9849f39</id>
+    <updated>2011-01-01T03:00:00Z</updated>
+    <author>
+      <name>test20120208 </name>
+    </author>
+    <content type="html"/>
+  </entry>
+  <entry>
+    <title>Revision b7b6dacc: edit issue-8857/test00.txt</title>
+    <link href="{{BASE}}/projects/subproject1/repository/12/revisions/b7b6dacc67d4c4d8cfe2453c8aed12cd865a310e" rel="alternate"/>
+    <id>{{BASE}}/projects/subproject1/repository/12/revisions/b7b6dacc67d4c4d8cfe2453c8aed12cd865a310e</id>
+    <updated>2011-01-01T02:00:00Z</updated>
+    <author>
+      <name>test20120208 </name>
+    </author>
+    <content type="html"/>
+  </entry>
+  <entry>
+    <title>Revision 92397af8: edit issue-8857/test01.txt</title>
+    <link href="{{BASE}}/projects/subproject1/repository/12/revisions/92397af84d22f27389c822848ecd5b463c181583" rel="alternate"/>
+    <id>{{BASE}}/projects/subproject1/repository/12/revisions/92397af84d22f27389c822848ecd5b463c181583</id>
+    <updated>2011-01-01T01:00:00Z</updated>
+    <author>
+      <name>test20120208 </name>
+    </author>
+    <content type="html"/>
+  </entry>
+  <entry>
+    <title>Revision 65e62bd9: edit issue-8857/test00.txt</title>
+    <link href="{{BASE}}/projects/subproject1/repository/12/revisions/65e62bd9fa7c3d9b6d92a883ed8d34abda5500e4" rel="alternate"/>
+    <id>{{BASE}}/projects/subproject1/repository/12/revisions/65e62bd9fa7c3d9b6d92a883ed8d34abda5500e4</id>
+    <updated>2011-01-01T00:00:00Z</updated>
+    <author>
+      <name>test20120208 </name>
+    </author>
+    <content type="html"/>
+  </entry>
+  <entry>
+    <title>Revision bc201c95: add issue-8857/test01.txt</title>
+    <link href="{{BASE}}/projects/subproject1/repository/12/revisions/bc201c95999c4f10d018b0aa03b541cd6a2ff0ee" rel="alternate"/>
+    <id>{{BASE}}/projects/subproject1/repository/12/revisions/bc201c95999c4f10d018b0aa03b541cd6a2ff0ee</id>
+    <updated>2010-12-31T23:00:00Z</updated>
+    <author>
+      <name>test20120208 </name>
+    </author>
+    <content type="html"/>
+  </entry>
+  <entry>
+    <title>Revision 95488a44: add issue-8857/test00.txt</title>
+    <link href="{{BASE}}/projects/subproject1/repository/12/revisions/95488a44bc25f7d1f97d775a31359539ff333a63" rel="alternate"/>
+    <id>{{BASE}}/projects/subproject1/repository/12/revisions/95488a44bc25f7d1f97d775a31359539ff333a63</id>
+    <updated>2010-12-31T22:00:00Z</updated>
+    <author>
+      <name>test20120208 </name>
+    </author>
+    <content type="html"/>
+  </entry>
+  <entry>
+    <title>Revision 1ca7f5ed: add files in latin-1 encoding directory.</title>
+    <link href="{{BASE}}/projects/subproject1/repository/12/revisions/1ca7f5ed374f3cb31a93ae5215c2e25cc6ec5127" rel="alternate"/>
+    <id>{{BASE}}/projects/subproject1/repository/12/revisions/1ca7f5ed374f3cb31a93ae5215c2e25cc6ec5127</id>
+    <updated>2010-10-02T14:00:00Z</updated>
+    <author>
+      <name>John Smith</name>
+    </author>
+    <content type="html"/>
+  </entry>
+  <entry>
+    <title>Revision 64f1f3e8: add latin-1 test file for diff/blame</title>
+    <link href="{{BASE}}/projects/subproject1/repository/12/revisions/64f1f3e89ad1cb57976ff0ad99a107012ba3481d" rel="alternate"/>
+    <id>{{BASE}}/projects/subproject1/repository/12/revisions/64f1f3e89ad1cb57976ff0ad99a107012ba3481d</id>
+    <updated>2010-10-01T05:06:00Z</updated>
+    <author>
+      <name>John Smith</name>
+    </author>
+    <content type="html"/>
+  </entry>
+  <entry>
+    <title>Revision 4fc55c43: add latin-1 test file for cat</title>
+    <link href="{{BASE}}/projects/subproject1/repository/12/revisions/4fc55c43bf3d3dc2efb66145365ddc17639ce81e" rel="alternate"/>
+    <id>{{BASE}}/projects/subproject1/repository/12/revisions/4fc55c43bf3d3dc2efb66145365ddc17639ce81e</id>
+    <updated>2010-10-01T05:05:00Z</updated>
+    <author>
+      <name>John Smith</name>
+    </author>
+    <content type="html"/>
+  </entry>
+  <entry>
+    <title>Revision 57ca437c: add latin-1 file.</title>
+    <link href="{{BASE}}/projects/subproject1/repository/12/revisions/57ca437c0acbbcb749821fdf3726a1367056d364" rel="alternate"/>
+    <id>{{BASE}}/projects/subproject1/repository/12/revisions/57ca437c0acbbcb749821fdf3726a1367056d364</id>
+    <updated>2010-10-01T05:03:00Z</updated>
+    <author>
+      <name>John Smith</name>
+    </author>
+    <content type="html"/>
+  </entry>
+  <entry>
+    <title>Revision 9a6f3b94: add latin-1-dir/make-latin-1-file.rb and update README</title>
+    <link href="{{BASE}}/projects/subproject1/repository/12/revisions/9a6f3b947d16f11b537363a60904d1b1d3bfcd2f" rel="alternate"/>
+    <id>{{BASE}}/projects/subproject1/repository/12/revisions/9a6f3b947d16f11b537363a60904d1b1d3bfcd2f</id>
+    <updated>2010-10-01T05:02:00Z</updated>
+    <author>
+      <name>John Smith</name>
+    </author>
+    <content type="html"/>
+  </entry>
+  <entry>
+    <title>Revision 67e7792c: latin-1 ÀÈÁÉÂÊÃËÄÅÆÇ</title>
+    <link href="{{BASE}}/projects/subproject1/repository/12/revisions/67e7792ce20ccae2e4bb73eed09bb397819c8834" rel="alternate"/>
+    <id>{{BASE}}/projects/subproject1/repository/12/revisions/67e7792ce20ccae2e4bb73eed09bb397819c8834</id>
+    <updated>2010-10-01T05:00:00Z</updated>
+    <author>
+      <name>test latin-1 ÀÈÁÉÂÊÃËÄÅÆÇ </name>
+    </author>
+    <content type="html"/>
+  </entry>
+  <entry>
+    <title>Revision b1650eac: Edit new_file.txt by a long author</title>
+    <link href="{{BASE}}/projects/subproject1/repository/12/revisions/b1650eac7c505a6dab9f19858afc9ecb481eccc2" rel="alternate"/>
+    <id>{{BASE}}/projects/subproject1/repository/12/revisions/b1650eac7c505a6dab9f19858afc9ecb481eccc2</id>
+    <updated>2010-10-01T04:00:00Z</updated>
+    <author>
+      <name>This is a very long and also quite pointless name of a committer which is just here so that it is very long and very pointless and also quite redundant as we have already stated that this name is very long and pointless and thus long enough to overflow...</name>
+    </author>
+    <content type="html"/>
+  </entry>
+  <entry>
+    <title>Revision 83ca5fd5: Add a filename with a leading and trailing whitespace</title>
+    <link href="{{BASE}}/projects/subproject1/repository/12/revisions/83ca5fd546063a3c7dc2e568ba3355661a9e2b2c" rel="alternate"/>
+    <id>{{BASE}}/projects/subproject1/repository/12/revisions/83ca5fd546063a3c7dc2e568ba3355661a9e2b2c</id>
+    <updated>2010-09-26T19:14:28Z</updated>
+    <author>
+      <name>Felix Schäfer </name>
+    </author>
+    <content type="html"/>
+  </entry>
+</feed>
