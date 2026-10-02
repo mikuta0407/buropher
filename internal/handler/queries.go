@@ -4,7 +4,6 @@ package handler
 // フィルタ UI が remote なフィルタの選択肢を取得する queries#filter。
 
 import (
-	"encoding/json"
 	"errors"
 	"html/template"
 	"net/http"
@@ -557,15 +556,7 @@ func (a *App) QueriesFilter(c *Req) {
 		}
 		values = filterValuesJSON(def, vals)
 	}
-	b, err := json.Marshal(values)
-	if err != nil {
-		a.internalError(c, "filter json", err)
-		return
-	}
-	c.W.Header().Set("Content-Type", "application/json; charset=utf-8")
-	c.W.WriteHeader(http.StatusOK)
-	_, _ = c.W.Write(b)
-	c.Halt()
+	renderJSON(c, values)
 }
 
 // filterValuesJSON は filter.values の JSON 表現（list 形式のカスタムフィールドは文字列の配列、

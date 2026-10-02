@@ -1,13 +1,15 @@
 package handler
 
-// AutoCompletesController（app/controllers/auto_completes_controller.rb）の issues。
+// AutoCompletesController（app/controllers/auto_completes_controller.rb）の issues / wiki_pages。
 
 import (
+	"errors"
 	"net/http"
 	"regexp"
 	"strconv"
 	"strings"
 
+	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/query"
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/view/rails"
@@ -19,10 +21,52 @@ var AutoCompletesController = &Controller{Name: "auto_completes", MainMenu: true
 // routesAutoCompletes は
 //
 //	match '/issues/auto_complete', :to => 'auto_completes#issues', :via => :get, :as => 'auto_complete_issues'
+//	match '/wiki_pages/auto_complete', :to => 'auto_completes#wiki_pages', :via => :get, :as => 'auto_complete_wiki_pages'
 func (a *App) routesAutoCompletes(r Router) {
 	// before_action :find_project
 	a.Handle(r, http.MethodGet, "/issues/auto_complete", AutoCompletesController, "issues", a.AutoCompletesIssues,
 		Before(a.findAutoCompleteProject))
+	a.Handle(r, http.MethodGet, "/wiki_pages/auto_complete", AutoCompletesController, "wiki_pages", a.AutoCompletesWikiPages,
+		Before(a.findAutoCompleteProject))
+}
+
+// AutoCompletesWikiPages は auto_completes#wiki_pages（Wiki ページ名の補完。JSON 配列 {id, label, value}）。
+// プロジェクトに Wiki が無いか view_wiki_pages 権限が無ければ空配列。
+func (a *App) AutoCompletesWikiPages(c *Req) {
+	q := strings.TrimSpace(rubyToS(func() any { v, _ := c.Params().Get("q"); return v }()))
+	out := []any{}
+	if c.Project == nil || !c.AllowedTo(domain.Perm("view_wiki_pages"), c.Project) {
+		renderJSON(c, out)
+		return
+	}
+	wiki, err := repository.FindWiki(c.Ctx(), a.DB, c.Project.ID)
+	if errors.Is(err, repository.ErrNotFound) {
+		renderJSON(c, out)
+		return
+	} else if err != nil {
+		a.internalError(c, "find wiki", err)
+		return
+	}
+	var rows []struct {
+		ID    int64  `db:"id"`
+		Title string `db:"title"`
+	}
+	sql := `SELECT id, title FROM wiki_pages WHERE wiki_id = ?`
+	args := []any{wiki.ID}
+	if q != "" {
+		// Rails と同じく % / _ はエスケープしない（"%#{q}%"）
+		sql += ` AND LOWER(wiki_pages.title) LIKE LOWER(?)`
+		args = append(args, "%"+q+"%")
+	}
+	sql += ` ORDER BY id DESC LIMIT 10`
+	if err := a.DB.Select(c.Ctx(), &rows, sql, args...); err != nil {
+		a.internalError(c, "wiki pages auto complete", err)
+		return
+	}
+	for _, r := range rows {
+		out = append(out, rails.NewHash("id", r.ID, "label", rubyTruncate(r.Title, 255), "value", r.Title))
+	}
+	renderJSON(c, out)
 }
 
 // findAutoCompleteProject は AutoCompletesController#find_project（project_id があれば Project.find。無ければ 404）。

@@ -1,0 +1,44 @@
+# AutoCompletesController（/issues/auto_complete, /wiki_pages/auto_complete）の互換シナリオ。
+# Wiki ページの補完はテキストエディタの [[ 入力（tribute）が使う。
+name: auto_completes
+
+users:
+  admin: {login: admin, password: admin}
+  jsmith: {login: jsmith, password: jsmith}
+
+requests:
+  - id: wiki_pages_query
+    path: /wiki_pages/auto_complete?project_id=ecookbook&q=Ano
+    users: [admin, jsmith, anonymous]
+    format: json
+  - id: wiki_pages_lower
+    path: /wiki_pages/auto_complete?project_id=ecookbook&q=page
+    user: jsmith
+    format: json
+  - id: wiki_pages_blank
+    path: /wiki_pages/auto_complete?project_id=ecookbook&q=
+    user: jsmith
+    format: json
+  - id: wiki_pages_wildcard
+    path: /wiki_pages/auto_complete?project_id=ecookbook&q=_
+    user: jsmith
+    format: json
+  - id: wiki_pages_no_project
+    path: /wiki_pages/auto_complete?q=page
+    user: admin
+    format: json
+  - id: wiki_pages_private_project
+    path: /wiki_pages/auto_complete?project_id=private-child&q=a
+    users: [admin, jsmith]
+    format: json
+  - id: wiki_pages_missing_project
+    path: /wiki_pages/auto_complete?project_id=nonexistent&q=a
+    user: admin
+  - id: wiki_pages_project_without_wiki
+    path: /wiki_pages/auto_complete?project_id=onlinestore&q=a
+    user: admin
+    format: json
+  - id: issues_query
+    path: /issues/auto_complete?project_id=ecookbook&q=rec
+    users: [admin, jsmith]
+    format: json
