@@ -1,0 +1,4 @@
+{{$a := assigns}}{{$p := current_project}}{{$repo := $a.Repository}}{{repository_breadcrumbs $p $repo .path .kind $a.Rev -}}
+{{$revText := $a.Rev}}{{if $a.Changeset}}{{$revText = format_revision $a.Changeset}}{{end -}}
+{{if present $revText}}{{printf " @ %s" $revText}}{{end -}}
+{{html_title (with_leading_slash .path)}}

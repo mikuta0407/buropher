@@ -77,6 +77,8 @@ type App struct {
 	BaseURL string
 	// PDFFonts は PDF 出力のフォント（nil なら埋め込みフォントと BUROPHER_PDF_FONT_DIR。internal/pdf）。
 	PDFFonts *pdf.FontSet
+	// GitCommand は git の実行ファイル（設定 scm.git_command。空なら "git"。repositories.go）。
+	GitCommand string
 }
 
 func (a *App) now() time.Time {

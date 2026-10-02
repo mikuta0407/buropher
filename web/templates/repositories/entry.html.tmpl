@@ -1,0 +1,31 @@
+{{$p := current_project}}{{$repo := .Repository}}
+{{call_hook "view_repositories_show_contextual"}}
+
+<div class="contextual">
+  {{partial "repositories/navigation" (dict)}}
+</div>
+
+<h2 class="breadcrumbs">{{partial "repositories/breadcrumbs" (dict "path" .Path "kind" "file" "revision" .Rev)}}</h2>
+
+{{partial "repositories/link_to_functions" (dict)}}
+
+{{if eq .Kind "image"}}
+  {{image_tag .RawURL (hash "alt" .Path "class" "filecontent image")}}
+{{else if eq .Kind "markup"}}
+  <div class="filecontent wiki">
+  {{.Markup}}
+</div>
+{{else if eq .Kind "file"}}
+  {{partial "common/file" (dict "filename" .Path "content" .Content)}}
+{{else}}
+  {{partial "common/other" (dict "path" .RawURL "kind" .MediaKind "download_link" (link_to (l "label_no_preview_download") .RawURL (hash "class" "icon icon-download")))}}
+{{end}}
+
+<span class="pagination filepreview">
+  {{render_entry_pagination .Paginator .PageEntries $p $repo .Rev}}
+</span>
+
+{{define "repositories/entry#header_tags"}}
+{{stylesheet_link_tag "scm"}}
+{{end}}
+{{content_for "header_tags" (capture "repositories/entry#header_tags")}}

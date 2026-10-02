@@ -1,0 +1,5 @@
+<h2>{{l "label_repository_new"}}</h2>
+
+{{$f := labelled_form_for "repository" .Repository (hash "url" (printf "/projects/%s/repositories" current_project.Identifier) "html" (hash "id" "repository-form"))}}{{$f.Open}}
+  {{partial "repositories/form" (dict "f" $f)}}
+{{end_form}}

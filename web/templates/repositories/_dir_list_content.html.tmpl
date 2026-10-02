@@ -1,0 +1,21 @@
+{{$a := assigns}}{{$p := current_project}}{{$repo := $a.Repository}}{{$report := $repo.ReportLastCommit}}
+{{range $entry := $a.Entries}}
+{{$trID := $entry.TrID}}{{$depth := $a.Depth}}
+{{$entPath := replace_invalid_utf8 $entry.Path}}
+{{$entName := replace_invalid_utf8 $entry.Name}}
+<tr id="{{$trID}}" class="{{$a.ParentID}} entry {{$entry.Kind}}">
+<td style="padding-inline-start: {{mul 18 $depth}}px;" class="{{if $report}}filename{{else}}filename_no_report{{end}}">
+{{if $entry.IsDir}}
+<span class="expander icon icon-collapsed" onclick="scmEntryClick('{{$trID}}', '{{j (repo_url "show" $p $repo (to_path_param $entPath) $a.Rev "depth" (add $depth 1) "parent_id" $trID)}}');">{{sprite_icon "angle-right" (hash "rtl" true)}}</span>
+{{end}}
+{{link_to (file_icon $entry.Entry $entName) (repo_url (ternary $entry.IsDir "show" "entry") $p $repo (to_path_param $entPath) $a.Rev) (hash "class" (ternary $entry.IsDir "icon icon-folder" (printf "icon icon-file %s" (mime_css_class_of $entName))))}}
+</td>
+<td class="size">{{if not $entry.IsDir}}{{if $entry.Size}}{{number_to_human_size $entry.SizeValue}}{{else}}?{{end}}{{end}}</td>
+{{if $report}}
+<td class="revision">{{if $entry.Changeset}}{{link_to_revision $entry.Changeset $p $repo}}{{end}}</td>
+<td class="age">{{if and $entry.Lastrev (not $entry.Lastrev.Time.IsZero)}}{{distance_of_time_in_words_now $entry.Lastrev.Time}}{{end}}</td>
+<td class="author">{{$entry.Author}}</td>
+<td class="comments">{{if $entry.Changeset}}{{str_truncate $entry.Changeset.Comments 50}}{{end}}</td>
+{{end}}
+</tr>
+{{end}}

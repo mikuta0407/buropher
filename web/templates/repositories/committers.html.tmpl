@@ -1,0 +1,33 @@
+{{$v := .}}
+<h2>{{l "label_repository"}}</h2>
+
+{{simple_format (l "text_repository_usernames_mapping")}}
+
+{{if not .Committers}}
+<p class="nodata">{{l "label_no_data"}}</p>
+{{else}}
+
+{{form_tag (printf "/repositories/%d/committers" .Repository.ID)}}
+<table class="list">
+<thead>
+  <tr>
+    <th>{{l "field_login"}}</th>
+    <th>{{l "label_user"}}</th>
+  </tr>
+</thead>
+<tbody>
+{{range $c := .Committers}}
+  <tr>
+    <td>{{$c.Committer}}</td>
+    <td>
+      {{hidden_field_tag (printf "committers[%d][]" $c.Index) $c.Committer (hash "id" nil)}}
+      {{select_tag (printf "committers[%d][]" $c.Index) (safe_join (list (content_tag "option" (printf "-- %s --" (l "actionview_instancetag_blank_option")) (hash "value" "")) (committer_user_options $v.Users $c.UserID)) "")}}
+    </td>
+  </tr>
+{{end}}
+</tbody>
+</table>
+<p>{{submit_tag (l "button_save")}}</p>
+{{end_form}}
+
+{{end}}

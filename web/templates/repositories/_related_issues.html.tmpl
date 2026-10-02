@@ -1,0 +1,32 @@
+{{$a := assigns}}
+{{$p := current_project}}
+{{$repo := $a.Repository}}
+{{$cs := $a.Changeset}}
+{{$manage := $a.ManageRelated}}
+
+<div id="related-issues">
+{{if $manage}}
+  <div class="contextual">
+    {{toggle_link (l "button_add") "new-relation-form" (hash "focus" "issue_id")}}
+  </div>
+{{end}}
+
+<h3>{{l "label_related_issues"}}</h3>
+<ul>
+{{range $issue := $a.RelatedIssues}}
+  <li id="related-issue-{{$issue.ID}}">{{link_to_issue $issue}}
+    {{if $manage}}{{link_to (sprite_icon "link-break" (l "label_relation_delete")) (printf "%s/issues/%d" (repo_url "revision" $p $repo "" $cs.Identifier) $issue.ID) (hash "remote" true "method" "delete" "data" (hash "confirm" (l "text_are_you_sure")) "title" (l "label_relation_delete") "class" "icon-only icon-link-break")}}{{end}}
+  </li>
+{{end}}
+</ul>
+
+{{if $manage}}
+  {{form_tag (printf "%s/issues" (repo_url "revision" $p $repo "" $cs.Identifier)) (hash "remote" true "method" "post" "id" "new-relation-form" "style" (ternary $a.Issue "" "display: none;"))}}
+  {{l "label_issue"}} #{{text_field_tag "issue_id" "" (hash "size" 10)}}
+  {{submit_tag (l "button_add")}}
+  {{toggle_link (l "button_cancel") "new-relation-form"}}
+  {{end_form}}
+{{end}}
+</div>
+
+{{javascript_tag (printf "observeAutocompleteField('issue_id', '%s')" (j $a.AutoCompletePath))}}

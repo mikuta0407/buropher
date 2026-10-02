@@ -120,3 +120,22 @@ entries:
     reason: "buropher 拡張: 認証方式の一覧に「新しい OpenID Connect プロバイダ」のリンク（class buropher-extra）を追加している"
     lines:
       - '^\s*<a class="icon icon-add buropher-extra" href="/auth_sources/new\?type=AuthSourceOidc">New OpenID Connect provider</a>$'
+  - case: "scm_git/*"
+    reason: "D-15: buropher は Git のみ対応のため、リポジトリのフォームの SCM の選択肢は空欄と Git だけ（Subversion / Mercurial / CVS / Bazaar を出さない）"
+    lines:
+      - '^\s*<option value="(Subversion|Mercurial|Cvs|Bazaar)">(Subversion|Mercurial|CVS|Bazaar)</option>$'
+  - case: "scm_git/new_xhr__*"
+    reason: "D-15: new.js の #content に埋め込むフォームの SCM の選択肢が Git だけ（1 行の JS 文字列なので行全体が差分になる）"
+    lines:
+      - '^\$\(''#content''\)\.html\(''<h2>New repository'
+  - case: "scm_git/*settings*"
+    reason: "フィクスチャのカスタム値 true（SQLite に 't' で保存）はインポートで '1' に正規化される（作業分類タブの選択状態）"
+    lines:
+      - '^\s*<option (selected="selected" )?value="1">Yes</option>$'
+  # ---- admin_users（ユーザー・グループ） ----
+  - case: "admin_users/*"
+    reason: "time_zone_select の Casablanca の基準オフセットは internal/i18n/zones_gen.go の生成時点の値（+00:00）で、参照（固定時刻 2026-01-15）は +01:00。並び位置も変わる。zones_gen.go を参照時刻で再生成すれば解消する"
+    lines:
+      - '^\s*<option value="Casablanca">\(GMT\+0[01]:00\) Casablanca</option>$'
+
+  # ---- wiki ----

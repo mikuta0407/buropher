@@ -21,6 +21,7 @@ type Config struct {
 	Discord Discord `toml:"discord"`
 	Auth    Auth    `toml:"auth"`
 	PDF     PDF     `toml:"pdf"`
+	SCM     SCM     `toml:"scm"`
 	// DevAssetsDir が空でなければ embed ではなくディスクからアセット/テンプレートを読む（開発用）。
 	DevWebDir string `toml:"dev_web_dir"`
 }
@@ -138,6 +139,15 @@ type PDF struct {
 	Fonts map[string]string `toml:"fonts"`
 }
 
+// SCM はリポジトリ（Git）の設定。
+type SCM struct {
+	// GitCommand は git の実行ファイル（Redmine の scm_git_command。空なら "git"）。
+	GitCommand string `toml:"git_command"`
+	// FetchInterval はチェンジセットを定期的に取り込む間隔（"15m" など。空なら定期取り込みしない。
+	// Redmine の cron による Repository.fetch_changesets 相当）。
+	FetchInterval string `toml:"fetch_interval"`
+}
+
 func Default() *Config {
 	return &Config{
 		Server:   Server{Addr: ":3000"},
@@ -155,21 +165,23 @@ func Load(path string) (*Config, error) {
 		}
 	}
 	env := map[string]*string{
-		"BUROPHER_ADDR":             &c.Server.Addr,
-		"BUROPHER_BASE_URL":         &c.Server.BaseURL,
-		"BUROPHER_SECRET_KEY":       &c.Server.SecretKey,
-		"BUROPHER_DB_DRIVER":        &c.Database.Driver,
-		"BUROPHER_DB_DSN":           &c.Database.DSN,
-		"BUROPHER_ATTACHMENTS_PATH": &c.Storage.AttachmentsPath,
-		"BUROPHER_DEV_WEB_DIR":      &c.DevWebDir,
-		"BUROPHER_MAIL_DELIVERY":    &c.Mail.DeliveryMethod,
-		"BUROPHER_SMTP_ADDRESS":     &c.Mail.SMTP.Address,
-		"BUROPHER_SMTP_DOMAIN":      &c.Mail.SMTP.Domain,
-		"BUROPHER_SMTP_USER_NAME":   &c.Mail.SMTP.UserName,
-		"BUROPHER_SMTP_PASSWORD":    &c.Mail.SMTP.Password,
-		"BUROPHER_SMTP_AUTH":        &c.Mail.SMTP.Authentication,
-		"BUROPHER_DISCORD_API_BASE": &c.Discord.APIBase,
-		"BUROPHER_PDF_FONT_DIR":     &c.PDF.FontDir,
+		"BUROPHER_ADDR":               &c.Server.Addr,
+		"BUROPHER_BASE_URL":           &c.Server.BaseURL,
+		"BUROPHER_SECRET_KEY":         &c.Server.SecretKey,
+		"BUROPHER_DB_DRIVER":          &c.Database.Driver,
+		"BUROPHER_DB_DSN":             &c.Database.DSN,
+		"BUROPHER_ATTACHMENTS_PATH":   &c.Storage.AttachmentsPath,
+		"BUROPHER_DEV_WEB_DIR":        &c.DevWebDir,
+		"BUROPHER_MAIL_DELIVERY":      &c.Mail.DeliveryMethod,
+		"BUROPHER_SMTP_ADDRESS":       &c.Mail.SMTP.Address,
+		"BUROPHER_SMTP_DOMAIN":        &c.Mail.SMTP.Domain,
+		"BUROPHER_SMTP_USER_NAME":     &c.Mail.SMTP.UserName,
+		"BUROPHER_SMTP_PASSWORD":      &c.Mail.SMTP.Password,
+		"BUROPHER_SMTP_AUTH":          &c.Mail.SMTP.Authentication,
+		"BUROPHER_DISCORD_API_BASE":   &c.Discord.APIBase,
+		"BUROPHER_PDF_FONT_DIR":       &c.PDF.FontDir,
+		"BUROPHER_SCM_GIT_COMMAND":    &c.SCM.GitCommand,
+		"BUROPHER_SCM_FETCH_INTERVAL": &c.SCM.FetchInterval,
 	}
 	for k, p := range env {
 		if v, ok := os.LookupEnv(k); ok {

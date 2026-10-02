@@ -1,0 +1,261 @@
+# Git リポジトリ（RepositoriesController / SysController）の互換シナリオ。
+#
+# 前提:
+#   1. Redmine の git フィクスチャを展開しておく（参照・候補の両方が同じパスを使う）:
+#        mkdir -p _reference/scm-test
+#        tar xzf _reference/redmine/test/fixtures/repositories/git_repository.tar.gz -C _reference/scm-test
+#        find _reference/scm-test -name '._*' -delete
+#      ケース repo_create の repository[url] は展開先の絶対パス（環境に合わせて書き換える）。
+#   2. 参照は専用インスタンス（共用の 3998 はリポジトリを持たない）:
+#        COMPAT_REF_DIR=$PWD/_reference/ref-scm COMPAT_REF_PORT=4028 tools/compat/redmine-ref.sh start
+#        BUROPHER_CAND_PORT=4128 BUROPHER_CAND_DIR=$PWD/data/cand tools/compat/buropher-cand.sh reset
+#        go run ./tools/compat diff -ref http://127.0.0.1:4028 -cand http://127.0.0.1:4128 \
+#          -reset-ref 'COMPAT_REF_DIR=$PWD/_reference/ref-scm COMPAT_REF_PORT=4028 tools/compat/redmine-ref.sh reset' \
+#          -reset-cand 'BUROPHER_CAND_PORT=4128 BUROPHER_CAND_DIR=$PWD/data/cand tools/compat/buropher-cand.sh reset' \
+#          -run '^scm_git/'
+#
+# 最初のケースで subproject1（Project 3）に Git リポジトリ（id 12、path_encoding ISO-8859-1、既定）を作成し、
+# 2 番目のケース（show）で自動取得（Setting.autofetch_changesets の既定は有効）により 29 件のチェンジセットを取り込む。
+# 以降のケースはその状態に依存する（記述順に実行すること）。
+name: scm_git
+
+users:
+  admin: {login: admin, password: admin}
+  jsmith: {login: jsmith, password: jsmith}
+
+normalize:
+  mask_text_selectors:
+    - "#footer"
+  regex:
+    - {pattern: 'value=\\"[A-Za-z0-9_-]{40,}\\"', replace: 'value=\"TOKEN\"'}
+    - {pattern: 'new-relation-form-[0-9a-f]{8}', replace: 'new-relation-form-RANDOM'}
+
+requests:
+  - id: repo_create
+    path: /projects/subproject1/repositories
+    method: POST
+    user: admin
+    form: {"repository_scm": "Git", "repository[url]": "/home/mikuta0407/projects/buropher/_reference/scm-test/git_repository", "repository[path_encoding]": "ISO-8859-1", "repository[identifier]": "", "repository[is_default]": "1", "repository[report_last_commit]": "0"}
+    expect_status: 302
+  - id: show_fetch
+    path: /projects/subproject1/repository
+    users: [admin]
+  - id: show_anonymous
+    path: /projects/subproject1/repository
+    users: [anonymous, jsmith]
+  - path: /projects/subproject1/repository/12
+    users: [admin]
+  - path: /projects/subproject1/repository/12?rev=test_branch
+    users: [admin]
+  - path: /projects/subproject1/repository/12?rev=tag01.annotated
+    users: [admin]
+  - path: /projects/subproject1/repository/12/revisions/master/show/sources
+    users: [admin]
+  - path: /projects/subproject1/repository/12/show/images
+    users: [admin]
+  - path: /projects/subproject1/repository/12/show/images?rev=7234cb2750b63f47bff735edc50a1c0a433c2518
+    users: [admin]
+  - path: /projects/subproject1/repository/12/show/latin-1-dir/test-%C3%9C-subdir?rev=1ca7f5ed374f3cb31a93ae5215c2e25cc6ec5127
+    users: [admin]
+  - path: /projects/subproject1/repository/12/browse/sources
+    users: [admin]
+  - path: /projects/subproject1/repository/12?rev=latin-1-branch-%C3%9C-01
+    users: [admin]
+  - path: /projects/subproject1/repository/12/show/latin-1-dir?rev=latin-1-path-encoding
+    users: [admin]
+  - path: /projects/subproject1/repository/12/revisions/57ca437c/annotate/latin-1-dir/test-%C3%9C.txt
+    users: [admin]
+  - id: revisions_xhr
+    path: /projects/subproject1/repository/12/revisions?page=2
+    users: [admin]
+    headers: {X-Requested-With: XMLHttpRequest}
+  - id: show_xhr_tree
+    path: /projects/subproject1/repository/12/revisions/master-20120212/show/sources?depth=1&parent_id=abc
+    users: [admin]
+    headers: {X-Requested-With: XMLHttpRequest}
+  - id: new_xhr
+    path: /projects/subproject1/repositories/new?repository_scm=Git
+    users: [admin]
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01"}
+  - path: /projects/subproject1/repository/12/changes/README
+    users: [admin]
+  - path: /projects/subproject1/repository/12/changes/images/edit.png
+    users: [admin]
+  - path: /projects/subproject1/repository/12/changes/images
+    users: [admin]
+  - path: /projects/subproject1/repository/12/entry/sources/watchers_controller.rb
+    users: [admin, anonymous]
+  - path: /projects/subproject1/repository/12/entry/README
+    users: [admin]
+  - path: /projects/subproject1/repository/12/entry/images/edit.png
+    users: [admin]
+  - path: /projects/subproject1/repository/12/entry/sources
+    users: [admin]
+  - path: /projects/subproject1/repository/12/revisions/57ca437c/entry/latin-1-dir/test-%C3%9C.txt
+    users: [admin]
+  - path: /projects/subproject1/repository/12/entry/nonexistent
+    users: [admin]
+  - path: /projects/subproject1/repository/12/raw/sources/watchers_controller.rb
+    users: [admin]
+  - path: /projects/subproject1/repository/12/annotate/sources/watchers_controller.rb
+    users: [admin]
+  - path: /projects/subproject1/repository/12/annotate/sources/watchers_controller.rb?rev=deff7
+    users: [admin]
+  - path: /projects/subproject1/repository/12/annotate/images/edit.png
+    users: [admin]
+  - path: /projects/subproject1/repository/12/revisions/83ca5fd546063a/annotate/%20filename%20with%20a%20leading%20space.txt%20
+    users: [admin]
+  - path: /projects/subproject1/repository/12/revisions
+    users: [admin, anonymous]
+  - path: /projects/subproject1/repository/12/revisions?page=2&per_page=25
+    users: [admin]
+  - path: /projects/subproject1/repository/12/revisions.atom
+    users: [admin]
+  - path: /projects/subproject1/repository/12/revisions/deff712f05a90d96edbd70facc47d944be5897e3
+    users: [admin, anonymous]
+  - path: /projects/subproject1/repository/12/revisions/61b685f
+    users: [admin]
+  - path: /projects/subproject1/repository/12/revisions/32ae898b720c2f7eec2723d5bdd558b4cb2d3ddf
+    users: [admin]
+  - path: /projects/subproject1/repository/12/revision?rev=
+    users: [admin]
+  - path: /projects/subproject1/repository/12/revision?rev=7234cb27
+    users: [admin]
+  - path: /projects/subproject1/repository/12/revisions/2f9c0091c754a91af7a9c478e36556b4bde8dcf7/diff
+    users: [admin]
+  - path: /projects/subproject1/repository/12/revisions/2f9c0091c754a91af7a9c478e36556b4bde8dcf7/diff?type=sbs
+    users: [admin]
+  - path: /projects/subproject1/repository/12/revisions/2f9c0091c754a91af7a9c478e36556b4bde8dcf7/diff/sources/watchers_controller.rb?type=inline
+    users: [admin]
+  - path: /projects/subproject1/repository/12/revisions/61b685fbe55ab05b5ac68402d5720c1a6ac973d1/diff?rev_to=2f9c0091c754a91af7a9c478e36556b4bde8dcf7&type=inline
+    users: [admin]
+  - path: /projects/subproject1/repository/12/revisions/deff712f05a90d96edbd70facc47d944be5897e3/diff?type=inline
+    users: [admin]
+  - path: /projects/subproject1/repository/12/revisions/57ca437c/diff?type=inline
+    users: [admin]
+  - path: /projects/subproject1/repository/12/diff?rev=deff712f&rev_to=7234cb27&type=inline
+    users: [admin]
+  - path: /projects/subproject1/repository/12/revisions/2f9c0091c754a91af7a9c478e36556b4bde8dcf7/diff.diff
+    users: [admin]
+  - path: /projects/subproject1/repository/12/statistics
+    users: [admin]
+  - path: /projects/subproject1/repository/12/graph?graph=commits_per_month
+    users: [admin]
+  - path: /projects/subproject1/repository/12/graph?graph=commits_per_author
+    users: [admin]
+  - path: /projects/subproject1/repository/12/graph?graph=unknown
+    users: [admin]
+  - path: /projects/subproject1/repository/99
+    users: [admin]
+  - path: /projects/subproject1
+    users: [admin]
+  - path: /projects/subproject1/settings/repositories
+    users: [admin]
+  - path: /projects/subproject1/repositories/new?repository_scm=Git
+    users: [admin]
+  - path: /repositories/12/edit
+    users: [admin]
+  - path: /repositories/12/committers
+    users: [admin]
+  - path: /projects/subproject1/activity?from=2010-10-01&show_changesets=1
+    users: [admin]
+  - path: /projects/subproject1/search?q=file&changesets=1
+    users: [admin]
+
+  # ---- 関連チケット ----
+  - id: add_related_issue
+    path: /projects/subproject1/repository/12/revisions/61b685fbe55ab05b5ac68402d5720c1a6ac973d1/issues.js
+    method: POST
+    user: admin
+    form: {"issue_id": "5"}
+  - id: add_related_issue_invalid
+    path: /projects/subproject1/repository/12/revisions/61b685fbe55ab05b5ac68402d5720c1a6ac973d1/issues.js
+    method: POST
+    user: admin
+    form: {"issue_id": "999"}
+  - id: revision_with_related_issue
+    path: /projects/subproject1/repository/12/revisions/61b685fbe55ab05b5ac68402d5720c1a6ac973d1
+    users: [admin, anonymous]
+  - id: issue_with_changeset
+    path: /issues/5
+    users: [admin]
+  - id: issue_changesets_tab
+    path: /issues/5?tab=changesets
+    users: [admin]
+  - id: issue_with_changeset_json
+    path: /issues/5.json?include=changesets
+    users: [admin]
+  - id: remove_related_issue
+    path: /projects/subproject1/repository/12/revisions/61b685fbe55ab05b5ac68402d5720c1a6ac973d1/issues/5.js
+    method: POST
+    user: admin
+    form: {"_method": "delete"}
+  - id: api_add_related_issue
+    path: /projects/subproject1/repository/12/revisions/deff712f05a90d96edbd70facc47d944be5897e3/issues.json
+    method: POST
+    user: admin
+    auth: basic
+    form: {"issue_id": "5"}
+  - id: api_add_related_issue_again
+    path: /projects/subproject1/repository/12/revisions/deff712f05a90d96edbd70facc47d944be5897e3/issues.json
+    method: POST
+    user: admin
+    auth: basic
+    form: {"issue_id": "5"}
+  - id: api_remove_related_issue
+    path: /projects/subproject1/repository/12/revisions/deff712f05a90d96edbd70facc47d944be5897e3/issues/5.json
+    method: DELETE
+    user: admin
+    auth: basic
+  - id: revision_after_api_remove
+    path: /projects/subproject1/repository/12/revisions/deff712f05a90d96edbd70facc47d944be5897e3
+    users: [admin]
+  - id: revision_after_remove
+    path: /projects/subproject1/repository/12/revisions/61b685fbe55ab05b5ac68402d5720c1a6ac973d1
+    users: [admin]
+
+  # ---- 更新系 ----
+  - id: committers_update
+    path: /repositories/12/committers
+    method: POST
+    user: admin
+    form: {"committers[1][]": ["test20120208 <none@none>", "3"]}
+    expect_status: 302
+  - id: revisions_after_mapping
+    path: /projects/subproject1/repository/12/revisions
+    users: [admin]
+  - id: repo_update_report_last_commit
+    path: /repositories/12
+    method: PUT
+    user: admin
+    form: {"repository[report_last_commit]": "1"}
+    expect_status: 302
+  - id: show_report_last_commit
+    path: /projects/subproject1/repository/12
+    users: [admin]
+  - id: repo_update_invalid
+    path: /repositories/12
+    method: PUT
+    user: admin
+    form: {"repository[identifier]": "diff"}
+  - id: repo_create_invalid
+    path: /projects/subproject1/repositories
+    method: POST
+    user: admin
+    form: {"repository_scm": "Git", "repository[url]": "", "repository[identifier]": "revisions"}
+  - id: fetch_changesets
+    path: /projects/subproject1/repository/12/fetch_changesets
+    method: POST
+    user: admin
+  - id: sys_disabled
+    path: /sys/fetch_changesets
+    users: [anonymous]
+  - id: repo_destroy
+    path: /repositories/12
+    method: POST
+    user: admin
+    form: {"_method": "delete"}
+    expect_status: 302
+  - id: settings_after_destroy
+    path: /projects/subproject1/settings/repositories
+    users: [admin]

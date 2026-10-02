@@ -1,0 +1,34 @@
+{{$a := assigns}}{{$p := current_project}}{{$repo := $a.Repository}}
+{{define "repositories/_navigation#header_tags"}}
+  {{javascript_include_tag "repository_navigation"}}
+{{end}}
+{{content_for "header_tags" (capture "repositories/_navigation#header_tags")}}
+
+{{if and $a.Entry (not $a.Entry.IsDir)}}
+  {{$label := l "button_download"}}{{if $a.Entry.Size}}{{$label = printf "%s (%s)" (l "button_download") (number_to_human_size $a.Entry.SizeValue)}}{{end}}
+  {{link_to (sprite_icon "download" $label) (repo_url "raw" $p $repo (to_path_param $a.Path) $a.Rev) (hash "class" "icon icon-download")}}
+{{end}}
+
+{{link_to (sprite_icon "stats" (l "label_statistics")) (repo_url "stats" $p $repo "" "") (hash "class" "icon icon-stats")}}
+
+{{actions_dropdown (capture "repositories/_navigation#actions" $a)}}
+{{define "repositories/_navigation#actions"}}
+  {{if .ManageRepository}}{{link_to (sprite_icon "settings" (l "label_settings")) (printf "/projects/%s/settings/repositories" current_project.Identifier) (hash "class" "icon icon-settings")}}{{end}}
+  {{if and .ManageRepository (not .Autofetch)}}{{link_to (sprite_icon "reload" (l "button_fetch_changesets")) (repo_url "fetch_changesets" current_project .Repository "" "") (hash "class" "icon icon-reload" "method" "post")}}{{end}}
+{{end}}
+
+{{form_tag (repo_url $a.ActionName $p $repo (to_path_param $a.Path) "") (hash "method" "get" "id" "revision_selector")}}
+  <!-- Branches Dropdown -->
+  {{if $a.Branches}}
+    | {{l "label_branch"}}:
+    {{select_tag "branch" (options_for_select (prepend_blank $a.Branches) $a.Rev) (hash "id" "branch")}}
+  {{end}}
+
+  {{if $a.Tags}}
+    | {{l "label_tag"}}:
+    {{select_tag "tag" (options_for_select (prepend_blank $a.Tags) $a.Rev) (hash "id" "tag")}}
+  {{end}}
+
+    | {{l "label_revision"}}:
+    {{text_field_tag "rev" $a.Rev (hash "size" 8)}}
+{{end_form -}}

@@ -164,6 +164,16 @@
 //     issues/_watchers。作成時の add_author_as_watcher は repository.AddWatcher(ctx, tx, kind, id, userID)。
 //
 // # 規約: 通知（Mailer.deliver_* / Redmine::Notifiable）
+// # 規約: リポジトリ（SCM）
+//
+//   - Git のみ対応（D-15）。git コマンドの実行は internal/scm（GitAdapter の移植。実行ファイルは設定 scm.git_command
+//     → a.GitCommand）、チェンジセットの取り込みとコミットメッセージのチケット参照（修正キーワード・作業時間）は
+//     internal/scmsync（a.scmService()）。SQL は internal/repository/scm.go、型は domain.Repository / domain.Changeset。
+//   - リポジトリの URL は helper.RepositoryURL（テンプレートでは repo_url）で生成する（routes.rb の優先順位と rev の
+//     制約を再現する）。:format => 'html' のルートは routeFormat("html") を付ける（ロードマップのメニューが versions.html になる）。
+//   - 定期取り込みは設定 scm.fetch_interval（internal/server/scm_fetcher.go）、外部からは /sys/fetch_changesets（sys.go）。
+//
+// # 規約: メール通知のフック
 //
 // メール・Discord DM の通知は a.Notify（*notify.Service。nil でも呼べる）に、DB のコミット後に渡す
 // （Redmine の after_create_commit / deliver_later と同じ。通知の失敗で操作を失敗させない）。

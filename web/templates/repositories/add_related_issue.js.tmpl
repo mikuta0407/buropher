@@ -1,0 +1,7 @@
+{{if .Issue}}
+  $('#related-issues').html('{{j (partial "repositories/related_issues" (dict))}}');
+  $('#related-issue-{{.Issue.ID}}').effect("highlight");
+  $('#issue_id').focus();
+{{else}}
+  alert("{{raw (j (printf "%s %s" (l "label_issue") (l "activerecord.errors.messages.invalid")))}}");
+{{end}}

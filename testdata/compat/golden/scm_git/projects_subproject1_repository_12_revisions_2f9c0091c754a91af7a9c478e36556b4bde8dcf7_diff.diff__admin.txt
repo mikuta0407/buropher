@@ -1,0 +1,30 @@
+status: 200
+content-type: text/x-patch
+
+commit 2f9c0091c754a91af7a9c478e36556b4bde8dcf7
+Author: jsmith <jsmith@foo.bar>
+Date:   Fri Dec 14 10:28:21 2007 +0100
+
+    Changed user variable to watcher
+
+diff --git a/sources/watchers_controller.rb b/sources/watchers_controller.rb
+index b70f6c9..4eca635 100644
+--- a/sources/watchers_controller.rb
++++ b/sources/watchers_controller.rb
+@@ -19,12 +19,12 @@ class WatchersController < ApplicationController
+   layout 'base'
+   before_filter :require_login, :find_project, :check_project_privacy
+   
+-  def remove
+-    user = User.current
+-    @watched.remove_watcher(user)
++  def remove_watcher
++    watcher = User.current
++    @watched.remove_watcher(watcher)
+     respond_to do |format|
+       format.html { render :text => 'Watcher removed.', :layout => true }
+-      format.js { render(:update) {|page| page.replace_html 'watcher', watcher_link(@watched, user)} }
++      format.js { render(:update) {|page| page.replace_html 'watcher', watcher_link(@watched, watcher)} }
+     end
+   end
+ 

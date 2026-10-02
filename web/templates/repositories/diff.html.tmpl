@@ -1,0 +1,49 @@
+{{$p := current_project}}{{$repo := .Repository}}
+{{if and .Changeset (not .ChangesetTo)}}
+<div class="contextual">
+  &#171;
+  {{if .Previous}}
+    {{link_to_revision .Previous $p $repo (hash "text" (l "label_previous") "accesskey" (accesskey "previous"))}}
+  {{else}}
+    {{l "label_previous"}}
+  {{end}}
+|
+  {{if .Next}}
+    {{link_to_revision .Next $p $repo (hash "text" (l "label_next") "accesskey" (accesskey "next"))}}
+  {{else}}
+    {{l "label_next"}}
+  {{end}}
+  &#187;&nbsp;
+
+  {{form_tag (repo_url "revision" $p $repo "" "") (hash "method" "get")}}
+    {{text_field_tag "rev" .Rev (hash "size" 8)}}
+    {{submit_tag (l "button_view") (hash "name" nil)}}
+  {{end_form}}
+</div>
+{{partial "repositories/changeset" (dict)}}
+{{else}}
+<h2>{{l "label_revision"}} {{.DiffFormatRevisions}} {{.Path}}</h2>
+{{end}}
+
+<!-- Choose view type -->
+{{form_tag .DiffFormURL (hash "method" "get")}}
+  {{if .HasRevToParam}}{{hidden_field_tag "rev_to" .RevToParam}}{{end}}
+  <p>
+    {{l "label_view_diff"}}:
+    <label>{{radio_button_tag "type" "inline" (ne .DiffType "sbs") (hash "onchange" "this.form.submit()")}} {{l "label_diff_inline"}}</label>
+    <label>{{radio_button_tag "type" "sbs" (eq .DiffType "sbs") (hash "onchange" "this.form.submit()")}} {{l "label_diff_side_by_side"}}</label>
+  </p>
+{{end_form}}
+
+{{partial "common/diff" (dict "diff" .Diff "diff_type" .DiffType "diff_style" .Repository.SCMName)}}
+
+{{other_formats_open}}
+  {{other_format_link_caption "Diff" .UnifiedDiffURL "Unified diff"}}
+{{other_formats_close}}
+
+{{html_title (with_leading_slash .Path) "Diff"}}
+
+{{define "repositories/diff#header_tags"}}
+{{stylesheet_link_tag "scm"}}
+{{end}}
+{{content_for "header_tags" (capture "repositories/diff#header_tags")}}

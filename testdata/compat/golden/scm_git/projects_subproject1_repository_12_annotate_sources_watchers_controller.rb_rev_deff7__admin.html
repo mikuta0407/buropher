@@ -1,0 +1,1005 @@
+status: 200
+content-type: text/html
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>/sources/watchers_controller.rb - Annotate - eCookbook Subproject 1 - Redmine</title>
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta content="Redmine" name="description">
+    <meta content="issue,bug,tracker" name="keywords">
+    <meta content="authenticity_token" name="csrf-param">
+    <meta content="{{CSRF}}" name="csrf-token">
+    <link href="/assets/favicon-DIGEST.ico" rel="shortcut icon" type="image/x-icon">
+    <link href="/assets/jquery/jquery-ui-1.13.2-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/tribute-5.1.3-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/application-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/responsive-DIGEST.css" media="all" rel="stylesheet">
+    <script data-turbo-track="reload" type="importmap">{
+  "imports": {
+    "@rails/request.js": "/assets/requestjs-DIGEST.js",
+    "application": "/assets/application-DIGEST.js",
+    "@hotwired/stimulus": "/assets/stimulus.min-DIGEST.js",
+    "@hotwired/stimulus-loading": "/assets/stimulus-loading-DIGEST.js",
+    "turndown": "/assets/turndown-DIGEST.js",
+    "controllers/api_key_copy_controller": "/assets/controllers/api_key_copy_controller-DIGEST.js",
+    "controllers/application": "/assets/controllers/application-DIGEST.js",
+    "controllers": "/assets/controllers/index-DIGEST.js",
+    "controllers/list_autofill_controller": "/assets/controllers/list_autofill_controller-DIGEST.js",
+    "controllers/quote_reply_controller": "/assets/controllers/quote_reply_controller-DIGEST.js",
+    "controllers/sticky_issue_header_controller": "/assets/controllers/sticky_issue_header_controller-DIGEST.js"
+  }
+}</script>
+    <link href="/assets/requestjs-DIGEST.js" rel="modulepreload">
+    <link href="/assets/application-DIGEST.js" rel="modulepreload">
+    <link href="/assets/stimulus.min-DIGEST.js" rel="modulepreload">
+    <link href="/assets/stimulus-loading-DIGEST.js" rel="modulepreload">
+    <link href="/assets/turndown-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/api_key_copy_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/application-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/index-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/list_autofill_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/quote_reply_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/sticky_issue_header_controller-DIGEST.js" rel="modulepreload">
+    <script type="module">import "application"</script>
+    <script src="/assets/jquery-3.7.1-ui-1.13.3-DIGEST.js"></script>
+    <script src="/assets/rails-ujs-DIGEST.js"></script>
+    <script src="/assets/tribute-5.1.3.min-DIGEST.js"></script>
+    <script src="/assets/application-legacy-DIGEST.js"></script>
+    <script src="/assets/responsive-DIGEST.js"></script>
+    <script>//<![CDATA[
+$(window).on('load', function(){ warnLeavingUnsaved('The current page contains unsaved text that will be lost if you leave this page.'); });
+//]]></script>
+    <script>//<![CDATA[
+rm = window.rm || {};rm.I18n = rm.I18n || {};rm.I18n = Object.freeze({buttonCopy: 'Copy'});
+//]]></script>
+    <script>//<![CDATA[
+rm = window.rm || {};rm.AutoComplete = rm.AutoComplete || {};rm.AutoComplete.dataSources = JSON.parse('{"issues":"/issues/auto_complete?project_id=subproject1\u0026q=","wiki_pages":"/wiki_pages/auto_complete?project_id=subproject1\u0026q="}');
+//]]></script>
+    <script src="/assets/repository_navigation-DIGEST.js"></script>
+    <link href="/assets/scm-DIGEST.css" media="screen" rel="stylesheet">
+  </head>
+  <body class="project-subproject1 has-main-menu controller-repositories action-annotate avatars-off" data-text-formatting="common_mark">
+    <div id="wrapper">
+      <div class="flyout-menu js-flyout-menu">
+        <div class="flyout-menu__search">
+          <form accept-charset="UTF-8" action="/projects/subproject1/search" method="get" name="form-RANDOM">
+            <input autocomplete="off" name="changesets" type="hidden" value="1">
+            <label class="search-magnifier search-magnifier--flyout" for="flyout-search">
+              <svg aria-hidden="true" class="s18 icon-svg">
+                <use href="/assets/icons-DIGEST.svg#icon--search"></use>
+              </svg>
+              <span class="icon-label hidden">Search</span>
+            </label>
+            <input class="small js-search-input" id="flyout-search" name="q" placeholder="Search" type="text">
+          </form>
+        </div>
+        <div class="flyout-menu__avatar">
+          <a href="/users/1">
+            <span class="avatar-color-1 s40 avatar" role="img">RA</span>
+          </a>
+          <a class="user active" href="/users/1">admin</a>
+        </div>
+        <h3>Project</h3>
+        <span class="js-project-menu"></span>
+        <h3>General</h3>
+        <span class="js-general-menu"></span>
+        <span class="js-sidebar flyout-menu__sidebar"></span>
+        <h3>Profile</h3>
+        <span class="js-profile-menu"></span>
+      </div>
+      <div id="top-menu">
+        <div id="account">
+          <ul>
+            <li>
+              <a class="my-account" href="/my/account">My account</a>
+            </li>
+            <li>
+              <a class="logout" data-method="post" href="/logout" rel="nofollow">Sign out</a>
+            </li>
+          </ul>
+        </div>
+        <div id="loggedas">
+          Logged in as
+          <a class="user active" href="/users/1">admin</a>
+        </div>
+        <ul>
+          <li>
+            <a class="home" href="/">Home</a>
+          </li>
+          <li>
+            <a class="my-page" href="/my/page">My page</a>
+          </li>
+          <li>
+            <a class="projects" href="/projects">Projects</a>
+          </li>
+          <li>
+            <a class="administration" href="/admin">Administration</a>
+          </li>
+          <li>
+            <a class="help" href="https://www.redmine.org/guide" rel="noopener" target="_blank">Help</a>
+          </li>
+        </ul>
+      </div>
+      <div id="header">
+        <a class="mobile-toggle-button js-flyout-menu-toggle-button" href="#"></a>
+        <div id="quick-search">
+          <form accept-charset="UTF-8" action="/projects/subproject1/search" method="get" name="form-RANDOM">
+            <input autocomplete="off" name="scope" type="hidden">
+            <input autocomplete="off" name="changesets" type="hidden" value="1">
+            <label for="q">
+              <a accesskey="4" href="/projects/subproject1/search">Search</a>
+              :
+            </label>
+            <input accesskey="f" class="small" data-auto-complete="true" id="q" name="q" size="20" type="text">
+          </form>
+          <div class="drdn" id="project-jump">
+            <span class="drdn-trigger">eCookbook Subproject 1</span>
+            <div class="drdn-content">
+              <div class="quick-search">
+                <svg aria-hidden="true" class="s18 icon-svg">
+                  <use href="/assets/icons-DIGEST.svg#icon--search"></use>
+                </svg>
+                <input autocomplete="off" class="autocomplete" data-automcomplete-url="/projects/autocomplete.js?jump=repository" id="projects-quick-search" name="q" type="text" value="">
+              </div>
+              <div class="drdn-items projects selection">
+                <strong>Bookmarks</strong>
+                <a href="/projects/ecookbook?jump=repository" title="eCookbook">
+                  <span style="padding-inline-start:0px;">eCookbook</span>
+                </a>
+                <a href="/projects/private-child?jump=repository" title="Private child of eCookbook">
+                  <span style="padding-inline-start:16px;">Private child of eCookbook</span>
+                </a>
+                <strong>Recently used</strong>
+                <a class="selected" href="/projects/subproject1?jump=repository" title="eCookbook Subproject 1">
+                  <span style="padding-inline-start:0px;">eCookbook Subproject 1</span>
+                </a>
+                <strong>All Projects</strong>
+                <a href="/projects/private-child?jump=repository" title="Private child of eCookbook">
+                  <span style="padding-inline-start:0px;">Private child of eCookbook</span>
+                </a>
+              </div>
+              <div class="drdn-items all-projects selection">
+                <a href="/projects?jump=repository">All Projects</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <h1>
+          <span class="breadcrumbs">
+            <a class="root" href="/projects/ecookbook?jump=repository">eCookbook</a>
+            <span class="separator">»</span>
+          </span>
+          <span class="current-project">eCookbook Subproject 1</span>
+        </h1>
+        <div class="tabs" id="main-menu">
+          <ul>
+            <li>
+              <a class="new-object" href="#" id="new-object" onclick="toggleNewObjectDropdown(); return false;">+</a>
+              <ul class="menu-children">
+                <li>
+                  <a accesskey="7" class="new-issue-sub" href="/projects/subproject1/issues/new">New issue</a>
+                </li>
+                <li>
+                  <a class="new-issue-category" href="/projects/subproject1/issue_categories/new">New category</a>
+                </li>
+                <li>
+                  <a class="new-version" href="/projects/subproject1/versions/new">New version</a>
+                </li>
+                <li>
+                  <a class="new-timelog" href="/projects/subproject1/time_entries/new">Log time</a>
+                </li>
+                <li>
+                  <a class="new-wiki-page" href="/projects/subproject1/wiki/new">New wiki page</a>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <a class="overview" href="/projects/subproject1">Overview</a>
+            </li>
+            <li>
+              <a class="activity" href="/projects/subproject1/activity">Activity</a>
+            </li>
+            <li>
+              <a class="roadmap" href="/projects/subproject1/versions.html">Roadmap</a>
+            </li>
+            <li>
+              <a class="issues" href="/projects/subproject1/issues">Issues</a>
+            </li>
+            <li>
+              <a class="time-entries" href="/projects/subproject1/time_entries">Spent time</a>
+            </li>
+            <li>
+              <a class="gantt" href="/projects/subproject1/issues/gantt">Gantt</a>
+            </li>
+            <li>
+              <a class="calendar" href="/projects/subproject1/issues/calendar">Calendar</a>
+            </li>
+            <li>
+              <a class="repository selected" href="/projects/subproject1/repository">Repository</a>
+            </li>
+            <li>
+              <a class="settings" href="/projects/subproject1/settings">Settings</a>
+            </li>
+          </ul>
+          <div class="tabs-buttons" style="display:none;">
+            <button class="tab-left icon-only" onclick="moveTabLeft(this); return false;">
+              <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
+                <use href="/assets/icons-DIGEST.svg#icon--angle-left"></use>
+              </svg>
+            </button>
+            <button class="tab-right icon-only" onclick="moveTabRight(this); return false;">
+              <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
+                <use href="/assets/icons-DIGEST.svg#icon--angle-right"></use>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="nosidebar" id="main">
+        <div id="sidebar">
+          <div id="sidebar-wrapper"></div>
+        </div>
+        <div id="content">
+          <div class="contextual">
+            <a class="icon icon-download" href="/projects/subproject1/repository/12/revisions/deff7/raw/sources/watchers_controller.rb">
+              <svg aria-hidden="true" class="s18 icon-svg">
+                <use href="/assets/icons-DIGEST.svg#icon--download"></use>
+              </svg>
+              <span class="icon-label">Download (1.51 KB)</span>
+            </a>
+            <a class="icon icon-stats" href="/projects/subproject1/repository/12/statistics">
+              <svg aria-hidden="true" class="s18 icon-svg">
+                <use href="/assets/icons-DIGEST.svg#icon--stats"></use>
+              </svg>
+              <span class="icon-label">Statistics</span>
+            </a>
+            <span class="drdn">
+              <span class="drdn-trigger">
+                <span class="icon-only icon-actions" title="Actions">
+                  <svg aria-hidden="true" class="s18 icon-svg">
+                    <use href="/assets/icons-DIGEST.svg#icon--3-bullets"></use>
+                  </svg>
+                  <span class="icon-label">Actions</span>
+                </span>
+              </span>
+              <div class="drdn-content">
+                <div class="drdn-items">
+                  <a class="icon icon-settings" href="/projects/subproject1/settings/repositories">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--settings"></use>
+                    </svg>
+                    <span class="icon-label">Settings</span>
+                  </a>
+                </div>
+              </div>
+            </span>
+            <form accept-charset="UTF-8" action="/projects/subproject1/repository/12/annotate/sources/watchers_controller.rb" id="revision_selector" method="get" name="revision_selector-RANDOM">
+              | Branch:
+              <select id="branch" name="branch">
+                <option value=""></option>
+                <option value="issue-8857">issue-8857</option>
+                <option value="latin-1-branch-Ü-01">latin-1-branch-Ü-01</option>
+                <option value="latin-1-branch-Ü-02">latin-1-branch-Ü-02</option>
+                <option value="latin-1-path-encoding">latin-1-path-encoding</option>
+                <option value="master">master</option>
+                <option value="master-20120212">master-20120212</option>
+                <option value="test-latin-1">test-latin-1</option>
+                <option value="test_branch">test_branch</option>
+              </select>
+              | Tag:
+              <select id="tag" name="tag">
+                <option value=""></option>
+                <option value="tag00.lightweight">tag00.lightweight</option>
+                <option value="tag01.annotated">tag01.annotated</option>
+                <option value="tag02.lightweight.Ü.01">tag02.lightweight.Ü.01</option>
+              </select>
+              | Revision:
+              <input id="rev" name="rev" size="8" type="text" value="deff7">
+            </form>
+          </div>
+          <h2 class="breadcrumbs">
+            <a href="/projects/subproject1/repository/12/revisions/deff7/show">root</a>
+            <span class="separator">/</span>
+            <a href="/projects/subproject1/repository/12/revisions/deff7/show/sources">sources</a>
+            <span class="separator">/</span>
+            <a href="/projects/subproject1/repository/12/revisions/deff7/entry/sources/watchers_controller.rb">watchers_controller.rb</a>
+            @ deff712f
+          </h2>
+          <div class="tabs">
+            <ul>
+              <li>
+                <a href="/projects/subproject1/repository/12/revisions/deff7/entry/sources/watchers_controller.rb" id="tab-entry">View</a>
+              </li>
+              <li>
+                <a href="/projects/subproject1/repository/12/changes/sources/watchers_controller.rb?rev=deff7" id="tab-changes">History</a>
+              </li>
+              <li>
+                <a class="selected" href="/projects/subproject1/repository/12/revisions/deff7/annotate/sources/watchers_controller.rb" id="tab-annotate">Annotate</a>
+              </li>
+            </ul>
+            <div class="tabs-buttons" style="display:none;">
+              <button class="tab-left icon-only" onclick="moveTabLeft(this);" type="button">
+                <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
+                  <use href="/assets/icons-DIGEST.svg#icon--angle-left"></use>
+                </svg>
+              </button>
+              <button class="tab-right icon-only" onclick="moveTabRight(this);" type="button">
+                <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
+                  <use href="/assets/icons-DIGEST.svg#icon--angle-right"></use>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div class="autoscroll">
+            <table class="filecontent annotate syntaxhl">
+              <tbody>
+                <tr class="bloc-0" id="L1">
+                  <th class="line-num">
+                    <a data-txt="1" href="#L1"></a>
+                  </th>
+                  <td class="revision">
+                    <a href="/projects/subproject1/repository/12/revisions/deff712f05a90d96edbd70facc47d944be5897e3" title="Revision deff712f">deff712f</a>
+                  </td>
+                  <td class="author">Adam Soltys</td>
+                  <td class="previous">
+                    <a class="icon icon-history" href="/projects/subproject1/repository/12/revisions/32ae898b720c2f7eec2723d5bdd558b4cb2d3ddf/annotate/sources/watchers_controller.rb" title="View annotation prior to this change"></a>
+                  </td>
+                  <td class="line-code">
+                    <div>
+                      <span class="c1"># This is a new line</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="bloc-1 bloc-change" id="L2">
+                  <th class="line-num">
+                    <a data-txt="2" href="#L2"></a>
+                  </th>
+                  <td class="revision">
+                    <a href="/projects/subproject1/repository/12/revisions/7234cb2750b63f47bff735edc50a1c0a433c2518" title="Revision 7234cb27">7234cb27</a>
+                  </td>
+                  <td class="author">jsmith</td>
+                  <td class="previous"></td>
+                  <td class="line-code">
+                    <div>
+                      <span class="c1"># redMine - project management software</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="bloc-1" id="L3">
+                  <th class="line-num">
+                    <a data-txt="3" href="#L3"></a>
+                  </th>
+                  <td class="revision"></td>
+                  <td class="author"></td>
+                  <td class="previous"></td>
+                  <td class="line-code">
+                    <div>
+                      <span class="c1"># Copyright (C) 2006-2007 Jean-Philippe Lang</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="bloc-1" id="L4">
+                  <th class="line-num">
+                    <a data-txt="4" href="#L4"></a>
+                  </th>
+                  <td class="revision"></td>
+                  <td class="author"></td>
+                  <td class="previous"></td>
+                  <td class="line-code">
+                    <div>
+                      <span class="c1">#</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="bloc-1" id="L5">
+                  <th class="line-num">
+                    <a data-txt="5" href="#L5"></a>
+                  </th>
+                  <td class="revision"></td>
+                  <td class="author"></td>
+                  <td class="previous"></td>
+                  <td class="line-code">
+                    <div>
+                      <span class="c1"># This program is free software; you can redistribute it and/or</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="bloc-1" id="L6">
+                  <th class="line-num">
+                    <a data-txt="6" href="#L6"></a>
+                  </th>
+                  <td class="revision"></td>
+                  <td class="author"></td>
+                  <td class="previous"></td>
+                  <td class="line-code">
+                    <div>
+                      <span class="c1"># modify it under the terms of the GNU General Public License</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="bloc-1" id="L7">
+                  <th class="line-num">
+                    <a data-txt="7" href="#L7"></a>
+                  </th>
+                  <td class="revision"></td>
+                  <td class="author"></td>
+                  <td class="previous"></td>
+                  <td class="line-code">
+                    <div>
+                      <span class="c1"># as published by the Free Software Foundation; either version 2</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="bloc-1" id="L8">
+                  <th class="line-num">
+                    <a data-txt="8" href="#L8"></a>
+                  </th>
+                  <td class="revision"></td>
+                  <td class="author"></td>
+                  <td class="previous"></td>
+                  <td class="line-code">
+                    <div>
+                      <span class="c1"># of the License, or (at your option) any later version.</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="bloc-1" id="L9">
+                  <th class="line-num">
+                    <a data-txt="9" href="#L9"></a>
+                  </th>
+                  <td class="revision"></td>
+                  <td class="author"></td>
+                  <td class="previous"></td>
+                  <td class="line-code">
+                    <div>
+                      <span class="c1">#</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="bloc-1" id="L10">
+                  <th class="line-num">
+                    <a data-txt="10" href="#L10"></a>
+                  </th>
+                  <td class="revision"></td>
+                  <td class="author"></td>
+                  <td class="previous"></td>
+                  <td class="line-code">
+                    <div>
+                      <span class="c1"># This program is distributed in the hope that it will be useful,</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="bloc-1" id="L11">
+                  <th class="line-num">
+                    <a data-txt="11" href="#L11"></a>
+                  </th>
+                  <td class="revision"></td>
+                  <td class="author"></td>
+                  <td class="previous"></td>
+                  <td class="line-code">
+                    <div>
+                      <span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="bloc-1" id="L12">
+                  <th class="line-num">
+                    <a data-txt="12" href="#L12"></a>
+                  </th>
+                  <td class="revision"></td>
+                  <td class="author"></td>
+                  <td class="previous"></td>
+                  <td class="line-code">
+                    <div>
+                      <span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="bloc-1" id="L13">
+                  <th class="line-num">
+                    <a data-txt="13" href="#L13"></a>
+                  </th>
+                  <td class="revision"></td>
+                  <td class="author"></td>
+                  <td class="previous"></td>
+                  <td class="line-code">
+                    <div>
+                      <span class="c1"># GNU General Public License for more details.</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="bloc-1" id="L14">
+                  <th class="line-num">
+                    <a data-txt="14" href="#L14"></a>
+                  </th>
+                  <td class="revision"></td>
+                  <td class="author"></td>
+                  <td class="previous"></td>
+                  <td class="line-code">
+                    <div>
+                      <span class="c1">#</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="bloc-1" id="L15">
+                  <th class="line-num">
+                    <a data-txt="15" href="#L15"></a>
+                  </th>
+                  <td class="revision"></td>
+                  <td class="author"></td>
+                  <td class="previous"></td>
+                  <td class="line-code">
+                    <div>
+                      <span class="c1"># You should have received a copy of the GNU General Public License</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="bloc-1" id="L16">
+                  <th class="line-num">
+                    <a data-txt="16" href="#L16"></a>
+                  </th>
+                  <td class="revision"></td>
+                  <td class="author"></td>
+                  <td class="previous"></td>
+                  <td class="line-code">
+                    <div>
+                      <span class="c1"># along with this program; if not, write to the Free Software</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="bloc-1" id="L17">
+                  <th class="line-num">
+                    <a data-txt="17" href="#L17"></a>
+                  </th>
+                  <td class="revision"></td>
+                  <td class="author"></td>
+                  <td class="previous"></td>
+                  <td class="line-code">
+                    <div>
+                      <span class="c1"># Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="bloc-1" id="L18">
+                  <th class="line-num">
+                    <a data-txt="18" href="#L18"></a>
+                  </th>
+                  <td class="revision"></td>
+                  <td class="author"></td>
+                  <td class="previous"></td>
+                  <td class="line-code">
+                    <br>
+                  </td>
+                </tr>
+                <tr class="bloc-1" id="L19">
+                  <th class="line-num">
+                    <a data-txt="19" href="#L19"></a>
+                  </th>
+                  <td class="revision"></td>
+                  <td class="author"></td>
+                  <td class="previous"></td>
+                  <td class="line-code">
+                    <div>
+                      <span class="k">class</span>
+                      <span class="nc">WatchersController</span>
+                      <span class="o">&lt;</span>
+                      <span class="no">ApplicationController</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="bloc-1" id="L20">
+                  <th class="line-num">
+                    <a data-txt="20" href="#L20"></a>
+                  </th>
+                  <td class="revision"></td>
+                  <td class="author"></td>
+                  <td class="previous"></td>
+                  <td class="line-code">
+                    <div>
+                      <span class="n">layout</span>
+                      <span class="s1">&#39;base&#39;</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="bloc-1" id="L21">
+                  <th class="line-num">
+                    <a data-txt="21" href="#L21"></a>
+                  </th>
+                  <td class="revision"></td>
+                  <td class="author"></td>
+                  <td class="previous"></td>
+                  <td class="line-code">
+                    <div>
+                      <span class="n">before_filter</span>
+                      <span class="ss">:require_login</span>
+                      <span class="p">,</span>
+                      <span class="ss">:find_project</span>
+                      <span class="p">,</span>
+                      <span class="ss">:check_project_privacy</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="bloc-1" id="L22">
+                  <th class="line-num">
+                    <a data-txt="22" href="#L22"></a>
+                  </th>
+                  <td class="revision"></td>
+                  <td class="author"></td>
+                  <td class="previous"></td>
+                  <td class="line-code">
+                    <div></div>
+                  </td>
+                </tr>
+                <tr class="bloc-2 bloc-change" id="L23">
+                  <th class="line-num">
+                    <a data-txt="23" href="#L23"></a>
+                  </th>
+                  <td class="revision">
+                    <a href="/projects/subproject1/repository/12/revisions/2f9c0091c754a91af7a9c478e36556b4bde8dcf7" title="Revision 2f9c0091">2f9c0091</a>
+                  </td>
+                  <td class="author">jsmith</td>
+                  <td class="previous">
+                    <a class="icon icon-history" href="/projects/subproject1/repository/12/revisions/4a79347ea4b7184938d9bbea0fd421a6079f71bb/annotate/sources/watchers_controller.rb" title="View annotation prior to this change"></a>
+                  </td>
+                  <td class="line-code">
+                    <div>
+                      <span class="k">def</span>
+                      <span class="nf">remove_watcher</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="bloc-2" id="L24">
+                  <th class="line-num">
+                    <a data-txt="24" href="#L24"></a>
+                  </th>
+                  <td class="revision"></td>
+                  <td class="author"></td>
+                  <td class="previous"></td>
+                  <td class="line-code">
+                    <div>
+                      <span class="n">watcher</span>
+                      <span class="o">=</span>
+                      <span class="no">User</span>
+                      <span class="p">.</span>
+                      <span class="nf">current</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="bloc-2" id="L25">
+                  <th class="line-num">
+                    <a data-txt="25" href="#L25"></a>
+                  </th>
+                  <td class="revision"></td>
+                  <td class="author"></td>
+                  <td class="previous"></td>
+                  <td class="line-code">
+                    <div>
+                      <span class="vi">@watched</span>
+                      <span class="p">.</span>
+                      <span class="nf">remove_watcher</span>
+                      <span class="p">(</span>
+                      <span class="n">watcher</span>
+                      <span class="p">)</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="bloc-1 bloc-change" id="L26">
+                  <th class="line-num">
+                    <a data-txt="26" href="#L26"></a>
+                  </th>
+                  <td class="revision">
+                    <a href="/projects/subproject1/repository/12/revisions/7234cb2750b63f47bff735edc50a1c0a433c2518" title="Revision 7234cb27">7234cb27</a>
+                  </td>
+                  <td class="author">jsmith</td>
+                  <td class="previous"></td>
+                  <td class="line-code">
+                    <div>
+                      <span class="n">respond_to</span>
+                      <span class="k">do</span>
+                      <span class="o">|</span>
+                      <span class="nb">format</span>
+                      <span class="o">|</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="bloc-1" id="L27">
+                  <th class="line-num">
+                    <a data-txt="27" href="#L27"></a>
+                  </th>
+                  <td class="revision"></td>
+                  <td class="author"></td>
+                  <td class="previous"></td>
+                  <td class="line-code">
+                    <div>
+                      <span class="nb">format</span>
+                      <span class="p">.</span>
+                      <span class="nf">html</span>
+                      <span class="p">{</span>
+                      <span class="n">render</span>
+                      <span class="ss">:text</span>
+                      <span class="o">=&gt;</span>
+                      <span class="s1">&#39;Watcher removed.&#39;</span>
+                      <span class="p">,</span>
+                      <span class="ss">:layout</span>
+                      <span class="o">=&gt;</span>
+                      <span class="kp">true</span>
+                      <span class="p">}</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="bloc-2 bloc-change" id="L28">
+                  <th class="line-num">
+                    <a data-txt="28" href="#L28"></a>
+                  </th>
+                  <td class="revision">
+                    <a href="/projects/subproject1/repository/12/revisions/2f9c0091c754a91af7a9c478e36556b4bde8dcf7" title="Revision 2f9c0091">2f9c0091</a>
+                  </td>
+                  <td class="author">jsmith</td>
+                  <td class="previous">
+                    <a class="icon icon-history" href="/projects/subproject1/repository/12/revisions/4a79347ea4b7184938d9bbea0fd421a6079f71bb/annotate/sources/watchers_controller.rb" title="View annotation prior to this change"></a>
+                  </td>
+                  <td class="line-code">
+                    <div>
+                      <span class="nb">format</span>
+                      <span class="p">.</span>
+                      <span class="nf">js</span>
+                      <span class="p">{</span>
+                      <span class="n">render</span>
+                      <span class="p">(</span>
+                      <span class="ss">:update</span>
+                      <span class="p">)</span>
+                      <span class="p">{</span>
+                      <span class="o">|</span>
+                      <span class="n">page</span>
+                      <span class="o">|</span>
+                      <span class="n">page</span>
+                      <span class="p">.</span>
+                      <span class="nf">replace_html</span>
+                      <span class="s1">&#39;watcher&#39;</span>
+                      <span class="p">,</span>
+                      <span class="n">watcher_link</span>
+                      <span class="p">(</span>
+                      <span class="vi">@watched</span>
+                      <span class="p">,</span>
+                      <span class="n">watcher</span>
+                      <span class="p">)}</span>
+                      <span class="p">}</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="bloc-1 bloc-change" id="L29">
+                  <th class="line-num">
+                    <a data-txt="29" href="#L29"></a>
+                  </th>
+                  <td class="revision">
+                    <a href="/projects/subproject1/repository/12/revisions/7234cb2750b63f47bff735edc50a1c0a433c2518" title="Revision 7234cb27">7234cb27</a>
+                  </td>
+                  <td class="author">jsmith</td>
+                  <td class="previous"></td>
+                  <td class="line-code">
+                    <div>
+                      <span class="k">end</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="bloc-1" id="L30">
+                  <th class="line-num">
+                    <a data-txt="30" href="#L30"></a>
+                  </th>
+                  <td class="revision"></td>
+                  <td class="author"></td>
+                  <td class="previous"></td>
+                  <td class="line-code">
+                    <div>
+                      <span class="k">end</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="bloc-1" id="L31">
+                  <th class="line-num">
+                    <a data-txt="31" href="#L31"></a>
+                  </th>
+                  <td class="revision"></td>
+                  <td class="author"></td>
+                  <td class="previous"></td>
+                  <td class="line-code">
+                    <br>
+                  </td>
+                </tr>
+                <tr class="bloc-1" id="L32">
+                  <th class="line-num">
+                    <a data-txt="32" href="#L32"></a>
+                  </th>
+                  <td class="revision"></td>
+                  <td class="author"></td>
+                  <td class="previous"></td>
+                  <td class="line-code">
+                    <div>
+                      <span class="kp">private</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="bloc-1" id="L33">
+                  <th class="line-num">
+                    <a data-txt="33" href="#L33"></a>
+                  </th>
+                  <td class="revision"></td>
+                  <td class="author"></td>
+                  <td class="previous"></td>
+                  <td class="line-code">
+                    <div>
+                      <span class="k">def</span>
+                      <span class="nf">find_project</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="bloc-3 bloc-change" id="L34">
+                  <th class="line-num">
+                    <a data-txt="34" href="#L34"></a>
+                  </th>
+                  <td class="revision">
+                    <a href="/projects/subproject1/repository/12/revisions/61b685fbe55ab05b5ac68402d5720c1a6ac973d1" title="Revision 61b685fb">61b685fb</a>
+                  </td>
+                  <td class="author">jsmith</td>
+                  <td class="previous">
+                    <a class="icon icon-history" href="/projects/subproject1/repository/12/revisions/2f9c0091c754a91af7a9c478e36556b4bde8dcf7/annotate/sources/watchers_controller.rb" title="View annotation prior to this change"></a>
+                  </td>
+                  <td class="line-code">
+                    <div>
+                      <span class="n">klass</span>
+                      <span class="o">=</span>
+                      <span class="no">Object</span>
+                      <span class="p">.</span>
+                      <span class="nf">const_get</span>
+                      <span class="p">(</span>
+                      <span class="n">params</span>
+                      <span class="p">[</span>
+                      <span class="ss">:object_type</span>
+                      <span class="p">])</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="bloc-4 bloc-change" id="L35">
+                  <th class="line-num">
+                    <a data-txt="35" href="#L35"></a>
+                  </th>
+                  <td class="revision">
+                    <a href="/projects/subproject1/repository/12/revisions/36211941d80ea7fd119e3b805a8af1b6a1034473" title="Revision 36211941">36211941</a>
+                  </td>
+                  <td class="author">jsmith</td>
+                  <td class="previous">
+                    <a class="icon icon-history" href="/projects/subproject1/repository/12/revisions/899a15dba03a3b350b89c3f537e4bbe02a03cdc9/annotate/sources/watchers_controller.rb" title="View annotation prior to this change"></a>
+                  </td>
+                  <td class="line-code">
+                    <div>
+                      <span class="k">return</span>
+                      <span class="kp">true</span>
+                      <span class="k">unless</span>
+                      <span class="n">klass</span>
+                      <span class="p">.</span>
+                      <span class="nf">respond_to?</span>
+                      <span class="p">(</span>
+                      <span class="s1">&#39;watched_by&#39;</span>
+                      <span class="p">)</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="bloc-1 bloc-change" id="L36">
+                  <th class="line-num">
+                    <a data-txt="36" href="#L36"></a>
+                  </th>
+                  <td class="revision">
+                    <a href="/projects/subproject1/repository/12/revisions/7234cb2750b63f47bff735edc50a1c0a433c2518" title="Revision 7234cb27">7234cb27</a>
+                  </td>
+                  <td class="author">jsmith</td>
+                  <td class="previous"></td>
+                  <td class="line-code">
+                    <div>
+                      <span class="vi">@watched</span>
+                      <span class="o">=</span>
+                      <span class="n">klass</span>
+                      <span class="p">.</span>
+                      <span class="nf">find</span>
+                      <span class="p">(</span>
+                      <span class="n">params</span>
+                      <span class="p">[</span>
+                      <span class="ss">:object_id</span>
+                      <span class="p">])</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="bloc-1" id="L37">
+                  <th class="line-num">
+                    <a data-txt="37" href="#L37"></a>
+                  </th>
+                  <td class="revision"></td>
+                  <td class="author"></td>
+                  <td class="previous"></td>
+                  <td class="line-code">
+                    <div>
+                      <span class="vi">@project</span>
+                      <span class="o">=</span>
+                      <span class="vi">@watched</span>
+                      <span class="p">.</span>
+                      <span class="nf">project</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="bloc-1" id="L38">
+                  <th class="line-num">
+                    <a data-txt="38" href="#L38"></a>
+                  </th>
+                  <td class="revision"></td>
+                  <td class="author"></td>
+                  <td class="previous"></td>
+                  <td class="line-code">
+                    <div>
+                      <span class="k">rescue</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="bloc-1" id="L39">
+                  <th class="line-num">
+                    <a data-txt="39" href="#L39"></a>
+                  </th>
+                  <td class="revision"></td>
+                  <td class="author"></td>
+                  <td class="previous"></td>
+                  <td class="line-code">
+                    <div>
+                      <span class="n">render_404</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="bloc-1" id="L40">
+                  <th class="line-num">
+                    <a data-txt="40" href="#L40"></a>
+                  </th>
+                  <td class="revision"></td>
+                  <td class="author"></td>
+                  <td class="previous"></td>
+                  <td class="line-code">
+                    <div>
+                      <span class="k">end</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="bloc-1" id="L41">
+                  <th class="line-num">
+                    <a data-txt="41" href="#L41"></a>
+                  </th>
+                  <td class="revision"></td>
+                  <td class="author"></td>
+                  <td class="previous"></td>
+                  <td class="line-code">
+                    <div>
+                      <span class="k">end</span>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div style="clear:both;"></div>
+        </div>
+      </div>
+      <div id="footer">MASKED</div>
+      <div id="ajax-indicator" style="display:none;">
+        <span class="icon">
+          <svg aria-hidden="true" class="s18 icon-svg svg-loader">
+            <use href="/assets/icons-DIGEST.svg#icon--loader"></use>
+          </svg>
+          <span class="icon-label">Loading...</span>
+        </span>
+      </div>
+      <div id="ajax-modal" style="display:none;"></div>
+      <div id="icon-copy-source" style="display: none;">
+        <svg aria-hidden="true" class="s18 icon-svg">
+          <use href="/assets/icons-DIGEST.svg#icon--"></use>
+        </svg>
+      </div>
+    </div>
+  </body>
+</html>

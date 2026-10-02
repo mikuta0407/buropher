@@ -1,0 +1,442 @@
+status: 200
+content-type: text/html
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Activity - eCookbook Subproject 1 - Redmine</title>
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta content="Redmine" name="description">
+    <meta content="issue,bug,tracker" name="keywords">
+    <meta content="authenticity_token" name="csrf-param">
+    <meta content="{{CSRF}}" name="csrf-token">
+    <link href="/assets/favicon-DIGEST.ico" rel="shortcut icon" type="image/x-icon">
+    <link href="/assets/jquery/jquery-ui-1.13.2-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/tribute-5.1.3-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/application-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/responsive-DIGEST.css" media="all" rel="stylesheet">
+    <script data-turbo-track="reload" type="importmap">{
+  "imports": {
+    "@rails/request.js": "/assets/requestjs-DIGEST.js",
+    "application": "/assets/application-DIGEST.js",
+    "@hotwired/stimulus": "/assets/stimulus.min-DIGEST.js",
+    "@hotwired/stimulus-loading": "/assets/stimulus-loading-DIGEST.js",
+    "turndown": "/assets/turndown-DIGEST.js",
+    "controllers/api_key_copy_controller": "/assets/controllers/api_key_copy_controller-DIGEST.js",
+    "controllers/application": "/assets/controllers/application-DIGEST.js",
+    "controllers": "/assets/controllers/index-DIGEST.js",
+    "controllers/list_autofill_controller": "/assets/controllers/list_autofill_controller-DIGEST.js",
+    "controllers/quote_reply_controller": "/assets/controllers/quote_reply_controller-DIGEST.js",
+    "controllers/sticky_issue_header_controller": "/assets/controllers/sticky_issue_header_controller-DIGEST.js"
+  }
+}</script>
+    <link href="/assets/requestjs-DIGEST.js" rel="modulepreload">
+    <link href="/assets/application-DIGEST.js" rel="modulepreload">
+    <link href="/assets/stimulus.min-DIGEST.js" rel="modulepreload">
+    <link href="/assets/stimulus-loading-DIGEST.js" rel="modulepreload">
+    <link href="/assets/turndown-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/api_key_copy_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/application-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/index-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/list_autofill_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/quote_reply_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/sticky_issue_header_controller-DIGEST.js" rel="modulepreload">
+    <script type="module">import "application"</script>
+    <script src="/assets/jquery-3.7.1-ui-1.13.3-DIGEST.js"></script>
+    <script src="/assets/rails-ujs-DIGEST.js"></script>
+    <script src="/assets/tribute-5.1.3.min-DIGEST.js"></script>
+    <script src="/assets/application-legacy-DIGEST.js"></script>
+    <script src="/assets/responsive-DIGEST.js"></script>
+    <script>//<![CDATA[
+$(window).on('load', function(){ warnLeavingUnsaved('The current page contains unsaved text that will be lost if you leave this page.'); });
+//]]></script>
+    <script>//<![CDATA[
+rm = window.rm || {};rm.I18n = rm.I18n || {};rm.I18n = Object.freeze({buttonCopy: 'Copy'});
+//]]></script>
+    <script>//<![CDATA[
+rm = window.rm || {};rm.AutoComplete = rm.AutoComplete || {};rm.AutoComplete.dataSources = JSON.parse('{"issues":"/issues/auto_complete?project_id=subproject1\u0026q=","wiki_pages":"/wiki_pages/auto_complete?project_id=subproject1\u0026q="}');
+//]]></script>
+    <link href="{{BASE}}/projects/subproject1/activity.atom?key=KEY&amp;show_changesets=1" rel="alternate" title="ATOM" type="application/atom+xml">
+    <script>//<![CDATA[
+var datepickerOptions={dateFormat: 'yy-mm-dd', firstDay: 0, showOn: 'button', buttonImageOnly: true, buttonImage: '/assets/calendar-DIGEST.png', showButtonPanel: true, showWeek: true, showOtherMonths: true, selectOtherMonths: true, changeMonth: true, changeYear: true, beforeShow: beforeShowDatePicker};
+//]]></script>
+  </head>
+  <body class="project-subproject1 has-main-menu controller-activities action-index avatars-off" data-text-formatting="common_mark">
+    <div id="wrapper">
+      <div class="flyout-menu js-flyout-menu">
+        <div class="flyout-menu__search">
+          <form accept-charset="UTF-8" action="/projects/subproject1/search" method="get" name="form-RANDOM">
+            <label class="search-magnifier search-magnifier--flyout" for="flyout-search">
+              <svg aria-hidden="true" class="s18 icon-svg">
+                <use href="/assets/icons-DIGEST.svg#icon--search"></use>
+              </svg>
+              <span class="icon-label hidden">Search</span>
+            </label>
+            <input class="small js-search-input" id="flyout-search" name="q" placeholder="Search" type="text">
+          </form>
+        </div>
+        <div class="flyout-menu__avatar">
+          <a href="/users/1">
+            <span class="avatar-color-1 s40 avatar" role="img">RA</span>
+          </a>
+          <a class="user active" href="/users/1">admin</a>
+        </div>
+        <h3>Project</h3>
+        <span class="js-project-menu"></span>
+        <h3>General</h3>
+        <span class="js-general-menu"></span>
+        <span class="js-sidebar flyout-menu__sidebar"></span>
+        <h3>Profile</h3>
+        <span class="js-profile-menu"></span>
+      </div>
+      <div id="top-menu">
+        <div id="account">
+          <ul>
+            <li>
+              <a class="my-account" href="/my/account">My account</a>
+            </li>
+            <li>
+              <a class="logout" data-method="post" href="/logout" rel="nofollow">Sign out</a>
+            </li>
+          </ul>
+        </div>
+        <div id="loggedas">
+          Logged in as
+          <a class="user active" href="/users/1">admin</a>
+        </div>
+        <ul>
+          <li>
+            <a class="home" href="/">Home</a>
+          </li>
+          <li>
+            <a class="my-page" href="/my/page">My page</a>
+          </li>
+          <li>
+            <a class="projects" href="/projects">Projects</a>
+          </li>
+          <li>
+            <a class="administration" href="/admin">Administration</a>
+          </li>
+          <li>
+            <a class="help" href="https://www.redmine.org/guide" rel="noopener" target="_blank">Help</a>
+          </li>
+        </ul>
+      </div>
+      <div id="header">
+        <a class="mobile-toggle-button js-flyout-menu-toggle-button" href="#"></a>
+        <div id="quick-search">
+          <form accept-charset="UTF-8" action="/projects/subproject1/search" method="get" name="form-RANDOM">
+            <input autocomplete="off" name="scope" type="hidden">
+            <label for="q">
+              <a accesskey="4" href="/projects/subproject1/search">Search</a>
+              :
+            </label>
+            <input accesskey="f" class="small" data-auto-complete="true" id="q" name="q" size="20" type="text">
+          </form>
+          <div class="drdn" id="project-jump">
+            <span class="drdn-trigger">eCookbook Subproject 1</span>
+            <div class="drdn-content">
+              <div class="quick-search">
+                <svg aria-hidden="true" class="s18 icon-svg">
+                  <use href="/assets/icons-DIGEST.svg#icon--search"></use>
+                </svg>
+                <input autocomplete="off" class="autocomplete" data-automcomplete-url="/projects/autocomplete.js?jump=activity" id="projects-quick-search" name="q" type="text" value="">
+              </div>
+              <div class="drdn-items projects selection">
+                <strong>Bookmarks</strong>
+                <a href="/projects/ecookbook?jump=activity" title="eCookbook">
+                  <span style="padding-inline-start:0px;">eCookbook</span>
+                </a>
+                <a href="/projects/private-child?jump=activity" title="Private child of eCookbook">
+                  <span style="padding-inline-start:16px;">Private child of eCookbook</span>
+                </a>
+                <strong>Recently used</strong>
+                <a class="selected" href="/projects/subproject1?jump=activity" title="eCookbook Subproject 1">
+                  <span style="padding-inline-start:0px;">eCookbook Subproject 1</span>
+                </a>
+                <strong>All Projects</strong>
+                <a href="/projects/private-child?jump=activity" title="Private child of eCookbook">
+                  <span style="padding-inline-start:0px;">Private child of eCookbook</span>
+                </a>
+              </div>
+              <div class="drdn-items all-projects selection">
+                <a href="/projects?jump=activity">All Projects</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <h1>
+          <span class="breadcrumbs">
+            <a class="root" href="/projects/ecookbook?jump=activity">eCookbook</a>
+            <span class="separator">»</span>
+          </span>
+          <span class="current-project">eCookbook Subproject 1</span>
+        </h1>
+        <div class="tabs" id="main-menu">
+          <ul>
+            <li>
+              <a class="new-object" href="#" id="new-object" onclick="toggleNewObjectDropdown(); return false;">+</a>
+              <ul class="menu-children">
+                <li>
+                  <a accesskey="7" class="new-issue-sub" href="/projects/subproject1/issues/new">New issue</a>
+                </li>
+                <li>
+                  <a class="new-issue-category" href="/projects/subproject1/issue_categories/new">New category</a>
+                </li>
+                <li>
+                  <a class="new-version" href="/projects/subproject1/versions/new">New version</a>
+                </li>
+                <li>
+                  <a class="new-timelog" href="/projects/subproject1/time_entries/new">Log time</a>
+                </li>
+                <li>
+                  <a class="new-wiki-page" href="/projects/subproject1/wiki/new">New wiki page</a>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <a class="overview" href="/projects/subproject1">Overview</a>
+            </li>
+            <li>
+              <a class="activity selected" href="/projects/subproject1/activity">Activity</a>
+            </li>
+            <li>
+              <a class="roadmap" href="/projects/subproject1/roadmap">Roadmap</a>
+            </li>
+            <li>
+              <a class="issues" href="/projects/subproject1/issues">Issues</a>
+            </li>
+            <li>
+              <a class="time-entries" href="/projects/subproject1/time_entries">Spent time</a>
+            </li>
+            <li>
+              <a class="gantt" href="/projects/subproject1/issues/gantt">Gantt</a>
+            </li>
+            <li>
+              <a class="calendar" href="/projects/subproject1/issues/calendar">Calendar</a>
+            </li>
+            <li>
+              <a class="repository" href="/projects/subproject1/repository">Repository</a>
+            </li>
+            <li>
+              <a class="settings" href="/projects/subproject1/settings">Settings</a>
+            </li>
+          </ul>
+          <div class="tabs-buttons" style="display:none;">
+            <button class="tab-left icon-only" onclick="moveTabLeft(this); return false;">
+              <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
+                <use href="/assets/icons-DIGEST.svg#icon--angle-left"></use>
+              </svg>
+            </button>
+            <button class="tab-right icon-only" onclick="moveTabRight(this); return false;">
+              <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
+                <use href="/assets/icons-DIGEST.svg#icon--angle-right"></use>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="collapsiblesidebar" id="main">
+        <script>//<![CDATA[
+$('#main.collapsiblesidebar').collapsibleSidebar();
+//]]></script>
+        <div id="sidebar">
+          <div id="sidebar-switch-panel" style="visibility: hidden;">
+            <a class="" href="#" id="sidebar-switch-button">
+              <svg aria-hidden="true" class="s20 icon-svg icon-rtl">
+                <use href="/assets/icons-DIGEST.svg#icon--chevrons-right"></use>
+              </svg>
+            </a>
+          </div>
+          <script>//<![CDATA[
+$('#sidebar-switch-panel').css('visibility', 'visible');
+//]]></script>
+          <div id="sidebar-wrapper">
+            <form accept-charset="UTF-8" action="/projects/subproject1/activity" id="activity_scope_form" method="get" name="activity_scope_form-RANDOM">
+              <h3>Activity</h3>
+              <p>
+                10 days up to
+                <input id="from" max="9999-12-31" name="from" size="10" type="date" value="2010-10-01">
+                <script>//<![CDATA[
+$(function() { $('#from').addClass('date').datepickerFallback(datepickerOptions); });
+//]]></script>
+              </p>
+              <p>
+                User
+                <select id="user_id" name="user_id">
+                  <option label=" " value=""></option>
+                  <option value="1">&lt;&lt; me &gt;&gt;</option>
+                </select>
+              </p>
+              <ul>
+                <li>
+                  <input id="show_issues" name="show_issues" type="checkbox" value="1">
+                  <label for="show_issues">
+                    <a href="/projects/subproject1/activity?from=2010-10-01&amp;show_issues=1">Issues</a>
+                  </label>
+                </li>
+                <li>
+                  <input checked="checked" id="show_changesets" name="show_changesets" type="checkbox" value="1">
+                  <label for="show_changesets">
+                    <a href="/projects/subproject1/activity?from=2010-10-01&amp;show_changesets=1">Changesets</a>
+                  </label>
+                </li>
+                <li>
+                  <input id="show_wiki_edits" name="show_wiki_edits" type="checkbox" value="1">
+                  <label for="show_wiki_edits">
+                    <a href="/projects/subproject1/activity?from=2010-10-01&amp;show_wiki_edits=1">Wiki edits</a>
+                  </label>
+                </li>
+                <li>
+                  <input id="show_time_entries" name="show_time_entries" type="checkbox" value="1">
+                  <label for="show_time_entries">
+                    <a href="/projects/subproject1/activity?from=2010-10-01&amp;show_time_entries=1">Spent time</a>
+                  </label>
+                </li>
+              </ul>
+              <p>
+                <input class="button-small" data-disable-with="Apply" name="submit" type="submit" value="Apply">
+              </p>
+            </form>
+          </div>
+        </div>
+        <div id="content">
+          <h2>Activity</h2>
+          <p class="subtitle">From 09/22/2010 to 10/01/2010</p>
+          <div id="activity">
+            <h3>10/01/2010</h3>
+            <dl>
+              <dt class="changeset icon icon-changeset">
+                <svg aria-hidden="true" class="s18 icon-svg">
+                  <use href="/assets/icons-DIGEST.svg#icon--changeset"></use>
+                </svg>
+                <span class="avatar-color-2 s24 avatar" role="img">JS</span>
+                <span class="time">05:06 AM</span>
+                <a href="/projects/subproject1/repository/12/revisions/64f1f3e89ad1cb57976ff0ad99a107012ba3481d">Revision 64f1f3e8: add latin-1 test file for diff/blame</a>
+              </dt>
+              <dd class="">
+                <span class="description"></span>
+                <span class="author">
+                  <a class="user active" href="/users/2">John Smith</a>
+                </span>
+              </dd>
+              <dt class="changeset icon icon-changeset">
+                <svg aria-hidden="true" class="s18 icon-svg">
+                  <use href="/assets/icons-DIGEST.svg#icon--changeset"></use>
+                </svg>
+                <span class="avatar-color-2 s24 avatar" role="img">JS</span>
+                <span class="time">05:05 AM</span>
+                <a href="/projects/subproject1/repository/12/revisions/4fc55c43bf3d3dc2efb66145365ddc17639ce81e">Revision 4fc55c43: add latin-1 test file for cat</a>
+              </dt>
+              <dd class="">
+                <span class="description"></span>
+                <span class="author">
+                  <a class="user active" href="/users/2">John Smith</a>
+                </span>
+              </dd>
+              <dt class="changeset icon icon-changeset">
+                <svg aria-hidden="true" class="s18 icon-svg">
+                  <use href="/assets/icons-DIGEST.svg#icon--changeset"></use>
+                </svg>
+                <span class="avatar-color-2 s24 avatar" role="img">JS</span>
+                <span class="time">05:03 AM</span>
+                <a href="/projects/subproject1/repository/12/revisions/57ca437c0acbbcb749821fdf3726a1367056d364">Revision 57ca437c: add latin-1 file.</a>
+              </dt>
+              <dd class="">
+                <span class="description"></span>
+                <span class="author">
+                  <a class="user active" href="/users/2">John Smith</a>
+                </span>
+              </dd>
+              <dt class="changeset icon icon-changeset">
+                <svg aria-hidden="true" class="s18 icon-svg">
+                  <use href="/assets/icons-DIGEST.svg#icon--changeset"></use>
+                </svg>
+                <span class="avatar-color-2 s24 avatar" role="img">JS</span>
+                <span class="time">05:02 AM</span>
+                <a href="/projects/subproject1/repository/12/revisions/9a6f3b947d16f11b537363a60904d1b1d3bfcd2f">Revision 9a6f3b94: add latin-1-dir/make-latin-1-file.rb and update README</a>
+              </dt>
+              <dd class="">
+                <span class="description"></span>
+                <span class="author">
+                  <a class="user active" href="/users/2">John Smith</a>
+                </span>
+              </dd>
+              <dt class="changeset icon icon-changeset">
+                <svg aria-hidden="true" class="s18 icon-svg">
+                  <use href="/assets/icons-DIGEST.svg#icon--changeset"></use>
+                </svg>
+                <span class="time">05:00 AM</span>
+                <a href="/projects/subproject1/repository/12/revisions/67e7792ce20ccae2e4bb73eed09bb397819c8834">Revision 67e7792c: latin-1 ÀÈÁÉÂÊÃËÄÅÆÇ</a>
+              </dt>
+              <dd class="">
+                <span class="description"></span>
+                <span class="author">test latin-1 ÀÈÁÉÂÊÃËÄÅÆÇ</span>
+              </dd>
+              <dt class="changeset icon icon-changeset">
+                <svg aria-hidden="true" class="s18 icon-svg">
+                  <use href="/assets/icons-DIGEST.svg#icon--changeset"></use>
+                </svg>
+                <span class="time">04:00 AM</span>
+                <a href="/projects/subproject1/repository/12/revisions/b1650eac7c505a6dab9f19858afc9ecb481eccc2">Revision b1650eac: Edit new_file.txt by a long author</a>
+              </dt>
+              <dd class="">
+                <span class="description"></span>
+                <span class="author">
+                  This is a very long and also quite pointless name of a committer which is just here so that it is very long and very pointless and also quite redundant as we have already stated that this name is very long and pointless and thus long enough to overflow...
+                </span>
+              </dd>
+            </dl>
+            <h3>09/26/2010</h3>
+            <dl>
+              <dt class="changeset icon icon-changeset">
+                <svg aria-hidden="true" class="s18 icon-svg">
+                  <use href="/assets/icons-DIGEST.svg#icon--changeset"></use>
+                </svg>
+                <span class="time">07:14 PM</span>
+                <a href="/projects/subproject1/repository/12/revisions/83ca5fd546063a3c7dc2e568ba3355661a9e2b2c">Revision 83ca5fd5: Add a filename with a leading and trailing whitespace</a>
+              </dt>
+              <dd class="">
+                <span class="description"></span>
+                <span class="author">Felix Schäfer</span>
+              </dd>
+            </dl>
+          </div>
+          <span class="pagination">
+            <ul class="pages">
+              <li class="previous page">
+                <a accesskey="p" href="/projects/subproject1/activity?from=2010-09-21&amp;show_changesets=1" title="From 09/12/2010 to 09/21/2010">« Previous</a>
+              </li>
+              <li class="next page">
+                <a accesskey="n" href="/projects/subproject1/activity?from=2010-10-11&amp;show_changesets=1" title="From 10/02/2010 to 10/11/2010">Next »</a>
+              </li>
+            </ul>
+          </span>
+          <p class="other-formats hide-when-print">
+            Also available in:
+            <span>
+              <a class="atom" href="/projects/subproject1/activity.atom?key=KEY&amp;show_changesets=1" rel="nofollow">Atom</a>
+            </span>
+          </p>
+          <div style="clear:both;"></div>
+        </div>
+      </div>
+      <div id="footer">MASKED</div>
+      <div id="ajax-indicator" style="display:none;">
+        <span class="icon">
+          <svg aria-hidden="true" class="s18 icon-svg svg-loader">
+            <use href="/assets/icons-DIGEST.svg#icon--loader"></use>
+          </svg>
+          <span class="icon-label">Loading...</span>
+        </span>
+      </div>
+      <div id="ajax-modal" style="display:none;"></div>
+      <div id="icon-copy-source" style="display: none;">
+        <svg aria-hidden="true" class="s18 icon-svg">
+          <use href="/assets/icons-DIGEST.svg#icon--"></use>
+        </svg>
+      </div>
+    </div>
+  </body>
+</html>

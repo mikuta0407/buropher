@@ -1,0 +1,43 @@
+{{$a := assigns}}{{$p := current_project}}{{$repo := $a.Repository}}{{$cs := $a.Changeset}}
+<h2>{{l "label_revision"}} {{format_revision $cs}}</h2>
+
+<div class="details">
+  <h4>
+    {{avatar $cs.User}}
+    {{authoring $cs.CommittedOn (changeset_author $cs)}}
+  </h4>
+  {{if or (present $cs.Scmid) $a.Parents $a.Children}}
+  <ul class="revision-info">
+    {{if present $cs.Scmid}}
+      <li>
+        <strong>ID </strong>{{$cs.Scmid}}
+      </li>
+    {{end}}
+    {{if $a.Parents}}
+      <li>
+        <strong>{{l "label_parent_revision"}}</strong>
+          {{revision_links $a.Parents $p $repo}}
+      </li>
+    {{end}}
+    {{if $a.Children}}
+      <li>
+        <strong>{{l "label_child_revision"}}</strong>
+         {{revision_links $a.Children $p $repo}}
+      </li>
+    {{end}}
+  </ul>
+  {{end}}
+
+</div>
+
+<div class="wiki changeset-comments">
+  {{format_changeset_comments $cs $p}}
+</div>
+
+{{if $a.ShowRelated}}
+  {{partial "repositories/related_issues" (dict)}}
+{{end}}
+
+{{if $a.BrowseRepository}}
+{{render_tabs $a.ChangesetTabs action_name}}
+{{end}}

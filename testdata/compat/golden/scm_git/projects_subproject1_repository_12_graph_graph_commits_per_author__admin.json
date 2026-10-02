@@ -1,0 +1,41 @@
+status: 200
+content-type: application/json
+
+{
+  "labels": [
+    "",
+    "",
+    "",
+    "test20120208 ",
+    "test latin-1 ÀÈÁÉÂÊÃËÄÅÆÇ ",
+    "John Smith",
+    "This is a very long and also quite pointless name of a committer which is just here so that it is very long and very pointless and also quite redundant as we have already stated that this name is very long and pointless and thus long enough to overflow...",
+    "Holger Just ",
+    "Felix Schäfer ",
+    "Adam Soltys "
+  ],
+  "commits": [
+    0,
+    0,
+    0,
+    7,
+    1,
+    11,
+    1,
+    1,
+    2,
+    6
+  ],
+  "changes": [
+    0,
+    0,
+    0,
+    6,
+    1,
+    19,
+    1,
+    1,
+    2,
+    10
+  ]
+}
