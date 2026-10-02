@@ -1,0 +1,286 @@
+# チケットの一括編集・一括更新・削除とジャーナルの引用・編集の互換シナリオ
+# （IssuesController#bulk_edit / bulk_update / destroy、JournalsController#new / edit / update）。
+# 状態を変えるため、参照は専用インスタンスで実行前に reset すること:
+#   go run ./tools/compat diff -ref http://127.0.0.1:<port> -cand http://127.0.0.1:<port> \
+#     -reset-ref '...redmine-ref.sh reset' -reset-cand '...buropher-cand.sh reset' \
+#     testdata/compat/scenarios/issues_write_bulk.yml
+# ケースは記述順に実行され、前のケースの結果に依存する。
+# 状態を変えるケースは共用の参照（3998）に送れないため、ゴールデン未取得の間は skip: PENDING_SNAPSHOT としている。
+# 専用の参照で snapshot を取るときに `sed -i '/skip: PENDING_SNAPSHOT/d'` で外すこと。
+name: issues_write_bulk
+
+users:
+  admin: {login: admin, password: admin}
+  jsmith: {login: jsmith, password: jsmith}
+  dlopper: {login: dlopper, password: foo}
+
+normalize:
+  mask_text_selectors:
+    - "#footer"
+  regex:
+    - {pattern: 'name=\\"authenticity_token\\" value=\\"[^"\\]+\\"', replace: 'name=\"authenticity_token\" value=\"TOKEN\"'}
+    - {pattern: 'name=\\"([a-z0-9_-]+?)-[0-9a-f]{8}\\"', replace: 'name=\"$1-RANDOM\"'}
+
+requests:
+  # ---- 一括編集フォーム ----
+  - id: bulk_edit_12
+    skip: PENDING_SNAPSHOT
+    path: /issues/bulk_edit?ids[]=1&ids[]=2
+    users: [admin, jsmith]
+  - id: bulk_edit_13
+    skip: PENDING_SNAPSHOT
+    path: /issues/bulk_edit?ids[]=1&ids[]=3
+    users: [admin]
+  - id: bulk_edit_copy
+    skip: PENDING_SNAPSHOT
+    path: /issues/bulk_edit?copy=1&ids[]=1&ids[]=2&ids[]=3
+    users: [admin, jsmith]
+  - id: bulk_edit_move
+    skip: PENDING_SNAPSHOT
+    path: /issues/bulk_edit?ids[]=1&ids[]=4&issue[project_id]=2&issue[tracker_id]=2&issue[status_id]=3&issue[assigned_to_id]=none&issue[start_date]=none
+    users: [admin]
+  - id: bulk_edit_denied
+    skip: PENDING_SNAPSHOT
+    path: /issues/bulk_edit?ids[]=1&ids[]=2
+    users: [dlopper, anonymous]
+  - id: bulk_edit_missing
+    skip: PENDING_SNAPSHOT
+    path: /issues/bulk_edit?ids[]=999
+    users: [admin]
+  # フォームの再描画（updateBulkEditFrom）
+  - id: bulk_edit_js
+    skip: PENDING_SNAPSHOT
+    path: /issues/bulk_edit.js
+    method: POST
+    user: admin
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01"}
+    form: {"ids[]": ["1", "2"], "issue[project_id]": "2", "issue[tracker_id]": "", "notes": "kept notes"}
+  - id: bulk_edit_js_copy
+    skip: PENDING_SNAPSHOT
+    path: /issues/bulk_edit.js
+    method: POST
+    user: admin
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01"}
+    form: {"ids[]": ["1", "3"], "copy": "1", "issue[project_id]": "1", "issue[tracker_id]": "2"}
+
+  # ---- 一括更新 ----
+  - id: bulk_update_attrs
+    skip: PENDING_SNAPSHOT
+    path: /issues/bulk_update
+    method: POST
+    user: admin
+    form: {"ids[]": ["1", "2"], "notes": "Bulk editing", "issue[priority_id]": "7", "issue[assigned_to_id]": "none", "issue[category_id]": "", "issue[custom_field_values][2]": "777"}
+    expect_status: 302
+  - path: /issues/1
+    skip: PENDING_SNAPSHOT
+    users: [admin]
+    id: show_1_after_bulk_update
+  - path: /issues/2
+    skip: PENDING_SNAPSHOT
+    users: [admin]
+    id: show_2_after_bulk_update
+  - path: /projects/ecookbook/issues
+    skip: PENDING_SNAPSHOT
+    users: [admin]
+    id: index_after_bulk_update
+  - id: bulk_update_back_url
+    skip: PENDING_SNAPSHOT
+    path: /issues/bulk_update
+    method: PATCH
+    user: admin
+    form: {"ids[]": "1", "issue[done_ratio]": "30", "back_url": "/issues/1"}
+    expect_status: 302
+  # 失敗 → bulk_edit をエラー付きで再描画
+  - id: bulk_update_failure
+    skip: PENDING_SNAPSHOT
+    path: /issues/bulk_update
+    method: POST
+    user: admin
+    form: {"ids[]": ["7", "8"], "issue[estimated_hours]": "-1", "notes": "failing"}
+  # 移動して follow
+  - id: bulk_update_move_follow
+    skip: PENDING_SNAPSHOT
+    path: /issues/bulk_update
+    method: POST
+    user: admin
+    form: {"ids[]": ["1", "2"], "issue[project_id]": "2", "follow": "Move and follow"}
+    expect_status: 302
+  - path: /projects/onlinestore/issues
+    skip: PENDING_SNAPSHOT
+    users: [admin]
+    id: index_onlinestore_after_move
+  # コピー（リンクあり・follow）
+  - id: bulk_update_copy_follow
+    skip: PENDING_SNAPSHOT
+    path: /issues/bulk_update
+    method: POST
+    user: admin
+    form: {"ids[]": "3", "copy": "1", "link_copy": "1", "issue[project_id]": "1", "follow": "Copy and follow"}
+    expect_status: 302
+  - path: /issues/15
+    skip: PENDING_SNAPSHOT
+    users: [admin]
+    id: show_copied_issue
+  - path: /issues/3
+    skip: PENDING_SNAPSHOT
+    users: [admin]
+    id: show_3_after_copy
+  # コピー（複数・リンクなし）
+  - id: bulk_update_copy_many
+    skip: PENDING_SNAPSHOT
+    path: /issues/bulk_update
+    method: POST
+    user: admin
+    form: {"ids[]": ["5", "6"], "copy": "1", "link_copy": "0", "issue[project_id]": ""}
+    expect_status: 302
+  - id: bulk_update_denied
+    skip: PENDING_SNAPSHOT
+    path: /issues/bulk_update
+    method: POST
+    user: dlopper
+    form: {"ids[]": "4", "issue[priority_id]": "7"}
+
+  # ---- ジャーナル ----
+  - id: journal_edit_js
+    skip: PENDING_SNAPSHOT
+    path: /journals/2/edit
+    users: [admin, jsmith, dlopper]
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01"}
+  - id: journal_edit_html
+    skip: PENDING_SNAPSHOT
+    path: /journals/2/edit
+    users: [admin]
+  - id: quoted_issue
+    skip: PENDING_SNAPSHOT
+    path: /issues/1/quoted
+    method: POST
+    user: admin
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript"}
+    form: {}
+  - id: quoted_journal_partial
+    skip: PENDING_SNAPSHOT
+    path: /issues/1/quoted?journal_id=2&journal_indice=2
+    method: POST
+    user: admin
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript"}
+    form: {"quote": "Some notes\nline"}
+  - id: quoted_journal_missing
+    skip: PENDING_SNAPSHOT
+    path: /issues/1/quoted?journal_id=999
+    method: POST
+    user: admin
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript"}
+    form: {}
+  - id: journal_update_js
+    skip: PENDING_SNAPSHOT
+    path: /journals/2
+    method: PUT
+    user: admin
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01"}
+    form: {"journal[notes]": "Updated **notes**", "journal[private_notes]": "1"}
+  - path: /issues/1
+    skip: PENDING_SNAPSHOT
+    users: [admin, jsmith]
+    id: show_1_after_journal_update
+  - id: journal_update_details_blank
+    skip: PENDING_SNAPSHOT
+    path: /journals/1
+    method: PUT
+    user: admin
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01"}
+    form: {"journal[notes]": ""}
+  - id: journal_update_destroy
+    skip: PENDING_SNAPSHOT
+    path: /journals/2
+    method: PUT
+    user: admin
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01"}
+    form: {"journal[notes]": ""}
+  - id: journal_update_html
+    skip: PENDING_SNAPSHOT
+    path: /journals/3
+    method: PATCH
+    user: admin
+    form: {"journal[notes]": "html update"}
+    expect_status: 302
+  - id: journal_update_denied
+    skip: PENDING_SNAPSHOT
+    path: /journals/3
+    method: PUT
+    user: dlopper
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01"}
+    form: {"journal[notes]": "x"}
+  - id: journal_update_api
+    skip: PENDING_SNAPSHOT
+    path: /journals/4.json
+    method: PUT
+    user: admin
+    body: '{"journal":{"notes":"api notes"}}'
+    content_type: application/json
+    expect_status: 204
+  - path: /issues/2
+    skip: PENDING_SNAPSHOT
+    users: [admin]
+    id: show_2_after_journal_updates
+
+  # ---- 削除 ----
+  - id: destroy_confirm
+    skip: PENDING_SNAPSHOT
+    path: /issues/1
+    method: DELETE
+    user: admin
+    form: {}
+  - id: destroy_reassign_other_project
+    skip: PENDING_SNAPSHOT
+    path: /issues
+    method: DELETE
+    user: admin
+    form: {"ids[]": ["1", "3"], "todo": "reassign", "reassign_to_id": "4"}
+  - id: destroy_reassign_self
+    skip: PENDING_SNAPSHOT
+    path: /issues
+    method: DELETE
+    user: admin
+    form: {"ids[]": ["1", "3"], "todo": "reassign", "reassign_to_id": "3"}
+  - id: destroy_reassign
+    skip: PENDING_SNAPSHOT
+    path: /issues
+    method: DELETE
+    user: admin
+    form: {"ids[]": ["1", "3"], "todo": "reassign", "reassign_to_id": "2"}
+    expect_status: 302
+  - path: /issues/2
+    skip: PENDING_SNAPSHOT
+    users: [admin]
+    id: show_2_after_reassign
+  - path: /projects/ecookbook/time_entries
+    users: [admin]
+    id: time_entries_after_reassign
+    skip: timelog is not implemented yet
+  - id: destroy_nullify_back_url
+    skip: PENDING_SNAPSHOT
+    path: /issues/2
+    method: DELETE
+    user: admin
+    form: {"todo": "nullify", "back_url": "/issues"}
+    expect_status: 302
+  - path: /issues
+    skip: PENDING_SNAPSHOT
+    users: [admin]
+    id: index_after_destroy
+  - id: destroy_denied_api
+    skip: PENDING_SNAPSHOT
+    path: /issues/5.json
+    method: DELETE
+    user: dlopper
+  - id: destroy_api
+    skip: PENDING_SNAPSHOT
+    path: /issues/5.json
+    method: DELETE
+    user: admin
+    expect_status: 204
+  - id: destroy_api_missing
+    skip: PENDING_SNAPSHOT
+    path: /issues/999.json
+    method: DELETE
+    user: admin

@@ -41,4 +41,5 @@ func (a *App) Routes(r Router) {
 	a.routesIssues(r)
 	a.routesJournals(r)
 	a.routesIssuesBulk(r)
+	a.routesJournalsWrite(r)
 }
