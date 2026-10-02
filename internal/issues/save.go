@@ -314,7 +314,14 @@ VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '')`, arg
 	}
 	iss.ID = id
 	if rootID == 0 {
-		rootID = id
+		// add_as_root: Redmine はハッシュ形式の update_all で root_id / lft / rgt を設定するため、
+		// 楽観ロックが有効なモデルでは lock_version も 1 進む (DB 上の値。Ruby のインスタンスは古いままだが
+		// ここでは DB と揃える)。
+		iss.RootID, iss.HierPath = id, hierPathFor("", id)
+		iss.LockVersion++
+		_, err = e.Q.Exec(ctx, `UPDATE issues SET root_id = ?, hier_path = ?, lock_version = ? WHERE id = ?`,
+			iss.RootID, iss.HierPath, iss.LockVersion, id)
+		return err
 	}
 	iss.RootID, iss.HierPath = rootID, hierPathFor(parentPath, id)
 	_, err = e.Q.Exec(ctx, `UPDATE issues SET root_id = ?, hier_path = ? WHERE id = ?`, iss.RootID, iss.HierPath, id)

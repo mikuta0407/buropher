@@ -327,7 +327,8 @@ func (e *Env) saveCustomFieldValues(ctx context.Context, iss *Issue) (bool, erro
 		r := cvRow{ID: id, FieldID: fieldID}
 		r.Value.String, r.Value.Valid = v, v != ""
 		keep = append(keep, r)
-		changed = true
+		// 新しい行は self.custom_values = ... の置き換え時に保存され、その後の save では変更が無いため
+		// Redmine の touch 判定 (custom_values.any?(&:saved_changes?)) には含まれない
 		return nil
 	}
 	for _, cv := range vs {

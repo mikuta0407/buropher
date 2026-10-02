@@ -1,0 +1,1645 @@
+{
+  "log": [
+    {
+      "step": "s1 create A",
+      "name": "create",
+      "value": {
+        "ok": true,
+        "id": 15,
+        "errors": [
+
+        ]
+      }
+    },
+    {
+      "step": "s2 create B",
+      "name": "create",
+      "value": {
+        "ok": true,
+        "id": 16,
+        "errors": [
+
+        ]
+      }
+    },
+    {
+      "step": "s3 create child C",
+      "name": "create",
+      "value": {
+        "ok": true,
+        "id": 17,
+        "errors": [
+
+        ]
+      }
+    },
+    {
+      "step": "s4 relation A precedes B",
+      "name": "relation",
+      "value": {
+        "ok": true,
+        "id": 3,
+        "errors": [
+
+        ]
+      }
+    },
+    {
+      "step": "s5 workflow status change by assignee",
+      "name": "update",
+      "value": {
+        "ok": true,
+        "id": 15,
+        "errors": [
+
+        ]
+      }
+    },
+    {
+      "step": "s6 update child C (reschedule B through parent)",
+      "name": "update",
+      "value": {
+        "ok": true,
+        "id": 17,
+        "errors": [
+
+        ]
+      }
+    },
+    {
+      "step": "s7 private note with changes on B",
+      "name": "update",
+      "value": {
+        "ok": true,
+        "id": 16,
+        "errors": [
+
+        ]
+      }
+    },
+    {
+      "step": "s8 copy A with subtasks",
+      "name": "copy",
+      "value": {
+        "ok": true,
+        "id": 18,
+        "errors": [
+
+        ]
+      }
+    },
+    {
+      "step": "s9 move B to project 2",
+      "name": "update",
+      "value": {
+        "ok": true,
+        "id": 16,
+        "errors": [
+
+        ]
+      }
+    },
+    {
+      "step": "s10 close duplicated issue",
+      "name": "create",
+      "value": {
+        "ok": true,
+        "id": 20,
+        "errors": [
+
+        ]
+      }
+    },
+    {
+      "step": "s10 close duplicated issue",
+      "name": "create",
+      "value": {
+        "ok": true,
+        "id": 21,
+        "errors": [
+
+        ]
+      }
+    },
+    {
+      "step": "s10 close duplicated issue",
+      "name": "relation",
+      "value": {
+        "ok": true,
+        "id": 6,
+        "errors": [
+
+        ]
+      }
+    },
+    {
+      "step": "s10 close duplicated issue",
+      "name": "update",
+      "value": {
+        "ok": true,
+        "id": 20,
+        "errors": [
+
+        ]
+      }
+    },
+    {
+      "step": "s11 remove parent of C",
+      "name": "update",
+      "value": {
+        "ok": true,
+        "id": 17,
+        "errors": [
+
+        ]
+      }
+    },
+    {
+      "step": "s12 invalid updates",
+      "name": "update",
+      "value": {
+        "ok": false,
+        "id": 15,
+        "errors": [
+          [
+            "due_date",
+            "greater_than_start_date"
+          ]
+        ]
+      }
+    },
+    {
+      "step": "s12 invalid updates",
+      "name": "update",
+      "value": {
+        "ok": false,
+        "id": 17,
+        "errors": [
+          [
+            "parent_issue_id",
+            "invalid"
+          ]
+        ]
+      }
+    },
+    {
+      "step": "s12 invalid updates",
+      "name": "relation",
+      "value": {
+        "ok": false,
+        "id": null,
+        "errors": [
+          [
+            "issue_to_id",
+            "not_same_project"
+          ]
+        ]
+      }
+    }
+  ],
+  "deliveries": [
+    {
+      "step": "s1 create A"
+    },
+    {
+      "event": "issue_add",
+      "object": "issue",
+      "object_id": 15,
+      "user": 2
+    },
+    {
+      "event": "issue_add",
+      "object": "issue",
+      "object_id": 15,
+      "user": 3
+    },
+    {
+      "event": "issue_add",
+      "object": "issue",
+      "object_id": 15,
+      "user": 8
+    },
+    {
+      "step": "s2 create B"
+    },
+    {
+      "event": "issue_add",
+      "object": "issue",
+      "object_id": 16,
+      "user": 2
+    },
+    {
+      "event": "issue_add",
+      "object": "issue",
+      "object_id": 16,
+      "user": 3
+    },
+    {
+      "step": "s3 create child C"
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 6,
+      "user": 2
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 6,
+      "user": 3
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 6,
+      "user": 8
+    },
+    {
+      "event": "issue_add",
+      "object": "issue",
+      "object_id": 17,
+      "user": 2
+    },
+    {
+      "event": "issue_add",
+      "object": "issue",
+      "object_id": 17,
+      "user": 3
+    },
+    {
+      "step": "s4 relation A precedes B"
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 7,
+      "user": 2
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 7,
+      "user": 3
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 8,
+      "user": 2
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 8,
+      "user": 3
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 8,
+      "user": 8
+    },
+    {
+      "step": "s5 workflow status change by assignee"
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 9,
+      "user": 2
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 9,
+      "user": 3
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 9,
+      "user": 8
+    },
+    {
+      "step": "s6 update child C (reschedule B through parent)"
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 10,
+      "user": 2
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 10,
+      "user": 3
+    },
+    {
+      "step": "s7 private note with changes on B"
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 12,
+      "user": 2
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 11,
+      "user": 2
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 11,
+      "user": 3
+    },
+    {
+      "step": "s8 copy A with subtasks"
+    },
+    {
+      "event": "issue_add",
+      "object": "issue",
+      "object_id": 18,
+      "user": 1
+    },
+    {
+      "event": "issue_add",
+      "object": "issue",
+      "object_id": 18,
+      "user": 3
+    },
+    {
+      "event": "issue_add",
+      "object": "issue",
+      "object_id": 18,
+      "user": 2
+    },
+    {
+      "event": "issue_add",
+      "object": "issue",
+      "object_id": 18,
+      "user": 8
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 13,
+      "user": 2
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 13,
+      "user": 3
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 13,
+      "user": 8
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 17,
+      "user": 1
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 17,
+      "user": 3
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 17,
+      "user": 2
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 17,
+      "user": 8
+    },
+    {
+      "event": "issue_add",
+      "object": "issue",
+      "object_id": 19,
+      "user": 1
+    },
+    {
+      "event": "issue_add",
+      "object": "issue",
+      "object_id": 19,
+      "user": 2
+    },
+    {
+      "event": "issue_add",
+      "object": "issue",
+      "object_id": 19,
+      "user": 3
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 15,
+      "user": 2
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 15,
+      "user": 3
+    },
+    {
+      "step": "s9 move B to project 2"
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 18,
+      "user": 2
+    },
+    {
+      "step": "s10 close duplicated issue"
+    },
+    {
+      "event": "issue_add",
+      "object": "issue",
+      "object_id": 20,
+      "user": 2
+    },
+    {
+      "event": "issue_add",
+      "object": "issue",
+      "object_id": 20,
+      "user": 3
+    },
+    {
+      "event": "issue_add",
+      "object": "issue",
+      "object_id": 21,
+      "user": 2
+    },
+    {
+      "event": "issue_add",
+      "object": "issue",
+      "object_id": 21,
+      "user": 3
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 19,
+      "user": 2
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 19,
+      "user": 3
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 20,
+      "user": 2
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 20,
+      "user": 3
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 21,
+      "user": 2
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 21,
+      "user": 3
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 22,
+      "user": 2
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 22,
+      "user": 3
+    },
+    {
+      "step": "s11 remove parent of C"
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 24,
+      "user": 2
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 24,
+      "user": 3
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 24,
+      "user": 8
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 23,
+      "user": 2
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 23,
+      "user": 3
+    },
+    {
+      "step": "s12 invalid updates"
+    },
+    {
+      "step": "s13 destroy copy"
+    }
+  ],
+  "issues": [
+    {
+      "id": 1,
+      "project_id": 1,
+      "tracker_id": 1,
+      "status_id": 1,
+      "priority_id": 4,
+      "author_id": 2,
+      "assigned_to_id": null,
+      "category_id": 1,
+      "fixed_version_id": null,
+      "parent_id": null,
+      "root_id": 1,
+      "subject": "Cannot print recipes",
+      "description": "Unable to print recipes",
+      "start_date": "2026-01-14",
+      "due_date": "2026-01-25",
+      "done_ratio": 0,
+      "estimated_hours": 200.0,
+      "is_private": false,
+      "lock_version": 3,
+      "created_on": "2026-01-12 12:00:00",
+      "updated_on": "2026-01-14 12:00:00",
+      "closed_on": null
+    },
+    {
+      "id": 2,
+      "project_id": 1,
+      "tracker_id": 2,
+      "status_id": 2,
+      "priority_id": 5,
+      "author_id": 2,
+      "assigned_to_id": 3,
+      "category_id": null,
+      "fixed_version_id": 2,
+      "parent_id": null,
+      "root_id": 2,
+      "subject": "Add ingredients categories",
+      "description": "Ingredients of the recipe should be classified by categories",
+      "start_date": "2026-01-13",
+      "due_date": null,
+      "done_ratio": 30,
+      "estimated_hours": 0.5,
+      "is_private": false,
+      "lock_version": 3,
+      "created_on": "2006-07-19 19:04:21",
+      "updated_on": "2006-07-19 19:09:50",
+      "closed_on": null
+    },
+    {
+      "id": 3,
+      "project_id": 1,
+      "tracker_id": 1,
+      "status_id": 1,
+      "priority_id": 4,
+      "author_id": 2,
+      "assigned_to_id": 3,
+      "category_id": null,
+      "fixed_version_id": null,
+      "parent_id": null,
+      "root_id": 3,
+      "subject": "Error 281 when updating a recipe",
+      "description": "Error 281 is encountered when saving a recipe",
+      "start_date": "2025-12-31",
+      "due_date": "2026-01-10",
+      "done_ratio": 0,
+      "estimated_hours": 1.0,
+      "is_private": false,
+      "lock_version": 0,
+      "created_on": "2006-07-19 19:07:27",
+      "updated_on": "2006-07-19 19:07:27",
+      "closed_on": null
+    },
+    {
+      "id": 4,
+      "project_id": 2,
+      "tracker_id": 1,
+      "status_id": 1,
+      "priority_id": 4,
+      "author_id": 2,
+      "assigned_to_id": 2,
+      "category_id": null,
+      "fixed_version_id": null,
+      "parent_id": null,
+      "root_id": 4,
+      "subject": "Issue on project 2",
+      "description": "Issue on project 2",
+      "start_date": null,
+      "due_date": null,
+      "done_ratio": 0,
+      "estimated_hours": null,
+      "is_private": false,
+      "lock_version": 0,
+      "created_on": "2026-01-10 12:00:00",
+      "updated_on": "2026-01-13 12:00:00",
+      "closed_on": null
+    },
+    {
+      "id": 5,
+      "project_id": 3,
+      "tracker_id": 1,
+      "status_id": 1,
+      "priority_id": 4,
+      "author_id": 2,
+      "assigned_to_id": null,
+      "category_id": null,
+      "fixed_version_id": null,
+      "parent_id": null,
+      "root_id": 5,
+      "subject": "Subproject issue",
+      "description": "This is an issue on a cookbook subproject",
+      "start_date": null,
+      "due_date": null,
+      "done_ratio": 0,
+      "estimated_hours": 2.0,
+      "is_private": false,
+      "lock_version": 0,
+      "created_on": "2026-01-10 12:00:00",
+      "updated_on": "2026-01-13 12:00:00",
+      "closed_on": null
+    },
+    {
+      "id": 6,
+      "project_id": 5,
+      "tracker_id": 1,
+      "status_id": 1,
+      "priority_id": 4,
+      "author_id": 2,
+      "assigned_to_id": null,
+      "category_id": null,
+      "fixed_version_id": null,
+      "parent_id": null,
+      "root_id": 6,
+      "subject": "Issue of a private subproject",
+      "description": "This is an issue of a private subproject of cookbook",
+      "start_date": "2026-01-15",
+      "due_date": "2026-01-16",
+      "done_ratio": 0,
+      "estimated_hours": null,
+      "is_private": false,
+      "lock_version": 0,
+      "created_on": "2026-01-15 11:59:00",
+      "updated_on": "2026-01-15 11:59:00",
+      "closed_on": null
+    },
+    {
+      "id": 7,
+      "project_id": 1,
+      "tracker_id": 1,
+      "status_id": 1,
+      "priority_id": 5,
+      "author_id": 2,
+      "assigned_to_id": null,
+      "category_id": null,
+      "fixed_version_id": null,
+      "parent_id": null,
+      "root_id": 7,
+      "subject": "Issue due today",
+      "description": "This is an issue that is due today",
+      "start_date": "2026-01-05",
+      "due_date": "2026-01-15",
+      "done_ratio": 0,
+      "estimated_hours": null,
+      "is_private": false,
+      "lock_version": 0,
+      "created_on": "2026-01-05 12:00:00",
+      "updated_on": "2026-01-05 12:00:00",
+      "closed_on": null
+    },
+    {
+      "id": 8,
+      "project_id": 1,
+      "tracker_id": 1,
+      "status_id": 5,
+      "priority_id": 5,
+      "author_id": 2,
+      "assigned_to_id": null,
+      "category_id": null,
+      "fixed_version_id": null,
+      "parent_id": null,
+      "root_id": 8,
+      "subject": "Closed issue",
+      "description": "This is a closed issue.",
+      "start_date": null,
+      "due_date": null,
+      "done_ratio": 0,
+      "estimated_hours": null,
+      "is_private": false,
+      "lock_version": 0,
+      "created_on": "2026-01-05 12:00:00",
+      "updated_on": "2026-01-05 12:00:00",
+      "closed_on": "2026-01-12 12:00:00"
+    },
+    {
+      "id": 9,
+      "project_id": 5,
+      "tracker_id": 1,
+      "status_id": 1,
+      "priority_id": 5,
+      "author_id": 2,
+      "assigned_to_id": null,
+      "category_id": null,
+      "fixed_version_id": null,
+      "parent_id": null,
+      "root_id": 9,
+      "subject": "Blocked Issue",
+      "description": "This is an issue that is blocked by issue",
+      "start_date": "2026-01-15",
+      "due_date": "2026-01-16",
+      "done_ratio": 0,
+      "estimated_hours": null,
+      "is_private": false,
+      "lock_version": 0,
+      "created_on": "2026-01-15 11:59:00",
+      "updated_on": "2026-01-15 11:59:00",
+      "closed_on": null
+    },
+    {
+      "id": 10,
+      "project_id": 5,
+      "tracker_id": 1,
+      "status_id": 1,
+      "priority_id": 5,
+      "author_id": 2,
+      "assigned_to_id": null,
+      "category_id": null,
+      "fixed_version_id": null,
+      "parent_id": null,
+      "root_id": 10,
+      "subject": "Issue Doing the Blocking",
+      "description": "This is an issue that blocks issue",
+      "start_date": "2026-01-15",
+      "due_date": "2026-01-16",
+      "done_ratio": 0,
+      "estimated_hours": null,
+      "is_private": false,
+      "lock_version": 0,
+      "created_on": "2026-01-15 11:59:00",
+      "updated_on": "2026-01-15 11:59:00",
+      "closed_on": null
+    },
+    {
+      "id": 11,
+      "project_id": 1,
+      "tracker_id": 1,
+      "status_id": 5,
+      "priority_id": 5,
+      "author_id": 2,
+      "assigned_to_id": null,
+      "category_id": 1,
+      "fixed_version_id": 1,
+      "parent_id": null,
+      "root_id": 11,
+      "subject": "Closed issue on a closed version",
+      "description": null,
+      "start_date": "2026-01-14",
+      "due_date": null,
+      "done_ratio": 0,
+      "estimated_hours": null,
+      "is_private": false,
+      "lock_version": 0,
+      "created_on": "2026-01-12 12:00:00",
+      "updated_on": "2026-01-14 12:00:00",
+      "closed_on": "2026-01-14 12:00:00"
+    },
+    {
+      "id": 12,
+      "project_id": 1,
+      "tracker_id": 1,
+      "status_id": 5,
+      "priority_id": 5,
+      "author_id": 3,
+      "assigned_to_id": null,
+      "category_id": 1,
+      "fixed_version_id": 2,
+      "parent_id": null,
+      "root_id": 12,
+      "subject": "Closed issue on a locked version",
+      "description": null,
+      "start_date": "2026-01-14",
+      "due_date": null,
+      "done_ratio": 0,
+      "estimated_hours": null,
+      "is_private": false,
+      "lock_version": 0,
+      "created_on": "2026-01-12 12:00:00",
+      "updated_on": "2026-01-14 12:00:00",
+      "closed_on": "2026-01-14 12:00:00"
+    },
+    {
+      "id": 13,
+      "project_id": 3,
+      "tracker_id": 1,
+      "status_id": 1,
+      "priority_id": 4,
+      "author_id": 2,
+      "assigned_to_id": null,
+      "category_id": null,
+      "fixed_version_id": null,
+      "parent_id": null,
+      "root_id": 13,
+      "subject": "Subproject issue two",
+      "description": "This is a second issue on a cookbook subproject",
+      "start_date": null,
+      "due_date": null,
+      "done_ratio": 0,
+      "estimated_hours": null,
+      "is_private": false,
+      "lock_version": 0,
+      "created_on": "2026-01-10 12:00:00",
+      "updated_on": "2026-01-13 12:00:00",
+      "closed_on": null
+    },
+    {
+      "id": 14,
+      "project_id": 3,
+      "tracker_id": 1,
+      "status_id": 1,
+      "priority_id": 5,
+      "author_id": 2,
+      "assigned_to_id": null,
+      "category_id": null,
+      "fixed_version_id": null,
+      "parent_id": null,
+      "root_id": 14,
+      "subject": "Private issue on public project",
+      "description": "This is a private issue",
+      "start_date": null,
+      "due_date": null,
+      "done_ratio": 0,
+      "estimated_hours": null,
+      "is_private": true,
+      "lock_version": 0,
+      "created_on": "2025-12-31 12:00:00",
+      "updated_on": "2025-12-31 12:00:00",
+      "closed_on": null
+    },
+    {
+      "id": 15,
+      "project_id": 1,
+      "tracker_id": 1,
+      "status_id": 2,
+      "priority_id": 6,
+      "author_id": 2,
+      "assigned_to_id": 3,
+      "category_id": 1,
+      "fixed_version_id": 3,
+      "parent_id": null,
+      "root_id": 15,
+      "subject": "Diff A",
+      "description": "line1\r\nline2 @dlopper",
+      "start_date": "2026-01-26",
+      "due_date": "2026-01-30",
+      "done_ratio": 80,
+      "estimated_hours": 2.5,
+      "is_private": false,
+      "lock_version": 4,
+      "created_on": "2026-01-15 12:00:00",
+      "updated_on": "2026-01-15 12:00:00",
+      "closed_on": null
+    },
+    {
+      "id": 16,
+      "project_id": 2,
+      "tracker_id": 1,
+      "status_id": 1,
+      "priority_id": 5,
+      "author_id": 2,
+      "assigned_to_id": null,
+      "category_id": null,
+      "fixed_version_id": null,
+      "parent_id": null,
+      "root_id": 16,
+      "subject": "Diff B",
+      "description": null,
+      "start_date": "2026-02-04",
+      "due_date": "2026-02-05",
+      "done_ratio": 20,
+      "estimated_hours": null,
+      "is_private": false,
+      "lock_version": 5,
+      "created_on": "2026-01-15 12:00:00",
+      "updated_on": "2026-01-15 12:00:00",
+      "closed_on": null
+    },
+    {
+      "id": 17,
+      "project_id": 1,
+      "tracker_id": 1,
+      "status_id": 1,
+      "priority_id": 6,
+      "author_id": 2,
+      "assigned_to_id": null,
+      "category_id": null,
+      "fixed_version_id": null,
+      "parent_id": null,
+      "root_id": 17,
+      "subject": "Diff C",
+      "description": null,
+      "start_date": "2026-01-26",
+      "due_date": "2026-01-30",
+      "done_ratio": 80,
+      "estimated_hours": 4.0,
+      "is_private": false,
+      "lock_version": 2,
+      "created_on": "2026-01-15 12:00:00",
+      "updated_on": "2026-01-15 12:00:00",
+      "closed_on": null
+    },
+    {
+      "id": 20,
+      "project_id": 1,
+      "tracker_id": 1,
+      "status_id": 5,
+      "priority_id": 5,
+      "author_id": 2,
+      "assigned_to_id": null,
+      "category_id": null,
+      "fixed_version_id": null,
+      "parent_id": null,
+      "root_id": 20,
+      "subject": "Diff E",
+      "description": null,
+      "start_date": "2026-01-15",
+      "due_date": null,
+      "done_ratio": 0,
+      "estimated_hours": null,
+      "is_private": false,
+      "lock_version": 2,
+      "created_on": "2026-01-15 12:00:00",
+      "updated_on": "2026-01-15 12:00:00",
+      "closed_on": "2026-01-15 12:00:00"
+    },
+    {
+      "id": 21,
+      "project_id": 1,
+      "tracker_id": 1,
+      "status_id": 5,
+      "priority_id": 5,
+      "author_id": 2,
+      "assigned_to_id": null,
+      "category_id": null,
+      "fixed_version_id": null,
+      "parent_id": null,
+      "root_id": 21,
+      "subject": "Diff D (duplicate)",
+      "description": null,
+      "start_date": "2026-01-15",
+      "due_date": null,
+      "done_ratio": 0,
+      "estimated_hours": null,
+      "is_private": false,
+      "lock_version": 2,
+      "created_on": "2026-01-15 12:00:00",
+      "updated_on": "2026-01-15 12:00:00",
+      "closed_on": "2026-01-15 12:00:00"
+    }
+  ],
+  "tree_order": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    20,
+    21
+  ],
+  "journals": [
+    {
+      "id": 1,
+      "issue_id": 1,
+      "user_id": 1,
+      "notes": "Journal notes",
+      "private_notes": false,
+      "created_on": "2026-01-13 00:00:00",
+      "details": [
+        [
+          "attr",
+          "status_id",
+          "1",
+          "2"
+        ],
+        [
+          "attr",
+          "done_ratio",
+          "40",
+          "30"
+        ]
+      ]
+    },
+    {
+      "id": 2,
+      "issue_id": 1,
+      "user_id": 2,
+      "notes": "Some notes with Redmine links: #2, r2.",
+      "private_notes": false,
+      "created_on": "2026-01-14 00:00:00",
+      "details": [
+
+      ]
+    },
+    {
+      "id": 3,
+      "issue_id": 2,
+      "user_id": 2,
+      "notes": "A comment with inline image: !picture.jpg! and a reference to #1 and r2.",
+      "private_notes": false,
+      "created_on": "2026-01-14 00:00:00",
+      "details": [
+        [
+          "attr",
+          "description",
+          "This word was removed and an other was",
+          "This word was and an other was added"
+        ],
+        [
+          "cf",
+          "2",
+          "Old value",
+          "New value"
+        ],
+        [
+          "attachment",
+          "4",
+          null,
+          "060719210727_picture.jpg"
+        ]
+      ]
+    },
+    {
+      "id": 4,
+      "issue_id": 6,
+      "user_id": 1,
+      "notes": "A comment with a private version.",
+      "private_notes": false,
+      "created_on": "2026-01-14 00:00:00",
+      "details": [
+        [
+          "attr",
+          "fixed_version_id",
+          null,
+          "6"
+        ]
+      ]
+    },
+    {
+      "id": 5,
+      "issue_id": 14,
+      "user_id": 2,
+      "notes": "A comment on a private issue.",
+      "private_notes": false,
+      "created_on": "2026-01-14 00:00:00",
+      "details": [
+
+      ]
+    },
+    {
+      "id": 6,
+      "issue_id": 15,
+      "user_id": 2,
+      "notes": null,
+      "private_notes": false,
+      "created_on": "2026-01-15 12:00:00",
+      "details": [
+        [
+          "attr",
+          "child_id",
+          null,
+          "17"
+        ]
+      ]
+    },
+    {
+      "id": 7,
+      "issue_id": 16,
+      "user_id": 2,
+      "notes": null,
+      "private_notes": false,
+      "created_on": "2026-01-15 12:00:00",
+      "details": [
+        [
+          "attr",
+          "due_date",
+          "2026-01-21",
+          "2026-02-03"
+        ],
+        [
+          "attr",
+          "start_date",
+          "2026-01-20",
+          "2026-02-02"
+        ],
+        [
+          "relation",
+          "follows",
+          null,
+          "15"
+        ]
+      ]
+    },
+    {
+      "id": 8,
+      "issue_id": 15,
+      "user_id": 2,
+      "notes": null,
+      "private_notes": false,
+      "created_on": "2026-01-15 12:00:00",
+      "details": [
+        [
+          "relation",
+          "precedes",
+          null,
+          "16"
+        ]
+      ]
+    },
+    {
+      "id": 9,
+      "issue_id": 15,
+      "user_id": 3,
+      "notes": "Status change note",
+      "private_notes": false,
+      "created_on": "2026-01-15 12:00:00",
+      "details": [
+        [
+          "attr",
+          "status_id",
+          "1",
+          "2"
+        ]
+      ]
+    },
+    {
+      "id": 10,
+      "issue_id": 17,
+      "user_id": 2,
+      "notes": null,
+      "private_notes": false,
+      "created_on": "2026-01-15 12:00:00",
+      "details": [
+        [
+          "attr",
+          "due_date",
+          "2026-01-28",
+          "2026-01-30"
+        ],
+        [
+          "attr",
+          "done_ratio",
+          "50",
+          "80"
+        ],
+        [
+          "cf",
+          "2",
+          "Default string",
+          "changed"
+        ]
+      ]
+    },
+    {
+      "id": 11,
+      "issue_id": 16,
+      "user_id": 2,
+      "notes": null,
+      "private_notes": false,
+      "created_on": "2026-01-15 12:00:00",
+      "details": [
+        [
+          "attr",
+          "done_ratio",
+          "0",
+          "20"
+        ]
+      ]
+    },
+    {
+      "id": 12,
+      "issue_id": 16,
+      "user_id": 2,
+      "notes": "private note",
+      "private_notes": true,
+      "created_on": "2026-01-15 12:00:00",
+      "details": [
+
+      ]
+    },
+    {
+      "id": 13,
+      "issue_id": 15,
+      "user_id": 1,
+      "notes": null,
+      "private_notes": false,
+      "created_on": "2026-01-15 12:00:00",
+      "details": [
+        [
+          "relation",
+          "copied_to",
+          null,
+          "18"
+        ]
+      ]
+    },
+    {
+      "id": 15,
+      "issue_id": 17,
+      "user_id": 1,
+      "notes": null,
+      "private_notes": false,
+      "created_on": "2026-01-15 12:00:00",
+      "details": [
+        [
+          "relation",
+          "copied_to",
+          null,
+          "19"
+        ]
+      ]
+    },
+    {
+      "id": 18,
+      "issue_id": 16,
+      "user_id": 1,
+      "notes": null,
+      "private_notes": false,
+      "created_on": "2026-01-15 12:00:00",
+      "details": [
+        [
+          "attr",
+          "project_id",
+          "1",
+          "2"
+        ]
+      ]
+    },
+    {
+      "id": 19,
+      "issue_id": 21,
+      "user_id": 2,
+      "notes": null,
+      "private_notes": false,
+      "created_on": "2026-01-15 12:00:00",
+      "details": [
+        [
+          "relation",
+          "duplicates",
+          null,
+          "20"
+        ]
+      ]
+    },
+    {
+      "id": 20,
+      "issue_id": 20,
+      "user_id": 2,
+      "notes": null,
+      "private_notes": false,
+      "created_on": "2026-01-15 12:00:00",
+      "details": [
+        [
+          "relation",
+          "duplicated",
+          null,
+          "21"
+        ]
+      ]
+    },
+    {
+      "id": 21,
+      "issue_id": 21,
+      "user_id": 1,
+      "notes": "closing E",
+      "private_notes": false,
+      "created_on": "2026-01-15 12:00:00",
+      "details": [
+        [
+          "attr",
+          "status_id",
+          "1",
+          "5"
+        ]
+      ]
+    },
+    {
+      "id": 22,
+      "issue_id": 20,
+      "user_id": 1,
+      "notes": "closing E",
+      "private_notes": false,
+      "created_on": "2026-01-15 12:00:00",
+      "details": [
+        [
+          "attr",
+          "status_id",
+          "1",
+          "5"
+        ]
+      ]
+    },
+    {
+      "id": 23,
+      "issue_id": 17,
+      "user_id": 2,
+      "notes": null,
+      "private_notes": false,
+      "created_on": "2026-01-15 12:00:00",
+      "details": [
+        [
+          "attr",
+          "parent_id",
+          "15",
+          null
+        ]
+      ]
+    },
+    {
+      "id": 24,
+      "issue_id": 15,
+      "user_id": 2,
+      "notes": null,
+      "private_notes": false,
+      "created_on": "2026-01-15 12:00:00",
+      "details": [
+        [
+          "attr",
+          "child_id",
+          "17",
+          null
+        ]
+      ]
+    }
+  ],
+  "relations": [
+    [
+      1,
+      10,
+      9,
+      "blocks",
+      null
+    ],
+    [
+      2,
+      2,
+      3,
+      "relates",
+      null
+    ],
+    [
+      6,
+      21,
+      20,
+      "duplicates",
+      null
+    ]
+  ],
+  "watchers": [
+    [
+      2,
+      1
+    ],
+    [
+      2,
+      3
+    ],
+    [
+      15,
+      3
+    ],
+    [
+      15,
+      8
+    ]
+  ],
+  "custom_values": [
+    [
+      1,
+      2,
+      "125"
+    ],
+    [
+      1,
+      6,
+      "2.1"
+    ],
+    [
+      1,
+      8,
+      "2009-12-01"
+    ],
+    [
+      2,
+      2,
+      null
+    ],
+    [
+      2,
+      6,
+      "2.05"
+    ],
+    [
+      3,
+      1,
+      "MySQL"
+    ],
+    [
+      3,
+      2,
+      "125"
+    ],
+    [
+      3,
+      6,
+      "11.65"
+    ],
+    [
+      5,
+      6,
+      "-7.6"
+    ],
+    [
+      7,
+      2,
+      "this is a stringforcustomfield search"
+    ],
+    [
+      7,
+      6,
+      null
+    ],
+    [
+      15,
+      1,
+      "PostgreSQL"
+    ],
+    [
+      15,
+      2,
+      "value1"
+    ],
+    [
+      15,
+      6,
+      null
+    ],
+    [
+      15,
+      8,
+      null
+    ],
+    [
+      15,
+      9,
+      null
+    ],
+    [
+      16,
+      1,
+      null
+    ],
+    [
+      16,
+      2,
+      "Default string"
+    ],
+    [
+      16,
+      6,
+      null
+    ],
+    [
+      16,
+      8,
+      null
+    ],
+    [
+      17,
+      1,
+      null
+    ],
+    [
+      17,
+      2,
+      "changed"
+    ],
+    [
+      17,
+      6,
+      null
+    ],
+    [
+      17,
+      8,
+      null
+    ],
+    [
+      17,
+      9,
+      null
+    ],
+    [
+      20,
+      1,
+      null
+    ],
+    [
+      20,
+      2,
+      "Default string"
+    ],
+    [
+      20,
+      6,
+      null
+    ],
+    [
+      20,
+      8,
+      null
+    ],
+    [
+      20,
+      9,
+      null
+    ],
+    [
+      21,
+      1,
+      null
+    ],
+    [
+      21,
+      2,
+      "Default string"
+    ],
+    [
+      21,
+      6,
+      null
+    ],
+    [
+      21,
+      8,
+      null
+    ],
+    [
+      21,
+      9,
+      null
+    ]
+  ]
+}
