@@ -64,6 +64,14 @@ func (e *Env) Today() time.Time {
 	return time.Date(y, m, d, 0, 0, 0, 0, time.UTC)
 }
 
+// WithQ は DB ハンドルを q に差し替えた Env を返す（トランザクション内で使う。チケットの Env は作り直す）。
+func (e *Env) WithQ(q db.Queryer) *Env {
+	c := *e
+	c.Q = q
+	c.iss = nil
+	return &c
+}
+
 // Issues はチケットの Env（共有）。
 func (e *Env) Issues() *issues.Env {
 	if e.iss == nil {
@@ -119,6 +127,7 @@ type Entry struct {
 
 	// HoursBeforeTypeCast / SpentOnBeforeTypeCast は代入された生の値（文字列）。
 	HoursBeforeTypeCast   any
+	IssueIDBeforeTypeCast any
 	SpentOnBeforeTypeCast any
 	hoursFromUser         bool
 
@@ -733,6 +742,7 @@ func (e *Env) SafeAssign(ctx context.Context, t *Entry, attrs Attrs, user *domai
 			projectBlank = strings.TrimSpace(toS(v)) == ""
 		case "issue_id":
 			t.IssueID = castInt(v)
+			t.IssueIDBeforeTypeCast = v
 		case "user_id":
 			t.UserID = castInt(v)
 		case "activity_id":

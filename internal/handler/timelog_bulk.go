@@ -313,9 +313,7 @@ func (a *App) TimelogBulkUpdate(c *Req) {
 	for _, t := range entries {
 		var ok bool
 		err := a.DB.WithTx(ctx, func(tx *db.Tx) error {
-			q := env.Q
-			env.Q = tx
-			defer func() { env.Q = q }()
+			env := env.WithQ(tx)
 			fresh, err := env.Reload(ctx, t)
 			if err != nil {
 				return err

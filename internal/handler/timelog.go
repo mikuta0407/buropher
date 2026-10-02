@@ -407,10 +407,7 @@ func (a *App) TimelogDestroy(c *Req) {
 	ctx := c.Ctx()
 	destroyed := true
 	err := a.DB.WithTx(ctx, func(tx *db.Tx) error {
-		env := a.teEnv(c)
-		saved := env.Q
-		env.Q = tx
-		defer func() { env.Q = saved }()
+		env := a.teEnv(c).WithQ(tx)
 		for _, t := range entries {
 			if err := env.Destroy(ctx, t); err != nil {
 				return err

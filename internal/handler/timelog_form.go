@@ -66,11 +66,14 @@ func (f *teForm) Send(method string) (any, bool) {
 			return nil, true
 		}
 		return *e.Comments, true
+	case "issue_id_before_type_cast":
+		if e.IssueIDBeforeTypeCast != nil {
+			return e.IssueIDBeforeTypeCast, true
+		}
+		return id(e.IssueID), true
 	case "spent_on":
+		// date_field はキャスト後の値（解釈できなければ nil）
 		if e.SpentOn == nil {
-			if s, ok := e.SpentOnBeforeTypeCast.(string); ok {
-				return s, true
-			}
 			return nil, true
 		}
 		return e.SpentOn.Format("2006-01-02"), true
@@ -482,9 +485,7 @@ func (a *App) TimelogCreate(c *Req) {
 	}
 	var saved bool
 	err = a.DB.WithTx(ctx, func(tx *db.Tx) error {
-		q := env.Q
-		env.Q = tx
-		defer func() { env.Q = q }()
+		env := env.WithQ(tx)
 		var err error
 		saved, err = env.Save(ctx, t)
 		return err
@@ -574,9 +575,7 @@ func (a *App) TimelogUpdate(c *Req) {
 	}
 	var saved bool
 	err := a.DB.WithTx(ctx, func(tx *db.Tx) error {
-		q := env.Q
-		env.Q = tx
-		defer func() { env.Q = q }()
+		env := env.WithQ(tx)
 		var err error
 		saved, err = env.Save(ctx, t)
 		return err

@@ -1,0 +1,33 @@
+status: 201
+content-type: application/json
+location: {{BASE}}/time_entries/13
+
+{
+  "time_entry": {
+    "id": 13,
+    "project": {
+      "id": 1,
+      "name": "eCookbook"
+    },
+    "user": {
+      "id": 2,
+      "name": "John Smith"
+    },
+    "activity": {
+      "id": 10,
+      "name": "Development"
+    },
+    "hours": 1.0,
+    "comments": "",
+    "spent_on": "2026-01-15",
+    "created_on": "TIMESTAMP",
+    "updated_on": "TIMESTAMP",
+    "custom_fields": [
+      {
+        "id": 10,
+        "name": "Overtime",
+        "value": "0"
+      }
+    ]
+  }
+}
