@@ -30,6 +30,7 @@ func (a *App) Routes(r Router) {
 	a.routesWorkflows(r)
 	a.routesActivities(r)
 	a.routesSearch(r)
+	a.routesTimelog(r)
 	a.routesAttachments(r)
 	a.routesWiki(r)
 	a.routesWikis(r)
