@@ -6,3 +6,5 @@
 /bin/
 /data/
 /config.toml
+# 互換テストのレポート出力
+/compat-report/

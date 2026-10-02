@@ -1,0 +1,56 @@
+# 互換テストのスモークシナリオ（Redmine 公式 test/fixtures 前提）。
+# ユーザー: admin/admin（管理者）, jsmith/jsmith（eCookbook の Manager）, anonymous（未ログイン）
+# 実行順序に意味がある（「最近使ったプロジェクト」等、GET でも DB 状態が変わる）ため、
+# 並べ替えたらゴールデンを取り直すこと。
+name: smoke
+
+users:
+  admin: {login: admin, password: admin}
+  jsmith: {login: jsmith, password: jsmith}
+  dlopper: {login: dlopper, password: foo}
+
+normalize:
+  # フッターの "Powered by Redmine © ..." は buropher で表記が変わりうるため中身をマスク
+  mask_text_selectors:
+    - "#footer"
+
+requests:
+  - path: /login
+    users: [anonymous, admin]
+  - path: /
+    users: [anonymous, admin, jsmith]
+  - path: /projects
+    users: [anonymous, admin, jsmith]
+  - path: /projects/ecookbook
+    users: [anonymous, admin, jsmith]
+  - path: /projects/ecookbook/issues
+    users: [anonymous, admin, jsmith]
+  - path: /issues/1
+    users: [anonymous, admin, jsmith]
+  - path: /issues/new?project_id=1
+    users: [anonymous, admin, jsmith]
+  - path: /my/page
+    users: [anonymous, admin, jsmith]
+  - path: /admin
+    users: [anonymous, admin, jsmith]
+  - path: /users
+    users: [admin, jsmith]
+  - path: /roles
+    users: [admin]
+  - path: /trackers
+    users: [admin]
+  - path: /issue_statuses
+    users: [admin]
+  - path: /workflows
+    users: [admin]
+  - path: /settings
+    users: [admin]
+  - path: /projects/ecookbook/wiki
+    users: [anonymous, admin, jsmith]
+  # API（ユーザー指定時は HTTP Basic 認証。REST API は redmine-ref.sh が有効化済み）
+  - path: /issues.json
+    users: [anonymous, admin, jsmith]
+  - path: /issues/1.json
+    users: [anonymous, admin]
+  - path: /projects.xml
+    users: [anonymous, admin, jsmith]

@@ -1,0 +1,112 @@
+status: 200
+content-type: application/xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<projects limit="25" offset="0" total_count="6" type="array">
+  <project>
+    <id>1</id>
+    <name>eCookbook</name>
+    <identifier>ecookbook</identifier>
+    <description>Recipes management application</description>
+    <homepage>http://ecookbook.somenet.foo/</homepage>
+    <status>1</status>
+    <is_public>true</is_public>
+    <inherit_members>false</inherit_members>
+    <custom_fields type="array">
+      <custom_field id="3" name="Development status">
+        <value>Stable</value>
+      </custom_field>
+    </custom_fields>
+    <created_on>2006-07-19T17:13:59Z</created_on>
+    <updated_on>2006-07-19T20:53:01Z</updated_on>
+  </project>
+  <project>
+    <id>5</id>
+    <name>Private child of eCookbook</name>
+    <identifier>private-child</identifier>
+    <description>This is a private subproject of a public project</description>
+    <homepage/>
+    <parent id="1" name="eCookbook"/>
+    <status>1</status>
+    <is_public>false</is_public>
+    <inherit_members>false</inherit_members>
+    <custom_fields type="array">
+      <custom_field id="3" name="Development status">
+        <value/>
+      </custom_field>
+    </custom_fields>
+    <created_on>2006-07-19T17:15:51Z</created_on>
+    <updated_on>2006-07-19T17:17:07Z</updated_on>
+  </project>
+  <project>
+    <id>6</id>
+    <name>Child of private child</name>
+    <identifier>project6</identifier>
+    <description>This is a public subproject of a private project</description>
+    <homepage/>
+    <parent id="5" name="Private child of eCookbook"/>
+    <status>1</status>
+    <is_public>true</is_public>
+    <inherit_members>false</inherit_members>
+    <custom_fields type="array">
+      <custom_field id="3" name="Development status">
+        <value/>
+      </custom_field>
+    </custom_fields>
+    <created_on>2006-07-19T17:15:51Z</created_on>
+    <updated_on>2006-07-19T17:17:07Z</updated_on>
+  </project>
+  <project>
+    <id>3</id>
+    <name>eCookbook Subproject 1</name>
+    <identifier>subproject1</identifier>
+    <description>eCookBook Subproject 1</description>
+    <homepage/>
+    <parent id="1" name="eCookbook"/>
+    <status>1</status>
+    <is_public>true</is_public>
+    <inherit_members>false</inherit_members>
+    <custom_fields type="array">
+      <custom_field id="3" name="Development status">
+        <value/>
+      </custom_field>
+    </custom_fields>
+    <created_on>2006-07-19T17:15:21Z</created_on>
+    <updated_on>2006-07-19T17:18:12Z</updated_on>
+  </project>
+  <project>
+    <id>4</id>
+    <name>eCookbook Subproject 2</name>
+    <identifier>subproject2</identifier>
+    <description>eCookbook Subproject 2</description>
+    <homepage/>
+    <parent id="1" name="eCookbook"/>
+    <status>1</status>
+    <is_public>true</is_public>
+    <inherit_members>false</inherit_members>
+    <custom_fields type="array">
+      <custom_field id="3" name="Development status">
+        <value/>
+      </custom_field>
+    </custom_fields>
+    <created_on>2006-07-19T17:15:51Z</created_on>
+    <updated_on>2006-07-19T17:17:07Z</updated_on>
+  </project>
+  <project>
+    <id>2</id>
+    <name>OnlineStore</name>
+    <identifier>onlinestore</identifier>
+    <description>E-commerce web site</description>
+    <homepage/>
+    <status>1</status>
+    <is_public>false</is_public>
+    <inherit_members>false</inherit_members>
+    <custom_fields type="array">
+      <custom_field id="3" name="Development status">
+        <value/>
+      </custom_field>
+    </custom_fields>
+    <created_on>2006-07-19T17:14:19Z</created_on>
+    <updated_on>2006-07-19T17:14:19Z</updated_on>
+  </project>
+</projects>
