@@ -259,4 +259,3 @@ func ActivityEventTypeIconName(eventType string) string {
 	}
 	return eventType
 }
-

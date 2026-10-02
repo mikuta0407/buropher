@@ -293,4 +293,3 @@ func (a *App) userActivityEvents(c *Req, u *domain.User) ([]helper.ActivityDay, 
 	}
 	return helper.GroupActivityEvents(events, c.Loc.Location), nil
 }
-
