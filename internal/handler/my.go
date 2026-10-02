@@ -143,7 +143,7 @@ func (a *App) MyAccount(c *Req) {
 				a.serverError(c, err)
 				return
 			}
-			// TODO(mail): User#deliver_security_notification（メールアドレス変更時のセキュリティ通知）
+			a.saveNotificationChannel(c, m.ID)
 			if api {
 				c.RenderAPIOK()
 				return
@@ -264,8 +264,8 @@ func (a *App) MyPassword(c *Req) {
 				if s := c.Session(); s != nil {
 					s.Renew()
 				}
-				// TODO(mail): Mailer.deliver_password_updated(@user, User.current)（セキュリティ通知）
-				a.logger().Info("password updated mail (not delivered: mail delivery is not implemented)", "user", u.Login)
+				// Mailer.deliver_password_updated(@user, User.current)（セキュリティ通知）
+				a.Notify.PasswordUpdated(c.Ctx(), u, c.User, c.remoteIP())
 				c.Flash().SetNotice(c.L("notice_account_password_updated"))
 				c.Redirect("/my/account")
 				return

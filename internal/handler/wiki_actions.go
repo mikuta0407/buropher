@@ -803,6 +803,14 @@ func (a *App) WikiUpdate(c *Req) {
 			saved = true
 		}
 	}
+	if saved && textChanged {
+		// WikiContent の after_create_commit / after_update_commit（本文が変わった場合）の通知
+		if wasNew || !hasContent {
+			a.Notify.WikiContentAdded(c.Ctx(), page.ID, page.CurrentVersion, c.User)
+		} else {
+			a.Notify.WikiContentUpdated(c.Ctx(), page.ID, page.CurrentVersion, c.User, oldText)
+		}
+	}
 	if conflict {
 		if api {
 			httpx.Head(c.W, c.R, http.StatusConflict)

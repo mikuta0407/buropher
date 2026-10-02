@@ -1,0 +1,11 @@
+{{.MessageURL}}
+{{.AuthorName}}
+
+{{.Content}}
+
+{{if .Attachments}}
+---{{.AttachmentsLabel}}
+{{range .Attachments}}
+{{.Filename}} ({{.Size}})
+{{end}}
+{{end}}

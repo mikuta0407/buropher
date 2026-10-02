@@ -151,6 +151,10 @@ func (a *App) EmailAddressesCreate(c *Req) {
 		a.serverError(c, err)
 		return
 	}
+	if saved {
+		// after_create_commit :deliver_security_notification_create
+		a.Notify.EmailAddressAdded(c.Ctx(), u, c.User, c.remoteIP(), form.Address)
+	}
 	if httpx.Format(c.R) == "js" {
 		if saved {
 			form = nil
@@ -170,9 +174,14 @@ func (a *App) EmailAddressesUpdate(c *Req) {
 	u := c.value(userCtxKey{}).(*domain.User)
 	addr := c.value(emailAddressCtxKey{}).(*domain.EmailAddress)
 	if v := c.Params().String("notify"); v != "" {
-		if err := repository.UpdateEmailNotify(c.Ctx(), a.DB, addr.ID, castBoolAny(v), a.now()); err != nil {
+		notify := castBoolAny(v)
+		if err := repository.UpdateEmailNotify(c.Ctx(), a.DB, addr.ID, notify, a.now()); err != nil {
 			a.serverError(c, err)
 			return
+		}
+		if notify != addr.Notify {
+			// after_update_commit :deliver_security_notification_update
+			a.Notify.EmailAddressNotifyChanged(c.Ctx(), u, c.User, c.remoteIP(), addr.Address, notify)
 		}
 	}
 	if httpx.Format(c.R) == "js" {
@@ -197,6 +206,8 @@ func (a *App) EmailAddressesDestroy(c *Req) {
 		a.serverError(c, err)
 		return
 	}
+	// after_destroy_commit :deliver_security_notification_destroy
+	a.Notify.EmailAddressRemoved(c.Ctx(), u, c.User, c.remoteIP(), addr.Address)
 	if httpx.Format(c.R) == "js" {
 		a.renderEmailIndex(c, nil)
 		return

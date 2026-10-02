@@ -1,0 +1,12 @@
+<h1>{{link_to .NewsTitle .NewsURL}}</h1>
+<em>{{.AuthorName}}</em>
+
+{{.DescriptionHTML}}
+
+{{if .Attachments}}
+<fieldset class="attachments"><legend>{{l "label_attachment_plural"}}</legend>
+{{range .Attachments}}
+  {{.Link}} ({{.Size}})<br />
+{{end}}
+</fieldset>
+{{end}}

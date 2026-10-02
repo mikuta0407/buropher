@@ -36,6 +36,8 @@ commands:
   init      load default data and create the administrator
   redmine   migrate data from Redmine (export | import | verify)
   setting   get or set a setting (setting get <name> / setting set <name> <value>)
+  reminders send due date reminders (rake redmine:send_reminders: -days -tracker -project -users -version)
+  jobs      run pending background jobs once (jobs run)
   version   print version
 `)
 }
@@ -58,6 +60,10 @@ func main() {
 		err = redmineCmd(args)
 	case "setting":
 		err = settingCmd(args)
+	case "reminders":
+		err = remindersCmd(args)
+	case "jobs":
+		err = jobsCmd(args)
 	case "version":
 		fmt.Println("buropher", version)
 	default:

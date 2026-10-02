@@ -1,0 +1,13 @@
+{{.IssueTitle}}
+{{.IssueURL}}
+
+{{.AttributesText}}
+----------------------------------------
+{{.Description}}
+
+{{if .Attachments}}
+---{{.AttachmentsLabel}}
+{{range .Attachments}}
+{{.Filename}} ({{.Size}})
+{{end}}
+{{end}}

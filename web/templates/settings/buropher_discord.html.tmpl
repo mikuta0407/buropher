@@ -1,0 +1,82 @@
+{{title (list (l "label_plugins") "/admin/plugins") .PluginName}}
+
+<div id="settings" class="plugin plugin-buropher_discord">
+{{form_tag "/settings/plugin/buropher_discord"}}
+<div class="box tabular settings">
+<p><em class="info">{{l "buropher.discord.text_setup_help"}}</em></p>
+<p>
+  <label for="settings_enabled">{{l "buropher.discord.field_enabled"}}</label>
+  {{hidden_field_tag "settings[enabled]" "0" (hash "id" nil)}}{{check_box_tag "settings[enabled]" "1" .Config.Enabled (hash "id" "settings_enabled")}}
+</p>
+<p>
+  <label for="settings_bot_token">{{l "buropher.discord.field_bot_token"}}</label>
+  {{password_field_tag "settings[bot_token]" "" (hash "id" "settings_bot_token" "size" 60 "autocomplete" "off")}}
+  {{if .BotTokenSet}}<span>{{l "buropher.discord.text_secret_set"}}</span>{{end}}
+  <em class="info">{{l "buropher.discord.text_secret_unchanged"}}</em>
+</p>
+<p>
+  <label for="settings_client_id">{{l "buropher.discord.field_client_id"}}</label>
+  {{text_field_tag "settings[client_id]" .Config.ClientID (hash "id" "settings_client_id" "size" 30)}}
+</p>
+<p>
+  <label for="settings_client_secret">{{l "buropher.discord.field_client_secret"}}</label>
+  {{password_field_tag "settings[client_secret]" "" (hash "id" "settings_client_secret" "size" 60 "autocomplete" "off")}}
+  {{if .ClientSecretSet}}<span>{{l "buropher.discord.text_secret_set"}}</span>{{end}}
+  <em class="info">{{l "buropher.discord.text_secret_unchanged"}}</em>
+</p>
+<p>
+  <label>{{l "buropher.discord.text_redirect_uri"}}</label>
+  <code>{{.RedirectURI}}</code>
+</p>
+<p>
+  <label for="settings_guild_id">{{l "buropher.discord.field_guild_id"}}</label>
+  {{text_field_tag "settings[guild_id]" .Config.GuildID (hash "id" "settings_guild_id" "size" 30)}}
+</p>
+<p>
+  <label for="settings_join_guild">{{l "buropher.discord.field_join_guild"}}</label>
+  {{hidden_field_tag "settings[join_guild]" "0" (hash "id" nil)}}{{check_box_tag "settings[join_guild]" "1" .Config.JoinGuild (hash "id" "settings_join_guild")}}
+</p>
+<p>
+  <label for="settings_default_channel">{{l "buropher.discord.field_default_channel"}}</label>
+  {{select_tag "settings[default_channel]" (options_for_select .ChannelOptions .DefaultChannel) (hash "id" "settings_default_channel")}}
+</p>
+<p>
+  <label for="settings_failure_threshold">{{l "buropher.discord.field_failure_threshold"}}</label>
+  {{text_field_tag "settings[failure_threshold]" .FailureThreshold (hash "id" "settings_failure_threshold" "size" 6)}}
+</p>
+</div>
+{{submit_tag (l "button_apply")}}
+{{end_form}}
+</div>
+
+{{if .Deliveries}}
+<h3>{{l "label_history"}}</h3>
+<div class="autoscroll">
+<table class="list notification-deliveries">
+  <thead><tr>
+    <th>{{l "label_date"}}</th>
+    <th>{{l "field_user"}}</th>
+    <th>{{l "field_type"}}</th>
+    <th>{{l "label_notifications"}}</th>
+    <th>{{l "field_mail"}}</th>
+    <th>{{l "field_status"}}</th>
+    <th></th>
+  </tr></thead>
+  <tbody>
+  {{range .Deliveries}}
+    <tr>
+      <td>{{format_time .Created}}</td>
+      <td>{{.User}}</td>
+      <td>{{.Delivery.Channel}}</td>
+      <td>{{.Delivery.Event}}</td>
+      <td>{{.Recipient}}</td>
+      <td>{{.Delivery.Status}}</td>
+      <td>{{.Error}}</td>
+    </tr>
+  {{end}}
+  </tbody>
+</table>
+</div>
+{{end}}
+
+{{html_title (l "label_plugins") .PluginName}}

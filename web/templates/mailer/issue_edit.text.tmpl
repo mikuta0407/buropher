@@ -1,0 +1,12 @@
+{{if .PrivateNotes}}({{l "field_private_notes"}}) {{end}}{{.UpdatedText}}
+
+{{range .DetailsText}}
+{{.}}
+{{end}}
+
+{{if .HasNotes}}
+{{.Notes}}
+
+{{end}}
+----------------------------------------
+{{partial "mailer/issue" assigns}}

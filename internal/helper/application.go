@@ -57,7 +57,7 @@ func (d *Deps) RequestFuncs(r *view.Render) ttemplate.FuncMap {
 		"auto_discovery_link_tag":   func(typ, href string, args ...any) html { return autoDiscoveryLinkTag(typ, href, optHash(args)) },
 		"image_tag":                 func(src string, args ...any) html { return d.imageTag(r, pg(), src, optHash(args)) },
 		// call_hook はプラグイン非対応のため常に空（Redmine::Hook の既定と同じ出力）。
-		"call_hook": func(name string, args ...any) html { return "" },
+		"call_hook": func(name string, args ...any) html { return d.callHook(r, pg(), name, args...) },
 
 		// --- icons / avatars / users ---
 		"sprite_icon": func(name any, args ...any) html {

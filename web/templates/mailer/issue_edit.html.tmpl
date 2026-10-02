@@ -1,0 +1,15 @@
+{{if .PrivateNotes}}
+  ({{l "field_private_notes"}})
+{{end}}
+{{.UpdatedHTML}}
+<hr />
+
+<ul class="journal details">
+{{range .DetailsHTML}}
+  <li>{{.}}</li>
+{{end}}
+</ul>
+
+{{.NotesHTML}}
+<hr />
+{{partial "mailer/issue" assigns}}

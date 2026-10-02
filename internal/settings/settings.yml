@@ -370,3 +370,26 @@ wiki_tablesort_enabled:
   default: 0
 reactions_enabled:
   default: 1
+# ---- buropher 独自（Discord DM 通知。docs/discord.md）
+buropher_discord_enabled:
+  default: 0
+# Bot トークン（secretbox で暗号化して保存）
+buropher_discord_bot_token:
+  default: ''
+buropher_discord_client_id:
+  default: ''
+# OAuth2 クライアントシークレット（secretbox で暗号化して保存）
+buropher_discord_client_secret:
+  default: ''
+buropher_discord_guild_id:
+  default: ''
+# 連携時に guilds.join で対象 Guild へ参加させる
+buropher_discord_join_guild:
+  default: 1
+# 通知の送信先の既定値（email / discord / both）
+buropher_default_notification_channel:
+  default: email
+# 恒久エラーが続いたらメールに切り替えるまでの回数
+buropher_discord_failure_threshold:
+  format: int
+  default: 3
