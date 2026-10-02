@@ -78,3 +78,24 @@ requests:
     users: [admin]
   - path: /documents/1/edit
     users: [admin, dlopper]
+
+  # ---- ファイル
+  - path: /projects/ecookbook/files
+    users: [anonymous, admin, jsmith, dlopper]
+  - path: /projects/ecookbook/files?sort=size:desc
+    users: [admin]
+  - path: /projects/ecookbook/files?sort=downloads
+    users: [admin]
+  - path: /projects/ecookbook/files?sort=created_on:desc,filename
+    users: [admin]
+  - path: /projects/ecookbook/files
+    id: projects_ecookbook_files_session_sort
+    users: [admin]
+  - path: /projects/onlinestore/files
+    users: [anonymous, jsmith]
+  - path: /projects/ecookbook/files/new
+    users: [admin, jsmith, dlopper]
+  - path: /projects/ecookbook/files.json
+    users: [admin]
+  - path: /projects/ecookbook/files.xml
+    users: [jsmith]

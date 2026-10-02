@@ -12,6 +12,7 @@ import (
 
 	"github.com/mikuta0407/buropher/internal/authz"
 	"github.com/mikuta0407/buropher/internal/domain"
+	"github.com/mikuta0407/buropher/internal/query"
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/textformat/redmine"
 	"github.com/mikuta0407/buropher/internal/view"
@@ -60,6 +61,10 @@ func init() {
 			},
 			"message_text_object": func(m *domain.Message, project any) *redmine.Object {
 				return &redmine.Object{Kind: "message", ID: m.ID, Project: toProject(project)}
+			},
+			// sort_header_tag(column, :caption => ..., :default_order => ...)（criteria は @sort_criteria）
+			"sort_header_tag": func(criteria query.SortCriteria, column string, args ...any) html {
+				return d.sortHeaderTag(pg(), criteria, column, optHash(args))
 			},
 			"comment_text_area": func(name, method, value string, opts *rails.Hash) html {
 				return commentTextArea(name, method, value, opts)
@@ -115,6 +120,41 @@ func commentTextArea(name, method, value string, opts *rails.Hash) html {
 		o.Set("id", name+"_"+method)
 	}
 	return rails.ContentTag("textarea", rails.H(value), o)
+}
+
+// ---------------------------------------------------------------- SortHelper
+
+// sortHeaderTag は SortHelper#sort_header_tag。
+func (d *Deps) sortHeaderTag(p *Page, criteria query.SortCriteria, column string, opts *rails.Hash) html {
+	opts = opts.Clone()
+	caption := rails.ToS(opts.Get("caption"))
+	opts.Delete("caption")
+	if caption == "" {
+		caption = rails.Humanize(column)
+	}
+	defaultOrder := rails.ToS(opts.Get("default_order"))
+	opts.Delete("default_order")
+	if defaultOrder == "" {
+		defaultOrder = "asc"
+	}
+	if _, ok := opts.Lookup("title"); !ok {
+		opts.Set("title", p.l("label_sort_by", "\""+caption+"\""))
+	}
+	// sort_link
+	var css any
+	icon := ""
+	order := defaultOrder
+	if column == criteria.FirstKey() {
+		if criteria.FirstAsc() {
+			css, icon, order = "sort asc icon icon-sorted-desc", "angle-up", "desc"
+		} else {
+			css, icon, order = "sort desc icon icon-sorted-asc", "angle-down", "asc"
+		}
+	}
+	qp := p.QueryParameters()
+	qp.Set("sort", criteria.Add(column, order).ToParam())
+	link := rails.LinkTo(d.spriteIcon(p, icon, caption, nil), URLWithQuery(p.requestPath(), qp), rails.NewHash("class", css))
+	return rails.ContentTag("th", link, opts)
 }
 
 // ---------------------------------------------------------------- ReactionsHelper

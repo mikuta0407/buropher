@@ -1,0 +1,15 @@
+<h2>{{l "label_attachment_new"}}</h2>
+
+{{error_messages_for nil}}
+{{form_tag (printf "/projects/%s/files" current_project.Identifier) (hash "multipart" true "class" "tabular")}}
+<div class="box">
+
+{{if .Versions}}
+<p><label for="version_id">{{l "field_version"}}</label>
+{{select_tag "version_id" (safe_join (list (content_tag "option" "") (options_from_collection_for_select .Versions "ID" "Name")) "")}}</p>
+{{end}}
+
+<p><label>{{l "label_attachment_plural"}}</label>{{partial "attachments/form" (dict)}}</p>
+</div>
+{{submit_tag (l "button_add")}}
+{{end_form}}

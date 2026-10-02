@@ -36,4 +36,5 @@ func (a *App) Routes(r Router) {
 	a.routesNews(r)
 	a.routesComments(r)
 	a.routesDocuments(r)
+	a.routesFiles(r)
 }

@@ -1,0 +1,49 @@
+{{$pr := current_project -}}
+<div class="contextual">
+{{if .ManageAllowed}}{{link_to (sprite_icon "add" (l "label_attachment_new")) (printf "/projects/%s/files/new" $pr.Identifier) (hash "class" "icon icon-add")}}{{end}}
+</div>
+
+<h2>{{l "label_attachment_plural"}}</h2>
+
+{{$deleteAllowed := .DeleteAllowed}}
+
+<div class="autoscroll">
+  <table class="list files">
+    <thead><tr>
+      {{sort_header_tag .Sort "filename" (hash "caption" (l "field_filename"))}}
+      {{sort_header_tag .Sort "created_on" (hash "caption" (l "label_date") "default_order" "desc")}}
+      {{sort_header_tag .Sort "size" (hash "caption" (l "field_filesize") "default_order" "desc")}}
+      {{sort_header_tag .Sort "downloads" (hash "caption" (l "label_downloads_abbr") "default_order" "desc")}}
+      <th>{{l "field_digest"}}</th>
+      <th></th>
+    </tr></thead>
+    <tbody>
+  {{range $container := .Containers}}
+    {{if $container.Attachments}}
+    {{if $container.Version}}
+    <tr>
+      <th colspan="6">
+        {{link_to (sprite_icon "package" $container.Version.Name) (printf "/versions/%d" $container.Version.ID) (hash "class" "icon icon-package")}}
+      </th>
+    </tr>
+    {{end}}
+    {{range $file := $container.Attachments}}
+    <tr class="file">
+      <td class="filename">{{link_to_attachment $file (hash "title" (presence $file.Description)) -}}</td>
+      <td class="created_on">{{format_time $file.CreatedOn}}</td>
+      <td class="filesize">{{number_to_human_size $file.Filesize}}</td>
+      <td class="downloads">{{$file.Downloads}}</td>
+      <td class="digest">{{$file.DigestType}}: {{$file.Digest}}</td>
+      <td class="buttons">
+      {{link_to_attachment $file (hash "class" "icon-only icon-download" "title" (l "button_download") "download" true "icon" "download")}}
+      {{if $deleteAllowed}}{{link_to (sprite_icon "del" (l "button_delete")) (printf "/attachments/%d" $file.ID) (hash "class" "icon-only icon-del" "data" (hash "confirm" (l "text_are_you_sure")) "method" "delete")}}{{end}}
+      </td>
+    </tr>
+    {{end}}
+    {{end}}
+  {{end}}
+    </tbody>
+  </table>
+</div>
+
+{{html_title (l "label_attachment_plural") -}}
