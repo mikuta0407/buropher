@@ -51,7 +51,44 @@ func (im *imp) resetSequences() error {
 			return fmt.Errorf("reset sequence %s: %w", t, err)
 		}
 	}
+	// 破棄した行の ID を再利用しないよう、移行元テーブルの最大 ID まで採番を進める
+	// (Redmine 上で次に作られるはずの ID と揃う)。
+	for target, src := range sequenceSources {
+		var max int64
+		if err := im.src.each(src, func(r rec) error {
+			if id := r.id(); id > max {
+				max = id
+			}
+			return nil
+		}); err != nil {
+			return err
+		}
+		if max == 0 {
+			continue
+		}
+		if err := im.tx.Dialect().AdvanceSequence(im.ctx, im.tx, target, max); err != nil {
+			return fmt.Errorf("advance sequence %s: %w", target, err)
+		}
+	}
 	return nil
+}
+
+// sequenceSources は採番を移行元の最大 ID まで進めるテーブル (移行先 → 移行元)。
+// enumerations は 3 テーブルで ID 空間を共有するので全て enumerations の最大値に揃える。
+var sequenceSources = map[string]string{
+	"principals": "users", "auth_sources": "auth_sources", "email_addresses": "email_addresses",
+	"tokens": "tokens", "issue_statuses": "issue_statuses", "trackers": "trackers", "projects": "projects",
+	"project_modules": "enabled_modules", "issue_priorities": "enumerations", "document_categories": "enumerations",
+	"time_entry_activities": "enumerations", "roles": "roles", "members": "members", "member_roles": "member_roles",
+	"custom_fields": "custom_fields", "custom_field_enumerations": "custom_field_enumerations",
+	"custom_values": "custom_values", "workflow_transitions": "workflows", "workflow_field_rules": "workflows",
+	"versions": "versions", "issue_categories": "issue_categories", "issues": "issues",
+	"issue_relations": "issue_relations", "issue_journals": "journals", "issue_journal_details": "journal_details",
+	"watchers": "watchers", "time_entries": "time_entries", "wikis": "wikis", "wiki_pages": "wiki_pages",
+	"wiki_redirects": "wiki_redirects", "boards": "boards", "messages": "messages", "news": "news",
+	"news_comments": "comments", "documents": "documents", "reactions": "reactions", "attachments": "attachments",
+	"queries": "queries", "repositories": "repositories", "changesets": "changesets", "changeset_files": "changes",
+	"oauth_applications": "oauth_applications",
 }
 
 // polyChecks はポリモーフィック参照の孤児検出(種別 → 参照先テーブル)。
