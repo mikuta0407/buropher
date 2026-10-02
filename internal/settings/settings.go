@@ -116,6 +116,13 @@ func normalize(v any) any {
 			a[i] = normalize(e)
 		}
 		return a
+	case []string:
+		// Go から []string で設定された配列も []any に揃える (Strings が読めるように)
+		a := make([]any, len(x))
+		for i, e := range x {
+			a[i] = e
+		}
+		return a
 	case nil:
 		return nil
 	}

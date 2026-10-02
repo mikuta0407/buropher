@@ -1,0 +1,1902 @@
+{
+  "log": [
+    {
+      "step": "t1 setup",
+      "name": "cf",
+      "value": 12
+    },
+    {
+      "step": "t2 create with workflow rules",
+      "name": "create",
+      "value": {
+        "ok": false,
+        "id": null,
+        "errors": [
+          [
+            "due_date",
+            "blank"
+          ]
+        ]
+      }
+    },
+    {
+      "step": "t2 create with workflow rules",
+      "name": "create",
+      "value": {
+        "ok": true,
+        "id": 15,
+        "errors": [
+
+        ]
+      }
+    },
+    {
+      "step": "t3 multi value change and mention",
+      "name": "update",
+      "value": {
+        "ok": true,
+        "id": 15,
+        "errors": [
+
+        ]
+      }
+    },
+    {
+      "step": "t4 children and derived done ratio",
+      "name": "create",
+      "value": {
+        "ok": true,
+        "id": 16,
+        "errors": [
+
+        ]
+      }
+    },
+    {
+      "step": "t4 children and derived done ratio",
+      "name": "create",
+      "value": {
+        "ok": true,
+        "id": 17,
+        "errors": [
+
+        ]
+      }
+    },
+    {
+      "step": "t4 children and derived done ratio",
+      "name": "update",
+      "value": {
+        "ok": true,
+        "id": 17,
+        "errors": [
+
+        ]
+      }
+    },
+    {
+      "step": "t5 bulk update",
+      "name": "bulk",
+      "value": {
+        "ok": true,
+        "id": 2,
+        "errors": [
+
+        ]
+      }
+    },
+    {
+      "step": "t5 bulk update",
+      "name": "bulk",
+      "value": {
+        "ok": true,
+        "id": 15,
+        "errors": [
+
+        ]
+      }
+    },
+    {
+      "step": "t6 bulk copy with subtasks",
+      "name": "bulk",
+      "value": {
+        "ok": true,
+        "id": 18,
+        "errors": [
+
+        ]
+      }
+    },
+    {
+      "step": "t7 reopen child",
+      "name": "update",
+      "value": {
+        "ok": true,
+        "id": 17,
+        "errors": [
+
+        ]
+      }
+    },
+    {
+      "step": "t8 destroy with time entry reassign",
+      "name": "destroy",
+      "value": [
+        15
+      ]
+    },
+    {
+      "step": "t9 edit journal notes",
+      "name": "edit_journal",
+      "value": {
+        "id": 1,
+        "exists": true
+      }
+    },
+    {
+      "step": "t9 edit journal notes",
+      "name": "edit_journal",
+      "value": {
+        "id": 2,
+        "exists": false
+      }
+    },
+    {
+      "step": "t10 blocked issue cannot be closed",
+      "name": "create",
+      "value": {
+        "ok": true,
+        "id": 21,
+        "errors": [
+
+        ]
+      }
+    },
+    {
+      "step": "t10 blocked issue cannot be closed",
+      "name": "create",
+      "value": {
+        "ok": true,
+        "id": 22,
+        "errors": [
+
+        ]
+      }
+    },
+    {
+      "step": "t10 blocked issue cannot be closed",
+      "name": "relation",
+      "value": {
+        "ok": true,
+        "id": 6,
+        "errors": [
+
+        ]
+      }
+    },
+    {
+      "step": "t10 blocked issue cannot be closed",
+      "name": "allowed",
+      "value": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "step": "t10 blocked issue cannot be closed",
+      "name": "update",
+      "value": {
+        "ok": true,
+        "id": 22,
+        "errors": [
+
+        ]
+      }
+    },
+    {
+      "step": "t11 move with subtasks",
+      "name": "create",
+      "value": {
+        "ok": true,
+        "id": 23,
+        "errors": [
+
+        ]
+      }
+    },
+    {
+      "step": "t11 move with subtasks",
+      "name": "create",
+      "value": {
+        "ok": true,
+        "id": 24,
+        "errors": [
+
+        ]
+      }
+    },
+    {
+      "step": "t11 move with subtasks",
+      "name": "update",
+      "value": {
+        "ok": true,
+        "id": 23,
+        "errors": [
+
+        ]
+      }
+    },
+    {
+      "step": "t12 version sharing change",
+      "name": "update",
+      "value": {
+        "ok": true,
+        "id": 24,
+        "errors": [
+
+        ]
+      }
+    }
+  ],
+  "deliveries": [
+    {
+      "step": "t1 setup"
+    },
+    {
+      "step": "t2 create with workflow rules"
+    },
+    {
+      "event": "issue_add",
+      "object": "issue",
+      "object_id": 15,
+      "user": 3
+    },
+    {
+      "event": "issue_add",
+      "object": "issue",
+      "object_id": 15,
+      "user": 2
+    },
+    {
+      "step": "t3 multi value change and mention"
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 6,
+      "user": 3
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 6,
+      "user": 2
+    },
+    {
+      "step": "t4 children and derived done ratio"
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 7,
+      "user": 3
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 7,
+      "user": 2
+    },
+    {
+      "event": "issue_add",
+      "object": "issue",
+      "object_id": 16,
+      "user": 2
+    },
+    {
+      "event": "issue_add",
+      "object": "issue",
+      "object_id": 16,
+      "user": 3
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 8,
+      "user": 3
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 8,
+      "user": 2
+    },
+    {
+      "event": "issue_add",
+      "object": "issue",
+      "object_id": 17,
+      "user": 2
+    },
+    {
+      "event": "issue_add",
+      "object": "issue",
+      "object_id": 17,
+      "user": 3
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 9,
+      "user": 2
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 9,
+      "user": 3
+    },
+    {
+      "step": "t5 bulk update"
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 10,
+      "user": 2
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 10,
+      "user": 3
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 10,
+      "user": 1
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 11,
+      "user": 3
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 11,
+      "user": 2
+    },
+    {
+      "step": "t6 bulk copy with subtasks"
+    },
+    {
+      "event": "issue_add",
+      "object": "issue",
+      "object_id": 18,
+      "user": 1
+    },
+    {
+      "event": "issue_add",
+      "object": "issue",
+      "object_id": 18,
+      "user": 3
+    },
+    {
+      "event": "issue_add",
+      "object": "issue",
+      "object_id": 18,
+      "user": 2
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 13,
+      "user": 3
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 13,
+      "user": 2
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 18,
+      "user": 1
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 18,
+      "user": 3
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 18,
+      "user": 2
+    },
+    {
+      "event": "issue_add",
+      "object": "issue",
+      "object_id": 19,
+      "user": 1
+    },
+    {
+      "event": "issue_add",
+      "object": "issue",
+      "object_id": 19,
+      "user": 2
+    },
+    {
+      "event": "issue_add",
+      "object": "issue",
+      "object_id": 19,
+      "user": 3
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 14,
+      "user": 2
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 14,
+      "user": 3
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 19,
+      "user": 1
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 19,
+      "user": 3
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 19,
+      "user": 2
+    },
+    {
+      "event": "issue_add",
+      "object": "issue",
+      "object_id": 20,
+      "user": 1
+    },
+    {
+      "event": "issue_add",
+      "object": "issue",
+      "object_id": 20,
+      "user": 2
+    },
+    {
+      "event": "issue_add",
+      "object": "issue",
+      "object_id": 20,
+      "user": 3
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 16,
+      "user": 2
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 16,
+      "user": 3
+    },
+    {
+      "step": "t7 reopen child"
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 20,
+      "user": 2
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 20,
+      "user": 3
+    },
+    {
+      "step": "t8 destroy with time entry reassign"
+    },
+    {
+      "step": "t9 edit journal notes"
+    },
+    {
+      "step": "t10 blocked issue cannot be closed"
+    },
+    {
+      "event": "issue_add",
+      "object": "issue",
+      "object_id": 21,
+      "user": 1
+    },
+    {
+      "event": "issue_add",
+      "object": "issue",
+      "object_id": 21,
+      "user": 2
+    },
+    {
+      "event": "issue_add",
+      "object": "issue",
+      "object_id": 21,
+      "user": 3
+    },
+    {
+      "event": "issue_add",
+      "object": "issue",
+      "object_id": 22,
+      "user": 1
+    },
+    {
+      "event": "issue_add",
+      "object": "issue",
+      "object_id": 22,
+      "user": 2
+    },
+    {
+      "event": "issue_add",
+      "object": "issue",
+      "object_id": 22,
+      "user": 3
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 21,
+      "user": 1
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 21,
+      "user": 2
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 21,
+      "user": 3
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 22,
+      "user": 1
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 22,
+      "user": 2
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 22,
+      "user": 3
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 23,
+      "user": 1
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 23,
+      "user": 2
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 23,
+      "user": 3
+    },
+    {
+      "step": "t11 move with subtasks"
+    },
+    {
+      "event": "issue_add",
+      "object": "issue",
+      "object_id": 23,
+      "user": 1
+    },
+    {
+      "event": "issue_add",
+      "object": "issue",
+      "object_id": 23,
+      "user": 2
+    },
+    {
+      "event": "issue_add",
+      "object": "issue",
+      "object_id": 23,
+      "user": 3
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 24,
+      "user": 1
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 24,
+      "user": 2
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 24,
+      "user": 3
+    },
+    {
+      "event": "issue_add",
+      "object": "issue",
+      "object_id": 24,
+      "user": 1
+    },
+    {
+      "event": "issue_add",
+      "object": "issue",
+      "object_id": 24,
+      "user": 2
+    },
+    {
+      "event": "issue_add",
+      "object": "issue",
+      "object_id": 24,
+      "user": 3
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 25,
+      "user": 1
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 25,
+      "user": 2
+    },
+    {
+      "step": "t12 version sharing change"
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 26,
+      "user": 1
+    },
+    {
+      "event": "issue_edit",
+      "object": "journal",
+      "object_id": 27,
+      "user": 1
+    }
+  ],
+  "issues": [
+    {
+      "id": 1,
+      "project_id": 1,
+      "tracker_id": 1,
+      "status_id": 1,
+      "priority_id": 4,
+      "author_id": 2,
+      "assigned_to_id": null,
+      "category_id": 1,
+      "fixed_version_id": null,
+      "parent_id": null,
+      "root_id": 1,
+      "subject": "Cannot print recipes",
+      "description": "Unable to print recipes",
+      "start_date": "2026-01-14",
+      "due_date": "2026-01-25",
+      "done_ratio": 0,
+      "estimated_hours": 200.0,
+      "is_private": false,
+      "lock_version": 3,
+      "created_on": "2026-01-12 12:00:00",
+      "updated_on": "2026-01-14 12:00:00",
+      "closed_on": null
+    },
+    {
+      "id": 2,
+      "project_id": 1,
+      "tracker_id": 2,
+      "status_id": 2,
+      "priority_id": 5,
+      "author_id": 2,
+      "assigned_to_id": 3,
+      "category_id": null,
+      "fixed_version_id": 3,
+      "parent_id": null,
+      "root_id": 2,
+      "subject": "Add ingredients categories",
+      "description": "Ingredients of the recipe should be classified by categories",
+      "start_date": null,
+      "due_date": null,
+      "done_ratio": 30,
+      "estimated_hours": 0.5,
+      "is_private": false,
+      "lock_version": 4,
+      "created_on": "2006-07-19 19:04:21",
+      "updated_on": "2026-01-15 12:00:00",
+      "closed_on": null
+    },
+    {
+      "id": 3,
+      "project_id": 1,
+      "tracker_id": 1,
+      "status_id": 1,
+      "priority_id": 4,
+      "author_id": 2,
+      "assigned_to_id": 3,
+      "category_id": null,
+      "fixed_version_id": null,
+      "parent_id": null,
+      "root_id": 3,
+      "subject": "Error 281 when updating a recipe",
+      "description": "Error 281 is encountered when saving a recipe",
+      "start_date": "2025-12-31",
+      "due_date": "2026-01-10",
+      "done_ratio": 0,
+      "estimated_hours": 1.0,
+      "is_private": false,
+      "lock_version": 0,
+      "created_on": "2006-07-19 19:07:27",
+      "updated_on": "2006-07-19 19:07:27",
+      "closed_on": null
+    },
+    {
+      "id": 4,
+      "project_id": 2,
+      "tracker_id": 1,
+      "status_id": 1,
+      "priority_id": 4,
+      "author_id": 2,
+      "assigned_to_id": 2,
+      "category_id": null,
+      "fixed_version_id": null,
+      "parent_id": null,
+      "root_id": 4,
+      "subject": "Issue on project 2",
+      "description": "Issue on project 2",
+      "start_date": null,
+      "due_date": null,
+      "done_ratio": 0,
+      "estimated_hours": null,
+      "is_private": false,
+      "lock_version": 0,
+      "created_on": "2026-01-10 12:00:00",
+      "updated_on": "2026-01-13 12:00:00",
+      "closed_on": null
+    },
+    {
+      "id": 5,
+      "project_id": 3,
+      "tracker_id": 1,
+      "status_id": 1,
+      "priority_id": 4,
+      "author_id": 2,
+      "assigned_to_id": null,
+      "category_id": null,
+      "fixed_version_id": null,
+      "parent_id": null,
+      "root_id": 5,
+      "subject": "Subproject issue",
+      "description": "This is an issue on a cookbook subproject",
+      "start_date": null,
+      "due_date": null,
+      "done_ratio": 0,
+      "estimated_hours": 2.0,
+      "is_private": false,
+      "lock_version": 0,
+      "created_on": "2026-01-10 12:00:00",
+      "updated_on": "2026-01-13 12:00:00",
+      "closed_on": null
+    },
+    {
+      "id": 6,
+      "project_id": 5,
+      "tracker_id": 1,
+      "status_id": 1,
+      "priority_id": 4,
+      "author_id": 2,
+      "assigned_to_id": null,
+      "category_id": null,
+      "fixed_version_id": null,
+      "parent_id": null,
+      "root_id": 6,
+      "subject": "Issue of a private subproject",
+      "description": "This is an issue of a private subproject of cookbook",
+      "start_date": "2026-01-15",
+      "due_date": "2026-01-16",
+      "done_ratio": 0,
+      "estimated_hours": null,
+      "is_private": false,
+      "lock_version": 0,
+      "created_on": "2026-01-15 11:59:00",
+      "updated_on": "2026-01-15 11:59:00",
+      "closed_on": null
+    },
+    {
+      "id": 7,
+      "project_id": 1,
+      "tracker_id": 1,
+      "status_id": 1,
+      "priority_id": 5,
+      "author_id": 2,
+      "assigned_to_id": null,
+      "category_id": null,
+      "fixed_version_id": null,
+      "parent_id": null,
+      "root_id": 7,
+      "subject": "Issue due today",
+      "description": "This is an issue that is due today",
+      "start_date": "2026-01-05",
+      "due_date": "2026-01-15",
+      "done_ratio": 0,
+      "estimated_hours": null,
+      "is_private": false,
+      "lock_version": 0,
+      "created_on": "2026-01-05 12:00:00",
+      "updated_on": "2026-01-05 12:00:00",
+      "closed_on": null
+    },
+    {
+      "id": 8,
+      "project_id": 1,
+      "tracker_id": 1,
+      "status_id": 5,
+      "priority_id": 5,
+      "author_id": 2,
+      "assigned_to_id": null,
+      "category_id": null,
+      "fixed_version_id": null,
+      "parent_id": null,
+      "root_id": 8,
+      "subject": "Closed issue",
+      "description": "This is a closed issue.",
+      "start_date": null,
+      "due_date": null,
+      "done_ratio": 0,
+      "estimated_hours": null,
+      "is_private": false,
+      "lock_version": 0,
+      "created_on": "2026-01-05 12:00:00",
+      "updated_on": "2026-01-05 12:00:00",
+      "closed_on": "2026-01-12 12:00:00"
+    },
+    {
+      "id": 9,
+      "project_id": 5,
+      "tracker_id": 1,
+      "status_id": 1,
+      "priority_id": 5,
+      "author_id": 2,
+      "assigned_to_id": null,
+      "category_id": null,
+      "fixed_version_id": null,
+      "parent_id": null,
+      "root_id": 9,
+      "subject": "Blocked Issue",
+      "description": "This is an issue that is blocked by issue",
+      "start_date": "2026-01-15",
+      "due_date": "2026-01-16",
+      "done_ratio": 0,
+      "estimated_hours": null,
+      "is_private": false,
+      "lock_version": 0,
+      "created_on": "2026-01-15 11:59:00",
+      "updated_on": "2026-01-15 11:59:00",
+      "closed_on": null
+    },
+    {
+      "id": 10,
+      "project_id": 5,
+      "tracker_id": 1,
+      "status_id": 1,
+      "priority_id": 5,
+      "author_id": 2,
+      "assigned_to_id": null,
+      "category_id": null,
+      "fixed_version_id": null,
+      "parent_id": null,
+      "root_id": 10,
+      "subject": "Issue Doing the Blocking",
+      "description": "This is an issue that blocks issue",
+      "start_date": "2026-01-15",
+      "due_date": "2026-01-16",
+      "done_ratio": 0,
+      "estimated_hours": null,
+      "is_private": false,
+      "lock_version": 0,
+      "created_on": "2026-01-15 11:59:00",
+      "updated_on": "2026-01-15 11:59:00",
+      "closed_on": null
+    },
+    {
+      "id": 11,
+      "project_id": 1,
+      "tracker_id": 1,
+      "status_id": 5,
+      "priority_id": 5,
+      "author_id": 2,
+      "assigned_to_id": null,
+      "category_id": 1,
+      "fixed_version_id": 1,
+      "parent_id": null,
+      "root_id": 11,
+      "subject": "Closed issue on a closed version",
+      "description": null,
+      "start_date": "2026-01-14",
+      "due_date": null,
+      "done_ratio": 0,
+      "estimated_hours": null,
+      "is_private": false,
+      "lock_version": 0,
+      "created_on": "2026-01-12 12:00:00",
+      "updated_on": "2026-01-14 12:00:00",
+      "closed_on": "2026-01-14 12:00:00"
+    },
+    {
+      "id": 12,
+      "project_id": 1,
+      "tracker_id": 1,
+      "status_id": 5,
+      "priority_id": 5,
+      "author_id": 3,
+      "assigned_to_id": null,
+      "category_id": 1,
+      "fixed_version_id": 2,
+      "parent_id": null,
+      "root_id": 12,
+      "subject": "Closed issue on a locked version",
+      "description": null,
+      "start_date": "2026-01-14",
+      "due_date": null,
+      "done_ratio": 0,
+      "estimated_hours": null,
+      "is_private": false,
+      "lock_version": 0,
+      "created_on": "2026-01-12 12:00:00",
+      "updated_on": "2026-01-14 12:00:00",
+      "closed_on": "2026-01-14 12:00:00"
+    },
+    {
+      "id": 13,
+      "project_id": 3,
+      "tracker_id": 1,
+      "status_id": 1,
+      "priority_id": 4,
+      "author_id": 2,
+      "assigned_to_id": null,
+      "category_id": null,
+      "fixed_version_id": null,
+      "parent_id": null,
+      "root_id": 13,
+      "subject": "Subproject issue two",
+      "description": "This is a second issue on a cookbook subproject",
+      "start_date": null,
+      "due_date": null,
+      "done_ratio": 0,
+      "estimated_hours": null,
+      "is_private": false,
+      "lock_version": 0,
+      "created_on": "2026-01-10 12:00:00",
+      "updated_on": "2026-01-13 12:00:00",
+      "closed_on": null
+    },
+    {
+      "id": 14,
+      "project_id": 3,
+      "tracker_id": 1,
+      "status_id": 1,
+      "priority_id": 5,
+      "author_id": 2,
+      "assigned_to_id": null,
+      "category_id": null,
+      "fixed_version_id": null,
+      "parent_id": null,
+      "root_id": 14,
+      "subject": "Private issue on public project",
+      "description": "This is a private issue",
+      "start_date": null,
+      "due_date": null,
+      "done_ratio": 0,
+      "estimated_hours": null,
+      "is_private": true,
+      "lock_version": 0,
+      "created_on": "2025-12-31 12:00:00",
+      "updated_on": "2025-12-31 12:00:00",
+      "closed_on": null
+    },
+    {
+      "id": 18,
+      "project_id": 1,
+      "tracker_id": 1,
+      "status_id": 1,
+      "priority_id": 5,
+      "author_id": 1,
+      "assigned_to_id": 3,
+      "category_id": null,
+      "fixed_version_id": 3,
+      "parent_id": null,
+      "root_id": 18,
+      "subject": "Diff G",
+      "description": null,
+      "start_date": "2026-01-15",
+      "due_date": null,
+      "done_ratio": 10,
+      "estimated_hours": null,
+      "is_private": false,
+      "lock_version": 9,
+      "created_on": "2026-01-15 12:00:00",
+      "updated_on": "2026-01-15 12:00:00",
+      "closed_on": null
+    },
+    {
+      "id": 19,
+      "project_id": 1,
+      "tracker_id": 1,
+      "status_id": 1,
+      "priority_id": 5,
+      "author_id": 1,
+      "assigned_to_id": null,
+      "category_id": null,
+      "fixed_version_id": null,
+      "parent_id": 18,
+      "root_id": 18,
+      "subject": "Diff H",
+      "description": null,
+      "start_date": "2026-01-15",
+      "due_date": null,
+      "done_ratio": 40,
+      "estimated_hours": 2.0,
+      "is_private": false,
+      "lock_version": 0,
+      "created_on": "2026-01-15 12:00:00",
+      "updated_on": "2026-01-15 12:00:00",
+      "closed_on": null
+    },
+    {
+      "id": 20,
+      "project_id": 1,
+      "tracker_id": 1,
+      "status_id": 1,
+      "priority_id": 5,
+      "author_id": 1,
+      "assigned_to_id": null,
+      "category_id": null,
+      "fixed_version_id": null,
+      "parent_id": 18,
+      "root_id": 18,
+      "subject": "Diff I",
+      "description": null,
+      "start_date": "2026-01-15",
+      "due_date": null,
+      "done_ratio": 0,
+      "estimated_hours": 6.0,
+      "is_private": false,
+      "lock_version": 1,
+      "created_on": "2026-01-15 12:00:00",
+      "updated_on": "2026-01-15 12:00:00",
+      "closed_on": null
+    },
+    {
+      "id": 21,
+      "project_id": 1,
+      "tracker_id": 1,
+      "status_id": 1,
+      "priority_id": 5,
+      "author_id": 1,
+      "assigned_to_id": null,
+      "category_id": null,
+      "fixed_version_id": null,
+      "parent_id": null,
+      "root_id": 21,
+      "subject": "Diff J",
+      "description": null,
+      "start_date": "2026-01-15",
+      "due_date": null,
+      "done_ratio": 0,
+      "estimated_hours": null,
+      "is_private": false,
+      "lock_version": 1,
+      "created_on": "2026-01-15 12:00:00",
+      "updated_on": "2026-01-15 12:00:00",
+      "closed_on": null
+    },
+    {
+      "id": 22,
+      "project_id": 1,
+      "tracker_id": 1,
+      "status_id": 1,
+      "priority_id": 5,
+      "author_id": 1,
+      "assigned_to_id": null,
+      "category_id": null,
+      "fixed_version_id": null,
+      "parent_id": null,
+      "root_id": 22,
+      "subject": "Diff K",
+      "description": null,
+      "start_date": "2026-01-15",
+      "due_date": null,
+      "done_ratio": 0,
+      "estimated_hours": null,
+      "is_private": false,
+      "lock_version": 1,
+      "created_on": "2026-01-15 12:00:00",
+      "updated_on": "2026-01-15 12:00:00",
+      "closed_on": null
+    },
+    {
+      "id": 23,
+      "project_id": 3,
+      "tracker_id": 1,
+      "status_id": 1,
+      "priority_id": 5,
+      "author_id": 1,
+      "assigned_to_id": 2,
+      "category_id": null,
+      "fixed_version_id": null,
+      "parent_id": null,
+      "root_id": 23,
+      "subject": "Diff L",
+      "description": null,
+      "start_date": "2026-01-15",
+      "due_date": null,
+      "done_ratio": 0,
+      "estimated_hours": null,
+      "is_private": false,
+      "lock_version": 2,
+      "created_on": "2026-01-15 12:00:00",
+      "updated_on": "2026-01-15 12:00:00",
+      "closed_on": null
+    },
+    {
+      "id": 24,
+      "project_id": 3,
+      "tracker_id": 1,
+      "status_id": 1,
+      "priority_id": 5,
+      "author_id": 1,
+      "assigned_to_id": null,
+      "category_id": null,
+      "fixed_version_id": null,
+      "parent_id": 23,
+      "root_id": 23,
+      "subject": "Diff M",
+      "description": null,
+      "start_date": "2026-01-15",
+      "due_date": null,
+      "done_ratio": 0,
+      "estimated_hours": null,
+      "is_private": false,
+      "lock_version": 3,
+      "created_on": "2026-01-15 12:00:00",
+      "updated_on": "2026-01-15 12:00:00",
+      "closed_on": null
+    }
+  ],
+  "tree_order": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24
+  ],
+  "journals": [
+    {
+      "id": 1,
+      "issue_id": 1,
+      "user_id": 1,
+      "notes": "Edited note",
+      "private_notes": false,
+      "created_on": "2026-01-13 00:00:00",
+      "updated_on": "2026-01-15 12:00:00",
+      "updated_by_id": 1,
+      "details": [
+        [
+          "attr",
+          "status_id",
+          "1",
+          "2"
+        ],
+        [
+          "attr",
+          "done_ratio",
+          "40",
+          "30"
+        ]
+      ]
+    },
+    {
+      "id": 3,
+      "issue_id": 2,
+      "user_id": 2,
+      "notes": "A comment with inline image: !picture.jpg! and a reference to #1 and r2.",
+      "private_notes": false,
+      "created_on": "2026-01-14 00:00:00",
+      "updated_on": "2026-01-14 00:00:00",
+      "updated_by_id": null,
+      "details": [
+        [
+          "attr",
+          "description",
+          "This word was removed and an other was",
+          "This word was and an other was added"
+        ],
+        [
+          "cf",
+          "2",
+          "Old value",
+          "New value"
+        ],
+        [
+          "attachment",
+          "4",
+          null,
+          "060719210727_picture.jpg"
+        ]
+      ]
+    },
+    {
+      "id": 4,
+      "issue_id": 6,
+      "user_id": 1,
+      "notes": "A comment with a private version.",
+      "private_notes": false,
+      "created_on": "2026-01-14 00:00:00",
+      "updated_on": "2026-01-14 00:00:00",
+      "updated_by_id": null,
+      "details": [
+        [
+          "attr",
+          "fixed_version_id",
+          null,
+          "6"
+        ]
+      ]
+    },
+    {
+      "id": 5,
+      "issue_id": 14,
+      "user_id": 2,
+      "notes": "A comment on a private issue.",
+      "private_notes": false,
+      "created_on": "2026-01-14 00:00:00",
+      "updated_on": "2026-01-14 00:00:00",
+      "updated_by_id": null,
+      "details": [
+
+      ]
+    },
+    {
+      "id": 10,
+      "issue_id": 2,
+      "user_id": 1,
+      "notes": "bulk",
+      "private_notes": false,
+      "created_on": "2026-01-15 12:00:00",
+      "updated_on": "2026-01-15 12:00:00",
+      "updated_by_id": null,
+      "details": [
+        [
+          "attr",
+          "fixed_version_id",
+          "2",
+          "3"
+        ],
+        [
+          "attr",
+          "start_date",
+          "2026-01-13",
+          null
+        ]
+      ]
+    },
+    {
+      "id": 12,
+      "issue_id": 18,
+      "user_id": 1,
+      "notes": "bulk copy",
+      "private_notes": false,
+      "created_on": "2026-01-15 12:00:00",
+      "updated_on": "2026-01-15 12:00:00",
+      "updated_by_id": null,
+      "details": [
+        [
+          "relation",
+          "copied_from",
+          null,
+          "15"
+        ]
+      ]
+    },
+    {
+      "id": 15,
+      "issue_id": 19,
+      "user_id": 1,
+      "notes": null,
+      "private_notes": false,
+      "created_on": "2026-01-15 12:00:00",
+      "updated_on": "2026-01-15 12:00:00",
+      "updated_by_id": null,
+      "details": [
+        [
+          "relation",
+          "copied_from",
+          null,
+          "16"
+        ]
+      ]
+    },
+    {
+      "id": 17,
+      "issue_id": 20,
+      "user_id": 1,
+      "notes": null,
+      "private_notes": false,
+      "created_on": "2026-01-15 12:00:00",
+      "updated_on": "2026-01-15 12:00:00",
+      "updated_by_id": null,
+      "details": [
+        [
+          "relation",
+          "copied_from",
+          null,
+          "17"
+        ]
+      ]
+    },
+    {
+      "id": 18,
+      "issue_id": 18,
+      "user_id": 1,
+      "notes": null,
+      "private_notes": false,
+      "created_on": "2026-01-15 12:00:00",
+      "updated_on": "2026-01-15 12:00:00",
+      "updated_by_id": null,
+      "details": [
+        [
+          "attr",
+          "child_id",
+          null,
+          "19"
+        ]
+      ]
+    },
+    {
+      "id": 19,
+      "issue_id": 18,
+      "user_id": 1,
+      "notes": null,
+      "private_notes": false,
+      "created_on": "2026-01-15 12:00:00",
+      "updated_on": "2026-01-15 12:00:00",
+      "updated_by_id": null,
+      "details": [
+        [
+          "attr",
+          "child_id",
+          null,
+          "20"
+        ]
+      ]
+    },
+    {
+      "id": 21,
+      "issue_id": 21,
+      "user_id": 1,
+      "notes": null,
+      "private_notes": false,
+      "created_on": "2026-01-15 12:00:00",
+      "updated_on": "2026-01-15 12:00:00",
+      "updated_by_id": null,
+      "details": [
+        [
+          "relation",
+          "blocks",
+          null,
+          "22"
+        ]
+      ]
+    },
+    {
+      "id": 22,
+      "issue_id": 22,
+      "user_id": 1,
+      "notes": null,
+      "private_notes": false,
+      "created_on": "2026-01-15 12:00:00",
+      "updated_on": "2026-01-15 12:00:00",
+      "updated_by_id": null,
+      "details": [
+        [
+          "relation",
+          "blocked",
+          null,
+          "21"
+        ]
+      ]
+    },
+    {
+      "id": 23,
+      "issue_id": 22,
+      "user_id": 1,
+      "notes": "try close",
+      "private_notes": false,
+      "created_on": "2026-01-15 12:00:00",
+      "updated_on": "2026-01-15 12:00:00",
+      "updated_by_id": null,
+      "details": [
+
+      ]
+    },
+    {
+      "id": 24,
+      "issue_id": 23,
+      "user_id": 1,
+      "notes": null,
+      "private_notes": false,
+      "created_on": "2026-01-15 12:00:00",
+      "updated_on": "2026-01-15 12:00:00",
+      "updated_by_id": null,
+      "details": [
+        [
+          "attr",
+          "child_id",
+          null,
+          "24"
+        ]
+      ]
+    },
+    {
+      "id": 25,
+      "issue_id": 23,
+      "user_id": 1,
+      "notes": null,
+      "private_notes": false,
+      "created_on": "2026-01-15 12:00:00",
+      "updated_on": "2026-01-15 12:00:00",
+      "updated_by_id": null,
+      "details": [
+        [
+          "attr",
+          "project_id",
+          "1",
+          "3"
+        ],
+        [
+          "attr",
+          "category_id",
+          "1",
+          null
+        ],
+        [
+          "attr",
+          "fixed_version_id",
+          "3",
+          null
+        ]
+      ]
+    },
+    {
+      "id": 26,
+      "issue_id": 24,
+      "user_id": 1,
+      "notes": null,
+      "private_notes": false,
+      "created_on": "2026-01-15 12:00:00",
+      "updated_on": "2026-01-15 12:00:00",
+      "updated_by_id": null,
+      "details": [
+        [
+          "attr",
+          "fixed_version_id",
+          null,
+          "3"
+        ]
+      ]
+    },
+    {
+      "id": 27,
+      "issue_id": 24,
+      "user_id": 1,
+      "notes": null,
+      "private_notes": false,
+      "created_on": "2026-01-15 12:00:00",
+      "updated_on": "2026-01-15 12:00:00",
+      "updated_by_id": null,
+      "details": [
+        [
+          "attr",
+          "fixed_version_id",
+          "3",
+          null
+        ]
+      ]
+    }
+  ],
+  "relations": [
+    [
+      1,
+      10,
+      9,
+      "blocks",
+      null
+    ],
+    [
+      2,
+      2,
+      3,
+      "relates",
+      null
+    ],
+    [
+      6,
+      21,
+      22,
+      "blocks",
+      null
+    ]
+  ],
+  "watchers": [
+    [
+      2,
+      1
+    ],
+    [
+      2,
+      3
+    ]
+  ],
+  "custom_values": [
+    [
+      1,
+      2,
+      "125"
+    ],
+    [
+      1,
+      6,
+      "2.1"
+    ],
+    [
+      1,
+      8,
+      "2009-12-01"
+    ],
+    [
+      2,
+      6,
+      "2.05"
+    ],
+    [
+      2,
+      8,
+      null
+    ],
+    [
+      2,
+      12,
+      null
+    ],
+    [
+      3,
+      1,
+      "MySQL"
+    ],
+    [
+      3,
+      2,
+      "125"
+    ],
+    [
+      3,
+      6,
+      "11.65"
+    ],
+    [
+      5,
+      6,
+      "-7.6"
+    ],
+    [
+      7,
+      2,
+      "this is a stringforcustomfield search"
+    ],
+    [
+      7,
+      6,
+      null
+    ],
+    [
+      18,
+      1,
+      null
+    ],
+    [
+      18,
+      2,
+      "Default string"
+    ],
+    [
+      18,
+      6,
+      null
+    ],
+    [
+      18,
+      8,
+      null
+    ],
+    [
+      18,
+      9,
+      null
+    ],
+    [
+      18,
+      12,
+      "B"
+    ],
+    [
+      18,
+      12,
+      "C"
+    ],
+    [
+      19,
+      1,
+      null
+    ],
+    [
+      19,
+      2,
+      "Default string"
+    ],
+    [
+      19,
+      6,
+      null
+    ],
+    [
+      19,
+      8,
+      null
+    ],
+    [
+      19,
+      9,
+      null
+    ],
+    [
+      19,
+      12,
+      null
+    ],
+    [
+      20,
+      1,
+      null
+    ],
+    [
+      20,
+      2,
+      "Default string"
+    ],
+    [
+      20,
+      6,
+      null
+    ],
+    [
+      20,
+      8,
+      null
+    ],
+    [
+      20,
+      9,
+      null
+    ],
+    [
+      20,
+      12,
+      null
+    ],
+    [
+      21,
+      1,
+      null
+    ],
+    [
+      21,
+      2,
+      "Default string"
+    ],
+    [
+      21,
+      6,
+      null
+    ],
+    [
+      21,
+      8,
+      null
+    ],
+    [
+      21,
+      9,
+      null
+    ],
+    [
+      21,
+      12,
+      null
+    ],
+    [
+      22,
+      1,
+      null
+    ],
+    [
+      22,
+      2,
+      "Default string"
+    ],
+    [
+      22,
+      6,
+      null
+    ],
+    [
+      22,
+      8,
+      null
+    ],
+    [
+      22,
+      9,
+      null
+    ],
+    [
+      22,
+      12,
+      null
+    ],
+    [
+      23,
+      1,
+      null
+    ],
+    [
+      23,
+      2,
+      "Default string"
+    ],
+    [
+      23,
+      6,
+      null
+    ],
+    [
+      23,
+      8,
+      null
+    ],
+    [
+      23,
+      12,
+      null
+    ],
+    [
+      24,
+      1,
+      null
+    ],
+    [
+      24,
+      2,
+      "Default string"
+    ],
+    [
+      24,
+      6,
+      null
+    ],
+    [
+      24,
+      8,
+      null
+    ],
+    [
+      24,
+      12,
+      null
+    ]
+  ],
+  "time_entries": [
+    [
+      1,
+      1,
+      1,
+      4.25
+    ],
+    [
+      2,
+      1,
+      1,
+      150.0
+    ],
+    [
+      3,
+      1,
+      3,
+      1.0
+    ],
+    [
+      4,
+      3,
+      null,
+      7.65
+    ],
+    [
+      5,
+      5,
+      null,
+      7.65
+    ],
+    [
+      6,
+      1,
+      1,
+      1.5
+    ]
+  ]
+}
