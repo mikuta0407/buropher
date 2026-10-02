@@ -74,6 +74,13 @@ type miscData struct {
 		Filters map[string]json.RawMessage `json:"filters"`
 		Keys    []string                   `json:"keys"`
 	} `json:"filters_json"`
+	JournalsVersions []struct {
+		User     string  `json:"user"`
+		Project  *int64  `json:"project"`
+		Filters  [][]any `json:"filters"`
+		Journals []int64 `json:"journals"`
+		Versions []int64 `json:"versions"`
+	} `json:"journals_versions"`
 	OperatorsLabels  map[string]string `json:"operators_labels"`
 	ColumnCaptions   [][]any           `json:"column_captions"`
 	TEColumnCaptions [][]any           `json:"te_column_captions"`
@@ -449,6 +456,39 @@ func TestMiscDifferential(t *testing.T) {
 					if fmt.Sprint(got.Values) != fmt.Sprint(wv) {
 						t.Errorf("%s: filter %s values %v, want %v", label, k, got.Values, wv)
 					}
+				}
+			}
+		})
+
+		t.Run("journals_versions", func(t *testing.T) {
+			for _, c := range m.JournalsVersions {
+				var pid int64
+				if c.Project != nil {
+					pid = *c.Project
+				}
+				q := tdb.newQuery(miscUser(c.User), KindIssue, pid)
+				q.Filters = NewFilters()
+				for _, f := range c.Filters {
+					var vals []string
+					for _, v := range f[2].([]any) {
+						vals = append(vals, fmt.Sprint(v))
+					}
+					mustFilter(t, q, f[0].(string), f[1].(string), vals...)
+				}
+				label := fmt.Sprintf("user=%s project=%v filters=%v", c.User, c.Project, c.Filters)
+				js, err := q.JournalIDs(ctx, ListOptions{Order: []string{"issue_journals.id DESC"}})
+				if err != nil {
+					t.Fatal(err)
+				}
+				if !slices.Equal(js, c.Journals) && len(js)+len(c.Journals) > 0 {
+					t.Errorf("%s: journals %v, want %v", label, js, c.Journals)
+				}
+				vs, err := q.VersionIDs(ctx, ListOptions{})
+				if err != nil {
+					t.Fatal(err)
+				}
+				if !slices.Equal(vs, c.Versions) && len(vs)+len(c.Versions) > 0 {
+					t.Errorf("%s: versions %v, want %v", label, vs, c.Versions)
 				}
 			}
 		})

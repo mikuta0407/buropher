@@ -230,6 +230,23 @@ ActiveRecord::Base.transaction do
   result['column_captions'] = IssueQuery.new(:name => '_').available_columns.map {|c| [c.name.to_s, c.caption.to_s, c.inline?, c.sortable?, c.groupable?.present?, c.totalable.present?, c.default_order]}
   result['te_column_captions'] = TimeEntryQuery.new(:name => '_').available_columns.map {|c| [c.name.to_s, c.caption.to_s, c.inline?, c.sortable?, c.groupable?.present?, c.totalable.present?, c.default_order]}
 
+  # 7. journals / versions
+  jv = []
+  [[1, nil], [2, nil], [2, 1], [3, 1], [:anon, nil], [1, 5]].each do |u, p|
+    user = user_of(u)
+    User.current = user
+    project = p && Project.find(p)
+    [{'status_id' => {:operator => '*', :values => ['']}}, {'status_id' => {:operator => 'o', :values => ['']}},
+     {'tracker_id' => {:operator => '=', :values => ['2']}}].each do |f|
+      q = IssueQuery.new(:name => '_', :project => project)
+      q.filters = f
+      jv << {'user' => uid(u), 'project' => p, 'filters' => f.map {|k, o| [k, o[:operator], o[:values]]},
+             'journals' => q.journals(:order => "#{Journal.table_name}.id DESC").map(&:id),
+             'versions' => q.versions.map(&:id).sort}
+    end
+  end
+  result['journals_versions'] = jv
+
   raise ActiveRecord::Rollback
 end
 
