@@ -1,6 +1,7 @@
 package i18n
 
 import (
+	"github.com/mikuta0407/buropher/internal/clock"
 	"math"
 	"time"
 )
@@ -93,7 +94,7 @@ func (b *Bundle) DistanceOfTimeInWords(locale string, from, to time.Time, includ
 
 // TimeAgoInWords は time_ago_in_words（現在時刻との差）。
 func (b *Bundle) TimeAgoInWords(locale string, from time.Time, includeSeconds bool) string {
-	return b.DistanceOfTimeInWords(locale, from, time.Now(), includeSeconds)
+	return b.DistanceOfTimeInWords(locale, from, clock.Now(), includeSeconds)
 }
 
 // DistanceOfDateInWords は Redmine が上書きした distance_of_date_in_words（config/initializers/10-patches.rb）。

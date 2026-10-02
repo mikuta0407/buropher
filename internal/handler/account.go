@@ -2,7 +2,6 @@ package handler
 
 import (
 	"net/http"
-	"time"
 
 	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/httpx"
@@ -118,7 +117,7 @@ func (a *App) setAutologinCookie(c *Req, user *domain.User) {
 
 // invalidCredentials は AccountController#invalid_credentials。
 func (a *App) invalidCredentials(c *Req) {
-	a.logger().Warn("Failed login", "login", c.Params().String("username"), "ip", httpx.RemoteIP(c.R), "at", time.Now().UTC())
+	a.logger().Warn("Failed login", "login", c.Params().String("username"), "ip", httpx.RemoteIP(c.R), "at", a.now().UTC())
 	c.Flash().Now("error", c.L("notice_account_invalid_credentials"))
 }
 

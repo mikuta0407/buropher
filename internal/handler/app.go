@@ -20,6 +20,7 @@ import (
 
 	"github.com/mikuta0407/buropher/internal/assets"
 	"github.com/mikuta0407/buropher/internal/authz"
+	"github.com/mikuta0407/buropher/internal/clock"
 	"github.com/mikuta0407/buropher/internal/db"
 	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/helper"
@@ -40,7 +41,7 @@ type App struct {
 	Helpers  *helper.Deps
 	Errors   *httpx.ErrorRenderer
 	Logger   *slog.Logger
-	// Now は現在時刻（テスト用。nil なら time.Now）。
+	// Now は現在時刻（テスト用。nil なら clock.Now）。
 	Now func() time.Time
 	// FormNameSuffix は form の name 属性の乱数部（テスト用。nil なら乱数）。
 	FormNameSuffix func() string
@@ -56,7 +57,7 @@ func (a *App) now() time.Time {
 	if a.Now != nil {
 		return a.Now()
 	}
-	return time.Now()
+	return clock.Now()
 }
 
 func (a *App) logger() *slog.Logger {

@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"strings"
 	"time"
+
+	"github.com/mikuta0407/buropher/internal/clock"
 )
 
 // TimeLayout は DB に保存するタイムスタンプの固定長 UTC 形式。
@@ -27,8 +29,9 @@ var timeParseLayouts = []string{
 	DateLayout,
 }
 
-// Now は現在時刻をマイクロ秒精度の UTC で返す (DB に保存して読み戻しても等しくなる)。
-func Now() Time { return NewTime(time.Now()) }
+// Now は現在時刻 (clock.Now。互換テストの固定時刻に従う) をマイクロ秒精度の UTC で返す
+// (DB に保存して読み戻しても等しくなる)。
+func Now() Time { return NewTime(clock.Now()) }
 
 // FormatTime は t を DB 保存形式 (UTC, マイクロ秒) の文字列にする。
 func FormatTime(t time.Time) string { return t.UTC().Format(TimeLayout) }

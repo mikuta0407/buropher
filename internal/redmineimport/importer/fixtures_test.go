@@ -1,0 +1,53 @@
+package importer
+
+import (
+	"bytes"
+	"context"
+	"os"
+	"path/filepath"
+	"testing"
+
+	"github.com/mikuta0407/buropher/internal/db"
+	"github.com/mikuta0407/buropher/internal/redmineimport/verify"
+)
+
+func fixturePaths(t *testing.T) (ref, srcDB, files string) {
+	t.Helper()
+	ref = findReference(t)
+	srcDB = filepath.Join(ref, "redmine-fixtures", "db", "redmine.pristine.sqlite3")
+	files = filepath.Join(ref, "redmine-fixtures", "test", "fixtures", "files")
+	if _, err := os.Stat(srcDB); err != nil {
+		t.Skip("redmine fixtures DB not found")
+	}
+	return
+}
+
+func TestImportFixtures(t *testing.T) {
+	ref, srcDB, files := fixturePaths(t)
+	dir := workDir(t, ref)
+	archivePath := exportFixture(t, dir, srcDB, files, "UTC", true)
+	targets(t, dir, func(t *testing.T, d *db.DB, filesDir string) {
+		ctx := context.Background()
+		rep, err := Run(ctx, d, archivePath, Options{FilesDir: filesDir, NewCipherKey: "test-secret", Now: fixturesNow, TempDir: dir})
+		var buf bytes.Buffer
+		rep.WriteText(&buf)
+		t.Log(buf.String())
+		if err != nil {
+			t.Fatalf("import: %v", err)
+		}
+		checkFixtureFacts(t, d, rep, filesDir)
+
+		vr, err := verify.Verify(ctx, d, archivePath, verify.Options{
+			FilesDir: filesDir, Digests: true, Passwords: map[string]string{"admin": "admin", "jsmith": "jsmith"},
+		})
+		if err != nil {
+			t.Fatalf("verify: %v", err)
+		}
+		buf.Reset()
+		vr.WriteText(&buf)
+		t.Log(buf.String())
+		if !vr.OK() {
+			t.Error("verify failed")
+		}
+	})
+}

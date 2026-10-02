@@ -17,6 +17,7 @@ import (
 
 	"github.com/mikuta0407/buropher/internal/assets"
 	"github.com/mikuta0407/buropher/internal/authz"
+	"github.com/mikuta0407/buropher/internal/clock"
 	"github.com/mikuta0407/buropher/internal/db"
 	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/httpx"
@@ -83,7 +84,7 @@ type Page struct {
 	DB db.Queryer
 	// Authz は User.current の Authorizer を返す（nil なら管理者のみ許可する保守的な判定）。
 	Authz func() *authz.Authorizer
-	// Now は現在時刻（nil なら time.Now。distance_of_time_in_words の基準）。
+	// Now は現在時刻（nil なら clock.Now。distance_of_time_in_words の基準）。
 	Now func() time.Time
 	// Logger はヘルパー内のエラーの記録先（nil なら slog.Default()）。
 	Logger *slog.Logger
@@ -155,12 +156,12 @@ func (p *Page) ctx() context.Context {
 	return context.Background()
 }
 
-// now は現在時刻。
+// now は現在時刻（Now 未設定なら clock.Now）。
 func (p *Page) now() time.Time {
 	if p.Now != nil {
 		return p.Now()
 	}
-	return time.Now()
+	return clock.Now()
 }
 
 // logError はヘルパー内のエラーを記録する（描画は続ける）。
