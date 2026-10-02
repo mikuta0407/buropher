@@ -108,7 +108,7 @@ func commentTextArea(name, method, value string, opts *rails.Hash) html {
 	if _, ok := o.Lookup("id"); !ok {
 		o.Set("id", name+"_"+method)
 	}
-	return rails.ContentTag("textarea", html("\n")+rails.H(value), o)
+	return rails.ContentTag("textarea", rails.H(value), o)
 }
 
 // ---------------------------------------------------------------- ReactionsHelper
@@ -355,17 +355,5 @@ func (d *Deps) quoteReplyButton(p *Page, url string, iconOnly bool) html {
 	}
 	return rails.LinkTo(d.spriteIcon(p, "quote-filled", label, rails.NewHash("icon_only", iconOnly, "style", "filled")), "#", opts)
 }
-
-// ContentFaviconPath は favicon_url のパス部分（テーマのファビコンがあればそれ）。
-func (d *Deps) ContentFaviconPath(p *Page) string {
-	icon := "favicon.ico"
-	if t := d.currentTheme(p); t != nil && t.Favicon() != "" {
-		icon = t.FaviconPath()
-	}
-	return d.assetPath(icon)
-}
-
-// UserNameOf は User#name（Setting.user_format）。
-func (p *Page) UserNameOf(u *domain.User) string { return p.userName(u, "") }
 
 var _ = authz.ConditionOptions{}

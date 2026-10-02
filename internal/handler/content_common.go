@@ -139,7 +139,7 @@ func renderAPIAttachmentAttributes(c *Req, b apibuilder.Builder, att *domain.Att
 		b.Value("thumbnail_url", base+"/attachments/thumbnail/"+strconv.FormatInt(att.ID, 10))
 	}
 	if att.Author != nil {
-		b.Attrs("author", apibuilder.A("id", att.Author.ID, "name", c.Page().UserNameOf(att.Author)))
+		b.Attrs("author", apibuilder.A("id", att.Author.ID, "name", c.Page().UserName(att.Author)))
 	}
 	b.Value("created_on", att.CreatedOn)
 }

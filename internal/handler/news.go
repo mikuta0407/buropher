@@ -2,8 +2,8 @@ package handler
 
 import (
 	"net/http"
-	"strings"
 
+	"github.com/mikuta0407/buropher/internal/activity"
 	"github.com/mikuta0407/buropher/internal/apibuilder"
 	"github.com/mikuta0407/buropher/internal/attachments"
 	"github.com/mikuta0407/buropher/internal/authz"
@@ -130,7 +130,7 @@ func (a *App) NewsIndex(c *Req) {
 							b.Attrs("project", apibuilder.A("id", n.ProjectID, "name", n.Project.Name))
 						}
 						if n.Author != nil {
-							b.Attrs("author", apibuilder.A("id", n.AuthorID, "name", c.Page().UserNameOf(n.Author)))
+							b.Attrs("author", apibuilder.A("id", n.AuthorID, "name", c.Page().UserName(n.Author)))
 						}
 						b.Value("title", n.Title)
 						b.Value("summary", nilIfEmptyString(n.Summary))
@@ -145,11 +145,11 @@ func (a *App) NewsIndex(c *Req) {
 		if c.Project != nil {
 			title = c.Project.Name
 		}
-		items := make([]feedItem, len(newss))
+		items := make([]*activity.Event, len(newss))
 		for i, n := range newss {
-			items[i] = newsFeedItem(n)
+			items[i] = newsEvent(n)
 		}
-		a.renderContentFeed(c, items, title+": "+c.L("label_news_plural"))
+		a.renderFeed(c, items, title+": "+c.L("label_news_plural"))
 	default:
 		data := map[string]any{
 			"Newss":       newss,
@@ -366,7 +366,7 @@ func (a *App) NewsShow(c *Req) {
 					b.Attrs("project", apibuilder.A("id", n.ProjectID, "name", n.Project.Name))
 				}
 				if n.Author != nil {
-					b.Attrs("author", apibuilder.A("id", n.AuthorID, "name", c.Page().UserNameOf(n.Author)))
+					b.Attrs("author", apibuilder.A("id", n.AuthorID, "name", c.Page().UserName(n.Author)))
 				}
 				b.Value("title", n.Title)
 				if !httpx.IsBlank(n.Summary) {
@@ -386,7 +386,7 @@ func (a *App) NewsShow(c *Req) {
 						for _, cm := range comments {
 							b.ObjectAttrs("comment", apibuilder.A("id", cm.ID), func() {
 								if cm.Author != nil {
-									b.Attrs("author", apibuilder.A("id", cm.AuthorID, "name", c.Page().UserNameOf(cm.Author)))
+									b.Attrs("author", apibuilder.A("id", cm.AuthorID, "name", c.Page().UserName(cm.Author)))
 								}
 								b.Value("content", nilIfEmptyString(cm.Content))
 							})
@@ -481,12 +481,15 @@ func (a *App) NewsDestroy(c *Req) {
 	c.Redirect("/projects/" + c.Project.Identifier + "/news")
 }
 
-// newsFeedItem は News の acts_as_event（タイトル・URL・日時・作成者・説明）。
-func newsFeedItem(n *domain.News) feedItem {
-	return feedItem{
-		Title: n.Title, Path: "/news/" + itoa(n.ID), Datetime: n.CreatedAt, Author: n.Author,
-		Project: n.Project, Description: n.Description, Object: newsTextObject(n),
+// newsEvent は News の acts_as_event（render_feed に渡すイベント）。
+func newsEvent(n *domain.News) *activity.Event {
+	var author any
+	if n.Author != nil {
+		author = n.Author
+	}
+	return &activity.Event{
+		Provider: activity.ProviderNews, ID: n.ID, Project: n.Project, Datetime: n.CreatedAt, Title: n.Title,
+		Description: n.Description, URL: "/news/" + itoa(n.ID), Type: "news", Author: author,
+		Group: "News:" + itoa(n.ID),
 	}
 }
-
-var _ = strings.TrimSpace
