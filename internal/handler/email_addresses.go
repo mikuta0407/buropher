@@ -89,6 +89,9 @@ func (m *emailAddressForm) HumanAttributeName(attr string) string {
 }
 func (m *emailAddressForm) Send(method string) (any, bool) {
 	if method == "address" {
+		if m.Address == "" {
+			return nil, true
+		}
 		return m.Address, true
 	}
 	return nil, false

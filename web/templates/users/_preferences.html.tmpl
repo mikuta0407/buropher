@@ -1,0 +1,13 @@
+{{$a := assigns}}
+{{$pf := labelled_fields_for "pref" $a.User.Pref}}
+
+<p>{{$pf.CheckBox "hide_mail"}}</p>
+<p>{{$pf.Select "time_zone" (time_zone_options) (hash "include_blank" true)}}</p>
+<p>{{$pf.Select "comments_sorting" (list (list (l "label_chronological_order") "asc") (list (l "label_reverse_chronological_order") "desc"))}}</p>
+<p>{{$pf.CheckBox "warn_on_leaving_unsaved"}}</p>
+<p>{{$pf.Select "textarea_font" (textarea_font_options)}}</p>
+<p>{{$pf.TextField "recently_used_projects" (hash "size" 2)}}</p>
+<p>{{$pf.Select "history_default_tab" (history_default_tab_options)}}</p>
+<p>{{$pf.TextArea "toolbar_language_options" (hash "rows" 4)}}</p>
+<p>{{$pf.Select "default_issue_query" $a.IssueQueryOptions (hash "include_blank" (l "label_none"))}}</p>
+<p>{{$pf.Select "default_project_query" $a.ProjectQueryOptions (hash "include_blank" (l "label_none"))}}</p>

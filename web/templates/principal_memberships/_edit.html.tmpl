@@ -1,0 +1,17 @@
+{{$a := assigns}}
+{{$m := $a.Membership}}
+{{form_tag (printf "%s/memberships/%d" $a.PrincipalBase $m.Member.ID) (hash "method" "put" "remote" $a.XHR "class" "edit_membership" "id" (printf "edit_membership_%d" $m.Member.ID))}}
+  <p>
+  {{range $role := $a.Roles}}
+    <label class="block">
+      {{check_box_tag "membership[role_ids][]" $role.ID ($m.HasRole $role.ID) (hash "id" nil "disabled" (not ($m.RoleEditable $role.ID)))}} {{role_name $role}}
+      {{if $m.RoleInheritance $role.ID}}{{content_tag "em" ($m.RoleInheritance $role.ID) (hash "class" "info")}}{{end}}
+    </label>
+  {{end}}
+  </p>
+  {{hidden_field_tag "membership[role_ids][]" "" (hash "id" nil)}}
+  <p>
+    {{submit_tag (l "button_save")}}
+    {{if $a.XHR}}{{link_to_function (l "button_cancel") (printf "$('#member-%d-roles').show(); $('#member-%d-form').empty(); return false;" $m.Member.ID $m.Member.ID)}}{{end}}
+  </p>
+{{end_form}}

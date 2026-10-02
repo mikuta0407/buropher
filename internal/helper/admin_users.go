@@ -4,11 +4,13 @@ import (
 	"fmt"
 	"sort"
 	"strconv"
+	"time"
 	"strings"
 	ttemplate "text/template"
 
 	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/i18n"
+	"github.com/mikuta0407/buropher/internal/pagination"
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/validation"
 	"github.com/mikuta0407/buropher/internal/view"
@@ -90,6 +92,84 @@ func init() {
 			"user_name":    func(u *domain.User) string { return pg().userName(u, "") },
 			"user_css":     func(u *domain.User) string { return u.CSSClasses() },
 			"current_user": func() *domain.User { return pg().User },
+			"auth_source_options": func(srcs []domain.AuthSource, internal string) []any {
+				out := []any{[]any{internal, ""}}
+				for _, s := range srcs {
+					out = append(out, []any{s.Name, s.ID})
+				}
+				return out
+			},
+			"has_id": func(ids []int64, id int64) bool {
+				for _, x := range ids {
+					if x == id {
+						return true
+					}
+				}
+				return false
+			},
+			"auto_watch_on_tags": func(selected []string) html { return autoWatchOnTags(pg(), selected) },
+			"textarea_font_options": func() []any {
+				out := []any{[]any{pg().l("label_font_default"), ""}}
+				for _, o := range domain.TextareaFontOptions {
+					out = append(out, []any{pg().l("label_font_" + o), o})
+				}
+				return out
+			},
+			"history_default_tab_options": func() []any {
+				p := pg()
+				return []any{[]any{p.l("label_issue_history_notes"), "notes"}, []any{p.l("label_history"), "history"},
+					[]any{p.l("label_issue_history_properties"), "properties"}, []any{p.l("label_time_entry_plural"), "time_entries"},
+					[]any{p.l("label_associated_revisions"), "changesets"}, []any{p.l("label_last_tab_visited"), "last_tab_visited"}}
+			},
+			"change_status_link": func(u *domain.User) html { return d.changeStatusLink(pg(), u) },
+			"user_edit_title": func(u *domain.User) html {
+				// page_title.insert(page_title.rindex(' ') + 1, avatar(@user).to_s)
+				t := string(pageTitle(r, []any{pg().l("label_user_plural"), "/users"}, u.Login))
+				i := strings.LastIndex(t, " ")
+				return html(t[:i+1] + string(d.avatar(r, pg(), u, rails.NewHash())) + t[i+1:])
+			},
+			"index_or_zero": func(m map[int64]int, id int64) int { return m[id] },
+			"render_principals_for_new_group_users": func(g *domain.Group, users []*domain.User, pages *pagination.Paginator, count int, q string) html {
+				p := pg()
+				sel := rails.ContentTag("div", rails.ContentTag("div", d.principalsCheckBoxTags(r, p, "user_ids[]", users), rails.NewHash("id", "principals")),
+					rails.NewHash("class", "objects-selection"))
+				links := paginationLinksEach(p, pages, false, func(text string, params *rails.Hash, opts *rails.Hash) html {
+					qp := params.Clone()
+					if q != "" {
+						qp.Set("q", q)
+					}
+					return rails.LinkTo(text, URLWithQuery("/groups/"+strconv.FormatInt(g.ID, 10)+"/autocomplete_for_user.js", qp), rails.NewHash("remote", true))
+				})
+				return sel + rails.ContentTag("span", links, rails.NewHash("class", "pagination"))
+			},
+			"user_emails": func(emails []string) html {
+				parts := make([]string, len(emails))
+				for i, e := range emails {
+					parts[i] = string(rails.MailTo(e, nil, rails.NewHash()))
+				}
+				return html(strings.Join(parts, ", "))
+			},
+			"deref_time": func(t *time.Time) time.Time {
+				if t == nil {
+					return time.Time{}
+				}
+				return *t
+			},
+			"searchable_auth_sources": func(srcs []domain.AuthSource) bool {
+				for _, s := range srcs {
+					if s.Searchable {
+						return true
+					}
+				}
+				return false
+			},
+			"capitalize": func(s string) string {
+				if s == "" {
+					return s
+				}
+				r := []rune(strings.ToLower(s))
+				return strings.ToUpper(string(r[0])) + string(r[1:])
+			},
 			"include_calendar_headers_tags": func() string { d.includeCalendarHeadersTags(r, pg()); return "" },
 			"export_csv_encoding_select_tag": func() html { return exportCSVEncodingSelectTag(pg()) },
 			"export_csv_separator_select_tag": func() html { return exportCSVSeparatorSelectTag(pg()) },
@@ -162,6 +242,53 @@ func exportCSVSeparatorSelectTag(p *Page) html {
 	}
 	sel := rails.SelectTag("field_separator", rails.OptionsForSelect(opts, sep), rails.NewHash())
 	return rails.ContentTag("p", rails.ContentTag("label", html(rails.H(p.l("label_fields_separator")+" "))+sel, nil), nil)
+}
+
+// autoWatchOnTags は users/_auto_watch_on の
+// pref_fields.collection_check_boxes :auto_watch_on, auto_watch_on_options, :last, :first の出力。
+func autoWatchOnTags(p *Page, selected []string) html {
+	var b strings.Builder
+	b.WriteString(`  <input type="hidden" name="pref[auto_watch_on][]" value="" autocomplete="off" />`)
+	for _, o := range domain.AutoWatchOnOptions {
+		id := "pref_auto_watch_on_" + o
+		checked := any(nil)
+		for _, s := range selected {
+			if s == o {
+				checked = "checked"
+			}
+		}
+		cb := rails.Tag("input", rails.NewHash("type", "checkbox", "value", o, "checked", checked, "name", "pref[auto_watch_on][]", "id", id))
+		lbl := rails.ContentTag("label", p.l("label_auto_watch_on_"+o), rails.NewHash("for", id))
+		b.WriteString("\n    <p>" + string(cb) + " " + string(lbl) + "</p>\n")
+	}
+	return html(b.String())
+}
+
+// changeStatusLink は UsersHelper#change_status_link。
+func (d *Deps) changeStatusLink(p *Page, u *domain.User) html {
+	params := p.Params()
+	q := rails.NewHash("page", nilIfBlankAny(params.String("page")), "status", nilIfBlankAny(params.String("status")))
+	link := func(status int, icon, label string) html {
+		qq := q.Clone().Set("user", rails.NewHash("status", status))
+		return rails.LinkTo(d.spriteIcon(p, icon, p.l(label), nil), URLWithQuery("/users/"+strconv.FormatInt(u.ID, 10), qq),
+			rails.NewHash("method", "put", "class", "icon icon-"+icon))
+	}
+	switch {
+	case u.Locked():
+		return link(domain.StatusActive, "unlock", "button_unlock")
+	case u.Registered():
+		return link(domain.StatusActive, "unlock", "button_activate")
+	case p.User == nil || u.ID != p.User.ID:
+		return link(domain.StatusLocked, "lock", "button_lock")
+	}
+	return ""
+}
+
+func nilIfBlankAny(s string) any {
+	if s == "" {
+		return nil
+	}
+	return s
 }
 
 // pageTitle は ApplicationHelper#title。引数は文字列か [text, url] のリスト（list で渡す）。
@@ -505,6 +632,9 @@ func projectCSSClasses(p *Page, pr *domain.Project) string {
 		s += " leaf"
 	} else {
 		s += " parent"
+	}
+	if pr.IsPublic {
+		s += " public"
 	}
 	if !pr.Active() {
 		if pr.Archived() {

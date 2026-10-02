@@ -1,0 +1,21 @@
+{{$a := assigns}}
+<fieldset class="box">
+  <legend>{{toggle_checkboxes_link ".projects-selection input:enabled"}}{{l "label_project_plural"}}</legend>
+  <div class="objects-selection">
+    <div class="projects-selection">
+    {{render_project_nested_lists $a.Projects "principal_memberships/new_project" (dict "member_of" $a.MemberOf)}}
+    </div>
+  </div>
+</fieldset>
+
+<fieldset class="box">
+  <legend>{{toggle_checkboxes_link ".roles-selection input"}}{{l "label_role_plural"}}</legend>
+  <div class="roles-selection">
+  {{range $role := $a.Roles}}
+    <label>
+      {{check_box_tag "membership[role_ids][]" $role.ID false (hash "id" nil)}}
+      {{role_name $role}}
+    </label>
+  {{end}}
+  </div>
+</fieldset>

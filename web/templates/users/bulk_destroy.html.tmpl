@@ -1,0 +1,20 @@
+{{title (l "label_confirmation")}}
+
+{{form_tag (printf "/users/bulk_destroy?%s" .IDsQuery) (hash "method" "delete")}}
+<div class="warning">
+
+<p>{{simple_format (l "text_users_bulk_destroy_head")}}</p>
+
+{{range $u := .Users}}
+  <p><strong>{{user_name $u}}</strong> ({{$u.Login}})</p>
+{{end}}
+
+<p>{{l "text_users_bulk_destroy_confirm" (hash "yes" (l "general_text_Yes"))}}</p>
+<p>{{text_field_tag "confirm"}}</p>
+
+</div>
+
+{{submit_tag (l "button_delete") (hash "class" "btn-alert btn-small")}}
+{{end_form}}
+{{button_to (l "button_lock") (printf "/users/bulk_lock?%s" .IDsQuery) (hash "method" "post" "class" "btn" "name" "lock")}}
+{{link_to (l "button_cancel") "/users"}}

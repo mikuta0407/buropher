@@ -15,6 +15,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/helper"
 	"github.com/mikuta0407/buropher/internal/httpx"
 	"github.com/mikuta0407/buropher/internal/pagination"
+	"github.com/mikuta0407/buropher/internal/query"
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/view"
 	"github.com/mikuta0407/buropher/internal/view/rails"
@@ -92,23 +93,27 @@ func adminLayout(c *Req) RenderOptions {
 // UsersIndex は users#index（GET /users(.:format)）。
 func (a *App) UsersIndex(c *Req) {
 	format := httpx.Format(c.R)
-	q := a.retrieveUserQuery(c, format != "csv")
-	if format != "html" && format != "" {
+	ctx := c.Ctx()
+	q, env, err := a.retrieveUserQuery(c, format != "csv")
+	if err != nil {
+		a.serverError(c, err)
+		return
+	}
+	if httpx.IsAPIRequest(c.R) || format == "csv" {
 		// API backwards compatibility: handle legacy filter parameters
 		if name := c.Params().String("name"); strings.TrimSpace(name) != "" {
-			q.addFilter("name", "~", []any{name})
+			_ = q.AddFilter(ctx, "name", "~", []string{name})
 		}
 		if g := c.Params().String("group_id"); strings.TrimSpace(g) != "" {
-			q.addFilter("is_member_of_group", "=", []any{g})
+			_ = q.AddFilter(ctx, "is_member_of_group", "=", []string{g})
 		}
 	}
-	qerrs := q.validationErrors()
-	var errMsgs []string
-	for _, e := range qerrs {
-		def := q.filterDef(e[0])
-		errMsgs = append(errMsgs, c.L(def.Label)+" "+c.L("activerecord.errors.messages."+e[1]))
+	errMsgs, err := q.Errors(ctx)
+	if err != nil {
+		a.serverError(c, err)
+		return
 	}
-	ctx := c.Ctx()
+	view := &userQueryView{q: q, env: env, c: c, app: a}
 	if len(errMsgs) > 0 {
 		switch {
 		case httpx.IsAPIRequest(c.R):
@@ -117,20 +122,20 @@ func (a *App) UsersIndex(c *Req) {
 			httpx.Head(c.W, c.R, http.StatusUnprocessableEntity)
 			c.Halt()
 		default:
-			c.Render("users/index", a.userIndexData(c, q, nil, nil, 0, errMsgs), adminLayout(c))
+			c.Render("users/index", a.userIndexData(c, view, nil, nil, 0, errMsgs), adminLayout(c))
 		}
 		return
 	}
-	filter := q.repositoryFilter()
-	count, err := repository.CountUsers(ctx, a.DB, filter)
+	count64, err := q.Count(ctx)
 	if err != nil {
 		a.serverError(c, err)
 		return
 	}
+	count := int(count64)
 	switch {
 	case httpx.IsAPIRequest(c.R):
 		offset, limit := c.APIOffsetAndLimit()
-		users, err := repository.SearchUsers(ctx, a.DB, filter, q.repositorySort(), limit, offset)
+		users, err := a.queryUsers(c, q, limit, offset)
 		if err != nil {
 			a.serverError(c, err)
 			return
@@ -150,22 +155,71 @@ func (a *App) UsersIndex(c *Req) {
 			})
 		})
 	case format == "csv":
-		users, err := repository.SearchUsers(ctx, a.DB, filter, q.repositorySort(), -1, 0)
+		users, err := a.queryUsers(c, q, 0, 0)
 		if err != nil {
 			a.serverError(c, err)
 			return
 		}
-		a.sendUsersCSV(c, q, users)
+		if err := a.prepareUserView(c, view, users); err != nil {
+			a.serverError(c, err)
+			return
+		}
+		a.sendUsersCSV(c, view, users)
 	default:
 		limit := c.PerPageOption()
 		pages := pagination.New(count, limit, c.Params().String("page"))
-		users, err := repository.SearchUsers(ctx, a.DB, filter, q.repositorySort(), pages.PerPage, pages.Offset())
+		users, err := a.queryUsers(c, q, pages.PerPage, pages.Offset())
 		if err != nil {
 			a.serverError(c, err)
 			return
 		}
-		c.Render("users/index", a.userIndexData(c, q, users, pages, count, nil), adminLayout(c))
+		if err := a.prepareUserView(c, view, users); err != nil {
+			a.serverError(c, err)
+			return
+		}
+		c.Render("users/index", a.userIndexData(c, view, users, pages, count, nil), adminLayout(c))
 	}
+}
+
+// queryUsers は query.results_scope.limit(limit).offset(offset)（limit 0 は全件）。
+func (a *App) queryUsers(c *Req, q *query.Query, limit, offset int) ([]*domain.User, error) {
+	ids, err := q.IDs(c.Ctx(), query.ListOptions{Limit: limit, Offset: offset})
+	if err != nil {
+		return nil, err
+	}
+	users, err := repository.UsersWhereIDs(c.Ctx(), a.DB, ids)
+	if err != nil {
+		return nil, err
+	}
+	byID := map[int64]*domain.User{}
+	for _, u := range users {
+		byID[u.ID] = u
+	}
+	out := make([]*domain.User, 0, len(ids))
+	for _, id := range ids {
+		if u := byID[id]; u != nil {
+			out = append(out, u)
+		}
+	}
+	return out, nil
+}
+
+// prepareUserView は列の表示に必要なカスタム値・認証方式を読み込む。
+func (a *App) prepareUserView(c *Req, v *userQueryView, users []*domain.User) error {
+	cfs, err := a.loadPrincipalCustomValues(c, "user", users)
+	if err != nil {
+		return err
+	}
+	v.cvs = cfs
+	srcs, err := repository.ListAuthSources(c.Ctx(), a.DB)
+	if err != nil {
+		return err
+	}
+	v.srcs = map[int64]string{}
+	for _, s := range srcs {
+		v.srcs[s.ID] = s.Name
+	}
+	return nil
 }
 
 // serverError は予期しないエラー（500）。
@@ -175,18 +229,9 @@ func (a *App) serverError(c *Req, err error) {
 }
 
 // userIndexData は users/index のデータ。
-func (a *App) userIndexData(c *Req, q *userQuery, users []*domain.User, pages *pagination.Paginator, count int, errs []string) map[string]any {
-	ctx := c.Ctx()
-	groups, err := repository.ListGroups(ctx, a.DB, false)
-	if err != nil {
-		a.logger().Error("list groups", "err", err)
-	}
-	srcs, err := repository.ListAuthSources(ctx, a.DB)
-	if err != nil {
-		a.logger().Error("list auth sources", "err", err)
-	}
+func (a *App) userIndexData(c *Req, v *userQueryView, users []*domain.User, pages *pagination.Paginator, count int, errs []string) map[string]any {
 	return map[string]any{
-		"Query":        &userQueryView{q: q, c: c, app: a, groups: groups, authSources: srcs},
+		"Query":        v,
 		"Users":        users,
 		"Pages":        pages,
 		"Count":        count,
@@ -197,84 +242,28 @@ func (a *App) userIndexData(c *Req, q *userQuery, users []*domain.User, pages *p
 	}
 }
 
-// userColumnValue は column_content(column, user)（format_object の結果）。
-func (a *App) userColumnValue(c *Req, col userQueryColumn, u *domain.User, html bool) string {
-	switch col.Name {
-	case "login":
-		return u.Login
-	case "firstname":
-		return u.Firstname
-	case "lastname":
-		return u.Lastname
-	case "mail":
-		return u.Mail
-	case "admin":
-		if u.AdminFlag {
-			return c.L("general_text_Yes")
-		}
-		return c.L("general_text_No")
-	case "created_on":
-		return c.Loc.FormatTime(u.CreatedAt, true)
-	case "updated_on":
-		return c.Loc.FormatTime(u.UpdatedAt, true)
-	case "last_login_on":
-		if u.LastLoginAt == nil {
-			return ""
-		}
-		return c.Loc.FormatTime(*u.LastLoginAt, true)
-	case "passwd_changed_on":
-		if u.PasswordChangedAt == nil {
-			return ""
-		}
-		return c.Loc.FormatTime(*u.PasswordChangedAt, true)
-	case "status":
-		return strconv.Itoa(u.Status)
-	case "twofa_scheme":
-		return u.TwofaScheme
-	case "auth_source.name":
-		if u.AuthSourceID == nil {
-			return ""
-		}
-		srcs, _ := repository.ListAuthSources(c.Ctx(), a.DB)
-		for _, s := range srcs {
-			if s.ID == *u.AuthSourceID {
-				return s.Name
-			}
-		}
-	}
-	return ""
-}
-
-// UserCell は users/_list のセル（テンプレート用）。
-func (v *userQueryView) Cell(col userQueryColumn, u *domain.User) rails.HTML {
-	if col.Name == "login" {
-		return rails.ContentTag("td", rails.LinkTo(u.Login, "/users/"+itoa(u.ID)+"/edit", nil), rails.NewHash("class", col.Name))
-	}
-	return rails.ContentTag("td", v.app.userColumnValue(v.c, col, u, true), rails.NewHash("class", col.Name))
-}
-
 // sendUsersCSV は query_to_csv（Redmine::Export::CSV）で /users.csv を返す。
-func (a *App) sendUsersCSV(c *Req, q *userQuery, users []*domain.User) {
+func (a *App) sendUsersCSV(c *Req, v *userQueryView, users []*domain.User) {
 	p := c.Params()
 	w := csvexport.New(csvexport.Options{
 		Separator:       firstNonEmpty(p.String("field_separator"), c.L("general_csv_separator")),
 		Encoding:        p.String("encoding"),
 		DefaultEncoding: c.L("general_csv_encoding"),
 	})
-	// c[]=all_inline は全列
-	if cs := p.Strings("c"); contains(cs, "all_inline") {
-		q.setColumnNames(append([]string{"all_inline"}, cs...))
+	cols, err := v.q.Columns(c.Ctx())
+	if err != nil {
+		a.serverError(c, err)
+		return
 	}
-	cols := q.columns()
 	var head []string
 	for _, col := range cols {
-		head = append(head, c.L(col.Caption))
+		head = append(head, v.ColumnCaption(col))
 	}
 	w.Strings(head...)
 	for _, u := range users {
 		var row []csvexport.Field
 		for _, col := range cols {
-			row = append(row, csvexport.S(a.userColumnValue(c, col, u, false)))
+			row = append(row, csvexport.S(v.Value(col, u)))
 		}
 		w.Row(row...)
 	}
@@ -326,6 +315,10 @@ func (a *App) UsersShow(c *Req) {
 	}
 	memberships, err := a.membershipRows(c, u.ID, projCond)
 	if err != nil {
+		a.serverError(c, err)
+		return
+	}
+	if err := a.setTreeLevels(c, memberships); err != nil {
 		a.serverError(c, err)
 		return
 	}

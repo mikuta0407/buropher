@@ -1,0 +1,10 @@
+{{$a := assigns}}
+{{$u := $a.User}}
+{{$f := labelled_form_for "user" $u (hash "url" (printf "/users/%d" $u.ID) "html" (hash "multipart" true))}}
+{{$f.Open}}
+  {{partial "users/form" (dict "f" $f)}}
+  {{if and $u.Active email_delivery_enabled (ne $u.ID (current_user).ID)}}
+    <p><label>{{check_box_tag "send_information" 1 $a.SendInfo}} {{l "label_send_information"}}</label></p>
+  {{end}}
+  <p class="mobile-show">{{submit_tag (l "button_save")}}</p>
+{{end_form}}

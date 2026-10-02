@@ -110,10 +110,12 @@ func (a *App) newPrincipalCustomValues(c *Req, ownerKind string) ([]principalCus
 	var out []principalCustomValue
 	for _, f := range fields {
 		cv := principalCustomValue{Field: f}
-		if f.DefaultValue.Valid && f.DefaultValue.String != "" {
+		if f.DefaultValue.Valid {
 			s := f.DefaultValue.String
 			if f.Multiple {
-				cv.Values = []string{s}
+				if s != "" {
+					cv.Values = []string{s}
+				}
 			} else {
 				cv.Value = &s
 			}

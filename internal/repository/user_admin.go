@@ -17,298 +17,12 @@ import (
 // ユーザーの一覧（UserQuery の検索条件）、作成・更新、削除（User#remove_references_before_destroy）、
 // メールアドレス、個人設定、通知設定、認証方式。
 
-// ---------------------------------------------------------------- 一覧（UserQuery）
-
-// UserFilter はユーザー一覧の検索条件（UserQuery の filters のうち対応しているもの）。
-// 各条件は Redmine の演算子（"=", "!", "*", "!*", "~", "!~", "^", "$" ...）と値で指定する。
-type UserFilter struct {
-	Conditions []UserCondition
-}
-
-// UserCondition は 1 つのフィルタ（field operator values）。
-type UserCondition struct {
-	Field    string // status / auth_source_id / is_member_of_group / admin / name / login / firstname / lastname / mail
-	Operator string
-	Values   []string
-}
-
-// userFilterSQL は UserFilter の WHERE 断片と引数を返す（principals p / user_accounts ua を参照）。
-func userFilterSQL(d db.Dialect, f UserFilter) (string, []any, error) {
-	where := []string{`p.kind = 'user'`}
-	var args []any
-	for _, c := range f.Conditions {
-		s, a, err := userConditionSQL(d, c)
-		if err != nil {
-			return "", nil, err
-		}
-		if s != "" {
-			where = append(where, s)
-			args = append(args, a...)
-		}
-	}
-	return strings.Join(where, " AND "), args, nil
-}
-
-// listCondition は "=" / "!" / "*" / "!*" の汎用条件（col IN (...) / NOT IN / IS NOT NULL / IS NULL）。
-func listCondition(col, op string, values []any) (string, []any, error) {
-	switch op {
-	case "*":
-		return col + " IS NOT NULL", nil, nil
-	case "!*":
-		return col + " IS NULL", nil, nil
-	case "=", "!":
-		if len(values) == 0 {
-			if op == "=" {
-				return "1=0", nil, nil
-			}
-			return "1=1", nil, nil
-		}
-		s, a, err := db.In(col+" IN (?)", values)
-		if err != nil {
-			return "", nil, err
-		}
-		if op == "!" {
-			s = "(" + col + " IS NULL OR " + col + " NOT IN " + strings.TrimPrefix(s, col+" IN ") + ")"
-		}
-		return s, a, nil
-	}
-	return "", nil, nil
-}
-
-func anyStrings(ss []string) []any {
-	out := make([]any, len(ss))
-	for i, s := range ss {
-		out[i] = s
-	}
-	return out
-}
-
-func anyInts(ss []string) []any {
-	var out []any
-	for _, s := range ss {
-		var n int64
-		if _, err := fmt.Sscan(strings.TrimSpace(s), &n); err == nil {
-			out = append(out, n)
-		}
-	}
-	return out
-}
+// ---------------------------------------------------------------- 一覧
 
 // likeEscape は LIKE のワイルドカードをエスケープする（Redmine の sanitize_sql_like）。
 func likeEscape(s string) string {
 	r := strings.NewReplacer(`\`, `\\`, `%`, `\%`, `_`, `\_`)
 	return r.Replace(s)
-}
-
-// stringCondition は Query#sql_for_field の文字列演算子（~ !~ ^ $ = ! *~ * !*）。大文字小文字は区別しない。
-func stringCondition(col, op string, values []string) (string, []any) {
-	v := ""
-	if len(values) > 0 {
-		v = values[0]
-	}
-	lower := "LOWER(" + col + ")"
-	switch op {
-	case "~", "!~":
-		// 空白区切りの各語を AND で含む（Redmine の sql_contains）
-		words := strings.Fields(v)
-		if len(words) == 0 {
-			words = []string{v}
-		}
-		var parts []string
-		var args []any
-		for _, w := range words {
-			parts = append(parts, lower+` LIKE ? ESCAPE '\'`)
-			args = append(args, "%"+likeEscape(strings.ToLower(w))+"%")
-		}
-		s := "(" + strings.Join(parts, " AND ") + ")"
-		if op == "!~" {
-			s = "(" + col + " IS NULL OR NOT " + s + ")"
-		}
-		return s, args
-	case "*~":
-		words := strings.Fields(v)
-		var parts []string
-		var args []any
-		for _, w := range words {
-			parts = append(parts, lower+` LIKE ? ESCAPE '\'`)
-			args = append(args, "%"+likeEscape(strings.ToLower(w))+"%")
-		}
-		if len(parts) == 0 {
-			return "1=0", nil
-		}
-		return "(" + strings.Join(parts, " OR ") + ")", args
-	case "^":
-		return lower + ` LIKE ? ESCAPE '\'`, []any{likeEscape(strings.ToLower(v)) + "%"}
-	case "$":
-		return lower + ` LIKE ? ESCAPE '\'`, []any{"%" + likeEscape(strings.ToLower(v))}
-	case "=":
-		return lower + " = ?", []any{strings.ToLower(v)}
-	case "!":
-		return "(" + col + " IS NULL OR " + lower + " <> ?)", []any{strings.ToLower(v)}
-	case "*":
-		return "(" + col + " IS NOT NULL AND " + col + " <> '')", nil
-	case "!*":
-		return "(" + col + " IS NULL OR " + col + " = '')", nil
-	}
-	return "", nil
-}
-
-func userConditionSQL(d db.Dialect, c UserCondition) (string, []any, error) {
-	switch c.Field {
-	case "status":
-		return listCondition("p.status", c.Operator, anyInts(c.Values))
-	case "auth_source_id":
-		return listCondition("ua.auth_source_id", c.Operator, anyInts(c.Values))
-	case "admin":
-		if len(c.Values) == 0 {
-			return "", nil, nil
-		}
-		trueValue := "0"
-		if c.Operator == "=" {
-			trueValue = "1"
-		}
-		if c.Values[0] == trueValue {
-			return "ua.admin = TRUE", nil, nil
-		}
-		return "ua.admin = FALSE", nil, nil
-	case "is_member_of_group":
-		e := "EXISTS"
-		if strings.HasPrefix(c.Operator, "!") {
-			e = "NOT EXISTS"
-		}
-		if c.Operator == "*" || c.Operator == "!*" {
-			return "(" + e + " (SELECT 1 FROM group_users gu JOIN principals g ON g.id = gu.group_id WHERE gu.user_id = p.id AND g.kind = 'group'))", nil, nil
-		}
-		ids := anyInts(c.Values)
-		if len(ids) == 0 {
-			ids = []any{int64(0)}
-		}
-		s, a, err := db.In("(SELECT 1 FROM group_users gu WHERE gu.user_id = p.id AND gu.group_id IN (?))", ids)
-		if err != nil {
-			return "", nil, err
-		}
-		return "(" + e + " " + s + ")", a, nil
-	case "login", "firstname", "lastname":
-		col := "ua.login"
-		if c.Field != "login" {
-			col = "p." + c.Field
-		}
-		s, a := stringCondition(col, c.Operator, c.Values)
-		return s, a, nil
-	case "mail":
-		op := c.Operator
-		match := true
-		if op == "!*" {
-			match, op = false, "*"
-		}
-		s, a := stringCondition("e.address", op, c.Values)
-		e := "EXISTS"
-		if !match {
-			e = "NOT EXISTS"
-		}
-		return e + " (SELECT 1 FROM email_addresses e WHERE e.user_id = p.id AND " + s + ")", a, nil
-	case "name":
-		switch c.Operator {
-		case "*":
-			return "1=1", nil, nil
-		case "!*":
-			return "1=0", nil, nil
-		}
-		match := !strings.HasPrefix(c.Operator, "!")
-		matching := strings.TrimPrefix(c.Operator, "!")
-		var parts []string
-		var args []any
-		for _, col := range []string{"ua.login", "p.firstname", "p.lastname"} {
-			s, a := stringCondition(col, c.Operator, c.Values)
-			parts = append(parts, "("+s+")")
-			args = append(args, a...)
-		}
-		s, a := stringCondition("e.address", matching, c.Values)
-		e := "EXISTS"
-		if !match {
-			e = "NOT EXISTS"
-		}
-		parts = append(parts, "("+e+" (SELECT 1 FROM email_addresses e WHERE e.user_id = p.id AND "+s+"))")
-		args = append(args, a...)
-		op := " OR "
-		if !match {
-			op = " AND "
-		}
-		return "(" + strings.Join(parts, op) + ")", args, nil
-	}
-	return "", nil, nil
-}
-
-// UserSortColumns は UserQuery の並べ替え可能な列と SQL 式。
-var UserSortColumns = map[string]string{
-	"login":             "ua.login",
-	"firstname":         "p.firstname",
-	"lastname":          "p.lastname",
-	"mail":              "dm.address",
-	"admin":             "ua.admin",
-	"created_on":        "p.created_at",
-	"updated_on":        "p.updated_at",
-	"last_login_on":     "ua.last_login_at",
-	"passwd_changed_on": "ua.password_changed_at",
-	"status":            "p.status",
-	"auth_source":       "aus.name",
-	"twofa_scheme":      "ua.twofa_scheme",
-}
-
-// SortCriterion は並べ替えの 1 要素。
-type SortCriterion struct {
-	Column string
-	Desc   bool
-}
-
-const userListFrom = ` FROM principals p JOIN user_accounts ua ON ua.principal_id = p.id
-LEFT JOIN email_addresses dm ON dm.user_id = p.id AND dm.is_default = TRUE
-LEFT JOIN auth_sources aus ON aus.id = ua.auth_source_id`
-
-// CountUsers は条件に一致するユーザー数（UserQuery#results_scope.count）。
-func CountUsers(ctx context.Context, q db.Queryer, f UserFilter) (int, error) {
-	where, args, err := userFilterSQL(q.Dialect(), f)
-	if err != nil {
-		return 0, err
-	}
-	var n int
-	err = q.Get(ctx, &n, `SELECT COUNT(*)`+userListFrom+` WHERE `+where, args...)
-	return n, err
-}
-
-// SearchUsers は条件に一致するユーザーを sort の順で返す（limit < 0 なら全件）。
-// NULL は MySQL / SQLite と同じく昇順で先頭に並べる。
-func SearchUsers(ctx context.Context, q db.Queryer, f UserFilter, sort []SortCriterion, limit, offset int) ([]*domain.User, error) {
-	where, args, err := userFilterSQL(q.Dialect(), f)
-	if err != nil {
-		return nil, err
-	}
-	var order []string
-	for _, s := range sort {
-		col, ok := UserSortColumns[s.Column]
-		if !ok {
-			continue
-		}
-		if s.Desc {
-			order = append(order, "("+col+" IS NULL) ASC", col+" DESC")
-		} else {
-			order = append(order, "("+col+" IS NULL) DESC", col+" ASC")
-		}
-	}
-	order = append(order, "p.id ASC")
-	query := userSelect[:strings.Index(userSelect, "\nFROM")] + userListFrom + ` WHERE ` + where + ` ORDER BY ` + strings.Join(order, ", ")
-	if limit >= 0 {
-		query += fmt.Sprintf(" LIMIT %d OFFSET %d", limit, offset)
-	}
-	var rows []userRow
-	if err := q.Select(ctx, &rows, query, args...); err != nil {
-		return nil, err
-	}
-	out := make([]*domain.User, len(rows))
-	for i := range rows {
-		out[i] = rows[i].user()
-	}
-	return out, nil
 }
 
 // LoggedUsersByIDs は User.logged.where(id: ids).where.not(id: exceptID)（id 順）。
@@ -655,11 +369,27 @@ func GlobalQueryOptions(ctx context.Context, q db.Queryer, kind string) ([]domai
 
 // ---------------------------------------------------------------- 認証方式
 
-// ListAuthSources は AuthSource.all（id 順）。
+// ListAuthSources は AuthSource.all（id 順）。Searchable は AuthSourceLdap#searchable?
+// （account が設定され "$login" を含まない）。
 func ListAuthSources(ctx context.Context, q db.Queryer) ([]domain.AuthSource, error) {
-	var rows []domain.AuthSource
-	err := q.Select(ctx, &rows, `SELECT id AS "id", kind AS "kind", name AS "name" FROM auth_sources ORDER BY id`)
-	return rows, err
+	var rows []struct {
+		ID     int64  `db:"id"`
+		Kind   string `db:"kind"`
+		Name   string `db:"name"`
+		Config string `db:"config"`
+	}
+	if err := q.Select(ctx, &rows, `SELECT id, kind, name, config FROM auth_sources ORDER BY id`); err != nil {
+		return nil, err
+	}
+	out := make([]domain.AuthSource, len(rows))
+	for i, r := range rows {
+		var cfg map[string]any
+		_ = json.Unmarshal([]byte(r.Config), &cfg)
+		acc, _ := cfg["account"].(string)
+		out[i] = domain.AuthSource{ID: r.ID, Kind: r.Kind, Name: r.Name,
+			Searchable: r.Kind == "ldap" && acc != "" && !strings.Contains(acc, "$login")}
+	}
+	return out, nil
 }
 
 // ---------------------------------------------------------------- メールアドレス

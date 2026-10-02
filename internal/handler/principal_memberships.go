@@ -64,6 +64,14 @@ func (p *principalRef) Base() string {
 	return "/users/" + itoa(p.User.ID)
 }
 
+// principalName は principal.to_s。
+func (a *App) principalName(c *Req, p *principalRef) string {
+	if p.Group != nil {
+		return helper.GroupName(c.Page(), p.Group)
+	}
+	return p.User.Name(a.Settings.String("user_format"))
+}
+
 type principalCtxKey struct{}
 type membershipCtxKey struct{}
 
@@ -141,6 +149,8 @@ type membershipRow struct {
 	Deletable bool
 	// RolesText は roles.sort.collect(&:to_s).join(', ')。
 	RolesText string
+	// Level は project_tree(..., init_level: true) の深さ（users/show 用）。
+	Level int
 	// Inheritance は role_id → render_role_inheritance の表示内容。
 	Inheritance map[int64]string
 	// Valid は保存に成功したか（create.js / update.js 用）。
@@ -194,6 +204,38 @@ func (a *App) membershipRows(c *Req, principalID int64, projCond string) ([]*mem
 		return ns[rows[i].Member.ProjectID].Lft < ns[rows[j].Member.ProjectID].Lft
 	})
 	return rows, nil
+}
+
+// setTreeLevels は Project.project_tree(projects, init_level: true) の深さを rows（lft 順）に設定する。
+func (a *App) setTreeLevels(c *Req, rows []*membershipRow) error {
+	if len(rows) == 0 || rows[0].Project == nil {
+		return nil
+	}
+	ns, err := repository.ProjectNestedSet(c.Ctx(), a.DB)
+	if err != nil {
+		return err
+	}
+	anc, err := repository.ProjectAncestors(c.Ctx(), a.DB, rows[0].Project.ID)
+	if err != nil {
+		return err
+	}
+	var stack []int64
+	for _, p := range anc {
+		stack = append(stack, p.ID)
+	}
+	sort.SliceStable(stack, func(i, j int) bool { return ns[stack[i]].Lft < ns[stack[j]].Lft })
+	isDesc := func(id, of int64) bool { return ns[of].Lft < ns[id].Lft && ns[id].Rgt < ns[of].Rgt }
+	for _, r := range rows {
+		if r.Project == nil {
+			continue
+		}
+		for len(stack) > 0 && !isDesc(r.Project.ID, stack[len(stack)-1]) {
+			stack = stack[:len(stack)-1]
+		}
+		r.Level = len(stack)
+		stack = append(stack, r.Project.ID)
+	}
+	return nil
 }
 
 // membershipRow は 1 件の membershipRow を作る。
@@ -373,7 +415,8 @@ func (a *App) PrincipalMembershipsEdit(c *Req) {
 		a.serverError(c, err)
 		return
 	}
-	data := map[string]any{"Principal": p, "PrincipalBase": p.Base(), "Membership": row, "Roles": roles, "XHR": httpx.IsXHR(c.R)}
+	data := map[string]any{"Principal": p, "PrincipalBase": p.Base(), "Membership": row, "Roles": roles, "XHR": httpx.IsXHR(c.R),
+		"PrincipalName": a.principalName(c, p)}
 	if httpx.Format(c.R) == "js" {
 		c.Render("principal_memberships/edit", data, RenderOptions{Format: "js"})
 		return

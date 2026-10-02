@@ -30,6 +30,7 @@ type userModel struct {
 	// mail は User#mail（email_address.address）。
 	mail    string
 	mailWas string
+	mailSet bool
 	// password / passwordConfirmation は attr_accessor（nil = 未設定）。
 	password             *string
 	passwordConfirmation *string
@@ -83,6 +84,10 @@ func (m *userModel) Send(method string) (any, bool) {
 	case "lastname":
 		return m.Lastname, true
 	case "mail":
+		if m.mail == "" && !m.mailSet {
+			// 新規ユーザーは email_address が無い（nil）
+			return nil, true
+		}
 		return m.mail, true
 	case "language":
 		return m.Language, true
@@ -220,7 +225,7 @@ func (a *App) newUserModel(c *Req) *userModel {
 // loadUserModel は保存済みのユーザーを編集用に読み込む。
 func (a *App) loadUserModel(c *Req, u *domain.User) (*userModel, error) {
 	ctx := c.Ctx()
-	m := &userModel{User: u, mail: u.Mail, mailWas: u.Mail, errors: validation.New("user"), loc: c.Loc, orig: *u}
+	m := &userModel{User: u, mail: u.Mail, mailWas: u.Mail, mailSet: true, errors: validation.New("user"), loc: c.Loc, orig: *u}
 	n, err := repository.GetUserNotification(ctx, a.DB, u.ID)
 	if err != nil {
 		return nil, err
@@ -308,6 +313,7 @@ func (m *userModel) assignSafeAttributes(p *httpx.Params, current *domain.User) 
 	}
 	if v, ok := str("mail"); ok {
 		m.mail = domain.NormalizeEmail(v)
+		m.mailSet = true
 	}
 	if v, ok := str("mail_notification"); ok {
 		m.notification.MailNotification = v

@@ -1,0 +1,6 @@
+<h2>{{l "label_add_projects"}}</h2>
+
+{{form_tag (printf "%s/memberships" .PrincipalBase) (hash "method" "post")}}
+  {{partial "principal_memberships/new_form"}}
+  <p>{{submit_tag (l "button_add") (hash "name" nil)}}</p>
+{{end_form}}

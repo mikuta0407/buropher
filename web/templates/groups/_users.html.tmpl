@@ -1,0 +1,24 @@
+{{$a := assigns}}
+{{$g := $a.Group}}
+<p>{{link_to (sprite_icon "add" (l "label_user_new")) (printf "/groups/%d/users/new" $g.ID) (hash "remote" true "class" "icon icon-add")}}</p>
+
+{{if $a.Users}}
+  <table class="list users">
+    <thead><tr>
+      <th>{{l "label_user"}}</th>
+      <th style="width:15%"></th>
+    </tr></thead>
+    <tbody>
+    {{range $u := $a.Users}}
+      <tr id="user-{{$u.ID}}">
+        <td class="name">{{link_to_user $u}}</td>
+        <td class="buttons">
+          {{delete_link (printf "/groups/%d/users/%d" $g.ID $u.ID) (hash "remote" true)}}
+        </td>
+      </tr>
+    {{end}}
+    </tbody>
+  </table>
+{{else}}
+  <p class="nodata">{{l "label_no_data"}}</p>
+{{end}}

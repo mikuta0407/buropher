@@ -1,0 +1,106 @@
+{{$f := .f}}
+{{$a := assigns}}
+{{$u := $a.User}}
+{{error_messages_for $u}}
+
+<div id="user_form">
+<!--[form:user]-->
+<div class="splitcontent">
+<div class="splitcontentleft">
+<fieldset class="box tabular">
+  <legend>{{l "label_information_plural"}}</legend>
+  <p>{{$f.TextField "login" (hash "required" true "size" 25)}}</p>
+  <p>{{$f.TextField "firstname" (hash "required" true)}}</p>
+  <p>{{$f.TextField "lastname" (hash "required" true)}}</p>
+  <p>{{$f.TextField "mail" (hash "required" true)}}</p>
+  {{if not $a.ForceDefaultLanguage}}
+  <p>{{$f.Select "language" (lang_options_for_select)}}</p>
+  {{end}}
+
+  {{range $tag := $u.CustomFieldTags}}
+    <p>{{$tag}}</p>
+  {{end}}
+
+  <p>{{$f.CheckBox "admin" (hash "disabled" (eq $u.ID (current_user).ID))}}</p>
+  {{call_hook "view_users_form"}}
+</fieldset>
+
+<fieldset class="box tabular">
+  <legend>{{l "label_authentication"}}</legend>
+  {{if $a.AuthSources}}
+  <p>{{$f.Select "auth_source_id" (auth_source_options $a.AuthSources (l "label_internal")) (hash) (hash "onchange" "if (this.value=='') {$('#password_fields').show();} else {$('#password_fields').hide();}")}}</p>
+  {{end}}
+  <div id="password_fields" style="{{if $u.AuthSourceID}}display:none;{{end}}">
+  <p>
+    {{$f.PasswordField "password" (hash "required" $u.NewRecord "size" 25)}}
+    <em class="info">{{l "text_caracters_minimum" (hash "count" $a.PasswordMinLength)}}</em>
+    {{if $a.PasswordCharClasses}}
+      <em class="info">{{l "text_characters_must_contain" (hash "character_classes" $a.PasswordCharClasses)}}</em>
+    {{end}}
+  </p>
+  <p>{{$f.PasswordField "password_confirmation" (hash "required" $u.NewRecord "size" 25)}}</p>
+  <p>{{$f.CheckBox "generate_password"}}</p>
+  <p>{{$f.CheckBox "must_change_passwd"}}</p>
+  </div>
+  {{if and $a.Twofa (not $u.NewRecord)}}
+  <p>
+    <label>{{l "setting_twofa"}}</label>
+    {{if $u.TwofaActive}}
+      {{l "twofa_currently_active" (hash "twofa_scheme_name" (l (printf "twofa__%s__name" $u.TwofaScheme)))}}<br/>
+      {{if eq $u.ID (current_user).ID}}
+        {{link_to (l "button_disable") (printf "/my/twofa/%s/deactivate" $u.TwofaScheme) (hash "method" "post")}}
+      {{else}}
+        {{link_to (l "button_disable") (printf "/users/%d/twofa/deactivate" $u.ID) (hash "method" "post")}}
+      {{end}}
+    {{else}}
+      {{l "twofa_not_active"}}
+    {{end}}
+  </p>
+  {{end}}
+</fieldset>
+<p class="mobile-hide">
+  {{if $u.NewRecord}}
+    {{submit_tag (l "button_create")}}
+    {{submit_tag (l "button_create_and_continue") (hash "name" "continue")}}
+  {{else}}
+    {{submit_tag (l "button_save")}}
+  {{end}}
+</p>
+</div>
+
+<div class="splitcontentright">
+<fieldset class="box">
+  <legend>{{l "field_mail_notification"}}</legend>
+  {{partial "users/mail_notifications"}}
+</fieldset>
+
+<fieldset class="box">
+  <legend>{{l "label_auto_watch_on"}}</legend>
+  {{partial "users/auto_watch_on"}}
+</fieldset>
+
+<fieldset class="box tabular">
+  <legend>{{l "label_preferences"}}</legend>
+  {{partial "users/preferences"}}
+  {{call_hook "view_users_form_preferences"}}
+</fieldset>
+</div>
+</div>
+</div>
+<div style="clear:left;"></div>
+<!--[eoform:user]-->
+
+{{define "users/_form#js"}}
+
+$(document).ready(function(){
+  $('#user_generate_password').change(function(){
+    var passwd = $('#user_password, #user_password_confirmation');
+    if ($(this).is(':checked')){
+      passwd.val('').attr('disabled', true);
+    }else{
+      passwd.removeAttr('disabled');
+    }
+  }).trigger('change');
+});
+{{end}}
+{{javascript_tag (capture "users/_form#js" .)}}

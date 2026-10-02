@@ -180,6 +180,8 @@ type AuthSource struct {
 	ID   int64
 	Kind string
 	Name string
+	// Searchable は AuthSourceLdap#searchable?。
+	Searchable bool
 }
 
 // SavedQueryOption は個人設定の既定クエリの選択肢（queries の id と name）。
