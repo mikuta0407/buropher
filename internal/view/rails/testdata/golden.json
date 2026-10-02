@@ -1,0 +1,1072 @@
+[
+  {
+    "id": "h-plain",
+    "output": "a&lt;b&gt;&amp;&quot;c&#39;d+e",
+    "safe": true
+  },
+  {
+    "id": "h-safe",
+    "output": "<b>x</b>",
+    "safe": true
+  },
+  {
+    "id": "h-nil",
+    "output": "",
+    "safe": true
+  },
+  {
+    "id": "h-int",
+    "output": "42",
+    "safe": true
+  },
+  {
+    "id": "h-float",
+    "output": "1.5",
+    "safe": true
+  },
+  {
+    "id": "h-float-int",
+    "output": "2.0",
+    "safe": true
+  },
+  {
+    "id": "escape_once",
+    "output": "1 &lt; 2 &amp; 3 &#39; &#x27; &amp;foo &amp; bar",
+    "safe": true
+  },
+  {
+    "id": "safe_join-1",
+    "output": "a&lt;<br />b",
+    "safe": true
+  },
+  {
+    "id": "safe_join-sep",
+    "output": "a, b&lt;",
+    "safe": true
+  },
+  {
+    "id": "safe_join-safe-sep",
+    "output": "a<br />b",
+    "safe": true
+  },
+  {
+    "id": "token_list",
+    "output": "foo bar qux",
+    "safe": true
+  },
+  {
+    "id": "tag-br",
+    "output": "<br />",
+    "safe": true
+  },
+  {
+    "id": "tag-input",
+    "output": "<input type=\"text\" name=\"q\" value=\"a&quot;b&#39;c&lt;d&gt;&amp;\" />",
+    "safe": true
+  },
+  {
+    "id": "tag-open",
+    "output": "<div class=\"x\">",
+    "safe": true
+  },
+  {
+    "id": "tag-bool",
+    "output": "<input type=\"checkbox\" checked=\"checked\" readonly=\"readonly\" selected=\"selected\" />",
+    "safe": true
+  },
+  {
+    "id": "tag-false-nonbool",
+    "output": "<input value=\"false\" title=\"true\" size=\"10\" />",
+    "safe": true
+  },
+  {
+    "id": "tag-data",
+    "output": "<div data-foo-bar=\"x\" data-num=\"1\" data-flag=\"true\" data-off=\"false\" data-arr=\"[1,&quot;a&quot;]\" data-hash=\"{&quot;a&quot;:&quot;\\u003cb\\u003e&quot;}\" data-str=\"it&#39;s &quot;q&quot;\" />",
+    "safe": true
+  },
+  {
+    "id": "tag-aria",
+    "output": "<div aria-label=\"L\" aria-hidden=\"true\" aria-describedby=\"a b\" />",
+    "safe": true
+  },
+  {
+    "id": "tag-class-array",
+    "output": "<div class=\"a b&lt; c\" />",
+    "safe": true
+  },
+  {
+    "id": "tag-other-array",
+    "output": "<div rel=\"nofollow noopener\" />",
+    "safe": true
+  },
+  {
+    "id": "tag-safe-attr",
+    "output": "<div title=\"a&amp;b&quot;c\" />",
+    "safe": true
+  },
+  {
+    "id": "tag-data-string-key",
+    "output": "<div data-foo=\"x\" data=\"plain\" />",
+    "safe": true
+  },
+  {
+    "id": "tag-sym-value",
+    "output": "<input type=\"hidden\" />",
+    "safe": true
+  },
+  {
+    "id": "content_tag-1",
+    "output": "<div class=\"c\" id=\"i\">a&lt;b</div>",
+    "safe": true
+  },
+  {
+    "id": "content_tag-safe",
+    "output": "<p><b>x</b></p>",
+    "safe": true
+  },
+  {
+    "id": "content_tag-nil",
+    "output": "<span class=\"x\"></span>",
+    "safe": true
+  },
+  {
+    "id": "content_tag-blank",
+    "output": "<span>   </span>",
+    "safe": true
+  },
+  {
+    "id": "content_tag-textarea",
+    "output": "<textarea>\nx</textarea>",
+    "safe": true
+  },
+  {
+    "id": "content_tag-int",
+    "output": "<td>3</td>",
+    "safe": true
+  },
+  {
+    "id": "link_to-basic",
+    "output": "<a href=\"/issues\">Issues</a>",
+    "safe": true
+  },
+  {
+    "id": "link_to-escape",
+    "output": "<a class=\"icon\" title=\"it&#39;s\" href=\"/x?a=1&amp;b=2\">a&lt;b&gt;</a>",
+    "safe": true
+  },
+  {
+    "id": "link_to-safe",
+    "output": "<a href=\"/x\"><span>x</span></a>",
+    "safe": true
+  },
+  {
+    "id": "link_to-nil-name",
+    "output": "<a href=\"/path\">/path</a>",
+    "safe": true
+  },
+  {
+    "id": "link_to-method",
+    "output": "<a data-confirm=\"Are you sure?\" class=\"icon icon-del\" rel=\"nofollow\" data-method=\"delete\" href=\"/issues/1\">Delete</a>",
+    "safe": true
+  },
+  {
+    "id": "link_to-method-get",
+    "output": "<a data-method=\"get\" href=\"/g\">G</a>",
+    "safe": true
+  },
+  {
+    "id": "link_to-method-rel",
+    "output": "<a rel=\"noopener nofollow\" data-method=\"post\" href=\"/p\">P</a>",
+    "safe": true
+  },
+  {
+    "id": "link_to-method-rel-nofollow",
+    "output": "<a rel=\"nofollow\" data-method=\"post\" href=\"/p\">P</a>",
+    "safe": true
+  },
+  {
+    "id": "link_to-remote",
+    "output": "<a class=\"x\" data-remote=\"true\" rel=\"nofollow\" data-method=\"post\" href=\"/r\">R</a>",
+    "safe": true
+  },
+  {
+    "id": "link_to-remote-false",
+    "output": "<a href=\"/r\">R</a>",
+    "safe": true
+  },
+  {
+    "id": "link_to-href-override",
+    "output": "<a href=\"#\" onclick=\"alert(&#39;x&#39;); return false;\">H</a>",
+    "safe": true
+  },
+  {
+    "id": "link_to-data-confirm-quote",
+    "output": "<a data-confirm=\"&quot;quoted&quot; &amp; &lt;tag&gt;\" href=\"/q\">Q</a>",
+    "safe": true
+  },
+  {
+    "id": "link_to_if-true",
+    "output": "<a href=\"/y\">Y</a>",
+    "safe": true
+  },
+  {
+    "id": "link_to_if-false",
+    "output": "N&lt;",
+    "safe": true
+  },
+  {
+    "id": "link_to_unless",
+    "output": "N",
+    "safe": true
+  },
+  {
+    "id": "button_to-basic",
+    "output": "<form class=\"button_to\" method=\"post\" action=\"/go\"><input type=\"submit\" value=\"Go\" /><input type=\"hidden\" name=\"authenticity_token\" value=\"TOKEN\" autocomplete=\"off\" /></form>",
+    "safe": true
+  },
+  {
+    "id": "button_to-delete",
+    "output": "<form class=\"button_to\" method=\"post\" action=\"/issues/1\"><input type=\"hidden\" name=\"_method\" value=\"delete\" autocomplete=\"off\" /><input data-confirm=\"Sure?\" class=\"btn\" type=\"submit\" value=\"Delete\" /><input type=\"hidden\" name=\"authenticity_token\" value=\"TOKEN\" autocomplete=\"off\" /></form>",
+    "safe": true
+  },
+  {
+    "id": "button_to-get",
+    "output": "<form class=\"button_to\" method=\"get\" action=\"/x\"><input type=\"submit\" value=\"Get\" /></form>",
+    "safe": true
+  },
+  {
+    "id": "button_to-remote-form",
+    "output": "<form id=\"f\" class=\"button_to\" method=\"post\" action=\"/r\" data-remote=\"true\"><input type=\"submit\" value=\"R\" /><input type=\"hidden\" name=\"authenticity_token\" value=\"TOKEN\" autocomplete=\"off\" /><input type=\"hidden\" name=\"a[]\" value=\"x\" autocomplete=\"off\" /><input type=\"hidden\" name=\"a[]\" value=\"y\" autocomplete=\"off\" /><input type=\"hidden\" name=\"b\" value=\"2\" autocomplete=\"off\" /></form>",
+    "safe": true
+  },
+  {
+    "id": "button_to-form_class",
+    "output": "<form class=\"fc\" method=\"post\" action=\"/c\"><input type=\"hidden\" name=\"_method\" value=\"patch\" autocomplete=\"off\" /><input type=\"submit\" value=\"C\" /><input type=\"hidden\" name=\"authenticity_token\" value=\"TOKEN\" autocomplete=\"off\" /></form>",
+    "safe": true
+  },
+  {
+    "id": "mail_to-basic",
+    "output": "<a href=\"mailto:user@example.com\">user@example.com</a>",
+    "safe": true
+  },
+  {
+    "id": "mail_to-name",
+    "output": "<a class=\"email\" href=\"mailto:user%2Bx@example.com?cc=a%40b.c&amp;subject=Hello%20World%20%26%20more\">Mail &lt;me&gt;</a>",
+    "safe": true
+  },
+  {
+    "id": "image_tag-basic",
+    "output": "<img src=\"/assets/add-DIGEST.png\" />",
+    "safe": true
+  },
+  {
+    "id": "image_tag-opts",
+    "output": "<img alt=\"Edit\" title=\"t\" src=\"/assets/edit-DIGEST.png\" width=\"16\" height=\"16\" />",
+    "safe": true
+  },
+  {
+    "id": "image_tag-size1",
+    "output": "<img src=\"/assets/edit-DIGEST.png\" width=\"20\" height=\"20\" />",
+    "safe": true
+  },
+  {
+    "id": "image_tag-url",
+    "output": "<img class=\"gravatar\" src=\"https://example.com/a.png\" />",
+    "safe": true
+  },
+  {
+    "id": "image_tag-abs",
+    "output": "<img src=\"/images/x.png\" />",
+    "safe": true
+  },
+  {
+    "id": "stylesheet_link_tag",
+    "output": "<link rel=\"stylesheet\" href=\"/assets/application-DIGEST.css\" media=\"all\" />\n<link rel=\"stylesheet\" href=\"/assets/responsive-DIGEST.css\" media=\"all\" />",
+    "safe": true
+  },
+  {
+    "id": "javascript_include_tag",
+    "output": "<script src=\"/assets/jquery-3.6.1-ui-1.13.2-ujs-6.1.7-DIGEST.js\"></script>\n<script src=\"/assets/application-DIGEST.js\"></script>",
+    "safe": true
+  },
+  {
+    "id": "form_tag-post",
+    "output": "<form action=\"/issues\" accept-charset=\"UTF-8\" name=\"form-abcd1234\" method=\"post\"><input type=\"hidden\" name=\"authenticity_token\" value=\"TOKEN\" autocomplete=\"off\" />",
+    "safe": true
+  },
+  {
+    "id": "form_tag-get",
+    "output": "<form action=\"/search\" accept-charset=\"UTF-8\" name=\"form-abcd1234\" method=\"get\">",
+    "safe": true
+  },
+  {
+    "id": "form_tag-patch",
+    "output": "<form id=\"issue-form\" class=\"tabular\" action=\"/issues/1\" accept-charset=\"UTF-8\" name=\"issue-form-abcd1234\" method=\"post\"><input type=\"hidden\" name=\"_method\" value=\"patch\" autocomplete=\"off\" /><input type=\"hidden\" name=\"authenticity_token\" value=\"TOKEN\" autocomplete=\"off\" />",
+    "safe": true
+  },
+  {
+    "id": "form_tag-delete",
+    "output": "<form action=\"/issues/1\" accept-charset=\"UTF-8\" name=\"form-abcd1234\" method=\"post\"><input type=\"hidden\" name=\"_method\" value=\"delete\" autocomplete=\"off\" /><input type=\"hidden\" name=\"authenticity_token\" value=\"TOKEN\" autocomplete=\"off\" />",
+    "safe": true
+  },
+  {
+    "id": "form_tag-multipart",
+    "output": "<form enctype=\"multipart/form-data\" action=\"/upload\" accept-charset=\"UTF-8\" data-remote=\"true\" name=\"form-abcd1234\" method=\"post\"><input type=\"hidden\" name=\"authenticity_token\" value=\"TOKEN\" autocomplete=\"off\" />",
+    "safe": true
+  },
+  {
+    "id": "form_tag-name",
+    "output": "<form name=\"given\" action=\"/x\" accept-charset=\"UTF-8\" method=\"post\"><input type=\"hidden\" name=\"authenticity_token\" value=\"TOKEN\" autocomplete=\"off\" />",
+    "safe": true
+  },
+  {
+    "id": "form_tag-noaction",
+    "output": "<form id=\"q\" accept-charset=\"UTF-8\" name=\"q-abcd1234\" method=\"post\"><input type=\"hidden\" name=\"authenticity_token\" value=\"TOKEN\" autocomplete=\"off\" />",
+    "safe": true
+  },
+  {
+    "id": "form_tag-token-false",
+    "output": "<form action=\"/x\" accept-charset=\"UTF-8\" name=\"form-abcd1234\" method=\"post\">",
+    "safe": true
+  },
+  {
+    "id": "form_tag-token-given",
+    "output": "<form action=\"/x\" accept-charset=\"UTF-8\" name=\"form-abcd1234\" method=\"post\"><input type=\"hidden\" name=\"authenticity_token\" value=\"given-token\" autocomplete=\"off\" />",
+    "safe": true
+  },
+  {
+    "id": "form_tag-data",
+    "output": "<form data-cm-url=\"/cm\" action=\"/x\" accept-charset=\"UTF-8\" name=\"form-abcd1234\" method=\"post\"><input type=\"hidden\" name=\"authenticity_token\" value=\"TOKEN\" autocomplete=\"off\" />",
+    "safe": true
+  },
+  {
+    "id": "label_tag-basic",
+    "output": "<label for=\"user_name\">User name</label>",
+    "safe": true
+  },
+  {
+    "id": "label_tag-content",
+    "output": "<label class=\"c\" for=\"q\">Search &lt;x&gt;</label>",
+    "safe": true
+  },
+  {
+    "id": "label_tag-for",
+    "output": "<label for=\"other\">S</label>",
+    "safe": true
+  },
+  {
+    "id": "label_tag-safe",
+    "output": "<label class=\"search-magnifier\" for=\"q\"><svg></svg></label>",
+    "safe": true
+  },
+  {
+    "id": "label_tag-nil-name",
+    "output": "<label>Text</label>",
+    "safe": true
+  },
+  {
+    "id": "text_field_tag-basic",
+    "output": "<input type=\"text\" name=\"q\" id=\"q\" />",
+    "safe": true
+  },
+  {
+    "id": "text_field_tag-value",
+    "output": "<input type=\"text\" name=\"issue[subject]\" id=\"issue_subject\" value=\"a&quot;b\" size=\"20\" class=\"small\" accesskey=\"f\" data-auto-complete=\"true\" />",
+    "safe": true
+  },
+  {
+    "id": "text_field_tag-id-nil",
+    "output": "<input type=\"text\" name=\"q\" placeholder=\"Search\" />",
+    "safe": true
+  },
+  {
+    "id": "text_field_tag-type-override",
+    "output": "<input type=\"number\" name=\"n\" id=\"n\" value=\"1\" />",
+    "safe": true
+  },
+  {
+    "id": "hidden_field_tag-basic",
+    "output": "<input type=\"hidden\" name=\"back_url\" id=\"back_url\" value=\"/issues?a=1&amp;b=2\" autocomplete=\"off\" />",
+    "safe": true
+  },
+  {
+    "id": "hidden_field_tag-id-nil",
+    "output": "<input type=\"hidden\" name=\"scope\" value=\"subprojects\" autocomplete=\"off\" />",
+    "safe": true
+  },
+  {
+    "id": "hidden_field_tag-array",
+    "output": "<input type=\"hidden\" name=\"ids[]\" value=\"5\" autocomplete=\"off\" />",
+    "safe": true
+  },
+  {
+    "id": "password_field_tag",
+    "output": "<input type=\"password\" name=\"password\" id=\"password\" size=\"25\" />",
+    "safe": true
+  },
+  {
+    "id": "email_field_tag",
+    "output": "<input type=\"email\" name=\"mail\" id=\"mail\" value=\"a@b.c\" />",
+    "safe": true
+  },
+  {
+    "id": "number_field_tag",
+    "output": "<input type=\"number\" name=\"n\" id=\"n\" value=\"3\" min=\"0\" step=\"any\" />",
+    "safe": true
+  },
+  {
+    "id": "date_field_tag",
+    "output": "<input type=\"date\" name=\"d\" id=\"d\" value=\"2024-01-31\" max=\"9999-12-31\" size=\"10\" />",
+    "safe": true
+  },
+  {
+    "id": "date_field_tag-max",
+    "output": "<input type=\"date\" name=\"d\" id=\"d\" max=\"2030-01-01\" />",
+    "safe": true
+  },
+  {
+    "id": "file_field_tag",
+    "output": "<input type=\"file\" name=\"attachments[dummy][file]\" id=\"attachments_dummy_file\" multiple=\"multiple\" class=\"file_selector\" />",
+    "safe": true
+  },
+  {
+    "id": "text_area_tag-basic",
+    "output": "<textarea name=\"notes\" id=\"notes\">\nline1\nline2 &lt;b&gt;</textarea>",
+    "safe": true
+  },
+  {
+    "id": "text_area_tag-leading-newline",
+    "output": "<textarea name=\"notes\" id=\"notes\">\n\nfoo</textarea>",
+    "safe": true
+  },
+  {
+    "id": "text_area_tag-nil",
+    "output": "<textarea name=\"notes\" id=\"notes\" cols=\"60\" rows=\"10\" class=\"wiki-edit\">\n</textarea>",
+    "safe": true
+  },
+  {
+    "id": "text_area_tag-size",
+    "output": "<textarea name=\"n\" id=\"n\" cols=\"20\" rows=\"5\">\nx</textarea>",
+    "safe": true
+  },
+  {
+    "id": "text_area_tag-noescape",
+    "output": "<textarea name=\"n\" id=\"n\">\n<b></textarea>",
+    "safe": true
+  },
+  {
+    "id": "text_area_tag-safe",
+    "output": "<textarea name=\"n\" id=\"n\">\n<b>&amp;</b></textarea>",
+    "safe": true
+  },
+  {
+    "id": "check_box_tag-basic",
+    "output": "<input type=\"checkbox\" name=\"accept\" id=\"accept\" value=\"1\" />",
+    "safe": true
+  },
+  {
+    "id": "check_box_tag-value",
+    "output": "<input type=\"checkbox\" name=\"ids[]\" value=\"5\" class=\"toggle\" checked=\"checked\" />",
+    "safe": true
+  },
+  {
+    "id": "check_box_tag-unchecked",
+    "output": "<input type=\"checkbox\" name=\"f[]\" id=\"cb_status_id\" value=\"status_id\" onclick=\"toggleFilter(&#39;status_id&#39;);\" />",
+    "safe": true
+  },
+  {
+    "id": "check_box_tag-checked-opt",
+    "output": "<input type=\"checkbox\" name=\"c\" id=\"c\" value=\"1\" checked=\"checked\" />",
+    "safe": true
+  },
+  {
+    "id": "radio_button_tag",
+    "output": "<input type=\"radio\" name=\"gender\" id=\"gender_male\" value=\"male\" />",
+    "safe": true
+  },
+  {
+    "id": "radio_button_tag-checked",
+    "output": "<input type=\"radio\" name=\"settings[x]\" id=\"settings_x_a_b.c\" value=\"a b.c\" class=\"r\" checked=\"checked\" />",
+    "safe": true
+  },
+  {
+    "id": "options_for_select-strings",
+    "output": "<option value=\"a\">a</option>\n<option selected=\"selected\" value=\"b&lt;\">b&lt;</option>\n<option value=\"c\">c</option>",
+    "safe": true
+  },
+  {
+    "id": "options_for_select-pairs",
+    "output": "<option value=\"1\">One</option>\n<option selected=\"selected\" value=\"2\">Two</option>\n<option value=\"3\">Three</option>",
+    "safe": true
+  },
+  {
+    "id": "options_for_select-multi",
+    "output": "<option selected=\"selected\" value=\"1\">One</option>\n<option value=\"2\">Two</option>\n<option selected=\"selected\" value=\"3\">Three</option>",
+    "safe": true
+  },
+  {
+    "id": "options_for_select-attrs",
+    "output": "<option class=\"c\" data-x=\"y\" selected=\"selected\" value=\"1\">One</option>\n<option disabled=\"disabled\" value=\"2\">Two</option>",
+    "safe": true
+  },
+  {
+    "id": "options_for_select-hash",
+    "output": "<option value=\"a\">A</option>\n<option selected=\"selected\" value=\"b\">B</option>",
+    "safe": true
+  },
+  {
+    "id": "options_for_select-none",
+    "output": "<option value=\"\"></option>\n<option value=\"1\">x</option>",
+    "safe": true
+  },
+  {
+    "id": "options_for_select-string",
+    "output": "<option>raw</option>",
+    "safe": false
+  },
+  {
+    "id": "options_for_select-nil-text",
+    "output": "<option value=\"1\"></option>\n<option value=\"\">t</option>",
+    "safe": true
+  },
+  {
+    "id": "options_from_collection",
+    "output": "<option value=\"1\">Bug</option>\n<option selected=\"selected\" value=\"2\">Feature &lt;x&gt;</option>",
+    "safe": true
+  },
+  {
+    "id": "options_from_collection-multi",
+    "output": "<option selected=\"selected\" value=\"1\">A</option>\n<option selected=\"selected\" value=\"2\">B</option>",
+    "safe": true
+  },
+  {
+    "id": "options_from_collection-disabled",
+    "output": "<option selected=\"selected\" value=\"1\">A</option>\n<option disabled=\"disabled\" value=\"2\">B</option>",
+    "safe": true
+  },
+  {
+    "id": "grouped_options",
+    "output": "<optgroup label=\"G1\"><option value=\"1\">a</option>\n<option selected=\"selected\" value=\"2\">b</option></optgroup><optgroup label=\"G&lt;2&gt;\" class=\"grp\"><option value=\"3\">c</option></optgroup>",
+    "safe": true
+  },
+  {
+    "id": "grouped_options-hash",
+    "output": "<option value=\"\">Choose</option><optgroup label=\"Fruits\"><option value=\"apple\">apple</option>\n<option selected=\"selected\" value=\"pear\">pear</option></optgroup><optgroup label=\"Veg\"><option value=\"leek\">leek</option></optgroup>",
+    "safe": true
+  },
+  {
+    "id": "grouped_options-divider",
+    "output": "<optgroup label=\"---\"><option value=\"1\">a</option></optgroup><optgroup label=\"---\"><option value=\"2\">b</option></optgroup>",
+    "safe": true
+  },
+  {
+    "id": "select_tag-basic",
+    "output": "<select name=\"status\" id=\"status\"><option selected=\"selected\" value=\"1\">Open</option>\n<option value=\"2\">Closed</option></select>",
+    "safe": true
+  },
+  {
+    "id": "select_tag-blank",
+    "output": "<select name=\"s\" id=\"s\" class=\"x\"><option value=\"\" label=\" \"></option><option value=\"a\">a</option></select>",
+    "safe": true
+  },
+  {
+    "id": "select_tag-blank-text",
+    "output": "<select name=\"s\" id=\"s\"><option value=\"\">None</option><option value=\"a\">a</option></select>",
+    "safe": true
+  },
+  {
+    "id": "select_tag-prompt",
+    "output": "<select name=\"s\" id=\"s\"><option value=\"\">Select &lt;one&gt;</option><option value=\"a\">a</option></select>",
+    "safe": true
+  },
+  {
+    "id": "select_tag-multiple",
+    "output": "<select name=\"v[status_id][]\" id=\"values_status_id\" multiple=\"multiple\" size=\"4\"><option value=\"a\">a</option></select>",
+    "safe": true
+  },
+  {
+    "id": "select_tag-nil",
+    "output": "<select name=\"e\" id=\"e\" onchange=\"this.form.submit(); return false;\"></select>",
+    "safe": true
+  },
+  {
+    "id": "select_tag-unsafe-string",
+    "output": "<select name=\"e\" id=\"e\">&lt;option&gt;x&lt;/option&gt;</select>",
+    "safe": true
+  },
+  {
+    "id": "select_tag-blank-false",
+    "output": "<select name=\"s\" id=\"s\"></select>",
+    "safe": true
+  },
+  {
+    "id": "submit_tag-default",
+    "output": "<input type=\"submit\" name=\"commit\" value=\"Save changes\" data-disable-with=\"Save changes\" />",
+    "safe": true
+  },
+  {
+    "id": "submit_tag-value",
+    "output": "<input type=\"submit\" name=\"commit\" value=\"Create\" data-disable-with=\"Create\" />",
+    "safe": true
+  },
+  {
+    "id": "submit_tag-opts",
+    "output": "<input type=\"submit\" name=\"continue\" value=\"Save\" class=\"button-small\" accesskey=\"s\" data-disable-with=\"Save\" />",
+    "safe": true
+  },
+  {
+    "id": "submit_tag-name-nil",
+    "output": "<input type=\"submit\" value=\"Apply\" data-disable-with=\"Apply\" />",
+    "safe": true
+  },
+  {
+    "id": "submit_tag-disable-false",
+    "output": "<input type=\"submit\" name=\"commit\" value=\"X\" data-foo=\"bar\" />",
+    "safe": true
+  },
+  {
+    "id": "submit_tag-disable-text",
+    "output": "<input type=\"submit\" name=\"commit\" value=\"X\" data-disable-with=\"Wait...\" />",
+    "safe": true
+  },
+  {
+    "id": "submit_tag-data",
+    "output": "<input type=\"submit\" name=\"commit\" value=\"X\" data-foo=\"bar\" data-disable-with=\"X\" />",
+    "safe": true
+  },
+  {
+    "id": "button_tag-basic",
+    "output": "<button name=\"button\" type=\"submit\">Click &lt;me&gt;</button>",
+    "safe": true
+  },
+  {
+    "id": "button_tag-opts",
+    "output": "<button name=\"button\" type=\"button\" class=\"btn\" onclick=\"go()\"><span>x</span></button>",
+    "safe": true
+  },
+  {
+    "id": "field_set_tag",
+    "output": "<fieldset class=\"box\"><legend>Legend &lt;x&gt;</legend><p>c</p></fieldset>",
+    "safe": true
+  },
+  {
+    "id": "field_set_tag-nolegend",
+    "output": "<fieldset>text</fieldset>",
+    "safe": true
+  },
+  {
+    "id": "escape_javascript",
+    "output": "it\\'s \\\"q\\\"\\n\\n\\\\ <\\/script> \\`x\\` \\${y} &#x2028;&#x2029;",
+    "safe": false
+  },
+  {
+    "id": "escape_javascript-safe",
+    "output": "<div class=\\\"a\\\">it\\'s<\\/div>\\n",
+    "safe": true
+  },
+  {
+    "id": "escape_javascript-nil",
+    "output": "",
+    "safe": false
+  },
+  {
+    "id": "javascript_tag",
+    "output": "<script>\n//<![CDATA[\n$('#x').hide(); if (a < b && c) {}\n//]]>\n</script>",
+    "safe": true
+  },
+  {
+    "id": "javascript_tag-opts",
+    "output": "<script id=\"s\">\n//<![CDATA[\nx();\n//]]>\n</script>",
+    "safe": true
+  },
+  {
+    "id": "javascript_tag-cdata",
+    "output": "<script>\n//<![CDATA[\nvar s = ']]]]><![CDATA[>';\n//]]>\n</script>",
+    "safe": true
+  },
+  {
+    "id": "simple_format-basic",
+    "output": "<p>Hello\n<br />World</p>\n\n<p>Para 2</p>",
+    "safe": true
+  },
+  {
+    "id": "simple_format-crlf",
+    "output": "<p>a\n<br />b</p>\n\n<p>c\n</p>",
+    "safe": true
+  },
+  {
+    "id": "simple_format-empty",
+    "output": "<p></p>",
+    "safe": true
+  },
+  {
+    "id": "simple_format-opts",
+    "output": "<div class=\"c\">x</div>",
+    "safe": true
+  },
+  {
+    "id": "simple_format-escape",
+    "output": "<p>a &amp; b &lt; c &gt; d \"q\" 'q'</p>",
+    "safe": true
+  },
+  {
+    "id": "simple_format-html",
+    "output": "<p><b>bold</b> alert(1) <a>l</a> <a href=\"http://e.com/?a=1&amp;b=2\" title=\"t\">ok</a></p>",
+    "safe": true
+  },
+  {
+    "id": "simple_format-nosanitize",
+    "output": "<p><b>x</b></p>",
+    "safe": true
+  },
+  {
+    "id": "sanitize-basic",
+    "output": "<p class=\"c\">Hi <em>there</em></p><img src=\"x.png\" alt=\"a\"><br>",
+    "safe": true
+  },
+  {
+    "id": "sanitize-entities",
+    "output": "© 2024 &amp; &lt;tag&gt;  x '",
+    "safe": true
+  },
+  {
+    "id": "sanitize-comment",
+    "output": "ab<div>d</div>",
+    "safe": true
+  },
+  {
+    "id": "strip_tags",
+    "output": "Hello World &amp; you",
+    "safe": true
+  },
+  {
+    "id": "truncate-short",
+    "output": "short",
+    "safe": true
+  },
+  {
+    "id": "truncate-long",
+    "output": "This is a very long string ...",
+    "safe": true
+  },
+  {
+    "id": "truncate-length",
+    "output": "Once upon a ...",
+    "safe": true
+  },
+  {
+    "id": "truncate-sep",
+    "output": "Once upon a...",
+    "safe": true
+  },
+  {
+    "id": "truncate-omission",
+    "output": "And they f... (continued)",
+    "safe": true
+  },
+  {
+    "id": "truncate-noescape",
+    "output": "<b>bold...",
+    "safe": true
+  },
+  {
+    "id": "truncate-multibyte",
+    "output": "日本語のテキス...",
+    "safe": true
+  },
+  {
+    "id": "pluralize-1",
+    "output": "1 person",
+    "safe": false
+  },
+  {
+    "id": "pluralize-2",
+    "output": "2 people",
+    "safe": false
+  },
+  {
+    "id": "pluralize-issue",
+    "output": "3 issues",
+    "safe": false
+  },
+  {
+    "id": "pluralize-category",
+    "output": "0 categories",
+    "safe": false
+  },
+  {
+    "id": "pluralize-plural",
+    "output": "2 boxen",
+    "safe": false
+  },
+  {
+    "id": "pluralize-status",
+    "output": "5 statuses",
+    "safe": false
+  },
+  {
+    "id": "pluralize-1.0",
+    "output": "1.0 day",
+    "safe": false
+  },
+  {
+    "id": "pluralize-nil",
+    "output": "0 days",
+    "safe": false
+  },
+  {
+    "id": "pluralize-words",
+    "output": "2 watches",
+    "safe": false
+  },
+  {
+    "id": "pluralize-knife",
+    "output": "2 knives",
+    "safe": false
+  },
+  {
+    "id": "pluralize-sheep",
+    "output": "2 sheep",
+    "safe": false
+  },
+  {
+    "id": "pluralize-child",
+    "output": "2 children",
+    "safe": false
+  },
+  {
+    "id": "cycle-seq",
+    "output": "odd\neven\nodd\nodd\nodd\na\nb\nx\ny",
+    "safe": false
+  },
+  {
+    "id": "fb-text_field",
+    "output": "<label for=\"issue_subject\">Subject<span class=\"required\"> *</span></label><input size=\"80\" maxlength=\"255\" type=\"text\" name=\"issue[subject]\" id=\"issue_subject\" />",
+    "safe": true
+  },
+  {
+    "id": "fb-text_field-nolabel",
+    "output": "<input required=\"required\" type=\"text\" name=\"issue[subject]\" id=\"issue_subject\" />",
+    "safe": true
+  },
+  {
+    "id": "fb-text_field-label-str",
+    "output": "<label for=\"issue_subject\">Sub<ject></label><input type=\"text\" name=\"issue[subject]\" id=\"issue_subject\" />",
+    "safe": true
+  },
+  {
+    "id": "fb-text_field-label-sym",
+    "output": "<label for=\"issue_subject\">Subject</label><input type=\"text\" name=\"issue[subject]\" id=\"issue_subject\" />",
+    "safe": true
+  },
+  {
+    "id": "fb-text_field-error",
+    "output": "<label class=\"error\" for=\"issue_subject\">Subject</label><input type=\"text\" value=\"\" name=\"issue[subject]\" id=\"issue_subject\" />",
+    "safe": true
+  },
+  {
+    "id": "fb-text_field-value",
+    "output": "<label for=\"issue_subject\">Subject</label><input class=\"c\" placeholder=\"p\" type=\"text\" value=\"Fix &quot;bug&quot; &lt;now&gt; &amp; &#39;then&#39;\" name=\"issue[subject]\" id=\"issue_subject\" />",
+    "safe": true
+  },
+  {
+    "id": "fb-text_field-override",
+    "output": "<label for=\"issue_subject\">Subject</label><input value=\"given\" id=\"custom\" name=\"n\" type=\"text\" />",
+    "safe": true
+  },
+  {
+    "id": "fb-text_field-nil-attr",
+    "output": "<label for=\"issue_estimated_hours\">Estimated hours</label><input size=\"3\" type=\"text\" name=\"issue[estimated_hours]\" id=\"issue_estimated_hours\" />",
+    "safe": true
+  },
+  {
+    "id": "fb-text_field-plain",
+    "output": "<input type=\"text\" value=\"Fix &quot;bug&quot; &lt;now&gt; &amp; &#39;then&#39;\" name=\"issue[subject]\" id=\"issue_subject\" />",
+    "safe": true
+  },
+  {
+    "id": "fb-text_field-nested-name",
+    "output": "<input type=\"text\" value=\"Fix &quot;bug&quot; &lt;now&gt; &amp; &#39;then&#39;\" name=\"issue[custom_field_values][subject]\" id=\"issue_custom_field_values_subject\" />",
+    "safe": true
+  },
+  {
+    "id": "fb-password_field",
+    "output": "<label for=\"user_password\">Password</label><input size=\"25\" type=\"password\" name=\"user[password]\" id=\"user_password\" />",
+    "safe": true
+  },
+  {
+    "id": "fb-text_area",
+    "output": "<textarea cols=\"60\" rows=\"10\" class=\"wiki-edit\" name=\"issue[description]\" id=\"issue_description\">\nline1\nline2 &lt;b&gt;</textarea>",
+    "safe": true
+  },
+  {
+    "id": "fb-text_area-size",
+    "output": "<label for=\"issue_description\">Description</label><textarea name=\"issue[description]\" id=\"issue_description\" cols=\"40\" rows=\"3\">\nline1\nline2 &lt;b&gt;</textarea>",
+    "safe": true
+  },
+  {
+    "id": "fb-text_area-newline",
+    "output": "<label for=\"issue_description\">Description</label><textarea name=\"issue[description]\" id=\"issue_description\">\n\nstarts with newline</textarea>",
+    "safe": true
+  },
+  {
+    "id": "fb-check_box",
+    "output": "<label for=\"issue_is_private\">Is private</label><input name=\"issue[is_private]\" type=\"hidden\" value=\"0\" autocomplete=\"off\" /><input type=\"checkbox\" value=\"1\" checked=\"checked\" name=\"issue[is_private]\" id=\"issue_is_private\" />",
+    "safe": true
+  },
+  {
+    "id": "fb-check_box-unchecked",
+    "output": "<label for=\"issue_is_private\">Is private</label><input name=\"issue[is_private]\" disabled=\"disabled\" type=\"hidden\" value=\"0\" autocomplete=\"off\" /><input disabled=\"disabled\" type=\"checkbox\" value=\"1\" name=\"issue[is_private]\" id=\"issue_is_private\" />",
+    "safe": true
+  },
+  {
+    "id": "fb-check_box-values",
+    "output": "<label for=\"user_admin\">Admin</label><input name=\"user[admin]\" type=\"hidden\" value=\"no\" autocomplete=\"off\" /><input type=\"checkbox\" value=\"yes\" name=\"user[admin]\" id=\"user_admin\" />",
+    "safe": true
+  },
+  {
+    "id": "fb-check_box-nohidden",
+    "output": "<label for=\"user_admin\">Admin</label><input type=\"checkbox\" value=\"1\" name=\"user[admin]\" id=\"user_admin\" />",
+    "safe": true
+  },
+  {
+    "id": "fb-check_box-plain",
+    "output": "<input name=\"issue[is_private]\" type=\"hidden\" value=\"0\" autocomplete=\"off\" /><input type=\"checkbox\" value=\"1\" checked=\"checked\" name=\"issue[is_private]\" id=\"issue_is_private\" />",
+    "safe": true
+  },
+  {
+    "id": "fb-hidden_field",
+    "output": "<input autocomplete=\"off\" type=\"hidden\" value=\"3\" name=\"issue[lock_version]\" id=\"issue_lock_version\" />",
+    "safe": true
+  },
+  {
+    "id": "fb-hidden_field-opts",
+    "output": "<input value=\"v\" autocomplete=\"off\" type=\"hidden\" name=\"issue[subject]\" />",
+    "safe": true
+  },
+  {
+    "id": "fb-date_field",
+    "output": "<label for=\"issue_start_date\">Start date</label><input max=\"9999-12-31\" size=\"10\" value=\"2024-03-01\" type=\"date\" name=\"issue[start_date]\" id=\"issue_start_date\" />",
+    "safe": true
+  },
+  {
+    "id": "fb-date_field-nil",
+    "output": "<label for=\"issue_start_date\">Start date<span class=\"required\"> *</span></label><input max=\"9999-12-31\" size=\"10\" type=\"date\" name=\"issue[start_date]\" id=\"issue_start_date\" />",
+    "safe": true
+  },
+  {
+    "id": "fb-select",
+    "output": "<label for=\"issue_status_id\">Status<span class=\"required\"> *</span></label><select onchange=\"x()\" name=\"issue[status_id]\" id=\"issue_status_id\"><option value=\"1\">New</option>\n<option selected=\"selected\" value=\"5\">Closed</option></select>",
+    "safe": true
+  },
+  {
+    "id": "fb-select-blank",
+    "output": "<label for=\"issue_status_id\">Status</label><select name=\"issue[status_id]\" id=\"issue_status_id\"><option value=\"\" label=\" \"></option>\n<option value=\"1\">New</option>\n<option value=\"5\">Closed</option></select>",
+    "safe": true
+  },
+  {
+    "id": "fb-select-blank-text",
+    "output": "<label for=\"issue_status_id\">Status</label><select name=\"issue[status_id]\" id=\"issue_status_id\"><option value=\"\">none</option>\n<option value=\"1\">New</option></select>",
+    "safe": true
+  },
+  {
+    "id": "fb-select-prompt",
+    "output": "<label for=\"issue_status_id\">Status</label><select name=\"issue[status_id]\" id=\"issue_status_id\"><option value=\"\">Choose</option>\n<option value=\"1\">New</option></select>",
+    "safe": true
+  },
+  {
+    "id": "fb-select-html-required",
+    "output": "<label for=\"issue_status_id\">Status</label><select required=\"required\" name=\"issue[status_id]\" id=\"issue_status_id\"><option value=\"\" label=\" \"></option>\n<option value=\"1\">New</option></select>",
+    "safe": true
+  },
+  {
+    "id": "fb-select-multiple",
+    "output": "<label for=\"issue_watcher_user_ids\">Watcher user ids</label><input name=\"issue[watcher_user_ids][]\" type=\"hidden\" value=\"\" autocomplete=\"off\" /><select size=\"5\" multiple=\"multiple\" name=\"issue[watcher_user_ids][]\" id=\"issue_watcher_user_ids\"><option value=\"1\">A</option>\n<option value=\"2\">B</option></select>",
+    "safe": true
+  },
+  {
+    "id": "fb-select-grouped",
+    "output": "<label for=\"issue_status_id\">Status</label><select name=\"issue[status_id]\" id=\"issue_status_id\"><optgroup label=\"G\"><option value=\"1\">New</option>\n<option selected=\"selected\" value=\"5\">Closed</option></optgroup></select>",
+    "safe": true
+  },
+  {
+    "id": "fb-select-selected",
+    "output": "<label for=\"issue_status_id\">St</label><select name=\"issue[status_id]\" id=\"issue_status_id\"><option selected=\"selected\" value=\"1\">New</option>\n<option value=\"5\">Closed</option></select>",
+    "safe": true
+  },
+  {
+    "id": "fb-select-error",
+    "output": "<label class=\"error\" for=\"issue_status_id\">Status</label><select name=\"issue[status_id]\" id=\"issue_status_id\"><option value=\"1\">New</option></select>",
+    "safe": true
+  },
+  {
+    "id": "fb-radio_button",
+    "output": "<input type=\"radio\" value=\"5\" checked=\"checked\" name=\"issue[status_id]\" id=\"issue_status_id_5\" />",
+    "safe": true
+  },
+  {
+    "id": "fb-radio_button-2",
+    "output": "<input class=\"r\" type=\"radio\" value=\"a b.c\" name=\"issue[status_id]\" id=\"issue_status_id_a_b_c\" />",
+    "safe": true
+  },
+  {
+    "id": "fb-label",
+    "output": "<label for=\"issue_subject\">Subject</label>",
+    "safe": true
+  },
+  {
+    "id": "fb-label-text",
+    "output": "<label class=\"c\" for=\"issue_subject\">Text &lt;x&gt;</label>",
+    "safe": true
+  },
+  {
+    "id": "fb-label-value",
+    "output": "<label for=\"issue_status_id_5\">S</label>",
+    "safe": true
+  },
+  {
+    "id": "fb-submit",
+    "output": "<input type=\"submit\" name=\"commit\" value=\"Save\" class=\"b\" data-disable-with=\"Save\" />",
+    "safe": true
+  },
+  {
+    "id": "fb-email_field",
+    "output": "<label for=\"user_mail\">Mail</label><input size=\"30\" type=\"email\" value=\"a@b.c\" name=\"user[mail]\" id=\"user_mail\" />",
+    "safe": true
+  },
+  {
+    "id": "fb-number_field",
+    "output": "<label for=\"user_age\">Age</label><input min=\"0\" type=\"number\" value=\"30\" name=\"user[age]\" id=\"user_age\" />",
+    "safe": true
+  },
+  {
+    "id": "form_for-new",
+    "output": "<form class=\"new_issue\" id=\"issue-form\" enctype=\"multipart/form-data\" action=\"/projects/p/issues\" accept-charset=\"UTF-8\" name=\"issue-form-abcd1234\" method=\"post\"><input type=\"hidden\" name=\"authenticity_token\" value=\"TOKEN\" autocomplete=\"off\" /></form>",
+    "safe": true
+  },
+  {
+    "id": "form_for-edit",
+    "output": "<form class=\"x\" id=\"issue-form\" action=\"/issues/5\" accept-charset=\"UTF-8\" name=\"issue-form-abcd1234\" method=\"post\"><input type=\"hidden\" name=\"_method\" value=\"patch\" autocomplete=\"off\" /><input type=\"hidden\" name=\"authenticity_token\" value=\"TOKEN\" autocomplete=\"off\" /></form>",
+    "safe": true
+  },
+  {
+    "id": "form_for-edit-default",
+    "output": "<form class=\"edit_issue\" id=\"edit_issue_5\" action=\"/issues/5\" accept-charset=\"UTF-8\" name=\"edit_issue_5-abcd1234\" method=\"post\"><input type=\"hidden\" name=\"_method\" value=\"patch\" autocomplete=\"off\" /><input type=\"hidden\" name=\"authenticity_token\" value=\"TOKEN\" autocomplete=\"off\" /></form>",
+    "safe": true
+  },
+  {
+    "id": "form_for-method",
+    "output": "<form class=\"new_issue\" id=\"new_issue\" action=\"/x\" accept-charset=\"UTF-8\" name=\"new_issue-abcd1234\" method=\"post\"><input type=\"hidden\" name=\"_method\" value=\"put\" autocomplete=\"off\" /><input type=\"hidden\" name=\"authenticity_token\" value=\"TOKEN\" autocomplete=\"off\" /></form>",
+    "safe": true
+  },
+  {
+    "id": "form_for-as",
+    "output": "<form class=\"edit_settings\" id=\"edit_settings\" action=\"/x\" accept-charset=\"UTF-8\" name=\"edit_settings-abcd1234\" method=\"post\"><input type=\"hidden\" name=\"_method\" value=\"patch\" autocomplete=\"off\" /><input type=\"hidden\" name=\"authenticity_token\" value=\"TOKEN\" autocomplete=\"off\" /></form>",
+    "safe": true
+  },
+  {
+    "id": "form_for-remote",
+    "output": "<form class=\"new_issue\" id=\"new_issue\" action=\"/x\" accept-charset=\"UTF-8\" data-remote=\"true\" name=\"new_issue-abcd1234\" method=\"post\"></form>",
+    "safe": true
+  }
+]
