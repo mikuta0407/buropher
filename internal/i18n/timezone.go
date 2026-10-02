@@ -4,6 +4,7 @@ package i18n
 
 import (
 	"fmt"
+	"github.com/mikuta0407/buropher/internal/clock"
 	"strings"
 	"sync"
 	"time"
@@ -120,7 +121,7 @@ func UserLocation(prefTimeZone string) *time.Location {
 
 // standardOffset は現在年の 1 月・7 月のうち夏時間でない方のオフセットを返す。
 func standardOffset(loc *time.Location) int {
-	y := time.Now().Year()
+	y := clock.Now().Year()
 	jan := time.Date(y, 1, 1, 0, 0, 0, 0, loc)
 	jul := time.Date(y, 7, 1, 0, 0, 0, 0, loc)
 	_, oj := jan.Zone()

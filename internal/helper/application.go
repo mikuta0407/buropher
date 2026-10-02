@@ -3,6 +3,7 @@ package helper
 import (
 	"crypto/sha256"
 	"encoding/hex"
+	"github.com/mikuta0407/buropher/internal/clock"
 	"html/template"
 	"net/url"
 	"reflect"
@@ -739,7 +740,7 @@ func (d *Deps) timeTag(p *Page, t time.Time) html {
 	}
 	text := ""
 	if p.Loc != nil {
-		text = p.Loc.DistanceOfTimeInWords(time.Now(), t)
+		text = p.Loc.DistanceOfTimeInWords(clock.Now(), t)
 	}
 	if p.Project != nil {
 		from := t

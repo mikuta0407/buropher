@@ -7,28 +7,11 @@ import (
 	"github.com/mikuta0407/buropher/internal/repository"
 )
 
-// recompute は導出値(position_name、カウンタキャッシュ)を再計算する。
+// recompute は導出値(position_name)を再計算する。
+// カウンタキャッシュ(comments_count 等)は Redmine が画面に表示する値なので、
+// 実件数とずれていても移行元の値をそのまま保持する(表示の互換を優先)。
 func (im *imp) recompute() error {
-	if err := repository.ComputePriorityPositionNames(im.ctx, im.tx); err != nil {
-		return err
-	}
-	stmts := []string{
-		`UPDATE boards SET
-			topics_count = (SELECT COUNT(*) FROM messages m WHERE m.board_id = boards.id AND m.parent_id IS NULL),
-			messages_count = (SELECT COUNT(*) FROM messages m WHERE m.board_id = boards.id),
-			last_message_id = (SELECT MAX(m.id) FROM messages m WHERE m.board_id = boards.id)`,
-		`UPDATE messages SET
-			replies_count = (SELECT COUNT(*) FROM messages c WHERE c.parent_id = messages.id),
-			last_reply_id = (SELECT MAX(c.id) FROM messages c WHERE c.parent_id = messages.id)
-		 WHERE parent_id IS NULL`,
-		`UPDATE news SET comments_count = (SELECT COUNT(*) FROM news_comments c WHERE c.news_id = news.id)`,
-	}
-	for _, q := range stmts {
-		if _, err := im.exec(q); err != nil {
-			return err
-		}
-	}
-	return nil
+	return repository.ComputePriorityPositionNames(im.ctx, im.tx)
 }
 
 // idTables は id 主キー(採番)を持つテーブル。
