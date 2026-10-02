@@ -1,0 +1,18 @@
+<div id="login-form">
+
+  <h3>{{l "setting_twofa"}}</h3>
+  <p>{{l "twofa_label_enter_otp"}}</p>
+
+  {{form_tag "/account/twofa" (hash "id" "twofa_form" "onsubmit" "return keepAnchorOnSignIn(this);")}}
+
+
+    <label for="twofa_code">
+      {{l "twofa_label_code" -}}
+      {{if .TwofaView.Resendable}}{{link_to (l "twofa_resend_code") "/account/twofa/resend" (hash "method" "post" "class" "lost_password")}}{{end -}}
+    </label>
+    {{text_field_tag "twofa_code" nil (hash "tabindex" "1" "autocomplete" "one-time-code" "autofocus" true) -}}
+
+    {{submit_tag (l "button_login") (hash "tabindex" "2" "id" "login-submit" "name" "submit_otp") -}}
+  {{end_form}}
+
+</div>

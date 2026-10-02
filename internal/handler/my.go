@@ -87,6 +87,8 @@ func (a *App) myAccountData(c *Req, m *userModel) (map[string]any, error) {
 func (a *App) mySidebarData(c *Req, u *domain.User, data map[string]any) error {
 	ctx := c.Ctx()
 	data["SidebarUser"] = u
+	// buropher 拡張: OIDC 認証方式があれば外部 ID 連携へのリンクを出す
+	data["SSOEnabled"] = len(a.oidcSources(c)) > 0
 	data["OwnAccountDeletable"] = a.ownAccountDeletable(c, u)
 	atom, err := repository.UserToken(ctx, a.DB, u.ID, repository.TokenFeeds)
 	if err != nil && !errors.Is(err, repository.ErrNotFound) {

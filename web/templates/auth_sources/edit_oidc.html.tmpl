@@ -1,0 +1,6 @@
+{{title (list (l "label_auth_source_plural") "/auth_sources") .AuthSource.Name}}
+
+{{$f := labelled_form_for "" .AuthSource (hash "as" "auth_source" "url" (printf "/auth_sources/%d" .AuthSource.ID) "html" (hash "id" "auth_source_form"))}}{{$f.Open}}
+  {{partial "auth_sources/form_auth_source_oidc" (dict "f" $f)}}
+  {{submit_tag (l "button_save")}}
+{{end_form}}

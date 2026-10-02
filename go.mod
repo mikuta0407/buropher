@@ -16,6 +16,7 @@ require (
 	filippo.io/edwards25519 v1.2.0 // indirect
 	github.com/Azure/go-ntlmssp v0.1.1 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
+	github.com/go-jose/go-jose/v4 v4.1.4 // indirect
 	github.com/golang-sql/civil v0.0.0-20220223132316-b832511892a9 // indirect
 	github.com/golang-sql/sqlexp v0.1.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
@@ -50,6 +51,8 @@ require (
 
 require (
 	github.com/alecthomas/chroma/v2 v2.27.0
+	github.com/boombuler/barcode v1.0.1-0.20190219062509-6c824513bacc
+	github.com/coreos/go-oidc/v3 v3.21.0
 	github.com/dlclark/regexp2 v1.12.0
 	github.com/dlclark/regexp2/v2 v2.8.1
 	github.com/go-asn1-ber/asn1-ber v1.5.8
@@ -58,5 +61,6 @@ require (
 	github.com/klauspost/compress v1.19.2
 	github.com/microsoft/go-mssqldb v1.11.0
 	github.com/yuin/goldmark v1.8.6
+	golang.org/x/oauth2 v0.37.0
 	golang.org/x/text v0.42.0
 )

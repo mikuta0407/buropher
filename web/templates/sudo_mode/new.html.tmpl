@@ -1,0 +1,17 @@
+<h2>{{l "label_password_required"}}</h2>
+<p class="nodata" style="font-size: 1em;">{{raw (l "sudo_mode_new_info_html")}}</p>
+{{form_tag .Action (hash "method" "post" "class" "tabular" "id" "sudo-form")}}
+
+  {{hidden_field_tag "_method" .Method}}
+  {{range $i, $f := .OriginalFields}}{{if $i}}
+{{end}}{{hidden_field_tag $f.Name $f.Value}}{{end}}
+
+  <div class="box">
+    <p>
+      <label for="sudo_password">{{l "field_password"}}<span class="required">*</span></label>
+      {{password_field_tag "sudo_password" nil (hash "size" 25 "autocomplete" "current-password" "autofocus" true)}}
+      </br>{{if setting_bool "lost_password"}}{{link_to (l "label_password_lost") "/account/lost_password" (hash "class" "lost_password")}}{{end}}
+    </p>
+  </div>
+  {{submit_tag (l "button_submit")}}
+{{end_form}}

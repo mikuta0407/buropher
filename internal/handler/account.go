@@ -21,6 +21,9 @@ func (a *App) routesAccount(r Router) {
 		a.Handle(r, m, "/logout", AccountController, "logout", a.AccountLogout,
 			Skip(FilterLoginRequired, FilterPasswordChange, FilterTwofaActivation))
 	}
+	a.routesAccountTwofa(r)
+	a.routesAccountRecovery(r)
+	a.routesOIDC(r)
 }
 
 // AccountLogin は account#login（GET / POST /login）。
@@ -33,7 +36,7 @@ func (a *App) AccountLogin(c *Req) {
 		c.RedirectBackOrDefault("/", true)
 	}
 	if !c.Halted() {
-		c.Render("account/login", nil)
+		c.Render("account/login", a.ssoLoginData(c))
 	}
 }
 
@@ -44,7 +47,13 @@ func (a *App) AccountLogout(c *Req) {
 		return
 	}
 	if c.R.Method == http.MethodPost {
+		// buropher 拡張: OIDC でログインしていれば IdP からもログアウトする（RP-Initiated Logout）
+		dest := a.ssoLogoutURL(c)
 		a.logoutUser(c)
+		if dest != "" {
+			c.Redirect(dest)
+			return
+		}
 		c.Redirect("/")
 		return
 	}
@@ -66,23 +75,33 @@ func (a *App) passwordAuthentication(c *Req) {
 	}
 	switch {
 	case unsaved != nil:
-		// onthefly_creation_failed: Redmine は session[:auth_source_registration] を設定して account/register を描画する。
-		// TODO(register): 登録画面（account#register）が未実装のため、資格情報エラーとして扱う。
-		a.logger().Warn("on-the-fly user creation failed", "login", unsaved.Login, "errors", unsaved.errors.FullMessages(c.Loc))
-		a.invalidCredentials(c)
+		// onthefly_creation_failed: session[:auth_source_registration] を設定して account/register を描画する
+		a.ontheflyCreationFailed(c, unsaved)
 	case user == nil:
 		a.invalidCredentials(c)
 	case user.Active():
+		if !a.localLoginAllowed(c, user) {
+			// buropher 拡張: SSO 必須モードでは管理者以外のパスワードログインを拒否する
+			c.Flash().Now("error", c.L("buropher.sso.notice_password_login_disabled"))
+			return
+		}
 		if user.TwofaActive() {
-			// TODO(twofa): setup_twofa_session と account/twofa 画面。未実装の間は 2FA を迂回させない。
-			c.Flash().SetError(c.L("notice_account_invalid_credentials"))
-			c.Redirect("/login")
+			a.startTwofaLogin(c, user)
 			return
 		}
 		a.handleActiveUser(c, user)
 	default:
 		a.handleInactiveUser(c, user, "/login")
 	}
+}
+
+// ontheflyCreationFailed は AccountController#onthefly_creation_failed（登録画面で不足している属性を入力させる）。
+func (a *App) ontheflyCreationFailed(c *Req, m *userModel) {
+	if s := c.Session(); s != nil && m.AuthSourceID != nil {
+		s.Set("auth_source_registration", map[string]any{"login": m.Login, "auth_source_id": *m.AuthSourceID})
+	}
+	c.NoStore()
+	a.renderRegister(c, m)
 }
 
 // handleActiveUser は AccountController#handle_active_user。

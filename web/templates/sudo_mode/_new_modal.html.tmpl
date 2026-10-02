@@ -1,0 +1,22 @@
+{{$a := assigns -}}
+<h3 class="title">{{l "label_password_required"}}</h3>
+<p class="nodata" style="font-size: 1em;">{{raw (l "sudo_mode_new_info_html")}}</p>
+{{form_tag $a.Action (hash "remote" true)}}
+
+  {{hidden_field_tag "_method" $a.Method}}
+  {{range $i, $f := $a.OriginalFields}}{{if $i}}
+{{end}}{{hidden_field_tag $f.Name $f.Value}}{{end}}
+  {{render_flash_messages}}
+  <div class="box tabular">
+    <p>
+      <label for="sudo_password">{{l "field_password"}}<span class="required">*</span></label>
+      {{password_field_tag "sudo_password" nil (hash "size" 25 "autocomplete" "current-password")}}
+      <br/>{{if setting_bool "lost_password"}}{{link_to (l "label_password_lost") "/account/lost_password" (hash "class" "lost_password")}}{{end}}
+    </p>
+  </div>
+
+  <p class="buttons">
+    {{submit_tag (l "button_submit") (hash "onclick" "hideModal(this);")}}
+    {{link_to_function (l "button_cancel") "hideModal(this);"}}
+  </p>
+{{end_form}}

@@ -1,0 +1,9 @@
+{{$v := .twofa_view -}}
+<p>
+  <label>&nbsp;</label>
+  {{image_tag $v.QRCode (hash "id" "twofa_code") -}}
+</p>
+<p>
+  <label>{{l "twofa__totp__label_plain_text_key" -}}</label>
+  <code>{{$v.TotpKeyGroups -}}</code>
+</p>

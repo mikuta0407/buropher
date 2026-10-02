@@ -48,7 +48,7 @@
     {{if $u.TwofaActive}}
       {{l "twofa_currently_active" (hash "twofa_scheme_name" (l (printf "twofa__%s__name" $u.TwofaScheme)))}}<br/>
       {{if eq $u.ID (current_user).ID}}
-        {{link_to (l "button_disable") (printf "/my/twofa/%s/deactivate" $u.TwofaScheme) (hash "method" "post")}}
+        {{link_to (l "button_disable") (printf "/my/twofa/%s/deactivate/init" $u.TwofaScheme) (hash "method" "post")}}
       {{else}}
         {{link_to (l "button_disable") (printf "/users/%d/twofa/deactivate" $u.ID) (hash "method" "post")}}
       {{end}}

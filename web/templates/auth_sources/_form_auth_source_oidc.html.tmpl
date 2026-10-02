@@ -1,0 +1,89 @@
+{{$f := .f}}{{$a := assigns}}{{$src := $a.AuthSource -}}
+{{error_messages_for $src}}
+
+<div class="box tabular">
+  <p>{{$f.TextField "name" (hash "required" true)}}</p>
+  <p>{{$f.CheckBox "enabled"}}</p>
+  <p>
+    {{$f.Select "preset" (list (list (l "buropher.sso.label_preset_generic") "generic") (list (l "buropher.sso.label_preset_entra") "entra")) (hash "required" true)}}
+    <em class="info">{{l "buropher.sso.text_preset"}}</em>
+  </p>
+  <p>
+    {{$f.TextField "issuer" (hash "size" 60)}}
+    <em class="info">{{l "buropher.sso.text_issuer"}}</em>
+  </p>
+  <p>
+    {{$f.TextField "tenant" (hash "size" 40)}}
+    <em class="info">{{l "buropher.sso.text_tenant"}}</em>
+  </p>
+  <p>{{$f.TextField "client_id" (hash "required" true "size" 60)}}</p>
+  <p>{{$f.PasswordField "client_secret" (hash "name" "dummy_client_secret" "value" $src.SecretDisplay "onfocus" "this.value=''; this.name='auth_source[client_secret]';" "onchange" "this.name='auth_source[client_secret]';")}}</p>
+  <p>{{$f.TextField "scopes" (hash "size" 60)}}</p>
+  {{if $src.CallbackURL}}
+  <p><label>{{l "buropher.sso.field_redirect_uri"}}</label><code>{{$src.CallbackURL}}</code></p>
+  {{else}}
+  <p><label>{{l "buropher.sso.field_redirect_uri"}}</label><em class="info">{{l "buropher.sso.text_redirect_uri"}}</em></p>
+  {{end}}
+  <p>{{$f.TextField "button_label" (hash "size" 40)}}</p>
+  <p>{{$f.CheckBox "onthefly_register" (hash "label" (sym "field_onthefly"))}}</p>
+  <p>
+    {{$f.Select "match_by" (list (list (l "buropher.sso.label_match_by_mail") "mail") (list (l "buropher.sso.label_match_by_login") "login") (list (l "buropher.sso.label_match_by_none") "none"))}}
+    <em class="info">{{l "buropher.sso.text_match_by"}}</em>
+  </p>
+</div>
+
+<fieldset class="box tabular"><legend>{{l "buropher.sso.label_claim_mapping"}}</legend>
+  <p>{{$f.TextField "claim_subject" (hash "size" 20 "placeholder" "sub")}}</p>
+  <p>{{$f.TextField "claim_login" (hash "size" 20 "placeholder" "preferred_username")}}</p>
+  <p>{{$f.TextField "claim_firstname" (hash "size" 20 "placeholder" "given_name")}}</p>
+  <p>{{$f.TextField "claim_lastname" (hash "size" 20 "placeholder" "family_name")}}</p>
+  <p>{{$f.TextField "claim_mail" (hash "size" 20 "placeholder" "email")}}</p>
+  <p>{{$f.TextField "claim_groups" (hash "size" 20 "placeholder" "groups")}}</p>
+  <p>{{$f.TextField "claim_tenant" (hash "size" 20 "placeholder" "tid")}}</p>
+</fieldset>
+
+<fieldset class="box tabular"><legend>{{l "buropher.sso.label_access_restrictions"}}</legend>
+  <p>
+    {{$f.TextArea "allowed_tenants" (hash "rows" 3 "cols" 60)}}
+    <em class="info">{{l "buropher.sso.text_allowed_tenants"}}</em>
+  </p>
+  <p>
+    {{$f.TextArea "allowed_groups" (hash "rows" 3 "cols" 60)}}
+    <em class="info">{{l "buropher.sso.text_allowed_groups"}}</em>
+  </p>
+  <p>
+    {{$f.CheckBox "sso_required"}}
+    <em class="info">{{l "buropher.sso.text_sso_required"}}</em>
+  </p>
+  <p>
+    {{$f.CheckBox "skip_twofa"}}
+    <em class="info">{{l "buropher.sso.text_skip_twofa"}}</em>
+  </p>
+  <p>
+    {{$f.CheckBox "rp_logout"}}
+    <em class="info">{{l "buropher.sso.text_rp_logout"}}</em>
+  </p>
+</fieldset>
+
+<fieldset class="box"><legend>{{l "buropher.sso.label_group_mappings"}}</legend>
+  <div class="tabular">
+  <p>
+    {{$f.CheckBox "group_sync"}}
+    <em class="info">{{l "buropher.sso.text_group_sync"}}</em>
+  </p>
+  </div>
+  <table class="list" id="group-mappings">
+    <thead><tr>
+      <th>{{l "buropher.sso.field_external_group"}}</th>
+      <th>{{l "label_group"}}</th>
+    </tr></thead>
+    <tbody>
+    {{range $m := $src.Mappings}}
+    <tr>
+      <td>{{text_field_tag "group_mapping_external[]" $m.ExternalGroup (hash "size" 50 "id" nil)}}</td>
+      <td>{{select_tag "group_mapping_group_id[]" (options_for_select $a.GroupOptions $m.GroupID) (hash "include_blank" true "id" nil)}}</td>
+    </tr>
+    {{end}}
+    </tbody>
+  </table>
+</fieldset>

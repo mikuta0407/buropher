@@ -126,6 +126,9 @@ func New(cfg *config.Config, d *db.DB, opts ...Options) (*Server, error) {
 		DB: d, Settings: st, Bundle: i18n.Default(), Assets: ap, Views: views, Helpers: helpers,
 		Errors: errs, Logger: o.Logger, Now: o.Now, FormNameSuffix: o.FormNameSuffix, Version: o.Version,
 	}
+	app.SudoMode = cfg.Auth.SudoMode
+	app.SudoModeTimeout = time.Duration(cfg.Auth.SudoModeTimeout) * time.Minute
+	app.BaseURL = cfg.Server.BaseURL
 	if box, err := secretbox.New(string(secret)); err == nil {
 		app.Secrets = box
 	}

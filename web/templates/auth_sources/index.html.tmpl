@@ -1,5 +1,6 @@
 <div class="contextual">
 {{link_to (sprite_icon "add" (l "label_auth_source_new")) "/auth_sources/new" (hash "class" "icon icon-add")}}
+{{/* buropher 拡張: OIDC 認証方式の追加 */}}{{link_to (l "buropher.sso.label_oidc_new") "/auth_sources/new?type=AuthSourceOidc" (hash "class" "icon icon-add buropher-extra")}}
 </div>
 
 {{title (l "label_auth_source_plural")}}

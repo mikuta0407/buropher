@@ -1,0 +1,18 @@
+<h2>{{l "twofa_label_backup_codes" -}}</h2>
+
+<div class="splitcontentleft">
+  <div class="box">
+    <p>{{l "twofa_text_backup_codes_hint" -}}</p>
+    <ul class="twofa_backup_codes">
+    {{range $code := .BackupCodes -}}
+      <li><code>{{$code -}}</code></li>
+    {{end -}}
+    </ul>
+    <p><em class="info">{{l "twofa_text_backup_codes_created_at" (hash "datetime" (format_time .CreatedAt)) -}}</em></p>
+  </div>
+</div>
+
+{{define "twofa_backup_codes/show#sidebar"}}
+{{partial "my/sidebar"}}
+{{end}}
+{{content_for "sidebar" (capture "twofa_backup_codes/show#sidebar")}}

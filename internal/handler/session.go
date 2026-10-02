@@ -247,7 +247,6 @@ func (a *App) checkPasswordChange(c *Req) {
 }
 
 // checkTwofaActivation は ApplicationController#check_twofa_activation。
-// TODO(twofa): 2FA 実装後に init_twofa_pairing_and_send_code_for を移植する（現在は画面へリダイレクトのみ）。
 func (a *App) checkTwofaActivation(c *Req) {
 	s := c.Session()
 	if s == nil || !s.Has("must_activate_twofa") {
@@ -255,8 +254,13 @@ func (a *App) checkTwofaActivation(c *Req) {
 	}
 	if a.mustActivateTwofa(c, c.User) {
 		c.Flash().SetWarning(c.L("twofa_warning_require"))
-		// 利用可能な方式は totp のみ
-		c.Redirect("/my/twofa/totp/activate/confirm")
+		// 利用可能な方式は totp のみ（available_schemes.length == 1 → init_twofa_pairing_and_send_code_for）
+		t, err := a.twofaFor(c, c.User)
+		if err != nil {
+			a.serverError(c, err)
+			return
+		}
+		a.initTwofaPairingAndSendCodeFor(c, t)
 		return
 	}
 	s.Delete("must_activate_twofa")
