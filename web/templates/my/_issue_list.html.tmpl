@@ -1,7 +1,7 @@
 {{/* issues/_list.html.erb（マイページのチケットブロック用。TODO(issues): issues/_list と共通化する） */}}
 {{$q := .query}}
 
-{{form_tag "/my/page" (hash "data" (hash "cm_url" "/issues/context_menu")) -}}
+{{form_tag request_path (hash "data" (hash "cm_url" "/issues/context_menu")) -}}
 {{hidden_field_tag "back_url" $q.BackURL (hash "id" nil)}}
 {{$q.ColumnsHiddenTags}}
 <div class="autoscroll">

@@ -1,9 +1,10 @@
-# カレンダー（CalendarsController#show）とレポート（ReportsController#issue_report / issue_report_details）。
+# マイページ・個人設定（MyController の GET）、カレンダー（CalendarsController#show）と
+# レポート（ReportsController#issue_report / issue_report_details）。
 # すべて GET。参照環境は共有でリセットしないため、閲覧で変わる状態（最近使ったプロジェクト・
 # ブックマーク）が出るプロジェクトジャンプボックスは比較から外す。
 # retrieve_query は session[:issue_query] を使うため、セッションごとの状態に依存しないよう
 # 各リクエストは set_filter / query_id 付きか、セッションに何も無い状態で始まる順に並べる。
-name: calendar_reports
+name: my_calendar_reports
 
 users:
   admin: {login: admin, password: admin}
@@ -17,6 +18,44 @@ normalize:
     - "#project-jump"
 
 requests:
+  # ---- マイページ（MyController）
+  # 各ユーザーの API キー・Atom キーを先に作る（参照環境では既に作られていることがあるため、
+  # 候補側でも同じ状態にしてから比較する。固定時刻なのでどちらも「1 分未満前」に作成となる）。
+  - path: /my/account.json
+    users: [admin, jsmith, dlopper]
+    normalize:
+      mask_keys: [api_key]
+  - path: /my/account.xml
+    users: [jsmith]
+    normalize:
+      mask_keys: [api_key]
+  - path: /my/page
+    users: [anonymous, admin, jsmith, dlopper]
+  - path: /my
+    users: [jsmith]
+  # time_zone_select の Casablanca の基準オフセットは tzinfo の評価時刻で変わる（internal/i18n の
+  # 生成データは +00:00、参照環境の固定時刻では +01:00）ため選択肢を比較から外す。
+  - path: /my/account
+    users: [anonymous, admin, jsmith, dlopper]
+    normalize:
+      strip_selectors: ["#pref_time_zone"]
+  - path: /my/password
+    users: [anonymous, admin, jsmith, dlopper]
+  - path: /my/api_key
+    users: [jsmith]
+    normalize:
+      regex:
+        - {pattern: '[0-9a-f]{40}', replace: 'APIKEY'}
+  - path: /my/api_key
+    id: my_api_key_xhr
+    users: [dlopper]
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, */*; q=0.01"}
+    normalize:
+      regex:
+        - {pattern: '[0-9a-f]{40}', replace: 'APIKEY'}
+  - path: /my/account/destroy
+    users: [admin, jsmith]
+
   # ---- カレンダー（全体）
   - path: /issues/calendar
     users: [anonymous, admin, jsmith, dlopper]

@@ -209,7 +209,7 @@ func (l *myIssueList) ColumnHeader(col *query.Column) rails.HTML {
 		if icon != "" {
 			label = l.a.Helpers.SpriteIcon(l.c.Page(), icon, caption, nil)
 		}
-		content = rails.LinkTo(label, helper.URLWithQuery("/my/page", qp),
+		content = rails.LinkTo(label, helper.URLWithQuery(l.c.R.URL.Path, qp),
 			rails.NewHash("title", l.c.L("label_sort_by", "\""+caption+"\""), "class", css, "method", "post", "remote", true))
 	}
 	return rails.ContentTag("th", content, rails.NewHash("class", col.CSSClasses()))
@@ -217,7 +217,7 @@ func (l *myIssueList) ColumnHeader(col *query.Column) rails.HTML {
 
 // BackURL は url_for(:params => request.query_parameters)。
 func (l *myIssueList) BackURL() string {
-	return helper.URLWithQuery("/my/page", pageQueryParameters(l.c))
+	return helper.URLWithQuery(l.c.R.URL.Path, pageQueryParameters(l.c))
 }
 
 // AvailableColumnsOptions は query_available_inline_columns_options(query)。

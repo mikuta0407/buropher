@@ -1,0 +1,28 @@
+status: 200
+content-type: application/json
+
+{
+  "user": {
+    "id": 1,
+    "login": "admin",
+    "admin": true,
+    "firstname": "Redmine",
+    "lastname": "Admin",
+    "mail": "admin@somenet.foo",
+    "created_on": "2006-07-19T17:12:21Z",
+    "last_login_on": "2026-01-15T12:00:00Z",
+    "api_key": "MASKED",
+    "custom_fields": [
+      {
+        "id": 4,
+        "name": "Phone number",
+        "value": null
+      },
+      {
+        "id": 5,
+        "name": "Money",
+        "value": null
+      }
+    ]
+  }
+}

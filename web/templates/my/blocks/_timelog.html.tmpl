@@ -28,7 +28,7 @@
 </div>
 
 {{if .entries_by_day}}
-{{form_tag "/my/page" (hash "data" (hash "cm_url" "/time_entries/context_menu"))}}
+{{form_tag request_path (hash "data" (hash "cm_url" "/time_entries/context_menu"))}}
 <table class="list time-entries odd-even">
 <thead><tr>
 <th>{{l "field_activity"}}</th>
