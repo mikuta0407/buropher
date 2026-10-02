@@ -59,6 +59,16 @@ func (s *Service) Adapter(repo *domain.Repository) *scm.Git {
 	return scm.NewGit(s.GitCommand, repo.URL, repo.RootURL, repo.PathEncoding)
 }
 
+// EnsureRootURL は Repository#scm の root_url の補完（アダプタは root_url が空なら retrieve_root_url で
+// url を root_url とし、Repository#scm がそれを update_attribute で保存する）。
+func EnsureRootURL(ctx context.Context, q db.Queryer, repo *domain.Repository) error {
+	if !repo.IsGit() || strings.TrimSpace(repo.RootURL) != "" {
+		return nil
+	}
+	repo.RootURL = repo.URL
+	return repository.UpdateScmRepositoryRootURL(ctx, q, repo.ID, repo.RootURL)
+}
+
 // FetchAll は Repository.fetch_changesets（リポジトリモジュールが有効な稼働中プロジェクトの全リポジトリ）。
 // user は User.current（キーワードによるチケット更新・作業時間の作成者。nil なら匿名）。
 func (s *Service) FetchAll(ctx context.Context, user *domain.User) error {
@@ -93,6 +103,9 @@ func (s *Service) FetchProject(ctx context.Context, projectID int64, user *domai
 func (s *Service) Fetch(ctx context.Context, repo *domain.Repository, user *domain.User) error {
 	if !repo.IsGit() {
 		return nil
+	}
+	if err := EnsureRootURL(ctx, s.DB, repo); err != nil {
+		return err
 	}
 	g := s.Adapter(repo)
 	brs := g.Branches(ctx)

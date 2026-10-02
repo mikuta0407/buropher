@@ -176,7 +176,9 @@ func init() {
 }
 
 // SyntaxHighlightLines は syntax_highlight_lines(filename, content)（行ごとの HTML）。
-func SyntaxHighlightLines(filename, content string) []string { return syntaxHighlightLines(filename, content) }
+func SyntaxHighlightLines(filename, content string) []string {
+	return syntaxHighlightLines(filename, content)
+}
 
 // queryPairs は repo_url の可変引数（key, value, ...）を組にする。
 func queryPairs(kv []any) [][2]string {

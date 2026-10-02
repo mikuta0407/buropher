@@ -54,7 +54,9 @@ func setupGit(t *testing.T) *gitEnv {
 	return &gitEnv{t: t, ts: ts, d: d, repo: r, admin: login(t, ts, "admin", "admin"), app: app}
 }
 
-func (e *gitEnv) base() string { return e.ts.URL + "/projects/subproject1/repository/" + itoa64(e.repo.ID) }
+func (e *gitEnv) base() string {
+	return e.ts.URL + "/projects/subproject1/repository/" + itoa64(e.repo.ID)
+}
 
 func (e *gitEnv) get(path string) (*http.Response, *html.Node, string) {
 	e.t.Helper()

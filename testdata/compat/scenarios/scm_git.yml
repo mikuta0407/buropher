@@ -190,6 +190,26 @@ requests:
     method: POST
     user: admin
     form: {"_method": "delete"}
+  - id: api_add_related_issue
+    path: /projects/subproject1/repository/12/revisions/deff712f05a90d96edbd70facc47d944be5897e3/issues.json
+    method: POST
+    user: admin
+    auth: basic
+    form: {"issue_id": "5"}
+  - id: api_add_related_issue_again
+    path: /projects/subproject1/repository/12/revisions/deff712f05a90d96edbd70facc47d944be5897e3/issues.json
+    method: POST
+    user: admin
+    auth: basic
+    form: {"issue_id": "5"}
+  - id: api_remove_related_issue
+    path: /projects/subproject1/repository/12/revisions/deff712f05a90d96edbd70facc47d944be5897e3/issues/5.json
+    method: DELETE
+    user: admin
+    auth: basic
+  - id: revision_after_api_remove
+    path: /projects/subproject1/repository/12/revisions/deff712f05a90d96edbd70facc47d944be5897e3
+    users: [admin]
   - id: revision_after_remove
     path: /projects/subproject1/repository/12/revisions/61b685fbe55ab05b5ac68402d5720c1a6ac973d1
     users: [admin]

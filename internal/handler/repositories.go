@@ -191,6 +191,10 @@ func (a *App) findProjectRepository(c *Req) {
 		return
 	}
 	repo.Project = c.Project
+	if err := scmsync.EnsureRootURL(c.Ctx(), a.DB, repo); err != nil {
+		a.internalError(c, "repository root_url", err)
+		return
+	}
 	s := &repoState{repo: repo, git: a.gitAdapter(repo)}
 	c.setValue(repoStateKey{}, s)
 	s.path = repoPathParam(c)

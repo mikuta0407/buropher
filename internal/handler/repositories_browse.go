@@ -757,8 +757,8 @@ type annotateLine struct {
 	Changed bool
 	// BlocChange は previous_revision && revision && revision != previous_revision（bloc-change クラス）。
 	BlocChange bool
-	Color   int
-	Author  string
+	Color      int
+	Author     string
 	// PreviousURL は「この変更以前の注釈」のリンク（無ければ ""）。
 	PreviousURL string
 }
