@@ -1,0 +1,2462 @@
+[
+ {
+  "name": "fuzz-0000",
+  "input": "## user:foo[^1]~</script><br>user@example.com\n> \"\n2) ~~del~~__**strong**``日本語\\_``\n\n"
+ },
+ {
+  "name": "fuzz-0001",
+  "input": "',www.example.com\n   <script>@user@user&amp;\n\n"
+ },
+ {
+  "name": "fuzz-0002",
+  "input": "\t[ref]wordhttps://example.com/a_b?c=d&e=f\n\n<a href=\"javascript:x\">j</a>&#x41;café\\user@example.com![img](a.png \"t\")\n> \"&amp;,\t**(_\ncafé<kbd>K</kbd>*\n"
+ },
+ {
+  "name": "fuzz-0003",
+  "input": "</script>)\n@user|</b>café[[Wiki]]?\n[ref]: [[Wiki]]@userwww.example.com\n> <!-- c -->:*em*[ref][[Wiki]]日本語`code`\n"
+ },
+ {
+  "name": "fuzz-0004",
+  "input": "```\nテストuser@example.com\\[:\\_``):\n;text\n```\n\n## '\n{{macro}}@usermailto:a@b.cc!.\n\n- :{{macro}}:r42?\n>[ref]\n> <br>[^1]mailto:a@b.cc\n\n```\n![img](a.png \"t\")];\nwww.example.com<span style=\"color:red\">,@user\n```\n~~~ruby\n__<span style=\"color:red\">テスト  ~~\n&amp;http://example.com<br>'<br>\\[**strong**\n~~~\n\n"
+ },
+ {
+  "name": "fuzz-0005",
+  "input": "    www.example.com'user@example.com`code`text\n> </span><kbd>K</kbd><b>word[ref]word[^1]@user\n\n| <script>[^1]#123>日本語word{{macro}} | **![img](a.png \"t\")\\.textr42`code`[ref] | ` ~~del~~`<kbd>K</kbd>@user |\n|:-:|---|--:|\n| [link](http://x.y)**{{macro}}&[link](http://x.y)<!-- c -->テスト![img](a.png \"t\") | \t<!)|   | *\\_text,_ |\n| , | www.example.com\"#123[link](http://x.y)テスト&copy; | <a href=\"javascript:x\">j</a>[^1]user:fooテスト<b>http://example.com<script>&#x41; | **em* |\n\n```\ntext,[ref]?**!@user\nword`code`[[Wiki]]\t{{macro}}\n```\n| café~~del~~**strong**__**mailto:a@b.cc**strong**[link](http://x.y) | __ | テスト@user\\_café|\\\\~~del~~ |\n|:-:|---|:--|\n| {{macro}}<a href=\"javascript:x\">j</a>[^1]www.example.com~~\t~~del~~ | <span style=\"color:red\"> |\n- [x] @user:`code`&amp;text\n**</script><[ref]\n  \\`café~``\n\n"
+ },
+ {
+  "name": "fuzz-0006",
+  "input": "    **strong**\n> (<span style=\"color:red\">  </script>!<span style=\"color:red\">>[^1]\n\t@user ;*em*[^1]\n    `code`&#123\n  <br>>**|\n\n* <span style=\"color:red\">@user`code`[!\\_\n  [^1]'<b>]@user</b>\n| <kbd>K</kbd>_.{{macro}}\t`code`</b>https://example.com/a_b?c=d&e=f |\n|---|\n\n"
+ },
+ {
+  "name": "fuzz-0007",
+  "input": "- [x] <b>user:foo`code`&\\\\**strong**\n   *em*&#x41;\n> ]~ \\\n\n    www.example.com\n> ![img](a.png \"t\")*em*\n1. <img src=\"a.png\">\\**[[Wiki]]]http://example.comテスト\n\n| <br> &amp; word\\[' | <kbd>K</kbd>café` | * |\n|---|---|--:|\n| ]<br> | >https://example.com/a_b?c=d&e=f | ][^1]user:foo'<a href=\"javascript:x\">j</a>*\\ | >[link](http://x.y)) |\n\n- [x] </script>テスト日本語|`code`<a href=\"javascript:x\">j</a>http://example.comhttps://example.com/a_b?c=d&e=f\n   *em*&amp;\n\n"
+ },
+ {
+  "name": "fuzz-0008",
+  "input": "```\n<!-- c -->\\{{macro}};[^1]\nテスト\n```\n# :\n ,</b><br>日本語``*em*\n\n<div>\n\\_`\n</div>\n\n* <img src=\"a.png\">[^1]\n> \\_\n  <kbd>K</kbd>[ :\n\n"
+ },
+ {
+  "name": "fuzz-0009",
+  "input": "* *em*user@example.comuser@example.com|user@example.com\n  www.example.com\\\\  日本語]user@example.com\n\n\\\n\n* https://example.com/a_b?c=d&e=f\\\\café\n\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0010",
+  "input": "- *'<span style=\"color:red\">)\nr42**)  [ref]>テスト\n  www.example.com~~\n- [x] ~~del~~ \n> '>`code`![img](a.png \"t\")</span>{{macro}}text\n- [x] <a href=\"javascript:x\">j</a>~['r42&\n\n"
+ },
+ {
+  "name": "fuzz-0011",
+  "input": "| _<img src=\"a.png\">r42\ttext |\n|---|\n| \\[<span style=\"color:red\"> |\n<div>\n<a href=\"javascript:x\">j</a><script>![img](a.png \"t\")`<!-- c --></script>**strong**]\n</div>\n\n"
+ },
+ {
+  "name": "fuzz-0012",
+  "input": "<div>\nx@2x.pngworduser:foo<kbd>K</kbd>x@2x.pngr42 \n</div>\n\n2) cafémailto:a@b.cc[\n> ;[^1]]`\\\\&copy;café\\*\n<div>\nwww.example.comr42[**\n</div>\n<div>\nuser@example.com>_<!-- c -->.<kbd>K</kbd>\n</div>\n\n> [^1];  \"\n\n"
+ },
+ {
+  "name": "fuzz-0013",
+  "input": ">   [link](http://x.y)**strong**\n| \"~~ |\n|:-:|\n| ></script>テスト</span>` |\n| ~~~del~~?:*em*\\**strong**: |\n\n# ![img](a.png \"t\").\\_日本語www.example.com  \\\\\n> \\[\n__]www.example.com[^1]<script>r42\n- .https://example.com/a_b?c=d&e=f]<!-- c --></b></b>**\n- [ ] \\_>>,.]user@example.com\n"
+ },
+ {
+  "name": "fuzz-0014",
+  "input": "2) <b>\\_|<b>_![img](a.png \"t\")mailto:a@b.cc``\n\n```\nmailto:a@b.cctext</script><a href=\"javascript:x\">j</a>``\n]<img src=\"a.png\">[ref][ref]#123\n```\n\n"
+ },
+ {
+  "name": "fuzz-0015",
+  "input": "2) <kbd>K</kbd>\n\n## <kbd>K</kbd>\n  &amp;#123,\n*em*テスト\"\n\n    </span>`&copy;(.\"<word\nhttps://example.com/a_b?c=d&e=f  \n> [^1]*__&#x41;日本語word**#123\n\n"
+ },
+ {
+  "name": "fuzz-0016",
+  "input": "```\n(  mailto:a@b.cc.\n?<kbd>K</kbd>\n```\n\n[^1]: !@userhttps://example.com/a_b?c=d&e=f\n\n<br>;\n  ]\n"
+ },
+ {
+  "name": "fuzz-0017",
+  "input": "[ref]: \\?![img](a.png \"t\").[^1]\n\n"
+ },
+ {
+  "name": "fuzz-0018",
+  "input": "```\n[[Wiki]]!@user\n\"</script>\n```\n```\nr42<**strong**x@2x.png*mailto:a@b.cc)\nuser@example.com&#x41;<span style=\"color:red\">':\n```\n> </span>&amp;\\  \n*&#x41;  \n"
+ },
+ {
+  "name": "fuzz-0019",
+  "input": "\\[&#x41;]*`code`\n   \"`code`;!**\n   <b>\n    日本語\n> <!-- c -->http://example.com![img](a.png \"t\")\nテスト</span>:\\texthttp://example.comhttp://example.comr42\n\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0020",
+  "input": "> r42<a href=\"javascript:x\">j</a>\n   <script>https://example.com/a_b?c=d&e=f<span style=\"color:red\">,_&#x41;\n\n## ]_``日本語\n> <img src=\"a.png\">?]&amp;\\*\n> [,テスト{{macro}}__\thttps://example.com/a_b?c=d&e=f~~\n\n<!-- c -->[<b>**strong**text~~del~~[[Wiki]]\n   [ref]\n> ,**![img](a.png \"t\")<script>text\n\n> [!NOTE]\n> x@2x.png*[[Wiki]][^1]</script>\n\n"
+ },
+ {
+  "name": "fuzz-0021",
+  "input": "> |\n\n\tuser@example.com\\[ x@2x.png\\[ref]|\n,<kbd>K</kbd>\\\\\\*user:foo\\*em*`\n> [!NOTE]\n> ~<br>__\n**strong**[^1]'x@2x.png**&amp;_~~\n\n<div>\n(<br>[user:foo<kbd>K</kbd>`日本語 \n</div>\n"
+ },
+ {
+  "name": "fuzz-0022",
+  "input": "- </b>?user:foo@user<a href=\"javascript:x\">j</a>\n\n- [ ] <span style=\"color:red\"></script>|!&amp;'\n"
+ },
+ {
+  "name": "fuzz-0023",
+  "input": "\"!{{macro}}<\n> `|text~\\[\thttp://example.com<script>\n2) [[Wiki]]</span><span style=\"color:red\">\n  </script>mailto:a@b.cc`<?<script>\n  <|<!-- c -->`code`\"wordcafé;\n\n"
+ },
+ {
+  "name": "fuzz-0024",
+  "input": "mailto:a@b.cc<span style=\"color:red\">?[\n    |`\n  \\_<!-- c -->\\\\user:foo.[^1][[Wiki]]\n\n- [ ] >~{{macro}}https://example.com/a_b?c=d&e=f~~www.example.com|&copy;\n   **\\*],<\n- [ ] <kbd>K</kbd>~~?mailto:a@b.cccafé\n> __&copy;[ref]x@2x.pngwww.example.com*em*?<\n\n"
+ },
+ {
+  "name": "fuzz-0025",
+  "input": "```\n;#123\n&copy;&amp;!テスト<a href=\"javascript:x\">j</a>{{macro}}<!-- c -->\n```\n[^1]: <img src=\"a.png\"><script>\n  r42\\\\*``<img src=\"a.png\"><script>(&amp;\n\n[^1]: _*em*[[Wiki]]`code`www.example.com\n   ~~del~~\n**word`\n[^1]: テスト\n"
+ },
+ {
+  "name": "fuzz-0026",
+  "input": "## www.example.com _\\*www.example.com&copy;\n> 日本語\n# ~~del~~<b>[^1].\n  >\\\\\\*~~del~~*em*\n2) café`'http://example.com;|\n  ~\\[ mailto:a@b.cc[  \n  `<\\*&amp;\"\\_\n```\n[[Wiki]]\n<a href=\"javascript:x\">j</a>\n```\n\n"
+ },
+ {
+  "name": "fuzz-0027",
+  "input": "| :word&x@2x.png</b>\\***strong** |\n|---|\n| \\\\(\\[~~&&] |\n* :\\*\n![img](a.png \"t\")``</span>user:foo(\n> 日本語\n```\n\\[</span>user@example.com&copy;\n#123r42<a href=\"javascript:x\">j</a>[link](http://x.y)\n```\n`<a href=\"javascript:x\">j</a>>#123<kbd>K</kbd>\\*:</script>\n_https://example.com/a_b?c=d&e=fuser:foor42</script>\n> ``'日本語\n> _user:foo~~\\[\n"
+ },
+ {
+  "name": "fuzz-0028",
+  "input": "- !<a href=\"javascript:x\">j</a>\n  ,user:foo:]\\[\n<div>\n[**\\[@user\n</div>\n    r42;text**\n  &\\[^1]:\n> テストmailto:a@b.cc</b>\n\n"
+ },
+ {
+  "name": "fuzz-0029",
+  "input": "- [ ] !*em*</script></span>~~\n  ,'\n> </span>mailto:a@b.cc<!-- c -->[ref]?)_\n> __.&#x41;user:foo![img](a.png \"t\")www.example.com@user<!-- c -->\n> \\``mailto:a@b.cc\\_\n> \\[\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0030",
+  "input": "2) <br>__&amp;|\n   ~~**strong**\n> [^1]*&#x41;<br>,@user)\n# )[^1]\t::**mailto:a@b.cc</span>\n\n[^1]: <span style=\"color:red\">\n[^1]: [^1]<b>!  &copy;(\n> ~~</script>*user:foo日本語<b>\n**![img](a.png \"t\")\n"
+ },
+ {
+  "name": "fuzz-0031",
+  "input": "1. textword</script></span>\n> www.example.com&\n&amp;)テスト\n\n## ?\t\n> <a href=\"javascript:x\">j</a>\t<br>word**strong**?\n> [!NOTE]\n> \\[\n![img](a.png \"t\")&amp;!{{macro}}\n  <img src=\"a.png\">|:#123|),x@2x.png\n"
+ },
+ {
+  "name": "fuzz-0032",
+  "input": "user:foo\n> user@example.comr42( \n> <img src=\"a.png\">**)\\\\\\word&copy;mailto:a@b.cc\n\n[ref]: <br>;<script><b>\n> [!NOTE]\n> &copy;\"`code`<img src=\"a.png\">**@user\n</script><!-- c -->*\n\n## café&#x41;~~del~~<script>\n"
+ },
+ {
+  "name": "fuzz-0033",
+  "input": "- [ ] <b>\\\\[[Wiki]][link](http://x.y)\n[ref]: \\[|**<**strong**<img src=\"a.png\">\nx@2x.png<!-- c -->user@example.com,\n  <script>\n"
+ },
+ {
+  "name": "fuzz-0034",
+  "input": "```\n<user:foo``&copy;[^1]\n\\*\\_(@usertext\n```\n\n**strong**<!-- c -->:~\"~~del~~`code`text\n</script>**strong**\n~~<br>テスト<b><span style=\"color:red\">テスト\n* user@example.com\n  </b>>\n| user@example.com|<b> |\n|---|\n- 日本語\n"
+ },
+ {
+  "name": "fuzz-0035",
+  "input": "1. &[[Wiki]]\"|[ref]\n\n```\n** \n***<span style=\"color:red\">*em*</span>]https://example.com/a_b?c=d&e=f;\n```\n> `code`<kbd>K</kbd>\n\n"
+ },
+ {
+  "name": "fuzz-0036",
+  "input": "# 日本語\n  user@example.com]\\[>\n> .user:foo{{macro}} \n* <kbd>K</kbd>([ref]{{macro}}\n\n"
+ },
+ {
+  "name": "fuzz-0037",
+  "input": "> <img src=\"a.png\">\n  {{macro}}. ~~\n<b>x@2x.png&#x41;**[[Wiki]]\n* |\t\\\\&#x41;&#x41;`\n  ![img](a.png \"t\")\\&#x41;~~\n<div>\n\"<br>\n</div>\n\n> [!NOTE]\n> ``__<b><span style=\"color:red\">>[[Wiki]]`\n> </b>)\\_\n\n"
+ },
+ {
+  "name": "fuzz-0038",
+  "input": "[ref]: )</b>[link](http://x.y)<script>\n#123,<br><b>~~ \n[^1]: \\_\n`code`|\n\n## <kbd>K</kbd>\\\\\n  <img src=\"a.png\"><a href=\"javascript:x\">j</a>>*\\*&#x41;>)\n"
+ },
+ {
+  "name": "fuzz-0039",
+  "input": "<script>mailto:a@b.cc\n?@user\n<img src=\"a.png\">http://example.com]~,\n2) [^1]http://example.com`code`*em*\\</b>\n\n- [ ] ]mailto:a@b.cc'café\n  日本語[[Wiki]]mailto:a@b.cc..]\n&amp;\\*\n\n* https://example.com/a_b?c=d&e=f!wordtext\n   ?<(?\n> [!NOTE]\n> ;&amp;*em*_,\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0040",
+  "input": "[ref]: )!\\https://example.com/a_b?c=d&e=f~~del~~テストuser:foo\n- [x] _[!\n- [x] [<a href=\"javascript:x\">j</a>[link](http://x.y)x@2x.png<kbd>K</kbd>@user\n\n2) café\n## \\_{{macro}}\t\tuser@example.com__\n&日本語(\"www.example.com<br>\")\n\n"
+ },
+ {
+  "name": "fuzz-0041",
+  "input": "\\*\\*\"*em*?\n> &amp;`code`&amp;:\n\n- [^1][<b><br>)x@2x.png\n1. `code`\n   ``<img src=\"a.png\"> @user[link](http://x.y)**\n> <script>__[ref]]\\\\_word<\n~~~ruby\n<script>\\</script>\"r42\n\\[__]``\n~~~\n\n[^1]: user@example.com,<br> user@example.com**>\n> </script>~café~~&#x41;\n> <script>&amp;https://example.com/a_b?c=d&e=f</span>word&amp;\n"
+ },
+ {
+  "name": "fuzz-0042",
+  "input": "`<img src=\"a.png\">**\n  mailto:a@b.cc[^1]\t\n"
+ },
+ {
+  "name": "fuzz-0043",
+  "input": "- <\n`code`http://example.com<\n\n1. '\nhttps://example.com/a_b?c=d&e=f</span>**<\n  <span style=\"color:red\">\\mailto:a@b.cc&#x41;<!-- c -->\n"
+ },
+ {
+  "name": "fuzz-0044",
+  "input": "<script>[\n\n    \\[https://example.com/a_b?c=d&e=f\n>\n"
+ },
+ {
+  "name": "fuzz-0045",
+  "input": "- [x] .x@2x.pngr42\n&copy;``\n2) ``www.example.com&\n"
+ },
+ {
+  "name": "fuzz-0046",
+  "input": "<a href=\"javascript:x\">j</a></script> <kbd>K</kbd>,https://example.com/a_b?c=d&e=f<a href=\"javascript:x\">j</a>\n~]\n~~~ruby\n*<kbd>K</kbd>&#x41;\tテスト\n\"[link](http://x.y)<span style=\"color:red\">;</b>http://example.com\\[https://example.com/a_b?c=d&e=f\n~~~\n\n# \\*]\n<!-- c -->&\n\n"
+ },
+ {
+  "name": "fuzz-0047",
+  "input": "[^1]: ![img](a.png \"t\")*em*&\\[\n> `\n- #123**[[Wiki]]****strong**\n| <img src=\"a.png\">,! |\n|:-:|\n| ` | user:foo**<span style=\"color:red\">[ref]  &amp;__ |\n| @user&copy;\\;[^1]user@example.comword | ((: 日本語 |\n"
+ },
+ {
+  "name": "fuzz-0048",
+  "input": "[ref]:  [link](http://x.y)<kbd>K</kbd>\n> _____'r42(@user\n\n2) !`\nx@2x.png**\n   ~~del~~\\[text~</b>\n\n* [link](http://x.y)</span>`code`!x@2x.png~\n   &amp;&#x41;\n\nhttps://example.com/a_b?c=d&e=f<img src=\"a.png\">\\[[link](http://x.y)\n   <b>\n\n"
+ },
+ {
+  "name": "fuzz-0049",
+  "input": "| 日本語~~?<script> |\n|:--|\n| \\*>  mailto:a@b.cc[\\  |\n\n  テスト:</b><b>[link](http://x.y){{macro}}text\n2) @user[link](http://x.y)[^1][^1]#123>\n\n- ,テスト\n  mailto:a@b.cc<script>[^1]user@example.com\ncafé.[ref]\n\n## *#123<a href=\"javascript:x\">j</a>\n   \"mailto:a@b.cc \n\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0050",
+  "input": "1. )&\n<script>\\[[link](http://x.y)\\\\\n  &*?!*em*\n"
+ },
+ {
+  "name": "fuzz-0051",
+  "input": "text@user@user<kbd>K</kbd>\n@user\n1. http://example.com\"  [link](http://x.y))?\n- `code`日本語\n   ![img](a.png \"t\")~~del~~\\\\#123\n```\nwww.example.comx@2x.png__<br></script>\n</b>~~del~~[^1][link](http://x.y)&copy;\\_&amp;\n```\n| [** | **strong**:テスト[link](http://x.y)<span style=\"color:red\"> | @user\\[  \\_ |\n|--:|:--|:-:|\n| <span style=\"color:red\">]<kbd>K</kbd>&amp;[link](http://x.y) | <!-- c --><a href=\"javascript:x\">j</a></script>' | *em**em*<br> |\n\n"
+ },
+ {
+  "name": "fuzz-0052",
+  "input": "r42:!wordテスト:\n  *,'__[[Wiki]]\n2) >\\_ ?[[Wiki]]**strong**<kbd>K</kbd>\n|&#x41;'&#x41;\n\n"
+ },
+ {
+  "name": "fuzz-0053",
+  "input": "[ref]: r42\n    .&`日本語\n> &amp;>!*em*~日本語~~\n  \\_&copy;&amp;\t),\n\n> http://example.com<a href=\"javascript:x\">j</a><a href=\"javascript:x\">j</a>\n> café>\\*\"\n> <script>http://example.comtext<br>`:\n\n# #123word*em*<kbd>K</kbd>テストworduser@example.com[[Wiki]]\n\\|`code`\n</span>\\\\\\*em*\n\n~~~ruby\n<script>text\\*{{macro}}日本語\\[!\\\\\n**{{macro}}\n~~~\n\n"
+ },
+ {
+  "name": "fuzz-0054",
+  "input": "# )~</span>\n##   x@2x.png<img src=\"a.png\"></script>  [ref]__&#x41;\n\n;\n   user:foo[`text@user.&#x41;*\n\n"
+ },
+ {
+  "name": "fuzz-0055",
+  "input": "    *em*user@example.com[\n  word\\http://example.com<img src=\"a.png\"><<span style=\"color:red\">\n\n[^1]: </script>r42[link](http://x.y)\\*~**strong**<script>\n  <kbd>K</kbd> \n[^1]: [ref]``<kbd>K</kbd>\\`#123[^1]\n@user[ref].user@example.com<<br>\n\n## http://example.com#123<br>worduser:foo\t#123&#x41;\n   \\[<script>~~del~~mailto:a@b.cc[^1],\n   \\]<br>www.example.com\n\n# https://example.com/a_b?c=d&e=f<script>\\\\*em*&#x41;テスト\n> (`code`<kbd>K</kbd>&#x41;\n"
+ },
+ {
+  "name": "fuzz-0056",
+  "input": "## \\_テスト>\\*日本語\\\\\n[ref]: text<\n"
+ },
+ {
+  "name": "fuzz-0057",
+  "input": "> \t</span></span>\n</script><a href=\"javascript:x\">j</a>\t<b>テストtext\n    &copy;*em*@user\n\n> [!NOTE]\n> ~~del~~\n   __<script>テスト,\\[\\\t'\n\n- [ ] *\t<!-- c -->**strong**>\n@user</span>{{macro}}.**user:foo<a href=\"javascript:x\">j</a>\n&amp;\n"
+ },
+ {
+  "name": "fuzz-0058",
+  "input": "* <br>~~@user,\\\n> ![img](a.png \"t\")<a href=\"javascript:x\">j</a></b>www.example.comhttps://example.com/a_b?c=d&e=f`\n\n"
+ },
+ {
+  "name": "fuzz-0059",
+  "input": "> [!NOTE]\n> &#x41;[ref]\n\n> `r42\n- \"*em*<!-- c -->word\n> ((x@2x.png\n\n- [ ] <kbd>K</kbd>|<!-- c -->\\\"\\_``\n  日本語\\[[[Wiki]]@userr42\n```\n!\t\n\t*@user></span>&copy;[link](http://x.y)[ref]\n```\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0060",
+  "input": "- ~~del~~\n> <b>(\n\n> )::\t![img](a.png \"t\")\n\n"
+ },
+ {
+  "name": "fuzz-0061",
+  "input": "&#x41;_!\n\n## word\n\n[ref]: <br> caféuser:foo?mailto:a@b.cc)\n```\n<</span>日本語<a href=\"javascript:x\">j</a><\n :,\n```\n# !www.example.com\\</script>word\\\\[\n[link](http://x.y)**word&copy;{{macro}}日本語`\n   #123]text,|<br>\n\n"
+ },
+ {
+  "name": "fuzz-0062",
+  "input": "- [x] `mailto:a@b.cc[&\n<span style=\"color:red\">**strong**|,\n> http://example.com#123\\_?&#x41;@user\n    &#x41;`code`__!#123\";!\n   ``|</b>\n"
+ },
+ {
+  "name": "fuzz-0063",
+  "input": "1. \\[<br>``\n# &copy;<\n   <span style=\"color:red\">\n\n'\n> www.example.com**x@2x.png!*em*\n    )http://example.comhttp://example.com<span style=\"color:red\">text[[Wiki]]\n\n</span><kbd>K</kbd>\n> 日本語*__~~del~~\n"
+ },
+ {
+  "name": "fuzz-0064",
+  "input": "> ?www.example.com|\n   <span style=\"color:red\">\n\n[^1]: .\n  www.example.com``|~~r42\\*</b>\n   )日本語\n"
+ },
+ {
+  "name": "fuzz-0065",
+  "input": "2) </b>&amp;\n| *em*>_<kbd>K</kbd>\\_café |\n|---|\n| __:http://example.com; |\n| `code`[^1] |\n"
+ },
+ {
+  "name": "fuzz-0066",
+  "input": "# |&{{macro}}~~del~~\n   <a href=\"javascript:x\">j</a>caféテスト\n"
+ },
+ {
+  "name": "fuzz-0067",
+  "input": "~~~ruby\n__\nhttps://example.com/a_b?c=d&e=f日本語<img src=\"a.png\"></script>\";text\n~~~\n?&copy;&copy; \n:\n"
+ },
+ {
+  "name": "fuzz-0068",
+  "input": "| ``&#x41;<img src=\"a.png\"> | &#x41;` | https://example.com/a_b?c=d&e=f</b>\t |\n|:-:|--:|:--|\n1.   ![img](a.png \"t\")*\n   &\\*[^1][(:  #123\n> [[Wiki]]&copy;[[Wiki]]?|</span><script>text\n[^1]: !日本語`code`</script>*em*![img](a.png \"t\"){{macro}} \n   &copy;&copy;*\\*\n  \\\\<b>`テスト\t<img src=\"a.png\"><br>user:foo\n\n~~~ruby\n<script>``text:café\n\twww.example.com&copy;|\n~~~\n\nhttp://example.com<kbd>K</kbd>wordr42\n   <img src=\"a.png\">**strong**\n\n"
+ },
+ {
+  "name": "fuzz-0069",
+  "input": "2) ]&#x41;</span><!-- c -->\t\\\\\n  #123.***<br>[ \n> caféx@2x.png\n- [x] mailto:a@b.cc&**\n> ][^1]user:foo#123\n   テスト|*em*www.example.com\n.x@2x.pnghttps://example.com/a_b?c=d&e=f!'\n> ![img](a.png \"t\")~日本語\n\n2) ~~del~~http://example.com!;[[Wiki]]user:foo\\*\n```\n.`mailto:a@b.cc\n<日本語<span style=\"color:red\">~(\n```\n\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0070",
+  "input": "[^1]: [ref]\\['\n<span style=\"color:red\">日本語[[Wiki]][^1]https://example.com/a_b?c=d&e=f[&\n   |</b></span>\n<kbd>K</kbd>[[Wiki]]&amp;\n[ref]: word<<kbd>K</kbd>\n</b>café:_'\n\\[\\*[link](http://x.y)|</span>**strong**\n\n* <span style=\"color:red\">#123https://example.com/a_b?c=d&e=f;>![img](a.png \"t\")[\n> <br>{{macro}}[^1]&copy;\\\\|(\t\n  .\\_[^1]<!-- c -->?\\*text\n"
+ },
+ {
+  "name": "fuzz-0071",
+  "input": "[ref]café\\*._mailto:a@b.cc&amp;\n\n"
+ },
+ {
+  "name": "fuzz-0072",
+  "input": "> [!NOTE]\n> \\[{{macro}}*__&#x41;\n&<b>textuser:foo</script><a href=\"javascript:x\">j</a><span style=\"color:red\">\n| `<kbd>K</kbd> |\n|--:|\n| café<!-- c -->[^1]</script> | _![img](a.png \"t\")<</b>>r42 |\n\n&copy;\n\n- [ ] </span>user:foo~[&copy;\n  #123#123<script>user@example.com\n   |!<img src=\"a.png\">[[Wiki]]<!-- c --></script></b>_\n\n"
+ },
+ {
+  "name": "fuzz-0073",
+  "input": "</b>[link](http://x.y)'r42\\\n_\\**text\n\n    ____http://example.com<script></b>\n> ~~&amp;wordhttps://example.com/a_b?c=d&e=f&\"\n> [link](http://x.y)_</b>~~del~~user@example.com</script><br>\n"
+ },
+ {
+  "name": "fuzz-0074",
+  "input": "[^1]\n```\nuser:foohttps://example.com/a_b?c=d&e=f\n:[ref]<span style=\"color:red\"></span>~~del~~<~\n```\n"
+ },
+ {
+  "name": "fuzz-0075",
+  "input": "[^1]: `\n  &amp;<!-- c -->[ref]\\\\<br>\n><b>{{macro}}<img src=\"a.png\">\n- [ ]  .\n   <!-- c --><b>\"</b>|テスト\n   <!-- c -->>\\http://example.com\t\\*\n\n[ref]: {{macro}}\nr42![img](a.png \"t\")![img](a.png \"t\")\n* \\[\\_((<img src=\"a.png\">?&copy;\n"
+ },
+ {
+  "name": "fuzz-0076",
+  "input": "<div>\n**'&amp;  |https://example.com/a_b?c=d&e=f<script>;\n</div>\n\n&copy;<<kbd>K</kbd>]`\n\n"
+ },
+ {
+  "name": "fuzz-0077",
+  "input": "[ref]: **textcafé*\n| |<[[Wiki]]![img](a.png \"t\")user:foo |\n|---|\n\n> [!NOTE]\n> ~~del~~#123~~\t\n~\n\n* [link](http://x.y)<kbd>K</kbd>[\"  ~~[link](http://x.y)\n[^1]: <kbd>K</kbd>|__</b>\n\n"
+ },
+ {
+  "name": "fuzz-0078",
+  "input": "<div>\n\\*<script>)\n</div>\n## >x@2x.png~~\n## )\n  <span style=\"color:red\">&<café**<kbd>K</kbd>\n\n> [!NOTE]\n> #123`![img](a.png \"t\")~~ \n   *café\n  !,</b><img src=\"a.png\">\n\n[^1]: <a href=\"javascript:x\">j</a>]?!\n"
+ },
+ {
+  "name": "fuzz-0079",
+  "input": "## \\\\text\n\n    https://example.com/a_b?c=d&e=f</b>[[Wiki]]\n   #123!http://example.com\n   word&copy;\\\\@userwordr42~__\n!cafécafé;`?&copy;`code`\n   (<script>r42)www.example.com#123[http://example.com\n[[Wiki]]`code`user:foo_**{{macro}}**strong**<b>\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0080",
+  "input": "<kbd>K</kbd>_http://example.comuser@example.com\n\n"
+ },
+ {
+  "name": "fuzz-0081",
+  "input": "* <br>café\n\n"
+ },
+ {
+  "name": "fuzz-0082",
+  "input": "    ``{{macro}},&#x41;)[link](http://x.y)word>\n  <!-- c -->&amp;[\n> .<kbd>K</kbd>user:foo.&#x41;\n\n```\n\\><!-- c -->&テスト,``\n  ``(#123\n```\n* https://example.com/a_b?c=d&e=f.|;\t\n  x@2x.pngtext\n> '\n| _user@example.com!#123_ | ]_user@example.comuser:foo |\n|:--|--:|\n\n```\n\\*[link](http://x.y)<span style=\"color:red\">[ref]&#x41;\n<script>\n```\n"
+ },
+ {
+  "name": "fuzz-0083",
+  "input": "> {{macro}}[link](http://x.y)<kbd>K</kbd><!-- c -->**\n> &@user\n\n# 日本語]\n  \\\n   &<!-- c -->user@example.com&copy;\t<<\n## <b>\n"
+ },
+ {
+  "name": "fuzz-0084",
+  "input": " \n  ~~`http://example.comcafé`code```\n\tuser@example.com<kbd>K</kbd>x@2x.png\n# ![img](a.png \"t\")\\[&];(\n  `\n\n- [ ] _[;\n  www.example.com*em*&\"?https://example.com/a_b?c=d&e=f\n> #123<kbd>K</kbd>></b>text\n\n"
+ },
+ {
+  "name": "fuzz-0085",
+  "input": "- [x] **![img](a.png \"t\"){{macro}}<br>**\\[\n  [^1]\n&#x41;<kbd>K</kbd></b>:<span style=\"color:red\">*www.example.com</b>\n- [ ] [ref]\\_:{{macro}}:\n   https://example.com/a_b?c=d&e=f\n  </b>\n<div>\n\t*em*\\_\\_\n</div>\n"
+ },
+ {
+  "name": "fuzz-0086",
+  "input": "```\n.www.example.com,日本語テスト<kbd>K</kbd>*[\nx@2x.png\n```\n\n@user[**&copy;\\\\\\|\n- [ ] <br>__\n> word\n1. http://example.com> \n日本語(&amp;\\*![img](a.png \"t\")<b>;\n\n- \\(``|\n"
+ },
+ {
+  "name": "fuzz-0087",
+  "input": "* '@user@user<b>]@user_@user\n    @user!`code`<</b>\n    &#x41;\\\\<span style=\"color:red\">r42[:  \n日本語</b>**,\n\n# )[^1]http://example.com![link](http://x.y)  [link](http://x.y)\nテスト#123<span style=\"color:red\">[:\n</script>\n\n"
+ },
+ {
+  "name": "fuzz-0088",
+  "input": "[ref]: </b>~\\[\\_(</b>\n\n"
+ },
+ {
+  "name": "fuzz-0089",
+  "input": "[ref]: \\\\<!-- c -->?www.example.com\\*<b>\n\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0090",
+  "input": "| \\_`` |\n|--:|\n| \\[user@example.com**<kbd>K</kbd>__www.example.com[[Wiki]]? |\n"
+ },
+ {
+  "name": "fuzz-0091",
+  "input": "# \t<br><\n\n``**strong**\n> ***?{{macro}}text<br>[café\n;テスト\n> *em*\n\n"
+ },
+ {
+  "name": "fuzz-0092",
+  "input": "> mailto:a@b.cc<span style=\"color:red\">https://example.com/a_b?c=d&e=f&amp;[link](http://x.y)テスト\n{{macro}}&copy;``www.example.com;\\\\~~del~~\t\n&copy;*~user@example.com<img src=\"a.png\"><\n\n[ref]: [[Wiki]][~~del~~[[Wiki]]`code`\n   <|<x@2x.png<a href=\"javascript:x\">j</a>\\\\_日本語\n\n```\n.]mailto:a@b.ccwww.example.com  \nx@2x.png:\\[*em*\n```\n\n"
+ },
+ {
+  "name": "fuzz-0093",
+  "input": "[ref]: r42\n\\\\</b></script>&#x41;\nテストwww.example.com`\n\n> https://example.com/a_b?c=d&e=fuser@example.com]:`code`)`\n> __;mailto:a@b.cc?__mailto:a@b.cc\"`\n,<b>]**\\_<script>\n\n~~~ruby\n*#123café\\[\n<kbd>K</kbd>;\n~~~\n| <a href=\"javascript:x\">j</a>!.http://example.comcafé`code`[ |\n|---|\n| </b> | ></span>\" |\n| <a href=\"javascript:x\">j</a></span>(& |\n"
+ },
+ {
+  "name": "fuzz-0094",
+  "input": "<div>\n~~\n</div>\n- [ ] <b>  \n1. \\_``#123|\n\n"
+ },
+ {
+  "name": "fuzz-0095",
+  "input": "```\nuser@example.com>text<span style=\"color:red\">**\n]<kbd>K</kbd>__&#x41;{{macro}}\n```\n\n"
+ },
+ {
+  "name": "fuzz-0096",
+  "input": "\\*\n  .\\&#x41;[</span><kbd>K</kbd>\n"
+ },
+ {
+  "name": "fuzz-0097",
+  "input": "    \\)\n> *:|www.example.com\\_<kbd>K</kbd>'<img src=\"a.png\">\n  ~~del~~日本語wordx@2x.png] \n# <a href=\"javascript:x\">j</a>;[ref]http://example.com\\*|x@2x.png&#x41;\n> <b>user@example.com**strong**<img src=\"a.png\">\n   ![img](a.png \"t\")user:foo\n\n> `***em*x@2x.pngwww.example.com\n~~~ruby\n<span style=\"color:red\">mailto:a@b.ccuser@example.com,\nx@2x.png<br>&amp;|;**\n~~~\n\n"
+ },
+ {
+  "name": "fuzz-0098",
+  "input": "- [ ] __\n   <br>]<b>\\*``http://example.com日本語:\n\n* [\\*@user<!-- c -->\n\n| ~.( |\n|---|\n| _mailto:a@b.cc</script><a href=\"javascript:x\">j</a><br> </b>word |\n| [[Wiki]]<img src=\"a.png\">[^1][[Wiki]][link](http://x.y)\\_ |\n\n"
+ },
+ {
+  "name": "fuzz-0099",
+  "input": "```\ntext.\n_>word\n```\n~<!-- c -->'*em*;<span style=\"color:red\">'\n\"user:foo)\n  x@2x.png\n[^1]: <!-- c -->.\n   `日本語http://example.com;テスト@user[[Wiki]]http://example.com\n@user\"`<!-- c -->\n\n\\*\n  @user<br>*\n'`code`\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0100",
+  "input": "- <a href=\"javascript:x\">j</a>user@example.com>~&#x41;</script>>\n[ref]:*em*<script>|\n| ![img](a.png \"t\")\\_<a href=\"javascript:x\">j</a> | |![img](a.png \"t\")\".? |\n|:-:|:-:|\n\n- [ ] >~word*@user\nhttps://example.com/a_b?c=d&e=f[[ref]\n\n"
+ },
+ {
+  "name": "fuzz-0101",
+  "input": "## word\"\n[[https://example.com/a_b?c=d&e=f\\[\t\n> \tmailto:a@b.cc<a href=\"javascript:x\">j</a>x@2x.png café[[^1]\n\n"
+ },
+ {
+  "name": "fuzz-0102",
+  "input": "[ref]: \"\n   <<kbd>K</kbd>(\n\n"
+ },
+ {
+  "name": "fuzz-0103",
+  "input": "> **]\n"
+ },
+ {
+  "name": "fuzz-0104",
+  "input": "> < texthttp://example.com<kbd>K</kbd>\n   __x@2x.pngテスト|`code`\"\n| \\*x@2x.png | </b> | !\\*</script></script><img src=\"a.png\">.www.example.com\\ |\n|:-:|--:|:-:|\n\n```\nmailto:a@b.cc`code`\\\t[[Wiki]]~~del~~\n</script><script>https://example.com/a_b?c=d&e=f)[^1]*em*www.example.com\n```\n"
+ },
+ {
+  "name": "fuzz-0105",
+  "input": "> <script><img src=\"a.png\"><kbd>K</kbd>\n\ncafémailto:a@b.cc``text<img src=\"a.png\">\\_'https://example.com/a_b?c=d&e=f\n1. &copy;#123**_><script><b>\n> x@2x.png>;!\n"
+ },
+ {
+  "name": "fuzz-0106",
+  "input": "> ``\\[\n- [x] `code`\n     https://example.com/a_b?c=d&e=f?\n  \"_)</script>  [link](http://x.y)\n\n```\n[[link](http://x.y)  mailto:a@b.cc<text[^1]\n[link](http://x.y)www.example.com' ~~;!\n```\n\n"
+ },
+ {
+  "name": "fuzz-0107",
+  "input": "- [x] user:foo![img](a.png \"t\")\"wordr42\n   \n\n# ~~del~~[[Wiki]]\\\\user@example.com&\n!]café?<b>\n- [x] (@user\n> `code`**strong**\n\n* word*em*&copy;`code`*em*café~~~\n  >user@example.com\t\\\\\\[mailto:a@b.cc`\n  [^1]&#x41;日本語;x@2x.pngmailto:a@b.cc\n"
+ },
+ {
+  "name": "fuzz-0108",
+  "input": "| < | www.example.com*</b><kbd>K</kbd>text\\[https://example.com/a_b?c=d&e=f | ** |\n|:--|---|--:|\n| text |   | user:foo |\n| ~]&amp;user@example.com | <br>[link](http://x.y))user@example.com([ref] |\n\n{{macro}}<*[^1]\n   ?user:foo[[Wiki]]\n   _テスト\\\\\n"
+ },
+ {
+  "name": "fuzz-0109",
+  "input": "> [!NOTE]\n> \\_caféx@2x.png|\n\\[\n  _</b>[^1] \n\n```\n\\*\\\\https://example.com/a_b?c=d&e=f<img src=\"a.png\">\n<!-- c -->\n```\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0110",
+  "input": "- `code`mailto:a@b.ccwww.example.com**~\n> @user<a href=\"javascript:x\">j</a>~~del~~\n\n"
+ },
+ {
+  "name": "fuzz-0111",
+  "input": "    \\[\n<b>[^1]`code`;\n"
+ },
+ {
+  "name": "fuzz-0112",
+  "input": "\\<b>@user<!-- c -->&__\n`code`\n   :``[[</b>\\_\n"
+ },
+ {
+  "name": "fuzz-0113",
+  "input": "# [ref]]![img](a.png \"t\")&amp;*\n\\*</b>\n\n[^1]: <script>  x@2x.png\n   r42![img](a.png \"t\")\n> <a href=\"javascript:x\">j</a></span>|*em*\n\n- [ ] \t\n> [!NOTE]\n> [.`**&amp;\n|\"\\[\n\n"
+ },
+ {
+  "name": "fuzz-0114",
+  "input": "<div>\n*em*[^1]\n</div>\n\ncafé(![img](a.png \"t\")<b>*em*https://example.com/a_b?c=d&e=f*em*\n   [ref]<*em*>http://example.com\n\n<div>\n,[ref]&\n</div>\n[^1]: !!<img src=\"a.png\">![img](a.png \"t\")[^1]日本語){{macro}}\n> __\n\n"
+ },
+ {
+  "name": "fuzz-0115",
+  "input": "![link](http://x.y)\n~~</b>word\n  ?\n| ( | \t**café<!-- c -->?</b> | )([ref]| |\n|---|:--|:--|\n| `</b> | &copy;<span style=\"color:red\">\"<kbd>K</kbd><,<kbd>K</kbd> | .r42&amp;@user** | word&`(:*@userhttps://example.com/a_b?c=d&e=f |\n| **<script>  **strong**word | r42?<img src=\"a.png\"> | <span style=\"color:red\"> |\n\n# '\\*[^1]&copy;www.example.com~~del~~日本語日本語\n   [\tword\t\t&amp;_日本語\n   ;\n\n"
+ },
+ {
+  "name": "fuzz-0116",
+  "input": "* user@example.com\n</script>&copy;mailto:a@b.cc\n   <script>[ref]www.example.com{{macro}}[^1]\\_[ref]\n> ``\n\n> \t_~~del~~\\_**strong**\n   )www.example.com#123[link](http://x.y)\t**<img src=\"a.png\">\n\n"
+ },
+ {
+  "name": "fuzz-0117",
+  "input": "<div>\n_\n</div>\n     ~~~~del~~,!\n   ![img](a.png \"t\")\\;<span style=\"color:red\">\"www.example.com&copy;\n> mailto:a@b.cc!?_\\[ref]</span>\n"
+ },
+ {
+  "name": "fuzz-0118",
+  "input": "1. \t( \n> word\\_https://example.com/a_b?c=d&e=f)&copy;~~del~~\\<script>\n"
+ },
+ {
+  "name": "fuzz-0119",
+  "input": "> ~日本語<br>``**strong**\\[テスト\n- [ ] :<br>word\n   ['[^1]``\n,\n   &#x41;<www.example.com&![img](a.png \"t\")``\n\n- [ ] !<\"\n   `code`\\\\`code`&amp;]\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0120",
+  "input": "* **strong**`</b>\\\\[^1]\t\n   <テスト\n   www.example.com<script>**?\n\n    <br>)&copy;@user<kbd>K</kbd>;&#x41;\n&<word*&:<script>\n* ?   __\\!</span><kbd>K</kbd>\n> (mailto:a@b.cc&copy;user:foo\n\n- #123`>:\\\\</span>\n*em*\nwww.example.com\n\n* \\_\n<img src=\"a.png\">&copy;<span style=\"color:red\">>  <img src=\"a.png\"><kbd>K</kbd>\n   ;<b>テスト!?\n\n"
+ },
+ {
+  "name": "fuzz-0121",
+  "input": "- [ ] word<img src=\"a.png\"><span style=\"color:red\">*\n\n# r42`code`mailto:a@b.cc&amp;?\n> user@example.com&#x41;~~x@2x.png**strong**\n   </span><kbd>K</kbd>mailto:a@b.cc**strong**:|*em*\t\n"
+ },
+ {
+  "name": "fuzz-0122",
+  "input": "?&copy;**strong**</script>テスト![img](a.png \"t\")\n   (&#x41;\\mailto:a@b.cc\n\n"
+ },
+ {
+  "name": "fuzz-0123",
+  "input": "<div>\n \n</div>\n\n"
+ },
+ {
+  "name": "fuzz-0124",
+  "input": "1. https://example.com/a_b?c=d&e=fhttp://example.com![img](a.png \"t\")https://example.com/a_b?c=d&e=fr42<script>~~__\n\n[ref]: </b>*em*\n> **https://example.com/a_b?c=d&e=f<script>'\n   <__&amp;\n\n"
+ },
+ {
+  "name": "fuzz-0125",
+  "input": "> ![img](a.png \"t\")<kbd>K</kbd>[ref]<br>\t``[link](http://x.y)\n   |<kbd>K</kbd>\n\n"
+ },
+ {
+  "name": "fuzz-0126",
+  "input": "[ref]</b>;*@usertext\n"
+ },
+ {
+  "name": "fuzz-0127",
+  "input": "# #123\\[\n"
+ },
+ {
+  "name": "fuzz-0128",
+  "input": "    .![img](a.png \"t\")></span><script>*http://example.com日本語\n  www.example.com[[Wiki]]\n> </span> \\_[mailto:a@b.cc[[Wiki]]'.\n\n      <kbd>K</kbd>'<br>http://example.com;\n"
+ },
+ {
+  "name": "fuzz-0129",
+  "input": "</script>~~del~~`code`,?.<b>>\n<div>\n#123]<kbd>K</kbd>[ref]**strong**</b>\n</div>\n\n1. <br>http://example.com'r42https://example.com/a_b?c=d&e=f<\n  text.caféuser:foo{{macro}}[link](http://x.y),text\n> [ref]café<br>\n\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0130",
+  "input": "* mailto:a@b.cc\n  ~~del~~: \\[>?\n> \\[[^1]r42日本語http://example.com>__</b>\n"
+ },
+ {
+  "name": "fuzz-0131",
+  "input": "~~~ruby\n\\_<!-- c -->'word\t\n!*__([[Wiki]]\n~~~\n<div>\n`\t<img src=\"a.png\">:\n</div>\n\n2) __*(``>https://example.com/a_b?c=d&e=f'\\\n> **</script>__\\\\user@example.com\n"
+ },
+ {
+  "name": "fuzz-0132",
+  "input": "# <script>&amp;[^1]café:  **![img](a.png \"t\")\n\n| [&#x41;https://example.com/a_b?c=d&e=f<script>@user<a href=\"javascript:x\">j</a>`code` |\n|---|\n| ``* |\n| <script>\\  <b>`<a href=\"javascript:x\">j</a>&#x41;: | >,{{macro}} |\n\n2) </span>[[Wiki]]  user@example.com<\ncafétext[^1]`code`\n  ~~\\_<kbd>K</kbd>.[[Wiki]]<b>\n\t\n   [link](http://x.y)!@user\\[:`\n\n"
+ },
+ {
+  "name": "fuzz-0133",
+  "input": "    &café\n</script>{{macro}}<[[Wiki]]__<img src=\"a.png\">.\n```\nテスト?\n&&copy;:</span>)**\n```\n"
+ },
+ {
+  "name": "fuzz-0134",
+  "input": "# **\\user:foo(<kbd>K</kbd><b>\n[^1]: #123user:foo\t\\_\n> </span>,https://example.com/a_b?c=d&e=f*em*@user*<!-- c -->\n```\n#123 <b>\n**r42</b>]\n```\n> [!NOTE]\n> >\n> ~~<img src=\"a.png\">&copy;  \n   text]word>\t[[Wiki]]<script>\n\n## &copy;**text<!-- c -->\\[\n"
+ },
+ {
+  "name": "fuzz-0135",
+  "input": "- ,[link](http://x.y)\n  <script>x@2x.png\n  <kbd>K</kbd>\\[?\n"
+ },
+ {
+  "name": "fuzz-0136",
+  "input": "2) word~~del~~\n\n"
+ },
+ {
+  "name": "fuzz-0137",
+  "input": "> mailto:a@b.cc<b>~\n"
+ },
+ {
+  "name": "fuzz-0138",
+  "input": "[ref]: x@2x.png**strong**\\[[ref]&#x41;\n- [link](http://x.y)<span style=\"color:red\">textuser:foohttp://example.com\n> <kbd>K</kbd>\n!|)*~word\\[^1]\n"
+ },
+ {
+  "name": "fuzz-0139",
+  "input": "- \\*!.テスト~~del~~\n  </script>[link](http://x.y)**strong**\n  |**\t<a href=\"javascript:x\">j</a>\n\n> )**strong**テスト&copy;<script>\n> '<br>\t<kbd>K</kbd>www.example.com\n> ]]</script>user@example.comuser:foo\n<div>\n\t\\`code`</span>#123\n</div>\n\n2) **strong**\n> ( ,&:\n   text(<br> `code`<!-- c --><\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0140",
+  "input": "2) @user*em*>\n   \\*<img src=\"a.png\"><br>  \t\n   <a href=\"javascript:x\">j</a><b>`code`</span><:('\n\n```\n(<*em*[ref]``**#123\n\\\\</b>_<a href=\"javascript:x\">j</a>www.example.com\n```\n> </span>[ref]text<span style=\"color:red\">http://example.com\n- [ ] \\_<span style=\"color:red\">\"[\"__\n> [ref][^1]`code`.</span>日本語</span>,\n   ?<user@example.com  https://example.com/a_b?c=d&e=f[[^1]\n"
+ },
+ {
+  "name": "fuzz-0141",
+  "input": "- <a href=\"javascript:x\">j</a><b>~</script>\n\\<*em*\\\\{{macro}}<café\n"
+ },
+ {
+  "name": "fuzz-0142",
+  "input": "# ~~@user&#x41;user:foox@2x.png\n> www.example.com日本語<kbd>K</kbd>テストword<kbd>K</kbd>\t;\n   [__user:foo**strong**{{macro}}<b>@user(\n?:\n   <script>( \t~~**![img](a.png \"t\")\n# >&copy;\n  <span style=\"color:red\"></script>~~del~~<b>!\n> [[Wiki]]<br>\\#123word![img](a.png \"t\")\n> \\_**strong**,~\n,x@2x.png\n~~~ruby\nテスト\\\ncafé\n~~~\n"
+ },
+ {
+  "name": "fuzz-0143",
+  "input": "<div>\n![img](a.png \"t\")user@example.com[link](http://x.y)r42www.example.com;r42http://example.com\n</div>\n[ref]: *``\t```code`**strong**  &\n\n> r42!#123mailto:a@b.cc\n   ``'*~~word<!-- c -->&?\n[[Wiki]]&#x41;word![img](a.png \"t\")\\[[\n<div>\n~<kbd>K</kbd>\\_[&#x41;テスト![img](a.png \"t\")\n</div>\n~~~ruby\nwww.example.com\tword\n<!-- c -->\n~~~\n"
+ },
+ {
+  "name": "fuzz-0144",
+  "input": "> \\_\n> <img src=\"a.png\">|,[link](http://x.y)~</script>\t\n> <b>```code`>\\_r42\n"
+ },
+ {
+  "name": "fuzz-0145",
+  "input": "## <br>``**strong**https://example.com/a_b?c=d&e=f\n\n## &amp;[^1]   <!-- c -->[^1][ref]\n> \\\\***em*\n> \\_\n\n"
+ },
+ {
+  "name": "fuzz-0146",
+  "input": "- [ ] [link](http://x.y)<br>\\*\t<img src=\"a.png\">\ncafé&copy;  </b><a href=\"javascript:x\">j</a>!\n\n- [ ] '![img](a.png \"t\")\"__\n> '</script>;:]\\\\\n\n"
+ },
+ {
+  "name": "fuzz-0147",
+  "input": "| ( | [^1]~~text |     #123日本語<b>)?r42 |\n|:-:|:--|--:|\n|   \\\\__&copy;```日本語 |\n| &amp;</span>]~~del~~@user\\[http://example.com? | [ref]&#x41;<!-- c -->テスト | @user> | [<img src=\"a.png\">www.example.com |\n- [x] \"\n   @user\n   text<[link](http://x.y):(\n\n## <img src=\"a.png\"><span style=\"color:red\">[^1]![img](a.png \"t\")日本語]?\n# </span>\n> :![img](a.png \"t\")*em*\"\n"
+ },
+ {
+  "name": "fuzz-0148",
+  "input": "~~~ruby\nuser@example.com日本語&amp;\n&amp;<script>x@2x.png&amp;café.<b>\n~~~\n2) .<&<img src=\"a.png\">**strong****`code`\n\n- [x] ~~del~~user@example.com\n\n<div>\n<img src=\"a.png\">[[Wiki]]<kbd>K</kbd>`**strong**_\n</div>\n"
+ },
+ {
+  "name": "fuzz-0149",
+  "input": "- <b>\n\n```\n<script>@user日本語日本語\nhttps://example.com/a_b?c=d&e=f\n```\n</span>;user@example.com#123http://example.com\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0150",
+  "input": "- *em*<!-- c -->r42mailto:a@b.cc|__\n   <br>*em*`<b>\n> </script>&amp;>www.example.com\n\n</span>\\[\\*\t.user:foox@2x.png>\n<div>\n`>#123mailto:a@b.cc\"\\word\n</div>\n## 日本語</script>\\\\&amp;https://example.com/a_b?c=d&e=fwww.example.com)\n> >https://example.com/a_b?c=d&e=f\n* user:foo``>\\_'&text\n\n"
+ },
+ {
+  "name": "fuzz-0151",
+  "input": "* \\[\n   ~_~~<kbd>K</kbd>*\n> <kbd>K</kbd>https://example.com/a_b?c=d&e=f![img](a.png \"t\")#123]text\n\n"
+ },
+ {
+  "name": "fuzz-0152",
+  "input": "<div>\n<br>\"\n</div>\n\n)</span>\t\n> \"\n\nテスト<a href=\"javascript:x\">j</a>\"\nx@2x.png\\![img](a.png \"t\")日本語;\n  \\[<script>'<kbd>K</kbd> <!-- c -->@user~\n\n| __café*em*``![img](a.png \"t\") | [ref]mailto:a@b.cc&amp; | <br>*em*\\\\<!-- c -->[user@example.com* |\n|:--|:--|:-:|\n| [[Wiki]]@user:[link](http://x.y)https://example.com/a_b?c=d&e=f]<span style=\"color:red\">. | [^1] | ![img](a.png \"t\")&#x41;&\\[<kbd>K</kbd>**user@example.com[ref] |\n"
+ },
+ {
+  "name": "fuzz-0153",
+  "input": ",r42`<b>_#123\n#123*em*``http://example.com\n> #123word\\[\n[ref]: __<script><a href=\"javascript:x\">j</a>www.example.com\n   __**[ref][link](http://x.y)[ref]?r42#123\n> </script>`code`~~del~~\n* @user</b>word\n> \\*[^1]\\_~~del~~\n   <img src=\"a.png\"></script><,#123café**strong**`\n\n"
+ },
+ {
+  "name": "fuzz-0154",
+  "input": "[^1]: <b>mailto:a@b.cc``</b></script>x@2x.pnguser:foo**\n> ![img](a.png \"t\").)\\[<span style=\"color:red\">)\n2) [link](http://x.y)user:fooword\n> http://example.com~~del~~テスト</script><kbd>K</kbd>\\*\n   \"~~del~~,&;\n\n[ref]: ,word*em*日本語<b><b>~~del~~\n<kbd>K</kbd><img src=\"a.png\">``[ref]</b>~~\n> \\\\<!-- c -->[^1]\nhttp://example.com<a href=\"javascript:x\">j</a>\\[http://example.com\nwww.example.com<b>user@example.com\n   mailto:a@b.cc**]\n\n    ~;~~*em*>#123\n\n"
+ },
+ {
+  "name": "fuzz-0155",
+  "input": "[^1]: #123<text&#x41;,\n  ![img](a.png \"t\")\t<(x@2x.png,mailto:a@b.cc \n  )*\\\n\n \"<span style=\"color:red\">*\n  (@user````<span style=\"color:red\">user:foo~~del~~~~del~~\n> ?![img](a.png \"t\")[[Wiki]]\n> user:foo>`</script>\n\n* *r42**strong** <script>テスト,\n\nhttp://example.com)@user\\\t\n  \t<br>\t[^1]*x@2x.png\n\n"
+ },
+ {
+  "name": "fuzz-0156",
+  "input": "2) </script>\n> テスト\n> ``<span style=\"color:red\">!\n> [!NOTE]\n> 日本語\n\n# \\word\\[  https://example.com/a_b?c=d&e=f\" café\n!)[link](http://x.y)<{{macro}}><kbd>K</kbd>\n\n* ;`code`<a href=\"javascript:x\">j</a>_\n\\[]\n\n"
+ },
+ {
+  "name": "fuzz-0157",
+  "input": "- <br>:\n  www.example.com@userx@2x.png#123 .*em*\n  |``)( &#x41;<script>\n\n"
+ },
+ {
+  "name": "fuzz-0158",
+  "input": "- [x] [ref],**;[\n   &#x41;\n<script>&amp;[ref](`code`**&copy;|\n<div>\nhttp://example.com,\n</div>\n\n> [!NOTE]\n> user@example.com`code`\\_,<b>~\n\\\\<!-- c -->\"<b>&amp;\n> <kbd>K</kbd> \n"
+ },
+ {
+  "name": "fuzz-0159",
+  "input": "- [ ] |_\n*日本語<kbd>K</kbd>]\n\n#123[[Wiki]].<img src=\"a.png\">__[^1][ref]\n  \\\\**テスト\n\n~~~ruby\n<span style=\"color:red\">@userr42[ref]&copy;<kbd>K</kbd>日本語\nhttps://example.com/a_b?c=d&e=fword\n~~~\n# <br><!-- c -->\n\n    http://example.com<img src=\"a.png\">日本語\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0160",
+  "input": "<div>\n&amp;[^1]``](,テスト[\n</div>\n\n1. *em*www.example.comcafé(\n"
+ },
+ {
+  "name": "fuzz-0161",
+  "input": "> www.example.com({{macro}}__café@user:`\n   <kbd>K</kbd>café**\"</b>\\[<b>\n   ``\n\n## ><span style=\"color:red\">``>日本語\t'www.example.com\n\n?)*em*'\n"
+ },
+ {
+  "name": "fuzz-0162",
+  "input": "- [ ] &amp;\n> <a href=\"javascript:x\">j</a>![img](a.png \"t\")|\\[``mailto:a@b.cc\ncafé&amp;[[Wiki]]``user@example.com;~~&copy;\n   __\n   [[Wiki]]\n\n"
+ },
+ {
+  "name": "fuzz-0163",
+  "input": "> [!NOTE]\n> @user\\*user@example.com  **strong**|(\n   *em*{{macro}}!mailto:a@b.cc&amp;\n\n"
+ },
+ {
+  "name": "fuzz-0164",
+  "input": "~~~ruby\nhttps://example.com/a_b?c=d&e=f~~del~~café\\\\[[Wiki]]user@example.com@user\n<a href=\"javascript:x\">j</a>*em*<br>&\n~~~\n"
+ },
+ {
+  "name": "fuzz-0165",
+  "input": "~~~ruby\n![img](a.png \"t\")\n?\"`code`[[Wiki]]\\\n~~~\n## [[Wiki]]日本語\\\\\n~~del~~![img](a.png \"t\")|https://example.com/a_b?c=d&e=f\n  [*x@2x.png@user![img](a.png \"t\")*\n"
+ },
+ {
+  "name": "fuzz-0166",
+  "input": ",</span><br>\n> ,\n[ref]: [^1]<br>|(&amp;)\\\n\n~~~ruby\nwww.example.com{{macro}}{{macro}}[link](http://x.y)~~\n@usertext~~del~~<img src=\"a.png\">café.\\*\n~~~\n`` \\[{{macro}}http://example.com\n"
+ },
+ {
+  "name": "fuzz-0167",
+  "input": "2) {{macro}}**strong**\n- [x] ~~del~~[link](http://x.y)user:footext\n.<img src=\"a.png\">{{macro}}\"日本語~~del~~<b>user:foo\n   http://example.com\\_<span style=\"color:red\"><span style=\"color:red\">\n<span style=\"color:red\">[&amp;.[^1]?\\_\n\n1. (</span>\\*<span style=\"color:red\">**strong**text\n    ~\n  \\\\__[:<kbd>K</kbd>**café~~del~~\n   </span>&user:foo`code`word[\n\n"
+ },
+ {
+  "name": "fuzz-0168",
+  "input": "``[ref][[Wiki]]\n   <a href=\"javascript:x\">j</a>\\\\café(\\[\n{{macro}}@user</b>\n~~~ruby\n[[Wiki]]user@example.com x@2x.png\n[ref]x@2x.pngx@2x.png\\[_~[^1].\n~~~\n\n~~del~~~~del~~\n\"**strong****\n\n"
+ },
+ {
+  "name": "fuzz-0169",
+  "input": "- \"&copy;\\[\n| x@2x.png;テスト | __`` |\n|:--|---|\n| https://example.com/a_b?c=d&e=f\t | *em*<!-- c -->) |\n\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0170",
+  "input": "[^1]: <a href=\"javascript:x\">j</a>~~del~~[ref]\\[  \n# #123<br>mailto:a@b.ccwww.example.comword<span style=\"color:red\">\n``  \\*<kbd>K</kbd>@user\n\n)<span style=\"color:red\">{{macro}}<span style=\"color:red\">  ]http://example.comuser@example.com\n    _テスト![img](a.png \"t\")**\n> text<img src=\"a.png\"><span style=\"color:red\">(\n\n## \\~~\n\";</b>~~http://example.com>~~del~~`code`\n\n"
+ },
+ {
+  "name": "fuzz-0171",
+  "input": "# '(`code`\n2) ~https://example.com/a_b?c=d&e=f.<script>_{{macro}}\n   `code`![img](a.png \"t\")<a href=\"javascript:x\">j</a>\\_&amp;<kbd>K</kbd><kbd>K</kbd>\n> ![img](a.png \"t\"),`\n"
+ },
+ {
+  "name": "fuzz-0172",
+  "input": "# </script>>user@example.com\n  #123<!-- c -->&]\n   #123\n\n<div>\n<kbd>K</kbd>.\\\\\n</div>\n\ntext,[^1],\n  wordwww.example.comword'<a href=\"javascript:x\">j</a>~~\n\"www.example.com**x@2x.png\n\n"
+ },
+ {
+  "name": "fuzz-0173",
+  "input": "<div>\nuser@example.com<kbd>K</kbd>**[^1]\n</div>\n\n~~~ruby\n<[[Wiki]]\t\n\\\\*_café<b>[link](http://x.y)r42\n~~~\n| \"@user[link](http://x.y)user:foo|<kbd>K</kbd>x@2x.png, | *&copy; |\n|:-:|--:|\n"
+ },
+ {
+  "name": "fuzz-0174",
+  "input": "user:foo'`\\_!</span>\n\n"
+ },
+ {
+  "name": "fuzz-0175",
+  "input": "[^1]: &#x41;</span>x@2x.pngwww.example.com**strong**>日本語x@2x.png\n2) </span>#123{{macro}}[^1]mailto:a@b.cc{{macro}}日本語'\n  |\\\\http://example.com**word#123x@2x.png\n  ~~;<b><kbd>K</kbd>?\n"
+ },
+ {
+  "name": "fuzz-0176",
+  "input": "```\n<br>\\_\n_~<br><b>~~\n```\n## https://example.com/a_b?c=d&e=f&[[Wiki]]\\**\\*</script>\n    \\[\n| __:*em*x@2x.png&copy;x@2x.png&<a href=\"javascript:x\">j</a> | [[Wiki]]  https://example.com/a_b?c=d&e=f{{macro}} | </script>*<b> |\n|:-:|:--|:-:|\n"
+ },
+ {
+  "name": "fuzz-0177",
+  "input": "~~~ruby\n*']|テストtext\n\\.café\n~~~\n<div>\n<\n</div>\n\n| user@example.com[[Wiki]]<span style=\"color:red\">café[link](http://x.y) | `code`)',user:foo | ]] |\n|:--|--:|---|\n| \\\\café日本語[ | </b>&.user:foo\t |\n| word#123*em*!~café&  | x@2x.png |\n*em*\n  text[ref]!user@example.com\n\n"
+ },
+ {
+  "name": "fuzz-0178",
+  "input": "~~~ruby\n~~\\*</script>\\![img](a.png \"t\")`code`[ref]\n~~del~~ \n~~~\n| [link](http://x.y))r42 ![img](a.png \"t\") |\n|:--|\n| '.:**strong**https://example.com/a_b?c=d&e=f |\n\n2) \\<a href=\"javascript:x\">j</a>*em*&copy;&#x41;\\\\<b>\n   </script></span>~~[[Wiki]]@user{{macro}}user@example.com`\n``<kbd>K</kbd>~~~_\n\n- [ ] </b>_)  [[Wiki]]**\n   ![img](a.png \"t\")**strong**text\\_www.example.com<b>\t</b>\n"
+ },
+ {
+  "name": "fuzz-0179",
+  "input": "<span style=\"color:red\"><script>#123]テスト{{macro}}\n\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0180",
+  "input": "> [!NOTE]\n> <b>r42|\n__*\n  </span>word&#x41;~<span style=\"color:red\">><kbd>K</kbd>__\n[ref]: mailto:a@b.cchttps://example.com/a_b?c=d&e=f\\*\\_user:foo\n*em*[ref]text ![img](a.png \"t\")``<br>\n\n1. word  #123\n:&copy;#123x@2x.png<b>!__<\n\n"
+ },
+ {
+  "name": "fuzz-0181",
+  "input": "<[link](http://x.y)*em*[[Wiki]]\\[?\n!<kbd>K</kbd>;|www.example.com**strong**\n> :<kbd>K</kbd>\n\n<div>\n`code`';<!-- c -->{{macro}}\n</div>\n"
+ },
+ {
+  "name": "fuzz-0182",
+  "input": "1. user@example.com``<@userテスト\\_\n  \\_cafétext&#x41;#123  __\n"
+ },
+ {
+  "name": "fuzz-0183",
+  "input": "# www.example.com'\n\n"
+ },
+ {
+  "name": "fuzz-0184",
+  "input": "```\n_\n &copy;http://example.com~~del~~\n```\n## #123<a href=\"javascript:x\">j</a> ~</span>\\_\n;**strong**]</script>\n<script>*&copy;<www.example.com\n> x@2x.png\"テスト`code`r42],:\n1. [[Wiki]]日本語*em*<br>_text\n  {{macro}}text<{{macro}}~![img](a.png \"t\")r42\n[[Wiki]]user:foo<kbd>K</kbd>![img](a.png \"t\")\\_`code`**]\n    *em*?</span>mailto:a@b.cc\n\n"
+ },
+ {
+  "name": "fuzz-0185",
+  "input": "##   テスト[~&\n  \"text<img src=\"a.png\">@user``\n\n- [x] [link](http://x.y)&amp;((\nx@2x.png![img](a.png \"t\"){{macro}}\n   [~\\[;`code`\\\\\n\n> [!NOTE]\n> ,<a href=\"javascript:x\">j</a>テスト[[Wiki]]&#x41;<kbd>K</kbd>\n> )\n> ~`code`\n"
+ },
+ {
+  "name": "fuzz-0186",
+  "input": "1. café</script></script>x@2x.png\n[ref]: \\*(]'<a href=\"javascript:x\">j</a>;\nmailto:a@b.cc<b>~~]~mailto:a@b.cctext__\n  `{{macro}}x@2x.png\n\n> [!NOTE]\n> **\n   *em***strong**user@example.com\\*em*~~del~~\"?\n ~~_@useruser:foo\\[:;\n"
+ },
+ {
+  "name": "fuzz-0187",
+  "input": "- [ ] **[ref].</b>\n\n<div>\n<a href=\"javascript:x\">j</a>~~del~~x@2x.png\n</div>\n\n- [x] &amp;[[<img src=\"a.png\">http://example.com'\t\n\t<b>**strong**日本語></script>  #123\n\n- [ ] |&amp;\\_textcafé~~del~~\n\n> [!NOTE]\n> <span style=\"color:red\">word<span style=\"color:red\">(~~___&\n&copy;mailto:a@b.cc<\n\n"
+ },
+ {
+  "name": "fuzz-0188",
+  "input": "\"<img src=\"a.png\">&#x41;[link](http://x.y)\n\n~~~ruby\ntext|</script>[[Wiki]][[Wiki]]\n_\t<script>\n~~~\n    mailto:a@b.cc)(&#x41;<<a href=\"javascript:x\">j</a></script>\n  ![img](a.png \"t\")[link](http://x.y)`code`<script>http://example.com日本語https://example.com/a_b?c=d&e=f__\n\n"
+ },
+ {
+  "name": "fuzz-0189",
+  "input": "```\n[\n>\\\\日本語www.example.com@user<a href=\"javascript:x\">j</a><b>&\n```\n\\*`*<b>`code`\n\n> [!NOTE]\n> &copy;www.example.comword !`\\*![img](a.png \"t\")\n> [!NOTE]\n> *テスト\n~~~ruby\n~~&\n.</b>\n~~~\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0190",
+  "input": "* _#123[^1]\n> \\[mailto:a@b.cc\n> &copy;\n\n2) (\n"
+ },
+ {
+  "name": "fuzz-0191",
+  "input": "> [!NOTE]\n> </b>?&#x41;~*__</span>\n  **>\n\n- [ ] ~\t\n> __,\n  :~__\n- [x] ,#123r42http://example.com<a href=\"javascript:x\">j</a>,``\n<!-- c -->[\n[ref]: <b>word'&amp;text'![img](a.png \"t\")<img src=\"a.png\">\n[^1]  \n> ![img](a.png \"t\")<b>>\n\n> <br>?\\_http://example.com[^1]\n\n"
+ },
+ {
+  "name": "fuzz-0192",
+  "input": "![img](a.png \"t\")![img](a.png \"t\")[[Wiki]]&#x41;___\n\n&#x41;>&#x41;\n> www.example.com<kbd>K</kbd></span>~<a href=\"javascript:x\">j</a><!-- c -->#123\n[^1]\"\n\n1. ~\\\\r42x@2x.png\n> café~~text#123 _]\n\n!</span>*em*  <img src=\"a.png\">,~~del~~\n   </span>\"user:foo&copy;[\n\n"
+ },
+ {
+  "name": "fuzz-0193",
+  "input": "## `code`[[Wiki]][link](http://x.y)\n__&amp;\\[<a href=\"javascript:x\">j</a><img src=\"a.png\">\n- [ ] user@example.com*,日本語[ref]https://example.com/a_b?c=d&e=f)\n   \\_`**strong**\n> \\[  \n<div>\n[.<img src=\"a.png\">![img](a.png \"t\")https://example.com/a_b?c=d&e=f(;\n</div>\n2) [link](http://x.y)~~del~~\\\\\n# {{macro}}<img src=\"a.png\">x@2x.png &copy;\n"
+ },
+ {
+  "name": "fuzz-0194",
+  "input": "| ,<!-- c --> user@example.com<script>&copy;' |\n|--:|\n| mailto:a@b.cc>[link](http://x.y),\\<script></span>~~ | <br>~>) |\n| </script>https://example.com/a_b?c=d&e=f | _#123]~~del~~ |\n2) </b>![img](a.png \"t\")*em*\\<script>_;`code`\n> x@2x.png~|r42\n  ]https://example.com/a_b?c=d&e=f[[Wiki]]<_;<img src=\"a.png\">**\n<\\[\t[^1][#123日本語café\n   [^1]<kbd>K</kbd>\n  テスト </span>\n\n[ref]: [^1]<<kbd>K</kbd>[link](http://x.y)user:foo</script><br>\n&#x41;!\n[`code`https://example.com/a_b?c=d&e=f\n\n"
+ },
+ {
+  "name": "fuzz-0195",
+  "input": "> [!NOTE]\n> café  [^1]テストcafé<img src=\"a.png\">\nword</b>\"`~~del~~mailto:a@b.cc\\_\n   &!<!-- c -->'<br><a href=\"javascript:x\">j</a>x@2x.png|\n[^1]\n> <span style=\"color:red\">r42\\_\\_www.example.com  \n   .<!-- c --> \n    {{macro}}<img src=\"a.png\">  ![img](a.png \"t\")~\n<\n   #123<b>www.example.com\n    http://example.com<a href=\"javascript:x\">j</a>|\n   <\n> ``<a href=\"javascript:x\">j</a>__&copy;`user:foo</span>\n> !</b></b>\n  &copy;\n  .{{macro}}\n"
+ },
+ {
+  "name": "fuzz-0196",
+  "input": "[ref]: &copy;!<img src=\"a.png\">user:foocafé\n> </span>*><<script>[ref]&#x41;[\n<div>\n#123\n</div>\n"
+ },
+ {
+  "name": "fuzz-0197",
+  "input": "__\n</span>http://example.com;<script>\\\\\n   ![img](a.png \"t\")</script>\t\n[^1]: ]![img](a.png \"t\")http://example.com\n"
+ },
+ {
+  "name": "fuzz-0198",
+  "input": "[^1]\\_<img src=\"a.png\">word*[^1][ref]~\n&@user<a href=\"javascript:x\">j</a>&amp;テスト `code`\n  mailto:a@b.cc&#x41;\n\n| \\\"テスト&#x41;www.example.com | wordテスト:. | [[Wiki]]x@2x.png<script><kbd>K</kbd>__</span>``' |\n|:-:|---|:--|\n"
+ },
+ {
+  "name": "fuzz-0199",
+  "input": "- [x] )<a href=\"javascript:x\">j</a><script>~<[[Wiki]]>!\n     &amp;_\n  &amp;<span style=\"color:red\">!café\n{{macro}}\tuser:foo日本語\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0200",
+  "input": "# *em*{{macro}}\\~~`code`café\\_  \n"
+ },
+ {
+  "name": "fuzz-0201",
+  "input": "    *em*``www.example.com<\\\\')\n  user@example.com<kbd>K</kbd><b>~~</b>**strong**[link](http://x.y)&copy;\n[ref][[Wiki]]x@2x.png___![img](a.png \"t\")\n<div>\n&#x41;[link](http://x.y):<span style=\"color:red\">user@example.com\n</div>\n\n"
+ },
+ {
+  "name": "fuzz-0202",
+  "input": "> [!NOTE]\n>  </b>&#x41;\n  ![img](a.png \"t\")@user`<script>https://example.com/a_b?c=d&e=f#123\\_\n   </b>\n\n> ``&copy;*\n   ;![^1],;<b>?&copy;\n\n| \t\\\\,~~del~~.! |\n|:--|\n- [ ] !>テストx@2x.png\n\n"
+ },
+ {
+  "name": "fuzz-0203",
+  "input": "\\_<br>~~del~~<script>#123<img src=\"a.png\"><b>\n\n> [!NOTE]\n> >\n``www.example.com<img src=\"a.png\"><img src=\"a.png\">\n   ~テストuser:foo  </b><!-- c -->`[\n"
+ },
+ {
+  "name": "fuzz-0204",
+  "input": "2) <!-- c -->*em*<kbd>K</kbd>[[link](http://x.y)\n[[Wiki]]![img](a.png \"t\")#123_テストx@2x.png&copy;[^1]\n  [,\n\n## _\n[^1]: >__&amp;café\n| \\&#x41;user:foohttp://example.com[[Wiki]]> |\n|--:|\n| ~~del~~https://example.com/a_b?c=d&e=f |\n| *]~~*em*!https://example.com/a_b?c=d&e=f[ref] | `code`&copy;[link](http://x.y) |\n"
+ },
+ {
+  "name": "fuzz-0205",
+  "input": "    ]**```*em*\n> \\[?.user:foo **(\n   ![img](a.png \"t\")!:word <x@2x.png\n"
+ },
+ {
+  "name": "fuzz-0206",
+  "input": "\\[[[Wiki]]<b>~~  )\n   #123[link](http://x.y)x@2x.png@userhttp://example.com____\n   ~http://example.com&.\n    <b>{{macro}}</span>&#x41;{{macro}}テスト\n"
+ },
+ {
+  "name": "fuzz-0207",
+  "input": "~~~ruby\nmailto:a@b.cc<b>http://example.com[&\n</b>日本語user:fooテスト\n~~~\n\n- ?\n   <b>\n\n"
+ },
+ {
+  "name": "fuzz-0208",
+  "input": "&amp;<!-- c -->(mailto:a@b.cc</b>\n> ![img](a.png \"t\")\t`user:foo'\n|#123|. \n~~~ruby\n**r42{{macro}}</span>\n&#x41;\n~~~\n\n    \\[,x@2x.png\thttp://example.comテスト\n  café\"<&amp;'*em*<\n##   '\\_;日本語|<script>\n> **strong**</b><!-- c -->~~|,\n,</span>r42<script>!\n\n"
+ },
+ {
+  "name": "fuzz-0209",
+  "input": "    ~~`code`@userhttps://example.com/a_b?c=d&e=f<span style=\"color:red\"></span>https://example.com/a_b?c=d&e=f\n- [ ] \\*\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0210",
+  "input": "~~~ruby\n<\n<b>!|mailto:a@b.cc)`code`[[Wiki]]テスト\n~~~\nuser:foo~~del~~[<br>![img](a.png \"t\")\n> [&#x41;![img](a.png \"t\")'\\_\\\\_\n## <script>&#x41;\n  x@2x.png\\[[Wiki]]:<img src=\"a.png\">http://example.comtext\n</b>\n  \\``</script>&copy;>**\n> '[\n"
+ },
+ {
+  "name": "fuzz-0211",
+  "input": "```\ntext>x@2x.png'.[;\n\\\\<b>\n```\n\n[^1]: _`code`.textuser@example.com\n,<script>x@2x.png&[ref]日本語user@example.com\n"
+ },
+ {
+  "name": "fuzz-0212",
+  "input": "```\n>mailto:a@b.ccx@2x.png]<b>テスト&#x41;\n<script>\t<a href=\"javascript:x\">j</a>\t\\_</script>\n```\n"
+ },
+ {
+  "name": "fuzz-0213",
+  "input": "[^1]: \\\\?>|&<!-- c -->\n\n- [ ] &amp;user@example.com*em*user@example.com\\_[[テスト\n> <b>_<b>[link](http://x.y)#123<!-- c -->![img](a.png \"t\")*\n   https://example.com/a_b?c=d&e=fuser@example.com日本語![img](a.png \"t\")\n\n# ~~del~~</script>\n   __((.<<br>.\n   \\user@example.comcafé~~del~~,  user@example.com[[Wiki]]\n"
+ },
+ {
+  "name": "fuzz-0214",
+  "input": "- [ ] __.'text\n"
+ },
+ {
+  "name": "fuzz-0215",
+  "input": "| ] | <!-- c -->[[Wiki]] | :] |\n|---|:--|:--|\n\n[ref]: r42<a href=\"javascript:x\">j</a>http://example.comcafé  \\*\n\n# __user@example.com日本語\n   (!テスト\n   ]&copy;テスト<!-- c -->日本語https://example.com/a_b?c=d&e=f&\n\n- [ ] \\\\user@example.com__[^1]\"|\n> &copy;_\\_?[^1]@user<br>\n  \\`code` *_~~)\n\n~~~ruby\n]\n</script>[\t\n~~~\n\n"
+ },
+ {
+  "name": "fuzz-0216",
+  "input": "* !mailto:a@b.cc;#123\\\\\\\\\n  ___\n**strong**{{macro}}</b>\n\n"
+ },
+ {
+  "name": "fuzz-0217",
+  "input": "| >&#x41;https://example.com/a_b?c=d&e=f`code` |\n|:-:|\n| </b>日本語<script><script>  **strong**&; | </script>;café</b>;user:foocafé. |\n\n"
+ },
+ {
+  "name": "fuzz-0218",
+  "input": "2) <.日本語<kbd>K</kbd>\n\n> [!NOTE]\n> <kbd>K</kbd>\t\n> [[Wiki]]\n\n"
+ },
+ {
+  "name": "fuzz-0219",
+  "input": "    ~~del~~<\n  </b>![img](a.png \"t\")&__日本語**strong**,\n  mailto:a@b.cc<!-- c -->@userword<a href=\"javascript:x\">j</a>\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0220",
+  "input": "* [[Wiki]]\\*&copy;__?<span style=\"color:red\">\n> [^1]&#x41;[^1]~~del~~\\_*\n> \"<a href=\"javascript:x\">j</a>`code`word&amp;!<\n"
+ },
+ {
+  "name": "fuzz-0221",
+  "input": "2) (</b>[ref]  \n\n# <a href=\"javascript:x\">j</a>:  word\\**\n>   <br>![img](a.png \"t\")http://example.com\\_'\n"
+ },
+ {
+  "name": "fuzz-0222",
+  "input": "## &word~x@2x.png\n2) ]\n  \\_ [[Wiki]]~\n  [ref]*  [\n"
+ },
+ {
+  "name": "fuzz-0223",
+  "input": "> [!NOTE]\n> ~~``café*em*'![img](a.png \"t\")[link](http://x.y).\n  <img src=\"a.png\">'{{macro}}<span style=\"color:red\">.*em*\n<div>\n</b>]\\\n</div>\n```\n,``\n~~del~~``[[Wiki]]\\_<br>\n```\n\n~~~ruby\n.r42]r42mailto:a@b.cc\\*\\[\n[[Wiki]](**mailto:a@b.cc\n~~~\nr42\n> ~~del~~<b></b>user@example.com`x@2x.png\n  \\[[\\*\n\n"
+ },
+ {
+  "name": "fuzz-0224",
+  "input": "[ref]: [ref]_[[Wiki]]\n**strong**\"&amp;\n* [`code`<<!-- c -->\n   ~~**<br>mailto:a@b.cc\\[<img src=\"a.png\">]</b>\n* \\\\`code`{{macro}}text**\n\n    <span style=\"color:red\">\"https://example.com/a_b?c=d&e=f<\n~~\n"
+ },
+ {
+  "name": "fuzz-0225",
+  "input": "<div>\n&#x41;https://example.com/a_b?c=d&e=f<!-- c -->\n</div>\n\n~~~ruby\n(\n#123\\_<;#123{{macro}}http://example.com\"\n~~~\n\n"
+ },
+ {
+  "name": "fuzz-0226",
+  "input": "> [!NOTE]\n> &amp;:\n\n# <b>`(**~\\\\[\n> <span style=\"color:red\">\n\n"
+ },
+ {
+  "name": "fuzz-0227",
+  "input": "> [!NOTE]\n> \\[@user\n(http://example.com\n- [x] user@example.com~~_`code`|?\n   <b>word!|text  ,\n> '\\[\n    ~~http://example.com;&#x41;\\*\n> <b><b>x@2x.png\n   [~~café*em*>https://example.com/a_b?c=d&e=f@user\n"
+ },
+ {
+  "name": "fuzz-0228",
+  "input": "~~~ruby\nuser:foo:&#x41;\nr42\n~~~\n\n"
+ },
+ {
+  "name": "fuzz-0229",
+  "input": "mailto:a@b.cc<span style=\"color:red\">.user@example.com\n**strong***em*\t,`code`[`\n  ``\n<__{{macro}}*em*\n  ,\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0230",
+  "input": ":https://example.com/a_b?c=d&e=f\\_;[[Wiki]]<span style=\"color:red\">\n  `'\"\n[^1]: text!\\[\n\n"
+ },
+ {
+  "name": "fuzz-0231",
+  "input": "_<&#x41;*em*</b>&copy;\t\n\n| mailto:a@b.cc | :<!-- c -->:user:foocaféwww.example.com |\n|---|:-:|\n\n* ![[Wiki]].`code`\n  \"&amp;x@2x.pngwordhttps://example.com/a_b?c=d&e=fhttp://example.com<kbd>K</kbd>)\n```\n~\n\t <kbd>K</kbd>\n```\n\ncafé**strong****<script>)**strong**\n"
+ },
+ {
+  "name": "fuzz-0232",
+  "input": "<div>\n{{macro}}\n</div>\n"
+ },
+ {
+  "name": "fuzz-0233",
+  "input": "  <!-- c -->\n  ``</script><kbd>K</kbd>\n  テストmailto:a@b.cc\tr42\"\n    https://example.com/a_b?c=d&e=f<b>\n\n1. &amp;www.example.comtext#123?*\\\n> )\n> <kbd>K</kbd></b></b>*``http://example.com\n\n[^1]: ]\"\n> ~~del~~**strong**?~~del~~[link](http://x.y)\"\n> ~<!-- c -->\n\n"
+ },
+ {
+  "name": "fuzz-0234",
+  "input": "]r42;</b>[[Wiki]][~~del~~\n   \\*![img](a.png \"t\")<img src=\"a.png\">,\n  ``.__*em*![img](a.png \"t\")`,\n- [x] テストx@2x.png#123~~del~~]\"\n  <br><kbd>K</kbd>[[Wiki]]@user,www.example.com\n- [ ] &?https://example.com/a_b?c=d&e=fmailto:a@b.cc,[link](http://x.y)<span style=\"color:red\">`\n   http://example.com>;\\[<a href=\"javascript:x\">j</a>\n\n1.   x@2x.png\\*\n  {{macro}}{{macro}}&copy;www.example.com\\[</span>?日本語\n![img](a.png \"t\")|&copy;mailto:a@b.cc:\n"
+ },
+ {
+  "name": "fuzz-0235",
+  "input": "    </b>*.:\n> ~~del~~`&#x41;texthttp://example.com<kbd>K</kbd>\\>\n#123***\n~~\n## <user:foo<img src=\"a.png\">\n  >&amp;\\_\\_x@2x.png<b>\n{{macro}}\"![img](a.png \"t\")<a href=\"javascript:x\">j</a>\n\n[^1]: [__<a href=\"javascript:x\">j</a>{{macro}}[^1]&@user&amp;\n- [x] *\"<[link](http://x.y)<kbd>K</kbd></span>\\[\n     ***em*\\*|![img](a.png \"t\")\n"
+ },
+ {
+  "name": "fuzz-0236",
+  "input": "- [ ] mailto:a@b.cccafé!\n  `**strong****<b>'>\n> **\n\n<div>\nテスト.\n</div>\n[[Wiki]]café日本語<@user~~del~~<kbd>K</kbd>\n<a href=\"javascript:x\">j</a>_<script><span style=\"color:red\">\n<div>\n\\[~~\n</div>\n* ]<img src=\"a.png\">[link](http://x.y)\n  \\*http://example.com<b><!-- c -->*\n  日本語<script>__<a href=\"javascript:x\">j</a>]\n"
+ },
+ {
+  "name": "fuzz-0237",
+  "input": "[^1]: [^1]\\_</b>~~&#x41;</span></span>\n"
+ },
+ {
+  "name": "fuzz-0238",
+  "input": "# mailto:a@b.cc\n\n> [!NOTE]\n> ?[^1]\n   <<span style=\"color:red\">\\*r42\n\n> </span>(;\n* &#x41;\n"
+ },
+ {
+  "name": "fuzz-0239",
+  "input": "> \\\\[^1]<b>日本語<script>;<!-- c -->\n\n~~~ruby\n<span style=\"color:red\"><kbd>K</kbd>\" \n`code`[ref]caféhttps://example.com/a_b?c=d&e=fhttps://example.com/a_b?c=d&e=f<span style=\"color:red\">![img](a.png \"t\")\n~~~\n\n<img src=\"a.png\"><!-- c -->  日本語&amp;[[Wiki]]&\\_\n\n## @user[link](http://x.y)user@example.com\n\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0240",
+  "input": "| ><!-- c --><b>  ) | ~~del~~**strong**<br> |\n|:-:|:-:|\n| http://example.com**strong**~~del~~*,テスト |\n| ` | \t</span>~~del~~[[Wiki]] |\n\n"
+ },
+ {
+  "name": "fuzz-0241",
+  "input": "- www.example.com\\\\![img](a.png \"t\")r42*em*\n| )\\\\__**&&#x41; | [ref]*`code`**strong**;]#123 |\n|--:|---|\n| \\\\&copy;!*[ref]</span><  | <br><!-- c -->**strong****mailto:a@b.cccafé'\\* |\n\n"
+ },
+ {
+  "name": "fuzz-0242",
+  "input": "| **strong**#123(mailto:a@b.ccx@2x.png\\_r42 |\n|:--|\n\n![img](a.png \"t\")user:foo:<span style=\"color:red\">![img](a.png \"t\"))\n[ref]: caféhttp://example.com\\\\\n   café,日本語){{macro}}</span>\n- [x] </script>~~del~~)(|<!-- c -->!<!-- c -->\n\\[*.\\&~~*em*\\_\n| x@2x.pnghttps://example.com/a_b?c=d&e=f\\</script>テスト`x@2x.pnghttp://example.com | text_<span style=\"color:red\">@user[^1] | &www.example.com: |\n|--:|--:|:--|\n| ,`code`\\~~http://example.com#123 | &copy;&amp;r42text<span style=\"color:red\"> | <img src=\"a.png\">__ | ] |\n"
+ },
+ {
+  "name": "fuzz-0243",
+  "input": "[^1]: ![img](a.png \"t\")<!-- c -->&#x41;\n&https://example.com/a_b?c=d&e=f<br>café\n\n[^1]www.example.com|?&_word\n  ![img](a.png \"t\")\n\n1.  \n   text\n  <!-- c -->,\\[<br>[ref]\n\n~~~ruby\n#123[[Wiki]]\n&copy;x@2x.png\\*&amp;:\\\\\n~~~\n\n"
+ },
+ {
+  "name": "fuzz-0244",
+  "input": "2) <br>`code`word``http://example.com<img src=\"a.png\">\n> <br>\\[\ntext<b>\n\n1. ~~del~~~~&r42[[Wiki]](<b><script>\n> ?r42</script>\n\n[ref]: \t\n   ]\t@user~<span style=\"color:red\">*em*\n"
+ },
+ {
+  "name": "fuzz-0245",
+  "input": "## </script>http://example.com\n   <kbd>K</kbd>[link](http://x.y)\\_[link](http://x.y)(mailto:a@b.cc\n  <a href=\"javascript:x\">j</a>~[]\n\n"
+ },
+ {
+  "name": "fuzz-0246",
+  "input": "~~~ruby\n\\[(\n,www.example.com><a href=\"javascript:x\">j</a>\n~~~\n<div>\n>\n</div>\n\n# _!\n"
+ },
+ {
+  "name": "fuzz-0247",
+  "input": "> ~~del~~<script>http://example.com\n> **strong**&#x41;café&copy;\\*\n   http://example.comx@2x.png[link](http://x.y)café<script>;{{macro}}\t\n\n"
+ },
+ {
+  "name": "fuzz-0248",
+  "input": "| >\\*,( | www.example.com] | )&\\\\\\**strong** |\n|---|:-:|---|\n# |~日本語</span>_\"_user:foo\n> #123  \\[<kbd>K</kbd>);&#x41;``\n"
+ },
+ {
+  "name": "fuzz-0249",
+  "input": "- [ ] www.example.com*em*)\n\n</b>!![img](a.png \"t\")|&copy;!mailto:a@b.cc\n   `日本語x@2x.png\\*<span style=\"color:red\">[[Wiki]]\n> \\*\\*\n\n(\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0250",
+  "input": "```\n'mailto:a@b.cc|**.;;\n>**\n```\n<div>\n<script>_<kbd>K</kbd><img src=\"a.png\"><img src=\"a.png\">word<script>word\n</div>\n\\*(<a href=\"javascript:x\">j</a>*&<b>\n|!.;*em*mailto:a@b.cc&amp;x@2x.png\n\n"
+ },
+ {
+  "name": "fuzz-0251",
+  "input": "| :\\_(,user@example.com日本語 | ``<kbd>K</kbd>www.example.com |\n|:--|:-:|\n| [ref]**strong**&#x41;][ref]:textテスト |\n| text&amp;`` | |<][[[Wiki]]~~del~~ |\n"
+ },
+ {
+  "name": "fuzz-0252",
+  "input": "- [ ]  </b>\n  [\n``r42r42<script><span style=\"color:red\">\n| \\*&copy;<span style=\"color:red\"> | <kbd>K</kbd>'**[link](http://x.y)text |\n|:--|:-:|\nwww.example.com:<b></script>r42mailto:a@b.cc|\n1. <b>@user\n> http://example.com\n   !,<script><b><script>\n- ~~~~del~~~~<span style=\"color:red\">\n  user@example.com[[Wiki]]www.example.comwww.example.comword\n\n"
+ },
+ {
+  "name": "fuzz-0253",
+  "input": "~~~ruby\n#123&amp;~~`code`'[link](http://x.y)]r42\n`code`\n~~~\n\n```\n_<a href=\"javascript:x\">j</a>[[Wiki]]|?`code`\n>x@2x.png&#x41;x@2x.png&#x41;\n```\n"
+ },
+ {
+  "name": "fuzz-0254",
+  "input": "[^1]: [^1]\\[<br>.<b>#123\\\\,\n![img](a.png \"t\")>\n\n| &copy;?*{{macro}} |\n|:--|\n\n"
+ },
+ {
+  "name": "fuzz-0255",
+  "input": "```\n\\*<word'*<kbd>K</kbd>text\n<!-- c -->user@example.com</span>user:foo*em*<span style=\"color:red\">\n```\n\n- [x] <b>テスト*caféuser@example.com``**strong**\n  user@example.commailto:a@b.cc<\n\n|   {{macro}}<!-- c -->[ref]`code`<a href=\"javascript:x\">j</a>**strong** |\n|--:|\n| ._ |\n## <span style=\"color:red\">日本語,日本語\n  {{macro}}\\_````|_r42\n> <a href=\"javascript:x\">j</a>\\\\.\n\n"
+ },
+ {
+  "name": "fuzz-0256",
+  "input": "> |\n  **strong**user@example.com\n  <[link](http://x.y)http://example.com__.[[Wiki]]www.example.com日本語\n"
+ },
+ {
+  "name": "fuzz-0257",
+  "input": "> [!NOTE]\n> _:~café\n\n> [!NOTE]\n> <script>>\n  #123https://example.com/a_b?c=d&e=f<<!-- c -->**strong**  \n> ~~!__ __#123\n\n> [!NOTE]\n> `~*]\n> www.example.com [\n"
+ },
+ {
+  "name": "fuzz-0258",
+  "input": "```\n`word@userhttps://example.com/a_b?c=d&e=f`code`[link](http://x.y)日本語![img](a.png \"t\")\n(~https://example.com/a_b?c=d&e=f[^1]\n```\n<span style=\"color:red\">~<br>\n   (\\_</b>\n   <a href=\"javascript:x\">j</a>mailto:a@b.cc\n[ref]: [ref]&copy;\\\\#123\n&\n\n2) `code`**<b>&amp;**strong**>\ntext[ref]<img src=\"a.png\">@user\n  user:foo<kbd>K</kbd><b><a href=\"javascript:x\">j</a>&amp;user@example.com**`\n\n[ref]: <br>?;mailto:a@b.cc<span style=\"color:red\">\n> <br>r42user@example.com</span>>__\n   __.*em*<!-- c -->\n"
+ },
+ {
+  "name": "fuzz-0259",
+  "input": "[[Wiki]]日本語![img](a.png \"t\")<img src=\"a.png\">.text'\n\n- [ ] :\\[café~~del~~*[[Wiki]]{{macro}}\n   `` 日本語{{macro}}\\<script>:\n   \\*</script>\n<div>\n~@user)&テスト;~_\n</div>\n| </script>_**strong**\\_,[www.example.com | user:foo(www.example.com | ,)&#x41;**strong** |\n|:-:|:--|:-:|\n- \\_~~del~~:[\n   \\\\\\*,~~\t<img src=\"a.png\">~~~del~~\n   [ref]~)wordwww.example.com\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0260",
+  "input": "~~~ruby\n[<.*em*]word\\[word\n,</b>?r42\n~~~\n> [[Wiki]][ref][[Wiki]]&,&#x41;\n)<b>r42<!-- c -->&[**\n  &copy;!mailto:a@b.cc&copy;  <a href=\"javascript:x\">j</a>\n\n| </b><b>[<script> | @user</span> ``@user[^1]`code`** | r42<kbd>K</kbd>&copy;`code`[^1]<b>~&copy; |\n|:-:|:--|:--|\n| r42__< ~café|text | <.!<b>textテスト|<br> |\n2) ,:#123',&copy;\n- [x] user@example.com#123\n"
+ },
+ {
+  "name": "fuzz-0261",
+  "input": "- [x] <>#123テスト [\n   テスト\n## ``&copy;\\[**&copy;\nhttp://example.com</b>>\n> ][x@2x.png\n\n<span style=\"color:red\">!*\\<br>[user:foo</span>\nx@2x.png~~del~~?\t&#x41;</script>\n  ;\\_www.example.com#123\thttps://example.com/a_b?c=d&e=f:\n\n> <b>\"*,*日本語__\n> [[Wiki]]\t~~del~~http://example.com[link](http://x.y)\n   www.example.com&amp;)\n[ref]: www.example.com'!  r42\t(?\n> *em*)</span>**strong**\n  \\_x@2x.png~</script>\\*</span>~~\n\n"
+ },
+ {
+  "name": "fuzz-0262",
+  "input": "~~~ruby\n<br>*em*word\\_\n?,\n~~~\n\n- [x] &#x41;x@2x.png;~&amp;~**\n> </script>`<a href=\"javascript:x\">j</a>  \n```\n\".``(*em*``\n*em*  ?<span style=\"color:red\">)\n```\n\n| \\>~.{{macro}}*em*~~del~~ | ![img](a.png \"t\")</span>mailto:a@b.cc<a href=\"javascript:x\">j</a>\\[\\\\\\ |\n|:-:|--:|\n| ~,**strong** | ;</span>**</b> | text&#x41;`<!-- c --> '~~ |\n\n"
+ },
+ {
+  "name": "fuzz-0263",
+  "input": "| ;(**strong**\\[<kbd>K</kbd>[ref]~~   | &https://example.com/a_b?c=d&e=f></span> |  &#x41;</b> |\n|:--|--:|---|\n| ,<kbd>K</kbd><kbd>K</kbd>word. | <span style=\"color:red\">~~\"' | *em*<text![img](a.png \"t\") |\n\n"
+ },
+ {
+  "name": "fuzz-0264",
+  "input": "    \\[\n   ~~del~~#123``~<a href=\"javascript:x\">j</a>\n**mailto:a@b.cc![_<br>\n\n> [!NOTE]\n> word[link](http://x.y)\n\n    |\n  )<span style=\"color:red\">\"~__http://example.com</span>[[Wiki]]\nテスト|\t_&amp;\\<a href=\"javascript:x\">j</a>__\n- http://example.com\\\\_\n"
+ },
+ {
+  "name": "fuzz-0265",
+  "input": "<a href=\"javascript:x\">j</a>www.example.comuser@example.comr42mailto:a@b.cc\t&#x41;\n- [x] [ref]~~del~~\n\n"
+ },
+ {
+  "name": "fuzz-0266",
+  "input": "| <script>[^1]\\ | r42&amp;&copy;( | <a href=\"javascript:x\">j</a>)\\[  https://example.com/a_b?c=d&e=f\t~ |\n|---|--:|:--|\n\n- [ ] [~~del~~<\\[`code`(@user\n  テスト&amp;r42texthttps://example.com/a_b?c=d&e=f\n  https://example.com/a_b?c=d&e=f*em*<img src=\"a.png\"></b>\\_\n> [!NOTE]\n> <br>{{macro}}#123<script> \n   [[link](http://x.y)!(\"</b>\n\n# [ref]!\\[>!text_\n\n"
+ },
+ {
+  "name": "fuzz-0267",
+  "input": "[ref]: \\[日本語mailto:a@b.cc**strong**@user\n  `**<br>日本語![ref]<b>\n   user@example.com<script>\n"
+ },
+ {
+  "name": "fuzz-0268",
+  "input": "* http://example.com'\t'text\t<!-- c -->\n  http://example.comcafé\n> <!-- c -->!!<a href=\"javascript:x\">j</a><[[Wiki]])\n\n"
+ },
+ {
+  "name": "fuzz-0269",
+  "input": "```\n`.\nuser@example.comテスト~\n```\n\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0270",
+  "input": "- [x] mailto:a@b.cc</span><|<img src=\"a.png\">text<script>\n> user@example.com#123|[~~del~~\"\n  |*<script>&copy;&\n"
+ },
+ {
+  "name": "fuzz-0271",
+  "input": "- [x] &.</b>``</script>\n> http://example.commailto:a@b.cc\n  {{macro}};)[link](http://x.y),@user\n## <!-- c -->{{macro}}**</span>[ref]テスト\n    <!-- c -->[link](http://x.y);>\n  mailto:a@b.cc``\\*@user\\[[link](http://x.y)\n  ~~r42 www.example.com&amp;~~<b><\n\n## !.`user@example.comwww.example.com\n   http://example.com<span style=\"color:red\">word\n  ~|<script>__\n\n<div>\n!www.example.com(_!\\*\n</div>\n\n"
+ },
+ {
+  "name": "fuzz-0272",
+  "input": "* ;.|:\"\n  *em*)\\;http://example.comテスト\n<div>\n\\http://example.comuser@example.com**\n</div>\n\n"
+ },
+ {
+  "name": "fuzz-0273",
+  "input": "~~~ruby\nmailto:a@b.cc\" \\*:\n**<kbd>K</kbd>[ref]user:foo\n~~~\n\n- [x] https://example.com/a_b?c=d&e=fテスト\n  \\\\{{macro}}caféhttps://example.com/a_b?c=d&e=f\n\n<div>\nr42<a href=\"javascript:x\">j</a>\\*[<a href=\"javascript:x\">j</a>\n</div>\n\n```\n!&<\n ?`[^1]\n```\n[ref]\n  ]http://example.com\t&#x41;&copy;\n  |**www.example.com{{macro}}\n"
+ },
+ {
+  "name": "fuzz-0274",
+  "input": "[^1]: </span></script>!:@user[^1]</b>\n;&#x41;café~;\n   **&www.example.com#123:café&#x41;<img src=\"a.png\">\n\n    ``\n><span style=\"color:red\">user:foo**strong**\n   <&amp;.wordhttps://example.com/a_b?c=d&e=f\n## ]\n  http://example.com\n&copy;テストx@2x.png\n\n<div>\n<!-- c -->\\_\n</div>\n"
+ },
+ {
+  "name": "fuzz-0275",
+  "input": "- [x] '</script>|user@example.com|\n    \\{{macro}}?\n~~~ruby\n**café`code`[link](http://x.y)  |<<\n\t~~del~~テスト<b>\n~~~\n\n"
+ },
+ {
+  "name": "fuzz-0276",
+  "input": "- [x] ><kbd>K</kbd>www.example.com![img](a.png \"t\")'\n\n  ||'`code`\n>   !<span style=\"color:red\">\"\n   text`code``code`\n> [!NOTE]\n> !(\t_\n   \\\\\\*\n  &#x41;|user@example.com*em*\n\n[ref]: http://example.com</b>&#x41;#123word**\n> ``&amp;<!-- c -->&#x41;**日本語\n   &#x41;<b>#123[link](http://x.y)*em*`code`café\\\\\n``\n   '#123www.example.com``  \\_\n> @user\\*_~~del~~\n"
+ },
+ {
+  "name": "fuzz-0277",
+  "input": "> [!NOTE]\n> &copy;>\t\n> )&<a href=\"javascript:x\">j</a>~~user:foo]\n> \\*`code`caféテストhttps://example.com/a_b?c=d&e=f``  \n\n1. [^1]&amp;\\[\n]\n\n<!-- c -->user:foo  ~~\t<script>&#x41;\n> www.example.com\n\n- [x] \\_\n   *em*user:foo:http://example.com>\n\n"
+ },
+ {
+  "name": "fuzz-0278",
+  "input": "<div>\nuser@example.com<kbd>K</kbd>\n</div>\n\n- [ ] ![^1]www.example.com`code`[user:foo__\n> ?\n<div>\nhttps://example.com/a_b?c=d&e=f#123<b>\n</div>\n\n"
+ },
+ {
+  "name": "fuzz-0279",
+  "input": "# (~~del~~([[Wiki]]\"\n   [[Wiki]]http://example.com**strong**  r42\n> `code`~</script>\n\n{{macro}}``[link](http://x.y)\n  mailto:a@b.cc~café~wordwww.example.com\n# </b>[^1]*<span style=\"color:red\">\"</span>user:foo\n\n    '!</span>café;[^1]http://example.com[^1]\n</span>*,[[Wiki]]</b>\\!word\n\n```\n<img src=\"a.png\">[ref]r42日本語\n#123<script>&~~del~~\n```\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0280",
+  "input": "~~~ruby\n`code`</span><span style=\"color:red\">;\n  ;__user@example.com\n~~~\n\n```\n<a href=\"javascript:x\">j</a>\t\n[[Wiki]][[Wiki]]]`code`\n```\n\n- [ ] https://example.com/a_b?c=d&e=f`\n   <a href=\"javascript:x\">j</a>~~?</span>\n``[link](http://x.y)\n\n| @user\"日本語``,r42textx@2x.png | <a href=\"javascript:x\">j</a>` |\n|:--|---|\n| `` | `code`'user@example.com</b>\\_</b>`<b> | !|)*<a href=\"javascript:x\">j</a> |\n| ***em*user@example.com  | <kbd>K</kbd>*(日本語 |\n\n"
+ },
+ {
+  "name": "fuzz-0281",
+  "input": "| `code`#123> | {{macro}}? | <!-- c --><*em* |\n|---|--:|---|\n| <b><script>\\\\* | user:foomailto:a@b.cc | mailto:a@b.cc*em* | < |\n\n~~~ruby\n[[Wiki]]~,#123日本語<!-- c -->\n`<br>(:``\\\\\n~~~\n```\n&#x41;\\[<script> word*em*word\n[^1]\n```\n# text&amp;</b>(<b>**strong**<span style=\"color:red\">\n:&copy;! 日本語<!-- c -->\n  .&]\n"
+ },
+ {
+  "name": "fuzz-0282",
+  "input": "## r42\\[\n{{macro}}&copy;@user</script>http://example.com\n> {{macro}}\tword]\n\n| [^1]&copy;_,<kbd>K</kbd>>[ |\n|:-:|\n|  <\t |\n| \t\\_user:foo)!r42: |\n\\\\_&</span>\n</b>[[Wiki]]\n\n* @user~~  r42`*\n  </script>@user<kbd>K</kbd><kbd>K</kbd>user@example.com)<br>\n\n```\n</b><span style=\"color:red\">\\``![img](a.png \"t\")**strong**{{macro}}\n<img src=\"a.png\">\n```\n"
+ },
+ {
+  "name": "fuzz-0283",
+  "input": "# [link](http://x.y)\\.\nhttp://example.com<img src=\"a.png\">x@2x.png\n\n[^1]: <img src=\"a.png\">café[~~  <img src=\"a.png\">text`code`\n> www.example.commailto:a@b.cc;(<!-- c -->\n</script>*{{macro}}**strong**user@example.com\n\n"
+ },
+ {
+  "name": "fuzz-0284",
+  "input": "[^1]: </b>www.example.com\n&#x41;\nmailto:a@b.cc日本語日本語<!-- c --> \n\n"
+ },
+ {
+  "name": "fuzz-0285",
+  "input": "[ref]: &\\\\\n,x@2x.png:<kbd>K</kbd>__|www.example.com\n\n[^1]: (mailto:a@b.cc&copy;\n   '<img src=\"a.png\"><kbd>K</kbd>&copy;[*em*[^1]\\_\n  日本語café[^1][\n<div>\nx@2x.png<br>text\n</div>\n\n"
+ },
+ {
+  "name": "fuzz-0286",
+  "input": "[^1]: \t``text[[Wiki]]<(\n| \\&&amp;~  | >**>&copy;]user@example.com*) |\n|--:|--:|\n\n# ;<kbd>K</kbd>mailto:a@b.cchttps://example.com/a_b?c=d&e=f~:\n\n    [[Wiki]])\n<span style=\"color:red\">*`>{{macro}}</b>[ref]\n> ':\n\n* &<span style=\"color:red\">?&amp;\n  x@2x.png[link](http://x.y)<\\\\\n"
+ },
+ {
+  "name": "fuzz-0287",
+  "input": "~~~ruby\n\\[<<span style=\"color:red\"><kbd>K</kbd> **strong**<]\n&`<br>#123)r42\n~~~\n\n| ]テストuser:foo | ~[ref]user@example.com[link](http://x.y))?_*em* |\n|:-:|---|\n| [[Wiki]]<&amp;&#x41;http://example.com日本語[link](http://x.y) | <!-- c -->www.example.com{{macro}}~ | r42user:foo<!-- c -->_`**strong**日本語word |\n\n[ref]: \"\\]  <br>\n   (<!-- c -->user@example.com**\\*r42\n> [[Wiki]]#123texttext<!-- c --><span style=\"color:red\"><!-- c -->\\_\n\n"
+ },
+ {
+  "name": "fuzz-0288",
+  "input": " ?<script>\n> ?<img src=\"a.png\"> ![*em*<script>\nuser:foowww.example.com;\\*\\[</b>\n   r42[\n| _#123 | \\\\http://example.comcafé</span>!)\" | &amp;[r42 |\n|--:|---|:--|\n| :r42word&#x41; | user:foouser:foo|x@2x.png[^1]~~del~~@user\t | x@2x.png**strong**| | user@example.com\t |\n\n**strong**]#123\n</script><img src=\"a.png\"><br></span>__user@example.com[\n"
+ },
+ {
+  "name": "fuzz-0289",
+  "input": "&#x41;\n> {{macro}}user:foo<a href=\"javascript:x\">j</a><img src=\"a.png\">[link](http://x.y)テスト\t`\n\n## !\\\\[(r42\n\n| [^1]?[~~~del~~ | www.example.com<script>'&www.example.com_|. | </script>café*em*[ref]~~?https://example.com/a_b?c=d&e=f |\n|---|---|---|\n- [ ] text[ref]https://example.com/a_b?c=d&e=f**strong**:\n\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0290",
+  "input": "mailto:a@b.cctext`\n\"[link](http://x.y)\n> &amp;<img src=\"a.png\">&amp;\n\n    ~\\  *\n> \\\\https://example.com/a_b?c=d&e=f</script>?mailto:a@b.cc\n"
+ },
+ {
+  "name": "fuzz-0291",
+  "input": "~~~ruby\n</span>\t?<kbd>K</kbd><!-- c -->&\n >><span style=\"color:red\">\n~~~\n\n"
+ },
+ {
+  "name": "fuzz-0292",
+  "input": "# ~~ {{macro}}[link](http://x.y);,\n\n- [x] \\_#123text`\n[^1]: <script>\\_&amp;r42日本語\n   <b>\n>mailto:a@b.cc\n\n~~~ruby\nuser:foo\n[[Wiki]]\n~~~\n\n- [x] )\n\n"
+ },
+ {
+  "name": "fuzz-0293",
+  "input": "[ref]: {{macro}}\\*``www.example.com~~del~~!<!-- c -->日本語\n  _\n"
+ },
+ {
+  "name": "fuzz-0294",
+  "input": "[^1]: &;_\n\n<br><a href=\"javascript:x\">j</a>!]\n\n1. <!-- c -->http://example.comhttp://example.com\\\\&amp;\n   \\[#123>\n  ![img](a.png \"t\")`code`</span>&copy;[[Wiki]]テスト__``\n\n<div>\nword&#x41;&amp;\\*</script>\n</div>\n\n- [ ] ?![img](a.png \"t\")\n  word([link](http://x.y)(www.example.com\n   ]<a href=\"javascript:x\">j</a>![img](a.png \"t\")http://example.com[\n"
+ },
+ {
+  "name": "fuzz-0295",
+  "input": "> [!NOTE]\n> 日本語'café\n\\&copy;r42.>&amp;]\n```\n>user@example.com!``&#x41;``café</span>\nテストhttp://example.comuser@example.com\n```\n\n"
+ },
+ {
+  "name": "fuzz-0296",
+  "input": "café**x@2x.png[ref]\nテスト]&#x41;*em*[[Wiki]].<b>'\n\n```\n[[Wiki]]https://example.com/a_b?c=d&e=fテスト!www.example.com|https://example.com/a_b?c=d&e=f\n`\n```\n\n|\n\n\tuser:foo**strong**\n   `\"[link](http://x.y)\n"
+ },
+ {
+  "name": "fuzz-0297",
+  "input": "## \\[?http://example.com;[:\n   </b>\"*em***`code`![img](a.png \"t\")!.\n\n    `code`'#123&amp;**strong**[link](http://x.y)\n   &).,<a href=\"javascript:x\">j</a>  \n[^1]: ``r42[[Wiki]]\n\n1. __?\\[\n> user@example.com\n> \\*[[Wiki]]~\\\\<span style=\"color:red\">]__<span style=\"color:red\">\n"
+ },
+ {
+  "name": "fuzz-0298",
+  "input": "<div>\n<b>(```\\*[[Wiki]]`code`&copy;\n</div>\n\n1. [link](http://x.y)&#x41;([link](http://x.y)[  \n  [link](http://x.y)**strong**:\t#123[^1]]#123\n1. \\*user@example.com***em*\n\n<div>\nword*\n</div>\n"
+ },
+ {
+  "name": "fuzz-0299",
+  "input": "#123\\*[[Wiki]]textr42\n   <!-- c -->\\[([</b>)r42.\n\n~~~ruby\n__)<script></span>&copy;<br>user@example.com\n日本語~<.<br>{{macro}}x@2x.pngwww.example.com\n~~~\n\n> [!NOTE]\n> \\_\\\\café\n2) 日本語日本語<!-- c --><a href=\"javascript:x\">j</a>@user![img](a.png \"t\")**\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0300",
+  "input": "# *em*\"www.example.com_\\[)テスト\n  &[link](http://x.y)@user[[Wiki]]\\_*<!-- c -->\n[ref]: ~.`café**strong**)``\\*\n<br>``#123<!-- c --><script>\\\\\n> &#x41;'*\\_~</script>\n"
+ },
+ {
+  "name": "fuzz-0301",
+  "input": "    `*em*r42  user:foo[\n> ~'~~del~~***\n   &copy;\n\n> </span>[^1]__\"&amp;\\\n> |![img](a.png \"t\")~~|テスト<b>\n\n"
+ },
+ {
+  "name": "fuzz-0302",
+  "input": "## text<a href=\"javascript:x\">j</a>x@2x.png![img](a.png \"t\")\\[\n  <!-- c -->~~~del~~\n~~~ruby\n>\n`` \n~~~\n\n- [ ] @user\\[[|{{macro}}\n  _]r42[^1]\n\n1. [&\"**strong**user@example.com\n#123<b>![img](a.png \"t\")\\\\\n  ][ref]\\_\n\n<div>\n_\\*{{macro}}[[Wiki]]'\n</div>\n"
+ },
+ {
+  "name": "fuzz-0303",
+  "input": "> word<!-- c -->user:foo__)<script>{{macro}}.\n\n# <script>{{macro}}\n"
+ },
+ {
+  "name": "fuzz-0304",
+  "input": "* ``</script>[^1]~\\:)\n"
+ },
+ {
+  "name": "fuzz-0305",
+  "input": "| ~~del~~テスト:`` | (  ~~<br> | r42\\\\&copy;``__<br> |\n|--:|--:|:--|\n\n## [^1]\"\\*. !\n</b>)</span>\n\\*\n"
+ },
+ {
+  "name": "fuzz-0306",
+  "input": "```\n\t\n日本語\n```\n\n"
+ },
+ {
+  "name": "fuzz-0307",
+  "input": "> \t\t?[ref]__**strong**\n> ]**strong**_\t*em*;&</script>\n\n* 日本語\n  ]<[ref]<!-- c -->[^1]\n1. &#x41;</script>\\text\t\t\n> x@2x.png<a href=\"javascript:x\">j</a>&user@example.com\n\n~\\\\[  http://example.com</span><br>\n   ,\nmailto:a@b.cc<b>日本語http://example.com*em*]\"\n| \",café<? | 日本語*em* |\n|---|---|\n\n"
+ },
+ {
+  "name": "fuzz-0308",
+  "input": "<div>\n&copy;**\n</div>\ncafémailto:a@b.cc~~\n  `<br>https://example.com/a_b?c=d&e=f\n\nhttp://example.com</b>)\n  [[Wiki]][&#x41;www.example.com~]\nuser@example.com\n"
+ },
+ {
+  "name": "fuzz-0309",
+  "input": "# <br>\"\n> ]`code`\\[&\\|&copy;http://example.com\n> <a href=\"javascript:x\">j</a>テスト@user>\n\n~~~ruby\n|https://example.com/a_b?c=d&e=f<br>_![img](a.png \"t\")<script>)\n**\n~~~\n| <img src=\"a.png\">[link](http://x.y)_)https://example.com/a_b?c=d&e=f </script> | \\['日本語 |\n|:--|:-:|\n\n- [x] !&</span>\n#   text`**\n  __![img](a.png \"t\")word\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0310",
+  "input": "## &copy;&\\_(\n\n[^1]: <span style=\"color:red\">  .`\n# __&amp;user:foowww.example.comwww.example.com]<script>user@example.com\n   <script></script>&amp;</script>\n> [\\[[Wiki]]__<\n\n> [!NOTE]\n> ;<kbd>K</kbd>worduser:foomailto:a@b.cc\n> ``<span style=\"color:red\">\n<kbd>K</kbd>*``*\\**em*text\n\n- [ ] `<span style=\"color:red\">~~<a href=\"javascript:x\">j</a><kbd>K</kbd>?<!-- c -->r42\nword\\_:!<{{macro}};\n\n"
+ },
+ {
+  "name": "fuzz-0311",
+  "input": "<div>\n&amp;   \t~~del~~_&``\n</div>\n<div>\nテスト``:word|`code`'\n</div>\n## <!-- c -->`code`<&amp;!``<kbd>K</kbd><script>\n"
+ },
+ {
+  "name": "fuzz-0312",
+  "input": "(日本語\\_text&#x41;*em*[ref]\n> ]www.example.com:[^1]![img](a.png \"t\")[^1]_\n__\n<img src=\"a.png\"></b>**strong**\n@user{{macro}}`;<span style=\"color:red\">~<img src=\"a.png\">&copy;\n\n"
+ },
+ {
+  "name": "fuzz-0313",
+  "input": "*em*https://example.com/a_b?c=d&e=fuser@example.com[link](http://x.y);\n   <img src=\"a.png\"><  >\\_&#x41;~\n- [ ] @user\".@user\n  *em*[^1]user:foo\n  \\[|;\\[user@example.com\n> [!NOTE]\n> </b>*\\\\<img src=\"a.png\">![img](a.png \"t\")<img src=\"a.png\">テストhttp://example.com\n  #123&\n   <script><text**strong**&#x41;</script>  \\\n\n"
+ },
+ {
+  "name": "fuzz-0314",
+  "input": "## &#x41;http://example.comhttps://example.com/a_b?c=d&e=f<kbd>K</kbd>*\n   {{macro}}|**strong**www.example.com|\\[\n  *em*<a href=\"javascript:x\">j</a>\tテスト\n> x@2x.png&copy;\\\n\n~~~ruby\n&#x41;word,**strong**https://example.com/a_b?c=d&e=f</b>#123\n\\[\n~~~\n"
+ },
+ {
+  "name": "fuzz-0315",
+  "input": "# </b>&&amp;  https://example.com/a_b?c=d&e=f'&copy;\n~~~ruby\n!\n~mailto:a@b.cc&#x41;\n~~~\n1. &amp;<img src=\"a.png\">テスト@user_\\`\n]<img src=\"a.png\">)\n> \\[@user<span style=\"color:red\">\\*&amp;``\n[ref]: x@2x.png<!-- c -->.\n  _#123\n   &amp;@user<img src=\"a.png\"></span>\n\n| .user@example.com` | 日本語~ |\n|:-:|---|\n| ''<br><script>café日本語 |\n"
+ },
+ {
+  "name": "fuzz-0316",
+  "input": "- [x] #123user:foo&#x41;</script>,\n  )@user<b>caféuser:foo*em*r42\n"
+ },
+ {
+  "name": "fuzz-0317",
+  "input": "- _``<b><kbd>K</kbd>**<\n![img](a.png \"t\")\n   \\\\*#123_(~~\n~~~ruby\n'<b>\n</span>http://example.com\t|@user\n~~~\n> ~~[[Wiki]]*]\"https://example.com/a_b?c=d&e=f``\n**cafétext&amp;#123</b>[ref]\n[ref]: http://example.com)\n\n"
+ },
+ {
+  "name": "fuzz-0318",
+  "input": "\\<a href=\"javascript:x\">j</a>[link](http://x.y)\n\n[ref]: @user**strong**_</script></script>&copy;\n  <a href=\"javascript:x\">j</a>__<b>http://example.com```code`</span>\n[ref]?\n{{macro}}\\.</b>@userword\n  &,[ref]テスト\\\\<!-- c -->\n"
+ },
+ {
+  "name": "fuzz-0319",
+  "input": "&#x41;&copy;&copy;<!-- c -->&#x41;__@user\n  ![img](a.png \"t\")www.example.com<!-- c -->r42<img src=\"a.png\">www.example.comテスト\n:><br>café_]<a href=\"javascript:x\">j</a>\n> [!NOTE]\n> :.\nwww.example.com\n   ]&#x41;<span style=\"color:red\">|[[Wiki]]  日本語user@example.com\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0320",
+  "input": ">  {{macro}}</span>\n   r42\n  </script>&copy;;[[Wiki]],\n"
+ },
+ {
+  "name": "fuzz-0321",
+  "input": "(<img src=\"a.png\">\\[\\_\n)[link](http://x.y)<img src=\"a.png\"></span>\"\\*!*em*\n\\*\n\n"
+ },
+ {
+  "name": "fuzz-0322",
+  "input": "| !<img src=\"a.png\">] | </b>&amp;<a href=\"javascript:x\">j</a>:~ | *__<img src=\"a.png\">[[Wiki]]&#x41;&#x41;日本語> |\n|---|:-:|---|\n| @user_`\\[|?{{macro}}\\* | *em*? ! |\n| </span>www.example.com|![img](a.png \"t\")www.example.com~https://example.com/a_b?c=d&e=f> | :<img src=\"a.png\">*em*![img](a.png \"t\") |\n~~~ruby\ntextx@2x.png<!-- c -->[^1]\n`].テスト\n~~~\n> [!NOTE]\n> <script>text\n> [!NOTE]\n> **strong**'&\\*&copy;~\n\n> </span>,\\\\[link](http://x.y)\n   ([link](http://x.y)&amp;<img src=\"a.png\"><span style=\"color:red\">日本語;\n\n"
+ },
+ {
+  "name": "fuzz-0323",
+  "input": "\\\\日本語user@example.com  <br><img src=\"a.png\">&#x41;\n| ``)   |\n|---|\n| :*{{macro}}  ;< | [link](http://x.y) |\n\n"
+ },
+ {
+  "name": "fuzz-0324",
+  "input": "| <![img](a.png \"t\")<img src=\"a.png\"> | <!-- c --></b>\\.</script>user:foo |\n|:-:|:-:|\n| user:foo  **strong**& |\n| <script>[^1] |\n> (][link](http://x.y)\\\\\n    __<!-- c -->[^1][^1]https://example.com/a_b?c=d&e=f`code`\n  www.example.com\\\n  ~<a href=\"javascript:x\">j</a>&<\\[{{macro}}__\n\n## http://example.com\\*\t&x@2x.png\n> 日本語<[[Wiki]]https://example.com/a_b?c=d&e=f__\n  </b></span>\n\n| [ref] |\n|:--|\n\n"
+ },
+ {
+  "name": "fuzz-0325",
+  "input": "> [!NOTE]\n> ![img](a.png \"t\")<!-- c -->  \nx@2x.png*em*<script>~~text\n\n- \\*)**\n  café\n<div>\n_[<script>\n</div>\n* \\_\"\n   テスト&copy;[[Wiki]]\n  :*&copy;text<kbd>K</kbd>|x@2x.png!\n"
+ },
+ {
+  "name": "fuzz-0326",
+  "input": "# \\*<!-- c -->](\n   \\<br><!-- c -->r42)\n\n"
+ },
+ {
+  "name": "fuzz-0327",
+  "input": "> [!NOTE]\n> `_\\[<**strong**http://example.com[link](http://x.y)\n  café__user@example.com[[Wiki]]\"<kbd>K</kbd>[ref]\n\n<div>\n{{macro}}www.example.com[^1]>\n</div>\n\n"
+ },
+ {
+  "name": "fuzz-0328",
+  "input": "[ref]: **strong**&\n\n"
+ },
+ {
+  "name": "fuzz-0329",
+  "input": "```\nテストtext[``\nuser@example.com_!</b>;\n```\n\n<img src=\"a.png\"><kbd>K</kbd>**?\n> \t_\\\\word&user:foo\\[\n\n</script>\\[<img src=\"a.png\"><script>~~\n   >@user\n\n~~~ruby\n<`\n&~\\*,user@example.com\n~~~\n\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0330",
+  "input": "> [!NOTE]\n>   <a href=\"javascript:x\">j</a>,mailto:a@b.cc@user!<kbd>K</kbd>>\n> *em*@user~~(user:foo\\\\user@example.com|\n\ntext`word>http://example.com<a href=\"javascript:x\">j</a>&amp;<\n  &amp;_)<br>&amp;\n> <kbd>K</kbd>www.example.comwww.example.com<b><a href=\"javascript:x\">j</a>\n\n"
+ },
+ {
+  "name": "fuzz-0331",
+  "input": "- [ ] `code`\n> <a href=\"javascript:x\">j</a>\"``:\n\n<div>\n~!\n</div>\n\n"
+ },
+ {
+  "name": "fuzz-0332",
+  "input": ")textテスト\\*<span style=\"color:red\">\n   <[\n\\_\\<b>日本語\\\\\n"
+ },
+ {
+  "name": "fuzz-0333",
+  "input": "[ref]: ]\n"
+ },
+ {
+  "name": "fuzz-0334",
+  "input": "2) \\_&copy;_\\\\``**strong**www.example.com\n> *em*<img src=\"a.png\">&&amp;\n> </script>,[ref]\n\n2) www.example.comuser:foo\n~~del~~x@2x.png):)\n  <@user<img src=\"a.png\">\n\n"
+ },
+ {
+  "name": "fuzz-0335",
+  "input": "[ref]: <script>>]__**strong**text\n> [!NOTE]\n> |\t<script>  日本語\n\\_[r42\n   <!-- c -->\\[*[[Wiki]]~~del~~**strong**`code`\n\n"
+ },
+ {
+  "name": "fuzz-0336",
+  "input": "> [!NOTE]\n> #123~\n&copy;\n  ~~del~~**\n\n- [x] <!-- c -->\\http://example.com**(\n  [[Wiki]]user:foo&\n| \tuser@example.com**strong** | [[Wiki]]<!-- c --> | user@example.com\\\\  \t |\n|--:|---|:--|\n\n[ref]: <br>[[Wiki]]text\"\n\n"
+ },
+ {
+  "name": "fuzz-0337",
+  "input": "> [!NOTE]\n> \\\\*<span style=\"color:red\">'\\\\text!user@example.com\n  </b>[^1]</b>[[Wiki]]|\"[link](http://x.y)\\_\n"
+ },
+ {
+  "name": "fuzz-0338",
+  "input": "| \\\\<br>*em*[mailto:a@b.cc | ]~~</b><b> | ;word |\n|:--|---|:--|\n| ~.mailto:a@b.cc |\n\n- [ ] \\****user@example.com\n> <a href=\"javascript:x\">j</a>.</span>{{macro}}\n- [x] [\n"
+ },
+ {
+  "name": "fuzz-0339",
+  "input": "| >#123<img src=\"a.png\">http://example.comtextuser:foo | [ref]https://example.com/a_b?c=d&e=f<a href=\"javascript:x\">j</a>user@example.com@user |\n|--:|--:|\n| café</script><span style=\"color:red\">\\?<b>&copy; |\n| ~~del~~<span style=\"color:red\">,*em* |\n~~~ruby\n</span> </script>text\n``{{macro}}\\\\\n~~~\n\n1. mailto:a@b.cccafé\n# <*|\n> #123>user:foo*em*[link](http://x.y)\\\\</b>\nr42[[Wiki]]<b>`~~@user*em* \n~~~ruby\n[ref]#123`code`**strong**[~r42\n~~del~~[link](http://x.y)\\\\?\n~~~\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0340",
+  "input": "- [ ] https://example.com/a_b?c=d&e=f日本語  **__**strong**\n\n1. <script>~user:foo`code`[ref][ref]\n   ~~del~~,~~~~&copy;\n"
+ },
+ {
+  "name": "fuzz-0341",
+  "input": "> <!-- c -->>\n  </script><user@example.com日本語!{{macro}}[ref]\n#123\\<script>[[Wiki]]*\n\n"
+ },
+ {
+  "name": "fuzz-0342",
+  "input": "<b>www.example.com**&amp;text<a href=\"javascript:x\">j</a>http://example.com\n> x@2x.png`code`**strong**</script>[[Wiki]]</script>``&copy;\n> :日本語<br>**user:foo&\n\n1. <img src=\"a.png\">(:    {{macro}}\n> \"`code`www.example.com日本語\n\n```\n__*]*'><span style=\"color:red\">\n&amp;&amp;</b>\n```\n\n```\n日本語*&amp;\n*  __\\mailto:a@b.cccafé\n```\n"
+ },
+ {
+  "name": "fuzz-0343",
+  "input": "* :\n> [!NOTE]\n> )'&#x41;\n  </b>;`code`![img](a.png \"t\")~~del~~\n   r42\\_[link](http://x.y)\\_\n2) :\\\n\n"
+ },
+ {
+  "name": "fuzz-0344",
+  "input": "> [!NOTE]\n> <span style=\"color:red\">|word</b>?\"&\n   )__'user:foo:</b>\n</script>>\n* http://example.com`[ref]_日本語word[ref]<span style=\"color:red\">\n?<script>\n## https://example.com/a_b?c=d&e=f#123`テスト[link](http://x.y)user:foo\n   \\*!)*em*&#x41;*em*\\ \n> mailto:a@b.cc,text{{macro}}?\n"
+ },
+ {
+  "name": "fuzz-0345",
+  "input": "\\'<span style=\"color:red\">>@user]<!-- c -->![img](a.png \"t\")\n\\_?user@example.com>\n> >user:foo`code`</script>'\\\\\n\n```\n\\,|>[[Wiki]]</b>*em*<kbd>K</kbd>\n~!~~del~~</span>\\|  \n```\n- &copy;\n  <span style=\"color:red\">\n    ``){{macro}}www.example.com[ref]<span style=\"color:red\">\n   </b>\\\\&text\\*&copy;\n"
+ },
+ {
+  "name": "fuzz-0346",
+  "input": "# </span>``**www.example.com_[link](http://x.y)\\\n> [ref]?</b>\n\n"
+ },
+ {
+  "name": "fuzz-0347",
+  "input": "| <br>[[Wiki]]</b>! | \\_ |\n|--:|:--|\n| _&[^1]**mailto:a@b.cc | user@example.com~~x@2x.png |\n| x@2x.png!テスト<``]user:foo** |\n[^1]: \\_[ref].**テスト\n<br>|\n   :\n\nhttps://example.com/a_b?c=d&e=f\"\\[テストcafé\n> `code`&``&#x41;[^1]![img](a.png \"t\"),\n   <a href=\"javascript:x\">j</a>[<a href=\"javascript:x\">j</a>www.example.com><a href=\"javascript:x\">j</a>\n\n```\n`code`&<kbd>K</kbd>__</script>[^1]</span>\n\\_{{macro}}<br>\\[*https://example.com/a_b?c=d&e=f<kbd>K</kbd>\n```\n"
+ },
+ {
+  "name": "fuzz-0348",
+  "input": ")www.example.com\n\\_![img](a.png \"t\")x@2x.png.\n\n2) café``\n]\n"
+ },
+ {
+  "name": "fuzz-0349",
+  "input": "- [x] (</span>`]\n# 日本語<script>http://example.com<br>\\*{{macro}}&amp;_\n   .<script><br>テスト\n\n2) [^1]*<span style=\"color:red\">`code`,\\&amp;</span>\n> <span style=\"color:red\">**strong**'<kbd>K</kbd>\\\\user@example.com\n\n2) **![img](a.png \"t\")>>wordmailto:a@b.cc\n\n1. \"[link](http://x.y)!<``__[[Wiki]]word\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0350",
+  "input": "> [!NOTE]\n> &amp;`*em*\n**<a href=\"javascript:x\">j</a><!-- c -->\\\\  'www.example.com\"\n<div>\n_([<br><img src=\"a.png\"><b>\n</div>\n\n"
+ },
+ {
+  "name": "fuzz-0351",
+  "input": "~~~ruby\n\\[[link](http://x.y)\n&#x41;?<!-- c -->\n~~~\n<div>\n**\\_![img](a.png \"t\"),[^1],&amp;~\n</div>\n## http://example.comuser@example.com?**strong**~~del~~\\[\\\\\n   </script>'>]user:footext!</script>\n\n"
+ },
+ {
+  "name": "fuzz-0352",
+  "input": "> &!textwww.example.com__{{macro}}\n&amp;<img src=\"a.png\">\\\\[link](http://x.y)<br>[link](http://x.y)`code`\n[^1]: mailto:a@b.cc~<b>&amp;x@2x.png**[[Wiki]]\n  <span style=\"color:red\">`&amp;\\\"x@2x.png\"!\n\n[ref]: * @usertext\n"
+ },
+ {
+  "name": "fuzz-0353",
+  "input": "- [x] \\\\</span><a href=\"javascript:x\">j</a>![{{macro}}\ntext![img](a.png \"t\")#123  **strong**\n\n# *em*https://example.com/a_b?c=d&e=f<*\\\\\n  **strong**__\n\n"
+ },
+ {
+  "name": "fuzz-0354",
+  "input": "| **strong**>!r42<a href=\"javascript:x\">j</a>!<script>**strong** | ,~;`code` |\n|:--|--:|\n| &|~~user:foo&. | x@2x.png[link](http://x.y)\\\\>&copy;<script>word! |\n| `code`  | </b>\\[ |\n1. `code`_'\n   :<b>],x@2x.png\n- [ ] mailto:a@b.cc&copy;\n  <span style=\"color:red\">http://example.com<x@2x.png<*em*\n*em*\\*\\\\*<\"'\n\n[ref]: user:foo&amp;user:foo</span>{{macro}}|</b>\n    <!-- c -->**strong**\n<div>\n<br>\n</div>\n\n"
+ },
+ {
+  "name": "fuzz-0355",
+  "input": "?**strong***``café</b>\n# mailto:a@b.cc?\\[\"?\n  @user\n<span style=\"color:red\"> mailto:a@b.cc&amp;~~~~del~~[[Wiki]],\n\n> _?_\n> \t\n> \"\n\n> [!NOTE]\n> ~``日本語\n> text[ref]テストhttp://example.com\n"
+ },
+ {
+  "name": "fuzz-0356",
+  "input": "- [ ] >user:foo\\*\n> word</script>\n  &amp;[^1][[Wiki]]&#x41;日本語.![img](a.png \"t\")http://example.com\n- http://example.com日本語\n> #123mailto:a@b.cc!&copy;`code`<span style=\"color:red\">[ref]'\n\n- [ ] http://example.com[ref] </script>&amp;]&#x41;http://example.com\n> ){{macro}}\n<!-- c -->]:_<img src=\"a.png\">\n- [ ] ?\t``\\*\n\n"
+ },
+ {
+  "name": "fuzz-0357",
+  "input": "- [x] <café~~__</span>&amp;>~~\n  \\[`code`\n  \\\\<a href=\"javascript:x\">j</a>\n<div>\nmailto:a@b.ccx@2x.png&www.example.com<span style=\"color:red\">`\n</div>\n\n"
+ },
+ {
+  "name": "fuzz-0358",
+  "input": "2) \\*テスト :\n\n<div>\n&<b>\n</div>\n~~~ruby\n\\|r42\n>[[Wiki]]![img](a.png \"t\")_.r42(\n~~~\n* `\n   ,&#x41;\n\n"
+ },
+ {
+  "name": "fuzz-0359",
+  "input": "- [x] ~~~~[https://example.com/a_b?c=d&e=f#123\\*\n  |<  \n&amp;http://example.com日本語*\\\\'user@example.com\n~~~ruby\nmailto:a@b.cc@user ;\n.\n~~~\n2) [link](http://x.y)\n   #123日本語:</script>http://example.com``\n| user@example.com\\\\  (></b>\"&#x41; | mailto:a@b.cc&#x41; |\n|:--|--:|\n\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0360",
+  "input": "# ~r42テストtext\n\n    café|&amp;&amp;[link](http://x.y)\n- [x] (\n> >\n* </span>~テスト*<span style=\"color:red\"><script>[link](http://x.y)\n\n"
+ },
+ {
+  "name": "fuzz-0361",
+  "input": "> [!NOTE]\n> text\\*日本語テスト\n   ]\\\\*`{{macro}}#123\\;\n  <b></b>[link](http://x.y)\n\n"
+ },
+ {
+  "name": "fuzz-0362",
+  "input": "    __テスト;\n- ('<script> **x@2x.png\n    \\www.example.com</script></script>café`code`\n\n# <\n&amp;*em*x@2x.png:~</b>\n   [ref]&amp;::text<script>**strong**<br>\n\n<div>\n(http://example.com__\\\\http://example.com\n</div>\n\n"
+ },
+ {
+  "name": "fuzz-0363",
+  "input": "[ref]: [_text\"_~~https://example.com/a_b?c=d&e=fuser@example.com\n  <(\n\n"
+ },
+ {
+  "name": "fuzz-0364",
+  "input": "    `code`#123</span>:\\[\n\n<div>\n``\n</div>\n\n# \\https://example.com/a_b?c=d&e=f日本語\n  <!-- c -->![img](a.png \"t\"):テスト;?text\\*\n   *em*]<a href=\"javascript:x\">j</a>\n~~~ruby\nhttp://example.com)\nuser@example.com#123\\\\[\\_.r42\"\n~~~\n\nhttps://example.com/a_b?c=d&e=f\n   &amp;{{macro}}<'<script>@user\\*\n   mailto:a@b.cchttps://example.com/a_b?c=d&e=f[ref]|r42\n\n"
+ },
+ {
+  "name": "fuzz-0365",
+  "input": "## **[\t|\n"
+ },
+ {
+  "name": "fuzz-0366",
+  "input": ">\n   \t\\_[ref]\n> ,[[Wiki]]\n\n"
+ },
+ {
+  "name": "fuzz-0367",
+  "input": "{{macro}}[ref]r42<a href=\"javascript:x\">j</a>\n\n"
+ },
+ {
+  "name": "fuzz-0368",
+  "input": "# user@example.comcaféhttp://example.com\n   r42café**#123\n\n> [!NOTE]\n> </span>__[ref]\\_*?\\*mailto:a@b.cc\n> &amp;\n"
+ },
+ {
+  "name": "fuzz-0369",
+  "input": "## https://example.com/a_b?c=d&e=f<span style=\"color:red\">&amp;word?\n\n- café:\n  @user<img src=\"a.png\"><kbd>K</kbd>,** <span style=\"color:red\">\n  <script>'<kbd>K</kbd>\n> [!NOTE]\n> ,[^1][link](http://x.y)[[Wiki]]mailto:a@b.cc[[Wiki]]\"\n2) #123|user:foohttps://example.com/a_b?c=d&e=f**strong**'\n> ![img](a.png \"t\")\n[\n\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0370",
+  "input": "<div>\n,~~~\n</div>\n1. :~~del~~word<img src=\"a.png\"><kbd>K</kbd>]*\\\\\n  word`code`![img](a.png \"t\"){{macro}}__.text\n> [&copy;~~#123>\\\\\n\n1. \":テストwww.example.com![img](a.png \"t\");__\n  .user@example.com,~*\n\n"
+ },
+ {
+  "name": "fuzz-0371",
+  "input": "2) <span style=\"color:red\">\\*``\n   <br>r42__**&\n'<[ref]\\:\n1. (\n>   (  \\*__\n\n"
+ },
+ {
+  "name": "fuzz-0372",
+  "input": "[^1]: __``</span>\\www.example.com_</b>\n   \\*\n"
+ },
+ {
+  "name": "fuzz-0373",
+  "input": "2) <script><!-- c --><a href=\"javascript:x\">j</a>![img](a.png \"t\")@user\n  \\*http://example.com**\n> [!NOTE]\n> 日本語(\n\n| ~~del~~ https://example.com/a_b?c=d&e=f |\n|---|\n```\n~~<a href=\"javascript:x\">j</a>[ref]テスト&copy;&amp;[[Wiki]]\\\\\n&copy;?[ref].\"&\n```\n\n"
+ },
+ {
+  "name": "fuzz-0374",
+  "input": "[ref]: ~~del~~\n\n[ref]: [link](http://x.y)\\_\t[link](http://x.y)\n\n| word__&amp;<:x@2x.png![img](a.png \"t\") |\n|:-:|\n| #123 | <img src=\"a.png\">':*[[Wiki]]user@example.com_ |\n| |\" |\n\n<div>\n<b>:[ref]\n</div>\n\n"
+ },
+ {
+  "name": "fuzz-0375",
+  "input": "* wordx@2x.pngword*em*\n> &copy;[link](http://x.y)`code`\n  >テスト[\n<div>\n#123{{macro}}&word</span>\\[\\*\n</div>\n-  'x@2x.png\n"
+ },
+ {
+  "name": "fuzz-0376",
+  "input": "| www.example.comword<script>user:foo{{macro}}www.example.com. |\n|--:|\n| <b>[ref]日本語\\ |\n"
+ },
+ {
+  "name": "fuzz-0377",
+  "input": "- [ ] _<!-- c -->\\\\``<b>  \n  &copy;\"<<a href=\"javascript:x\">j</a>\t&amp;</script><span style=\"color:red\">\n"
+ },
+ {
+  "name": "fuzz-0378",
+  "input": "1. user@example.com&amp;\n> :&#x41;\n   &__&\t\n\n2) &*\n   ~\\<kbd>K</kbd>\n| <br>@user[link](http://x.y)'@user&copy;]: |\n|:--|\n\n1. ]&copy;`code`~~<br>mailto:a@b.cc&amp;<span style=\"color:red\">\n"
+ },
+ {
+  "name": "fuzz-0379",
+  "input": "- [ ] `&user:foo)\n> <a href=\"javascript:x\">j</a>\n\n* &#x41;https://example.com/a_b?c=d&e=f&copy;`code`mailto:a@b.cc__&#x41;[[Wiki]]\n  テスト\n</span>*em*</b>|?@user![img](a.png \"t\")\n\n~~~ruby\n[link](http://x.y):]日本語word  r42~\nhttp://example.com*em*<b>.<\n~~~\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0380",
+  "input": "2) &#x41;{{macro}}.\n\n> [!NOTE]\n> 日本語[link](http://x.y)'テスト<span style=\"color:red\">\n  ]![img](a.png \"t\")[link](http://x.y)**[link](http://x.y)text<\t\n"
+ },
+ {
+  "name": "fuzz-0381",
+  "input": "https://example.com/a_b?c=d&e=f:mailto:a@b.cc\\\\?![img](a.png \"t\")\n[link](http://x.y)r42\n\\&copy;&#x41;){{macro}}\\*]\n   user:foo#123\\*|café:\n    <script>!word(user@example.com<!-- c -->]\n\n~~~ruby\n[^1]\n  \\<!-- c -->\n~~~\n"
+ },
+ {
+  "name": "fuzz-0382",
+  "input": "- :\t<kbd>K</kbd>__)[?<script>\nhttp://example.com{{macro}}|**strong**__\n> ____\n\n- [x] <b>.\n>  [[Wiki]]\n\n"
+ },
+ {
+  "name": "fuzz-0383",
+  "input": "<div>\n{{macro}}`code`_~~del~~mailto:a@b.cc!?_\n</div>\n\n[ref]: [![\"\n\n## **<a href=\"javascript:x\">j</a>&copy;`[[[Wiki]]  \n> \t></script>*em*)\n   _![img](a.png \"t\")!<span style=\"color:red\">#123\n\n[ref]: ![img](a.png \"t\")r42\t)user@example.com\n- テスト:日本語<a href=\"javascript:x\">j</a><script>(\n  &amp;  `<kbd>K</kbd>&amp;**strong**\n"
+ },
+ {
+  "name": "fuzz-0384",
+  "input": "    \\.mailto:a@b.cctext'{{macro}}<b>\n\n    . ~~\n   \\![img](a.png \"t\")\n  \\[~~del~~ ,\n"
+ },
+ {
+  "name": "fuzz-0385",
+  "input": "# @user</b>&#x41;\n\n> ,*em*\n\n"
+ },
+ {
+  "name": "fuzz-0386",
+  "input": "-  {{macro}}café  https://example.com/a_b?c=d&e=f**`code`[^1]\n   <a href=\"javascript:x\">j</a>\n\n<br>  <img src=\"a.png\">;\n- http://example.com<br>]café<@user\n"
+ },
+ {
+  "name": "fuzz-0387",
+  "input": "```\n<a href=\"javascript:x\">j</a></span>;|\\[;テスト\ncafé\\*``\n```\n2) [ref]![img](a.png \"t\")\\\\****strong**\n<a href=\"javascript:x\">j</a>>日本語\n\n"
+ },
+ {
+  "name": "fuzz-0388",
+  "input": "> [<a href=\"javascript:x\">j</a>x@2x.png</span>r42``user:foo\\\n  <kbd>K</kbd>r42*<span style=\"color:red\">(\n\n> <x@2x.png<kbd>K</kbd>&#x41;``<br>]\n> </script>`code`text\t<kbd>K</kbd>*em*<br>\n1. ~~</b><b>__\n\n"
+ },
+ {
+  "name": "fuzz-0389",
+  "input": "    _&copy;\n  ,[link](http://x.y)https://example.com/a_b?c=d&e=f,[**strong**&:\n\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0390",
+  "input": "2) \\_\n\n    `` x@2x.png*@user\n\n))()<kbd>K</kbd>r42.\n\n[ref]: <a href=\"javascript:x\">j</a>>\\\\&#x41;#123\\\\  \n``&<script>*em*[^1]text\n  <img src=\"a.png\">\n\n~~~ruby\n<!-- c --></b>&#x41;www.example.com[\\[\n:>\n~~~\n\n"
+ },
+ {
+  "name": "fuzz-0391",
+  "input": "* .\\_word日本語user@example.com<img src=\"a.png\">**\n\\_\\_\"&copy;#123\n- [x] {{macro}}user:foo;</span>\n  mailto:a@b.cc&copy;<!-- c -->\\r42テスト\n\n| [^1]word\"\\**https://example.com/a_b?c=d&e=f&copy;#123 | x@2x.pngwww.example.com.\\; |\n|---|:--|\n| <a href=\"javascript:x\">j</a>&copy;日本語[ref]www.example.com?<br> | *\\*mailto:a@b.cc[[Wiki]]\\\\__ | ~~del~~* |\n\nuser:foo[|**strong**https://example.com/a_b?c=d&e=f_&copy;\nuser@example.com*\\*\n   *日本語.\n\n[[Wiki]].|:[[Wiki]]日本語テスト,\n> :\n"
+ },
+ {
+  "name": "fuzz-0392",
+  "input": "- \"<span style=\"color:red\">\n| . | ___&amp;{{macro}}<br>  `code`\\* | `[link](http://x.y)** |\n|--:|---|---|\n| mailto:a@b.cc\\[<script>mailto:a@b.cchttp://example.comuser@example.com</span><a href=\"javascript:x\">j</a> | x@2x.png</script>text</span>!user@example.com\\\\\t |\n| \\*`user:foo?![img](a.png \"t\") | ]café<b><script>*em*<script> | café[link](http://x.y) | ![img](a.png \"t\")[\\*www.example.com\\*&amp;user@example.com |\n]{{macro}}*\n> \\\\`code`*em*\n"
+ },
+ {
+  "name": "fuzz-0393",
+  "input": "[^1]: [ref]\\[word\\[.text>>\n\n    <kbd>K</kbd>x@2x.png*![img](a.png \"t\") \n## {{macro}}{{macro}}\n## , !``\\_</span>\n  \t\n[ref]: \\\\'\n\n"
+ },
+ {
+  "name": "fuzz-0394",
+  "input": "1. *<b>\n\n> ![img](a.png \"t\")<span style=\"color:red\">http://example.com'[ref][ref]\n   café\\(>~http://example.com]\n\n<div>\nword \n</div>\n\n<div>\n'(`&copy;\n</div>\n\n- [ ] {{macro}}@user<kbd>K</kbd>**\\\\>\n  :\n"
+ },
+ {
+  "name": "fuzz-0395",
+  "input": "**~<script>]\\__www.example.com\n> &#x41;</span>\\.\n<b>>\\*user@example.com#123<kbd>K</kbd>\n[ref]: テストr42text**\n    word>`<>\n\n- [ ] <script><!-- c -->**strong**([^1]~~del~~\"\n> <~\n   ~~<[link](http://x.y)&copy;,\n\n[ref]: http://example.comword{{macro}}\n  &amp;\n\n"
+ },
+ {
+  "name": "fuzz-0396",
+  "input": "    [ref]\n> *em*https://example.com/a_b?c=d&e=fhttp://example.com`,<<script>{{macro}}\n\n~~~ruby\n&user:foo,café[link](http://x.y)r42\n*em*日本語>\\[<script>\n~~~\n<div>\n(café</script>\"\n</div>\n"
+ },
+ {
+  "name": "fuzz-0397",
+  "input": "| *em*[^1]mailto:a@b.cc@user<kbd>K</kbd> | >\\_ |\n|:-:|:--|\n| [^1]&<a href=\"javascript:x\">j</a>*em* | </script>.www.example.commailto:a@b.cc | </script>![img](a.png \"t\")( |\n\n"
+ },
+ {
+  "name": "fuzz-0398",
+  "input": "> [!NOTE]\n> @user{{macro}}#123\\[~~~~\n.https://example.com/a_b?c=d&e=f  ![img](a.png \"t\")\n   word\n# http://example.com\t,#123\\\n<kbd>K</kbd>`code`\n| \\*<img src=\"a.png\">r42</span><a href=\"javascript:x\">j</a><img src=\"a.png\">\\*  | word\\\\www.example.comテスト_ |\n|---|---|\n| !</script>user:foo |\n| \\\\\t**strong** | text | *![img](a.png \"t\"),日本語 |\n# ,\\<img src=\"a.png\"></b>{{macro}}\n  ` \n> </span>テスト(\n\n"
+ },
+ {
+  "name": "fuzz-0399",
+  "input": "> [!NOTE]\n> .<script>日本語.\n\n* <span style=\"color:red\">&#x41;user:foo<kbd>K</kbd>www.example.com\n\n| \\[**strong** | ]]user:foo | *~#123``<br>[link](http://x.y) |\n|:-:|:--|---|\n> &#x41;&text[link](http://x.y)**?:_\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0400",
+  "input": "<a href=\"javascript:x\">j</a>text~&amp;  word\nuser@example.com\n\n[ref]: \\\n(~[ref]\n\n[ref]: ~~del~~[link](http://x.y)<kbd>K</kbd>**http://example.com`\\_text\n   `__<br>**x@2x.png__``\n"
+ },
+ {
+  "name": "fuzz-0401",
+  "input": "## \\[</b>\tx@2x.png<![img](a.png \"t\")</span><kbd>K</kbd>\n  <b>\n\n1. ?テスト~**\t&copy;\n   [^1]\n   \\[\n\n"
+ },
+ {
+  "name": "fuzz-0402",
+  "input": "    <span style=\"color:red\"><a href=\"javascript:x\">j</a>https://example.com/a_b?c=d&e=f_r42www.example.com&amp;\\*\n  <b>)\\[<img src=\"a.png\">\"\n\n"
+ },
+ {
+  "name": "fuzz-0403",
+  "input": "<div>\n~~\\[*&<a href=\"javascript:x\">j</a>www.example.comtext\n</div>\n</script>;\n  http://example.com?<b>#123`code`![img](a.png \"t\")**strong**{{macro}}\n   &amp;<kbd>K</kbd>  **&copy;;日本語![img](a.png \"t\")\n| https://example.com/a_b?c=d&e=f</span>café![img](a.png \"t\")_ |\n|:-:|\n#  <span style=\"color:red\"><kbd>K</kbd><@usertext&#x41;\n"
+ },
+ {
+  "name": "fuzz-0404",
+  "input": "~~~ruby\n@user!\nテスト,\n~~~\n[^1]: [^1]>\"*em*\n  http://example.com<br>]<!-- c -->;user:foo\n  [link](http://x.y)&amp;~www.example.comtext<script>\t\n\n    user@example.com\\\\</script><script>`[link](http://x.y)![img](a.png \"t\")x@2x.png\n   _&#x41;<@user[^1]\n1. &amp;\\_[<kbd>K</kbd>~__\n   <br>~~<kbd>K</kbd><a href=\"javascript:x\">j</a>http://example.com日本語`code`\n> [ref]r42&copy;http://example.com.\n\n"
+ },
+ {
+  "name": "fuzz-0405",
+  "input": ";\n   texttext<br></span>\n  http://example.com??[[Wiki]]\n\n[ref]: !.~<b>(|![img](a.png \"t\")\n> <&#x41;'\n> ]\n\n# ;~] <!-- c -->\n> `www.example.com\n- [x] text\n</script>\\_<b><\n \\*(mailto:a@b.cc\\[^1]\n| *;?; | www.example.com  __https://example.com/a_b?c=d&e=f | <kbd>K</kbd> |\n|:-:|:--|:-:|\n| </script><*em* |\n"
+ },
+ {
+  "name": "fuzz-0406",
+  "input": "> \\?@user![img](a.png \"t\")café<span style=\"color:red\">\n<!-- c -->&<img src=\"a.png\">https://example.com/a_b?c=d&e=fuser:foo\n\n> [!NOTE]\n> (<!-- c -->\n  mailto:a@b.cc``word\\\\`code`\nテスト  \n\n~~~ruby\n<a href=\"javascript:x\">j</a>~café日本語<a href=\"javascript:x\">j</a>\\\n#123\n~~~\n> |~)  \n## <img src=\"a.png\">\n   \"__テスト<script>(__*\n\n"
+ },
+ {
+  "name": "fuzz-0407",
+  "input": "1. テスト\\***<script>\n  [[Wiki]] *__\n   _user:foo<a href=\"javascript:x\">j</a>![img](a.png \"t\")``</script><!-- c -->![img](a.png \"t\")\n"
+ },
+ {
+  "name": "fuzz-0408",
+  "input": ":user:foo\\[\n\n[^1]:  word\n\n</b><a href=\"javascript:x\">j</a>wordr42\t&copy;\\\n\n- [ ] ``\\*\n~~del~~@user?<café</span>\\]\n"
+ },
+ {
+  "name": "fuzz-0409",
+  "input": "[^1]: ?<b>user@example.comcafé\n  _<img src=\"a.png\">\t&copy;word\n## ])[\\_**strong**</b>\n  \\[worduser:footextmailto:a@b.cc`code`http://example.com  \n\n- [x] ;`code```#123  *em*,\n  *'[ref]r42&#x41;\n\n| `</b>& |\n|:-:|\n| http://example.com |\n\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0410",
+  "input": "__#123,!?:\n  www.example.com\n\n- [x] \\\n> user@example.com\n| \tword'<img src=\"a.png\">\\\\ |\n|:-:|\n| <script>|</script>*em***strong**[[Wiki]]`` | __;_</b>mailto:a@b.cc**word |\n| https://example.com/a_b?c=d&e=f | <user:foo![img](a.png \"t\")<a href=\"javascript:x\">j</a>r42 |\n\\*~~]*em*<script></script>r42*em*\n> &copy;<!-- c -->`code`\ncafé.<kbd>K</kbd>\n| ;:<!-- c --> text</script>\\_<kbd>K</kbd> | <img src=\"a.png\">~~del~~[ref]? |\n|:--|:-:|\n| *em**em*)&amp;` | *em*& |\n\n"
+ },
+ {
+  "name": "fuzz-0411",
+  "input": "~~~ruby\n(\nhttps://example.com/a_b?c=d&e=f日本語\n~~~\n\n\t?`**strong**@user,\n\n"
+ },
+ {
+  "name": "fuzz-0412",
+  "input": "~~~ruby\ncaféuser@example.comr42\\_ [_x@2x.png\n日本語,\\\\[\n~~~\n## <!-- c -->\n   テスト.@user\n   @user@user&<script>*em*user@example.com`![img](a.png \"t\")\n\n"
+ },
+ {
+  "name": "fuzz-0413",
+  "input": "[ref]: word?\n  &#x41;café~<a href=\"javascript:x\">j</a><kbd>K</kbd>r42\n[ref]: \t?|www.example.comuser:foo<\n\n"
+ },
+ {
+  "name": "fuzz-0414",
+  "input": "[ref]: &amp;) http://example.com[ref]www.example.com![img](a.png \"t\")<!-- c -->\n> &copy;\n\n[^1]: #123<script>&`code`www.example.com\n  mailto:a@b.ccmailto:a@b.cc user:foo*em*!~~del~~*em*\nmailto:a@b.cc|![img](a.png \"t\")user:foocafé日本語\n## ~~del~~`~~]\n  <a href=\"javascript:x\">j</a>***em*[ref]<a href=\"javascript:x\">j</a>;**\n\n* &amp;\n  www.example.com\"[link](http://x.y)<b>|www.example.com\\*.\n- #123.~_[\\\nwordcafé\n"
+ },
+ {
+  "name": "fuzz-0415",
+  "input": "~~~ruby\n?\n~~`code`\\[\\\\@user\n~~~\n\n- ]~~del~~\n\n"
+ },
+ {
+  "name": "fuzz-0416",
+  "input": "<div>\n[[Wiki]]__:\\\\user:foo\n</div>\n\n(</script><span style=\"color:red\">\"\n\n~~~ruby\n**strong**``(\nword<kbd>K</kbd>>    \n~~~\n* </b>user@example.com*em*<b>*em*&user@example.com\n\n- [ ] |\\\\\\\\</span>https://example.com/a_b?c=d&e=fuser@example.com`code`\n  <script>\\[&?cafér42]\nwww.example.com@userx@2x.png\n"
+ },
+ {
+  "name": "fuzz-0417",
+  "input": "<script>\\[<!-- c -->&#x41;[[Wiki]]:__user@example.com\n   {{macro}}<img src=\"a.png\">\n> \\[日本語\\[[http://example.com![img](a.png \"t\")\t\n\n- [x] '<kbd>K</kbd>__\n``:\\&amp;&amp;<span style=\"color:red\">\n  *em***strong**</span>&copy;word)\n\n[^1]: ]{{macro}}!\n"
+ },
+ {
+  "name": "fuzz-0418",
+  "input": "~~~ruby\nテストuser:foo</script>\\\\\\*;r42\n日本語\n~~~\n\n![img](a.png \"t\")</span>)\nhttp://example.com[ref]\n\n[ref]</span>r42<,r42>]\n   <br><b>\n`&https://example.com/a_b?c=d&e=f:\n\n```\n\\<;&amp;テスト[[Wiki]]</span>\n![img](a.png \"t\")\n```\n> [!NOTE]\n> ![img](a.png \"t\")\\*[link](http://x.y)</script></script>\n> [[Wiki]]`x@2x.png[[Wiki]][ref]\n"
+ },
+ {
+  "name": "fuzz-0419",
+  "input": "![img](a.png \"t\")\n   .#123&amp;``\n[ref]: user@example.com\\\\{{macro}}``&#x41;[ref]https://example.com/a_b?c=d&e=f\n> [!NOTE]\n> </span>; </script>\t~~\n  @user*em*\n    \n\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0420",
+  "input": "    ,)*\n   &{{macro}}https://example.com/a_b?c=d&e=f\n<div>\nwww.example.commailto:a@b.cc<img src=\"a.png\">]]<kbd>K</kbd>textmailto:a@b.cc\n</div>\n"
+ },
+ {
+  "name": "fuzz-0421",
+  "input": "~~~ruby\n*em*,~~del~~[\n``<script>>wordword\n~~~\n\n# ~_\\\\</span>\n   \\*![img](a.png \"t\")<b>\"café\\\\&copy;\n~~__</b>@user\n\n,<script>![img](a.png \"t\")word</span>\n> \\\\  word~[[Wiki]]\t<a href=\"javascript:x\">j</a>[link](http://x.y)\n  {{macro}}[[Wiki]]@useruser:foo<b>__\n\n"
+ },
+ {
+  "name": "fuzz-0422",
+  "input": "1. www.example.com<!-- c -->\n\n"
+ },
+ {
+  "name": "fuzz-0423",
+  "input": "> \\日本語x@2x.png<!-- c -->@usercafé\n  \n  ![img](a.png \"t\")[\n\n"
+ },
+ {
+  "name": "fuzz-0424",
+  "input": "- [ ] __]*\n\n| ;:  ~~ | __!www.example.comcafé\thttp://example.com<br>**strong** |\n|:-:|:--|\n- [link](http://x.y)\\[[http://example.com****&#x41;\n   !~~;\n"
+ },
+ {
+  "name": "fuzz-0425",
+  "input": "```\n~~del~~<br>\n![img](a.png \"t\").user@example.com\\[&\n```\n\n"
+ },
+ {
+  "name": "fuzz-0426",
+  "input": "[~<br>``\n~`![ref].  `code`\n\n# 'テストuser:foo</script>_\n   </span>\n<div>\n\\\\! <!-- c -->\n</div>\n"
+ },
+ {
+  "name": "fuzz-0427",
+  "input": "> x@2x.pnghttps://example.com/a_b?c=d&e=f>'x@2x.png\n  #123\\\\__<!-- c --><a href=\"javascript:x\">j</a>*em*<kbd>K</kbd>\n> ~~<kbd>K</kbd>~~x@2x.png\n[ref]: !\"|(\\_\"`\n   <br>{{macro}}[^1]>`code`x@2x.png.\n> &#x41;??\\[\n- [ ] '<kbd>K</kbd>)\n> >https://example.com/a_b?c=d&e=fmailto:a@b.cc<span style=\"color:red\">&#x41;[</script>\n   http://example.commailto:a@b.cchttps://example.com/a_b?c=d&e=f\n- [ ] r42  {{macro}}\n\n"
+ },
+ {
+  "name": "fuzz-0428",
+  "input": "<div>\n&copy;~~del~~</b>  \n</div>\n[ref]: www.example.com&#x41;x@2x.png\\_*日本語.user@example.com\n\n1. \t\\\\.>!<span style=\"color:red\">`</script>\n   [^1]>http://example.com&amp;<script>\n  \\*\n<div>\n</span>[\n</div>\n\n"
+ },
+ {
+  "name": "fuzz-0429",
+  "input": "[ref]: \\\\x@2x.pngテスト<script>www.example.com</span>){{macro}}\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0430",
+  "input": "<script><br>~\n\n> [!NOTE]\n> :<br>\n  [ref]{{macro}}_<br>日本語mailto:a@b.cc\n  <kbd>K</kbd><img src=\"a.png\">)`code` >!\n## ``mailto:a@b.cc\n([ref]<span style=\"color:red\">;\n\n- {{macro}}]\n   ,text![img](a.png \"t\")![img](a.png \"t\")\n"
+ },
+ {
+  "name": "fuzz-0431",
+  "input": "> ``,,*x@2x.png)\n</span><a href=\"javascript:x\">j</a>__  café日本語[ref]:\n> [!NOTE]\n> (\n\n\t\n- [ ] <a href=\"javascript:x\">j</a>'`code`text\n*</span>],テストcafé_\n| )>\\user@example.com>https://example.com/a_b?c=d&e=f<b> |\n|:--|\n| https://example.com/a_b?c=d&e=f[^1]</span><[ref]caféwww.example.com@user |\n| <img src=\"a.png\"><script>x@2x.png!|__[ref] | )`code``` |\n"
+ },
+ {
+  "name": "fuzz-0432",
+  "input": "- \\('word*em*\"![img](a.png \"t\")\n   \\\\\\[テスト~~del~~____\n[ref]: @user\\{{macro}}<{{macro}}\n> *\t\n\n"
+ },
+ {
+  "name": "fuzz-0433",
+  "input": "> [!NOTE]\n> `code`,~@user|*em*\n  </script><br>`\n> (mailto:a@b.cc*worduser@example.commailto:a@b.cc\n\n[ref]: `)\n   \\\\\n\n> [!NOTE]\n> \\*word_\\[~~del~~)**strong**~~del~~\n> **  \n   <`code`**strong**?<br>`![img](a.png \"t\")\n- [x] ;<b>** &copy;\\\\\n\n> [!NOTE]\n> {{macro}}\\\\\n   &#x41;__@user~~\n   &copy;`<a href=\"javascript:x\">j</a>~~\n"
+ },
+ {
+  "name": "fuzz-0434",
+  "input": "* [[Wiki]]**strong**[link](http://x.y)\n- [x] ]\n\n1. @user;>`<b>\\\\'http://example.com\n\n[^1]: mailto:a@b.cc<a href=\"javascript:x\">j</a>\\_*em*'  \n*\n\\*\\[*em*<b>@userwww.example.com</b>**strong**\n\n"
+ },
+ {
+  "name": "fuzz-0435",
+  "input": "    </span>\">]*(<kbd>K</kbd>\\[\n(\\\n"
+ },
+ {
+  "name": "fuzz-0436",
+  "input": "- [x] \\[<user@example.comhttp://example.com</script>\n   \\https://example.com/a_b?c=d&e=f<span style=\"color:red\">#123&#x41;,\nuser:foo\\\n[ref]: \\\\<br>`user@example.com&amp;r42[[Wiki]]テスト\n"
+ },
+ {
+  "name": "fuzz-0437",
+  "input": "テスト**strong**[ref]テスト]\n  ~~\n  <kbd>K</kbd>!!?<img src=\"a.png\">,</span>\\_\n"
+ },
+ {
+  "name": "fuzz-0438",
+  "input": "> [!NOTE]\n> \\:**\n</script>[\\_`[@user,\n\n"
+ },
+ {
+  "name": "fuzz-0439",
+  "input": "[ref]: \"#123[^1]*em*\n   ][[Wiki]]user:foo``テスト\n   ( \n| \\ | <**[^1]!user@example.com |\n|:--|---|\n~~~ruby\n#123\n[</b>&#123[link](http://x.y)`code`[[Wiki]]<script>\n~~~\n* )[link](http://x.y)`@user&#x41;\n> https://example.com/a_b?c=d&e=fr42\\_&amp;user@example.com\\*\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0440",
+  "input": "1. <!-- c -->*em*&#x41;&copy;'{{macro}}\\[\n'_</script>\"#123#123\n- [ ] https://example.com/a_b?c=d&e=f\n   [.~word\\``r42\n*em*r42>&copy;<script>@user\n  [[Wiki]]**strong**  ?<a href=\"javascript:x\">j</a>[ref]{{macro}}[^1]\n>    <!-- c -->\n|  |<img src=\"a.png\"></span>テスト&r42 |\n|---|\n\n"
+ },
+ {
+  "name": "fuzz-0441",
+  "input": "<div>\n!>テスト  ;)&amp;\"\n</div>\n\n[^1]: <br>>!\n- [x] </script><kbd>K</kbd>r42&#x41;\n> texttexthttps://example.com/a_b?c=d&e=f*em* <a href=\"javascript:x\">j</a>\n\n"
+ },
+ {
+  "name": "fuzz-0442",
+  "input": "{{macro}}\\ ` <kbd>K</kbd><b>*em*\n- [ ] \\<script>日本語#123\\[[link](http://x.y)\n```\n \\[\t</b><&copy;[link](http://x.y)@user\n\\*,http://example.com\\_\"~~del~~user@example.com\n```\n\n&amp;{{macro}}mailto:a@b.cc\n  [ref]'#123``[link](http://x.y)#123\n  (\n| r42~~del~~&#x41;{{macro}}[<script>text<b> | [ref] | [@user[^1][<br>\"~~</span> |\n|:-:|---|--:|\n| *em***strong**~word#123mailto:a@b.cc | ,~https://example.com/a_b?c=d&e=f | café<!-- c --><!-- c --> | ?__<!-- c --> |\n\n"
+ },
+ {
+  "name": "fuzz-0443",
+  "input": "x@2x.png\n   \\*<img src=\"a.png\">**strong**[link](http://x.y)]テストword``\n> ?.<a href=\"javascript:x\">j</a>https://example.com/a_b?c=d&e=f[^1]_\n| www.example.com | &</script>&copy;\t<!-- c --> |\n|---|:-:|\n| text[ref]<__`` | &#x41;#123:& | [&copy;\"![img](a.png \"t\") |\n| ** | <b>|<_\\\\ |\n\n[ref]: ~~del~~<span style=\"color:red\">;![img](a.png \"t\")&#x41;\n``テスト`<br>\t&#x41;`code`\n   <!-- c -->![img](a.png \"t\")|\\\\text~~\n[ref]: *x@2x.png\\_'\n- [x] \\[</script>__日本語  \n  café<script>&user@example.com``日本語\n\n"
+ },
+ {
+  "name": "fuzz-0444",
+  "input": "[ref]: ><br>\\*<kbd>K</kbd>r42x@2x.png__\n   &copy;|\n\n[^1]: [<img src=\"a.png\">\"</span>?![img](a.png \"t\")\n\n    日本語\n<b>__<a href=\"javascript:x\">j</a>\n\"`code`\\_`<a href=\"javascript:x\">j</a>テスト\n\n<!-- c -->\\*text[ref]**strong****[link](http://x.y)\\[\n~~\n"
+ },
+ {
+  "name": "fuzz-0445",
+  "input": "* !https://example.com/a_b?c=d&e=f<span style=\"color:red\">user:foo?\\[~~del~~\n\n2) '{{macro}}*em*\\*\t\n\n  **<!-- c -->&#x41;\n\t>?\n- [ ] [\\\\*em*![img](a.png \"t\")<script>\n  <b>?user:foo[\n(café\n\n1. &amp;~>\n> <b>www.example.com*café\n  !_\n\n"
+ },
+ {
+  "name": "fuzz-0446",
+  "input": "## <</b>@userword\n  ~~del~~~!\\*<<br>|(\n\n  \"``<span style=\"color:red\">]テストhttps://example.com/a_b?c=d&e=fmailto:a@b.cc\n- \t|\n  [^1]\t[ref]text`code`[&#x41;user:foo\n> *&\n-   '>**\n> [link](http://x.y)user@example.com[ref][link](http://x.y)>!:\n1. www.example.com!~</span>[ref]\n&copy;\n<img src=\"a.png\">\\\\ _[[Wiki]]&</b>>\n"
+ },
+ {
+  "name": "fuzz-0447",
+  "input": "> [!NOTE]\n> __#123\n\n    '<img src=\"a.png\">\\`*\n`code`:\\_!&copy;<img src=\"a.png\">;  \nword\n> [!NOTE]\n> ,</script>*em*_,\n  \\[[ref]*&&\n   <!-- c -->`code`@user<{{macro}}<!-- c -->\n- [ ] <<a href=\"javascript:x\">j</a>\n\n"
+ },
+ {
+  "name": "fuzz-0448",
+  "input": "1. ({{macro}}<img src=\"a.png\">https://example.com/a_b?c=d&e=fmailto:a@b.cc<;テスト\n\n[^1]: [link](http://x.y)\\*.\\r42\n   [link](http://x.y)<br>!<br> \\user@example.com\\\\\n\n## \t<a href=\"javascript:x\">j</a>~~_.**[ref]<a href=\"javascript:x\">j</a>\n> &copy;@user\n\n#  \n  ~<span style=\"color:red\">text<b>)\\\n> <b>&copy;|``\n<div>\n\\\\<a href=\"javascript:x\">j</a>!\"r42``日本語@user\n</div>\n"
+ },
+ {
+  "name": "fuzz-0449",
+  "input": "[ref]: *\\\\日本語\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0450",
+  "input": "> {{macro}}http://example.com):@user|\n\\\\\n\n1. ?[[^1]&copy;<_  \n  ?\\~<kbd>K</kbd>\n\\[*em*<img src=\"a.png\">\n> ]&<a href=\"javascript:x\">j</a><!-- c -->user:foo\\[\\[)\n"
+ },
+ {
+  "name": "fuzz-0451",
+  "input": "* [@user [link](http://x.y)&#x41;\n  caféword\n   ,&amp;<!-- c -->**strong**,</span>テスト\n\n| https://example.com/a_b?c=d&e=fx@2x.png!user@example.com |\n|--:|\n| ]]\t__\t_<script>@user | @user</b>wordr42<!-- c -->café) |\n\n> café]\\*\"\\\\mailto:a@b.ccuser:foo\n"
+ },
+ {
+  "name": "fuzz-0452",
+  "input": "    <span style=\"color:red\">\\\\&~~del~~|user:fooword\n**\n"
+ },
+ {
+  "name": "fuzz-0453",
+  "input": "wordテストuser@example.com\n*</b>&**strong**\\\\\n\n## www.example.com.[~~\\*&amp;</script></b>\n   *em*\"r42text\n\n```\n<.日本語``[^1]<b>\n日本語@user_\\_@user\"&amp;\n```\n<div>\n{{macro}}[link](http://x.y).\n</div>\n\n# user@example.com' \n  ~~</b>\n"
+ },
+ {
+  "name": "fuzz-0454",
+  "input": "> #123~~del~~\\)\n   ~~&copy;テスト:![img](a.png \"t\")__\n> '&amp;)[link](http://x.y)\n\n<div>\n<kbd>K</kbd>\\[<br>`<br>`code`_\n</div>\n> [!NOTE]\n> text[[Wiki]][^1]\nuser@example.com\\_café*>\t(!\n  .\n"
+ },
+ {
+  "name": "fuzz-0455",
+  "input": "# &copy;&*em*)\\\\r42_\n> <script>><[link](http://x.y)\n"
+ },
+ {
+  "name": "fuzz-0456",
+  "input": "> [!NOTE]\n> `code`!,</b> \n- [x] x@2x.png*user@example.com#123{{macro}}_[\n\\_café**strong**</span>\\_\n~~del~~text[^1]<kbd>K</kbd>\\\\[*em*\n> [!NOTE]\n> wordテスト,\n   [</span>>?\n\n<div>\n<kbd>K</kbd>|https://example.com/a_b?c=d&e=f<br>_)\n</div>\n\n"
+ },
+ {
+  "name": "fuzz-0457",
+  "input": "[ref]: </script><kbd>K</kbd>mailto:a@b.cc\n\n2) <]*em*text{{macro}}#123\n> {{macro}}https://example.com/a_b?c=d&e=f:#123\n> &amp;</b>];<script>  \n\n"
+ },
+ {
+  "name": "fuzz-0458",
+  "input": "## [link](http://x.y)~~del~~)` \n"
+ },
+ {
+  "name": "fuzz-0459",
+  "input": "2) cafécafé\\*~~del~~[^1]\n\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0460",
+  "input": "- mailto:a@b.cc\n\n> </span>_@user<b><img src=\"a.png\">\n   テスト]\n## www.example.com|word\\\n  <!-- c -->\nmailto:a@b.cc\\https://example.com/a_b?c=d&e=f_\n-   <img src=\"a.png\">)]\n"
+ },
+ {
+  "name": "fuzz-0461",
+  "input": "- [ ] mailto:a@b.cchttps://example.com/a_b?c=d&e=f\n```\n</span>**\n<!-- c --><br>`\n```\n2) www.example.com<span style=\"color:red\">~~text\n   ~![^1]@user<img src=\"a.png\">\n (#123http://example.com'word[ref]\n\n~~~ruby\nmailto:a@b.cc`![[^1],|\ncafé<span style=\"color:red\">x@2x.png<br><kbd>K</kbd>caféuser:foo\n~~~\n[^1]: r42\n\n"
+ },
+ {
+  "name": "fuzz-0462",
+  "input": "2) x@2x.pngx@2x.png__<span style=\"color:red\">\\_\n\n&amp;  [&amp;text\n   x@2x.png<b>\\user@example.com<caféhttp://example.com\"\n2) <a href=\"javascript:x\">j</a>&copy;</script>x@2x.pnguser@example.com**strong**\n  user:foo\"<&#x41;<a href=\"javascript:x\">j</a>~~http://example.com`code`\n**<a href=\"javascript:x\">j</a>\n"
+ },
+ {
+  "name": "fuzz-0463",
+  "input": "* #123<kbd>K</kbd>x@2x.png\n```\n[[link](http://x.y)word</script>\n<!-- c -->\"~~text\"x@2x.png\n```\n\n# ?\\\nwww.example.com[ref]www.example.commailto:a@b.cc\\<img src=\"a.png\"><br>\n# word\n   ~~~~![img](a.png \"t\")\n> &amp;mailto:a@b.cc<br>[[Wiki]]]&#x41;![img](a.png \"t\")\n- mailto:a@b.ccwww.example.com&\n> \\*&#x41;~r42\n   ~ *\n"
+ },
+ {
+  "name": "fuzz-0464",
+  "input": "- [ ] :mailto:a@b.cc?\n- *\\[{{macro}}mailto:a@b.cc</b>~~del~~\n  )(x@2x.png\n   https://example.com/a_b?c=d&e=f**strong**~~\n\n# \t<kbd>K</kbd>text#123,\n> &amp;@user(**<!-- c -->\n\n[ref]: [__\n  @user#123mailto:a@b.cc?x@2x.png\\_&amp;\\*\n> x@2x.pnguser:foo[link](http://x.y)mailto:a@b.cc<script>{{macro}}\n\n"
+ },
+ {
+  "name": "fuzz-0465",
+  "input": "```\n,)~~del~~),~~\n(**\\_|\n```\n\n- [x] |\n> <b>**strong**\n\n ,;|*em*</span>\t\n> :\\_:!  \n\n1. user@example.comx@2x.png&**strong**) \n\n1. </b>'text_mailto:a@b.cc[[Wiki]]`code`\n"
+ },
+ {
+  "name": "fuzz-0466",
+  "input": "# \\\\!\n<img src=\"a.png\">**\n~日本語__<b>\n\n&#x41;*em***strong**www.example.com\n  .\\_https://example.com/a_b?c=d&e=f![img](a.png \"t\")\n## >\\[&copy; {{macro}}~~\n> ]https://example.com/a_b?c=d&e=fテストuser@example.comuser@example.com```text\n\n- ~~:,&copy;\n_\\\\<br>\n  <br>.*)https://example.com/a_b?c=d&e=f~~&\n| )r42[link](http://x.y)text#123! | ' | `:![img](a.png \"t\")日本語[& |\n|:--|---|:--|\n\n"
+ },
+ {
+  "name": "fuzz-0467",
+  "input": "[link](http://x.y)![img](a.png \"t\")user:foo<a href=\"javascript:x\">j</a>\n  <script></script>>,<kbd>K</kbd>{{macro}}(<b>\n> x@2x.pnghttp://example.com{{macro}}\n> !&#x41;[ref]**strong**\n> ![img](a.png \"t\")|*~~mailto:a@b.cc\n\n# </span>*em*text:\n\n~~~ruby\nテスト\n>\"mailto:a@b.cc~#123&~</b>\n~~~\n\n1. 'r42r42;\n"
+ },
+ {
+  "name": "fuzz-0468",
+  "input": "- [ ] <kbd>K</kbd></span>user@example.com  >__<b>&amp;\n\n"
+ },
+ {
+  "name": "fuzz-0469",
+  "input": "~~~ruby\n<kbd>K</kbd>&copy;\\[]**mailto:a@b.cc\n!\n~~~\n[[Wiki]]\n   <br>;@user,]\n<b>\t\n\nword\"word`code`~~del~~[[Wiki]]\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0470",
+  "input": "__~***strong**text\n[[Wiki]]日本語\t\n\n\\*[link](http://x.y)\n\n#  user:foo*em*r42.\n  !<span style=\"color:red\"><span style=\"color:red\">\\_\n"
+ },
+ {
+  "name": "fuzz-0471",
+  "input": "<div>\n`code`#123\n</div>\n\n     \n\n    ~~del~~_<span style=\"color:red\">café\n\n* <b>\n"
+ },
+ {
+  "name": "fuzz-0472",
+  "input": "    ?\\\\word![link](http://x.y)[[Wiki]]\n\n"
+ },
+ {
+  "name": "fuzz-0473",
+  "input": "    text\\_\\[*日本語\\_\t\n> r42~\n> user@example.com<!-- c -->x@2x.png]<br>~~\n\n"
+ },
+ {
+  "name": "fuzz-0474",
+  "input": "( [[Wiki]]|\n> **strong**\n> &#x41;~>&amp;\n\ntext[^1]\\\\\\[<kbd>K</kbd>'</script>\\*\n\"; &\n\n> [!NOTE]\n> user:foo<script>\n,__</span>)<\"\n\n"
+ },
+ {
+  "name": "fuzz-0475",
+  "input": "テスト\n\n```\n.</span>\n**</b>|![img](a.png \"t\")&  textテスト\n```\n\n## mailto:a@b.ccr42![img](a.png \"t\")`code`&copy;,#123\n> \"([^1]:\n\n"
+ },
+ {
+  "name": "fuzz-0476",
+  "input": "#123**strong**#123`code`!\n<kbd>K</kbd>テスト**`[link](http://x.y)\n\n    \\*\t*em*\nr42\t<;\t]\n  \\&copy;<<b>\n\n<span style=\"color:red\">\n   [ref];.)\\_\n\n[^1]: \\*@userhttps://example.com/a_b?c=d&e=f .**\n![img](a.png \"t\")|<span style=\"color:red\">:\n   *:\n"
+ },
+ {
+  "name": "fuzz-0477",
+  "input": "1. ![img](a.png \"t\")wordcafé``テストuser:foo\n\n<div>\nr42x@2x.png~*  \"#123\n</div>\n\n~~~ruby\n``\n\\*,café<kbd>K</kbd>\t``<\n~~~\n\n# www.example.com>):[[Wiki]]user@example.com<a href=\"javascript:x\">j</a>?\n"
+ },
+ {
+  "name": "fuzz-0478",
+  "input": "1. _<img src=\"a.png\">[link](http://x.y),\n\n1. <br>**\n"
+ },
+ {
+  "name": "fuzz-0479",
+  "input": "1. ,**strong**``\\*\n   *<a href=\"javascript:x\">j</a>\n\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0480",
+  "input": "2) テストテスト(<a href=\"javascript:x\">j</a></b>~<img src=\"a.png\">\n> http://example.com[[Wiki]].__\t\t__&amp;\n   </span>word\\\\</span>r42*&copy;\n"
+ },
+ {
+  "name": "fuzz-0481",
+  "input": "* ([ref]]テスト[[Wiki]]~~,\n\n## ,~~del~~テスト].#123\n   テスト`text\n[link](http://x.y)>&>\n\n"
+ },
+ {
+  "name": "fuzz-0482",
+  "input": "<div>\n[(</script>https://example.com/a_b?c=d&e=f\"\n</div>\n\n[^1]: <!-- c -->>**em*\n> <br></b>,\\*[[Wiki]]café\n\n"
+ },
+ {
+  "name": "fuzz-0483",
+  "input": "<div>\n;http://example.com\n</div>\n\n</script>&copy;`code`user@example.com;``http://example.com\n\n[ref]: user@example.com\\\\テスト\nr42x@2x.png[ref]@user\"r42\n   *em*['\t\n> [!NOTE]\n> ~*;&#x41;[ref]café\n* ~;text__&#x41;x@2x.png&\n   x@2x.png&copy;<span style=\"color:red\"><kbd>K</kbd>www.example.com'*em*\n"
+ },
+ {
+  "name": "fuzz-0484",
+  "input": "- [ ] text*{{macro}}\n"
+ },
+ {
+  "name": "fuzz-0485",
+  "input": "## www.example.com.\n\\_<![img](a.png \"t\")www.example.com\nwordmailto:a@b.cc<a href=\"javascript:x\">j</a>日本語![img](a.png \"t\")~~del~~\\_~\n\n~~~ruby\nr42'x@2x.png\n**strong**\n~~~\n[ref]: {{macro}}\n   [link](http://x.y)[link](http://x.y)<www.example.comwww.example.com\n# café~]www.example.com[ref]\n*  *em*\n> <script>.\\\\\n\n> [!NOTE]\n> @user]\\\\café\\__**strong**\n  &*~~del~~)\n\n"
+ },
+ {
+  "name": "fuzz-0486",
+  "input": "- ~~del~~https://example.com/a_b?c=d&e=f~\\*\\user@example.com\n  ? &copy;~~del~~?:\n> mailto:a@b.cc@user|worduser@example.com<script>?<\n\n    <!-- c -->\t\n   <!-- c -->~~del~~&amp;[^1]<script>]\n   </script>\n<div>\nword&copy;\n</div>\n\n- [x] ,<b>!mailto:a@b.ccword[^1]<kbd>K</kbd><!-- c -->\n   http://example.com\n<a href=\"javascript:x\">j</a>&copy;\n"
+ },
+ {
+  "name": "fuzz-0487",
+  "input": "2) <www.example.com[ref]&</span>?<!-- c -->テスト\n[ref]: 日本語**strong**#123\n> ?\n~~~ruby\n<!-- c -->\tmailto:a@b.cc[\\[r42<span style=\"color:red\">\n\\_&copy;>\\*\n~~~\n## ~~http://example.com.<span style=\"color:red\">,[[Wiki]]<br>user@example.com\n> \\[[[Wiki]]\\[!`\n\\\\\n\n- .user:foo<b>**\\\\\n   <b>{{macro}}___*em*\n"
+ },
+ {
+  "name": "fuzz-0488",
+  "input": "| テスト | `word</span>\t日本語 |\n|:-:|---|\n| x@2x.png? | r42\t[![img](a.png \"t\")\\<br>![img](a.png \"t\")] |\n| r42http://example.com* |\n\n    ***strong**_!<!-- c -->\n  café[^1]*em*\\_r42\n\n| <br>&#x41;**strong**;! |\n|---|\n| r42?`code`café** |\n| <br>mailto:a@b.cc;www.example.com | `<kbd>K</kbd><span style=\"color:red\"> |\n"
+ },
+ {
+  "name": "fuzz-0489",
+  "input": "    日本語café\n> [!NOTE]\n> '|\n\n- [x] [!|**strong**~~#123word</span>\n<!-- c -->:user@example.comcafé[[Wiki]]www.example.com\n> ] {{macro}}\n* '<kbd>K</kbd>\\[]&copy;テストcafétext\n<kbd>K</kbd>\n> \\*\\_:\n\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0490",
+  "input": "1.  ~~del~~.\n\n~~~ruby\n\"'\\\n  café&amp;user@example.com'<a href=\"javascript:x\">j</a>[link](http://x.y)&amp;\n~~~\n\n"
+ },
+ {
+  "name": "fuzz-0491",
+  "input": "2) _]@user\t?\n\n| )><a href=\"javascript:x\">j</a> |\n|:-:|\n| </script>&&http://example.com\\_\t | *[^1]<kbd>K</kbd>[link](http://x.y)r42 |\n| user:foo.<a href=\"javascript:x\">j</a>テスト |\n    ,x@2x.png\\*<a href=\"javascript:x\">j</a>http://example.com\n   &#x41;  **~~del~~\\#123\n- [x] &#x41;\n> <!-- c -->[ref]){{macro}}`code`\"&#x41;テスト\n<div>\n~</script>\n</div>\n\n"
+ },
+ {
+  "name": "fuzz-0492",
+  "input": "<div>\n  &amp;\n</div>\n\n> \\\n> テストx@2x.png)café<!-- c --><br>:\n\n"
+ },
+ {
+  "name": "fuzz-0493",
+  "input": "## @user&amp;\\\\<b>café\n> &amp;\n\n[^1]: '\\**\"<!-- c --><script>\n_#123&[[Wiki]]\n# :<!-- c -->mailto:a@b.cc<br></span>\n   テスト<br>\n  https://example.com/a_b?c=d&e=f<kbd>K</kbd>\n```\n&copy;\t\thttps://example.com/a_b?c=d&e=f:@user\\\\\n|テスト<script>;`\"![img](a.png \"t\")\n```\n"
+ },
+ {
+  "name": "fuzz-0494",
+  "input": "- [x] __user:foomailto:a@b.cc[[Wiki]]\n2) www.example.com~~del~~{{macro}}<script>]<kbd>K</kbd>user@example.com]\n"
+ },
+ {
+  "name": "fuzz-0495",
+  "input": "- text`(;\n- [ ] <img src=\"a.png\"><b>\n> </script>&#x41;<a href=\"javascript:x\">j</a>\n~~![img](a.png \"t\")`code`x@2x.png<span style=\"color:red\">&amp;\\_\n\n[)\\\n   ***em*<span style=\"color:red\">]__:**\n   >[ref]https://example.com/a_b?c=d&e=f\\_<\n\n"
+ },
+ {
+  "name": "fuzz-0496",
+  "input": "- [ ] ;テスト\n`<kbd>K</kbd>\\*</span>\ncafé<b>\"<a href=\"javascript:x\">j</a>(café![img](a.png \"t\")text\n> (.\n[^1]user@example.com~~del~~)**strong**\n- [ ] ;_?#123~~del~~*em* \n**</script>mailto:a@b.cc<a href=\"javascript:x\">j</a>\n1. </script>café,\n   </script>;``www.example.com`code`<script>\n   </b>'#123`code`\\_\\[\n\n> [!NOTE]\n> www.example.com\n"
+ },
+ {
+  "name": "fuzz-0497",
+  "input": "</script>user@example.com</script>(<!-- c -->![img](a.png \"t\")\n(\n> **strong**\n* __@userr42\n> .&copy;\n\n- <script>`code`![img](a.png \"t\");][^1]\\\\\\\n> user@example.comhttp://example.com[link](http://x.y)text\"\n\t\n# &amp;<!-- c --><!-- c -->  `code`[link](http://x.y)r42<script>\n@user*em***~<café\"\n"
+ },
+ {
+  "name": "fuzz-0498",
+  "input": "- </span>x@2x.png\t**strong**&\n> &#x41;|<a href=\"javascript:x\">j</a></span>![img](a.png \"t\")]\n    ,\n\n- [x]   \"\\[テスト~~\n   _\n"
+ },
+ {
+  "name": "fuzz-0499",
+  "input": "https://example.com/a_b?c=d&e=f{{macro}}]\n> (\n\n- [x] &amp;word&amp;*em*\n   r42<b></span>[link](http://x.y)]<b>**\n\n- [ ] \"*\n`code`.www.example.com<br>\\[日本語\n  )\n[^1]: )<br>~\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0500",
+  "input": "> [!NOTE]\n> <span style=\"color:red\">`\n  [[Wiki]]**strong**</b>````_\n- [ ] café**<a href=\"javascript:x\">j</a><br>\n   user:foo)<script>)user@example.com\n> [!NOTE]\n> #123caféhttps://example.com/a_b?c=d&e=f**  [&&amp;\n> [ref]~user@example.com&#x41;_  &#x41;\n"
+ },
+ {
+  "name": "fuzz-0501",
+  "input": "[ref]: (\n> `code`\n\n    <b>\\~~\n  word\n   :\n\n[ref]: <a href=\"javascript:x\">j</a>\\\n| `\t\t |\n|--:|\n| ]****strong**  www.example.comuser@example.com |\n| http://example.com!&日本語 |\n\n"
+ },
+ {
+  "name": "fuzz-0502",
+  "input": "> [!NOTE]\n> </span>**strong**__~&#x41;`code`\\*\n> &#x41;\n   )**&#x41;r42*em*mailto:a@b.cc<span style=\"color:red\">_\n- [x] <script>x@2x.png\n   \\_``~~&#x41;user:foo~~\n"
+ },
+ {
+  "name": "fuzz-0503",
+  "input": "<div>\n<span style=\"color:red\">&copy;!</script>~~del~~<img src=\"a.png\">\n</div>\n<div>\n[ref]~\\<!-- c -->\n</div>\n\n- [x] @user)x@2x.png</span>\n   (&#x41;```code`r42 user:foo{{macro}}\n  \t<script>x@2x.png\\_[[Wiki]]\n\n<div>\n日本語```code`user@example.commailto:a@b.cc?\n</div>\n\n## https://example.com/a_b?c=d&e=f'<kbd>K</kbd>\n\n"
+ },
+ {
+  "name": "fuzz-0504",
+  "input": "# </span><br>  **\\\\``\n<b>['[^1].\n\n> **strong**<kbd>K</kbd>.``#123,[ref]\n> '</span>\n\n> [!NOTE]\n> <br>&mailto:a@b.cc\n> _\n> http://example.comhttp://example.com\n"
+ },
+ {
+  "name": "fuzz-0505",
+  "input": "1. テスト<kbd>K</kbd>&</span>*em*.\\*word\n> &#x41;http://example.com<kbd>K</kbd>https://example.com/a_b?c=d&e=f**.\n   </script><a href=\"javascript:x\">j</a><日本語\n# user:foo</b>&<span style=\"color:red\">user@example.com\n> {{macro}}café&amp;\"<br>&<a href=\"javascript:x\">j</a>text\n"
+ },
+ {
+  "name": "fuzz-0506",
+  "input": "</b>[link](http://x.y)```<:\n  <img src=\"a.png\">\n\n&#x41;<]`*em*word\n\n2) user:foo<span style=\"color:red\">]&amp;mailto:a@b.cc</span>テスト\"\n![img](a.png \"t\")https://example.com/a_b?c=d&e=f&amp;'\t\n\n"
+ },
+ {
+  "name": "fuzz-0507",
+  "input": "- [ ] ;user:foo(www.example.com\\~\n\nmailto:a@b.ccuser:foo'**strong**<b>|</span>&amp;\n- [ ] \"</b>**strong**&amp;\n<script>www.example.com<a href=\"javascript:x\">j</a>`code`]  \n"
+ },
+ {
+  "name": "fuzz-0508",
+  "input": "[^1]: ~~\n> ~~del~~****<kbd>K</kbd>\\*http://example.com)\n<div>\n&amp;日本語r42テスト&amp;\n</div>\n>?:\n\n"
+ },
+ {
+  "name": "fuzz-0509",
+  "input": "| )\\_\\\\(user@example.com<b>テストr42 |\n|---|\n<!-- c -->_<kbd>K</kbd>\\[[[Wiki]]_<user@example.com\n  [link](http://x.y)\n&copy;~(\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0510",
+  "input": "# |\n  **em*\n"
+ },
+ {
+  "name": "fuzz-0511",
+  "input": "- <kbd>K</kbd>|<!-- c -->[ref])[^1]\n> r42*em*r42|[^1]\n   <script><!-- c -->?``\n| ]~~del~~ | <!r42~~del~~\"\"テスト| | ]![img](a.png \"t\")<img src=\"a.png\"> |\n|:--|---|--:|\n| <\\* | ** | x@2x.png |\n| \\[ | user@example.com | <kbd>K</kbd>日本語> | </b>\\http://example.com  r42]**strong**: |\n1. ,<img src=\"a.png\">\n  __\n\n<div>\n~~\\*&copy;</script>\n</div>\n\n"
+ },
+ {
+  "name": "fuzz-0512",
+  "input": "```\n~``_<kbd>K</kbd>`code`|http://example.comuser@example.com\n<br>http://example.com)user:foo`code``\"<kbd>K</kbd>\n```\n\n"
+ },
+ {
+  "name": "fuzz-0513",
+  "input": "- [ ] </span>user@example.com~~del~~|\\_\n  \\\\__**strong**日本語\n\n> [!NOTE]\n> |\\_`code`!:``code`.\n\n* <kbd>K</kbd>www.example.com`word[link](http://x.y)x@2x.png\n> ,[[Wiki]][link](http://x.y)~~\n(#123{{macro}}wordhttp://example.com\n\n"
+ },
+ {
+  "name": "fuzz-0514",
+  "input": "2) x@2x.pnguser:foo``http://example.com[text\n  \\*'[link](http://x.y)\\*<!-- c -->http://example.com\n> `code`user:foo<!-- c -->\n\n"
+ },
+ {
+  "name": "fuzz-0515",
+  "input": "```\n>~~del~~'</script>**`\n.{{macro}}&#x41;\n```\n* *x@2x.png{{macro}}user@example.com)\t**strong**[\n> </b>[^1]![img](a.png \"t\")</span>\n{{macro}}\t?\\_\n\n"
+ },
+ {
+  "name": "fuzz-0516",
+  "input": "> text:_!mailto:a@b.cc&#x41;<kbd>K</kbd>\n   \\_&copy;<a href=\"javascript:x\">j</a>\\[\n  \\[*em*.&#x41;user@example.com~~del~~text\n# ?**?\n<b>#123**\n\n# [ref]mailto:a@b.ccx@2x.png**<span style=\"color:red\">\n* **``~~テスト@user\n\n"
+ },
+ {
+  "name": "fuzz-0517",
+  "input": "<span style=\"color:red\"><kbd>K</kbd>textcafé\n\n"
+ },
+ {
+  "name": "fuzz-0518",
+  "input": "* ![img](a.png \"t\")\n\n~~~ruby\n<br>[[[Wiki]]\n{{macro}}&amp;\"\n~~~\n~~テスト<\n\n> |\n> café'&\n"
+ },
+ {
+  "name": "fuzz-0519",
+  "input": "~~~ruby\n__[[Wiki]](www.example.com:\n\\[\n~~~\n\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0520",
+  "input": "# テストcafé\n\n1. </span>`code`!\"`mailto:a@b.cc?\\\\\n  *em*#123<b>user@example.com\n\n| text&copy;![img](a.png \"t\")\\<img src=\"a.png\">テスト |\n|---|\n| user:foo<script>user:foo\\[<a href=\"javascript:x\">j</a>#123 | \\_``<(user:foo<br>__ |\n\n"
+ },
+ {
+  "name": "fuzz-0521",
+  "input": "> mailto:a@b.cc_[^1]]\n  _\n   '<a href=\"javascript:x\">j</a>|\n\n~~~ruby\n[^1]user@example.com)http://example.com\n&\n~~~\n* \"\n"
+ },
+ {
+  "name": "fuzz-0522",
+  "input": "| \\__ |\n|---|\n| </span> |\n\n~~~ruby\n\"@user\n</span>日本語*em***user:foo;<script>\n~~~\n[^1]: ]]r42\n<a href=\"javascript:x\">j</a>\n[link](http://x.y)&[ref]`<kbd>K</kbd>[[Wiki]]\n\n"
+ },
+ {
+  "name": "fuzz-0523",
+  "input": "- [x] !\n  \"user@example.comテスト>&#x41;\n    ~~\n\n"
+ },
+ {
+  "name": "fuzz-0524",
+  "input": "~~~ruby\ntextmailto:a@b.cc\\\\?x@2x.png<img src=\"a.png\">&\nuser:foo(\n~~~\n\n| _<!-- c --><!-- c --> |\n|--:|\n| <kbd>K</kbd>#123 | user@example.com``&amp;~~del~~,[日本語 |\n| `code`\\_&#x41; | :&copy;[[Wiki]] |\n\n> \\_&~~del~~[^1]</b><kbd>K</kbd>~~del~~__\n  </script>.]>*日本語)\n   @user~~del~~text日本語\n\n__<</b>``)~<*\n> !{{macro}}http://example.com\"</span>&\\_\n> '**\\[>café!text\n- [x] \t\n\n"
+ },
+ {
+  "name": "fuzz-0525",
+  "input": "&copy;mailto:a@b.cc<a href=\"javascript:x\">j</a>\t!café<script>**strong**\n"
+ },
+ {
+  "name": "fuzz-0526",
+  "input": "~~,<img src=\"a.png\">{{macro}}&#x41;~~del~~\n> [!NOTE]\n> ![img](a.png \"t\"))|</span>http://example.comuser@example.com\n   [[Wiki]]_\\*'\n\n"
+ },
+ {
+  "name": "fuzz-0527",
+  "input": "[ref]: [<img src=\"a.png\">;:user:foocafé<kbd>K</kbd>;\n   ')x@2x.png\n  >日本語;\n~~~ruby\n[)\n日本語[ref];user@example.com?\n~~~\n* <a href=\"javascript:x\">j</a>text;\\\\**strong**``#123\n   user@example.commailto:a@b.cc**strong**[link](http://x.y);\nwordword\n> [!NOTE]\n> 日本語[ref]**[^1]&<br>&#x41;日本語\n   <script>!\n| 日本語;\\*</script>\" |\n|:--|\n| \\_<kbd>K</kbd> | wordx@2x.png |\n| ]x@2x.png |\n\n"
+ },
+ {
+  "name": "fuzz-0528",
+  "input": "```\nx@2x.png**\nwordhttps://example.com/a_b?c=d&e=f~~user@example.com&amp;  </script>mailto:a@b.cc\n```\n[^1]: https://example.com/a_b?c=d&e=fテスト  <*em*&copy;</span>|\n日本語@user</span>(\n> x@2x.png\t\n\n"
+ },
+ {
+  "name": "fuzz-0529",
+  "input": "café\n## ~~del~~`&#x41;\\*http://example.com,\n<div>\n </span><</b>&#x41;**\n</div>\n\n> [!NOTE]\n> ![img](a.png \"t\")\"www.example.com\n> @user<script><kbd>K</kbd>user@example.com<b><\\[\n   <script>[link](http://x.y)\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0530",
+  "input": "- [x] user@example.com_&#x41;\t日本語user:foo<br>\nx@2x.png`||<img src=\"a.png\">r42[link](http://x.y)\n    &amp; [[Wiki]]\n\t\\\\~~\n  http://example.com#123</b>\n\n> [!NOTE]\n> https://example.com/a_b?c=d&e=f!\\\\**strong**\"[[Wiki]]\n``[ref]**strong**&amp;'\n  café]&amp;<b>  ]\n"
+ },
+ {
+  "name": "fuzz-0531",
+  "input": "| \\[~~__@user`code` | x@2x.png)[link](http://x.y) | ( |\n|:--|:-:|---|\n| ~~del~~***strong**<script>``~~del~~ | _user:foo |\n| [[Wiki]]&#x41;[[Wiki]]!**<kbd>K</kbd>) | </span>https://example.com/a_b?c=d&e=fcafé  &copy; #123user@example.com | `https://example.com/a_b?c=d&e=f*em*<script>cafécafé{{macro}}? |\n[^1]\nhttps://example.com/a_b?c=d&e=f&#x41;www.example.com</script>\n   _:!![img](a.png \"t\")*em*https://example.com/a_b?c=d&e=fuser:foomailto:a@b.cc\n> #123<a href=\"javascript:x\">j</a>@user~~del~~:~~'\n\n:\t__</span>\n> #123</span>~\\\\www.example.com&amp;x@2x.pngx@2x.png\n\n"
+ },
+ {
+  "name": "fuzz-0532",
+  "input": "~~~ruby\nuser@example.com&]</b>[^1](www.example.com\n\\\\;&(&amp;@userwww.example.com\n~~~\n\nwww.example.com\n  r42&#123mailto:a@b.cc**\n> \t__@user{{macro}}:r42>*em*\n- [ ] <a href=\"javascript:x\">j</a><kbd>K</kbd><img src=\"a.png\">www.example.com#123[^1]http://example.com\"\n## x@2x.png\n`code`café[link](http://x.y)</span>[\n"
+ },
+ {
+  "name": "fuzz-0533",
+  "input": "    \\_<a href=\"javascript:x\">j</a>``~\"<!-- c -->\n   ``<&&テスト\n\n~~~ruby\nwww.example.com**strong**;\nword`<a href=\"javascript:x\">j</a><a href=\"javascript:x\">j</a>.<img src=\"a.png\">*\n~~~\n\n</span>  _</b>café?`code`user:foo\n\n```\n<a href=\"javascript:x\">j</a></b>  word:http://example.com\n&amp;  \n```\n\n```\n(*em*`\n<span style=\"color:red\">[</span>\\wordr42|[ref]\n```\n\n"
+ },
+ {
+  "name": "fuzz-0534",
+  "input": "    テスト<{{macro}}.[^1]~!  \n#123\n&#x41;*:[ref]textcafé*em*\n| ~~<script>~~del~~ | <script>http://example.com`code`www.example.com[ref]@user | </b>[link](http://x.y)\\_< |\n|:-:|--:|---|\n| <kbd>K</kbd>`` | \\_&#x41;) | www.example.com<b>#123<&copy; | <kbd>K</kbd>~~del~~(テスト) |\n\n| ><img src=\"a.png\"><br><b>!x@2x.png**strong**~ | <kbd>K</kbd>\\[#123\\*)&amp; | &#x41;<mailto:a@b.cc<<span style=\"color:red\">![img](a.png \"t\") |\n|:-:|---|---|\n\n"
+ },
+ {
+  "name": "fuzz-0535",
+  "input": "    [^1]\n\n- [ ] &#x41;www.example.com>\n*café``<a href=\"javascript:x\">j</a>\\_#123\\\\<br>\n   r42\\_日本語<!-- c -->>\n\n## </script>~~#123\n  [link](http://x.y)\n<br>]<span style=\"color:red\">  <br>__<script>\\\n| * |\n|:--|\n| ~.word*em*)_& |\n| \\[&copy;\\_<br>,#123: | ,![img](a.png \"t\")`<span style=\"color:red\">|x@2x.png |\n| &amp; <b>`\"<   | <!-- c -->?:\"http://example.com</script> | [_![img](a.png \"t\") | |\n|---|---|:--|\n| (![img](a.png \"t\")?text | '!x@2x.pngtextcafé</script>text | user:foo\\_] | r42user:foohttps://example.com/a_b?c=d&e=f<br>[link](http://x.y)[link](http://x.y) |\n| [[Wiki]]r42<br>' |\n\n"
+ },
+ {
+  "name": "fuzz-0536",
+  "input": "> [!NOTE]\n> x@2x.png\n  '**\n\n1. <<br>__<</b>[[Wiki]]:\n  !'\n\n> [ref]\\[:\n> user@example.comcafétext\n"
+ },
+ {
+  "name": "fuzz-0537",
+  "input": "- [x] <script>&copy;\n\n- [ ] '<!-- c -->[link](http://x.y)>~  </span>:\n  ~~__\n"
+ },
+ {
+  "name": "fuzz-0538",
+  "input": "1. textmailto:a@b.cc\n> <kbd>K</kbd>\n\n"
+ },
+ {
+  "name": "fuzz-0539",
+  "input": "- café!www.example.com</span>[link](http://x.y)\n'<span style=\"color:red\">text\\_テストtext\n~~~ruby\n(\n user:foo日本語\n~~~\n[^1]: `code`:text**strong**\n\n```\n]&#x41;`code`&copy;http://example.com<script>&copy;)\n_*em*~~\n```\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0540",
+  "input": "* \\[[^1][link](http://x.y)<span style=\"color:red\"><b></script>~~del~~\ncafé_word\n  [^1]text</span><b>テスト\n\n| \\[\"[ref] | < | text\\[[ref]<b> |\n|:-:|:-:|---|\n| \\*text&amp;\\\\> |\n| ![img](a.png \"t\")<span style=\"color:red\"><kbd>K</kbd> |\n\n|_!``<kbd>K</kbd>.café\n| [link](http://x.y)r42\\[[ref]word | \\\\[^1]<br> |\n|:--|---|\n\n```\n~\n\\<\\*\\_<b>\n```\n\n"
+ },
+ {
+  "name": "fuzz-0541",
+  "input": "## \"\\\\[[Wiki]]>\n> x@2x.png__<!-- c -->[^1][[Wiki]]\n\n.<<span style=\"color:red\">café`.<img src=\"a.png\">\n> ,<kbd>K</kbd>_\n> user:foox@2x.pngテスト~<script>*,\n\n1. &copy;x@2x.pngr42r42&copy;`code`<script>__\n> x@2x.png[ref]テストx@2x.png[[Wiki]].\n  &;\\\\@user**strong**\n\n* <kbd>K</kbd>(\n<b>https://example.com/a_b?c=d&e=fuser:foo?]https://example.com/a_b?c=d&e=f**<b>\n\n"
+ },
+ {
+  "name": "fuzz-0542",
+  "input": "`\n> **\n  [^1][[Wiki]]:<!-- c -->\\[\\\\\n[ref]: https://example.com/a_b?c=d&e=f]#123https://example.com/a_b?c=d&e=fmailto:a@b.cc:\n  ?\\\\~:>\n| >|\\  @user`code` | café>r42 | @user\\_ |\n|---|---|--:|\n| ;www.example.com[ | #123 | #123:\\_~~del~~] |\n| \t |\n"
+ },
+ {
+  "name": "fuzz-0543",
+  "input": "[^1]: <img src=\"a.png\">日本語<img src=\"a.png\">[ref]#123<kbd>K</kbd>\n\n1. :`テスト&#x41;<br>\n"
+ },
+ {
+  "name": "fuzz-0544",
+  "input": "http://example.com\n\n1. **strong**\\[;\n  r42\n1. <span style=\"color:red\">[[Wiki]]\n  #123![img](a.png \"t\")日本語&\n  ~~del~~\n\n~~~ruby\n?\n![img](a.png \"t\")mailto:a@b.cc  </b>text\n~~~\n"
+ },
+ {
+  "name": "fuzz-0545",
+  "input": "<div>\n[link](http://x.y)![img](a.png \"t\")<script>.?\n</div>\n\n- [x] ></span>[^1]r42@user&copy;\n\n"
+ },
+ {
+  "name": "fuzz-0546",
+  "input": "> [!NOTE]\n> \\[<img src=\"a.png\">_テスト>http://example.com\nuser@example.comword\n\n* <,</script>\\*\n  *em*\t<!-- c -->text&#x41;\n  .:[*em*日本語>|\n> ![img](a.png \"t\")https://example.com/a_b?c=d&e=f\n\n"
+ },
+ {
+  "name": "fuzz-0547",
+  "input": "~~~ruby\n\"https://example.com/a_b?c=d&e=f?テスト]\n``</script>,[link](http://x.y))<span style=\"color:red\">\n~~~\n"
+ },
+ {
+  "name": "fuzz-0548",
+  "input": "- \\[~`code`@useruser:foo**strong***em*.\n# <br>~~del~~[link](http://x.y)~~\\[\\\n"
+ },
+ {
+  "name": "fuzz-0549",
+  "input": "[ref]: word日本語~text_\n<[^1]\n  \"\n\n#  <span style=\"color:red\"></b>\\*\n![img](a.png \"t\")日本語\\\\&[\n\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0550",
+  "input": "</script>``[^1]:\nuser:foo<b>*em*,text&amp;@user\n~~~ruby\n|\n\\_&amp;</b>user@example.com\n~~~\n"
+ },
+ {
+  "name": "fuzz-0551",
+  "input": "~~~ruby\n\\[<kbd>K</kbd>!*\\[\n~~del~~\n~~~\n    *![img](a.png \"t\")[[Wiki]]\n> `]`code`r42caféhttp://example.com\n\n1. http://example.com[[Wiki]]https://example.com/a_b?c=d&e=f&amp;テストcafé{{macro}}\\[\n> {{macro}}user@example.com#123\n*   `#123[[Wiki]][\n~~~ruby\n[^1]?&\n\\__,`  ~~[[Wiki]](\n~~~\n"
+ },
+ {
+  "name": "fuzz-0552",
+  "input": "    &copy;@user|\n> mailto:a@b.cc~\n``code`r42_\n\n1. 日本語#123<span style=\"color:red\"></span>[ref]'café\n"
+ },
+ {
+  "name": "fuzz-0553",
+  "input": "- ?~*\nx@2x.png[ref]テスト\n  <b><a href=\"javascript:x\">j</a><!-- c -->|</script>\n> [!NOTE]\n> ]\n   user:foocafé!text\n\n| ?__<!-- c --> | |{{macro}}<\t* | ~~del~~ |\n|--:|--:|:-:|\n|   **strong**| | <kbd>K</kbd>)  \\\\& | テスト\\[& | <img src=\"a.png\">  <br>> |\n| texthttp://example.com</span> | https://example.com/a_b?c=d&e=f</span>http://example.com'<kbd>K</kbd><~**strong** |\n\n| <kbd>K</kbd>\"r42r42\\\\\\ | [link](http://x.y)text``www.example.com\" | user@example.com|&amp;~~</b>  テスト |\n|:--|:--|--:|\n| ~~del~~<kbd>K</kbd>\\\\,\\[<br>&</span> | __ | </span>[``</b></b>r42user:foo( |\n| .https://example.com/a_b?c=d&e=f[^1]< |  <script><b>textwww.example.com&copy; |\n"
+ },
+ {
+  "name": "fuzz-0554",
+  "input": "| ? |\n|:-:|\n| *!text日本語@user&amp; | :[link](http://x.y)\\![img](a.png \"t\")</b> |\n\n# ![img](a.png \"t\")_\n> *em*]&amp;\n   x@2x.png\n~#123mailto:a@b.cc[^1]_\n\n`\\\n  <!-- c -->café mailto:a@b.cc`code`\n\n# word\\[[Wiki]]\n> ;&amp;[link](http://x.y)<span style=\"color:red\">\n\t\n\n"
+ },
+ {
+  "name": "fuzz-0555",
+  "input": "<div>\n\t__.\n</div>\n\n1. **user@example.comr42? word[link](http://x.y)\n   ~~del~~user:foo]user:fooテスト\n</b>café[^1]&café\n\n~~~ruby\n?&copy;,\n(</span>[[Wiki]]\n~~~\n- [ ] <span style=\"color:red\">word</span>[[Wiki]]~~\n"
+ },
+ {
+  "name": "fuzz-0556",
+  "input": "2) </b>__\nwww.example.com[ref]**~~\nuser:foo<a href=\"javascript:x\">j</a>r42(;**<kbd>K</kbd>\n2) x@2x.pnghttp://example.com:;``r42café\n> </script>https://example.com/a_b?c=d&e=f\n[^1][[Wiki]]#123~~&:\n> [!NOTE]\n> [^1]\n   <b>**strong**\n@user<kbd>K</kbd>`code`<br>wordmailto:a@b.cc__\n"
+ },
+ {
+  "name": "fuzz-0557",
+  "input": "# <</script>```\n\n"
+ },
+ {
+  "name": "fuzz-0558",
+  "input": "<div>\n[\\*`code`<br>\n</div>\n:__ &<a href=\"javascript:x\">j</a>&#x41;<kbd>K</kbd><kbd>K</kbd>\n  </b>,**\\\n> ]www.example.com[ref]\n\n## *]\\</script></span>**\n\n- `code`![img](a.png \"t\")!<span style=\"color:red\">www.example.com<kbd>K</kbd>mailto:a@b.cc\\_\n  word``\\!\\_</script>\n\n> [!NOTE]\n> {{macro}}``.@user\ntext**strong**:<kbd>K</kbd>\n"
+ },
+ {
+  "name": "fuzz-0559",
+  "input": "[ref]: <.<script>\\**{{macro}}``\n  @user&copy;(\n  ~<!-- c -->text\n\n2) `\n> !![img](a.png \"t\")**user:foo<img src=\"a.png\">\\**em*\n  日本語~~del~~@user</script>>\n\n[ref]: <`code`  \n[ref]<a href=\"javascript:x\">j</a>__\n```\n!テスト\\\\\n<br>[link](http://x.y):<a href=\"javascript:x\">j</a>?\\_&#x41;\n```\n> https://example.com/a_b?c=d&e=f~~[ref]\n> |\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0560",
+  "input": "[^1]: _&&amp;\\_\n    |;\n\n- [x] `code`,,\n)\t\n\n* **\n  [[Wiki]]\n\n&amp;*em*.|mailto:a@b.cc\\*r42word\n\n"
+ },
+ {
+  "name": "fuzz-0561",
+  "input": "```\nwww.example.com[[Wiki]][link](http://x.y)<img src=\"a.png\">[日本語テスト*em*\n,user:foo\n```\n\n2) `code`*em*````[\n   '<b>@user&[ref]\n\\[text\n   <span style=\"color:red\">![img](a.png \"t\")\n   ~~del~~\\`code`[^1]\n(text**strong**:日本語\n"
+ },
+ {
+  "name": "fuzz-0562",
+  "input": "> [!NOTE]\n> \\\\<a href=\"javascript:x\">j</a>@user~~del~~</span>\n   <br>\n\n"
+ },
+ {
+  "name": "fuzz-0563",
+  "input": "| </b> \"]< |\n|:-:|\n- [ ] ;(http://example.com&copy;\"*em*text<br>\n- [x] ]>\n<script>~~del~~www.example.com \n\n> _]</b>\\:~~del~~\n\n> [!NOTE]\n> `\n"
+ },
+ {
+  "name": "fuzz-0564",
+  "input": "```\n<span style=\"color:red\">\n</span>{{macro}}\n```\n&copy;\\\t#123\n  [[Wiki]]<br>[link](http://x.y):\n>  \\[word\\~~<a href=\"javascript:x\">j</a>textx@2x.png\n\n> &copy;\\*</span>https://example.com/a_b?c=d&e=f</b>\n   café[|<script>\n   \\[<&amp;[ref]``<b>\\\t\n> ~{{macro}}[ref]?|\\[?,\n   [^1]<a href=\"javascript:x\">j</a>!word*em*日本語\n```\nmailto:a@b.cc</b>\ncafé<b>word[ref]``[\n```\n"
+ },
+ {
+  "name": "fuzz-0565",
+  "input": "# </b>**strong**~~del~~<img src=\"a.png\"><!-- c -->\\[text\n   '\n  mailto:a@b.cc[^1]&amp;\\_[</b>\n"
+ },
+ {
+  "name": "fuzz-0566",
+  "input": "     \t<,[link](http://x.y)http://example.com\\\\\n**x@2x.pnghttp://example.comr42**)__\n> \"~!_<img src=\"a.png\">\n```\n<span style=\"color:red\"><kbd>K</kbd>&copy;)&copy;\\_\n<!-- c -->\\_  ;www.example.com**\n```\n    **strong**<span style=\"color:red\">>\n> r42<|\n\n![img](a.png \"t\")https://example.com/a_b?c=d&e=f&{{macro}}![img](a.png \"t\")~[link](http://x.y)&\n\n"
+ },
+ {
+  "name": "fuzz-0567",
+  "input": ",**strong**``<img src=\"a.png\">\\*x@2x.png*em**\n   ]</span>>\n   ({{macro}}http://example.com&#x41;<kbd>K</kbd>mailto:a@b.cc__;\n```\n~\ntext</span>\n```\n"
+ },
+ {
+  "name": "fuzz-0568",
+  "input": "> 日本語< .text<span style=\"color:red\">\n  \\_</script>(**]\n"
+ },
+ {
+  "name": "fuzz-0569",
+  "input": "- [x] _[^1]`code`<script>_*em*\n   <script>![img](a.png \"t\")<a href=\"javascript:x\">j</a>x@2x.png>user@example.com\n\\[\\\\<b><b>\\[\n    <b>\n<kbd>K</kbd>user@example.com<img src=\"a.png\">![img](a.png \"t\")  \n\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0570",
+  "input": "> :![img](a.png \"t\")mailto:a@b.cc\n   `code`r42<b>:**__\n   \\***strong**;~テスト``\n\n> </span>café\n\"text&\n\n"
+ },
+ {
+  "name": "fuzz-0571",
+  "input": "## __&copy;~~del~~&#x41;\n*word\n   ``)[[Wiki]]?x@2x.png`code`\n<!-- c -->'テスト~~del~~\\;*\n- [^1]\"<span style=\"color:red\">'\n\n"
+ },
+ {
+  "name": "fuzz-0572",
+  "input": "> `café[_\n* &copy;{{macro}}**?\\*\n> !text![img](a.png \"t\")~\n\n> [!NOTE]\n> <script>#123 ~#123\n  日本語www.example.com<img src=\"a.png\">_(@user__[link](http://x.y)\n> ~~<`code`\n\n<div>\n ](\n</div>\n\n2) :\n> [link](http://x.y)\t`[[Wiki]]user:foo\\\\\n\n"
+ },
+ {
+  "name": "fuzz-0573",
+  "input": "<div>\n</b>\\_\\_)![img](a.png \"t\")r42&amp;__\n</div>\n\n#123**\n&copy;&#x41;;<span style=\"color:red\">&#x41;\\\\\\[_\n\n2) ,テスト</script>@user<a href=\"javascript:x\">j</a>.\n   &__)テスト_</span>`{{macro}}\n\\\\<script>\"\\*\\_&amp;<!-- c -->\n\n1. `\\\\;\\\\\n__![img](a.png \"t\")\n:[ >\n\n[ref]: x@2x.png\n'.\\[</span>&copy;\n> )\n"
+ },
+ {
+  "name": "fuzz-0574",
+  "input": "| &&amp;.\" | [link](http://x.y)text\\\\_  {{macro}};' | word</b>user@example.com |\n|--:|:-:|--:|\n| [ref]<kbd>K</kbd>text![img](a.png \"t\")[link](http://x.y)>[link](http://x.y) | wordword@user | @user**>text[<b>テスト |\n| <!-- c -->(''?``) | <span style=\"color:red\">r42<span style=\"color:red\">\\[*em* |\n\n2) café&copy;!<\n> </script>]<script>\n   @userr42\n- [ ] http://example.com__\n\n* テスト[link](http://x.y)[**strong**textmailto:a@b.cc\n> <br>~<b>)</span>日本語user:foo\n  .``<!-- c -->\n\n"
+ },
+ {
+  "name": "fuzz-0575",
+  "input": "[ref]: <span style=\"color:red\">\n  ~<kbd>K</kbd><!-- c -->&*em*\n"
+ },
+ {
+  "name": "fuzz-0576",
+  "input": "[ref]: `code`\\\\__\n   text*em*&<span style=\"color:red\">\\[)]\n\n"
+ },
+ {
+  "name": "fuzz-0577",
+  "input": "```\n\\\n</span>\n```\n2) [link](http://x.y)</span>``<script>\\_<;\n> <user@example.com\\*.user@example.com</span>\\_<!-- c -->\n\n> [!NOTE]\n> x@2x.png**strong**;\n> &amp;<a href=\"javascript:x\">j</a>;~~~\t?\n~~~ruby\n?:\n \\*\n~~~\n"
+ },
+ {
+  "name": "fuzz-0578",
+  "input": "# x@2x.png__**<kbd>K</kbd>\n\n[^1]: user@example.com\\'<br>~~\n\n[ref]:   \n   `.</script>[[Wiki]]_日本語\n> \"@usermailto:a@b.cc</script>mailto:a@b.cc&[^1]\n\n## .\t.&#x41;</span>*em*café\ncafé<\\\\\\  \n   [link](http://x.y)http://example.com**\n# <a href=\"javascript:x\">j</a>>\n  ~日本語**\\**em*\n   ~\n"
+ },
+ {
+  "name": "fuzz-0579",
+  "input": "user@example.com&{{macro}}https://example.com/a_b?c=d&e=f\\[word\n   ,&copy;<script>word<b>;~[ref]\n,user:foo<img src=\"a.png\">'<kbd>K</kbd>\n\n| wordhttps://example.com/a_b?c=d&e=fmailto:a@b.cc`code` [link](http://x.y)[^1] |\n|:-:|\n\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0580",
+  "input": "1. [ref]`[\n  テスト:(~]'[ref]\n> \t#123(!|\n- [ ] </b><br>[^1]|text![img](a.png \"t\")\n> `\\[[日本語https://example.com/a_b?c=d&e=f#123</script>)\n\n> !\n> &amp; \\\\``</b><<kbd>K</kbd>\n\n</script>&#x41;\n\n# `user:foo**](**<a href=\"javascript:x\">j</a>\n*em*@user(<span style=\"color:red\"><kbd>K</kbd>\n> ~~[ref]\n"
+ },
+ {
+  "name": "fuzz-0581",
+  "input": "![img](a.png \"t\")<a href=\"javascript:x\">j</a>\\[[link](http://x.y)\n```\n]\n\\\n```\n> 日本語\\\\@user*\n\n- [x] ![img](a.png \"t\")www.example.com.  <**strong**\n> http://example.com`</span>,\\\\*em*\\[__\n\n```\n\"</b>https://example.com/a_b?c=d&e=f</b>&amp;</b> \n*em*(<!-- c -->@user\n```\n"
+ },
+ {
+  "name": "fuzz-0582",
+  "input": "* `<br><img src=\"a.png\">日本語,&amp;\n> [link](http://x.y)[ref]?<!-- c -->x@2x.pngcafé_~\n> _?|café``*em*\n  ~~\n  |&`user@example.com\n"
+ },
+ {
+  "name": "fuzz-0583",
+  "input": "## [**``&copy;._\\_\n   **~~del~~\\*!\\_;<\n* \\*[^1]]<script><kbd>K</kbd>*\t\\\\\n  <a href=\"javascript:x\">j</a>&copy;\n  \\[ &#x41;**strong**</span>&#x41;\n> [!NOTE]\n> café!\n,&\t`code`\n"
+ },
+ {
+  "name": "fuzz-0584",
+  "input": "日本語http://example.com</script>&copy;\n   ![img](a.png \"t\")(@user{{macro}}~~word`\n> \t</script>\n\n"
+ },
+ {
+  "name": "fuzz-0585",
+  "input": "- )caféx@2x.png{{macro}}\n\n</span>;@user\n1. x@2x.png <img src=\"a.png\">***\\\n"
+ },
+ {
+  "name": "fuzz-0586",
+  "input": "    ]word<br>www.example.com\t&amp;&copy;\n\n<div>\n|'?\n</div>\n\n~~\n\n__user:foo<span style=\"color:red\">:<br>\n   &amp;@user`code`<b>~~r42text\n\n[^1]:   _{{macro}}テスト__user:foo<b>\n.[^1]user:foo*<)`code`café\n\n"
+ },
+ {
+  "name": "fuzz-0587",
+  "input": "* <br>https://example.com/a_b?c=d&e=f<b>*__r42!\n  ~~del~~\t~\n\n<span style=\"color:red\">\n"
+ },
+ {
+  "name": "fuzz-0588",
+  "input": "[ref]: <a href=\"javascript:x\">j</a>\\[|**strong**\n]café![img](a.png \"t\")word\n  \t![img](a.png \"t\")</span>x@2x.png<script>r42\n- [x] ;&amp;``\n\n[^1]: (café_\n> &#x41;\ncafé[[Wiki]]\n   </b>www.example.com\t__>([_\n\n| \"'r42 | \\_![img](a.png \"t\")&#x41; |\n|:--|:--|\n| http://example.com |\n| <;\\_\\http://example.comuser:foo日本語 | user:foo |\n\n"
+ },
+ {
+  "name": "fuzz-0589",
+  "input": "\\_`code`__\"&amp;word\n   [^1][[Wiki]]~~&|\t>(\n",
+  "hardbreaks": false
+ },
+ {
+  "name": "fuzz-0590",
+  "input": "# \\\\\n  &<kbd>K</kbd>\"r42_`code`.[[Wiki]]\n\n"
+ },
+ {
+  "name": "fuzz-0591",
+  "input": "## `x@2x.png**.@user<span style=\"color:red\">https://example.com/a_b?c=d&e=f\n   [  ~~del~~\n  user@example.com[[Wiki]].word```\n\n\"&amp;</b>text[`code`\n    テストhttp://example.com\n> mailto:a@b.cc\\]#123&<br>\n   http://example.com\ntextmailto:a@b.cc!**\n![img](a.png \"t\")\"\n\n"
+ },
+ {
+  "name": "fuzz-0592",
+  "input": "[ref]: @usertextuser:foo<<img src=\"a.png\">[ref].www.example.com\n  [^1]&#x41;>テスト@user\\[*em*r42\n)\n\n# '\n\n- [x] http://example.com\\\\<a href=\"javascript:x\">j</a>\"<img src=\"a.png\"></b>\\*<img src=\"a.png\">\n| </span>* | [[Wiki]]_ | 日本語text |\n|---|:-:|:--|\n| [ref], | &copy;café[[Wiki]]'*em****em* | ]</span>{{macro}}** | #123 |\n| </b>café'**` | <script>[^1] | <!-- c -->~~del~~**&amp;&copy;{{macro}}__ |\n* [ref]'(x@2x.png']\n"
+ },
+ {
+  "name": "fuzz-0593",
+  "input": "[^1]: 日本語)&#x41;<!-- c -->&#x41;<kbd>K</kbd>(\n  <!-- c -->日本語www.example.com..\n;café\n| ** | \\_![img](a.png \"t\")@user~<a href=\"javascript:x\">j</a><br>[link](http://x.y) |\n|:-:|:--|\n| user@example.com | *https://example.com/a_b?c=d&e=f![img](a.png \"t\").日本語https://example.com/a_b?c=d&e=f@user&#x41; |\n| ' | ,</b>\\\\<span style=\"color:red\"> | [[Wiki]]\\*!](; |\n\n- [x] <img src=\"a.png\"><span style=\"color:red\"><kbd>K</kbd>[**user@example.com<script><span style=\"color:red\">\n   ![img](a.png \"t\")<a href=\"javascript:x\">j</a><span style=\"color:red\">\\\\\\\\&copy;\n"
+ },
+ {
+  "name": "fuzz-0594",
+  "input": "__?@user__*_#123>\n  ~**\\*;caféuser:foohttp://example.com\t\n  </b>)__word>~~\n- [x] ~~\\\\~~del~~~~\n   *\n|,[^1]http://example.com<a href=\"javascript:x\">j</a>\n"
+ },
+ {
+  "name": "fuzz-0595",
+  "input": "- [ ] [link](http://x.y)<span style=\"color:red\"></span>\n\t>> www.example.comr42[^1]>\n  >café~~del~~\">{{macro}}r42[[Wiki]]\n\n* __\n   |:\t<kbd>K</kbd>&#x41;`\n  <br><span style=\"color:red\">]\"_<script>https://example.com/a_b?c=d&e=f\n\n"
+ },
+ {
+  "name": "fuzz-0596",
+  "input": "> <!-- c -->user:foo**strong**\n  ~~</b>[<img src=\"a.png\">[link](http://x.y)|\n- [x] !][link](http://x.y)\\[{{macro}}``_</script>\n> **strong**\n> <!-- c -->&</b></b>*~~del~~\n\n</script>user@example.com\n> ]&copy;\t\n\n"
+ },
+ {
+  "name": "fuzz-0597",
+  "input": "* [^1]word#123<script>wordwordtext`code`\n\n> [#123<script>\\\\#123!\\\\__\n   <!-- c -->café\\[\\\\  #123[[Wiki]]\n  <kbd>K</kbd>[link](http://x.y){{macro}}<\n\n* \\[\\mailto:a@b.cc\n\n"
+ },
+ {
+  "name": "fuzz-0598",
+  "input": "- [x] _#123_<script>\\_\n> ![^1]</span>;_mailto:a@b.cc\n- [ ] ~~>\\r42>\n> \"#123__;.café(<a href=\"javascript:x\">j</a>\n\n"
+ },
+ {
+  "name": "fuzz-0599",
+  "input": "1. user@example.com.&copy;~~del~~~http://example.com\n```\n,@useruser:footext\n \\_)&x@2x.png]&amp;www.example.com\n```\n\n)https://example.com/a_b?c=d&e=ftext\\*<span style=\"color:red\">[ref] .\n\n",
+  "hardbreaks": false
+ }
+]

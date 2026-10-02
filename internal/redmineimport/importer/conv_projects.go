@@ -73,7 +73,7 @@ func (im *imp) importProjects() error {
 	}
 	idents := map[string]bool{}
 	ins := im.ins(t, "projects", "id", "parent_id", "name", "identifier", "description", "homepage", "is_public", "status",
-		"inherit_members", "default_version_id", "default_assigned_to_id", "default_issue_query_id", "created_at", "updated_at")
+		"inherit_members", "position", "default_version_id", "default_assigned_to_id", "default_issue_query_id", "created_at", "updated_at")
 	for _, r := range rows {
 		id := r.id()
 		ident := strings.TrimSpace(r.str("identifier"))
@@ -111,7 +111,8 @@ func (im *imp) importProjects() error {
 		}
 		im.st.projects[id] = parent[id]
 		if err := ins.add(id, nullIfZero(parent[id]), r.str("name"), ident, r.strNull("description", true), r.strNull("homepage", true),
-			r.bool("is_public", true), status, r.bool("inherit_members", false), nil, assignee, nil,
+			// 兄弟順は旧 lft の大小で保持する (position = lft。兄弟内の順序だけが意味を持つ)
+			r.bool("is_public", true), status, r.bool("inherit_members", false), r.intOr("lft", 0), nil, assignee, nil,
 			im.tsOr(t, id, r, "created_on", "updated_on"), im.tsOr(t, id, r, "updated_on", "created_on")); err != nil {
 			return err
 		}
