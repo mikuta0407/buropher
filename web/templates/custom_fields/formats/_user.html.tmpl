@@ -1,0 +1,19 @@
+<p>
+  <label>{{l "label_role"}}</label>
+  <label class="block">
+    {{radio_button_tag "status" 1 (.custom_field.SettingBlank "user_role") (hash "id" "custom_field_user_role_all" "data" (hash "disables" ".custom_field_user_role input"))}}
+    {{l "label_all"}}
+  </label>
+  <label class="block">
+    {{radio_button_tag "status" 0 (not (.custom_field.SettingBlank "user_role")) (hash "id" "custom_field_user_role_only" "data" (hash "enables" ".custom_field_user_role input"))}}
+    {{l "label_only"}}:
+  </label>
+  {{range $role := assigns.GivableRoles}}
+    <label class="block custom_field_user_role" style="padding-left:2em;">
+      {{check_box_tag "custom_field[user_role][]" $role.ID ($.custom_field.SettingListIncludes "user_role" (to_s $role.ID)) (hash "id" nil)}}
+      {{$role.Name}}
+    </label>
+  {{end}}
+  {{hidden_field_tag "custom_field[user_role][]" ""}}
+</p>
+<p>{{edit_tag_style_tag .f}}</p>

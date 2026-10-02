@@ -1,0 +1,11 @@
+{{custom_field_title .CustomField}}
+
+{{form_tag "/custom_fields/new" (hash "method" "get")}}
+  <div class="box">
+  <p>{{l "label_custom_field_select_type"}}:</p>
+  <p>
+  {{select_type_radio_buttons (param "tab")}}
+  </p>
+  </div>
+  <p>{{submit_tag (raw (printf "%s &#187;" (l "label_next"))) (hash "name" nil)}}</p>
+{{end_form}}

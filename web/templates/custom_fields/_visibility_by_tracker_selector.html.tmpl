@@ -1,0 +1,10 @@
+{{$cf := assigns.CustomField}}
+<fieldset class="box" id="custom_field_tracker_ids"><legend>{{toggle_checkboxes_link "#custom_field_tracker_ids input[type=checkbox]"}}{{l "label_tracker_plural"}}</legend>
+  {{range $tracker := assigns.Trackers}}
+    {{check_box_tag "custom_field[tracker_ids][]" $tracker.ID ($cf.CF.HasTracker $tracker.ID) (hash "id" (printf "custom_field_tracker_ids_%d" $tracker.ID))}}
+    <label class="no-css" for="custom_field_tracker_ids_{{$tracker.ID}}">
+      {{$tracker.Name}}
+    </label>
+  {{end}}
+  {{hidden_field_tag "custom_field[tracker_ids][]" ""}}
+</fieldset>

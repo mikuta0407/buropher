@@ -1,0 +1,51 @@
+{{custom_field_title .CustomField}}
+{{$id := .CustomField.CF.ID}}
+
+{{if .Enumerations}}
+{{form_tag (printf "/custom_fields/%d/enumerations" $id) (hash "method" "put")}}
+<div class="box">
+  <ul id="custom_field_enumerations" class="flat">
+  {{range $position, $value := .Enumerations}}
+    <li>
+      {{content_tag "span" (sprite_icon "reorder" "") (hash "class" "icon-only icon-sort-handle sort-handle" "title" (l "button_move"))}}
+      {{hidden_field_tag (printf "custom_field_enumerations[%d][position]" $value.ID) $position (hash "class" "position")}}
+      {{text_field_tag (printf "custom_field_enumerations[%d][name]" $value.ID) $value.Name (hash "size" 40)}}
+      {{hidden_field_tag (printf "custom_field_enumerations[%d][active]" $value.ID) 0}}
+      <label>
+        {{check_box_tag (printf "custom_field_enumerations[%d][active]" $value.ID) 1 $value.Active}}
+        {{l "field_active"}}
+      </label>
+      {{delete_link (printf "/custom_fields/%d/enumerations/%d" $id $value.ID)}}
+    </li>
+  {{end}}
+  </ul>
+</div>
+<p>
+  {{submit_tag (l "button_save")}} |
+  {{link_to (l "button_back") (printf "/custom_fields/%d/edit" $id)}}
+</p>
+{{end_form}}
+{{end}}
+
+{{form_tag (printf "/custom_fields/%d/enumerations" $id) (hash "method" "post" "remote" true "id" "add-element")}}
+  <p>{{l "label_enumeration_new"}}</p>
+
+  <p>{{text_field_tag "custom_field_enumeration[name]" "" (hash "size" 40)}}
+  {{submit_tag (l "button_add")}}</p>
+{{end_form}}
+
+{{define "custom_field_enumerations/index#js"}}
+
+$(function() {
+  $("#custom_field_enumerations").sortable({
+    handle: ".sort-handle",
+    update: function(event, ui) {
+      $("#custom_field_enumerations li").each(function(){
+        $(this).find("input.position").val($(this).index()+1);
+      });
+    }
+  });
+});
+{{end}}
+{{/* ERB の <% end %> と同じく末尾の改行を出さない */}}
+{{javascript_tag (capture "custom_field_enumerations/index#js")}}

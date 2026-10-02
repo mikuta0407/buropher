@@ -340,7 +340,7 @@ func (a *App) PrincipalMembershipsNew(c *Req) {
 		c.Render("principal_memberships/new", data, RenderOptions{Format: "js"})
 		return
 	}
-	c.Render("principal_memberships/new", data, adminLayout(c))
+	c.Render("principal_memberships/new", data, adminLayoutXHR(c))
 }
 
 // PrincipalMembershipsCreate は principal_memberships#create（Member.create_principal_memberships）。
@@ -429,7 +429,7 @@ func (a *App) PrincipalMembershipsEdit(c *Req) {
 		c.Render("principal_memberships/edit", data, RenderOptions{Format: "js"})
 		return
 	}
-	c.Render("principal_memberships/edit", data, adminLayout(c))
+	c.Render("principal_memberships/edit", data, adminLayoutXHR(c))
 }
 
 // PrincipalMembershipsUpdate は principal_memberships#update（role_ids の置き換え）。

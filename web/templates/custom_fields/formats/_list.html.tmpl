@@ -1,0 +1,7 @@
+<p>
+  {{.f.TextArea "possible_values" (hash "value" .custom_field.PossibleValuesText "rows" 15 "required" true)}}
+  <em class="info">{{l "text_custom_field_possible_values_info"}}</em>
+</p>
+<p>{{.f.TextField "default_value"}}</p>
+<p>{{.f.TextField "url_pattern" (hash "size" 50 "label" (sym "label_link_values_to"))}}</p>
+<p>{{edit_tag_style_tag .f}}</p>

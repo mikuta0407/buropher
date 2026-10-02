@@ -80,8 +80,8 @@ func (a *App) findUser(logged bool) ActionOption {
 	})
 }
 
-// adminLayout は layout 'admin'（XHR なら layout なし）。
-func adminLayout(c *Req) RenderOptions {
+// adminLayoutXHR は layout 'admin'（XHR なら layout なし）。
+func adminLayoutXHR(c *Req) RenderOptions {
 	if httpx.IsXHR(c.R) {
 		return RenderOptions{Layout: view.NoLayout}
 	}
@@ -122,7 +122,7 @@ func (a *App) UsersIndex(c *Req) {
 			httpx.Head(c.W, c.R, http.StatusUnprocessableEntity)
 			c.Halt()
 		default:
-			c.Render("users/index", a.userIndexData(c, view, nil, nil, 0, errMsgs), adminLayout(c))
+			c.Render("users/index", a.userIndexData(c, view, nil, nil, 0, errMsgs), adminLayoutXHR(c))
 		}
 		return
 	}
@@ -178,7 +178,7 @@ func (a *App) UsersIndex(c *Req) {
 			a.serverError(c, err)
 			return
 		}
-		c.Render("users/index", a.userIndexData(c, view, users, pages, count, nil), adminLayout(c))
+		c.Render("users/index", a.userIndexData(c, view, users, pages, count, nil), adminLayoutXHR(c))
 	}
 }
 
@@ -685,7 +685,7 @@ func (a *App) UsersNew(c *Req) {
 		return
 	}
 	c.NoStore()
-	c.Render("users/new", data, adminLayout(c))
+	c.Render("users/new", data, adminLayoutXHR(c))
 }
 
 // UsersCreate は users#create（POST /users(.:format)）。
@@ -750,7 +750,7 @@ func (a *App) UsersCreate(c *Req) {
 		return
 	}
 	c.NoStore()
-	c.Render("users/new", data, adminLayout(c))
+	c.Render("users/new", data, adminLayoutXHR(c))
 }
 
 // deliverAccountInformation は Mailer.deliver_account_information(user, password)。
@@ -779,7 +779,7 @@ func (a *App) renderUserEdit(c *Req, m *userModel, status int) {
 		return
 	}
 	c.NoStore()
-	opts := adminLayout(c)
+	opts := adminLayoutXHR(c)
 	opts.Status = status
 	c.Render("users/edit", data, opts)
 }
@@ -886,7 +886,7 @@ func (a *App) UsersDestroy(c *Req) {
 		c.RedirectBackOrDefault("/users", false)
 		return
 	}
-	c.Render("users/destroy", map[string]any{"User": u}, adminLayout(c))
+	c.Render("users/destroy", map[string]any{"User": u}, adminLayoutXHR(c))
 }
 
 // destroyUser は User#destroy（参照を匿名ユーザーへ付け替えてから削除）。
@@ -923,7 +923,7 @@ func (a *App) UsersBulkDestroy(c *Req) {
 	for i, u := range users {
 		ids[i] = u.ID
 	}
-	c.Render("users/bulk_destroy", map[string]any{"Users": users, "IDsQuery": helper.ToQuery(rails.NewHash("ids", ids))}, adminLayout(c))
+	c.Render("users/bulk_destroy", map[string]any{"Users": users, "IDsQuery": helper.ToQuery(rails.NewHash("ids", ids))}, adminLayoutXHR(c))
 }
 
 // UsersBulkLock は users#bulk_lock（POST /users/bulk_lock）。

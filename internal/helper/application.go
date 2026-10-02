@@ -5,7 +5,6 @@ import (
 	"encoding/hex"
 	"html/template"
 	"net/url"
-	"regexp"
 	"sort"
 	"strconv"
 	"strings"
@@ -15,6 +14,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/httpx"
 	"github.com/mikuta0407/buropher/internal/repository"
+	"github.com/mikuta0407/buropher/internal/textformat/redmine"
 	"github.com/mikuta0407/buropher/internal/view"
 	"github.com/mikuta0407/buropher/internal/view/rails"
 )
@@ -108,7 +108,7 @@ func (d *Deps) RequestFuncs(r *view.Render) ttemplate.FuncMap {
 		// --- forms / misc ---
 		"back_url":                  func() string { return backURL(pg()) },
 		"back_url_hidden_field_tag": func() html { return backURLHiddenFieldTag(pg()) },
-		"textilizable":              func(text any, args ...any) html { return Textilizable(text) },
+		"textilizable":              func(text any, args ...any) html { return d.textilizable(pg(), text, args...) },
 		"link_to_project": func(p any, args ...any) html {
 			var opts, htmlOpts *rails.Hash
 			if len(args) > 0 {
@@ -764,28 +764,11 @@ func backURLHiddenFieldTag(p *Page) html {
 	return rails.HiddenFieldTag("back_url", u, rails.NewHash("id", nil))
 }
 
-var blankLinesRe = regexp.MustCompile(`\n[ \t]*\n+`)
-
-// Textilizable は textilizable(text) の暫定実装。
-// TODO(textformat): internal/textformat（CommonMark / Textile + Redmine リンク・マクロ・サニタイズ）に置き換える。
-// 現状は空行で段落に分け、& < > をエスケープし、段落内の改行を <br> にして <p> で囲む
-// （既定の welcome_text では Redmine の common_mark 出力と一致する）。
+// Textilizable は DB・ページ文脈なしで text を Setting の既定（common_mark）で整形する簡易版。
+// Redmine リンク・マクロは解決されない。テンプレートでは textilizable 関数（Page の文脈を使う）を使うこと。
 func Textilizable(text any) template.HTML {
-	s := strings.ReplaceAll(rails.ToS(text), "\r\n", "\n")
-	s = strings.Trim(s, "\n")
-	if strings.TrimSpace(s) == "" {
-		return ""
-	}
-	esc := strings.NewReplacer("&", "&amp;", "<", "&lt;", ">", "&gt;")
-	var out []string
-	for _, para := range blankLinesRe.Split(s, -1) {
-		lines := strings.Split(strings.TrimRight(para, " \t\n"), "\n")
-		for i, l := range lines {
-			lines[i] = esc.Replace(strings.TrimSpace(l))
-		}
-		out = append(out, "<p>"+strings.Join(lines, "<br>\n")+"</p>")
-	}
-	return template.HTML(strings.Join(out, "\n"))
+	r := &redmine.Renderer{TextFormatting: "common_mark"}
+	return r.Textilizable(rails.ToS(text), redmine.Options{})
 }
 
 // ---- time ----

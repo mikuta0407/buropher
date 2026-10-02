@@ -24,27 +24,10 @@ import (
 // link_to_context_menu, context_menu, actions_dropdown, error_messages_for, principals_check_box_tags,
 // project_css_classes, role_name, roles_to_s など。
 
-// Tab は render_tabs の 1 タブ（{:name, :partial, :label}）。
-type Tab struct {
-	Name    string
-	Partial string
-	Label   string
-	OnClick string
-	URL     string
-}
 
 func init() {
 	registerFuncs(func(d *Deps, r *view.Render, pg func() *Page) ttemplate.FuncMap {
 		return ttemplate.FuncMap{
-			"render_tabs":    func(tabs []Tab, selected ...string) (html, error) { return renderTabs(r, pg(), tabs, selected...) },
-			"get_tab_action": getTabAction,
-			"tab_link":       func(t Tab, selected string) html { return tabLink(pg(), t, selected) },
-			"tab_hidden_style": func(t Tab, selected string) any {
-				if t.Name != selected {
-					return "display:none"
-				}
-				return nil
-			},
 			"cond": func(c bool, a, b any) any {
 				if c {
 					return a
@@ -164,7 +147,6 @@ func init() {
 				r := []rune(strings.ToLower(s))
 				return strings.ToUpper(string(r[0])) + string(r[1:])
 			},
-			"include_calendar_headers_tags": func() string { d.includeCalendarHeadersTags(r, pg()); return "" },
 			// current_path_with_format は OtherFormatsBuilder#link_to_with_query_parameters の URL
 			// （現在のパス + .format、クエリは page / format を除く）。
 			"current_path_with_format": func(format string) string {
@@ -183,37 +165,6 @@ func (d *Deps) SpriteIcon(p *Page, name string, label any, opts *rails.Hash) htm
 	return d.spriteIcon(p, name, label, opts)
 }
 
-// includeCalendarHeadersTags は ApplicationHelper#include_calendar_headers_tags。
-func (d *Deps) includeCalendarHeadersTags(r *view.Render, p *Page) {
-	if p.calendarHeadersIncluded {
-		return
-	}
-	p.calendarHeadersIncluded = true
-	sow := p.setting("start_of_week")
-	if sow == "" {
-		sow = p.l("general_first_day_of_week")
-		if sow == "" {
-			sow = "1"
-		}
-	}
-	n, _ := strconv.Atoi(sow)
-	tags := rails.JavascriptTag("var datepickerOptions={dateFormat: 'yy-mm-dd', firstDay: "+strconv.Itoa(n%7)+", "+
-		"showOn: 'button', buttonImageOnly: true, buttonImage: '"+d.assetPath("calendar.png")+
-		"', showButtonPanel: true, showWeek: true, showOtherMonths: true, "+
-		"selectOtherMonths: true, changeMonth: true, changeYear: true, "+
-		"beforeShow: beforeShowDatePicker};", nil)
-	locale := "en"
-	if p.Loc != nil {
-		locale = p.Loc.Lang
-		if p.Loc.Bundle.Exists(p.Loc.Lang, "jquery.locale") {
-			locale = p.l("jquery.locale")
-		}
-	}
-	if locale != "en" {
-		tags += d.jsInclude("i18n/datepicker-" + locale + ".js")
-	}
-	r.ContentFor("header_tags", tags)
-}
 
 // autoWatchOnTags は users/_auto_watch_on の
 // pref_fields.collection_check_boxes :auto_watch_on, auto_watch_on_options, :last, :first の出力。
@@ -262,43 +213,7 @@ func nilIfBlankAny(s string) any {
 	return s
 }
 
-// renderTabs は ApplicationHelper#render_tabs（common/_tabs を描画する）。
-func renderTabs(r *view.Render, p *Page, tabs []Tab, selected ...string) (html, error) {
-	if len(tabs) == 0 {
-		return rails.ContentTag("p", p.l("label_no_data"), rails.NewHash("class", "nodata")), nil
-	}
-	sel := p.Params().String("tab")
-	if len(selected) > 0 {
-		sel = selected[0]
-	}
-	found := false
-	for _, t := range tabs {
-		if t.Name == sel {
-			found = true
-		}
-	}
-	if !found {
-		sel = tabs[0].Name
-	}
-	return r.Partial("common/tabs", map[string]any{"tabs": tabs, "selected_tab": sel})
-}
 
-// tabLink は common/_tabs のタブのリンク
-// （link_to l(tab[:label]), (tab[:url] || {:tab => tab[:name]}), id:, class:, onclick:）。
-func tabLink(p *Page, t Tab, selected string) html {
-	url := t.URL
-	if url == "" {
-		url = URLWithQuery(p.requestPath(), rails.NewHash("tab", t.Name))
-	}
-	var class, onclick any
-	if t.Name == selected {
-		class = "selected"
-	}
-	if a := getTabAction(t); a != "" {
-		onclick = a + "; return false;"
-	}
-	return rails.LinkTo(p.l(t.Label), url, rails.NewHash("id", "tab-"+t.Name, "class", class, "onclick", onclick))
-}
 
 // requestPath は現在のリクエストのパス（url_for で現在のアクションのパスを作る場合に使う）。
 func (p *Page) requestPath() string {
@@ -308,16 +223,6 @@ func (p *Page) requestPath() string {
 	return p.Request.URL.Path
 }
 
-// getTabAction は ApplicationHelper#get_tab_action。
-func getTabAction(t Tab) string {
-	if t.OnClick != "" {
-		return t.OnClick
-	}
-	if t.Partial != "" {
-		return "showTab('" + t.Name + "', this.href)"
-	}
-	return ""
-}
 
 // langOptionsForSelect は ApplicationHelper#lang_options_for_select（[表示名, 値]）。
 func langOptionsForSelect(p *Page, blank bool) [][2]string {

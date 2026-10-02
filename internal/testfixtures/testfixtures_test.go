@@ -20,7 +20,7 @@ func TestResolve(t *testing.T) {
 	if !slices.Equal(got, want) {
 		t.Errorf("Resolve = %v, want %v", got, want)
 	}
-	if _, err := Resolve("changesets"); err == nil || !strings.Contains(err.Error(), "not supported") {
+	if _, err := Resolve("no_such_fixture"); err == nil || !strings.Contains(err.Error(), "not supported") {
 		t.Errorf("unsupported fixture error = %v", err)
 	}
 }
@@ -97,6 +97,61 @@ func TestLoadAll(t *testing.T) {
 		id, err := d.InsertReturningID(ctx, `INSERT INTO projects (name, identifier, created_at, updated_at) VALUES ('x', 'x', ?, ?)`, db.Now(), db.Now())
 		if err != nil || id != 7 {
 			t.Errorf("next project id = %d, %v", id, err)
+		}
+	})
+}
+
+func TestLoadTextContents(t *testing.T) {
+	dbtest.ForEachDialect(t, func(t *testing.T, d *db.DB) {
+		Load(t, d, All()...)
+		ctx := context.Background()
+		counts := map[string]int{
+			"documents": 3, "messages": 7, "news_comments": 2, "wiki_pages": 12, "issue_journals": 5,
+			"issue_journal_details": 6, "attachments": 24,
+		}
+		for tbl, want := range counts {
+			var n int
+			if err := d.Get(ctx, &n, `SELECT COUNT(*) FROM `+tbl); err != nil {
+				t.Fatal(err)
+			}
+			if n != want {
+				t.Errorf("%s: %d rows, want %d", tbl, n, want)
+			}
+		}
+		// Wiki の最新版は wiki_contents の本文 (同じ版の履歴より優先)
+		var text string
+		var cur int
+		if err := d.QueryRow(ctx, `SELECT v.text, p.current_version FROM wiki_pages p
+JOIN wiki_page_versions v ON v.page_id = p.id AND v.version = p.current_version
+WHERE p.title = 'CookBook_documentation'`).Scan(&text, &cur); err != nil {
+			t.Fatal(err)
+		}
+		if cur != 3 || !strings.Contains(text, "with gzipped history") {
+			t.Errorf("CookBook_documentation = v%d %q", cur, text)
+		}
+		var vers int
+		if err := d.Get(ctx, &vers, `SELECT COUNT(*) FROM wiki_page_versions WHERE page_id = 1`); err != nil || vers != 3 {
+			t.Errorf("page 1 versions = %d, %v", vers, err)
+		}
+		var kind, desc string
+		var cid int64
+		if err := d.QueryRow(ctx, `SELECT container_kind, container_id, description FROM attachments WHERE filename = 'error281.txt'`).Scan(&kind, &cid, &desc); err != nil {
+			t.Fatal(err)
+		}
+		if kind != "issue" || cid != 3 || desc != "An attachment" {
+			t.Errorf("error281.txt = %s %d %q", kind, cid, desc)
+		}
+		var parent int64
+		if err := d.Get(ctx, &parent, `SELECT parent_id FROM messages WHERE id = 5`); err != nil || parent != 4 {
+			t.Errorf("message 5 parent = %d, %v", parent, err)
+		}
+		var last int64
+		if err := d.Get(ctx, &last, `SELECT last_message_id FROM boards WHERE id = 1`); err != nil || last == 0 {
+			t.Errorf("board 1 last_message_id = %d, %v", last, err)
+		}
+		var scmid string
+		if err := d.Get(ctx, &scmid, `SELECT scmid FROM changesets WHERE repository_id = 10 AND revision = '1'`); err != nil || scmid != "691322a8eb01e11fd7" {
+			t.Errorf("changeset r1 scmid = %q, %v", scmid, err)
 		}
 	})
 }

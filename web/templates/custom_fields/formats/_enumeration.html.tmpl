@@ -1,0 +1,12 @@
+{{if not .custom_field.IsNewRecord}}
+<p>
+  <label>{{l "field_possible_values"}}</label>
+  {{link_to (sprite_icon "edit" (l "button_edit")) (printf "/custom_fields/%d/enumerations" .custom_field.CF.ID) (hash "class" "icon icon-edit")}}
+</p>
+{{if .custom_field.ActiveEnumerations}}
+  <p>{{.f.Select "default_value" (enumeration_options .custom_field.ActiveEnumerations) (hash "include_blank" true)}}</p>
+{{end}}
+{{end}}
+
+<p>{{.f.TextField "url_pattern" (hash "size" 50 "label" (sym "label_link_values_to"))}}</p>
+<p>{{edit_tag_style_tag .f}}</p>

@@ -1,0 +1,18 @@
+{{$cf := assigns.CustomField}}
+<fieldset class="box tabular"><legend>{{l "field_visible"}}</legend>
+  <label class="block">
+    {{radio_button_tag "custom_field[visible]" 1 $cf.CF.Visible (hash "id" "custom_field_visible_on" "data" (hash "disables" ".custom_field_role input"))}}
+    {{l "label_visibility_public"}}
+  </label>
+  <label class="block">
+    {{radio_button_tag "custom_field[visible]" 0 (not $cf.CF.Visible) (hash "id" "custom_field_visible_off" "data" (hash "enables" ".custom_field_role input"))}}
+    {{l "label_visibility_roles"}}:
+  </label>
+  {{range $role := assigns.GivableRoles}}
+    <label class="block custom_field_role" style="padding-left:2em;">
+      {{check_box_tag "custom_field[role_ids][]" $role.ID ($cf.CF.HasRole $role.ID) (hash "id" nil)}}
+      {{$role.Name}}
+    </label>
+  {{end}}
+  {{hidden_field_tag "custom_field[role_ids][]" ""}}
+</fieldset>

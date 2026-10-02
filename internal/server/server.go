@@ -178,7 +178,7 @@ func newViews(cfg *config.Config, helpers *helper.Deps) (*view.Engine, error) {
 	opts := view.Options{
 		FS:           web.Templates(),
 		Funcs:        helpers.Funcs(),
-		RequestFuncs: []func(r *view.Render) template.FuncMap{helpers.RequestFuncs},
+		RequestFuncs: []func(r *view.Render) template.FuncMap{helpers.RequestFuncs, helpers.AdminRequestFuncs},
 		FlashIcon:    helpers.FlashIcon,
 	}
 	if cfg.DevWebDir != "" {

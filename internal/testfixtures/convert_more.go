@@ -51,9 +51,9 @@ func loadCustomFields(c *loadCtx, rows []row) error {
 		if err := c.exec(`INSERT INTO custom_fields (id, owner_kind, name, description, field_format, regexp, min_length, max_length,
   is_required, is_for_all, is_filter, searchable, default_value, editable, visible, multiple, position, possible_values, format_settings)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-			id, kind, r.str("name"), r.nstr("description"), r.str("field_format"), r.nstr("regexp"),
+			id, kind, r.str("name"), r.strOrNil("description"), r.str("field_format"), r.strOrNil("regexp"),
 			r.nint("min_length"), r.nint("max_length"), r.bool("is_required", false), r.bool("is_for_all", false),
-			r.bool("is_filter", false), r.bool("searchable", false), r.nstr("default_value"), r.bool("editable", true),
+			r.bool("is_filter", false), r.bool("searchable", false), r.strOrNil("default_value"), r.bool("editable", true),
 			r.bool("visible", true), r.bool("multiple", false), r.int("position", 1), pv, fs); err != nil {
 			return err
 		}
@@ -269,35 +269,6 @@ var containerKinds = map[string]string{
 	"News": "news", "Document": "document", "CustomValue": "custom_value",
 }
 
-func loadAttachments(c *loadCtx, rows []row) error {
-	for _, r := range rows {
-		var kind, cid any
-		if t := r.str("container_type"); t != "" {
-			k, ok := containerKinds[t]
-			if !ok {
-				return fmt.Errorf("%s: unknown container_type %q", r.label, t)
-			}
-			kind, cid = k, r.int("container_id", 0)
-		}
-		var digest, algo any
-		if d := r.str("digest"); d != "" {
-			digest = d
-			if len(d) == 64 {
-				algo = "sha256"
-			} else {
-				algo = "md5"
-			}
-		}
-		if err := c.exec(`INSERT INTO attachments (id, container_kind, container_id, filename, disk_directory, disk_filename, filesize,
-  content_type, digest, digest_algo, downloads, author_id, description, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-			r.int("id", 0), kind, cid, r.str("filename"), r.nstr("disk_directory"), r.str("disk_filename"), r.int("filesize", 0),
-			r.nstr("content_type"), digest, algo, r.int("downloads", 0), r.int("author_id", 0), r.nstr("description"),
-			ts(c, r, "created_on")); err != nil {
-			return err
-		}
-	}
-	return nil
-}
 
 func loadUserPreferences(c *loadCtx, rows []row) error {
 	for _, r := range rows {

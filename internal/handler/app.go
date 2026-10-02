@@ -130,6 +130,8 @@ type Req struct {
 	ArchivedProject *domain.Project
 	// Question は @question。
 	Question string
+	// Attachments は @attachments（find_attachments が読み込む未紐付けの添付。プレビューで使う）。
+	Attachments []*repository.RefAttachment
 
 	cfg    *actionConfig
 	authz  *authz.Authorizer

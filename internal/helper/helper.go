@@ -24,6 +24,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/i18n"
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/settings"
+	"github.com/mikuta0407/buropher/internal/textformat/redmine"
 	"github.com/mikuta0407/buropher/internal/view"
 )
 
@@ -89,10 +90,14 @@ type Page struct {
 	// Logger はヘルパー内のエラーの記録先（nil なら slog.Default()）。
 	Logger *slog.Logger
 
-	accessKeys []string
-	theme      *assets.Theme
-	themeSet   bool
-	leaf       map[int64]bool
+	// PreviewAttachments は @attachments（プレビューで thumbnail マクロが参照する未保存の添付）。
+	PreviewAttachments []*redmine.Attachment
+
+	accessKeys   []string
+	wikiRenderer *redmine.Renderer
+	theme        *assets.Theme
+	themeSet     bool
+	leaf         map[int64]bool
 	// contextMenuIncluded は @context_menu_included（context_menu ヘルパー）。
 	contextMenuIncluded bool
 	// calendarHeadersIncluded は @calendar_headers_tags_included。

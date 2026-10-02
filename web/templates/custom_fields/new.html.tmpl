@@ -1,0 +1,22 @@
+{{custom_field_title .CustomField}}
+
+{{$f := labelled_form_for "custom_field" .CustomField (hash "as" "custom_field" "url" "/custom_fields" "html" (hash "id" "custom_field_form"))}}
+{{$f.Open}}
+{{partial "custom_fields/form" (dict "f" $f)}}
+{{hidden_field_tag "type" .CustomField.ClassName}}
+{{if .CustomField.CopyFrom}}{{hidden_field_tag "copy" .CustomField.CopyFrom.ID}}{{end}}
+{{end_form}}
+
+{{define "custom_fields/new#js"}}
+
+$('#custom_field_field_format').change(function(){
+  $.ajax({
+    url: '/custom_fields/new.js',
+    type: 'get',
+    data: $('#custom_field_form').serialize(),
+    complete: toggleDisabledInit
+  });
+});
+{{end}}
+{{/* ERB の <% end %> と同じく末尾の改行を出さない */}}
+{{javascript_tag (capture "custom_fields/new#js")}}

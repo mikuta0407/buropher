@@ -276,7 +276,7 @@ func (a *App) GroupsIndex(c *Req) {
 		a.serverError(c, err)
 		return
 	}
-	c.Render("groups/index", map[string]any{"Groups": groups, "Pages": pages, "Count": count, "UserCounts": counts, "Name": name}, adminLayout(c))
+	c.Render("groups/index", map[string]any{"Groups": groups, "Pages": pages, "Count": count, "UserCounts": counts, "Name": name}, adminLayoutXHR(c))
 }
 
 func (a *App) groupAPIFields(c *Req, b apibuilder.Builder, g *domain.Group, cvs []principalCustomValue) {
@@ -410,7 +410,7 @@ func (a *App) GroupsNew(c *Req) {
 	}
 	m.customValues = cvs
 	data, _ := a.groupFormData(c, m)
-	c.Render("groups/new", data, adminLayout(c))
+	c.Render("groups/new", data, adminLayoutXHR(c))
 }
 
 // GroupsCreate は groups#create。
@@ -453,7 +453,7 @@ func (a *App) GroupsCreate(c *Req) {
 		return
 	}
 	data, _ := a.groupFormData(c, m)
-	c.Render("groups/new", data, adminLayout(c))
+	c.Render("groups/new", data, adminLayoutXHR(c))
 }
 
 // GroupsEdit は groups#edit。
@@ -469,7 +469,7 @@ func (a *App) GroupsEdit(c *Req) {
 		a.serverError(c, err)
 		return
 	}
-	c.Render("groups/edit", data, adminLayout(c))
+	c.Render("groups/edit", data, adminLayoutXHR(c))
 }
 
 // GroupsUpdate は groups#update。
@@ -505,7 +505,7 @@ func (a *App) GroupsUpdate(c *Req) {
 		a.serverError(c, err)
 		return
 	}
-	c.Render("groups/edit", data, adminLayout(c))
+	c.Render("groups/edit", data, adminLayoutXHR(c))
 }
 
 // GroupsDestroy は groups#destroy（組込グループは削除しない）。
@@ -553,7 +553,7 @@ func (a *App) GroupsNewUsers(c *Req) {
 		c.Render("groups/new_users", data, RenderOptions{Format: "js"})
 		return
 	}
-	c.Render("groups/new_users", data, adminLayout(c))
+	c.Render("groups/new_users", data, adminLayoutXHR(c))
 }
 
 // GroupsAutocompleteForUser は groups#autocomplete_for_user（js のみ）。
