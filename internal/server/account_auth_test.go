@@ -14,10 +14,12 @@ import (
 	"testing"
 	"time"
 
+	"github.com/go-chi/chi/v5"
 	_ "modernc.org/sqlite"
 
 	"github.com/mikuta0407/buropher/internal/auth/totp"
 	"github.com/mikuta0407/buropher/internal/db"
+	"github.com/mikuta0407/buropher/internal/handler"
 )
 
 // このファイルはパスワード再発行・自己登録・2 要素認証の画面を参照 Redmine と比較するテスト。
@@ -393,6 +395,76 @@ func TestAccountAuthModesMatchRedmine(t *testing.T) {
 			return v
 		}}
 	authModesFlow(e)
+	if dump := os.Getenv("BUROPHER_AUTH_DUMP"); dump != "" {
+		_ = os.MkdirAll(dump, 0o755)
+		for name, s := range e.out {
+			_ = os.WriteFile(filepath.Join(dump, name), []byte(s), 0o644)
+		}
+	}
+	for _, name := range e.order {
+		t.Run(name, func(t *testing.T) { myCompare(t, dir, name, e.out[name]) })
+	}
+}
+
+// autologinClient は user でログイン（autologin 付き）し、autologin クッキーだけを持つ新しいクライアントを作る
+// （自動ログインで始まったセッションは sudo の時刻を持たないため、sudo モードのフォームが表示される）。
+func (e *authEnv) autologinClient(name, user string) {
+	e.t.Helper()
+	tmp := "tmp-" + name
+	e.clients[tmp] = newClient(e.t)
+	e.do(tmp, "POST", "/login", url.Values{"username": {user}, "password": {authPasswords[user]}, "autologin": {"1"}}, "")
+	u, _ := url.Parse(e.base)
+	c := newClient(e.t)
+	for _, ck := range e.clients[tmp].Jar.Cookies(u) {
+		if ck.Name == "autologin" {
+			c.Jar.SetCookies(u, []*http.Cookie{ck})
+		}
+	}
+	e.clients[name] = c
+}
+
+// sudoFlow は sudo モード（config の sudo_mode: true）の操作列。
+func sudoFlow(e *authEnv) {
+	if st, _, b := e.do("admin", "POST", "/settings/edit?tab=authentication", url.Values{"settings[autologin]": {"7"}}, ""); st != 302 {
+		i := strings.Index(b, "<div id=\"content\">")
+		e.t.Fatalf("settings: %d %s", st, b[i:min(len(b), i+1500)])
+	}
+	e.autologinClient("admin2", "admin")
+	e.do("admin2", "GET", "/settings?tab=general", nil, "sudo_settings_form.html")
+	e.do("admin2", "POST", "/settings/edit?tab=general", url.Values{"settings[app_title]": {"Sudo test"}, "settings[per_page_options]": {"10,25"}, "sudo_password": {"wrong"}}, "sudo_settings_wrong.html")
+	e.do("admin2", "POST", "/settings/edit?tab=general", url.Values{"settings[app_title]": {"Sudo test"}, "sudo_password": {"admin"}}, "sudo_settings_ok.html")
+	e.do("admin2", "GET", "/settings?tab=general", nil, "")
+	e.autologinClient("jsmith2", "jsmith")
+	e.do("jsmith2", "POST", "/my/twofa/totp/activate/init", nil, "sudo_twofa_activate.html")
+	e.do("jsmith2", "POST", "/my/atom_key", url.Values{"ids[]": {"1", "2"}, "q": {"a b&c"}}, "sudo_atom_key.html")
+	e.do("jsmith2", "GET", "/my/account", nil, "sudo_my_account_get.html")
+	e.autologinClient("dlopper2", "dlopper")
+	e.do("dlopper2", "POST", "/my/api_key", nil, "sudo_api_key_reset.html")
+	e.do("dlopper2", "POST", "/my/api_key", url.Values{"sudo_password": {"foo"}}, "sudo_api_key_reset_ok.html")
+}
+
+// TestSudoModeMatchRedmine は sudo モードのパスワード再入力フォームが参照 Redmine と一致することを確認する。
+// 参照側は config/configuration.yml の production に sudo_mode: true を加えて reset した専用インスタンスを使う:
+//
+//	BUROPHER_SUDO_GOLDEN_REF=http://127.0.0.1:4023 go test -run TestSudoModeMatchRedmine ./internal/server
+func TestSudoModeMatchRedmine(t *testing.T) {
+	dir := filepath.Join("testdata", "account_sudo")
+	if ref := os.Getenv("BUROPHER_SUDO_GOLDEN_REF"); ref != "" {
+		e := &authEnv{t: t, base: ref, clients: map[string]*http.Client{}, out: map[string]string{}}
+		sudoFlow(e)
+		if err := os.MkdirAll(dir, 0o755); err != nil {
+			t.Fatal(err)
+		}
+		for name, s := range e.out {
+			if err := os.WriteFile(filepath.Join(dir, name), []byte(s), 0o644); err != nil {
+				t.Fatal(err)
+			}
+		}
+	}
+	myFreezeClock(t)
+	ts, _ := newFixtureServer(t, func(a *handler.App, _ chi.Router) { a.SudoMode = true })
+	e := &authEnv{t: t, base: ts.URL, clients: map[string]*http.Client{}, out: map[string]string{}}
+	sudoFlow(e)
 	if dump := os.Getenv("BUROPHER_AUTH_DUMP"); dump != "" {
 		_ = os.MkdirAll(dump, 0o755)
 		for name, s := range e.out {

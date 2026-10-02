@@ -297,15 +297,17 @@ func (a *App) OIDCCallback(c *Req) {
 		return
 	}
 	a.logger().Info("Successful SSO authentication", "login", user.Login, "auth_source", rec.ID, "ip", httpx.RemoteIP(c.R))
-	a.handleActiveUser(c, user)
-	s.Set(sessionSSOSource, rec.ID)
-	if set.RPLogout() && len(id.IDToken) < 8192 {
-		s.Set(sessionSSOIDToken, id.IDToken)
-	}
-	if set.SkipTwofa() {
-		// IdP の多要素認証を信頼する設定では 2 要素認証の有効化も求めない
-		s.Delete("must_activate_twofa")
-	}
+	a.handleActiveUser(c, user, func() {
+		s := c.Session()
+		s.Set(sessionSSOSource, rec.ID)
+		if set.RPLogout() && len(id.IDToken) < 8192 {
+			s.Set(sessionSSOIDToken, id.IDToken)
+		}
+		if set.SkipTwofa() {
+			// IdP の多要素認証を信頼する設定では 2 要素認証の有効化も求めない
+			s.Delete("must_activate_twofa")
+		}
+	})
 }
 
 // oidcProviderKey は user_identities.provider。

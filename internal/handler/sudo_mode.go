@@ -42,6 +42,9 @@ var sudoModeTable = map[string][]sudoRequirement{
 	"members":  {{actions: []string{"create", "update", "destroy"}}},
 }
 
+// adminLayoutControllers は require_sudo_mode を宣言するコントローラのうち layout 'admin' のもの。
+var adminLayoutControllers = []string{"settings", "auth_sources", "groups", "users", "roles"}
+
 // sudoTimeout は SudoMode.timeout。
 func (a *App) sudoTimeout() time.Duration {
 	if a.SudoModeTimeout > 0 {
@@ -157,7 +160,7 @@ func toQueryPairs(prefix string, v any, out *[]string) {
 			*out = append(*out, url.QueryEscape(prefix)+"=")
 		}
 	case map[string]any:
-		if len(x) == 0 {
+		if len(x) == 0 && prefix != "" {
 			*out = append(*out, url.QueryEscape(prefix)+"=")
 			return
 		}
@@ -216,6 +219,11 @@ func (a *App) renderSudoForm(c *Req, original *httpx.Params) {
 	}
 	if httpx.Negotiate(c.R, "html", "js") == "js" {
 		c.Render("sudo_mode/new", data, RenderOptions{Format: "js", Layout: view.NoLayout})
+		return
+	}
+	// コントローラのレイアウト（layout 'admin' のコントローラは管理画面のレイアウト）で描画する
+	if c.Controller != nil && slices.Contains(adminLayoutControllers, c.Controller.Name) {
+		c.renderAdmin("sudo_mode/new", data, false)
 		return
 	}
 	c.Render("sudo_mode/new", data)

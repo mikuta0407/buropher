@@ -105,20 +105,30 @@ func (a *App) ontheflyCreationFailed(c *Req, m *userModel) {
 }
 
 // handleActiveUser は AccountController#handle_active_user。
-func (a *App) handleActiveUser(c *Req, user *domain.User) {
-	a.successfulAuthentication(c, user)
-	// update_sudo_timestamp!
-	if s := c.Session(); s != nil {
-		s.SetSudoAt(a.now())
-	}
+// afterLogin はログイン直後（セッション開始後・リダイレクト前）に行う処理（SSO のセッション情報の保存など）。
+// セッションはレスポンスヘッダの送出時に保存されるため、リダイレクトより前に済ませる必要がある。
+func (a *App) handleActiveUser(c *Req, user *domain.User, afterLogin ...func()) {
+	a.successfulAuthentication(c, user, func() {
+		// update_sudo_timestamp!（Redmine は successful_authentication の後に呼ぶが、
+		// buropher のセッションはリダイレクトの送出時に保存されるため先に設定する）
+		if s := c.Session(); s != nil {
+			s.SetSudoAt(a.now())
+		}
+		for _, f := range afterLogin {
+			f()
+		}
+	})
 }
 
 // successfulAuthentication は AccountController#successful_authentication。
-func (a *App) successfulAuthentication(c *Req, user *domain.User) {
+func (a *App) successfulAuthentication(c *Req, user *domain.User, beforeRedirect func()) {
 	a.logger().Info("Successful authentication", "login", user.Login, "ip", httpx.RemoteIP(c.R))
 	a.setLoggedUser(c, user)
 	if c.Params().Present("autologin") && a.Settings.Bool("autologin") {
 		a.setAutologinCookie(c, user)
+	}
+	if beforeRedirect != nil {
+		beforeRedirect()
 	}
 	c.RedirectBackOrDefault("/my/page", false)
 }
