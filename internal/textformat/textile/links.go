@@ -76,10 +76,20 @@ func mailInLinkRe(mail string) *regexp2.Regexp {
 // autoMailto は auto_mailto! (links_helper.rb:69-82): メールアドレスをリンクに置き換える
 func autoMailto(text string) string {
 	orig := text
+	// 判定用の正規表現は "<a" を必須とするので、含まなければ判定を省略できる
+	hasA := strings.Contains(orig, "<a")
+	linked := map[string]bool{}
 	return gsub(reMail, text, func(m md) string {
 		mail := m.s(1)
-		if matches(mailInLinkRe(mail), orig) {
-			return mail
+		if hasA {
+			l, ok := linked[mail]
+			if !ok {
+				l = matches(mailInLinkRe(mail), orig)
+				linked[mail] = l
+			}
+			if l {
+				return mail
+			}
 		}
 		return `<a class="email" href="mailto:` + htmlEscapeERB(mail) + `">` + htmlEscapeERB(mail) + `</a>`
 	})

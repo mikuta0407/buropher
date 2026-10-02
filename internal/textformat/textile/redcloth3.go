@@ -12,6 +12,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"unicode"
 
 	"github.com/dlclark/regexp2"
 )
@@ -135,9 +136,68 @@ var rePglAbbr = rx(reB + `([A-Z][A-Z0-9]{1,})` + reB + `(?:[(]([^)]*)[)])`)
 
 // pgl (redcloth3.rb:453-461): グリフ置換 (Redmine 版は略語 <abbr> のみ)
 func (rc *redcloth) pgl(text string) string {
+	// 原典の正規表現 (rePglAbbr) は ")" の無い長い入力で O(n^2) になるため、
+	// 同じ結果になる手書きの走査で置換する (rePglAbbr との一致はテストで検証)。
+	return pglScan(text)
+}
+
+// pglRegexp は原典どおり正規表現で処理する版 (検証用)。
+func pglRegexp(text string) string {
 	return gsub(rePglAbbr, text, func(m md) string {
 		return `<abbr title="` + htmlesc(m.s(2), escQuotes) + `">` + m.s(1) + `</abbr>`
 	})
+}
+
+func isBWordRune(r rune) bool {
+	return unicode.IsLetter(r) || unicode.IsMark(r) || unicode.IsNumber(r) || unicode.Is(unicode.Pc, r)
+}
+
+func isUpperDigit(r rune) bool {
+	return (r >= 'A' && r <= 'Z') || (r >= '0' && r <= '9')
+}
+
+// pglScan は /\b([A-Z][A-Z0-9]{1,})\b(?:[(]([^)]*)[)])/ による置換を線形時間で行う。
+// [A-Z0-9]{1,} の後の \b は、連続の直後が "(" (非単語文字) である場合にしか成立しない。
+func pglScan(text string) string {
+	if !strings.Contains(text, "(") || !strings.Contains(text, ")") {
+		return text
+	}
+	rs := []rune(text)
+	n := len(rs)
+	var out strings.Builder
+	prev := 0
+	for p := 0; p < n; p++ {
+		if rs[p] < 'A' || rs[p] > 'Z' {
+			continue
+		}
+		if p > 0 && isBWordRune(rs[p-1]) {
+			continue
+		}
+		q := p + 1
+		for q < n && isUpperDigit(rs[q]) {
+			q++
+		}
+		if q-p < 2 || q >= n || rs[q] != '(' {
+			continue
+		}
+		c := q + 1
+		for c < n && rs[c] != ')' {
+			c++
+		}
+		if c >= n {
+			// 以降の開始位置にも対応する ")" は存在しない
+			break
+		}
+		out.WriteString(string(rs[prev:p]))
+		out.WriteString(`<abbr title="` + htmlesc(string(rs[q+1:c]), escQuotes) + `">` + string(rs[p:q]) + `</abbr>`)
+		prev = c + 1
+		p = c
+	}
+	if prev == 0 {
+		return text
+	}
+	out.WriteString(string(rs[prev:]))
+	return out.String()
 }
 
 var (
@@ -854,15 +914,24 @@ func (rc *redcloth) glyphsTextile(text string, level int) string {
 }
 
 var (
-	reHasAnyTag   = rx(`<.*>`)
 	reCodeClassW  = rx(`<code` + reS + `+class="(` + reW + `+)">`)
 	reOfftagFirst = rx(`<` + offtags + `([^>]*)>`)
 	reClassAttr   = rxi(`(class=("[^"]+"|'[^']+'))`)
 )
 
+// hasAnyTag は text =~ /<.*>/ (同じ行に "<" とその後の ">" がある) と等価な判定。
+func hasAnyTag(text string) bool {
+	for _, line := range strings.Split(text, "\n") {
+		if i := strings.IndexByte(line, '<'); i >= 0 && strings.LastIndexByte(line, '>') > i {
+			return true
+		}
+	}
+	return false
+}
+
 // rip_offtags (redcloth3.rb:1083-1122): <pre> 等の中身を退避する
 func (rc *redcloth) ripOfftags(text string, escapeAftertag, escapeLine bool) string {
-	if !matches(reHasAnyTag, text) {
+	if !hasAnyTag(text) {
 		return text
 	}
 	codepre := 0

@@ -5,7 +5,10 @@ package textile
 
 import (
 	"encoding/json"
+	"math/rand/v2"
 	"os"
+	"reflect"
+	"strings"
 	"testing"
 )
 
@@ -40,4 +43,31 @@ func TestSectionFixtures(t *testing.T) {
 			c.Name, c.Index, c.Input, c.Section, sec, c.Updated, upd)
 	}
 	t.Logf("section exact match: %d/%d", pass, len(cases))
+}
+
+// TestScanSectionsEquivalence は scanSections が原典の正規表現 (reSections) の scan と
+// 同じ結果になることをランダム入力で確認する。
+func TestScanSectionsEquivalence(t *testing.T) {
+	alphabet := []string{"h1. ", "h2(c). ", "h3.\t", "h", "1", ".", " ", "  ", "\n", "\n", "\r\n", "\r", "\t", "\v",
+		"a", "x", "(", ")", "{color:red}", "h1.", "h10. ", "h1.:cite ", "\n\n", "\n \n", "日本"}
+	rng := rand.New(rand.NewPCG(3, 4))
+	for i := 0; i < 30000; i++ {
+		var b strings.Builder
+		k := 1 + rng.IntN(25)
+		for j := 0; j < k; j++ {
+			b.WriteString(alphabet[rng.IntN(len(alphabet))])
+		}
+		s := b.String()
+		got := scanSections(s)
+		var want []sectionMatch
+		for _, m := range scan(reSections, s) {
+			want = append(want, sectionMatch{all: m.s(1), content: m.s(2), heading: m.s(4), level: m.s(5), isHeading: m.ok(4)})
+			if !m.ok(4) {
+				break
+			}
+		}
+		if !reflect.DeepEqual(got, want) {
+			t.Fatalf("mismatch for %q\nwant %#v\ngot  %#v", s, want, got)
+		}
+	}
 }

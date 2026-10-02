@@ -9,6 +9,27 @@ import (
 	"testing"
 )
 
+// TestPglAndTagScanEquivalence は pglScan / hasAnyTag が原典の正規表現と同じ結果になることを確認する。
+func TestPglAndTagScanEquivalence(t *testing.T) {
+	alphabet := []string{"A", "B", "Z", "AB", "A1", "a", "é", "日", "²", "_", "(", ")", " ", "\n", "\"", "'", "<", ">", "&", "-", "1", "x"}
+	reTag := rx(`<.*>`)
+	rng := rand.New(rand.NewPCG(5, 6))
+	for i := 0; i < 50000; i++ {
+		var b strings.Builder
+		k := 1 + rng.IntN(20)
+		for j := 0; j < k; j++ {
+			b.WriteString(alphabet[rng.IntN(len(alphabet))])
+		}
+		s := b.String()
+		if got, want := pglScan(s), pglRegexp(s); got != want {
+			t.Fatalf("pgl mismatch for %q\nwant %q\ngot  %q", s, want, got)
+		}
+		if got, want := hasAnyTag(s), matches(reTag, s); got != want {
+			t.Fatalf("hasAnyTag mismatch for %q: want %v", s, want)
+		}
+	}
+}
+
 // TestQtagMatcherEquivalence は専用マッチャが原典の正規表現と同じ結果になることを
 // ランダム入力で確認する。
 func TestQtagMatcherEquivalence(t *testing.T) {

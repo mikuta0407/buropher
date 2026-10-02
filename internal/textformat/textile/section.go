@@ -64,9 +64,9 @@ func extractSections(src string, index int) [3]string {
 	started := false
 	ended := false
 loop:
-	for _, m := range scan(reSections, text) {
-		all := m.s(1)
-		if !m.ok(4) {
+	for _, m := range scanSections(text) {
+		all := m.all
+		if !m.isHeading {
 			switch {
 			case ended:
 				after.WriteString(all)
@@ -77,7 +77,7 @@ loop:
 			}
 			break loop
 		}
-		content, heading, level := m.s(2), m.s(4), atoiRuby(m.s(5))
+		content, heading, level := m.content, m.heading, atoiRuby(m.level)
 		i++
 		switch {
 		case ended:
@@ -104,6 +104,89 @@ loop:
 		sections[k] = rc.smoothOfftagsPlain(sections[k])
 	}
 	return sections
+}
+
+// sectionMatch は text.scan(reSections) の 1 要素 ([all, content, lf, heading, level, ...])。
+type sectionMatch struct {
+	all, content, heading, level string
+	isHeading                    bool
+}
+
+var reSectionHeading = rxm(`\Ah([0-9]+)(` + reA + reC + `)\.(?::(` + reNS + `+))?[ \t](.*?)$`)
+
+// scanSections は text.scan(reSections) と同じ結果を返す。
+// 正規表現版は空白行が多い入力で O(n^2) になるため、区切り
+// (\A|\r?\n\s*\r?\n) の候補を線形に走査する。見出しは "h" で始まるので、
+// \s* は空白の連続の末尾までしか伸ばせない点を利用している。
+// 正規表現版 (reSections) との一致はテストで検証している。
+func scanSections(text string) []sectionMatch {
+	n := len(text)
+	// runEnd[i]: i 以上で最初の非空白 (Ruby の \s) の位置
+	runEnd := make([]int, n+1)
+	runEnd[n] = n
+	for i := n - 1; i >= 0; i-- {
+		if isRubySpace(text[i]) {
+			runEnd[i] = runEnd[i+1]
+		} else {
+			runEnd[i] = i
+		}
+	}
+	headingCache := map[int]*md{}
+	headingAt := func(y int) *md {
+		if y+1 >= n || text[y] != 'h' || text[y+1] < '0' || text[y+1] > '9' {
+			return nil
+		}
+		if m, ok := headingCache[y]; ok {
+			return m
+		}
+		m := match(reSectionHeading, text[y:])
+		headingCache[y] = m
+		return m
+	}
+	var res []sectionMatch
+	pos := 0
+	for {
+		found := false
+		for x := pos; x <= n; x++ {
+			// \A の選択肢
+			if x == 0 {
+				if hm := headingAt(0); hm != nil {
+					h := hm.all()
+					res = append(res, sectionMatch{all: h, content: "", heading: h, level: hm.s(1), isHeading: true})
+					pos = len(h)
+					found = true
+					break
+				}
+			}
+			// \r?\n\s*\r?\n の選択肢
+			firstNL := -1
+			if x < n && text[x] == '\n' {
+				firstNL = x
+			} else if x+1 < n && text[x] == '\r' && text[x+1] == '\n' {
+				firstNL = x + 1
+			}
+			if firstNL < 0 {
+				continue
+			}
+			y := runEnd[firstNL]
+			if y-1 <= firstNL || text[y-1] != '\n' {
+				continue
+			}
+			if hm := headingAt(y); hm != nil {
+				h := hm.all()
+				content := text[pos:y]
+				res = append(res, sectionMatch{all: content + h, content: content, heading: h, level: hm.s(1), isHeading: true})
+				pos = y + len(h)
+				found = true
+				break
+			}
+		}
+		if !found {
+			// |.* の選択肢 (残り全部)
+			res = append(res, sectionMatch{all: text[pos:]})
+			return res
+		}
+	}
 }
 
 // atoiRuby は String#to_i 相当 (先頭の数字列のみ解釈、桁あふれは考慮しない)。
