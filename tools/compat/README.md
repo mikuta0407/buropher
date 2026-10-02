@@ -117,6 +117,21 @@ requests:
     skip: "未対応"
 ```
 
+ファイルのアップロードと動的な URL（`imports_write.yml` を参照）:
+
+```yaml
+  - id: issues_create
+    path: /imports
+    method: POST
+    user: jsmith
+    form: {type: "IssueImport"}
+    files: {file: ../files/imports/import_issues.csv}   # multipart/form-data（相対パスはシナリオファイル基準）
+    capture: {issues: '/imports/([0-9a-f]+)/settings'}  # Location から変数を取り出す（参照・候補で別々に保持）
+  - id: issues_settings
+    path: /imports/${issues}/settings                   # Path / Form / Body の ${name} を展開
+    users: [jsmith]
+```
+
 簡易 TXT 形式（`.txt`）: `[METHOD] /path [user1,user2] [format=json] [auth=basic]`、`#` 以降コメント。
 
 **注意**: Redmine は GET でも DB を更新する（最近使ったプロジェクト、RSS キー生成、`last_login_on` 等）。

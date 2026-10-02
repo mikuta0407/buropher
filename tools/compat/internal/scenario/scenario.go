@@ -79,6 +79,13 @@ type Request struct {
 	Normalize normalize.Config `yaml:"normalize"`
 	// Skip が空でなければ実行しない（理由を書く）。
 	Skip string `yaml:"skip"`
+	// Files は multipart/form-data で送るファイル（フィールド名 → パス。相対パスはシナリオファイルの
+	// ディレクトリから）。指定すると Form の値も multipart のフィールドとして送る。
+	Files map[string]string `yaml:"files"`
+	// Capture はレスポンスの Location ヘッダから変数を取り出す（変数名 → 正規表現。最初のグループ、
+	// グループが無ければ一致全体）。変数は以降のリクエストの Path / Form / Body で ${name} として使える
+	// （参照・候補それぞれで別々に保持する）。
+	Capture map[string]string `yaml:"capture"`
 }
 
 // File はシナリオファイル全体。
@@ -108,6 +115,10 @@ type Case struct {
 	Expect    int
 	Normalize normalize.Config
 	Skip      string
+	// Files はフィールド名 → 絶対パス（multipart で送る）。
+	Files map[string]string
+	// Capture は変数名 → Location ヘッダに適用する正規表現。
+	Capture map[string]string
 }
 
 // Load はシナリオファイルを読み込む。拡張子 .txt は簡易形式として扱う。
@@ -131,6 +142,15 @@ func Load(path string) (*File, error) {
 	if f.Name == "" {
 		base := filepath.Base(path)
 		f.Name = strings.TrimSuffix(base, filepath.Ext(base))
+	}
+	// files: の相対パスはシナリオファイルのディレクトリ基準で解決する
+	dir := filepath.Dir(path)
+	for i := range f.Requests {
+		for k, p := range f.Requests[i].Files {
+			if !filepath.IsAbs(p) {
+				f.Requests[i].Files[k] = filepath.Join(dir, p)
+			}
+		}
 	}
 	return f, nil
 }
@@ -275,6 +295,8 @@ func (f *File) Cases() ([]Case, error) {
 				Expect:    r.ExpectStatus,
 				Normalize: f.Normalize.Merge(r.Normalize),
 				Skip:      r.Skip,
+				Files:     r.Files,
+				Capture:   r.Capture,
 			})
 		}
 	}

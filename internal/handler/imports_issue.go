@@ -416,7 +416,14 @@ func (m *importModel) issueBuildAndSave(ctx context.Context, row csvimport.Row, 
 		return importResult{}, err
 	}
 	if !saved {
-		return importResult{obj: iss, message: strings.Join(iss.Errors.FullMessages(m.c.L), "\n")}, nil
+		// human_attribute_name は訳が無ければ属性名（カスタムフィールド名）そのもの
+		tr := func(key string, args ...any) string {
+			if strings.HasPrefix(key, "field_") && !m.a.Bundle.Exists(m.c.Loc.Lang, key) {
+				return strings.TrimPrefix(key, "field_")
+			}
+			return m.c.L(key, args...)
+		}
+		return importResult{obj: iss, message: strings.Join(iss.Errors.FullMessages(tr), "\n")}, nil
 	}
 	if res != nil {
 		if err := env.Dispatch(ctx, res.Notifications); err != nil {

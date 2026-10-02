@@ -430,7 +430,8 @@ func (l *issueLookup) linkToVersion(v *repository.Version) template.HTML {
 		return ""
 	}
 	name := l.formatVersionName(v)
-	var title any = ""
+	// format_date(nil) は nil（title 属性を出さない）
+	var title any
 	if v.EffectiveDate.Valid {
 		title = l.formatDate(v.EffectiveDate.Date.Time)
 	}

@@ -136,9 +136,10 @@ func (a *App) setImportType(c *Req, t *importType) {
 	if t != nil {
 		item := t.MenuItem
 		ctrl.MenuItem = func(string) string { return item }
-		ctrl.MainMenu = t.Layout != "admin"
+		ctrl.NoCurrentMenu = t.Layout == "admin"
 	} else {
-		ctrl.MenuItem = func(string) string { return "" }
+		// menu_items の :default が nil（current_menu_item も nil）
+		ctrl.MenuItem = func(string) string { return helper.NoMenuItem }
 	}
 	c.Controller = &ctrl
 }
