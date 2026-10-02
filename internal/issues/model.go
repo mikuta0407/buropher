@@ -40,6 +40,8 @@ type Issue struct {
 	cfv        []*CustomFieldValue
 	cvRows     []cvRow
 	cfvChanged bool
+	// builtValues は行の無いフィールドについて組み立てた CustomValue の値 (custom_values.build、既定値か nil)。
+	builtValues map[int64]CFValue
 
 	currentJournal  *Journal
 	attributesSetBy *domain.User

@@ -223,6 +223,8 @@ var cfSeq atomic.Int64
 
 // cfAttrs は IssueCustomField.create! / generate! の属性。
 type cfAttrs struct {
+	// ID は明示する場合のみ (0 なら採番)。
+	ID             int64
 	Name           string
 	Format         string
 	IsForAll       bool
@@ -280,6 +282,10 @@ func (c *tc) createCF(a cfAttrs) int64 {
   multiple, default_value, possible_values, editable, regexp, max_length, position) VALUES ('issue', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 		a.Name, a.Format, a.IsForAll, a.IsRequired, visible, a.Multiple, dv, pv, editable, re, ml, pos)
 	c.must(err)
+	if a.ID != 0 && a.ID != id {
+		c.exec(`UPDATE custom_fields SET id = ? WHERE id = ?`, a.ID, id)
+		id = a.ID
+	}
 	trackers := a.Trackers
 	if trackers == nil {
 		trackers = c.ids(`SELECT id FROM trackers ORDER BY id`)

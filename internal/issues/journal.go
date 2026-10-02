@@ -318,8 +318,13 @@ func (e *Env) insertJournal(ctx context.Context, j *Journal, iss *Issue, st *sav
 	if j.Notes != "" {
 		notes = j.Notes
 	}
-	id, err := e.Q.InsertReturningID(ctx, `INSERT INTO issue_journals (issue_id, user_id, notes, private_notes, created_at) VALUES (?, ?, ?, ?, ?)`,
-		iss.ID, j.UserID, notes, j.PrivateNotes, db.NewTime(j.CreatedAt))
+	// Rails のタイムスタンプは作成時に updated_on も created_on と同じ値にする (編集表示は両者の比較で判定)
+	if j.UpdatedAt == nil {
+		t := j.CreatedAt
+		j.UpdatedAt = &t
+	}
+	id, err := e.Q.InsertReturningID(ctx, `INSERT INTO issue_journals (issue_id, user_id, notes, private_notes, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)`,
+		iss.ID, j.UserID, notes, j.PrivateNotes, db.NewTime(j.CreatedAt), db.NewTime(*j.UpdatedAt))
 	if err != nil {
 		return false, err
 	}

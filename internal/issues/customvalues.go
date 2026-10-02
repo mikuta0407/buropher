@@ -84,18 +84,34 @@ func (e *Env) CustomFieldValues(ctx context.Context, iss *Issue) ([]*CustomField
 	for _, cf := range fields {
 		v, ok := iss.storedValue(cf)
 		if !ok {
-			var dv *string
-			if iss.setCustomFieldDefault() {
-				dv = defaultValue(cf)
-			}
-			if cf.Multiple {
-				if dv != nil {
-					v = ArrayValue(*dv)
-				} else {
-					v = ArrayValue("")
+			if b, built := iss.builtValues[cf.ID]; built {
+				// 既に組み立て済みの CustomValue (custom_values.build) を再利用する
+				v = b
+				if cf.Multiple {
+					v = ArrayValue(b.String())
 				}
-			} else if dv != nil {
-				v = StrValue(*dv)
+			} else {
+				var dv *string
+				if iss.setCustomFieldDefault() {
+					dv = defaultValue(cf)
+				}
+				if cf.Multiple {
+					if dv != nil {
+						v = ArrayValue(*dv)
+					} else {
+						v = ArrayValue("")
+					}
+				} else if dv != nil {
+					v = StrValue(*dv)
+				}
+				if iss.builtValues == nil {
+					iss.builtValues = map[int64]CFValue{}
+				}
+				if dv != nil {
+					iss.builtValues[cf.ID] = StrValue(*dv)
+				} else {
+					iss.builtValues[cf.ID] = CFValue{}
+				}
 			}
 		}
 		out = append(out, &CustomFieldValue{Field: cf, Value: v, ValueWas: v.clone()})
@@ -314,6 +330,29 @@ func (e *Env) saveCustomFieldValues(ctx context.Context, iss *Issue) (bool, erro
 	used := map[int64]bool{}
 	changed := false
 	var keep []cvRow
+	// 行が無かったフィールドの組み立て済み CustomValue は、関連の autosave (after_create / after_update) で
+	// 先に保存される。その後の save_custom_field_values では「既存の行」として扱われ、
+	// 値が変わらなければ touch の対象にならない。
+	for _, cv := range vs {
+		b, built := iss.builtValues[cv.Field.ID]
+		if !built || slices.ContainsFunc(existing, func(r cvRow) bool { return r.FieldID == cv.Field.ID }) {
+			continue
+		}
+		bv := b.String()
+		var val any
+		if bv != "" {
+			val = bv
+		}
+		id, err := e.Q.InsertReturningID(ctx, `INSERT INTO custom_values (customized_kind, customized_id, custom_field_id, value) VALUES ('issue', ?, ?, ?)`,
+			iss.ID, cv.Field.ID, val)
+		if err != nil {
+			return false, err
+		}
+		r := cvRow{ID: id, FieldID: cv.Field.ID}
+		r.Value.String, r.Value.Valid = bv, bv != ""
+		existing = append(existing, r)
+	}
+	iss.builtValues = nil
 	insert := func(fieldID int64, v string) error {
 		var val any
 		if v != "" {
@@ -327,8 +366,8 @@ func (e *Env) saveCustomFieldValues(ctx context.Context, iss *Issue) (bool, erro
 		r := cvRow{ID: id, FieldID: fieldID}
 		r.Value.String, r.Value.Valid = v, v != ""
 		keep = append(keep, r)
-		// 新しい行は self.custom_values = ... の置き換え時に保存され、その後の save では変更が無いため
-		// Redmine の touch 判定 (custom_values.any?(&:saved_changes?)) には含まれない
+		// save_custom_field_values で新たに組み立てた行 (複数値の追加分) は保存で変更ありになる
+		changed = true
 		return nil
 	}
 	for _, cv := range vs {

@@ -303,7 +303,8 @@ func dumpState(t *testing.T, c *tc) map[string]any {
 			details = append(details, []any{d.Property, d.PropKey, o, v})
 		}
 		journals = append(journals, map[string]any{"id": j.ID, "issue_id": j.IssueID, "user_id": j.UserID, "notes": nullStr(j.Notes),
-			"private_notes": j.PrivateNotes, "created_on": tsStr(db.NullTime{Time: j.CreatedAt.Time, Valid: true}), "details": details})
+			"private_notes": j.PrivateNotes, "created_on": tsStr(db.NullTime{Time: j.CreatedAt.Time, Valid: true}),
+			"updated_on": tsStr(j.UpdatedAt), "updated_by_id": nullInt(j.UpdatedByID), "details": details})
 	}
 	var rels []relationRow
 	c.must(c.d.Select(c.ctx, &rels, `SELECT id, issue_from_id, issue_to_id, relation_type, delay FROM issue_relations ORDER BY id`))
@@ -331,8 +332,19 @@ ORDER BY customized_id, custom_field_id, id`))
 	for _, v := range cvs {
 		values = append(values, []any{v.IssueID, v.FieldID, nullStr(v.Value)})
 	}
+	var tes []struct {
+		ID        int64         `db:"id"`
+		ProjectID int64         `db:"project_id"`
+		IssueID   sql.NullInt64 `db:"issue_id"`
+		Hours     float64       `db:"hours"`
+	}
+	c.must(c.d.Select(c.ctx, &tes, `SELECT id, project_id, issue_id, hours FROM time_entries ORDER BY id`))
+	var timeEntries []any
+	for _, te := range tes {
+		timeEntries = append(timeEntries, []any{te.ID, te.ProjectID, nullInt(te.IssueID), te.Hours})
+	}
 	return map[string]any{"issues": issues, "tree_order": tree, "journals": journals, "relations": relations,
-		"watchers": watchers, "custom_values": values}
+		"watchers": watchers, "custom_values": values, "time_entries": timeEntries}
 }
 
 // normalizeJSON は JSON を経由して数値型などを揃える。
@@ -348,23 +360,32 @@ func normalizeJSON(t *testing.T, v any) any {
 	return out
 }
 
-func TestDifferentialScenario(t *testing.T) {
-	var want map[string]any
-	if err := json.Unmarshal(scenarioJSON, &want); err != nil {
-		t.Fatal(err)
-	}
+func diffSetup(t *testing.T) *tc {
 	c := setup(t)
 	// 参照 DB (redmine.pristine.sqlite3) の設定
 	c.setting("default_notification_option", "only_assigned")
 	c.setting("text_formatting", "common_mark")
 	c.setting("wiki_tablesort_enabled", "0")
 	c.setting("rest_api_enabled", "1")
+	return c
+}
 
+func TestDifferentialScenario(t *testing.T) {
+	c := diffSetup(t)
 	s := runScenario(t, c)
+	compareScenario(t, scenarioJSON, c, s)
+}
+
+// compareScenario は Ruby のダンプ (wantJSON) と Go の結果を比較する。
+func compareScenario(t *testing.T, wantJSON []byte, c *tc, s *scenarioRun) {
+	var want map[string]any
+	if err := json.Unmarshal(wantJSON, &want); err != nil {
+		t.Fatal(err)
+	}
 	got := normalizeJSON(t, dumpState(t, c)).(map[string]any)
 	got["log"] = normalizeJSON(t, s.log)
 
-	for _, key := range []string{"log", "issues", "tree_order", "journals", "relations", "watchers", "custom_values"} {
+	for _, key := range []string{"log", "issues", "tree_order", "journals", "relations", "watchers", "custom_values", "time_entries"} {
 		w, g := want[key], got[key]
 		if reflect.DeepEqual(w, g) {
 			continue
