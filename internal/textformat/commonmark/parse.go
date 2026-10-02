@@ -187,7 +187,7 @@ func (p *wwwAutolinkParser) Parse(parent ast.Node, block text.Reader, pc parser.
 		consume = 1
 	case line[0] == '\\':
 		// comrak は直前の生の文字を見るため、"\*www." なども対象になる
-		if len(line) < 2 || bytes.IndexByte([]byte("*_~("), line[1]) < 0 {
+		if len(line) < 2 || bytes.IndexByte([]byte("*_~(["), line[1]) < 0 {
 			return nil
 		}
 		consume = 2
@@ -368,14 +368,14 @@ func (p *footnoteRefParser) Parse(parent ast.Node, block text.Reader, pc parser.
 		if len(line) < 5 || line[1] != '[' || line[2] != '^' {
 			return nil
 		}
-		if p.lookahead(line[1:], pc) == nil {
+		if p.lookahead(line[1:], pc, block, 1) == nil {
 			return nil
 		}
 		ast.MergeOrAppendTextSegment(parent, seg.WithStop(seg.Start+1))
 		block.Advance(1)
 		line, _ = block.PeekLine()
 	}
-	n := p.lookahead(line, pc)
+	n := p.lookahead(line, pc, block, 0)
 	if n == nil {
 		return nil
 	}
@@ -388,7 +388,7 @@ func (p *footnoteRefParser) Parse(parent ast.Node, block text.Reader, pc parser.
 }
 
 // lookahead は line（"[^" で始まる）が脚注参照として扱われる場合そのノードを返す（位置は進めない）。
-func (p *footnoteRefParser) lookahead(line []byte, pc parser.Context) ast.Node {
+func (p *footnoteRefParser) lookahead(line []byte, pc parser.Context, block text.Reader, base int) ast.Node {
 	if len(line) < 4 || line[0] != '[' || line[1] != '^' {
 		return nil
 	}
@@ -400,7 +400,7 @@ func (p *footnoteRefParser) lookahead(line []byte, pc parser.Context) ast.Node {
 	if len(content) == 0 || bytes.ContainsAny(content, "`<&\\[\n\r") {
 		return nil
 	}
-	if end+1 < len(line) && line[end+1] == '(' {
+	if end+1 < len(line) && line[end+1] == '(' && inlineLinkFollows(block, base+end+1) {
 		return nil
 	}
 	if end+1 < len(line) && line[end+1] == '[' {

@@ -34,6 +34,12 @@ func (n *normalizer) Transform(doc *ast.Document, reader text.Reader, pc parser.
 			}
 			c = next
 		}
+		if ws, ok := b.AttributeString("cm-lead-ws"); ok {
+			// 怠惰な継続行が段落の先頭になった場合の行頭空白（refdef.go）
+			if s, ok := ws.(string); ok && b.FirstChild() != nil {
+				b.InsertBefore(b, b.FirstChild(), &Str{Value: s})
+			}
+		}
 	}
 	removeLinkRefDefs(doc)
 	walkBlocks(doc)
@@ -222,6 +228,13 @@ func convertInline(parent, c ast.Node, src []byte) {
 		}
 		lit := strings.ReplaceAll(sb.String(), "\r\n", " ")
 		lit = strings.ReplaceAll(lit, "\n", " ")
+		if _, isCell := block.(*east.TableCell); block != nil && !isCell {
+			// 表のセル以外は原文から comrak と同じ規則で組み立てる
+			// （セルは comrak がパイプのエスケープを外した内容を解析するため対象外）
+			if l, ok := codeSpanLiteral(n, block, src); ok {
+				lit = l
+			}
+		}
 		parent.ReplaceChild(parent, c, &Code{Literal: lit})
 	case *ast.RawHTML:
 		var sb strings.Builder

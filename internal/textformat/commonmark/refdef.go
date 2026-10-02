@@ -66,6 +66,16 @@ func (refDefTransformer) Transform(node *ast.Paragraph, reader text.Reader, pc p
 		} else {
 			parent.AppendChild(parent, node)
 		}
+		// 残りの先頭行が怠惰な継続行なら、comrak では行頭の空白が段落の
+		// 先頭に残る（通常の段落先頭の空白はブロック解析で除かれている）
+		// （goldmark はインライン解析で先頭の空白を除くため、属性で normalizer に伝える）
+		if len(rest) > 0 {
+			v := rest[0].Value(src)
+			ws := len(v) - len(bytes.TrimLeft(v, " \t"))
+			if ws > 0 && lazyLineIndent(node, rest[0].Start+ws, src) != "" {
+				node.SetAttributeString("cm-lead-ws", string(v[:ws]))
+			}
+		}
 	}
 	node.Lines().AppendAll(rest)
 }

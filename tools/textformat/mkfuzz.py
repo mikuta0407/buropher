@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """構文要素をランダムに組み合わせた CommonMark 差分テスト用コーパスを生成する（乱数シード固定）。
 
-使い方: mkfuzz.py [件数] > corpus_fuzz.json
+使い方: mkfuzz.py [件数 [シード [名前の接頭辞]]] > corpus_fuzz.json
 """
 import json
 import random
@@ -55,10 +55,12 @@ def doc(r):
 
 if __name__ == '__main__':
     n = int(sys.argv[1]) if len(sys.argv) > 1 else 400
-    r = random.Random(20261002)
+    seed = int(sys.argv[2]) if len(sys.argv) > 2 else 20261002
+    prefix = sys.argv[3] if len(sys.argv) > 3 else "fuzz"
+    r = random.Random(seed)
     out = []
     for i in range(n):
-        e = {'name': 'fuzz-%04d' % i, 'input': doc(r)}
+        e = {'name': '%s-%04d' % (prefix, i), 'input': doc(r)}
         if i % 10 == 9:
             e['hardbreaks'] = False
         out.append(e)

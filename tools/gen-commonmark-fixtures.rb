@@ -8,14 +8,16 @@
 #   SECRET_KEY_BASE=x RAILS_ENV=production bin/rails runner \
 #     /path/to/buropher/tools/gen-commonmark-fixtures.rb \
 #     $T/fixtures.json $T/corpus.txt $T/corpus_edge.txt $T/corpus_more.txt \
-#     $T/corpus_spec.json $T/corpus_comrak.json $T/corpus_highlight.json $T/corpus_fuzz.json
+#     $T/corpus_spec.json $T/corpus_comrak.json $T/corpus_highlight.json \
+#     $T/corpus_fuzz.json $T/corpus_fuzz2.json $T/corpus_fuzz3.json
 #
 #   （T=/path/to/buropher/internal/textformat/commonmark/testdata）
 #
 # corpus*.txt は手書きのコーパス、corpus_spec.json / corpus_comrak.json /
 # corpus_highlight.json は tools/textformat/mkcorpus.py で外部のテスト資産
-# （CommonMark 仕様の例、comrak のテスト、Rouge のデモ）から、corpus_fuzz.json は
-# tools/textformat/mkfuzz.py で構文要素をランダムに組み合わせて生成したもの。
+# （CommonMark 仕様の例、comrak のテスト、Rouge のデモ）から、corpus_fuzz*.json は
+# tools/textformat/mkfuzz.py で構文要素をランダムに組み合わせて生成したもの
+# （fuzz: 600 件 シード 20261002、fuzz2: 800 件 20261003、fuzz3: 1000 件 20261004）。
 #
 # コーパスは 2 形式に対応する:
 #   *.json : {"name", "mode", "input", ...} の配列
