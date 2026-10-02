@@ -694,19 +694,15 @@ func (a *App) UsersCreate(c *Req) {
 	m.AdminFlag = false
 	up := c.Params().Map("user")
 	m.assignSafeAttributes(up, c.User)
-	if m.AuthSourceID == nil {
-		var pw, conf string
-		if up != nil {
-			pw, conf = up.String("password"), up.String("password_confirmation")
-			// params[:user][:password_confirmation] が無ければ nil
-			if _, ok := up.Get("password_confirmation"); !ok {
-				m.password = &pw
-				m.passwordConfirmation = nil
-			} else {
-				m.password, m.passwordConfirmation = &pw, &conf
-			}
-		} else {
+	if m.AuthSourceID == nil && up != nil {
+		// @user.password = params[:user][:password]（キーが無ければ nil）
+		if v, ok := up.Get("password"); ok && v != nil {
+			pw := httpx.ValueString(v)
 			m.password = &pw
+		}
+		if v, ok := up.Get("password_confirmation"); ok && v != nil {
+			conf := httpx.ValueString(v)
+			m.passwordConfirmation = &conf
 		}
 	}
 	m.assignPref(c.Params().Map("pref"))
@@ -726,7 +722,12 @@ func (a *App) UsersCreate(c *Req) {
 				a.serverError(c, err)
 				return
 			}
-			a.renderUserShowAPI(c, u, nil, nil, http.StatusCreated)
+			cvs, err := a.loadPrincipalCustomValues(c, "user", []*domain.User{u})
+			if err != nil {
+				a.serverError(c, err)
+				return
+			}
+			a.renderUserShowAPI(c, u, nil, cvs[u.ID], http.StatusCreated)
 			return
 		}
 		link := rails.LinkTo(m.Login, "/users/"+itoa(m.ID), nil)

@@ -14,6 +14,9 @@ normalize:
     - "#footer"
   # API キーは参照側では既存のトークン、候補側では生成値になる
   mask_keys: [api_key]
+  # 候補の時計は固定時刻から進む（参照は travel_to で止まっている）ため、同じ分の秒を揃える
+  regex:
+    - {pattern: "2026-01-15T12:0\\d:\\d\\dZ", replace: "2026-01-15T12:00:00Z"}
 
 requests:
   # ---- 一覧
@@ -172,7 +175,7 @@ requests:
     path: /users/2?user[group_ids][]=10&user[group_ids][]=
     method: PUT
     user: admin
-    form: {}
+    form: {"commit": "Save"}
     expect_status: 302
   - id: m_users_edit_groups
     path: /users/2/edit?tab=groups
@@ -190,13 +193,13 @@ requests:
     path: /users/bulk_unlock?ids[]=3
     method: POST
     user: admin
-    form: {}
+    form: {"commit": "Save"}
     expect_status: 302
   - id: m_users_bulk_lock
     path: /users/bulk_lock?ids[]=7&ids[]=8
     method: POST
     user: admin
-    form: {}
+    form: {"commit": "Save"}
     expect_status: 302
   - id: m_users_destroy_confirm
     path: /users/7
@@ -206,7 +209,7 @@ requests:
     path: /users/bulk_destroy?ids[]=7&ids[]=8
     method: DELETE
     user: admin
-    form: {}
+    form: {"commit": "Save"}
   - id: m_users_destroy
     path: /users/7
     method: DELETE
@@ -221,7 +224,7 @@ requests:
     path: /users/3/memberships?membership[project_ids][]=1&membership[project_ids][]=2&membership[role_ids][]=3
     method: POST
     user: admin
-    form: {}
+    form: {"commit": "Save"}
     expect_status: 302
   - id: m_membership_edit_tab
     path: /users/3/edit?tab=memberships
@@ -230,7 +233,7 @@ requests:
     path: /users/2/memberships/1?membership[role_ids][]=1&membership[role_ids][]=2
     method: PUT
     user: admin
-    form: {}
+    form: {"commit": "Save"}
     expect_status: 302
   - id: m_membership_destroy
     path: /users/2/memberships/3
@@ -274,7 +277,7 @@ requests:
     path: /groups/11/users?user_ids[]=2&user_ids[]=3
     method: POST
     user: admin
-    form: {}
+    form: {"commit": "Save"}
     expect_status: 302
   - id: m_groups_users_tab
     path: /groups/11/edit?tab=users
