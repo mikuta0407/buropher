@@ -1,0 +1,443 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Summary - Trackers - Redmine</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Redmine" />
+<meta name="keywords" content="issue,bug,tracker" />
+<meta name="csrf-param" content="authenticity_token" />
+<meta name="csrf-token" content="R7pthnLnv2jy-Bgu82Fu9FEuFcmMSkz-ippotPbSfkll8WEius7DdW85KtrzlLoSvH1yW7yhdrZNTWUsSebO9w" />
+<link rel="shortcut icon" type="image/x-icon" href="/assets/favicon-0e291875.ico" />
+<link rel="stylesheet" href="/assets/jquery/jquery-ui-1.13.2-70e53573.css" media="all" />
+<link rel="stylesheet" href="/assets/tribute-5.1.3-c23a7bf2.css" media="all" />
+<link rel="stylesheet" href="/assets/application-6dc0ec44.css" media="all" />
+<link rel="stylesheet" href="/assets/responsive-194751d3.css" media="all" />
+
+<script type="importmap" data-turbo-track="reload">{
+  "imports": {
+    "@rails/request.js": "/assets/requestjs-64720317.js",
+    "application": "/assets/application-20c5ac24.js",
+    "@hotwired/stimulus": "/assets/stimulus.min-7ea3d58b.js",
+    "@hotwired/stimulus-loading": "/assets/stimulus-loading-25917588.js",
+    "turndown": "/assets/turndown-93630580.js",
+    "controllers/api_key_copy_controller": "/assets/controllers/api_key_copy_controller-75f835b3.js",
+    "controllers/application": "/assets/controllers/application-fab29967.js",
+    "controllers": "/assets/controllers/index-dfefe98d.js",
+    "controllers/list_autofill_controller": "/assets/controllers/list_autofill_controller-5f013171.js",
+    "controllers/quote_reply_controller": "/assets/controllers/quote_reply_controller-3e6a21f7.js",
+    "controllers/sticky_issue_header_controller": "/assets/controllers/sticky_issue_header_controller-18502bbe.js"
+  }
+}</script>
+<link rel="modulepreload" href="/assets/requestjs-64720317.js">
+<link rel="modulepreload" href="/assets/application-20c5ac24.js">
+<link rel="modulepreload" href="/assets/stimulus.min-7ea3d58b.js">
+<link rel="modulepreload" href="/assets/stimulus-loading-25917588.js">
+<link rel="modulepreload" href="/assets/turndown-93630580.js">
+<link rel="modulepreload" href="/assets/controllers/api_key_copy_controller-75f835b3.js">
+<link rel="modulepreload" href="/assets/controllers/application-fab29967.js">
+<link rel="modulepreload" href="/assets/controllers/index-dfefe98d.js">
+<link rel="modulepreload" href="/assets/controllers/list_autofill_controller-5f013171.js">
+<link rel="modulepreload" href="/assets/controllers/quote_reply_controller-3e6a21f7.js">
+<link rel="modulepreload" href="/assets/controllers/sticky_issue_header_controller-18502bbe.js">
+<script type="module">import "application"</script>
+<script src="/assets/jquery-3.7.1-ui-1.13.3-3ca148b8.js"></script>
+<script src="/assets/rails-ujs-3de06f48.js"></script>
+<script src="/assets/tribute-5.1.3.min-6c16c47a.js"></script><script src="/assets/application-legacy-54b0807d.js"></script>
+<script src="/assets/responsive-aa0cdb6f.js"></script>
+<script>
+//<![CDATA[
+$(window).on('load', function(){ warnLeavingUnsaved('The current page contains unsaved text that will be lost if you leave this page.'); });
+//]]>
+</script>
+
+<script>
+//<![CDATA[
+rm = window.rm || {};rm.I18n = rm.I18n || {};rm.I18n = Object.freeze({buttonCopy: 'Copy'});
+//]]>
+</script>
+<script>
+//<![CDATA[
+rm = window.rm || {};rm.AutoComplete = rm.AutoComplete || {};rm.AutoComplete.dataSources = JSON.parse('{"issues":"/issues/auto_complete?q=","wiki_pages":"/wiki_pages/auto_complete?q="}');
+//]]>
+</script>
+
+<!-- page specific tags -->
+</head>
+<body class="controller-trackers action-fields avatars-off" data-text-formatting="common_mark">
+
+<div id="wrapper">
+
+<div class="flyout-menu js-flyout-menu">
+
+        <div class="flyout-menu__search">
+            <form action="/search" accept-charset="UTF-8" name="form-e351900c" method="get">
+            
+            <label class="search-magnifier search-magnifier--flyout" for="flyout-search"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--search"></use></svg><span class="icon-label hidden">Search</span></label>
+            <input type="text" name="q" id="flyout-search" class="small js-search-input" placeholder="Search" />
+</form>        </div>
+
+        <div class="flyout-menu__avatar">
+          <a href="/users/1"><span role="img" class="avatar-color-1 s40 avatar">RA</span></a>
+          <a class="user active" href="/users/1">admin</a>
+        </div>
+
+
+    <h3>General</h3>
+    <span class="js-general-menu"></span>
+
+    <span class="js-sidebar flyout-menu__sidebar"></span>
+
+    <h3>Profile</h3>
+    <span class="js-profile-menu"></span>
+
+</div>
+
+
+<div id="top-menu">
+    <div id="account">
+        <ul><li><a class="my-account" href="/my/account">My account</a></li><li><a class="logout" rel="nofollow" data-method="post" href="/logout">Sign out</a></li></ul>    </div>
+    <div id="loggedas">Logged in as <a class="user active" href="/users/1">admin</a></div>
+    <ul><li><a class="home" href="/">Home</a></li><li><a class="my-page" href="/my/page">My page</a></li><li><a class="projects" href="/projects">Projects</a></li><li><a class="administration" href="/admin">Administration</a></li><li><a target="_blank" rel="noopener" class="help" href="https://www.redmine.org/guide">Help</a></li></ul></div>
+
+<div id="header">
+
+    <a href="#" class="mobile-toggle-button js-flyout-menu-toggle-button"></a>
+
+    <div id="quick-search">
+        <form action="/search" accept-charset="UTF-8" name="form-0040603c" method="get">
+        <input type="hidden" name="scope" autocomplete="off" />
+        
+        <label for='q'>
+          <a accesskey="4" href="/search">Search</a>:
+        </label>
+        <input type="text" name="q" id="q" size="20" class="small" accesskey="f" data-auto-complete="true" />
+</form>        <div id="project-jump" class="drdn"><span class="drdn-trigger">Jump to a project...</span><div class="drdn-content"><div class="quick-search"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--search"></use></svg><input type="text" name="q" id="projects-quick-search" value="" class="autocomplete" data-automcomplete-url="/projects/autocomplete.js?jump=trackers" autocomplete="off" /></div><div class="drdn-items projects selection"><strong>Bookmarks</strong><a title="eCookbook" href="/projects/ecookbook?jump=trackers"><span style="padding-inline-start:0px;">eCookbook</span></a><a title="Private child of eCookbook" href="/projects/private-child?jump=trackers"><span style="padding-inline-start:16px;">Private child of eCookbook</span></a><strong>All Projects</strong><a title="Private child of eCookbook" href="/projects/private-child?jump=trackers"><span style="padding-inline-start:0px;">Private child of eCookbook</span></a></div><div class="drdn-items all-projects selection"><a href="/projects?jump=trackers">All Projects</a></div></div></div>
+    </div>
+
+    <h1>Redmine</h1>
+
+</div>
+
+<div id="main" class="collapsiblesidebar">
+  <script>
+//<![CDATA[
+$('#main.collapsiblesidebar').collapsibleSidebar();
+//]]>
+</script>
+    <div id="sidebar">
+          <div id="sidebar-switch-panel" style="visibility: hidden;">
+            <a id="sidebar-switch-button" class="" href="#">
+              <svg class="s20 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--chevrons-right"></use></svg></a>
+          </div>
+          <script>
+//<![CDATA[
+$('#sidebar-switch-panel').css('visibility', 'visible');
+//]]>
+</script>
+        <div id="sidebar-wrapper">
+              <h3>Administration</h3>
+    <div id="admin-menu">
+  <ul><li><a class="icon icon-projects projects" href="/admin/projects"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--projects"></use></svg><span class="icon-label">Projects</span></a></li><li><a class="icon icon-user users" href="/users"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--user"></use></svg><span class="icon-label">Users</span></a></li><li><a class="icon icon-group groups" href="/groups"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--group"></use></svg><span class="icon-label">Groups</span></a></li><li><a class="icon icon-roles roles" href="/roles"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--roles"></use></svg><span class="icon-label">Roles and permissions</span></a></li><li><a class="icon icon-issue trackers selected" href="/trackers"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--issue"></use></svg><span class="icon-label">Trackers</span></a></li><li><a class="icon icon-issue-edit issue-statuses" href="/issue_statuses"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--issue-edit"></use></svg><span class="icon-label">Issue statuses</span></a></li><li><a class="icon icon-workflows workflows" href="/workflows/edit"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--workflows"></use></svg><span class="icon-label">Workflow</span></a></li><li><a class="icon icon-custom-fields custom-fields" href="/custom_fields"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--custom-fields"></use></svg><span class="icon-label">Custom fields</span></a></li><li><a class="icon icon-list enumerations" href="/enumerations"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--list"></use></svg><span class="icon-label">Enumerations</span></a></li><li><a class="icon icon-settings settings" href="/settings"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--settings"></use></svg><span class="icon-label">Settings</span></a></li><li><a class="icon icon-server-authentication ldap-authentication" href="/auth_sources"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--server-authentication"></use></svg><span class="icon-label">LDAP authentication</span></a></li><li><a class="icon icon-applications applications" href="/oauth/applications"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--apps"></use></svg><span class="icon-label">Applications</span></a></li><li><a class="icon icon-plugins plugins" href="/admin/plugins"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--plugins"></use></svg><span class="icon-label">Plugins</span></a></li><li><a class="icon icon-help info" href="/admin/info"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--help"></use></svg><span class="icon-label">Information</span></a></li></ul>
+</div>
+
+
+          
+        </div>
+    </div>
+
+    <div id="content">
+        
+        <h2><a href="/trackers">Trackers</a> &#187; Summary</h2>
+
+  <form action="/trackers/fields" accept-charset="UTF-8" name="form-8a0b9bb1" method="post"><input type="hidden" name="authenticity_token" value="VgYPllgfC_LO5zs9WTST9CNoS-DE1hWfQOXUuGoerGV0TQMykDZ371MmCclZwUcSzjsscvQ9L9eHMtkg1Soc2w" autocomplete="off" />
+    <div class="autoscroll">
+    <table class="list tracker-summary">
+    <thead>
+      <tr>
+        <th></th>
+        <th>
+          <a href="#" onclick="toggleCheckboxesBySelector(&#39;input.tracker-1&#39;); return false;" title="Check all / Uncheck all" class="icon icon-checked"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--checked"></use></svg><span class="icon-label"></span></a>
+          Bug
+        </th>
+        <th>
+          <a href="#" onclick="toggleCheckboxesBySelector(&#39;input.tracker-2&#39;); return false;" title="Check all / Uncheck all" class="icon icon-checked"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--checked"></use></svg><span class="icon-label"></span></a>
+          Feature request
+        </th>
+        <th>
+          <a href="#" onclick="toggleCheckboxesBySelector(&#39;input.tracker-3&#39;); return false;" title="Check all / Uncheck all" class="icon icon-checked"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--checked"></use></svg><span class="icon-label"></span></a>
+          Support request
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="group open">
+        <td colspan="4">
+          <span class="expander icon icon-expanded" onclick="toggleRowGroup(this);"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--angle-down"></use></svg></span>
+          Standard fields
+        </td>
+      </tr>
+      <tr>
+        <td class="name">
+          <a href="#" onclick="toggleCheckboxesBySelector(&#39;input.core-field-assigned_to_id&#39;); return false;" title="Check all / Uncheck all" class="icon icon-checked"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--checked"></use></svg><span class="icon-label"></span></a>
+          Assignee
+        </td>
+        <td title="Bug: Assignee">
+          <input type="checkbox" name="trackers[1][core_fields][]" value="assigned_to_id" class="tracker-1 core-field-assigned_to_id" checked="checked" />
+        </td>
+        <td title="Feature request: Assignee">
+          <input type="checkbox" name="trackers[2][core_fields][]" value="assigned_to_id" class="tracker-2 core-field-assigned_to_id" checked="checked" />
+        </td>
+        <td title="Support request: Assignee">
+          <input type="checkbox" name="trackers[3][core_fields][]" value="assigned_to_id" class="tracker-3 core-field-assigned_to_id" checked="checked" />
+        </td>
+      </tr>
+      <tr>
+        <td class="name">
+          <a href="#" onclick="toggleCheckboxesBySelector(&#39;input.core-field-category_id&#39;); return false;" title="Check all / Uncheck all" class="icon icon-checked"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--checked"></use></svg><span class="icon-label"></span></a>
+          Category
+        </td>
+        <td title="Bug: Category">
+          <input type="checkbox" name="trackers[1][core_fields][]" value="category_id" class="tracker-1 core-field-category_id" checked="checked" />
+        </td>
+        <td title="Feature request: Category">
+          <input type="checkbox" name="trackers[2][core_fields][]" value="category_id" class="tracker-2 core-field-category_id" checked="checked" />
+        </td>
+        <td title="Support request: Category">
+          <input type="checkbox" name="trackers[3][core_fields][]" value="category_id" class="tracker-3 core-field-category_id" checked="checked" />
+        </td>
+      </tr>
+      <tr>
+        <td class="name">
+          <a href="#" onclick="toggleCheckboxesBySelector(&#39;input.core-field-fixed_version_id&#39;); return false;" title="Check all / Uncheck all" class="icon icon-checked"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--checked"></use></svg><span class="icon-label"></span></a>
+          Target version
+        </td>
+        <td title="Bug: Target version">
+          <input type="checkbox" name="trackers[1][core_fields][]" value="fixed_version_id" class="tracker-1 core-field-fixed_version_id" checked="checked" />
+        </td>
+        <td title="Feature request: Target version">
+          <input type="checkbox" name="trackers[2][core_fields][]" value="fixed_version_id" class="tracker-2 core-field-fixed_version_id" checked="checked" />
+        </td>
+        <td title="Support request: Target version">
+          <input type="checkbox" name="trackers[3][core_fields][]" value="fixed_version_id" class="tracker-3 core-field-fixed_version_id" checked="checked" />
+        </td>
+      </tr>
+      <tr>
+        <td class="name">
+          <a href="#" onclick="toggleCheckboxesBySelector(&#39;input.core-field-parent_issue_id&#39;); return false;" title="Check all / Uncheck all" class="icon icon-checked"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--checked"></use></svg><span class="icon-label"></span></a>
+          Parent task
+        </td>
+        <td title="Bug: Parent task">
+          <input type="checkbox" name="trackers[1][core_fields][]" value="parent_issue_id" class="tracker-1 core-field-parent_issue_id" checked="checked" />
+        </td>
+        <td title="Feature request: Parent task">
+          <input type="checkbox" name="trackers[2][core_fields][]" value="parent_issue_id" class="tracker-2 core-field-parent_issue_id" checked="checked" />
+        </td>
+        <td title="Support request: Parent task">
+          <input type="checkbox" name="trackers[3][core_fields][]" value="parent_issue_id" class="tracker-3 core-field-parent_issue_id" checked="checked" />
+        </td>
+      </tr>
+      <tr>
+        <td class="name">
+          <a href="#" onclick="toggleCheckboxesBySelector(&#39;input.core-field-start_date&#39;); return false;" title="Check all / Uncheck all" class="icon icon-checked"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--checked"></use></svg><span class="icon-label"></span></a>
+          Start date
+        </td>
+        <td title="Bug: Start date">
+          <input type="checkbox" name="trackers[1][core_fields][]" value="start_date" class="tracker-1 core-field-start_date" checked="checked" />
+        </td>
+        <td title="Feature request: Start date">
+          <input type="checkbox" name="trackers[2][core_fields][]" value="start_date" class="tracker-2 core-field-start_date" checked="checked" />
+        </td>
+        <td title="Support request: Start date">
+          <input type="checkbox" name="trackers[3][core_fields][]" value="start_date" class="tracker-3 core-field-start_date" checked="checked" />
+        </td>
+      </tr>
+      <tr>
+        <td class="name">
+          <a href="#" onclick="toggleCheckboxesBySelector(&#39;input.core-field-due_date&#39;); return false;" title="Check all / Uncheck all" class="icon icon-checked"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--checked"></use></svg><span class="icon-label"></span></a>
+          Due date
+        </td>
+        <td title="Bug: Due date">
+          <input type="checkbox" name="trackers[1][core_fields][]" value="due_date" class="tracker-1 core-field-due_date" checked="checked" />
+        </td>
+        <td title="Feature request: Due date">
+          <input type="checkbox" name="trackers[2][core_fields][]" value="due_date" class="tracker-2 core-field-due_date" checked="checked" />
+        </td>
+        <td title="Support request: Due date">
+          <input type="checkbox" name="trackers[3][core_fields][]" value="due_date" class="tracker-3 core-field-due_date" checked="checked" />
+        </td>
+      </tr>
+      <tr>
+        <td class="name">
+          <a href="#" onclick="toggleCheckboxesBySelector(&#39;input.core-field-estimated_hours&#39;); return false;" title="Check all / Uncheck all" class="icon icon-checked"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--checked"></use></svg><span class="icon-label"></span></a>
+          Estimated time
+        </td>
+        <td title="Bug: Estimated time">
+          <input type="checkbox" name="trackers[1][core_fields][]" value="estimated_hours" class="tracker-1 core-field-estimated_hours" checked="checked" />
+        </td>
+        <td title="Feature request: Estimated time">
+          <input type="checkbox" name="trackers[2][core_fields][]" value="estimated_hours" class="tracker-2 core-field-estimated_hours" checked="checked" />
+        </td>
+        <td title="Support request: Estimated time">
+          <input type="checkbox" name="trackers[3][core_fields][]" value="estimated_hours" class="tracker-3 core-field-estimated_hours" checked="checked" />
+        </td>
+      </tr>
+      <tr>
+        <td class="name">
+          <a href="#" onclick="toggleCheckboxesBySelector(&#39;input.core-field-done_ratio&#39;); return false;" title="Check all / Uncheck all" class="icon icon-checked"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--checked"></use></svg><span class="icon-label"></span></a>
+          % Done
+        </td>
+        <td title="Bug: % Done">
+          <input type="checkbox" name="trackers[1][core_fields][]" value="done_ratio" class="tracker-1 core-field-done_ratio" checked="checked" />
+        </td>
+        <td title="Feature request: % Done">
+          <input type="checkbox" name="trackers[2][core_fields][]" value="done_ratio" class="tracker-2 core-field-done_ratio" checked="checked" />
+        </td>
+        <td title="Support request: % Done">
+          <input type="checkbox" name="trackers[3][core_fields][]" value="done_ratio" class="tracker-3 core-field-done_ratio" checked="checked" />
+        </td>
+      </tr>
+      <tr>
+        <td class="name">
+          <a href="#" onclick="toggleCheckboxesBySelector(&#39;input.core-field-description&#39;); return false;" title="Check all / Uncheck all" class="icon icon-checked"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--checked"></use></svg><span class="icon-label"></span></a>
+          Description
+        </td>
+        <td title="Bug: Description">
+          <input type="checkbox" name="trackers[1][core_fields][]" value="description" class="tracker-1 core-field-description" checked="checked" />
+        </td>
+        <td title="Feature request: Description">
+          <input type="checkbox" name="trackers[2][core_fields][]" value="description" class="tracker-2 core-field-description" checked="checked" />
+        </td>
+        <td title="Support request: Description">
+          <input type="checkbox" name="trackers[3][core_fields][]" value="description" class="tracker-3 core-field-description" checked="checked" />
+        </td>
+      </tr>
+      <tr>
+        <td class="name">
+          <a href="#" onclick="toggleCheckboxesBySelector(&#39;input.core-field-priority_id&#39;); return false;" title="Check all / Uncheck all" class="icon icon-checked"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--checked"></use></svg><span class="icon-label"></span></a>
+          Priority
+        </td>
+        <td title="Bug: Priority">
+          <input type="checkbox" name="trackers[1][core_fields][]" value="priority_id" class="tracker-1 core-field-priority_id" checked="checked" />
+        </td>
+        <td title="Feature request: Priority">
+          <input type="checkbox" name="trackers[2][core_fields][]" value="priority_id" class="tracker-2 core-field-priority_id" checked="checked" />
+        </td>
+        <td title="Support request: Priority">
+          <input type="checkbox" name="trackers[3][core_fields][]" value="priority_id" class="tracker-3 core-field-priority_id" checked="checked" />
+        </td>
+      </tr>
+        <tr class="group open">
+          <td colspan="4">
+            <span class="expander icon icon-expanded" onclick="toggleRowGroup(this);"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--angle-down"></use></svg></span>
+            Custom fields
+          </td>
+        </tr>
+        <tr>
+          <td class="name">
+            <a href="#" onclick="toggleCheckboxesBySelector(&#39;input.custom-field-2&#39;); return false;" title="Check all / Uncheck all" class="icon icon-checked"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--checked"></use></svg><span class="icon-label"></span></a>
+            Searchable field
+          </td>
+          <td title="Bug: Searchable field">
+            <input type="checkbox" name="trackers[1][custom_field_ids][]" value="2" class="tracker-1 custom-field-2" checked="checked" />
+          </td>
+          <td title="Feature request: Searchable field">
+            <input type="checkbox" name="trackers[2][custom_field_ids][]" value="2" class="tracker-2 custom-field-2" />
+          </td>
+          <td title="Support request: Searchable field">
+            <input type="checkbox" name="trackers[3][custom_field_ids][]" value="2" class="tracker-3 custom-field-2" checked="checked" />
+          </td>
+        </tr>
+        <tr>
+          <td class="name">
+            <a href="#" onclick="toggleCheckboxesBySelector(&#39;input.custom-field-1&#39;); return false;" title="Check all / Uncheck all" class="icon icon-checked"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--checked"></use></svg><span class="icon-label"></span></a>
+            Database
+          </td>
+          <td title="Bug: Database">
+            <input type="checkbox" name="trackers[1][custom_field_ids][]" value="1" class="tracker-1 custom-field-1" checked="checked" />
+          </td>
+          <td title="Feature request: Database">
+            <input type="checkbox" name="trackers[2][custom_field_ids][]" value="1" class="tracker-2 custom-field-1" />
+          </td>
+          <td title="Support request: Database">
+            <input type="checkbox" name="trackers[3][custom_field_ids][]" value="1" class="tracker-3 custom-field-1" />
+          </td>
+        </tr>
+        <tr>
+          <td class="name">
+            <a href="#" onclick="toggleCheckboxesBySelector(&#39;input.custom-field-6&#39;); return false;" title="Check all / Uncheck all" class="icon icon-checked"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--checked"></use></svg><span class="icon-label"></span></a>
+            Float field
+          </td>
+          <td title="Bug: Float field">
+            <input type="checkbox" name="trackers[1][custom_field_ids][]" value="6" class="tracker-1 custom-field-6" checked="checked" />
+          </td>
+          <td title="Feature request: Float field">
+            <input type="checkbox" name="trackers[2][custom_field_ids][]" value="6" class="tracker-2 custom-field-6" checked="checked" />
+          </td>
+          <td title="Support request: Float field">
+            <input type="checkbox" name="trackers[3][custom_field_ids][]" value="6" class="tracker-3 custom-field-6" checked="checked" />
+          </td>
+        </tr>
+        <tr>
+          <td class="name">
+            <a href="#" onclick="toggleCheckboxesBySelector(&#39;input.custom-field-8&#39;); return false;" title="Check all / Uncheck all" class="icon icon-checked"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--checked"></use></svg><span class="icon-label"></span></a>
+            Custom date
+          </td>
+          <td title="Bug: Custom date">
+            <input type="checkbox" name="trackers[1][custom_field_ids][]" value="8" class="tracker-1 custom-field-8" checked="checked" />
+          </td>
+          <td title="Feature request: Custom date">
+            <input type="checkbox" name="trackers[2][custom_field_ids][]" value="8" class="tracker-2 custom-field-8" checked="checked" />
+          </td>
+          <td title="Support request: Custom date">
+            <input type="checkbox" name="trackers[3][custom_field_ids][]" value="8" class="tracker-3 custom-field-8" checked="checked" />
+          </td>
+        </tr>
+        <tr>
+          <td class="name">
+            <a href="#" onclick="toggleCheckboxesBySelector(&#39;input.custom-field-9&#39;); return false;" title="Check all / Uncheck all" class="icon icon-checked"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--checked"></use></svg><span class="icon-label"></span></a>
+            Project 1 cf
+          </td>
+          <td title="Bug: Project 1 cf">
+            <input type="checkbox" name="trackers[1][custom_field_ids][]" value="9" class="tracker-1 custom-field-9" checked="checked" />
+          </td>
+          <td title="Feature request: Project 1 cf">
+            <input type="checkbox" name="trackers[2][custom_field_ids][]" value="9" class="tracker-2 custom-field-9" />
+          </td>
+          <td title="Support request: Project 1 cf">
+            <input type="checkbox" name="trackers[3][custom_field_ids][]" value="9" class="tracker-3 custom-field-9" />
+          </td>
+        </tr>
+    </tbody>
+    </table>
+    </div>
+    <p><input type="submit" name="commit" value="Save" data-disable-with="Save" /></p>
+      <input type="hidden" name="trackers[1][core_fields][]" id="trackers_1_core_fields_" value="" autocomplete="off" />
+      <input type="hidden" name="trackers[1][custom_field_ids][]" id="trackers_1_custom_field_ids_" value="" autocomplete="off" />
+      <input type="hidden" name="trackers[2][core_fields][]" id="trackers_2_core_fields_" value="" autocomplete="off" />
+      <input type="hidden" name="trackers[2][custom_field_ids][]" id="trackers_2_custom_field_ids_" value="" autocomplete="off" />
+      <input type="hidden" name="trackers[3][core_fields][]" id="trackers_3_core_fields_" value="" autocomplete="off" />
+      <input type="hidden" name="trackers[3][custom_field_ids][]" id="trackers_3_custom_field_ids_" value="" autocomplete="off" />
+</form>
+        
+        <div style="clear:both;"></div>
+    </div>
+</div>
+<div id="footer">
+    Powered by <a target="_blank" rel="noopener" href="https://www.redmine.org/">Redmine</a> &copy; 2006-2026 Jean-Philippe Lang
+</div>
+
+<div id="ajax-indicator" style="display:none;">
+  <span class="icon">
+    <svg class="s18 icon-svg svg-loader" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--loader"></use></svg><span class="icon-label">Loading...</span>
+  </span>
+</div>
+<div id="ajax-modal" style="display:none;"></div>
+<div id="icon-copy-source" style="display: none;"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--"></use></svg></div>
+
+</div>
+
+</body>
+</html>
+

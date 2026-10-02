@@ -154,8 +154,10 @@ func (t *Target) Do(c scenario.Case) (*Response, error) {
 	switch {
 	case len(c.Form) > 0:
 		form := url.Values{}
-		for k, v := range c.Form {
-			form.Set(k, v)
+		for k, vs := range c.Form {
+			for _, v := range vs {
+				form.Add(k, v)
+			}
 		}
 		if c.Auth == "session" && form.Get("authenticity_token") == "" {
 			tok, err := t.fetchToken(cl, "/")

@@ -136,17 +136,17 @@ func New(cfg *config.Config, d *db.DB, opts ...Options) (*Server, error) {
 	s := &Server{cfg: cfg, assets: ap, app: app, sessions: sessions}
 
 	r := chi.NewRouter()
-	r.Use(recoverer(o.Logger), httpx.RequestIDMiddleware, httpx.RemoteIPMiddleware(nil), defaultHeaders)
+	// Params と MethodOverride はルーティングより前に適用する（chi は Group の middleware より先に
+	// メソッドとパスでルートを決めるため、Group 内で _method を反映してもルートが変わらない）。
+	r.Use(recoverer(o.Logger), httpx.RequestIDMiddleware, httpx.RemoteIPMiddleware(nil), defaultHeaders,
+		httpx.ParamsMiddleware(&httpx.ParseOptions{TempDir: tempDir}, nil),
+		httpx.MethodOverride)
 	r.NotFound(notFound)
 	r.MethodNotAllowed(notFound)
 	r.Get("/healthz", healthz(d))
 	r.Handle(assets.DefaultPrefix+"/*", ap.Handler())
 	r.Group(func(r chi.Router) {
-		r.Use(
-			httpx.ParamsMiddleware(&httpx.ParseOptions{TempDir: tempDir}, nil),
-			httpx.MethodOverride,
-			sessions.Middleware,
-		)
+		r.Use(sessions.Middleware)
 		app.Routes(r)
 		if o.ExtraRoutes != nil {
 			o.ExtraRoutes(app, r)

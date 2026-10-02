@@ -6,12 +6,12 @@ import (
 	"fmt"
 )
 
-// JSON は JSON 列 (SQLite: TEXT + json_valid, PG: JSONB) を Go の値として読み書きする型。
+// JSON は JSON 列 (SQLite: TEXT + json_valid, PG: JSON。キー順保持のため JSONB は使わない) を Go の値として読み書きする型。
 //
 //	var f db.JSON[map[string]Filter]
 //	q.Get(ctx, &f, "SELECT filters FROM queries WHERE id = ?", id)
 //
-// Value は JSON テキスト (string) を返す。pgx は string を JSONB にそのまま渡す。
+// Value は JSON テキスト (string) を返す。pgx は string を JSON にそのまま渡す。
 type JSON[T any] struct {
 	V T
 }

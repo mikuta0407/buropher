@@ -1,0 +1,80 @@
+status: 200
+content-type: text/csv
+
+﻿Module,Permissions,Reporter,Anonymous
+"",Create project,No,""
+"",Edit project,No,""
+"",Close / reopen the project,No,""
+"",Delete the project,No,""
+"",Set project public or private,No,""
+"",Select project modules,No,""
+"",Manage members,No,""
+"",Manage versions,No,""
+"",Create subprojects,No,""
+"",Manage public queries,No,""
+"",Save queries,No,""
+Forums,View messages,No,No
+Forums,Post messages,No,No
+Forums,Edit messages,No,""
+Forums,Edit own messages,No,""
+Forums,Delete messages,No,""
+Forums,Delete own messages,No,""
+Forums,View message watchers list,No,No
+Forums,Add message watchers,No,No
+Forums,Delete message watchers,No,No
+Forums,Manage forums,No,""
+Calendar,View calendar,No,No
+Documents,View documents,No,No
+Documents,Add documents,No,""
+Documents,Edit documents,No,""
+Documents,Delete documents,No,""
+Files,View files,No,No
+Files,Manage files,No,""
+Gantt,View gantt chart,No,No
+Issue tracking,View Issues,Yes,Yes
+Issue tracking,Add issues,Yes,No
+Issue tracking,Edit issues,No,No
+Issue tracking,Edit own issues,No,No
+Issue tracking,Copy issues,No,No
+Issue tracking,Manage issue relations,No,No
+Issue tracking,Manage subtasks,No,No
+Issue tracking,Set issues public or private,No,No
+Issue tracking,Set own issues public or private,No,""
+Issue tracking,Add notes,No,No
+Issue tracking,Edit notes,No,""
+Issue tracking,Edit own notes,No,""
+Issue tracking,View private notes,No,""
+Issue tracking,Set notes as private,No,""
+Issue tracking,Delete issues,No,""
+Issue tracking,View watchers list,No,No
+Issue tracking,Add watchers,No,No
+Issue tracking,Delete watchers,No,No
+Issue tracking,Import issues,No,No
+Issue tracking,Manage issue categories,No,""
+News,View news,No,No
+News,Manage news,No,""
+News,Comment news,No,No
+Repository,View changesets,No,No
+Repository,Browse repository,No,No
+Repository,Commit access,No,No
+Repository,Manage related issues,No,No
+Repository,Manage repository,No,""
+Time tracking,View spent time,No,No
+Time tracking,Log spent time,No,""
+Time tracking,Edit time logs,No,""
+Time tracking,Edit own time logs,No,""
+Time tracking,Manage project activities,No,""
+Time tracking,Log spent time for other users,No,No
+Time tracking,Import time entries,No,No
+Wiki,View wiki,Yes,No
+Wiki,View wiki history,No,No
+Wiki,Export wiki pages,No,No
+Wiki,Edit wiki pages,No,No
+Wiki,Rename wiki pages,No,""
+Wiki,Delete wiki pages,No,""
+Wiki,Delete attachments,No,No
+Wiki,View wiki page watchers list,No,No
+Wiki,Add wiki page watchers,No,No
+Wiki,Delete wiki page watchers,No,No
+Wiki,Protect wiki pages,No,""
+Wiki,Manage wiki,No,""

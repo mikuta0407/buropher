@@ -1,0 +1,7 @@
+{{title (list (l .Enumeration.OptionName) "/enumerations") (l "label_enumeration_new")}}
+
+{{$f := labelled_form_for "" .Enumeration (hash "as" "enumeration" "url" "/enumerations" "html" (hash "multipart" true))}}{{$f.Open}}
+  {{$f.HiddenField "type"}}
+  {{partial "enumerations/form" (dict "f" $f)}}
+  {{submit_tag (l "button_create")}}
+{{end_form}}

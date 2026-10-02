@@ -111,7 +111,8 @@ func Render(name, src, dialect string) (string, error) {
 			if sqlite {
 				return fmt.Sprintf("%s TEXT CHECK (json_valid(%s))", col, col)
 			}
-			return col + " JSONB"
+			// JSONB はキー順を保持しない (保存クエリのフィルタ順など Redmine は順序を表示に使う) ため JSON 型にする
+			return col + " JSON"
 		},
 		"latefk": func(table, col, ref string) string {
 			if sqlite {

@@ -1,0 +1,20 @@
+status: 200
+content-type: application/json
+
+{
+  "role": {
+    "id": 6,
+    "name": "Tester",
+    "assignable": false,
+    "issues_visibility": "own",
+    "time_entries_visibility": "own",
+    "users_visibility": "all",
+    "permissions": [
+      "view_issues",
+      "add_issues",
+      "edit_issues",
+      "add_issue_notes",
+      "view_wiki_pages"
+    ]
+  }
+}

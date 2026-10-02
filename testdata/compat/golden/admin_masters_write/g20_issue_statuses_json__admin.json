@@ -1,0 +1,49 @@
+status: 200
+content-type: application/json
+
+{
+  "issue_statuses": [
+    {
+      "id": 1,
+      "name": "New",
+      "is_closed": false,
+      "description": "Description for New issue status"
+    },
+    {
+      "id": 7,
+      "name": "Tested",
+      "is_closed": true,
+      "description": "Under test"
+    },
+    {
+      "id": 2,
+      "name": "Assigned",
+      "is_closed": false,
+      "description": "Description for Assigned issue status"
+    },
+    {
+      "id": 3,
+      "name": "Resolved",
+      "is_closed": false,
+      "description": "Description for Resolved issue status"
+    },
+    {
+      "id": 4,
+      "name": "Feedback",
+      "is_closed": false,
+      "description": null
+    },
+    {
+      "id": 5,
+      "name": "Closed",
+      "is_closed": true,
+      "description": null
+    },
+    {
+      "id": 6,
+      "name": "Rejected",
+      "is_closed": true,
+      "description": null
+    }
+  ]
+}
