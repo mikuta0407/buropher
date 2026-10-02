@@ -1,0 +1,45 @@
+status: 200
+location: 
+
+<title>Redmine</title>
+----
+<!-- page specific tags -->
+</head>
+----
+<div id="main" class="nosidebar">
+  
+    <div id="sidebar">
+        <div id="sidebar-wrapper">
+          
+          
+        </div>
+    </div>
+
+    <div id="content">
+        <div class="flash error" id="flash_error"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--warning"></use></svg>You haven't activated your account yet. If you want to receive a new activation email, please <a href="/account/activation_email">click this link</a>.</div>
+        
+
+<div id="login-form">
+  <form onsubmit="return keepAnchorOnSignIn(this);" action="/login" accept-charset="UTF-8" name="form-RANDOM" method="post"><input type="hidden" name="authenticity_token" value="{{CSRF}}" autocomplete="off" />
+  
+  
+  <label for="username">Login</label>
+  <input type="text" name="username" id="username" tabindex="1" autocomplete="username" autofocus="autofocus" />
+  
+  <label for="password">
+    Password
+    <a class="lost_password" href="/account/lost_password">Lost password</a>
+  </label>
+  <input type="password" name="password" id="password" tabindex="2" autocomplete="current-password" />
+  
+  
+  <input type="submit" name="login" value="Login" tabindex="5" id="login-submit" />
+</form></div>
+
+
+
+        
+        <div style="clear:both;"></div>
+    </div>
+</div>
+<div id="footer">

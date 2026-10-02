@@ -43,6 +43,8 @@ type authEnv struct {
 	clients map[string]*http.Client
 	// recoveryToken は user_id の recovery トークンの値を返す。
 	recoveryToken func(userID int) string
+	// registerToken は login の register トークンの値を返す。
+	registerToken func(login string) string
 	out           map[string]string
 	order         []string
 }
@@ -114,6 +116,7 @@ func (e *authEnv) do(user, method, path string, form url.Values, golden string) 
 	b, _ := io.ReadAll(res.Body)
 	res.Body.Close()
 	loc := strings.Replace(res.Header.Get("Location"), e.base, "", 1)
+	loc = strings.ReplaceAll(loc, url.QueryEscape(e.base), "{{BASE}}")
 	if golden != "" {
 		s := asNormalize(string(b), e.base)
 		s = authQRRe.ReplaceAllString(s, "data:image/png;base64,QRCODE")
@@ -257,6 +260,139 @@ func TestAccountAuthPagesMatchRedmine(t *testing.T) {
 	e := &authEnv{t: t, base: ts.URL, clients: map[string]*http.Client{}, out: map[string]string{},
 		recoveryToken: func(uid int) string { return dbRecoveryToken(t, d, uid) }}
 	authFlow(e)
+	if dump := os.Getenv("BUROPHER_AUTH_DUMP"); dump != "" {
+		_ = os.MkdirAll(dump, 0o755)
+		for name, s := range e.out {
+			_ = os.WriteFile(filepath.Join(dump, name), []byte(s), 0o644)
+		}
+	}
+	for _, name := range e.order {
+		t.Run(name, func(t *testing.T) { myCompare(t, dir, name, e.out[name]) })
+	}
+}
+
+// authModesFlow は設定（自己登録の方式・パスワードの有効期限・2 要素認証の必須化）を変えながら流す操作列。
+func authModesFlow(e *authEnv) {
+	t := e.t
+	setting := func(kv ...string) {
+		form := url.Values{}
+		for i := 0; i+1 < len(kv); i += 2 {
+			form.Set("settings["+kv[i]+"]", kv[i+1])
+		}
+		if st, _, _ := e.do("admin", "POST", "/settings/edit?tab=authentication", form, ""); st != 302 {
+			t.Fatalf("settings update: %d", st)
+		}
+	}
+	// ---- メールによるアカウント有効化
+	setting("self_registration", "1")
+	e.clients["anon"] = newClient(t)
+	e.do("anon", "POST", "/account/register", url.Values{"user[login]": {"emailact"}, "user[password]": {"emailact1"}, "user[password_confirmation]": {"emailact1"},
+		"user[firstname]": {"Email"}, "user[lastname]": {"Act"}, "user[mail]": {"emailact@example.net"}, "user[language]": {"en"}}, "email_register.html")
+	e.do("anon", "GET", "/login", nil, "email_register_next.html")
+	e.do("anon", "POST", "/login", url.Values{"username": {"emailact"}, "password": {"emailact1"}}, "email_login_pending.html")
+	e.do("anon", "GET", "/login", nil, "email_login_pending_next.html")
+	e.do("anon", "GET", "/account/activation_email", nil, "email_activation_resend.html")
+	e.do("anon", "GET", "/login", nil, "email_activation_resend_next.html")
+	e.do("anon", "GET", "/account/activation_email", nil, "email_activation_resend_again.html")
+	tok := e.registerToken("emailact")
+	if tok == "" {
+		t.Fatal("register token not found")
+	}
+	e.do("anon", "GET", "/account/activate?token="+tok, nil, "email_activate.html")
+	e.do("anon", "GET", "/login", nil, "email_activate_next.html")
+	e.do("anon", "GET", "/account/activate?token="+tok, nil, "email_activate_again.html")
+	e.do("anon", "POST", "/login", url.Values{"username": {"emailact"}, "password": {"emailact1"}}, "email_login_ok.html")
+
+	// ---- 自動有効化
+	setting("self_registration", "3")
+	e.clients["anon2"] = newClient(t)
+	e.do("anon2", "POST", "/account/register", url.Values{"user[login]": {"autouser"}, "user[password]": {"autouser1"}, "user[password_confirmation]": {"autouser1"},
+		"user[firstname]": {"Auto"}, "user[lastname]": {"User"}, "user[mail]": {"autouser@example.net"}, "user[language]": {"en"}}, "auto_register.html")
+	e.do("anon2", "GET", "/my/page", nil, "auto_register_my_page.html")
+
+	// ---- 登録の無効化・パスワード再発行の無効化
+	setting("self_registration", "0", "lost_password", "0")
+	e.clients["anon3"] = newClient(t)
+	e.do("anon3", "GET", "/account/register", nil, "register_disabled.html")
+	e.do("anon3", "GET", "/account/lost_password", nil, "lost_password_disabled.html")
+	e.do("anon3", "GET", "/login", nil, "login_no_lost_password.html")
+	setting("lost_password", "1")
+
+	// ---- 次回ログイン時にパスワード変更（must_change_passwd）
+	if st, _, _ := e.do("admin", "POST", "/users/3", url.Values{"_method": {"patch"}, "user[must_change_passwd]": {"1"}}, ""); st != 302 {
+		t.Fatalf("users update: %d", st)
+	}
+	e.do("dlopper", "GET", "/my/page", nil, "must_change_my_page.html")
+	e.do("dlopper", "GET", "/projects", nil, "must_change_projects.html")
+	e.do("dlopper", "GET", "/my/password", nil, "must_change_password_form.html")
+	// 再発行でも同じパスワードは拒否する
+	e.clients["anon4"] = newClient(t)
+	e.do("anon4", "POST", "/account/lost_password", url.Values{"mail": {"dlopper@somenet.foo"}}, "")
+	rt := e.recoveryToken(3)
+	e.do("anon4", "GET", "/account/lost_password?token="+rt, nil, "")
+	e.do("anon4", "POST", "/account/lost_password", url.Values{"token": {rt}, "new_password": {"foo"}, "new_password_confirmation": {"foo"}}, "must_change_recovery_same.html")
+
+	// ---- パスワードの有効期限
+	setting("password_max_age", "7")
+	e.do("jsmith", "GET", "/my/page", nil, "expired_my_page.html")
+	e.do("jsmith", "GET", "/my/password", nil, "expired_password_form.html")
+	setting("password_max_age", "0")
+
+	// ---- 2 要素認証の必須化
+	setting("twofa", "2")
+	e.do("rhill", "GET", "/my/page", nil, "twofa_required_my_page.html")
+	e.do("rhill", "GET", "/my/twofa/totp/activate/confirm", nil, "twofa_required_confirm.html")
+	e.do("rhill", "GET", "/projects", nil, "twofa_required_projects.html")
+	e.do("rhill", "GET", "/my/twofa/select_scheme", nil, "twofa_required_select.html")
+	// 2 要素認証の無効化
+	setting("twofa", "0")
+	e.do("rhill", "GET", "/my/twofa/select_scheme", nil, "twofa_disabled_select.html")
+	e.clients["anon5"] = newClient(t)
+	e.do("anon5", "GET", "/account/twofa/confirm", nil, "twofa_disabled_confirm.html")
+}
+
+// TestAccountAuthModesMatchRedmine は authModesFlow の各応答が参照 Redmine と一致することを確認する
+// （ゴールデンの取得方法は TestAccountAuthPagesMatchRedmine と同じ。環境変数も共通）。
+func TestAccountAuthModesMatchRedmine(t *testing.T) {
+	dir := filepath.Join("testdata", "account_auth_modes")
+	if ref := os.Getenv("BUROPHER_AUTH_MODES_GOLDEN_REF"); ref != "" {
+		refDB, err := sql.Open("sqlite", "file:"+os.Getenv("BUROPHER_AUTH_GOLDEN_REF_DB")+"?mode=ro")
+		if err != nil {
+			t.Fatal(err)
+		}
+		defer refDB.Close()
+		e := &authEnv{t: t, base: ref, clients: map[string]*http.Client{}, out: map[string]string{},
+			recoveryToken: func(uid int) string {
+				var v string
+				_ = refDB.QueryRow(`SELECT value FROM tokens WHERE user_id = ? AND action = 'recovery' ORDER BY id DESC LIMIT 1`, uid).Scan(&v)
+				return v
+			},
+			registerToken: func(login string) string {
+				var v string
+				_ = refDB.QueryRow(`SELECT t.value FROM tokens t JOIN users u ON u.id = t.user_id WHERE u.login = ? AND t.action = 'register' ORDER BY t.id DESC LIMIT 1`, login).Scan(&v)
+				return v
+			}}
+		authModesFlow(e)
+		if err := os.MkdirAll(dir, 0o755); err != nil {
+			t.Fatal(err)
+		}
+		for name, s := range e.out {
+			if err := os.WriteFile(filepath.Join(dir, name), []byte(s), 0o644); err != nil {
+				t.Fatal(err)
+			}
+		}
+	}
+	myFreezeClock(t)
+	ts, d := newFixtureServer(t)
+	insertFixtureAuthSource(t, d)
+	e := &authEnv{t: t, base: ts.URL, clients: map[string]*http.Client{}, out: map[string]string{},
+		recoveryToken: func(uid int) string { return dbRecoveryToken(t, d, uid) },
+		registerToken: func(login string) string {
+			var v string
+			_ = d.Get(context.Background(), &v, `SELECT t.value FROM tokens t JOIN user_accounts u ON u.principal_id = t.user_id WHERE u.login = ? AND t.action = 'register' ORDER BY t.id DESC LIMIT 1`, login)
+			return v
+		}}
+	authModesFlow(e)
 	if dump := os.Getenv("BUROPHER_AUTH_DUMP"); dump != "" {
 		_ = os.MkdirAll(dump, 0o755)
 		for name, s := range e.out {
