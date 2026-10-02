@@ -1,0 +1,27 @@
+<h2>{{l "label_home"}}</h2>
+
+<div class="splitcontent">
+<div class="splitcontentleft">
+  <div class="wiki">
+    {{textilizable (setting "welcome_text")}}
+  </div>
+  {{call_hook "view_welcome_index_left"}}
+</div>
+
+<div class="splitcontentright">
+  {{if .News}}
+  <div class="news box">
+  <h3 class="icon icon-news">{{sprite_icon "news" (l "label_news_latest")}}</h3>
+    {{render_collection "news/news" .News}}
+    {{link_to (l "label_news_view_all") "/news"}}
+  </div>
+  {{end}}
+  {{call_hook "view_welcome_index_right"}}
+</div>
+</div>
+
+{{define "welcome/index#header_tags"}}
+{{auto_discovery_link_tag "atom" (url_for_atom "/news" .AtomKey) (hash "title" (printf "%s: %s" (setting "app_title") (l "label_news_latest")))}}
+{{auto_discovery_link_tag "atom" (url_for_atom "/activity" .AtomKey) (hash "title" (printf "%s: %s" (setting "app_title") (l "label_activity")))}}
+{{end}}
+{{content_for "header_tags" (capture "welcome/index#header_tags")}}

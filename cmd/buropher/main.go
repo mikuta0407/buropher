@@ -4,6 +4,7 @@ package main
 import (
 	"context"
 	"crypto/rand"
+	"encoding/json"
 	"flag"
 	"fmt"
 	"log/slog"
@@ -17,7 +18,9 @@ import (
 	"github.com/mikuta0407/buropher/internal/config"
 	"github.com/mikuta0407/buropher/internal/db"
 	"github.com/mikuta0407/buropher/internal/redmineimport/export"
+	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/server"
+	"github.com/mikuta0407/buropher/internal/settings"
 )
 
 var version = "dev"
@@ -30,6 +33,7 @@ commands:
   migrate   apply database migrations (up|down|status)
   init      load default data and create the administrator
   redmine   migrate data from Redmine (export)
+  setting   get or set a setting (setting get <name> / setting set <name> <value>)
   version   print version
 `)
 }
@@ -50,6 +54,8 @@ func main() {
 		err = initCmd(args)
 	case "redmine":
 		err = redmineCmd(args)
+	case "setting":
+		err = settingCmd(args)
 	case "version":
 		fmt.Println("buropher", version)
 	default:
@@ -70,12 +76,20 @@ func serve(args []string) error {
 	if err != nil {
 		return err
 	}
-	srv, err := server.New(cfg)
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
+	d, err := openDB(ctx, cfg)
 	if err != nil {
 		return err
 	}
-	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
-	defer stop()
+	defer d.Close()
+	if err := server.CheckInitialized(ctx, d); err != nil {
+		return err
+	}
+	srv, err := server.New(cfg, d)
+	if err != nil {
+		return err
+	}
 	return srv.Run(ctx)
 }
 
@@ -183,5 +197,56 @@ func redmineCmd(args []string) error {
 		return export.Main(args[1:])
 	default:
 		return fmt.Errorf("unknown redmine command %q", args[0])
+// settingCmd は設定値の参照・変更（buropher setting get|set）。
+func settingCmd(args []string) error {
+	fs := flag.NewFlagSet("setting", flag.ExitOnError)
+	cfgPath := fs.String("config", "", "path to config.toml")
+	fs.Parse(args)
+	cfg, err := config.Load(*cfgPath)
+	if err != nil {
+		return err
+	}
+	ctx := context.Background()
+	d, err := openDB(ctx, cfg)
+	if err != nil {
+		return err
+	}
+	defer d.Close()
+	if err := server.CheckInitialized(ctx, d); err != nil {
+		return err
+	}
+	st, err := settings.New(ctx, repository.SettingsStore{DB: d})
+	if err != nil {
+		return err
+	}
+	switch fs.Arg(0) {
+	case "get":
+		if fs.NArg() != 2 {
+			return fmt.Errorf("usage: buropher setting get <name>")
+		}
+		if settings.Lookup(fs.Arg(1)) == nil {
+			return fmt.Errorf("unknown setting %q", fs.Arg(1))
+		}
+		b, _ := json.Marshal(st.Get(fs.Arg(1)))
+		fmt.Println(string(b))
+		return nil
+	case "set":
+		if fs.NArg() != 3 {
+			return fmt.Errorf("usage: buropher setting set <name> <value>  (JSON for serialized settings)")
+		}
+		name, raw := fs.Arg(1), fs.Arg(2)
+		def := settings.Lookup(name)
+		if def == nil {
+			return fmt.Errorf("unknown setting %q", name)
+		}
+		var v any = raw
+		if def.Serialized {
+			if err := json.Unmarshal([]byte(raw), &v); err != nil {
+				return fmt.Errorf("%s is serialized; value must be JSON: %w", name, err)
+			}
+		}
+		return st.Set(ctx, name, v)
+	default:
+		return fmt.Errorf("usage: buropher setting get|set ...")
 	}
 }

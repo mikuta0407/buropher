@@ -1,0 +1,9 @@
+{{define "layouts/admin#sidebar"}}
+    <h3>{{l "label_administration"}}</h3>
+    {{partial "admin/menu"}}
+{{end}}
+{{if not (and (eq controller_name "admin") (eq action_name "index"))}}
+{{content_for "sidebar" (capture "layouts/admin#sidebar")}}
+{{end}}
+
+{{capture "layouts/base.html"}}
