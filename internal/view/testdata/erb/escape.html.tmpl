@@ -1,0 +1,10 @@
+<!-- page specific tags -->
+<a title="{{.name}}" href="/x?a={{.name}}&amp;b=1">{{.name}}</a>
+<script>var x = '{{.name}}'; var y = '{{j .name}}'; var z = '{{j .html_safe}}';</script>
+{{.num}} [{{.nilv}}] {{.flag}} {{.float}} {{.plus}}
+{{.html_safe}}
+{{raw .name}}
+<style>a > b { content: "{{.name}}"; }</style>
+<textarea>{{.name}}</textarea>
+<title>{{.name}}</title>
+<div onclick="go('{{.name}}')"></div>

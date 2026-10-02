@@ -1,0 +1,10 @@
+<!-- page specific tags -->
+<a title="World &lt;&amp;&gt; &quot;q&quot; &#39;a&#39;" href="/x?a=World &lt;&amp;&gt; &quot;q&quot; &#39;a&#39;&amp;b=1">World &lt;&amp;&gt; &quot;q&quot; &#39;a&#39;</a>
+<script>var x = 'World &lt;&amp;&gt; &quot;q&quot; &#39;a&#39;'; var y = 'World &lt;&amp;&gt; \&quot;q\&quot; \&#39;a\&#39;'; var z = '<b>bold<\/b>';</script>
+42 [] true 1.5 1+1=2
+<b>bold</b>
+World <&> "q" 'a'
+<style>a > b { content: "World &lt;&amp;&gt; &quot;q&quot; &#39;a&#39;"; }</style>
+<textarea>World &lt;&amp;&gt; &quot;q&quot; &#39;a&#39;</textarea>
+<title>World &lt;&amp;&gt; &quot;q&quot; &#39;a&#39;</title>
+<div onclick="go('World &lt;&amp;&gt; &quot;q&quot; &#39;a&#39;')"></div>

@@ -1,0 +1,12 @@
+{{html_title "Issues"}}
+{{define "issues/index#sidebar"}}
+<h3>Side &amp; {{.Title}}</h3>
+{{end}}
+{{content_for "sidebar" (capture "issues/index#sidebar")}}
+{{content_for "header_tags" "<raw-is-escaped>"}}
+<h2>{{.Title}}</h2>
+<table>
+{{render_collection "issues/issue" .Issues (dict "query" .Title)}}
+</table>
+{{partial "footer" (dict "note" "x<y")}}
+{{partial "shared"}}

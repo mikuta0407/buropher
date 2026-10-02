@@ -1,0 +1,33 @@
+{{html_title "Issues" .name}}
+{{define "blocks#header_tags1"}}
+  <link rel="alternate" href="/x" />
+{{end}}
+{{content_for "header_tags" (capture "blocks#header_tags1")}}
+{{define "blocks#header_tags2"}}
+<script>1</script>
+{{end}}
+{{content_for "header_tags" (capture "blocks#header_tags2")}}
+<head>
+<title>{{html_title}}</title>
+<!-- page specific tags -->
+{{yield "header_tags" -}}
+</head>
+<p>{{has_content_for "header_tags"}} {{has_content_for "sidebar"}}</p>
+<div id="search">
+    {{form_tag "/search" (hash "method" "get")}}
+    {{hidden_field_tag "scope" "x" (hash "id" nil)}}
+    {{text_field_tag "q" .name (hash "size" 20 "class" "small")}}
+    {{end_form}}
+</div>
+{{form_tag "/issues/1" (hash "method" "patch" "id" "f")}}
+<p>{{submit_tag "Save"}}</p>
+{{end_form}}
+after
+{{content_tag_open "div" (hash "class" "box")}}
+  {{link_to .name "/x?a=1&b=2" (hash "class" "icon")}}
+{{end_tag "div"}}
+{{range .items}}
+<span class="{{cycle "odd" "even"}}">{{.}}</span>
+{{end}}
+{{javascript_tag "$('#x').hide();"}}
+{{select_tag "status" (options_for_select (list (list "Open" 1) (list "Closed" 2)) 2) (hash "include_blank" true)}}

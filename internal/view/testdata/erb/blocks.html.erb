@@ -1,0 +1,31 @@
+<% html_title "Issues", name %>
+<% content_for :header_tags do %>
+  <link rel="alternate" href="/x" />
+<% end %>
+<% content_for :header_tags do %>
+<script>1</script>
+<% end %>
+<head>
+<title><%= html_title %></title>
+<!-- page specific tags -->
+<%= yield :header_tags -%>
+</head>
+<p><%= content_for?(:header_tags) %> <%= content_for?(:sidebar) %></p>
+<div id="search">
+    <%= form_tag("/search", :method => :get) do %>
+    <%= hidden_field_tag 'scope', 'x', :id => nil %>
+    <%= text_field_tag 'q', name, :size => 20, :class => 'small' %>
+    <% end %>
+</div>
+<%= form_tag("/issues/1", :method => :patch, :id => 'f') do %>
+<p><%= submit_tag "Save" %></p>
+<% end %>
+after
+<%= content_tag 'div', :class => 'box' do %>
+  <%= link_to name, "/x?a=1&b=2", :class => 'icon' %>
+<% end %>
+<% items.each do |item| %>
+<span class="<%= cycle('odd', 'even') %>"><%= item %></span>
+<% end %>
+<%= javascript_tag "$('#x').hide();" %>
+<%= select_tag 'status', options_for_select([['Open', 1], ['Closed', 2]], 2), :include_blank => true %>
