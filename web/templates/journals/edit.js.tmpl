@@ -1,0 +1,18 @@
+$("#journal-{{.F.Journal.ID}}-notes").hide();
+
+if ($("form#journal-{{.F.Journal.ID}}-form").length > 0) {
+  // journal edit form already loaded
+  $("#journal-{{.F.Journal.ID}}-form").show();
+} else {
+  $("#journal-{{.F.Journal.ID}}-notes").after('{{j (partial "journals/notes_form" (dict "F" .F))}}');
+}
+
+// Focus on the textarea
+(() => {
+  const textarea = $("#journal-{{.F.Journal.ID}}-form .wiki-edit");
+  if (textarea.length > 0) {
+    textarea.focus();
+    const textareaLength = textarea.val().length;
+    textarea.get(0).setSelectionRange(textareaLength, textareaLength);
+  }
+})();

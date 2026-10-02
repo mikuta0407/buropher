@@ -99,7 +99,7 @@ entries:
     ignore: true
 
   # ---- issues_write（チケットの作成・更新） ----
-  - case: "issues_write/*"
+  - case: "issues_write*/*"
     reason: "custom_values.value は '' を NULL で保存する（docs/schema.md の '' → NULL）ため、保存後に値の無いカスタムフィールド（Redmine では nil の行）を '' として読み、入力欄に value=\"\" が付く"
     lines:
       - '^\s*<input class="(date|string|float|int)_cf cf_\d+" id="issue_custom_field_values_\d+"( max="9999-12-31")? name="issue\[custom_field_values\]\[\d+\]"( size="10")? type="(date|text)"( value="")?>$'

@@ -50,4 +50,6 @@ func (a *App) Routes(r Router) {
 	a.routesAdmin(r)
 	a.routesAuthSources(r)
 	a.routesIssueRelationsAndWatchers(r)
+	a.routesIssuesBulk(r)
+	a.routesJournalsWrite(r)
 }
