@@ -20,4 +20,5 @@ func (a *App) Routes(r Router) {
 	a.routesIssueStatuses(r)
 	a.routesRoles(r)
 	a.routesEnumerations(r)
+	a.routesPreviews(r)
 }

@@ -1,0 +1,5 @@
+{{if not (blank .Text)}}
+  {{textilizable .Text (hash "attachments" .Attachments "object" .Previewed)}}
+{{else}}
+  <p class="empty-preview">{{l "label_nothing_to_preview"}}</p>
+{{end}}

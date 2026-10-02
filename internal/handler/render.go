@@ -27,6 +27,7 @@ func (c *Req) Page() *helper.Page {
 		DB:                 a.DB,
 		Now:                a.now,
 		Logger:             a.logger(),
+		PreviewAttachments: c.Attachments,
 	}
 	if c.User != nil {
 		p.Pref = c.Pref()

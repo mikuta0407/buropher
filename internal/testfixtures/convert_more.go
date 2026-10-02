@@ -269,35 +269,6 @@ var containerKinds = map[string]string{
 	"News": "news", "Document": "document", "CustomValue": "custom_value",
 }
 
-func loadAttachments(c *loadCtx, rows []row) error {
-	for _, r := range rows {
-		var kind, cid any
-		if t := r.str("container_type"); t != "" {
-			k, ok := containerKinds[t]
-			if !ok {
-				return fmt.Errorf("%s: unknown container_type %q", r.label, t)
-			}
-			kind, cid = k, r.int("container_id", 0)
-		}
-		var digest, algo any
-		if d := r.str("digest"); d != "" {
-			digest = d
-			if len(d) == 64 {
-				algo = "sha256"
-			} else {
-				algo = "md5"
-			}
-		}
-		if err := c.exec(`INSERT INTO attachments (id, container_kind, container_id, filename, disk_directory, disk_filename, filesize,
-  content_type, digest, digest_algo, downloads, author_id, description, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-			r.int("id", 0), kind, cid, r.str("filename"), r.nstr("disk_directory"), r.str("disk_filename"), r.int("filesize", 0),
-			r.nstr("content_type"), digest, algo, r.int("downloads", 0), r.int("author_id", 0), r.nstr("description"),
-			ts(c, r, "created_on")); err != nil {
-			return err
-		}
-	}
-	return nil
-}
 
 func loadUserPreferences(c *loadCtx, rows []row) error {
 	for _, r := range rows {
