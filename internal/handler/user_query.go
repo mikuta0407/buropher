@@ -213,15 +213,24 @@ func (v *userQueryView) AvailableFiltersJSON() rails.HTML {
 				if err != nil {
 					v.app.logger().Error("filter values", "err", err)
 				}
-				vals := make([][]string, len(opts))
-				for j, o := range opts {
-					if o.Group != "" {
-						vals[j] = []string{o.Label, o.Value, o.Group}
-					} else {
-						vals[j] = []string{o.Label, o.Value}
+				if d.CustomField != nil && d.CustomField.FieldFormat == "list" {
+					// ListFormat#possible_values_options は possible_values（文字列の配列）をそのまま返す
+					strs := make([]string, len(opts))
+					for j, o := range opts {
+						strs[j] = o.Value
 					}
+					b.WriteString(`,"values":` + rawJSON(strs))
+				} else {
+					vals := make([][]string, len(opts))
+					for j, o := range opts {
+						if o.Group != "" {
+							vals[j] = []string{o.Label, o.Value, o.Group}
+						} else {
+							vals[j] = []string{o.Label, o.Value}
+						}
+					}
+					b.WriteString(`,"values":` + rawJSON(vals))
 				}
-				b.WriteString(`,"values":` + rawJSON(vals))
 			}
 		}
 		b.WriteByte('}')

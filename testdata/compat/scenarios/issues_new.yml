@@ -1,0 +1,107 @@
+# チケットの作成・編集フォーム（issues#new / edit と update_form の XHR）の互換シナリオ。
+# GET（と状態を変えない update_form の POST / PATCH）のみ。POST を含むので専用の参照インスタンスで流すこと:
+#   COMPAT_REF_DIR=_reference/ref-issuesw COMPAT_REF_PORT=4022 tools/compat/redmine-ref.sh start
+#   go run ./tools/compat diff -ref http://127.0.0.1:4022 -cand http://127.0.0.1:4122 \
+#     -reset-ref '...redmine-ref.sh reset' -reset-cand '...buropher-cand.sh reset' testdata/compat/scenarios/issues_new.yml
+name: issues_new
+
+users:
+  admin: {login: admin, password: admin}
+  jsmith: {login: jsmith, password: jsmith}
+  dlopper: {login: dlopper, password: foo}
+
+normalize:
+  mask_text_selectors:
+    - "#footer"
+  strip_selectors:
+    - "#project-jump"
+
+requests:
+  # ---- 新規作成フォーム ----
+  - path: /projects/ecookbook/issues/new
+    users: [admin, jsmith, dlopper, anonymous]
+  - path: /issues/new
+    users: [admin, jsmith]
+  - path: /projects/ecookbook/issues/new?issue[tracker_id]=2
+    users: [jsmith]
+  - path: /projects/ecookbook/issues/new?issue[tracker_id]=3&issue[subject]=Prefilled&issue[description]=Some+text&issue[priority_id]=6&issue[assigned_to_id]=3&issue[start_date]=2026-02-01&issue[custom_field_values][2]=cfvalue
+    users: [admin]
+  - path: /projects/ecookbook/issues/new?issue[parent_issue_id]=1&back_url=%2Fissues%2F1
+    users: [jsmith]
+  - path: /projects/ecookbook/issues/new?issue[assigned_to_id]=me
+    users: [jsmith]
+  - path: /projects/subproject1/issues/new
+    users: [admin, jsmith]
+  - path: /projects/onlinestore/issues/new
+    users: [admin, jsmith]
+  - path: /projects/private-child/issues/new
+    users: [admin]
+  - path: /issues/new?issue[project_id]=2
+    users: [admin]
+  # ---- コピー ----
+  - path: /projects/ecookbook/issues/1/copy
+    users: [admin, jsmith]
+  - path: /projects/ecookbook/issues/new?copy_from=1
+    users: [admin]
+  - path: /projects/ecookbook/issues/2/copy
+    users: [admin]
+  - path: /projects/ecookbook/issues/999/copy
+    users: [admin]
+  # ---- 編集フォーム ----
+  - path: /issues/1/edit
+    users: [admin, jsmith, dlopper, anonymous]
+  - path: /issues/2/edit
+    users: [admin]
+  - path: /issues/3/edit
+    users: [admin, jsmith]
+  - path: /issues/1/edit?issue[status_id]=2&issue[notes]=Some+notes
+    users: [admin]
+  - path: /issues/1/edit?issue[tracker_id]=2
+    users: [jsmith]
+  - path: /issues/14/edit
+    users: [admin]
+  - path: /issues/4/edit
+    users: [admin, jsmith]
+  # ---- update_form（XHR） ----
+  - id: new_update_form_tracker
+    path: /projects/ecookbook/issues/new.js
+    method: POST
+    user: jsmith
+    headers: {X-Requested-With: XMLHttpRequest}
+    form: {"form_update_triggered_by": "issue_tracker_id", "issue[tracker_id]": "2", "issue[subject]": "Updated", "issue[status_id]": "1", "was_default_status": "1"}
+  - id: new_update_form_project
+    path: /issues/new.js
+    method: POST
+    user: admin
+    headers: {X-Requested-With: XMLHttpRequest}
+    form: {"form_update_triggered_by": "issue_project_id", "issue[project_id]": "2", "issue[tracker_id]": "1", "issue[subject]": "Moved", "issue[fixed_version_id]": "2"}
+  - id: new_update_form_category
+    path: /projects/ecookbook/issues/new.js
+    method: POST
+    user: admin
+    headers: {X-Requested-With: XMLHttpRequest}
+    form: {"form_update_triggered_by": "issue_category_id", "issue[tracker_id]": "1", "issue[category_id]": "1"}
+  - id: new_update_form_status
+    path: /projects/ecookbook/issues/new.js
+    method: POST
+    user: jsmith
+    headers: {X-Requested-With: XMLHttpRequest}
+    form: {"form_update_triggered_by": "issue_status_id", "issue[tracker_id]": "1", "issue[status_id]": "2", "was_default_status": "1"}
+  - id: edit_update_form_status
+    path: /issues/1/edit.js
+    method: PATCH
+    user: jsmith
+    headers: {X-Requested-With: XMLHttpRequest}
+    form: {"form_update_triggered_by": "issue_status_id", "issue[status_id]": "5", "issue[lock_version]": "0"}
+  - id: edit_update_form_tracker
+    path: /issues/1/edit.js
+    method: PATCH
+    user: admin
+    headers: {X-Requested-With: XMLHttpRequest}
+    form: {"form_update_triggered_by": "issue_tracker_id", "issue[tracker_id]": "2", "issue[lock_version]": "0", "issue[notes]": "keep me"}
+  - id: edit_update_form_project
+    path: /issues/1/edit.js
+    method: PATCH
+    user: admin
+    headers: {X-Requested-With: XMLHttpRequest}
+    form: {"form_update_triggered_by": "issue_project_id", "issue[project_id]": "2", "issue[lock_version]": "0"}

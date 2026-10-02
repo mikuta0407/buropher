@@ -834,29 +834,6 @@ func (a *App) copyParamEnabled(setting string, c *Req, param string) bool {
 	return false
 }
 
-// issueParamsOf は params[:issue] を issues.Params に変換する（配列は []string、ハッシュは map[string]any）。
-func issueParamsOf(p *httpx.Params) issues.Params {
-	out := issues.Params{}
-	p.Each(func(k string, v any) { out[k] = plainIssueParam(v) })
-	return out
-}
-
-func plainIssueParam(v any) any {
-	switch x := v.(type) {
-	case *httpx.Params:
-		m := map[string]any{}
-		x.Each(func(k string, v any) { m[k] = plainIssueParam(v) })
-		return m
-	case []any:
-		ss := make([]string, 0, len(x))
-		for _, e := range x {
-			ss = append(ss, rails.ToS(e))
-		}
-		return ss
-	}
-	return v
-}
-
 // IssuesBulkUpdate は IssuesController#bulk_update（POST / PATCH /issues/bulk_update）。
 func (a *App) IssuesBulkUpdate(c *Req) {
 	rows, _ := c.local(ctxIssues).([]*query.IssueRow)

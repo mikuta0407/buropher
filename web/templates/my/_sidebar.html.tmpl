@@ -1,0 +1,50 @@
+{{$a := assigns}}
+{{$u := $a.SidebarUser}}
+<h3>{{l "label_my_account"}}</h3>
+
+<p>{{l "field_login"}}: <strong>{{link_to_user $u (hash "format" "username")}}</strong><br />
+{{l "field_created_on"}}: {{format_time $u.CreatedAt}}</p>
+
+{{if $a.OwnAccountDeletable}}
+  <p>{{link_to (sprite_icon "del" (l "button_delete_my_account")) "/my/account/destroy" (hash "class" "icon icon-del")}}</p>
+{{end}}
+
+<h4>{{l "label_feeds_access_key"}}</h4>
+
+<p>
+{{if $a.AtomTokenAge}}
+{{l "label_feeds_access_key_created_on" $a.AtomTokenAge}}
+{{else}}
+{{l "label_missing_feeds_access_key"}}
+{{end}}
+({{link_to (l "button_reset") "/my/atom_key" (hash "method" "post")}})
+</p>
+
+{{if $a.RestAPIEnabled}}
+<h4>{{l "label_api_access_key"}}</h4>
+<div data-controller="api-key-copy">
+  <div class="api-key-actions">
+    {{link_to (l "button_show") "/my/api_key" (hash "remote" true)}}
+    <a class="copy-api-key-link icon icon-only"
+       title="{{l "button_copy"}}"
+       aria-label="{{l "button_copy"}}"
+       href="#"
+       role="button"
+       tabindex="0"
+       style="display: none;"
+       data-action="click->api-key-copy#copy">
+      {{sprite_icon "copy"}}
+    </a>
+  </div>
+  <pre id='api-access-key' class='autoscroll' data-api-key-copy-target="apiKey"></pre>
+  {{javascript_tag "$('#api-access-key').hide();"}}
+  <p>
+  {{if $a.APITokenAge}}
+  {{l "label_api_access_key_created_on" $a.APITokenAge}}
+  {{else}}
+  {{l "label_missing_api_access_key"}}
+  {{end}}
+  ({{link_to (l "button_reset") "/my/api_key" (hash "method" "post")}})
+  </p>
+</div>
+{{end}}

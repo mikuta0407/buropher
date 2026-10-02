@@ -1,0 +1,7 @@
+status: 200
+content-type: text/plain
+
+# 2.0
+
+Future version
+

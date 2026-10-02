@@ -1,0 +1,35 @@
+<ul>
+    <li>{{.EditLink}}</li>
+
+  {{call_hook "view_time_entries_context_menu_start"}}
+
+  {{if .ActivityLinks}}
+  <li class="folder">
+    <a href="#" class="submenu">{{l "field_activity"}}</a>
+    <span class="icon-only">{{sprite_icon "angle-right" (hash "rtl" true)}}</span>
+    <ul>
+    {{range $link := .ActivityLinks}}
+        <li>{{$link}}</li>
+    {{end}}
+    </ul>
+  </li>
+  {{end}}
+
+  {{range $f := .Folders}}
+    <li class="folder {{$f.CSS}}">
+      <a href="#" class="submenu">{{$f.Name}}</a>
+      <span class="icon-only">{{sprite_icon "angle-right" (hash "rtl" true)}}</span>
+      <ul>
+      {{range $link := $f.Links}}
+        <li>{{$link}}</li>
+      {{end}}
+      </ul>
+    </li>
+  {{end}}
+
+  {{call_hook "view_time_entries_context_menu_end"}}
+
+  <li>
+    {{.DeleteLink}}
+  </li>
+</ul>

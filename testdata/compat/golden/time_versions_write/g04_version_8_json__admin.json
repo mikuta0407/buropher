@@ -1,0 +1,22 @@
+status: 200
+content-type: application/json
+
+{
+  "version": {
+    "id": 8,
+    "project": {
+      "id": 1,
+      "name": "eCookbook"
+    },
+    "name": "3.0",
+    "description": "Next",
+    "status": "open",
+    "due_date": "2026-01-10",
+    "sharing": "descendants",
+    "wiki_page_title": "CookBook_documentation",
+    "estimated_hours": 0.0,
+    "spent_hours": 0.0,
+    "created_on": "TIMESTAMP",
+    "updated_on": "TIMESTAMP"
+  }
+}

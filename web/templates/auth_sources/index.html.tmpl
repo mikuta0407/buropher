@@ -1,0 +1,31 @@
+<div class="contextual">
+{{link_to (sprite_icon "add" (l "label_auth_source_new")) "/auth_sources/new" (hash "class" "icon icon-add")}}
+</div>
+
+{{title (l "label_auth_source_plural")}}
+
+<table class="list">
+  <thead><tr>
+    <th>{{l "field_name"}}</th>
+    <th>{{l "field_type"}}</th>
+    <th>{{l "field_host"}}</th>
+    <th>{{l "label_user_plural"}}</th>
+    <th></th>
+  </tr></thead>
+  <tbody>
+{{range $source := .AuthSources}}
+  <tr id="auth-source-{{$source.ID}}">
+    <td class="name">{{link_to $source.Name (printf "/auth_sources/%d/edit" $source.ID)}}</td>
+    <td>{{$source.AuthMethodName}}</td>
+    <td>{{$source.Host}}</td>
+    <td>{{$source.UserCount}}</td>
+    <td class="buttons">
+      {{link_to (sprite_icon "arrow-right" (l "button_test")) (printf "/auth_sources/%d/test_connection" $source.ID) (hash "class" "icon icon-test")}}
+      {{delete_link (printf "/auth_sources/%d" $source.ID)}}
+    </td>
+  </tr>
+{{end}}
+  </tbody>
+</table>
+
+<span class="pagination">{{pagination_links_full .Pages}}</span>

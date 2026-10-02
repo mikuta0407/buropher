@@ -1,0 +1,45 @@
+# 認証方式（LDAP。auth_sources）の互換シナリオ（GET のみ）。
+# 参照環境の auth_sources.yml（id 1、host は空文字列）を前提にする。
+name: auth_sources
+
+users:
+  admin: {login: admin, password: admin}
+  jsmith: {login: jsmith, password: jsmith}
+
+normalize:
+  mask_text_selectors:
+    - "#footer"
+  # ジャンプボックスの「最近使ったもの」は共用の参照環境（reset しない）の閲覧履歴に依存するため除く
+  strip_selectors:
+    - "#project-jump"
+
+requests:
+  # ---- 権限 ----
+  - path: /auth_sources
+    users: [anonymous, jsmith]
+  - path: /auth_sources/new
+    users: [jsmith]
+  - path: /auth_sources/1/edit
+    users: [jsmith]
+
+  # ---- 画面 ----
+  - path: /auth_sources
+    users: [admin]
+  - path: /auth_sources/new
+    users: [admin]
+  - path: /auth_sources/new?auth_source%5Bname%5D=Prefilled&auth_source%5Bport%5D=636&auth_source%5Bldap_mode%5D=ldaps_verify_peer
+    id: auth_sources_new_prefilled
+    user: admin
+  - path: /auth_sources/new?type=AuthSourceFoo
+    id: auth_sources_new_bad_type
+    user: admin
+  - path: /auth_sources/1/edit
+    users: [admin]
+  - path: /auth_sources/999/edit
+    users: [admin]
+  # 検索可能なソース（host が空で接続できない）→ エラーは記録して空の配列
+  - path: /auth_sources/autocomplete_for_new_user?term=a
+    id: auth_sources_autocomplete
+    user: admin
+    format: json
+    auth: session

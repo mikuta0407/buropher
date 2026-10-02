@@ -1,0 +1,10 @@
+status: 422
+content-type: application/json
+
+{
+  "errors": [
+    "Date cannot be blank",
+    "Date is not a valid date",
+    "Activity is not included in the list"
+  ]
+}

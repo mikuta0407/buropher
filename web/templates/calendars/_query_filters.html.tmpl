@@ -1,0 +1,28 @@
+{{/* queries/_filters.html.erb（IssueQuery 用。locals: query = calendarQueryView, filters_url）。TODO(query): issues#index の queries/_filters と共通化する。 */}}
+{{define "calendars/_query_filters#js"}}
+
+var operatorLabels = {{.query.OperatorLabelsJSON}};
+var operatorByType = {{.query.OperatorByTypeJSON}};
+var availableFilters = {{.query.AvailableFiltersJSON}};
+var labelDayPlural = {{.query.RawJSON (l "label_day_plural")}};
+
+var filtersUrl = {{.query.RawJSON .filters_url}};
+
+$(document).ready(function(){
+  initFilters();
+  {{range $f := .query.Filters}}
+  addFilter("{{$f.Field}}", {{$.query.RawJSON $f.Operator}}, {{$.query.RawJSON $f.Values}});
+  {{end}}
+});
+{{end}}
+{{javascript_tag (capture "calendars/_query_filters#js" .)}}
+<div id="filters-table">
+</div>
+
+<div class="add-filter">
+{{label_tag "add_filter_select" (l "label_filter_add")}}
+{{select_tag "add_filter_select" .query.FilterOptions (hash "name" nil)}}
+</div>
+
+{{hidden_field_tag "f[]" ""}}
+{{$_ := include_calendar_headers_tags}}

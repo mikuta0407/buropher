@@ -1,0 +1,81 @@
+{{$v := assigns}}
+{{form_tag "/settings/edit?tab=issues"}}
+
+<div class="box tabular settings">
+<p>{{setting_check_box "cross_project_issue_relations"}}</p>
+
+<p>{{setting_select "link_copied_issue" (labelled_options "general_text_Yes" "yes" "general_text_No" "no" "label_ask" "ask")}}</p>
+
+<p>{{setting_select "copy_attachments_on_issue_copy" (labelled_options "general_text_Yes" "yes" "general_text_No" "no" "label_ask" "ask")}}</p>
+
+<p>{{setting_select "cross_project_subtasks" (labelled_options "label_disabled" "" "label_cross_project_system" "system" "label_cross_project_tree" "tree" "label_cross_project_hierarchy" "hierarchy" "label_cross_project_descendants" "descendants")}}</p>
+
+<p>{{setting_check_box "close_duplicate_issues"}}</p>
+
+<p>{{setting_check_box "issue_group_assignment"}}</p>
+
+<p>{{setting_check_box "default_issue_start_date_to_creation_date"}}</p>
+
+<p>{{setting_check_box "display_subprojects_issues"}}</p>
+
+<p>{{setting_select "issue_done_ratio" $v.DoneRatioOptions}}</p>
+
+<p>{{setting_select "issue_done_ratio_interval" (list (list "5 %" 5) (list "10 %" 10))}}</p>
+
+<p>{{setting_multiselect "non_working_week_days" $v.NonWorkingWeekDayOptions (hash "inline" true)}}</p>
+
+<p>{{setting_text_field "issues_export_limit" (hash "size" 6)}}</p>
+
+<p>{{setting_text_field "gantt_items_limit" (hash "size" 6)}}</p>
+
+<p>{{setting_text_field "gantt_months_limit" (hash "size" 6)}}</p>
+</div>
+
+<fieldset class="box">
+  <legend>{{l "label_parent_task_attributes"}}</legend>
+  <div class="tabular settings">
+    <p>{{setting_select "parent_issue_dates" (labelled_options "label_parent_task_attributes_derived" "derived" "label_parent_task_attributes_independent" "independent") (hash "label" $v.ParentDatesLabel)}}</p>
+
+    <p>{{setting_select "parent_issue_priority" (labelled_options "label_parent_task_attributes_derived" "derived" "label_parent_task_attributes_independent" "independent") (hash "label" (sym "field_priority"))}}</p>
+
+    <p>{{setting_select "parent_issue_done_ratio" (labelled_options "label_parent_task_attributes_derived" "derived" "label_parent_task_attributes_independent" "independent") (hash "label" (sym "field_done_ratio"))}}</p>
+  </div>
+</fieldset>
+
+<fieldset class="box">
+  <legend>{{l "setting_issue_list_default_columns"}}</legend>
+  <div id="list-definition">
+    <div>
+      {{partial "queries/columns" (dict "qv" $v.IssueQuery "tag_name" "settings[issue_list_default_columns][]")}}
+    </div>
+  </div>
+
+  <p>{{setting_multiselect "issue_list_default_totals" $v.IssueTotalOptions (hash "inline" true "label" (sym "label_total_plural"))}}</p>
+
+  <p>
+    <label>{{l "label_default_query"}}</label>
+    {{setting_select "default_issue_query" $v.DefaultGlobalIssueQueryOptions (hash "label" false)}}
+  </p>
+</fieldset>
+
+<fieldset class="box">
+  <legend>{{l "setting_related_issues_default_columns"}}</legend>
+  <div id="list-definition">
+    <div>
+      {{partial "queries/columns" (dict "qv" $v.RelatedQuery "tag_name" "settings[related_issues_default_columns][]")}}
+      {{javascript_tag (capture "settings/_issues#related_js" .) -}}
+    </div>
+  </div>
+
+  <div class="tabular settings">
+    <p>{{setting_check_box "display_related_issues_table_headers"}}</p>
+  </div>
+</fieldset>
+
+{{submit_tag (l "button_save")}}
+{{end_form}}
+{{define "settings/_issues#related_js"}}
+
+        $('#available_settings_related_issues_default_columns option[value="tracker"]').remove();
+        $('#available_settings_related_issues_default_columns option[value="subject"]').remove();
+      {{end}}

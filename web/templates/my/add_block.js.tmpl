@@ -1,0 +1,3 @@
+$("#block-{{j .Block}}").remove();
+$("#list-top").prepend("{{j (partial "my/blocks" (dict "blocks" .Blocks))}}");
+$("#block-select").replaceWith("{{j .BlockSelect}}");

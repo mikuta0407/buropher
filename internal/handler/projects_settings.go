@@ -780,18 +780,6 @@ func (a *App) settingsVersionRow(c *Req, p *domain.Project, v *repository.Versio
 	return sv
 }
 
-// wikiTitleize は Wiki.titleize（空白を _ に、先頭を大文字）。
-func wikiTitleize(title string) string {
-	t := strings.TrimSpace(title)
-	t = strings.Join(strings.Fields(t), "_")
-	if t == "" {
-		return t
-	}
-	rs := []rune(t)
-	rs[0] = []rune(strings.ToUpper(string(rs[0])))[0]
-	return string(rs)
-}
-
 // renderBoardsTree は ProjectsHelper#render_boards_tree の入れ子構造（親 → 子の順と深さ）。
 func renderBoardsTree(boards []*repository.BoardInfo) []boardTreeNode {
 	var walk func(parent *int64, level int) []boardTreeNode

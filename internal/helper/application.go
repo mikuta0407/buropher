@@ -453,7 +453,9 @@ func (d *Deps) gravatarAvatarTag(r *view.Render, p *Page, u *domain.User, opts *
 	}
 	sz, _ := strconv.Atoi(rails.ToS(o.Get("size")))
 	o.Set("srcset", gravatarURL(strings.ToLower(email), o.Clone().Set("size", sz*2))+" 2x")
-	return r.Rails.ImageTag(string(rails.H(src)), o.Except("rating", "size", "default", "ssl"))
+	// Redmine は h(src)（html_safe）を image_tag に渡すため & は 1 回だけエスケープされる。
+	// ImageTag は属性値をエスケープするので、ここではエスケープ前の URL を渡す。
+	return r.Rails.ImageTag(src, o.Except("rating", "size", "default", "ssl"))
 }
 
 func gravatarURL(email string, o *rails.Hash) string {

@@ -1,0 +1,52 @@
+{{$list := .list}}
+{{form_tag (assigns).ListFormAction (hash "data" (hash "cm_url" "/time_entries/context_menu")) -}}
+{{hidden_field_tag "back_url" $list.BackURL (hash "id" nil)}}
+<div class="autoscroll">
+<table class="list odd-even time-entries">
+<thead>
+  <tr>
+    <th class="checkbox hide-when-print">
+      {{check_box_tag "check_all" "" false (hash "class" "toggle-selection" "title" (printf "%s / %s" (l "button_check_all") (l "button_uncheck_all")))}}
+    </th>
+    {{range $h := $list.Headers}}
+      {{$h}}
+    {{end}}
+    <th class="buttons hide-when-print"></th>
+  </tr>
+</thead>
+<tbody>
+{{range $row := $list.Rows}}
+  {{if $row.HasGroup}}
+    <tr class="group open">
+      <td colspan="{{$list.ColSpan}}">
+        <span class="expander icon icon-expanded" onclick="toggleRowGroup(this);">{{sprite_icon "angle-down"}}</span>
+        <span class="name">{{$row.GroupName}}</span>
+        {{if $row.GroupCount}}
+        <span class="badge badge-count count">{{$row.GroupCount}}</span>
+        {{end}}
+        <span class="totals">{{$row.GroupTotals}}</span>
+        {{link_to_function (printf "%s/%s" (l "button_collapse_all") (l "button_expand_all")) "toggleAllRowGroups(this)" (hash "class" "toggle-all")}}
+      </td>
+    </tr>
+  {{end}}
+  <tr id="time-entry-{{$row.Entry.ID}}" class="time-entry {{$row.CSS}} hascontextmenu">
+    <td class="checkbox hide-when-print">{{check_box_tag "ids[]" $row.Entry.ID false (hash "id" nil)}}</td>
+    {{range $cell := $row.Cells}}
+    {{content_tag "td" $cell.Content (hash "class" $cell.CSS)}}
+    {{end}}
+    <td class="buttons hide-when-print">
+    {{if $row.Editable}}
+        {{link_to (sprite_icon "edit" (l "button_edit")) (printf "/time_entries/%d/edit" $row.Entry.ID) (hash "title" (l "button_edit") "class" "icon-only icon-edit")}}
+        {{link_to (sprite_icon "del" (l "button_delete")) (printf "/time_entries/%d" $row.Entry.ID) (hash "data" (hash "confirm" (l "text_are_you_sure")) "method" "delete" "title" (l "button_delete") "class" "icon-only icon-del")}}
+    {{end}}
+        {{link_to_context_menu}}
+    </td>
+  </tr>
+
+{{end}}
+</tbody>
+</table>
+</div>
+{{end_form}}
+
+{{context_menu}}

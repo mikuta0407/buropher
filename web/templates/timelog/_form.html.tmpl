@@ -1,0 +1,89 @@
+{{$f := .f}}
+{{$d := .d}}
+{{error_messages_for_list $d.Errors}}
+{{back_url_hidden_field_tag}}
+
+<div class="box tabular">
+  {{if $d.HiddenProjectID}}
+    {{hidden_field_tag "project_id" $d.HiddenProjectID}}
+  {{else if $d.HiddenIssueID}}
+    {{hidden_field_tag "issue_id" $d.HiddenIssueID}}
+  {{else}}
+    <p>{{$f.Select "project_id" $d.ProjectOptions (hash "required" true)}}</p>
+  {{end}}
+
+  <p>
+    {{$f.TextField "issue_id" (hash "size" 6 "required" $d.IssueRequired)}}
+    <span id="time_entry_issue">
+      {{$d.IssueLink}}
+    </span>
+  </p>
+
+  {{if $d.ShowUserSelect}}
+    <p>{{$f.Select "user_id" $d.UserOptions (hash "required" true)}}</p>
+  {{else if not $d.New}}
+    <p>
+      {{$f.LabelForField "user_id" (hash)}}
+      <span>{{$d.UserLink}}</span>
+    </p>
+  {{end}}
+  <p>{{$f.DateField "spent_on" (hash "size" 10 "required" true)}}{{calendar_for "time_entry_spent_on"}}</p>
+  <p>{{if $d.HoursHasError}}{{$f.TextField "hours" (hash "size" 6 "required" true)}}{{else}}{{$f.TextField "hours" (hash "placeholder" "h:mm" "size" 6 "required" true "value" $d.HoursValue)}}{{end}}</p>
+  <p>{{$f.TextField "comments" (hash "size" 100 "maxlength" 1024 "required" $d.CommentsRequired)}}</p>
+  <p>{{$f.Select "activity_id" $d.ActivityChoices (hash "required" true)}}</p>
+  {{range $v := $d.CustomValues}}
+    <p>{{custom_field_tag_with_label "time_entry" $v}}</p>
+  {{end}}
+  {{call_hook "view_timelog_edit_form_bottom"}}
+</div>
+
+{{define "timelog/_form#js"}}
+
+  $(document).ready(function(){
+    $('#time_entry_project_id').change(function(){
+      $('#time_entry_issue_id').val('');
+    });
+    $('#time_entry_project_id, #time_entry_issue_id').change(function(){
+      $.ajax({
+        url: '{{j .FormJS}}',
+        type: 'post',
+        data: $(this).closest('form').serialize()
+      });
+    });
+  });
+
+  observeAutocompleteField('time_entry_issue_id',
+    function(request, callback) {
+      var url = '{{j "/issues/auto_complete"}}';
+      var data = {
+        term: request.term
+      };
+      var project_id;
+      {{if .AutocompleteProjectID}}
+      project_id = '{{.AutocompleteProjectID}}';
+      {{else}}
+      project_id = $('#time_entry_project_id').val();
+      {{end}}
+      if(project_id){
+        data['project_id'] = project_id;
+      } else {
+        data['scope'] = 'all';
+      }
+
+      $.get(url, data, null, 'json')
+        .done(function(data){
+          callback(data);
+        })
+        .fail(function(jqXHR, status, error){
+          callback([]);
+        });
+    },
+    {
+      select: function(event, ui) {
+        $('#time_entry_issue').text('');
+        $('#time_entry_issue_id').val(ui.item.value).change();
+      }
+    }
+  );
+{{end}}
+{{javascript_tag (capture "timelog/_form#js" $d) -}}

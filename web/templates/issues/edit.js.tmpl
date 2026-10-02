@@ -1,0 +1,14 @@
+replaceIssueFormWith('{{j (partial "issues/form" .)}}');
+{{if .CanLogTime}}
+  $('#log_time').show();
+{{else}}
+  $('#log_time').hide();
+{{end}}
+
+{{if .V.M.NotesAddable}}
+  $('#add_notes').show();
+  $('#add_attachments').show();
+{{else}}
+  $('#add_notes').hide();
+  $('#add_attachments').hide();
+{{end}}

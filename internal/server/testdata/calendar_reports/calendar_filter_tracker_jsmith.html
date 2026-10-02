@@ -1,0 +1,510 @@
+<title>Calendar - Redmine</title>
+----
+<!-- page specific tags -->
+<script>
+//<![CDATA[
+var datepickerOptions={dateFormat: 'yy-mm-dd', firstDay: 0, showOn: 'button', buttonImageOnly: true, buttonImage: '/assets/calendar-DIGEST.png', showButtonPanel: true, showWeek: true, showOtherMonths: true, selectOtherMonths: true, changeMonth: true, changeYear: true, beforeShow: beforeShowDatePicker};
+//]]>
+</script><script src="/assets/context_menu-DIGEST.js"></script><link rel="stylesheet" href="/assets/context_menu-DIGEST.css" media="screen" /></head>
+----
+<div id="main" class="collapsiblesidebar">
+  <script>
+//<![CDATA[
+$('#main.collapsiblesidebar').collapsibleSidebar();
+//]]>
+</script>
+    <div id="sidebar">
+          <div id="sidebar-switch-panel" style="visibility: hidden;">
+            <a id="sidebar-switch-button" class="" href="#">
+              <svg class="s20 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--chevrons-right"></use></svg></a>
+          </div>
+          <script>
+//<![CDATA[
+$('#sidebar-switch-panel').css('visibility', 'visible');
+//]]>
+</script>
+        <div id="sidebar-wrapper">
+              
+
+
+<h3>Custom queries</h3>
+<ul class="queries"><li><a class="query" title="Description for Open issues by priority and tracker" data-disable-with="Open issues by priority and tracker" href="/issues/calendar?query_id=5">Open issues by priority and tracker</a></li>
+<li><a class="query" title="Description for Open issues grouped by list custom field" data-disable-with="Open issues grouped by list custom field" href="/issues/calendar?query_id=9">Open issues grouped by list custom field</a></li>
+<li><a class="query" title="Description for Open issues grouped by tracker" data-disable-with="Open issues grouped by tracker" href="/issues/calendar?query_id=6">Open issues grouped by tracker</a></li>
+<li><a class="query" title="Description for Public query for all projects" data-disable-with="Public query for all projects" href="/issues/calendar?query_id=4">Public query for all projects</a></li></ul>
+
+
+
+
+          
+        </div>
+    </div>
+
+    <div id="content">
+        
+        <h2>Calendar</h2>
+
+
+<form id="query_form" action="/issues/calendar" accept-charset="UTF-8" name="query_form-RANDOM" method="get">
+<input type="hidden" name="set_filter" id="set_filter" value="1" autocomplete="off" />
+<input type="hidden" name="calendar" id="calendar" value="1" autocomplete="off" />
+
+<div id="query_form_with_buttons" class="hide-when-print">
+<div id="query_form_content">
+  <fieldset id="filters" class="collapsible ">
+    <legend onclick="toggleFieldset(this);" class="icon icon-expanded">
+      <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--angle-down"></use></svg>
+      Filters
+    </legend>
+    <div style="">
+      <script>
+//<![CDATA[
+
+var operatorLabels = {"=":"is","!":"is not","o":"open","c":"closed","!*":"none","*":"any","\u003e=":"\u003e=","\u003c=":"\u003c=","\u003e\u003c":"between","\u003ct+":"in less than","\u003et+":"in more than","\u003e\u003ct+":"in the next","t+":"in","nd":"tomorrow","t":"today","ld":"yesterday","nw":"next week","w":"this week","lw":"last week","l2w":"last 2 weeks","nm":"next month","m":"this month","lm":"last month","y":"this year","\u003et-":"less than days ago","\u003ct-":"more than days ago","\u003e\u003ct-":"in the past","t-":"days ago","~":"contains","!~":"doesn't contain","*~":"contains any of","^":"starts with","$":"ends with","=p":"any issues in project","=!p":"any issues not in project","!p":"no issues in project","*o":"any open issues","!o":"no open issues","ev":"has been","!ev":"has never been","cf":"changed from"};
+var operatorByType = {"list":["=","!"],"list_with_history":["=","!","ev","!ev","cf"],"list_status":["o","=","!","ev","!ev","cf","c","*"],"list_optional":["=","!","!*","*"],"list_optional_with_history":["=","!","ev","!ev","cf","!*","*"],"list_subprojects":["*","!*","=","!"],"date":["=","\u003e=","\u003c=","\u003e\u003c","\u003ct+","\u003et+","\u003e\u003ct+","t+","nd","t","ld","nw","w","lw","l2w","nm","m","lm","y","\u003et-","\u003ct-","\u003e\u003ct-","t-","!*","*"],"date_past":["=","\u003e=","\u003c=","\u003e\u003c","\u003et-","\u003ct-","\u003e\u003ct-","t-","t","ld","w","lw","l2w","m","lm","y","!*","*"],"string":["~","*~","=","!~","!","^","$","!*","*"],"text":["~","*~","!~","^","$","!*","*"],"search":["~","*~","!~"],"integer":["=","\u003e=","\u003c=","\u003e\u003c","!*","*"],"float":["=","\u003e=","\u003c=","\u003e\u003c","!*","*"],"relation":["=","!","=p","=!p","!p","*o","!o","!*","*"],"tree":["=","~","!*","*"]};
+var availableFilters = {"status_id":{"type":"list_status","name":"Status","remote":true},"project_id":{"type":"list","name":"Project","remote":true},"tracker_id":{"type":"list_with_history","name":"Tracker","values":[["Bug","1"],["Feature request","2"],["Support request","3"]]},"priority_id":{"type":"list_with_history","name":"Priority","values":[["Low","4"],["Normal","5"],["High","6"],["Urgent","7"],["Immediate","8"],["Inactive Priority","15"]]},"author_id":{"type":"list","name":"Author","remote":true},"author.group":{"type":"list","name":"Author's Group","remote":true},"author.role":{"type":"list","name":"Author's Role","remote":true},"assigned_to_id":{"type":"list_optional_with_history","name":"Assignee","remote":true},"member_of_group":{"type":"list_optional","name":"Assignee's group","remote":true},"assigned_to_role":{"type":"list_optional","name":"Assignee's role","remote":true},"fixed_version_id":{"type":"list_optional_with_history","name":"Target version","remote":true},"fixed_version.due_date":{"type":"date","name":"Target version's Due date","values":null},"fixed_version.status":{"type":"list","name":"Target version's Status","values":[["open","open"],["locked","locked"],["closed","closed"]]},"subject":{"type":"text","name":"Subject","values":null},"description":{"type":"text","name":"Description","values":null},"notes":{"type":"text","name":"Notes","values":null},"created_on":{"type":"date_past","name":"Created","values":null},"updated_on":{"type":"date_past","name":"Updated","values":null},"closed_on":{"type":"date_past","name":"Closed","values":null},"start_date":{"type":"date","name":"Start date","values":null},"due_date":{"type":"date","name":"Due date","values":null},"estimated_hours":{"type":"float","name":"Estimated time","values":null},"spent_time":{"type":"float","name":"Spent time","values":null},"done_ratio":{"type":"integer","name":"% Done","values":null},"is_private":{"type":"list","name":"Private","values":[["yes","1"],["no","0"]]},"attachment":{"type":"text","name":"File","values":null},"attachment_description":{"type":"text","name":"File description","values":null},"watcher_id":{"type":"list","name":"Watcher","remote":true},"updated_by":{"type":"list","name":"Updated by","remote":true},"last_updated_by":{"type":"list","name":"Last updated by","remote":true},"project.status":{"type":"list","name":"Project's Status","remote":true},"cf_2":{"type":"string","name":"Searchable field","values":null},"cf_1":{"type":"list_optional","name":"Database","remote":true},"cf_9":{"type":"date","name":"Project 1 cf","values":null},"project.cf_3":{"type":"list_optional","name":"Project's Development status","remote":true},"relates":{"type":"relation","name":"Related to","remote":true},"duplicates":{"type":"relation","name":"Is duplicate of","remote":true},"duplicated":{"type":"relation","name":"Has duplicate","remote":true},"blocks":{"type":"relation","name":"Blocks","remote":true},"blocked":{"type":"relation","name":"Blocked by","remote":true},"precedes":{"type":"relation","name":"Precedes","remote":true},"follows":{"type":"relation","name":"Follows","remote":true},"copied_to":{"type":"relation","name":"Copied to","remote":true},"copied_from":{"type":"relation","name":"Copied from","remote":true},"parent_id":{"type":"tree","name":"Parent task","values":null},"child_id":{"type":"tree","name":"Subtasks","values":null},"issue_id":{"type":"integer","name":"Issue","values":null},"any_searchable":{"type":"search","name":"Any searchable text","values":null}};
+var labelDayPlural = "days";
+
+var filtersUrl = "\/queries\/filter?type=IssueQuery";
+
+$(document).ready(function(){
+  initFilters();
+  addFilter("tracker_id", "=", ["1"]);
+});
+
+//]]>
+</script>
+<div id="filters-table">
+</div>
+
+<div class="add-filter">
+<label for="add_filter_select">Add filter</label>
+<select id="add_filter_select"><option value=""></option>
+<option value="status_id">Status</option>
+<option value="project_id">Project</option>
+<option value="tracker_id">Tracker</option>
+<option value="priority_id">Priority</option>
+<option value="author_id">Author</option>
+<option value="assigned_to_id">Assignee</option>
+<option value="fixed_version_id">Target version</option>
+<option value="done_ratio">% Done</option>
+<option value="is_private">Private</option>
+<option value="watcher_id">Watcher</option>
+<option value="updated_by">Updated by</option>
+<option value="last_updated_by">Last updated by</option>
+<option value="cf_1">Database</option>
+<option value="issue_id">Issue</option><optgroup label="Text"><option value="subject">Subject</option>
+<option value="description">Description</option>
+<option value="notes">Notes</option>
+<option value="cf_2">Searchable field</option>
+<option value="any_searchable">Any searchable text</option></optgroup><optgroup label="Date"><option value="created_on">Created</option>
+<option value="updated_on">Updated</option>
+<option value="closed_on">Closed</option>
+<option value="start_date">Start date</option>
+<option value="due_date">Due date</option>
+<option value="cf_9">Project 1 cf</option></optgroup><optgroup label="Time tracking"><option value="estimated_hours">Estimated time</option>
+<option value="spent_time">Spent time</option></optgroup><optgroup label="File"><option value="attachment">File</option>
+<option value="attachment_description">File description</option></optgroup><optgroup label="Author"><option value="author.group">Author&#39;s Group</option>
+<option value="author.role">Author&#39;s Role</option></optgroup><optgroup label="Assignee"><option value="member_of_group">Assignee&#39;s group</option>
+<option value="assigned_to_role">Assignee&#39;s role</option></optgroup><optgroup label="Target version"><option value="fixed_version.due_date">Target version&#39;s Due date</option>
+<option value="fixed_version.status">Target version&#39;s Status</option></optgroup><optgroup label="Project"><option value="project.status">Project&#39;s Status</option>
+<option value="project.cf_3">Project&#39;s Development status</option></optgroup><optgroup label="Relations"><option value="relates">Related to</option>
+<option value="duplicates">Is duplicate of</option>
+<option value="duplicated">Has duplicate</option>
+<option value="blocks">Blocks</option>
+<option value="blocked">Blocked by</option>
+<option value="precedes">Precedes</option>
+<option value="follows">Follows</option>
+<option value="copied_to">Copied to</option>
+<option value="copied_from">Copied from</option>
+<option value="parent_id">Parent task</option>
+<option value="child_id">Subtasks</option></optgroup></select>
+</div>
+
+<input type="hidden" name="f[]" id="f_" value="" autocomplete="off" />
+
+    </div>
+  </fieldset>
+</div>
+
+<span class="contextual pagination">
+  <ul class="pages">
+    <li class="previous page">
+      <a accesskey="p" href="/issues/calendar?f%5B%5D=tracker_id&amp;month=12&amp;op%5Btracker_id%5D=%3D&amp;set_filter=1&amp;v%5Btracker_id%5D%5B%5D=1&amp;year=2025">« December 2025</a>
+    </li><li class="next page">
+      <a accesskey="n" href="/issues/calendar?f%5B%5D=tracker_id&amp;month=2&amp;op%5Btracker_id%5D=%3D&amp;set_filter=1&amp;v%5Btracker_id%5D%5B%5D=1&amp;year=2026">February »</a>
+    </li>
+  </ul>
+</span>
+
+<p class="buttons">
+  <label for="month">Month</label>
+  <select id="month" name="month">
+<option value="1" selected="selected">January</option>
+<option value="2">February</option>
+<option value="3">March</option>
+<option value="4">April</option>
+<option value="5">May</option>
+<option value="6">June</option>
+<option value="7">July</option>
+<option value="8">August</option>
+<option value="9">September</option>
+<option value="10">October</option>
+<option value="11">November</option>
+<option value="12">December</option>
+</select>
+
+  <label for="year">Year</label>
+  <select id="year" name="year">
+<option value="2021">2021</option>
+<option value="2022">2022</option>
+<option value="2023">2023</option>
+<option value="2024">2024</option>
+<option value="2025">2025</option>
+<option value="2026" selected="selected">2026</option>
+<option value="2027">2027</option>
+<option value="2028">2028</option>
+<option value="2029">2029</option>
+<option value="2030">2030</option>
+<option value="2031">2031</option>
+</select>
+
+
+  <a href="#" onclick="$(&quot;#query_form&quot;).submit(); return false;" class="icon icon-checked"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--checked"></use></svg><span class="icon-label">Apply</span></a>
+  <a class="icon icon-reload" href="/issues/calendar?set_filter=1"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--reload"></use></svg><span class="icon-label">Clear</span></a>
+    <a href="#" onclick="$(&#39;#query_form&#39;).attr(&#39;action&#39;, &#39;/queries/new&#39;).submit();; return false;" class="icon icon-save"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--save"></use></svg><span class="icon-label">Save custom query</span></a>
+</p>
+</div>
+</form>
+
+<form data-cm-url="/issues/context_menu" action="/issues/calendar" accept-charset="UTF-8" name="form-RANDOM" method="post"><input type="hidden" name="authenticity_token" value="{{CSRF}}" autocomplete="off" /><input type="hidden" name="back_url" value="/issues/calendar?f%5B%5D=tracker_id&amp;op%5Btracker_id%5D=%3D&amp;set_filter=1&amp;v%5Btracker_id%5D%5B%5D=1" autocomplete="off" />
+<ul class="cal">
+  <li scope="col" title="Week" class="calhead week-number"></li>
+    <li scope="col" class="calhead">Sunday</li>
+    <li scope="col" class="calhead">Monday</li>
+    <li scope="col" class="calhead">Tuesday</li>
+    <li scope="col" class="calhead">Wednesday</li>
+    <li scope="col" class="calhead">Thursday</li>
+    <li scope="col" class="calhead">Friday</li>
+    <li scope="col" class="calhead">Saturday</li>
+    <li class='week-number'>
+      <span class="label-week">Week</span> 1
+    </li>
+    <li class="other-month nwday calbody">
+      <p class="day-num">28
+        <span class="abbr-day">(Sun)</span>
+      </p>
+    </li>
+    <li class="other-month calbody">
+      <p class="day-num">29
+        <span class="abbr-day">(Mon)</span>
+      </p>
+    </li>
+    <li class="other-month calbody">
+      <p class="day-num">30
+        <span class="abbr-day">(Tue)</span>
+      </p>
+    </li>
+    <li class="other-month calbody">
+      <p class="day-num">31
+        <span class="abbr-day">(Wed)</span>
+      </p>
+          <div class="issue tracker-1 status-1 priority-4 priority-lowest overdue behind-schedule created-by-me tooltip hascontextmenu starting">
+            eCookbook -
+            <svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--bullet-go"></use></svg>
+            
+            
+            <a class="issue tracker-1 status-1 priority-4 priority-lowest overdue behind-schedule created-by-me" href="/issues/3">Bug #3</a>: Error 281 when updating a r...
+            <span class="tip"><a class="issue tracker-1 status-1 priority-4 priority-lowest overdue behind-schedule created-by-me" href="/issues/3">Bug #3</a>: Error 281 when updating a recipe<br /><br /><strong>Project</strong>: <a href="/projects/ecookbook">eCookbook</a><br /><strong>Status</strong>: New<br /><strong>Start date</strong>: 12/31/2025<br /><strong>Due date</strong>: 01/10/2026<br /><strong>Assignee</strong>: <span role="img" class="avatar-color-3 s13 avatar" title="Assignee">DL</span> Dave Lopper<br /><strong>Priority</strong>: Low</span>
+            <input type="checkbox" name="ids[]" value="3" style="display:none;" />
+</div>    </li>
+    <li class="this-month calbody">
+      <p class="day-num">1
+        <span class="abbr-day">(Thu)</span>
+      </p>
+    </li>
+    <li class="this-month calbody">
+      <p class="day-num">2
+        <span class="abbr-day">(Fri)</span>
+      </p>
+    </li>
+    <li class="this-month nwday calbody">
+      <p class="day-num">3
+        <span class="abbr-day">(Sat)</span>
+      </p>
+    </li>
+    <li class='week-number'>
+      <span class="label-week">Week</span> 2
+    </li>
+    <li class="this-month nwday calbody">
+      <p class="day-num">4
+        <span class="abbr-day">(Sun)</span>
+      </p>
+    </li>
+    <li class="this-month calbody">
+      <p class="day-num">5
+        <span class="abbr-day">(Mon)</span>
+      </p>
+          <div class="issue tracker-1 status-1 priority-5 priority-default behind-schedule created-by-me tooltip hascontextmenu starting">
+            eCookbook -
+            <svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--bullet-go"></use></svg>
+            
+            
+            <a class="issue tracker-1 status-1 priority-5 priority-default behind-schedule created-by-me" href="/issues/7">Bug #7</a>: Issue due today
+            <span class="tip"><a class="issue tracker-1 status-1 priority-5 priority-default behind-schedule created-by-me" href="/issues/7">Bug #7</a>: Issue due today<br /><br /><strong>Project</strong>: <a href="/projects/ecookbook">eCookbook</a><br /><strong>Status</strong>: New<br /><strong>Start date</strong>: 01/05/2026<br /><strong>Due date</strong>: 01/15/2026<br /><strong>Assignee</strong>:  <br /><strong>Priority</strong>: Normal</span>
+            <input type="checkbox" name="ids[]" value="7" style="display:none;" />
+</div>    </li>
+    <li class="this-month calbody">
+      <p class="day-num">6
+        <span class="abbr-day">(Tue)</span>
+      </p>
+    </li>
+    <li class="this-month calbody">
+      <p class="day-num">7
+        <span class="abbr-day">(Wed)</span>
+      </p>
+    </li>
+    <li class="this-month calbody">
+      <p class="day-num">8
+        <span class="abbr-day">(Thu)</span>
+      </p>
+    </li>
+    <li class="this-month calbody">
+      <p class="day-num">9
+        <span class="abbr-day">(Fri)</span>
+      </p>
+    </li>
+    <li class="this-month nwday calbody">
+      <p class="day-num">10
+        <span class="abbr-day">(Sat)</span>
+      </p>
+          <div class="issue tracker-1 status-1 priority-4 priority-lowest overdue behind-schedule created-by-me tooltip hascontextmenu ending">
+            eCookbook -
+            
+            <svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--bullet-end"></use></svg>
+            
+            <a class="issue tracker-1 status-1 priority-4 priority-lowest overdue behind-schedule created-by-me" href="/issues/3">Bug #3</a>: Error 281 when updating a r...
+            <span class="tip"><a class="issue tracker-1 status-1 priority-4 priority-lowest overdue behind-schedule created-by-me" href="/issues/3">Bug #3</a>: Error 281 when updating a recipe<br /><br /><strong>Project</strong>: <a href="/projects/ecookbook">eCookbook</a><br /><strong>Status</strong>: New<br /><strong>Start date</strong>: 12/31/2025<br /><strong>Due date</strong>: 01/10/2026<br /><strong>Assignee</strong>: <span role="img" class="avatar-color-3 s13 avatar" title="Assignee">DL</span> Dave Lopper<br /><strong>Priority</strong>: Low</span>
+            <input type="checkbox" name="ids[]" value="3" style="display:none;" />
+</div>    </li>
+    <li class='week-number'>
+      <span class="label-week">Week</span> 3
+    </li>
+    <li class="this-month nwday calbody">
+      <p class="day-num">11
+        <span class="abbr-day">(Sun)</span>
+      </p>
+    </li>
+    <li class="this-month calbody">
+      <p class="day-num">12
+        <span class="abbr-day">(Mon)</span>
+      </p>
+    </li>
+    <li class="this-month calbody">
+      <p class="day-num">13
+        <span class="abbr-day">(Tue)</span>
+      </p>
+    </li>
+    <li class="this-month calbody">
+      <p class="day-num">14
+        <span class="abbr-day">(Wed)</span>
+      </p>
+          <div class="issue tracker-1 status-5 priority-5 priority-default closed tooltip hascontextmenu starting">
+            eCookbook -
+            <svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--bullet-go"></use></svg>
+            
+            
+            <a class="issue tracker-1 status-5 priority-5 priority-default closed" href="/issues/12">Bug #12</a>: Closed issue on a locked ve...
+            <span class="tip"><a class="issue tracker-1 status-5 priority-5 priority-default closed" href="/issues/12">Bug #12</a>: Closed issue on a locked version<br /><br /><strong>Project</strong>: <a href="/projects/ecookbook">eCookbook</a><br /><strong>Status</strong>: Closed (01/14/2026)<br /><strong>Start date</strong>: 01/14/2026<br /><strong>Due date</strong>: <br /><strong>Assignee</strong>:  <br /><strong>Priority</strong>: Normal</span>
+            <input type="checkbox" name="ids[]" value="12" style="display:none;" />
+</div>          <div class="issue tracker-1 status-5 priority-5 priority-default closed created-by-me tooltip hascontextmenu starting">
+            eCookbook -
+            <svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--bullet-go"></use></svg>
+            
+            
+            <a class="issue tracker-1 status-5 priority-5 priority-default closed created-by-me" href="/issues/11">Bug #11</a>: Closed issue on a closed ve...
+            <span class="tip"><a class="issue tracker-1 status-5 priority-5 priority-default closed created-by-me" href="/issues/11">Bug #11</a>: Closed issue on a closed version<br /><br /><strong>Project</strong>: <a href="/projects/ecookbook">eCookbook</a><br /><strong>Status</strong>: Closed (01/14/2026)<br /><strong>Start date</strong>: 01/14/2026<br /><strong>Due date</strong>: <br /><strong>Assignee</strong>:  <br /><strong>Priority</strong>: Normal</span>
+            <input type="checkbox" name="ids[]" value="11" style="display:none;" />
+</div>          <div class="issue tracker-1 status-1 priority-4 priority-lowest behind-schedule created-by-me tooltip hascontextmenu starting">
+            eCookbook -
+            <svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--bullet-go"></use></svg>
+            
+            
+            <a class="issue tracker-1 status-1 priority-4 priority-lowest behind-schedule created-by-me" href="/issues/1">Bug #1</a>: Cannot print recipes
+            <span class="tip"><a class="issue tracker-1 status-1 priority-4 priority-lowest behind-schedule created-by-me" href="/issues/1">Bug #1</a>: Cannot print recipes<br /><br /><strong>Project</strong>: <a href="/projects/ecookbook">eCookbook</a><br /><strong>Status</strong>: New<br /><strong>Start date</strong>: 01/14/2026<br /><strong>Due date</strong>: 01/25/2026<br /><strong>Assignee</strong>:  <br /><strong>Priority</strong>: Low</span>
+            <input type="checkbox" name="ids[]" value="1" style="display:none;" />
+</div>    </li>
+    <li class="this-month today calbody">
+      <p class="day-num">15
+        <span class="abbr-day">(Thu)</span>
+      </p>
+          <div class="issue tracker-1 status-1 priority-5 priority-default behind-schedule created-by-me tooltip hascontextmenu ending">
+            eCookbook -
+            
+            <svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--bullet-end"></use></svg>
+            
+            <a class="issue tracker-1 status-1 priority-5 priority-default behind-schedule created-by-me" href="/issues/7">Bug #7</a>: Issue due today
+            <span class="tip"><a class="issue tracker-1 status-1 priority-5 priority-default behind-schedule created-by-me" href="/issues/7">Bug #7</a>: Issue due today<br /><br /><strong>Project</strong>: <a href="/projects/ecookbook">eCookbook</a><br /><strong>Status</strong>: New<br /><strong>Start date</strong>: 01/05/2026<br /><strong>Due date</strong>: 01/15/2026<br /><strong>Assignee</strong>:  <br /><strong>Priority</strong>: Normal</span>
+            <input type="checkbox" name="ids[]" value="7" style="display:none;" />
+</div>          <div class="issue tracker-1 status-1 priority-5 priority-default behind-schedule created-by-me tooltip hascontextmenu starting">
+            Private child of eCookbook -
+            <svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--bullet-go"></use></svg>
+            
+            
+            <a class="issue tracker-1 status-1 priority-5 priority-default behind-schedule created-by-me" href="/issues/10">Bug #10</a>: Issue Doing the Blocking
+            <span class="tip"><a class="issue tracker-1 status-1 priority-5 priority-default behind-schedule created-by-me" href="/issues/10">Bug #10</a>: Issue Doing the Blocking<br /><br /><strong>Project</strong>: <a href="/projects/private-child">Private child of eCookbook</a><br /><strong>Status</strong>: New<br /><strong>Start date</strong>: 01/15/2026<br /><strong>Due date</strong>: 01/16/2026<br /><strong>Assignee</strong>:  <br /><strong>Priority</strong>: Normal</span>
+            <input type="checkbox" name="ids[]" value="10" style="display:none;" />
+</div>          <div class="issue tracker-1 status-1 priority-5 priority-default behind-schedule created-by-me tooltip hascontextmenu starting">
+            Private child of eCookbook -
+            <svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--bullet-go"></use></svg>
+            
+            
+            <a class="issue tracker-1 status-1 priority-5 priority-default behind-schedule created-by-me" href="/issues/9">Bug #9</a>: Blocked Issue
+            <span class="tip"><a class="issue tracker-1 status-1 priority-5 priority-default behind-schedule created-by-me" href="/issues/9">Bug #9</a>: Blocked Issue<br /><br /><strong>Project</strong>: <a href="/projects/private-child">Private child of eCookbook</a><br /><strong>Status</strong>: New<br /><strong>Start date</strong>: 01/15/2026<br /><strong>Due date</strong>: 01/16/2026<br /><strong>Assignee</strong>:  <br /><strong>Priority</strong>: Normal</span>
+            <input type="checkbox" name="ids[]" value="9" style="display:none;" />
+</div>          <div class="issue tracker-1 status-1 priority-4 priority-lowest behind-schedule created-by-me tooltip hascontextmenu starting">
+            Private child of eCookbook -
+            <svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--bullet-go"></use></svg>
+            
+            
+            <a class="issue tracker-1 status-1 priority-4 priority-lowest behind-schedule created-by-me" href="/issues/6">Bug #6</a>: Issue of a private subproject
+            <span class="tip"><a class="issue tracker-1 status-1 priority-4 priority-lowest behind-schedule created-by-me" href="/issues/6">Bug #6</a>: Issue of a private subproject<br /><br /><strong>Project</strong>: <a href="/projects/private-child">Private child of eCookbook</a><br /><strong>Status</strong>: New<br /><strong>Start date</strong>: 01/15/2026<br /><strong>Due date</strong>: 01/16/2026<br /><strong>Assignee</strong>:  <br /><strong>Priority</strong>: Low</span>
+            <input type="checkbox" name="ids[]" value="6" style="display:none;" />
+</div>    </li>
+    <li class="this-month calbody">
+      <p class="day-num">16
+        <span class="abbr-day">(Fri)</span>
+      </p>
+          <div class="issue tracker-1 status-1 priority-5 priority-default behind-schedule created-by-me tooltip hascontextmenu ending">
+            Private child of eCookbook -
+            
+            <svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--bullet-end"></use></svg>
+            
+            <a class="issue tracker-1 status-1 priority-5 priority-default behind-schedule created-by-me" href="/issues/10">Bug #10</a>: Issue Doing the Blocking
+            <span class="tip"><a class="issue tracker-1 status-1 priority-5 priority-default behind-schedule created-by-me" href="/issues/10">Bug #10</a>: Issue Doing the Blocking<br /><br /><strong>Project</strong>: <a href="/projects/private-child">Private child of eCookbook</a><br /><strong>Status</strong>: New<br /><strong>Start date</strong>: 01/15/2026<br /><strong>Due date</strong>: 01/16/2026<br /><strong>Assignee</strong>:  <br /><strong>Priority</strong>: Normal</span>
+            <input type="checkbox" name="ids[]" value="10" style="display:none;" />
+</div>          <div class="issue tracker-1 status-1 priority-5 priority-default behind-schedule created-by-me tooltip hascontextmenu ending">
+            Private child of eCookbook -
+            
+            <svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--bullet-end"></use></svg>
+            
+            <a class="issue tracker-1 status-1 priority-5 priority-default behind-schedule created-by-me" href="/issues/9">Bug #9</a>: Blocked Issue
+            <span class="tip"><a class="issue tracker-1 status-1 priority-5 priority-default behind-schedule created-by-me" href="/issues/9">Bug #9</a>: Blocked Issue<br /><br /><strong>Project</strong>: <a href="/projects/private-child">Private child of eCookbook</a><br /><strong>Status</strong>: New<br /><strong>Start date</strong>: 01/15/2026<br /><strong>Due date</strong>: 01/16/2026<br /><strong>Assignee</strong>:  <br /><strong>Priority</strong>: Normal</span>
+            <input type="checkbox" name="ids[]" value="9" style="display:none;" />
+</div>          <div class="issue tracker-1 status-1 priority-4 priority-lowest behind-schedule created-by-me tooltip hascontextmenu ending">
+            Private child of eCookbook -
+            
+            <svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--bullet-end"></use></svg>
+            
+            <a class="issue tracker-1 status-1 priority-4 priority-lowest behind-schedule created-by-me" href="/issues/6">Bug #6</a>: Issue of a private subproject
+            <span class="tip"><a class="issue tracker-1 status-1 priority-4 priority-lowest behind-schedule created-by-me" href="/issues/6">Bug #6</a>: Issue of a private subproject<br /><br /><strong>Project</strong>: <a href="/projects/private-child">Private child of eCookbook</a><br /><strong>Status</strong>: New<br /><strong>Start date</strong>: 01/15/2026<br /><strong>Due date</strong>: 01/16/2026<br /><strong>Assignee</strong>:  <br /><strong>Priority</strong>: Low</span>
+            <input type="checkbox" name="ids[]" value="6" style="display:none;" />
+</div>    </li>
+    <li class="this-month nwday calbody">
+      <p class="day-num">17
+        <span class="abbr-day">(Sat)</span>
+      </p>
+    </li>
+    <li class='week-number'>
+      <span class="label-week">Week</span> 4
+    </li>
+    <li class="this-month nwday calbody">
+      <p class="day-num">18
+        <span class="abbr-day">(Sun)</span>
+      </p>
+    </li>
+    <li class="this-month calbody">
+      <p class="day-num">19
+        <span class="abbr-day">(Mon)</span>
+      </p>
+    </li>
+    <li class="this-month calbody">
+      <p class="day-num">20
+        <span class="abbr-day">(Tue)</span>
+      </p>
+    </li>
+    <li class="this-month calbody">
+      <p class="day-num">21
+        <span class="abbr-day">(Wed)</span>
+      </p>
+    </li>
+    <li class="this-month calbody">
+      <p class="day-num">22
+        <span class="abbr-day">(Thu)</span>
+      </p>
+    </li>
+    <li class="this-month calbody">
+      <p class="day-num">23
+        <span class="abbr-day">(Fri)</span>
+      </p>
+    </li>
+    <li class="this-month nwday calbody">
+      <p class="day-num">24
+        <span class="abbr-day">(Sat)</span>
+      </p>
+    </li>
+    <li class='week-number'>
+      <span class="label-week">Week</span> 5
+    </li>
+    <li class="this-month nwday calbody">
+      <p class="day-num">25
+        <span class="abbr-day">(Sun)</span>
+      </p>
+          <div class="issue tracker-1 status-1 priority-4 priority-lowest behind-schedule created-by-me tooltip hascontextmenu ending">
+            eCookbook -
+            
+            <svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--bullet-end"></use></svg>
+            
+            <a class="issue tracker-1 status-1 priority-4 priority-lowest behind-schedule created-by-me" href="/issues/1">Bug #1</a>: Cannot print recipes
+            <span class="tip"><a class="issue tracker-1 status-1 priority-4 priority-lowest behind-schedule created-by-me" href="/issues/1">Bug #1</a>: Cannot print recipes<br /><br /><strong>Project</strong>: <a href="/projects/ecookbook">eCookbook</a><br /><strong>Status</strong>: New<br /><strong>Start date</strong>: 01/14/2026<br /><strong>Due date</strong>: 01/25/2026<br /><strong>Assignee</strong>:  <br /><strong>Priority</strong>: Low</span>
+            <input type="checkbox" name="ids[]" value="1" style="display:none;" />
+</div>    </li>
+    <li class="this-month calbody">
+      <p class="day-num">26
+        <span class="abbr-day">(Mon)</span>
+      </p>
+    </li>
+    <li class="this-month calbody">
+      <p class="day-num">27
+        <span class="abbr-day">(Tue)</span>
+      </p>
+    </li>
+    <li class="this-month calbody">
+      <p class="day-num">28
+        <span class="abbr-day">(Wed)</span>
+      </p>
+    </li>
+    <li class="this-month calbody">
+      <p class="day-num">29
+        <span class="abbr-day">(Thu)</span>
+      </p>
+    </li>
+    <li class="this-month calbody">
+      <p class="day-num">30
+        <span class="abbr-day">(Fri)</span>
+      </p>
+    </li>
+    <li class="this-month nwday calbody">
+      <p class="day-num">31
+        <span class="abbr-day">(Sat)</span>
+      </p>
+    </li>
+</ul>
+</form>
+
+
+
+
+<p class="legend cal">
+  <span class="starting"><svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--bullet-go"></use></svg><span class="icon-label">issue beginning this day</span></span>
+  <span class="ending"><svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--bullet-end"></use></svg><span class="icon-label">issue ending this day</span></span>
+  <span class="starting ending"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--bullet-go-end"></use></svg><span class="icon-label">issue beginning and ending this day</span></span>
+</p>
+
+
+
+        
+        <div style="clear:both;"></div>
+    </div>
+</div>
+<div id="footer">

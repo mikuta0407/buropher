@@ -69,9 +69,9 @@ func newRailsView(ctx *Context) *rails.View {
 	}
 	v.FormName = func(base string) string { return base + "-" + ctx.formNameSuffix() }
 	v.Translate = func(key string) string { return ctx.translate(key) }
-	// Redmine は load_defaults を使わないため embed_authenticity_token_in_remote_forms は nil:
-	// remote: true の form_tag には authenticity_token を埋め込み（nil は false ではない）、
-	// form_for には埋め込まない（!nil が真）。
+	// Rails 7.2 の既定値（config.action_view.embed_authenticity_token_in_remote_forms = nil）:
+	// remote: true の form_for には authenticity_token を埋め込まず、form_tag には埋め込む
+	// （form_tag は == false のときだけ省く）
 	v.EmbedAuthenticityTokenInRemoteForms = nil
 	return v
 }

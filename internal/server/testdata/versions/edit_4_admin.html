@@ -1,0 +1,55 @@
+<title>eCookbook Subproject 1 - Redmine</title>
+----
+<!-- page specific tags -->
+<script>
+//<![CDATA[
+var datepickerOptions={dateFormat: 'yy-mm-dd', firstDay: 0, showOn: 'button', buttonImageOnly: true, buttonImage: '/assets/calendar-DIGEST.png', showButtonPanel: true, showWeek: true, showOtherMonths: true, selectOtherMonths: true, changeMonth: true, changeYear: true, beforeShow: beforeShowDatePicker};
+//]]>
+</script></head>
+----
+<div id="main" class="nosidebar">
+  
+    <div id="sidebar">
+        <div id="sidebar-wrapper">
+          
+          
+        </div>
+    </div>
+
+    <div id="content">
+        
+        <h2>Version</h2>
+
+<form class="edit_version" id="edit_version_4" enctype="multipart/form-data" action="/versions/4" accept-charset="UTF-8" name="edit_version_4-RANDOM" method="post"><input type="hidden" name="_method" value="patch" autocomplete="off" /><input type="hidden" name="authenticity_token" value="{{CSRF}}" autocomplete="off" />
+
+
+
+<div class="box tabular">
+<p><label for="version_name">Name<span class="required"> *</span></label><input maxlength="60" size="60" type="text" value="2.0" name="version[name]" id="version_name" /></p>
+<p><label for="version_description">Description</label><input size="60" type="text" value="Future version on subproject" name="version[description]" id="version_description" /></p>
+  <p><label for="version_status">Status</label><select name="version[status]" id="version_status"><option selected="selected" value="open">open</option>
+<option value="locked">locked</option>
+<option value="closed">closed</option></select></p>
+<p><label for="version_wiki_page_title">Wiki page</label><input size="60" disabled="disabled" type="text" name="version[wiki_page_title]" id="version_wiki_page_title" /></p>
+<p><label for="version_effective_date">Due date</label><input max="9999-12-31" size="10" type="date" name="version[effective_date]" id="version_effective_date" /><script>
+//<![CDATA[
+$(function() { $('#version_effective_date').addClass('date').datepickerFallback(datepickerOptions); });
+//]]>
+</script></p>
+<p><label for="version_sharing">Sharing</label><select name="version[sharing]" id="version_sharing"><option value="none">Not shared</option>
+<option value="descendants">With subprojects</option>
+<option value="hierarchy">With project hierarchy</option>
+<option selected="selected" value="tree">With project tree</option>
+<option value="system">With all projects</option></select></p>
+
+
+</div>
+
+<input type="submit" name="commit" value="Save" data-disable-with="Save" />
+</form>
+
+        
+        <div style="clear:both;"></div>
+    </div>
+</div>
+<div id="footer">

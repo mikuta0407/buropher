@@ -1,0 +1,32 @@
+{{/* queries/_columns.html.erb（マイページのチケットブロック用。TODO(issues): queries/_columns と共通化する） */}}
+{{$avail := printf "available_%s" .tag_id}}
+{{$sel := printf "selected_%s" .tag_id}}
+
+<div class="query-columns">
+      {{label_tag $avail (l "description_available_columns")}}
+      {{select_tag "available_columns" .query.AvailableColumnsOptions (hash "id" $avail "multiple" true "size" 10 "ondblclick" (printf "moveOptions(this.form.%s, this.form.%s);" $avail $sel))}}
+</div>
+<div class="buttons">
+      <button type="button" class="move-right" onclick="moveOptions(this.form.{{$avail}}, this.form.{{$sel}});">{{sprite_icon "arrow-narrow-right" (hash "rtl" true)}}</button>
+      <button type="button" class="move-left" onclick="moveOptions(this.form.{{$sel}}, this.form.{{$avail}});">{{sprite_icon "arrow-narrow-left" (hash "rtl" true)}}</button>
+</div>
+<div class="query-columns">
+      {{label_tag $sel (l "description_selected_columns")}}
+      {{select_tag .tag_name .query.SelectedColumnsOptions (hash "id" $sel "multiple" true "size" 10 "ondblclick" (printf "moveOptions(this.form.%s, this.form.%s);" $sel $avail))}}
+</div>
+<div class="buttons">
+      <button type="button" onclick="moveOptionTop(this.form.{{$sel}});">&#8648;</button>
+      <button type="button" onclick="moveOptionUp(this.form.{{$sel}});">&#8593;</button>
+      <button type="button" onclick="moveOptionDown(this.form.{{$sel}});">&#8595;</button>
+      <button type="button" onclick="moveOptionBottom(this.form.{{$sel}});">&#8650;</button>
+</div>
+
+{{define "my/_query_columns#js"}}
+
+$(document).ready(function(){
+  $('.query-columns').closest('form').submit(function(){
+    $('#{{.sel}} option:not(:disabled)').prop('selected', true);
+  });
+});
+{{end}}
+{{javascript_tag (capture "my/_query_columns#js" (dict "sel" $sel))}}

@@ -1,0 +1,160 @@
+# 設定画面の更新（settings#edit の POST）と admin#default_configuration の互換シナリオ。
+# 状態を変えるため、共用の参照環境（3998）ではなく専用の参照インスタンスに対して、
+# 参照・候補とも実行前に reset して流すこと（-reset-ref / -reset-cand）。
+# ケースは記述順に依存する。
+name: settings_admin_write
+
+users:
+  admin: {login: admin, password: admin}
+
+normalize:
+  mask_text_selectors:
+    - "#footer"
+
+requests:
+  # ---- 一般 ----
+  - id: settings_general_update
+    path: /settings/edit
+    method: POST
+    user: admin
+    form:
+      settings[app_title]: "Buropher test"
+      settings[per_page_options]: "10,20,50"
+      settings[text_formatting]: "textile"
+      settings[cache_formatted_text]: "1"
+      settings[feeds_limit]: "abc"
+    expect_status: 302
+  - id: g01_settings
+    path: /settings
+    user: admin
+
+  # ---- 表示・認証（タブ付きのリダイレクト）----
+  - id: settings_display_update
+    path: /settings/edit?tab=display
+    method: POST
+    user: admin
+    form:
+      tab: display
+      settings[ui_theme]: "classic"
+      settings[date_format]: "%d/%m/%Y"
+      settings[user_format]: "lastname_comma_firstname"
+      settings[gravatar_enabled]: "1"
+      settings[gravatar_default]: "initials"
+    expect_status: 302
+  - id: settings_authentication_update
+    path: /settings/edit?tab=authentication
+    method: POST
+    user: admin
+    form:
+      tab: authentication
+      settings[self_registration]: "0"
+      settings[password_min_length]: "10"
+      settings[password_required_char_classes][]: ["", "uppercase", "digits"]
+      settings[session_lifetime]: "1440"
+      settings[twofa]: "0"
+    expect_status: 302
+  - id: g02_settings_tab_authentication
+    path: /settings?tab=authentication
+    user: admin
+
+  # ---- プロジェクト・チケット・作業時間（列の選択）----
+  - id: settings_projects_update
+    path: /settings/edit?tab=projects
+    method: POST
+    user: admin
+    form:
+      tab: projects
+      settings[default_projects_modules][]: ["", "issue_tracking", "wiki"]
+      settings[default_projects_tracker_ids][]: ["", "1", "3"]
+      settings[new_project_user_role_id]: "2"
+      settings[project_list_display_type]: "list"
+      settings[project_list_defaults][column_names][]: ["name", "status", "created_on"]
+    expect_status: 302
+  - id: settings_issues_update
+    path: /settings/edit?tab=issues
+    method: POST
+    user: admin
+    form:
+      tab: issues
+      settings[issue_list_default_columns][]: ["tracker", "status", "subject", "due_date"]
+      settings[issue_list_default_totals][]: ["", "estimated_hours", "spent_hours"]
+      settings[non_working_week_days][]: ["", "5", "6", "7"]
+      settings[issue_done_ratio_interval]: "5"
+    expect_status: 302
+  - id: settings_timelog_update
+    path: /settings/edit?tab=timelog
+    method: POST
+    user: admin
+    form:
+      tab: timelog
+      settings[timelog_required_fields][]: ["", "comments"]
+      settings[time_entry_list_defaults][column_names][]: ["", "spent_on", "user", "hours"]
+      settings[time_entry_list_defaults][totalable_names][]: [""]
+    expect_status: 302
+  - id: g03_settings
+    path: /settings
+    user: admin
+
+  # ---- 通知・メール受信・リポジトリ ----
+  - id: settings_notifications_update
+    path: /settings/edit?tab=notifications
+    method: POST
+    user: admin
+    form:
+      tab: notifications
+      settings[mail_from]: "redmine@example.org"
+      settings[notified_events][]: ["", "issue_added", "issue_note_added", "news_added"]
+      settings[emails_footer]: "Footer"
+    expect_status: 302
+  - id: settings_repositories_update
+    path: /settings/edit?tab=repositories
+    method: POST
+    user: admin
+    form:
+      tab: repositories
+      settings[enabled_scm][]: ["", "Git"]
+      settings[sys_api_enabled]: "1"
+      settings[sys_api_key]: "abcdefghij"
+      settings[commit_logtime_enabled]: "1"
+      settings[commit_update_keywords][keywords][]: ["fixes", "closes"]
+      settings[commit_update_keywords][status_id][]: ["3", "5"]
+      settings[commit_update_keywords][done_ratio][]: ["", "100"]
+      settings[commit_update_keywords][if_tracker_id][]: ["", "2"]
+    expect_status: 302
+  - id: g04_settings_tab_repositories
+    path: /settings?tab=repositories
+    user: admin
+
+  # ---- 検証エラー ----
+  - id: settings_invalid_mail_from
+    path: /settings/edit?tab=notifications
+    method: POST
+    user: admin
+    form:
+      tab: notifications
+      settings[mail_from]: "invalid address"
+      settings[plain_text_mail]: "1"
+  - id: settings_invalid_regexp_disabled
+    path: /settings/edit?tab=mail_handler
+    method: POST
+    user: admin
+    form:
+      tab: mail_handler
+      settings[mail_handler_enable_regex_delimiters]: "0"
+      settings[mail_handler_body_delimiters]: "Abc["
+    expect_status: 302
+  - id: g05_settings_tab_mail_handler
+    path: /settings?tab=mail_handler
+    user: admin
+
+  # ---- 既定の設定データ（既にあるので DataAlreadyLoaded のエラー）----
+  - id: admin_default_configuration
+    path: /admin/default_configuration
+    method: POST
+    user: admin
+    form:
+      lang: fr
+    expect_status: 302
+  - id: g06_admin
+    path: /admin
+    user: admin

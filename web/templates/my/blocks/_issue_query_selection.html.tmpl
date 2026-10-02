@@ -1,0 +1,19 @@
+<h3>
+  {{l "label_issue_plural"}}
+</h3>
+
+<div id="{{.block}}-settings">
+  {{form_tag "/my/page" (hash "remote" true)}}
+    <div class="box">
+      <p>
+        <label>
+          {{l "label_query"}}
+          {{select_tag (printf "settings[%s][query_id]" .block) (safe_concat (content_tag "option" "") .query_options)}}
+        </label>
+      </p>
+    </div>
+    <p>
+      {{submit_tag (l "button_save")}}
+    </p>
+  {{end_form}}
+</div>

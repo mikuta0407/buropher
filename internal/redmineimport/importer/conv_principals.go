@@ -155,22 +155,23 @@ func (im *imp) importAuthSources() error {
 				cfg = append(cfg, rubyyaml.MapItem{Key: k, Value: v})
 			}
 		}
-		put("host", r.strNull("host", true))
+		// 空文字列も保持する（Redmine のフォームは nil と "" で value 属性の有無が異なる）
+		put("host", r.strNull("host", false))
 		if p, ok := r.int("port"); ok {
 			put("port", p)
 		}
-		put("account", r.strNull("account", true))
-		put("base_dn", r.strNull("base_dn", true))
-		put("filter", r.strNull("filter", true))
+		put("account", r.strNull("account", false))
+		put("base_dn", r.strNull("base_dn", false))
+		put("filter", r.strNull("filter", false))
 		if to, ok := r.int("timeout"); ok {
 			put("timeout", to)
 		}
 		put("tls", r.bool("tls", false))
 		put("verify_peer", r.bool("verify_peer", true))
-		put("attr_login", r.strNull("attr_login", true))
-		put("attr_firstname", r.strNull("attr_firstname", true))
-		put("attr_lastname", r.strNull("attr_lastname", true))
-		put("attr_mail", r.strNull("attr_mail", true))
+		put("attr_login", r.strNull("attr_login", false))
+		put("attr_firstname", r.strNull("attr_firstname", false))
+		put("attr_lastname", r.strNull("attr_lastname", false))
+		put("attr_mail", r.strNull("attr_mail", false))
 		sec, _, err := im.secret(t, id, "account_password", r.Row["account_password"])
 		if err != nil {
 			return err
