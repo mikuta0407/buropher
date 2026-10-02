@@ -91,7 +91,7 @@ func isWordRune(r rune) bool {
 	return r == '_' || (r >= '0' && r <= '9') || (r >= 'a' && r <= 'z') || (r >= 'A' && r <= 'Z') || r > 0x7f
 }
 
-// translateDefault は l(key, :default => '', :locale => locale)。
+// translateDefault は l(key, :default => ”, :locale => locale)。
 func (r *receiver) translateDefault(locale, key string) string {
 	return i18n.RubyToS(r.h.bundle().TranslateDefault(locale, key, nil, ""))
 }

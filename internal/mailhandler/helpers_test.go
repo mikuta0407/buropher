@@ -49,7 +49,9 @@ func (n *recNotifier) deliveries() int {
 
 type recContent struct{ actions []string }
 
-func (n *recContent) Notify(_ context.Context, action string, _ any) { n.actions = append(n.actions, action) }
+func (n *recContent) Notify(_ context.Context, action string, _ any) {
+	n.actions = append(n.actions, action)
+}
 
 type accountMail struct {
 	user     *domain.User

@@ -80,3 +80,5 @@ func (c *tc) createTracker(name string) int64 {
 	c.must(err)
 	return id
 }
+
+func dbNow() db.Time { return db.NewTime(frozenNow) }
