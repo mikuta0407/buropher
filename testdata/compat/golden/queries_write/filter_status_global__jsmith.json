@@ -1,0 +1,29 @@
+status: 200
+content-type: application/json
+
+[
+  [
+    "New",
+    "1"
+  ],
+  [
+    "Assigned",
+    "2"
+  ],
+  [
+    "Resolved",
+    "3"
+  ],
+  [
+    "Feedback",
+    "4"
+  ],
+  [
+    "Closed",
+    "5"
+  ],
+  [
+    "Rejected",
+    "6"
+  ]
+]

@@ -1,0 +1,35 @@
+status: 200
+content-type: application/json
+
+[
+  [
+    "eCookbook - 2.0",
+    "3",
+    "open"
+  ],
+  [
+    "eCookbook Subproject 1 - 2.0",
+    "4",
+    "open"
+  ],
+  [
+    "Private child of eCookbook - Private Version of public subproject",
+    "6",
+    "open"
+  ],
+  [
+    "OnlineStore - Systemwide visible version",
+    "7",
+    "open"
+  ],
+  [
+    "eCookbook - 1.0",
+    "2",
+    "locked"
+  ],
+  [
+    "eCookbook - 0.1",
+    "1",
+    "closed"
+  ]
+]

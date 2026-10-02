@@ -1,0 +1,6 @@
+<h2>{{l "label_query"}}</h2>
+
+{{form_tag .qv.QueryPath (hash "method" "put" "id" "query-form")}}
+  {{partial "queries/form" (dict "F" .F "qv" .qv)}}
+  {{submit_tag (l "button_save")}}
+{{end_form}}
