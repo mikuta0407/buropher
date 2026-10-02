@@ -149,7 +149,7 @@ WHERE news_id = ? ORDER BY created_at, id`, newsID); err != nil {
 // InsertComment はコメントを作成し、news.comments_count を増やす（counter_cache）。
 func InsertComment(ctx context.Context, q db.Queryer, c *domain.Comment) error {
 	id, err := q.InsertReturningID(ctx, `INSERT INTO news_comments (news_id, author_id, content, created_at, updated_at) VALUES (?, ?, ?, ?, ?)`,
-		c.NewsID, c.AuthorID, nullStr(c.Content), db.NewTime(c.CreatedAt), db.NewTime(c.UpdatedAt))
+		c.NewsID, c.AuthorID, c.Content, db.NewTime(c.CreatedAt), db.NewTime(c.UpdatedAt))
 	if err != nil {
 		return err
 	}

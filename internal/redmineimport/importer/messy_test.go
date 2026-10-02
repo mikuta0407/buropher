@@ -168,8 +168,8 @@ func TestImportMessy(t *testing.T) {
 		if u := q1[int64](t, d, `SELECT user_id FROM issue_journals WHERE id = 102`); u != 6 {
 			t.Errorf("journal 102 user = %d", u)
 		}
-		if n := q1[*string](t, d, `SELECT notes FROM issue_journals WHERE id = 102`); n != nil {
-			t.Error("empty notes should be NULL")
+		if n := q1[*string](t, d, `SELECT notes FROM issue_journals WHERE id = 102`); n == nil || *n != "" {
+			t.Error("empty notes should stay ''")
 		}
 		// 工数
 		type te struct {

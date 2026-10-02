@@ -103,7 +103,7 @@ func DefaultDocumentCategoryID(ctx context.Context, q db.Queryer) (int64, error)
 // InsertDocument は documents 行を作成して d.ID を設定する。
 func InsertDocument(ctx context.Context, q db.Queryer, d *domain.Document) error {
 	id, err := q.InsertReturningID(ctx, `INSERT INTO documents (project_id, category_id, title, description, created_at) VALUES (?, ?, ?, ?, ?)`,
-		d.ProjectID, d.CategoryID, d.Title, nullStr(d.Description), db.NewTime(d.CreatedAt))
+		d.ProjectID, d.CategoryID, d.Title, d.Description, db.NewTime(d.CreatedAt))
 	if err != nil {
 		return err
 	}
@@ -114,7 +114,7 @@ func InsertDocument(ctx context.Context, q db.Queryer, d *domain.Document) error
 // UpdateDocument は category_id / title / description を保存する。
 func UpdateDocument(ctx context.Context, q db.Queryer, d *domain.Document) error {
 	_, err := q.Exec(ctx, `UPDATE documents SET category_id = ?, title = ?, description = ? WHERE id = ?`,
-		d.CategoryID, d.Title, nullStr(d.Description), d.ID)
+		d.CategoryID, d.Title, d.Description, d.ID)
 	return err
 }
 

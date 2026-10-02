@@ -72,14 +72,10 @@ VALUES ('issue', 'filter', ?, ?, ?, ?, ?, 20)`, format, pv, true, true, multiple
 	return id
 }
 
-// cvA はカスタム値を作る (” は NULL)。
+// cvA はカスタム値を作る (空文字列もそのまま保存する。D-17)。
 func cvA(tdb *testDB, cf int64, kind string, id int64, value string) {
 	tdb.t.Helper()
-	var v any
-	if value != "" {
-		v = value
-	}
-	tdb.exec(`INSERT INTO custom_values (customized_kind, customized_id, custom_field_id, value) VALUES (?, ?, ?, ?)`, kind, id, cf, v)
+	tdb.exec(`INSERT INTO custom_values (customized_kind, customized_id, custom_field_id, value) VALUES (?, ?, ?, ?)`, kind, id, cf, value)
 }
 
 func cfFilterA(cf int64) string { return "cf_" + itoa(cf) }
@@ -417,8 +413,8 @@ func TestQueryOperatorNoneForBlankText(t *testing.T) {
 
 func TestQueryOperatorAnyForBlankText(t *testing.T) {
 	forEachDB(t, func(t *testing.T, tdb *testDB) {
-		// update_all(description: '') — buropher は '' を NULL として保存する
-		tdb.exec(`UPDATE issues SET description = NULL WHERE id IN (1, 2)`)
+		// update_all(description: '')
+		tdb.exec(`UPDATE issues SET description = '' WHERE id IN (1, 2)`)
 		q := tdb.newQuery(0, KindIssue, 0)
 		mustFilter(t, q, "status_id", "*", "")
 		mustFilter(t, q, "description", "*", "")

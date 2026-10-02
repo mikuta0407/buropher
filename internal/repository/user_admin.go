@@ -122,7 +122,7 @@ func InsertUser(ctx context.Context, q db.Queryer, u *domain.User, mail string, 
 	}
 	if _, err := q.Exec(ctx, `INSERT INTO user_accounts (principal_id, login, password_hash, password_changed_at, must_change_password, admin, language, auth_source_id)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, id, u.Login, nullString(u.PasswordHash), nullTimePtr(u.PasswordChangedAt), u.MustChangePassword, u.AdminFlag,
-		nullString(u.Language), u.AuthSourceID); err != nil {
+		u.Language, u.AuthSourceID); err != nil {
 		return 0, err
 	}
 	if mail != "" {
@@ -163,7 +163,7 @@ func UpdateUser(ctx context.Context, q db.Queryer, u *domain.User, touch bool, n
 	_, err := q.Exec(ctx, `UPDATE user_accounts SET login = ?, password_hash = ?, password_changed_at = ?, must_change_password = ?, admin = ?,
   language = ?, auth_source_id = ? WHERE principal_id = ?`,
 		u.Login, nullString(u.PasswordHash), nullTimePtr(u.PasswordChangedAt), u.MustChangePassword, u.AdminFlag,
-		nullString(u.Language), u.AuthSourceID, u.ID)
+		u.Language, u.AuthSourceID, u.ID)
 	return err
 }
 
@@ -304,6 +304,7 @@ FROM user_preferences WHERE user_id = ?`, userID)
 			RecentlyUsedProjects: r.RecentlyUsedProjects, HistoryDefaultTab: r.HistoryDefaultTab.String,
 		},
 		Persisted:              true,
+		TimeZoneNull:           !r.TimeZone.Valid,
 		ToolbarLanguageOptions: r.ToolbarLanguageOptions.String,
 		DefaultIssueQueryID:    nullID(r.DefaultIssueQueryID),
 		DefaultProjectQueryID:  nullID(r.DefaultProjectQueryID),
@@ -327,7 +328,12 @@ func SaveUserPreferenceDetail(ctx context.Context, q db.Queryer, p *domain.UserP
 	if font != "monospace" && font != "proportional" {
 		font = ""
 	}
-	args := []any{p.HideMail, nullString(p.TimeZone), comments, p.WarnOnLeavingUnsaved, nullString(font),
+	// time_zone は NULL の行で空のままなら NULL を保つ（フォームの "" は "" のまま保存する。D-17）
+	var tz any = p.TimeZone
+	if p.TimeZoneNull && p.TimeZone == "" {
+		tz = nil
+	}
+	args := []any{p.HideMail, tz, comments, p.WarnOnLeavingUnsaved, nullString(font),
 		p.RecentlyUsedProjects, nullString(p.HistoryDefaultTab), nullString(p.ToolbarLanguageOptions),
 		p.DefaultIssueQueryID, p.DefaultProjectQueryID, string(awJSON), p.UserID}
 	res, err := q.Exec(ctx, `UPDATE user_preferences SET hide_mail = ?, time_zone = ?, comments_sorting = ?, warn_on_leaving_unsaved = ?,

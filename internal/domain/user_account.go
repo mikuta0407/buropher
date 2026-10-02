@@ -160,6 +160,8 @@ type UserPreferenceDetail struct {
 	UserPreference
 	// Persisted は行が存在するか（無ければ UserPreference.new の既定値）。
 	Persisted bool
+	// TimeZoneNull は time_zone が NULL（Redmine の nil）。保存時に "" へ変えないために持つ (D-17)。
+	TimeZoneNull bool
 	// ToolbarLanguageOptions は "" なら既定（DefaultToolbarLanguageOptions）。
 	ToolbarLanguageOptions string
 	DefaultIssueQueryID    *int64

@@ -247,6 +247,8 @@ func New(up Upload, author *domain.User) *domain.Attachment {
 		Filename:    SanitizeFilename(up.Filename),
 		ContentType: strings.TrimRight(up.ContentType, "\r\n"),
 		Filesize:    up.Size,
+		// description は nil（attachments.description に既定値は無い）
+		DescriptionNull: true,
 	}
 	if author != nil {
 		a.AuthorID = author.ID

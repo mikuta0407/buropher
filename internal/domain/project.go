@@ -17,11 +17,14 @@ const (
 
 // Project は projects 行 (Redmine Project)。
 type Project struct {
-	ID                  int64
-	ParentID            *int64
-	Name                string
-	Identifier          string
-	Description         string
+	ID          int64
+	ParentID    *int64
+	Name        string
+	Identifier  string
+	Description string
+	// DescriptionNull は description が NULL（Redmine の nil。API で null を出す）。"" とは区別する (D-17)。
+	DescriptionNull bool
+	// Homepage は homepage（Redmine の列既定値は ""）。
 	Homepage            string
 	IsPublic            bool
 	Status              int

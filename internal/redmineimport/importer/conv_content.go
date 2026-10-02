@@ -33,7 +33,7 @@ func (im *imp) importDocuments() error {
 			cat = im.st.defaultDocCategory
 		}
 		im.st.documents.add(id)
-		return ins.add(id, p, cat, r.str("title"), r.strNull("description", true), im.tsOr(t, id, r, "created_on"))
+		return ins.add(id, p, cat, r.str("title"), r.strNull("description", false), im.tsOr(t, id, r, "created_on"))
 	})
 	if err != nil {
 		return err
@@ -54,7 +54,7 @@ func (im *imp) importNews() error {
 		}
 		author := im.authorOr(t, id, "author_id", r.ref("author_id"))
 		im.st.news.add(id)
-		return ins.add(id, p, r.str("title"), r.strNull("summary", true), r.strNull("description", false), author, r.intOr("comments_count", 0), im.tsOr(t, id, r, "created_on"))
+		return ins.add(id, p, r.str("title"), r.strNull("summary", false), r.strNull("description", false), author, r.intOr("comments_count", 0), im.tsOr(t, id, r, "created_on"))
 	})
 	if err != nil {
 		return err
@@ -392,7 +392,7 @@ func (im *imp) importWikiVersions() error {
 		if ver > maxVersion[page] {
 			maxVersion[page] = ver
 		}
-		return ins.add(id, page, ver, author, text, r.strNull("comments", true), im.tsOr(t, id, r, "updated_on"))
+		return ins.add(id, page, ver, author, text, r.strNull("comments", false), im.tsOr(t, id, r, "updated_on"))
 	})
 	if err != nil {
 		return err
@@ -429,7 +429,7 @@ func (im *imp) importWikiVersions() error {
 			if err := im.tx.Get(im.ctx, &cur, `SELECT text, comments FROM wiki_page_versions WHERE page_id = ? AND version = ?`, page, ver); err != nil {
 				return err
 			}
-			comments := r.strNull("comments", true)
+			comments := r.strNull("comments", false)
 			curComments := any(nil)
 			if cur.Comments != nil {
 				curComments = *cur.Comments
@@ -449,7 +449,7 @@ func (im *imp) importWikiVersions() error {
 			maxVersion[page] = ver
 		}
 		maxID++
-		return cins.add(maxID, page, ver, author, text, r.strNull("comments", true), upd)
+		return cins.add(maxID, page, ver, author, text, r.strNull("comments", false), upd)
 	})
 	if err != nil {
 		return err

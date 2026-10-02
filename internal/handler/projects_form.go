@@ -103,7 +103,7 @@ func derefID(p *int64) any {
 // newProjectForm は Project.new（Setting の既定値で初期化）。
 func (a *App) newProjectForm(c *Req) (*projectForm, error) {
 	ctx := c.Ctx()
-	p := &domain.Project{IsPublic: a.Settings.Bool("default_projects_public"), Status: domain.ProjectStatusActive}
+	p := &domain.Project{IsPublic: a.Settings.Bool("default_projects_public"), Status: domain.ProjectStatusActive, DescriptionNull: true}
 	if a.Settings.Bool("sequential_project_identifiers") {
 		if last, ok, err := repository.LastProjectIdentifier(ctx, a.DB); err != nil {
 			return nil, err
@@ -317,7 +317,7 @@ func (a *App) assignProject(c *Req, f *projectForm, attrs *httpx.Params) error {
 		case "name":
 			p.Name = attrs.String(key)
 		case "description":
-			p.Description = attrs.String(key)
+			p.Description, p.DescriptionNull = attrs.String(key), false
 		case "homepage":
 			p.Homepage = attrs.String(key)
 		case "identifier":

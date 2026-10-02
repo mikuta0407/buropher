@@ -71,14 +71,6 @@ entries:
   - case: "issues_read/issues_changes.atom_project_id_ecookbook__*"
     reason: "journals#index は created_on DESC だけで並べるため、同時刻のジャーナル（フィクスチャの 2026-01-14 の 4 件）の順序は参照の SQLite の実行計画に依存する。buropher は id DESC で揃える（同時刻を含まない条件のケースは別に一致を確認している）"
     ignore: true
-  - case: "issues_read/*.json*"
-    reason: "空文字列は NULL で保存する（docs/schema.md の '' → NULL）ため、添付ファイル等の description: \"\" は null になる"
-    lines:
-      - '^\s*"description": (null|""),?$'
-  - case: "issues_read/*.xml*"
-    reason: "空文字列は NULL で保存する（docs/schema.md の '' → NULL）ため、添付ファイル等の <description></description> は <description/> になる"
-    lines:
-      - '^\s*<description(/>|></description>)$'
   - case: "settings_admin*/*settings*"
     reason: "buropher は SCM として Git のみ対応する（D-15）ため、設定画面のリポジトリタブの SCM 表には Git の行だけを出す"
     lines:
@@ -102,16 +94,7 @@ entries:
     ignore: true
 
   # ---- content（ニュース・文書・ファイル・フォーラム・添付）
-  - case: "content*/attachments_issues_14_edit__*"
-    reason: "フィクスチャの attachments.description の空文字はインポートで NULL に正規化されるため、空の説明欄に value=\"\" が付かない"
-    lines:
-      - '^\s*<input id="attachments_\d+_description" name="attachments\[\d+\]\[description\]" placeholder="Optional description" size="80" type="text"( value="")?>$'
-
   # ---- issues_write（チケットの作成・更新） ----
-  - case: "issues_write*/*"
-    reason: "custom_values.value は '' を NULL で保存する（docs/schema.md の '' → NULL）ため、保存後に値の無いカスタムフィールド（Redmine では nil の行）を '' として読み、入力欄に value=\"\" が付く"
-    lines:
-      - '^\s*<input class="(date|string|float|int)_cf cf_\d+" id="issue_custom_field_values_\d+"( max="9999-12-31")? name="issue\[custom_field_values\]\[\d+\]"( size="10")? type="(date|text)"( value="")?>$'
   - case: "auth_sources*/*auth_sources__admin"
     reason: "buropher 拡張: 認証方式の一覧に「新しい OpenID Connect プロバイダ」のリンク（class buropher-extra）を追加している"
     lines:

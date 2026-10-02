@@ -12,20 +12,22 @@ import (
 
 // TimeEntryRow は工数一覧の行 (TimeEntryQuery#results_scope の要素)。
 type TimeEntryRow struct {
-	ID         int64
-	ProjectID  int64
-	UserID     int64
-	AuthorID   int64
-	IssueID    *int64
-	Hours      float64
-	Comments   string
-	ActivityID int64
-	SpentOn    time.Time
-	TYear      int
-	TMonth     int
-	TWeek      int
-	CreatedAt  time.Time
-	UpdatedAt  time.Time
+	ID        int64
+	ProjectID int64
+	UserID    int64
+	AuthorID  int64
+	IssueID   *int64
+	Hours     float64
+	Comments  string
+	// CommentsNull は comments が NULL（Redmine の nil。API で null を出す）。
+	CommentsNull bool
+	ActivityID   int64
+	SpentOn      time.Time
+	TYear        int
+	TMonth       int
+	TWeek        int
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
 	// CustomValues は CF 列があるとき (custom_field_id → 値)。
 	CustomValues map[int64][]string
 }
@@ -66,6 +68,8 @@ func (q *Query) TimeEntries(ctx context.Context, opts ListOptions) ([]*TimeEntry
 				CreatedAt: r.CreatedAt.Time, UpdatedAt: r.UpdatedAt.Time}
 			if r.Comments != nil {
 				row.Comments = *r.Comments
+			} else {
+				row.CommentsNull = true
 			}
 			byID[r.ID] = row
 		}

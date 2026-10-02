@@ -309,7 +309,7 @@ func (im *imp) importUsers() error {
 				lastUsed = n
 			}
 		}
-		lang := r.strNull("language", true)
+		lang := r.strNull("language", false)
 		mn := r.str("mail_notification")
 		if mn != "" && !mailNotificationValues[mn] {
 			t.repair(id, "unknown mail_notification %q; set NULL (default)", mn)
@@ -656,7 +656,7 @@ func (im *imp) importUserPreferences() error {
 			}
 		}
 		hide := r.bool("hide_mail", true)
-		if err := ins.add(uid, hide, r.strNull("time_zone", true), sorting, warn, font, recent,
+		if err := ins.add(uid, hide, r.strNull("time_zone", false), sorting, warn, font, recent,
 			strOrNull("history_default_tab"), strOrNull("toolbar_language_options"),
 			queryRef("default_issue_query", "issue"), queryRef("default_project_query", "project"),
 			auto, layout, mps, toJSON(extra)); err != nil {

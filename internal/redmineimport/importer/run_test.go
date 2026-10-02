@@ -174,8 +174,11 @@ func TestValueHelpers(t *testing.T) {
 	if v, _ := normalizeCFValue("int", " 12 "); v != "12" {
 		t.Errorf("int = %v", v)
 	}
-	if v, _ := normalizeCFValue("string", ""); v != nil {
+	if v, _ := normalizeCFValue("string", ""); v != "" {
 		t.Errorf("empty = %v", v)
+	}
+	if v, _ := normalizeCFValue("string", nil); v != nil {
+		t.Errorf("nil = %v", v)
 	}
 	if s, err := inflate([]byte("plain"), ""); err != nil || s != "plain" {
 		t.Errorf("inflate = %q %v", s, err)

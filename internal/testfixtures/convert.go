@@ -26,7 +26,7 @@ func nts(r row, k string) db.NullTime {
 func loadIssueStatuses(c *loadCtx, rows []row) error {
 	for _, r := range rows {
 		if err := c.exec(`INSERT INTO issue_statuses (id, name, description, is_closed, position, default_done_ratio) VALUES (?, ?, ?, ?, ?, ?)`,
-			r.int("id", 0), r.str("name"), r.nstr("description"), r.bool("is_closed", false), r.int("position", 1), r.nint("default_done_ratio")); err != nil {
+			r.int("id", 0), r.str("name"), r.text("description", nil), r.bool("is_closed", false), r.int("position", 1), r.nint("default_done_ratio")); err != nil {
 			return err
 		}
 	}
@@ -48,7 +48,7 @@ func loadTrackers(c *loadCtx, rows []row) error {
 		}
 		dj, _ := json.Marshal(disabled)
 		if err := c.exec(`INSERT INTO trackers (id, name, description, position, is_in_roadmap, default_status_id, disabled_core_fields) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-			r.int("id", 0), r.str("name"), r.nstr("description"), r.int("position", 1), r.bool("is_in_roadmap", true),
+			r.int("id", 0), r.str("name"), r.text("description", nil), r.int("position", 1), r.bool("is_in_roadmap", true),
 			r.int("default_status_id", 0), string(dj)); err != nil {
 			return err
 		}
@@ -111,7 +111,7 @@ func loadUsers(c *loadCtx, rows []row) error {
 		if err := c.exec(`INSERT INTO user_accounts (principal_id, login, password_hash, password_changed_at, must_change_password, admin,
   language, auth_source_id, last_login_at, twofa_scheme, twofa_totp_key, twofa_totp_last_used_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 			id, r.str("login"), hash, nts(r, "passwd_changed_on"), r.bool("must_change_passwd", false), r.bool("admin", false),
-			r.nstr("language"), r.nint("auth_source_id"), nts(r, "last_login_on"), r.nstr("twofa_scheme"), r.nstr("twofa_totp_key"),
+			r.text("language", ""), r.nint("auth_source_id"), nts(r, "last_login_on"), r.nstr("twofa_scheme"), r.nstr("twofa_totp_key"),
 			r.nint("twofa_totp_last_used_at")); err != nil {
 			return err
 		}
@@ -160,7 +160,7 @@ func loadProjects(c *loadCtx, rows []row) error {
 		// 兄弟順は fixtures の lft で保持する (position = lft)
 		if err := c.exec(`INSERT INTO projects (id, parent_id, name, identifier, description, homepage, is_public, status, inherit_members,
   position, default_assigned_to_id, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-			id, r.nint("parent_id"), r.str("name"), r.str("identifier"), r.nstr("description"), r.nstr("homepage"),
+			id, r.nint("parent_id"), r.str("name"), r.str("identifier"), r.text("description", nil), r.text("homepage", ""),
 			r.bool("is_public", true), r.int("status", domain.ProjectStatusActive), r.bool("inherit_members", false),
 			r.int("lft", 0), assigned, ts(c, r, "created_on"), ts(c, r, "updated_on")); err != nil {
 			return err
@@ -216,8 +216,8 @@ func loadVersions(c *loadCtx, rows []row) error {
 		}
 		if err := c.exec(`INSERT INTO versions (id, project_id, name, description, effective_date, wiki_page_title, status, sharing, created_at, updated_at)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-			r.int("id", 0), r.int("project_id", 0), r.str("name"), r.nstr("description"), r.date("effective_date"),
-			r.nstr("wiki_page_title"), status, sharing, ts(c, r, "created_on"), ts(c, r, "updated_on")); err != nil {
+			r.int("id", 0), r.int("project_id", 0), r.str("name"), r.text("description", ""), r.date("effective_date"),
+			r.text("wiki_page_title", nil), status, sharing, ts(c, r, "created_on"), ts(c, r, "updated_on")); err != nil {
 			return err
 		}
 	}
@@ -362,7 +362,7 @@ func loadIssues(c *loadCtx, rows []row) error {
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 			id, r.int("project_id", 0), r.int("tracker_id", 0), r.int("status_id", 0), r.int("priority_id", 0),
 			r.int("author_id", 0), r.nint("assigned_to_id"), r.nint("category_id"), r.nint("fixed_version_id"),
-			r.nint("parent_id"), path[0], hp.String(), r.str("subject"), r.nstr("description"),
+			r.nint("parent_id"), path[0], hp.String(), r.str("subject"), r.text("description", nil),
 			r.date("start_date"), r.date("due_date"), r.int("done_ratio", 0), r.float("estimated_hours"),
 			r.bool("is_private", false), r.int("lock_version", 0), ts(c, r, "created_on"), ts(c, r, "updated_on"),
 			nts(r, "closed_on")); err != nil {

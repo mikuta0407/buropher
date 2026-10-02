@@ -92,14 +92,14 @@ func SetPrincipalCustomValue(ctx context.Context, q db.Queryer, principalID, fie
 		principalID, fieldID); err != nil {
 		return false, err
 	}
-	if len(cur) == 1 && cur[0].String == value {
+	if len(cur) == 1 && cur[0].Valid && cur[0].String == value {
 		return false, nil
 	}
 	if _, err := q.Exec(ctx, `DELETE FROM custom_values WHERE customized_kind = 'principal' AND customized_id = ? AND custom_field_id = ?`, principalID, fieldID); err != nil {
 		return false, err
 	}
 	_, err := q.Exec(ctx, `INSERT INTO custom_values (customized_kind, customized_id, custom_field_id, value) VALUES ('principal', ?, ?, ?)`,
-		principalID, fieldID, nullString(value))
+		principalID, fieldID, value)
 	return err == nil, err
 }
 

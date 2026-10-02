@@ -352,8 +352,12 @@ func (l *teLookup) apiEntry(b apibuilder.Builder, t *timelog.Entry, cvs []*domai
 		h = round2(*rh)
 	}
 	b.Value("hours", h)
-	// 参照フィクスチャの "" は NULL として読み込まれるため、NULL も "" として出力する
-	b.Value("comments", t.CommentsString())
+	// api.comments time_entry.comments（NULL は null、"" は ""）
+	if t.Comments == nil {
+		b.Value("comments", nil)
+	} else {
+		b.Value("comments", *t.Comments)
+	}
 	if t.SpentOn != nil {
 		b.Value("spent_on", t.SpentOn.Format("2006-01-02"))
 	} else {

@@ -46,6 +46,9 @@ type Attachment struct {
 	Downloads   int
 	AuthorID    int64
 	Description string
+	// DescriptionNull は description が NULL（Redmine の nil。API で null を出す）。"" とは区別する (D-17)。
+	// Attachment.new（アップロード直後）は nil、フォームの添付（attach_saved_attachments 等）で "" 以上になる。
+	DescriptionNull bool
 	// CreatedOn は created_on。
 	CreatedOn time.Time
 
@@ -61,6 +64,14 @@ func (a *Attachment) Attached() bool { return a.ContainerID != nil }
 
 // Token は Attachment#token（"#{id}.#{digest}"）。
 func (a *Attachment) Token() string { return strconv.FormatInt(a.ID, 10) + "." + a.Digest }
+
+// DescriptionValue は description（NULL なら nil。text_field_tag の value 属性の有無を Redmine と揃える）。
+func (a *Attachment) DescriptionValue() any {
+	if a.DescriptionNull {
+		return nil
+	}
+	return a.Description
+}
 
 // Title は Attachment#title（説明があれば "filename (description)"）。
 func (a *Attachment) Title() string {
