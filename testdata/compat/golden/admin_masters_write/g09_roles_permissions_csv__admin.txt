@@ -1,0 +1,80 @@
+status: 200
+content-type: text/csv
+
+Module,Permissions,Manager,Developer,Reporter,Non member,Anonymous
+"",Create project,Yes,No,No,No,""
+"",Edit project,Yes,Yes,No,"",""
+"",Close / reopen the project,Yes,No,No,"",""
+"",Delete the project,Yes,Yes,No,"",""
+"",Set project public or private,Yes,Yes,No,"",""
+"",Select project modules,Yes,No,No,"",""
+"",Manage members,Yes,Yes,No,"",""
+"",Manage versions,Yes,Yes,No,"",""
+"",Create subprojects,No,No,No,"",""
+"",Manage public queries,Yes,No,No,"",""
+"",Save queries,Yes,Yes,No,Yes,""
+Forums,View messages,Yes,Yes,No,Yes,No
+Forums,Post messages,Yes,Yes,No,Yes,No
+Forums,Edit messages,Yes,No,No,"",""
+Forums,Edit own messages,No,Yes,No,No,""
+Forums,Delete messages,Yes,No,No,"",""
+Forums,Delete own messages,No,Yes,No,No,""
+Forums,View message watchers list,Yes,Yes,No,No,No
+Forums,Add message watchers,Yes,No,No,No,No
+Forums,Delete message watchers,Yes,No,No,No,No
+Forums,Manage forums,Yes,Yes,No,"",""
+Calendar,View calendar,Yes,Yes,No,Yes,No
+Documents,View documents,Yes,Yes,No,Yes,No
+Documents,Add documents,Yes,Yes,No,No,""
+Documents,Edit documents,Yes,Yes,No,No,""
+Documents,Delete documents,Yes,Yes,No,No,""
+Files,View files,Yes,Yes,No,Yes,No
+Files,Manage files,Yes,Yes,No,Yes,""
+Gantt,View gantt chart,Yes,Yes,No,Yes,No
+Issue tracking,View Issues,Yes,Yes,Yes,Yes,Yes
+Issue tracking,Add issues,Yes,Yes,Yes,Yes,No
+Issue tracking,Edit issues,Yes,Yes,No,Yes,No
+Issue tracking,Edit own issues,No,No,No,No,No
+Issue tracking,Copy issues,Yes,Yes,No,No,No
+Issue tracking,Manage issue relations,Yes,Yes,No,Yes,No
+Issue tracking,Manage subtasks,Yes,Yes,No,No,No
+Issue tracking,Set issues public or private,Yes,No,No,No,No
+Issue tracking,Set own issues public or private,No,No,No,No,""
+Issue tracking,Add notes,Yes,Yes,No,Yes,No
+Issue tracking,Edit notes,No,No,No,No,""
+Issue tracking,Edit own notes,No,No,No,No,""
+Issue tracking,View private notes,Yes,No,No,"",""
+Issue tracking,Set notes as private,Yes,No,No,"",""
+Issue tracking,Delete issues,Yes,Yes,No,"",""
+Issue tracking,View watchers list,Yes,Yes,No,No,No
+Issue tracking,Add watchers,Yes,No,No,No,No
+Issue tracking,Delete watchers,Yes,No,No,No,No
+Issue tracking,Import issues,Yes,No,No,No,No
+Issue tracking,Manage issue categories,Yes,Yes,No,"",""
+News,View news,Yes,Yes,No,Yes,No
+News,Manage news,Yes,Yes,No,"",""
+News,Comment news,Yes,Yes,No,Yes,No
+Repository,View changesets,Yes,Yes,No,Yes,No
+Repository,Browse repository,Yes,Yes,No,Yes,No
+Repository,Commit access,No,No,No,No,No
+Repository,Manage related issues,Yes,No,No,No,No
+Repository,Manage repository,Yes,No,No,"",""
+Time tracking,View spent time,Yes,Yes,No,Yes,No
+Time tracking,Log spent time,Yes,Yes,No,Yes,""
+Time tracking,Edit time logs,Yes,No,No,"",""
+Time tracking,Edit own time logs,No,Yes,No,No,""
+Time tracking,Manage project activities,Yes,No,No,"",""
+Time tracking,Log spent time for other users,No,No,No,No,No
+Time tracking,Import time entries,Yes,No,No,No,No
+Wiki,View wiki,Yes,Yes,Yes,Yes,No
+Wiki,View wiki history,Yes,Yes,No,Yes,No
+Wiki,Export wiki pages,Yes,No,No,No,No
+Wiki,Edit wiki pages,Yes,Yes,No,Yes,No
+Wiki,Rename wiki pages,Yes,No,No,"",""
+Wiki,Delete wiki pages,Yes,Yes,No,"",""
+Wiki,Delete attachments,Yes,No,No,No,No
+Wiki,View wiki page watchers list,Yes,Yes,No,No,No
+Wiki,Add wiki page watchers,Yes,No,No,No,No
+Wiki,Delete wiki page watchers,Yes,No,No,No,No
+Wiki,Protect wiki pages,Yes,Yes,No,"",""
+Wiki,Manage wiki,Yes,No,No,"",""

@@ -1,0 +1,42 @@
+status: 200
+content-type: application/xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<issue_statuses type="array">
+  <issue_status>
+    <id>1</id>
+    <name>New</name>
+    <is_closed>false</is_closed>
+    <description>Description for New issue status</description>
+  </issue_status>
+  <issue_status>
+    <id>2</id>
+    <name>Assigned</name>
+    <is_closed>false</is_closed>
+    <description>Description for Assigned issue status</description>
+  </issue_status>
+  <issue_status>
+    <id>3</id>
+    <name>Resolved</name>
+    <is_closed>false</is_closed>
+    <description>Description for Resolved issue status</description>
+  </issue_status>
+  <issue_status>
+    <id>4</id>
+    <name>Feedback</name>
+    <is_closed>false</is_closed>
+    <description/>
+  </issue_status>
+  <issue_status>
+    <id>5</id>
+    <name>Closed</name>
+    <is_closed>true</is_closed>
+    <description/>
+  </issue_status>
+  <issue_status>
+    <id>6</id>
+    <name>Rejected</name>
+    <is_closed>true</is_closed>
+    <description/>
+  </issue_status>
+</issue_statuses>
