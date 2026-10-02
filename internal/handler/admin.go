@@ -69,19 +69,21 @@ func (a *App) AdminDefaultConfiguration(c *Req) {
 	c.Redirect("/admin")
 }
 
-// TestEmailSender は Mailer.deliver_test_email(user) の差し込み口（メール送信の移植で設定する）。
-// nil なら送信できないものとしてエラーを表示する。
+// TestEmailSender は Mailer.deliver_test_email(user) の差し替え口（テスト用。nil なら App.Notify で送る）。
 var TestEmailSender func(c *Req, to string) error
 
 // AdminTestEmail は admin#test_email。
 func (a *App) AdminTestEmail(c *Req) {
 	mail := c.User.Mail
 	var err error
-	if TestEmailSender == nil {
-		// 意図的な差異: メール送信が未実装の間は常に失敗として扱う
-		err = fmt.Errorf("email delivery is not configured")
-	} else {
+	switch {
+	case TestEmailSender != nil:
 		err = TestEmailSender(c, mail)
+	case a.Notify != nil:
+		// Mailer.deliver_test_email(User.current)（同期送信して配送エラーを表示する）
+		err = a.Notify.TestEmail(c.Ctx(), c.User)
+	default:
+		err = fmt.Errorf("email delivery is not configured")
 	}
 	if err != nil {
 		c.Flash().SetError(c.L("notice_email_error", html.EscapeString(err.Error())))

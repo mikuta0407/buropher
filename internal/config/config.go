@@ -112,6 +112,8 @@ type Reminders struct {
 
 // Discord は Discord API の接続先（テストでは偽サーバの URL を指定する）。
 type Discord struct {
+	// Enabled は Discord 通知の機能を使えるようにする（管理画面のプラグイン一覧に設定画面を出す）。
+	Enabled bool `toml:"enabled"`
 	// APIBase は REST API の基底 URL（空なら https://discord.com/api/v10）。
 	APIBase string `toml:"api_base"`
 	// AuthorizeURL は OAuth2 の認可画面の URL（空なら https://discord.com/oauth2/authorize）。

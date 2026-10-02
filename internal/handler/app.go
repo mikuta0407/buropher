@@ -23,6 +23,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/helper"
 	"github.com/mikuta0407/buropher/internal/httpx"
 	"github.com/mikuta0407/buropher/internal/i18n"
+	"github.com/mikuta0407/buropher/internal/notify"
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/settings"
 	"github.com/mikuta0407/buropher/internal/view"
@@ -54,6 +55,12 @@ type App struct {
 	Secrets *secretbox.Box
 	// Version は buropher のバージョン（admin/info に表示する。空なら "dev"）。
 	Version string
+	// Notify は通知（メール・Discord DM）の配送層（nil なら通知しない。doc.go の「規約: 通知」）。
+	Notify *notify.Service
+	// DiscordAuthorizeURL は Discord の OAuth2 認可画面の URL（空なら既定）。
+	DiscordAuthorizeURL string
+	// DiscordFeature は config の discord.enabled（管理画面のプラグイン一覧に Discord 通知を出す）。
+	DiscordFeature bool
 }
 
 func (a *App) now() time.Time {

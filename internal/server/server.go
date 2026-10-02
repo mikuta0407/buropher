@@ -34,6 +34,9 @@ import (
 	"github.com/mikuta0407/buropher/internal/helper"
 	"github.com/mikuta0407/buropher/internal/httpx"
 	"github.com/mikuta0407/buropher/internal/i18n"
+	"github.com/mikuta0407/buropher/internal/jobs"
+	"github.com/mikuta0407/buropher/internal/mail"
+	"github.com/mikuta0407/buropher/internal/notify"
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/settings"
 	"github.com/mikuta0407/buropher/internal/view"
@@ -47,6 +50,8 @@ type Server struct {
 	assets   *assets.Pipeline
 	app      *handler.App
 	sessions *httpx.SessionManager
+	queue    *jobs.Queue
+	notify   *notify.Service
 }
 
 // Options は New の追加設定（主にテスト用）。
@@ -63,6 +68,8 @@ type Options struct {
 	ExtraRoutes func(a *handler.App, r chi.Router)
 	// Version は buropher のバージョン（admin/info に表示する）。
 	Version string
+	// MailSender はメールの配送先の上書き（テスト用。nil なら config の mail から作る）。
+	MailSender mail.Sender
 }
 
 // ErrNotInitialized は DB が未初期化（buropher init 未実行）。
@@ -142,6 +149,9 @@ func New(cfg *config.Config, d *db.DB, opts ...Options) (*Server, error) {
 		Logger: o.Logger,
 	}
 	s := &Server{cfg: cfg, assets: ap, app: app, sessions: sessions}
+	if s.queue, s.notify, err = setupNotify(cfg, d, app, o); err != nil {
+		return nil, err
+	}
 
 	r := chi.NewRouter()
 	// Params と MethodOverride はルーティングより前に適用する（chi は Group の middleware より先に
@@ -298,6 +308,7 @@ func healthz(d *db.DB) http.HandlerFunc {
 
 // Run は ctx がキャンセルされるまでサーバを動かす。
 func (s *Server) Run(ctx context.Context) error {
+	s.runWorkers(ctx)
 	srv := &http.Server{Addr: s.cfg.Server.Addr, Handler: s.router, ReadHeaderTimeout: 10 * time.Second}
 	errc := make(chan error, 1)
 	go func() {

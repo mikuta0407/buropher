@@ -114,6 +114,9 @@ type mailer struct {
 	references []string
 	base       string
 	data       map[string]any
+	// discord は Discord の DM の描画のために呼んだ（宛先の解決と本文の描画を行わず、件名とデータだけ作る）。
+	discord bool
+	subject string
 }
 
 // tokenObject は Mailer.token_for の対象（クラス名・id・created_on/updated_on）。
@@ -123,8 +126,8 @@ type tokenObject struct {
 	at    time.Time
 }
 
-// RenderMail は notify.Renderer#RenderMail（Mailer の各アクション）。
-func (a *App) RenderMail(ctx context.Context, p *notify.Payload) (*mail.Message, error) {
+// newMailer は 1 通分の描画状態を作る（受信者が削除されていれば nil）。
+func (a *App) newMailer(ctx context.Context, p *notify.Payload) (*mailer, error) {
 	var user *domain.User
 	if p.UserID != 0 {
 		u, err := repository.GetUser(ctx, a.DB, p.UserID)
@@ -139,6 +142,21 @@ func (a *App) RenderMail(ctx context.Context, p *notify.Payload) (*mail.Message,
 	m := &mailer{a: a, ctx: ctx, p: p, user: user, data: map[string]any{}}
 	m.c = a.newBackgroundReq(ctx, user, MailerController, p.Kind)
 	m.base = m.c.MailBaseURL
+	return m, nil
+}
+
+// RenderMail は notify.Renderer#RenderMail（Mailer の各アクション）。
+func (a *App) RenderMail(ctx context.Context, p *notify.Payload) (*mail.Message, error) {
+	m, err := a.newMailer(ctx, p)
+	if m == nil || err != nil {
+		return nil, err
+	}
+	return m.run()
+}
+
+// run は Payload.Kind のアクションを実行する。
+func (m *mailer) run() (*mail.Message, error) {
+	p := m.p
 	switch p.Kind {
 	case notify.KindIssueAdd:
 		return m.issueAdd()
@@ -174,6 +192,8 @@ func (a *App) RenderMail(ctx context.Context, p *notify.Payload) (*mail.Message,
 		return m.settingsUpdated()
 	case notify.KindTestEmail:
 		return m.testEmail()
+	case notify.KindDiscordFallback:
+		return m.discordFallback()
 	}
 	return nil, fmt.Errorf("mailer: unknown mail %q", p.Kind)
 }
@@ -309,6 +329,9 @@ func (m *mailer) mailTo(users []*domain.User, addrs []string) ([]string, error) 
 func (m *mailer) finish(to []string, subject, view string) (*mail.Message, error) {
 	a := m.a
 	st := a.Settings
+	if m.discord {
+		return m.finishDiscord(subject)
+	}
 	mailFrom := st.String("mail_from")
 	var from, listID string
 	if addr, err := netmail.ParseAddress(mailFrom); err == nil {

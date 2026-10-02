@@ -433,9 +433,9 @@ func GetDiscordDMChannel(ctx context.Context, q db.Queryer, userID int64) (*Disc
 	return rows[0], nil
 }
 
-// SaveDiscordDMChannel は DM チャンネルを保存する（失敗回数は 0 に戻す）。
+// SaveDiscordDMChannel は DM チャンネルを保存する（既存の行の失敗回数はそのまま）。
 func SaveDiscordDMChannel(ctx context.Context, q db.Queryer, userID int64, discordUserID, channelID string, now time.Time) error {
-	res, err := q.Exec(ctx, `UPDATE discord_dm_channels SET discord_user_id = ?, channel_id = ?, consecutive_failures = 0, last_error = NULL, updated_at = ? WHERE user_id = ?`,
+	res, err := q.Exec(ctx, `UPDATE discord_dm_channels SET discord_user_id = ?, channel_id = ?, updated_at = ? WHERE user_id = ?`,
 		discordUserID, channelID, db.NewTime(now), userID)
 	if err != nil {
 		return err

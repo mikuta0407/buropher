@@ -38,6 +38,8 @@ const (
 	KindSettingsUpdated          = "settings_updated"
 	KindTestEmail                = "test_email"
 	KindReminder                 = "reminder"
+	// KindDiscordFallback は Discord の DM が恒久的に失敗してメールに切り替えたことの通知（buropher 独自）。
+	KindDiscordFallback = "discord_fallback"
 )
 
 // Notifiable のイベント名（Setting.notified_events の値）。
@@ -63,7 +65,7 @@ const (
 var accountKinds = map[string]bool{
 	KindAccountInformation: true, KindAccountActivationRequest: true, KindAccountActivated: true,
 	KindLostPassword: true, KindRegister: true, KindSecurityNotification: true, KindSettingsUpdated: true,
-	KindTestEmail: true,
+	KindTestEmail: true, KindDiscordFallback: true,
 }
 
 // IsAccountKind はアカウント・セキュリティ系のメールか（常にメールで送る）。
@@ -116,6 +118,8 @@ type Payload struct {
 	IssueIDs []int64 `json:"issue_ids,omitempty"`
 	// Fallback は Discord から切り替えたメール（記録用）。
 	Fallback bool `json:"fallback,omitempty"`
+	// Error は discord_fallback の失敗理由。
+	Error string `json:"error,omitempty"`
 }
 
 // DiscordField は埋め込みのフィールド。

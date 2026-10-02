@@ -315,6 +315,7 @@ func (m *mailer) reminder() (*mail.Message, error) {
 		return a.ID < b.ID
 	})
 	var items []item
+	var lines []string
 	for _, r := range rows {
 		p := l.project(r.ProjectID)
 		dist := ""
@@ -324,7 +325,9 @@ func (m *mailer) reminder() (*mail.Message, error) {
 		text := p.Name + " - " + l.tracker(r.TrackerID).Name + " #" + strconv.FormatInt(r.ID, 10) + ": " + r.Subject + " (" + dist + ")"
 		link := l.linkToIssue(r, redmine.LinkToIssueOptions{Project: true, FullURL: true})
 		items = append(items, item{Text: text, HTML: link + template.HTML(" ("+html.EscapeString(dist)+")")})
+		lines = append(lines, text)
 	}
+	m.data["ReminderLines"] = lines
 	days := m.p.Days
 	openURL := m.url("/issues?" + "assigned_to_id=me&set_filter=1&sort=due_date%3Aasc")
 	remURL := m.url("/issues?" + "f%5B%5D=status_id&f%5B%5D=assigned_to_id&f%5B%5D=due_date&op%5Bassigned_to_id%5D=%3D&op%5Bdue_date%5D=%3Ct%2B&op%5Bstatus_id%5D=o&set_filter=1&sort=due_date%3Aasc&v%5Bassigned_to_id%5D%5B%5D=me&v%5Bdue_date%5D%5B%5D=" + strconv.Itoa(days))
