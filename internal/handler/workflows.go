@@ -545,12 +545,12 @@ func (a *App) WorkflowsUpdatePermissions(c *Req) {
 
 // workflowCopyState は find_sources_and_targets のインスタンス変数。
 type workflowCopyState struct {
-	Roles          []*domain.Role
-	Trackers       []*domain.Tracker
-	SourceTracker  *domain.Tracker
-	SourceRole     *domain.Role
-	TargetTrackers []*domain.Tracker
-	TargetRoles    []*domain.Role
+	Roles                                 []*domain.Role
+	Trackers                              []*domain.Tracker
+	SourceTracker                         *domain.Tracker
+	SourceRole                            *domain.Role
+	TargetTrackers                        []*domain.Tracker
+	TargetRoles                           []*domain.Role
 	targetTrackersGiven, targetRolesGiven bool
 }
 
