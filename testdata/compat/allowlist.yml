@@ -124,13 +124,6 @@ entries:
   # ---- wiki ----
 
   # ---- api / api_write（REST API） ----
-  - case: "api*/*"
-    reason: "空文字列と NULL の区別（フィクスチャ・インポートで空文字の添付説明が NULL、既存の行の無いカスタムフィールドを保存すると API で \"\" になる）。空文字列の扱いの修正（importer / testfixtures / repository）で解消する予定"
-    lines:
-      - '^\s*"description": (""|null),?$'
-      - '^\s*<description>(</description>)?$'
-      - '^\s*<description/>$'
-      - '^\s*"value": (""|null),?$'
   - case: "api/enumerations_*"
     reason: "フィクスチャのカスタム値 true（SQLite に 't' で保存）はインポートで '1' に正規化される"
     lines:
