@@ -10,6 +10,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/httpx"
 	"github.com/mikuta0407/buropher/internal/query"
+	"github.com/mikuta0407/buropher/internal/notify"
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/view"
 )
@@ -163,8 +164,7 @@ func (a *App) ProjectsDestroy(c *Req) {
 
 // destroyProjects は DestroyProjectJob.schedule / DestroyProjectsJob.schedule + perform:
 // 自身と子孫を削除予約にし、続けて削除する（Redmine はジョブで非同期に削除する。buropher は同じリクエストで行う）。
-//
-// TODO: 削除完了・失敗のセキュリティ通知メール（Mailer.deliver_security_notification）は通知の移植で行う。
+// 削除の完了・失敗は削除した本人にセキュリティ通知メールで知らせる（DestroyProjectJob#success / failure）。
 func (a *App) destroyProjects(c *Req, projects []*domain.Project) error {
 	ctx := c.Ctx()
 	for _, p := range projects {
@@ -173,10 +173,20 @@ func (a *App) destroyProjects(c *Req, projects []*domain.Project) error {
 		}
 	}
 	for _, p := range projects {
-		err := a.DB.WithTx(ctx, func(tx *db.Tx) error { return repository.DestroyProject(ctx, tx, p.ID) })
-		if err != nil && err != repository.ErrNotFound {
-			a.logger().Error("destroy project job", "project", p.ID, "err", err)
+		msg := "mail_destroy_project_successful"
+		if ds, err := repository.ProjectDescendants(ctx, a.DB, p.ID); err == nil && len(ds) > 0 {
+			msg = "mail_destroy_project_with_subprojects_successful"
 		}
+		err := a.DB.WithTx(ctx, func(tx *db.Tx) error { return repository.DestroyProject(ctx, tx, p.ID) })
+		if err == repository.ErrNotFound {
+			continue
+		}
+		if err != nil {
+			a.logger().Error("destroy project job", "project", p.ID, "err", err)
+			msg = "mail_destroy_project_failed"
+		}
+		a.Notify.SecurityNotification(ctx, []int64{c.User.ID}, c.User, c.remoteIP(), notify.SecurityOptions{
+			Message: msg, Value: p.Name, URL: "/admin/projects", Title: "label_project_plural"})
 	}
 	c.ResetAuthz()
 	return nil

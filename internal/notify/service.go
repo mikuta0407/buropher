@@ -95,7 +95,9 @@ type DiscordConfig struct {
 func (c DiscordConfig) Usable() bool { return c.Enabled && c.BotToken != "" }
 
 // LinkUsable はアカウント連携ができる設定か。
-func (c DiscordConfig) LinkUsable() bool { return c.Usable() && c.ClientID != "" && c.ClientSecret != "" }
+func (c DiscordConfig) LinkUsable() bool {
+	return c.Usable() && c.ClientID != "" && c.ClientSecret != ""
+}
 
 // OpenSecret は secretbox で暗号化した設定値を復号する（暗号化されていなければそのまま）。
 func OpenSecret(box *secretbox.Box, v string) string {

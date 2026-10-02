@@ -13,6 +13,7 @@ import (
 	"html/template"
 	"log/slog"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/mikuta0407/buropher/internal/assets"
@@ -134,6 +135,30 @@ func PageOf(r *view.Render) *Page {
 // Deps はヘルパーが使うアプリケーション全体の依存。
 type Deps struct {
 	Assets *assets.Pipeline
+	// Hooks はビューのフック（Redmine::Hook の call_hook。buropher 独自機能の差し込み口）。
+	Hooks map[string][]HookFunc
+}
+
+// HookFunc は call_hook(name, args...) で呼ばれるビューのフック。
+type HookFunc func(r *view.Render, p *Page, args ...any) template.HTML
+
+// AddHook はビューのフックを登録する（起動時に呼ぶ。並行利用中の登録は想定しない）。
+func (d *Deps) AddHook(name string, fn HookFunc) {
+	if d.Hooks == nil {
+		d.Hooks = map[string][]HookFunc{}
+	}
+	d.Hooks[name] = append(d.Hooks[name], fn)
+}
+
+// callHook は登録順にフックを呼んで出力をつなげる（Redmine の call_hook と同じく改行で区切る）。
+func (d *Deps) callHook(r *view.Render, p *Page, name string, args ...any) template.HTML {
+	var out []string
+	for _, fn := range d.Hooks[name] {
+		if h := fn(r, p, args...); h != "" {
+			out = append(out, string(h))
+		}
+	}
+	return template.HTML(strings.Join(out, "\n"))
 }
 
 // setting は Setting[name] の文字列値（Settings 未設定なら定義の既定値）。

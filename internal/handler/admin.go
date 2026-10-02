@@ -46,9 +46,10 @@ func (a *App) AdminIndex(c *Req) {
 	c.renderAdmin("admin/index", map[string]any{"NoConfigurationData": noData}, false)
 }
 
-// AdminPlugins は admin#plugins。buropher はプラグインに対応しないため常に空（@plugins = []）。
+// AdminPlugins は admin#plugins。buropher はプラグインに対応しないため空（@plugins = []）。
+// ただし config の discord.enabled（または有効化済み）なら組み込みの Discord 通知を設定画面へのリンク付きで出す。
 func (a *App) AdminPlugins(c *Req) {
-	c.renderAdmin("admin/plugins", map[string]any{"Plugins": []any{}}, false)
+	c.renderAdmin("admin/plugins", map[string]any{"Plugins": a.adminPlugins(c)}, false)
 }
 
 // AdminDefaultConfiguration は admin#default_configuration（POST。既定の設定データを投入する）。

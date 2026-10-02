@@ -772,10 +772,15 @@ func (a *App) UsersCreate(c *Req) {
 	c.Render("users/new", data, adminLayoutXHR(c))
 }
 
-// deliverAccountInformation は Mailer.deliver_account_information(user, password)。
-// TODO(mail): メール送信は通知機能で実装する（ここはフック）。
+// deliverAccountInformation は Mailer.deliver_account_information(user, password)（password は @user.password）。
 func (a *App) deliverAccountInformation(c *Req, m *userModel) {
-	a.logger().Info("account information mail (not delivered: mail delivery is not implemented)", "user", m.Login)
+	pw := ""
+	if m.password != nil {
+		pw = *m.password
+	}
+	u := *m.User
+	u.Mail = m.mail
+	a.Notify.AccountInformation(c.Ctx(), &u, pw)
 }
 
 // ---------------------------------------------------------------- edit / update
@@ -835,10 +840,14 @@ func (a *App) UsersUpdate(c *Req) {
 			a.serverError(c, err)
 			return
 		}
-		// TODO(mail): deliver_password_updated / deliver_account_activated / deliver_account_information
-		_ = updatingPassword
-		_ = wasActivated
-		if m.Active() && c.Params().Present("send_information") && m.ID != c.User.ID && !wasActivated {
+		u := *m.User
+		u.Mail = m.mail
+		if updatingPassword {
+			a.Notify.PasswordUpdated(c.Ctx(), &u, c.User, c.remoteIP())
+		}
+		if wasActivated {
+			a.Notify.AccountActivated(c.Ctx(), &u)
+		} else if m.Active() && c.Params().Present("send_information") && m.ID != c.User.ID {
 			a.deliverAccountInformation(c, m)
 		}
 		if httpx.IsAPIRequest(c.R) {
@@ -911,9 +920,15 @@ func (a *App) UsersDestroy(c *Req) {
 // destroyUser は User#destroy（参照を匿名ユーザーへ付け替えてから削除）。
 func (a *App) destroyUser(c *Req, id int64) error {
 	anon := a.anonymous(c.Ctx())
-	return a.DB.WithTx(c.Ctx(), func(tx *db.Tx) error {
+	u, _ := repository.GetUser(c.Ctx(), a.DB, id)
+	if err := a.DB.WithTx(c.Ctx(), func(tx *db.Tx) error {
 		return repository.DestroyUser(c.Ctx(), tx, id, anon.ID)
-	})
+	}); err != nil {
+		return err
+	}
+	// after_destroy :deliver_security_notification
+	a.notifyUserDestroyed(c, u)
+	return nil
 }
 
 // UsersBulkDestroy は users#bulk_destroy（DELETE /users/bulk_destroy）。

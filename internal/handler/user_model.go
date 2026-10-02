@@ -666,6 +666,7 @@ func (a *App) saveUser(c *Req, m *userModel) (bool, error) {
 	if m.newRecord && m.notification.MailNotification == "" {
 		m.notification.MailNotification = a.Settings.String("default_notification_option")
 	}
+	before := userSavedSnapshot{newRecord: m.newRecord, admin: m.orig.AdminFlag, status: m.orig.Status, mail: m.mailWas}
 	err := a.DB.WithTx(c.Ctx(), func(tx *db.Tx) error {
 		if m.newRecord {
 			m.Kind = domain.KindUser
@@ -734,7 +735,8 @@ func (a *App) saveUser(c *Req, m *userModel) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	// TODO(mail): deliver_security_notification（管理者の追加・削除時の通知メール）
+	// after_save :deliver_security_notification（管理者の追加・削除）と既定アドレスの変更の通知
+	a.notifyUserSaved(c, m.User, before, m.mail)
 	m.newRecord = false
 	m.orig = *m.User
 	m.mailWas = m.mail

@@ -45,8 +45,15 @@ func (a *App) routesSettings(r Router) {
 // SettingsIndex は settings#index（edit と同じ処理で edit テンプレートを描画する）。
 func (a *App) SettingsIndex(c *Req) { a.SettingsEdit(c) }
 
-// SettingsPlugin は settings#plugin。buropher はプラグインに対応しないため、Redmine::PluginNotFound と同じく常に 404。
-func (a *App) SettingsPlugin(c *Req) { c.Render404("") }
+// SettingsPlugin は settings#plugin。buropher はプラグインに対応しないため、Redmine::PluginNotFound と同じく 404
+// （組み込みの Discord 通知 buropher_discord の設定画面を除く）。
+func (a *App) SettingsPlugin(c *Req) {
+	if c.Params().String("id") == DiscordPluginID {
+		a.DiscordSettingsPage(c)
+		return
+	}
+	c.Render404("")
+}
 
 // SettingsEdit は settings#edit（GET は表示、POST は Setting.set_all_from_params）。
 func (a *App) SettingsEdit(c *Req) {
@@ -102,10 +109,8 @@ func (a *App) SettingsEdit(c *Req) {
 }
 
 // deliverSettingsUpdated は Mailer.deliver_settings_updated(User.current, changes)（セキュリティ通知）。
-// TODO(mail): メール送信の移植で実装する。現在は記録のみ。
 func (a *App) deliverSettingsUpdated(c *Req, changed []string) {
-	a.logger().Info("security notification: settings updated (mail delivery is not implemented)",
-		"user", c.User.Login, "settings", strings.Join(changed, ","))
+	a.Notify.SettingsUpdated(c.Ctx(), c.User, changed, c.remoteIP())
 }
 
 // settingsView は settings/edit とタブの部分テンプレートに渡す値（コントローラのインスタンス変数と

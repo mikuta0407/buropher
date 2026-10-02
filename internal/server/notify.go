@@ -80,6 +80,7 @@ func setupNotify(cfg *config.Config, d *db.DB, app *handler.App, o Options) (*jo
 	app.Notify = svc
 	app.DiscordAuthorizeURL = cfg.Discord.AuthorizeURL
 	app.DiscordFeature = cfg.Discord.Enabled
+	app.RegisterDiscordHooks()
 	return q, svc, nil
 }
 

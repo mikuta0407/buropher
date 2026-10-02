@@ -1,5 +1,30 @@
 {{title (l "label_plugins")}}
 
-{{/* buropher はプラグインに対応しないため、常に「データなし」（Redmine の @plugins.any? が偽の場合） */}}
+{{/* buropher はプラグインに対応しない。一覧には組み込みの Discord 通知（config の discord.enabled のとき）だけを出し、redmine.org への更新確認は行わない */}}
+{{if .Plugins}}
+<div class="autoscroll">
+  <table class="list plugins">
+      <thead><tr>
+        <th>{{l "field_name"}} / {{l "field_description"}}</th>
+        <th>{{l "field_author"}}</th>
+        <th>{{l "label_version"}}</th>
+        <th></th>
+      </tr></thead>
+      <tbody>
+      {{range .Plugins}}
+          <tr id="plugin-{{.ID}}">
+          <td class="name"><span class="name">{{.Name}}</span>
+              {{if .Description}}{{content_tag "span" .Description (hash "class" "description")}}{{end}}
+          </td>
+          <td class="author">{{.Author}}</td>
+          <td class="version"><span class="icon">{{.Version}}</span></td>
+          <td class="configure">{{if .Configurable}}{{link_to (l "button_configure") (printf "/settings/plugin/%s" .ID)}}{{end}}</td>
+          </tr>
+      {{end}}
+      </tbody>
+  </table>
+</div>
+{{else}}
 <p class="nodata">{{l "label_no_data"}}</p>
+{{end}}
 
