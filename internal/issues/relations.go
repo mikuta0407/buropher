@@ -236,6 +236,9 @@ func (e *Env) successorSoonestStart(ctx context.Context, r *domain.IssueRelation
 
 // SoonestStart は soonest_start (先行チケットと (日付が派生する場合の) 親から決まる最も早い開始日)。
 func (e *Env) SoonestStart(ctx context.Context, iss *Issue) (*time.Time, error) {
+	if iss.soonestStartStub != nil {
+		return iss.soonestStartStub, nil
+	}
 	var dates []time.Time
 	if iss.ID != 0 {
 		rs, err := e.relationsTo(ctx, iss.ID)

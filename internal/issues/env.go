@@ -107,8 +107,10 @@ func (e *Env) inTx(ctx context.Context, fn func() error) error {
 		return fn()
 	}
 	return d.WithTx(ctx, func(tx *db.Tx) error {
-		e.Q = tx
-		defer func() { e.Q = d }()
+		// Authorizer は DB ハンドルを保持するので、トランザクション中は別のキャッシュを使う
+		az := e.az
+		e.Q, e.az = tx, nil
+		defer func() { e.Q, e.az = d, az }()
 		return fn()
 	})
 }

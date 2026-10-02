@@ -65,7 +65,9 @@ type Issue struct {
 
 	// mentionedUserIDs は直前の保存で新たにメンションされたユーザ。
 	mentionedUserIDs []int64
-	mentionsParsed   bool
+
+	// soonestStartStub はテスト用に soonest_start を固定する (issue.stubs(:soonest_start))。
+	soonestStartStub *time.Time
 }
 
 // NewRecord は new_record?。
