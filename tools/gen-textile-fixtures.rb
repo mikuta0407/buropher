@@ -23,7 +23,6 @@ require 'yaml'
 out_dir = ARGV[0] or abort "usage: gen-textile-fixtures.rb OUTDIR"
 redmine_root = Rails.root.to_s
 test_root = ENV['REDMINE_TEST_ROOT'] || File.join(redmine_root, 'test')
-test_root = '/home/mikuta0407/projects/buropher/_reference/redmine/test' unless File.directory?(test_root)
 
 # ---- フェイクハイライタ ----
 FAKE_LANGS = %w(ruby c python javascript sql bash xml html java go).freeze

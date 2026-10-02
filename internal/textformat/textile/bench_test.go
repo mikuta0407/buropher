@@ -79,7 +79,6 @@ func TestPathologicalInputs(t *testing.T) {
 	}
 	for i, in := range inputs {
 		start := time.Now()
-		println("start", i)
 		Format(in, fakeOpts)
 		GetSection(in, 2)
 		d := time.Since(start)

@@ -55,11 +55,11 @@ func TestFixtures(t *testing.T) {
 }
 
 // TestFuzzFile は tools/gen-textile-fuzz.rb が生成したランダム入力で差分テストを行う
-// (環境変数 TEXTILE_FUZZ_FILE が設定されているときのみ)。
+// (既定は testdata/fuzz.json。環境変数 TEXTILE_FUZZ_FILE で別ファイルを指定できる)。
 func TestFuzzFile(t *testing.T) {
 	path := os.Getenv("TEXTILE_FUZZ_FILE")
 	if path == "" {
-		t.Skip("TEXTILE_FUZZ_FILE not set")
+		path = "testdata/fuzz.json"
 	}
 	b, err := os.ReadFile(path)
 	if err != nil {
