@@ -84,7 +84,7 @@ func TestApplicationMenu(t *testing.T) {
 func TestProjectMenuNewObject(t *testing.T) {
 	e := &fakeEnv{current: "issues", settings: map[string]string{"new_item_menu_tab": "2"}, labels: labels}
 	got := string(ProjectMenu().Render(e, proj("ecookbook")))
-	if !strings.HasPrefix(got, "<ul><li>\n"+`<a id="new-object" onclick="toggleNewObjectDropdown(); return false;" class="new-object" href="#"> + </a>`+"\n"+`<ul class="menu-children"><li><a accesskey="7" class="new-issue-sub" href="/projects/ecookbook/issues/new">New issue</a></li>`) {
+	if !strings.HasPrefix(got, "<ul><li>\n"+`<a onclick="toggleNewObjectDropdown(); return false;" id="new-object" class="new-object" href="#"> + </a>`+"\n"+`<ul class="menu-children"><li><a accesskey="7" class="new-issue-sub" href="/projects/ecookbook/issues/new">New issue</a></li>`) {
 		t.Errorf("unexpected: %s", got)
 	}
 	if !strings.Contains(got, `<a class="issues selected" href="/projects/ecookbook/issues">Issues</a>`) {

@@ -245,16 +245,18 @@ func renderSingle(e Env, it *Item, p Project, selected bool) string {
 	}
 	if url == "" {
 		url = "#"
-		// reverse_merge!(:onclick => 'return false;'): 既存がなければ末尾に追加
-		has := false
+		// reverse_merge!(:onclick => 'return false;') は replace({onclick: ...}.merge(self)) なので、
+		// onclick は（既存の値を保ったまま）常に先頭のキーになる
+		onclick := Attr{"onclick", "return false;"}
+		rest := make([]Attr, 0, len(attrs))
 		for _, a := range attrs {
 			if a.Name == "onclick" {
-				has = true
+				onclick.Value = a.Value
+				continue
 			}
+			rest = append(rest, a)
 		}
-		if !has {
-			attrs = append(attrs, Attr{"onclick", "return false;"})
-		}
+		attrs = append([]Attr{onclick}, rest...)
 	}
 	label := template.HTML(template.HTMLEscapeString(it.caption(e)))
 	if it.Icon != "" {

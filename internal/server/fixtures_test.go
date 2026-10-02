@@ -10,9 +10,12 @@ import (
 	"testing"
 	"time"
 
+	"github.com/go-chi/chi/v5"
+
 	"github.com/mikuta0407/buropher/internal/config"
 	"github.com/mikuta0407/buropher/internal/db"
 	"github.com/mikuta0407/buropher/internal/db/dbtest"
+	"github.com/mikuta0407/buropher/internal/handler"
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/server"
 	"github.com/mikuta0407/buropher/internal/settings"
@@ -24,7 +27,8 @@ import (
 var frozenTime = time.Date(2026, 1, 15, 12, 0, 0, 0, time.UTC)
 
 // newFixtureServer は Redmine の公式フィクスチャを投入した DB（REST API 有効・時刻固定）でサーバを起動する。
-func newFixtureServer(t *testing.T) (*httptest.Server, *db.DB) {
+// extra はテスト用の追加ルート（nil 可）。
+func newFixtureServer(t *testing.T, extra ...func(a *handler.App, r chi.Router)) (*httptest.Server, *db.DB) {
 	t.Helper()
 	// 参照環境は TZ=UTC（タイムゾーン未設定ユーザーの時刻はサーバのローカル時刻で表示される）
 	saved := time.Local
@@ -44,7 +48,11 @@ func newFixtureServer(t *testing.T) (*httptest.Server, *db.DB) {
 	}
 	cfg := config.Default()
 	cfg.Server.SecretKey = "test-secret"
-	srv, err := server.New(cfg, d, server.Options{TempDir: t.TempDir(), Now: func() time.Time { return frozenTime }})
+	opts := server.Options{TempDir: t.TempDir(), Now: func() time.Time { return frozenTime }}
+	if len(extra) > 0 {
+		opts.ExtraRoutes = extra[0]
+	}
+	srv, err := server.New(cfg, d, opts)
 	if err != nil {
 		t.Fatal(err)
 	}

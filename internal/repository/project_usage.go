@@ -184,6 +184,14 @@ func exists(ctx context.Context, q db.Queryer, query string, args ...any) (bool,
 	return n > 0, nil
 }
 
+// SharedVersionIDs は project.shared_versions の id（昇順）。
+func SharedVersionIDs(ctx context.Context, q db.Queryer, p *domain.Project) ([]int64, error) {
+	var ids []int64
+	err := q.Select(ctx, &ids, `SELECT versions.id FROM versions JOIN projects ON projects.id = versions.project_id WHERE `+
+		SharedVersionsCondition(p)+` ORDER BY versions.id`)
+	return ids, err
+}
+
 // ProjectHasSharedVersions は project.shared_versions.any?。
 func ProjectHasSharedVersions(ctx context.Context, q db.Queryer, p *domain.Project) (bool, error) {
 	return exists(ctx, q, `SELECT 1 FROM versions JOIN projects ON projects.id = versions.project_id WHERE `+SharedVersionsCondition(p))

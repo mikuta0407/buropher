@@ -57,6 +57,8 @@ type Options struct {
 	Logger *slog.Logger
 	// TempDir はアップロードの一時ファイル置き場（空なら data/tmp）。
 	TempDir string
+	// ExtraRoutes はテスト用の追加ルート（App.Routes の後に同じミドルウェアの下で登録する）。
+	ExtraRoutes func(a *handler.App, r chi.Router)
 }
 
 // ErrNotInitialized は DB が未初期化（buropher init 未実行）。
@@ -146,6 +148,9 @@ func New(cfg *config.Config, d *db.DB, opts ...Options) (*Server, error) {
 			sessions.Middleware,
 		)
 		app.Routes(r)
+		if o.ExtraRoutes != nil {
+			o.ExtraRoutes(app, r)
+		}
 	})
 	s.router = r
 	return s, nil
