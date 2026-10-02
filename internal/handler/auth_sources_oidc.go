@@ -48,17 +48,17 @@ type oidcSourceForm struct {
 	callbackURL     string
 }
 
-func (f *oidcSourceForm) ParamKey() string                  { return "auth_source" }
-func (f *oidcSourceForm) Persisted() bool                   { return f.rec.ID != 0 }
-func (f *oidcSourceForm) ToParam() string                   { return strconv.FormatInt(f.rec.ID, 10) }
-func (f *oidcSourceForm) ID() int64                         { return f.rec.ID }
-func (f *oidcSourceForm) Name() string                      { return f.name }
-func (f *oidcSourceForm) Type() string                      { return oidcTypeName }
-func (f *oidcSourceForm) NewRecord() bool                   { return f.rec.ID == 0 }
-func (f *oidcSourceForm) AuthMethodName() string            { return "OIDC" }
+func (f *oidcSourceForm) ParamKey() string                     { return "auth_source" }
+func (f *oidcSourceForm) Persisted() bool                      { return f.rec.ID != 0 }
+func (f *oidcSourceForm) ToParam() string                      { return strconv.FormatInt(f.rec.ID, 10) }
+func (f *oidcSourceForm) ID() int64                            { return f.rec.ID }
+func (f *oidcSourceForm) Name() string                         { return f.name }
+func (f *oidcSourceForm) Type() string                         { return oidcTypeName }
+func (f *oidcSourceForm) NewRecord() bool                      { return f.rec.ID == 0 }
+func (f *oidcSourceForm) AuthMethodName() string               { return "OIDC" }
 func (f *oidcSourceForm) ValidationErrors() *validation.Errors { return f.errors }
-func (f *oidcSourceForm) ErrorsOn(attr string) []string     { return f.errors.Messages(f.loc, attr) }
-func (f *oidcSourceForm) CallbackURL() string               { return f.callbackURL }
+func (f *oidcSourceForm) ErrorsOn(attr string) []string        { return f.errors.Messages(f.loc, attr) }
+func (f *oidcSourceForm) CallbackURL() string                  { return f.callbackURL }
 func (f *oidcSourceForm) Mappings() []domain.AuthSourceGroupMapping {
 	// 既存の対応表 + 空行 3 つ
 	return append(slices.Clone(f.mappings), domain.AuthSourceGroupMapping{}, domain.AuthSourceGroupMapping{}, domain.AuthSourceGroupMapping{})

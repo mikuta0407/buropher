@@ -73,10 +73,10 @@ func (s oidcSettings) MatchBy() string {
 	}
 	return "mail"
 }
-func (s oidcSettings) GroupSync() bool    { return s.rec.ConfigBool("group_sync") }
-func (s oidcSettings) SSORequired() bool  { return s.rec.ConfigBool("sso_required") }
-func (s oidcSettings) SkipTwofa() bool    { return s.rec.ConfigBool("skip_twofa") }
-func (s oidcSettings) RPLogout() bool     { return s.rec.ConfigBool("rp_logout") }
+func (s oidcSettings) GroupSync() bool     { return s.rec.ConfigBool("group_sync") }
+func (s oidcSettings) SSORequired() bool   { return s.rec.ConfigBool("sso_required") }
+func (s oidcSettings) SkipTwofa() bool     { return s.rec.ConfigBool("skip_twofa") }
+func (s oidcSettings) RPLogout() bool      { return s.rec.ConfigBool("rp_logout") }
 func (s oidcSettings) ButtonLabel() string { return s.str("button_label") }
 
 // splitList は改行・カンマ区切りの一覧。
