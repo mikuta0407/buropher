@@ -188,6 +188,7 @@ WHERE issues.id = ? AND (`+vis+`)`, id); err != nil {
 		question = ""
 	}
 	c.Question = question
+	c.QuestionSet = true
 
 	if api {
 		c.RenderAPI(0, func(b apibuilder.Builder) {
