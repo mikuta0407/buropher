@@ -19,6 +19,7 @@ type Config struct {
 	Jobs Jobs `toml:"jobs"`
 	// Discord は Discord API の接続先（Bot トークン等は管理画面で設定する）。
 	Discord Discord `toml:"discord"`
+	Auth    Auth    `toml:"auth"`
 	// DevAssetsDir が空でなければ embed ではなくディスクからアセット/テンプレートを読む（開発用）。
 	DevWebDir string `toml:"dev_web_dir"`
 }
@@ -120,6 +121,14 @@ type Discord struct {
 	AuthorizeURL string `toml:"authorize_url"`
 }
 
+// Auth は認証まわりの設定（Redmine の configuration.yml の sudo_mode / sudo_mode_timeout 相当）。
+type Auth struct {
+	// SudoMode は sudo モード（管理操作の前にパスワードを再入力させる）を有効にする。既定 false（Redmine と同じ）。
+	SudoMode bool `toml:"sudo_mode"`
+	// SudoModeTimeout は sudo モードの有効時間（分）。0 なら 15。
+	SudoModeTimeout int `toml:"sudo_mode_timeout"`
+}
+
 func Default() *Config {
 	return &Config{
 		Server:   Server{Addr: ":3000"},
@@ -161,6 +170,9 @@ func Load(path string) (*Config, error) {
 		if _, err := fmt.Sscanf(v, "%d", &c.Mail.SMTP.Port); err != nil {
 			return nil, fmt.Errorf("config: BUROPHER_SMTP_PORT: %w", err)
 		}
+	}
+	if v, ok := os.LookupEnv("BUROPHER_SUDO_MODE"); ok {
+		c.Auth.SudoMode = v == "1" || strings.EqualFold(v, "true")
 	}
 	c.Server.BaseURL = strings.TrimRight(c.Server.BaseURL, "/")
 	return c, nil

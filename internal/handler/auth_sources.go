@@ -21,7 +21,7 @@ import (
 
 // AuthSourcesController（app/controllers/auth_sources_controller.rb）。layout 'admin'、menu_item :ldap_authentication。
 //
-// 対応する種類は AuthSourceLdap（kind = ldap）のみ。一覧は OIDC（kind = oidc。別タスク）の行も表示する。
+// 対応する種類は AuthSourceLdap（kind = ldap）と buropher 拡張の OIDC（kind = oidc。auth_sources_oidc.go）。
 // require_sudo_mode :update, :destroy は buropher に sudo モードが無いため未実装。
 var AuthSourcesController = &Controller{Name: "auth_sources", MainMenu: false}
 
@@ -551,6 +551,10 @@ func (a *App) buildNewAuthSource(c *Req) *ldapSourceForm {
 
 // AuthSourcesNew は auth_sources#new。
 func (a *App) AuthSourcesNew(c *Req) {
+	if c.Params().String("type") == oidcTypeName {
+		a.oidcSourcesNew(c)
+		return
+	}
 	f := a.buildNewAuthSource(c)
 	if f == nil {
 		return
@@ -561,6 +565,10 @@ func (a *App) AuthSourcesNew(c *Req) {
 
 // AuthSourcesCreate は auth_sources#create。
 func (a *App) AuthSourcesCreate(c *Req) {
+	if c.Params().String("type") == oidcTypeName {
+		a.oidcSourcesCreate(c)
+		return
+	}
 	f := a.buildNewAuthSource(c)
 	if f == nil {
 		return
@@ -582,8 +590,11 @@ func (a *App) AuthSourcesCreate(c *Req) {
 // AuthSourcesEdit は auth_sources#edit。
 func (a *App) AuthSourcesEdit(c *Req) {
 	rec := c.authSource()
+	if rec.Kind == domain.AuthSourceKindOIDC {
+		a.oidcSourcesEdit(c, rec)
+		return
+	}
 	if rec.Kind != domain.AuthSourceKindLDAP {
-		// TODO(oidc): OIDC の編集画面は別タスク
 		c.Render404("")
 		return
 	}
@@ -594,6 +605,10 @@ func (a *App) AuthSourcesEdit(c *Req) {
 // AuthSourcesUpdate は auth_sources#update。
 func (a *App) AuthSourcesUpdate(c *Req) {
 	rec := c.authSource()
+	if rec.Kind == domain.AuthSourceKindOIDC {
+		a.oidcSourcesUpdate(c, rec)
+		return
+	}
 	if rec.Kind != domain.AuthSourceKindLDAP {
 		c.Render404("")
 		return
@@ -616,6 +631,10 @@ func (a *App) AuthSourcesUpdate(c *Req) {
 
 // AuthSourcesTestConnection は auth_sources#test_connection。
 func (a *App) AuthSourcesTestConnection(c *Req) {
+	if rec := c.authSource(); rec.Kind == domain.AuthSourceKindOIDC {
+		a.oidcSourcesTestConnection(c, rec)
+		return
+	}
 	src := a.ldapSource(c.authSource())
 	var err error
 	if src != nil {

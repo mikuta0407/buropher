@@ -1,0 +1,36 @@
+status: 200
+location: 
+
+<title>Enable two-factor authentication - Redmine</title>
+----
+<!-- page specific tags -->
+</head>
+----
+<div id="main" class="nosidebar">
+  
+    <div id="sidebar">
+        <div id="sidebar-wrapper">
+          
+          
+        </div>
+    </div>
+
+    <div id="content">
+        <div class="flash warning" id="flash_warning"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--warning"></use></svg>The administrator requires you to enable two-factor authentication.</div>
+        <h2>Enable two-factor authentication</h2>
+
+<form action="/my/twofa/activate/init" accept-charset="UTF-8" name="form-RANDOM" method="post"><input type="hidden" name="authenticity_token" value="{{CSRF}}" autocomplete="off" />
+  <div class="box">
+  <p>Please select the two-factor scheme you would like to use:</p>
+  <p>
+    <label style="display:block;"><input type="radio" name="scheme" id="scheme_totp" value="totp" checked="checked" /> Authenticator app</label>
+  </p>
+  </div>
+  <p><input type="submit" name="commit" value="Next &#187;" data-disable-with="Next &#187;" /></p>
+</form>
+
+        
+        <div style="clear:both;"></div>
+    </div>
+</div>
+<div id="footer">

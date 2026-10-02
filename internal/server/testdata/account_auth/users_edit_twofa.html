@@ -1,0 +1,475 @@
+status: 200
+location: 
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>jsmith - Users - Redmine</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Redmine" />
+<meta name="keywords" content="issue,bug,tracker" />
+<meta name="csrf-param" content="authenticity_token" />
+<meta name="csrf-token" content="{{CSRF}}" />
+<link rel="shortcut icon" type="image/x-icon" href="/assets/favicon-DIGEST.ico" />
+<link rel="stylesheet" href="/assets/jquery/jquery-ui-1.13.2-DIGEST.css" media="all" />
+<link rel="stylesheet" href="/assets/tribute-5.1.3-DIGEST.css" media="all" />
+<link rel="stylesheet" href="/assets/application-DIGEST.css" media="all" />
+<link rel="stylesheet" href="/assets/responsive-DIGEST.css" media="all" />
+
+<script type="importmap" data-turbo-track="reload">{
+  "imports": {
+    "@rails/request.js": "/assets/requestjs-DIGEST.js",
+    "application": "/assets/application-DIGEST.js",
+    "@hotwired/stimulus": "/assets/stimulus.min-DIGEST.js",
+    "@hotwired/stimulus-loading": "/assets/stimulus-loading-DIGEST.js",
+    "turndown": "/assets/turndown-DIGEST.js",
+    "controllers/api_key_copy_controller": "/assets/controllers/api_key_copy_controller-DIGEST.js",
+    "controllers/application": "/assets/controllers/application-DIGEST.js",
+    "controllers": "/assets/controllers/index-DIGEST.js",
+    "controllers/list_autofill_controller": "/assets/controllers/list_autofill_controller-DIGEST.js",
+    "controllers/quote_reply_controller": "/assets/controllers/quote_reply_controller-DIGEST.js",
+    "controllers/sticky_issue_header_controller": "/assets/controllers/sticky_issue_header_controller-DIGEST.js"
+  }
+}</script>
+<link rel="modulepreload" href="/assets/requestjs-DIGEST.js">
+<link rel="modulepreload" href="/assets/application-DIGEST.js">
+<link rel="modulepreload" href="/assets/stimulus.min-DIGEST.js">
+<link rel="modulepreload" href="/assets/stimulus-loading-DIGEST.js">
+<link rel="modulepreload" href="/assets/turndown-DIGEST.js">
+<link rel="modulepreload" href="/assets/controllers/api_key_copy_controller-DIGEST.js">
+<link rel="modulepreload" href="/assets/controllers/application-DIGEST.js">
+<link rel="modulepreload" href="/assets/controllers/index-DIGEST.js">
+<link rel="modulepreload" href="/assets/controllers/list_autofill_controller-DIGEST.js">
+<link rel="modulepreload" href="/assets/controllers/quote_reply_controller-DIGEST.js">
+<link rel="modulepreload" href="/assets/controllers/sticky_issue_header_controller-DIGEST.js">
+<script type="module">import "application"</script>
+<script src="/assets/jquery-3.7.1-ui-1.13.3-DIGEST.js"></script>
+<script src="/assets/rails-ujs-DIGEST.js"></script>
+<script src="/assets/tribute-5.1.3.min-DIGEST.js"></script><script src="/assets/application-legacy-DIGEST.js"></script>
+<script src="/assets/responsive-DIGEST.js"></script>
+<script>
+//<![CDATA[
+$(window).on('load', function(){ warnLeavingUnsaved('The current page contains unsaved text that will be lost if you leave this page.'); });
+//]]>
+</script>
+
+<script>
+//<![CDATA[
+rm = window.rm || {};rm.I18n = rm.I18n || {};rm.I18n = Object.freeze({buttonCopy: 'Copy'});
+//]]>
+</script>
+<script>
+//<![CDATA[
+rm = window.rm || {};rm.AutoComplete = rm.AutoComplete || {};rm.AutoComplete.dataSources = JSON.parse('{"issues":"/issues/auto_complete?q=","wiki_pages":"/wiki_pages/auto_complete?q="}');
+//]]>
+</script>
+
+<!-- page specific tags -->
+</head>
+<body class="controller-users action-edit avatars-off" data-text-formatting="common_mark">
+
+<div id="wrapper">
+
+<div class="flyout-menu js-flyout-menu">
+
+        <div class="flyout-menu__search">
+            <form action="/search" accept-charset="UTF-8" name="form-RANDOM" method="get">
+            
+            <label class="search-magnifier search-magnifier--flyout" for="flyout-search"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--search"></use></svg><span class="icon-label hidden">Search</span></label>
+            <input type="text" name="q" id="flyout-search" class="small js-search-input" placeholder="Search" />
+</form>        </div>
+
+        <div class="flyout-menu__avatar">
+          <a href="/users/1"><span role="img" class="avatar-color-1 s40 avatar">RA</span></a>
+          <a class="user active" href="/users/1">admin</a>
+        </div>
+
+
+    <h3>General</h3>
+    <span class="js-general-menu"></span>
+
+    <span class="js-sidebar flyout-menu__sidebar"></span>
+
+    <h3>Profile</h3>
+    <span class="js-profile-menu"></span>
+
+</div>
+
+
+<div id="top-menu">
+    <div id="account">
+        <ul><li><a class="my-account" href="/my/account">My account</a></li><li><a class="logout" rel="nofollow" data-method="post" href="/logout">Sign out</a></li></ul>    </div>
+    <div id="loggedas">Logged in as <a class="user active" href="/users/1">admin</a></div>
+    <ul><li><a class="home" href="/">Home</a></li><li><a class="my-page" href="/my/page">My page</a></li><li><a class="projects" href="/projects">Projects</a></li><li><a class="administration" href="/admin">Administration</a></li><li><a target="_blank" rel="noopener" class="help" href="https://www.redmine.org/guide">Help</a></li></ul></div>
+
+<div id="header">
+
+    <a href="#" class="mobile-toggle-button js-flyout-menu-toggle-button"></a>
+
+    <div id="quick-search">
+        <form action="/search" accept-charset="UTF-8" name="form-RANDOM" method="get">
+        <input type="hidden" name="scope" autocomplete="off" />
+        
+        <label for='q'>
+          <a accesskey="4" href="/search">Search</a>:
+        </label>
+        <input type="text" name="q" id="q" size="20" class="small" accesskey="f" data-auto-complete="true" />
+</form>        <div id="project-jump" class="drdn"><span class="drdn-trigger">Jump to a project...</span><div class="drdn-content"><div class="quick-search"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--search"></use></svg><input type="text" name="q" id="projects-quick-search" value="" class="autocomplete" data-automcomplete-url="/projects/autocomplete.js?jump=users" autocomplete="off" /></div><div class="drdn-items projects selection"><strong>Bookmarks</strong><a title="eCookbook" href="/projects/ecookbook?jump=users"><span style="padding-inline-start:0px;">eCookbook</span></a><a title="Private child of eCookbook" href="/projects/private-child?jump=users"><span style="padding-inline-start:16px;">Private child of eCookbook</span></a><strong>All Projects</strong><a title="Private child of eCookbook" href="/projects/private-child?jump=users"><span style="padding-inline-start:0px;">Private child of eCookbook</span></a></div><div class="drdn-items all-projects selection"><a href="/projects?jump=users">All Projects</a></div></div></div>
+    </div>
+
+    <h1>Redmine</h1>
+
+</div>
+
+<div id="main" class="collapsiblesidebar">
+  <script>
+//<![CDATA[
+$('#main.collapsiblesidebar').collapsibleSidebar();
+//]]>
+</script>
+    <div id="sidebar">
+          <div id="sidebar-switch-panel" style="visibility: hidden;">
+            <a id="sidebar-switch-button" class="" href="#">
+              <svg class="s20 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--chevrons-right"></use></svg></a>
+          </div>
+          <script>
+//<![CDATA[
+$('#sidebar-switch-panel').css('visibility', 'visible');
+//]]>
+</script>
+        <div id="sidebar-wrapper">
+              <h3>Administration</h3>
+    <div id="admin-menu">
+  <ul><li><a class="icon icon-projects projects" href="/admin/projects"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--projects"></use></svg><span class="icon-label">Projects</span></a></li><li><a class="icon icon-user users selected" href="/users"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--user"></use></svg><span class="icon-label">Users</span></a></li><li><a class="icon icon-group groups" href="/groups"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--group"></use></svg><span class="icon-label">Groups</span></a></li><li><a class="icon icon-roles roles" href="/roles"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--roles"></use></svg><span class="icon-label">Roles and permissions</span></a></li><li><a class="icon icon-issue trackers" href="/trackers"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--issue"></use></svg><span class="icon-label">Trackers</span></a></li><li><a class="icon icon-issue-edit issue-statuses" href="/issue_statuses"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--issue-edit"></use></svg><span class="icon-label">Issue statuses</span></a></li><li><a class="icon icon-workflows workflows" href="/workflows/edit"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--workflows"></use></svg><span class="icon-label">Workflow</span></a></li><li><a class="icon icon-custom-fields custom-fields" href="/custom_fields"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--custom-fields"></use></svg><span class="icon-label">Custom fields</span></a></li><li><a class="icon icon-list enumerations" href="/enumerations"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--list"></use></svg><span class="icon-label">Enumerations</span></a></li><li><a class="icon icon-settings settings" href="/settings"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--settings"></use></svg><span class="icon-label">Settings</span></a></li><li><a class="icon icon-server-authentication ldap-authentication" href="/auth_sources"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--server-authentication"></use></svg><span class="icon-label">LDAP authentication</span></a></li><li><a class="icon icon-applications applications" href="/oauth/applications"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--apps"></use></svg><span class="icon-label">Applications</span></a></li><li><a class="icon icon-plugins plugins" href="/admin/plugins"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--plugins"></use></svg><span class="icon-label">Plugins</span></a></li><li><a class="icon icon-help info" href="/admin/info"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--help"></use></svg><span class="icon-label">Information</span></a></li></ul>
+</div>
+
+
+          
+        </div>
+    </div>
+
+    <div id="content">
+        
+        <div class="contextual">
+<a class="icon icon-user" href="/users/2"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--user"></use></svg><span class="icon-label">Profile</span></a>
+<a class="icon icon-email-add" data-remote="true" href="/users/2/email_addresses"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--email"></use></svg><span class="icon-label">Emails</span></a>
+<a class="icon icon-lock" rel="nofollow" data-method="put" href="/users/2?user%5Bstatus%5D=3"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--lock"></use></svg><span class="icon-label">Lock</span></a>
+<a data-confirm="Are you sure?" class="icon icon-del" rel="nofollow" data-method="delete" href="/users/2"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--del"></use></svg><span class="icon-label">Delete</span></a>
+</div>
+
+<h2><a href="/users">Users</a> &#187; <span role="img" class="avatar-color-2 s24 avatar">JS</span>jsmith</h2>
+
+
+<div class="tabs">
+  <ul>
+    <li><a id="tab-general" class="selected" onclick="showTab(&#39;general&#39;, this.href); return false;" href="/users/2/edit?tab=general">General</a></li>
+    <li><a id="tab-groups" onclick="showTab(&#39;groups&#39;, this.href); return false;" href="/users/2/edit?tab=groups">Groups</a></li>
+    <li><a id="tab-memberships" onclick="showTab(&#39;memberships&#39;, this.href); return false;" href="/users/2/edit?tab=memberships">Projects</a></li>
+  </ul>
+  <div class="tabs-buttons" style="display:none;">
+    <button class="tab-left icon-only" type="button" onclick="moveTabLeft(this);">
+      <svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--angle-left"></use></svg>
+    </button>
+    <button class="tab-right icon-only" type="button" onclick="moveTabRight(this);">
+      <svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--angle-right"></use></svg>
+    </button>
+  </div>
+</div>
+
+  <div id="tab-content-general" class="tab-content"><form class="edit_user" id="edit_user_2" enctype="multipart/form-data" action="/users/2" accept-charset="UTF-8" name="edit_user_2-RANDOM" method="post"><input type="hidden" name="_method" value="patch" autocomplete="off" /><input type="hidden" name="authenticity_token" value="{{CSRF}}" autocomplete="off" />
+  
+
+<div id="user_form">
+<!--[form:user]-->
+<div class="splitcontent">
+<div class="splitcontentleft">
+<fieldset class="box tabular">
+  <legend>Information</legend>
+  <p><label for="user_login">Login<span class="required"> *</span></label><input size="25" type="text" value="jsmith" name="user[login]" id="user_login" /></p>
+  <p><label for="user_firstname">First name<span class="required"> *</span></label><input type="text" value="John" name="user[firstname]" id="user_firstname" /></p>
+  <p><label for="user_lastname">Last name<span class="required"> *</span></label><input type="text" value="Smith" name="user[lastname]" id="user_lastname" /></p>
+  <p><label for="user_mail">Email<span class="required"> *</span></label><input type="text" value="jsmith@somenet.foo" name="user[mail]" id="user_mail" /></p>
+  <p><label for="user_language">Language</label><select name="user[language]" id="user_language"><option value="">(auto)</option>
+<option value="sq">Albanian (Shqip)</option>
+<option value="ar">Arabic (عربي)</option>
+<option value="az">Azerbaijani (Azeri)</option>
+<option value="eu">Basque (Euskara)</option>
+<option value="bs">Bosnian (Bosanski)</option>
+<option value="bg">Bulgarian (Български)</option>
+<option value="ca">Catalan (Català)</option>
+<option value="zh">Chinese/Simplified (简体中文)</option>
+<option value="zh-TW">Chinese/Traditional (繁體中文)</option>
+<option value="hr">Croatian (Hrvatski)</option>
+<option value="cs">Czech (Čeština)</option>
+<option value="da">Danish (Dansk)</option>
+<option value="nl">Dutch (Nederlands)</option>
+<option selected="selected" value="en">English</option>
+<option value="en-GB">English (British)</option>
+<option value="et">Estonian (Eesti)</option>
+<option value="fi">Finnish (Suomi)</option>
+<option value="fr">French (Français)</option>
+<option value="gl">Galician (Galego)</option>
+<option value="de">German (Deutsch)</option>
+<option value="el">Greek (Ελληνικά)</option>
+<option value="he">Hebrew (עברית)</option>
+<option value="hu">Hungarian (Magyar)</option>
+<option value="id">Indonesian (Bahasa Indonesia)</option>
+<option value="it">Italian (Italiano)</option>
+<option value="ja">Japanese (日本語)</option>
+<option value="ko">Korean (한국어)</option>
+<option value="lv">Latvian (Latviešu)</option>
+<option value="lt">Lithuanian (lietuvių)</option>
+<option value="mk">Macedonian (Македонски)</option>
+<option value="mn">Mongolian (Монгол)</option>
+<option value="no">Norwegian (Norsk bokmål)</option>
+<option value="fa">Persian (فارسی)</option>
+<option value="pl">Polish (Polski)</option>
+<option value="pt">Portuguese (Português)</option>
+<option value="pt-BR">Portuguese/Brazil (Português/Brasil)</option>
+<option value="ro">Romanian (Română)</option>
+<option value="ru">Russian (Русский)</option>
+<option value="sr-YU">Serbian (Srpski)</option>
+<option value="sr">Serbian Cyrillic (Српски)</option>
+<option value="sk">Slovak (Slovenčina)</option>
+<option value="sl">Slovene (Slovenščina)</option>
+<option value="es">Spanish (Español)</option>
+<option value="es-PA">Spanish/Panama (Español/Panamá)</option>
+<option value="sv">Swedish (Svenska)</option>
+<option value="ta-IN">Tamil (தமிழ்)</option>
+<option value="th">Thai (ไทย)</option>
+<option value="tr">Turkish (Türkçe)</option>
+<option value="uk">Ukrainian (Українська)</option>
+<option value="vi">Vietnamese (Tiếng Việt)</option></select></p>
+
+    <p><label for="user_custom_field_values_4"><span>Phone number</span></label><input type="text" name="user[custom_field_values][4]" id="user_custom_field_values_4" value="01 42 50 00 00" class="string_cf cf_4" /></p>
+    <p><label for="user_custom_field_values_5"><span>Money</span></label><input type="text" name="user[custom_field_values][5]" id="user_custom_field_values_5" class="float_cf cf_5" /></p>
+
+  <p><label for="user_admin">Administrator</label><input name="user[admin]" type="hidden" value="0" autocomplete="off" /><input type="checkbox" value="1" name="user[admin]" id="user_admin" /></p>
+  
+</fieldset>
+
+<fieldset class="box tabular">
+  <legend>Authentication</legend>
+  <p><label for="user_auth_source_id">Authentication mode</label><select onchange="if (this.value==&#39;&#39;) {$(&#39;#password_fields&#39;).show();} else {$(&#39;#password_fields&#39;).hide();}" name="user[auth_source_id]" id="user_auth_source_id"><option selected="selected" value="">Internal</option>
+<option value="1">LDAP test server</option></select></p>
+  <div id="password_fields" style="">
+  <p>
+    <label for="user_password">Password</label><input size="25" type="password" name="user[password]" id="user_password" />
+    <em class="info">Must be at least 8 characters long.</em>
+  </p>
+  <p><label for="user_password_confirmation">Confirmation</label><input size="25" type="password" name="user[password_confirmation]" id="user_password_confirmation" /></p>
+  <p><label for="user_generate_password">Generate password</label><input name="user[generate_password]" type="hidden" value="0" autocomplete="off" /><input type="checkbox" value="1" name="user[generate_password]" id="user_generate_password" /></p>
+  <p><label for="user_must_change_passwd">Must change password at next logon</label><input name="user[must_change_passwd]" type="hidden" value="0" autocomplete="off" /><input type="checkbox" value="1" name="user[must_change_passwd]" id="user_must_change_passwd" /></p>
+  </div>
+  <p>
+    <label>Two-factor authentication</label>
+      Currently active: Authenticator app<br/>
+        <a rel="nofollow" data-method="post" href="/users/2/twofa/deactivate">Disable</a>  </p>
+</fieldset>
+<p class="mobile-hide">
+    <input type="submit" name="commit" value="Save" data-disable-with="Save" />
+</p>
+</div>
+
+<div class="splitcontentright">
+<fieldset class="box">
+  <legend>Email notifications</legend>
+  <p>
+<label class="hidden-for-sighted" for="user_mail_notification">Mail notification settings</label>
+<select name="user[mail_notification]" id="user_mail_notification" onchange="if (this.value == &quot;selected&quot;) {$(&quot;#notified-projects&quot;).show();} else {$(&quot;#notified-projects&quot;).hide();}"><option selected="selected" value="all">For any event on all my projects</option>
+<option value="selected">For any event on the selected projects only...</option>
+<option value="only_my_events">Only for things I watch or I&#39;m involved in</option>
+<option value="only_assigned">Only for things I watch or I am assigned to</option>
+<option value="only_owner">Only for things I watch or I am the owner of</option>
+<option value="none">No events</option></select>
+</p>
+<fieldset id="notified-projects" style="display:none;">
+  <legend><a href="#" onclick="toggleCheckboxesBySelector(&#39;#notified-projects input[type=checkbox]&#39;); return false;" title="Check all / Uncheck all" class="icon icon-checked"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--checked"></use></svg><span class="icon-label"></span></a>Projects</legend>
+  <ul class='projects root'>
+<li class='root'><div class='root'><label><input type="checkbox" name="user[notified_project_ids][]" value="1" checked="checked" /> eCookbook</label></div>
+<ul class='projects '>
+<li class='child'><div class='child'><label><input type="checkbox" name="user[notified_project_ids][]" value="5" checked="checked" /> Private child of eCookbook</label></div>
+</li></ul></li>
+<li class='root'><div class='root'><label><input type="checkbox" name="user[notified_project_ids][]" value="2" checked="checked" /> OnlineStore</label></div>
+</li></ul>
+
+  <input type="hidden" name="user[notified_project_ids][]" id="user_notified_project_ids_" value="" autocomplete="off" />
+  <p><em class="info">For unselected projects, you will only receive notifications about things you watch or you&#39;re involved in (eg. issues you&#39;re the author or assignee).</em></p>
+</fieldset>
+
+
+<p>
+  <input name="pref[notify_about_high_priority_issues]" type="hidden" value="0" autocomplete="off" /><input type="checkbox" value="1" name="pref[notify_about_high_priority_issues]" id="pref_notify_about_high_priority_issues" />
+  <label for="pref_notify_about_high_priority_issues">Also notify me about issues with a priority of <em>high</em> or higher</label>
+</p>
+<p>
+  <input name="pref[no_self_notified]" type="hidden" value="0" autocomplete="off" /><input type="checkbox" value="1" name="pref[no_self_notified]" id="pref_no_self_notified" />
+  <label for="pref_no_self_notified">I don&#39;t want to be notified of changes that I make myself</label>
+</p>
+
+</fieldset>
+
+<fieldset class="box">
+  <legend>Auto watch</legend>
+  
+  <input type="hidden" name="pref[auto_watch_on][]" value="" autocomplete="off" />
+    <p><input type="checkbox" value="issue_created" name="pref[auto_watch_on][]" id="pref_auto_watch_on_issue_created" /> <label for="pref_auto_watch_on_issue_created">Issues I created</label></p>
+
+    <p><input type="checkbox" value="issue_contributed_to" name="pref[auto_watch_on][]" id="pref_auto_watch_on_issue_contributed_to" /> <label for="pref_auto_watch_on_issue_contributed_to">Issues I contributed to</label></p>
+
+</fieldset>
+
+<fieldset class="box tabular">
+  <legend>Preferences</legend>
+  
+<p><label for="pref_hide_mail">Hide my email address</label><input name="pref[hide_mail]" type="hidden" value="0" autocomplete="off" /><input type="checkbox" value="1" checked="checked" name="pref[hide_mail]" id="pref_hide_mail" /></p>
+<!-- time_zone -->
+<p><label for="pref_comments_sorting">Display comments</label><select name="pref[comments_sorting]" id="pref_comments_sorting"><option value="asc">In chronological order</option>
+<option value="desc">In reverse chronological order</option></select></p>
+<p><label for="pref_warn_on_leaving_unsaved">Warn me when leaving a page with unsaved text</label><input name="pref[warn_on_leaving_unsaved]" type="hidden" value="0" autocomplete="off" /><input type="checkbox" value="1" checked="checked" name="pref[warn_on_leaving_unsaved]" id="pref_warn_on_leaving_unsaved" /></p>
+<p><label for="pref_textarea_font">Font used for text areas</label><select name="pref[textarea_font]" id="pref_textarea_font"><option selected="selected" value="">Default font</option>
+<option value="monospace">Monospaced font</option>
+<option value="proportional">Proportional font</option></select></p>
+<p><label for="pref_recently_used_projects">Number of recently used projects in jump box</label><input size="2" type="text" value="3" name="pref[recently_used_projects]" id="pref_recently_used_projects" /></p>
+<p><label for="pref_history_default_tab">Issue's history default tab</label><select name="pref[history_default_tab]" id="pref_history_default_tab"><option value="notes">Notes</option>
+<option value="history">History</option>
+<option value="properties">Property changes</option>
+<option value="time_entries">Spent time</option>
+<option value="changesets">Associated revisions</option>
+<option value="last_tab_visited">Last visited tab</option></select></p>
+<p><label for="pref_toolbar_language_options">Code highlighting toolbar languages</label><textarea rows="4" name="pref[toolbar_language_options]" id="pref_toolbar_language_options">
+c,cpp,csharp,css,diff,go,groovy,html,java,javascript,objc,perl,php,python,r,ruby,sass,scala,shell,sql,swift,xml,yaml</textarea></p>
+<p><label for="pref_default_issue_query">Default issue query</label><select name="pref[default_issue_query]" id="pref_default_issue_query"><option value="">none</option>
+<optgroup label="For all users"><option value="4">Public query for all projects</option>
+<option value="5">Open issues by priority and tracker</option>
+<option value="6">Open issues grouped by tracker</option>
+<option value="9">Open issues grouped by list custom field</option></optgroup><optgroup label="For this user"></optgroup></select></p>
+<p><label for="pref_default_project_query">Default project query</label><select name="pref[default_project_query]" id="pref_default_project_query"><option value="">none</option>
+<optgroup label="For all users"><option value="11">Projects as list</option></optgroup><optgroup label="For this user"></optgroup></select></p>
+
+  
+</fieldset>
+</div>
+</div>
+</div>
+<div style="clear:left;"></div>
+<!--[eoform:user]-->
+
+<script>
+//<![CDATA[
+
+$(document).ready(function(){
+  $('#user_generate_password').change(function(){
+    var passwd = $('#user_password, #user_password_confirmation');
+    if ($(this).is(':checked')){
+      passwd.val('').attr('disabled', true);
+    }else{
+      passwd.removeAttr('disabled');
+    }
+  }).trigger('change');
+});
+
+//]]>
+</script>
+    <p><label><input type="checkbox" name="send_information" id="send_information" value="1" /> Send account information to the user</label></p>
+  <p class="mobile-show"><input type="submit" name="commit" value="Save" data-disable-with="Save" /></p>
+</form></div>
+  <div id="tab-content-groups" style="display:none" class="tab-content"><form action="/users/2" accept-charset="UTF-8" name="form-RANDOM" method="post"><input type="hidden" name="_method" value="put" autocomplete="off" /><input type="hidden" name="authenticity_token" value="{{CSRF}}" autocomplete="off" />
+<div class="box">
+<div id="user_group_ids">
+<label><input type="checkbox" name="user[group_ids][]" value="10" /> A Team</label><br />
+<label><input type="checkbox" name="user[group_ids][]" value="11" /> B Team</label><br />
+<input type="hidden" name="user[group_ids][]" id="user_group_ids_" value="" autocomplete="off" />
+</div>
+<p><a href="#" onclick="checkAll(&#39;user_group_ids&#39;, true); return false;">Check all</a> | <a href="#" onclick="checkAll(&#39;user_group_ids&#39;, false); return false;">Uncheck all</a></p>
+</div>
+<input type="submit" name="commit" value="Save" data-disable-with="Save" />
+</form></div>
+  <div id="tab-content-memberships" style="display:none" class="tab-content">
+<p><a class="icon icon-add" data-remote="true" href="/users/2/memberships/new"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--add"></use></svg><span class="icon-label">Add projects</span></a></p>
+
+<table class="list memberships">
+  <thead><tr>
+    <th>Project</th>
+    <th>Roles</th>
+    <th style="width:15%"></th>
+      
+  </tr></thead>
+  <tbody>
+  <tr id="member-1" class="class">
+  <td class="project name">
+    <a href="/projects/ecookbook">eCookbook</a>
+  </td>
+  <td class="roles">
+    <span id="member-1-roles">Manager</span>
+    <div id="member-1-form"></div>
+  </td>
+  <td class="buttons">
+      <a class="icon icon-edit" data-remote="true" href="/users/2/memberships/1/edit"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--edit"></use></svg><span class="icon-label">Edit</span></a>
+      <a data-confirm="Are you sure?" class="icon icon-del" data-remote="true" rel="nofollow" data-method="delete" href="/users/2/memberships/1"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--del"></use></svg><span class="icon-label">Delete</span></a>
+  </td>
+      
+  </tr>
+  <tr id="member-5" class="class">
+  <td class="project name">
+    <a href="/projects/private-child">Private child of eCookbook</a>
+  </td>
+  <td class="roles">
+    <span id="member-5-roles">Manager</span>
+    <div id="member-5-form"></div>
+  </td>
+  <td class="buttons">
+      <a class="icon icon-edit" data-remote="true" href="/users/2/memberships/5/edit"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--edit"></use></svg><span class="icon-label">Edit</span></a>
+      <a data-confirm="Are you sure?" class="icon icon-del" data-remote="true" rel="nofollow" data-method="delete" href="/users/2/memberships/5"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--del"></use></svg><span class="icon-label">Delete</span></a>
+  </td>
+      
+  </tr>
+  <tr id="member-3" class="class">
+  <td class="project name">
+    <a href="/projects/onlinestore">OnlineStore</a>
+  </td>
+  <td class="roles">
+    <span id="member-3-roles">Developer</span>
+    <div id="member-3-form"></div>
+  </td>
+  <td class="buttons">
+      <a class="icon icon-edit" data-remote="true" href="/users/2/memberships/3/edit"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--edit"></use></svg><span class="icon-label">Edit</span></a>
+      <a data-confirm="Are you sure?" class="icon icon-del" data-remote="true" rel="nofollow" data-method="delete" href="/users/2/memberships/3"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--del"></use></svg><span class="icon-label">Delete</span></a>
+  </td>
+      
+  </tr>
+  </tbody>
+</table>
+
+</div>
+
+<script>
+//<![CDATA[
+showTab('general', this.href)
+//]]>
+</script>
+
+
+        
+        <div style="clear:both;"></div>
+    </div>
+</div>
+<div id="footer">
+    Powered by <a target="_blank" rel="noopener" href="https://www.redmine.org/">Redmine</a> &copy; 2006-2026 Jean-Philippe Lang
+</div>
+
+<div id="ajax-indicator" style="display:none;">
+  <span class="icon">
+    <svg class="s18 icon-svg svg-loader" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--loader"></use></svg><span class="icon-label">Loading...</span>
+  </span>
+</div>
+<div id="ajax-modal" style="display:none;"></div>
+<div id="icon-copy-source" style="display: none;"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--"></use></svg></div>
+
+</div>
+
+</body>
+</html>
+

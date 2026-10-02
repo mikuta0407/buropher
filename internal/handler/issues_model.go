@@ -67,7 +67,7 @@ func (l *issueLookup) issuesEnv() *issues.Env {
 	if l.ie == nil {
 		e := issues.NewEnv(l.a.DB, l.a.Settings, l.c.User)
 		e.Now = l.a.now
-		e.Notifier = l.a.issuesNotifier()
+		e.Notifier = l.a.issueNotifier()
 		e.Translate = func(key string, args ...any) string { return l.c.L(key, args...) }
 		l.ie = e
 	}

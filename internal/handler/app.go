@@ -64,6 +64,16 @@ type App struct {
 	DiscordAuthorizeURL string
 	// DiscordFeature は config の discord.enabled（管理画面のプラグイン一覧に Discord 通知を出す）。
 	DiscordFeature bool
+	// Mailer は認証・アカウント関連のメール（nil ならログに記録するだけ。account_mailer.go）。
+	Mailer AccountMailer
+	// SudoMode は Redmine::Configuration['sudo_mode']（既定 false。sudo_mode.go）。
+	SudoMode bool
+	// SudoModeTimeout は sudo_mode_timeout（0 なら 15 分）。
+	SudoModeTimeout time.Duration
+	// OIDCHTTPClient は OIDC プロバイダとの通信に使う HTTP クライアント（nil なら http.DefaultClient。テスト用）。
+	OIDCHTTPClient *http.Client
+	// BaseURL は外部から見たベース URL（config の server.base_url。空ならリクエストから組み立てる）。
+	BaseURL string
 }
 
 func (a *App) now() time.Time {
@@ -305,6 +315,10 @@ func (a *App) runBeforeActions(c *Req, cfg *actionConfig) bool {
 		if f(c); c.halted {
 			return true
 		}
+	}
+	// require_sudo_mode（既存コントローラの宣言は sudo_mode.go の表で適用する）
+	if a.sudoModeTableFilter(c); c.halted {
+		return true
 	}
 	return false
 }

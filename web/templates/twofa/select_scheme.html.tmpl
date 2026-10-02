@@ -1,0 +1,20 @@
+{{title (l "twofa_label_setup")}}
+
+{{form_tag "/my/twofa/activate/init" (hash "method" "post")}}
+  <div class="box">
+  <p>{{l "twofa_notice_select" -}}</p>
+  <p>
+  {{range $idx, $s := .Schemes}}
+    <label style="display:block;">{{radio_button_tag "scheme" $s (eq $idx 0) -}} {{l (printf "twofa__%s__name" $s) -}}</label>
+  {{end}}
+  </p>
+  </div>
+  <p>{{submit_tag (printf "%s &#187;" (l "label_next") | raw) -}}</p>
+{{end_form}}
+
+{{define "twofa/select_scheme#sidebar"}}
+{{partial "my/sidebar"}}
+{{end}}
+{{if not .MustActivateTwofa}}
+{{content_for "sidebar" (capture "twofa/select_scheme#sidebar")}}
+{{end}}

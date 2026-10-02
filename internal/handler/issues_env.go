@@ -10,7 +10,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/issues"
 )
 
-// LogNotifier は通知をログに出すだけの issues.Notifier（メール・Discord の配送は後続の実装で差し替える）。
+// LogNotifier は通知をログに出すだけの issues.Notifier（メール・Discord の配送がどちらも無効なときに使う）。
 type LogNotifier struct {
 	App *App
 }
@@ -22,10 +22,14 @@ func (n LogNotifier) Enqueue(ctx context.Context, x issues.Notification) error {
 	return nil
 }
 
-// issueNotifier は通知の配送先（App.Notifier。nil ならログ出力のみ）。
+// issueNotifier は通知の配送先。App.Notifier（テスト等での上書き）があればそれ、通知の配送層（App.Notify）で
+// メールか Discord が使えればそれ、どちらも無効ならログ出力のみ。
 func (a *App) issueNotifier() issues.Notifier {
 	if a.Notifier != nil {
 		return a.Notifier
+	}
+	if a.Notify != nil && (a.Notify.MailEnabled() || a.Notify.DiscordConfig().Usable()) {
+		return a.Notify
 	}
 	return LogNotifier{App: a}
 }

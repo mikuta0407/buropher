@@ -159,7 +159,7 @@ func (t *Target) Do(c scenario.Case) (*Response, error) {
 				form.Add(k, v)
 			}
 		}
-		if c.Auth == "session" && form.Get("authenticity_token") == "" {
+		if (c.Auth == "session" || c.CSRF) && form.Get("authenticity_token") == "" {
 			tok, err := t.fetchToken(cl, "/")
 			if err != nil {
 				return nil, err

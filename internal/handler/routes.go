@@ -62,4 +62,6 @@ func (a *App) Routes(r Router) {
 	a.routesIssuesBulk(r)
 	a.routesJournalsWrite(r)
 	a.routesDiscord(r)
+	a.routesTwofa(r)
+	a.routesMyIdentities(r)
 }

@@ -1,0 +1,14 @@
+<h2>{{l "twofa_label_deactivation_confirmation" -}}</h2>
+
+<div class="splitcontentleft">
+  {{form_tag (printf "/my/twofa/%s/deactivate" .TwofaView.SchemeName) (hash "method" "post" "id" "twofa_form") -}}
+    {{partial "twofa/twofa_code_form" -}}
+    {{submit_tag (l "button_disable") (hash "name" "submit_otp") -}}
+    {{if .TwofaView.Resendable}}{{link_to (l "twofa_resend_code") (printf "/my/twofa/%s/deactivate/init" .TwofaView.SchemeName) (hash "method" "post")}}{{end -}}
+  {{end_form}}
+</div>
+
+{{define "twofa/deactivate_confirm#sidebar"}}
+{{partial "my/sidebar"}}
+{{end}}
+{{content_for "sidebar" (capture "twofa/deactivate_confirm#sidebar")}}

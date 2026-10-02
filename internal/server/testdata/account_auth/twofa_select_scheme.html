@@ -1,0 +1,90 @@
+status: 200
+location: 
+
+<title>Enable two-factor authentication - Redmine</title>
+----
+<!-- page specific tags -->
+</head>
+----
+<div id="main" class="collapsiblesidebar">
+  <script>
+//<![CDATA[
+$('#main.collapsiblesidebar').collapsibleSidebar();
+//]]>
+</script>
+    <div id="sidebar">
+          <div id="sidebar-switch-panel" style="visibility: hidden;">
+            <a id="sidebar-switch-button" class="" href="#">
+              <svg class="s20 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--chevrons-right"></use></svg></a>
+          </div>
+          <script>
+//<![CDATA[
+$('#sidebar-switch-panel').css('visibility', 'visible');
+//]]>
+</script>
+        <div id="sidebar-wrapper">
+          <h3>My account</h3>
+
+<p>Login: <strong><a class="user active" href="/users/2">jsmith</a></strong><br />
+Created: 07/19/2006 05:32 PM</p>
+
+  <p><a class="icon icon-del" href="/my/account/destroy"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--del"></use></svg><span class="icon-label">Delete my account</span></a></p>
+
+<h4>Atom access key</h4>
+
+<p>
+Missing a Atom access key
+(<a rel="nofollow" data-method="post" href="/my/atom_key">Reset</a>)
+</p>
+
+<h4>API access key</h4>
+<div data-controller="api-key-copy">
+  <div class="api-key-actions">
+    <a data-remote="true" href="/my/api_key">Show</a>
+    <a class="copy-api-key-link icon icon-only"
+       title="Copy"
+       aria-label="Copy"
+       href="#"
+       role="button"
+       tabindex="0"
+       style="display: none;"
+       data-action="click->api-key-copy#copy">
+      <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--copy"></use></svg>
+    </a>
+  </div>
+  <pre id='api-access-key' class='autoscroll' data-api-key-copy-target="apiKey"></pre>
+  <script>
+//<![CDATA[
+$('#api-access-key').hide();
+//]]>
+</script>
+  <p>
+  Missing an API access key
+  (<a rel="nofollow" data-method="post" href="/my/api_key">Reset</a>)
+  </p>
+</div>
+
+
+          
+        </div>
+    </div>
+
+    <div id="content">
+        
+        <h2>Enable two-factor authentication</h2>
+
+<form action="/my/twofa/activate/init" accept-charset="UTF-8" name="form-RANDOM" method="post"><input type="hidden" name="authenticity_token" value="{{CSRF}}" autocomplete="off" />
+  <div class="box">
+  <p>Please select the two-factor scheme you would like to use:</p>
+  <p>
+    <label style="display:block;"><input type="radio" name="scheme" id="scheme_totp" value="totp" checked="checked" /> Authenticator app</label>
+  </p>
+  </div>
+  <p><input type="submit" name="commit" value="Next &#187;" data-disable-with="Next &#187;" /></p>
+</form>
+
+        
+        <div style="clear:both;"></div>
+    </div>
+</div>
+<div id="footer">

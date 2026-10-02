@@ -78,6 +78,10 @@ func setupNotify(cfg *config.Config, d *db.DB, app *handler.App, o Options) (*jo
 		Secrets: app.Secrets, Logger: o.Logger, Now: o.Now}
 	svc.RegisterJobs()
 	app.Notify = svc
+	if svc.MailEnabled() {
+		// パスワード再発行・登録・2 要素認証のセキュリティ通知などのアカウント系メール（未設定ならログのみ）
+		app.Mailer = handler.NotifyAccountMailer{Service: svc}
+	}
 	app.DiscordAuthorizeURL = cfg.Discord.AuthorizeURL
 	app.DiscordFeature = cfg.Discord.Enabled
 	app.RegisterDiscordHooks()

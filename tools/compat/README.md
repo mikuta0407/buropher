@@ -111,6 +111,10 @@ requests:
     method: PUT
     user: admin
     form: {"issue[subject]": "x"}   # session 認証時は authenticity_token を自動付与
+  - path: /account/lost_password
+    method: POST
+    user: anonymous
+    csrf: true                 # 未ログインのフォーム送信でも authenticity_token を付与する
     expect_status: 302         # 参照側のステータス確認
     normalize: {strip_selectors: ["#sidebar"]}
   - path: /gantt

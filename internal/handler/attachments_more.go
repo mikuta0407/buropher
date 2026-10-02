@@ -511,6 +511,7 @@ func (a *App) AttachmentsUpdate(c *Req) {
 // AttachmentsDestroy は attachments#destroy（チケットの添付ならジャーナルに記録する）。
 func (a *App) AttachmentsDestroy(c *Req) {
 	att := c.attachment()
+	var jres *issues.SaveResult
 	err := a.withTx(c, func(tx *db.Tx) error {
 		if att.ContainerKind == domain.AttachmentContainerIssue && att.ContainerID != nil {
 			// container.init_journal(User.current); container.attachments.delete(@attachment)
@@ -529,7 +530,7 @@ func (a *App) AttachmentsDestroy(c *Req) {
 				return err
 			}
 			j.JournalizeAttachment(att.ID, att.Filename, false)
-			_, _, err = env.SaveJournal(c.Ctx(), iss, j)
+			_, jres, err = env.SaveJournal(c.Ctx(), iss, j)
 			return err
 		}
 		return repository.DeleteAttachment(c.Ctx(), tx, att.ID)
@@ -539,6 +540,8 @@ func (a *App) AttachmentsDestroy(c *Req) {
 		return
 	}
 	a.deleteAttachmentsAfterCommit(c, []*domain.Attachment{att})
+	// Journal の after_create_commit :send_notification（添付の削除も issue_updated の通知になる）
+	a.dispatchIssueNotifications(c, jres)
 	switch httpx.Negotiate(c.R, "html", "js", "xml", "json") {
 	case "html":
 		def := "/"

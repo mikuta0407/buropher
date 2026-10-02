@@ -49,14 +49,21 @@ func (s *Service) DocumentAdded(ctx context.Context, documentID int64, author *d
 	s.fire(ctx, "document_added", p, r, err)
 }
 
-// AttachmentsAdded は files#create / documents#add_attachment の Mailer.deliver_attachments_added
+// AttachmentsAdded は files#create の Mailer.deliver_attachments_added
 // （Setting.notified_events に file_added があれば。attachmentIDs は同じコンテナに追加した添付）。
 func (s *Service) AttachmentsAdded(ctx context.Context, attachmentIDs []int64) {
-	if s == nil || len(attachmentIDs) == 0 || !s.eventEnabled(EventFileAdded) {
+	s.AttachmentsAddedFor(ctx, EventFileAdded, attachmentIDs)
+}
+
+// AttachmentsAddedFor は Mailer.deliver_attachments_added を、コントローラが判定する通知イベントで送る
+// （files#create は file_added、documents#add_attachment は document_added。Redmine はコントローラで
+// Setting.notified_events を見る）。
+func (s *Service) AttachmentsAddedFor(ctx context.Context, event string, attachmentIDs []int64) {
+	if s == nil || len(attachmentIDs) == 0 || !s.eventEnabled(event) {
 		return
 	}
 	r, err := s.AttachmentsRecipients(ctx, attachmentIDs)
-	s.fire(ctx, "attachments_added", Payload{Kind: KindAttachmentsAdded, Event: EventFileAdded, AttachmentIDs: attachmentIDs}, r, err)
+	s.fire(ctx, "attachments_added", Payload{Kind: KindAttachmentsAdded, Event: event, AttachmentIDs: attachmentIDs}, r, err)
 }
 
 // MessagePosted は Message#send_notification（message_posted）。

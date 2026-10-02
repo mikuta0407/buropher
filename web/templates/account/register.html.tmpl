@@ -1,0 +1,38 @@
+<h2>{{l "label_register"}}</h2>
+
+{{$f := labelled_form_for "user" .User (hash "url" "/account/register")}}
+{{$f.Open}}
+{{error_messages_for .User}}
+
+<div class="box tabular">
+{{if not .User.AuthSourceID}}
+  <p>{{$f.TextField "login" (hash "size" 25 "required" true)}}</p>
+
+  <p>{{$f.PasswordField "password" (hash "size" 25 "required" true)}}
+  <em class="info">{{l "text_caracters_minimum" (hash "count" .PasswordMinLength)}}</em>
+  {{if .PasswordCharClasses}}
+    <em class="info">{{l "text_characters_must_contain" (hash "character_classes" .PasswordCharClasses)}}</em>
+  {{end}}
+  </p>
+  <p>{{$f.PasswordField "password_confirmation" (hash "size" 25 "required" true)}}</p>
+{{end}}
+
+<p>{{$f.TextField "firstname" (hash "required" true)}}</p>
+<p>{{$f.TextField "lastname" (hash "required" true)}}</p>
+<p>{{$f.TextField "mail" (hash "required" true)}}</p>
+{{$pf := labelled_fields_for "pref" .User.Pref}}
+
+<p>{{$pf.CheckBox "hide_mail"}}</p>
+
+
+{{if not .ForceDefaultLanguage}}
+<p>{{$f.Select "language" (lang_options_for_select)}}</p>
+{{end}}
+
+{{range $tag := .CustomFieldTags}}
+  <p>{{$tag}}</p>
+{{end}}
+</div>
+
+{{submit_tag (l "button_submit")}}
+{{end_form}}

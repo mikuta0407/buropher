@@ -6,19 +6,10 @@ package handler
 import (
 	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/httpx"
-	"github.com/mikuta0407/buropher/internal/issues"
 )
 
 // remoteIP は User.current.remote_ip。
 func (c *Req) remoteIP() string { return httpx.RemoteIP(c.R) }
-
-// issuesNotifier は issues.Env.Notifier に設定する通知先（App.Notify が nil なら nil）。
-func (a *App) issuesNotifier() issues.Notifier {
-	if a.Notify == nil {
-		return nil
-	}
-	return a.Notify
-}
 
 // userSavedSnapshot は保存前のユーザーの状態（User#deliver_security_notification の saved_change_to_*）。
 type userSavedSnapshot struct {
