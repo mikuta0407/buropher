@@ -1,0 +1,275 @@
+# チケットの状態を変える互換シナリオ（issues#create / update と API）。
+# 参照は専用インスタンスで実行前に reset すること:
+#   COMPAT_REF_DIR=_reference/ref-issuesw COMPAT_REF_PORT=4022 tools/compat/redmine-ref.sh start
+#   go run ./tools/compat diff -ref http://127.0.0.1:4022 -cand http://127.0.0.1:4122 \
+#     -reset-ref '...redmine-ref.sh reset' -reset-cand '...buropher-cand.sh reset' testdata/compat/scenarios/issues_write.yml
+# ケースは記述順に実行され、前のケースの結果に依存する（fixtures のチケットは 14 件なので新規は 15 から）。
+name: issues_write
+
+users:
+  admin: {login: admin, password: admin}
+  jsmith: {login: jsmith, password: jsmith}
+  dlopper: {login: dlopper, password: foo}
+
+normalize:
+  mask_text_selectors:
+    - "#footer"
+  strip_selectors:
+    - "#project-jump"
+
+requests:
+  # ---- 作成 ----
+  - id: create_basic
+    path: /projects/ecookbook/issues
+    method: POST
+    user: jsmith
+    form: {"issue[tracker_id]": "1", "issue[subject]": "New issue from scenario", "issue[description]": "Some description\nline 2", "issue[priority_id]": "5", "issue[assigned_to_id]": "3", "issue[custom_field_values][2]": "Value for field 2", "issue[watcher_user_ids][]": ["", "3"]}
+    expect_status: 302
+  - id: show_created
+    path: /issues/15
+    users: [jsmith]
+  - id: show_created_admin
+    path: /issues/15
+    users: [admin]
+  - id: create_blank_subject
+    path: /projects/ecookbook/issues
+    method: POST
+    user: jsmith
+    form: {"issue[tracker_id]": "1", "issue[subject]": "", "issue[priority_id]": "5", "issue[start_date]": "2026-02-10", "issue[due_date]": "2026-02-01", "issue[estimated_hours]": "abc"}
+  - id: create_invalid_parent
+    path: /projects/ecookbook/issues
+    method: POST
+    user: jsmith
+    form: {"issue[tracker_id]": "1", "issue[subject]": "Child", "issue[priority_id]": "5", "issue[parent_issue_id]": "99999"}
+  - id: create_and_continue
+    path: /projects/ecookbook/issues
+    method: POST
+    user: jsmith
+    form: {"issue[tracker_id]": "2", "issue[subject]": "Continue me", "issue[priority_id]": "5", "continue": "Create and continue"}
+    expect_status: 302
+  - id: new_after_continue
+    path: /projects/ecookbook/issues/new?issue%5Btracker_id%5D=2
+    users: [jsmith]
+  - id: create_global_continue
+    path: /issues
+    method: POST
+    user: admin
+    form: {"issue[project_id]": "2", "issue[tracker_id]": "1", "issue[subject]": "Global create", "issue[priority_id]": "5", "continue": "1", "back_url": "/projects/onlinestore/issues"}
+    expect_status: 302
+  - id: create_subtask_follow
+    path: /projects/ecookbook/issues
+    method: POST
+    user: jsmith
+    form: {"issue[tracker_id]": "1", "issue[subject]": "Subtask of 1", "issue[priority_id]": "5", "issue[parent_issue_id]": "1", "back_url": "/issues/1", "follow": "1"}
+    expect_status: 302
+  - id: show_parent_after_subtask
+    path: /issues/1
+    users: [jsmith]
+  - id: create_back_url
+    path: /projects/ecookbook/issues
+    method: POST
+    user: jsmith
+    form: {"issue[tracker_id]": "3", "issue[subject]": "With back url", "issue[priority_id]": "4", "back_url": "/projects/ecookbook/issues"}
+    expect_status: 302
+  - id: create_private
+    path: /projects/ecookbook/issues
+    method: POST
+    user: admin
+    form: {"issue[tracker_id]": "1", "issue[subject]": "Private one", "issue[priority_id]": "6", "issue[is_private]": "1", "issue[status_id]": "2", "issue[start_date]": "2026-01-20", "issue[estimated_hours]": "2:30", "issue[done_ratio]": "30"}
+    expect_status: 302
+  - id: show_private_dlopper
+    path: /issues/20
+    users: [dlopper, admin]
+  - id: create_denied_anonymous
+    path: /projects/ecookbook/issues
+    method: POST
+    user: anonymous
+    form: {"issue[tracker_id]": "1", "issue[subject]": "Anon", "issue[priority_id]": "5"}
+  # ---- コピー ----
+  - id: create_copy
+    path: /projects/ecookbook/issues
+    method: POST
+    user: admin
+    form: {"copy_from": "1", "link_copy": "1", "copy_subtasks": "1", "issue[tracker_id]": "1", "issue[subject]": "Copy of issue 1", "issue[priority_id]": "4", "issue[status_id]": "1"}
+    expect_status: 302
+  - id: show_copy
+    path: /issues/21
+    users: [admin]
+  - id: show_copy_source
+    path: /issues/1
+    users: [admin]
+  # ---- 更新 ----
+  - id: update_attributes
+    path: /issues/2
+    method: PUT
+    user: jsmith
+    form: {"issue[subject]": "Updated subject", "issue[status_id]": "2", "issue[priority_id]": "6", "issue[notes]": "Updated **notes**", "issue[lock_version]": "3", "issue[done_ratio]": "40", "issue[custom_field_values][2]": "new value"}
+    expect_status: 302
+  - id: show_after_update
+    path: /issues/2
+    users: [jsmith, dlopper]
+  - id: update_stale
+    path: /issues/2
+    method: PUT
+    user: admin
+    form: {"issue[subject]": "Conflicting", "issue[notes]": "My conflicting note", "issue[lock_version]": "3", "last_journal_id": "4"}
+  - id: update_stale_add_notes
+    path: /issues/2
+    method: PUT
+    user: admin
+    form: {"issue[subject]": "Conflicting", "issue[notes]": "Only my note", "issue[lock_version]": "3", "conflict_resolution": "add_notes"}
+    expect_status: 302
+  - id: update_stale_cancel
+    path: /issues/2
+    method: PUT
+    user: admin
+    form: {"issue[subject]": "x", "issue[lock_version]": "3", "conflict_resolution": "cancel"}
+    expect_status: 302
+  - id: update_stale_overwrite
+    path: /issues/2
+    method: PUT
+    user: admin
+    form: {"issue[subject]": "Overwritten", "issue[lock_version]": "3", "conflict_resolution": "overwrite"}
+    expect_status: 302
+  - id: show_after_conflicts
+    path: /issues/2
+    users: [admin]
+  - id: update_invalid
+    path: /issues/1
+    method: PUT
+    user: jsmith
+    form: {"issue[subject]": "", "issue[notes]": "kept notes"}
+  - id: update_private_notes
+    path: /issues/1
+    method: PATCH
+    user: jsmith
+    form: {"issue[notes]": "A private note", "issue[private_notes]": "1"}
+    expect_status: 302
+  - id: show_private_note_admin
+    path: /issues/1
+    users: [admin, dlopper]
+  - id: update_log_time
+    path: /issues/3
+    method: PUT
+    user: jsmith
+    form: {"issue[notes]": "Logged time", "time_entry[hours]": "1.5", "time_entry[activity_id]": "9", "time_entry[comments]": "worked"}
+    expect_status: 302
+  - id: show_after_log_time
+    path: /issues/3
+    users: [jsmith]
+  - id: update_log_time_invalid
+    path: /issues/3
+    method: PUT
+    user: jsmith
+    form: {"issue[notes]": "Note with bad time", "time_entry[hours]": "2z", "time_entry[activity_id]": "", "time_entry[comments]": ""}
+  - id: update_log_time_only
+    path: /issues/3
+    method: PUT
+    user: jsmith
+    form: {"time_entry[hours]": "0:45", "time_entry[activity_id]": "10"}
+    expect_status: 302
+  - id: show_after_time_only
+    path: /issues/3
+    users: [jsmith]
+  - id: update_assign_me
+    path: /issues/5
+    method: PUT
+    user: jsmith
+    form: {"issue[assigned_to_id]": "me", "prev_issue_id": "4", "next_issue_id": "6", "issue_position": "2", "issue_count": "10"}
+    expect_status: 302
+  - id: show_after_assign_me
+    path: /issues/5
+    users: [jsmith]
+  - id: update_no_change
+    path: /issues/5
+    method: PUT
+    user: jsmith
+    form: {"issue[notes]": ""}
+    expect_status: 302
+  - id: show_after_no_change
+    path: /issues/5
+    users: [jsmith]
+  - id: update_notes_only_dlopper
+    path: /issues/6
+    method: PUT
+    user: dlopper
+    form: {"issue[notes]": "Developer note", "issue[subject]": "ignored?"}
+  - id: update_move_project
+    path: /issues/4
+    method: PUT
+    user: admin
+    form: {"issue[project_id]": "1", "issue[tracker_id]": "1", "issue[notes]": "moved"}
+    expect_status: 302
+  - id: show_after_move
+    path: /issues/4
+    users: [admin]
+  - id: update_denied_anonymous
+    path: /issues/1
+    method: PUT
+    user: anonymous
+    form: {"issue[notes]": "anon"}
+  # ---- API ----
+  - id: api_create
+    path: /issues.json
+    method: POST
+    user: jsmith
+    content_type: application/json
+    body: '{"issue": {"project_id": 1, "tracker_id": 2, "subject": "API issue", "priority_id": 5, "description": "from api", "custom_fields": [{"id": 2, "value": "api cf"}], "watcher_user_ids": [3]}}'
+    expect_status: 201
+  - id: api_show_created
+    path: /issues/22.json?include=watchers,journals
+    users: [jsmith]
+  - id: api_create_xml
+    path: /projects/ecookbook/issues.xml
+    method: POST
+    user: jsmith
+    content_type: application/xml
+    body: '<?xml version="1.0"?><issue><tracker_id>1</tracker_id><subject>XML issue</subject><priority_id>4</priority_id></issue>'
+    expect_status: 201
+  - id: api_create_invalid
+    path: /issues.json
+    method: POST
+    user: jsmith
+    content_type: application/json
+    body: '{"issue": {"project_id": 1, "subject": "", "priority_id": 5}}'
+    expect_status: 422
+  - id: api_create_invalid_xml
+    path: /issues.xml
+    method: POST
+    user: jsmith
+    content_type: application/xml
+    body: '<?xml version="1.0"?><issue><project_id>1</project_id><subject></subject></issue>'
+    expect_status: 422
+  - id: api_create_no_project
+    path: /issues.json
+    method: POST
+    user: jsmith
+    content_type: application/json
+    body: '{"issue": {"subject": "No project"}}'
+  - id: api_update
+    path: /issues/22.json
+    method: PUT
+    user: jsmith
+    content_type: application/json
+    body: '{"issue": {"subject": "API updated", "notes": "api note", "status_id": 2}}'
+    expect_status: 204
+  - id: api_show_updated
+    path: /issues/22.json?include=journals
+    users: [jsmith]
+  - id: api_update_invalid
+    path: /issues/22.json
+    method: PUT
+    user: jsmith
+    content_type: application/json
+    body: '{"issue": {"subject": ""}}'
+    expect_status: 422
+  - id: api_update_forbidden
+    path: /issues/22.json
+    method: PUT
+    user: anonymous
+    auth: none
+    content_type: application/json
+    body: '{"issue": {"subject": "anon"}}'
+  - id: list_after_writes
+    path: /projects/ecookbook/issues?set_filter=1&f[]=status_id&op[status_id]=*&sort=id:desc&c[]=subject&c[]=status&c[]=assigned_to&c[]=spent_hours
+    users: [admin]

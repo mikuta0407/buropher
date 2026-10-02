@@ -3,6 +3,7 @@ package handler
 // issues/index.api.rsb と issues/show.api.rsb（REST API の JSON / XML）。
 
 import (
+	"net/http"
 	"net/url"
 	"slices"
 	"time"
@@ -107,7 +108,12 @@ func (l *issueLookup) renderAPIIssueCore(b apibuilder.Builder, m *issueModel) {
 	b.Value("is_private", r.IsPrivate)
 	b.Value("estimated_hours", floatOrNil(r.EstimatedHours))
 	b.Value("total_estimated_hours", floatOrNil(m.TotalEstimatedHours()))
-	if l.c.AllowedTo(domain.Perm("view_time_entries"), m.Project) {
+	timeProject := m.Project
+	if l.apiTimeProjectSet {
+		// create の show.api.rsb は User.current.allowed_to?(:view_time_entries, @project)（@project はパラメータのプロジェクト）
+		timeProject = l.c.Project
+	}
+	if timeProject != nil && l.c.AllowedTo(domain.Perm("view_time_entries"), timeProject) {
 		b.Value("spent_hours", m.SpentHours())
 		b.Value("total_spent_hours", m.TotalSpentHours())
 	}
@@ -206,6 +212,7 @@ func (a *App) issuesShowAPI(c *Req) { a.issuesShowAPIStatus(c, 0) }
 func (a *App) issuesShowAPIStatus(c *Req, status int) {
 	ctx := c.Ctx()
 	l := a.newIssueLookup(c)
+	l.apiTimeProjectSet = status == http.StatusCreated
 	m := l.model(c.currentIssue())
 	inc := func(k string) bool { return c.IncludeInAPIResponse(k) }
 	var journals []*journalView

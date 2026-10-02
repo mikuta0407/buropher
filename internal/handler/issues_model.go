@@ -269,7 +269,17 @@ func (m *issueModel) EditableCustomFieldValues() []*issueCFValue {
 	if m.I == nil {
 		return nil
 	}
-	return m.convertCF(m.env().EditableCustomFieldValues(m.l.ctx, m.I, m.user()))
+	vs := m.convertCF(m.env().EditableCustomFieldValues(m.l.ctx, m.I, m.user()))
+	if m.I.NewRecord() {
+		// 新規チケットの CustomValue は value ||= custom_field.default_value なので、既定値が空文字列なら ""
+		// （issues パッケージは空の既定値を nil として扱う）
+		for _, v := range vs {
+			if !v.Multi && len(v.Values) == 0 && v.CF.DefaultValue != nil {
+				v.Values = []string{""}
+			}
+		}
+	}
+	return vs
 }
 
 // customized は CustomValue#customized。

@@ -714,13 +714,17 @@ func (f *issueEditForm) DoneRatioOptions() []any {
 
 // EstimatedHoursOptions は hours_field :estimated_hours の options。
 func (f *issueEditForm) HoursFieldOptions(size int, required bool, value *float64) *rails.Hash {
+	if f.m.I != nil && len(f.m.I.Errors.On("estimated_hours")) > 0 {
+		// hours_field: エラーがあれば value_before_type_cast をそのまま表示する（placeholder も付けない）
+		h := rails.NewHash("size", size)
+		if required {
+			h.Set("required", true)
+		}
+		return h
+	}
 	h := rails.NewHash("placeholder", "h:mm", "size", size)
 	if required {
 		h.Set("required", true)
-	}
-	if f.m.I != nil && len(f.m.I.Errors.On("estimated_hours")) > 0 {
-		// hours_field: エラーがあれば value_before_type_cast をそのまま表示する
-		return h
 	}
 	if value != nil {
 		h.Set("value", f.l.c.Loc.FormatHours(*value))
@@ -733,11 +737,11 @@ func (f *issueEditForm) HoursFieldOptions(size int, required bool, value *float6
 // TimeEntryHoursOptions は time_entry.hours_field :hours, :size => 6, :label => :label_spent_time の options
 // （検証エラーが無ければ format_hours(hours)、あれば入力値のまま）。
 func (f *issueEditForm) TimeEntryHoursOptions() *rails.Hash {
-	h := rails.NewHash("placeholder", "h:mm", "size", 6, "label", rails.Symbol("label_spent_time"))
 	t := f.TimeEntry
 	if t != nil && t.TE != nil && len(t.TE.Errors.On("hours")) > 0 {
-		return h
+		return rails.NewHash("size", 6, "label", rails.Symbol("label_spent_time"))
 	}
+	h := rails.NewHash("placeholder", "h:mm", "size", 6, "label", rails.Symbol("label_spent_time"))
 	if t != nil && t.TE != nil && t.TE.Hours != nil {
 		h.Set("value", f.l.c.Loc.FormatHours(*t.TE.Hours))
 	} else {
