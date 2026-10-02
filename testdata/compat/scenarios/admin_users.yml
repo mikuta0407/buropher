@@ -44,6 +44,12 @@ requests:
     users: [admin]
   - path: /users?set_filter=1&f[]=name&op[name]=~&v[name][]=
     users: [admin]
+  - path: /users.csv
+    users: [admin]
+    format: text
+  - path: /users.csv?set_filter=1&f[]=&c[]=all_inline&encoding=UTF-8&field_separator=%3B
+    users: [admin]
+    format: text
   # ---- 詳細・作成・編集
   - path: /users/2
     users: [anonymous, admin, jsmith, dlopper]
