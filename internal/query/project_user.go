@@ -2,7 +2,6 @@ package query
 
 import (
 	"context"
-	"slices"
 	"strings"
 
 	"github.com/mikuta0407/buropher/internal/authz"
@@ -327,5 +326,3 @@ func (userKind) sqlForSpecialField(ctx context.Context, q *Query, field, operato
 	}
 	return frag{}, false, nil
 }
-
-var _ = slices.Contains[[]string]

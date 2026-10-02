@@ -21,25 +21,24 @@ import (
 // 合計の組み合わせごとの結果 (id の並び・件数・グループ別件数・合計) を持つ。
 
 type diffCase struct {
-	Scenario    string                 `json:"scenario"`
-	Kind        string                 `json:"kind"`
-	User        int64                  `json:"user"`
-	Anonymous   bool                   `json:"anonymous"`
-	Project     *int64                 `json:"project"`
-	Filters     [][]json.RawMessage    `json:"filters"`
-	Sort        [][2]string            `json:"sort"`
-	GroupBy     *string                `json:"group_by"`
-	Totals      []string               `json:"totals"`
-	Applied     []string               `json:"applied"`
-	Valid       *bool                  `json:"valid"`
-	IDs         []int64                `json:"ids"`
-	Count       *int64                 `json:"count"`
-	Grouped     *bool                  `json:"grouped"`
-	Groups      [][2]json.RawMessage   `json:"groups"`
-	TotalValues map[string]*float64    `json:"total_values"`
-	GroupTotals map[string][][2]any    `json:"group_totals"`
-	Error       string                 `json:"error"`
-	extra       map[string]interface{} //nolint:unused
+	Scenario    string               `json:"scenario"`
+	Kind        string               `json:"kind"`
+	User        int64                `json:"user"`
+	Anonymous   bool                 `json:"anonymous"`
+	Project     *int64               `json:"project"`
+	Filters     [][]json.RawMessage  `json:"filters"`
+	Sort        [][2]string          `json:"sort"`
+	GroupBy     *string              `json:"group_by"`
+	Totals      []string             `json:"totals"`
+	Applied     []string             `json:"applied"`
+	Valid       *bool                `json:"valid"`
+	IDs         []int64              `json:"ids"`
+	Count       *int64               `json:"count"`
+	Grouped     *bool                `json:"grouped"`
+	Groups      [][2]json.RawMessage `json:"groups"`
+	TotalValues map[string]*float64  `json:"total_values"`
+	GroupTotals map[string][][2]any  `json:"group_totals"`
+	Error       string               `json:"error"`
 }
 
 func loadDiffCases(t *testing.T) []diffCase {

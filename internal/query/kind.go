@@ -2,9 +2,7 @@ package query
 
 import (
 	"context"
-	"database/sql"
 	"encoding/json"
-	"strings"
 
 	"github.com/mikuta0407/buropher/internal/authz"
 	"github.com/mikuta0407/buropher/internal/customfield"
@@ -251,14 +249,3 @@ func sortInt64(a []int64) {
 		}
 	}
 }
-
-// quoteList は値を SQL 文字列リテラルの並び ('a','b') にする (role_id IN ('1','2') の再現用)。
-func quoteList(values []string) string {
-	parts := make([]string, len(values))
-	for i, v := range values {
-		parts[i] = "'" + strings.ReplaceAll(strings.ReplaceAll(v, "'", "''"), "?", "") + "'"
-	}
-	return strings.Join(parts, ",")
-}
-
-func nullStr(s sql.NullString) string { return s.String }

@@ -6,7 +6,6 @@ import (
 	"errors"
 	"slices"
 	"strings"
-	"time"
 
 	"github.com/mikuta0407/buropher/internal/authz"
 	"github.com/mikuta0407/buropher/internal/customfield"
@@ -634,5 +633,3 @@ WHERE principals.id IN (`+idList(ids)+`) AND (`+vis+`) ORDER BY principals.id`);
 	}
 	return out, nil
 }
-
-var _ = time.Time{}

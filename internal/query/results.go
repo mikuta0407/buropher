@@ -9,7 +9,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/mikuta0407/buropher/internal/customfield"
 	"github.com/mikuta0407/buropher/internal/db"
 )
 
@@ -780,5 +779,3 @@ WHERE customized_kind = 'issue' AND customized_id IN (`+in+`) ORDER BY id`); err
 	}
 	return nil
 }
-
-var _ = customfield.RubyToI
