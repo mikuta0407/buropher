@@ -123,6 +123,7 @@ func (d *Deps) RequestFuncs(r *view.Render) ttemplate.FuncMap {
 			return linkToProject(toProject(p), opts, htmlOpts)
 		},
 		"project_path": func(p any) string { return projectPath(toProject(p)) },
+		"news_path":    newsPath,
 		"authoring": func(created time.Time, author any, args ...any) html {
 			return d.authoring(pg(), created, author, optHash(args))
 		},
@@ -525,6 +526,14 @@ func (p *Page) accesskey(name string) any {
 	}
 	p.accessKeys = append(p.accessKeys, key)
 	return key
+}
+
+// newsPath は news_path(news)。
+func newsPath(n *domain.News) string {
+	if n == nil {
+		return ""
+	}
+	return "/news/" + strconv.FormatInt(n.ID, 10)
 }
 
 func projectPath(p *domain.Project) string {

@@ -19,6 +19,10 @@
 //   - issues.lft/rgt は捨て、parent_id から root_id / hier_path を構築
 //   - workflows (WorkflowTransition) → workflow_transitions (old_status_id 0 → NULL)
 //   - watchers.watchable_type → watchable_kind
+//   - user_preferences.others (YAML) → 列 (warn_on_leaving_unsaved 等) と
+//     bookmarked_project_ids / recently_used_project_ids → user_project_bookmarks / user_recent_projects
+//   - wikis.status は捨てる、boards.last_message_id は messages 未対応のため NULL
+//   - repositories.type (Repository::Subversion 等) → scm
 //
 // ERB の相対日時 (<%= 2.days.ago.to_fs(:db) %> 等) は Load 呼び出し時刻 (UTC) を基準に評価する。
 // フィクスチャに無いタイムスタンプは Rails と同様に現在時刻で埋める。
@@ -48,6 +52,7 @@ var order = []string{
 	"issue_statuses", "trackers", "enumerations", "users", "email_addresses", "groups_users",
 	"projects", "enabled_modules", "projects_trackers", "versions", "issue_categories",
 	"roles", "members", "member_roles", "issues", "workflows", "watchers",
+	"news", "user_preferences", "wikis", "boards", "repositories",
 }
 
 var defs = map[string]fixtureDef{
@@ -67,8 +72,13 @@ var defs = map[string]fixtureDef{
 	"member_roles":      {deps: []string{"members", "roles"}, tables: []string{"member_roles"}, load: loadMemberRoles},
 	"issues": {deps: []string{"projects", "trackers", "issue_statuses", "enumerations", "users", "issue_categories", "versions"},
 		tables: []string{"issues"}, load: loadIssues},
-	"workflows": {deps: []string{"trackers", "roles", "issue_statuses"}, tables: []string{"workflow_transitions"}, load: loadWorkflows},
-	"watchers":  {deps: []string{"users"}, tables: []string{"watchers"}, load: loadWatchers},
+	"workflows":        {deps: []string{"trackers", "roles", "issue_statuses"}, tables: []string{"workflow_transitions"}, load: loadWorkflows},
+	"watchers":         {deps: []string{"users"}, tables: []string{"watchers"}, load: loadWatchers},
+	"news":             {deps: []string{"projects", "users"}, tables: []string{"news"}, load: loadNews},
+	"user_preferences": {deps: []string{"users", "projects"}, load: loadUserPreferences},
+	"wikis":            {deps: []string{"projects"}, tables: []string{"wikis"}, load: loadWikis},
+	"boards":           {deps: []string{"projects"}, tables: []string{"boards"}, load: loadBoards},
+	"repositories":     {deps: []string{"projects"}, tables: []string{"repositories"}, load: loadRepositories},
 }
 
 // Supported は変換に対応しているフィクスチャ名を投入順で返す。

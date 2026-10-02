@@ -1,6 +1,6 @@
 <p>{{if not current_project}}{{link_to_project .news.Project}}: {{end}}
-{{link_to .news.Title .news.Path}}
+{{link_to .news.Title (news_path .news)}}
 {{if gt .news.CommentsCount 0}}<span class="comments">({{l "label_x_comments" (dict "count" .news.CommentsCount)}})</span>{{end}}
 <br />
 {{if present .news.Summary}}<span class="summary">{{.news.Summary}}</span><br />{{end}}
-<span class="author">{{authoring .news.CreatedOn .news.Author}}</span></p>
+<span class="author">{{authoring .news.CreatedAt .news.Author}}</span></p>
