@@ -67,4 +67,5 @@ func (a *App) Routes(r Router) {
 	a.routesMyIdentities(r)
 	a.routesRepositories(r)
 	a.routesSys(r)
+	a.routesMailHandler(r)
 }

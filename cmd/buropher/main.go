@@ -38,6 +38,7 @@ commands:
   setting   get or set a setting (setting get <name> / setting set <name> <value>)
   reminders send due date reminders (rake redmine:send_reminders: -days -tracker -project -users -version)
   jobs      run pending background jobs once (jobs run)
+  mail      receive emails (mail receive -stdin | -imap | -pop3 [options])
   version   print version
 `)
 }
@@ -64,6 +65,8 @@ func main() {
 		err = remindersCmd(args)
 	case "jobs":
 		err = jobsCmd(args)
+	case "mail":
+		err = mailCmd(args)
 	case "version":
 		fmt.Println("buropher", version)
 	default:
@@ -97,6 +100,10 @@ func serve(args []string) error {
 	srv, err := server.New(cfg, d, server.Options{Version: version})
 	if err != nil {
 		return err
+	}
+	// [mail_receive] があればメールを定期受信する
+	if pc, ok := mailPollConfig(cfg.MailReceive); ok {
+		go srv.App().MailHandler().Poll(ctx, pc)
 	}
 	return srv.Run(ctx)
 }
