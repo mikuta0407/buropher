@@ -1,0 +1,25 @@
+{{$f := .f}}{{$src := (assigns).AuthSource -}}
+{{error_messages_for $src}}
+
+<div class="box tabular">
+  <p>{{$f.TextField "name" (hash "required" true)}}</p>
+  <p>{{$f.TextField "host" (hash "required" true)}}</p>
+  <p>
+    {{$f.TextField "port" (hash "required" true "size" 6)}}
+    {{$f.Select "ldap_mode" (list (list (l "label_ldap") "ldap") (list (l "label_ldaps_verify_none") "ldaps_verify_none") (list (l "label_ldaps_verify_peer") "ldaps_verify_peer")) (hash "no_label" true)}}
+    <em class="info ldaps_warning">{{l "label_ldaps_warning"}}</em>
+  </p>
+  <p>{{$f.TextField "account"}}</p>
+  <p>{{$f.PasswordField "account_password" (hash "label" (sym "field_password") "name" "dummy_password" "value" $src.PasswordDisplay "onfocus" "this.value=''; this.name='auth_source[account_password]';" "onchange" "this.name='auth_source[account_password]';")}}</p>
+  <p>{{$f.TextField "base_dn" (hash "required" true "size" 60)}}</p>
+  <p>{{$f.TextArea "filter" (hash "size" 60 "label" (sym "field_auth_source_ldap_filter"))}}</p>
+  <p>{{$f.TextField "timeout" (hash "size" 4)}}</p>
+  <p>{{$f.CheckBox "onthefly_register" (hash "label" (sym "field_onthefly"))}}</p>
+</div>
+
+<fieldset class="box tabular"><legend>{{l "label_attribute_plural"}}</legend>
+  <p>{{$f.TextField "attr_login" (hash "required" true "size" 20)}}</p>
+  <p>{{$f.TextField "attr_firstname" (hash "size" 20)}}</p>
+  <p>{{$f.TextField "attr_lastname" (hash "size" 20)}}</p>
+  <p>{{$f.TextField "attr_mail" (hash "size" 20)}}</p>
+</fieldset>
