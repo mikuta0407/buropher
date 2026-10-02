@@ -461,21 +461,28 @@ func nestedConsistent(ns []nested, scope func(nested) int64) bool {
 		groups[scope(n)] = append(groups[scope(n)], n)
 	}
 	for _, g := range groups {
+		// lft 順に走査し、スタックで直近の囲む区間(= 親)を求める
+		sort.Slice(g, func(i, j int) bool { return g[i].lft < g[j].lft })
+		var stack []nested
 		for _, n := range g {
-			var best *nested
-			for i := range g {
-				p := &g[i]
-				if p.id != n.id && p.lft < n.lft && n.rgt < p.rgt && (best == nil || p.lft > best.lft) {
-					best = p
-				}
+			if n.rgt <= n.lft {
+				return false
+			}
+			for len(stack) > 0 && stack[len(stack)-1].rgt < n.lft {
+				stack = stack[:len(stack)-1]
 			}
 			parent := int64(0)
-			if best != nil {
-				parent = best.id
+			if len(stack) > 0 {
+				top := stack[len(stack)-1]
+				if n.rgt >= top.rgt {
+					return false // 区間が交差している
+				}
+				parent = top.id
 			}
 			if parent != n.parent {
 				return false
 			}
+			stack = append(stack, n)
 		}
 	}
 	return true
