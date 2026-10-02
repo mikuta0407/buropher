@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"sync"
 	"time"
 
 	"github.com/mikuta0407/buropher/internal/authz"
@@ -94,14 +95,10 @@ func (e *Env) l(key string, args ...any) string {
 	return defaultLocalizer().L(key, args...)
 }
 
-var defaultLoc *i18n.Localizer
-
-func defaultLocalizer() *i18n.Localizer {
-	if defaultLoc == nil {
-		defaultLoc = i18n.Default().NewLocalizer("en", i18n.Settings{}, nil)
-	}
-	return defaultLoc
-}
+// defaultLocalizer は Env.L が無いときの英語の Localizer。
+var defaultLocalizer = sync.OnceValue(func() *i18n.Localizer {
+	return i18n.Default().NewLocalizer("en", i18n.Settings{}, nil)
+})
 
 func (e *Env) setting(name string) string {
 	if e.Settings == nil {
