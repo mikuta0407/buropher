@@ -1,0 +1,485 @@
+<title>Gantt - Redmine</title>
+----
+<!-- page specific tags -->
+<script>
+//<![CDATA[
+var datepickerOptions={dateFormat: 'yy-mm-dd', firstDay: 0, showOn: 'button', buttonImageOnly: true, buttonImage: '/assets/calendar-DIGEST.png', showButtonPanel: true, showWeek: true, showOtherMonths: true, selectOtherMonths: true, changeMonth: true, changeYear: true, beforeShow: beforeShowDatePicker};
+//]]>
+</script>  <script src="/assets/raphael-DIGEST.js"></script>
+  <script src="/assets/gantt-DIGEST.js"></script>
+<script src="/assets/context_menu-DIGEST.js"></script><link rel="stylesheet" href="/assets/context_menu-DIGEST.css" media="screen" /></head>
+----
+<div id="main" class="collapsiblesidebar">
+  <script>
+//<![CDATA[
+$('#main.collapsiblesidebar').collapsibleSidebar();
+//]]>
+</script>
+    <div id="sidebar">
+          <div id="sidebar-switch-panel" style="visibility: hidden;">
+            <a id="sidebar-switch-button" class="" href="#">
+              <svg class="s20 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--chevrons-right"></use></svg></a>
+          </div>
+          <script>
+//<![CDATA[
+$('#sidebar-switch-panel').css('visibility', 'visible');
+//]]>
+</script>
+        <div id="sidebar-wrapper">
+            
+
+
+<h3>Custom queries</h3>
+<ul class="queries"><li><a class="query" title="Description for Open issues by priority and tracker" data-disable-with="Open issues by priority and tracker" href="/issues/gantt?query_id=5">Open issues by priority and tracker</a></li>
+<li><a class="query" title="Description for Open issues grouped by list custom field" data-disable-with="Open issues grouped by list custom field" href="/issues/gantt?query_id=9">Open issues grouped by list custom field</a></li>
+<li><a class="query" title="Description for Open issues grouped by tracker" data-disable-with="Open issues grouped by tracker" href="/issues/gantt?query_id=6">Open issues grouped by tracker</a></li>
+<li><a class="query" title="Description for Public query for all projects" data-disable-with="Public query for all projects" href="/issues/gantt?query_id=4">Public query for all projects</a></li></ul>
+
+
+
+
+          
+        </div>
+    </div>
+
+    <div id="content">
+        
+        <div class="contextual">
+</div>
+
+<h2>Gantt</h2>
+
+
+<form id="query_form" action="/issues/gantt?months=6" accept-charset="UTF-8" name="query_form-RANDOM" method="get">
+<input type="hidden" name="set_filter" id="set_filter" value="1" autocomplete="off" />
+<input type="hidden" name="gantt" id="gantt" value="1" autocomplete="off" />
+
+<div id="query_form_with_buttons" class="hide-when-print">
+<div id="query_form_content">
+  <fieldset id="filters" class="collapsible ">
+    <legend onclick="toggleFieldset(this);" class="icon icon-expanded">
+      <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--angle-down"></use></svg>
+      Filters
+    </legend>
+    <div style="">
+      <script>
+//<![CDATA[
+
+var operatorLabels = {"=":"is","!":"is not","o":"open","c":"closed","!*":"none","*":"any","\u003e=":"\u003e=","\u003c=":"\u003c=","\u003e\u003c":"between","\u003ct+":"in less than","\u003et+":"in more than","\u003e\u003ct+":"in the next","t+":"in","nd":"tomorrow","t":"today","ld":"yesterday","nw":"next week","w":"this week","lw":"last week","l2w":"last 2 weeks","nm":"next month","m":"this month","lm":"last month","y":"this year","\u003et-":"less than days ago","\u003ct-":"more than days ago","\u003e\u003ct-":"in the past","t-":"days ago","~":"contains","!~":"doesn't contain","*~":"contains any of","^":"starts with","$":"ends with","=p":"any issues in project","=!p":"any issues not in project","!p":"no issues in project","*o":"any open issues","!o":"no open issues","ev":"has been","!ev":"has never been","cf":"changed from"};
+var operatorByType = {"list":["=","!"],"list_with_history":["=","!","ev","!ev","cf"],"list_status":["o","=","!","ev","!ev","cf","c","*"],"list_optional":["=","!","!*","*"],"list_optional_with_history":["=","!","ev","!ev","cf","!*","*"],"list_subprojects":["*","!*","=","!"],"date":["=","\u003e=","\u003c=","\u003e\u003c","\u003ct+","\u003et+","\u003e\u003ct+","t+","nd","t","ld","nw","w","lw","l2w","nm","m","lm","y","\u003et-","\u003ct-","\u003e\u003ct-","t-","!*","*"],"date_past":["=","\u003e=","\u003c=","\u003e\u003c","\u003et-","\u003ct-","\u003e\u003ct-","t-","t","ld","w","lw","l2w","m","lm","y","!*","*"],"string":["~","*~","=","!~","!","^","$","!*","*"],"text":["~","*~","!~","^","$","!*","*"],"search":["~","*~","!~"],"integer":["=","\u003e=","\u003c=","\u003e\u003c","!*","*"],"float":["=","\u003e=","\u003c=","\u003e\u003c","!*","*"],"relation":["=","!","=p","=!p","!p","*o","!o","!*","*"],"tree":["=","~","!*","*"]};
+var availableFilters = {"status_id":{"type":"list_status","name":"Status","remote":true,"values":[["New","1"],["Assigned","2"],["Resolved","3"],["Feedback","4"],["Closed","5"],["Rejected","6"]]},"project_id":{"type":"list","name":"Project","remote":true},"tracker_id":{"type":"list_with_history","name":"Tracker","values":[["Bug","1"],["Feature request","2"],["Support request","3"]]},"priority_id":{"type":"list_with_history","name":"Priority","values":[["Low","4"],["Normal","5"],["High","6"],["Urgent","7"],["Immediate","8"],["Inactive Priority","15"]]},"author_id":{"type":"list","name":"Author","remote":true},"author.group":{"type":"list","name":"Author's Group","remote":true},"author.role":{"type":"list","name":"Author's Role","remote":true},"assigned_to_id":{"type":"list_optional_with_history","name":"Assignee","remote":true},"member_of_group":{"type":"list_optional","name":"Assignee's group","remote":true},"assigned_to_role":{"type":"list_optional","name":"Assignee's role","remote":true},"fixed_version_id":{"type":"list_optional_with_history","name":"Target version","remote":true},"fixed_version.due_date":{"type":"date","name":"Target version's Due date","values":null},"fixed_version.status":{"type":"list","name":"Target version's Status","values":[["open","open"],["locked","locked"],["closed","closed"]]},"subject":{"type":"text","name":"Subject","values":null},"description":{"type":"text","name":"Description","values":null},"notes":{"type":"text","name":"Notes","values":null},"created_on":{"type":"date_past","name":"Created","values":null},"updated_on":{"type":"date_past","name":"Updated","values":null},"closed_on":{"type":"date_past","name":"Closed","values":null},"start_date":{"type":"date","name":"Start date","values":null},"due_date":{"type":"date","name":"Due date","values":null},"estimated_hours":{"type":"float","name":"Estimated time","values":null},"spent_time":{"type":"float","name":"Spent time","values":null},"done_ratio":{"type":"integer","name":"% Done","values":null},"is_private":{"type":"list","name":"Private","values":[["yes","1"],["no","0"]]},"attachment":{"type":"text","name":"File","values":null},"attachment_description":{"type":"text","name":"File description","values":null},"watcher_id":{"type":"list","name":"Watcher","remote":true},"updated_by":{"type":"list","name":"Updated by","remote":true},"last_updated_by":{"type":"list","name":"Last updated by","remote":true},"project.status":{"type":"list","name":"Project's Status","remote":true},"cf_2":{"type":"string","name":"Searchable field","values":null},"cf_1":{"type":"list_optional","name":"Database","remote":true},"cf_9":{"type":"date","name":"Project 1 cf","values":null},"project.cf_3":{"type":"list_optional","name":"Project's Development status","remote":true},"relates":{"type":"relation","name":"Related to","remote":true},"duplicates":{"type":"relation","name":"Is duplicate of","remote":true},"duplicated":{"type":"relation","name":"Has duplicate","remote":true},"blocks":{"type":"relation","name":"Blocks","remote":true},"blocked":{"type":"relation","name":"Blocked by","remote":true},"precedes":{"type":"relation","name":"Precedes","remote":true},"follows":{"type":"relation","name":"Follows","remote":true},"copied_to":{"type":"relation","name":"Copied to","remote":true},"copied_from":{"type":"relation","name":"Copied from","remote":true},"parent_id":{"type":"tree","name":"Parent task","values":null},"child_id":{"type":"tree","name":"Subtasks","values":null},"issue_id":{"type":"integer","name":"Issue","values":null},"any_searchable":{"type":"search","name":"Any searchable text","values":null}};
+var labelDayPlural = "days";
+
+var filtersUrl = "\/queries\/filter?type=IssueQuery";
+
+$(document).ready(function(){
+  initFilters();
+  addFilter("status_id", "o", [""]);
+});
+
+//]]>
+</script>
+<div id="filters-table">
+</div>
+
+<div class="add-filter">
+<label for="add_filter_select">Add filter</label>
+<select id="add_filter_select"><option value=""></option>
+<option value="status_id">Status</option>
+<option value="project_id">Project</option>
+<option value="tracker_id">Tracker</option>
+<option value="priority_id">Priority</option>
+<option value="author_id">Author</option>
+<option value="assigned_to_id">Assignee</option>
+<option value="fixed_version_id">Target version</option>
+<option value="done_ratio">% Done</option>
+<option value="is_private">Private</option>
+<option value="watcher_id">Watcher</option>
+<option value="updated_by">Updated by</option>
+<option value="last_updated_by">Last updated by</option>
+<option value="cf_1">Database</option>
+<option value="issue_id">Issue</option><optgroup label="Text"><option value="subject">Subject</option>
+<option value="description">Description</option>
+<option value="notes">Notes</option>
+<option value="cf_2">Searchable field</option>
+<option value="any_searchable">Any searchable text</option></optgroup><optgroup label="Date"><option value="created_on">Created</option>
+<option value="updated_on">Updated</option>
+<option value="closed_on">Closed</option>
+<option value="start_date">Start date</option>
+<option value="due_date">Due date</option>
+<option value="cf_9">Project 1 cf</option></optgroup><optgroup label="Time tracking"><option value="estimated_hours">Estimated time</option>
+<option value="spent_time">Spent time</option></optgroup><optgroup label="File"><option value="attachment">File</option>
+<option value="attachment_description">File description</option></optgroup><optgroup label="Author"><option value="author.group">Author&#39;s Group</option>
+<option value="author.role">Author&#39;s Role</option></optgroup><optgroup label="Assignee"><option value="member_of_group">Assignee&#39;s group</option>
+<option value="assigned_to_role">Assignee&#39;s role</option></optgroup><optgroup label="Target version"><option value="fixed_version.due_date">Target version&#39;s Due date</option>
+<option value="fixed_version.status">Target version&#39;s Status</option></optgroup><optgroup label="Project"><option value="project.status">Project&#39;s Status</option>
+<option value="project.cf_3">Project&#39;s Development status</option></optgroup><optgroup label="Relations"><option value="relates">Related to</option>
+<option value="duplicates">Is duplicate of</option>
+<option value="duplicated">Has duplicate</option>
+<option value="blocks">Blocks</option>
+<option value="blocked">Blocked by</option>
+<option value="precedes">Precedes</option>
+<option value="follows">Follows</option>
+<option value="copied_to">Copied to</option>
+<option value="copied_from">Copied from</option>
+<option value="parent_id">Parent task</option>
+<option value="child_id">Subtasks</option></optgroup></select>
+</div>
+
+<input type="hidden" name="f[]" id="f_" value="" autocomplete="off" />
+
+    </div>
+  </fieldset>
+
+  <fieldset id="options" class="collapsible collapsed">
+    <legend onclick="toggleFieldset(this);" class="icon icon-collapsed">
+      <svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--angle-right"></use></svg>
+      Options
+    </legend>
+    <div style="display: none;">
+      <div>
+            <fieldset>
+              <legend>
+                Columns
+              </legend>
+              <div id="list-definition">
+                <div>
+              <label for="draw_selected_columns">
+                <input name="query[draw_selected_columns]" type="hidden" value="0" autocomplete="off" /><input id="draw_selected_columns" data-enables="#list-definition .query-columns select, #list-definition .query-columns input" type="checkbox" value="1" name="query[draw_selected_columns]" />
+                  Display
+              </label>
+                </div>
+                <div>
+              
+<div class="query-columns">
+      <label for="available_c">Available Columns</label>
+      <select name="available_columns[]" id="available_c" multiple="multiple" size="10" ondblclick="moveOptions(this.form.available_c, this.form.selected_c);"><option value="parent">Parent task</option>
+<option value="parent.subject">Parent task subject</option>
+<option value="author">Author</option>
+<option value="watcher_users">Watchers</option>
+<option value="category">Category</option>
+<option value="fixed_version">Target version</option>
+<option value="start_date">Start date</option>
+<option value="due_date">Due date</option>
+<option value="estimated_hours">Estimated time</option>
+<option value="estimated_remaining_hours">Estimated remaining time</option>
+<option value="total_estimated_hours">Total estimated time</option>
+<option value="spent_hours">Spent time</option>
+<option value="total_spent_hours">Total spent time</option>
+<option value="done_ratio">% Done</option>
+<option value="created_on">Created</option>
+<option value="closed_on">Closed</option>
+<option value="last_updated_by">Last updated by</option>
+<option value="relations">Related issues</option>
+<option value="attachments">Files</option>
+<option value="cf_2">Searchable field</option>
+<option value="cf_1">Database</option>
+<option value="cf_6">Float field</option>
+<option value="cf_8">Custom date</option>
+<option value="cf_9">Project 1 cf</option>
+<option value="is_private">Private</option></select>
+</div>
+<div class="buttons">
+      <button type="button" class="move-right" onclick="moveOptions(this.form.available_c, this.form.selected_c);"><svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--arrow-narrow-right"></use></svg></button>
+      <button type="button" class="move-left" onclick="moveOptions(this.form.selected_c, this.form.available_c);"><svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--arrow-narrow-left"></use></svg></button>
+</div>
+<div class="query-columns">
+      <label for="selected_c">Selected Columns</label>
+      <select name="c[]" id="selected_c" multiple="multiple" size="10" ondblclick="moveOptions(this.form.selected_c, this.form.available_c);"><option value="project">Project</option>
+<option value="tracker">Tracker</option>
+<option value="status">Status</option>
+<option value="priority">Priority</option>
+<option value="subject">Subject</option>
+<option value="assigned_to">Assignee</option>
+<option value="updated_on">Updated</option></select>
+</div>
+<div class="buttons">
+      <button type="button" onclick="moveOptionTop(this.form.selected_c);">&#8648;</button>
+      <button type="button" onclick="moveOptionUp(this.form.selected_c);">&#8593;</button>
+      <button type="button" onclick="moveOptionDown(this.form.selected_c);">&#8595;</button>
+      <button type="button" onclick="moveOptionBottom(this.form.selected_c);">&#8650;</button>
+</div>
+
+<script>
+//<![CDATA[
+
+$(document).ready(function(){
+  $('.query-columns').closest('form').submit(function(){
+    $('#selected_c option:not(:disabled)').prop('selected', true);
+  });
+});
+
+//]]>
+</script>
+                </div>
+              </div>
+            </fieldset>
+            <fieldset>
+              <legend>Related issues</legend>
+              <label for="draw_relations">
+                <input name="query[draw_relations]" type="hidden" value="0" autocomplete="off" /><input id="draw_relations" type="checkbox" value="1" checked="checked" name="query[draw_relations]" />
+                  <span style="background-color: #F34F4F">&nbsp;&nbsp;&nbsp;</span>
+                  Blocks
+                  <span style="background-color: #628FEA">&nbsp;&nbsp;&nbsp;</span>
+                  Precedes
+              </label>
+            </fieldset>
+            <fieldset>
+              <legend>Progress line</legend>
+              <label for="draw_progress_line">
+                <input name="query[draw_progress_line]" type="hidden" value="0" autocomplete="off" /><input id="draw_progress_line" type="checkbox" value="1" name="query[draw_progress_line]" />
+                Display
+              </label>
+            </fieldset>
+      </div>
+    </div>
+  </fieldset>
+</div>
+
+<p class="contextual">
+  <span>
+    <a class="icon icon-zoom-in" href="/issues/gantt?action=show&amp;controller=gantts&amp;month=1&amp;months=6&amp;year=2026&amp;zoom=3"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--zoom-in"></use></svg><span class="icon-label">Zoom in</span></a>
+    <a class="icon icon-zoom-out" href="/issues/gantt?action=show&amp;controller=gantts&amp;month=1&amp;months=6&amp;year=2026&amp;zoom=1"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--zoom-out"></use></svg><span class="icon-label">Zoom out</span></a>
+  </span>
+  <span>
+    <a accesskey="p" href="/issues/gantt?month=12&amp;months=6&amp;year=2025&amp;zoom=2">« December 2025</a> | <a accesskey="n" href="/issues/gantt?month=2&amp;months=6&amp;year=2026&amp;zoom=2">February »</a>
+  </span>
+</p>
+
+<p class="buttons">
+  <input type="number" name="months" id="months" value="6" min="1" max="24" autocomplete="false" />
+  months from
+  <select id="month" name="month">
+<option value="1" selected="selected">January</option>
+<option value="2">February</option>
+<option value="3">March</option>
+<option value="4">April</option>
+<option value="5">May</option>
+<option value="6">June</option>
+<option value="7">July</option>
+<option value="8">August</option>
+<option value="9">September</option>
+<option value="10">October</option>
+<option value="11">November</option>
+<option value="12">December</option>
+</select>
+
+  <select id="year" name="year">
+<option value="2021">2021</option>
+<option value="2022">2022</option>
+<option value="2023">2023</option>
+<option value="2024">2024</option>
+<option value="2025">2025</option>
+<option value="2026" selected="selected">2026</option>
+<option value="2027">2027</option>
+<option value="2028">2028</option>
+<option value="2029">2029</option>
+<option value="2030">2030</option>
+<option value="2031">2031</option>
+</select>
+
+  <input type="hidden" name="zoom" id="zoom" value="2" autocomplete="off" />
+
+  <a href="#" onclick="$(&quot;#query_form&quot;).submit(); return false;" class="icon icon-checked"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--checked"></use></svg><span class="icon-label">Apply</span></a>
+  <a class="icon icon-reload" href="/issues/gantt?set_filter=1"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--reload"></use></svg><span class="icon-label">Clear</span></a>
+    <a href="#" onclick="$(&#39;#query_form&#39;).attr(&#39;action&#39;, &#39;/queries/new&#39;).submit();; return false;" class="icon icon-save"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--save"></use></svg><span class="icon-label">Save custom query</span></a>
+</p>
+</div>
+</form>
+
+
+
+<table class='gantt-table'>
+<tr>
+<td style="width:332px;" class="gantt_subjects_column">
+  <div style="position:relative;height: 650px;width: 331px;" class="gantt_subjects_container ">
+    <div style="width: 331px;height: 36px;background: #eee;" class="gantt_hdr"></div>
+    <div style="z-index: 1;width: 331px;height: 626px;overflow: hidden;" class="gantt_hdr"></div>
+    <div class="gantt_subjects">
+      <form data-cm-url="/issues/context_menu" action="/issues/gantt" accept-charset="UTF-8" name="form-RANDOM" method="post"><input type="hidden" name="authenticity_token" value="{{CSRF}}" autocomplete="off" />        <input type="hidden" name="back_url" value="/issues/gantt?months=6&amp;zoom=2" autocomplete="off" />
+        <div class="project-name open" data-collapse-expand="{&quot;top_increment&quot;:20,&quot;obj_id&quot;:&quot;project-1&quot;}" data-number-of-rows="0" style="position: absolute;top:44px;left:4px;width:326px;"><span class="icon icon-expanded expander"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--angle-down"></use></svg></span><span class="icon icon-projects "><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--projects"></use></svg><a href="/projects/ecookbook">eCookbook</a></span></div><div id="issue-3" class="issue-subject hascontextmenu" title="Error 281 when updating a recipe" data-collapse-expand="{&quot;top_increment&quot;:20,&quot;obj_id&quot;:&quot;issue-3&quot;}" data-number-of-rows="1" style="position: absolute;top:64px;left:42px;width:288px;"><span class=" issue-overdue issue-behind-schedule behind-start-date"><span role="img" class="avatar-color-3 s13 avatar icon-avatar" title="Assignee: Dave Lopper">DL</span><a class="issue tracker-1 status-1 priority-4 priority-lowest overdue behind-schedule" href="/issues/3">Bug #3</a>: Error 281 when updating a recipe<input type="checkbox" name="ids[]" value="3" style="display:none;" class="toggle-selection"></input></span></div><div id="issue-7" class="issue-subject hascontextmenu" title="Issue due today" data-collapse-expand="{&quot;top_increment&quot;:20,&quot;obj_id&quot;:&quot;issue-7&quot;}" data-number-of-rows="2" style="position: absolute;top:84px;left:42px;width:288px;"><span class=" issue-behind-schedule icon icon-issue"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--issue"></use></svg><a class="issue tracker-1 status-1 priority-5 priority-default behind-schedule" href="/issues/7">Bug #7</a>: Issue due today<input type="checkbox" name="ids[]" value="7" style="display:none;" class="toggle-selection"></input></span></div><div id="issue-1" class="issue-subject hascontextmenu" title="Cannot print recipes" data-collapse-expand="{&quot;top_increment&quot;:20,&quot;obj_id&quot;:&quot;issue-1&quot;}" data-number-of-rows="3" style="position: absolute;top:104px;left:42px;width:288px;"><span class=" issue-behind-schedule icon icon-issue"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--issue"></use></svg><a class="issue tracker-1 status-1 priority-4 priority-lowest behind-schedule" href="/issues/1">Bug #1</a>: Cannot print recipes<input type="checkbox" name="ids[]" value="1" style="display:none;" class="toggle-selection"></input></span></div><div id="version-2" class="version-name open" data-collapse-expand="{&quot;top_increment&quot;:20,&quot;obj_id&quot;:&quot;version-2&quot;}" data-number-of-rows="4" style="position: absolute;top:124px;left:24px;width:306px;"><span class="icon icon-expanded expander"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--angle-down"></use></svg></span><span class="icon icon-package   version-closed"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--package"></use></svg><a title="02/04/2026" href="/versions/2">eCookbook - 1.0</a></span></div><div id="issue-2" class="issue-subject hascontextmenu" title="Add ingredients categories" data-collapse-expand="{&quot;top_increment&quot;:20,&quot;obj_id&quot;:&quot;issue-2&quot;}" data-number-of-rows="5" style="position: absolute;top:144px;left:62px;width:268px;"><span class=""><span role="img" class="avatar-color-3 s13 avatar icon-avatar" title="Assignee: Dave Lopper">DL</span><a class="issue tracker-2 status-2 priority-5 priority-default" href="/issues/2">Feature request #2</a>: Add ingredients categories<input type="checkbox" name="ids[]" value="2" style="display:none;" class="toggle-selection"></input></span></div><div class="project-name open" data-collapse-expand="{&quot;top_increment&quot;:20,&quot;obj_id&quot;:&quot;project-5&quot;}" data-number-of-rows="6" style="position: absolute;top:164px;left:24px;width:306px;"><span class="icon icon-expanded expander"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--angle-down"></use></svg></span><span class="icon icon-projects "><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--projects"></use></svg><a href="/projects/private-child">Private child of eCookbook</a></span></div><div id="issue-6" class="issue-subject hascontextmenu" title="Issue of a private subproject" data-collapse-expand="{&quot;top_increment&quot;:20,&quot;obj_id&quot;:&quot;issue-6&quot;}" data-number-of-rows="7" style="position: absolute;top:184px;left:62px;width:268px;"><span class=" issue-behind-schedule icon icon-issue"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--issue"></use></svg><a class="issue tracker-1 status-1 priority-4 priority-lowest behind-schedule" href="/issues/6">Bug #6</a>: Issue of a private subproject<input type="checkbox" name="ids[]" value="6" style="display:none;" class="toggle-selection"></input></span></div><div id="issue-9" class="issue-subject hascontextmenu" title="Blocked Issue" data-collapse-expand="{&quot;top_increment&quot;:20,&quot;obj_id&quot;:&quot;issue-9&quot;}" data-number-of-rows="8" style="position: absolute;top:204px;left:62px;width:268px;"><span class=" issue-behind-schedule icon icon-issue"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--issue"></use></svg><a class="issue tracker-1 status-1 priority-5 priority-default behind-schedule" href="/issues/9">Bug #9</a>: Blocked Issue<input type="checkbox" name="ids[]" value="9" style="display:none;" class="toggle-selection"></input></span></div><div id="issue-10" class="issue-subject hascontextmenu" title="Issue Doing the Blocking" data-collapse-expand="{&quot;top_increment&quot;:20,&quot;obj_id&quot;:&quot;issue-10&quot;}" data-number-of-rows="9" style="position: absolute;top:224px;left:62px;width:268px;"><span class=" issue-behind-schedule icon icon-issue"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--issue"></use></svg><a class="issue tracker-1 status-1 priority-5 priority-default behind-schedule" href="/issues/10">Bug #10</a>: Issue Doing the Blocking<input type="checkbox" name="ids[]" value="10" style="display:none;" class="toggle-selection"></input></span></div><div class="project-name open" data-collapse-expand="{&quot;top_increment&quot;:20,&quot;obj_id&quot;:&quot;project-3&quot;}" data-number-of-rows="10" style="position: absolute;top:244px;left:24px;width:306px;"><span class="icon icon-expanded expander"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--angle-down"></use></svg></span><span class="icon icon-projects "><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--projects"></use></svg><a href="/projects/subproject1">eCookbook Subproject 1</a></span></div><div id="issue-5" class="issue-subject hascontextmenu" title="Subproject issue" data-collapse-expand="{&quot;top_increment&quot;:20,&quot;obj_id&quot;:&quot;issue-5&quot;}" data-number-of-rows="11" style="position: absolute;top:264px;left:62px;width:268px;"><span class=" icon icon-issue"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--issue"></use></svg><a class="issue tracker-1 status-1 priority-4 priority-lowest" href="/issues/5">Bug #5</a>: Subproject issue<input type="checkbox" name="ids[]" value="5" style="display:none;" class="toggle-selection"></input></span></div><div id="issue-13" class="issue-subject hascontextmenu" title="Subproject issue two" data-collapse-expand="{&quot;top_increment&quot;:20,&quot;obj_id&quot;:&quot;issue-13&quot;}" data-number-of-rows="12" style="position: absolute;top:284px;left:62px;width:268px;"><span class=" icon icon-issue"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--issue"></use></svg><a class="issue tracker-1 status-1 priority-4 priority-lowest" href="/issues/13">Bug #13</a>: Subproject issue two<input type="checkbox" name="ids[]" value="13" style="display:none;" class="toggle-selection"></input></span></div><div id="issue-14" class="issue-subject hascontextmenu" title="Private issue on public project" data-collapse-expand="{&quot;top_increment&quot;:20,&quot;obj_id&quot;:&quot;issue-14&quot;}" data-number-of-rows="13" style="position: absolute;top:304px;left:62px;width:268px;"><span class=" icon icon-issue"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--issue"></use></svg><a class="issue tracker-1 status-1 priority-5 priority-default private" href="/issues/14">Bug #14</a>: Private issue on public project<input type="checkbox" name="ids[]" value="14" style="display:none;" class="toggle-selection"></input></span></div><div class="project-name open" data-collapse-expand="{&quot;top_increment&quot;:20,&quot;obj_id&quot;:&quot;project-2&quot;}" data-number-of-rows="14" style="position: absolute;top:324px;left:4px;width:326px;"><span class="icon icon-expanded expander"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--angle-down"></use></svg></span><span class="icon icon-projects project-overdue"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--projects"></use></svg><a href="/projects/onlinestore">OnlineStore</a></span></div><div id="issue-4" class="issue-subject hascontextmenu" title="Issue on project 2" data-collapse-expand="{&quot;top_increment&quot;:20,&quot;obj_id&quot;:&quot;issue-4&quot;}" data-number-of-rows="15" style="position: absolute;top:344px;left:42px;width:288px;"><span class=""><span role="img" class="avatar-color-2 s13 avatar icon-avatar" title="Assignee: John Smith">JS</span><a class="issue tracker-1 status-1 priority-4 priority-lowest" href="/issues/4">Bug #4</a>: Issue on project 2<input type="checkbox" name="ids[]" value="4" style="display:none;" class="toggle-selection"></input></span></div>
+</form></div></div></td>
+  <td class="gantt_project_column gantt_selected_column " id="project">
+    <div style="position: relative;height: 650px;" class="gantt_project_container gantt_selected_column_container">
+      <div style="height: 626px;overflow: hidden;" class="gantt_hdr"></div>
+      <div style="height: 36px;background: #eee;" class="gantt_hdr"><p class="gantt_hdr_selected_column_name">Project</p></div>
+      <div class="gantt_project gantt_selected_column_content">
+        <div style="position: absolute;top: 64px; font-size: 0.8em;" class="issue_project" id="project_issue_3" data-collapse-expand="issue-3" data-number-of-rows="1"><a href="/projects/ecookbook">eCookbook</a></div><div style="position: absolute;top: 84px; font-size: 0.8em;" class="issue_project" id="project_issue_7" data-collapse-expand="issue-7" data-number-of-rows="2"><a href="/projects/ecookbook">eCookbook</a></div><div style="position: absolute;top: 104px; font-size: 0.8em;" class="issue_project" id="project_issue_1" data-collapse-expand="issue-1" data-number-of-rows="3"><a href="/projects/ecookbook">eCookbook</a></div><div style="position: absolute;top: 144px; font-size: 0.8em;" class="issue_project" id="project_issue_2" data-collapse-expand="issue-2" data-number-of-rows="5"><a href="/projects/ecookbook">eCookbook</a></div><div style="position: absolute;top: 184px; font-size: 0.8em;" class="issue_project" id="project_issue_6" data-collapse-expand="issue-6" data-number-of-rows="7"><a href="/projects/private-child">Private child of eCookbook</a></div><div style="position: absolute;top: 204px; font-size: 0.8em;" class="issue_project" id="project_issue_9" data-collapse-expand="issue-9" data-number-of-rows="8"><a href="/projects/private-child">Private child of eCookbook</a></div><div style="position: absolute;top: 224px; font-size: 0.8em;" class="issue_project" id="project_issue_10" data-collapse-expand="issue-10" data-number-of-rows="9"><a href="/projects/private-child">Private child of eCookbook</a></div><div style="position: absolute;top: 264px; font-size: 0.8em;" class="issue_project" id="project_issue_5" data-collapse-expand="issue-5" data-number-of-rows="11"><a href="/projects/subproject1">eCookbook Subproject 1</a></div><div style="position: absolute;top: 284px; font-size: 0.8em;" class="issue_project" id="project_issue_13" data-collapse-expand="issue-13" data-number-of-rows="12"><a href="/projects/subproject1">eCookbook Subproject 1</a></div><div style="position: absolute;top: 304px; font-size: 0.8em;" class="issue_project" id="project_issue_14" data-collapse-expand="issue-14" data-number-of-rows="13"><a href="/projects/subproject1">eCookbook Subproject 1</a></div><div style="position: absolute;top: 344px; font-size: 0.8em;" class="issue_project" id="project_issue_4" data-collapse-expand="issue-4" data-number-of-rows="15"><a href="/projects/onlinestore">OnlineStore</a></div>
+</div></div>  </td>
+  <td class="gantt_status_column gantt_selected_column " id="status">
+    <div style="position: relative;height: 650px;" class="gantt_status_container gantt_selected_column_container">
+      <div style="height: 626px;overflow: hidden;" class="gantt_hdr"></div>
+      <div style="height: 36px;background: #eee;" class="gantt_hdr"><p class="gantt_hdr_selected_column_name">Status</p></div>
+      <div class="gantt_status gantt_selected_column_content">
+        <div style="position: absolute;top: 64px; font-size: 0.8em;" class="issue_status" id="status_issue_3" data-collapse-expand="issue-3" data-number-of-rows="1">New</div><div style="position: absolute;top: 84px; font-size: 0.8em;" class="issue_status" id="status_issue_7" data-collapse-expand="issue-7" data-number-of-rows="2">New</div><div style="position: absolute;top: 104px; font-size: 0.8em;" class="issue_status" id="status_issue_1" data-collapse-expand="issue-1" data-number-of-rows="3">New</div><div style="position: absolute;top: 144px; font-size: 0.8em;" class="issue_status" id="status_issue_2" data-collapse-expand="issue-2" data-number-of-rows="5">Assigned</div><div style="position: absolute;top: 184px; font-size: 0.8em;" class="issue_status" id="status_issue_6" data-collapse-expand="issue-6" data-number-of-rows="7">New</div><div style="position: absolute;top: 204px; font-size: 0.8em;" class="issue_status" id="status_issue_9" data-collapse-expand="issue-9" data-number-of-rows="8">New</div><div style="position: absolute;top: 224px; font-size: 0.8em;" class="issue_status" id="status_issue_10" data-collapse-expand="issue-10" data-number-of-rows="9">New</div><div style="position: absolute;top: 264px; font-size: 0.8em;" class="issue_status" id="status_issue_5" data-collapse-expand="issue-5" data-number-of-rows="11">New</div><div style="position: absolute;top: 284px; font-size: 0.8em;" class="issue_status" id="status_issue_13" data-collapse-expand="issue-13" data-number-of-rows="12">New</div><div style="position: absolute;top: 304px; font-size: 0.8em;" class="issue_status" id="status_issue_14" data-collapse-expand="issue-14" data-number-of-rows="13">New</div><div style="position: absolute;top: 344px; font-size: 0.8em;" class="issue_status" id="status_issue_4" data-collapse-expand="issue-4" data-number-of-rows="15">New</div>
+</div></div>  </td>
+  <td class="gantt_priority_column gantt_selected_column " id="priority">
+    <div style="position: relative;height: 650px;" class="gantt_priority_container gantt_selected_column_container">
+      <div style="height: 626px;overflow: hidden;" class="gantt_hdr"></div>
+      <div style="height: 36px;background: #eee;" class="gantt_hdr"><p class="gantt_hdr_selected_column_name">Priority</p></div>
+      <div class="gantt_priority gantt_selected_column_content">
+        <div style="position: absolute;top: 64px; font-size: 0.8em;" class="issue_priority" id="priority_issue_3" data-collapse-expand="issue-3" data-number-of-rows="1">Low</div><div style="position: absolute;top: 84px; font-size: 0.8em;" class="issue_priority" id="priority_issue_7" data-collapse-expand="issue-7" data-number-of-rows="2">Normal</div><div style="position: absolute;top: 104px; font-size: 0.8em;" class="issue_priority" id="priority_issue_1" data-collapse-expand="issue-1" data-number-of-rows="3">Low</div><div style="position: absolute;top: 144px; font-size: 0.8em;" class="issue_priority" id="priority_issue_2" data-collapse-expand="issue-2" data-number-of-rows="5">Normal</div><div style="position: absolute;top: 184px; font-size: 0.8em;" class="issue_priority" id="priority_issue_6" data-collapse-expand="issue-6" data-number-of-rows="7">Low</div><div style="position: absolute;top: 204px; font-size: 0.8em;" class="issue_priority" id="priority_issue_9" data-collapse-expand="issue-9" data-number-of-rows="8">Normal</div><div style="position: absolute;top: 224px; font-size: 0.8em;" class="issue_priority" id="priority_issue_10" data-collapse-expand="issue-10" data-number-of-rows="9">Normal</div><div style="position: absolute;top: 264px; font-size: 0.8em;" class="issue_priority" id="priority_issue_5" data-collapse-expand="issue-5" data-number-of-rows="11">Low</div><div style="position: absolute;top: 284px; font-size: 0.8em;" class="issue_priority" id="priority_issue_13" data-collapse-expand="issue-13" data-number-of-rows="12">Low</div><div style="position: absolute;top: 304px; font-size: 0.8em;" class="issue_priority" id="priority_issue_14" data-collapse-expand="issue-14" data-number-of-rows="13">Normal</div><div style="position: absolute;top: 344px; font-size: 0.8em;" class="issue_priority" id="priority_issue_4" data-collapse-expand="issue-4" data-number-of-rows="15">Low</div>
+</div></div>  </td>
+  <td class="gantt_assigned_to_column gantt_selected_column " id="assigned_to">
+    <div style="position: relative;height: 650px;" class="gantt_assigned_to_container gantt_selected_column_container">
+      <div style="height: 626px;overflow: hidden;" class="gantt_hdr"></div>
+      <div style="height: 36px;background: #eee;" class="gantt_hdr"><p class="gantt_hdr_selected_column_name">Assignee</p></div>
+      <div class="gantt_assigned_to gantt_selected_column_content">
+        <div style="position: absolute;top: 64px; font-size: 0.8em;" class="issue_assigned_to" id="assigned_to_issue_3" data-collapse-expand="issue-3" data-number-of-rows="1"><a class="user active" href="/users/3">Dave Lopper</a></div><div style="position: absolute;top: 84px; font-size: 0.8em;" class="issue_assigned_to" id="assigned_to_issue_7" data-collapse-expand="issue-7" data-number-of-rows="2"></div><div style="position: absolute;top: 104px; font-size: 0.8em;" class="issue_assigned_to" id="assigned_to_issue_1" data-collapse-expand="issue-1" data-number-of-rows="3"></div><div style="position: absolute;top: 144px; font-size: 0.8em;" class="issue_assigned_to" id="assigned_to_issue_2" data-collapse-expand="issue-2" data-number-of-rows="5"><a class="user active" href="/users/3">Dave Lopper</a></div><div style="position: absolute;top: 184px; font-size: 0.8em;" class="issue_assigned_to" id="assigned_to_issue_6" data-collapse-expand="issue-6" data-number-of-rows="7"></div><div style="position: absolute;top: 204px; font-size: 0.8em;" class="issue_assigned_to" id="assigned_to_issue_9" data-collapse-expand="issue-9" data-number-of-rows="8"></div><div style="position: absolute;top: 224px; font-size: 0.8em;" class="issue_assigned_to" id="assigned_to_issue_10" data-collapse-expand="issue-10" data-number-of-rows="9"></div><div style="position: absolute;top: 264px; font-size: 0.8em;" class="issue_assigned_to" id="assigned_to_issue_5" data-collapse-expand="issue-5" data-number-of-rows="11"></div><div style="position: absolute;top: 284px; font-size: 0.8em;" class="issue_assigned_to" id="assigned_to_issue_13" data-collapse-expand="issue-13" data-number-of-rows="12"></div><div style="position: absolute;top: 304px; font-size: 0.8em;" class="issue_assigned_to" id="assigned_to_issue_14" data-collapse-expand="issue-14" data-number-of-rows="13"></div><div style="position: absolute;top: 344px; font-size: 0.8em;" class="issue_assigned_to" id="assigned_to_issue_4" data-collapse-expand="issue-4" data-number-of-rows="15"><a class="user active" href="/users/2">John Smith</a></div>
+</div></div>  </td>
+  <td class="gantt_updated_on_column gantt_selected_column last_gantt_selected_column" id="updated_on">
+    <div style="position: relative;height: 650px;" class="gantt_updated_on_container gantt_selected_column_container">
+      <div style="height: 626px;overflow: hidden;" class="gantt_hdr"></div>
+      <div style="height: 36px;background: #eee;" class="gantt_hdr"><p class="gantt_hdr_selected_column_name">Updated</p></div>
+      <div class="gantt_updated_on gantt_selected_column_content">
+        <div style="position: absolute;top: 64px; font-size: 0.8em;" class="issue_updated_on" id="updated_on_issue_3" data-collapse-expand="issue-3" data-number-of-rows="1">07/19/2006 07:07 PM</div><div style="position: absolute;top: 84px; font-size: 0.8em;" class="issue_updated_on" id="updated_on_issue_7" data-collapse-expand="issue-7" data-number-of-rows="2">01/05/2026 12:00 PM</div><div style="position: absolute;top: 104px; font-size: 0.8em;" class="issue_updated_on" id="updated_on_issue_1" data-collapse-expand="issue-1" data-number-of-rows="3">01/14/2026 12:00 PM</div><div style="position: absolute;top: 144px; font-size: 0.8em;" class="issue_updated_on" id="updated_on_issue_2" data-collapse-expand="issue-2" data-number-of-rows="5">07/19/2006 07:09 PM</div><div style="position: absolute;top: 184px; font-size: 0.8em;" class="issue_updated_on" id="updated_on_issue_6" data-collapse-expand="issue-6" data-number-of-rows="7">01/15/2026 11:59 AM</div><div style="position: absolute;top: 204px; font-size: 0.8em;" class="issue_updated_on" id="updated_on_issue_9" data-collapse-expand="issue-9" data-number-of-rows="8">01/15/2026 11:59 AM</div><div style="position: absolute;top: 224px; font-size: 0.8em;" class="issue_updated_on" id="updated_on_issue_10" data-collapse-expand="issue-10" data-number-of-rows="9">01/15/2026 11:59 AM</div><div style="position: absolute;top: 264px; font-size: 0.8em;" class="issue_updated_on" id="updated_on_issue_5" data-collapse-expand="issue-5" data-number-of-rows="11">01/13/2026 12:00 PM</div><div style="position: absolute;top: 284px; font-size: 0.8em;" class="issue_updated_on" id="updated_on_issue_13" data-collapse-expand="issue-13" data-number-of-rows="12">01/13/2026 12:00 PM</div><div style="position: absolute;top: 304px; font-size: 0.8em;" class="issue_updated_on" id="updated_on_issue_14" data-collapse-expand="issue-14" data-number-of-rows="13">12/31/2025 12:00 PM</div><div style="position: absolute;top: 344px; font-size: 0.8em;" class="issue_updated_on" id="updated_on_issue_4" data-collapse-expand="issue-4" data-number-of-rows="15">01/13/2026 12:00 PM</div>
+</div></div>  </td>
+<td>
+<div style="position:relative;height:650px;overflow:auto;" id="gantt_area">
+<div style="width: 723px;height: 36px;background: #eee;" class="gantt_hdr">&nbsp;</div>
+
+  <div style="left: 0px;width: 123px;height: 18px;" class="gantt_hdr">
+    <a title="January 2026" href="/issues/gantt?month=1&amp;months=6&amp;year=2026&amp;zoom=2">2026-1</a>
+</div>  <div style="left: 124px;width: 111px;height: 18px;" class="gantt_hdr">
+    <a title="February 2026" href="/issues/gantt?month=2&amp;months=6&amp;year=2026&amp;zoom=2">2026-2</a>
+</div>  <div style="left: 236px;width: 123px;height: 18px;" class="gantt_hdr">
+    <a title="March 2026" href="/issues/gantt?month=3&amp;months=6&amp;year=2026&amp;zoom=2">2026-3</a>
+</div>  <div style="left: 360px;width: 119px;height: 18px;" class="gantt_hdr">
+    <a title="April 2026" href="/issues/gantt?month=4&amp;months=6&amp;year=2026&amp;zoom=2">2026-4</a>
+</div>  <div style="left: 480px;width: 123px;height: 18px;" class="gantt_hdr">
+    <a title="May 2026" href="/issues/gantt?month=5&amp;months=6&amp;year=2026&amp;zoom=2">2026-5</a>
+</div>  <div style="left: 604px;width: 119px;height: 18px;" class="gantt_hdr">
+    <a title="June 2026" href="/issues/gantt?month=6&amp;months=6&amp;year=2026&amp;zoom=2">2026-6</a>
+</div>
+    <div style="left: 0px;top: 19px;width: 15px;height: 607px;" class="gantt_hdr">&nbsp;</div>
+    <div style="left: 16px;top: 19px;width: 27px;height: 607px;" class="gantt_hdr">
+      <small>
+        2
+</small></div>    <div style="left: 44px;top: 19px;width: 27px;height: 607px;" class="gantt_hdr">
+      <small>
+        3
+</small></div>    <div style="left: 72px;top: 19px;width: 27px;height: 607px;" class="gantt_hdr">
+      <small>
+        4
+</small></div>    <div style="left: 100px;top: 19px;width: 27px;height: 607px;" class="gantt_hdr">
+      <small>
+        5
+</small></div>    <div style="left: 128px;top: 19px;width: 27px;height: 607px;" class="gantt_hdr">
+      <small>
+        6
+</small></div>    <div style="left: 156px;top: 19px;width: 27px;height: 607px;" class="gantt_hdr">
+      <small>
+        7
+</small></div>    <div style="left: 184px;top: 19px;width: 27px;height: 607px;" class="gantt_hdr">
+      <small>
+        8
+</small></div>    <div style="left: 212px;top: 19px;width: 27px;height: 607px;" class="gantt_hdr">
+      <small>
+        9
+</small></div>    <div style="left: 240px;top: 19px;width: 27px;height: 607px;" class="gantt_hdr">
+      <small>
+        10
+</small></div>    <div style="left: 268px;top: 19px;width: 27px;height: 607px;" class="gantt_hdr">
+      <small>
+        11
+</small></div>    <div style="left: 296px;top: 19px;width: 27px;height: 607px;" class="gantt_hdr">
+      <small>
+        12
+</small></div>    <div style="left: 324px;top: 19px;width: 27px;height: 607px;" class="gantt_hdr">
+      <small>
+        13
+</small></div>    <div style="left: 352px;top: 19px;width: 27px;height: 607px;" class="gantt_hdr">
+      <small>
+        14
+</small></div>    <div style="left: 380px;top: 19px;width: 27px;height: 607px;" class="gantt_hdr">
+      <small>
+        15
+</small></div>    <div style="left: 408px;top: 19px;width: 27px;height: 607px;" class="gantt_hdr">
+      <small>
+        16
+</small></div>    <div style="left: 436px;top: 19px;width: 27px;height: 607px;" class="gantt_hdr">
+      <small>
+        17
+</small></div>    <div style="left: 464px;top: 19px;width: 27px;height: 607px;" class="gantt_hdr">
+      <small>
+        18
+</small></div>    <div style="left: 492px;top: 19px;width: 27px;height: 607px;" class="gantt_hdr">
+      <small>
+        19
+</small></div>    <div style="left: 520px;top: 19px;width: 27px;height: 607px;" class="gantt_hdr">
+      <small>
+        20
+</small></div>    <div style="left: 548px;top: 19px;width: 27px;height: 607px;" class="gantt_hdr">
+      <small>
+        21
+</small></div>    <div style="left: 576px;top: 19px;width: 27px;height: 607px;" class="gantt_hdr">
+      <small>
+        22
+</small></div>    <div style="left: 604px;top: 19px;width: 27px;height: 607px;" class="gantt_hdr">
+      <small>
+        23
+</small></div>    <div style="left: 632px;top: 19px;width: 27px;height: 607px;" class="gantt_hdr">
+      <small>
+        24
+</small></div>    <div style="left: 660px;top: 19px;width: 27px;height: 607px;" class="gantt_hdr">
+      <small>
+        25
+</small></div>    <div style="left: 688px;top: 19px;width: 27px;height: 607px;" class="gantt_hdr">
+      <small>
+        26
+</small></div>    <div style="left: 716px;top: 19px;width: 7px;height: 607px;" class="gantt_hdr">
+      <small>
+</small></div>
+
+
+<form data-cm-url="/issues/context_menu" action="/issues/gantt" accept-charset="UTF-8" name="form-RANDOM" method="post"><input type="hidden" name="authenticity_token" value="{{CSRF}}" autocomplete="off" />  <input type="hidden" name="back_url" value="/issues/gantt?months=6&amp;zoom=2" autocomplete="off" />
+  <div style="top:44px;left:0px;width:138px;" class="task project task_todo" data-collapse-expand="project-1" data-number-of-rows="0">&nbsp;</div><div style="top:44px;left:140px;width:15px;" class="task project marker ending" data-collapse-expand="project-1" data-number-of-rows="0">&nbsp;</div><div style="top:44px;left:148px;width:15px;" class="task project label" data-collapse-expand="project-1" data-number-of-rows="0">eCookbook</div><div style="top:64px;left:0px;width:38px;" class="task leaf task_todo" id="task-todo-issue-3" data-collapse-expand="issue-3" data-number-of-rows="1">&nbsp;</div><div style="top:64px;left:0px;width:38px;" class="task leaf task_late" data-collapse-expand="issue-3" data-number-of-rows="1">&nbsp;</div><div style="top:64px;left:48px;width:15px;" class="task leaf label" data-collapse-expand="issue-3" data-number-of-rows="1">New 0%</div><div style="position: absolute;top:64px;left:0px;width:40px;height:12px;" class="tooltip hascontextmenu" data-collapse-expand="issue-3" data-number-of-rows="1"><span class="tip"><a class="issue tracker-1 status-1 priority-4 priority-lowest overdue behind-schedule" href="/issues/3">Bug #3</a>: Error 281 when updating a recipe<br /><br /><strong>Project</strong>: <a href="/projects/ecookbook">eCookbook</a><br /><strong>Status</strong>: New<br /><strong>Start date</strong>: 12/31/2025<br /><strong>Due date</strong>: 01/10/2026<br /><strong>Assignee</strong>: <span role="img" class="avatar-color-3 s13 avatar" title="Assignee">DL</span> Dave Lopper<br /><strong>Priority</strong>: Low</span><input type="checkbox" name="ids[]" value="3" style="display:none;" class="toggle-selection"></input></div><div style="top:84px;left:16px;width:42px;" class="task leaf task_todo" id="task-todo-issue-7" data-collapse-expand="issue-7" data-number-of-rows="2">&nbsp;</div><div style="top:84px;left:16px;width:42px;" class="task leaf task_late" data-collapse-expand="issue-7" data-number-of-rows="2">&nbsp;</div><div style="top:84px;left:68px;width:15px;" class="task leaf label" data-collapse-expand="issue-7" data-number-of-rows="2">New 0%</div><div style="position: absolute;top:84px;left:16px;width:44px;height:12px;" class="tooltip hascontextmenu" data-collapse-expand="issue-7" data-number-of-rows="2"><span class="tip"><a class="issue tracker-1 status-1 priority-5 priority-default behind-schedule" href="/issues/7">Bug #7</a>: Issue due today<br /><br /><strong>Project</strong>: <a href="/projects/ecookbook">eCookbook</a><br /><strong>Status</strong>: New<br /><strong>Start date</strong>: 01/05/2026<br /><strong>Due date</strong>: 01/15/2026<br /><strong>Assignee</strong>:  <br /><strong>Priority</strong>: Normal</span><input type="checkbox" name="ids[]" value="7" style="display:none;" class="toggle-selection"></input></div><div style="top:104px;left:52px;width:46px;" class="task leaf task_todo" id="task-todo-issue-1" data-collapse-expand="issue-1" data-number-of-rows="3">&nbsp;</div><div style="top:104px;left:52px;width:6px;" class="task leaf task_late" data-collapse-expand="issue-1" data-number-of-rows="3">&nbsp;</div><div style="top:104px;left:108px;width:15px;" class="task leaf label" data-collapse-expand="issue-1" data-number-of-rows="3">New 0%</div><div style="position: absolute;top:104px;left:52px;width:48px;height:12px;" class="tooltip hascontextmenu" data-collapse-expand="issue-1" data-number-of-rows="3"><span class="tip"><a class="issue tracker-1 status-1 priority-4 priority-lowest behind-schedule" href="/issues/1">Bug #1</a>: Cannot print recipes<br /><br /><strong>Project</strong>: <a href="/projects/ecookbook">eCookbook</a><br /><strong>Status</strong>: New<br /><strong>Start date</strong>: 01/14/2026<br /><strong>Due date</strong>: 01/25/2026<br /><strong>Assignee</strong>:  <br /><strong>Priority</strong>: Low</span><input type="checkbox" name="ids[]" value="1" style="display:none;" class="toggle-selection"></input></div><div style="top:124px;left:48px;width:90px;" class="task version task_todo" id="task-todo-version-2" data-collapse-expand="version-2" data-number-of-rows="4">&nbsp;</div><div style="top:124px;left:48px;width:57px;" class="task version task_done" id="task-done-version-2" data-collapse-expand="version-2" data-number-of-rows="4">&nbsp;</div><div style="top:124px;left:48px;width:15px;" class="task version marker starting" data-collapse-expand="version-2" data-number-of-rows="4">&nbsp;</div><div style="top:124px;left:140px;width:15px;" class="task version marker ending" data-collapse-expand="version-2" data-number-of-rows="4">&nbsp;</div><div style="top:124px;left:148px;width:15px;" class="task version label" data-collapse-expand="version-2" data-number-of-rows="4">eCookbook -1.0 65%</div><div style="top:144px;left:48px;width:90px;" class="task leaf task_todo" id="task-todo-issue-2" data-collapse-expand="issue-2" data-number-of-rows="5">&nbsp;</div><div style="top:144px;left:48px;width:25px;" class="task leaf task_done" id="task-done-issue-2" data-collapse-expand="issue-2" data-number-of-rows="5">&nbsp;</div><div style="top:144px;left:148px;width:15px;" class="task leaf label" data-collapse-expand="issue-2" data-number-of-rows="5">Assigned 30%</div><div style="position: absolute;top:144px;left:48px;width:92px;height:12px;" class="tooltip hascontextmenu" data-collapse-expand="issue-2" data-number-of-rows="5"><span class="tip"><a class="issue tracker-2 status-2 priority-5 priority-default" href="/issues/2">Feature request #2</a>: Add ingredients categories<br /><br /><strong>Project</strong>: <a href="/projects/ecookbook">eCookbook</a><br /><strong>Status</strong>: Assigned<br /><strong>Start date</strong>: 01/13/2026<br /><strong>Due date</strong>: <br /><strong>Assignee</strong>: <span role="img" class="avatar-color-3 s13 avatar" title="Assignee">DL</span> Dave Lopper<br /><strong>Priority</strong>: Normal</span><input type="checkbox" name="ids[]" value="2" style="display:none;" class="toggle-selection"></input></div><div style="top:164px;left:56px;width:6px;" class="task project task_todo" data-collapse-expand="project-5" data-number-of-rows="6">&nbsp;</div><div style="top:164px;left:56px;width:15px;" class="task project marker starting" data-collapse-expand="project-5" data-number-of-rows="6">&nbsp;</div><div style="top:164px;left:64px;width:15px;" class="task project marker ending" data-collapse-expand="project-5" data-number-of-rows="6">&nbsp;</div><div style="top:164px;left:72px;width:15px;" class="task project label" data-collapse-expand="project-5" data-number-of-rows="6">Private child of eCookbook</div><div style="top:184px;left:56px;width:6px;" class="task leaf task_todo" id="task-todo-issue-6" data-collapse-expand="issue-6" data-number-of-rows="7">&nbsp;</div><div style="top:184px;left:56px;width:2px;" class="task leaf task_late" data-collapse-expand="issue-6" data-number-of-rows="7">&nbsp;</div><div style="top:184px;left:72px;width:15px;" class="task leaf label" data-collapse-expand="issue-6" data-number-of-rows="7">New 0%</div><div style="position: absolute;top:184px;left:56px;width:8px;height:12px;" class="tooltip hascontextmenu" data-collapse-expand="issue-6" data-number-of-rows="7"><span class="tip"><a class="issue tracker-1 status-1 priority-4 priority-lowest behind-schedule" href="/issues/6">Bug #6</a>: Issue of a private subproject<br /><br /><strong>Project</strong>: <a href="/projects/private-child">Private child of eCookbook</a><br /><strong>Status</strong>: New<br /><strong>Start date</strong>: 01/15/2026<br /><strong>Due date</strong>: 01/16/2026<br /><strong>Assignee</strong>:  <br /><strong>Priority</strong>: Low</span><input type="checkbox" name="ids[]" value="6" style="display:none;" class="toggle-selection"></input></div><div style="top:204px;left:56px;width:6px;" class="task leaf task_todo" id="task-todo-issue-9" data-collapse-expand="issue-9" data-number-of-rows="8">&nbsp;</div><div style="top:204px;left:56px;width:2px;" class="task leaf task_late" data-collapse-expand="issue-9" data-number-of-rows="8">&nbsp;</div><div style="top:204px;left:72px;width:15px;" class="task leaf label" data-collapse-expand="issue-9" data-number-of-rows="8">New 0%</div><div style="position: absolute;top:204px;left:56px;width:8px;height:12px;" class="tooltip hascontextmenu" data-collapse-expand="issue-9" data-number-of-rows="8"><span class="tip"><a class="issue tracker-1 status-1 priority-5 priority-default behind-schedule" href="/issues/9">Bug #9</a>: Blocked Issue<br /><br /><strong>Project</strong>: <a href="/projects/private-child">Private child of eCookbook</a><br /><strong>Status</strong>: New<br /><strong>Start date</strong>: 01/15/2026<br /><strong>Due date</strong>: 01/16/2026<br /><strong>Assignee</strong>:  <br /><strong>Priority</strong>: Normal</span><input type="checkbox" name="ids[]" value="9" style="display:none;" class="toggle-selection"></input></div><div style="top:224px;left:56px;width:6px;" class="task leaf task_todo" id="task-todo-issue-10" data-rels="{&quot;blocks&quot;:[9]}" data-collapse-expand="issue-10" data-number-of-rows="9">&nbsp;</div><div style="top:224px;left:56px;width:2px;" class="task leaf task_late" data-collapse-expand="issue-10" data-number-of-rows="9">&nbsp;</div><div style="top:224px;left:72px;width:15px;" class="task leaf label" data-collapse-expand="issue-10" data-number-of-rows="9">New 0%</div><div style="position: absolute;top:224px;left:56px;width:8px;height:12px;" class="tooltip hascontextmenu" data-collapse-expand="issue-10" data-number-of-rows="9"><span class="tip"><a class="issue tracker-1 status-1 priority-5 priority-default behind-schedule" href="/issues/10">Bug #10</a>: Issue Doing the Blocking<br /><br /><strong>Project</strong>: <a href="/projects/private-child">Private child of eCookbook</a><br /><strong>Status</strong>: New<br /><strong>Start date</strong>: 01/15/2026<br /><strong>Due date</strong>: 01/16/2026<br /><strong>Assignee</strong>:  <br /><strong>Priority</strong>: Normal</span><input type="checkbox" name="ids[]" value="10" style="display:none;" class="toggle-selection"></input></div><div style="top:324px;left:8px;width:15px;" class="task project label" data-collapse-expand="project-2" data-number-of-rows="14">OnlineStore</div>
+</form>
+  <div style="position: absolute;height: 590px;top: 37px;left: 59px;width:10px;border-left: 1px dashed red;" id="today_line">&nbsp;</div>
+<div style="position: absolute;height: 590px;top: 37px;left: 0px;width: 723px;" id="gantt_draw_area"></div>
+</div>
+</td>
+</tr>
+</table>
+
+<span class="pagination">
+  <ul class="pages">
+    <li class="previous page">
+      <a href="/issues/gantt?action=show&amp;controller=gantts&amp;month=7&amp;months=6&amp;year=2025&amp;zoom=2">« Previous</a>
+    </li><li class="next page">
+      <a href="/issues/gantt?action=show&amp;controller=gantts&amp;month=7&amp;months=6&amp;year=2026&amp;zoom=2">Next »</a>
+    </li>
+  </ul>
+</span>
+
+<p class="other-formats hide-when-print">Also available in:  <span><a class="pdf" rel="nofollow" href="/issues/gantt.pdf?month=1&amp;months=6&amp;year=2026&amp;zoom=2">PDF</a></span>
+  
+</p>
+
+
+
+<script>
+//<![CDATA[
+
+  var issue_relation_type = {"blocks":{"landscape_margin":16,"color":"#F34F4F"},"precedes":{"landscape_margin":20,"color":"#628FEA"}};
+  $(function() {
+    disable_unavailable_columns('tracker,id,subject'.split(','));
+    drawGanttHandler();
+    resizableSubjectColumn();
+    drawSelectedColumns();
+    $("#draw_relations, #draw_progress_line, #draw_selected_columns").change(drawGanttHandler);
+    $('div.gantt_subjects .expander').on('click', ganttEntryClick);
+  });
+  $(window).resize(function() {
+    drawGanttHandler();
+    resizableSubjectColumn();
+  });
+
+//]]>
+</script>
+
+        
+        <div style="clear:both;"></div>
+    </div>
+</div>
+<div id="footer">
