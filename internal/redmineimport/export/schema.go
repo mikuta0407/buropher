@@ -40,6 +40,7 @@ var encryptedColumns = map[string]map[string]bool{
 }
 
 // CoreMigrations は受け入れ対象の Redmine 6.1.2 コア schema_migrations(322 件)のコピーを返す。
+// 6.1.0 / 6.1.1 の db/migrate も同一のため、この集合で 6.1.0〜6.1.2 を受け入れる。
 func CoreMigrations() []string {
 	return append([]string(nil), coreMigrations...)
 }
