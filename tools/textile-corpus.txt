@@ -1,0 +1,1679 @@
+h1. Title
+=====
+h2(foo#bar). Heading with class and id
+=====
+h3{color:red}. Styled heading
+=====
+h1. TOC
+
+{{toc}}
+
+h2. Section A
+
+text
+
+h2. Section B
+
+h3. Sub B1
+=====
+{{>toc}}
+=====
+{{macro(arg1, arg2)}}
+=====
+{{macro
+multi
+line
+}}
+=====
+!>image.png!
+=====
+!<image.png!
+=====
+!=image.png!
+=====
+!image.png(Alt text)!
+=====
+!image.png!:http://example.com
+=====
+!{width:100px}image.png!
+=====
+!(cls)image.png(title (nested))!
+=====
+!javascript:alert(1)!
+=====
+!data:image/png;base64,AAAA!
+=====
+!http://example.com/a.png?x=1&y=2!
+=====
+"link":http://example.com
+=====
+"link (title)":http://example.com/path
+=====
+"link":http://example.com/foo_(bar)
+=====
+("link":http://example.com/foo)
+=====
+"link":http://example.com.
+=====
+"link":/relative/path
+=====
+"link":javascript:alert(1)
+=====
+"mail":mailto:foo@example.com
+=====
+"link with *bold*":http://example.com
+=====
+"(cls)link":http://example.com
+=====
+"link":http://example.com/?a=1&b=2
+=====
+"link":www.example.com
+=====
+see http://example.com/foo?bar=baz&x=1 for details
+=====
+http://example.com/foo_(bar)
+=====
+(http://example.com/foo)
+=====
+www.redmine.org
+=====
+<a href="http://example.com">http://example.com</a>
+=====
+foo@example.com
+=====
+mailto:foo@example.com
+=====
+@inline code@
+=====
+@<b>tag</b>@
+=====
+@|ruby|code@
+=====
+text @code with *stars*@ end
+=====
+==notextile *here*==
+=====
+==*a*== and ==*b*==
+=====
+ ==indented notextile==
+=====
+<notextile>*no textile*</notextile>
+=====
+<pre>
+preformatted *text*
+  <b>bold</b> & amp
+</pre>
+=====
+<pre><code class="ruby">
+def foo
+  "bar" & 1
+end
+</code></pre>
+=====
+<pre><code class="foolang">
+unsupported
+</code></pre>
+=====
+<pre><code class="c++">
+int main() { return a < b; }
+</code></pre>
+=====
+<pre><code>
+plain code <tag>
+</code></pre>
+=====
+<pre>
+one
+
+two
+
+three
+</pre>
+=====
+<pre>
+<pre>nested</pre>
+</pre>
+=====
+<code class="ruby">inline ruby</code>
+=====
+<kbd>Ctrl</kbd>+<kbd>C</kbd>
+=====
+* item 1
+* item 2
+** item 2.1
+** item 2.2
+*** item 2.2.1
+* item 3
+=====
+# one
+# two
+## two.one
+# three
+=====
+# ordered
+** mixed bullet
+# back
+=====
+*(cls) item with class
+* second
+=====
+* item
+
+* separated item
+=====
+*bold* start of line
+=====
+* list
+not list
+=====
+|a|b|c|
+|1|2|3|
+=====
+|_. head1|_. head2|
+|cell1|cell2|
+=====
+table(tcls).
+|a|b|
+=====
+table{border:1px solid black}.
+|a|b|
+=====
+|\2. colspan|
+|a|b|
+=====
+|/2. rowspan|a|
+|b|
+=====
+|^. top|-. middle|~. bottom|
+=====
+(rowcls). |a|b|
+=====
+{background:#ddd}. |a|b|
+=====
+|=. center|<. left|>. right|
+=====
+|[[Wiki|Link]]|other|
+=====
+|a | b |
+|c | d |
+=====
+| *bold* | _em_ |
+=====
+bq. A block quote
+=====
+bq.:http://example.com Quote with cite
+=====
+> quoted line
+> second line
+
+after
+=====
+> level 1
+>> level 2
+> back 1
+=====
+fn1. Footnote one
+=====
+text[1] and more[2]
+
+fn1. first
+
+fn2. second
+=====
+p. explicit paragraph
+=====
+p(cls). para with class
+=====
+p(#id). para with id
+=====
+p[ja]. lang para
+=====
+p<. left
+=====
+p>. right
+=====
+p=. center
+=====
+p<>. justify
+=====
+p((. padded
+=====
+p)). padded right
+=====
+p{color:red;background:url(x)}. filtered style
+=====
+p{color:red; font-size:12px; text-align:center}. multiple styles
+=====
+%{color:red}span text%
+=====
+%(cls)span%
+=====
+_emphasis_ and __italic__
+=====
+*strong* and **bold**
+=====
+??citation??
+=====
+-deleted- text
+=====
++inserted+ text
+=====
+x^2^ and H~2~O
+=====
+a -b- c
+=====
+a - b -- c --- d
+=====
+foo->bar
+=====
+"quoted" and 'single'
+=====
+It's John's book
+=====
+10 x 20
+=====
+(c) (r) (tm)
+=====
+Wait...
+=====
+ABC(Alphabet) and NASA(National Aeronautics)
+=====
+日本語のテキスト
+=====
+日本語ABC(エービーシー)です
+=====
+*太字*と_斜体_
+=====
+これは*太字*です
+=====
+「引用」と"リンク":http://example.jp/パス
+=====
+http://example.jp/日本語
+=====
+全角スペース　を含む行
+=====
+中文测试 *粗体* 文本
+=====
+한국어 _기울임_
+=====
+emoji 😀 *bold 😀*
+=====
+&amp; &lt; &gt; &copy; &#169; &#xa9;
+=====
+AT&T and R&D
+=====
+a & b
+=====
+<b>bold</b> <i>italic</i>
+=====
+<script>alert(1)</script>
+=====
+<div class="x">div</div>
+=====
+<img src="x.png" onerror="alert(1)">
+=====
+<!-- comment --> visible
+=====
+<a href="javascript:alert(1)">x</a>
+=====
+1 < 2 > 0
+=====
+<<double>>
+=====
+<
+=====
+line one
+line two
+line three
+=====
+para one
+
+para two
+
+
+para three
+=====
+  indented
+  block
+=====
+normal
+
+    indented code?
+    more
+
+after
+=====
+hr below
+
+---
+
+***
+
+___
+=====
+- - -
+=====
+h1. heading
+paragraph right after
+=====
+h2. Heading *bold* @code@
+=====
+h4. h4
+h5. h5
+h6. h6
+=====
+h7. not a heading
+=====
+foo. not a block
+=====
+[[WikiPage]]
+=====
+[[WikiPage|Text]]
+=====
+[[Page#anchor|Text]]
+=====
+#1 issue link and r123
+=====
+version:"1.0" and document:"Doc title"
+=====
+[@jsmith@somenet.foo]
+=====
+user:jsmith@somenet.foo
+=====
+attachment:image@2x.png
+=====
+[printscreen@2x.png]
+=====
+!image@2x.png!
+=====
+commit:abcd1234
+=====
+source:"some file.txt"
+=====
+trailing quote"
+=====
+"open quote
+=====
+"link":http://example.com/"quote"
+=====
+a"b"c
+=====
+"a" "b":http://x.com
+=====
+!image.png! "link":http://x.com
+=====
+!image.png!:http://x.com/page
+=====
+text !image.png! text
+=====
+!http://example.com/image.png!
+=====
+!/images/comment.png"onclick=alert(1)!
+=====
+'single quoted' text
+=====
+foo -- bar
+=====
+foo---bar
+=====
+<pre>
+a
+</pre>
+text after
+=====
+text before
+<pre>
+a
+</pre>
+=====
+<pre class="x">x</pre>
+=====
+<pre>unclosed pre
+=====
+</pre> stray close
+=====
+<code>a</code> and <code>b</code>
+=====
+@a@ and @b@
+=====
+@@
+=====
+@ space@
+=====
+email@example.com, other@example.org.
+=====
+http://a.com, http://b.com.
+=====
+https://example.com/path#frag
+=====
+ftp://ftp.example.com/file
+=====
+sftp://host/path
+=====
+<http://example.com>
+=====
+[http://example.com]
+=====
+"Link":http://example.com/a;b
+=====
+"Link":https://example.com/path/
+=====
+"Link":https://example.com/path/,
+=====
+**bold** __italic__ ??cite?? %span%
+=====
+*bold _em_ bold*
+=====
+_em *strong* em_
+=====
+*-*
+=====
+**
+=====
+*
+=====
+*
+=====
+#
+=====
+#
+=====
+|
+=====
+||
+=====
+|a|
+=====
+|a
+b|
+=====
+|a|b|
+|c|d|
+
+|e|f|
+=====
+* a
+# b
+=====
+#(cls) ordered with class
+# second
+=====
+* a
+  continued indent
+* b
+=====
+* level1
+*** level3 skip
+* level1
+=====
+** start at 2
+* back to 1
+=====
+lone line with trailing spaces
+next
+=====
+tab	separated	text
+=====
+	tab indented
+=====
+CRLF line1
+CRLF line2
+=====
+Ⅰ Ⅱ Ⅲ roman numerals
+=====
+text with control char
+=====
+p. a
+
+p. b
+=====
+bq(cls). quote with class
+=====
+bq. *bold quote*
+=====
+fn12. footnote 12
+=====
+text[12] here
+=====
+word[1]
+
+fn1. the note
+=====
+[1] at line start
+=====
+foo [1] spaced
+=====
+foo[a] letter
+=====
+CamelCase(test) and A(b)
+=====
+JS(JavaScript)と日本語
+=====
+1st 2nd 3rd
+=====
+50% and 100%
+=====
+a%b%c
+=====
+%%
+=====
+^^
+=====
+~~
+=====
++-
+=====
+a+b+c
+=====
+x-y-z
+=====
+2009-10-11
+=====
+some_variable_name and other_var
+=====
+_some_variable_
+=====
+foo_bar_baz
+=====
+a*b*c
+=====
+http://example.com/some_path_with_underscores_here
+=====
+"link":http://example.com/some_path_with_underscores_
+=====
+!image_with_underscores.png!
+=====
+<pre>
+<code class="ruby">
+x = 1
+</code>
+</pre>
+=====
+<pre><code class="javascript">var a = "<b>" && b;</code></pre>
+=====
+<pre><code class='python'>print("hi")</code></pre>
+=====
+<pre><code class="ruby foo">x</code></pre>
+=====
+<pre>
+<code>not highlighted</code>
+</pre>
+=====
+<code class="sql">SELECT * FROM t WHERE a < 1</code>
+=====
+<pre>x%x% literal</pre>
+=====
+x%x% literal outside
+=====
+h2. Heading with "link":http://x.com
+=====
+h1. First
+
+para
+
+h1. Second
+
+h2. Second.1
+
+h1. Third
+=====
+h1. A
+
+<pre>
+h1. Not a heading
+</pre>
+
+h1. B
+=====
+h2. Only
+
+text
+=====
+intro text
+
+h2. One
+
+one text
+
+h3. One.one
+
+h2. Two
+=====
+Some text with a {{macro}} inside
+=====
+{{collapse(View details...)
+This is a block of text that is collapsed by default.
+}}
+=====
+!!
+=====
+!a!
+=====
+!a b!
+=====
+!a.png!b.png!
+=====
+"":http://x.com
+=====
+" ":http://x.com
+=====
+"a":
+=====
+foo":http://x.com
+=====
+"<b>x</b>":http://x.com
+=====
+*<b>x</b>*
+=====
+<b>*x*</b>
+=====
+<span>span</span> <em>em</em>
+=====
+<br> <br/> <br />
+=====
+<p>para tag</p>
+=====
+<table><tr><td>html table</td></tr></table>
+=====
+<ul><li>html list</li></ul>
+=====
+<notextile>
+block notextile *x*
+</notextile>
+=====
+<pre>
+&lt;already escaped&gt; & raw
+</pre>
+=====
+p. Paragraph with
+hard break
+=====
+* list with
+hard break
+* next
+=====
+text
+* list right after text
+=====
+text
+# ordered right after
+=====
+|table|right after|
+text
+=====
+text
+|a|b|
+=====
+Hello
+world (trailing space line)
+=====
+http://example.com/path) trailing paren
+=====
+(see http://example.com/a_(b))
+=====
+http://example.com/<b>
+=====
+http://example.com/&quot;
+=====
+http://example.com/?a=1&amp;b=2
+=====
+https://user:pass@example.com/
+=====
+foo.bar@baz.co.jp
+=====
+a@b
+=====
+x@y.z
+=====
+"Link":http://example.com/ and "Other":http://example.org/
+=====
+"Link":http://example.com/
+"Other":http://example.org/
+=====
+p{color:#123}. hex short
+=====
+p{color:rgb(1,2,3)}. rgb
+=====
+p{font-size:12px;font-weight:bold}. font
+=====
+p{float:left}. float
+=====
+p{min-width:10px}. min width
+=====
+p{margin:0 auto}. margin
+=====
+p{background-color:#fff}. bg
+=====
+p{COLOR:RED}. upper
+=====
+p{color:red;;}. double semi
+=====
+p{}. empty style
+=====
+p{ color : red }. spaced
+=====
+%[en]lang span%
+=====
+%{color:red}(cls)[en]all attrs%
+=====
+*{color:red}styled bold*
+=====
+*(a#b)classed*
+=====
+_(x)em_
+=====
+-(x)del-
+=====
+done.
+=====
+Ends with question?
+=====
+"Quote" in middle "of" text
+=====
+'apostrophe's
+=====
+--
+=====
+---
+=====
+- item?
+=====
+1. numbered like markdown
+2. second
+=====
++ plus
+=====
+>
+=====
+>
+=====
+>> double
+=====
+> * quoted list
+> * item 2
+=====
+> quote
+text after without blank
+=====
+text before
+> quote
+=====
+bq.. extended?
+=====
+pre. pre block
+=====
+bc. code block
+=====
+notextile. block
+=====
+clear. x
+=====
+dl. x
+=====
+h1.no space
+=====
+h1.  two spaces
+=====
+h1.	tab
+=====
+h1(#custom-id). With id
+=====
+h2(wiki-class-x#wiki-id-y). prefixed
+=====
+h2(a b). two classes
+=====
+!(a b)img.png!
+=====
+!{float:left}img.png!
+=====
+!>{width:10px}img.png(t)!:http://x.com
+=====
+!<img.png!
+
+text
+=====
+text !>img.png! inline
+=====
+<p>!>img.png!</p>
+=====
+"link":http://x.com/a.b?c=d#e
+=====
+"link":http://x.com/a)
+=====
+"link":http://x.com/(a)
+=====
+["link":http://x.com]
+=====
+"link":http://x.com!
+=====
+"link":http://x.com?
+=====
+"link":http://x.com/foo"bar
+=====
+"link"::http://x.com
+=====
+"li"nk":http://x.com
+=====
+"title (t)":http://x.com
+=====
+"title(t)":http://x.com
+=====
+"(t)":http://x.com
+=====
+Ω≈ç√∫ symbols
+=====
+a < b && c > d
+=====
+5 > 3
+=====
+<3 love
+=====
+-> arrow
+=====
+<- arrow
+=====
+<= and >=
+=====
+<pre>
+	tabbed pre
+</pre>
+=====
+    whole document indented
+    second line
+=====
+ one space
+ indented
+=====
+x
+
+ indented after blank
+
+y
+=====
+*bold
+across lines*
+=====
+_a_b_
+=====
+__a__
+=====
+***triple***
+=====
+*a* *b* *c*
+=====
+*a*b
+=====
+a*b*
+=====
+(*paren*)
+=====
+[*bracket*]
+=====
+>*after gt*
+=====
+"*quoted*"
+=====
+*bold*.
+=====
+*bold*,
+=====
+*bold*!
+=====
+*bold*:
+=====
+--*dash*--
+=====
+-- *x* --
+=====
+-del with space -
+=====
+- not del-
+=====
+[1]
+=====
+a[1]
+=====
+a [1]
+=====
+日本[1]
+
+fn1. 脚注
+=====
+footnote[1] reference with link "x":http://x.com
+
+fn1. note "y":http://y.com
+=====
+==*notextile* inline== *textile*
+=====
+x==notextile==y
+=====
+== spaced ==
+=====
+<notextile>a</notextile> <notextile>b</notextile>
+=====
+@code with "quotes" & amp@
+=====
+@code with 'single'@
+=====
+@<pre>in code</pre>@
+=====
+"@code link@":http://x.com
+=====
+@"link":http://x.com@
+=====
+text@notcode@text
+=====
+(@parens@)
+=====
+@a
+b@
+=====
+|@code|pipe@|
+=====
+|a|
+|b|
+|c|
+text
+
+|d|
+=====
+table.
+|a|
+=====
+table(cls#id).
+|a|
+=====
+|_\2. head span|
+|a|b|
+=====
+|_/2. hrow|a|
+|b|
+=====
+|{color:red}. styled|
+=====
+|(c). cls|(#i). id|
+=====
+|[en]. lang|
+=====
+|<>^. combo|
+=====
+|>\2/3. all|
+=====
+|.dot|
+=====
+|. dot space|
+=====
+|a|b|c
+=====
+| a |
+=====
+|a|b|
+|c|d|e|
+=====
+|a||b|
+=====
+|*bold*|_em_|@code@|
+=====
+|"link":http://x.com|!img.png!|
+=====
+|a
+|b|
+=====
+* [[Wiki|link]] in list
+=====
+* *bold* item
+* _em_ item
+=====
+* item "link":http://x.com
+* item !img.png!
+=====
+# a
+## b
+### c
+## d
+# e
+=====
+* a
+** b
+* c
+** d
+*** e
+=====
+#. dot
+=====
+*. dot
+=====
+*{color:red} styled list
+* b
+=====
+*[en] lang list
+=====
+#(c#i) id list
+=====
+Paragraph
+
+* list
+
+Paragraph
+=====
+* a
+* b
+
+
+* c
+=====
+* a
+
+text
+
+* b
+=====
+** a
+** b
+=====
+*** a
+=====
+#* mixed
+#* mixed2
+=====
+*# mixed
+*# mixed2
+=====
+* a
+#* b
+=====
+<pre>
+* not a list
+|not|table|
+h1. not heading
+</pre>
+=====
+before<pre>inline pre</pre>after
+=====
+<pre>
+a
+</pre>
+<pre>
+b
+</pre>
+=====
+<pre><code class="ruby">
+a
+</code></pre>
+<pre><code class="python">
+b
+</code></pre>
+=====
+<pre><code class="ruby"><pre><code class="ruby">nested</code></pre></code></pre>
+=====
+<code><code>double</code></code>
+=====
+<kbd><b>x</b></kbd>
+=====
+<notextile><b>x</b></notextile>
+=====
+<pre>
+x & y < z
+"quotes" 'apos'
+</pre>
+=====
+<pre>
+x &amp; y
+</pre>
+=====
+<PRE>upper</PRE>
+=====
+<Pre>mixed</Pre>
+=====
+<code>
+multi
+line
+</code>
+=====
+<pre id="x">with id</pre>
+=====
+<code lang="ruby">lang attr</code>
+=====
+<code class="">empty class</code>
+=====
+<code class=ruby>unquoted</code>
+=====
+<code  class="ruby">double space</code>
+=====
+<code class="ruby" id="x">extra attr</code>
+=====
+<pre>
+<!-- comment in pre -->
+</pre>
+=====
+<!-- unclosed comment
+=====
+a <!-- x --> b <!-- y --> c
+=====
+<b
+=====
+<b>
+=====
+</b>
+=====
+<foo:bar>
+=====
+<!DOCTYPE html>
+=====
+<?xml version="1.0"?>
+=====
+<a href='x'>single</a>
+=====
+<img src=x>
+=====
+x <redpre#0> y
+=====
+:redsh#1: test
+=====
+ :redsh#1: test
+=====
+"x":http://x.com :redsh#1:
+=====
+text with
+<pre>
+pre after line
+</pre>
+=====
+h1. Title
+
+* list
+* list
+
+|t|t|
+
+bq. q
+
+fn1. f
+
+<pre>
+p
+</pre>
+
+---
+
+end
+=====
+Redmine is a flexible project management web application. Written using the Ruby on Rails framework, it is cross-platform and cross-database.
+
+h2. Features
+
+* Multiple projects support
+* Flexible role based access control
+* Flexible issue tracking system
+* Gantt chart and calendar
+
+Some of the main features of Redmine are:
+
+# Multiple projects support
+# Flexible role based access control
+# Flexible issue tracking system
+
+|_. Feature|_. Supported|
+|Wiki|Yes|
+|Forums|Yes|
+=====
+h1. 見出し
+
+本文の段落です。*強調*や_斜体_、@コード@も使えます。
+
+* 箇条書き1
+* 箇条書き2
+** ネスト
+
+# 番号付き1
+# 番号付き2
+
+|_. 列1|_. 列2|
+|値1|値2|
+
+bq. 引用文です。
+
+"リンク":https://redmine.jp/ と !画像.png! もあります。
+
+<pre>
+コードブロック
+</pre>
+=====
+これは長い文章です。改行を含みます。
+二行目です。
+三行目です。
+
+段落2
+=====
+用語(説明)
+=====
+ABC（全角括弧）
+=====
+「"リンク":http://x.com」
+=====
+（"リンク":http://x.com）
+=====
+、"リンク":http://x.com。
+=====
+日本語 http://example.com/ 日本語
+=====
+日本語http://example.com/日本語
+=====
+メールaddress@example.com宛
+=====
+*日本語の太字*、続き
+=====
+_日本語_
+=====
+-取り消し-
+=====
++下線+
+=====
+文中の-取り消し-です
+=====
+文中の *太字* です
+=====
+@コード@です
+=====
+文中@コード@です
+=====
+!>画像.png!
+=====
+h2. 見出し(ふりがな)
+=====
+API(Application Programming Interface)を使う
+=====
+xAPI(test)
+=====
+API (test)
+=====
+A1(test)
+=====
+AB(test)
+=====
+A(test)
+=====
+ABc(test)
+=====
+AB(t"e"s<t>)
+=====
+AB()
+=====
+AB((nested))
+=====
+a.b.c.
+=====
+e.g. i.e.
+=====
+Mr. Smith
+=====
+3.14
+=====
+#hash at start
+=====
+# hash with space at start
+=====
+#hash
+
+text
+=====
+##double hash
+=====
+*star at start
+=====
+*star *
+=====
+* star space
+=====
+** double star space
+=====
+**bold**text
+=====
+foo **bar** baz
+=====
+foo __bar__ baz
+=====
+??cite?? text
+=====
+a ?? b ?? c
+=====
+%{color:red}% empty span
+=====
+%{color:red}a%
+=====
+%a%
+=====
+x%{color:red}a%
+=====
+^sup^
+=====
+~sub~
+=====
+a^b^
+=====
+a~b~
+=====
+2^10^
+=====
+H~2~O
+=====
+^ not sup ^
+=====
+~ not sub ~
+=====
+end of document with trailing newlines
+
+
+=====
+
+leading newline
+=====
+
+
+two leading newlines
+=====
+
+whitespace-only first line
+=====
+text
+=====
+a\
+b
+=====
+back\slash
+=====
+C:\path\to\file
+=====
+\\server\share
+=====
+1\2
+=====
+h1. 2009\02\09
+=====
+|1\2|
+=====
+$var and ${expr}
+=====
+`backticks` code
+=====
+```
+fenced
+```
+=====
+~~~
+tilde fenced
+~~~
+=====
+**not bold**markdown
+=====
+[link](http://x.com)
+=====
+[text][ref]
+=====
+![alt](img.png)
+=====
+Setext
+======
+=====
+Setext2
+-------
+=====
+## atx
+=====
+> markdown quote
+=====
+1. md list
+=====
+- md list
+=====
++ md list
+=====
+    md code
+=====
+<del>del tag</del> <ins>ins tag</ins>
+=====
+<sup>sup</sup><sub>sub</sub>
+=====
+<u>u</u>
+=====
+<strike>strike</strike>
+=====
+<h1>html heading</h1>
+=====
+<blockquote>html quote</blockquote>
+=====
+<hr>
+=====
+<hr/>
+=====
+text<br>text
+=====
+<style>body{}</style>
+=====
+<iframe src="x"></iframe>
+=====
+<object></object>
+=====
+<form><input></form>
+=====
+<svg onload=alert(1)>
+=====
+<math></math>
+=====
+<a name="x"></a>
+=====
+<abbr title="x">abbr</abbr>
+=====
+<span style="color:red">styled span</span>
+=====
+<code>a</code><pre>b</pre><kbd>c</kbd><notextile>d</notextile>
+=====
+<pre>
+first
+</pre>
+
+paragraph
+
+<pre>
+second
+</pre>
+=====
+<pre>
+first
+
+after blank
+</pre>
+=====
+<pre>
+
+leading blank
+</pre>
+=====
+<pre>
+trailing blank
+
+</pre>
+=====
+p. <pre>in p</pre>
+=====
+* <pre>in list</pre>
+=====
+|<pre>in table</pre>|
+=====
+bq. <pre>in bq</pre>
+=====
+h1. <pre>in h1</pre>
+=====
+"<pre>x</pre>":http://x.com
+=====
+*<pre>x</pre>*
+=====
+<pre>*x*</pre>
+=====
+<pre>"link":http://x.com</pre>
+=====
+<pre>!img.png!</pre>
+=====
+<pre>http://example.com</pre>
+=====
+<pre>foo@example.com</pre>
+=====
+<code>http://example.com</code>
+=====
+@http://example.com@
+=====
+@foo@example.com@
+=====
+foo@example.com@
+=====
+<notextile>http://example.com</notextile>
+=====
+==http://example.com==
+=====
+a http://example.com/a.b.c/ b
+=====
+http://example.com:8080/path
+=====
+http://[::1]/
+=====
+http://example.com/~user
+=====
+http://example.com/path%20with%20spaces
+=====
+http://example.com/'quote'
+=====
+http://example.com/"dq"
+=====
+http://example.com/;semi
+=====
+http://example.com/a,b
+=====
+http://example.com/a.
+=====
+http://example.com/a!
+=====
+http://example.com/a?
+=====
+http://example.com/a:
+=====
+http://example.com/a-
+=====
+http://example.com/a_
+=====
+http://example.com/a=
+=====
+http://example.com/a/
+=====
+http://example.com/a//
+=====
+http://example.com/(a
+=====
+http://example.com/a)
+=====
+http://example.com/(a))
+=====
+http://example.com/[a]
+=====
+http://example.com/{a}
+=====
+http://example.com/a&b
+=====
+http://example.com/a&b;c
+=====
+http://
+=====
+http://x
+=====
+www.
+=====
+www.x
+=====
+xwww.example.com
+=====
+,www.example.com
+=====
+;www.example.com
+=====
+(www.example.com)
+=====
+[www.example.com]
+=====
+<b>http://example.com</b>
+=====
+"http://example.com":http://example.com
+=====
+"x":http://example.com/http://y.com
+=====
+!http://example.com/a.png!:http://example.com/b
+=====
+!https://example.com/a.png(alt)!
+=====
+!ftp://example.com/a.png!
+=====
+!mailto:x!
+=====
+!vbscript:x!
+=====
+!JAVASCRIPT:x!
+=====
+!foo:bar!
+=====
+!a:b/c.png!
+=====
+!a.png?x:y!
+=====
+!a.png!:javascript:alert(1)
+=====
+!a.png!:/relative
+=====
+"x":JaVaScRiPt:alert(1)
+=====
+"x":data:text/html,x
+=====
+"x":vbscript:x
+=====
+"x":ftp://x.com
+=====
+"x":irc://x.com
+=====
+"x":foo://x.com
+=====
+"x":mailto:a@b.com
+=====
+"x":/
+=====
+"x"://x
+=====
+"x":www.x.com/path
+=====
+"x":http://x.com/javascript:
+=====
+"x":http://x.com "y":http://y.com
+=====
+"x":http://x.com,"y":http://y.com
+=====
+"x y z":http://x.com
+=====
+"x
+y":http://x.com
+=====
+"x":http://x.com
+"y":http://y.com
+=====
+"  x  ":http://x.com
+=====
+"x (t) ":http://x.com
+=====
+"x(t)":http://x.com/
+=====
+"x (t"q") ":http://x.com
+=====
+"x (<b>)":http://x.com
+=====
+"{color:red}x":http://x.com
+=====
+"[en]x":http://x.com
+=====
+""x"":http://x.com
+=====
+end
