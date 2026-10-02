@@ -14,6 +14,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/httpx"
 	"github.com/mikuta0407/buropher/internal/i18n"
 	"github.com/mikuta0407/buropher/internal/repository"
+	"github.com/mikuta0407/buropher/internal/urlroot"
 	"github.com/mikuta0407/buropher/internal/validation"
 )
 
@@ -154,9 +155,9 @@ func renderAPIAttachmentAttributes(c *Req, b apibuilder.Builder, att *domain.Att
 	} else {
 		b.Value("description", att.Description)
 	}
-	b.Value("content_url", base+downloadNamedAttachmentPath(att))
+	b.Value("content_url", base+urlroot.Path(downloadNamedAttachmentPath(att)))
 	if att.Thumbnailable() {
-		b.Value("thumbnail_url", base+"/attachments/thumbnail/"+strconv.FormatInt(att.ID, 10))
+		b.Value("thumbnail_url", base+urlroot.Path("/attachments/thumbnail/"+strconv.FormatInt(att.ID, 10)))
 	}
 	if att.Author != nil {
 		b.Attrs("author", apibuilder.A("id", att.Author.ID, "name", c.Page().UserName(att.Author)))

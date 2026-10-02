@@ -18,6 +18,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/query"
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/settings"
+	"github.com/mikuta0407/buropher/internal/urlroot"
 	"github.com/mikuta0407/buropher/internal/view"
 )
 
@@ -275,7 +276,7 @@ func (a *App) ActivitiesIndex(c *Req) {
 		"NextURL":        link(dateTo.AddDate(0, 0, days-1)),
 		"NextTitle":      dateRange(dateTo, dateTo.AddDate(0, 0, days-1)),
 		"AtomURL":        helper.URLWithQuery(path+".atom", atomParams),
-		"AtomFeedURL":    httpx.RequestBaseURL(c.R) + helper.URLWithQuery(path+".atom", discParams),
+		"AtomFeedURL":    httpx.RequestBaseURL(c.R) + urlroot.Path(helper.URLWithQuery(path+".atom", discParams)),
 		"FormAction":     path,
 	}, ropts...)
 }

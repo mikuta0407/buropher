@@ -11,7 +11,7 @@
 
 $('#custom_field_field_format').change(function(){
   $.ajax({
-    url: '/custom_fields/new.js',
+    url: '{{url_path "/custom_fields/new.js"}}',
     type: 'get',
     data: $('#custom_field_form').serialize(),
     complete: toggleDisabledInit

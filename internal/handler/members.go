@@ -13,6 +13,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/helper"
 	"github.com/mikuta0407/buropher/internal/httpx"
 	"github.com/mikuta0407/buropher/internal/repository"
+	"github.com/mikuta0407/buropher/internal/urlroot"
 	"github.com/mikuta0407/buropher/internal/view"
 	"github.com/mikuta0407/buropher/internal/view/rails"
 )
@@ -401,7 +402,7 @@ func (a *App) MembersCreate(c *Req) {
 			a.internalError(c, "membership api", err)
 			return
 		}
-		c.W.Header().Set("Location", httpx.RequestBaseURL(c.R)+"/memberships/"+strconv.FormatInt(m.Member.ID, 10))
+		c.W.Header().Set("Location", httpx.RequestBaseURL(c.R)+urlroot.Path("/memberships/"+strconv.FormatInt(m.Member.ID, 10)))
 		c.renderAPIRoot(el, nil, http.StatusCreated)
 	default:
 		c.unknownFormat()

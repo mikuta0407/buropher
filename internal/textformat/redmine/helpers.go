@@ -15,6 +15,7 @@ import (
 	"time"
 
 	"github.com/mikuta0407/buropher/internal/domain"
+	"github.com/mikuta0407/buropher/internal/urlroot"
 	"github.com/mikuta0407/buropher/internal/view/rails"
 )
 
@@ -116,10 +117,11 @@ func projectParam(p *domain.Project) string {
 	return p.Identifier
 }
 
-// url は only_path に応じて BaseURL を前置する。
+// url は only_path に応じて BaseURL を前置する（only_path なら relative_url_root を前置する。
+// BaseURL は script_name を含む）。
 func (r *Renderer) url(path string) string {
 	if r.onlyPath {
-		return path
+		return urlroot.Path(path)
 	}
 	return r.BaseURL + path
 }
@@ -350,6 +352,7 @@ func latestAttach(atts []*Attachment, filename string) *Attachment {
 // ThumbnailTag は thumbnail_tag(attachment)（size は Setting.thumbnails_size）。
 func (r *Renderer) ThumbnailTag(a *Attachment, size int) template.HTML {
 	tp := "/attachments/thumbnail/" + strconv.FormatInt(a.ID, 10) + "/" + strconv.Itoa(size*2)
+	tp = urlroot.Path(tp)
 	img := `<img srcset="` + h(tp+" 2x") + `" style="` + h("max-width: "+strconv.Itoa(size)+"px; max-height: "+strconv.Itoa(size)+"px;") +
 		`" alt="` + h(a.Filename) + `" loading="lazy" src="` + h(tp) + `" />`
 	link := rails.LinkTo(template.HTML(img), "/attachments/"+strconv.FormatInt(a.ID, 10), nil)

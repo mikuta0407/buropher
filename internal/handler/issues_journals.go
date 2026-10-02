@@ -18,6 +18,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/issues"
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/textformat/redmine"
+	"github.com/mikuta0407/buropher/internal/urlroot"
 	"github.com/mikuta0407/buropher/internal/view/rails"
 )
 
@@ -657,5 +658,5 @@ func (l *issueLookup) toSentence(items []string) string {
 
 // issueURL は issue_url(issue)（完全 URL）。
 func issueURL(c *Req, id int64) string {
-	return httpx.RequestBaseURL(c.R) + "/issues/" + strconv.FormatInt(id, 10)
+	return httpx.RequestBaseURL(c.R) + urlroot.Path("/issues/"+strconv.FormatInt(id, 10))
 }

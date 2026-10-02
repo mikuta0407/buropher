@@ -6,7 +6,7 @@ var operatorByType = {{.query.OperatorByTypeJSON}};
 var availableFilters = {{.query.AvailableFiltersJSON}};
 var labelDayPlural = {{.query.RawJSON (l "label_day_plural")}};
 
-var filtersUrl = {{.query.RawJSON "/queries/filter?type=UserQuery"}};
+var filtersUrl = {{.query.RawJSON (url_path "/queries/filter?type=UserQuery")}};
 
 $(document).ready(function(){
   initFilters();

@@ -2,7 +2,7 @@
 <fieldset class="box">
   <legend>{{label_tag "user_search" (l "label_user_search")}}</legend>
   <p>{{text_field_tag "user_search" nil}}</p>
-  {{javascript_tag (printf "observeSearchfield('user_search', null, '%s')" (j (printf "/groups/%d/autocomplete_for_user" $a.Group.ID)))}}
+  {{javascript_tag (printf "observeSearchfield('user_search', null, '%s')" (j (url_path (printf "/groups/%d/autocomplete_for_user" $a.Group.ID))))}}
 
   <div id="users">
     {{render_principals_for_new_group_users $a.Group $a.Candidates $a.CandidatePages $a.CandidateCount $a.Q}}

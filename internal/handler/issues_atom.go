@@ -17,6 +17,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/query"
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/textformat/redmine"
+	"github.com/mikuta0407/buropher/internal/urlroot"
 )
 
 // xmlMarkup は Builder::XmlMarkup（indent 2）の最小限の移植。
@@ -75,11 +76,11 @@ func (c *Req) renderAtom(x *xmlMarkup) {
 }
 
 // homeURL は home_url。
-func homeURL(c *Req) string { return httpx.RequestBaseURL(c.R) + "/" }
+func homeURL(c *Req) string { return httpx.RequestBaseURL(c.R) + urlroot.Path("/") }
 
 // faviconURL は favicon_url。
 func (a *App) faviconURL(c *Req) string {
-	return httpx.RequestBaseURL(c.R) + a.Helpers.AssetPath("favicon.ico")
+	return httpx.RequestBaseURL(c.R) + urlroot.Path(a.Helpers.AssetPath("favicon.ico"))
 }
 
 // ---------------------------------------------------------------- issues#index（render_feed）
@@ -107,13 +108,13 @@ func (a *App) renderIssuesIndexAtom(c *Req, q *query.Query) {
 	title += ": " + c.L("label_issue_plural")
 	base := httpx.RequestBaseURL(c.R)
 	qp := c.Page().QueryParameters()
-	self := base + strings.TrimSuffix(c.R.URL.Path, ".atom") + ".atom"
+	self := base + urlroot.Path(strings.TrimSuffix(c.R.URL.Path, ".atom")+".atom")
 	if s := helper.ToQuery(qp); s != "" {
 		self += "?" + s
 	}
 	qp.Delete("format")
 	qp.Delete("key")
-	alt := base + strings.TrimSuffix(c.R.URL.Path, ".atom")
+	alt := base + urlroot.Path(strings.TrimSuffix(c.R.URL.Path, ".atom"))
 	if s := helper.ToQuery(qp); s != "" {
 		alt += "?" + s
 	}
@@ -134,7 +135,7 @@ func (a *App) renderIssuesIndexAtom(c *Req, q *query.Query) {
 		x.block("generator", func() { x.text(helper.AppName) }, [2]string{"uri", helper.AppURL})
 		for _, r := range rows {
 			x.block("entry", func() {
-				u := base + "/issues/" + strconv.FormatInt(r.ID, 10)
+				u := base + urlroot.Path("/issues/"+strconv.FormatInt(r.ID, 10))
 				st := l.status(r.StatusID)
 				et := l.tracker(r.TrackerID).Name + " #" + strconv.FormatInt(r.ID, 10) + " (" + st.Name + "): " + r.Subject
 				if c.Project == nil || c.Project.ID != r.ProjectID {
@@ -200,8 +201,8 @@ func (a *App) renderJournalsAtom(c *Req, l *issueLookup, title *string, selfURL 
 			m := j.issue
 			x.block("entry", func() {
 				x.tag("title", sp(m.Project.Name+" - "+m.Tracker.Name+" #"+strconv.FormatInt(m.Row.ID, 10)+": "+m.Row.Subject))
-				x.tag("link", nil, [2]string{"rel", "alternate"}, [2]string{"href", base + "/issues/" + strconv.FormatInt(m.Row.ID, 10)})
-				x.tag("id", sp(base+"/issues/"+strconv.FormatInt(m.Row.ID, 10)+"?journal_id="+strconv.FormatInt(j.ID, 10)))
+				x.tag("link", nil, [2]string{"rel", "alternate"}, [2]string{"href", base + urlroot.Path("/issues/"+strconv.FormatInt(m.Row.ID, 10))})
+				x.tag("id", sp(base+urlroot.Path("/issues/"+strconv.FormatInt(m.Row.ID, 10)+"?journal_id="+strconv.FormatInt(j.ID, 10))))
 				x.tag("updated", sp(xmlschema(j.CreatedAt)))
 				x.block("author", func() {
 					x.tag("name", sp(l.principalName(j.User)))
@@ -236,7 +237,7 @@ func (a *App) issuesShowAtom(c *Req) {
 	if c.Pref().CommentsSorting == "desc" {
 		slices.Reverse(js)
 	}
-	self := httpx.RequestBaseURL(c.R) + "/issues/" + strconv.FormatInt(m.Row.ID, 10) + ".atom"
+	self := httpx.RequestBaseURL(c.R) + urlroot.Path("/issues/"+strconv.FormatInt(m.Row.ID, 10)+".atom")
 	if k := c.AtomKey(); k != "" {
 		self += "?key=" + k
 	}

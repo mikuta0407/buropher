@@ -17,6 +17,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/textformat/commonmark"
 	"github.com/mikuta0407/buropher/internal/textformat/textile"
+	"github.com/mikuta0407/buropher/internal/urlroot"
 	"github.com/mikuta0407/buropher/internal/validation"
 	"github.com/mikuta0407/buropher/internal/view"
 	"github.com/mikuta0407/buropher/internal/wikidiff"
@@ -857,7 +858,7 @@ func (a *App) WikiUpdate(c *Req) {
 				a.wikiError(c, err)
 				return
 			}
-			c.W.Header().Set("Location", wikiPagePath(c.Project, page.Title))
+			c.W.Header().Set("Location", urlroot.Path(wikiPagePath(c.Project, page.Title)))
 			a.renderWikiPageAPI(c, page, cur, http.StatusCreated)
 			return
 		}
@@ -962,7 +963,7 @@ func (a *App) WikiNew(c *Req) {
 			if httpx.Format(c.R) == "js" {
 				httpx.SetContentType(c.W, "js", true)
 				c.W.WriteHeader(http.StatusOK)
-				_, _ = c.W.Write([]byte("window.location = " + jsonString(path)))
+				_, _ = c.W.Write([]byte("window.location = " + jsonString(urlroot.Path(path))))
 				c.Halt()
 				return
 			}

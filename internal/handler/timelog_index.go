@@ -16,6 +16,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/query"
 	"github.com/mikuta0407/buropher/internal/textformat/redmine"
 	"github.com/mikuta0407/buropher/internal/timelog"
+	"github.com/mikuta0407/buropher/internal/urlroot"
 	"github.com/mikuta0407/buropher/internal/view"
 	"github.com/mikuta0407/buropher/internal/view/rails"
 )
@@ -389,7 +390,7 @@ func (a *App) teIndexHTML(c *Req, q *query.Query) {
 	if k := c.AtomKey(); k != "" {
 		disc += "?key=" + k
 	}
-	data["AtomDiscoveryURL"] = httpx.RequestBaseURL(c.R) + disc
+	data["AtomDiscoveryURL"] = httpx.RequestBaseURL(c.R) + urlroot.Path(disc)
 	opts := RenderOptions{}
 	if httpx.IsXHR(c.R) {
 		opts.Layout = view.NoLayout

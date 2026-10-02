@@ -6,6 +6,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/httpx"
 	"github.com/mikuta0407/buropher/internal/repository"
+	"github.com/mikuta0407/buropher/internal/urlroot"
 )
 
 // AccountController（app/controllers/account_controller.rb）。
@@ -168,7 +169,7 @@ func (a *App) handleInactiveUser(c *Req, user *domain.User, redirectPath string)
 // accountPending は AccountController#account_pending。
 func (a *App) accountPending(c *Req, user *domain.User, redirectPath string) {
 	if a.Settings.String("self_registration") == "1" {
-		c.Flash().SetError(c.L("notice_account_not_activated_yet", map[string]any{"url": "/account/activation_email"}))
+		c.Flash().SetError(c.L("notice_account_not_activated_yet", map[string]any{"url": urlroot.Path("/account/activation_email")}))
 		c.Session().Set("registered_user_id", user.ID)
 	} else {
 		c.Flash().SetError(c.L("notice_account_pending"))

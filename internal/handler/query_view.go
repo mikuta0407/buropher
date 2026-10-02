@@ -14,6 +14,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/httpx"
 	"github.com/mikuta0407/buropher/internal/query"
+	"github.com/mikuta0407/buropher/internal/urlroot"
 	"github.com/mikuta0407/buropher/internal/view/rails"
 )
 
@@ -218,7 +219,7 @@ func (qv *queryView) FiltersURLJSON() template.HTML {
 		v.Set("project_id", strconv.FormatInt(qv.Q.Project.ID, 10))
 	}
 	v.Set("type", qv.Type)
-	return queryRawJSON("/queries/filter?" + v.Encode())
+	return queryRawJSON(urlroot.Path("/queries/filter?" + v.Encode()))
 }
 
 // filterLine は addFilter の 1 行。
@@ -499,7 +500,7 @@ func (qv *queryView) ClearPath() string {
 
 // SaveQueryOnClick は「保存」リンクの onclick。
 func (qv *queryView) SaveQueryOnClick() string {
-	return "$('#query_type').prop('disabled',false);$('#query_form').attr('action', '" + qv.NewQueryPath + "').submit()"
+	return "$('#query_type').prop('disabled',false);$('#query_form').attr('action', '" + urlroot.Path(qv.NewQueryPath) + "').submit()"
 }
 
 // EditQueryPath は edit_query_path(@query)。

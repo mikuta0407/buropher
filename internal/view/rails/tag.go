@@ -3,6 +3,7 @@ package rails
 import (
 	"bytes"
 	"encoding/json"
+	"github.com/mikuta0407/buropher/internal/urlroot"
 	"html/template"
 	"math/big"
 	"reflect"
@@ -87,6 +88,7 @@ func TagOptions(opts *Hash, escape bool) string {
 
 // tagOption は TagBuilder#tag_option。
 func tagOption(key string, value any, escape bool) string {
+	value = rootURLAttr(key, value)
 	if escape {
 		key = XMLNameEscape(key)
 	}
@@ -126,6 +128,33 @@ func tagOption(key string, value any, escape bool) string {
 	}
 	return key + `="` + s + `"`
 }
+
+// rootURLAttr は URL を値に取る属性（href・src・action・formaction と、名前に "url" を含む data-*。
+// 例: data-cm-url・data-reorder-url・data-automcomplete-url）の "/" 始まりのパスに
+// relative_url_root を前置する（Redmine ではこれらは常にルートヘルパーの *_path が生成する）。
+// data-upload-path のように "-path" で終わる data-* も対象。
+func rootURLAttr(key string, value any) any {
+	switch key {
+	case "href", "src", "action", "formaction":
+	default:
+		if !strings.HasPrefix(key, "data-") || !(strings.Contains(key, "url") || strings.HasSuffix(key, "-path")) {
+			return value
+		}
+	}
+	switch v := value.(type) {
+	case string:
+		return urlroot.Path(v)
+	case template.HTML:
+		return template.HTML(urlroot.Path(string(v)))
+	}
+	return value
+}
+
+// RawURL は relative_url_root を前置しない URL 属性値（利用者が入力した URL など、Redmine で
+// url_for を通らずに文字列のまま link_to に渡されるもの）。
+type RawURL string
+
+func (u RawURL) String() string { return string(u) }
 
 // prefixTagOption は TagBuilder#prefix_tag_option（data-* / aria-*）。
 // 値が文字列・シンボル以外なら to_json する。

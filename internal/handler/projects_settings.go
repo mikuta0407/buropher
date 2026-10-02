@@ -16,6 +16,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/httpx"
 	"github.com/mikuta0407/buropher/internal/permission"
 	"github.com/mikuta0407/buropher/internal/repository"
+	"github.com/mikuta0407/buropher/internal/urlroot"
 	"github.com/mikuta0407/buropher/internal/view/rails"
 )
 
@@ -175,7 +176,7 @@ func (a *App) ProjectsCreate(c *Req) {
 	// after_action :record_project_usage は作成したプロジェクトに対して行われる
 	c.Project = p
 	if api {
-		c.W.Header().Set("Location", httpx.RequestBaseURL(c.R)+"/projects/"+strconv.FormatInt(p.ID, 10))
+		c.W.Header().Set("Location", httpx.RequestBaseURL(c.R)+urlroot.Path("/projects/"+strconv.FormatInt(p.ID, 10)))
 		a.renderProjectShowAPI(c, p, http.StatusCreated)
 		return
 	}

@@ -4,10 +4,14 @@ import (
 	"fmt"
 	"sort"
 	"strings"
+
+	"github.com/mikuta0407/buropher/internal/urlroot"
 )
 
 // urlFor は url_for(String) 相当。文字列以外は to_s する。
-func urlFor(u any) string { return ToS(u) }
+// buropher ではルートヘルパー（*_path）の代わりに "/issues/1" のような絶対パスを渡すため、
+// "/" で始まるパスには relative_url_root（script_name）を前置する（urlroot.Path。冪等）。
+func urlFor(u any) string { return urlroot.Path(ToS(u)) }
 
 // convertOptionsToDataAttributes は UrlHelper#convert_options_to_data_attributes。
 // html は破壊的に変更される（呼び出し側で複製しておくこと）。

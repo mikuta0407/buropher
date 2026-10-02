@@ -20,6 +20,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/query"
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/settings"
+	"github.com/mikuta0407/buropher/internal/urlroot"
 	"github.com/mikuta0407/buropher/internal/view/rails"
 )
 
@@ -161,7 +162,7 @@ func (a *App) newSettingsView(c *Req, errs []helper.SettingError) (*settingsView
 		{Name: "mail_handler", Partial: "settings/mail_handler", Label: "label_incoming_emails"},
 		{Name: "repositories", Partial: "settings/repositories", Label: "label_repository_plural"},
 	}
-	v.GuessedHostAndPath = httpx.RequestHostWithPort(c.R)
+	v.GuessedHostAndPath = httpx.RequestHostWithPort(c.R) + urlroot.Get() // request.host_with_port + Redmine::Utils.relative_url_root
 	v.CommitUpdateKeywords = commitUpdateKeywordsForForm(a.Settings.Get("commit_update_keywords"))
 
 	var err error
@@ -335,7 +336,7 @@ func (v *settingsView) AnonymousRolePath() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return "/roles/" + strconv.FormatInt(r.ID, 10) + "/edit", nil
+	return urlroot.Path("/roles/" + strconv.FormatInt(r.ID, 10) + "/edit"), nil
 }
 
 // PasswordCharClassOptions は Setting::PASSWORD_CHAR_CLASSES.keys.collect {|c| [l("label_password_char_class_#{c}"), c]}。

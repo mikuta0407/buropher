@@ -85,7 +85,7 @@
   {{link_to_function (sprite_icon "checked" (l "button_apply")) "$(\"#query_form\").submit()" (hash "class" "icon icon-checked")}}
   {{link_to (sprite_icon "reload" (l "button_clear")) .ClearURL (hash "class" "icon icon-reload")}}
   {{if .CanSave}}
-    {{link_to_function (sprite_icon "save" (capitalize (l "button_save_object" (hash "object_name" (l "label_query"))))) (printf "$('#query_form').attr('action', '%s').submit();" .qv.NewQueryPath) (hash "class" "icon icon-save")}}
+    {{link_to_function (sprite_icon "save" (capitalize (l "button_save_object" (hash "object_name" (l "label_query"))))) (printf "$('#query_form').attr('action', '%s').submit();" (url_path .qv.NewQueryPath)) (hash "class" "icon icon-save")}}
   {{end}}
 {{if .Editable}}
   {{link_to (sprite_icon "edit" (capitalize (l "button_edit_object" (hash "object_name" (l "label_query"))))) .EditQueryURL (hash "class" "icon icon-edit")}}

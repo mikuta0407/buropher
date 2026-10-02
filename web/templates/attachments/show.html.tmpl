@@ -21,7 +21,7 @@
   {{.Markup}}
 </div>
   {{else if eq .Kind "image"}}
-  <img alt="{{$att.Filename}}" class="filecontent image" src="{{download_named_attachment_path $att}}" />
+  <img alt="{{$att.Filename}}" class="filecontent image" src="{{url_path (download_named_attachment_path $att)}}" />
   {{else if eq .Kind "diff"}}
   {{form_tag request_path (hash "method" "get")}}
     <p>

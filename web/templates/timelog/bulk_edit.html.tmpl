@@ -27,7 +27,7 @@
   <div>
     <p>
       <label>{{l "field_project"}}</label>
-      {{select_tag "time_entry[project_id]" $v.ProjectOptions (hash "onchange" "updateBulkEditFrom('/time_entries/bulk_edit.js')")}}
+      {{select_tag "time_entry[project_id]" $v.ProjectOptions (hash "onchange" (printf "updateBulkEditFrom('%s')" (url_path "/time_entries/bulk_edit.js")))}}
     </p>
     <p>
       <label for="time_entry_issue_id">{{l "field_issue"}}</label>
@@ -84,7 +84,7 @@
   {{if .Autocomplete}}
     observeAutocompleteField('time_entry_issue_id',
       function(request, callback) {
-        var url = '{{j "/issues/auto_complete"}}';
+        var url = '{{j (url_path "/issues/auto_complete")}}';
         var data = {
           term: request.term
         };

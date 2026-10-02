@@ -14,6 +14,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/httpx"
 	"github.com/mikuta0407/buropher/internal/pagination"
 	"github.com/mikuta0407/buropher/internal/repository"
+	"github.com/mikuta0407/buropher/internal/urlroot"
 	"github.com/mikuta0407/buropher/internal/validation"
 	"github.com/mikuta0407/buropher/internal/view/rails"
 )
@@ -436,7 +437,7 @@ func (a *App) GroupsCreate(c *Req) {
 	}
 	if ok {
 		if httpx.IsAPIRequest(c.R) {
-			c.W.Header().Set("Location", httpx.RequestBaseURL(c.R)+"/groups/"+itoa(m.ID))
+			c.W.Header().Set("Location", httpx.RequestBaseURL(c.R)+urlroot.Path("/groups/"+itoa(m.ID)))
 			users, _ := repository.GroupUsers(c.Ctx(), a.DB, m.ID)
 			var rows []*membershipRow
 			if c.IncludeInAPIResponse("memberships") {

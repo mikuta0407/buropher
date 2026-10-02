@@ -1,5 +1,7 @@
 package rails
 
+import "github.com/mikuta0407/buropher/internal/urlroot"
+
 // テンプレート用の関数群。Ruby のメソッド名・引数順をそのまま使えるように、
 // 省略可能な位置引数と末尾のオプションハッシュ（hash "k" v ...）を可変長引数で受ける。
 
@@ -187,6 +189,8 @@ func (v *View) FuncMap() map[string]any {
 		// --- JavaScriptHelper ---
 		"escape_javascript": EscapeJavascript,
 		"j":                 EscapeJavascript,
+		// url_path は "/" 始まりのパスに relative_url_root を前置する（JS 文字列など link_to を通らない URL 用）。
+		"url_path": urlroot.Path,
 		"javascript_tag": func(content any, args ...any) HTML {
 			return JavascriptTag(content, optHash(args, 0))
 		},

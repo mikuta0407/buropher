@@ -13,6 +13,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/httpx"
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/textformat/redmine"
+	"github.com/mikuta0407/buropher/internal/urlroot"
 )
 
 // このファイルは WikiController の補助（textilizable の :object、添付、send_data）。
@@ -193,9 +194,9 @@ func (a *App) renderAPIAttachment(c *Req, b apibuilder.Builder, at *domain.Attac
 		b.Value("filesize", at.Filesize)
 		b.Value("content_type", at.ContentType)
 		b.Value("description", at.Description)
-		b.Value("content_url", base+"/attachments/download/"+strconv.FormatInt(at.ID, 10)+"/"+escapePathSegment(at.Filename))
+		b.Value("content_url", base+urlroot.Path("/attachments/download/"+strconv.FormatInt(at.ID, 10)+"/"+escapePathSegment(at.Filename)))
 		if at.Thumbnailable() {
-			b.Value("thumbnail_url", base+"/attachments/thumbnail/"+strconv.FormatInt(at.ID, 10))
+			b.Value("thumbnail_url", base+urlroot.Path("/attachments/thumbnail/"+strconv.FormatInt(at.ID, 10)))
 		}
 		if at.Author != nil {
 			b.Attrs("author", apibuilder.A("id", at.Author.ID, "name", at.Author.Name(a.Settings.String("user_format"))))

@@ -45,7 +45,7 @@
     });
     $('#time_entry_project_id, #time_entry_issue_id').change(function(){
       $.ajax({
-        url: '{{j .FormJS}}',
+        url: '{{j (url_path .FormJS)}}',
         type: 'post',
         data: $(this).closest('form').serialize()
       });
@@ -54,7 +54,7 @@
 
   observeAutocompleteField('time_entry_issue_id',
     function(request, callback) {
-      var url = '{{j "/issues/auto_complete"}}';
+      var url = '{{j (url_path "/issues/auto_complete")}}';
       var data = {
         term: request.term
       };

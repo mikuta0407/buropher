@@ -8,7 +8,7 @@ fileSpan.find('a.remove-upload')
   .attr({
     "data-remote": true,
     "data-method": 'delete',
-    href: '{{j .AttachmentPath}}'
+    href: '{{j (url_path .AttachmentPath)}}'
   })
   .off('click');
 {{end}}

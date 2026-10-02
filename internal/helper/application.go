@@ -15,6 +15,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/httpx"
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/textformat/redmine"
+	"github.com/mikuta0407/buropher/internal/urlroot"
 	"github.com/mikuta0407/buropher/internal/view"
 	"github.com/mikuta0407/buropher/internal/view/rails"
 )
@@ -280,7 +281,7 @@ func (d *Deps) headsForAutoComplete(project *domain.Project) html {
 	if project != nil {
 		q = "?project_id=" + url.QueryEscape(project.Identifier) + "&q="
 	}
-	js := `{"issues":` + rails.ToJSON("/issues/auto_complete"+q) + `,"wiki_pages":` + rails.ToJSON("/wiki_pages/auto_complete"+q) + `}`
+	js := `{"issues":` + rails.ToJSON(urlroot.Path("/issues/auto_complete"+q)) + `,"wiki_pages":` + rails.ToJSON(urlroot.Path("/wiki_pages/auto_complete"+q)) + `}`
 	return rails.JavascriptTag("rm = window.rm || {};"+
 		"rm.AutoComplete = rm.AutoComplete || {};"+
 		"rm.AutoComplete.dataSources = JSON.parse('"+js+"');", nil)
@@ -317,7 +318,7 @@ func atomURL(p *Page, path, key string) string {
 		u += "?key=" + url.QueryEscape(key)
 	}
 	if p.Request != nil {
-		return httpx.RequestBaseURL(p.Request) + u
+		return httpx.RequestBaseURL(p.Request) + urlroot.Path(u)
 	}
 	return u
 }

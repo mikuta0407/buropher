@@ -26,6 +26,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/scm"
 	"github.com/mikuta0407/buropher/internal/scmsync"
 	"github.com/mikuta0407/buropher/internal/textformat/redmine"
+	"github.com/mikuta0407/buropher/internal/urlroot"
 	"github.com/mikuta0407/buropher/internal/view"
 	"github.com/mikuta0407/buropher/internal/view/rails"
 )
@@ -216,7 +217,7 @@ func (a *App) repositoriesShow(c *Req, entry *scm.Entry) {
 	if key != "" {
 		kv = append(kv, [2]string{"key", key})
 	}
-	data["AtomDiscoveryURL"] = httpx.RequestBaseURL(c.R) + helperRepositoryURL(c.Project, s.repo, "revisions", "", "", kv...)
+	data["AtomDiscoveryURL"] = httpx.RequestBaseURL(c.R) + urlroot.Path(helperRepositoryURL(c.Project, s.repo, "revisions", "", "", kv...))
 	data["AtomURL"] = withAtomFormat(helperRepositoryURL(c.Project, s.repo, "revisions", "", "", kv...))
 	c.Render("repositories/show", data)
 }
@@ -312,7 +313,7 @@ func (a *App) indexCommits(c *Req, s *repoState, commits []*domain.Changeset) (s
 	for i := len(commits) - 1; i >= 0; i-- {
 		cs := commits[i]
 		gc := &graphCommit{parents: parents[cs.ID], rdmid: len(commits) - 1 - i, scmid: cs.Scmid,
-			href: helperRepositoryURL(c.Project, s.repo, "revision", "", cs.Scmid)}
+			href: urlroot.Path(helperRepositoryURL(c.Project, s.repo, "revision", "", cs.Scmid))}
 		if gc.parents == nil {
 			gc.parents = []string{}
 		}
@@ -596,7 +597,7 @@ func (a *App) relatedIssuesData(c *Req) (map[string]any, error) {
 		"RelatedIssues":    issues,
 		"ManageRelated":    manage,
 		"ShowRelated":      len(issues) > 0 || manage,
-		"AutoCompletePath": "/issues/auto_complete?project_id=" + rails.URLEncode(c.Project.Identifier) + "&scope=all",
+		"AutoCompletePath": urlroot.Path("/issues/auto_complete?project_id=" + rails.URLEncode(c.Project.Identifier) + "&scope=all"),
 	}, nil
 }
 

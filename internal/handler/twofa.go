@@ -6,6 +6,7 @@ import (
 	"slices"
 
 	"github.com/mikuta0407/buropher/internal/repository"
+	"github.com/mikuta0407/buropher/internal/urlroot"
 )
 
 // TwofaController（app/controllers/twofa_controller.rb）。main_menu = false。
@@ -137,7 +138,7 @@ func (a *App) TwofaActivate(c *Req) {
 	if s := c.Session(); s != nil {
 		s.Renew()
 	}
-	c.Flash().SetNotice(c.L("twofa_activated", map[string]any{"bc_path": "/my/twofa/backup_codes/init"}))
+	c.Flash().SetNotice(c.L("twofa_activated", map[string]any{"bc_path": urlroot.Path("/my/twofa/backup_codes/init")}))
 	c.Redirect("/my/account")
 }
 

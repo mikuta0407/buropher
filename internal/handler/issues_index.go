@@ -15,6 +15,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/httpx"
 	"github.com/mikuta0407/buropher/internal/pagination"
 	"github.com/mikuta0407/buropher/internal/query"
+	"github.com/mikuta0407/buropher/internal/urlroot"
 	"github.com/mikuta0407/buropher/internal/view"
 	"github.com/mikuta0407/buropher/internal/view/rails"
 )
@@ -204,7 +205,7 @@ func (a *App) issuesAtomLinks(c *Req, q *query.Query) (string, string) {
 		if s != "" {
 			path += "?" + s
 		}
-		return base + path
+		return base + urlroot.Path(path)
 	}
 	issues := qs(issuesPath(c.Project) + ".atom")
 	// journals#index のルート（/issues/changes）は project_id を持たないので引き継がれない

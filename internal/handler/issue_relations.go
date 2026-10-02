@@ -16,6 +16,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/issues"
 	"github.com/mikuta0407/buropher/internal/query"
 	"github.com/mikuta0407/buropher/internal/repository"
+	"github.com/mikuta0407/buropher/internal/urlroot"
 	"github.com/mikuta0407/buropher/internal/validation"
 )
 
@@ -294,7 +295,7 @@ func (a *App) IssueRelationsCreate(c *Req) {
 			return
 		}
 		if saved {
-			c.W.Header().Set("Location", httpx.RequestBaseURL(c.R)+"/relations/"+strconv.FormatInt(last.ID, 10))
+			c.W.Header().Set("Location", httpx.RequestBaseURL(c.R)+urlroot.Path("/relations/"+strconv.FormatInt(last.ID, 10)))
 			c.RenderAPI(http.StatusCreated, func(b apibuilder.Builder) { renderRelationAPI(b, &last.IssueRelation) })
 		} else {
 			c.RenderValidationErrors(relationErrors(last))

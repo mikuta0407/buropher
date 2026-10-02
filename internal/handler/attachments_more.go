@@ -26,6 +26,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/textformat/redmine"
 	"github.com/mikuta0407/buropher/internal/unifieddiff"
+	"github.com/mikuta0407/buropher/internal/urlroot"
 	"github.com/mikuta0407/buropher/internal/validation"
 	"github.com/mikuta0407/buropher/internal/view/rails"
 )
@@ -415,7 +416,7 @@ func (a *App) AttachmentsShow(c *Req) {
 		case att.IsAudio():
 			data["MediaKind"] = "audio"
 		}
-		data["DownloadURL"] = httpx.RequestBaseURL(c.R) + downloadNamedAttachmentPath(att)
+		data["DownloadURL"] = httpx.RequestBaseURL(c.R) + urlroot.Path(downloadNamedAttachmentPath(att))
 	}
 	c.Render("attachments/show", data)
 }
@@ -673,22 +674,22 @@ func (a *App) containerURL(c *Req, ct *attContainer) string {
 	switch ct.Kind {
 	case domain.AttachmentContainerMessage:
 		if m, err := repository.GetMessage(c.Ctx(), a.DB, ct.ID); err == nil {
-			return base + boardMessagePath(m)
+			return base + urlroot.Path(boardMessagePath(m))
 		}
 	case domain.AttachmentContainerProject, domain.AttachmentContainerVersion:
-		return base + "/projects/" + ct.Project.Identifier + "/files"
+		return base + urlroot.Path("/projects/"+ct.Project.Identifier+"/files")
 	case domain.AttachmentContainerWikiPage:
 		if page, err := repository.GetWikiPageByID(c.Ctx(), a.DB, 0, ct.ID); err == nil {
-			return base + wikiPagePath(ct.Project, page.Title)
+			return base + urlroot.Path(wikiPagePath(ct.Project, page.Title))
 		}
 	case domain.AttachmentContainerIssue:
-		return base + "/issues/" + id
+		return base + urlroot.Path("/issues/"+id)
 	case domain.AttachmentContainerNews:
-		return base + "/news/" + id
+		return base + urlroot.Path("/news/"+id)
 	case domain.AttachmentContainerDocument:
-		return base + "/documents/" + id
+		return base + urlroot.Path("/documents/"+id)
 	}
-	return base + "/"
+	return base + urlroot.Path("/")
 }
 
 // attachmentEdit は edit_all の 1 行（filename_was と入力値・エラー）。

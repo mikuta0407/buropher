@@ -33,7 +33,7 @@ $(document).ready(function(){
       // trigger the call on the list that receives the block only
       if ($(this).find(ui.item).length > 0) {
         $.ajax({
-          url: "{{j "/my/order_blocks"}}",
+          url: "{{j (url_path "/my/order_blocks")}}",
           type: 'post',
           data: {
             'group': $(this).attr('id').replace(/^list-/, ''),

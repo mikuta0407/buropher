@@ -253,11 +253,12 @@ func sanitizedLink(text rails.HTML, u string) rails.HTML {
 			scheme = strings.ToLower(s)
 		}
 	}
+	// 利用者が設定した URL（Redmine では link_to に文字列で渡すため relative_url_root を前置しない）
 	switch scheme {
 	case "":
-		attrs.Set("href", u)
+		attrs.Set("href", rails.RawURL(u))
 	case "http", "https", "ftp", "mailto":
-		attrs.Set("href", u)
+		attrs.Set("href", rails.RawURL(u))
 		if scheme == "mailto" {
 			attrs.Set("class", "email")
 		} else {

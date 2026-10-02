@@ -10,6 +10,7 @@ import (
 
 	"github.com/mikuta0407/buropher/internal/httpx"
 	"github.com/mikuta0407/buropher/internal/mailhandler"
+	"github.com/mikuta0407/buropher/internal/urlroot"
 )
 
 // このファイルは MailHandlerController（app/controllers/mail_handler_controller.rb）の移植。
@@ -114,7 +115,7 @@ var mailHandlerNewTemplate = template.Must(template.New("mail_handler/new").Pars
 <body>
 <h1>Redmine Mail Handler</h1>
 
-<form enctype="multipart/form-data" action="/mail_handler" accept-charset="UTF-8" method="post"><input type="hidden" name="authenticity_token" value="{{.Token}}" autocomplete="off" />
+<form enctype="multipart/form-data" action="{{.Action}}" accept-charset="UTF-8" method="post"><input type="hidden" name="authenticity_token" value="{{.Token}}" autocomplete="off" />
   <input type="hidden" name="key" id="key" value="{{.Key}}" autocomplete="off" />
 
   <fieldset>
@@ -157,7 +158,7 @@ var mailHandlerNewTemplate = template.Must(template.New("mail_handler/new").Pars
 // MailHandlerNew は mail_handler#new（受信メールを手で投入するフォーム）。
 func (a *App) MailHandlerNew(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	data := map[string]string{"Key": httpx.ParamsOf(r).String("key"), "Token": httpx.CSRFToken(r)}
+	data := map[string]string{"Key": httpx.ParamsOf(r).String("key"), "Token": httpx.CSRFToken(r), "Action": urlroot.Path("/mail_handler")}
 	if err := mailHandlerNewTemplate.Execute(w, data); err != nil {
 		a.logger().Error("render mail_handler/new", "err", err)
 	}

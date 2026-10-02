@@ -17,6 +17,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/textformat/redmine"
 	"github.com/mikuta0407/buropher/internal/timelog"
+	"github.com/mikuta0407/buropher/internal/urlroot"
 	"github.com/mikuta0407/buropher/internal/view"
 	"github.com/mikuta0407/buropher/internal/view/rails"
 )
@@ -504,7 +505,7 @@ func (a *App) TimelogCreate(c *Req) {
 		return
 	}
 	if api {
-		c.W.Header().Set("Location", httpx.RequestBaseURL(c.R)+"/time_entries/"+strconv.FormatInt(t.ID, 10))
+		c.W.Header().Set("Location", httpx.RequestBaseURL(c.R)+urlroot.Path("/time_entries/"+strconv.FormatInt(t.ID, 10)))
 		a.teRenderShowAPI(c, t, http.StatusCreated, true)
 		return
 	}

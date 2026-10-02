@@ -11,7 +11,7 @@
 
 {{define "repositories/stats#js"}}
 $(document).ready(function(){
-  $.getJSON({{raw (json_string .MonthURL)}}, function(data){
+  $.getJSON({{raw (json_string (url_path .MonthURL))}}, function(data){
 
     var chartData = {
       labels: data['labels'],
@@ -50,7 +50,7 @@ $(document).ready(function(){
     });
   });
 
-  $.getJSON({{raw (json_string .AuthorURL)}}, function(data){
+  $.getJSON({{raw (json_string (url_path .AuthorURL))}}, function(data){
 
     var chartData = {
       labels: data['labels'],

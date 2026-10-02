@@ -17,9 +17,15 @@
 
 # Public base URL without trailing slash, e.g. "https://redmine.example.com".
 # Used for OIDC redirect URIs. Links in e-mails use "Host name and path" and "Protocol"
-# in Administration > Settings > General. Sub-path deployment is not supported.
+# in Administration > Settings > General. Give only scheme and host (the sub-path comes
+# from relative_url_root).
 # env: BUROPHER_BASE_URL
 #base_url = ""
+
+# Sub-path to serve buropher under (Redmine's RAILS_RELATIVE_URL_ROOT), e.g. "/redmine".
+# The reverse proxy must forward the full path including the prefix. Empty = host root.
+# env: BUROPHER_RELATIVE_URL_ROOT
+#relative_url_root = ""
 
 # Secret used to sign sessions/CSRF tokens and to encrypt stored secrets (TOTP keys,
 # LDAP bind passwords, repository passwords, OIDC/Discord client secrets).

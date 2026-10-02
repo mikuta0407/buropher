@@ -17,6 +17,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/search"
 	"github.com/mikuta0407/buropher/internal/settings"
+	"github.com/mikuta0407/buropher/internal/urlroot"
 	"github.com/mikuta0407/buropher/internal/view"
 	"github.com/mikuta0407/buropher/internal/view/rails"
 )
@@ -199,7 +200,7 @@ WHERE issues.id = ? AND (`+vis+`)`, id); err != nil {
 						b.Value("id", e.ID)
 						b.Value("title", e.Title)
 						b.Value("type", e.Type)
-						b.Value("url", base+e.URL)
+						b.Value("url", base+urlroot.Path(e.URL))
 						if e.DescriptionNull {
 							b.Value("description", nil)
 						} else {

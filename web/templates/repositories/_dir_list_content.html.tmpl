@@ -6,7 +6,7 @@
 <tr id="{{$trID}}" class="{{$a.ParentID}} entry {{$entry.Kind}}">
 <td style="padding-inline-start: {{mul 18 $depth}}px;" class="{{if $report}}filename{{else}}filename_no_report{{end}}">
 {{if $entry.IsDir}}
-<span class="expander icon icon-collapsed" onclick="scmEntryClick('{{$trID}}', '{{j (repo_url "show" $p $repo (to_path_param $entPath) $a.Rev "depth" (add $depth 1) "parent_id" $trID)}}');">{{sprite_icon "angle-right" (hash "rtl" true)}}</span>
+<span class="expander icon icon-collapsed" onclick="scmEntryClick('{{$trID}}', '{{j (url_path (repo_url "show" $p $repo (to_path_param $entPath) $a.Rev "depth" (add $depth 1) "parent_id" $trID))}}');">{{sprite_icon "angle-right" (hash "rtl" true)}}</span>
 {{end}}
 {{link_to (file_icon $entry.Entry $entName) (repo_url (ternary $entry.IsDir "show" "entry") $p $repo (to_path_param $entPath) $a.Rev) (hash "class" (ternary $entry.IsDir "icon icon-folder" (printf "icon icon-file %s" (mime_css_class_of $entName))))}}
 </td>

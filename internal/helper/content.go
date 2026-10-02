@@ -218,12 +218,12 @@ func (e menuEnv) RecalledFormat() string {
 	return f
 }
 
-// baseURL は request.base_url。
+// baseURL は request.base_url + script_name（relative_url_root）。
 func (p *Page) baseURL() string {
 	if p.Request == nil {
 		return ""
 	}
-	return httpx.RequestBaseURL(p.Request)
+	return httpx.RequestRootURL(p.Request)
 }
 
 // newsIndexPath は project_news_index_path(project) / news_index_path。
