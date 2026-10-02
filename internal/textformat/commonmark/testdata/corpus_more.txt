@@ -1,0 +1,488 @@
+実際の Redmine の記述に近い文書と、libxml2 互換パーサの境界ケース（tools/gen-commonmark-fixtures.rb の書式）。
+
+@@@ doc-release-notes
+# Release 5.0.0
+
+## Features
+
+* Added **dark mode** (#1234)
+* Improved [search](/search?q=foo&scope=all)
+  * Faster indexing
+  * Better ranking
+
+## Bug fixes
+
+1. Fixed crash when `nil` is passed — see r4567
+2. Fixed ~~old~~ new behaviour
+
+> [!WARNING]
+> Database migration required:
+> ```
+> bundle exec rake db:migrate RAILS_ENV=production
+> ```
+
+| Version | Date       | Notes |
+|---------|:----------:|------:|
+| 5.0.0   | 2024-01-01 | major |
+| 4.2.1   | 2023-06-15 | patch |
+
+Thanks to @alice and user:bob@example.com!
+@@@ doc-bug-report
+**Environment:**
+- Redmine version: 6.1.2.stable
+- Ruby version: 3.3.0-p0 (2023-12-25) [x86_64-linux]
+- Database adapter: PostgreSQL
+
+**Steps:**
+
+1. Go to `/projects/foo/issues/new`
+2. Fill in the form:
+   - Subject: `<script>alert(1)</script>`
+   - Description: see attachment:screenshot@2x.png
+3. Click *Create*
+
+**Log:**
+
+```
+Started POST "/projects/foo/issues" for 127.0.0.1 at 2024-01-01 12:00:00 +0900
+Processing by IssuesController#create as HTML
+Completed 500 Internal Server Error in 42ms
+```
+
+```ruby
+# app/models/issue.rb:123
+def foo
+  bar.baz # => NoMethodError
+end
+```
+
+Expected <b>no</b> error. Actual: 500.
+@@@ doc-japanese-wiki
+# 開発環境の構築手順
+
+このページでは、**ローカル開発環境**の構築手順を説明します。
+
+## 前提条件
+
+| ソフトウェア | バージョン | 備考 |
+|:--|:--:|--:|
+| Ruby | 3.3 | rbenv 推奨 |
+| PostgreSQL | 16 | Docker でも可 |
+
+## 手順
+
+1. リポジトリをクローンする
+   ```bash
+   git clone https://github.com/example/repo.git
+   cd repo
+   ```
+2. 依存関係をインストールする（`bundle install`）
+3. 設定ファイル `config/database.yml` を編集する
+
+> [!NOTE]
+> 詳細は [[開発ガイド]] を参照してください。
+
+> [!IMPORTANT] 注意事項
+> 本番環境では**絶対に**実行しないでください。
+
+脚注のテスト[^1]です。
+
+[^1]: 脚注の内容です。
+@@@ doc-meeting-notes
+Meeting 2024-01-15
+==================
+
+Attendees: Alice, Bob, Carol
+
+Agenda
+------
+
+- [x] Review last week's action items
+- [ ] Discuss release schedule
+  - [ ] QA sign-off
+  - [x] Docs updated
+- [ ] AOB
+
+Notes
+-----
+
+Bob: "We need to fix #42 before release."
+Carol: agreed &mdash; also ##43 & ###44?
+
+Next meeting: *2024-01-22 10:00 JST*
+@@@ doc-api-doc
+## GET /issues.json
+
+Parameters:
+
+| name | type | description |
+|------|------|-------------|
+| `project_id` | integer | Project ID |
+| `status_id` | string | `open`, `closed`, `*` |
+| `limit` | integer | max 100 |
+
+Response:
+
+```json
+{
+  "issues": [
+    {"id": 1, "subject": "Example", "done_ratio": 0}
+  ],
+  "total_count": 1
+}
+```
+
+See <https://www.redmine.org/projects/redmine/wiki/Rest_Issues> for details.
+@@@ doc-mixed-html
+<div style="text-align: center; color: #333; font-size: 14px">
+<h2>Centered title</h2>
+<p>Paragraph with <a href="https://example.com" target="_blank">external link</a>.</p>
+</div>
+
+<details>
+<summary>Click to expand</summary>
+
+- hidden list
+- with `code`
+
+</details>
+
+<table>
+  <thead>
+    <tr><th>A</th><th>B</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>1</td><td>2</td></tr>
+  </tbody>
+</table>
+@@@ doc-long-code
+```python
+import os
+import sys
+
+
+def main(argv):
+    """Docstring."""
+    for i, arg in enumerate(argv):
+        print(f"{i}: {arg}")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv))
+```
+@@@ doc-sql
+```sql
+SELECT i.id, i.subject, s.name AS status
+FROM issues i
+JOIN issue_statuses s ON s.id = i.status_id
+WHERE i.project_id = 1 AND s.is_closed = false
+ORDER BY i.updated_on DESC
+LIMIT 25;
+```
+@@@ html-p-autoclose
+<p>one
+<p>two
+<div>three</div>
+@@@ html-li-autoclose
+<ul>
+<li>a
+<li>b
+</ul>
+<ol><li>x<li>y</ol>
+@@@ html-dl-autoclose
+<dl><dt>t1<dd>d1<dt>t2<dd>d2</dl>
+@@@ html-table-autoclose
+<table><tr><td>1<td>2<tr><td>3</table>
+<table><thead><tr><th>h<tbody><tr><td>b</table>
+@@@ html-inline-block-mix
+<b><p>bold para</p></b>
+<span><div>div in span</div></span>
+@@@ html-headings-in-p
+<p>text <h3>heading</h3> more</p>
+@@@ html-nested-a
+<a href="http://a.example.com">outer <a href="http://b.example.com">inner</a> tail</a>
+@@@ html-attr-no-value
+<input type="checkbox" class="task-list-item-checkbox" checked> <div itemscope>x</div> <td nowrap>c</td>
+@@@ html-attr-dup
+<span title="a" title="b" class="c" class="d">dup</span>
+@@@ html-attr-unquoted
+<a href=http://x.example.com/a?b=c title=t>u</a> <img src=a.png alt=b>
+@@@ html-attr-weird-chars
+<span title="a<b>c" data-x='y"z'>w</span> <a href="http://x.example.com/?a=<b>">lt</a>
+@@@ html-attr-newline
+<span
+  title="multi"
+  class="x">nl</span>
+@@@ html-entity-in-attr
+<a href="http://x.example.com/?q=caf&eacute;&amp;x=&#x41;&unknown;">ent</a>
+@@@ html-comment-weird
+a <!--> b <!---> c <!-- -- --> d <!-- x --!> e
+@@@ html-bogus-comment
+a <!x> b <! > c
+@@@ html-lt-variants
+a <1 b < c <> d </ e </> f <_x> g <:y>
+@@@ html-pi-inline
+a <?xml version="1.0"?> b <?pi?> c
+@@@ html-cdata-inline
+a <![CDATA[ <b>x</b> ]]> b
+@@@ html-script-unclosed
+<script>
+var x = "</div>";
+@@@ html-style-in-p
+para <style>p{color:red}</style> after
+@@@ html-textarea-content
+<textarea><b>not bold</b></textarea>
+@@@ html-title-in-body
+<title>Title</title> body text
+@@@ html-head-tags
+<head><meta charset="utf-8"></head><body><p>body</p></body>
+@@@ html-body-start chomp=1
+<body><p>starts with body</p></body>
+@@@ html-html-tag
+<html><p>inside html</p></html>
+@@@ html-frameset
+<frameset><frame src="x"></frameset> after
+@@@ html-noscript
+<noscript>no js</noscript> after
+@@@ html-xmp-listing
+<xmp><b>raw</b></xmp> <listing>l</listing>
+@@@ html-unknown-nested-block
+<section><article><p>deep</p></article></section>
+@@@ html-figure-caption
+<figure><img src="a.png"><figcaption>Cap <b>bold</b></figcaption></figure>
+@@@ html-ruby-full
+<ruby>東京<rp>(</rp><rt>とうきょう</rt><rp>)</rp></ruby>
+@@@ html-kbd-samp-var
+<kbd><kbd>Ctrl</kbd>+<kbd>S</kbd></kbd> <samp>out</samp> <var>x</var>
+@@@ html-hn-h7-h8
+<h7>seven</h7> <h8>eight</h8> <h9>nine</h9>
+@@@ html-wbr-bdo
+long<wbr>word <bdo dir="rtl">rtl</bdo> <bdi>bdi</bdi>
+@@@ html-mark-small
+<mark>m</mark> <small>s</small> <big>b</big> <tt>t</tt>
+@@@ html-pre-nested-tags
+<pre><b>bold</b>
+<i>italic</i>
+  indented</pre>
+@@@ html-pre-entities
+<pre>&lt;tag&gt; &amp; &quot;</pre>
+@@@ html-whitespace-between-blocks
+<div>a</div>   <div>b</div>
+<p>c</p>
+   <p>d</p>
+@@@ html-controls-in-attr esc=1
+<span title="a\u0001b\u0007c">ctrl</span>
+@@@ html-nul-in-text mode=sanitize esc=1 chomp=1
+a\0b <b>c\0d</b>
+@@@ html-long-attr-name mode=sanitize chomp=1
+<span abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdef="x" title="t">long</span>
+@@@ html-sanitize-whitespace-only mode=sanitize chomp=1
+
+@@@ html-sanitize-text-only mode=sanitize chomp=1
+just text
+@@@ html-sanitize-nested-remove mode=sanitize chomp=1
+<section><header><h1>t</h1></header><nav><a href="/x">x</a></nav></section>
+@@@ html-sanitize-script-in-p mode=sanitize chomp=1
+<p>a<script>b</script>c</p>
+@@@ html-sanitize-iframe-text mode=sanitize chomp=1
+<iframe>text<b>bold</b></iframe>
+@@@ html-sanitize-style-attr-variants mode=sanitize chomp=1
+<p style="color:red;color:blue">a</p><p style="  ">b</p><p style="font: 12px/1.5 'Helvetica Neue', Arial">c</p><p style="background-color: rgb(1, 2, 3)">d</p><p style="color: red !important;; margin: 0">e</p>
+@@@ html-sanitize-css-escapes mode=sanitize chomp=1
+<p style="color: \72 ed">a</p><p style="width: calc(100% - 10px)">b</p><p style="font-family: &quot;A&quot;">c</p>
+@@@ html-sanitize-css-url mode=sanitize chomp=1
+<p style="background-color: red; border: url(x)">a</p><p style="border-style: solid; background: url('a')">b</p>
+@@@ html-sanitize-css-at mode=sanitize chomp=1
+<p style="@import url(x); color: red">a</p><p style="color: red; @media print { color: blue }">b</p>
+@@@ html-sanitize-css-comment mode=sanitize chomp=1
+<p style="color/**/: red">a</p><p style="/* c */color: red">b</p><p style="color: red /* unterminated">c</p>
+@@@ html-sanitize-css-hack mode=sanitize chomp=1
+<p style="*color: red; _width: 1px; color: blue">a</p>
+@@@ html-sanitize-css-newlines mode=sanitize esc=1 chomp=1
+<p style="color:\r\n red;\r\nwidth:\f1px">a</p>
+@@@ html-sanitize-css-important mode=sanitize chomp=1
+<p style="color: red ! important">a</p><p style="color: red!IMPORTANT">b</p>
+@@@ html-sanitize-css-unicode mode=sanitize chomp=1
+<p style="font-family: 'メイリオ', sans-serif">a</p>
+@@@ html-sanitize-css-expression mode=sanitize chomp=1
+<p style="width: ex/**/pression(alert(1))">a</p><p style="color: expression">b</p><p style="font-family: expression">c</p>
+@@@ html-sanitize-href-variants mode=sanitize chomp=1
+<a href="HTTP://X.EXAMPLE.COM">u</a><a href="//proto.relative/x">p</a><a href="?q">q</a><a href="#">h</a><a href="javascript">j</a><a href="mailto:">m</a><a href="tel:123">t</a><a href="data">d</a>
+@@@ html-sanitize-href-entities mode=sanitize chomp=1
+<a href="&#106;avascript&#58;x">e1</a><a href="jav&#x09;ascript:x">e2</a><a href="&#x20;javascript:x">e3</a><a href="javascript&colon;x">e4</a>
+@@@ html-sanitize-href-nonascii mode=sanitize chomp=1
+<a href="http://x.example.com/ä?ö=ü#ß">n</a><a href="ä:x">s</a>
+@@@ html-sanitize-img-src mode=sanitize chomp=1
+<img src="HTTPS://x.example.com/a.png"><img src="//x.example.com/b.png"><img src="ftp://x/c.png"><img src="c d.png"><img src="javascript:x"><img src=" /e.png ">
+@@@ html-sanitize-cite mode=sanitize chomp=1
+<blockquote cite="javascript:x">a</blockquote><q cite="mailto:x">b</q><del cite=" http://x ">c</del>
+@@@ html-sanitize-name-attr mode=sanitize chomp=1
+<a name="a b&quot;c">x</a><p name="n">y</p><img name="i" src="a.png">
+@@@ html-sanitize-action mode=sanitize chomp=1
+<div action="a b" title="t">x</div>
+@@@ html-sanitize-li-in-table mode=sanitize chomp=1
+<table><tr><td><li>li in td</li></td></tr></table>
+@@@ html-sanitize-tr-in-ul mode=sanitize chomp=1
+<ul><li><tr><td>x</td></tr></li></ul>
+@@@ html-sanitize-input-children mode=sanitize chomp=1
+<input type="text">after<input type="checkbox" class="task-list-item-checkbox">
+@@@ html-sanitize-code-classes mode=sanitize chomp=1
+<code class="language-ruby extra">a</code><code class="language-">b</code><code class=" language-ruby">c</code><code class="LANGUAGE-ruby">d</code>
+@@@ html-sanitize-div-classes mode=sanitize chomp=1
+<div class="markdown-alert markdown-alert-NOTE">a</div><div class="markdown-alert  markdown-alert-note">b</div><div class="markdown-alert markdown-alert-note x">c</div><div class="markdown-alert markdown-alert-x1">d</div>
+@@@ html-sanitize-li-ids mode=sanitize chomp=1
+<ol><li id="fn-12">a</li><li id="fn-1x">b</li><li id="fn-">c</li><li class="task-list-item other">d</li></ol>
+@@@ html-sanitize-a-ids mode=sanitize chomp=1
+<a id="fnref-1-2-3">a</a><a id="fnref-1-2">b</a><a id="fnref-">c</a><a id="fnref-a">d</a>
+@@@ html-sanitize-external-classes mode=sanitize chomp=1
+<a href="http://x.example.com" class="external">a</a><a href="mailto:a@b.c" class="foo">b</a><a href="foo:bar">c</a><a href="http:x">d</a><a href="a:b:c">e</a>
+@@@ html-sanitize-target-variants mode=sanitize chomp=1
+<a href="http://x.example.com" target="_blank" rel="noopener">a</a><a href="http://x.example.com" target="">b</a><a href="/local" target="_blank">c</a><a href="ftp://x" target="_blank" rel="  a  b ">d</a>
+@@@ html-sanitize-format-mixed mode=sanitize chomp=1
+<div><span>a</span><p>b</p>text<p>c</p></div><table><tbody><tr><td>x</td><td>y</td></tr></tbody></table>
+@@@ html-sanitize-empty-block-children mode=sanitize chomp=1
+<ul><li></li><li><ul><li>x</li></ul></li></ul><blockquote><blockquote>q</blockquote></blockquote>
+@@@ html-sanitize-pre-in-li mode=sanitize chomp=1
+<ul><li><pre>code</pre></li><li><p>p</p><p>q</p></li></ul>
+@@@ html-sanitize-details-summary mode=sanitize chomp=1
+<details><summary>a</summary>b<div>c</div></details>
+@@@ html-sanitize-h-in-li mode=sanitize chomp=1
+<ol><li><h1>t</h1>text</li></ol>
+@@@ inline-emphasis-links
+*[em link](http://x.example.com)* [*link em*](http://x.example.com) **[a](b) and [c](d)**
+@@@ inline-code-in-link
+[`code` link](http://x.example.com) `[not link](x)`
+@@@ inline-html-in-link
+[<b>bold</b> link](http://x.example.com) <a href="http://x.example.com">*md in a*</a>
+@@@ inline-autolink-in-emphasis
+**see www.example.com** _visit http://x.example.com_ ~~old www.old.com~~
+@@@ inline-email-in-emphasis
+*mail a@b.cc* **x@y.zz**
+@@@ inline-entity-in-autolink
+http://x.example.com/&lt;tag&gt; www.example.com/&quot;q&quot;
+@@@ inline-www-after-paren-bracket
+(www.a.com) [www.b.com] {www.c.com} "www.d.com"
+@@@ inline-colon-text
+time: 10:30 ratio 1:2 http:not-a-link https:/x ftp:// mailto:x
+@@@ inline-many-colons
+a::b http:://x https:///y
+@@@ inline-url-after-cjk
+日本語http://example.com/x 中文www.example.com テストuser@example.com
+@@@ inline-url-fullwidth-space
+URL　http://example.com/x　です
+@@@ inline-hard-break-cjk
+一行目\
+二行目
+三行目
+@@@ inline-tabs-text esc=1
+a\tb\t\tc
+@@@ inline-backslash-variants
+\a \1 \  \é \\a
+@@@ inline-image-nested-link
+![alt [link](http://x.y)](img.png)
+@@@ inline-link-ref-shortcut-case
+[Foo] [FOO] [foo]
+
+[foo]: http://foo.example.com
+@@@ inline-link-ref-collapsed
+[foo][] [bar][]
+
+[foo]: /url1
+@@@ inline-link-title-newline
+[a](http://x.y "multi
+line title")
+@@@ inline-strike-single-double
+~a~ ~~b~~ ~a~~ ~~a~
+@@@ inline-strike-intraword
+foo~bar~baz foo~~bar~~baz
+@@@ inline-emphasis-mod3
+*foo**bar**baz* ***foo** bar* *foo**bar*
+@@@ block-quote-in-list-lazy
+- > quote
+continued
+@@@ block-nested-lists-deep
+- 1
+  - 2
+    - 3
+      - 4
+        - 5
+@@@ block-ordered-big-start
+123456789. big
+@@@ block-ordered-interrupt
+para
+2. not a list
+@@@ block-indented-code-after-list
+- item
+
+      code?
+@@@ block-fence-in-quote-lazy
+> ```
+code
+```
+@@@ block-html-in-list
+- <div>
+  html
+  </div>
+- after
+@@@ block-setext-vs-list
+Text
+- - -
+@@@ block-hr-interrupt-para
+para
+---
+para2
+***
+@@@ block-link-ref-def-in-list
+- [a]
+
+  [a]: http://a.example.com
+@@@ block-heading-trailing-backslash
+# foo\
+@@@ block-tab-indented-list esc=1
+-\tfoo\n\n\tbar\n
+@@@ block-alert-in-table-cell
+| a |
+|---|
+| > [!NOTE] |
+@@@ block-footnote-in-list-item
+- item[^li]
+
+[^li]: list footnote
+@@@ block-many-footnotes
+a[^1] b[^2] c[^3] d[^4] e[^5] f[^6] g[^7] h[^8] i[^9] j[^10]
+
+[^1]: 1
+[^2]: 2
+[^3]: 3
+[^4]: 4
+[^5]: 5
+[^6]: 6
+[^7]: 7
+[^8]: 8
+[^9]: 9
+[^10]: 10
+@@@ hb-doc-nohard hardbreaks=false
+# Title
+line1
+line2
+
+- a
+  b
+
+> q1
+> q2
+
+| t |
+|---|
+| c |
+@@@ hb-footnote-nohard hardbreaks=false
+Text[^1]
+more
+
+[^1]: note
+    continued
+@@@ hb-alert-nohard hardbreaks=false
+> [!NOTE]
+> line1
+> line2

@@ -1,0 +1,717 @@
+comrak / goldmark の差が出やすい境界ケース集（tools/gen-commonmark-fixtures.rb の書式）。
+
+@@@ tbl-cont-header-indent
+para
+  | a | b |
+  |---|---|
+  | 1 | 2 |
+@@@ tbl-in-list
+- item
+
+  | a | b |
+  |---|---|
+  | 1 | 2 |
+- next
+@@@ tbl-in-quote
+> | a | b |
+> |---|---|
+> | 1 | 2 |
+@@@ tbl-then-text
+| a | b |
+|---|---|
+| 1 | 2 |
+following text
+more
+@@@ tbl-then-list
+| a |
+|---|
+| 1 |
+- list item
+@@@ tbl-then-quote
+| a |
+|---|
+| 1 |
+> quote
+@@@ tbl-then-heading
+| a |
+|---|
+| 1 |
+# heading
+@@@ tbl-then-fence
+| a |
+|---|
+| 1 |
+```
+code
+```
+@@@ tbl-then-html
+| a |
+|---|
+| 1 |
+<div>html</div>
+@@@ tbl-then-hr
+| a |
+|---|
+| 1 |
+***
+@@@ tbl-then-indented
+| a |
+|---|
+| 1 |
+    indented
+@@@ tbl-more-cells
+| a | b |
+|---|---|
+| 1 | 2 | 3 | 4 |
+| 5 |
+@@@ tbl-code-pipe
+| a | b |
+|---|---|
+| `x|y` | z |
+@@@ tbl-only-pipe
+| a |
+|---|
+|
+| b |
+@@@ tbl-empty-cells
+| a | b | c |
+|---|---|---|
+|| x ||
+@@@ tbl-mismatch
+| a | b |
+|---|
+| c | d |
+@@@ tbl-mismatch-then-ok
+| a | b |
+|---|
+| c | d |
+|---|---|
+@@@ tbl-single-col-dash
+a
+---
+b
+@@@ tbl-minimal
+|a|
+|-|
+@@@ tbl-multi-line-para
+first line
+second line
+| h1 | h2 |
+| -- | -- |
+| v1 | v2 |
+@@@ tbl-tabs esc=1
+|\ta\t|\tb\t|\n|---|---|\n|\t1\t|\t2\t|\n
+@@@ tbl-in-footnote
+Ref[^t].
+
+[^t]: | a |
+    |---|
+    | 1 |
+@@@ tbl-no-leading-pipe
+a | b
+- | -
+1 | 2
+@@@ tbl-escaped-backslash-pipe
+| a |
+|---|
+| x \\| y |
+@@@ tbl-inline-link-pipe
+| a |
+|---|
+| [l|x](http://x.y) |
+@@@ tbl-header-emphasis
+| *a* | **b** |
+|:---:|----:|
+| _c_ | ~~d~~ |
+@@@ tbl-cjk-align
+| 項目 | 値 |
+|:----|:---:|
+| 名前 | テスト |
+| 説明 | 長い説明文です |
+@@@ tbl-after-blank-header
+|   |   |
+|---|---|
+| a | b |
+@@@ tbl-delim-spaces
+| a | b |
+| :--- | ---: |
+| 1 | 2 |
+@@@ tbl-html-cell
+| a |
+|---|
+| <b>bold</b> <br/> <img src="x.png"> |
+@@@ fn-def-before-ref
+[^a]: Definition first.
+
+Then ref[^a].
+@@@ fn-duplicate-defs
+Ref[^d].
+
+[^d]: First def.
+[^d]: Second def.
+@@@ fn-case
+Ref[^Note] and[^NOTE].
+
+[^note]: case insensitive
+@@@ fn-in-table
+| a |
+|---|
+| x[^1] |
+
+[^1]: in table
+@@@ fn-in-link
+[link[^1]](http://x.y)
+
+[^1]: in link
+@@@ fn-in-heading
+# Heading[^h]
+
+[^h]: heading note
+@@@ fn-nested
+Outer[^o].
+
+[^o]: Outer has[^i].
+[^i]: Inner.
+@@@ fn-empty-def
+Ref[^e].
+
+[^e]:
+@@@ fn-unicode
+注釈[^注].
+
+[^注]: 日本語の注釈
+@@@ fn-ref-paren
+[^1](http://x.y) and [^1][ref]
+
+[^1]: note
+[ref]: http://ref.example.com
+@@@ fn-space-label
+Ref[^a b].
+
+[^a b]: no
+@@@ fn-list-content
+Ref[^l].
+
+[^l]: Item list:
+
+    - one
+    - two
+@@@ fn-many-refs
+A[^x] B[^x] C[^x].
+
+[^x]: thrice
+@@@ fn-def-in-quote
+> Ref[^q].
+>
+> [^q]: quoted def
+@@@ fn-numeric-order
+B[^2] A[^1].
+
+[^1]: one
+[^2]: two
+@@@ fn-not-referenced-mixed
+Only[^b].
+
+[^a]: unused
+[^b]: used
+[^c]: unused too
+@@@ fn-bang
+Hi![^z]
+
+[^z]: bang
+@@@ fn-emphasis-label
+Ref[^*x*].
+
+[^*x*]: star
+@@@ al-www-variants
+www.example.com. www.ex_ample.com www.example.com/path?q=1. (www.example.com) *www.example.com* _www.example.com_ ~www.example.com~ www. www.a
+@@@ al-www-bracket
+[www.example.com] [a] www.example.com
+@@@ al-url-parens
+http://example.com/path(with)parens http://example.com/a) (http://example.com/b) http://example.com/c((d))
+@@@ al-url-entity
+https://example.com/?q=a&amp;b=c https://example.com/x&copy; https://example.com/y&amp;
+@@@ al-localhost
+http://localhost:3000/issues/1 http://127.0.0.1/ ftp://x https://a
+@@@ al-uppercase-scheme
+HTTP://EXAMPLE.COM Https://example.com xhttp://foo.com
+@@@ al-in-link-text
+[see http://x.y here](http://z.example.com) and [www.a.com](http://b.c)
+@@@ al-after-bracket
+[a] http://x.example.com [b]http://y.example.com
+@@@ al-in-emphasis
+*http://x.example.com* **http://x.example.com/** _http://y.example.com_
+@@@ al-email-prefix
+mailto:a@b.cc xmpp:a@b.cc/res xmpp:x@y.zz mailto:foo
+@@@ al-email-brackets
+[a@b.cc] [[c@d.ee] (f@g.hh) <i@j.kk>
+@@@ al-email-trailing
+a@b.cc. c@d.ee- f@g.hh_ i@j.kk, l@m.nn!
+@@@ al-email-plus
+first.last+tag@example.co.jp foo-bar@sub.domain.example.org x@y.z1
+@@@ al-email-port
+user@example.com:8080 user@example.com/path
+@@@ al-url-lt
+http://x.example.com<b>bold</b> http://y.example.com/<
+@@@ al-underscores
+http://x.example.com/a_b_c http://x_y.example.com http://a.b_c.example.com http://x.y_z
+@@@ al-cjk-after
+http://example.com/です。 http://example.com/パス、次 メールはuser@example.jpです
+@@@ al-idn
+https://例え.jp https://日本語.example/パス www.例え.jp
+@@@ al-newline
+see http://example.com
+and www.example.org
+@@@ al-escaped
+www.x\_y.com http://a.b/\_c\_ https://x.y/\)
+@@@ al-trailing-punct
+http://x.example.com/foo? http://x.example.com/foo! http://x.example.com/foo, http://x.example.com/foo: http://x.example.com/foo' http://x.example.com/foo"
+@@@ al-quote-wrapped
+"http://x.example.com" 'http://y.example.com'
+@@@ al-hash-only
+http:// https://. www.
+@@@ esc-in-link
+[a\*b](http://x.y) [c](http://x.y/\*) ![d\_e](f.png)
+@@@ esc-heading
+# Heading \# with \*escapes\*
+@@@ esc-end chomp=1
+trailing backslash \
+@@@ esc-double
+\\ \\\* \\\\
+@@@ esc-in-code
+`\*` and ``\` ``
+@@@ html-block-blank
+<div>
+
+*md*
+
+</div>
+@@@ html-type7
+<custom-element attr="1">
+not *md*
+</custom-element>
+
+<span>inline start
+*md*</span>
+@@@ html-comment-para
+para <!-- comment --> after
+
+<!-- comment block -->
+next
+@@@ html-pi-cdata
+<?php echo 1; ?>
+
+<![CDATA[x < y]]>
+
+<!ELEMENT br EMPTY>
+@@@ html-unclosed-end
+<div><span>unclosed
+@@@ html-stray-close
+text </p> more </span> end
+@@@ html-p-in-li
+- <p>para in li</p>
+- <div>div in li</div>
+@@@ html-img-attrs
+<img src="a.png" srcset="a@2x.png 2x" width="100" height="50" alt="A" title="T" loading="lazy" style="max-width:100%">
+@@@ html-a-name
+<a name="top"></a> <a name="x y">sp</a> <a id="fnref-3" name="n">both</a>
+@@@ html-details-open
+<details open>
+<summary>Sum</summary>
+
+Body **bold**
+
+</details>
+@@@ html-table-md
+<table>
+<tr>
+<td>
+
+**md in cell**
+
+</td>
+</tr>
+</table>
+@@@ html-uppercase-inline
+<B>bold</B> <I>it</I> <SPAN STYLE="color:red">x</SPAN> <A HREF="http://x.y">l</A>
+@@@ html-nbsp-raw
+<p>a&nbsp;b&nbsp;&nbsp;c</p>
+@@@ html-pre-leading-newline
+<pre>
+
+two newlines</pre>
+@@@ html-raw-pre-code-lang
+<pre><code class="language-ruby">def foo
+  1
+end</code></pre>
+@@@ html-code-outside-pre
+<code class="language-ruby">def x; end</code>
+@@@ html-tagfilter-inline
+a <textarea>t</textarea> b <title>x</title> c <TEXTAREA>u</TEXTAREA>
+@@@ html-javascript-variants
+<a href="JavaScript:alert(1)">a</a> <a href=" javascript:alert(1)">b</a> <a href="java&#x0A;script:alert(1)">c</a> <a href="&#x6A;avascript:x">d</a> <img src="javascript:x">
+@@@ html-data-attrs
+<span data-foo="bar" aria-label="lbl" role="note" title="t">x</span>
+@@@ html-ol-start
+<ol start="5" type="a"><li>five</li></ol>
+@@@ html-nested-inline
+<b><i><u>deep</u></i></b> <strong><em>se</em></strong>
+@@@ html-entity-attrs
+<a href="http://x.y/?a=1&amp;b=2&c=3" title="&lt;t&gt; &quot;q&quot;">e</a>
+@@@ html-br-variants
+a<br>b<br/>c<br />d<BR>e
+@@@ html-hr-variants
+<hr>
+<hr/>
+<hr class="x" />
+@@@ list-start-zero
+0. zero
+1. one
+@@@ list-paren
+1) a
+2) b
+@@@ list-mixed-markers
+- a
++ b
+* c
+@@@ list-code-only
+-     code in item
+@@@ list-task-tab esc=1
+-\t[ ] tab task\n- [x]\ttab after\n
+@@@ list-task-link
+- [ ] [link](http://x.y)
+- [x] **bold** task
+- [ ] `code` task
+@@@ list-task-nested-ol
+1. top
+   - [ ] nested task
+   - [x] done
+@@@ list-task-only-space
+- [ ]
+- [x]
+@@@ list-loose-nested
+- a
+
+  - b
+
+  - c
+@@@ list-lazy
+- item
+continued lazily
+@@@ list-interrupt-para
+para
+- list
+para2
+1. not interrupt if not 1?
+2. two
+@@@ list-empty-item
+-
+- b
+-
+
+  c
+@@@ em-triple
+***strong em*** **a*b*c** *a**b**c*
+@@@ em-underscore-intraword
+snake_case_word __init__ _a_b _x_
+@@@ em-cjk
+**日本語**の強調。**「括弧」**と、文中の*斜体*です。中文的**粗体**。
+@@@ em-strike-abort
+~~a~ *b* **c**
+@@@ em-strike-abort-link
+[~~x~ *y*](http://z.example.com) *after*
+@@@ em-strike-nested
+~~**bold strike**~~ **~~strike bold~~**
+@@@ em-punct
+*"quoted"* **(paren)** _[bracket]_
+@@@ alert-in-list
+- > [!NOTE]
+  > in list
+@@@ alert-lazy
+> [!TIP]
+lazy line
+@@@ alert-blank-then-text
+> [!WARNING]
+>
+> after blank
+@@@ alert-nested
+> [!NOTE]
+> > [!TIP]
+> > inner
+@@@ alert-double-gt
+>> [!NOTE]
+>> double
+@@@ alert-title-spaces
+> [!NOTE]   Spaced   Title
+> body
+@@@ alert-title-entities
+> [!CAUTION] Fish &amp; Chips \*x\*
+> body
+@@@ alert-title-is-type
+> [!NOTE] Warning
+> body
+
+> [!TIP] tip
+> body
+@@@ alert-setext
+> [!NOTE]
+> ===
+@@@ alert-no-space
+>[!NOTE]
+> no space
+@@@ alert-text-after
+> [!note]text-without-space
+@@@ alert-two-spaces
+>  [!NOTE]
+> two spaces
+@@@ alert-indented
+   > [!IMPORTANT]
+   > indented 3
+@@@ alert-code
+> [!NOTE]
+>     indented code
+@@@ alert-unknown-types
+> [!INFO]
+> info
+
+> [!DANGER]
+> danger
+@@@ code-info-spaces
+```   ruby   extra
+x = 1
+```
+@@@ code-backtick-info
+``` a`b
+code
+```
+@@@ code-indented-fence
+   ```
+   indented fence
+   ```
+@@@ code-in-list
+- item
+
+  ```ruby
+  puts 1
+  ```
+@@@ code-tilde-info-backtick
+~~~ a`b
+code
+~~~
+@@@ code-long-fence
+`````
+````
+inner
+````
+`````
+@@@ code-lang-uppercase-unknown
+```FooBar
+x
+```
+@@@ code-lang-plus
+```c++
+int x = 1;
+```
+
+```objective-c
+@interface A
+@end
+```
+@@@ code-blank-lines
+```
+
+line after blank
+
+
+```
+@@@ heading-empty
+#
+#
+##
+@@@ heading-closing
+# A #
+## B ##########
+### C # D
+@@@ heading-setext-multi
+Line one
+line two
+========
+@@@ heading-cjk
+# 見出し１
+## 見出し２ ##
+@@@ hb-in-quote hardbreaks=false
+> line1
+> line2
+@@@ hb-list hardbreaks=false
+- a
+  b
+- c
+@@@ hb-table-para hardbreaks=false
+para
+line
+@@@ hb-cjk hardbreaks=false
+日本語の
+改行
+@@@ hb-trailing-spaces hardbreaks=false
+spaces
+backslash\
+end
+@@@ img-alt-emphasis
+![*em* and `code` and <b>x</b>](a.png "Title") ![a&amp;b](c.png)
+@@@ img-in-link
+[![img](i.png)](http://x.example.com)
+@@@ img-angle-url
+![a](<my image.png>) ![b](my%20image.png)
+@@@ link-ref-titles
+[a][r1] [b][r2] [c][R3]
+
+[r1]: http://a.example.com "Title 1"
+[r2]: <http://b.example.com/x y> 'Title 2'
+[r3]: http://c.example.com (Title 3)
+@@@ link-unicode-label
+[日本語][リンク]
+
+[リンク]: http://example.jp
+@@@ link-nested-brackets
+[a [b] c](http://x.y) [d [e](http://f.g)](http://h.i)
+@@@ link-entity-url
+[a](http://x.y/?a&amp;b) [b](http://x.y/&#x41;) [c](http://x.y/%41)
+@@@ link-angle-space
+[a](<b c>) [d](<e)>)
+@@@ link-empty
+[]() [x]() [](y)
+@@@ link-mailto
+[mail](mailto:a@b.c) [MAIL](MAILTO:A@B.C)
+@@@ link-title-entity
+[a](http://x.y "&amp; &quot; \"esc\"")
+@@@ ent-variants
+&#X41; &#0; &#xE000; &#55357; &#x110000; &amp;amp; &#1234567; &#12345678; &CounterClockwiseContourIntegral; &nbsp
+@@@ misc-zero-width
+a​b (ZWSP) and c‌d and e﻿f
+@@@ misc-nbsp
+non breaking space here
+@@@ misc-emoji-shortcode
+:smile: :+1: :thumbsup:
+@@@ misc-long-word
+Averyveryveryveryveryveryveryveryveryveryveryveryveryveryveryveryveryveryveryveryverylongword
+@@@ misc-only-html
+<b>x</b>
+@@@ misc-only-entity chomp=1
+&copy;
+@@@ misc-hr-after-para
+para
+***
+text
+@@@ misc-quote-list-code
+> 1. item
+>    ```
+>    code
+>    ```
+> 2. item2
+@@@ misc-wiki-and-macro-in-code
+`[[Wiki]]` and `{{macro}}` and ```#123```
+@@@ misc-redmine-pre-block
+<pre>
+#123 [[Wiki]] {{macro}}
+</pre>
+@@@ misc-at-mentions
+@user @user.name @user-name hello@world (@paren)
+@@@ misc-url-in-code
+`http://example.com` and <code>www.example.com</code>
+@@@ misc-ampersand-text
+AT&T R&D a & b a&b &unknown
+@@@ misc-angle-text
+a < b > c <notatag 1 < 2
+@@@ misc-quotes
+"double" 'single' `back`
+@@@ misc-backslash-newline-list
+- a\
+  b
+@@@ misc-heading-in-list
+- # heading in list
+- text
+@@@ misc-thematic-in-list
+- a
+- ***
+- b
+@@@ misc-setext-in-quote
+> Title
+> =====
+@@@ misc-html-inline-across-lines
+a <span
+class="x">b</span> c
+@@@ misc-link-across-lines
+[multi
+line](http://x.y) [ref
+label]
+
+[ref label]: http://r.example.com
+@@@ misc-emphasis-across-lines
+*em
+across* **strong
+across**
+@@@ misc-autolink-angle-variants
+<http://a.b> <https://a.b/c?d=e&f=g> <ftp://a.b> <irc://a.b> <a+b://c> <foo@bar.example.com> <mailto:foo@bar> <http://a.b/c d>
+@@@ misc-sanitizer-svg-math
+<svg><script>alert(1)</script><circle/></svg> <math><mi>x</mi></math>
+@@@ misc-iframe-content
+<iframe src="https://www.youtube.com/embed/x">fallback text</iframe>
+@@@ misc-object-embed
+<object data="x.swf"><param name="a" value="b"><embed src="x.swf"></object>
+@@@ misc-form-elements
+<form><label for="a">L</label><input id="a"><select><option selected>o</option></select><textarea>t</textarea><button>b</button></form>
+@@@ misc-style-block
+<style>
+body { color: red }
+</style>
+after
+@@@ misc-font-center
+<font color="red">red</font> <center>c</center> <big>b</big>
+@@@ misc-abbr-dfn
+<abbr title="HyperText">HTML</abbr> <dfn>term</dfn> <cite>c</cite>
+@@@ misc-time
+<time datetime="2024-01-01T00:00">Jan</time>
+@@@ misc-del-ins-cite
+<del cite="http://x.y" datetime="2020">d</del> <ins cite="javascript:x">i</ins> <q cite="/rel">q</q> <blockquote cite="ftp://x">b</blockquote>
+@@@ misc-img-longdesc
+<img src="a.png" longdesc="http://x.y/desc"> <img src="b.png" longdesc="javascript:x">
+@@@ misc-table-attrs
+<table border="1" cellspacing="0" cellpadding="3" width="100%" style="border-collapse:collapse"><tr><th colspan="2" align="center" bgcolor="#ccc">h</th></tr><tr><td valign="top" nowrap>a</td><td headers="x" scope="row">b</td></tr></table>
+@@@ misc-sup-sub-footnote-like
+x<sup>2</sup> H<sub>2</sub>O <sup><a href="#fn-1" id="fnref-1">1</a></sup>
+@@@ misc-ul-class
+<ul class="contains-task-list"><li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled checked> raw task</li></ul>
+@@@ misc-div-alert-raw
+<div class="markdown-alert markdown-alert-note">
+<p class="markdown-alert-title">Note</p>
+<p>raw alert html</p>
+</div>
+@@@ misc-div-alert-raw-custom
+<div class="markdown-alert markdown-alert-custom">
+<p class="markdown-alert-title">Custom</p>
+</div>
+@@@ misc-section-footnotes-raw
+<section class="footnotes"><ol><li id="fn-1"><p>raw</p></li></ol></section>
+@@@ misc-empty-link-text
+[](http://x.example.com) <a href="http://y.example.com"></a>
+@@@ misc-link-target-raw
+<a href="http://x.example.com" target="_blank" rel="nofollow">t</a> <a href="/rel" target="_blank">r</a> <a href="mailto:a@b.c" target="_top">m</a>
+@@@ misc-link-class-raw
+<a href="http://x.example.com" class="wiki-page">w</a> <a href="http://x.example.com" class="  ">sp</a>
+@@@ misc-url-with-quotes
+<a href='http://x.example.com/"q"'>q</a> <a href="http://x.example.com/it's">a</a>
+@@@ misc-href-space-encoding
+<a href="http://x.example.com/a b">s</a> <img src="/a b.png">
+@@@ misc-autolinked-user-mailto
+@foo@bar.com user:foo@bar.com  user: foo@bar.com attachment:foo@2x.png
+@@@ misc-hires-in-link
+[printscreen@2x.png](printscreen@2x.png) <a href="mailto:x@2x.png">x@2x.png</a>
+@@@ misc-heading-with-link-and-footnote
+## [Link](http://x.example.com) and code `x` [^n]
+
+[^n]: note
+@@@ misc-blockquote-footnote-alert
+> [!NOTE]
+> See[^a].
+
+[^a]: alert footnote
