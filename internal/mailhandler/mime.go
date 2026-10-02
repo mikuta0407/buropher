@@ -398,7 +398,12 @@ func (p *Part) DecodedBody() []byte {
 	case "base64":
 		return decodeBase64(body)
 	case "quoted-printable":
-		return toLF(decodeQuotedPrintable(toCRLF(body)))
+		// mail gem の to_lf は ASCII のみの文字列（バイナリ文字列で安全に変換できるもの）だけを変換する
+		b := decodeQuotedPrintable(toCRLF(body))
+		if isASCII(b) {
+			return toLF(b)
+		}
+		return b
 	case "7bit":
 		return toLF(body)
 	}
