@@ -193,11 +193,21 @@ func (s *Server) Assets() *assets.Pipeline { return s.assets }
 func (s *Server) App() *handler.App { return s.app }
 
 // newAssets は embed（開発時は DevWebDir/assets）からアセットパイプラインを作る。
+// 外部テーマ（config の web.themes_dir）は ExtraThemes として読み込み、同梱テーマと同じくダイジェスト付き URL で配信する。
 func newAssets(cfg *config.Config) (*assets.Pipeline, error) {
-	if cfg.DevWebDir != "" {
-		return assets.New(os.DirFS(filepath.Join(cfg.DevWebDir, "assets")), assets.Options{Dev: true})
+	var opts assets.Options
+	if cfg.Web.ThemesDir != "" {
+		if fi, err := os.Stat(cfg.Web.ThemesDir); err != nil || !fi.IsDir() {
+			return nil, fmt.Errorf("config: web.themes_dir %q is not a directory", cfg.Web.ThemesDir)
+		}
+		// 起動時に読み込む（Redmine の本番環境と同じく、テーマの追加・変更は再起動で反映する）
+		opts.ExtraThemes = os.DirFS(cfg.Web.ThemesDir)
 	}
-	return assets.New(web.Assets(), assets.Options{})
+	if cfg.DevWebDir != "" {
+		opts.Dev = true
+		return assets.New(os.DirFS(filepath.Join(cfg.DevWebDir, "assets")), opts)
+	}
+	return assets.New(web.Assets(), opts)
 }
 
 // newViews はテンプレートエンジンを作る（開発時は DevWebDir/templates を都度再読み込み）。

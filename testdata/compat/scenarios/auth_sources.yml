@@ -12,6 +12,9 @@ normalize:
   # ジャンプボックスの「最近使ったもの」は共用の参照環境（reset しない）の閲覧履歴に依存するため除く
   strip_selectors:
     - "#project-jump"
+    # buropher 拡張: LDAP の追加設定・同期の欄（class buropher-extra。参照に無い）
+    - "#ldap-extra"
+    - "#ldap-sync-status"
 
 requests:
   # ---- 権限 ----

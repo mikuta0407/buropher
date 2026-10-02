@@ -5,7 +5,9 @@
 //
 //   - 接続方式 ldap_mode: ldap（平文）/ ldaps_verify_none（simple_tls・証明書検証なし）/
 //     ldaps_verify_peer（simple_tls・証明書検証あり）。buropher 拡張として STARTTLS（StartTLS=true、
-//     平文接続後に StartTLS。証明書検証は VerifyPeer に従う）を持つ（フォームには出さない）。
+//     平文接続後に StartTLS。証明書検証は VerifyPeer に従う）を持つ。
+//   - buropher 拡張（ldap_ext.go）: CA 証明書の指定、複数ホストのフェイルオーバ、Active Directory プリセット、
+//     グループの取得（memberOf 属性 / グループ検索。ネストは LDAP_MATCHING_RULE_IN_CHAIN）、定期同期用の Lookup。
 //   - bind: account / account_password の両方が空なら匿名、そうでなければ simple bind。
 //     account に "$login" を含むと、ログイン名を DN エスケープして置換し、ユーザー自身のパスワードで bind する。
 //   - 検索フィルタ: (&(&(objectClass=*)<filter>)(<attr_login>=<login>))。
@@ -16,7 +18,6 @@
 package ldap
 
 import (
-	"crypto/tls"
 	"errors"
 	"fmt"
 	"net"
@@ -54,6 +55,18 @@ type Source struct {
 	AttrLastname     string
 	AttrMail         string
 	OntheflyRegister bool
+
+	// 以下は buropher 拡張（ldap_ext.go）。
+
+	// FailoverHosts は Host:Port に接続できないときに順に試す予備のホスト（"host" または "host:port"。
+	// ポート省略時は Port）。
+	FailoverHosts []string
+	// CACert は TLS（LDAPS / STARTTLS）の検証に追加する CA 証明書（PEM の本文、またはファイルのパス）。
+	CACert string
+	// DirectoryType は "openldap" / "active_directory"（空は汎用）。
+	DirectoryType string
+	// Groups はグループの取得方法（Mode が空なら取得しない）。
+	Groups GroupConfig
 }
 
 // Attrs は authenticate / search が返すユーザー属性（Redmine の attrs ハッシュ）。
@@ -64,6 +77,10 @@ type Attrs struct {
 	Lastname     string
 	Mail         string
 	AuthSourceID int64
+	// Groups はユーザーが所属する LDAP グループの DN（buropher 拡張。Source.Groups.Mode が空なら nil）。
+	Groups []string
+	// GroupsFetched はグループを取得したか（取得に失敗・未設定なら false。false のときグループは同期しない）。
+	GroupsFetched bool
 }
 
 // Error は AuthSourceException / AuthSourceTimeoutException。
@@ -181,16 +198,37 @@ func (s *Source) wrap(err error) error {
 	return newError(err.Error())
 }
 
-// dial は initialize_ldap_con の接続部分（bind は呼び出し側）。
+// dial は initialize_ldap_con の接続部分（bind は呼び出し側）。接続できなければ予備のホストを順に試す。
 func (ss *session) dial() (*goldap.Conn, error) {
 	s := ss.s
-	addr := net.JoinHostPort(s.Host, strconv.Itoa(s.Port))
+	var firstErr error
+	for _, ep := range s.endpoints() {
+		conn, err := ss.dialHost(ep.host, ep.port)
+		if err == nil {
+			return conn, nil
+		}
+		if firstErr == nil {
+			firstErr = err
+		}
+		var le *Error
+		if errors.As(err, &le) || time.Until(ss.deadline) <= 0 {
+			// 設定の誤り（CA 証明書など）や期限切れは次のホストを試さない
+			break
+		}
+	}
+	return nil, firstErr
+}
+
+// dialHost は 1 つのホストに接続する（TLS / STARTTLS を含む）。
+func (ss *session) dialHost(host string, port int) (*goldap.Conn, error) {
+	s := ss.s
+	addr := net.JoinHostPort(host, strconv.Itoa(port))
 	dialer := &net.Dialer{Timeout: ss.remaining()}
-	tc := &tls.Config{InsecureSkipVerify: !s.VerifyPeer, ServerName: s.Host}
-	var (
-		conn *goldap.Conn
-		err  error
-	)
+	tc, err := s.tlsConfig(host)
+	if err != nil {
+		return nil, err
+	}
+	var conn *goldap.Conn
 	if s.TLS {
 		conn, err = goldap.DialURL("ldaps://"+addr, goldap.DialWithDialer(dialer), goldap.DialWithTLSConfig(tc))
 	} else {
@@ -250,7 +288,7 @@ func (s *Source) Authenticate(login, password string) (*Attrs, error) {
 	}
 	var out *Attrs
 	err := s.run(func(ss *session) error {
-		attrs, err := ss.getUserDN(login, password)
+		attrs, entry, conn, err := ss.getUserDN(login, password)
 		if err != nil || attrs == nil || attrs.DN == "" {
 			return err
 		}
@@ -259,6 +297,12 @@ func (s *Source) Authenticate(login, password string) (*Attrs, error) {
 			return err
 		}
 		a := *attrs
+		if s.Groups.Enabled() {
+			// グループの取得の失敗は認証の失敗にしない（グループは同期しない）
+			if groups, gerr := ss.userGroups(conn, attrs.DN, login, entry); gerr == nil {
+				a.Groups, a.GroupsFetched = groups, true
+			}
+		}
 		a.DN = ""
 		out = &a
 		return nil
@@ -267,7 +311,8 @@ func (s *Source) Authenticate(login, password string) (*Attrs, error) {
 }
 
 // getUserDN は get_user_dn（ログイン名から DN と、オンザフライ登録なら属性を得る）。
-func (ss *session) getUserDN(login, password string) (*Attrs, error) {
+// グループの取得のため、検索したエントリと検索に使った接続も返す。
+func (ss *session) getUserDN(login, password string) (*Attrs, *goldap.Entry, *goldap.Conn, error) {
 	s := ss.s
 	user, pw := s.Account, s.AccountPassword
 	if strings.Contains(s.Account, "$login") {
@@ -275,37 +320,42 @@ func (ss *session) getUserDN(login, password string) (*Attrs, error) {
 	}
 	conn, err := ss.dial()
 	if err != nil {
-		return nil, err
+		return nil, nil, nil, err
 	}
 	ok, err := bind(conn, user, pw)
 	if err != nil {
-		return nil, err
+		return nil, nil, nil, err
 	}
 	if !ok {
 		// net-ldap の search は bind 失敗時に結果なしを返す
-		return &Attrs{}, nil
+		return &Attrs{}, nil, conn, nil
 	}
 	attrNames := []string{"dn"}
 	if s.OntheflyRegister {
 		attrNames = append(attrNames, s.AttrFirstname, s.AttrLastname, s.AttrMail)
+	}
+	if s.Groups.Mode == GroupModeMemberOf {
+		attrNames = append(attrNames, s.Groups.memberOfAttr())
 	}
 	req := goldap.NewSearchRequest(s.BaseDN, goldap.ScopeWholeSubtree, goldap.NeverDerefAliases, 0, 0, false,
 		s.searchFilter(eqFilter(s.AttrLogin, login)), compact(attrNames), nil)
 	res, err := conn.Search(req)
 	if err != nil {
 		if res == nil || !searchResultUsable(err) {
-			return nil, searchError(err)
+			return nil, nil, conn, searchError(err)
 		}
 	}
 	attrs := &Attrs{}
+	var entry *goldap.Entry
 	for _, e := range res.Entries {
 		if s.OntheflyRegister {
 			attrs = s.entryAttrs(e)
 		} else {
 			attrs = &Attrs{DN: e.DN}
 		}
+		entry = e
 	}
-	return attrs, nil
+	return attrs, entry, conn, nil
 }
 
 // searchResultUsable はサーバのエラー応答（検索結果コードが成功以外）を結果なしとして扱えるか。

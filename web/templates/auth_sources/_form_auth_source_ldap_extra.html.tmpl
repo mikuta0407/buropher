@@ -1,0 +1,91 @@
+{{/* buropher 拡張: LDAP の追加設定（Redmine の項目は _form_auth_source_ldap のまま。ここは class buropher-extra） */}}{{$f := .f}}{{$a := assigns}}{{$src := $a.AuthSource -}}
+<div class="buropher-extra" id="ldap-extra">
+<fieldset class="box tabular buropher-extra" id="ldap-extra-connection"><legend>{{l "buropher.ldap.label_connection"}}</legend>
+  <p>
+    {{$f.Select "directory_type" (list (list (l "buropher.ldap.label_directory_generic") "") (list (l "buropher.ldap.label_directory_openldap") "openldap") (list (l "buropher.ldap.label_directory_ad") "active_directory"))}}
+    <em class="info">{{l "buropher.ldap.text_directory_type"}}</em>
+  </p>
+  <p>
+    <label>{{l "buropher.ldap.label_presets"}}</label>
+    <button type="button" class="ldap-preset" data-preset="openldap">{{l "buropher.ldap.label_directory_openldap"}}</button>
+    <button type="button" class="ldap-preset" data-preset="ad_sam">{{l "buropher.ldap.label_preset_ad_sam"}}</button>
+    <button type="button" class="ldap-preset" data-preset="ad_upn">{{l "buropher.ldap.label_preset_ad_upn"}}</button>
+    <em class="info">{{l "buropher.ldap.text_presets"}}</em>
+  </p>
+  <p>
+    {{$f.CheckBox "starttls"}}
+    <em class="info">{{l "buropher.ldap.text_starttls"}}</em>
+  </p>
+  <p>{{$f.CheckBox "starttls_verify_peer"}}</p>
+  <p>
+    {{$f.TextArea "failover_hosts" (hash "rows" 3 "cols" 40)}}
+    <em class="info">{{l "buropher.ldap.text_failover_hosts"}}</em>
+  </p>
+  <p>
+    {{$f.TextArea "ca_cert" (hash "rows" 4 "cols" 60)}}
+    <em class="info">{{l "buropher.ldap.text_ca_cert"}}</em>
+  </p>
+</fieldset>
+
+<fieldset class="box buropher-extra" id="ldap-extra-groups"><legend>{{l "buropher.ldap.label_group_sync"}}</legend>
+  <div class="tabular">
+  <p>
+    {{$f.Select "group_mode" (list (list (l "buropher.ldap.label_group_mode_none") "") (list (l "buropher.ldap.label_group_mode_memberof") "memberof") (list (l "buropher.ldap.label_group_mode_search") "search"))}}
+    <em class="info">{{l "buropher.ldap.text_group_mode"}}</em>
+  </p>
+  <p>{{$f.TextField "group_base_dn" (hash "size" 60)}}</p>
+  <p>
+    {{$f.TextField "group_filter" (hash "size" 60 "placeholder" "(objectClass=groupOfNames)")}}
+    <em class="info">{{l "buropher.ldap.text_group_filter"}}</em>
+  </p>
+  <p>
+    {{$f.TextField "group_member_attr" (hash "size" 20 "placeholder" "member")}}
+    <em class="info">{{l "buropher.ldap.text_group_member_attr"}}</em>
+  </p>
+  <p>{{$f.TextField "group_memberof_attr" (hash "size" 20 "placeholder" "memberOf")}}</p>
+  <p>
+    {{$f.CheckBox "group_nested"}}
+    <em class="info">{{l "buropher.ldap.text_group_nested"}}</em>
+  </p>
+  </div>
+  <p><em class="info">{{l "buropher.ldap.text_group_mappings"}}</em></p>
+  <table class="list" id="group-mappings">
+    <thead><tr>
+      <th>{{l "buropher.ldap.field_external_group"}}</th>
+      <th>{{l "label_group"}}</th>
+    </tr></thead>
+    <tbody>
+    {{range $m := $src.Mappings}}
+    <tr>
+      <td>{{text_field_tag "group_mapping_external[]" $m.ExternalGroup (hash "size" 60 "id" nil)}}</td>
+      <td>{{select_tag "group_mapping_group_id[]" (options_for_select $a.GroupOptions $m.GroupID) (hash "include_blank" true "id" nil)}}</td>
+    </tr>
+    {{end}}
+    </tbody>
+  </table>
+</fieldset>
+
+<fieldset class="box tabular buropher-extra" id="ldap-extra-sync"><legend>{{l "buropher.ldap.label_periodic_sync"}}</legend>
+  <p>
+    {{$f.CheckBox "sync_enabled"}}
+    <em class="info">{{l "buropher.ldap.text_sync_enabled"}}</em>
+  </p>
+  <p>{{$f.TextField "sync_interval" (hash "size" 4 "placeholder" "24")}}</p>
+  <p>
+    {{$f.CheckBox "sync_lock_missing"}}
+    <em class="info">{{l "buropher.ldap.text_sync_lock_missing"}}</em>
+  </p>
+  <p>{{$f.CheckBox "sync_update_attrs"}}</p>
+</fieldset>
+{{javascript_tag `$(function(){
+  var presets = {
+    openldap: {directory_type: 'openldap', attr_login: 'uid', attr_firstname: 'givenName', attr_lastname: 'sn', attr_mail: 'mail', group_member_attr: 'member', group_filter: '(objectClass=groupOfNames)'},
+    ad_sam: {directory_type: 'active_directory', attr_login: 'sAMAccountName', attr_firstname: 'givenName', attr_lastname: 'sn', attr_mail: 'mail', filter: '(objectClass=user)', group_member_attr: 'member', group_filter: '(objectClass=group)'},
+    ad_upn: {directory_type: 'active_directory', attr_login: 'userPrincipalName', attr_firstname: 'givenName', attr_lastname: 'sn', attr_mail: 'mail', filter: '(objectClass=user)', group_member_attr: 'member', group_filter: '(objectClass=group)'}
+  };
+  $('button.ldap-preset').on('click', function(){
+    var p = presets[$(this).data('preset')];
+    $.each(p, function(k, v){ $('#auth_source_' + k).val(v); });
+  });
+});`}}
+</div><!-- /buropher-extra -->

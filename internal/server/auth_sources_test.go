@@ -34,8 +34,13 @@ func stripRecentlyUsed(s string) string { return recentlyUsedRe.ReplaceAllString
 
 var buropherExtraRe = regexp.MustCompile(`\n<a class="icon icon-add buropher-extra"[^>]*>[^<]*</a>`)
 
-// stripBuropherExtra は buropher 拡張のリンク（class に buropher-extra を持つ a 要素）を除く。
-func stripBuropherExtra(s string) string { return buropherExtraRe.ReplaceAllString(s, "") }
+// buropherExtraBlockRe は buropher 拡張の LDAP の追加設定・同期の欄（<!-- /buropher-extra --> で終わる要素）。
+var buropherExtraBlockRe = regexp.MustCompile(`(?s)\n[ ]*<div class="(box )?buropher-extra".*?<!-- /buropher-extra -->\n?`)
+
+// stripBuropherExtra は buropher 拡張のリンク（class に buropher-extra を持つ a 要素）と追加の欄を除く。
+func stripBuropherExtra(s string) string {
+	return buropherExtraBlockRe.ReplaceAllString(buropherExtraRe.ReplaceAllString(s, ""), "")
+}
 
 func TestAuthSourcesPagesMatchRedmine(t *testing.T) {
 	ts, d := newFixtureServer(t)

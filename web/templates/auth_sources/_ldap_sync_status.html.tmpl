@@ -1,0 +1,11 @@
+{{/* buropher 拡張: LDAP の同期（今すぐ同期・最後の結果） */}}{{$src := .src}}
+<div class="box buropher-extra" id="ldap-sync-status">
+  <h3>{{l "buropher.ldap.label_sync_status"}}</h3>
+  {{button_to (l "buropher.ldap.button_sync_now") (printf "/auth_sources/%d/sync" $src.ID) (hash "method" "post" "class" "btn")}}
+  {{if $src.SyncLastAt}}
+  <p>{{l "buropher.ldap.label_sync_last_at"}}: {{$src.SyncLastAt}}</p>
+  <pre>{{$src.SyncLastLog}}</pre>
+  {{else}}
+  <p class="nodata">{{l "label_no_data"}}</p>
+  {{end}}
+</div><!-- /buropher-extra -->

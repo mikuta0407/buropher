@@ -360,6 +360,8 @@ func (a *App) tryToLoginBang(c *Req, login, pw string, activeOnly bool) (*domain
 			return nil, m, nil
 		}
 		a.logger().Info("User created from external auth source", "login", m.Login, "auth_source_id", id)
+		// buropher 拡張: LDAP グループの同期（auth_sources_ldap_ext.go）
+		a.syncLDAPGroupsOnLogin(c, id, m.ID, attrs)
 		if u, err = repository.GetUser(c.Ctx(), a.DB, m.ID); err != nil {
 			return nil, nil, err
 		}
@@ -397,6 +399,10 @@ func (a *App) checkPassword(c *Req, u *domain.User, pw string) (bool, error) {
 			return false, nil
 		}
 		attrs, err := src.Authenticate(u.Login, pw)
+		if attrs != nil {
+			// buropher 拡張: LDAP グループの同期（auth_sources_ldap_ext.go）
+			a.syncLDAPGroupsOnLogin(c, rec.ID, u.ID, attrs)
+		}
 		return attrs != nil, err
 	}
 	ok, err := password.Verify(u.PasswordHash, pw)

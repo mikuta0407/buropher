@@ -24,6 +24,8 @@ type Config struct {
 	SCM     SCM     `toml:"scm"`
 	// MailReceive はサーバー内でのメールの定期受信（IMAP / POP3）。
 	MailReceive MailReceive `toml:"mail_receive"`
+	// Web は画面まわり（外部テーマ等）の設定。
+	Web Web `toml:"web"`
 	// DevAssetsDir が空でなければ embed ではなくディスクからアセット/テンプレートを読む（開発用）。
 	DevWebDir string `toml:"dev_web_dir"`
 }
@@ -176,6 +178,13 @@ type MailReceive struct {
 	Options map[string]string `toml:"options"`
 }
 
+// Web は画面まわりの設定。
+type Web struct {
+	// ThemesDir は外部テーマのディレクトリ（Redmine の Rails.root/themes 相当。直下に
+	// <テーマ>/stylesheets/application.css を持つ）。空なら同梱テーマ（classic / alternate）のみ。
+	ThemesDir string `toml:"themes_dir"`
+}
+
 func Default() *Config {
 	return &Config{
 		Server:   Server{Addr: ":3000"},
@@ -210,6 +219,7 @@ func Load(path string) (*Config, error) {
 		"BUROPHER_PDF_FONT_DIR":       &c.PDF.FontDir,
 		"BUROPHER_SCM_GIT_COMMAND":    &c.SCM.GitCommand,
 		"BUROPHER_SCM_FETCH_INTERVAL": &c.SCM.FetchInterval,
+		"BUROPHER_THEMES_DIR":         &c.Web.ThemesDir,
 	}
 	for k, p := range env {
 		if v, ok := os.LookupEnv(k); ok {
