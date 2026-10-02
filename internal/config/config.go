@@ -14,6 +14,8 @@ type Config struct {
 	Database Database `toml:"database"`
 	Storage  Storage  `toml:"storage"`
 	Auth     Auth     `toml:"auth"`
+	// MailReceive はサーバー内でのメールの定期受信（IMAP / POP3）。
+	MailReceive MailReceive `toml:"mail_receive"`
 	// DevAssetsDir が空でなければ embed ではなくディスクからアセット/テンプレートを読む（開発用）。
 	DevWebDir string `toml:"dev_web_dir"`
 }
@@ -42,6 +44,32 @@ type Auth struct {
 	SudoMode bool `toml:"sudo_mode"`
 	// SudoModeTimeout は sudo モードの有効時間（分）。0 なら 15。
 	SudoModeTimeout int `toml:"sudo_mode_timeout"`
+}
+
+// MailReceive はサーバー内でのメールの定期受信（Redmine の rake redmine:email:receive_imap / receive_pop3 を
+// cron で動かす代わり）。各項目の意味は rake の環境変数と同じ。
+type MailReceive struct {
+	// Protocol は "imap" または "pop3"（空なら定期受信しない）。
+	Protocol string `toml:"protocol"`
+	// Interval は受信の間隔（秒）。0 なら 300。
+	Interval int    `toml:"interval"`
+	Host     string `toml:"host"`
+	Port     string `toml:"port"`
+	// SSL は SSL/TLS を使うか（"" 以外なら使う。"force" ならサーバー証明書を検証しない）。
+	SSL      string `toml:"ssl"`
+	StartTLS bool   `toml:"starttls"`
+	Username string `toml:"username"`
+	Password string `toml:"password"`
+	// Folder / MoveOnSuccess / MoveOnFailure は IMAP のみ。
+	Folder        string `toml:"folder"`
+	MoveOnSuccess string `toml:"move_on_success"`
+	MoveOnFailure string `toml:"move_on_failure"`
+	// APOP / DeleteUnprocessed は POP3 のみ。
+	APOP              bool `toml:"apop"`
+	DeleteUnprocessed bool `toml:"delete_unprocessed"`
+	// Options は MailHandler のオプション（unknown_user / project / tracker / allow_override / private ... を
+	// rake の環境変数と同じ名前で指定する）。
+	Options map[string]string `toml:"options"`
 }
 
 func Default() *Config {

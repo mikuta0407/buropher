@@ -257,7 +257,7 @@ func (r *receiver) userString() string {
 	if r.user == nil {
 		return ""
 	}
-	return r.user.Name(r.h.Settings.String("user_format"))
+	return strings.TrimSpace(r.user.Name(r.h.Settings.String("user_format")))
 }
 
 // dispatch は In-Reply-To / References のメッセージ ID、件名の [#123] / [msg123] から処理を振り分ける。

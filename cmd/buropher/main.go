@@ -36,6 +36,7 @@ commands:
   init      load default data and create the administrator
   redmine   migrate data from Redmine (export | import | verify)
   setting   get or set a setting (setting get <name> / setting set <name> <value>)
+  mail      receive emails (mail receive -stdin | -imap | -pop3 [options])
   version   print version
 `)
 }
@@ -58,6 +59,8 @@ func main() {
 		err = redmineCmd(args)
 	case "setting":
 		err = settingCmd(args)
+	case "mail":
+		err = mailCmd(args)
 	case "version":
 		fmt.Println("buropher", version)
 	default:
@@ -91,6 +94,10 @@ func serve(args []string) error {
 	srv, err := server.New(cfg, d, server.Options{Version: version})
 	if err != nil {
 		return err
+	}
+	// [mail_receive] があればメールを定期受信する
+	if pc, ok := mailPollConfig(cfg.MailReceive); ok {
+		go srv.App().MailHandler().Poll(ctx, pc)
 	}
 	return srv.Run(ctx)
 }
