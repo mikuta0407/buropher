@@ -15,6 +15,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/httpx"
 	"github.com/mikuta0407/buropher/internal/i18n"
+	"github.com/mikuta0407/buropher/internal/issues"
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/textformat/redmine"
 	"github.com/mikuta0407/buropher/internal/view/rails"
@@ -22,18 +23,22 @@ import (
 
 // journalView は 1 件のジャーナル（@journals の要素）。
 type journalView struct {
-	*repository.IssueJournal
-	l      *issueLookup
-	issue  *issueModel
-	Indice int
-	User   *domain.User
+	*issues.Journal
+	l     *issueLookup
+	issue *issueModel
+	User  *domain.User
+
+	visible     []*domain.JournalDetail
+	visibleDone bool
 }
 
 // visibleJournals は Issue#visible_journals_with_index(User.current)。
 func (m *issueModel) visibleJournals() []*journalView {
-	js, err := repository.IssueJournals(m.l.ctx, m.l.a.DB, m.Row.ID)
+	if m.I == nil {
+		return nil
+	}
+	js, err := m.env().VisibleJournalsWithIndex(m.l.ctx, m.I, m.user())
 	m.l.fail(err)
-	canPrivate := m.allowedTo("view_private_notes")
 	var uids []int64
 	for _, j := range js {
 		uids = append(uids, j.UserID)
@@ -42,19 +47,15 @@ func (m *issueModel) visibleJournals() []*journalView {
 		}
 	}
 	m.l.preloadPrincipals(uids)
-	var out []*journalView
-	for i, j := range js {
-		jv := &journalView{IssueJournal: j, l: m.l, issue: m, Indice: i + 1, User: m.l.principal(j.UserID)}
-		if j.PrivateNotes && !canPrivate && !(j.UserID == m.user().ID && m.user().Logged()) {
-			continue
-		}
-		if strings.TrimSpace(j.NotesString()) == "" && len(jv.VisibleDetails()) == 0 {
-			continue
-		}
-		out = append(out, jv)
+	out := make([]*journalView, 0, len(js))
+	for _, j := range js {
+		out = append(out, &journalView{Journal: j, l: m.l, issue: m, User: m.l.principal(j.UserID)})
 	}
 	return out
 }
+
+// NotesString は notes。
+func (j *journalView) NotesString() string { return j.Journal.Notes }
 
 // HasNotes は notes.present?。
 func (j *journalView) HasNotes() bool { return rails.IsPresent(j.NotesString()) }
@@ -75,37 +76,21 @@ func (j *journalView) CSSClasses() string {
 }
 
 // VisibleDetails は Journal#visible_details(User.current)。
-func (j *journalView) VisibleDetails() []*repository.IssueJournalDetail {
-	var out []*repository.IssueJournalDetail
-	for _, d := range j.Details {
-		switch d.Property {
-		case "cf":
-			cf := j.l.customField(customfield.RubyToI(d.PropKey))
-			if cf == nil || !j.l.cfVisibleBy(cf, j.issue.Project) {
-				continue
-			}
-		case "relation":
-			id := d.Value
-			if id == nil {
-				id = d.OldValue
-			}
-			if id == nil {
-				continue
-			}
-			r := j.l.issue(customfield.RubyToI(*id))
-			if r == nil || !j.l.issueVisible(r) {
-				continue
-			}
-		}
-		out = append(out, d)
+func (j *journalView) VisibleDetails() []*domain.JournalDetail {
+	if !j.visibleDone {
+		j.visibleDone = true
+		ds, err := j.l.issuesEnv().VisibleDetails(j.l.ctx, j.Journal, j.issue.I, j.l.c.User)
+		j.l.fail(err)
+		j.visible = ds
 	}
-	return out
+	return j.visible
 }
 
 // EditableBy は Journal#editable_by?(User.current)。
 func (j *journalView) EditableBy() bool {
-	u := j.l.c.User
-	return u.Logged() && (j.issue.allowedTo("edit_issue_notes") || (j.UserID == u.ID && j.issue.allowedTo("edit_own_issue_notes")))
+	ok, err := j.l.issuesEnv().JournalEditableBy(j.l.ctx, j.Journal, j.l.c.User)
+	j.l.fail(err)
+	return ok
 }
 
 // Attachments は Journal#attachments（追加された添付）。
@@ -132,10 +117,10 @@ func (j *journalView) Attachments() []*repository.ReadAttachment {
 
 // UpdatedOn は journal.updated_on（nil なら created_on）。
 func (j *journalView) UpdatedOn() time.Time {
-	if j.UpdatedAt.Valid {
-		return j.UpdatedAt.Time
+	if j.UpdatedAt != nil {
+		return *j.UpdatedAt
 	}
-	return j.CreatedAt.Time
+	return j.CreatedAt
 }
 
 // PrivateNotesIndicator は render_private_notes_indicator(journal)。
@@ -149,19 +134,19 @@ func (j *journalView) PrivateNotesIndicator() template.HTML {
 
 // UpdateInfo は render_journal_update_info(journal)。
 func (j *journalView) UpdateInfo() template.HTML {
-	if !j.UpdatedAt.Valid || j.UpdatedAt.Time.Equal(j.CreatedAt.Time) {
+	if j.UpdatedAt == nil || j.UpdatedAt.Equal(j.CreatedAt) {
 		return ""
 	}
 	var by string
 	if j.UpdatedByID != nil {
 		by = j.l.principalName(j.l.principal(*j.UpdatedByID))
 	}
-	title := j.l.L("label_time_by_author", i18n.Vars{"time": j.l.formatTime(j.UpdatedAt.Time), "author": by})
+	title := j.l.L("label_time_by_author", i18n.Vars{"time": j.l.formatTime(*j.UpdatedAt), "author": by})
 	return rails.ContentTag("span", "· "+j.l.L("label_edited"), rails.NewHash("title", title, "class", "update-info"))
 }
 
-// Notes は render_notes(issue, journal)。
-func (j *journalView) Notes() template.HTML {
+// NotesHTML は render_notes(issue, journal)。
+func (j *journalView) NotesHTML() template.HTML {
 	text := j.l.renderer().Textilizable(j.NotesString(), redmine.Options{Object: &redmine.Object{Kind: "journal", ID: j.ID,
 		Project: j.issue.Project, JournalizedID: j.IssueID}})
 	return rails.ContentTag("div", text, rails.NewHash("id", "journal-"+strconv.FormatInt(j.ID, 10)+"-notes",
@@ -206,14 +191,14 @@ func (j *journalView) DetailStrings() []template.HTML {
 
 // multiDetail は MultipleValuesDetail（複数値 CF の追加・削除をまとめたもの）。
 type detailItem struct {
-	d        *repository.IssueJournalDetail
+	d        *domain.JournalDetail
 	values   []string
 	olds     []string
 	multiple bool
 }
 
 // detailsToStrings は details_to_strings(details, no_html, only_path)。
-func (l *issueLookup) detailsToStrings(details []*repository.IssueJournalDetail, issue *issueModel, noHTML, onlyPath bool) []template.HTML {
+func (l *issueLookup) detailsToStrings(details []*domain.JournalDetail, issue *issueModel, noHTML, onlyPath bool) []template.HTML {
 	var out []template.HTML
 	type changes struct {
 		added, deleted []string
@@ -244,10 +229,10 @@ func (l *issueLookup) detailsToStrings(details []*repository.IssueJournalDetail,
 		ch := byField[id]
 		key := strconv.FormatInt(id, 10)
 		if len(ch.added) > 0 {
-			out = append(out, l.showDetail(detailItem{d: &repository.IssueJournalDetail{Property: "cf", PropKey: key}, values: ch.added, multiple: true}, issue, noHTML, onlyPath))
+			out = append(out, l.showDetail(detailItem{d: &domain.JournalDetail{Property: "cf", PropKey: key}, values: ch.added, multiple: true}, issue, noHTML, onlyPath))
 		}
 		if len(ch.deleted) > 0 {
-			out = append(out, l.showDetail(detailItem{d: &repository.IssueJournalDetail{Property: "cf", PropKey: key}, olds: ch.deleted, multiple: true}, issue, noHTML, onlyPath))
+			out = append(out, l.showDetail(detailItem{d: &domain.JournalDetail{Property: "cf", PropKey: key}, olds: ch.deleted, multiple: true}, issue, noHTML, onlyPath))
 		}
 	}
 	return out

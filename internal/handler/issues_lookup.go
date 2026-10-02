@@ -17,6 +17,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/db"
 	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/helper"
+	"github.com/mikuta0407/buropher/internal/issues"
 	"github.com/mikuta0407/buropher/internal/query"
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/textformat/redmine"
@@ -49,6 +50,7 @@ type issueLookup struct {
 	attachs    map[int64]*repository.ReadAttachment
 	relations  map[int64]*repository.IssueRelation
 	vVisible   map[int64]bool
+	ie         *issues.Env
 }
 
 func (a *App) newIssueLookup(c *Req) *issueLookup {

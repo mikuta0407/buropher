@@ -111,21 +111,20 @@ func (a *App) changesetVisibleCondition(c *Req) (string, error) {
 
 // visibleRelations は @issue.relations.select {|r| r.other_issue(@issue)&.visible? }（IssueRelation#<=> の順）。
 func (l *issueLookup) visibleRelations(m *issueModel) []*repository.IssueRelation {
-	rels, err := repository.IssueRelations(l.ctx, l.a.DB, m.Row.ID)
+	if m.I == nil {
+		return nil
+	}
+	rels, err := l.issuesEnv().VisibleRelations(l.ctx, m.I, l.c.User)
 	l.fail(err)
 	var ids []int64
+	out := make([]*repository.IssueRelation, 0, len(rels))
 	for _, r := range rels {
+		rr := &repository.IssueRelation{ID: r.ID, IssueFromID: r.IssueFromID, IssueToID: r.IssueToID, RelationType: r.RelationType, Delay: r.Delay}
+		l.relations[r.ID] = rr
+		out = append(out, rr)
 		ids = append(ids, r.IssueFromID, r.IssueToID)
 	}
 	l.preloadIssues(ids)
-	var out []*repository.IssueRelation
-	for _, r := range rels {
-		l.relations[r.ID] = r
-		if o := l.issue(otherIssueID(r, m.Row.ID)); o != nil && l.issueVisible(o) {
-			out = append(out, r)
-		}
-	}
-	sortRelations(out)
 	return out
 }
 
@@ -942,7 +941,7 @@ func (v *issueShowView) WatcherLink() template.HTML {
 
 // CanCopy は User.current.allowed_to?(:copy_issues, @project) && Issue.allowed_target_projects.any?。
 func (v *issueShowView) CanCopy() bool {
-	return v.M.allowedTo("copy_issues") && len(v.l.allowedTargetProjects(nil)) > 0
+	return v.M.allowedTo("copy_issues") && v.l.allowedTargetProjectsAny()
 }
 
 // CopyPath は project_copy_issue_path(@project, @issue)。
@@ -977,7 +976,10 @@ func (v *issueShowView) destroyConfirmation() string {
 
 // watcherIDs は @issue.watcher_users の id。
 func (v *issueShowView) watcherIDs() []int64 {
-	ids, err := repository.WatcherPrincipalIDs(v.l.ctx, v.l.a.DB, "issue", v.M.Row.ID)
+	if v.M.I == nil {
+		return nil
+	}
+	ids, err := v.l.issuesEnv().WatcherIDs(v.l.ctx, v.M.I)
 	v.l.fail(err)
 	return ids
 }
