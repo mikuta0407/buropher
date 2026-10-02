@@ -137,6 +137,25 @@
 //     repository.ContainerAttachmentList と attachments/_links（helper の link_to_attachments）だけを使う。
 //     共通の添付基盤を差し替えるときは NewWikiAttachmentSaver を合わせる。
 //
+// # 規約: 通知（Mailer.deliver_* / Redmine::Notifiable）
+//
+// メール・Discord DM の通知は a.Notify（*notify.Service。nil でも呼べる）に、DB のコミット後に渡す
+// （Redmine の after_create_commit / deliver_later と同じ。通知の失敗で操作を失敗させない）。
+// Setting.notified_events の判定・受信者の計算・チャネル（メール / Discord）の決定・ジョブ投入は notify が行う。
+//
+//   - チケット: issues.Env の Notifier に a.issuesNotifier() を設定し（issueLookup.issuesEnv は設定済み）、
+//     保存後に env.Dispatch(ctx, res.Notifications)（または a.Notify.Dispatch(ctx, res.Notifications)）。
+//   - ニュース追加 a.Notify.NewsAdded(ctx, newsID)、ニュースのコメント NewsCommentAdded(ctx, commentID)、
+//     文書追加 DocumentAdded(ctx, docID, c.User)、ファイル・文書への添付追加（files#create / documents#add_attachment）
+//     AttachmentsAdded(ctx, attachmentIDs)、フォーラムの投稿 MessagePosted(ctx, messageID)、
+//     Wiki の作成・本文の更新 WikiContentAdded / WikiContentUpdated（wiki_actions.go）。
+//   - アカウント・セキュリティ系（常にメール）: AccountInformation、AccountActivationRequest（自己登録の承認待ち）、
+//     AccountActivated、LostPassword(ctx, user, token, recipient)、Register(ctx, user, token)、PasswordUpdated、
+//     SecurityNotification / EmailAddress*（メールアドレスの追加・変更・削除）/ AdminFlagChanged / Twofa（2FA の
+//     有効化・無効化・バックアップコード）、SettingsUpdated、TestEmail（同期送信）。sender は c.User、remote_ip は c.remoteIP()。
+//   - メールの本文は mailer*.go（notify.Renderer の実装）と web/templates/mailer/*.tmpl。期待値は
+//     internal/server/testdata/mail（Redmine で生成。gen/regen.sh）。
+//
 // # 規約: 互換テスト
 //
 //   - 画面のテストは internal/server のテストで、internal/testfixtures で Redmine の公式フィクスチャを投入した DB に
