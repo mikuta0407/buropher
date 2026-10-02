@@ -432,4 +432,3 @@ func (a *App) importSavedTimeEntries(c *Req, ids []int64) ([]importTimeEntryRow,
 	}
 	return rows, l.err
 }
-

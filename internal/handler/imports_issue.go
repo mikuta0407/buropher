@@ -205,7 +205,6 @@ func importNamed(name, arg string) bool {
 	return asciiLower(name) == asciiLower(strings.TrimSpace(arg))
 }
 
-
 // issueBuildAndSave は IssueImport#build_object と object.save。
 func (m *importModel) issueBuildAndSave(ctx context.Context, row csvimport.Row, item *repository.ImportItem) (importResult, error) {
 	st := m.issueState()
@@ -804,7 +803,9 @@ func (m *importModel) cfValueFromKeyword(ctx context.Context, cf *customfield.Cu
 		return importParseKeyword(cf, keyword, find)
 	}
 	env := l.cfEnv(cf)
-	env.ProjectUsers = func(projectID int64, roleIDs []int64) []customfield.Option { return l.projectUserOptions(projectID, roleIDs) }
+	env.ProjectUsers = func(projectID int64, roleIDs []int64) []customfield.Option {
+		return l.projectUserOptions(projectID, roleIDs)
+	}
 	env.SharedVersions = func(projectID int64, statuses []string) []customfield.Option {
 		return l.sharedVersionOptions(projectID, statuses)
 	}
