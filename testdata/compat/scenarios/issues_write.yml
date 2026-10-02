@@ -217,7 +217,7 @@ requests:
     body: '{"issue": {"project_id": 1, "tracker_id": 2, "subject": "API issue", "priority_id": 5, "description": "from api", "custom_fields": [{"id": 2, "value": "api cf"}], "watcher_user_ids": [3]}}'
     expect_status: 201
   - id: api_show_created
-    path: /issues/22.json?include=watchers,journals
+    path: /issues/23.json?include=watchers,journals
     users: [jsmith]
   - id: api_create_xml
     path: /projects/ecookbook/issues.xml
@@ -247,24 +247,24 @@ requests:
     content_type: application/json
     body: '{"issue": {"subject": "No project"}}'
   - id: api_update
-    path: /issues/22.json
+    path: /issues/23.json
     method: PUT
     user: jsmith
     content_type: application/json
     body: '{"issue": {"subject": "API updated", "notes": "api note", "status_id": 2}}'
     expect_status: 204
   - id: api_show_updated
-    path: /issues/22.json?include=journals
+    path: /issues/23.json?include=journals
     users: [jsmith]
   - id: api_update_invalid
-    path: /issues/22.json
+    path: /issues/23.json
     method: PUT
     user: jsmith
     content_type: application/json
     body: '{"issue": {"subject": ""}}'
     expect_status: 422
   - id: api_update_forbidden
-    path: /issues/22.json
+    path: /issues/23.json
     method: PUT
     user: anonymous
     auth: none
@@ -272,4 +272,53 @@ requests:
     body: '{"issue": {"subject": "anon"}}'
   - id: list_after_writes
     path: /projects/ecookbook/issues?set_filter=1&f[]=status_id&op[status_id]=*&sort=id:desc&c[]=subject&c[]=status&c[]=assigned_to&c[]=spent_hours
+    users: [admin]
+  # ---- 添付ファイル ----
+  - id: upload_file
+    path: /uploads.json?filename=test.txt
+    method: POST
+    user: jsmith
+    content_type: application/octet-stream
+    body: 'hello world'
+    expect_status: 201
+  - id: create_with_upload_token
+    path: /projects/ecookbook/issues
+    method: POST
+    user: jsmith
+    form: {"issue[tracker_id]": "1", "issue[subject]": "With attachment", "issue[priority_id]": "5", "attachments[1][token]": "25.b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9", "attachments[1][filename]": "renamed.txt", "attachments[1][description]": "my file"}
+    expect_status: 302
+  - id: show_with_attachment
+    path: /issues/25
+    users: [jsmith]
+  - id: create_with_invalid_token
+    path: /projects/ecookbook/issues
+    method: POST
+    user: jsmith
+    form: {"issue[tracker_id]": "1", "issue[subject]": "Invalid token", "issue[priority_id]": "5", "attachments[1][token]": "999.0123456789abcdef"}
+  - id: upload_file2
+    path: /uploads.json?filename=second.txt
+    method: POST
+    user: jsmith
+    content_type: application/octet-stream
+    body: 'second file'
+    expect_status: 201
+  - id: update_invalid_with_token
+    path: /issues/3
+    method: PUT
+    user: jsmith
+    form: {"issue[subject]": "", "attachments[1][token]": "26.54811cbc6c86311729b0a33e26c89087881b36b9ca3217d15cb5196e35f9a7e3", "attachments[1][filename]": "second.txt"}
+  - id: update_with_token
+    path: /issues/3
+    method: PUT
+    user: jsmith
+    form: {"issue[notes]": "added a file", "attachments[1][token]": "26.54811cbc6c86311729b0a33e26c89087881b36b9ca3217d15cb5196e35f9a7e3", "attachments[1][filename]": "second.txt"}
+    expect_status: 302
+  - id: update_delete_attachments
+    path: /issues/3
+    method: PUT
+    user: admin
+    form: {"issue[deleted_attachment_ids][]": ["5", "6"], "issue[notes]": "removed two files"}
+    expect_status: 302
+  - id: show_after_attachment_changes
+    path: /issues/3
     users: [admin]

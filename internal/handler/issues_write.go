@@ -17,6 +17,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/httpx"
 	"github.com/mikuta0407/buropher/internal/issues"
+	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/view/rails"
 )
 
@@ -501,11 +502,40 @@ func (a *App) saveNewIssue(c *Req, env *issues.Env, iss *issues.Issue, res *atta
 		iss.Errors.List = append([]domain.ValidationError{{Attr: "base", Message: msg}}, iss.Errors.List...)
 		return false, nil, nil
 	}
-	ok, sres, err := env.Save(ctx, iss)
-	if errors.Is(err, issues.ErrStale) {
+	var ok bool
+	var sres *issues.SaveResult
+	err := a.DB.WithTx(ctx, func(tx *db.Tx) error {
+		if err := persistSavedAttachments(c, tx, res); err != nil {
+			return err
+		}
+		var err error
+		ok, sres, err = env.WithQ(tx).Save(ctx, iss)
+		if errors.Is(err, issues.ErrStale) {
+			ok, err = false, nil
+		}
+		if err == nil && !ok {
+			return errIssueRollback
+		}
+		return err
+	})
+	if errors.Is(err, errIssueRollback) {
 		return false, nil, nil
 	}
 	return ok, sres, err
+}
+
+// persistSavedAttachments は saved_attachments の filename / description / content_type の変更を保存する
+// （attach_saved_attachments の attachments << attachment。コンテナの紐付けは issues パッケージが行う）。
+func persistSavedAttachments(c *Req, q db.Queryer, res *attachments.SaveResult) error {
+	if res == nil {
+		return nil
+	}
+	for _, f := range res.Files {
+		if err := repository.UpdateAttachment(c.Ctx(), q, f); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // redirectAfterCreate は IssuesController#redirect_after_create。
@@ -807,6 +837,9 @@ func (a *App) saveIssueWithChildRecords(c *Req, st *issueEditState, res *attachm
 			}
 			iss.Errors.List = append(extra, iss.Errors.List...)
 			return errIssueRollback
+		}
+		if err := persistSavedAttachments(c, tx, res); err != nil {
+			return err
 		}
 		ok, r, err := env.Save(ctx, iss)
 		if errors.Is(err, issues.ErrStale) {
