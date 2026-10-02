@@ -14,7 +14,6 @@ import (
 	"strconv"
 	"strings"
 
-
 	"github.com/mikuta0407/buropher/internal/apibuilder"
 	"github.com/mikuta0407/buropher/internal/attachments"
 	"github.com/mikuta0407/buropher/internal/db"
