@@ -1,0 +1,383 @@
+status: 200
+content-type: application/xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<issues limit="8" offset="0" total_count="14" type="array">
+  <issue>
+    <id>14</id>
+    <project id="3" name="eCookbook Subproject 1"/>
+    <tracker id="1" name="Bug"/>
+    <status id="1" is_closed="false" name="New"/>
+    <priority id="5" name="Normal"/>
+    <author id="2" name="John Smith"/>
+    <subject>Private issue on public project</subject>
+    <description>This is a private issue</description>
+    <start_date/>
+    <due_date/>
+    <done_ratio>0</done_ratio>
+    <is_private>true</is_private>
+    <estimated_hours/>
+    <total_estimated_hours/>
+    <spent_hours>0.0</spent_hours>
+    <total_spent_hours>0.0</total_spent_hours>
+    <custom_fields type="array">
+      <custom_field id="2" name="Searchable field">
+        <value/>
+      </custom_field>
+      <custom_field id="1" name="Database">
+        <value/>
+      </custom_field>
+      <custom_field id="6" name="Float field">
+        <value/>
+      </custom_field>
+      <custom_field id="8" name="Custom date">
+        <value/>
+      </custom_field>
+    </custom_fields>
+    <created_on>2025-12-31T12:00:00Z</created_on>
+    <updated_on>2025-12-31T12:00:00Z</updated_on>
+    <closed_on/>
+    <attachments type="array">
+      <attachment>
+        <id>15</id>
+        <filename>private.diff</filename>
+        <filesize>687</filesize>
+        <content_type>text/x-diff</content_type>
+        <description>attachment of a private issue</description>
+        <content_url>{{BASE}}/attachments/download/15/private.diff</content_url>
+        <author id="2" name="John Smith"/>
+        <created_on>2010-07-19T19:07:27Z</created_on>
+      </attachment>
+      <attachment>
+        <id>16</id>
+        <filename>testfile.png</filename>
+        <filesize>2654</filesize>
+        <content_type>image/png</content_type>
+        <description/>
+        <content_url>{{BASE}}/attachments/download/16/testfile.png</content_url>
+        <thumbnail_url>{{BASE}}/attachments/thumbnail/16</thumbnail_url>
+        <author id="2" name="John Smith"/>
+        <created_on>2010-11-23T07:14:50Z</created_on>
+      </attachment>
+      <attachment>
+        <id>17</id>
+        <filename>testfile.PNG</filename>
+        <filesize>3582</filesize>
+        <content_type>image/png</content_type>
+        <description/>
+        <content_url>{{BASE}}/attachments/download/17/testfile.PNG</content_url>
+        <thumbnail_url>{{BASE}}/attachments/thumbnail/17</thumbnail_url>
+        <author id="2" name="John Smith"/>
+        <created_on>2010-12-23T07:14:50Z</created_on>
+      </attachment>
+      <attachment>
+        <id>18</id>
+        <filename>testテスト.png</filename>
+        <filesize>2654</filesize>
+        <content_type>image/png</content_type>
+        <description/>
+        <content_url>{{BASE}}/attachments/download/18/test%E3%83%86%E3%82%B9%E3%83%88.png</content_url>
+        <thumbnail_url>{{BASE}}/attachments/thumbnail/18</thumbnail_url>
+        <author id="2" name="John Smith"/>
+        <created_on>2011-01-23T07:14:50Z</created_on>
+      </attachment>
+      <attachment>
+        <id>19</id>
+        <filename>Testテスト.PNG</filename>
+        <filesize>3582</filesize>
+        <content_type>image/png</content_type>
+        <description/>
+        <content_url>{{BASE}}/attachments/download/19/Test%E3%83%86%E3%82%B9%E3%83%88.PNG</content_url>
+        <thumbnail_url>{{BASE}}/attachments/thumbnail/19</thumbnail_url>
+        <author id="2" name="John Smith"/>
+        <created_on>2011-02-23T07:14:50Z</created_on>
+      </attachment>
+      <attachment>
+        <id>20</id>
+        <filename>root_attachment.txt</filename>
+        <filesize>54</filesize>
+        <content_type>text/plain</content_type>
+        <description/>
+        <content_url>{{BASE}}/attachments/download/20/root_attachment.txt</content_url>
+        <author id="2" name="John Smith"/>
+        <created_on>2012-05-12T07:14:50Z</created_on>
+      </attachment>
+    </attachments>
+    <relations type="array"/>
+  </issue>
+  <issue>
+    <id>13</id>
+    <project id="3" name="eCookbook Subproject 1"/>
+    <tracker id="1" name="Bug"/>
+    <status id="1" is_closed="false" name="New"/>
+    <priority id="4" name="Low"/>
+    <author id="2" name="John Smith"/>
+    <subject>Subproject issue two</subject>
+    <description>This is a second issue on a cookbook subproject</description>
+    <start_date/>
+    <due_date/>
+    <done_ratio>0</done_ratio>
+    <is_private>false</is_private>
+    <estimated_hours/>
+    <total_estimated_hours/>
+    <spent_hours>0.0</spent_hours>
+    <total_spent_hours>0.0</total_spent_hours>
+    <custom_fields type="array">
+      <custom_field id="2" name="Searchable field">
+        <value/>
+      </custom_field>
+      <custom_field id="1" name="Database">
+        <value/>
+      </custom_field>
+      <custom_field id="6" name="Float field">
+        <value/>
+      </custom_field>
+      <custom_field id="8" name="Custom date">
+        <value/>
+      </custom_field>
+    </custom_fields>
+    <created_on>2026-01-10T12:00:00Z</created_on>
+    <updated_on>2026-01-13T12:00:00Z</updated_on>
+    <closed_on/>
+    <attachments type="array"/>
+    <relations type="array"/>
+  </issue>
+  <issue>
+    <id>12</id>
+    <project id="1" name="eCookbook"/>
+    <tracker id="1" name="Bug"/>
+    <status id="5" is_closed="true" name="Closed"/>
+    <priority id="5" name="Normal"/>
+    <author id="3" name="Dave Lopper"/>
+    <category id="1" name="Printing"/>
+    <fixed_version id="2" name="1.0"/>
+    <subject>Closed issue on a locked version</subject>
+    <description/>
+    <start_date>2026-01-14</start_date>
+    <due_date/>
+    <done_ratio>0</done_ratio>
+    <is_private>false</is_private>
+    <estimated_hours/>
+    <total_estimated_hours/>
+    <spent_hours>0.0</spent_hours>
+    <total_spent_hours>0.0</total_spent_hours>
+    <custom_fields type="array">
+      <custom_field id="2" name="Searchable field">
+        <value/>
+      </custom_field>
+      <custom_field id="1" name="Database">
+        <value/>
+      </custom_field>
+      <custom_field id="6" name="Float field">
+        <value/>
+      </custom_field>
+      <custom_field id="8" name="Custom date">
+        <value/>
+      </custom_field>
+      <custom_field id="9" name="Project 1 cf">
+        <value/>
+      </custom_field>
+    </custom_fields>
+    <created_on>2026-01-12T12:00:00Z</created_on>
+    <updated_on>2026-01-14T12:00:00Z</updated_on>
+    <closed_on>2026-01-14T12:00:00Z</closed_on>
+    <attachments type="array"/>
+    <relations type="array"/>
+  </issue>
+  <issue>
+    <id>11</id>
+    <project id="1" name="eCookbook"/>
+    <tracker id="1" name="Bug"/>
+    <status id="5" is_closed="true" name="Closed"/>
+    <priority id="5" name="Normal"/>
+    <author id="2" name="John Smith"/>
+    <category id="1" name="Printing"/>
+    <fixed_version id="1" name="0.1"/>
+    <subject>Closed issue on a closed version</subject>
+    <description/>
+    <start_date>2026-01-14</start_date>
+    <due_date/>
+    <done_ratio>0</done_ratio>
+    <is_private>false</is_private>
+    <estimated_hours/>
+    <total_estimated_hours/>
+    <spent_hours>0.0</spent_hours>
+    <total_spent_hours>0.0</total_spent_hours>
+    <custom_fields type="array">
+      <custom_field id="2" name="Searchable field">
+        <value/>
+      </custom_field>
+      <custom_field id="1" name="Database">
+        <value/>
+      </custom_field>
+      <custom_field id="6" name="Float field">
+        <value/>
+      </custom_field>
+      <custom_field id="8" name="Custom date">
+        <value/>
+      </custom_field>
+      <custom_field id="9" name="Project 1 cf">
+        <value/>
+      </custom_field>
+    </custom_fields>
+    <created_on>2026-01-12T12:00:00Z</created_on>
+    <updated_on>2026-01-14T12:00:00Z</updated_on>
+    <closed_on>2026-01-14T12:00:00Z</closed_on>
+    <attachments type="array"/>
+    <relations type="array"/>
+  </issue>
+  <issue>
+    <id>10</id>
+    <project id="5" name="Private child of eCookbook"/>
+    <tracker id="1" name="Bug"/>
+    <status id="1" is_closed="false" name="New"/>
+    <priority id="5" name="Normal"/>
+    <author id="2" name="John Smith"/>
+    <subject>Issue Doing the Blocking</subject>
+    <description>This is an issue that blocks issue</description>
+    <start_date>2026-01-15</start_date>
+    <due_date>2026-01-16</due_date>
+    <done_ratio>0</done_ratio>
+    <is_private>false</is_private>
+    <estimated_hours/>
+    <total_estimated_hours/>
+    <custom_fields type="array">
+      <custom_field id="2" name="Searchable field">
+        <value/>
+      </custom_field>
+      <custom_field id="1" name="Database">
+        <value/>
+      </custom_field>
+      <custom_field id="6" name="Float field">
+        <value/>
+      </custom_field>
+      <custom_field id="8" name="Custom date">
+        <value/>
+      </custom_field>
+    </custom_fields>
+    <created_on>2026-01-15T11:59:00Z</created_on>
+    <updated_on>2026-01-15T11:59:00Z</updated_on>
+    <closed_on/>
+    <attachments type="array"/>
+    <relations type="array">
+      <relation delay="" id="1" issue_id="10" issue_to_id="9" relation_type="blocks"/>
+    </relations>
+  </issue>
+  <issue>
+    <id>9</id>
+    <project id="5" name="Private child of eCookbook"/>
+    <tracker id="1" name="Bug"/>
+    <status id="1" is_closed="false" name="New"/>
+    <priority id="5" name="Normal"/>
+    <author id="2" name="John Smith"/>
+    <subject>Blocked Issue</subject>
+    <description>This is an issue that is blocked by issue</description>
+    <start_date>2026-01-15</start_date>
+    <due_date>2026-01-16</due_date>
+    <done_ratio>0</done_ratio>
+    <is_private>false</is_private>
+    <estimated_hours/>
+    <total_estimated_hours/>
+    <custom_fields type="array">
+      <custom_field id="2" name="Searchable field">
+        <value/>
+      </custom_field>
+      <custom_field id="1" name="Database">
+        <value/>
+      </custom_field>
+      <custom_field id="6" name="Float field">
+        <value/>
+      </custom_field>
+      <custom_field id="8" name="Custom date">
+        <value/>
+      </custom_field>
+    </custom_fields>
+    <created_on>2026-01-15T11:59:00Z</created_on>
+    <updated_on>2026-01-15T11:59:00Z</updated_on>
+    <closed_on/>
+    <attachments type="array"/>
+    <relations type="array">
+      <relation delay="" id="1" issue_id="10" issue_to_id="9" relation_type="blocks"/>
+    </relations>
+  </issue>
+  <issue>
+    <id>8</id>
+    <project id="1" name="eCookbook"/>
+    <tracker id="1" name="Bug"/>
+    <status id="5" is_closed="true" name="Closed"/>
+    <priority id="5" name="Normal"/>
+    <author id="2" name="John Smith"/>
+    <subject>Closed issue</subject>
+    <description>This is a closed issue.</description>
+    <start_date/>
+    <due_date/>
+    <done_ratio>0</done_ratio>
+    <is_private>false</is_private>
+    <estimated_hours/>
+    <total_estimated_hours/>
+    <spent_hours>0.0</spent_hours>
+    <total_spent_hours>0.0</total_spent_hours>
+    <custom_fields type="array">
+      <custom_field id="2" name="Searchable field">
+        <value/>
+      </custom_field>
+      <custom_field id="1" name="Database">
+        <value/>
+      </custom_field>
+      <custom_field id="6" name="Float field">
+        <value/>
+      </custom_field>
+      <custom_field id="8" name="Custom date">
+        <value/>
+      </custom_field>
+      <custom_field id="9" name="Project 1 cf">
+        <value/>
+      </custom_field>
+    </custom_fields>
+    <created_on>2026-01-05T12:00:00Z</created_on>
+    <updated_on>2026-01-05T12:00:00Z</updated_on>
+    <closed_on>2026-01-12T12:00:00Z</closed_on>
+    <attachments type="array"/>
+    <relations type="array"/>
+  </issue>
+  <issue>
+    <id>7</id>
+    <project id="1" name="eCookbook"/>
+    <tracker id="1" name="Bug"/>
+    <status id="1" is_closed="false" name="New"/>
+    <priority id="5" name="Normal"/>
+    <author id="2" name="John Smith"/>
+    <subject>Issue due today</subject>
+    <description>This is an issue that is due today</description>
+    <start_date>2026-01-05</start_date>
+    <due_date>2026-01-15</due_date>
+    <done_ratio>0</done_ratio>
+    <is_private>false</is_private>
+    <estimated_hours/>
+    <total_estimated_hours/>
+    <spent_hours>0.0</spent_hours>
+    <total_spent_hours>0.0</total_spent_hours>
+    <custom_fields type="array">
+      <custom_field id="2" name="Searchable field">
+        <value>this is a stringforcustomfield search</value>
+      </custom_field>
+      <custom_field id="1" name="Database">
+        <value/>
+      </custom_field>
+      <custom_field id="6" name="Float field">
+        <value/>
+      </custom_field>
+      <custom_field id="8" name="Custom date">
+        <value/>
+      </custom_field>
+      <custom_field id="9" name="Project 1 cf">
+        <value/>
+      </custom_field>
+    </custom_fields>
+    <created_on>2026-01-05T12:00:00Z</created_on>
+    <updated_on>2026-01-05T12:00:00Z</updated_on>
+    <closed_on/>
+    <attachments type="array"/>
+    <relations type="array"/>
+  </issue>
+</issues>

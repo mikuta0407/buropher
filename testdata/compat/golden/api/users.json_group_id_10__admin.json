@@ -1,0 +1,36 @@
+status: 200
+content-type: application/json
+
+{
+  "users": [
+    {
+      "id": 8,
+      "login": "miscuser8",
+      "admin": false,
+      "firstname": "User",
+      "lastname": "Misc",
+      "mail": "miscuser8@foo.bar",
+      "created_on": "2006-07-19T17:33:19Z",
+      "updated_on": "2006-07-19T17:33:19Z",
+      "last_login_on": null,
+      "passwd_changed_on": null,
+      "twofa_scheme": null,
+      "status": 1,
+      "custom_fields": [
+        {
+          "id": 4,
+          "name": "Phone number",
+          "value": null
+        },
+        {
+          "id": 5,
+          "name": "Money",
+          "value": null
+        }
+      ]
+    }
+  ],
+  "total_count": 1,
+  "offset": 0,
+  "limit": 25
+}

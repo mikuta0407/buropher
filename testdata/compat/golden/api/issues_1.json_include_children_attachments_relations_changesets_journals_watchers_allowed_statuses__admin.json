@@ -1,0 +1,151 @@
+status: 200
+content-type: application/json
+
+{
+  "issue": {
+    "id": 1,
+    "project": {
+      "id": 1,
+      "name": "eCookbook"
+    },
+    "tracker": {
+      "id": 1,
+      "name": "Bug"
+    },
+    "status": {
+      "id": 1,
+      "name": "New",
+      "is_closed": false
+    },
+    "priority": {
+      "id": 4,
+      "name": "Low"
+    },
+    "author": {
+      "id": 2,
+      "name": "John Smith"
+    },
+    "category": {
+      "id": 1,
+      "name": "Printing"
+    },
+    "subject": "Cannot print recipes",
+    "description": "Unable to print recipes",
+    "start_date": "2026-01-14",
+    "due_date": "2026-01-25",
+    "done_ratio": 0,
+    "is_private": false,
+    "estimated_hours": 200.0,
+    "total_estimated_hours": 200.0,
+    "spent_hours": 154.25,
+    "total_spent_hours": 154.25,
+    "custom_fields": [
+      {
+        "id": 2,
+        "name": "Searchable field",
+        "value": "125"
+      },
+      {
+        "id": 1,
+        "name": "Database",
+        "value": null
+      },
+      {
+        "id": 6,
+        "name": "Float field",
+        "value": "2.1"
+      },
+      {
+        "id": 8,
+        "name": "Custom date",
+        "value": "2009-12-01"
+      },
+      {
+        "id": 9,
+        "name": "Project 1 cf",
+        "value": null
+      }
+    ],
+    "created_on": "2026-01-12T12:00:00Z",
+    "updated_on": "2026-01-14T12:00:00Z",
+    "closed_on": null,
+    "attachments": [],
+    "changesets": [],
+    "journals": [
+      {
+        "id": 1,
+        "user": {
+          "id": 1,
+          "name": "Redmine Admin"
+        },
+        "notes": "Journal notes",
+        "created_on": "2026-01-13T00:00:00Z",
+        "updated_on": "2026-01-14T00:00:00Z",
+        "updated_by": {
+          "id": 1,
+          "name": "Redmine Admin"
+        },
+        "private_notes": false,
+        "details": [
+          {
+            "property": "attr",
+            "name": "status_id",
+            "old_value": "1",
+            "new_value": "2"
+          },
+          {
+            "property": "attr",
+            "name": "done_ratio",
+            "old_value": "40",
+            "new_value": "30"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "user": {
+          "id": 2,
+          "name": "John Smith"
+        },
+        "notes": "Some notes with Redmine links: #2, r2.",
+        "created_on": "2026-01-14T00:00:00Z",
+        "updated_on": "2026-01-14T00:00:00Z",
+        "private_notes": false,
+        "details": []
+      }
+    ],
+    "watchers": [],
+    "allowed_statuses": [
+      {
+        "id": 1,
+        "name": "New",
+        "is_closed": false
+      },
+      {
+        "id": 2,
+        "name": "Assigned",
+        "is_closed": false
+      },
+      {
+        "id": 3,
+        "name": "Resolved",
+        "is_closed": false
+      },
+      {
+        "id": 4,
+        "name": "Feedback",
+        "is_closed": false
+      },
+      {
+        "id": 5,
+        "name": "Closed",
+        "is_closed": true
+      },
+      {
+        "id": 6,
+        "name": "Rejected",
+        "is_closed": true
+      }
+    ]
+  }
+}

@@ -1,0 +1,249 @@
+status: 200
+content-type: application/xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<projects limit="25" offset="0" total_count="6" type="array">
+  <project>
+    <id>1</id>
+    <name>eCookbook</name>
+    <identifier>ecookbook</identifier>
+    <description>Recipes management application</description>
+    <homepage>http://ecookbook.somenet.foo/</homepage>
+    <status>1</status>
+    <is_public>true</is_public>
+    <inherit_members>false</inherit_members>
+    <custom_fields type="array">
+      <custom_field id="3" name="Development status">
+        <value>Stable</value>
+      </custom_field>
+    </custom_fields>
+    <trackers type="array">
+      <tracker id="1" name="Bug"/>
+      <tracker id="2" name="Feature request"/>
+      <tracker id="3" name="Support request"/>
+    </trackers>
+    <issue_categories type="array">
+      <issue_category id="1" name="Printing"/>
+      <issue_category id="2" name="Recipes"/>
+    </issue_categories>
+    <time_entry_activities type="array">
+      <time_entry_activity id="9" name="Design"/>
+      <time_entry_activity id="10" name="Development"/>
+      <time_entry_activity id="11" name="QA"/>
+    </time_entry_activities>
+    <enabled_modules type="array">
+      <enabled_module id="1" name="issue_tracking"/>
+      <enabled_module id="2" name="time_tracking"/>
+      <enabled_module id="3" name="news"/>
+      <enabled_module id="4" name="documents"/>
+      <enabled_module id="5" name="files"/>
+      <enabled_module id="6" name="wiki"/>
+      <enabled_module id="7" name="repository"/>
+      <enabled_module id="8" name="boards"/>
+      <enabled_module id="17" name="calendar"/>
+      <enabled_module id="18" name="gantt"/>
+    </enabled_modules>
+    <issue_custom_fields type="array">
+      <custom_field id="2" name="Searchable field"/>
+      <custom_field id="1" name="Database"/>
+      <custom_field id="6" name="Float field"/>
+      <custom_field id="8" name="Custom date"/>
+      <custom_field id="9" name="Project 1 cf"/>
+    </issue_custom_fields>
+    <created_on>2006-07-19T17:13:59Z</created_on>
+    <updated_on>2006-07-19T20:53:01Z</updated_on>
+  </project>
+  <project>
+    <id>5</id>
+    <name>Private child of eCookbook</name>
+    <identifier>private-child</identifier>
+    <description>This is a private subproject of a public project</description>
+    <homepage/>
+    <parent id="1" name="eCookbook"/>
+    <status>1</status>
+    <is_public>false</is_public>
+    <inherit_members>false</inherit_members>
+    <custom_fields type="array">
+      <custom_field id="3" name="Development status">
+        <value/>
+      </custom_field>
+    </custom_fields>
+    <trackers type="array">
+      <tracker id="1" name="Bug"/>
+      <tracker id="2" name="Feature request"/>
+      <tracker id="3" name="Support request"/>
+    </trackers>
+    <issue_categories type="array"/>
+    <time_entry_activities type="array">
+      <time_entry_activity id="9" name="Design"/>
+      <time_entry_activity id="10" name="Development"/>
+      <time_entry_activity id="11" name="QA"/>
+    </time_entry_activities>
+    <enabled_modules type="array">
+      <enabled_module id="14" name="issue_tracking"/>
+      <enabled_module id="23" name="calendar"/>
+      <enabled_module id="24" name="gantt"/>
+    </enabled_modules>
+    <issue_custom_fields type="array">
+      <custom_field id="2" name="Searchable field"/>
+      <custom_field id="1" name="Database"/>
+      <custom_field id="6" name="Float field"/>
+      <custom_field id="8" name="Custom date"/>
+    </issue_custom_fields>
+    <created_on>2006-07-19T17:15:51Z</created_on>
+    <updated_on>2006-07-19T17:17:07Z</updated_on>
+  </project>
+  <project>
+    <id>6</id>
+    <name>Child of private child</name>
+    <identifier>project6</identifier>
+    <description>This is a public subproject of a private project</description>
+    <homepage/>
+    <parent id="5" name="Private child of eCookbook"/>
+    <status>1</status>
+    <is_public>true</is_public>
+    <inherit_members>false</inherit_members>
+    <custom_fields type="array">
+      <custom_field id="3" name="Development status">
+        <value/>
+      </custom_field>
+    </custom_fields>
+    <trackers type="array"/>
+    <issue_categories type="array"/>
+    <time_entry_activities type="array">
+      <time_entry_activity id="9" name="Design"/>
+      <time_entry_activity id="10" name="Development"/>
+      <time_entry_activity id="11" name="QA"/>
+    </time_entry_activities>
+    <enabled_modules type="array"/>
+    <issue_custom_fields type="array">
+      <custom_field id="2" name="Searchable field"/>
+      <custom_field id="1" name="Database"/>
+      <custom_field id="6" name="Float field"/>
+      <custom_field id="8" name="Custom date"/>
+    </issue_custom_fields>
+    <created_on>2006-07-19T17:15:51Z</created_on>
+    <updated_on>2006-07-19T17:17:07Z</updated_on>
+  </project>
+  <project>
+    <id>3</id>
+    <name>eCookbook Subproject 1</name>
+    <identifier>subproject1</identifier>
+    <description>eCookBook Subproject 1</description>
+    <homepage/>
+    <parent id="1" name="eCookbook"/>
+    <status>1</status>
+    <is_public>true</is_public>
+    <inherit_members>false</inherit_members>
+    <custom_fields type="array">
+      <custom_field id="3" name="Development status">
+        <value/>
+      </custom_field>
+    </custom_fields>
+    <trackers type="array">
+      <tracker id="1" name="Bug"/>
+      <tracker id="2" name="Feature request"/>
+      <tracker id="3" name="Support request"/>
+    </trackers>
+    <issue_categories type="array"/>
+    <time_entry_activities type="array">
+      <time_entry_activity id="9" name="Design"/>
+      <time_entry_activity id="10" name="Development"/>
+      <time_entry_activity id="11" name="QA"/>
+    </time_entry_activities>
+    <enabled_modules type="array">
+      <enabled_module id="9" name="repository"/>
+      <enabled_module id="10" name="wiki"/>
+      <enabled_module id="12" name="time_tracking"/>
+      <enabled_module id="13" name="issue_tracking"/>
+      <enabled_module id="21" name="calendar"/>
+      <enabled_module id="22" name="gantt"/>
+    </enabled_modules>
+    <issue_custom_fields type="array">
+      <custom_field id="2" name="Searchable field"/>
+      <custom_field id="1" name="Database"/>
+      <custom_field id="6" name="Float field"/>
+      <custom_field id="8" name="Custom date"/>
+    </issue_custom_fields>
+    <created_on>2006-07-19T17:15:21Z</created_on>
+    <updated_on>2006-07-19T17:18:12Z</updated_on>
+  </project>
+  <project>
+    <id>4</id>
+    <name>eCookbook Subproject 2</name>
+    <identifier>subproject2</identifier>
+    <description>eCookbook Subproject 2</description>
+    <homepage/>
+    <parent id="1" name="eCookbook"/>
+    <status>1</status>
+    <is_public>true</is_public>
+    <inherit_members>false</inherit_members>
+    <custom_fields type="array">
+      <custom_field id="3" name="Development status">
+        <value/>
+      </custom_field>
+    </custom_fields>
+    <trackers type="array"/>
+    <issue_categories type="array"/>
+    <time_entry_activities type="array">
+      <time_entry_activity id="9" name="Design"/>
+      <time_entry_activity id="10" name="Development"/>
+      <time_entry_activity id="11" name="QA"/>
+    </time_entry_activities>
+    <enabled_modules type="array"/>
+    <issue_custom_fields type="array">
+      <custom_field id="2" name="Searchable field"/>
+      <custom_field id="1" name="Database"/>
+      <custom_field id="6" name="Float field"/>
+      <custom_field id="8" name="Custom date"/>
+    </issue_custom_fields>
+    <created_on>2006-07-19T17:15:51Z</created_on>
+    <updated_on>2006-07-19T17:17:07Z</updated_on>
+  </project>
+  <project>
+    <id>2</id>
+    <name>OnlineStore</name>
+    <identifier>onlinestore</identifier>
+    <description>E-commerce web site</description>
+    <homepage/>
+    <status>1</status>
+    <is_public>false</is_public>
+    <inherit_members>false</inherit_members>
+    <custom_fields type="array">
+      <custom_field id="3" name="Development status">
+        <value/>
+      </custom_field>
+    </custom_fields>
+    <trackers type="array">
+      <tracker id="1" name="Bug"/>
+      <tracker id="2" name="Feature request"/>
+      <tracker id="3" name="Support request"/>
+    </trackers>
+    <issue_categories type="array">
+      <issue_category id="4" name="Printing"/>
+      <issue_category id="3" name="Stock management"/>
+    </issue_categories>
+    <time_entry_activities type="array">
+      <time_entry_activity id="9" name="Design"/>
+      <time_entry_activity id="10" name="Development"/>
+      <time_entry_activity id="11" name="QA"/>
+    </time_entry_activities>
+    <enabled_modules type="array">
+      <enabled_module id="11" name="issue_tracking"/>
+      <enabled_module id="15" name="wiki"/>
+      <enabled_module id="16" name="boards"/>
+      <enabled_module id="19" name="calendar"/>
+      <enabled_module id="20" name="gantt"/>
+      <enabled_module id="25" name="news"/>
+      <enabled_module id="26" name="repository"/>
+    </enabled_modules>
+    <issue_custom_fields type="array">
+      <custom_field id="2" name="Searchable field"/>
+      <custom_field id="1" name="Database"/>
+      <custom_field id="6" name="Float field"/>
+      <custom_field id="8" name="Custom date"/>
+    </issue_custom_fields>
+    <created_on>2006-07-19T17:14:19Z</created_on>
+    <updated_on>2006-07-19T17:14:19Z</updated_on>
+  </project>
+</projects>

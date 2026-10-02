@@ -1,0 +1,188 @@
+status: 200
+content-type: application/json
+
+{
+  "issues": [
+    {
+      "id": 10,
+      "project": {
+        "id": 5,
+        "name": "Private child of eCookbook"
+      },
+      "tracker": {
+        "id": 1,
+        "name": "Bug"
+      },
+      "status": {
+        "id": 1,
+        "name": "New",
+        "is_closed": false
+      },
+      "priority": {
+        "id": 5,
+        "name": "Normal"
+      },
+      "author": {
+        "id": 2,
+        "name": "John Smith"
+      },
+      "subject": "Issue Doing the Blocking",
+      "description": "This is an issue that blocks issue",
+      "start_date": "2026-01-15",
+      "due_date": "2026-01-16",
+      "done_ratio": 0,
+      "is_private": false,
+      "estimated_hours": null,
+      "total_estimated_hours": null,
+      "custom_fields": [
+        {
+          "id": 2,
+          "name": "Searchable field",
+          "value": null
+        },
+        {
+          "id": 1,
+          "name": "Database",
+          "value": null
+        },
+        {
+          "id": 6,
+          "name": "Float field",
+          "value": null
+        },
+        {
+          "id": 8,
+          "name": "Custom date",
+          "value": null
+        }
+      ],
+      "created_on": "2026-01-15T11:59:00Z",
+      "updated_on": "2026-01-15T11:59:00Z",
+      "closed_on": null
+    },
+    {
+      "id": 9,
+      "project": {
+        "id": 5,
+        "name": "Private child of eCookbook"
+      },
+      "tracker": {
+        "id": 1,
+        "name": "Bug"
+      },
+      "status": {
+        "id": 1,
+        "name": "New",
+        "is_closed": false
+      },
+      "priority": {
+        "id": 5,
+        "name": "Normal"
+      },
+      "author": {
+        "id": 2,
+        "name": "John Smith"
+      },
+      "subject": "Blocked Issue",
+      "description": "This is an issue that is blocked by issue",
+      "start_date": "2026-01-15",
+      "due_date": "2026-01-16",
+      "done_ratio": 0,
+      "is_private": false,
+      "estimated_hours": null,
+      "total_estimated_hours": null,
+      "custom_fields": [
+        {
+          "id": 2,
+          "name": "Searchable field",
+          "value": null
+        },
+        {
+          "id": 1,
+          "name": "Database",
+          "value": null
+        },
+        {
+          "id": 6,
+          "name": "Float field",
+          "value": null
+        },
+        {
+          "id": 8,
+          "name": "Custom date",
+          "value": null
+        }
+      ],
+      "created_on": "2026-01-15T11:59:00Z",
+      "updated_on": "2026-01-15T11:59:00Z",
+      "closed_on": null
+    },
+    {
+      "id": 7,
+      "project": {
+        "id": 1,
+        "name": "eCookbook"
+      },
+      "tracker": {
+        "id": 1,
+        "name": "Bug"
+      },
+      "status": {
+        "id": 1,
+        "name": "New",
+        "is_closed": false
+      },
+      "priority": {
+        "id": 5,
+        "name": "Normal"
+      },
+      "author": {
+        "id": 2,
+        "name": "John Smith"
+      },
+      "subject": "Issue due today",
+      "description": "This is an issue that is due today",
+      "start_date": "2026-01-05",
+      "due_date": "2026-01-15",
+      "done_ratio": 0,
+      "is_private": false,
+      "estimated_hours": null,
+      "total_estimated_hours": null,
+      "spent_hours": 0.0,
+      "total_spent_hours": 0.0,
+      "custom_fields": [
+        {
+          "id": 2,
+          "name": "Searchable field",
+          "value": "this is a stringforcustomfield search"
+        },
+        {
+          "id": 1,
+          "name": "Database",
+          "value": null
+        },
+        {
+          "id": 6,
+          "name": "Float field",
+          "value": ""
+        },
+        {
+          "id": 8,
+          "name": "Custom date",
+          "value": null
+        },
+        {
+          "id": 9,
+          "name": "Project 1 cf",
+          "value": null
+        }
+      ],
+      "created_on": "2026-01-05T12:00:00Z",
+      "updated_on": "2026-01-05T12:00:00Z",
+      "closed_on": null
+    }
+  ],
+  "total_count": 11,
+  "offset": 2,
+  "limit": 3
+}

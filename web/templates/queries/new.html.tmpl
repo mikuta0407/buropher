@@ -1,0 +1,7 @@
+<h2>{{l "label_query_new"}}</h2>
+
+{{form_tag .F.Action (hash "id" "query-form")}}
+  {{hidden_field_tag "type" .QV.Type}}
+  {{partial "queries/form" .}}
+  {{submit_tag (l "button_save")}}
+{{end_form}}

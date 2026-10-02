@@ -158,6 +158,40 @@ func PrincipalsAsUsersByIDs(ctx context.Context, q db.Queryer, ids []int64) (map
 	return out, nil
 }
 
+// VisibleSpentHours は Issue.load_visible_spent_hours（TimeEntry.visible に限った issue ごとの工数合計。cond は可視条件で
+// time_entries・projects を参照）。工数の無いチケットは含まない。
+func VisibleSpentHours(ctx context.Context, q db.Queryer, ids []int64, cond string) (map[int64]float64, error) {
+	return sumHoursByID(ctx, q, `SELECT time_entries.issue_id AS id, SUM(time_entries.hours) AS total FROM time_entries
+JOIN projects ON projects.id = time_entries.project_id
+WHERE (`+condOr(cond)+`) AND time_entries.issue_id IN (`+joinIDs(ids)+`) GROUP BY time_entries.issue_id`, ids)
+}
+
+// VisibleTotalSpentHours は Issue.load_visible_total_spent_hours（自身と子孫の可視な工数の合計）。
+func VisibleTotalSpentHours(ctx context.Context, q db.Queryer, ids []int64, cond string) (map[int64]float64, error) {
+	return sumHoursByID(ctx, q, `SELECT parent.id AS id, SUM(time_entries.hours) AS total FROM time_entries
+JOIN projects ON projects.id = time_entries.project_id JOIN issues ON issues.id = time_entries.issue_id
+JOIN issues parent ON parent.root_id = issues.root_id AND issues.hier_path LIKE (parent.hier_path || '%')
+WHERE (`+condOr(cond)+`) AND parent.id IN (`+joinIDs(ids)+`) GROUP BY parent.id`, ids)
+}
+
+func sumHoursByID(ctx context.Context, q db.Queryer, query string, ids []int64) (map[int64]float64, error) {
+	m := map[int64]float64{}
+	if len(ids) == 0 {
+		return m, nil
+	}
+	var sums []struct {
+		ID    int64   `db:"id"`
+		Total float64 `db:"total"`
+	}
+	if err := q.Select(ctx, &sums, query); err != nil {
+		return nil, err
+	}
+	for _, s := range sums {
+		m[s.ID] = s.Total
+	}
+	return m, nil
+}
+
 func joinIDs(ids []int64) string {
 	parts := make([]string, len(ids))
 	for i, id := range ids {

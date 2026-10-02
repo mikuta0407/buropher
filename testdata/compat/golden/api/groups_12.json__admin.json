@@ -1,0 +1,10 @@
+status: 200
+content-type: application/json
+
+{
+  "group": {
+    "id": 12,
+    "name": "Non member users",
+    "builtin": "non_member"
+  }
+}

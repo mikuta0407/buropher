@@ -1,0 +1,27 @@
+status: 200
+content-type: application/json
+
+{
+  "memberships": [
+    {
+      "id": 2,
+      "project": {
+        "id": 1,
+        "name": "eCookbook"
+      },
+      "user": {
+        "id": 3,
+        "name": "Dave Lopper"
+      },
+      "roles": [
+        {
+          "id": 2,
+          "name": "Developer"
+        }
+      ]
+    }
+  ],
+  "total_count": 3,
+  "offset": 1,
+  "limit": 1
+}

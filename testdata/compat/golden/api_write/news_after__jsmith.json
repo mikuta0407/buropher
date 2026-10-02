@@ -1,0 +1,35 @@
+status: 200
+content-type: application/json
+
+{
+  "news": {
+    "id": 4,
+    "project": {
+      "id": 1,
+      "name": "eCookbook"
+    },
+    "author": {
+      "id": 2,
+      "name": "Johnny Smith"
+    },
+    "title": "API news",
+    "summary": "sum",
+    "description": "desc",
+    "created_on": "TIMESTAMP",
+    "attachments": [
+      {
+        "id": 27,
+        "filename": "release.txt",
+        "filesize": 12,
+        "content_type": "text/plain",
+        "description": "",
+        "content_url": "{{BASE}}/attachments/download/27/release.txt",
+        "author": {
+          "id": 2,
+          "name": "Johnny Smith"
+        },
+        "created_on": "TIMESTAMP"
+      }
+    ]
+  }
+}

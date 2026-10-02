@@ -1,0 +1,15 @@
+status: 200
+content-type: application/xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<news limit="25" offset="0" total_count="1" type="array">
+  <news>
+    <id>3</id>
+    <project id="2" name="OnlineStore"/>
+    <author id="2" name="John Smith"/>
+    <title>News on a private project</title>
+    <summary/>
+    <description>This is a private news</description>
+    <created_on>2006-07-19T20:42:58Z</created_on>
+  </news>
+</news>

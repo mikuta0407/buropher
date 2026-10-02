@@ -1,0 +1,19 @@
+status: 200
+content-type: application/json
+
+{
+  "attachment": {
+    "id": 16,
+    "filename": "testfile.png",
+    "filesize": 2654,
+    "content_type": "image/png",
+    "description": "",
+    "content_url": "{{BASE}}/attachments/download/16/testfile.png",
+    "thumbnail_url": "{{BASE}}/attachments/thumbnail/16",
+    "author": {
+      "id": 2,
+      "name": "John Smith"
+    },
+    "created_on": "2010-11-23T07:14:50Z"
+  }
+}

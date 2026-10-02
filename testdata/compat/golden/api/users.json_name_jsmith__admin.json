@@ -1,0 +1,36 @@
+status: 200
+content-type: application/json
+
+{
+  "users": [
+    {
+      "id": 2,
+      "login": "jsmith",
+      "admin": false,
+      "firstname": "John",
+      "lastname": "Smith",
+      "mail": "jsmith@somenet.foo",
+      "created_on": "2006-07-19T17:32:09Z",
+      "updated_on": "2006-07-19T20:42:15Z",
+      "last_login_on": "MASKED",
+      "passwd_changed_on": null,
+      "twofa_scheme": null,
+      "status": 1,
+      "custom_fields": [
+        {
+          "id": 4,
+          "name": "Phone number",
+          "value": "01 42 50 00 00"
+        },
+        {
+          "id": 5,
+          "name": "Money",
+          "value": null
+        }
+      ]
+    }
+  ],
+  "total_count": 1,
+  "offset": 0,
+  "limit": 25
+}

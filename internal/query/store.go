@@ -428,6 +428,27 @@ WHERE `+cond+` ORDER BY queries.name, queries.id`); err != nil {
 	return out, nil
 }
 
+// ListVisiblePage は queries#index の <Kind>Query.visible.order(name).limit(limit).offset(offset) と件数を返す
+// （同名の並びを安定させるため id を第 2 キーにする）。limit が 0 以下なら全件。
+func ListVisiblePage(ctx context.Context, a *authz.Authorizer, kind Kind, offset, limit int) ([]SavedQuery, int, error) {
+	all, err := ListVisible(ctx, a, kind, nil, false)
+	if err != nil {
+		return nil, 0, err
+	}
+	total := len(all)
+	if offset > total {
+		offset = total
+	}
+	if offset < 0 {
+		offset = 0
+	}
+	all = all[offset:]
+	if limit > 0 && limit < len(all) {
+		all = all[:limit]
+	}
+	return all, total, nil
+}
+
 // VisibleTo は Query#visible?(user)。
 func (q *Query) VisibleTo(ctx context.Context, a *authz.Authorizer) (bool, error) {
 	u := a.User()

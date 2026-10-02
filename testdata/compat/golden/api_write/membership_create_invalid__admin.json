@@ -1,0 +1,9 @@
+status: 422
+content-type: application/json
+
+{
+  "errors": [
+    "User has already been taken",
+    "Role cannot be empty"
+  ]
+}

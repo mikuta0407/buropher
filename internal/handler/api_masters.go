@@ -63,9 +63,16 @@ func (c *Req) renderAPI(root *apiEl, status int) {
 		writeJSON(&b, root)
 		b.WriteString("}")
 	}
-	httpx.SetContentType(c.W, format, true)
+	out := b.String()
+	// JSONP（Setting.jsonp_enabled と callback / jsonp パラメータ。RenderAPI と同じ）
+	if cb := httpx.JSONPCallback(c.R, c.App.Settings.Bool("jsonp_enabled")); format == "json" && cb != "" {
+		out = cb + "(" + out + ")"
+		c.W.Header().Set("Content-Type", "application/javascript; charset=utf-8")
+	} else {
+		httpx.SetContentType(c.W, format, true)
+	}
 	c.W.WriteHeader(status)
-	_, _ = c.W.Write([]byte(b.String()))
+	_, _ = c.W.Write([]byte(out))
 	c.Halt()
 }
 
@@ -205,10 +212,7 @@ func writeXML(b *strings.Builder, e *apiEl) {
 			s, _ := xmlScalar(a[1])
 			b.WriteString(" " + a[0].(string) + `="` + xmlAttrEscaper.Replace(s) + `"`)
 		}
-		if len(e.children) == 0 {
-			b.WriteString("/>")
-			return
-		}
+		// Builder::XmlMarkup はブロック付きの要素を空でも <x></x> で出す
 		b.WriteString(">")
 		for _, ch := range e.children {
 			writeXML(b, ch)

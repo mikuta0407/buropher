@@ -524,8 +524,7 @@ func (a *App) customFieldsByType(c *Req) (map[string][]*customfield.CustomField,
 // CustomFieldsIndex は custom_fields#index（GET /custom_fields）。
 func (a *App) CustomFieldsIndex(c *Req) {
 	if httpx.IsAPIRequest(c.R) {
-		// TODO(api): index.api.rsb（Redmine::Views::Builders の移植が master に入ったら実装する）
-		c.RenderError(http.StatusNotAcceptable, "")
+		a.renderCustomFieldsAPI(c)
 		return
 	}
 	byType, err := a.customFieldsByType(c)

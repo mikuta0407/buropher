@@ -85,6 +85,10 @@ func (a *App) newIssueShowView(c *Req, l *issueLookup) *issueShowView {
 
 func (a *App) issuesShowHTML(c *Req) {
 	l := a.newIssueLookup(c)
+	if c.AllowedTo(domain.Perm("view_time_entries"), c.Project) {
+		// Issue.load_visible_spent_hours / load_visible_total_spent_hours
+		l.loadVisibleSpentHours([]*query.IssueRow{c.currentIssue()})
+	}
 	v := a.newIssueShowView(c, l)
 	m := v.M
 	vis, err := a.changesetVisibleCondition(c)

@@ -1,0 +1,76 @@
+status: 200
+content-type: application/json
+
+{
+  "wiki_pages": [
+    {
+      "title": "Another_page",
+      "version": 1,
+      "created_on": "TIMESTAMP",
+      "updated_on": "TIMESTAMP"
+    },
+    {
+      "title": "Child_1",
+      "parent": {
+        "title": "Another_page"
+      },
+      "version": 1,
+      "created_on": "TIMESTAMP",
+      "updated_on": "TIMESTAMP"
+    },
+    {
+      "title": "Child_1_1",
+      "parent": {
+        "title": "Child_1"
+      },
+      "version": 1,
+      "created_on": "TIMESTAMP",
+      "updated_on": "TIMESTAMP"
+    },
+    {
+      "title": "Child_2",
+      "parent": {
+        "title": "Another_page"
+      },
+      "version": 1,
+      "created_on": "TIMESTAMP",
+      "updated_on": "TIMESTAMP"
+    },
+    {
+      "title": "CookBook_documentation",
+      "version": 4,
+      "created_on": "TIMESTAMP",
+      "updated_on": "TIMESTAMP"
+    },
+    {
+      "title": "Page_with_an_inline_image",
+      "parent": {
+        "title": "CookBook_documentation"
+      },
+      "version": 1,
+      "created_on": "TIMESTAMP",
+      "updated_on": "TIMESTAMP"
+    },
+    {
+      "title": "Page_with_sections",
+      "version": 3,
+      "created_on": "TIMESTAMP",
+      "updated_on": "TIMESTAMP"
+    },
+    {
+      "title": "XML_child",
+      "parent": {
+        "title": "CookBook_documentation"
+      },
+      "version": 1,
+      "created_on": "TIMESTAMP",
+      "updated_on": "TIMESTAMP"
+    },
+    {
+      "title": "Этика_менеджмента",
+      "version": 1,
+      "created_on": "TIMESTAMP",
+      "updated_on": "TIMESTAMP"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+status: 201
+content-type: application/xml
+location: {{BASE}}/versions/9
+
+<?xml version="1.0" encoding="UTF-8"?>
+<version>
+  <id>9</id>
+  <project id="1" name="eCookbook"/>
+  <name>XML v1</name>
+  <description/>
+  <status>open</status>
+  <due_date>2026-06-30</due_date>
+  <sharing>none</sharing>
+  <wiki_page_title/>
+  <estimated_hours>0.0</estimated_hours>
+  <spent_hours>0.0</spent_hours>
+  <created_on>TIMESTAMP</created_on>
+  <updated_on>TIMESTAMP</updated_on>
+</version>

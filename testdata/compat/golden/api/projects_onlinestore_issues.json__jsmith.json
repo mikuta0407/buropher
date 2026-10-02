@@ -1,0 +1,71 @@
+status: 200
+content-type: application/json
+
+{
+  "issues": [
+    {
+      "id": 4,
+      "project": {
+        "id": 2,
+        "name": "OnlineStore"
+      },
+      "tracker": {
+        "id": 1,
+        "name": "Bug"
+      },
+      "status": {
+        "id": 1,
+        "name": "New",
+        "is_closed": false
+      },
+      "priority": {
+        "id": 4,
+        "name": "Low"
+      },
+      "author": {
+        "id": 2,
+        "name": "John Smith"
+      },
+      "assigned_to": {
+        "id": 2,
+        "name": "John Smith"
+      },
+      "subject": "Issue on project 2",
+      "description": "Issue on project 2",
+      "start_date": null,
+      "due_date": null,
+      "done_ratio": 0,
+      "is_private": false,
+      "estimated_hours": null,
+      "total_estimated_hours": null,
+      "custom_fields": [
+        {
+          "id": 2,
+          "name": "Searchable field",
+          "value": null
+        },
+        {
+          "id": 1,
+          "name": "Database",
+          "value": null
+        },
+        {
+          "id": 6,
+          "name": "Float field",
+          "value": null
+        },
+        {
+          "id": 8,
+          "name": "Custom date",
+          "value": null
+        }
+      ],
+      "created_on": "2026-01-10T12:00:00Z",
+      "updated_on": "2026-01-13T12:00:00Z",
+      "closed_on": null
+    }
+  ],
+  "total_count": 1,
+  "offset": 0,
+  "limit": 25
+}

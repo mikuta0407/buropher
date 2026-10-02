@@ -1,0 +1,18 @@
+status: 200
+content-type: application/json
+
+{
+  "attachment": {
+    "id": 7,
+    "filename": "archive.zip",
+    "filesize": 157,
+    "content_type": "application/zip",
+    "description": null,
+    "content_url": "{{BASE}}/attachments/download/7/archive.zip",
+    "author": {
+      "id": 1,
+      "name": "Redmine Admin"
+    },
+    "created_on": "2006-07-19T19:07:27Z"
+  }
+}

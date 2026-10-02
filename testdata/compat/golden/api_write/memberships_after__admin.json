@@ -1,0 +1,96 @@
+status: 200
+content-type: application/json
+
+{
+  "memberships": [
+    {
+      "id": 1,
+      "project": {
+        "id": 1,
+        "name": "eCookbook"
+      },
+      "user": {
+        "id": 2,
+        "name": "John Smith"
+      },
+      "roles": [
+        {
+          "id": 1,
+          "name": "Manager"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "project": {
+        "id": 1,
+        "name": "eCookbook"
+      },
+      "user": {
+        "id": 3,
+        "name": "Dave Lopper"
+      },
+      "roles": [
+        {
+          "id": 2,
+          "name": "Developer"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "project": {
+        "id": 1,
+        "name": "eCookbook"
+      },
+      "user": {
+        "id": 5,
+        "name": "Dave2 Lopper2"
+      },
+      "roles": [
+        {
+          "id": 2,
+          "name": "Developer"
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "project": {
+        "id": 1,
+        "name": "eCookbook"
+      },
+      "group": {
+        "id": 10,
+        "name": "A Team"
+      },
+      "roles": [
+        {
+          "id": 3,
+          "name": "Reporter"
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "project": {
+        "id": 1,
+        "name": "eCookbook"
+      },
+      "user": {
+        "id": 8,
+        "name": "User Misc"
+      },
+      "roles": [
+        {
+          "id": 3,
+          "name": "Reporter",
+          "inherited": true
+        }
+      ]
+    }
+  ],
+  "total_count": 5,
+  "offset": 0,
+  "limit": 25
+}

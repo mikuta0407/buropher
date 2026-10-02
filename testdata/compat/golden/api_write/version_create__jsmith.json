@@ -1,0 +1,23 @@
+status: 201
+content-type: application/json
+location: {{BASE}}/versions/8
+
+{
+  "version": {
+    "id": 8,
+    "project": {
+      "id": 1,
+      "name": "eCookbook"
+    },
+    "name": "API v1",
+    "description": "api version",
+    "status": "open",
+    "due_date": "2026-12-31",
+    "sharing": "none",
+    "wiki_page_title": null,
+    "estimated_hours": 0.0,
+    "spent_hours": 0.0,
+    "created_on": "TIMESTAMP",
+    "updated_on": "TIMESTAMP"
+  }
+}

@@ -1,0 +1,415 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Redmine</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Redmine" />
+<meta name="keywords" content="issue,bug,tracker" />
+<meta name="csrf-param" content="authenticity_token" />
+<meta name="csrf-token" content="gP5L97-B7PRBdgCm6oQrTMc8bhS_SBBph0J9hoDh_EoOpxUUcxyZHR3TJ2UbkKsHJE5fCOAM-TezZ196LyjioQ" />
+<link rel="shortcut icon" type="image/x-icon" href="/assets/favicon-0e291875.ico" />
+<link rel="stylesheet" href="/assets/jquery/jquery-ui-1.13.2-70e53573.css" media="all" />
+<link rel="stylesheet" href="/assets/tribute-5.1.3-c23a7bf2.css" media="all" />
+<link rel="stylesheet" href="/assets/application-6dc0ec44.css" media="all" />
+<link rel="stylesheet" href="/assets/responsive-194751d3.css" media="all" />
+
+<script type="importmap" data-turbo-track="reload">{
+  "imports": {
+    "@rails/request.js": "/assets/requestjs-64720317.js",
+    "application": "/assets/application-20c5ac24.js",
+    "@hotwired/stimulus": "/assets/stimulus.min-7ea3d58b.js",
+    "@hotwired/stimulus-loading": "/assets/stimulus-loading-25917588.js",
+    "turndown": "/assets/turndown-93630580.js",
+    "controllers/api_key_copy_controller": "/assets/controllers/api_key_copy_controller-75f835b3.js",
+    "controllers/application": "/assets/controllers/application-fab29967.js",
+    "controllers": "/assets/controllers/index-dfefe98d.js",
+    "controllers/list_autofill_controller": "/assets/controllers/list_autofill_controller-5f013171.js",
+    "controllers/quote_reply_controller": "/assets/controllers/quote_reply_controller-3e6a21f7.js",
+    "controllers/sticky_issue_header_controller": "/assets/controllers/sticky_issue_header_controller-18502bbe.js"
+  }
+}</script>
+<link rel="modulepreload" href="/assets/requestjs-64720317.js">
+<link rel="modulepreload" href="/assets/application-20c5ac24.js">
+<link rel="modulepreload" href="/assets/stimulus.min-7ea3d58b.js">
+<link rel="modulepreload" href="/assets/stimulus-loading-25917588.js">
+<link rel="modulepreload" href="/assets/turndown-93630580.js">
+<link rel="modulepreload" href="/assets/controllers/api_key_copy_controller-75f835b3.js">
+<link rel="modulepreload" href="/assets/controllers/application-fab29967.js">
+<link rel="modulepreload" href="/assets/controllers/index-dfefe98d.js">
+<link rel="modulepreload" href="/assets/controllers/list_autofill_controller-5f013171.js">
+<link rel="modulepreload" href="/assets/controllers/quote_reply_controller-3e6a21f7.js">
+<link rel="modulepreload" href="/assets/controllers/sticky_issue_header_controller-18502bbe.js">
+<script type="module">import "application"</script>
+<script src="/assets/jquery-3.7.1-ui-1.13.3-3ca148b8.js"></script>
+<script src="/assets/rails-ujs-3de06f48.js"></script>
+<script src="/assets/tribute-5.1.3.min-6c16c47a.js"></script><script src="/assets/application-legacy-54b0807d.js"></script>
+<script src="/assets/responsive-aa0cdb6f.js"></script>
+<script>
+//<![CDATA[
+$(window).on('load', function(){ warnLeavingUnsaved('The current page contains unsaved text that will be lost if you leave this page.'); });
+//]]>
+</script>
+
+<script>
+//<![CDATA[
+rm = window.rm || {};rm.I18n = rm.I18n || {};rm.I18n = Object.freeze({buttonCopy: 'Copy'});
+//]]>
+</script>
+<script>
+//<![CDATA[
+rm = window.rm || {};rm.AutoComplete = rm.AutoComplete || {};rm.AutoComplete.dataSources = JSON.parse('{"issues":"/issues/auto_complete?q=","wiki_pages":"/wiki_pages/auto_complete?q="}');
+//]]>
+</script>
+
+<!-- page specific tags -->
+<script>
+//<![CDATA[
+var datepickerOptions={dateFormat: 'yy-mm-dd', firstDay: 0, showOn: 'button', buttonImageOnly: true, buttonImage: '/assets/calendar-503585d1.png', showButtonPanel: true, showWeek: true, showOtherMonths: true, selectOtherMonths: true, changeMonth: true, changeYear: true, beforeShow: beforeShowDatePicker};
+//]]>
+</script></head>
+<body class="controller-queries action-new avatars-off" data-text-formatting="common_mark">
+
+<div id="wrapper">
+
+<div class="flyout-menu js-flyout-menu">
+
+        <div class="flyout-menu__search">
+            <form action="/search" accept-charset="UTF-8" name="form-a186e5bf" method="get">
+            
+            <label class="search-magnifier search-magnifier--flyout" for="flyout-search"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--search"></use></svg><span class="icon-label hidden">Search</span></label>
+            <input type="text" name="q" id="flyout-search" class="small js-search-input" placeholder="Search" />
+</form>        </div>
+
+        <div class="flyout-menu__avatar">
+          <a href="/users/1"><span role="img" class="avatar-color-1 s40 avatar">RA</span></a>
+          <a class="user active" href="/users/1">admin</a>
+        </div>
+
+
+    <h3>General</h3>
+    <span class="js-general-menu"></span>
+
+    <span class="js-sidebar flyout-menu__sidebar"></span>
+
+    <h3>Profile</h3>
+    <span class="js-profile-menu"></span>
+
+</div>
+
+
+<div id="top-menu">
+    <div id="account">
+        <ul><li><a class="my-account" href="/my/account">My account</a></li><li><a class="logout" rel="nofollow" data-method="post" href="/logout">Sign out</a></li></ul>    </div>
+    <div id="loggedas">Logged in as <a class="user active" href="/users/1">admin</a></div>
+    <ul><li><a class="home" href="/">Home</a></li><li><a class="my-page" href="/my/page">My page</a></li><li><a class="projects" href="/projects">Projects</a></li><li><a class="administration" href="/admin">Administration</a></li><li><a target="_blank" rel="noopener" class="help" href="https://www.redmine.org/guide">Help</a></li></ul></div>
+
+<div id="header">
+
+    <a href="#" class="mobile-toggle-button js-flyout-menu-toggle-button"></a>
+
+    <div id="quick-search">
+        <form action="/search" accept-charset="UTF-8" name="form-dd81b9ee" method="get">
+        <input type="hidden" name="scope" autocomplete="off" />
+        
+        <label for='q'>
+          <a accesskey="4" href="/search">Search</a>:
+        </label>
+        <input type="text" name="q" id="q" size="20" class="small" accesskey="f" data-auto-complete="true" />
+</form>        <div id="project-jump" class="drdn"><span class="drdn-trigger">Jump to a project...</span><div class="drdn-content"><div class="quick-search"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--search"></use></svg><input type="text" name="q" id="projects-quick-search" value="" class="autocomplete" data-automcomplete-url="/projects/autocomplete.js" autocomplete="off" /></div><div class="drdn-items projects selection"><strong>Bookmarks</strong><a title="eCookbook" href="/projects/ecookbook"><span style="padding-inline-start:0px;">eCookbook</span></a><a title="Private child of eCookbook" href="/projects/private-child"><span style="padding-inline-start:16px;">Private child of eCookbook</span></a><strong>Recently used</strong><a title="OnlineStore" href="/projects/onlinestore"><span style="padding-inline-start:0px;">OnlineStore</span></a><a title="eCookbook Subproject 1" href="/projects/subproject1"><span style="padding-inline-start:0px;">eCookbook Subproject 1</span></a><strong>All Projects</strong><a title="Private child of eCookbook" href="/projects/private-child"><span style="padding-inline-start:0px;">Private child of eCookbook</span></a></div><div class="drdn-items all-projects selection"><a class="selected" href="/projects">All Projects</a></div></div></div>
+    </div>
+
+    <h1>Redmine</h1>
+
+</div>
+
+<div id="main" class="collapsiblesidebar">
+  <script>
+//<![CDATA[
+$('#main.collapsiblesidebar').collapsibleSidebar();
+//]]>
+</script>
+    <div id="sidebar">
+          <div id="sidebar-switch-panel" style="visibility: hidden;">
+            <a id="sidebar-switch-button" class="" href="#">
+              <svg class="s20 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--chevrons-right"></use></svg></a>
+          </div>
+          <script>
+//<![CDATA[
+$('#sidebar-switch-panel').css('visibility', 'visible');
+//]]>
+</script>
+        <div id="sidebar-wrapper">
+              <h3>Administration</h3>
+    <div id="admin-menu">
+  <ul><li><a class="icon icon-projects projects" href="/admin/projects"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--projects"></use></svg><span class="icon-label">Projects</span></a></li><li><a class="icon icon-user users" href="/users"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--user"></use></svg><span class="icon-label">Users</span></a></li><li><a class="icon icon-group groups" href="/groups"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--group"></use></svg><span class="icon-label">Groups</span></a></li><li><a class="icon icon-roles roles" href="/roles"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--roles"></use></svg><span class="icon-label">Roles and permissions</span></a></li><li><a class="icon icon-issue trackers" href="/trackers"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--issue"></use></svg><span class="icon-label">Trackers</span></a></li><li><a class="icon icon-issue-edit issue-statuses" href="/issue_statuses"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--issue-edit"></use></svg><span class="icon-label">Issue statuses</span></a></li><li><a class="icon icon-workflows workflows" href="/workflows/edit"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--workflows"></use></svg><span class="icon-label">Workflow</span></a></li><li><a class="icon icon-custom-fields custom-fields" href="/custom_fields"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--custom-fields"></use></svg><span class="icon-label">Custom fields</span></a></li><li><a class="icon icon-list enumerations" href="/enumerations"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--list"></use></svg><span class="icon-label">Enumerations</span></a></li><li><a class="icon icon-settings settings" href="/settings"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--settings"></use></svg><span class="icon-label">Settings</span></a></li><li><a class="icon icon-server-authentication ldap-authentication" href="/auth_sources"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--server-authentication"></use></svg><span class="icon-label">LDAP authentication</span></a></li><li><a class="icon icon-applications applications" href="/oauth/applications"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--apps"></use></svg><span class="icon-label">Applications</span></a></li><li><a class="icon icon-plugins plugins" href="/admin/plugins"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--plugins"></use></svg><span class="icon-label">Plugins</span></a></li><li><a class="icon icon-help info" href="/admin/info"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--help"></use></svg><span class="icon-label">Information</span></a></li></ul>
+</div>
+
+
+          
+        </div>
+    </div>
+
+    <div id="content">
+        
+        <h2>New query</h2>
+
+<form id="query-form" action="/queries" accept-charset="UTF-8" name="query-form-ec6ed759" method="post"><input type="hidden" name="authenticity_token" value="f7K21I6ouov_F4Jp9PIWBO35t8RlevvMNV94iylnMP_x6-g3QjXPYqOypaoF5pZPDouG2Do-EpIBelp3hq4uFA" autocomplete="off" />
+  <input type="hidden" name="type" id="type" value="UserQuery" autocomplete="off" />
+  
+
+<div class="box">
+<div class="tabular">
+
+
+
+<p>
+  <label for="query_name">
+    Name
+    <span class="required">*</span>
+  </label>
+  <input size="80" type="text" value="" name="query[name]" id="query_name" />
+</p>
+<p><label for="query_description">Description</label>
+<input size="80" type="text" name="query[description]" id="query_description" /></p>
+
+<p><label>Visible</label>
+  <label class="block"><input type="radio" value="0" checked="checked" name="query[visibility]" id="query_visibility_0" /> to me only</label>
+  <label class="block"><input type="radio" value="2" name="query[visibility]" id="query_visibility_2" /> to any users</label>
+    <label class="block"><input type="radio" value="1" name="query[visibility]" id="query_visibility_1" /> to these roles only:</label>
+        <label class="block role-visibility"><input type="checkbox" name="query[role_ids][]" value="1" /> Manager</label>
+        <label class="block role-visibility"><input type="checkbox" name="query[role_ids][]" value="2" /> Developer</label>
+        <label class="block role-visibility"><input type="checkbox" name="query[role_ids][]" value="3" /> Reporter</label>
+      <input type="hidden" name="query[role_ids][]" id="query_role_ids_" value="" autocomplete="off" />
+</p>
+
+  <p><label for="query_is_for_all">For all projects</label>
+  <input type="checkbox" name="query_is_for_all" id="query_is_for_all" value="1" class="" checked="checked" /></p>
+
+  <fieldset id="options"><legend>Options</legend>
+      <input type="hidden" name="query[display_type]" id="query_display_type" value="list" autocomplete="off" />
+
+    <p id ="default_columns"><label for="query_default_columns">Default columns</label>
+    <input type="checkbox" name="default_columns" id="query_default_columns" value="1" data-disables="#columns, .block_columns input" checked="checked" /></p>
+
+      <p id="group_by"><label for="query_group_by">Group results by</label>
+      <select name="query[group_by]" id="query_group_by"><option value="" label=" "></option>
+</select></p>
+
+
+        <p class="totable_columns"><label>Totals</label>
+        <label class="inline"><input type="checkbox" name="t[]" value="cf_5" /> Money</label><input type="hidden" name="t[]" id="t_" value="" autocomplete="off" /></p>
+  </fieldset>
+</div>
+
+<fieldset id="filters"><legend>Filters</legend>
+<script>
+//<![CDATA[
+
+var operatorLabels = {"=":"is","!":"is not","o":"open","c":"closed","!*":"none","*":"any","\u003e=":"\u003e=","\u003c=":"\u003c=","\u003e\u003c":"between","\u003ct+":"in less than","\u003et+":"in more than","\u003e\u003ct+":"in the next","t+":"in","nd":"tomorrow","t":"today","ld":"yesterday","nw":"next week","w":"this week","lw":"last week","l2w":"last 2 weeks","nm":"next month","m":"this month","lm":"last month","y":"this year","\u003et-":"less than days ago","\u003ct-":"more than days ago","\u003e\u003ct-":"in the past","t-":"days ago","~":"contains","!~":"doesn't contain","*~":"contains any of","^":"starts with","$":"ends with","=p":"any issues in project","=!p":"any issues not in project","!p":"no issues in project","*o":"any open issues","!o":"no open issues","ev":"has been","!ev":"has never been","cf":"changed from"};
+var operatorByType = {"list":["=","!"],"list_with_history":["=","!","ev","!ev","cf"],"list_status":["o","=","!","ev","!ev","cf","c","*"],"list_optional":["=","!","!*","*"],"list_optional_with_history":["=","!","ev","!ev","cf","!*","*"],"list_subprojects":["*","!*","=","!"],"date":["=","\u003e=","\u003c=","\u003e\u003c","\u003ct+","\u003et+","\u003e\u003ct+","t+","nd","t","ld","nw","w","lw","l2w","nm","m","lm","y","\u003et-","\u003ct-","\u003e\u003ct-","t-","!*","*"],"date_past":["=","\u003e=","\u003c=","\u003e\u003c","\u003et-","\u003ct-","\u003e\u003ct-","t-","t","ld","w","lw","l2w","m","lm","y","!*","*"],"string":["~","*~","=","!~","!","^","$","!*","*"],"text":["~","*~","!~","^","$","!*","*"],"search":["~","*~","!~"],"integer":["=","\u003e=","\u003c=","\u003e\u003c","!*","*"],"float":["=","\u003e=","\u003c=","\u003e\u003c","!*","*"],"relation":["=","!","=p","=!p","!p","*o","!o","!*","*"],"tree":["=","~","!*","*"]};
+var availableFilters = {"status":{"type":"list_optional","name":"Status","remote":true,"values":[["active","1"],["registered","2"],["locked","3"]]},"auth_source_id":{"type":"list_optional","name":"Authentication mode","remote":true},"is_member_of_group":{"type":"list_optional","name":"Member of group","remote":true},"twofa_scheme":{"type":"list_optional","name":"Two-factor authentication scheme","remote":true},"name":{"type":"text","name":"Name, email or login","values":null},"login":{"type":"string","name":"Login","values":null},"firstname":{"type":"string","name":"First name","values":null},"lastname":{"type":"string","name":"Last name","values":null},"mail":{"type":"string","name":"Email","values":null},"created_on":{"type":"date_past","name":"Created","values":null},"last_login_on":{"type":"date_past","name":"Last sign in","values":null},"admin":{"type":"list","name":"Administrator","values":[["yes","1"],["no","0"]]}};
+var labelDayPlural = "days";
+
+var filtersUrl = "\/queries\/filter?type=UserQuery";
+
+$(document).ready(function(){
+  initFilters();
+  addFilter("status", "=", [1]);
+});
+
+//]]>
+</script>
+<div id="filters-table">
+</div>
+
+<div class="add-filter">
+<label for="add_filter_select">Add filter</label>
+<select id="add_filter_select"><option value=""></option>
+<option value="status">Status</option>
+<option value="auth_source_id">Authentication mode</option>
+<option value="is_member_of_group">Member of group</option>
+<option value="twofa_scheme">Two-factor authentication scheme</option>
+<option value="admin">Administrator</option><optgroup label="Text"><option value="name">Name, email or login</option>
+<option value="login">Login</option>
+<option value="firstname">First name</option>
+<option value="lastname">Last name</option>
+<option value="mail">Email</option></optgroup><optgroup label="Date"><option value="created_on">Created</option>
+<option value="last_login_on">Last sign in</option></optgroup></select>
+</div>
+
+<input type="hidden" name="f[]" id="f_" value="" autocomplete="off" />
+
+</fieldset>
+
+  <fieldset id="sort"><legend>Sort</legend>
+    <span class="query_sort_criteria_count">1:</span>
+    <label class="hidden-for-sighted" for="query_sort_criteria_attribute_0">Sort attribute</label>
+    <select name="query[sort_criteria][0][]" id="query_sort_criteria_attribute_0"><option value=""></option>
+<option selected="selected" value="login">Login</option>
+<option value="firstname">First name</option>
+<option value="lastname">Last name</option>
+<option value="mail">Email</option>
+<option value="admin">Administrator</option>
+<option value="created_on">Created</option>
+<option value="updated_on">Updated</option>
+<option value="last_login_on">Last sign in</option>
+<option value="passwd_changed_on">Password last changed</option>
+<option value="status">Status</option>
+<option value="auth_source.name">Authentication mode</option>
+<option value="twofa_scheme">Two-factor authentication scheme</option>
+<option value="cf_4">Phone number</option>
+<option value="cf_5">Money</option></select>
+    <label class="hidden-for-sighted" for="query_sort_criteria_direction_0">Sort direction</label>
+    <select name="query[sort_criteria][0][]" id="query_sort_criteria_direction_0"><option value=""></option>
+<option selected="selected" value="asc">Ascending</option>
+<option value="desc">Descending</option></select>
+    <br />
+    <span class="query_sort_criteria_count">2:</span>
+    <label class="hidden-for-sighted" for="query_sort_criteria_attribute_1">Sort attribute</label>
+    <select name="query[sort_criteria][1][]" id="query_sort_criteria_attribute_1"><option value=""></option>
+<option value="login">Login</option>
+<option value="firstname">First name</option>
+<option value="lastname">Last name</option>
+<option value="mail">Email</option>
+<option value="admin">Administrator</option>
+<option value="created_on">Created</option>
+<option value="updated_on">Updated</option>
+<option value="last_login_on">Last sign in</option>
+<option value="passwd_changed_on">Password last changed</option>
+<option value="status">Status</option>
+<option value="auth_source.name">Authentication mode</option>
+<option value="twofa_scheme">Two-factor authentication scheme</option>
+<option value="cf_4">Phone number</option>
+<option value="cf_5">Money</option></select>
+    <label class="hidden-for-sighted" for="query_sort_criteria_direction_1">Sort direction</label>
+    <select name="query[sort_criteria][1][]" id="query_sort_criteria_direction_1"><option value=""></option>
+<option value="asc">Ascending</option>
+<option value="desc">Descending</option></select>
+    <br />
+    <span class="query_sort_criteria_count">3:</span>
+    <label class="hidden-for-sighted" for="query_sort_criteria_attribute_2">Sort attribute</label>
+    <select name="query[sort_criteria][2][]" id="query_sort_criteria_attribute_2"><option value=""></option>
+<option value="login">Login</option>
+<option value="firstname">First name</option>
+<option value="lastname">Last name</option>
+<option value="mail">Email</option>
+<option value="admin">Administrator</option>
+<option value="created_on">Created</option>
+<option value="updated_on">Updated</option>
+<option value="last_login_on">Last sign in</option>
+<option value="passwd_changed_on">Password last changed</option>
+<option value="status">Status</option>
+<option value="auth_source.name">Authentication mode</option>
+<option value="twofa_scheme">Two-factor authentication scheme</option>
+<option value="cf_4">Phone number</option>
+<option value="cf_5">Money</option></select>
+    <label class="hidden-for-sighted" for="query_sort_criteria_direction_2">Sort direction</label>
+    <select name="query[sort_criteria][2][]" id="query_sort_criteria_direction_2"><option value=""></option>
+<option value="asc">Ascending</option>
+<option value="desc">Descending</option></select>
+    <br />
+  </fieldset>
+
+  <fieldset id="columns">
+  <legend>Columns</legend>
+  <div id="list-definition">
+    <div>
+      
+<div class="query-columns">
+      <label for="available_c">Available Columns</label>
+      <select name="available_columns[]" id="available_c" multiple="multiple" size="10" ondblclick="moveOptions(this.form.available_c, this.form.selected_c);"><option value="updated_on">Updated</option>
+<option value="passwd_changed_on">Password last changed</option>
+<option value="status">Status</option>
+<option value="auth_source.name">Authentication mode</option>
+<option value="twofa_scheme">Two-factor authentication scheme</option>
+<option value="cf_4">Phone number</option>
+<option value="cf_5">Money</option></select>
+</div>
+<div class="buttons">
+      <button type="button" class="move-right" onclick="moveOptions(this.form.available_c, this.form.selected_c);"><svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--arrow-narrow-right"></use></svg></button>
+      <button type="button" class="move-left" onclick="moveOptions(this.form.selected_c, this.form.available_c);"><svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--arrow-narrow-left"></use></svg></button>
+</div>
+<div class="query-columns">
+      <label for="selected_c">Selected Columns</label>
+      <select name="c[]" id="selected_c" multiple="multiple" size="10" ondblclick="moveOptions(this.form.selected_c, this.form.available_c);"><option value="login">Login</option>
+<option value="firstname">First name</option>
+<option value="lastname">Last name</option>
+<option value="mail">Email</option>
+<option value="admin">Administrator</option>
+<option value="created_on">Created</option>
+<option value="last_login_on">Last sign in</option></select>
+</div>
+<div class="buttons">
+      <button type="button" onclick="moveOptionTop(this.form.selected_c);">&#8648;</button>
+      <button type="button" onclick="moveOptionUp(this.form.selected_c);">&#8593;</button>
+      <button type="button" onclick="moveOptionDown(this.form.selected_c);">&#8595;</button>
+      <button type="button" onclick="moveOptionBottom(this.form.selected_c);">&#8650;</button>
+</div>
+
+<script>
+//<![CDATA[
+
+$(document).ready(function(){
+  $('.query-columns').closest('form').submit(function(){
+    $('#selected_c option:not(:disabled)').prop('selected', true);
+  });
+});
+
+//]]>
+</script>
+    </div>
+  </div>
+</fieldset>
+</div>
+
+<script>
+//<![CDATA[
+
+$(document).ready(function(){
+  $("input[name='query[visibility]']").change(function(){
+    var roles_checked = $('#query_visibility_1').is(':checked');
+    var private_checked = $('#query_visibility_0').is(':checked');
+    $("input[name='query[role_ids][]'][type=checkbox]").attr('disabled', !roles_checked);
+    if (!private_checked) $("input.disable-unless-private").attr('checked', false);
+    $("input.disable-unless-private").attr('disabled', !private_checked);
+  }).trigger('change');
+});
+
+$(function ($) {
+  $('input[name=display_type]').change(function () {
+    var option = $('input[name=display_type]:checked').val();
+    if (option == 'board') {
+      $('fieldset#columns, fieldset#sort, p#default_columns, p#group_by').hide();
+    } else {
+      $('fieldset#columns, fieldset#sort, p#default_columns, p#group_by').show();
+    }
+  }).change();
+});
+
+//]]>
+</script>
+  <input type="submit" name="commit" value="Save" data-disable-with="Save" />
+</form>
+        
+        <div style="clear:both;"></div>
+    </div>
+</div>
+<div id="footer">
+    Powered by <a target="_blank" rel="noopener" href="https://www.redmine.org/">Redmine</a> &copy; 2006-2026 Jean-Philippe Lang
+</div>
+
+<div id="ajax-indicator" style="display:none;">
+  <span class="icon">
+    <svg class="s18 icon-svg svg-loader" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--loader"></use></svg><span class="icon-label">Loading...</span>
+  </span>
+</div>
+<div id="ajax-modal" style="display:none;"></div>
+<div id="icon-copy-source" style="display: none;"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--"></use></svg></div>
+
+</div>
+
+</body>
+</html>
+

@@ -1,0 +1,33 @@
+status: 200
+content-type: application/xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<news limit="25" offset="0" total_count="3" type="array">
+  <news>
+    <id>3</id>
+    <project id="2" name="OnlineStore"/>
+    <author id="2" name="John Smith"/>
+    <title>News on a private project</title>
+    <summary/>
+    <description>This is a private news</description>
+    <created_on>2006-07-19T20:42:58Z</created_on>
+  </news>
+  <news>
+    <id>2</id>
+    <project id="1" name="eCookbook"/>
+    <author id="2" name="John Smith"/>
+    <title>100,000 downloads for eCookbook</title>
+    <summary>eCookbook 1.0 have downloaded 100,000 times</summary>
+    <description>eCookbook 1.0 have downloaded 100,000 times</description>
+    <created_on>2006-07-19T20:42:58Z</created_on>
+  </news>
+  <news>
+    <id>1</id>
+    <project id="1" name="eCookbook"/>
+    <author id="2" name="John Smith"/>
+    <title>eCookbook first release !</title>
+    <summary>First version was released...</summary>
+    <description>eCookbook 1.0 has been released.&#xA;&#xA;Visit http://ecookbook.somenet.foo/</description>
+    <created_on>2006-07-19T20:40:26Z</created_on>
+  </news>
+</news>

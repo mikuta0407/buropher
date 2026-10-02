@@ -1,0 +1,10 @@
+status: 422
+content-type: application/json
+
+{
+  "errors": [
+    "Email is invalid",
+    "First name cannot be blank",
+    "Login has already been taken"
+  ]
+}

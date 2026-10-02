@@ -1,0 +1,8 @@
+status: 422
+content-type: application/json
+
+{
+  "errors": [
+    "Fichier doit être renseigné(e)"
+  ]
+}

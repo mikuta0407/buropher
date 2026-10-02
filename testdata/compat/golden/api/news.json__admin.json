@@ -1,0 +1,55 @@
+status: 200
+content-type: application/json
+
+{
+  "news": [
+    {
+      "id": 3,
+      "project": {
+        "id": 2,
+        "name": "OnlineStore"
+      },
+      "author": {
+        "id": 2,
+        "name": "John Smith"
+      },
+      "title": "News on a private project",
+      "summary": null,
+      "description": "This is a private news",
+      "created_on": "2006-07-19T20:42:58Z"
+    },
+    {
+      "id": 2,
+      "project": {
+        "id": 1,
+        "name": "eCookbook"
+      },
+      "author": {
+        "id": 2,
+        "name": "John Smith"
+      },
+      "title": "100,000 downloads for eCookbook",
+      "summary": "eCookbook 1.0 have downloaded 100,000 times",
+      "description": "eCookbook 1.0 have downloaded 100,000 times",
+      "created_on": "2006-07-19T20:42:58Z"
+    },
+    {
+      "id": 1,
+      "project": {
+        "id": 1,
+        "name": "eCookbook"
+      },
+      "author": {
+        "id": 2,
+        "name": "John Smith"
+      },
+      "title": "eCookbook first release !",
+      "summary": "First version was released...",
+      "description": "eCookbook 1.0 has been released.\n\nVisit http://ecookbook.somenet.foo/",
+      "created_on": "2006-07-19T20:40:26Z"
+    }
+  ],
+  "total_count": 3,
+  "offset": 0,
+  "limit": 25
+}

@@ -1,0 +1,86 @@
+status: 200
+content-type: application/xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<issue>
+  <id>3</id>
+  <project id="1" name="eCookbook"/>
+  <tracker id="1" name="Bug"/>
+  <status id="1" is_closed="false" name="New"/>
+  <priority id="4" name="Low"/>
+  <author id="2" name="John Smith"/>
+  <assigned_to id="3" name="Dave Lopper"/>
+  <subject>Error 281 when updating a recipe</subject>
+  <description>Error 281 is encountered when saving a recipe</description>
+  <start_date>2025-12-31</start_date>
+  <due_date>2026-01-10</due_date>
+  <done_ratio>0</done_ratio>
+  <is_private>false</is_private>
+  <estimated_hours>1.0</estimated_hours>
+  <total_estimated_hours>1.0</total_estimated_hours>
+  <spent_hours>1.0</spent_hours>
+  <total_spent_hours>1.0</total_spent_hours>
+  <custom_fields type="array">
+    <custom_field id="2" name="Searchable field">
+      <value>125</value>
+    </custom_field>
+    <custom_field id="1" name="Database">
+      <value>MySQL</value>
+    </custom_field>
+    <custom_field id="6" name="Float field">
+      <value>11.65</value>
+    </custom_field>
+    <custom_field id="8" name="Custom date">
+      <value/>
+    </custom_field>
+    <custom_field id="9" name="Project 1 cf">
+      <value/>
+    </custom_field>
+  </custom_fields>
+  <created_on>2006-07-19T19:07:27Z</created_on>
+  <updated_on>2006-07-19T19:07:27Z</updated_on>
+  <closed_on/>
+  <attachments type="array">
+    <attachment>
+      <id>1</id>
+      <filename>error281.txt</filename>
+      <filesize>28</filesize>
+      <content_type>text/plain</content_type>
+      <description>An attachment</description>
+      <content_url>{{BASE}}/attachments/download/1/error281.txt</content_url>
+      <author id="2" name="John Smith"/>
+      <created_on>2006-07-19T19:07:27Z</created_on>
+    </attachment>
+    <attachment>
+      <id>5</id>
+      <filename>changeset_iso8859-1.diff</filename>
+      <filesize>687</filesize>
+      <content_type>text/x-diff</content_type>
+      <description/>
+      <content_url>{{BASE}}/attachments/download/5/changeset_iso8859-1.diff</content_url>
+      <author id="2" name="John Smith"/>
+      <created_on>2006-07-19T19:07:27Z</created_on>
+    </attachment>
+    <attachment>
+      <id>6</id>
+      <filename>archive.zip</filename>
+      <filesize>157</filesize>
+      <content_type>application/zip</content_type>
+      <description/>
+      <content_url>{{BASE}}/attachments/download/6/archive.zip</content_url>
+      <author id="2" name="John Smith"/>
+      <created_on>2006-07-19T19:07:27Z</created_on>
+    </attachment>
+    <attachment>
+      <id>14</id>
+      <filename>changeset_utf8.diff</filename>
+      <filesize>687</filesize>
+      <content_type>text/x-diff</content_type>
+      <description/>
+      <content_url>{{BASE}}/attachments/download/14/changeset_utf8.diff</content_url>
+      <author id="2" name="John Smith"/>
+      <created_on>2006-07-19T19:07:27Z</created_on>
+    </attachment>
+  </attachments>
+  <journals type="array"/>
+</issue>

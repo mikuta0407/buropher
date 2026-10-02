@@ -1,0 +1,94 @@
+status: 200
+content-type: application/json
+
+{
+  "files": [
+    {
+      "id": 8,
+      "filename": "project_file.zip",
+      "filesize": 320,
+      "content_type": "application/octet-stream",
+      "description": null,
+      "content_url": "{{BASE}}/attachments/download/8/project_file.zip",
+      "author": {
+        "id": 2,
+        "name": "Johnny Smith"
+      },
+      "created_on": "TIMESTAMP",
+      "digest": "b91e08d0cf966d5c6ff411bd8c4cc3a2",
+      "downloads": 0
+    },
+    {
+      "id": 22,
+      "filename": "redmine_logo.ai.unknown",
+      "filesize": 4994,
+      "content_type": null,
+      "description": "unknown type",
+      "content_url": "{{BASE}}/attachments/download/22/redmine_logo.ai.unknown",
+      "author": {
+        "id": 1,
+        "name": "Redmine Admin"
+      },
+      "created_on": "TIMESTAMP",
+      "digest": "68d90c016f0806d88234a6f16530fdf0b7f1d2481354798f1a5fd165dca6b04f",
+      "downloads": 0
+    },
+    {
+      "id": 29,
+      "filename": "api.txt",
+      "filesize": 12,
+      "content_type": "text/plain",
+      "description": "API file",
+      "content_url": "{{BASE}}/attachments/download/29/api.txt",
+      "author": {
+        "id": 2,
+        "name": "Johnny Smith"
+      },
+      "created_on": "TIMESTAMP",
+      "version": {
+        "id": 2,
+        "name": "1.0"
+      },
+      "digest": "70195378e26400f321a170529a641bb13d5560b94c4d1a11be937870225461a0",
+      "downloads": 0
+    },
+    {
+      "id": 9,
+      "filename": "version_file.zip",
+      "filesize": 452,
+      "content_type": "application/octet-stream",
+      "description": null,
+      "content_url": "{{BASE}}/attachments/download/9/version_file.zip",
+      "author": {
+        "id": 2,
+        "name": "Johnny Smith"
+      },
+      "created_on": "TIMESTAMP",
+      "version": {
+        "id": 1,
+        "name": "0.1"
+      },
+      "digest": "b91e08d0cf966d5c6ff411bd8c4cc3a2",
+      "downloads": 0
+    },
+    {
+      "id": 12,
+      "filename": "version_file.zip",
+      "filesize": 452,
+      "content_type": "application/octet-stream",
+      "description": null,
+      "content_url": "{{BASE}}/attachments/download/12/version_file.zip",
+      "author": {
+        "id": 2,
+        "name": "Johnny Smith"
+      },
+      "created_on": "TIMESTAMP",
+      "version": {
+        "id": 1,
+        "name": "0.1"
+      },
+      "digest": "b91e08d0cf966d5c6ff411bd8c4cc3a2",
+      "downloads": 0
+    }
+  ]
+}

@@ -30,6 +30,13 @@ var frozenTime = time.Date(2026, 1, 15, 12, 0, 0, 0, time.UTC)
 // extra はテスト用の追加ルート（nil 可）。
 func newFixtureServer(t *testing.T, extra ...func(a *handler.App, r chi.Router)) (*httptest.Server, *db.DB) {
 	t.Helper()
+	_, ts, d := newFixtureServerFull(t, extra...)
+	return ts, d
+}
+
+// newFixtureServerFull は newFixtureServer と同じ。*server.Server（ルータ・App）も返す。
+func newFixtureServerFull(t *testing.T, extra ...func(a *handler.App, r chi.Router)) (*server.Server, *httptest.Server, *db.DB) {
+	t.Helper()
 	// 参照環境は TZ=UTC（タイムゾーン未設定ユーザーの時刻はサーバのローカル時刻で表示される）
 	saved := time.Local
 	time.Local = time.UTC
@@ -59,7 +66,7 @@ func newFixtureServer(t *testing.T, extra ...func(a *handler.App, r chi.Router))
 	}
 	ts := httptest.NewServer(srv.Handler())
 	t.Cleanup(ts.Close)
-	return ts, d
+	return srv, ts, d
 }
 
 var feedKeyRe = regexp.MustCompile(`key=[0-9a-f]{40}`)

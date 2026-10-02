@@ -42,6 +42,9 @@ type queryView struct {
 	ErrorMessages []string
 	// Valid は @query.valid?。
 	Valid bool
+	// IntDefaultStatus は UserQuery の既定フィルタ（status = [1]）を整数のまま出す（Redmine の
+	// UserQuery#initialize は整数の User::STATUS_ACTIVE を保持し、addFilter に [1] と出る）。
+	IntDefaultStatus bool
 }
 
 // newQueryView は q の queryView を作る。
@@ -233,7 +236,11 @@ func (qv *queryView) FilterLines() []filterLine {
 		if vals == nil {
 			vals = []string{}
 		}
-		out = append(out, filterLine{Field: k, Operator: queryRawJSON(qv.Q.OperatorFor(k)), Values: queryRawJSON(vals)})
+		var jv any = vals
+		if qv.IntDefaultStatus && k == "status" && qv.Q.OperatorFor(k) == "=" && len(vals) == 1 && vals[0] == "1" {
+			jv = []int{domain.StatusActive}
+		}
+		out = append(out, filterLine{Field: k, Operator: queryRawJSON(qv.Q.OperatorFor(k)), Values: queryRawJSON(jv)})
 	}
 	return out
 }

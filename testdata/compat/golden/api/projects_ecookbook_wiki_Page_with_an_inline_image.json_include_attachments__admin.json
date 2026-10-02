@@ -1,0 +1,36 @@
+status: 200
+content-type: application/json
+
+{
+  "wiki_page": {
+    "title": "Page_with_an_inline_image",
+    "parent": {
+      "title": "CookBook_documentation"
+    },
+    "text": "h1. Page with an inline image\n\nThis is an inline image:\n\n!logo.gif!",
+    "version": 1,
+    "author": {
+      "id": 1,
+      "name": "Redmine Admin"
+    },
+    "comments": null,
+    "created_on": "2007-03-07T23:18:07Z",
+    "updated_on": "2007-03-07T23:18:07Z",
+    "attachments": [
+      {
+        "id": 3,
+        "filename": "logo.gif",
+        "filesize": 280,
+        "content_type": "image/gif",
+        "description": "This is a logo",
+        "content_url": "{{BASE}}/attachments/download/3/logo.gif",
+        "thumbnail_url": "{{BASE}}/attachments/thumbnail/3",
+        "author": {
+          "id": 2,
+          "name": "John Smith"
+        },
+        "created_on": "2006-07-19T19:07:27Z"
+      }
+    ]
+  }
+}

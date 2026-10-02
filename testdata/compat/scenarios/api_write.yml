@@ -1,0 +1,789 @@
+# REST API の書き込み（POST / PUT / PATCH / DELETE）の互換シナリオ（test/integration/api_test の作成・更新・削除）。
+# 状態を変えるため、共用の参照環境（3998）ではなく専用の参照インスタンスに対して、
+# 参照・候補とも実行前に reset して流すこと（-reset-ref / -reset-cand）:
+#   COMPAT_REF_DIR=.../_reference/ref-api COMPAT_REF_PORT=4036 tools/compat/redmine-ref.sh start
+# ケースは記述順に依存する（作成したレコードの id を後続で使う）。
+name: api_write
+
+users:
+  admin: {login: admin, password: admin}
+  jsmith: {login: jsmith, password: jsmith}
+  dlopper: {login: dlopper, password: foo}
+
+normalize:
+  mask_keys: [api_key]
+  # 作成・更新したレコードの日時は実時刻（候補の時計は固定時刻から進む）
+  mask_timestamps: true
+
+requests:
+  # ---- uploads（attachments/upload.api.rsb）
+  - id: upload_json
+    path: /uploads.json?filename=test.txt
+    method: POST
+    user: jsmith
+    content_type: application/octet-stream
+    body: 'hello world'
+    expect_status: 201
+    capture_body: {tok1: '"token":"([0-9a-f.]+)"'}
+  - id: upload_xml
+    path: /uploads.xml?filename=second.txt
+    method: POST
+    user: jsmith
+    content_type: application/octet-stream
+    body: 'second file'
+    expect_status: 201
+    capture_body: {tok2: '<token>([0-9a-f.]+)</token>'}
+  - id: upload_json_for_files
+    path: /uploads.json?filename=release.txt
+    method: POST
+    user: jsmith
+    content_type: application/octet-stream
+    body: 'release file'
+    expect_status: 201
+    capture_body: {tok3: '"token":"([0-9a-f.]+)"'}
+  - id: upload_wrong_content_type
+    path: /uploads.json
+    method: POST
+    user: jsmith
+    content_type: application/json
+    body: '{"x":1}'
+  - id: upload_anonymous
+    path: /uploads.json
+    method: POST
+    user: anonymous
+    content_type: application/octet-stream
+    body: 'anon'
+
+  # ---- issues
+  - id: issue_create_json
+    path: /issues.json
+    method: POST
+    user: jsmith
+    content_type: application/json
+    body: '{"issue":{"project_id":1,"tracker_id":2,"status_id":3,"subject":"API test","priority_id":4,"description":"API description","custom_fields":[{"id":2,"value":"Foo"}],"uploads":[{"token":"${tok1}","filename":"test.txt","content_type":"text/plain","description":"uploaded"}]}}'
+    expect_status: 201
+  - id: issue_create_xml
+    path: /issues.xml
+    method: POST
+    user: jsmith
+    content_type: application/xml
+    body: '<?xml version="1.0"?><issue><project_id>1</project_id><tracker_id>1</tracker_id><subject>XML issue</subject><priority_id>5</priority_id><watcher_user_ids type="array"><watcher_user_id>3</watcher_user_id></watcher_user_ids></issue>'
+    expect_status: 201
+  - id: issue_create_invalid_json
+    path: /issues.json
+    method: POST
+    user: jsmith
+    content_type: application/json
+    body: '{"issue":{"project_id":1,"subject":"","priority_id":4}}'
+    expect_status: 422
+  - id: issue_create_invalid_xml
+    path: /issues.xml
+    method: POST
+    user: jsmith
+    content_type: application/xml
+    body: '<?xml version="1.0"?><issue><project_id>1</project_id><subject></subject></issue>'
+    expect_status: 422
+  - id: issue_create_invalid_project
+    path: /issues.json
+    method: POST
+    user: jsmith
+    content_type: application/json
+    body: '{"issue":{"project_id":999,"subject":"x"}}'
+  - id: issue_create_forbidden
+    path: /issues.json
+    method: POST
+    user: dlopper
+    content_type: application/json
+    body: '{"issue":{"project_id":2,"subject":"x","tracker_id":1}}'
+  - id: issue_create_anonymous
+    path: /issues.json
+    method: POST
+    user: anonymous
+    content_type: application/json
+    body: '{"issue":{"project_id":1,"subject":"x"}}'
+  - id: issue_15_after_create
+    path: /issues/15.json?include=attachments,journals,watchers
+    user: admin
+  - id: issue_16_after_create
+    path: /issues/16.xml?include=watchers
+    user: admin
+  - id: issue_update_json
+    path: /issues/1.json
+    method: PUT
+    user: jsmith
+    content_type: application/json
+    body: '{"issue":{"subject":"API update","notes":"note via api","custom_fields":[{"id":2,"value":"125"}],"uploads":[{"token":"${tok2}","filename":"second.txt","content_type":"text/plain"}]}}'
+    expect_status: 204
+  - id: issue_update_xml
+    path: /issues/2.xml
+    method: PUT
+    user: jsmith
+    content_type: application/xml
+    body: '<?xml version="1.0"?><issue><notes>xml note</notes><done_ratio>50</done_ratio></issue>'
+    expect_status: 204
+  - id: issue_update_private_notes
+    path: /issues/3.json
+    method: PUT
+    user: jsmith
+    content_type: application/json
+    body: '{"issue":{"notes":"private","private_notes":true}}'
+    expect_status: 204
+  - id: issue_update_invalid
+    path: /issues/1.json
+    method: PUT
+    user: jsmith
+    content_type: application/json
+    body: '{"issue":{"subject":""}}'
+    expect_status: 422
+  - id: issue_update_invalid_xml
+    path: /issues/1.xml
+    method: PUT
+    user: jsmith
+    content_type: application/xml
+    body: '<?xml version="1.0"?><issue><subject></subject></issue>'
+    expect_status: 422
+  - id: issue_update_stale
+    path: /issues/1.json
+    method: PUT
+    user: jsmith
+    content_type: application/json
+    body: '{"issue":{"subject":"stale","lock_version":0}}'
+  - id: issue_update_not_found
+    path: /issues/999.json
+    method: PUT
+    user: jsmith
+    content_type: application/json
+    body: '{"issue":{"subject":"x"}}'
+  - id: issue_1_after_update
+    path: /issues/1.json?include=attachments,journals
+    user: admin
+  - id: issue_2_after_update
+    path: /issues/2.xml?include=journals
+    user: admin
+  - id: issue_3_after_update
+    path: /issues/3.json?include=journals
+    user: dlopper
+
+  # ---- watchers / relations / journals
+  - id: watcher_add
+    path: /issues/1/watchers.json
+    method: POST
+    user: jsmith
+    content_type: application/json
+    body: '{"user_id":3}'
+    expect_status: 204
+  - id: watcher_add_xml
+    path: /issues/1/watchers.xml
+    method: POST
+    user: jsmith
+    content_type: application/xml
+    body: '<user_id>8</user_id>'
+  - id: watcher_remove
+    path: /issues/1/watchers/3.json
+    method: DELETE
+    user: jsmith
+    expect_status: 204
+  - id: relation_create
+    path: /issues/1/relations.json
+    method: POST
+    user: jsmith
+    content_type: application/json
+    body: '{"relation":{"issue_to_id":7,"relation_type":"precedes","delay":2}}'
+    expect_status: 201
+    capture_body: {rid: '"relation":\{"id":(\d+)'}
+  - id: relation_create_xml
+    path: /issues/1/relations.xml
+    method: POST
+    user: jsmith
+    content_type: application/xml
+    body: '<relation><issue_to_id>8</issue_to_id><relation_type>relates</relation_type></relation>'
+  - id: relation_create_invalid
+    path: /issues/1/relations.json
+    method: POST
+    user: jsmith
+    content_type: application/json
+    body: '{"relation":{"issue_to_id":999,"relation_type":"relates"}}'
+    expect_status: 422
+  - id: relation_destroy
+    path: /relations/${rid}.json
+    method: DELETE
+    user: jsmith
+    expect_status: 204
+  - id: journal_update
+    path: /journals/1.json
+    method: PUT
+    user: admin
+    content_type: application/json
+    body: '{"journal":{"notes":"edited via api","private_notes":false}}'
+    expect_status: 204
+  - id: journal_update_xml
+    path: /journals/2.xml
+    method: PUT
+    user: admin
+    content_type: application/xml
+    body: '<journal><notes>xml edited</notes></journal>'
+  - id: journal_update_forbidden
+    path: /journals/1.json
+    method: PUT
+    user: dlopper
+    content_type: application/json
+    body: '{"journal":{"notes":"x"}}'
+  - id: issue_1_after_journals
+    path: /issues/1.json?include=journals,watchers,relations
+    user: admin
+  - id: issue_delete
+    path: /issues/16.json
+    method: DELETE
+    user: jsmith
+    expect_status: 204
+  - id: issue_delete_xml
+    path: /issues/15.xml
+    method: DELETE
+    user: jsmith
+    expect_status: 204
+  - id: issue_16_after_delete
+    path: /issues/16.json
+    user: admin
+
+  # ---- projects
+  - id: project_create
+    path: /projects.json
+    method: POST
+    user: admin
+    content_type: application/json
+    body: '{"project":{"name":"API project","identifier":"api-project","description":"desc","is_public":true,"enabled_module_names":["issue_tracking","wiki","news"],"tracker_ids":[1,2],"custom_fields":[{"id":3,"value":"Beta"}]}}'
+    expect_status: 201
+  - id: project_create_xml
+    path: /projects.xml
+    method: POST
+    user: admin
+    content_type: application/xml
+    body: '<project><name>XML project</name><identifier>xml-project</identifier><parent_id>1</parent_id><inherit_members>1</inherit_members></project>'
+    expect_status: 201
+  - id: project_create_invalid
+    path: /projects.json
+    method: POST
+    user: admin
+    content_type: application/json
+    body: '{"project":{"name":"","identifier":"1"}}'
+    expect_status: 422
+  - id: project_create_invalid_xml
+    path: /projects.xml
+    method: POST
+    user: admin
+    content_type: application/xml
+    body: '<project><name>x</name><identifier>ecookbook</identifier></project>'
+    expect_status: 422
+  - id: project_create_forbidden
+    path: /projects.json
+    method: POST
+    user: dlopper
+    content_type: application/json
+    body: '{"project":{"name":"x","identifier":"forbidden-x"}}'
+  - id: project_update
+    path: /projects/api-project.json
+    method: PUT
+    user: admin
+    content_type: application/json
+    body: '{"project":{"name":"API renamed","homepage":"https://example.net/"}}'
+    expect_status: 204
+  - id: project_update_invalid
+    path: /projects/api-project.json
+    method: PUT
+    user: admin
+    content_type: application/json
+    body: '{"project":{"name":""}}'
+    expect_status: 422
+  - id: project_after_update
+    path: /projects/api-project.json?include=trackers,enabled_modules,issue_custom_fields
+    user: admin
+  - id: project_xml_after_create
+    path: /projects/xml-project.xml
+    user: admin
+  - id: project_close
+    path: /projects/api-project/close.json
+    method: PUT
+    user: admin
+    expect_status: 204
+  - id: project_after_close
+    path: /projects/api-project.json
+    user: admin
+  - id: project_reopen
+    path: /projects/api-project/reopen.json
+    method: PUT
+    user: admin
+    expect_status: 204
+  - id: project_archive
+    path: /projects/api-project/archive.json
+    method: PUT
+    user: admin
+    expect_status: 204
+  - id: project_after_archive
+    path: /projects/api-project.json
+    user: admin
+  - id: project_unarchive
+    path: /projects/api-project/unarchive.json
+    method: PUT
+    user: admin
+    expect_status: 204
+  - id: project_destroy_forbidden
+    path: /projects/api-project.json
+    method: DELETE
+    user: jsmith
+
+  # ---- memberships
+  - id: membership_create
+    path: /projects/1/memberships.json
+    method: POST
+    user: admin
+    content_type: application/json
+    body: '{"membership":{"user_id":7,"role_ids":[2,3]}}'
+    expect_status: 201
+    capture_body: {mid: '"membership":\{"id":(\d+)'}
+  - id: membership_create_group_xml
+    path: /projects/1/memberships.xml
+    method: POST
+    user: admin
+    content_type: application/xml
+    body: '<membership><user_id>10</user_id><role_ids type="array"><role_id>3</role_id></role_ids></membership>'
+    expect_status: 201
+  - id: membership_create_invalid
+    path: /projects/1/memberships.json
+    method: POST
+    user: admin
+    content_type: application/json
+    body: '{"membership":{"user_id":7,"role_ids":[]}}'
+    expect_status: 422
+  - id: membership_update
+    path: /memberships/${mid}.json
+    method: PUT
+    user: admin
+    content_type: application/json
+    body: '{"membership":{"role_ids":[1,2]}}'
+    expect_status: 204
+  # 存在しないロールだけを指定すると全 member_roles が消え、MemberRole#remove_member_if_empty で
+  # メンバーシップ自体が削除される（応答は 422）。以降の取得・削除は 404 になる。
+  - id: membership_update_invalid
+    path: /memberships/${mid}.json
+    method: PUT
+    user: admin
+    content_type: application/json
+    body: '{"membership":{"role_ids":[99]}}'
+  - id: membership_after_update
+    path: /memberships/${mid}.json
+    user: admin
+  - id: memberships_after
+    path: /projects/1/memberships.json
+    user: admin
+  - id: membership_destroy
+    path: /memberships/${mid}.json
+    method: DELETE
+    user: admin
+    expect_status: 404
+  - id: membership_destroy_existing
+    path: /memberships/2.json
+    method: DELETE
+    user: admin
+    expect_status: 204
+
+  # ---- issue_categories
+  - id: category_create
+    path: /projects/1/issue_categories.json
+    method: POST
+    user: jsmith
+    content_type: application/json
+    body: '{"issue_category":{"name":"API category","assigned_to_id":2}}'
+    expect_status: 201
+    capture_body: {cid: '"issue_category":\{"id":(\d+)'}
+  - id: category_create_invalid
+    path: /projects/1/issue_categories.xml
+    method: POST
+    user: jsmith
+    content_type: application/xml
+    body: '<issue_category><name></name></issue_category>'
+    expect_status: 422
+  - id: category_update
+    path: /issue_categories/${cid}.json
+    method: PUT
+    user: jsmith
+    content_type: application/json
+    body: '{"issue_category":{"name":"API category renamed"}}'
+    expect_status: 204
+  - id: category_update_invalid
+    path: /issue_categories/${cid}.json
+    method: PUT
+    user: jsmith
+    content_type: application/json
+    body: '{"issue_category":{"name":""}}'
+    expect_status: 422
+  - id: category_after_update
+    path: /issue_categories/${cid}.json
+    user: jsmith
+  - id: category_destroy_reassign
+    path: /issue_categories/1.json?reassign_to_id=2
+    method: DELETE
+    user: jsmith
+    expect_status: 204
+  - id: category_destroy
+    path: /issue_categories/${cid}.json
+    method: DELETE
+    user: jsmith
+    expect_status: 204
+
+  # ---- versions
+  - id: version_create
+    path: /projects/1/versions.json
+    method: POST
+    user: jsmith
+    content_type: application/json
+    body: '{"version":{"name":"API v1","due_date":"2026-12-31","sharing":"none","description":"api version","custom_fields":[{"id":4,"value":"x"}]}}'
+    expect_status: 201
+    capture_body: {vid: '"version":\{"id":(\d+)'}
+  - id: version_create_xml
+    path: /projects/1/versions.xml
+    method: POST
+    user: jsmith
+    content_type: application/xml
+    body: '<version><name>XML v1</name><effective_date>2026-06-30</effective_date></version>'
+    expect_status: 201
+  - id: version_create_invalid
+    path: /projects/1/versions.json
+    method: POST
+    user: jsmith
+    content_type: application/json
+    body: '{"version":{"name":""}}'
+    expect_status: 422
+  - id: version_update
+    path: /versions/${vid}.json
+    method: PUT
+    user: jsmith
+    content_type: application/json
+    body: '{"version":{"status":"locked","wiki_page_title":"CookBook_documentation"}}'
+    expect_status: 204
+  - id: version_after_update
+    path: /versions/${vid}.json
+    user: jsmith
+  - id: version_destroy
+    path: /versions/${vid}.json
+    method: DELETE
+    user: jsmith
+    expect_status: 204
+  - id: version_destroy_in_use
+    path: /versions/2.json
+    method: DELETE
+    user: jsmith
+    expect_status: 422
+
+  # ---- users / groups / my
+  - id: user_create
+    path: /users.json
+    method: POST
+    user: admin
+    content_type: application/json
+    body: '{"user":{"login":"apiuser","firstname":"API","lastname":"User","mail":"apiuser@example.net","password":"secret123","mail_notification":"only_assigned","custom_fields":[{"id":4,"value":"01 23 45 67"}]}}'
+    expect_status: 201
+    capture_body: {uid: '"user":\{"id":(\d+)'}
+  - id: user_create_xml
+    path: /users.xml
+    method: POST
+    user: admin
+    content_type: application/xml
+    body: '<user><login>xmluser</login><firstname>XML</firstname><lastname>User</lastname><mail>xmluser@example.net</mail><generate_password>1</generate_password></user>'
+    expect_status: 201
+  - id: user_create_invalid
+    path: /users.json
+    method: POST
+    user: admin
+    content_type: application/json
+    body: '{"user":{"login":"jsmith","firstname":"","lastname":"x","mail":"bad"}}'
+    expect_status: 422
+  - id: user_create_forbidden
+    path: /users.json
+    method: POST
+    user: jsmith
+    content_type: application/json
+    body: '{"user":{"login":"x"}}'
+  - id: user_update
+    path: /users/${uid}.json
+    method: PUT
+    user: admin
+    content_type: application/json
+    body: '{"user":{"firstname":"Changed","admin":true}}'
+    expect_status: 204
+  - id: user_update_invalid
+    path: /users/${uid}.json
+    method: PUT
+    user: admin
+    content_type: application/json
+    body: '{"user":{"mail":"x"}}'
+    expect_status: 422
+  - id: user_after_update
+    path: /users/${uid}.json
+    user: admin
+  - id: user_lock
+    path: /users/${uid}.json
+    method: PUT
+    user: admin
+    content_type: application/json
+    body: '{"user":{"status":3}}'
+    expect_status: 204
+  - id: user_destroy
+    path: /users/${uid}.json
+    method: DELETE
+    user: admin
+    expect_status: 204
+  - id: group_create
+    path: /groups.json
+    method: POST
+    user: admin
+    content_type: application/json
+    body: '{"group":{"name":"API group","user_ids":[2,3]}}'
+    expect_status: 201
+    capture_body: {gid: '"group":\{"id":(\d+)'}
+  - id: group_create_invalid
+    path: /groups.xml
+    method: POST
+    user: admin
+    content_type: application/xml
+    body: '<group><name></name></group>'
+    expect_status: 422
+  - id: group_update
+    path: /groups/${gid}.json
+    method: PUT
+    user: admin
+    content_type: application/json
+    body: '{"group":{"name":"API group renamed","user_ids":[2]}}'
+    expect_status: 204
+  - id: group_add_user
+    path: /groups/${gid}/users.json
+    method: POST
+    user: admin
+    content_type: application/json
+    body: '{"user_id":5}'
+    expect_status: 204
+  - id: group_add_user_invalid
+    path: /groups/${gid}/users.json
+    method: POST
+    user: admin
+    content_type: application/json
+    body: '{"user_id":999}'
+  - id: group_after_add
+    path: /groups/${gid}.json?include=users
+    user: admin
+  - id: group_remove_user
+    path: /groups/${gid}/users/5.json
+    method: DELETE
+    user: admin
+    expect_status: 204
+  - id: group_destroy
+    path: /groups/${gid}.json
+    method: DELETE
+    user: admin
+    expect_status: 204
+  - id: my_account_update
+    path: /my/account.json
+    method: PUT
+    user: jsmith
+    content_type: application/json
+    body: '{"user":{"firstname":"Johnny","mail":"jsmith@somenet.foo","language":"fr"}}'
+    expect_status: 204
+  - id: my_account_update_invalid
+    path: /my/account.xml
+    method: PUT
+    user: jsmith
+    content_type: application/xml
+    body: '<user><mail>bad</mail></user>'
+    expect_status: 422
+  - id: my_account_after
+    path: /my/account.json
+    user: jsmith
+
+  # ---- news
+  - id: news_create
+    path: /projects/1/news.json
+    method: POST
+    user: jsmith
+    content_type: application/json
+    body: '{"news":{"title":"API news","summary":"sum","description":"desc","uploads":[{"token":"${tok3}","filename":"release.txt"}]}}'
+    expect_status: 204
+  - id: news_create_invalid
+    path: /projects/1/news.xml
+    method: POST
+    user: jsmith
+    content_type: application/xml
+    body: '<news><title></title></news>'
+    expect_status: 422
+  - id: news_update
+    path: /news/1.json
+    method: PUT
+    user: jsmith
+    content_type: application/json
+    body: '{"news":{"title":"Renamed news"}}'
+    expect_status: 204
+  - id: news_update_invalid
+    path: /news/1.json
+    method: PUT
+    user: jsmith
+    content_type: application/json
+    body: '{"news":{"title":""}}'
+    expect_status: 422
+  - id: news_after
+    path: /news/4.json?include=attachments
+    user: jsmith
+  - id: news_destroy
+    path: /news/1.json
+    method: DELETE
+    user: jsmith
+    expect_status: 204
+
+  # ---- time_entries
+  - id: time_entry_create
+    path: /time_entries.json
+    method: POST
+    user: jsmith
+    content_type: application/json
+    body: '{"time_entry":{"issue_id":1,"hours":"3.5","activity_id":9,"spent_on":"2026-01-10","comments":"api","custom_fields":[{"id":10,"value":"1"}]}}'
+    expect_status: 201
+    capture_body: {tid: '"time_entry":\{"id":(\d+)'}
+  - id: time_entry_create_project_xml
+    path: /time_entries.xml
+    method: POST
+    user: jsmith
+    content_type: application/xml
+    body: '<time_entry><project_id>1</project_id><hours>1.25</hours><activity_id>9</activity_id><spent_on>2026-01-11</spent_on></time_entry>'
+    expect_status: 201
+  - id: time_entry_create_invalid
+    path: /time_entries.json
+    method: POST
+    user: jsmith
+    content_type: application/json
+    body: '{"time_entry":{"issue_id":1,"hours":"","activity_id":9}}'
+    expect_status: 422
+  - id: time_entry_create_for_other_user
+    path: /time_entries.json
+    method: POST
+    user: admin
+    content_type: application/json
+    body: '{"time_entry":{"project_id":1,"hours":"2","activity_id":9,"user_id":3}}'
+  - id: time_entry_update
+    path: /time_entries/${tid}.json
+    method: PUT
+    user: jsmith
+    content_type: application/json
+    body: '{"time_entry":{"hours":"2.5","comments":"changed"}}'
+    expect_status: 204
+  - id: time_entry_update_invalid
+    path: /time_entries/${tid}.json
+    method: PUT
+    user: jsmith
+    content_type: application/json
+    body: '{"time_entry":{"hours":"-1"}}'
+    expect_status: 422
+  - id: time_entry_after
+    path: /time_entries/${tid}.json
+    user: jsmith
+  - id: time_entry_destroy
+    path: /time_entries/${tid}.json
+    method: DELETE
+    user: jsmith
+    expect_status: 204
+
+  # ---- attachments / files
+  - id: attachment_update
+    path: /attachments/1.json
+    method: PATCH
+    user: jsmith
+    content_type: application/json
+    body: '{"attachment":{"filename":"renamed.zip","description":"updated"}}'
+    expect_status: 204
+  - id: attachment_update_invalid
+    path: /attachments/1.json
+    method: PATCH
+    user: jsmith
+    content_type: application/json
+    body: '{"attachment":{"filename":""}}'
+    expect_status: 422
+  - id: attachment_after_update
+    path: /attachments/1.json
+    user: jsmith
+  - id: attachment_destroy
+    path: /attachments/7.json
+    method: DELETE
+    user: admin
+    expect_status: 204
+  - id: attachment_after_destroy
+    path: /attachments/7.json
+    user: admin
+  - id: upload_for_file
+    path: /uploads.json?filename=file.txt
+    method: POST
+    user: jsmith
+    content_type: application/octet-stream
+    body: 'project file'
+    capture_body: {tok4: '"token":"([0-9a-f.]+)"'}
+  - id: file_create
+    path: /projects/1/files.json
+    method: POST
+    user: jsmith
+    content_type: application/json
+    body: '{"file":{"token":"${tok4}","version_id":2,"filename":"api.txt","description":"API file"}}'
+    expect_status: 204
+  - id: file_create_invalid_token
+    path: /projects/1/files.json
+    method: POST
+    user: jsmith
+    content_type: application/json
+    body: '{"file":{"token":"1.invalid"}}'
+  - id: files_after
+    path: /projects/1/files.json
+    user: jsmith
+
+  # ---- wiki
+  - id: wiki_create
+    path: /projects/ecookbook/wiki/New_API_page.json
+    method: PUT
+    user: jsmith
+    content_type: application/json
+    body: '{"wiki_page":{"text":"Hello *API*","comments":"created via api"}}'
+    expect_status: 201
+  - id: wiki_create_xml_with_parent
+    path: /projects/ecookbook/wiki/XML_child.xml
+    method: PUT
+    user: jsmith
+    content_type: application/xml
+    body: '<wiki_page><text>XML child</text><parent_title>CookBook_documentation</parent_title></wiki_page>'
+    expect_status: 201
+  - id: wiki_update
+    path: /projects/ecookbook/wiki/CookBook_documentation.json
+    method: PUT
+    user: jsmith
+    content_type: application/json
+    body: '{"wiki_page":{"text":"Updated text","comments":"api update","version":3}}'
+    expect_status: 204
+  - id: wiki_update_stale
+    path: /projects/ecookbook/wiki/CookBook_documentation.json
+    method: PUT
+    user: jsmith
+    content_type: application/json
+    body: '{"wiki_page":{"text":"Stale","version":1}}'
+    expect_status: 409
+  - id: wiki_update_invalid
+    path: /projects/ecookbook/wiki/Another_page.json
+    method: PUT
+    user: jsmith
+    content_type: application/json
+    body: '{"wiki_page":{"text":"x","parent_title":"Another_page"}}'
+  - id: wiki_after_update
+    path: /projects/ecookbook/wiki/CookBook_documentation.json
+    user: jsmith
+  - id: wiki_new_after
+    path: /projects/ecookbook/wiki/New_API_page.xml
+    user: jsmith
+  - id: wiki_destroy
+    path: /projects/ecookbook/wiki/New_API_page.json
+    method: DELETE
+    user: jsmith
+    expect_status: 204
+  - id: wiki_index_after
+    path: /projects/ecookbook/wiki/index.json
+    user: jsmith

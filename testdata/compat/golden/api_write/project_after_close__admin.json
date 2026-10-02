@@ -1,0 +1,24 @@
+status: 200
+content-type: application/json
+
+{
+  "project": {
+    "id": 7,
+    "name": "API renamed",
+    "identifier": "api-project",
+    "description": "desc",
+    "homepage": "https://example.net/",
+    "status": 5,
+    "is_public": true,
+    "inherit_members": false,
+    "custom_fields": [
+      {
+        "id": 3,
+        "name": "Development status",
+        "value": "Beta"
+      }
+    ],
+    "created_on": "TIMESTAMP",
+    "updated_on": "TIMESTAMP"
+  }
+}

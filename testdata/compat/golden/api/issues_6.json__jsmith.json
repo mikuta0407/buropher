@@ -1,0 +1,62 @@
+status: 200
+content-type: application/json
+
+{
+  "issue": {
+    "id": 6,
+    "project": {
+      "id": 5,
+      "name": "Private child of eCookbook"
+    },
+    "tracker": {
+      "id": 1,
+      "name": "Bug"
+    },
+    "status": {
+      "id": 1,
+      "name": "New",
+      "is_closed": false
+    },
+    "priority": {
+      "id": 4,
+      "name": "Low"
+    },
+    "author": {
+      "id": 2,
+      "name": "John Smith"
+    },
+    "subject": "Issue of a private subproject",
+    "description": "This is an issue of a private subproject of cookbook",
+    "start_date": "2026-01-15",
+    "due_date": "2026-01-16",
+    "done_ratio": 0,
+    "is_private": false,
+    "estimated_hours": null,
+    "total_estimated_hours": null,
+    "custom_fields": [
+      {
+        "id": 2,
+        "name": "Searchable field",
+        "value": null
+      },
+      {
+        "id": 1,
+        "name": "Database",
+        "value": null
+      },
+      {
+        "id": 6,
+        "name": "Float field",
+        "value": null
+      },
+      {
+        "id": 8,
+        "name": "Custom date",
+        "value": null
+      }
+    ],
+    "created_on": "2026-01-15T11:59:00Z",
+    "updated_on": "2026-01-15T11:59:00Z",
+    "closed_on": null
+  }
+}

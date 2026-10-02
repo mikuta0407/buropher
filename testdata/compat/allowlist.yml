@@ -122,3 +122,18 @@ entries:
       - '^\s*<option value="Casablanca">\(GMT\+0[01]:00\) Casablanca</option>$'
 
   # ---- wiki ----
+
+  # ---- api / api_write（REST API） ----
+  - case: "api/enumerations_*"
+    reason: "フィクスチャのカスタム値 true（SQLite に 't' で保存）はインポートで '1' に正規化される"
+    lines:
+      - '^\s*"value": "(t|1)"$'
+      - '^\s*<value>(t|1)</value>$'
+  - case: "api/roles_*"
+    reason: "ロールの権限の保存順を持たない（role_permissions に順序列がない）ため API では AccessControl の定義順で出す"
+    lines:
+      - '^\s*"[a-z_]+",?$'
+      - '^\s*<permission>[a-z_]+</permission>$'
+  - case: "api/custom_fields.*"
+    reason: "フィクスチャの custom_fields id 11（type が基底クラス CustomField）は custom_fields.owner_kind の CHECK 制約に合わずインポートされない"
+    ignore: true

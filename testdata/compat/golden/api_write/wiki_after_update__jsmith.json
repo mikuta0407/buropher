@@ -1,0 +1,17 @@
+status: 200
+content-type: application/json
+
+{
+  "wiki_page": {
+    "title": "CookBook_documentation",
+    "text": "Updated text",
+    "version": 4,
+    "author": {
+      "id": 2,
+      "name": "Johnny Smith"
+    },
+    "comments": "api update",
+    "created_on": "TIMESTAMP",
+    "updated_on": "TIMESTAMP"
+  }
+}

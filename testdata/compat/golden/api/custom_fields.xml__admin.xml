@@ -1,0 +1,279 @@
+status: 200
+content-type: application/xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<custom_fields type="array">
+  <custom_field>
+    <id>1</id>
+    <name>Database</name>
+    <description>Select one of the databases</description>
+    <customized_type>issue</customized_type>
+    <field_format>list</field_format>
+    <regexp/>
+    <min_length/>
+    <max_length/>
+    <is_required>false</is_required>
+    <is_filter>true</is_filter>
+    <searchable>false</searchable>
+    <multiple>false</multiple>
+    <default_value/>
+    <visible>true</visible>
+    <editable>true</editable>
+    <possible_values type="array">
+      <possible_value>
+        <value>MySQL</value>
+        <label>MySQL</label>
+      </possible_value>
+      <possible_value>
+        <value>PostgreSQL</value>
+        <label>PostgreSQL</label>
+      </possible_value>
+      <possible_value>
+        <value>Oracle</value>
+        <label>Oracle</label>
+      </possible_value>
+    </possible_values>
+    <trackers type="array">
+      <tracker id="1" name="Bug"/>
+    </trackers>
+    <roles type="array"/>
+  </custom_field>
+  <custom_field>
+    <id>2</id>
+    <name>Searchable field</name>
+    <description/>
+    <customized_type>issue</customized_type>
+    <field_format>string</field_format>
+    <regexp/>
+    <min_length>1</min_length>
+    <max_length>100</max_length>
+    <is_required>false</is_required>
+    <is_filter>true</is_filter>
+    <searchable>true</searchable>
+    <multiple>false</multiple>
+    <default_value>Default string</default_value>
+    <visible>true</visible>
+    <editable>true</editable>
+    <trackers type="array">
+      <tracker id="1" name="Bug"/>
+      <tracker id="3" name="Support request"/>
+    </trackers>
+    <roles type="array"/>
+  </custom_field>
+  <custom_field>
+    <id>3</id>
+    <name>Development status</name>
+    <description/>
+    <customized_type>project</customized_type>
+    <field_format>list</field_format>
+    <regexp/>
+    <min_length/>
+    <max_length/>
+    <is_required>false</is_required>
+    <is_filter>true</is_filter>
+    <searchable>false</searchable>
+    <multiple>false</multiple>
+    <default_value/>
+    <visible>true</visible>
+    <editable>true</editable>
+    <possible_values type="array">
+      <possible_value>
+        <value>Stable</value>
+        <label>Stable</label>
+      </possible_value>
+      <possible_value>
+        <value>Beta</value>
+        <label>Beta</label>
+      </possible_value>
+      <possible_value>
+        <value>Alpha</value>
+        <label>Alpha</label>
+      </possible_value>
+      <possible_value>
+        <value>Planning</value>
+        <label>Planning</label>
+      </possible_value>
+    </possible_values>
+  </custom_field>
+  <custom_field>
+    <id>4</id>
+    <name>Phone number</name>
+    <description/>
+    <customized_type>user</customized_type>
+    <field_format>string</field_format>
+    <regexp/>
+    <min_length/>
+    <max_length/>
+    <is_required>false</is_required>
+    <is_filter>false</is_filter>
+    <searchable>false</searchable>
+    <multiple>false</multiple>
+    <default_value/>
+    <visible>true</visible>
+    <editable>true</editable>
+  </custom_field>
+  <custom_field>
+    <id>5</id>
+    <name>Money</name>
+    <description/>
+    <customized_type>user</customized_type>
+    <field_format>float</field_format>
+    <regexp/>
+    <min_length/>
+    <max_length/>
+    <is_required>false</is_required>
+    <is_filter>false</is_filter>
+    <searchable>false</searchable>
+    <multiple>false</multiple>
+    <default_value/>
+    <visible>true</visible>
+    <editable>true</editable>
+  </custom_field>
+  <custom_field>
+    <id>6</id>
+    <name>Float field</name>
+    <description/>
+    <customized_type>issue</customized_type>
+    <field_format>float</field_format>
+    <regexp/>
+    <min_length/>
+    <max_length/>
+    <is_required>false</is_required>
+    <is_filter>false</is_filter>
+    <searchable>false</searchable>
+    <multiple>false</multiple>
+    <default_value/>
+    <visible>true</visible>
+    <editable>true</editable>
+    <trackers type="array">
+      <tracker id="1" name="Bug"/>
+      <tracker id="2" name="Feature request"/>
+      <tracker id="3" name="Support request"/>
+    </trackers>
+    <roles type="array"/>
+  </custom_field>
+  <custom_field>
+    <id>7</id>
+    <name>Billable</name>
+    <description/>
+    <customized_type>time_entry_activity</customized_type>
+    <field_format>bool</field_format>
+    <regexp/>
+    <min_length/>
+    <max_length/>
+    <is_required>false</is_required>
+    <is_filter>true</is_filter>
+    <searchable>false</searchable>
+    <multiple>false</multiple>
+    <default_value/>
+    <visible>true</visible>
+    <editable>true</editable>
+    <possible_values type="array">
+      <possible_value>
+        <value>1</value>
+        <label>Yes</label>
+      </possible_value>
+      <possible_value>
+        <value>0</value>
+        <label>No</label>
+      </possible_value>
+    </possible_values>
+  </custom_field>
+  <custom_field>
+    <id>8</id>
+    <name>Custom date</name>
+    <description/>
+    <customized_type>issue</customized_type>
+    <field_format>date</field_format>
+    <regexp/>
+    <min_length/>
+    <max_length/>
+    <is_required>false</is_required>
+    <is_filter>false</is_filter>
+    <searchable>false</searchable>
+    <multiple>false</multiple>
+    <default_value/>
+    <visible>true</visible>
+    <editable>true</editable>
+    <trackers type="array">
+      <tracker id="1" name="Bug"/>
+      <tracker id="2" name="Feature request"/>
+      <tracker id="3" name="Support request"/>
+    </trackers>
+    <roles type="array"/>
+  </custom_field>
+  <custom_field>
+    <id>9</id>
+    <name>Project 1 cf</name>
+    <description/>
+    <customized_type>issue</customized_type>
+    <field_format>date</field_format>
+    <regexp/>
+    <min_length/>
+    <max_length/>
+    <is_required>false</is_required>
+    <is_filter>true</is_filter>
+    <searchable>false</searchable>
+    <multiple>false</multiple>
+    <default_value/>
+    <visible>true</visible>
+    <editable>true</editable>
+    <trackers type="array">
+      <tracker id="1" name="Bug"/>
+    </trackers>
+    <roles type="array"/>
+  </custom_field>
+  <custom_field>
+    <id>10</id>
+    <name>Overtime</name>
+    <description/>
+    <customized_type>time_entry</customized_type>
+    <field_format>bool</field_format>
+    <regexp/>
+    <min_length/>
+    <max_length/>
+    <is_required>false</is_required>
+    <is_filter>false</is_filter>
+    <searchable>false</searchable>
+    <multiple>false</multiple>
+    <default_value>0</default_value>
+    <visible>true</visible>
+    <editable>true</editable>
+    <possible_values type="array">
+      <possible_value>
+        <value>1</value>
+        <label>Yes</label>
+      </possible_value>
+      <possible_value>
+        <value>0</value>
+        <label>No</label>
+      </possible_value>
+    </possible_values>
+  </custom_field>
+  <custom_field>
+    <id>11</id>
+    <name>Binary</name>
+    <description/>
+    <field_format>list</field_format>
+    <regexp/>
+    <min_length/>
+    <max_length/>
+    <is_required>false</is_required>
+    <is_filter>false</is_filter>
+    <searchable>false</searchable>
+    <multiple>false</multiple>
+    <default_value/>
+    <visible>true</visible>
+    <editable>true</editable>
+    <possible_values type="array">
+      <possible_value>
+        <value>Heélçjksd€654ù</value>
+        <label>Heélçjksd€654ù</label>
+      </possible_value>
+      <possible_value>
+        <value>Other value</value>
+        <label>Other value</label>
+      </possible_value>
+    </possible_values>
+  </custom_field>
+</custom_fields>

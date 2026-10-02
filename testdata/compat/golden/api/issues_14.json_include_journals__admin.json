@@ -1,0 +1,78 @@
+status: 200
+content-type: application/json
+
+{
+  "issue": {
+    "id": 14,
+    "project": {
+      "id": 3,
+      "name": "eCookbook Subproject 1"
+    },
+    "tracker": {
+      "id": 1,
+      "name": "Bug"
+    },
+    "status": {
+      "id": 1,
+      "name": "New",
+      "is_closed": false
+    },
+    "priority": {
+      "id": 5,
+      "name": "Normal"
+    },
+    "author": {
+      "id": 2,
+      "name": "John Smith"
+    },
+    "subject": "Private issue on public project",
+    "description": "This is a private issue",
+    "start_date": null,
+    "due_date": null,
+    "done_ratio": 0,
+    "is_private": true,
+    "estimated_hours": null,
+    "total_estimated_hours": null,
+    "spent_hours": 0.0,
+    "total_spent_hours": 0.0,
+    "custom_fields": [
+      {
+        "id": 2,
+        "name": "Searchable field",
+        "value": null
+      },
+      {
+        "id": 1,
+        "name": "Database",
+        "value": null
+      },
+      {
+        "id": 6,
+        "name": "Float field",
+        "value": null
+      },
+      {
+        "id": 8,
+        "name": "Custom date",
+        "value": null
+      }
+    ],
+    "created_on": "2025-12-31T12:00:00Z",
+    "updated_on": "2025-12-31T12:00:00Z",
+    "closed_on": null,
+    "journals": [
+      {
+        "id": 5,
+        "user": {
+          "id": 2,
+          "name": "John Smith"
+        },
+        "notes": "A comment on a private issue.",
+        "created_on": "2026-01-14T00:00:00Z",
+        "updated_on": "2026-01-14T00:00:00Z",
+        "private_notes": false,
+        "details": []
+      }
+    ]
+  }
+}

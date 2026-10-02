@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"slices"
 
 	"github.com/mikuta0407/buropher/internal/db"
 )
@@ -101,6 +102,38 @@ func SetPrincipalCustomValue(ctx context.Context, q db.Queryer, principalID, fie
 	_, err := q.Exec(ctx, `INSERT INTO custom_values (customized_kind, customized_id, custom_field_id, value) VALUES ('principal', ?, ?, ?)`,
 		principalID, fieldID, value)
 	return err == nil, err
+}
+
+// SetPrincipalCustomValues は複数値のカスタム値を保存する（1 値 1 行。値が無ければ NULL の 1 行。
+// save_custom_field_values と同じく、既存の値と同じ集合なら何もしない）。変更があれば true。
+func SetPrincipalCustomValues(ctx context.Context, q db.Queryer, principalID, fieldID int64, values []string) (bool, error) {
+	var cur []sql.NullString
+	if err := q.Select(ctx, &cur, `SELECT value FROM custom_values WHERE customized_kind = 'principal' AND customized_id = ? AND custom_field_id = ? ORDER BY id`,
+		principalID, fieldID); err != nil {
+		return false, err
+	}
+	var curVals []string
+	for _, c := range cur {
+		if c.String != "" {
+			curVals = append(curVals, c.String)
+		}
+	}
+	if len(cur) > 0 && slices.Equal(curVals, values) {
+		return false, nil
+	}
+	if _, err := q.Exec(ctx, `DELETE FROM custom_values WHERE customized_kind = 'principal' AND customized_id = ? AND custom_field_id = ?`, principalID, fieldID); err != nil {
+		return false, err
+	}
+	if len(values) == 0 {
+		values = []string{""}
+	}
+	for _, v := range values {
+		if _, err := q.Exec(ctx, `INSERT INTO custom_values (customized_kind, customized_id, custom_field_id, value) VALUES ('principal', ?, ?, ?)`,
+			principalID, fieldID, nullString(v)); err != nil {
+			return false, err
+		}
+	}
+	return true, nil
 }
 
 // HighPriorityAfterDefault は users/_mail_notifications の

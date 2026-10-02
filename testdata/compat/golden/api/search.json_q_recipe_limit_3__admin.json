@@ -1,0 +1,34 @@
+status: 200
+content-type: application/json
+
+{
+  "results": [
+    {
+      "id": 1,
+      "title": "Bug #1 (New): Cannot print recipes",
+      "type": "issue",
+      "url": "{{BASE}}/issues/1",
+      "description": "Unable to print recipes",
+      "datetime": "2026-01-12T12:00:00Z"
+    },
+    {
+      "id": 3,
+      "title": "Bug #3 (New): Error 281 when updating a recipe",
+      "type": "issue",
+      "url": "{{BASE}}/issues/3",
+      "description": "Error 281 is encountered when saving a recipe",
+      "datetime": "2006-07-19T19:07:27Z"
+    },
+    {
+      "id": 2,
+      "title": "Feature request #2 (Assigned): Add ingredients categories",
+      "type": "issue",
+      "url": "{{BASE}}/issues/2",
+      "description": "Ingredients of the recipe should be classified by categories",
+      "datetime": "2006-07-19T19:04:21Z"
+    }
+  ],
+  "total_count": 4,
+  "offset": 0,
+  "limit": 3
+}

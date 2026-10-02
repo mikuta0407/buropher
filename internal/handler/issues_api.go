@@ -36,6 +36,9 @@ func (a *App) renderIssuesIndexAPI(c *Req, q *query.Query) {
 	l := a.newIssueLookup(c)
 	l.addIssues(rows)
 	l.markVisible(rows)
+	if c.AllowedToGlobally(domain.Perm("view_time_entries")) {
+		l.loadVisibleSpentHours(rows)
+	}
 	incAttachments := c.IncludeInAPIResponse("attachments")
 	incRelations := c.IncludeInAPIResponse("relations")
 	var models []*issueModel
@@ -121,6 +124,27 @@ func (l *issueLookup) renderAPIIssueCore(b apibuilder.Builder, m *issueModel) {
 	b.Value("created_on", r.CreatedAt)
 	b.Value("updated_on", r.UpdatedAt)
 	b.Value("closed_on", r.ClosedAt)
+}
+
+// loadVisibleSpentHours は Issue.load_visible_spent_hours と load_visible_total_spent_hours
+// （TimeEntry.visible に限った工数を rows の SpentHours / TotalSpentHours に設定する）。
+func (l *issueLookup) loadVisibleSpentHours(rows []*query.IssueRow) {
+	if len(rows) == 0 {
+		return
+	}
+	ids := make([]int64, len(rows))
+	for i, r := range rows {
+		ids[i] = r.ID
+	}
+	cond := l.timeEntryVisibleCondition()
+	spent, err := repository.VisibleSpentHours(l.ctx, l.a.DB, ids, cond)
+	l.fail(err)
+	total, err := repository.VisibleTotalSpentHours(l.ctx, l.a.DB, ids, cond)
+	l.fail(err)
+	for _, r := range rows {
+		s, t := spent[r.ID], total[r.ID]
+		r.SpentHours, r.TotalSpentHours = &s, &t
+	}
 }
 
 // apiDate は Date の値（nil なら nil。文字列 "YYYY-MM-DD"）。
@@ -213,6 +237,10 @@ func (a *App) issuesShowAPIStatus(c *Req, status int) {
 	ctx := c.Ctx()
 	l := a.newIssueLookup(c)
 	l.apiTimeProjectSet = status == http.StatusCreated
+	if status != http.StatusCreated && c.AllowedTo(domain.Perm("view_time_entries"), c.Project) {
+		// show の Issue.load_visible_spent_hours / load_visible_total_spent_hours（create の応答では行わない）
+		l.loadVisibleSpentHours([]*query.IssueRow{c.currentIssue()})
+	}
 	m := l.model(c.currentIssue())
 	inc := func(k string) bool { return c.IncludeInAPIResponse(k) }
 	var journals []*journalView

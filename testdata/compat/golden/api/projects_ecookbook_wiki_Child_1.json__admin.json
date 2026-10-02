@@ -1,0 +1,20 @@
+status: 200
+content-type: application/json
+
+{
+  "wiki_page": {
+    "title": "Child_1",
+    "parent": {
+      "title": "Another_page"
+    },
+    "text": "h1. Child page 1\n\nThis is a child page",
+    "version": 1,
+    "author": {
+      "id": 1,
+      "name": "Redmine Admin"
+    },
+    "comments": null,
+    "created_on": "2007-03-07T23:18:07Z",
+    "updated_on": "2007-03-07T23:18:07Z"
+  }
+}

@@ -1,0 +1,10 @@
+status: 201
+content-type: application/json
+location: {{BASE}}/groups/16
+
+{
+  "group": {
+    "id": 16,
+    "name": "API group"
+  }
+}
