@@ -11,7 +11,25 @@ import (
 // カウンタキャッシュ(comments_count 等)は Redmine が画面に表示する値なので、
 // 実件数とずれていても移行元の値をそのまま保持する(表示の互換を優先)。
 func (im *imp) recompute() error {
-	return repository.ComputePriorityPositionNames(im.ctx, im.tx)
+	if err := repository.ComputePriorityPositionNames(im.ctx, im.tx); err != nil {
+		return err
+	}
+	// boards.last_message_id / messages.last_reply_id は参照先メッセージが取り込まれていれば移行元の値を設定する
+	for _, f := range im.lastIDs {
+		if !im.st.messages.has(f.ref) {
+			continue
+		}
+		if _, err := im.exec(`UPDATE `+f.table+` SET `+f.col+` = ? WHERE id = ?`, f.ref, f.id); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// lastIDFix は後から設定する last_*_id。
+type lastIDFix struct {
+	table, col string
+	id, ref    int64
 }
 
 // idTables は id 主キー(採番)を持つテーブル。

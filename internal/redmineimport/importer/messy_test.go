@@ -250,7 +250,7 @@ func TestImportMessy(t *testing.T) {
 		if m := q1[msg](t, d, `SELECT parent_id, sticky, locked FROM messages WHERE id = 100`); m.Parent == nil || *m.Parent != 1 || !m.Sticky || m.Locked {
 			t.Errorf("message 100 = %+v", m)
 		}
-		if n := q1[int](t, d, `SELECT replies_count FROM messages WHERE id = 1`); n != 3 {
+		if n := q1[int](t, d, `SELECT replies_count FROM messages WHERE id = 1`); n != 2 { // 移行元の値を保持
 			t.Errorf("replies_count = %d", n)
 		}
 		if s := q1[string](t, d, `SELECT title FROM wiki_pages WHERE id = 100`); s != "another_page_100" {

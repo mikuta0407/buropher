@@ -265,7 +265,7 @@ func checkFixtureFacts(t *testing.T, d *db.DB, rep *Report, filesDir string) {
 	if n := q1[int](t, d, `SELECT COUNT(*) FROM wiki_pages WHERE current_version = 0`); n != 0 {
 		t.Errorf("pages without current version = %d", n)
 	}
-	// --- forums / news counters (recomputed)
+	// --- forums / news counters (移行元の値を保持)
 	type board struct {
 		Topics   int    `db:"topics_count"`
 		Messages int    `db:"messages_count"`
@@ -277,7 +277,7 @@ func checkFixtureFacts(t *testing.T, d *db.DB, rep *Report, filesDir string) {
 	if n := q1[int](t, d, `SELECT replies_count FROM messages WHERE id = 1`); n != 2 {
 		t.Errorf("message 1 replies = %d", n)
 	}
-	if n := q1[int](t, d, `SELECT comments_count FROM news WHERE id = 1`); n != 2 {
+	if n := q1[int](t, d, `SELECT comments_count FROM news WHERE id = 1`); n != 1 {
 		t.Errorf("news 1 comments_count = %d", n)
 	}
 	// --- queries

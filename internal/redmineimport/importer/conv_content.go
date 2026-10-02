@@ -54,7 +54,7 @@ func (im *imp) importNews() error {
 		}
 		author := im.authorOr(t, id, "author_id", r.ref("author_id"))
 		im.st.news.add(id)
-		return ins.add(id, p, r.str("title"), r.strNull("summary", true), r.strNull("description", false), author, 0, im.tsOr(t, id, r, "created_on"))
+		return ins.add(id, p, r.str("title"), r.strNull("summary", true), r.strNull("description", false), author, r.intOr("comments_count", 0), im.tsOr(t, id, r, "created_on"))
 	})
 	if err != nil {
 		return err
@@ -135,7 +135,11 @@ func (im *imp) importBoards() error {
 			t.repair(id, "description NULL; set ''")
 		}
 		im.st.boards[id] = project[id]
-		if err := ins.add(id, project[id], nullIfZero(parent[id]), r.str("name"), desc, pos[id], 0, 0, nil); err != nil {
+		// last_message_id は messages 取り込み後に setLastMessageIDs で設定する
+		if v := r.ref("last_message_id"); v != 0 {
+			im.lastIDs = append(im.lastIDs, lastIDFix{"boards", "last_message_id", id, v})
+		}
+		if err := ins.add(id, project[id], nullIfZero(parent[id]), r.str("name"), desc, pos[id], r.intOr("topics_count", 0), r.intOr("messages_count", 0), nil); err != nil {
 			return err
 		}
 	}
@@ -198,7 +202,10 @@ func (im *imp) importMessages() error {
 			sticky = v
 		}
 		im.st.messages.add(id)
-		return ins.add(id, b, nullIfZero(p), r.str("subject"), r.strNull("content", false), author, 0, nil,
+		if v := r.ref("last_reply_id"); v != 0 {
+			im.lastIDs = append(im.lastIDs, lastIDFix{"messages", "last_reply_id", id, v})
+		}
+		return ins.add(id, b, nullIfZero(p), r.str("subject"), r.strNull("content", false), author, r.intOr("replies_count", 0), nil,
 			r.bool("locked", false), sticky, im.tsOr(t, id, r, "created_on", "updated_on"), im.tsOr(t, id, r, "updated_on", "created_on"))
 	})
 	if err != nil {

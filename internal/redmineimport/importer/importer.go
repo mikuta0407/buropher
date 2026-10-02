@@ -191,16 +191,17 @@ func checkTarget(ctx context.Context, d *db.DB) error {
 
 // imp は 1 回のインポートの作業状態。
 type imp struct {
-	ctx    context.Context
-	tx     *db.Tx
-	opt    Options
-	src    *source
-	rep    *Report
-	log    *slog.Logger
-	box    *secretbox.Box
-	tz     *tzconv
-	now    time.Time
-	nowStr string
+	lastIDs []lastIDFix
+	ctx     context.Context
+	tx      *db.Tx
+	opt     Options
+	src     *source
+	rep     *Report
+	log     *slog.Logger
+	box     *secretbox.Box
+	tz      *tzconv
+	now     time.Time
+	nowStr  string
 
 	st state
 }
