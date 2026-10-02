@@ -181,7 +181,7 @@ func (l *myIssueList) ColumnsHiddenTags() rails.HTML {
 
 var reColumnsTagID = regexp.MustCompile(`[\[\]]+`)
 
-// ColumnsTagID は queries/_columns の tag_id（tag_name.gsub(/[\[\]]+/, '_').sub(/_+$/, '')）。
+// ColumnsTagID は queries/_columns の tag_id（tag_name.gsub(/[\[\]]+/, '_').sub(/_+$/, ”)）。
 func (l *myIssueList) ColumnsTagID() string {
 	return strings.TrimRight(reColumnsTagID.ReplaceAllString(l.ColumnsTagName+"[]", "_"), "_")
 }

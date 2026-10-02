@@ -96,7 +96,7 @@ type Calendar struct {
 	// BackURL は back_url（url_for(:params => request.query_parameters)）。空ならテンプレートで request_path を使う。
 	BackURL string
 
-	events  []*Event
+	events   []*Event
 	ending   map[time.Time][]*Event
 	starting map[time.Time][]*Event
 }
