@@ -425,6 +425,28 @@ func TestImportsController(t *testing.T) {
 		t.Errorf("unknown type: %d", res.StatusCode)
 	}
 
+	// set_default_settings: 区切り文字・囲み文字の推定、利用者の言語の日付書式・文字コード
+	for _, c := range []struct{ lang, file, want string }{
+		{"fr", "import_issues_single_quotation.csv", `"date_format":"%d/%m/%Y","encoding":"UTF-8","notifications":"0","separator":";","wrapper":"'"`},
+		{"ja", "import_iso8859-1.csv", `"date_format":"%Y/%m/%d","encoding":"CP932","notifications":"0","separator":";","wrapper":"\""`},
+		{"en", "import_dates.csv", `"date_format":"%m/%d/%Y","encoding":"UTF-8","notifications":"0","separator":";","wrapper":"\""`},
+	} {
+		if _, err := d.Exec(context.Background(), `UPDATE user_accounts SET language = ? WHERE principal_id = 2`, c.lang); err != nil {
+			t.Fatal(err)
+		}
+		f := importUpload(t, jsmith, ts, "IssueImport", c.file, "")
+		if s := queryString(t, d, `SELECT settings FROM imports WHERE filename = ?`, f); !strings.Contains(s, c.want) {
+			t.Errorf("%s default settings = %s, want %s", c.lang, s, c.want)
+		}
+	}
+	if _, err := d.Exec(context.Background(), `UPDATE user_accounts SET language = 'en' WHERE principal_id = 2`); err != nil {
+		t.Fatal(err)
+	}
+	pf := importUpload(t, jsmith, ts, "IssueImport", "import_issues.csv", "ecookbook")
+	if s := queryString(t, d, `SELECT settings FROM imports WHERE filename = ?`, pf); !strings.Contains(s, `"mapping":{"project_id":1}`) {
+		t.Errorf("project_id default = %s", s)
+	}
+
 	// settings: 選択肢と更新
 	_, body = get(t, jsmith, ts.URL+"/imports/"+id+"/settings")
 	for _, s := range []string{`name="import_settings[separator]"`, `name="import_settings[wrapper]"`, `<option value="ISO-8859-1">ISO-8859-1</option>`,
