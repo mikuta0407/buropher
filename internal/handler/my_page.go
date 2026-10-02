@@ -446,6 +446,8 @@ func (a *App) MyOrderBlocks(c *Req) {
 		a.serverError(c, err)
 		return
 	}
+	// head :ok（Content-Type は text/html）
+	c.W.Header().Set("Content-Type", "text/html; charset=utf-8")
 	c.W.WriteHeader(http.StatusOK)
 	c.Halt()
 }

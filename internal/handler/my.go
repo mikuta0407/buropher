@@ -156,6 +156,9 @@ func (a *App) MyAccount(c *Req) {
 			c.RenderValidationErrors(m.errors)
 			return
 		}
+		// Redmine では @user と User.current が同じオブジェクトのため、保存に失敗した値が
+		// レイアウト（アバターの頭文字など）にも表れる
+		c.User = m.User
 	} else if api {
 		a.renderMyAccountAPI(c, m.User)
 		return
