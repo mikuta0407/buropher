@@ -21,4 +21,8 @@ func (a *App) Routes(r Router) {
 	a.routesPrincipalMemberships(r)
 	a.routesEmailAddresses(r)
 	a.routesGroups(r)
+	a.routesTrackers(r)
+	a.routesIssueStatuses(r)
+	a.routesRoles(r)
+	a.routesEnumerations(r)
 }

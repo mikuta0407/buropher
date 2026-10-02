@@ -21,7 +21,7 @@ func (a *App) routesContextMenus(r Router) {
 
 // ContextMenusUsers は context_menus#users（layout なし）。
 func (a *App) ContextMenusUsers(c *Req) {
-	users, err := repository.UsersWhereIDs(c.Ctx(), a.DB, paramIDs(c.Params().Slice("ids")))
+	users, err := repository.UsersWhereIDs(c.Ctx(), a.DB, idsFromParam(c.Params().Slice("ids")))
 	if err != nil {
 		a.serverError(c, err)
 		return

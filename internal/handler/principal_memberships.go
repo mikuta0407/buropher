@@ -349,11 +349,11 @@ func (a *App) PrincipalMembershipsCreate(c *Req) {
 	mp := c.Params().Map("membership")
 	var created []*membershipRow
 	if mp != nil {
-		projectIDs := paramIDs(mp.Slice("project_ids"))
+		projectIDs := idsFromParam(mp.Slice("project_ids"))
 		if len(projectIDs) == 0 {
-			projectIDs = paramIDs(mp.Slice("project_id"))
+			projectIDs = idsFromParam(mp.Slice("project_id"))
 		}
-		roleIDs := paramIDs(mp.Slice("role_ids"))
+		roleIDs := idsFromParam(mp.Slice("role_ids"))
 		err := a.DB.WithTx(c.Ctx(), func(tx *db.Tx) error {
 			for _, pid := range projectIDs {
 				row := &membershipRow{Errors: validation.New("member")}
@@ -445,7 +445,7 @@ func (a *App) PrincipalMembershipsUpdate(c *Req) {
 	}
 	errs := validation.New("member")
 	destroyed := false
-	roleIDs := paramIDs(mp.Slice("role_ids"))
+	roleIDs := idsFromParam(mp.Slice("role_ids"))
 	err := a.DB.WithTx(c.Ctx(), func(tx *db.Tx) error {
 		err := repository.SetMemberRoles(c.Ctx(), tx, m.ID, roleIDs)
 		switch {

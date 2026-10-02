@@ -23,7 +23,7 @@ import (
 // 名前収集のためダミーの Render でも呼ばれるので、ここでは Page を参照しない（関数内で遅延参照する）。
 func (d *Deps) RequestFuncs(r *view.Render) ttemplate.FuncMap {
 	pg := func() *Page { return PageOf(r) }
-	m := ttemplate.FuncMap{
+	fm := ttemplate.FuncMap{
 		// --- Setting / User.current ---
 		"setting":        func(name string) string { return pg().setting(name) },
 		"setting_bool":   func(name string) bool { return pg().settingBool(name) },
@@ -132,13 +132,16 @@ func (d *Deps) RequestFuncs(r *view.Render) ttemplate.FuncMap {
 		"format_date":  func(t time.Time) string { return formatDate(pg(), t) },
 		"url_for_atom": func(path string, key string) string { return atomURL(pg(), path, key) },
 	}
+	for k, v := range d.mastersFuncs(r, pg) {
+		fm[k] = v
+	}
 	// 機能別のファイルで registerFuncs により追加された関数（並列開発での衝突を避けるため）
 	for _, f := range extraFuncs {
 		for k, v := range f(d, r, pg) {
-			m[k] = v
+			fm[k] = v
 		}
 	}
-	return m
+	return fm
 }
 
 // extraFuncs は registerFuncs で登録された追加のテンプレート関数群。

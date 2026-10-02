@@ -170,7 +170,7 @@ func (a *App) EmailAddressesUpdate(c *Req) {
 	u := c.value(userCtxKey{}).(*domain.User)
 	addr := c.value(emailAddressCtxKey{}).(*domain.EmailAddress)
 	if v := c.Params().String("notify"); v != "" {
-		if err := repository.UpdateEmailNotify(c.Ctx(), a.DB, addr.ID, castBool(v), a.now()); err != nil {
+		if err := repository.UpdateEmailNotify(c.Ctx(), a.DB, addr.ID, castBoolAny(v), a.now()); err != nil {
 			a.serverError(c, err)
 			return
 		}

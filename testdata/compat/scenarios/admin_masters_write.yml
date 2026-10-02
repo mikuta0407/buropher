@@ -1,0 +1,362 @@
+# 管理画面のマスタ（ロール・トラッカー・ステータス・列挙）の作成・更新・削除の互換シナリオ。
+# 状態を変えるため、共用の参照環境（3998）ではなく専用の参照インスタンスに対して、
+# 参照・候補とも実行前に reset して流すこと（-reset-ref / -reset-cand）。
+# ケースは記述順に依存する（作成した id 6 のロール・id 4 のトラッカー等を後続で使う）。
+name: admin_masters_write
+
+users:
+  admin: {login: admin, password: admin}
+
+normalize:
+  mask_text_selectors:
+    - "#footer"
+
+requests:
+  # ---- ロール ----
+  - id: roles_create_invalid
+    path: /roles
+    method: POST
+    user: admin
+    form:
+      role[name]: ""
+      role[assignable]: "1"
+      role[issues_visibility]: "default"
+      role[permissions][]: ["add_issues", ""]
+  - id: roles_create
+    path: /roles
+    method: POST
+    user: admin
+    form:
+      role[name]: "Tester"
+      role[assignable]: "0"
+      role[issues_visibility]: "own"
+      role[time_entries_visibility]: "own"
+      role[users_visibility]: "all"
+      role[all_roles_managed]: "0"
+      role[managed_role_ids][]: ["2", "3", ""]
+      role[default_time_entry_activity_id]: "10"
+      role[permissions][]: ["view_issues", "add_issues", "edit_issues", "add_issue_notes", "view_wiki_pages", ""]
+      role[permissions_all_trackers][view_issues]: "0"
+      role[permissions_tracker_ids][view_issues][]: ["1", "3", ""]
+      copy_workflow_from: "1"
+  - id: g01_roles
+    path: /roles
+    user: admin
+  - id: g02_roles_6_edit
+    path: /roles/6/edit
+    user: admin
+  - id: g03_roles_6_json
+    path: /roles/6.json
+    user: admin
+  - id: roles_update_taken
+    path: /roles/6
+    method: PATCH
+    user: admin
+    form:
+      role[name]: "Manager"
+  - id: roles_update
+    path: /roles/6?page=2
+    method: PATCH
+    user: admin
+    form:
+      role[name]: "Tester 2"
+      role[all_roles_managed]: "1"
+      role[permissions][]: ["view_issues", "delete_issues", ""]
+      role[permissions_all_trackers][view_issues]: "1"
+      role[permissions_all_trackers][delete_issues]: "0"
+      role[permissions_tracker_ids][delete_issues][]: ["2", ""]
+  - id: g04_roles_6_edit
+    path: /roles/6/edit
+    user: admin
+  - id: roles_reorder
+    path: /roles/6
+    method: PUT
+    user: admin
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01"}
+    form:
+      role[position]: "1"
+  - id: g05_roles
+    path: /roles
+    user: admin
+  - id: roles_reorder_xhr_index
+    path: /roles
+    user: admin
+    headers: {X-Requested-With: XMLHttpRequest}
+  - id: roles_destroy_in_use
+    path: /roles/1
+    method: DELETE
+    user: admin
+    form: {_dummy: "1"}
+  - id: roles_destroy_builtin
+    path: /roles/4
+    method: DELETE
+    user: admin
+    form: {_dummy: "1"}
+  - id: roles_destroy
+    path: /roles/6
+    method: DELETE
+    user: admin
+    form: {_dummy: "1"}
+  - id: g06_roles
+    path: /roles
+    user: admin
+  - id: roles_update_permissions
+    path: /roles/permissions
+    method: POST
+    user: admin
+    form:
+      permissions[3][]: ["view_issues", "add_issues", "view_wiki_pages", ""]
+      permissions[5][]: ["view_issues", ""]
+  - id: g07_roles
+    path: /roles
+    user: admin
+  - id: g08_roles_permissions
+    path: /roles/permissions
+    user: admin
+  - id: g09_roles_permissions_csv
+    path: /roles/permissions.csv
+    user: admin
+    auth: session
+    format: text
+  - id: g10_roles_permissions_csv_encoding_utf_8_field_separator_3b_ids_3_ids_5
+    path: /roles/permissions.csv?encoding=UTF-8&field_separator=%3B&ids[]=3&ids[]=5
+    user: admin
+    auth: session
+    format: text
+
+  # ---- トラッカー ----
+  - id: trackers_create_invalid
+    path: /trackers
+    method: POST
+    user: admin
+    form:
+      tracker[name]: "Bug"
+      tracker[default_status_id]: ""
+      tracker[core_fields][]: ["assigned_to_id", ""]
+      tracker[project_ids][]: ["1", ""]
+  - id: trackers_create
+    path: /trackers
+    method: POST
+    user: admin
+    form:
+      tracker[name]: "QA"
+      tracker[default_status_id]: "2"
+      tracker[is_in_roadmap]: "0"
+      tracker[description]: "Quality assurance"
+      tracker[core_fields][]: ["assigned_to_id", "due_date", "priority_id", ""]
+      tracker[custom_field_ids][]: ["1", "6", ""]
+      tracker[project_ids][]: ["1", "5", ""]
+      copy_workflow_from: "2"
+  - id: g11_trackers
+    path: /trackers
+    user: admin
+  - id: g12_trackers_4_edit
+    path: /trackers/4/edit
+    user: admin
+  - id: g13_trackers_json
+    path: /trackers.json
+    user: admin
+  - id: trackers_update_invalid
+    path: /trackers/4
+    method: PATCH
+    user: admin
+    form:
+      tracker[name]: "A tracker name that is far too long to be valid"
+      tracker[description]: ""
+  # Rails UJS と同じく POST + _method で送る（Rack::MethodOverride）
+  - id: trackers_update
+    path: /trackers/4
+    method: POST
+    user: admin
+    form:
+      _method: patch
+      tracker[name]: "QA2"
+      tracker[core_fields][]: [""]
+      tracker[project_ids][]: [""]
+  - id: trackers_reorder
+    path: /trackers/4
+    method: PUT
+    user: admin
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01"}
+    form:
+      tracker[position]: "2"
+  - id: g14_trackers
+    path: /trackers
+    user: admin
+  - id: trackers_destroy_in_use
+    path: /trackers/1
+    method: DELETE
+    user: admin
+    form: {_dummy: "1"}
+  - id: trackers_destroy
+    path: /trackers/4
+    method: DELETE
+    user: admin
+    form: {_dummy: "1"}
+  - id: g15_trackers
+    path: /trackers
+    user: admin
+  - id: trackers_fields_update
+    path: /trackers/fields
+    method: POST
+    user: admin
+    form:
+      trackers[1][core_fields][]: ["assigned_to_id", "category_id", ""]
+      trackers[1][custom_field_ids][]: ["2", ""]
+      trackers[2][core_fields][]: [""]
+      trackers[2][custom_field_ids][]: ["1", "2", "6", ""]
+  - id: g16_trackers_fields
+    path: /trackers/fields
+    user: admin
+
+  # ---- ステータス ----
+  - id: issue_statuses_create_invalid
+    path: /issue_statuses
+    method: POST
+    user: admin
+    form:
+      issue_status[name]: "New"
+      issue_status[description]: ""
+  - id: issue_statuses_create
+    path: /issue_statuses
+    method: POST
+    user: admin
+    form:
+      issue_status[name]: "Testing"
+      issue_status[description]: "Under test"
+      issue_status[is_closed]: "0"
+  - id: g17_issue_statuses
+    path: /issue_statuses
+    user: admin
+  - id: g18_issue_statuses_7_edit
+    path: /issue_statuses/7/edit
+    user: admin
+  - id: issue_statuses_update
+    path: /issue_statuses/7
+    method: PATCH
+    user: admin
+    form:
+      issue_status[name]: "Tested"
+      issue_status[is_closed]: "1"
+  - id: issue_statuses_reorder
+    path: /issue_statuses/7
+    method: PUT
+    user: admin
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01"}
+    form:
+      issue_status[position]: "2"
+  - id: g19_issue_statuses
+    path: /issue_statuses
+    user: admin
+  - id: g20_issue_statuses_json
+    path: /issue_statuses.json
+    user: admin
+  - id: issue_statuses_destroy_in_use
+    path: /issue_statuses/1
+    method: DELETE
+    user: admin
+    form: {_dummy: "1"}
+  - id: g21_issue_statuses
+    path: /issue_statuses
+    user: admin
+  - id: issue_statuses_destroy
+    path: /issue_statuses/7
+    method: DELETE
+    user: admin
+    form: {_dummy: "1"}
+  - id: issue_statuses_update_done_ratio
+    path: /issue_statuses/update_issue_done_ratio
+    method: POST
+    user: admin
+    form:
+      dummy: "1"
+  - id: g22_issue_statuses
+    path: /issue_statuses
+    user: admin
+
+  # ---- 列挙 ----
+  - id: enumerations_create_invalid
+    path: /enumerations
+    method: POST
+    user: admin
+    form:
+      enumeration[type]: "IssuePriority"
+      enumeration[name]: "Low"
+  - id: enumerations_create_bad_type
+    path: /enumerations
+    method: POST
+    user: admin
+    form:
+      enumeration[type]: "Enumeration"
+      enumeration[name]: "X"
+  - id: enumerations_create_priority
+    path: /enumerations
+    method: POST
+    user: admin
+    form:
+      enumeration[type]: "IssuePriority"
+      enumeration[name]: "Critical"
+      enumeration[active]: "1"
+      enumeration[is_default]: "1"
+  - id: enumerations_create_activity
+    path: /enumerations
+    method: POST
+    user: admin
+    form:
+      enumeration[type]: "TimeEntryActivity"
+      enumeration[name]: "Support"
+      enumeration[active]: "1"
+      enumeration[is_default]: "0"
+      enumeration[custom_field_values][7]: "1"
+  - id: g23_enumerations
+    path: /enumerations
+    user: admin
+  - id: g24_enumerations_18_edit
+    path: /enumerations/18/edit
+    user: admin
+  - id: g25_enumerations_time_entry_activities_json
+    path: /enumerations/time_entry_activities.json
+    user: admin
+  - id: g26_enumerations_issue_priorities_json
+    path: /enumerations/issue_priorities.json
+    user: admin
+  - id: enumerations_update
+    path: /enumerations/18
+    method: PUT
+    user: admin
+    form:
+      enumeration[name]: "Support desk"
+      enumeration[active]: "0"
+      enumeration[custom_field_values][7]: "0"
+  - id: enumerations_reorder
+    path: /enumerations/17
+    method: PUT
+    user: admin
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01"}
+    form:
+      enumeration[position]: "2"
+  - id: g27_enumerations
+    path: /enumerations
+    user: admin
+  - id: enumerations_destroy_in_use
+    path: /enumerations/4
+    method: DELETE
+    user: admin
+    form: {_dummy: "1"}
+  - id: enumerations_destroy_reassign
+    path: /enumerations/4
+    method: DELETE
+    user: admin
+    form:
+      reassign_to_id: "5"
+  - id: enumerations_destroy
+    path: /enumerations/18
+    method: DELETE
+    user: admin
+    form: {_dummy: "1"}
+  - id: g28_enumerations
+    path: /enumerations
+    user: admin
+  - id: g29_enumerations_issue_priorities_json
+    path: /enumerations/issue_priorities.json
+    user: admin

@@ -22,20 +22,22 @@ import (
 // `compat fetch -raw` の出力に CSRF・フォーム名・ダイジェスト・ベース URL・キーの置換をしたもの。
 
 var (
-	namedFormRe = regexp.MustCompile(`name="([a-z_0-9]+)-[0-9a-f]{8}"`)
+	namedFormRe = regexp.MustCompile(`name="([a-z_0-9-]+)-[0-9a-f]{8}"`)
 	apiKeyJSON  = regexp.MustCompile(`("api_key":")[0-9a-f]{40}"`)
 	apiKeyXML   = regexp.MustCompile(`<api_key>[0-9a-f]{40}</api_key>`)
+	pngDigestRe = regexp.MustCompile(`-[0-9a-f]{8}\.png`)
 )
 
-// normalizeAdmin は normalize / normalizeFixture に加えて名前付きフォームの乱数と API キーを伏せる。
-func normalizeAdmin(s, base string) string {
+// normalizeUsersAdmin は normalize / normalizeFixture に加えて名前付きフォームの乱数と API キーを伏せる。
+func normalizeUsersAdmin(s, base string) string {
 	s = normalize(normalizeFixture(s, base))
 	s = namedFormRe.ReplaceAllString(s, `name="$1-RANDOM"`)
+	s = pngDigestRe.ReplaceAllString(s, "-DIGEST.png")
 	s = apiKeyJSON.ReplaceAllString(s, `${1}KEY"`)
 	return apiKeyXML.ReplaceAllString(s, `<api_key>KEY</api_key>`)
 }
 
-func compareAdminGolden(t *testing.T, name, got string) {
+func compareUsersGolden(t *testing.T, name, got string) {
 	t.Helper()
 	want, err := os.ReadFile("testdata/admin_users/" + name)
 	if err != nil {
@@ -78,11 +80,18 @@ func TestAdminUsersPagesMatchRedmine(t *testing.T) {
 	}
 	for _, tc := range cases {
 		t.Run(tc.golden, func(t *testing.T) {
-			res, body := get(t, c, ts.URL+tc.path)
+			var res *http.Response
+			var body string
+			if strings.Contains(tc.path, ".json") || strings.Contains(tc.path, ".xml") {
+				// API は HTTP Basic 認証（API 形式ではセッションを使わない）
+				res, body = apiRequest(t, "GET", ts.URL+tc.path, "", "")
+			} else {
+				res, body = get(t, c, ts.URL+tc.path)
+			}
 			if res.StatusCode != 200 {
 				t.Fatalf("status %d", res.StatusCode)
 			}
-			compareAdminGolden(t, tc.golden, normalizeAdmin(body, ts.URL))
+			compareUsersGolden(t, tc.golden, normalizeUsersAdmin(body, ts.URL))
 		})
 	}
 }
@@ -146,7 +155,7 @@ func send(t *testing.T, c *http.Client, ts string, method, path string, form url
 	return post(t, c, ts+path, form)
 }
 
-func queryInt(t *testing.T, d *db.DB, q string, args ...any) int {
+func uQueryInt(t *testing.T, d *db.DB, q string, args ...any) int {
 	t.Helper()
 	var n int
 	if err := d.Get(context.Background(), &n, q, args...); err != nil {
@@ -155,7 +164,7 @@ func queryInt(t *testing.T, d *db.DB, q string, args ...any) int {
 	return n
 }
 
-func queryString(t *testing.T, d *db.DB, q string, args ...any) string {
+func uQueryString(t *testing.T, d *db.DB, q string, args ...any) string {
 	t.Helper()
 	var s string
 	if err := d.Get(context.Background(), &s, q, args...); err != nil {
@@ -196,24 +205,24 @@ func TestUsersCreateUpdateDestroy(t *testing.T) {
 	if res.StatusCode != 302 {
 		t.Fatalf("create: status %d", res.StatusCode)
 	}
-	id := queryInt(t, d, `SELECT principal_id FROM user_accounts WHERE login = 'newuser'`)
-	if loc := res.Header.Get("Location"); !strings.HasSuffix(loc, "/users/"+itoa(id)+"/edit") {
+	id := uQueryInt(t, d, `SELECT principal_id FROM user_accounts WHERE login = 'newuser'`)
+	if loc := res.Header.Get("Location"); !strings.HasSuffix(loc, "/users/"+uitoa(id)+"/edit") {
 		t.Errorf("redirect %s", loc)
 	}
-	if got := queryString(t, d, `SELECT address FROM email_addresses WHERE user_id = ? AND is_default = TRUE`, id); got != "newuser@example.net" {
+	if got := uQueryString(t, d, `SELECT address FROM email_addresses WHERE user_id = ? AND is_default = TRUE`, id); got != "newuser@example.net" {
 		t.Errorf("mail %q", got)
 	}
-	if got := queryString(t, d, `SELECT mail_notification FROM user_notification_settings WHERE user_id = ?`, id); got != "none" {
+	if got := uQueryString(t, d, `SELECT mail_notification FROM user_notification_settings WHERE user_id = ?`, id); got != "none" {
 		t.Errorf("mail_notification %q", got)
 	}
-	if got := queryString(t, d, `SELECT time_zone FROM user_preferences WHERE user_id = ?`, id); got != "Tokyo" {
+	if got := uQueryString(t, d, `SELECT time_zone FROM user_preferences WHERE user_id = ?`, id); got != "Tokyo" {
 		t.Errorf("time_zone %q", got)
 	}
 	// 作成したユーザーでログインできる
 	login(t, ts, "newuser", "secret123")
 	// flash
-	_, body = get(t, c, ts.URL+"/users/"+itoa(id)+"/edit")
-	if !strings.Contains(body, `User <a href="/users/`+itoa(id)+`">newuser</a> created.`) {
+	_, body = get(t, c, ts.URL+"/users/"+uitoa(id)+"/edit")
+	if !strings.Contains(body, `User <a href="/users/`+uitoa(id)+`">newuser</a> created.`) {
 		t.Error("create flash missing")
 	}
 
@@ -233,10 +242,10 @@ func TestUsersCreateUpdateDestroy(t *testing.T) {
 	if res.StatusCode != 302 {
 		t.Fatalf("update: status %d", res.StatusCode)
 	}
-	if got := queryString(t, d, `SELECT firstname FROM principals WHERE id = 2`); got != "Johnny" {
+	if got := uQueryString(t, d, `SELECT firstname FROM principals WHERE id = 2`); got != "Johnny" {
 		t.Errorf("firstname %q", got)
 	}
-	if queryInt(t, d, `SELECT admin FROM user_accounts WHERE principal_id = 2`) != 1 {
+	if uQueryInt(t, d, `SELECT admin FROM user_accounts WHERE principal_id = 2`) != 1 {
 		t.Error("admin flag not set")
 	}
 	login(t, ts, "jsmith", "newpassword1")
@@ -244,26 +253,26 @@ func TestUsersCreateUpdateDestroy(t *testing.T) {
 	if res.StatusCode != 302 {
 		t.Fatalf("update groups: %d", res.StatusCode)
 	}
-	if queryInt(t, d, `SELECT COUNT(*) FROM group_users WHERE group_id = 10 AND user_id = 2`) != 1 {
+	if uQueryInt(t, d, `SELECT COUNT(*) FROM group_users WHERE group_id = 10 AND user_id = 2`) != 1 {
 		t.Error("group not added")
 	}
 	// グループのメンバーシップ（Private child: Manager, Developer）が継承される
-	if queryInt(t, d, `SELECT COUNT(*) FROM member_roles mr JOIN members m ON m.id = mr.member_id WHERE m.principal_id = 2 AND mr.inherited_from IS NOT NULL`) == 0 {
+	if uQueryInt(t, d, `SELECT COUNT(*) FROM member_roles mr JOIN members m ON m.id = mr.member_id WHERE m.principal_id = 2 AND mr.inherited_from IS NOT NULL`) == 0 {
 		t.Error("inherited member roles not created")
 	}
 
 	// ロックとロック解除
 	send(t, c, ts.URL, "PUT", "/users/3", url.Values{"user[status]": {"3"}})
-	if queryInt(t, d, `SELECT status FROM principals WHERE id = 3`) != 3 {
+	if uQueryInt(t, d, `SELECT status FROM principals WHERE id = 3`) != 3 {
 		t.Error("lock failed")
 	}
 	send(t, c, ts.URL, "POST", "/users/bulk_unlock", url.Values{"ids[]": {"3"}})
-	if queryInt(t, d, `SELECT status FROM principals WHERE id = 3`) != 1 {
+	if uQueryInt(t, d, `SELECT status FROM principals WHERE id = 3`) != 1 {
 		t.Error("bulk unlock failed")
 	}
 	// 自分自身は一括ロックの対象外
 	send(t, c, ts.URL, "POST", "/users/bulk_lock", url.Values{"ids[]": {"1", "8"}})
-	if queryInt(t, d, `SELECT status FROM principals WHERE id = 1`) != 1 || queryInt(t, d, `SELECT status FROM principals WHERE id = 8`) != 3 {
+	if uQueryInt(t, d, `SELECT status FROM principals WHERE id = 1`) != 1 || uQueryInt(t, d, `SELECT status FROM principals WHERE id = 8`) != 3 {
 		t.Error("bulk lock")
 	}
 
@@ -272,19 +281,19 @@ func TestUsersCreateUpdateDestroy(t *testing.T) {
 	if res.StatusCode != 200 || !strings.Contains(body, "text_user_destroy_confirmation") && !strings.Contains(body, `<label for="confirm">Login</label>`) {
 		t.Fatalf("destroy confirmation: %d", res.StatusCode)
 	}
-	anon := queryInt(t, d, `SELECT id FROM principals WHERE kind = 'anonymous_user'`)
-	authored := queryInt(t, d, `SELECT COUNT(*) FROM issues WHERE author_id = 2`)
+	anon := uQueryInt(t, d, `SELECT id FROM principals WHERE kind = 'anonymous_user'`)
+	authored := uQueryInt(t, d, `SELECT COUNT(*) FROM issues WHERE author_id = 2`)
 	res, _ = send(t, c, ts.URL, "DELETE", "/users/2", url.Values{"confirm": {"jsmith"}})
 	if res.StatusCode != 302 {
 		t.Fatalf("destroy: %d", res.StatusCode)
 	}
-	if queryInt(t, d, `SELECT COUNT(*) FROM principals WHERE id = 2`) != 0 {
+	if uQueryInt(t, d, `SELECT COUNT(*) FROM principals WHERE id = 2`) != 0 {
 		t.Error("user not deleted")
 	}
-	if authored > 0 && queryInt(t, d, `SELECT COUNT(*) FROM issues WHERE author_id = ?`, anon) < authored {
+	if authored > 0 && uQueryInt(t, d, `SELECT COUNT(*) FROM issues WHERE author_id = ?`, anon) < authored {
 		t.Error("issues not reassigned to anonymous")
 	}
-	if queryInt(t, d, `SELECT COUNT(*) FROM members WHERE principal_id = 2`) != 0 {
+	if uQueryInt(t, d, `SELECT COUNT(*) FROM members WHERE principal_id = 2`) != 0 {
 		t.Error("memberships not deleted")
 	}
 
@@ -294,7 +303,7 @@ func TestUsersCreateUpdateDestroy(t *testing.T) {
 		t.Fatalf("bulk destroy confirmation: %d", res.StatusCode)
 	}
 	res, _ = send(t, c, ts.URL, "DELETE", "/users/bulk_destroy", url.Values{"ids[]": {"7", "8"}, "confirm": {"Yes"}})
-	if res.StatusCode != 302 || queryInt(t, d, `SELECT COUNT(*) FROM principals WHERE id IN (7, 8)`) != 0 {
+	if res.StatusCode != 302 || uQueryInt(t, d, `SELECT COUNT(*) FROM principals WHERE id IN (7, 8)`) != 0 {
 		t.Errorf("bulk destroy: %d", res.StatusCode)
 	}
 }
@@ -312,59 +321,59 @@ func TestGroupsAndMemberships(t *testing.T) {
 	if res.StatusCode != 302 || !strings.HasSuffix(res.Header.Get("Location"), "/groups") {
 		t.Fatalf("group create: %d %s", res.StatusCode, res.Header.Get("Location"))
 	}
-	gid := queryInt(t, d, `SELECT id FROM principals WHERE kind = 'group' AND name = 'C Team'`)
+	gid := uQueryInt(t, d, `SELECT id FROM principals WHERE kind = 'group' AND name = 'C Team'`)
 
-	res, _ = send(t, c, ts.URL, "POST", "/groups/"+itoa(gid)+"/users", url.Values{"user_ids[]": {"2", "3"}})
-	if res.StatusCode != 302 || queryInt(t, d, `SELECT COUNT(*) FROM group_users WHERE group_id = ?`, gid) != 2 {
+	res, _ = send(t, c, ts.URL, "POST", "/groups/"+uitoa(gid)+"/users", url.Values{"user_ids[]": {"2", "3"}})
+	if res.StatusCode != 302 || uQueryInt(t, d, `SELECT COUNT(*) FROM group_users WHERE group_id = ?`, gid) != 2 {
 		t.Fatalf("add users: %d", res.StatusCode)
 	}
 	// XHR（js）の追加・削除
-	res, body = send(t, c, ts.URL, "DELETE", "/groups/"+itoa(gid)+"/users/3.js", nil)
+	res, body = send(t, c, ts.URL, "DELETE", "/groups/"+uitoa(gid)+"/users/3.js", nil)
 	if res.StatusCode != 200 || !strings.Contains(body, "$('#tab-content-users').html(") {
 		t.Fatalf("remove user js: %d %s", res.StatusCode, body)
 	}
-	if queryInt(t, d, `SELECT COUNT(*) FROM group_users WHERE group_id = ?`, gid) != 1 {
+	if uQueryInt(t, d, `SELECT COUNT(*) FROM group_users WHERE group_id = ?`, gid) != 1 {
 		t.Error("user not removed")
 	}
 
 	// グループのメンバーシップ → ユーザーに継承
-	res, _ = send(t, c, ts.URL, "POST", "/groups/"+itoa(gid)+"/memberships", url.Values{"membership[project_ids][]": {"1"}, "membership[role_ids][]": {"2"}})
+	res, _ = send(t, c, ts.URL, "POST", "/groups/"+uitoa(gid)+"/memberships", url.Values{"membership[project_ids][]": {"1"}, "membership[role_ids][]": {"2"}})
 	if res.StatusCode != 302 {
 		t.Fatalf("membership create: %d", res.StatusCode)
 	}
-	mid := queryInt(t, d, `SELECT id FROM members WHERE principal_id = ? AND project_id = 1`, gid)
-	if queryInt(t, d, `SELECT COUNT(*) FROM member_roles mr JOIN members m ON m.id = mr.member_id WHERE m.principal_id = 2 AND m.project_id = 1 AND mr.inherited_from IS NOT NULL`) != 1 {
+	mid := uQueryInt(t, d, `SELECT id FROM members WHERE principal_id = ? AND project_id = 1`, gid)
+	if uQueryInt(t, d, `SELECT COUNT(*) FROM member_roles mr JOIN members m ON m.id = mr.member_id WHERE m.principal_id = 2 AND m.project_id = 1 AND mr.inherited_from IS NOT NULL`) != 1 {
 		t.Error("group membership not inherited by user")
 	}
-	res, body = send(t, c, ts.URL, "PUT", "/groups/"+itoa(gid)+"/memberships/"+itoa(mid)+".js", url.Values{"membership[role_ids][]": {"2", "3"}})
+	res, body = send(t, c, ts.URL, "PUT", "/groups/"+uitoa(gid)+"/memberships/"+uitoa(mid)+".js", url.Values{"membership[role_ids][]": {"2", "3"}})
 	if res.StatusCode != 200 || !strings.Contains(body, `-roles").html("Developer, Reporter")`) {
 		t.Fatalf("membership update js: %d %s", res.StatusCode, body)
 	}
-	res, body = send(t, c, ts.URL, "PUT", "/groups/"+itoa(gid)+"/memberships/"+itoa(mid)+".js", url.Values{"membership[role_ids][]": {""}})
+	res, body = send(t, c, ts.URL, "PUT", "/groups/"+uitoa(gid)+"/memberships/"+uitoa(mid)+".js", url.Values{"membership[role_ids][]": {""}})
 	if !strings.Contains(body, "alert('Failed to save member(s): Role cannot be empty.');") && !strings.Contains(body, "alert(") {
 		t.Errorf("empty roles: %s", body)
 	}
-	res, _ = send(t, c, ts.URL, "DELETE", "/groups/"+itoa(gid)+"/memberships/"+itoa(mid), nil)
-	if res.StatusCode != 302 || queryInt(t, d, `SELECT COUNT(*) FROM members WHERE id = ?`, mid) != 0 {
+	res, _ = send(t, c, ts.URL, "DELETE", "/groups/"+uitoa(gid)+"/memberships/"+uitoa(mid), nil)
+	if res.StatusCode != 302 || uQueryInt(t, d, `SELECT COUNT(*) FROM members WHERE id = ?`, mid) != 0 {
 		t.Fatalf("membership destroy: %d", res.StatusCode)
 	}
 	// 継承されたメンバーシップは削除できない
-	inheritedMember := queryInt(t, d, `SELECT m.id FROM members m JOIN member_roles mr ON mr.member_id = m.id WHERE mr.inherited_from IS NOT NULL ORDER BY m.id LIMIT 1`)
+	inheritedMember := uQueryInt(t, d, `SELECT m.id FROM members m JOIN member_roles mr ON mr.member_id = m.id WHERE mr.inherited_from IS NOT NULL ORDER BY m.id LIMIT 1`)
 	_, body = get(t, c, ts.URL+"/users/8/edit?tab=memberships")
-	if strings.Contains(body, `href="/users/8/memberships/`+itoa(inheritedMember)+`" `) && strings.Contains(body, `data-method="delete" href="/users/8/memberships/`+itoa(inheritedMember)+`"`) {
+	if strings.Contains(body, `href="/users/8/memberships/`+uitoa(inheritedMember)+`" `) && strings.Contains(body, `data-method="delete" href="/users/8/memberships/`+uitoa(inheritedMember)+`"`) {
 		t.Error("inherited membership should not be deletable")
 	}
 
 	// 組込グループは削除されない
 	res, _ = send(t, c, ts.URL, "DELETE", "/groups/12", nil)
-	if res.StatusCode != 302 || queryInt(t, d, `SELECT COUNT(*) FROM principals WHERE id = 12`) != 1 {
+	if res.StatusCode != 302 || uQueryInt(t, d, `SELECT COUNT(*) FROM principals WHERE id = 12`) != 1 {
 		t.Error("builtin group destroyed")
 	}
-	res, _ = send(t, c, ts.URL, "DELETE", "/groups/"+itoa(gid), nil)
-	if res.StatusCode != 302 || queryInt(t, d, `SELECT COUNT(*) FROM principals WHERE id = ?`, gid) != 0 {
+	res, _ = send(t, c, ts.URL, "DELETE", "/groups/"+uitoa(gid), nil)
+	if res.StatusCode != 302 || uQueryInt(t, d, `SELECT COUNT(*) FROM principals WHERE id = ?`, gid) != 0 {
 		t.Error("group not destroyed")
 	}
-	if queryInt(t, d, `SELECT COUNT(*) FROM member_roles WHERE inherited_from IS NOT NULL AND member_id IN (SELECT id FROM members WHERE principal_id = 2 AND project_id = 1)`) != 0 {
+	if uQueryInt(t, d, `SELECT COUNT(*) FROM member_roles WHERE inherited_from IS NOT NULL AND member_id IN (SELECT id FROM members WHERE principal_id = 2 AND project_id = 1)`) != 0 {
 		t.Error("inherited roles remain after group destroy")
 	}
 }
@@ -377,22 +386,22 @@ func TestEmailAddresses(t *testing.T) {
 	if res.StatusCode != 302 {
 		t.Fatalf("create: %d", res.StatusCode)
 	}
-	id := queryInt(t, d, `SELECT id FROM email_addresses WHERE address = 'jsmith2@example.net'`)
+	id := uQueryInt(t, d, `SELECT id FROM email_addresses WHERE address = 'jsmith2@example.net'`)
 	res, body := send(t, c, ts.URL, "POST", "/users/2/email_addresses.js", url.Values{"email_address[address]": {"JSMITH2@example.net"}})
 	if res.StatusCode != 200 || !strings.Contains(body, "Email has already been taken") {
 		t.Errorf("duplicate: %d %s", res.StatusCode, body)
 	}
-	send(t, c, ts.URL, "PUT", "/users/2/email_addresses/"+itoa(id), url.Values{"notify": {"0"}})
-	if queryInt(t, d, `SELECT notify FROM email_addresses WHERE id = ?`, id) != 0 {
+	send(t, c, ts.URL, "PUT", "/users/2/email_addresses/"+uitoa(id), url.Values{"notify": {"0"}})
+	if uQueryInt(t, d, `SELECT notify FROM email_addresses WHERE id = ?`, id) != 0 {
 		t.Error("notify not disabled")
 	}
-	send(t, c, ts.URL, "DELETE", "/users/2/email_addresses/"+itoa(id), nil)
-	if queryInt(t, d, `SELECT COUNT(*) FROM email_addresses WHERE id = ?`, id) != 0 {
+	send(t, c, ts.URL, "DELETE", "/users/2/email_addresses/"+uitoa(id), nil)
+	if uQueryInt(t, d, `SELECT COUNT(*) FROM email_addresses WHERE id = ?`, id) != 0 {
 		t.Error("not deleted")
 	}
 	// 既定のアドレスは削除できない（404）
-	def := queryInt(t, d, `SELECT id FROM email_addresses WHERE user_id = 2 AND is_default = TRUE`)
-	if res, _ := send(t, c, ts.URL, "DELETE", "/users/2/email_addresses/"+itoa(def), nil); res.StatusCode != 404 {
+	def := uQueryInt(t, d, `SELECT id FROM email_addresses WHERE user_id = 2 AND is_default = TRUE`)
+	if res, _ := send(t, c, ts.URL, "DELETE", "/users/2/email_addresses/"+uitoa(def), nil); res.StatusCode != 404 {
 		t.Errorf("default address delete: %d", res.StatusCode)
 	}
 }
@@ -434,7 +443,7 @@ func TestUsersGroupsAPI(t *testing.T) {
 	if err := json.Unmarshal([]byte(body), &created); err != nil || created.User.Login != "apiuser" {
 		t.Fatalf("create body: %s", body)
 	}
-	if !strings.HasSuffix(res.Header.Get("Location"), "/users/"+itoa(created.User.ID)) {
+	if !strings.HasSuffix(res.Header.Get("Location"), "/users/"+uitoa(created.User.ID)) {
 		t.Errorf("location %s", res.Header.Get("Location"))
 	}
 	res, body = apiRequest(t, "POST", ts.URL+"/users.json", "application/json", `{"user":{"login":"apiuser","lastname":"User","mail":"apiuser@example.net"}}`)
@@ -442,11 +451,11 @@ func TestUsersGroupsAPI(t *testing.T) {
 		t.Errorf("invalid create: %d %s", res.StatusCode, body)
 	}
 	res, _ = apiRequest(t, "PUT", ts.URL+"/users/4.json", "application/json", `{"user":{"lastname":"Hilly"}}`)
-	if res.StatusCode != 204 || queryString(t, d, `SELECT lastname FROM principals WHERE id = 4`) != "Hilly" {
+	if res.StatusCode != 204 || uQueryString(t, d, `SELECT lastname FROM principals WHERE id = 4`) != "Hilly" {
 		t.Errorf("update: %d", res.StatusCode)
 	}
-	res, _ = apiRequest(t, "DELETE", ts.URL+"/users/"+itoa(created.User.ID)+".json", "", "")
-	if res.StatusCode != 204 || queryInt(t, d, `SELECT COUNT(*) FROM principals WHERE id = ?`, created.User.ID) != 0 {
+	res, _ = apiRequest(t, "DELETE", ts.URL+"/users/"+uitoa(created.User.ID)+".json", "", "")
+	if res.StatusCode != 204 || uQueryInt(t, d, `SELECT COUNT(*) FROM principals WHERE id = ?`, created.User.ID) != 0 {
 		t.Errorf("destroy: %d", res.StatusCode)
 	}
 
@@ -455,26 +464,26 @@ func TestUsersGroupsAPI(t *testing.T) {
 	if res.StatusCode != 201 || !strings.Contains(body, "<name>Api Group</name>") {
 		t.Fatalf("group create: %d %s", res.StatusCode, body)
 	}
-	gid := queryInt(t, d, `SELECT id FROM principals WHERE name = 'Api Group'`)
-	if queryInt(t, d, `SELECT COUNT(*) FROM group_users WHERE group_id = ?`, gid) != 2 {
+	gid := uQueryInt(t, d, `SELECT id FROM principals WHERE name = 'Api Group'`)
+	if uQueryInt(t, d, `SELECT COUNT(*) FROM group_users WHERE group_id = ?`, gid) != 2 {
 		t.Error("group users not set")
 	}
-	res, _ = apiRequest(t, "POST", ts.URL+"/groups/"+itoa(gid)+"/users.json", "application/json", `{"user_id":3}`)
-	if res.StatusCode != 204 || queryInt(t, d, `SELECT COUNT(*) FROM group_users WHERE group_id = ?`, gid) != 3 {
+	res, _ = apiRequest(t, "POST", ts.URL+"/groups/"+uitoa(gid)+"/users.json", "application/json", `{"user_id":3}`)
+	if res.StatusCode != 204 || uQueryInt(t, d, `SELECT COUNT(*) FROM group_users WHERE group_id = ?`, gid) != 3 {
 		t.Errorf("add user: %d", res.StatusCode)
 	}
-	res, body = apiRequest(t, "POST", ts.URL+"/groups/"+itoa(gid)+"/users.json", "application/json", `{"user_id":3}`)
+	res, body = apiRequest(t, "POST", ts.URL+"/groups/"+uitoa(gid)+"/users.json", "application/json", `{"user_id":3}`)
 	if res.StatusCode != 422 || body != `{"errors":["User is invalid"]}` {
 		t.Errorf("add existing user: %d %s", res.StatusCode, body)
 	}
-	res, _ = apiRequest(t, "DELETE", ts.URL+"/groups/"+itoa(gid)+"/users/3.json", "", "")
+	res, _ = apiRequest(t, "DELETE", ts.URL+"/groups/"+uitoa(gid)+"/users/3.json", "", "")
 	if res.StatusCode != 204 {
 		t.Errorf("remove user: %d", res.StatusCode)
 	}
-	res, _ = apiRequest(t, "DELETE", ts.URL+"/groups/"+itoa(gid)+".json", "", "")
-	if res.StatusCode != 204 || queryInt(t, d, `SELECT COUNT(*) FROM principals WHERE id = ?`, gid) != 0 {
+	res, _ = apiRequest(t, "DELETE", ts.URL+"/groups/"+uitoa(gid)+".json", "", "")
+	if res.StatusCode != 204 || uQueryInt(t, d, `SELECT COUNT(*) FROM principals WHERE id = ?`, gid) != 0 {
 		t.Errorf("group destroy: %d", res.StatusCode)
 	}
 }
 
-func itoa(n int) string { return strconv.Itoa(n) }
+func uitoa(n int) string { return strconv.Itoa(n) }

@@ -1,0 +1,84 @@
+status: 200
+content-type: application/json
+
+{
+  "trackers": [
+    {
+      "id": 1,
+      "name": "Bug",
+      "default_status": {
+        "id": 1,
+        "name": "New"
+      },
+      "description": "Description for Bug tracker",
+      "enabled_standard_fields": [
+        "assigned_to_id",
+        "category_id",
+        "fixed_version_id",
+        "parent_issue_id",
+        "start_date",
+        "due_date",
+        "estimated_hours",
+        "done_ratio",
+        "description",
+        "priority_id"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Feature request",
+      "default_status": {
+        "id": 1,
+        "name": "New"
+      },
+      "description": "Description for Feature request tracker",
+      "enabled_standard_fields": [
+        "assigned_to_id",
+        "category_id",
+        "fixed_version_id",
+        "parent_issue_id",
+        "start_date",
+        "due_date",
+        "estimated_hours",
+        "done_ratio",
+        "description",
+        "priority_id"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Support request",
+      "default_status": {
+        "id": 1,
+        "name": "New"
+      },
+      "description": null,
+      "enabled_standard_fields": [
+        "assigned_to_id",
+        "category_id",
+        "fixed_version_id",
+        "parent_issue_id",
+        "start_date",
+        "due_date",
+        "estimated_hours",
+        "done_ratio",
+        "description",
+        "priority_id"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "QA",
+      "default_status": {
+        "id": 2,
+        "name": "Assigned"
+      },
+      "description": "Quality assurance",
+      "enabled_standard_fields": [
+        "assigned_to_id",
+        "due_date",
+        "priority_id"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+{{title (list (l "label_role_plural") "/roles") (l "label_role_new")}}
+
+{{$f := labelled_form_for "" .Role (hash "url" "/roles")}}{{$f.Open}}
+{{partial "roles/form" (dict "f" $f)}}
+{{submit_tag (l "button_create")}}
+{{end_form}}

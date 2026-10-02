@@ -145,10 +145,10 @@ func (m *groupModel) assign(p *httpx.Params) {
 		m.Name = httpx.ValueString(v)
 	}
 	if v, ok := p.Get("twofa_required"); ok {
-		m.TwofaRequired = castBool(v)
+		m.TwofaRequired = castBoolAny(v)
 	}
 	if v, ok := p.Get("user_ids"); ok {
-		m.userIDs = paramIDs(v)
+		m.userIDs = idsFromParam(v)
 		m.userIDsSet = true
 	}
 	m.customValues = assignCustomFieldValues(m.customValues, p)
@@ -581,7 +581,7 @@ func (a *App) GroupsAddUsers(c *Req) {
 	if !ok || v == nil {
 		v, _ = p.Get("user_ids")
 	}
-	users, err := repository.UsersNotInGroupByIDs(c.Ctx(), a.DB, g.ID, paramIDs(v))
+	users, err := repository.UsersNotInGroupByIDs(c.Ctx(), a.DB, g.ID, idsFromParam(v))
 	if err != nil {
 		a.serverError(c, err)
 		return

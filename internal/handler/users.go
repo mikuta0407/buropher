@@ -899,7 +899,7 @@ func (a *App) destroyUser(c *Req, id int64) error {
 
 // UsersBulkDestroy は users#bulk_destroy（DELETE /users/bulk_destroy）。
 func (a *App) UsersBulkDestroy(c *Req) {
-	users, err := repository.LoggedUsersByIDs(c.Ctx(), a.DB, paramIDs(c.Params().Slice("ids")), c.User.ID)
+	users, err := repository.LoggedUsersByIDs(c.Ctx(), a.DB, idsFromParam(c.Params().Slice("ids")), c.User.ID)
 	if err != nil {
 		a.serverError(c, err)
 		return
@@ -934,7 +934,7 @@ func (a *App) UsersBulkUnlock(c *Req) { a.bulkUpdateStatus(c, domain.StatusActiv
 
 // bulkUpdateStatus は UsersController#bulk_update_status（update_all のためコールバックなし）。
 func (a *App) bulkUpdateStatus(c *Req, status int) {
-	users, err := repository.LoggedUsersByIDs(c.Ctx(), a.DB, paramIDs(c.Params().Slice("ids")), c.User.ID)
+	users, err := repository.LoggedUsersByIDs(c.Ctx(), a.DB, idsFromParam(c.Params().Slice("ids")), c.User.ID)
 	if err != nil {
 		a.serverError(c, err)
 		return

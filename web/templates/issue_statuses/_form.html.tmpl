@@ -1,0 +1,13 @@
+{{$f := .f}}{{$status := (assigns).IssueStatus -}}
+{{error_messages_for $status.Errors}}
+
+<div class="box tabular">
+<p>{{$f.TextField "name" (hash "required" true)}}</p>
+<p>{{$f.TextArea "description" (hash "rows" 4)}}</p>
+{{if (assigns).UseStatusForDoneRatio}}
+  <p>{{$f.Select "default_done_ratio" (assigns).DoneRatioOptions (hash "include_blank" true "label" (sym "field_done_ratio"))}}</p>
+{{end}}
+<p>{{$f.CheckBox "is_closed"}}</p>
+
+{{call_hook "view_issue_statuses_form"}}
+</div>

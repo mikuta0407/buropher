@@ -1,0 +1,43 @@
+status: 200
+content-type: application/json
+
+{
+  "issue_priorities": [
+    {
+      "id": 17,
+      "name": "Critical",
+      "is_default": true,
+      "active": true
+    },
+    {
+      "id": 5,
+      "name": "Normal",
+      "is_default": false,
+      "active": true
+    },
+    {
+      "id": 6,
+      "name": "High",
+      "is_default": false,
+      "active": true
+    },
+    {
+      "id": 7,
+      "name": "Urgent",
+      "is_default": false,
+      "active": true
+    },
+    {
+      "id": 8,
+      "name": "Immediate",
+      "is_default": false,
+      "active": true
+    },
+    {
+      "id": 15,
+      "name": "Inactive Priority",
+      "is_default": false,
+      "active": false
+    }
+  ]
+}

@@ -1,4 +1,5 @@
 {{define "users/index#actions"}}
+
     {{if .CanImport}}
       {{link_to (sprite_icon "import" (l "button_import")) "/users/imports/new" (hash "class" "icon icon-import")}}
     {{end}}
@@ -43,4 +44,7 @@
   </div>
 {{end}}
 
+{{/* content_for :sidebar（render_sidebar_queries と call_hook は空。Rails の capture は空白のみの出力を捨て、
+   ブロックの戻り値（最後の改行）を sidebar に加える） */}}
+{{content_for "sidebar" (raw "\n")}}
 {{html_title (l "label_user_plural")}}

@@ -358,7 +358,9 @@ func (v *userQueryView) TotalableColumns() []*query.Column {
 }
 
 // IsTotalable は query.totalable_columns.include?(column)。
-func (v *userQueryView) IsTotalable(col *query.Column) bool { return contains(v.q.TotalableNames(), col.Name) }
+func (v *userQueryView) IsTotalable(col *query.Column) bool {
+	return contains(v.q.TotalableNames(), col.Name)
+}
 
 // Totals は render_query_totals(query)（合計値は format_object(Float) = "%.2f"）。
 func (v *userQueryView) Totals() rails.HTML {

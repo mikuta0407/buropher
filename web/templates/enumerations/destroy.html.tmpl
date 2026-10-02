@@ -1,0 +1,12 @@
+{{title (list (l .Enumeration.OptionName) "/enumerations") .Enumeration.Name}}
+
+{{form_tag .FormPath (hash "method" "delete")}}
+<div class="box">
+<p><strong>{{l "text_enumeration_destroy_question" (hash "name" .Enumeration.Name "count" .ObjectsCount)}}</strong></p>
+<p><label for='reassign_to_id'>{{l "text_enumeration_category_reassign_to"}}</label>
+{{select_tag "reassign_to_id" (safe_join (list (content_tag "option" (printf "--- %s ---" (l "actionview_instancetag_blank_option")) (hash "value" "")) (options_from_collection_for_select .Enumerations "id" "name")) "")}}</p>
+</div>
+
+{{submit_tag (l "button_apply")}}
+{{link_to (l "button_cancel") "/enumerations"}}
+{{end_form}}

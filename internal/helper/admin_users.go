@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"sort"
 	"strconv"
-	"time"
 	"strings"
 	ttemplate "text/template"
+	"time"
 
 	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/i18n"
@@ -36,7 +36,6 @@ type Tab struct {
 func init() {
 	registerFuncs(func(d *Deps, r *view.Render, pg func() *Page) ttemplate.FuncMap {
 		return ttemplate.FuncMap{
-			"title":          func(args ...any) html { return pageTitle(r, args...) },
 			"render_tabs":    func(tabs []Tab, selected ...string) (html, error) { return renderTabs(r, pg(), tabs, selected...) },
 			"get_tab_action": getTabAction,
 			"tab_link":       func(t Tab, selected string) html { return tabLink(pg(), t, selected) },
@@ -58,11 +57,7 @@ func init() {
 				}
 				return v
 			},
-			"current_path_with":      func(params any) string { return URLWithQuery(pg().requestPath(), params) },
-			"delete_link":            func(url any, args ...any) html { return d.deleteLink(pg(), url, args...) },
-			"link_to_function":       func(name any, fn string, args ...any) html { return linkToFunction(name, fn, optHash(args)) },
-			"toggle_checkboxes_link": func(selector string, args ...any) html { return d.toggleCheckboxesLink(pg(), selector, optHash(args)) },
-			"check_all_links":        func(form string) html { return checkAllLinks(pg(), form) },
+			"current_path_with": func(params any) string { return URLWithQuery(pg().requestPath(), params) },
 			"lang_options_for_select": func(blank ...bool) [][2]string {
 				return langOptionsForSelect(pg(), len(blank) == 0 || blank[0])
 			},
@@ -83,7 +78,6 @@ func init() {
 				return d.principalsCheckBoxTags(r, pg(), name, principals)
 			},
 			"project_css_classes": func(p *domain.Project) string { return projectCSSClasses(pg(), p) },
-			"role_name":           func(role *domain.Role) string { return roleName(pg(), role) },
 			"email_delivery_enabled": func() bool {
 				// ActionMailer::Base.perform_deliveries（既定 true）。メール送信の実装は通知機能で行う。
 				return true
@@ -124,7 +118,7 @@ func init() {
 			"change_status_link": func(u *domain.User) html { return d.changeStatusLink(pg(), u) },
 			"user_edit_title": func(u *domain.User) html {
 				// page_title.insert(page_title.rindex(' ') + 1, avatar(@user).to_s)
-				t := string(pageTitle(r, []any{pg().l("label_user_plural"), "/users"}, u.Login))
+				t := string(title(r, []any{pg().l("label_user_plural"), "/users"}, u.Login))
 				i := strings.LastIndex(t, " ")
 				return html(t[:i+1] + string(d.avatar(r, pg(), u, rails.NewHash())) + t[i+1:])
 			},
@@ -171,8 +165,6 @@ func init() {
 				return strings.ToUpper(string(r[0])) + string(r[1:])
 			},
 			"include_calendar_headers_tags": func() string { d.includeCalendarHeadersTags(r, pg()); return "" },
-			"export_csv_encoding_select_tag": func() html { return exportCSVEncodingSelectTag(pg()) },
-			"export_csv_separator_select_tag": func() html { return exportCSVSeparatorSelectTag(pg()) },
 			// current_path_with_format は OtherFormatsBuilder#link_to_with_query_parameters の URL
 			// （現在のパス + .format、クエリは page / format を除く）。
 			"current_path_with_format": func(format string) string {
@@ -223,27 +215,6 @@ func (d *Deps) includeCalendarHeadersTags(r *view.Render, p *Page) {
 	r.ContentFor("header_tags", tags)
 }
 
-// exportCSVEncodingSelectTag は ApplicationHelper#export_csv_encoding_select_tag。
-func exportCSVEncodingSelectTag(p *Page) html {
-	enc := p.l("general_csv_encoding")
-	if strings.EqualFold(enc, "UTF-8") {
-		return ""
-	}
-	sel := rails.SelectTag("encoding", rails.OptionsForSelect([]any{"UTF-8", enc}, "UTF-8"), rails.NewHash())
-	return rails.ContentTag("p", rails.ContentTag("label", html(rails.H(p.l("label_encoding")+" "))+sel, nil), nil)
-}
-
-// exportCSVSeparatorSelectTag は ApplicationHelper#export_csv_separator_select_tag。
-func exportCSVSeparatorSelectTag(p *Page) html {
-	opts := []any{[]any{p.l("label_comma_char"), ","}, []any{p.l("label_semi_colon_char"), ";"}}
-	sep := p.l("general_csv_separator")
-	if sep != "," && sep != ";" {
-		opts = append(opts, []any{sep, sep})
-	}
-	sel := rails.SelectTag("field_separator", rails.OptionsForSelect(opts, sep), rails.NewHash())
-	return rails.ContentTag("p", rails.ContentTag("label", html(rails.H(p.l("label_fields_separator")+" "))+sel, nil), nil)
-}
-
 // autoWatchOnTags は users/_auto_watch_on の
 // pref_fields.collection_check_boxes :auto_watch_on, auto_watch_on_options, :last, :first の出力。
 func autoWatchOnTags(p *Page, selected []string) html {
@@ -289,30 +260,6 @@ func nilIfBlankAny(s string) any {
 		return nil
 	}
 	return s
-}
-
-// pageTitle は ApplicationHelper#title。引数は文字列か [text, url] のリスト（list で渡す）。
-func pageTitle(r *view.Render, args ...any) html {
-	var strs []string
-	var titles []any
-	for _, a := range args {
-		if xs, ok := a.([]any); ok && len(xs) >= 2 {
-			strs = append(strs, string(rails.LinkTo(xs[0], xs[1], rails.NewHash())))
-		} else {
-			strs = append(strs, string(rails.H(rails.ToS(a))))
-		}
-	}
-	for i := len(args) - 1; i >= 0; i-- {
-		if xs, ok := args[i].([]any); ok && len(xs) >= 1 {
-			titles = append(titles, rails.ToS(xs[0]))
-		} else {
-			titles = append(titles, rails.ToS(args[i]))
-		}
-	}
-	if r != nil {
-		r.AddTitle(titles...)
-	}
-	return rails.ContentTag("h2", rails.Raw(strings.Join(strs, " &#187; ")), nil)
 }
 
 // renderTabs は ApplicationHelper#render_tabs（common/_tabs を描画する）。
@@ -370,44 +317,6 @@ func getTabAction(t Tab) string {
 		return "showTab('" + t.Name + "', this.href)"
 	}
 	return ""
-}
-
-// deleteLink は ApplicationHelper#delete_link(url, options = {}, button_name = l(:button_delete))。
-func (d *Deps) deleteLink(p *Page, url any, args ...any) html {
-	opts := rails.NewHash()
-	name := p.l("button_delete")
-	for _, a := range args {
-		switch x := a.(type) {
-		case *rails.Hash:
-			opts = x
-		case string:
-			name = x
-		}
-	}
-	o := rails.NewHash("method", "delete", "data", rails.NewHash("confirm", p.l("text_are_you_sure")), "class", "icon icon-del").Update(opts)
-	return rails.LinkTo(d.spriteIcon(p, "del", name, nil), url, o)
-}
-
-// linkToFunction は ApplicationHelper#link_to_function。
-func linkToFunction(name any, function string, opts *rails.Hash) html {
-	o := rails.NewHash("href", "#", "onclick", function+"; return false;").Update(opts)
-	return rails.ContentTag("a", name, o)
-}
-
-// toggleCheckboxesLink は ApplicationHelper#toggle_checkboxes_link。
-func (d *Deps) toggleCheckboxesLink(p *Page, selector string, opts *rails.Hash) html {
-	css := "icon icon-checked"
-	if c := opts.Get("class"); c != nil {
-		css += " " + rails.ToS(c)
-	}
-	return linkToFunction(d.spriteIcon(p, "checked", "", nil), "toggleCheckboxesBySelector('"+selector+"')",
-		rails.NewHash("title", p.l("button_check_all")+" / "+p.l("button_uncheck_all"), "class", css))
-}
-
-// checkAllLinks は ApplicationHelper#check_all_links。
-func checkAllLinks(p *Page, form string) html {
-	return linkToFunction(p.l("button_check_all"), "checkAll('"+form+"', true)", rails.NewHash()) + " | " +
-		linkToFunction(p.l("button_uncheck_all"), "checkAll('"+form+"', false)", rails.NewHash())
 }
 
 // langOptionsForSelect は ApplicationHelper#lang_options_for_select（[表示名, 値]）。
@@ -575,6 +484,11 @@ func (d *Deps) errorMessagesFor(p *Page, objs ...any) html {
 			msgs = append(msgs, x.FullMessages(p.Loc)...)
 		case []string:
 			msgs = append(msgs, x...)
+		default:
+			// 他の管理画面の検証エラー（*domain.ValidationErrors）
+			if s := errorMessagesFor(d, p, o); s != "" {
+				return s
+			}
 		}
 	}
 	return d.renderErrorMessages(p, msgs)
@@ -646,20 +560,6 @@ func projectCSSClasses(p *Page, pr *domain.Project) string {
 	return s
 }
 
-// roleName は Role#to_s / name（組込ロールは翻訳した名前）。
-func roleName(p *Page, r *domain.Role) string {
-	if r == nil {
-		return ""
-	}
-	switch r.Builtin {
-	case domain.RoleBuiltinNonMember:
-		return p.l("label_role_non_member")
-	case domain.RoleBuiltinAnonymous:
-		return p.l("label_role_anonymous")
-	}
-	return r.Name
-}
-
 // SortRoles は Role#<=>（builtin、position の順）で並べる。
 func SortRoles(roles []*domain.Role) {
 	sort.SliceStable(roles, func(i, j int) bool {
@@ -676,7 +576,7 @@ func RolesToS(p *Page, roles []*domain.Role) string {
 	SortRoles(rs)
 	names := make([]string, len(rs))
 	for i, r := range rs {
-		names[i] = roleName(p, r)
+		names[i] = RoleName(p, r)
 	}
 	return strings.Join(names, ", ")
 }

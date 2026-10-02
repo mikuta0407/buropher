@@ -266,8 +266,8 @@ func (a *App) loadUserModel(c *Req, u *domain.User) (*userModel, error) {
 	return m, nil
 }
 
-// castBool は ActiveModel::Type::Boolean の変換（"0" / "false" / "f" / "off" / "" は false）。
-func castBool(v any) bool {
+// castBoolAny は ActiveModel::Type::Boolean の変換（"0" / "false" / "f" / "off" / "" は false）。
+func castBoolAny(v any) bool {
 	switch x := v.(type) {
 	case nil:
 		return false
@@ -283,8 +283,8 @@ func castBool(v any) bool {
 	return httpx.ValueBool(v)
 }
 
-// paramIDs は配列パラメータを正の整数 ID の列にする（空文字は除く）。
-func paramIDs(v any) []int64 {
+// idsFromParam は配列パラメータを正の整数 ID の列にする（空文字は除く）。
+func idsFromParam(v any) []int64 {
 	var out []int64
 	add := func(s string) {
 		if n, err := strconv.ParseInt(strings.TrimSpace(s), 10, 64); err == nil && n > 0 && !slices.Contains(out, n) {
@@ -329,7 +329,7 @@ func (m *userModel) assignSafeAttributes(p *httpx.Params, current *domain.User) 
 		m.notification.MailNotification = v
 	}
 	if v, ok := p.Get("notified_project_ids"); ok {
-		m.notifiedProjectIDs = paramIDs(v)
+		m.notifiedProjectIDs = idsFromParam(v)
 		m.notifiedChanged = true
 	}
 	if v, ok := str("language"); ok {
@@ -354,17 +354,17 @@ func (m *userModel) assignSafeAttributes(p *httpx.Params, current *domain.User) 
 			}
 		}
 		if v, ok := p.Get("generate_password"); ok {
-			m.generatePassword = castBool(v)
+			m.generatePassword = castBoolAny(v)
 		}
 		if v, ok := p.Get("must_change_passwd"); ok {
-			m.MustChangePassword = castBool(v)
+			m.MustChangePassword = castBoolAny(v)
 		}
 		if v, ok := p.Get("admin"); ok {
-			m.AdminFlag = castBool(v)
+			m.AdminFlag = castBoolAny(v)
 		}
 		if !m.newRecord {
 			if v, ok := p.Get("group_ids"); ok {
-				m.groupIDs = paramIDs(v)
+				m.groupIDs = idsFromParam(v)
 				m.groupIDsChanged = true
 			}
 		}
@@ -380,7 +380,7 @@ func (m *userModel) assignPref(p *httpx.Params) {
 	pr := m.pref
 	get := func(k string) (any, bool) { return p.Get(k) }
 	if v, ok := get("hide_mail"); ok {
-		pr.HideMail = castBool(v)
+		pr.HideMail = castBoolAny(v)
 	}
 	if v, ok := get("time_zone"); ok {
 		pr.TimeZone = httpx.ValueString(v)
@@ -436,7 +436,7 @@ func (m *userModel) assignPref(p *httpx.Params) {
 }
 
 func firstID(v any) *int64 {
-	ids := paramIDs(v)
+	ids := idsFromParam(v)
 	if len(ids) == 0 {
 		return nil
 	}

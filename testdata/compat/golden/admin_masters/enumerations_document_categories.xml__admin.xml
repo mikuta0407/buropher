@@ -1,0 +1,30 @@
+status: 200
+content-type: application/xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<document_categories type="array">
+  <document_category>
+    <id>1</id>
+    <name>Uncategorized</name>
+    <is_default>false</is_default>
+    <active>true</active>
+  </document_category>
+  <document_category>
+    <id>2</id>
+    <name>User documentation</name>
+    <is_default>false</is_default>
+    <active>true</active>
+  </document_category>
+  <document_category>
+    <id>3</id>
+    <name>Technical documentation</name>
+    <is_default>false</is_default>
+    <active>true</active>
+  </document_category>
+  <document_category>
+    <id>16</id>
+    <name>Inactive Document Category</name>
+    <is_default>false</is_default>
+    <active>false</active>
+  </document_category>
+</document_categories>
