@@ -154,6 +154,8 @@ requests:
     path: "/my/page?settings%5Bissueswatched%5D%5Bsort%5D=subject%2Cupdated_on%3Adesc"
     method: POST
     user: jsmith
+    form: {dummy: "1"}
+    expect_status: 200
     headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, */*; q=0.01"}
   - id: settings_timelog
     path: /my/page
@@ -283,7 +285,8 @@ requests:
     path: /my/account/destroy
     method: POST
     user: miscuser8
-    form: {}
+    form: {dummy: "1"}
+    expect_status: 200
   - id: destroy_admin_only
     path: /my/account/destroy
     method: POST
@@ -296,6 +299,6 @@ requests:
     user: miscuser8
     form: {confirm: "1"}
     expect_status: 302
-  - path: /users/9
+  - path: /users/8
     id: destroyed_user
     users: [admin]
