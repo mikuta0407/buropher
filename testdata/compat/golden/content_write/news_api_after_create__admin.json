@@ -1,0 +1,35 @@
+status: 200
+content-type: application/json
+
+{
+  "news": {
+    "id": 4,
+    "project": {
+      "id": 1,
+      "name": "eCookbook"
+    },
+    "author": {
+      "id": 2,
+      "name": "John Smith"
+    },
+    "title": "New release",
+    "summary": "Summary text",
+    "description": "Released *today* with #1",
+    "created_on": "2026-01-15T12:00:00Z",
+    "attachments": [
+      {
+        "id": 25,
+        "filename": "hello.txt",
+        "filesize": 11,
+        "content_type": "text/plain",
+        "description": "readme",
+        "content_url": "{{BASE}}/attachments/download/25/hello.txt",
+        "author": {
+          "id": 2,
+          "name": "John Smith"
+        },
+        "created_on": "2026-01-15T12:00:00Z"
+      }
+    ]
+  }
+}

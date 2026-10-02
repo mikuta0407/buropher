@@ -1,0 +1,9 @@
+status: 201
+content-type: application/json
+
+{
+  "upload": {
+    "id": 26,
+    "token": "26.21e251f136ac7d866c371c2b426d4bc4b2821470a82e8b20a703b32a3c939136"
+  }
+}

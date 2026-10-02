@@ -1,0 +1,9 @@
+status: 422
+content-type: application/json
+
+{
+  "errors": [
+    "Title cannot be blank",
+    "Description cannot be blank"
+  ]
+}
