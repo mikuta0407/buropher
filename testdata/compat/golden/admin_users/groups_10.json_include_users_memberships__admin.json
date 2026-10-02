@@ -1,0 +1,34 @@
+status: 200
+content-type: application/json
+
+{
+  "group": {
+    "id": 10,
+    "name": "A Team",
+    "users": [
+      {
+        "id": 8,
+        "name": "User Misc"
+      }
+    ],
+    "memberships": [
+      {
+        "id": 6,
+        "project": {
+          "id": 5,
+          "name": "Private child of eCookbook"
+        },
+        "roles": [
+          {
+            "id": 1,
+            "name": "Manager"
+          },
+          {
+            "id": 2,
+            "name": "Developer"
+          }
+        ]
+      }
+    ]
+  }
+}

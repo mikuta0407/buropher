@@ -78,8 +78,8 @@ func (qv *queryView) Caption(col *query.Column) string { return col.CaptionText(
 
 // ---------------------------------------------------------------- _filters
 
-// rawJSON は raw_json（to_json の / を \/ に置き換える）。
-func rawJSON(v any) template.HTML {
+// queryRawJSON は raw_json（to_json の / を \/ に置き換える）。
+func queryRawJSON(v any) template.HTML {
 	var buf bytes.Buffer
 	enc := json.NewEncoder(&buf)
 	_ = enc.Encode(v)
@@ -146,7 +146,7 @@ func (qv *queryView) OperatorLabelsJSON() template.HTML {
 	for _, op := range query.Operators {
 		o.set(op.Op, labels[op.Op])
 	}
-	return rawJSON(o)
+	return queryRawJSON(o)
 }
 
 // OperatorByTypeJSON は raw_json Query.operators_by_filter_type。
@@ -155,7 +155,7 @@ func (qv *queryView) OperatorByTypeJSON() template.HTML {
 	for _, t := range operatorFilterTypes {
 		o.set(t, query.OperatorsByFilterType[t])
 	}
-	return rawJSON(o)
+	return queryRawJSON(o)
 }
 
 // AvailableFiltersJSON は raw_json query.available_filters_as_json。
@@ -200,11 +200,11 @@ func (qv *queryView) AvailableFiltersJSON() (template.HTML, error) {
 		}
 		o.set(def.Field, f)
 	}
-	return rawJSON(o), nil
+	return queryRawJSON(o), nil
 }
 
 // LabelDayPluralJSON は raw_json l(:label_day_plural)。
-func (qv *queryView) LabelDayPluralJSON() template.HTML { return rawJSON(qv.c.L("label_day_plural")) }
+func (qv *queryView) LabelDayPluralJSON() template.HTML { return queryRawJSON(qv.c.L("label_day_plural")) }
 
 // FiltersURLJSON は raw_json queries_filter_path(:project_id => @query.project.try(:id), :type => @query.type)。
 func (qv *queryView) FiltersURLJSON() template.HTML {
@@ -213,7 +213,7 @@ func (qv *queryView) FiltersURLJSON() template.HTML {
 		v.Set("project_id", strconv.FormatInt(qv.Q.Project.ID, 10))
 	}
 	v.Set("type", qv.Type)
-	return rawJSON("/queries/filter?" + v.Encode())
+	return queryRawJSON("/queries/filter?" + v.Encode())
 }
 
 // filterLine は addFilter の 1 行。
@@ -231,7 +231,7 @@ func (qv *queryView) FilterLines() []filterLine {
 		if vals == nil {
 			vals = []string{}
 		}
-		out = append(out, filterLine{Field: k, Operator: rawJSON(qv.Q.OperatorFor(k)), Values: rawJSON(vals)})
+		out = append(out, filterLine{Field: k, Operator: queryRawJSON(qv.Q.OperatorFor(k)), Values: queryRawJSON(vals)})
 	}
 	return out
 }

@@ -1,0 +1,60 @@
+status: 200
+content-type: text/html
+
+<html>
+  <head></head>
+  <body>
+    <h2>Another page</h2>
+    <form accept-charset="UTF-8" action="/projects/ecookbook/wiki/Another_page/rename" class="edit_wiki_page" id="edit_wiki_page" method="post" name="edit_wiki_page-RANDOM">
+      <input autocomplete="off" name="authenticity_token" type="hidden" value="{{CSRF}}">
+      <div class="box tabular">
+        <p>
+          <label for="wiki_page_title">
+            Title
+            <span class="required">*</span>
+          </label>
+          <input id="wiki_page_title" name="wiki_page[title]" size="100" type="text" value="Another_page">
+        </p>
+        <p>
+          <label for="wiki_page_is_start_page">Start page</label>
+          <input autocomplete="off" name="wiki_page[is_start_page]" type="hidden" value="0">
+          <input id="wiki_page_is_start_page" name="wiki_page[is_start_page]" type="checkbox" value="1">
+        </p>
+        <p>
+          <label for="wiki_page_redirect_existing_links">Redirect existing links</label>
+          <input autocomplete="off" name="wiki_page[redirect_existing_links]" type="hidden" value="0">
+          <input checked="checked" id="wiki_page_redirect_existing_links" name="wiki_page[redirect_existing_links]" type="checkbox" value="1">
+        </p>
+        <p>
+          <label for="wiki_page_wiki_id">Project</label>
+          <select id="wiki_page_wiki_id" name="wiki_page[wiki_id]">
+            <option value="1">eCookbook</option>
+            <option selected="selected" value="2">OnlineStore</option>
+          </select>
+        </p>
+        <p>
+          <label for="wiki_page_parent_id">Parent page</label>
+          <select id="wiki_page_parent_id" name="wiki_page[parent_id]">
+            <option value=""></option>
+            <option value="1">CookBook documentation</option>
+            <option value="4">» Page with an inline image</option>
+            <option value="11">Page with sections</option>
+            <option value="10">Этика менеджмента</option>
+          </select>
+        </p>
+      </div>
+      <input data-disable-with="Rename" name="commit" type="submit" value="Rename">
+    </form>
+    <script>//<![CDATA[
+
+$('#wiki_page_wiki_id').change(function() {
+  $.ajax({
+    url: '/projects/1/wiki/Another_page/rename.js',
+    type: 'get',
+    data: { 'wiki_page[wiki_id]': $('#wiki_page_wiki_id').val() }
+  });
+});
+
+//]]></script>
+  </body>
+</html>

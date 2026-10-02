@@ -1,0 +1,10 @@
+status: 200
+content-type: application/xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<group>
+  <id>12</id>
+  <name>Non member users</name>
+  <builtin>non_member</builtin>
+  <memberships type="array"/>
+</group>

@@ -1,0 +1,139 @@
+# 活動（ActivitiesController / UsersController#show の活動欄 / Atom）と検索（SearchController・API）。
+# すべて GET。参照環境は共有でリセットしないため、閲覧で変わる状態（最近使ったプロジェクト・
+# ブックマーク）が出るプロジェクトジャンプボックスは比較から外す。
+# 個人設定の activity_scope を保存してしまう submit パラメータ付きのリクエストは含めない。
+name: activity_search
+
+users:
+  admin: {login: admin, password: admin}
+  jsmith: {login: jsmith, password: jsmith}
+  dlopper: {login: dlopper, password: foo}
+
+normalize:
+  mask_text_selectors:
+    - "#footer"
+  strip_selectors:
+    - "#project-jump"
+
+requests:
+  # ---- 活動（全体）
+  - path: /activity
+    users: [anonymous, admin, jsmith, dlopper]
+  - path: /activity?from=2026-01-14&show_issues=1
+    users: [jsmith]
+  - path: /activity?from=2007-04-15&show_changesets=1&show_news=1&show_documents=1&show_files=1&show_wiki_edits=1&show_messages=1&show_time_entries=1&show_issues=1
+    users: [admin]
+  - path: /activity?from=2007-03-06&show_wiki_edits=1&show_documents=1&show_files=1
+    users: [admin]
+  - path: /activity?from=2007-05-15&show_messages=1
+    users: [admin, jsmith]
+  - path: /activity?from=2007-04-25&show_time_entries=1
+    users: [admin, jsmith]
+  - path: /activity?from=2006-07-25&show_news=1&show_files=1&show_documents=1&show_issues=1
+    users: [admin, anonymous]
+  - path: /activity?from=2009-09-12&show_changesets=1
+    users: [jsmith]
+  - path: /activity?user_id=2
+    users: [admin]
+  - path: /activity?user_id=3&from=2007-04-15
+    users: [admin]
+  - path: /activity?user_id=999
+    users: [admin]
+  - path: /activity?from=invalid
+    users: [admin]
+  # ---- 活動（プロジェクト）
+  - path: /projects/ecookbook/activity
+    users: [anonymous, jsmith, dlopper]
+  - path: /projects/ecookbook/activity?with_subprojects=0
+    users: [jsmith]
+  - path: /projects/onlinestore/activity
+    users: [admin, jsmith]
+  - path: /projects/ecookbook/activity?from=2007-03-06&show_documents=1&show_files=1
+    users: [jsmith]
+  # ---- Atom
+  - path: /activity.atom
+    users: [anonymous, admin]
+  - path: /activity.atom?show_issues=1
+    users: [admin]
+  - path: /activity.atom?user_id=2
+    users: [admin]
+  - path: /projects/ecookbook/activity.atom
+    users: [jsmith]
+  - path: /projects/ecookbook/activity.atom?show_changesets=1&show_documents=1&show_files=1&show_news=1
+    users: [admin]
+  # ---- ユーザー詳細の活動欄
+  - path: /users/2
+    users: [anonymous, admin, dlopper]
+  - path: /users/3
+    users: [jsmith]
+  - path: /users/1
+    users: [admin]
+
+  # ---- 検索
+  - path: /search
+    users: [admin]
+  - path: /search?q=recipe
+    users: [anonymous, admin]
+  - path: /search?q=issue
+    users: [jsmith, dlopper]
+  - path: /search?q=e
+    users: [admin]
+  - path: /search?q=cookbook&titles_only=1
+    users: [admin]
+  - path: /search?q=issue&all_words=&open_issues=1
+    users: [admin]
+  - path: /search?q=error&attachments=1
+    users: [admin]
+  - path: /search?q=error&attachments=only
+    users: [admin]
+  - path: /search?q=changeset&attachments=only&titles_only=1
+    users: [admin]
+  - path: /search?q=issue&scope=my_projects
+    users: [jsmith]
+  - path: /search?q=issue&scope=bookmarks
+    users: [admin]
+  - path: /search?q=issue&issues=1
+    users: [admin]
+  - path: /search?q=%22first+post%22
+    users: [admin]
+  - path: /search?q=issue&page=2
+    users: [admin]
+  - path: /search?q=commit
+    users: [admin]
+  - path: /search?q=wiki
+    users: [admin]
+  - path: /search?q=help&messages=1&wiki_pages=1
+    users: [admin]
+  - path: /search?q=private
+    users: [dlopper]
+  - path: /search?q=cookbook+recipes&all_words=
+    users: [admin]
+  - path: /search?q=%233
+    users: [admin]
+  - path: /search?q=%23999
+    users: [admin]
+  - path: /search?q=ecookbook&projects=1
+    users: [jsmith]
+  - path: /search?q=hello&options=1
+    users: [admin]
+  - path: /projects/ecookbook/search?q=issue
+    users: [jsmith]
+  - path: /projects/ecookbook/search?q=issue&scope=subprojects
+    users: [jsmith]
+  - path: /projects/ecookbook/search?q=issue&scope=all
+    users: [jsmith]
+  - path: /projects/ecookbook/search?q=cookbook
+    users: [anonymous]
+  # ---- 検索 API
+  - path: /search.json?q=recipe
+    users: [admin]
+  - path: /search.xml?q=recipe
+    users: [admin]
+  - path: /search.json?q=issue&offset=2&limit=3
+    users: [jsmith]
+  - path: /search.json?q=cookbook
+    users: [anonymous]
+  - path: /search.json
+    users: [admin]
+  - path: /projects/ecookbook/search.json?q=issue&scope=subprojects
+    users: [admin]

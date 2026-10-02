@@ -102,9 +102,9 @@ func (a *App) projectVisibleCustomFieldValues(c *Req, p *domain.Project) ([]*pro
 	return a.visibleCustomFieldValues(c, p, all)
 }
 
-// assignCustomFieldValues は custom_field_values=（params[:project][:custom_field_values]）。
+// assignProjectCFValues は custom_field_values=（params[:project][:custom_field_values]）。
 // editable（表示可能）な値だけを更新する。
-func assignCustomFieldValues(values []*projectCFValue, p *httpx.Params) {
+func assignProjectCFValues(values []*projectCFValue, p *httpx.Params) {
 	if p == nil {
 		return
 	}
@@ -138,9 +138,9 @@ var (
 	cfDateRe  = regexp.MustCompile(`^\d{4}-\d{2}-\d{2}$`)
 )
 
-// validateCustomFieldValues は CustomFieldValue#validate_value（必須・書式・選択肢・長さ・正規表現）。
+// validateProjectCFValues は CustomFieldValue#validate_value（必須・書式・選択肢・長さ・正規表現）。
 // エラーは custom_field の名前を属性名として errs に追加する（Redmine の errors.add(:base, ...) と同じ表示）。
-func validateCustomFieldValues(errs *domain.ValidationErrors, values []*projectCFValue, l func(string, ...any) string) {
+func validateProjectCFValues(errs *domain.ValidationErrors, values []*projectCFValue, l func(string, ...any) string) {
 	for _, v := range values {
 		cf := v.Field
 		nonBlank := []string{}

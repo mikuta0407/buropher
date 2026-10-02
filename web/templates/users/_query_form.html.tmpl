@@ -1,0 +1,65 @@
+{{/* queries/_query_form.html.erb（UserQuery 用の暫定移植。TODO(query): internal/query の queries/_query_form に置き換える） */}}
+{{hidden_field_tag "set_filter" "1"}}
+{{hidden_field_tag "type" "UserQuery" (hash "disabled" true "id" "query_type")}}
+{{hidden_field_tag "sort" .query.SortParam (hash "id" nil)}}
+
+<div id="query_form_with_buttons" class="hide-when-print">
+<div id="query_form_content">
+  <fieldset id="filters" class="collapsible ">
+    <legend onclick="toggleFieldset(this);" class="icon icon-expanded">
+      {{sprite_icon "angle-down" (hash "rtl" false)}}
+      {{l "label_filter_plural"}}
+    </legend>
+    <div style="">
+      {{partial "users/query_filters" .}}
+    </div>
+  </fieldset>
+
+    <fieldset id="options" class="collapsible collapsed">
+      <legend onclick="toggleFieldset(this);" class="icon icon-collapsed">
+        {{sprite_icon "angle-right" (hash "rtl" true)}}
+        {{l "label_options"}}
+      </legend>
+        <div class="hidden">
+          <div id="list-definition" class="">
+            <div>
+              <div class="field">{{l "field_column_names"}}</div>
+              {{partial "users/query_columns" .}}
+            </div>
+          {{if .query.TotalableColumns}}
+            <div>
+              <div class="field">{{l "label_total_plural"}}</div>
+              <div>{{range $col := .query.TotalableColumns}}{{content_tag "label" (safe_join (list (check_box_tag "t[]" $col.Name ($.query.IsTotalable $col) (hash "id" nil)) (printf " %s" ($.query.ColumnCaption $col))) "") (hash "class" "inline")}}{{end}}{{hidden_field_tag "t[]" ""}}</div>
+            </div>
+          {{end}}
+        </div>
+      </div>
+    </fieldset>
+</div>
+
+<p class="buttons">
+  {{link_to_function (sprite_icon "checked" (l "button_apply")) "$(\"#query_form\").submit()" (hash "class" "icon icon-checked")}}
+  {{link_to (sprite_icon "reload" (l "button_clear")) "/users?set_filter=1&sort=" (hash "class" "icon icon-reload")}}
+  {{if .can_save}}
+      {{link_to_function (sprite_icon "save" (capitalize (l "button_save_object" (hash "object_name" (l "label_query"))))) "$('#query_type').prop('disabled',false);$('#query_form').attr('action', '/queries/new').submit()" (hash "class" "icon icon-save")}}
+  {{end}}
+</p>
+</div>
+
+{{render_error_messages .errors}}
+
+{{define "users/_query_form#js"}}
+
+$(function ($) {
+  $('input[name=display_type]').change(function (e) {
+    if ($("#display_type_list").is(':checked')) {
+      $('table#list-definition').show();
+    } else {
+      $('table#list-definition').hide();
+    }
+
+  })
+});
+
+{{end}}
+{{javascript_tag (capture "users/_query_form#js" .)}}

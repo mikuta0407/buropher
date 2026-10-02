@@ -24,6 +24,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/i18n"
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/settings"
+	"github.com/mikuta0407/buropher/internal/textformat/redmine"
 	"github.com/mikuta0407/buropher/internal/view"
 )
 
@@ -84,6 +85,8 @@ type Page struct {
 	ProjectNameWas string
 	// Question は @question（検索語）。
 	Question string
+	// QuestionSet は @question が nil でない（空文字列でも value="" を出す）。
+	QuestionSet bool
 	// DB はヘルパーがデータを読むための接続（nil ならデータを要する部分は空になる）。
 	DB db.Queryer
 	// Authz は User.current の Authorizer を返す（nil なら管理者のみ許可する保守的な判定）。
@@ -93,16 +96,18 @@ type Page struct {
 	// Logger はヘルパー内のエラーの記録先（nil なら slog.Default()）。
 	Logger *slog.Logger
 
-	accessKeys []string
-	theme      *assets.Theme
-	themeSet   bool
-	leaf       map[int64]bool
-	// calendarHeadersIncluded は include_calendar_headers_tags の @calendar_headers_tags_included。
-	calendarHeadersIncluded bool
-	// contextMenuIncluded は context_menu の @context_menu_included。
+	// PreviewAttachments は @attachments（プレビューで thumbnail マクロが参照する未保存の添付）。
+	PreviewAttachments []*redmine.Attachment
+
+	accessKeys   []string
+	wikiRenderer *redmine.Renderer
+	theme        *assets.Theme
+	themeSet     bool
+	leaf         map[int64]bool
+	// contextMenuIncluded は @context_menu_included（context_menu ヘルパー）。
 	contextMenuIncluded bool
-	// wikiFormatterHeadsIncluded は heads_for_wiki_formatter の @heads_for_wiki_formatter_included。
-	wikiFormatterHeadsIncluded bool
+	// calendarHeadersIncluded は @calendar_headers_tags_included。
+	calendarHeadersIncluded bool
 }
 
 // Params は Rails の params。

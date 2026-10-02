@@ -1,0 +1,4 @@
+status: 200
+content-type: text/javascript
+
+$('#users').html('<div class=\"objects-selection\"><div id=\"principals\"><label><input type=\"checkbox\" name=\"user_ids[]\" value=\"9\" /><span role=\"img\" class=\"avatar-color-1 s16 avatar\">UM<\/span>User Misc<\/label><\/div><\/div><span class=\"pagination\"><ul class=\"pages\"><\/ul><span><span class=\"items\">(1-1/1)<\/span> <\/span><\/span>');

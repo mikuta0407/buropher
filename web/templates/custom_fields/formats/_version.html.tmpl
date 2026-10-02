@@ -1,0 +1,19 @@
+<p>
+  <label>{{l "field_status"}}</label>
+  <label class="block">
+    {{radio_button_tag "status" 1 (.custom_field.SettingBlank "version_status") (hash "id" "custom_field_version_status_all" "data" (hash "disables" ".custom_field_version_status input"))}}
+    {{l "label_all"}}
+  </label>
+  <label class="block">
+    {{radio_button_tag "status" 0 (not (.custom_field.SettingBlank "version_status")) (hash "id" "custom_field_version_status_only" "data" (hash "enables" ".custom_field_version_status input"))}}
+    {{l "label_only"}}:
+  </label>
+  {{range $status := version_statuses}}
+    <label class="block custom_field_version_status" style="padding-left:2em;">
+      {{check_box_tag "custom_field[version_status][]" $status ($.custom_field.SettingListIncludes "version_status" $status) (hash "id" nil)}}
+      {{l (printf "version_status_%s" $status)}}
+    </label>
+  {{end}}
+  {{hidden_field_tag "custom_field[version_status][]" ""}}
+</p>
+<p>{{edit_tag_style_tag .f}}</p>

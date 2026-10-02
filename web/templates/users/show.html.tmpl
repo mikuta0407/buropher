@@ -1,0 +1,122 @@
+{{define "users/show#header_tags"}}
+  {{auto_discovery_link_tag "atom" .ActivityFeedURL}}
+{{end}}
+{{$u := .User}}
+<div class="contextual">
+{{if and admin $u.Logged}}{{link_to (sprite_icon "edit" (l "button_edit")) (printf "/users/%d/edit" $u.ID) (hash "class" "icon icon-edit")}}{{end}}
+</div>
+
+<h2>{{avatar $u (hash "size" "50")}} {{user_name $u}}</h2>
+
+<div class="splitcontent">
+<div class="splitcontentleft">
+<ul>
+  <li>{{l "field_login"}}: {{$u.Login}}</li>
+  {{if not .Pref.HideMail}}
+    <li>{{l "field_mail"}}: {{user_emails .Emails}}</li>
+  {{end}}
+  {{range $cv := .CustomValues}}
+  {{if $cv.ValueString}}
+    <li class="{{$cv.CSSClasses}}">{{$cv.Name}}: {{$cv.ValueString}}</li>
+  {{end}}
+  {{end}}
+    <li>{{l "label_registered_on"}}: {{format_date $u.CreatedAt}}</li>
+  {{if $u.LastLoginAt}}
+    <li>{{l "field_last_login_on"}}: {{format_date (deref_time $u.LastLoginAt)}}</li>
+  {{end}}
+</ul>
+
+<h3>{{l "label_issue_plural"}}</h3>
+
+<table class="list issue-report">
+<thead>
+  <tr>
+    <th></th>
+    <th>{{l "label_open_issues_plural"}}</th>
+    <th>{{l "label_closed_issues_plural"}}</th>
+    <th>{{l "label_total"}}</th>
+  </tr>
+</thead>
+<tbody>
+  {{$sort := "priority:desc,updated_on:desc"}}
+  <tr>
+    <td class="name">
+      {{link_to (l "label_assigned_issues") (printf "/issues?%s" (to_query (hash "set_filter" 1 "assigned_to_id" .AssignedToIDs "sort" $sort)))}}
+    </td>
+    <td>
+      {{link_to (index .Counts "assigned_open") (printf "/issues?%s" (to_query (hash "set_filter" 1 "assigned_to_id" .AssignedToIDs "sort" $sort)))}}
+    </td>
+    <td>
+      {{link_to (sub (index .Counts "assigned_total") (index .Counts "assigned_open")) (printf "/issues?%s" (to_query (hash "set_filter" 1 "status_id" "c" "assigned_to_id" .AssignedToIDs "sort" $sort)))}}
+    </td>
+    <td class="total">
+      {{link_to (index .Counts "assigned_total") (printf "/issues?%s" (to_query (hash "set_filter" 1 "status_id" "*" "assigned_to_id" .AssignedToIDs "sort" $sort)))}}
+    </td>
+  </tr>
+  <tr>
+    <td class="name">
+      {{link_to (l "label_reported_issues") (printf "/issues?%s" (to_query (hash "set_filter" 1 "author_id" $u.ID "sort" $sort)))}}
+    </td>
+    <td>
+      {{link_to (index .Counts "reported_open") (printf "/issues?%s" (to_query (hash "set_filter" 1 "author_id" $u.ID "sort" $sort)))}}
+    </td>
+    <td>
+      {{link_to (sub (index .Counts "reported_total") (index .Counts "reported_open")) (printf "/issues?%s" (to_query (hash "set_filter" 1 "status_id" "c" "author_id" $u.ID "sort" $sort)))}}
+    </td>
+    <td class="total">
+      {{link_to (index .Counts "reported_total") (printf "/issues?%s" (to_query (hash "set_filter" 1 "status_id" "*" "author_id" $u.ID "sort" $sort)))}}
+    </td>
+  </tr>
+</tbody>
+</table>
+
+{{if .Memberships}}
+<h3>{{l "label_project_plural"}}</h3>
+<table class="list projects">
+<thead>
+  <tr>
+    <th>{{l "label_project"}}</th>
+    <th>{{l "label_role_plural"}}</th>
+    <th>{{l "label_registered_on"}}</th>
+  </tr>
+</thead>
+<tbody>
+{{range $m := .Memberships}}
+  <tr class="{{project_css_classes $m.Project}} {{if gt $m.Level 0}}idnt idnt-{{$m.Level}}{{end}}">
+    <td class="name"><span>{{link_to_project $m.Project}}</span></td>
+    <td class="roles">{{$m.RolesText}}</td>
+    <td>{{format_date $m.Member.CreatedAt}}</td>
+  </tr>
+{{end}}
+</tbody>
+</table>
+{{end}}
+
+{{if .Groups}}
+<div id="groups">
+  <h3>{{l "label_group_plural"}}</h3>
+  <ul>
+  {{range $g := .Groups}}
+    <li>{{link_to_group $g}}
+  {{end}}
+  </ul>
+</div>
+{{end}}
+
+{{call_hook "view_account_left_bottom"}}
+</div>
+
+<div class="splitcontentright">
+
+{{if .EventsByDay}}
+<h3>{{link_to (l "label_activity") .ActivityURL}}</h3>
+{{partial "activities/activities" (dict "events_by_day" .EventsByDay)}}
+
+<p class="other-formats hide-when-print">{{l "label_export_to"}}  <span>{{link_to "Atom" .ActivityAtomURL (hash "class" "atom" "rel" "nofollow")}}</span>
+</p>
+{{content_for "header_tags" (capture "users/show#header_tags")}}
+{{end}}
+{{call_hook "view_account_right_bottom"}}
+</div>
+</div>
+{{html_title (user_name $u)}}

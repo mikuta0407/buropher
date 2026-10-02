@@ -106,7 +106,8 @@ func title(r *view.Render, args ...any) html {
 		}
 	}
 	if r != nil {
-		r.AddTitle(titles...)
+		// html_title args.reverse.map {...}（Redmine は配列 1 つを渡すため、空の要素も " - " で連結される）
+		r.AddTitle(titles)
 	}
 	return rails.ContentTag("h2", html(strings.Join(parts, " &#187; ")), nil)
 }
@@ -164,6 +165,8 @@ func errorMessagesFor(d *Deps, p *Page, objs ...any) html {
 	for _, o := range objs {
 		if e, ok := o.(*domain.ValidationErrors); ok && e != nil {
 			msgs = append(msgs, e.FullMessages(tr)...)
+		} else if m, ok := o.(ErrorMessenger); ok && m != nil {
+			msgs = append(msgs, m.FullErrorMessages()...)
 		}
 	}
 	return RenderErrorMessages(d, p, msgs)

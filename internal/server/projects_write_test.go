@@ -47,7 +47,7 @@ func projSubmit(t *testing.T, c *http.Client, ts *httptest.Server, method, path 
 }
 
 // apiRequest は HTTP Basic 認証で API を呼ぶ。
-func apiRequest(t *testing.T, ts *httptest.Server, method, path, user, body string) (*http.Response, string) {
+func projectsAPIRequest(t *testing.T, ts *httptest.Server, method, path, user, body string) (*http.Response, string) {
 	t.Helper()
 	req, _ := http.NewRequest(method, ts.URL+path, strings.NewReader(body))
 	req.SetBasicAuth(user, user)
@@ -138,15 +138,15 @@ func TestProjectsCreateUpdate(t *testing.T) {
 	}
 
 	// API
-	res, body = apiRequest(t, ts, http.MethodPost, "/projects.json", "admin", `{"project":{"name":"API","identifier":"api-project"}}`)
+	res, body = projectsAPIRequest(t, ts, http.MethodPost, "/projects.json", "admin", `{"project":{"name":"API","identifier":"api-project"}}`)
 	if res.StatusCode != http.StatusCreated || !strings.Contains(body, `"identifier":"api-project"`) {
 		t.Fatalf("api create: %d %s", res.StatusCode, body)
 	}
-	res, _ = apiRequest(t, ts, http.MethodPut, "/projects/api-project.json", "admin", `{"project":{"name":"API 2"}}`)
+	res, _ = projectsAPIRequest(t, ts, http.MethodPut, "/projects/api-project.json", "admin", `{"project":{"name":"API 2"}}`)
 	if res.StatusCode != http.StatusNoContent {
 		t.Fatalf("api update: %d", res.StatusCode)
 	}
-	res, body = apiRequest(t, ts, http.MethodPost, "/projects.json", "admin", `{"project":{"name":"API","identifier":"api-project"}}`)
+	res, body = projectsAPIRequest(t, ts, http.MethodPost, "/projects.json", "admin", `{"project":{"name":"API","identifier":"api-project"}}`)
 	if res.StatusCode != http.StatusUnprocessableEntity || !strings.Contains(body, "Identifier has already been taken") {
 		t.Fatalf("api create taken: %d %s", res.StatusCode, body)
 	}

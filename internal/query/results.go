@@ -84,6 +84,11 @@ func (q *Query) orderOption(ctx context.Context, opts ListOptions) ([]string, er
 		}
 	case KindTimeEntry:
 		out = append(out, "time_entries.id ASC")
+	case KindUser:
+		// 同値の並びを DB 間で揃える (SQLite 上の Redmine は暗黙に id 順になる)
+		if !slices.Contains(out, "users.id ASC") && !slices.Contains(out, "users.id DESC") {
+			out = append(out, "users.id ASC")
+		}
 	case KindProject, KindProjectAdmin:
 		lft, err := q.projectsLftExpr(ctx, "projects")
 		if err != nil {
@@ -91,7 +96,31 @@ func (q *Query) orderOption(ctx context.Context, opts ListOptions) ([]string, er
 		}
 		out = append(out, lft+" ASC")
 	}
-	return out, nil
+	return q.env.nullsOrder(out), nil
+}
+
+// nullsOrder は ORDER BY 項目の NULL の位置を DB 間で揃える。
+// SQLite・MySQL (Redmine の大半の環境) は NULL を最小値として扱う (昇順で先頭) が、
+// PostgreSQL は最大値扱いなので、PG では NULLS FIRST / NULLS LAST を明示する。
+func (e *Env) nullsOrder(terms []string) []string {
+	if e.dialect().Name() != db.Postgres {
+		return terms
+	}
+	out := make([]string, len(terms))
+	for i, t := range terms {
+		u := strings.ToUpper(strings.TrimSpace(t))
+		switch {
+		case strings.Contains(u, " NULLS "):
+			out[i] = t
+		case strings.HasSuffix(u, " DESC"):
+			out[i] = t + " NULLS LAST"
+		case strings.HasSuffix(u, " ASC"):
+			out[i] = t + " NULLS FIRST"
+		default:
+			out[i] = t + " NULLS FIRST"
+		}
+	}
+	return out
 }
 
 // Count は base_scope.count (IssueQuery#issue_count, ProjectQuery#result_count 等)。

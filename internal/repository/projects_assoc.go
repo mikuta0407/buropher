@@ -190,8 +190,8 @@ type RepositoryInfo struct {
 	URL        string
 }
 
-// ProjectRepositories は project.repositories.sort（既定を先頭、次に識別子順）。
-func ProjectRepositories(ctx context.Context, q db.Queryer, projectID int64) ([]*RepositoryInfo, error) {
+// ProjectRepositoriesForSettings は project.repositories.sort（既定を先頭、次に識別子順。設定画面用）。
+func ProjectRepositoriesForSettings(ctx context.Context, q db.Queryer, projectID int64) ([]*RepositoryInfo, error) {
 	var rows []struct {
 		ID         int64          `db:"id"`
 		Identifier sql.NullString `db:"identifier"`

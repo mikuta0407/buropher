@@ -1,9 +1,18 @@
-// Package customfield は Redmine のカスタムフィールド (app/models/custom_field.rb とサブクラス,
-// lib/redmine/field_format.rb) のうち、クエリシステムが必要とする部分を移植する。
+// Package customfield は Redmine のカスタムフィールド（app/models/custom_field.rb とサブクラス、
+// custom_field_enumeration.rb、lib/redmine/field_format.rb）の移植。
 //
-// 値の書式 (Format)、ソート・グループ用の SQL 断片 (order_statement / group_statement /
-// join_for_order_statement)、可視性 (CustomField.visible スコープ, visibility_by_project_condition,
-// visible_by?) と読み込みを提供する。
+//   - モデル: CustomField（custom_fields 行と関連）、Enumeration（key/value リストの選択肢）、
+//     種類（OwnerKind / Types: IssueCustomField ...）。読み込み（Load / ListByKind / Get）と保存（store.go）。
+//   - 書式（Format、13 種類）: クラス属性（multiple_supported, is_filter_supported, form_partial ...）、
+//     値の正規化・キャスト（SetValue / Cast / CastSingleValue）、検証（ValidateCustomField / ValidateValue /
+//     ValidateField）、選択肢（PossibleValuesOptions）、表示（FormattedValue, URL パターン）、
+//     編集タグ（EditTag / BulkEditTag。edit_tag_style による drop-down / check_box / radio）、
+//     クエリ（FilterType、order_statement / group_statement / join_for_order_statement）。
+//   - 可視性（CustomField.visible スコープ, visibility_by_project_condition, visible_by?）。
+//
+// DB やビューに依存する書式の処理（キー・値リストの選択肢、プロジェクトのユーザー、共有バージョン、
+// テキスト整形、カレンダー、添付フォーム）は Env の関数フィールドで呼び出し側から受け取る。
+// 値は Redmine と同じく文字列（単一値）または []string（複数値）で扱う（nil は未設定）。
 package customfield
 
 import (
@@ -76,19 +85,20 @@ func (k OwnerKind) CustomizedKind() string {
 
 // CustomField は custom_fields 行と関連 (roles / trackers / projects)。
 type CustomField struct {
-	ID             int64
-	OwnerKind      OwnerKind
-	Name           string
-	Description    string
+	ID        int64
+	OwnerKind OwnerKind
+	Name      string
+	// Description / Regexp / DefaultValue は Redmine で nil と "" が区別される（フォームの value 属性の有無・API の null）。
+	Description    *string
 	FieldFormat    string
-	Regexp         string
+	Regexp         *string
 	MinLength      *int
 	MaxLength      *int
 	IsRequired     bool
 	IsForAll       bool
 	IsFilter       bool
 	Searchable     bool
-	DefaultValue   string
+	DefaultValue   *string
 	Editable       bool
 	Visible        bool
 	Multiple       bool
@@ -122,17 +132,20 @@ func (cf *CustomField) Setting(name string) string {
 	}
 }
 
-// SettingList は format_store の配列値 (user_role / version_status)。配列でなければ nil。
+// SettingList は format_store の配列値 (user_role / version_status)。配列でなければ nil
+// （空の配列は空で nil でないスライス）。
 func (cf *CustomField) SettingList(name string) []string {
-	a, ok := cf.Settings[name].([]any)
-	if !ok {
-		return nil
+	switch a := cf.Settings[name].(type) {
+	case []string:
+		return append(make([]string, 0, len(a)), a...)
+	case []any:
+		out := make([]string, 0, len(a))
+		for _, v := range a {
+			out = append(out, fmt.Sprint(v))
+		}
+		return out
 	}
-	out := make([]string, 0, len(a))
-	for _, v := range a {
-		out = append(out, fmt.Sprint(v))
-	}
-	return out
+	return nil
 }
 
 // Totalable は totalable? (書式が合計をサポートする)。
@@ -362,6 +375,14 @@ const cfCols = `custom_fields.id, custom_fields.owner_kind, custom_fields.name, 
   custom_fields.default_value, custom_fields.editable, custom_fields.visible, custom_fields.multiple,
   custom_fields.position, custom_fields.possible_values, custom_fields.format_settings`
 
+func nullStr(n sql.NullString) *string {
+	if !n.Valid {
+		return nil
+	}
+	s := n.String
+	return &s
+}
+
 func nullInt(n sql.NullInt64) *int {
 	if !n.Valid {
 		return nil
@@ -384,11 +405,11 @@ func Load(ctx context.Context, q db.Queryer, where string, args ...any) ([]*Cust
 	byID := map[int64]*CustomField{}
 	for _, r := range rows {
 		cf := &CustomField{
-			ID: r.ID, OwnerKind: OwnerKind(r.OwnerKind), Name: r.Name, Description: r.Description.String,
-			FieldFormat: r.FieldFormat, Regexp: r.Regexp.String, MinLength: nullInt(r.MinLength), MaxLength: nullInt(r.MaxLength),
+			ID: r.ID, OwnerKind: OwnerKind(r.OwnerKind), Name: r.Name, Description: nullStr(r.Description),
+			FieldFormat: r.FieldFormat, Regexp: nullStr(r.Regexp), MinLength: nullInt(r.MinLength), MaxLength: nullInt(r.MaxLength),
 			IsRequired: r.IsRequired, IsForAll: r.IsForAll, IsFilter: r.IsFilter, Searchable: r.Searchable,
-			DefaultValue: r.DefaultValue.String, Editable: r.Editable, Visible: r.Visible, Multiple: r.Multiple,
-			Position: r.Position, Settings: map[string]any{},
+			DefaultValue: nullStr(r.DefaultValue), Editable: r.Editable, Visible: r.Visible, Multiple: r.Multiple,
+			Position: r.Position, Settings: map[string]any{}, PossibleValues: []string{},
 		}
 		if len(r.PossibleValues) > 0 {
 			var pv []any

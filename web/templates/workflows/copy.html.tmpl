@@ -1,0 +1,28 @@
+{{title (list (l "label_workflow") "/workflows/edit") (l "button_copy")}}
+
+{{form_tag "/workflows/duplicate" (hash "method" "post" "id" "workflow_copy_form")}}
+<fieldset class="tabular box">
+<legend>{{l "label_copy_source"}}</legend>
+<p>
+  <label>{{l "label_tracker"}}</label>
+  {{select_tag "source_tracker_id" (safe_join (list (content_tag "option" (printf "--- %s ---" (l "actionview_instancetag_blank_option")) (hash "value" "")) (content_tag "option" (printf "--- %s ---" (l "label_copy_same_as_target")) (hash "value" "any")) (options_from_collection_for_select .Trackers "id" "name" .SourceTracker)) "")}}
+</p>
+<p>
+  <label>{{l "label_role"}}</label>
+  {{select_tag "source_role_id" (safe_join (list (content_tag "option" (printf "--- %s ---" (l "actionview_instancetag_blank_option")) (hash "value" "")) (content_tag "option" (printf "--- %s ---" (l "label_copy_same_as_target")) (hash "value" "any")) (options_from_collection_for_select .Roles "id" "name" .SourceRole)) "")}}
+</p>
+</fieldset>
+
+<fieldset class="tabular box">
+<legend>{{l "label_copy_target"}}</legend>
+<p>
+  <label>{{l "label_tracker"}}</label>
+  {{select_tag "target_tracker_ids" (safe_join (list (content_tag "option" (printf "--- %s ---" (l "actionview_instancetag_blank_option")) (hash "value" "" "disabled" true)) (options_from_collection_for_select .Trackers "id" "name" .TargetTrackers)) "") (hash "multiple" true)}}
+</p>
+<p>
+  <label>{{l "label_role"}}</label>
+  {{select_tag "target_role_ids" (safe_join (list (content_tag "option" (printf "--- %s ---" (l "actionview_instancetag_blank_option")) (hash "value" "" "disabled" true)) (options_from_collection_for_select .Roles "id" "name" .TargetRoles)) "") (hash "multiple" true)}}
+</p>
+</fieldset>
+{{submit_tag (l "button_copy")}}
+{{end_form}}

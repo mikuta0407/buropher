@@ -1,0 +1,74 @@
+status: 200
+content-type: application/json
+
+{
+  "results": [
+    {
+      "id": 13,
+      "title": "Bug #13 (New): Subproject issue two",
+      "type": "issue",
+      "url": "{{BASE}}/issues/13",
+      "description": "This is a second issue on a cookbook subproject",
+      "datetime": "2026-01-10T12:00:00Z"
+    },
+    {
+      "id": 5,
+      "title": "Bug #5 (New): Subproject issue",
+      "type": "issue",
+      "url": "{{BASE}}/issues/5",
+      "description": "This is an issue on a cookbook subproject",
+      "datetime": "2026-01-10T12:00:00Z"
+    },
+    {
+      "id": 1,
+      "title": "Wiki: CookBook_documentation",
+      "type": "wiki-page",
+      "url": "{{BASE}}/projects/ecookbook/wiki/CookBook_documentation",
+      "description": "h1. CookBook documentation\n\n{{child_pages}}\n\nSome updated [[documentation]] here with gzipped history",
+      "datetime": "2007-03-06T23:08:07Z"
+    },
+    {
+      "id": 2,
+      "title": "100,000 downloads for eCookbook",
+      "type": "news",
+      "url": "{{BASE}}/news/2",
+      "description": "eCookbook 1.0 have downloaded 100,000 times",
+      "datetime": "2006-07-19T20:42:58Z"
+    },
+    {
+      "id": 1,
+      "title": "eCookbook first release !",
+      "type": "news",
+      "url": "{{BASE}}/news/1",
+      "description": "eCookbook 1.0 has been released.\n\nVisit http://ecookbook.somenet.foo/",
+      "datetime": "2006-07-19T20:40:26Z"
+    },
+    {
+      "id": 4,
+      "title": "Project: eCookbook Subproject 2",
+      "type": "project",
+      "url": "{{BASE}}/projects/subproject2",
+      "description": "eCookbook Subproject 2",
+      "datetime": "2006-07-19T17:15:51Z"
+    },
+    {
+      "id": 3,
+      "title": "Project: eCookbook Subproject 1",
+      "type": "project",
+      "url": "{{BASE}}/projects/subproject1",
+      "description": "eCookBook Subproject 1",
+      "datetime": "2006-07-19T17:15:21Z"
+    },
+    {
+      "id": 1,
+      "title": "Project: eCookbook",
+      "type": "project",
+      "url": "{{BASE}}/projects/ecookbook",
+      "description": "Recipes management application",
+      "datetime": "2006-07-19T17:13:59Z"
+    }
+  ],
+  "total_count": 8,
+  "offset": 0,
+  "limit": 25
+}

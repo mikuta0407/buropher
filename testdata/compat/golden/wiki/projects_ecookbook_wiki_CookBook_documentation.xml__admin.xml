@@ -1,0 +1,13 @@
+status: 200
+content-type: application/xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<wiki_page>
+  <title>CookBook_documentation</title>
+  <text>h1. CookBook documentation&#xA;&#xA;{{child_pages}}&#xA;&#xA;Some updated [[documentation]] here with gzipped history</text>
+  <version>3</version>
+  <author id="1" name="Redmine Admin"/>
+  <comments>Gzip compression activated</comments>
+  <created_on>2007-03-06T23:08:07Z</created_on>
+  <updated_on>2007-03-06T23:10:51Z</updated_on>
+</wiki_page>

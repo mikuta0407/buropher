@@ -1,0 +1,1 @@
+{{content_tag "label" (safe_join (list (check_box_tag "user[notified_project_ids][]" .project.ID (has_id .ids .project.ID) (hash "id" nil)) " " .project.Name) "")}}

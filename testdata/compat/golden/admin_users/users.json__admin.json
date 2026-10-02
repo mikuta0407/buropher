@@ -1,0 +1,192 @@
+status: 200
+content-type: application/json
+
+{
+  "users": [
+    {
+      "id": 1,
+      "login": "admin",
+      "admin": true,
+      "firstname": "Redmine",
+      "lastname": "Admin",
+      "mail": "admin@somenet.foo",
+      "created_on": "2006-07-19T17:12:21Z",
+      "updated_on": "2006-07-19T20:57:52Z",
+      "last_login_on": "2026-01-15T12:00:00Z",
+      "passwd_changed_on": null,
+      "twofa_scheme": null,
+      "status": 1,
+      "custom_fields": [
+        {
+          "id": 4,
+          "name": "Phone number",
+          "value": null
+        },
+        {
+          "id": 5,
+          "name": "Money",
+          "value": null
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "login": "dlopper",
+      "admin": false,
+      "firstname": "Dave",
+      "lastname": "Lopper",
+      "mail": "dlopper@somenet.foo",
+      "created_on": "2006-07-19T17:33:19Z",
+      "updated_on": "2006-07-19T17:33:19Z",
+      "last_login_on": "2026-01-15T12:00:00Z",
+      "passwd_changed_on": null,
+      "twofa_scheme": null,
+      "status": 1,
+      "custom_fields": [
+        {
+          "id": 4,
+          "name": "Phone number",
+          "value": ""
+        },
+        {
+          "id": 5,
+          "name": "Money",
+          "value": null
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "login": "jsmith",
+      "admin": false,
+      "firstname": "John",
+      "lastname": "Smith",
+      "mail": "jsmith@somenet.foo",
+      "created_on": "2006-07-19T17:32:09Z",
+      "updated_on": "2006-07-19T20:42:15Z",
+      "last_login_on": "2026-01-15T12:00:00Z",
+      "passwd_changed_on": null,
+      "twofa_scheme": null,
+      "status": 1,
+      "custom_fields": [
+        {
+          "id": 4,
+          "name": "Phone number",
+          "value": "01 42 50 00 00"
+        },
+        {
+          "id": 5,
+          "name": "Money",
+          "value": null
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "login": "miscuser8",
+      "admin": false,
+      "firstname": "User",
+      "lastname": "Misc",
+      "mail": "miscuser8@foo.bar",
+      "created_on": "2006-07-19T17:33:19Z",
+      "updated_on": "2006-07-19T17:33:19Z",
+      "last_login_on": null,
+      "passwd_changed_on": null,
+      "twofa_scheme": null,
+      "status": 1,
+      "custom_fields": [
+        {
+          "id": 4,
+          "name": "Phone number",
+          "value": null
+        },
+        {
+          "id": 5,
+          "name": "Money",
+          "value": null
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "login": "miscuser9",
+      "admin": false,
+      "firstname": "User",
+      "lastname": "Misc",
+      "mail": "miscuser9@foo.bar",
+      "created_on": "2006-07-19T17:33:19Z",
+      "updated_on": "2006-07-19T17:33:19Z",
+      "last_login_on": null,
+      "passwd_changed_on": null,
+      "twofa_scheme": null,
+      "status": 1,
+      "custom_fields": [
+        {
+          "id": 4,
+          "name": "Phone number",
+          "value": null
+        },
+        {
+          "id": 5,
+          "name": "Money",
+          "value": null
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "login": "rhill",
+      "admin": false,
+      "firstname": "Robert",
+      "lastname": "Hill",
+      "mail": "rhill@somenet.foo",
+      "created_on": "2006-07-19T17:34:07Z",
+      "updated_on": "2006-07-19T17:34:07Z",
+      "last_login_on": null,
+      "passwd_changed_on": null,
+      "twofa_scheme": null,
+      "status": 1,
+      "custom_fields": [
+        {
+          "id": 4,
+          "name": "Phone number",
+          "value": "01 23 45 67 89"
+        },
+        {
+          "id": 5,
+          "name": "Money",
+          "value": null
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "login": "someone",
+      "admin": false,
+      "firstname": "Some",
+      "lastname": "One",
+      "mail": "someone@foo.bar",
+      "created_on": "2006-07-19T17:33:19Z",
+      "updated_on": "2006-07-19T17:33:19Z",
+      "last_login_on": null,
+      "passwd_changed_on": null,
+      "twofa_scheme": null,
+      "status": 1,
+      "custom_fields": [
+        {
+          "id": 4,
+          "name": "Phone number",
+          "value": null
+        },
+        {
+          "id": 5,
+          "name": "Money",
+          "value": null
+        }
+      ]
+    }
+  ],
+  "total_count": 7,
+  "offset": 0,
+  "limit": 25
+}

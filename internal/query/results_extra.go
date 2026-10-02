@@ -25,7 +25,7 @@ func (q *Query) JournalIDs(ctx context.Context, opts ListOptions) ([]int64, erro
 		" INNER JOIN projects ON projects.id = issues.project_id INNER JOIN issue_statuses ON issue_statuses.id = issues.status_id" +
 		" WHERE " + where.SQL
 	if len(opts.Order) > 0 {
-		s += " ORDER BY " + strings.Join(opts.Order, ", ")
+		s += " ORDER BY " + strings.Join(q.env.nullsOrder(opts.Order), ", ")
 	}
 	if opts.Limit > 0 || opts.Offset > 0 {
 		limit := opts.Limit

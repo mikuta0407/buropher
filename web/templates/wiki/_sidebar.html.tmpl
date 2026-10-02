@@ -1,0 +1,21 @@
+{{$sb := .Sidebar}}
+{{if $sb.Editable}}
+  <div class="contextual">
+    {{link_to (sprite_icon "edit" (l "button_edit")) (printf "/projects/%s/wiki/sidebar/edit" (project_param current_project)) (hash "class" "icon icon-edit")}}
+  </div>
+{{end}}
+
+{{if $sb.Content}}
+  <div class="wiki">
+    {{textilizable $sb.Content.Text (hash "object" $sb.Object)}}
+  </div>
+{{end}}
+
+<h3>{{l "label_wiki"}}</h3>
+<ul>
+  <li>{{link_to (l "field_start_page") (printf "/projects/%s/wiki" (project_param current_project))}}</li>
+  <li>{{link_to (l "label_index_by_title") (printf "/projects/%s/wiki/index" (project_param current_project))}}</li>
+  <li>{{link_to (l "label_index_by_date") (printf "/projects/%s/wiki/date_index" (project_param current_project))}}</li>
+</ul>
+
+{{call_hook "view_wiki_show_sidebar_bottom"}}

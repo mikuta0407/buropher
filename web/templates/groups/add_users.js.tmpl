@@ -1,0 +1,5 @@
+hideModal();
+$('#tab-content-users').html('{{j (partial "groups/users")}}');
+{{range $u := .Added}}
+  $('#user-{{$u.ID}}').effect("highlight");
+{{end}}

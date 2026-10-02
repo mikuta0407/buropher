@@ -1,0 +1,114 @@
+{{$page := .Page}}
+{{$content := .Content}}
+{{$pr := current_project}}
+<div class="contextual">
+
+{{if .Editable}}
+{{if .CurrentVersion}}
+  {{if authorize_for "wiki" "edit"}}{{link_to (sprite_icon "edit" (l "button_edit")) (printf "%s/edit" (wiki_page_path $pr $page.Title)) (hash "class" "icon icon-edit" "accesskey" (accesskey "edit"))}}{{end}}
+  {{watcher_link "wiki_page" $page.ID}}
+{{end}}
+{{end}}
+
+  {{actions_dropdown (capture "wiki/show#actions")}}</div>
+
+{{wiki_page_breadcrumb .Ancestors}}
+
+{{if not .CurrentVersion}}
+  {{title (list $page.PrettyTitle (wiki_page_path $page.Project $page.Title)) (list (l "label_history") (printf "%s/history" (wiki_page_path $page.Project $page.Title))) (printf "%s %d" (l "label_revision") $content.Version)}}
+
+    <p>
+    {{if .Previous}}
+      {{link_to (printf "« %s" (l "label_previous")) (printf "%s/%d" (wiki_page_path $page.Project $page.Title) .Previous.Version)}} |
+    {{end}}
+    {{printf "%s %d/%d" (l "label_revision") $content.Version $page.CurrentVersion}}
+    {{if .Previous}}
+      ({{link_to (l "label_diff") (printf "%s/%d/diff" (wiki_page_path $page.Project $page.Title) $content.Version)}})
+    {{end}}
+    {{if .Next}}
+      | {{link_to (printf "%s »" (l "label_next")) (printf "%s/%d" (wiki_page_path $page.Project $page.Title) .Next.Version)}}
+    {{end}}
+    <br />
+    <em>{{if $content.Author}}{{link_to_user $content.Author}}{{else}}{{l "label_user_anonymous"}}{{end}}, {{format_time $content.UpdatedOn}} </em><br />
+    {{$content.CommentsString}}
+    </p>
+    <hr />
+{{end}}
+
+{{partial "wiki/content" (dict "content" $content "object" .TextObject "attachments" .Attachments "sections_editable" .SectionsEditable "page" $page)}}
+
+<fieldset class="collapsible collapsed hide-when-print">
+  <legend onclick="toggleFieldset(this);" class="icon icon-collapsed">
+    {{sprite_icon "angle-right" (hash "rtl" true)}}
+    {{l "label_attachment_plural"}} ({{len .Attachments}})
+  </legend>
+  <div style="display: none;">
+
+  {{link_to_attachments "wiki_page" $page.ID .Attachments (hash "thumbnails" true "editable" .AttachmentsEditable "deletable" .AttachmentsDeletable)}}
+
+  {{if and .Editable .CanAddAttachment}}
+  <div id="wiki_add_attachment">
+    {{form_tag (printf "%s/add_attachment" (wiki_page_path $pr $page.Title)) (hash "multipart" true "id" "add_attachment_form")}}
+      <div class="box">
+      <p>{{partial "attachments/form" (dict)}}</p>
+      </div>
+      {{submit_tag (l "button_add")}}
+    {{end_form}}
+  </div>
+  {{end}}
+</div>
+</fieldset>
+
+<p class="wiki-update-info">
+  {{if .CanEdits}}
+    {{wiki_content_update_info $content}}
+    · {{link_to (l "label_x_revisions" (hash "count" .VersionsCount)) (printf "%s/history" (wiki_page_path $pr $page.Title))}}
+  {{end}}
+  {{if $page.Protected}}
+    <span class="badge badge-status-locked">{{l "status_locked"}}</span>
+  {{end}}
+</p>
+
+{{if .CanExport}}
+{{other_formats_open -}}
+  {{other_format_link "PDF" (wiki_format_url $page.Title "pdf" .VersionParam)}}
+  {{other_format_link "HTML" (wiki_format_url $page.Title "html" .VersionParam)}}
+  {{other_format_link "TXT" (wiki_format_url $page.Title "txt" .VersionParam)}}
+{{other_formats_close -}}
+{{end}}
+
+{{define "wiki/show#actions"}}
+
+    {{if authorize_for "wiki" "history"}}{{link_to (sprite_icon "history" (l "label_history")) (printf "%s/history" (wiki_page_path current_project .Page.Title)) (hash "class" "icon icon-history")}}{{end}}
+
+    {{if .Editable}}
+    {{if .CurrentVersion}}
+      {{if and (authorize_for "wiki" "protect") (not .Page.Protected)}}{{link_to (sprite_icon "lock" (l "button_lock")) (printf "%s/protect?protected=1" (wiki_page_path current_project .Page.Title)) (hash "method" "post" "class" "icon icon-lock")}}{{end}}
+      {{if and (authorize_for "wiki" "protect") .Page.Protected}}{{link_to (sprite_icon "unlock" (l "button_unlock")) (printf "%s/protect?protected=0" (wiki_page_path current_project .Page.Title)) (hash "method" "post" "class" "icon icon-unlock")}}{{end}}
+      {{if authorize_for "wiki" "rename"}}{{link_to (sprite_icon "move" (l "button_rename")) (printf "%s/rename" (wiki_page_path current_project .Page.Title)) (hash "class" "icon icon-move")}}{{end}}
+      {{if authorize_for "wiki" "destroy"}}{{link_to (sprite_icon "del" (l "button_delete")) (wiki_page_path current_project .Page.Title) (hash "method" "delete" "data" (hash "confirm" (l "text_are_you_sure")) "class" "icon icon-del")}}{{end}}
+    {{else}}
+      {{if authorize_for "wiki" "edit"}}{{link_to (sprite_icon "cancel" (l "button_rollback")) (printf "%s/edit?version=%d" (wiki_page_path current_project .Page.Title) .Content.Version) (hash "class" "icon icon-cancel")}}{{end}}
+    {{end}}
+    {{end}}
+
+    {{if .CanEdit}}
+      {{link_to (sprite_icon "add" (l "label_wiki_page_new")) (printf "/projects/%s/wiki/new?parent=%s" (project_param current_project) (url_encode_param .Page.Title)) (hash "remote" true "class" "icon icon-add")}}
+    {{end}}
+{{end}}
+{{define "wiki/show#sidebar"}}
+  {{partial "wiki/sidebar" .}}
+  {{if .ShowWatchers}}
+    <div id="watchers">
+      {{partial "watchers/watchers" (dict "kind" "wiki_page" "id" .Page.ID)}}
+    </div>
+  {{end}}
+{{end}}
+{{content_for "sidebar" (capture "wiki/show#sidebar")}}
+
+{{define "wiki/show#header_tags"}}
+  {{if not .CurrentVersion}}{{robot_exclusion_tag}}{{end}}
+{{end}}
+{{content_for "header_tags" (capture "wiki/show#header_tags")}}
+
+{{html_title $page.PrettyTitle}}

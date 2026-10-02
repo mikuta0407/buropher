@@ -1,0 +1,6 @@
+status: 200
+content-type: text/javascript
+
+  $("#member-1-form").empty();
+  $("#member-1-roles").html("Manager, Developer").show();
+  $("#member-1").effect("highlight");

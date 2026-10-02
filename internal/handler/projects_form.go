@@ -358,7 +358,7 @@ func (a *App) assignProject(c *Req, f *projectForm, attrs *httpx.Params) error {
 			if err != nil {
 				return err
 			}
-			assignCustomFieldValues(vis, attrs.Map(key))
+			assignProjectCFValues(vis, attrs.Map(key))
 			f.cfChanged = true
 		}
 	}
@@ -384,7 +384,7 @@ func (a *App) validateProject(c *Req, f *projectForm) error {
 		if err != nil {
 			return err
 		}
-		validateCustomFieldValues(f.errs, vis, c.L)
+		validateProjectCFValues(f.errs, vis, c.L)
 	}
 	if strings.TrimSpace(p.Name) == "" {
 		f.errs.Add("name", "blank", nil)
@@ -442,13 +442,6 @@ func (a *App) validateProject(c *Req, f *projectForm) error {
 		}
 	}
 	return nil
-}
-
-func sameIDPtr(a, b *int64) bool {
-	if a == nil || b == nil {
-		return a == nil && b == nil
-	}
-	return *a == *b
 }
 
 // saveProject は @project.save（作成時は閉包・モジュール・トラッカー・CF・継承メンバーも保存）。

@@ -328,10 +328,6 @@ func ProjectEnabledModules(ctx context.Context, q db.Queryer, projectID int64) (
 	return out, nil
 }
 
-// MemberOfMemberRole は member_roles.id のメンバー（継承元の判定に使う）。
-func MemberOfMemberRole(ctx context.Context, q db.Queryer, memberRoleID int64) (*domain.Member, error) {
-	return oneMember(loadMembers(ctx, q, `m.id IN (SELECT member_id FROM member_roles WHERE id = ?)`, memberRoleID))
-}
 
 // ReapplyInheritedMemberRoles は remove_inherited_member_roles + add_inherited_member_roles。
 // Redmine は新規作成時（parent_id と inherit_members の両方が変化）に update_inherited_members と

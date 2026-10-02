@@ -480,15 +480,6 @@ func adminProjectsPath(c *Req) string {
 	return "/admin/projects"
 }
 
-// redirectToRefererOr は redirect_to_referer_or(default)。
-func (c *Req) redirectToRefererOr(def string) {
-	if ref := c.R.Header.Get("Referer"); ref != "" {
-		c.Redirect(ref)
-		return
-	}
-	c.Redirect(def)
-}
-
 // ProjectsArchive は projects#archive。
 func (a *App) ProjectsArchive(c *Req) {
 	var ok bool

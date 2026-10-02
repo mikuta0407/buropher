@@ -1,0 +1,1293 @@
+status: 200
+content-type: text/html
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Workflow - Redmine</title>
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta content="Redmine" name="description">
+    <meta content="issue,bug,tracker" name="keywords">
+    <meta content="authenticity_token" name="csrf-param">
+    <meta content="{{CSRF}}" name="csrf-token">
+    <link href="/assets/favicon-DIGEST.ico" rel="shortcut icon" type="image/x-icon">
+    <link href="/assets/jquery/jquery-ui-1.13.2-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/tribute-5.1.3-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/application-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/responsive-DIGEST.css" media="all" rel="stylesheet">
+    <script data-turbo-track="reload" type="importmap">{
+  "imports": {
+    "@rails/request.js": "/assets/requestjs-DIGEST.js",
+    "application": "/assets/application-DIGEST.js",
+    "@hotwired/stimulus": "/assets/stimulus.min-DIGEST.js",
+    "@hotwired/stimulus-loading": "/assets/stimulus-loading-DIGEST.js",
+    "turndown": "/assets/turndown-DIGEST.js",
+    "controllers/api_key_copy_controller": "/assets/controllers/api_key_copy_controller-DIGEST.js",
+    "controllers/application": "/assets/controllers/application-DIGEST.js",
+    "controllers": "/assets/controllers/index-DIGEST.js",
+    "controllers/list_autofill_controller": "/assets/controllers/list_autofill_controller-DIGEST.js",
+    "controllers/quote_reply_controller": "/assets/controllers/quote_reply_controller-DIGEST.js",
+    "controllers/sticky_issue_header_controller": "/assets/controllers/sticky_issue_header_controller-DIGEST.js"
+  }
+}</script>
+    <link href="/assets/requestjs-DIGEST.js" rel="modulepreload">
+    <link href="/assets/application-DIGEST.js" rel="modulepreload">
+    <link href="/assets/stimulus.min-DIGEST.js" rel="modulepreload">
+    <link href="/assets/stimulus-loading-DIGEST.js" rel="modulepreload">
+    <link href="/assets/turndown-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/api_key_copy_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/application-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/index-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/list_autofill_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/quote_reply_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/sticky_issue_header_controller-DIGEST.js" rel="modulepreload">
+    <script type="module">import "application"</script>
+    <script src="/assets/jquery-3.7.1-ui-1.13.3-DIGEST.js"></script>
+    <script src="/assets/rails-ujs-DIGEST.js"></script>
+    <script src="/assets/tribute-5.1.3.min-DIGEST.js"></script>
+    <script src="/assets/application-legacy-DIGEST.js"></script>
+    <script src="/assets/responsive-DIGEST.js"></script>
+    <script>//<![CDATA[
+$(window).on('load', function(){ warnLeavingUnsaved('The current page contains unsaved text that will be lost if you leave this page.'); });
+//]]></script>
+    <script>//<![CDATA[
+rm = window.rm || {};rm.I18n = rm.I18n || {};rm.I18n = Object.freeze({buttonCopy: 'Copy'});
+//]]></script>
+    <script>//<![CDATA[
+rm = window.rm || {};rm.AutoComplete = rm.AutoComplete || {};rm.AutoComplete.dataSources = JSON.parse('{"issues":"/issues/auto_complete?q=","wiki_pages":"/wiki_pages/auto_complete?q="}');
+//]]></script>
+  </head>
+  <body class="controller-workflows action-edit avatars-off" data-text-formatting="common_mark">
+    <div id="wrapper">
+      <div class="flyout-menu js-flyout-menu">
+        <div class="flyout-menu__search">
+          <form accept-charset="UTF-8" action="/search" method="get" name="form-RANDOM">
+            <label class="search-magnifier search-magnifier--flyout" for="flyout-search">
+              <svg aria-hidden="true" class="s18 icon-svg">
+                <use href="/assets/icons-DIGEST.svg#icon--search"></use>
+              </svg>
+              <span class="icon-label hidden">Search</span>
+            </label>
+            <input class="small js-search-input" id="flyout-search" name="q" placeholder="Search" type="text">
+          </form>
+        </div>
+        <div class="flyout-menu__avatar">
+          <a href="/users/1">
+            <span class="avatar-color-1 s40 avatar" role="img">RA</span>
+          </a>
+          <a class="user active" href="/users/1">admin</a>
+        </div>
+        <h3>General</h3>
+        <span class="js-general-menu"></span>
+        <span class="js-sidebar flyout-menu__sidebar"></span>
+        <h3>Profile</h3>
+        <span class="js-profile-menu"></span>
+      </div>
+      <div id="top-menu">
+        <div id="account">
+          <ul>
+            <li>
+              <a class="my-account" href="/my/account">My account</a>
+            </li>
+            <li>
+              <a class="logout" data-method="post" href="/logout" rel="nofollow">Sign out</a>
+            </li>
+          </ul>
+        </div>
+        <div id="loggedas">
+          Logged in as
+          <a class="user active" href="/users/1">admin</a>
+        </div>
+        <ul>
+          <li>
+            <a class="home" href="/">Home</a>
+          </li>
+          <li>
+            <a class="my-page" href="/my/page">My page</a>
+          </li>
+          <li>
+            <a class="projects" href="/projects">Projects</a>
+          </li>
+          <li>
+            <a class="administration" href="/admin">Administration</a>
+          </li>
+          <li>
+            <a class="help" href="https://www.redmine.org/guide" rel="noopener" target="_blank">Help</a>
+          </li>
+        </ul>
+      </div>
+      <div id="header">
+        <a class="mobile-toggle-button js-flyout-menu-toggle-button" href="#"></a>
+        <div id="quick-search">
+          <form accept-charset="UTF-8" action="/search" method="get" name="form-RANDOM">
+            <input autocomplete="off" name="scope" type="hidden">
+            <label for="q">
+              <a accesskey="4" href="/search">Search</a>
+              :
+            </label>
+            <input accesskey="f" class="small" data-auto-complete="true" id="q" name="q" size="20" type="text">
+          </form>
+          <div class="drdn" id="project-jump">
+            <span class="drdn-trigger">Jump to a project...</span>
+            <div class="drdn-content">
+              <div class="quick-search">
+                <svg aria-hidden="true" class="s18 icon-svg">
+                  <use href="/assets/icons-DIGEST.svg#icon--search"></use>
+                </svg>
+                <input autocomplete="off" class="autocomplete" data-automcomplete-url="/projects/autocomplete.js?jump=workflows" id="projects-quick-search" name="q" type="text" value="">
+              </div>
+              <div class="drdn-items projects selection">
+                <strong>Bookmarks</strong>
+                <a href="/projects/ecookbook?jump=workflows" title="eCookbook">
+                  <span style="padding-inline-start:0px;">eCookbook</span>
+                </a>
+                <a href="/projects/private-child?jump=workflows" title="Private child of eCookbook">
+                  <span style="padding-inline-start:16px;">Private child of eCookbook</span>
+                </a>
+                <strong>All Projects</strong>
+                <a href="/projects/private-child?jump=workflows" title="Private child of eCookbook">
+                  <span style="padding-inline-start:0px;">Private child of eCookbook</span>
+                </a>
+              </div>
+              <div class="drdn-items all-projects selection">
+                <a href="/projects?jump=workflows">All Projects</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <h1>Redmine</h1>
+      </div>
+      <div class="collapsiblesidebar" id="main">
+        <script>//<![CDATA[
+$('#main.collapsiblesidebar').collapsibleSidebar();
+//]]></script>
+        <div id="sidebar">
+          <div id="sidebar-switch-panel" style="visibility: hidden;">
+            <a class="" href="#" id="sidebar-switch-button">
+              <svg aria-hidden="true" class="s20 icon-svg icon-rtl">
+                <use href="/assets/icons-DIGEST.svg#icon--chevrons-right"></use>
+              </svg>
+            </a>
+          </div>
+          <script>//<![CDATA[
+$('#sidebar-switch-panel').css('visibility', 'visible');
+//]]></script>
+          <div id="sidebar-wrapper">
+            <h3>Administration</h3>
+            <div id="admin-menu">
+              <ul>
+                <li>
+                  <a class="icon icon-projects projects" href="/admin/projects">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--projects"></use>
+                    </svg>
+                    <span class="icon-label">Projects</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-user users" href="/users">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--user"></use>
+                    </svg>
+                    <span class="icon-label">Users</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-group groups" href="/groups">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--group"></use>
+                    </svg>
+                    <span class="icon-label">Groups</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-roles roles" href="/roles">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--roles"></use>
+                    </svg>
+                    <span class="icon-label">Roles and permissions</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-issue trackers" href="/trackers">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--issue"></use>
+                    </svg>
+                    <span class="icon-label">Trackers</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-issue-edit issue-statuses" href="/issue_statuses">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--issue-edit"></use>
+                    </svg>
+                    <span class="icon-label">Issue statuses</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-workflows workflows selected" href="/workflows/edit">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--workflows"></use>
+                    </svg>
+                    <span class="icon-label">Workflow</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-custom-fields custom-fields" href="/custom_fields">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--custom-fields"></use>
+                    </svg>
+                    <span class="icon-label">Custom fields</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-list enumerations" href="/enumerations">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--list"></use>
+                    </svg>
+                    <span class="icon-label">Enumerations</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-settings settings" href="/settings">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--settings"></use>
+                    </svg>
+                    <span class="icon-label">Settings</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-server-authentication ldap-authentication" href="/auth_sources">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--server-authentication"></use>
+                    </svg>
+                    <span class="icon-label">LDAP authentication</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-applications applications" href="/oauth/applications">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--apps"></use>
+                    </svg>
+                    <span class="icon-label">Applications</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-plugins plugins" href="/admin/plugins">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--plugins"></use>
+                    </svg>
+                    <span class="icon-label">Plugins</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-help info" href="/admin/info">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--help"></use>
+                    </svg>
+                    <span class="icon-label">Information</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div id="content">
+          <div class="flash notice" id="flash_notice">
+            <svg aria-hidden="true" class="s18 icon-svg">
+              <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+            </svg>
+            Successful update.
+          </div>
+          <div class="contextual">
+            <a class="icon icon-copy" href="/workflows/copy">
+              <svg aria-hidden="true" class="s18 icon-svg">
+                <use href="/assets/icons-DIGEST.svg#icon--copy"></use>
+              </svg>
+              <span class="icon-label">Copy</span>
+            </a>
+            <a class="icon icon-summary" href="/workflows">
+              <svg aria-hidden="true" class="s18 icon-svg">
+                <use href="/assets/icons-DIGEST.svg#icon--summary"></use>
+              </svg>
+              <span class="icon-label">Summary</span>
+            </a>
+          </div>
+          <h2>Workflow</h2>
+          <div class="tabs">
+            <ul>
+              <li>
+                <a class="selected" href="/workflows/edit?role_id%5B%5D=1&amp;tracker_id%5B%5D=1">Status transitions</a>
+              </li>
+              <li>
+                <a href="/workflows/permissions?role_id%5B%5D=1&amp;tracker_id%5B%5D=1">Fields permissions</a>
+              </li>
+            </ul>
+          </div>
+          <p>Select a role and a tracker to edit the workflow:</p>
+          <form accept-charset="UTF-8" action="/workflows/edit" method="get" name="form-RANDOM">
+            <p>
+              <label>
+                Role:
+                <select class="expandable" id="role_id" name="role_id[]">
+                  <option value="all">all</option>
+                  <option selected="selected" value="1">Manager</option>
+                  <option value="2">Developer</option>
+                  <option value="3">Reporter</option>
+                  <option value="4">Non member</option>
+                </select>
+                <span class="toggle-multiselect icon-only">
+                  <svg aria-hidden="true" class="s18 icon-svg">
+                    <use href="/assets/icons-DIGEST.svg#icon--"></use>
+                  </svg>
+                </span>
+              </label>
+              <label>
+                Tracker:
+                <select class="expandable" id="tracker_id" name="tracker_id[]">
+                  <option value="all">all</option>
+                  <option selected="selected" value="1">Bug</option>
+                  <option value="2">Feature request</option>
+                  <option value="3">Support request</option>
+                </select>
+                <span class="toggle-multiselect icon-only">
+                  <svg aria-hidden="true" class="s18 icon-svg">
+                    <use href="/assets/icons-DIGEST.svg#icon--"></use>
+                  </svg>
+                </span>
+              </label>
+              <input data-disable-with="Edit" type="submit" value="Edit">
+              <input autocomplete="off" name="used_statuses_only" type="hidden" value="0">
+              <label>
+                <input id="used_statuses_only" name="used_statuses_only" type="checkbox" value="1">
+                Only display statuses that are used by this tracker
+              </label>
+            </p>
+          </form>
+          <form accept-charset="UTF-8" action="/workflows/update" id="workflow_form" method="post" name="workflow_form-RANDOM">
+            <input autocomplete="off" name="_method" type="hidden" value="patch">
+            <input autocomplete="off" name="authenticity_token" type="hidden" value="{{CSRF}}">
+            <input autocomplete="off" name="tracker_id[]" type="hidden" value="1">
+            <input autocomplete="off" name="role_id[]" type="hidden" value="1">
+            <input autocomplete="off" name="used_statuses_only" type="hidden" value="0">
+            <div class="autoscroll">
+              <table class="list workflows transitions transitions-always">
+                <thead>
+                  <tr>
+                    <th>
+                      <a class="icon icon-checked no-tooltip" href="#" onclick="toggleCheckboxesBySelector(&#39;table.transitions-always input[type=checkbox]:not(:disabled)&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Current status
+                    </th>
+                    <th colspan="6">New statuses allowed</th>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td style="width:12%;">
+                      <a class="icon icon-checked no-tooltip" href="#" onclick="toggleCheckboxesBySelector(&#39;table.transitions-always input[type=checkbox]:not(:disabled).new-status-1&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      New
+                    </td>
+                    <td style="width:12%;">
+                      <a class="icon icon-checked no-tooltip" href="#" onclick="toggleCheckboxesBySelector(&#39;table.transitions-always input[type=checkbox]:not(:disabled).new-status-2&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Assigned
+                    </td>
+                    <td style="width:12%;">
+                      <a class="icon icon-checked no-tooltip" href="#" onclick="toggleCheckboxesBySelector(&#39;table.transitions-always input[type=checkbox]:not(:disabled).new-status-3&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Resolved
+                    </td>
+                    <td style="width:12%;">
+                      <a class="icon icon-checked no-tooltip" href="#" onclick="toggleCheckboxesBySelector(&#39;table.transitions-always input[type=checkbox]:not(:disabled).new-status-4&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Feedback
+                    </td>
+                    <td style="width:12%;">
+                      <a class="icon icon-checked no-tooltip" href="#" onclick="toggleCheckboxesBySelector(&#39;table.transitions-always input[type=checkbox]:not(:disabled).new-status-5&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Closed
+                    </td>
+                    <td style="width:12%;">
+                      <a class="icon icon-checked no-tooltip" href="#" onclick="toggleCheckboxesBySelector(&#39;table.transitions-always input[type=checkbox]:not(:disabled).new-status-6&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Rejected
+                    </td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="name">
+                      <a class="icon icon-checked no-tooltip" href="#" onclick="toggleCheckboxesBySelector(&#39;table.transitions-always input[type=checkbox]:not(:disabled).old-status-0&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      <em>New issue</em>
+                    </td>
+                    <td class="no-tooltip enabled" title="New issue » New">
+                      <input autocomplete="off" name="transitions[0][1][always]" type="hidden" value="0">
+                      <input checked="checked" class="old-status-0 new-status-1" id="transitions_0_1_always" name="transitions[0][1][always]" type="checkbox" value="1">
+                    </td>
+                    <td class="no-tooltip enabled" title="New issue » Assigned">
+                      <input autocomplete="off" name="transitions[0][2][always]" type="hidden" value="0">
+                      <input checked="checked" class="old-status-0 new-status-2" id="transitions_0_2_always" name="transitions[0][2][always]" type="checkbox" value="1">
+                    </td>
+                    <td class="no-tooltip" title="New issue » Resolved">
+                      <input autocomplete="off" name="transitions[0][3][always]" type="hidden" value="0">
+                      <input class="old-status-0 new-status-3" id="transitions_0_3_always" name="transitions[0][3][always]" type="checkbox" value="1">
+                    </td>
+                    <td class="no-tooltip" title="New issue » Feedback">
+                      <input autocomplete="off" name="transitions[0][4][always]" type="hidden" value="0">
+                      <input class="old-status-0 new-status-4" id="transitions_0_4_always" name="transitions[0][4][always]" type="checkbox" value="1">
+                    </td>
+                    <td class="no-tooltip" title="New issue » Closed">
+                      <input autocomplete="off" name="transitions[0][5][always]" type="hidden" value="0">
+                      <input class="old-status-0 new-status-5" id="transitions_0_5_always" name="transitions[0][5][always]" type="checkbox" value="1">
+                    </td>
+                    <td class="no-tooltip" title="New issue » Rejected">
+                      <input autocomplete="off" name="transitions[0][6][always]" type="hidden" value="0">
+                      <input class="old-status-0 new-status-6" id="transitions_0_6_always" name="transitions[0][6][always]" type="checkbox" value="1">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="name">
+                      <a class="icon icon-checked no-tooltip" href="#" onclick="toggleCheckboxesBySelector(&#39;table.transitions-always input[type=checkbox]:not(:disabled).old-status-1&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      New
+                    </td>
+                    <td class="no-tooltip enabled" title="New » New">
+                      <input checked="checked" class="old-status-1 new-status-1" disabled="disabled" id="transitions_1_1_always" name="transitions[1][1][always]" type="checkbox" value="1">
+                    </td>
+                    <td class="no-tooltip enabled" title="New » Assigned">
+                      <input autocomplete="off" name="transitions[1][2][always]" type="hidden" value="0">
+                      <input checked="checked" class="old-status-1 new-status-2" id="transitions_1_2_always" name="transitions[1][2][always]" type="checkbox" value="1">
+                    </td>
+                    <td class="no-tooltip enabled" title="New » Resolved">
+                      <input autocomplete="off" name="transitions[1][3][always]" type="hidden" value="0">
+                      <input checked="checked" class="old-status-1 new-status-3" id="transitions_1_3_always" name="transitions[1][3][always]" type="checkbox" value="1">
+                    </td>
+                    <td class="no-tooltip enabled" title="New » Feedback">
+                      <input autocomplete="off" name="transitions[1][4][always]" type="hidden" value="0">
+                      <input checked="checked" class="old-status-1 new-status-4" id="transitions_1_4_always" name="transitions[1][4][always]" type="checkbox" value="1">
+                    </td>
+                    <td class="no-tooltip" title="New » Closed">
+                      <input autocomplete="off" name="transitions[1][5][always]" type="hidden" value="0">
+                      <input class="old-status-1 new-status-5" id="transitions_1_5_always" name="transitions[1][5][always]" type="checkbox" value="1">
+                    </td>
+                    <td class="no-tooltip enabled" title="New » Rejected">
+                      <input autocomplete="off" name="transitions[1][6][always]" type="hidden" value="0">
+                      <input checked="checked" class="old-status-1 new-status-6" id="transitions_1_6_always" name="transitions[1][6][always]" type="checkbox" value="1">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="name">
+                      <a class="icon icon-checked no-tooltip" href="#" onclick="toggleCheckboxesBySelector(&#39;table.transitions-always input[type=checkbox]:not(:disabled).old-status-2&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Assigned
+                    </td>
+                    <td class="no-tooltip enabled" title="Assigned » New">
+                      <input autocomplete="off" name="transitions[2][1][always]" type="hidden" value="0">
+                      <input checked="checked" class="old-status-2 new-status-1" id="transitions_2_1_always" name="transitions[2][1][always]" type="checkbox" value="1">
+                    </td>
+                    <td class="no-tooltip enabled" title="Assigned » Assigned">
+                      <input checked="checked" class="old-status-2 new-status-2" disabled="disabled" id="transitions_2_2_always" name="transitions[2][2][always]" type="checkbox" value="1">
+                    </td>
+                    <td class="no-tooltip enabled" title="Assigned » Resolved">
+                      <input autocomplete="off" name="transitions[2][3][always]" type="hidden" value="0">
+                      <input checked="checked" class="old-status-2 new-status-3" id="transitions_2_3_always" name="transitions[2][3][always]" type="checkbox" value="1">
+                    </td>
+                    <td class="no-tooltip enabled" title="Assigned » Feedback">
+                      <input autocomplete="off" name="transitions[2][4][always]" type="hidden" value="0">
+                      <input checked="checked" class="old-status-2 new-status-4" id="transitions_2_4_always" name="transitions[2][4][always]" type="checkbox" value="1">
+                    </td>
+                    <td class="no-tooltip enabled" title="Assigned » Closed">
+                      <input autocomplete="off" name="transitions[2][5][always]" type="hidden" value="0">
+                      <input checked="checked" class="old-status-2 new-status-5" id="transitions_2_5_always" name="transitions[2][5][always]" type="checkbox" value="1">
+                    </td>
+                    <td class="no-tooltip enabled" title="Assigned » Rejected">
+                      <input autocomplete="off" name="transitions[2][6][always]" type="hidden" value="0">
+                      <input checked="checked" class="old-status-2 new-status-6" id="transitions_2_6_always" name="transitions[2][6][always]" type="checkbox" value="1">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="name">
+                      <a class="icon icon-checked no-tooltip" href="#" onclick="toggleCheckboxesBySelector(&#39;table.transitions-always input[type=checkbox]:not(:disabled).old-status-3&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Resolved
+                    </td>
+                    <td class="no-tooltip enabled" title="Resolved » New">
+                      <input autocomplete="off" name="transitions[3][1][always]" type="hidden" value="0">
+                      <input checked="checked" class="old-status-3 new-status-1" id="transitions_3_1_always" name="transitions[3][1][always]" type="checkbox" value="1">
+                    </td>
+                    <td class="no-tooltip enabled" title="Resolved » Assigned">
+                      <input autocomplete="off" name="transitions[3][2][always]" type="hidden" value="0">
+                      <input checked="checked" class="old-status-3 new-status-2" id="transitions_3_2_always" name="transitions[3][2][always]" type="checkbox" value="1">
+                    </td>
+                    <td class="no-tooltip enabled" title="Resolved » Resolved">
+                      <input checked="checked" class="old-status-3 new-status-3" disabled="disabled" id="transitions_3_3_always" name="transitions[3][3][always]" type="checkbox" value="1">
+                    </td>
+                    <td class="no-tooltip enabled" title="Resolved » Feedback">
+                      <input autocomplete="off" name="transitions[3][4][always]" type="hidden" value="0">
+                      <input checked="checked" class="old-status-3 new-status-4" id="transitions_3_4_always" name="transitions[3][4][always]" type="checkbox" value="1">
+                    </td>
+                    <td class="no-tooltip enabled" title="Resolved » Closed">
+                      <input autocomplete="off" name="transitions[3][5][always]" type="hidden" value="0">
+                      <input checked="checked" class="old-status-3 new-status-5" id="transitions_3_5_always" name="transitions[3][5][always]" type="checkbox" value="1">
+                    </td>
+                    <td class="no-tooltip enabled" title="Resolved » Rejected">
+                      <input autocomplete="off" name="transitions[3][6][always]" type="hidden" value="0">
+                      <input checked="checked" class="old-status-3 new-status-6" id="transitions_3_6_always" name="transitions[3][6][always]" type="checkbox" value="1">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="name">
+                      <a class="icon icon-checked no-tooltip" href="#" onclick="toggleCheckboxesBySelector(&#39;table.transitions-always input[type=checkbox]:not(:disabled).old-status-4&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Feedback
+                    </td>
+                    <td class="no-tooltip enabled" title="Feedback » New">
+                      <input autocomplete="off" name="transitions[4][1][always]" type="hidden" value="0">
+                      <input checked="checked" class="old-status-4 new-status-1" id="transitions_4_1_always" name="transitions[4][1][always]" type="checkbox" value="1">
+                    </td>
+                    <td class="no-tooltip enabled" title="Feedback » Assigned">
+                      <input autocomplete="off" name="transitions[4][2][always]" type="hidden" value="0">
+                      <input checked="checked" class="old-status-4 new-status-2" id="transitions_4_2_always" name="transitions[4][2][always]" type="checkbox" value="1">
+                    </td>
+                    <td class="no-tooltip enabled" title="Feedback » Resolved">
+                      <input autocomplete="off" name="transitions[4][3][always]" type="hidden" value="0">
+                      <input checked="checked" class="old-status-4 new-status-3" id="transitions_4_3_always" name="transitions[4][3][always]" type="checkbox" value="1">
+                    </td>
+                    <td class="no-tooltip enabled" title="Feedback » Feedback">
+                      <input checked="checked" class="old-status-4 new-status-4" disabled="disabled" id="transitions_4_4_always" name="transitions[4][4][always]" type="checkbox" value="1">
+                    </td>
+                    <td class="no-tooltip enabled" title="Feedback » Closed">
+                      <input autocomplete="off" name="transitions[4][5][always]" type="hidden" value="0">
+                      <input checked="checked" class="old-status-4 new-status-5" id="transitions_4_5_always" name="transitions[4][5][always]" type="checkbox" value="1">
+                    </td>
+                    <td class="no-tooltip enabled" title="Feedback » Rejected">
+                      <input autocomplete="off" name="transitions[4][6][always]" type="hidden" value="0">
+                      <input checked="checked" class="old-status-4 new-status-6" id="transitions_4_6_always" name="transitions[4][6][always]" type="checkbox" value="1">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="name">
+                      <a class="icon icon-checked no-tooltip" href="#" onclick="toggleCheckboxesBySelector(&#39;table.transitions-always input[type=checkbox]:not(:disabled).old-status-5&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Closed
+                    </td>
+                    <td class="no-tooltip enabled" title="Closed » New">
+                      <input autocomplete="off" name="transitions[5][1][always]" type="hidden" value="0">
+                      <input checked="checked" class="old-status-5 new-status-1" id="transitions_5_1_always" name="transitions[5][1][always]" type="checkbox" value="1">
+                    </td>
+                    <td class="no-tooltip enabled" title="Closed » Assigned">
+                      <input autocomplete="off" name="transitions[5][2][always]" type="hidden" value="0">
+                      <input checked="checked" class="old-status-5 new-status-2" id="transitions_5_2_always" name="transitions[5][2][always]" type="checkbox" value="1">
+                    </td>
+                    <td class="no-tooltip enabled" title="Closed » Resolved">
+                      <input autocomplete="off" name="transitions[5][3][always]" type="hidden" value="0">
+                      <input checked="checked" class="old-status-5 new-status-3" id="transitions_5_3_always" name="transitions[5][3][always]" type="checkbox" value="1">
+                    </td>
+                    <td class="no-tooltip enabled" title="Closed » Feedback">
+                      <input autocomplete="off" name="transitions[5][4][always]" type="hidden" value="0">
+                      <input checked="checked" class="old-status-5 new-status-4" id="transitions_5_4_always" name="transitions[5][4][always]" type="checkbox" value="1">
+                    </td>
+                    <td class="no-tooltip enabled" title="Closed » Closed">
+                      <input checked="checked" class="old-status-5 new-status-5" disabled="disabled" id="transitions_5_5_always" name="transitions[5][5][always]" type="checkbox" value="1">
+                    </td>
+                    <td class="no-tooltip enabled" title="Closed » Rejected">
+                      <input autocomplete="off" name="transitions[5][6][always]" type="hidden" value="0">
+                      <input checked="checked" class="old-status-5 new-status-6" id="transitions_5_6_always" name="transitions[5][6][always]" type="checkbox" value="1">
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="name">
+                      <a class="icon icon-checked no-tooltip" href="#" onclick="toggleCheckboxesBySelector(&#39;table.transitions-always input[type=checkbox]:not(:disabled).old-status-6&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Rejected
+                    </td>
+                    <td class="no-tooltip enabled" title="Rejected » New">
+                      <input autocomplete="off" name="transitions[6][1][always]" type="hidden" value="0">
+                      <input checked="checked" class="old-status-6 new-status-1" id="transitions_6_1_always" name="transitions[6][1][always]" type="checkbox" value="1">
+                    </td>
+                    <td class="no-tooltip enabled" title="Rejected » Assigned">
+                      <input autocomplete="off" name="transitions[6][2][always]" type="hidden" value="0">
+                      <input checked="checked" class="old-status-6 new-status-2" id="transitions_6_2_always" name="transitions[6][2][always]" type="checkbox" value="1">
+                    </td>
+                    <td class="no-tooltip enabled" title="Rejected » Resolved">
+                      <input autocomplete="off" name="transitions[6][3][always]" type="hidden" value="0">
+                      <input checked="checked" class="old-status-6 new-status-3" id="transitions_6_3_always" name="transitions[6][3][always]" type="checkbox" value="1">
+                    </td>
+                    <td class="no-tooltip enabled" title="Rejected » Feedback">
+                      <input autocomplete="off" name="transitions[6][4][always]" type="hidden" value="0">
+                      <input checked="checked" class="old-status-6 new-status-4" id="transitions_6_4_always" name="transitions[6][4][always]" type="checkbox" value="1">
+                    </td>
+                    <td class="no-tooltip enabled" title="Rejected » Closed">
+                      <input autocomplete="off" name="transitions[6][5][always]" type="hidden" value="0">
+                      <input checked="checked" class="old-status-6 new-status-5" id="transitions_6_5_always" name="transitions[6][5][always]" type="checkbox" value="1">
+                    </td>
+                    <td class="no-tooltip enabled" title="Rejected » Rejected">
+                      <input checked="checked" class="old-status-6 new-status-6" disabled="disabled" id="transitions_6_6_always" name="transitions[6][6][always]" type="checkbox" value="1">
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <fieldset class="collapsible" style="padding: 0; margin-top: 0.5em;">
+                <legend class="icon icon-collapsed" onclick="toggleFieldset(this);">
+                  <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
+                    <use href="/assets/icons-DIGEST.svg#icon--angle-right"></use>
+                  </svg>
+                  Additional transitions allowed when the user is the author
+                </legend>
+                <div id="author_workflows" style="margin: 0.5em 0 0.5em 0;">
+                  <table class="list workflows transitions transitions-author">
+                    <thead>
+                      <tr>
+                        <th>
+                          <a class="icon icon-checked no-tooltip" href="#" onclick="toggleCheckboxesBySelector(&#39;table.transitions-author input[type=checkbox]:not(:disabled)&#39;); return false;" title="Check all / Uncheck all">
+                            <svg aria-hidden="true" class="s18 icon-svg">
+                              <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                            </svg>
+                            <span class="icon-label"></span>
+                          </a>
+                          Current status
+                        </th>
+                        <th colspan="6">New statuses allowed</th>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td style="width:12%;">
+                          <a class="icon icon-checked no-tooltip" href="#" onclick="toggleCheckboxesBySelector(&#39;table.transitions-author input[type=checkbox]:not(:disabled).new-status-1&#39;); return false;" title="Check all / Uncheck all">
+                            <svg aria-hidden="true" class="s18 icon-svg">
+                              <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                            </svg>
+                            <span class="icon-label"></span>
+                          </a>
+                          New
+                        </td>
+                        <td style="width:12%;">
+                          <a class="icon icon-checked no-tooltip" href="#" onclick="toggleCheckboxesBySelector(&#39;table.transitions-author input[type=checkbox]:not(:disabled).new-status-2&#39;); return false;" title="Check all / Uncheck all">
+                            <svg aria-hidden="true" class="s18 icon-svg">
+                              <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                            </svg>
+                            <span class="icon-label"></span>
+                          </a>
+                          Assigned
+                        </td>
+                        <td style="width:12%;">
+                          <a class="icon icon-checked no-tooltip" href="#" onclick="toggleCheckboxesBySelector(&#39;table.transitions-author input[type=checkbox]:not(:disabled).new-status-3&#39;); return false;" title="Check all / Uncheck all">
+                            <svg aria-hidden="true" class="s18 icon-svg">
+                              <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                            </svg>
+                            <span class="icon-label"></span>
+                          </a>
+                          Resolved
+                        </td>
+                        <td style="width:12%;">
+                          <a class="icon icon-checked no-tooltip" href="#" onclick="toggleCheckboxesBySelector(&#39;table.transitions-author input[type=checkbox]:not(:disabled).new-status-4&#39;); return false;" title="Check all / Uncheck all">
+                            <svg aria-hidden="true" class="s18 icon-svg">
+                              <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                            </svg>
+                            <span class="icon-label"></span>
+                          </a>
+                          Feedback
+                        </td>
+                        <td style="width:12%;">
+                          <a class="icon icon-checked no-tooltip" href="#" onclick="toggleCheckboxesBySelector(&#39;table.transitions-author input[type=checkbox]:not(:disabled).new-status-5&#39;); return false;" title="Check all / Uncheck all">
+                            <svg aria-hidden="true" class="s18 icon-svg">
+                              <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                            </svg>
+                            <span class="icon-label"></span>
+                          </a>
+                          Closed
+                        </td>
+                        <td style="width:12%;">
+                          <a class="icon icon-checked no-tooltip" href="#" onclick="toggleCheckboxesBySelector(&#39;table.transitions-author input[type=checkbox]:not(:disabled).new-status-6&#39;); return false;" title="Check all / Uncheck all">
+                            <svg aria-hidden="true" class="s18 icon-svg">
+                              <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                            </svg>
+                            <span class="icon-label"></span>
+                          </a>
+                          Rejected
+                        </td>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="name">
+                          <a class="icon icon-checked no-tooltip" href="#" onclick="toggleCheckboxesBySelector(&#39;table.transitions-author input[type=checkbox]:not(:disabled).old-status-1&#39;); return false;" title="Check all / Uncheck all">
+                            <svg aria-hidden="true" class="s18 icon-svg">
+                              <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                            </svg>
+                            <span class="icon-label"></span>
+                          </a>
+                          New
+                        </td>
+                        <td class="no-tooltip enabled" title="New » New">
+                          <input checked="checked" class="old-status-1 new-status-1" disabled="disabled" id="transitions_1_1_author" name="transitions[1][1][author]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip" title="New » Assigned">
+                          <input autocomplete="off" name="transitions[1][2][author]" type="hidden" value="0">
+                          <input class="old-status-1 new-status-2" id="transitions_1_2_author" name="transitions[1][2][author]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip" title="New » Resolved">
+                          <input autocomplete="off" name="transitions[1][3][author]" type="hidden" value="0">
+                          <input class="old-status-1 new-status-3" id="transitions_1_3_author" name="transitions[1][3][author]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip" title="New » Feedback">
+                          <input autocomplete="off" name="transitions[1][4][author]" type="hidden" value="0">
+                          <input class="old-status-1 new-status-4" id="transitions_1_4_author" name="transitions[1][4][author]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip" title="New » Closed">
+                          <input autocomplete="off" name="transitions[1][5][author]" type="hidden" value="0">
+                          <input class="old-status-1 new-status-5" id="transitions_1_5_author" name="transitions[1][5][author]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip" title="New » Rejected">
+                          <input autocomplete="off" name="transitions[1][6][author]" type="hidden" value="0">
+                          <input class="old-status-1 new-status-6" id="transitions_1_6_author" name="transitions[1][6][author]" type="checkbox" value="1">
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="name">
+                          <a class="icon icon-checked no-tooltip" href="#" onclick="toggleCheckboxesBySelector(&#39;table.transitions-author input[type=checkbox]:not(:disabled).old-status-2&#39;); return false;" title="Check all / Uncheck all">
+                            <svg aria-hidden="true" class="s18 icon-svg">
+                              <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                            </svg>
+                            <span class="icon-label"></span>
+                          </a>
+                          Assigned
+                        </td>
+                        <td class="no-tooltip" title="Assigned » New">
+                          <input autocomplete="off" name="transitions[2][1][author]" type="hidden" value="0">
+                          <input class="old-status-2 new-status-1" id="transitions_2_1_author" name="transitions[2][1][author]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip enabled" title="Assigned » Assigned">
+                          <input checked="checked" class="old-status-2 new-status-2" disabled="disabled" id="transitions_2_2_author" name="transitions[2][2][author]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip" title="Assigned » Resolved">
+                          <input autocomplete="off" name="transitions[2][3][author]" type="hidden" value="0">
+                          <input class="old-status-2 new-status-3" id="transitions_2_3_author" name="transitions[2][3][author]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip" title="Assigned » Feedback">
+                          <input autocomplete="off" name="transitions[2][4][author]" type="hidden" value="0">
+                          <input class="old-status-2 new-status-4" id="transitions_2_4_author" name="transitions[2][4][author]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip" title="Assigned » Closed">
+                          <input autocomplete="off" name="transitions[2][5][author]" type="hidden" value="0">
+                          <input class="old-status-2 new-status-5" id="transitions_2_5_author" name="transitions[2][5][author]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip" title="Assigned » Rejected">
+                          <input autocomplete="off" name="transitions[2][6][author]" type="hidden" value="0">
+                          <input class="old-status-2 new-status-6" id="transitions_2_6_author" name="transitions[2][6][author]" type="checkbox" value="1">
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="name">
+                          <a class="icon icon-checked no-tooltip" href="#" onclick="toggleCheckboxesBySelector(&#39;table.transitions-author input[type=checkbox]:not(:disabled).old-status-3&#39;); return false;" title="Check all / Uncheck all">
+                            <svg aria-hidden="true" class="s18 icon-svg">
+                              <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                            </svg>
+                            <span class="icon-label"></span>
+                          </a>
+                          Resolved
+                        </td>
+                        <td class="no-tooltip" title="Resolved » New">
+                          <input autocomplete="off" name="transitions[3][1][author]" type="hidden" value="0">
+                          <input class="old-status-3 new-status-1" id="transitions_3_1_author" name="transitions[3][1][author]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip" title="Resolved » Assigned">
+                          <input autocomplete="off" name="transitions[3][2][author]" type="hidden" value="0">
+                          <input class="old-status-3 new-status-2" id="transitions_3_2_author" name="transitions[3][2][author]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip enabled" title="Resolved » Resolved">
+                          <input checked="checked" class="old-status-3 new-status-3" disabled="disabled" id="transitions_3_3_author" name="transitions[3][3][author]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip" title="Resolved » Feedback">
+                          <input autocomplete="off" name="transitions[3][4][author]" type="hidden" value="0">
+                          <input class="old-status-3 new-status-4" id="transitions_3_4_author" name="transitions[3][4][author]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip" title="Resolved » Closed">
+                          <input autocomplete="off" name="transitions[3][5][author]" type="hidden" value="0">
+                          <input class="old-status-3 new-status-5" id="transitions_3_5_author" name="transitions[3][5][author]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip" title="Resolved » Rejected">
+                          <input autocomplete="off" name="transitions[3][6][author]" type="hidden" value="0">
+                          <input class="old-status-3 new-status-6" id="transitions_3_6_author" name="transitions[3][6][author]" type="checkbox" value="1">
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="name">
+                          <a class="icon icon-checked no-tooltip" href="#" onclick="toggleCheckboxesBySelector(&#39;table.transitions-author input[type=checkbox]:not(:disabled).old-status-4&#39;); return false;" title="Check all / Uncheck all">
+                            <svg aria-hidden="true" class="s18 icon-svg">
+                              <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                            </svg>
+                            <span class="icon-label"></span>
+                          </a>
+                          Feedback
+                        </td>
+                        <td class="no-tooltip" title="Feedback » New">
+                          <input autocomplete="off" name="transitions[4][1][author]" type="hidden" value="0">
+                          <input class="old-status-4 new-status-1" id="transitions_4_1_author" name="transitions[4][1][author]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip" title="Feedback » Assigned">
+                          <input autocomplete="off" name="transitions[4][2][author]" type="hidden" value="0">
+                          <input class="old-status-4 new-status-2" id="transitions_4_2_author" name="transitions[4][2][author]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip" title="Feedback » Resolved">
+                          <input autocomplete="off" name="transitions[4][3][author]" type="hidden" value="0">
+                          <input class="old-status-4 new-status-3" id="transitions_4_3_author" name="transitions[4][3][author]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip enabled" title="Feedback » Feedback">
+                          <input checked="checked" class="old-status-4 new-status-4" disabled="disabled" id="transitions_4_4_author" name="transitions[4][4][author]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip" title="Feedback » Closed">
+                          <input autocomplete="off" name="transitions[4][5][author]" type="hidden" value="0">
+                          <input class="old-status-4 new-status-5" id="transitions_4_5_author" name="transitions[4][5][author]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip" title="Feedback » Rejected">
+                          <input autocomplete="off" name="transitions[4][6][author]" type="hidden" value="0">
+                          <input class="old-status-4 new-status-6" id="transitions_4_6_author" name="transitions[4][6][author]" type="checkbox" value="1">
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="name">
+                          <a class="icon icon-checked no-tooltip" href="#" onclick="toggleCheckboxesBySelector(&#39;table.transitions-author input[type=checkbox]:not(:disabled).old-status-5&#39;); return false;" title="Check all / Uncheck all">
+                            <svg aria-hidden="true" class="s18 icon-svg">
+                              <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                            </svg>
+                            <span class="icon-label"></span>
+                          </a>
+                          Closed
+                        </td>
+                        <td class="no-tooltip" title="Closed » New">
+                          <input autocomplete="off" name="transitions[5][1][author]" type="hidden" value="0">
+                          <input class="old-status-5 new-status-1" id="transitions_5_1_author" name="transitions[5][1][author]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip" title="Closed » Assigned">
+                          <input autocomplete="off" name="transitions[5][2][author]" type="hidden" value="0">
+                          <input class="old-status-5 new-status-2" id="transitions_5_2_author" name="transitions[5][2][author]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip" title="Closed » Resolved">
+                          <input autocomplete="off" name="transitions[5][3][author]" type="hidden" value="0">
+                          <input class="old-status-5 new-status-3" id="transitions_5_3_author" name="transitions[5][3][author]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip" title="Closed » Feedback">
+                          <input autocomplete="off" name="transitions[5][4][author]" type="hidden" value="0">
+                          <input class="old-status-5 new-status-4" id="transitions_5_4_author" name="transitions[5][4][author]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip enabled" title="Closed » Closed">
+                          <input checked="checked" class="old-status-5 new-status-5" disabled="disabled" id="transitions_5_5_author" name="transitions[5][5][author]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip" title="Closed » Rejected">
+                          <input autocomplete="off" name="transitions[5][6][author]" type="hidden" value="0">
+                          <input class="old-status-5 new-status-6" id="transitions_5_6_author" name="transitions[5][6][author]" type="checkbox" value="1">
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="name">
+                          <a class="icon icon-checked no-tooltip" href="#" onclick="toggleCheckboxesBySelector(&#39;table.transitions-author input[type=checkbox]:not(:disabled).old-status-6&#39;); return false;" title="Check all / Uncheck all">
+                            <svg aria-hidden="true" class="s18 icon-svg">
+                              <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                            </svg>
+                            <span class="icon-label"></span>
+                          </a>
+                          Rejected
+                        </td>
+                        <td class="no-tooltip" title="Rejected » New">
+                          <input autocomplete="off" name="transitions[6][1][author]" type="hidden" value="0">
+                          <input class="old-status-6 new-status-1" id="transitions_6_1_author" name="transitions[6][1][author]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip" title="Rejected » Assigned">
+                          <input autocomplete="off" name="transitions[6][2][author]" type="hidden" value="0">
+                          <input class="old-status-6 new-status-2" id="transitions_6_2_author" name="transitions[6][2][author]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip" title="Rejected » Resolved">
+                          <input autocomplete="off" name="transitions[6][3][author]" type="hidden" value="0">
+                          <input class="old-status-6 new-status-3" id="transitions_6_3_author" name="transitions[6][3][author]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip" title="Rejected » Feedback">
+                          <input autocomplete="off" name="transitions[6][4][author]" type="hidden" value="0">
+                          <input class="old-status-6 new-status-4" id="transitions_6_4_author" name="transitions[6][4][author]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip" title="Rejected » Closed">
+                          <input autocomplete="off" name="transitions[6][5][author]" type="hidden" value="0">
+                          <input class="old-status-6 new-status-5" id="transitions_6_5_author" name="transitions[6][5][author]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip enabled" title="Rejected » Rejected">
+                          <input checked="checked" class="old-status-6 new-status-6" disabled="disabled" id="transitions_6_6_author" name="transitions[6][6][author]" type="checkbox" value="1">
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </fieldset>
+              <script>//<![CDATA[
+hideFieldset($('#author_workflows'))
+//]]></script>
+              <fieldset class="collapsible" style="padding: 0;">
+                <legend class="icon icon-expanded" onclick="toggleFieldset(this);">
+                  <svg aria-hidden="true" class="s18 icon-svg">
+                    <use href="/assets/icons-DIGEST.svg#icon--angle-down"></use>
+                  </svg>
+                  Additional transitions allowed when the user is the assignee
+                </legend>
+                <div id="assignee_workflows" style="margin: 0.5em 0 0.5em 0;">
+                  <table class="list workflows transitions transitions-assignee">
+                    <thead>
+                      <tr>
+                        <th>
+                          <a class="icon icon-checked no-tooltip" href="#" onclick="toggleCheckboxesBySelector(&#39;table.transitions-assignee input[type=checkbox]:not(:disabled)&#39;); return false;" title="Check all / Uncheck all">
+                            <svg aria-hidden="true" class="s18 icon-svg">
+                              <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                            </svg>
+                            <span class="icon-label"></span>
+                          </a>
+                          Current status
+                        </th>
+                        <th colspan="6">New statuses allowed</th>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td style="width:12%;">
+                          <a class="icon icon-checked no-tooltip" href="#" onclick="toggleCheckboxesBySelector(&#39;table.transitions-assignee input[type=checkbox]:not(:disabled).new-status-1&#39;); return false;" title="Check all / Uncheck all">
+                            <svg aria-hidden="true" class="s18 icon-svg">
+                              <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                            </svg>
+                            <span class="icon-label"></span>
+                          </a>
+                          New
+                        </td>
+                        <td style="width:12%;">
+                          <a class="icon icon-checked no-tooltip" href="#" onclick="toggleCheckboxesBySelector(&#39;table.transitions-assignee input[type=checkbox]:not(:disabled).new-status-2&#39;); return false;" title="Check all / Uncheck all">
+                            <svg aria-hidden="true" class="s18 icon-svg">
+                              <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                            </svg>
+                            <span class="icon-label"></span>
+                          </a>
+                          Assigned
+                        </td>
+                        <td style="width:12%;">
+                          <a class="icon icon-checked no-tooltip" href="#" onclick="toggleCheckboxesBySelector(&#39;table.transitions-assignee input[type=checkbox]:not(:disabled).new-status-3&#39;); return false;" title="Check all / Uncheck all">
+                            <svg aria-hidden="true" class="s18 icon-svg">
+                              <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                            </svg>
+                            <span class="icon-label"></span>
+                          </a>
+                          Resolved
+                        </td>
+                        <td style="width:12%;">
+                          <a class="icon icon-checked no-tooltip" href="#" onclick="toggleCheckboxesBySelector(&#39;table.transitions-assignee input[type=checkbox]:not(:disabled).new-status-4&#39;); return false;" title="Check all / Uncheck all">
+                            <svg aria-hidden="true" class="s18 icon-svg">
+                              <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                            </svg>
+                            <span class="icon-label"></span>
+                          </a>
+                          Feedback
+                        </td>
+                        <td style="width:12%;">
+                          <a class="icon icon-checked no-tooltip" href="#" onclick="toggleCheckboxesBySelector(&#39;table.transitions-assignee input[type=checkbox]:not(:disabled).new-status-5&#39;); return false;" title="Check all / Uncheck all">
+                            <svg aria-hidden="true" class="s18 icon-svg">
+                              <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                            </svg>
+                            <span class="icon-label"></span>
+                          </a>
+                          Closed
+                        </td>
+                        <td style="width:12%;">
+                          <a class="icon icon-checked no-tooltip" href="#" onclick="toggleCheckboxesBySelector(&#39;table.transitions-assignee input[type=checkbox]:not(:disabled).new-status-6&#39;); return false;" title="Check all / Uncheck all">
+                            <svg aria-hidden="true" class="s18 icon-svg">
+                              <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                            </svg>
+                            <span class="icon-label"></span>
+                          </a>
+                          Rejected
+                        </td>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="name">
+                          <a class="icon icon-checked no-tooltip" href="#" onclick="toggleCheckboxesBySelector(&#39;table.transitions-assignee input[type=checkbox]:not(:disabled).old-status-1&#39;); return false;" title="Check all / Uncheck all">
+                            <svg aria-hidden="true" class="s18 icon-svg">
+                              <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                            </svg>
+                            <span class="icon-label"></span>
+                          </a>
+                          New
+                        </td>
+                        <td class="no-tooltip enabled" title="New » New">
+                          <input checked="checked" class="old-status-1 new-status-1" disabled="disabled" id="transitions_1_1_assignee" name="transitions[1][1][assignee]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip" title="New » Assigned">
+                          <input autocomplete="off" name="transitions[1][2][assignee]" type="hidden" value="0">
+                          <input class="old-status-1 new-status-2" id="transitions_1_2_assignee" name="transitions[1][2][assignee]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip" title="New » Resolved">
+                          <input autocomplete="off" name="transitions[1][3][assignee]" type="hidden" value="0">
+                          <input class="old-status-1 new-status-3" id="transitions_1_3_assignee" name="transitions[1][3][assignee]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip" title="New » Feedback">
+                          <input autocomplete="off" name="transitions[1][4][assignee]" type="hidden" value="0">
+                          <input class="old-status-1 new-status-4" id="transitions_1_4_assignee" name="transitions[1][4][assignee]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip" title="New » Closed">
+                          <input autocomplete="off" name="transitions[1][5][assignee]" type="hidden" value="0">
+                          <input class="old-status-1 new-status-5" id="transitions_1_5_assignee" name="transitions[1][5][assignee]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip" title="New » Rejected">
+                          <input autocomplete="off" name="transitions[1][6][assignee]" type="hidden" value="0">
+                          <input class="old-status-1 new-status-6" id="transitions_1_6_assignee" name="transitions[1][6][assignee]" type="checkbox" value="1">
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="name">
+                          <a class="icon icon-checked no-tooltip" href="#" onclick="toggleCheckboxesBySelector(&#39;table.transitions-assignee input[type=checkbox]:not(:disabled).old-status-2&#39;); return false;" title="Check all / Uncheck all">
+                            <svg aria-hidden="true" class="s18 icon-svg">
+                              <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                            </svg>
+                            <span class="icon-label"></span>
+                          </a>
+                          Assigned
+                        </td>
+                        <td class="no-tooltip" title="Assigned » New">
+                          <input autocomplete="off" name="transitions[2][1][assignee]" type="hidden" value="0">
+                          <input class="old-status-2 new-status-1" id="transitions_2_1_assignee" name="transitions[2][1][assignee]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip enabled" title="Assigned » Assigned">
+                          <input checked="checked" class="old-status-2 new-status-2" disabled="disabled" id="transitions_2_2_assignee" name="transitions[2][2][assignee]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip" title="Assigned » Resolved">
+                          <input autocomplete="off" name="transitions[2][3][assignee]" type="hidden" value="0">
+                          <input class="old-status-2 new-status-3" id="transitions_2_3_assignee" name="transitions[2][3][assignee]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip" title="Assigned » Feedback">
+                          <input autocomplete="off" name="transitions[2][4][assignee]" type="hidden" value="0">
+                          <input class="old-status-2 new-status-4" id="transitions_2_4_assignee" name="transitions[2][4][assignee]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip" title="Assigned » Closed">
+                          <input autocomplete="off" name="transitions[2][5][assignee]" type="hidden" value="0">
+                          <input class="old-status-2 new-status-5" id="transitions_2_5_assignee" name="transitions[2][5][assignee]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip" title="Assigned » Rejected">
+                          <input autocomplete="off" name="transitions[2][6][assignee]" type="hidden" value="0">
+                          <input class="old-status-2 new-status-6" id="transitions_2_6_assignee" name="transitions[2][6][assignee]" type="checkbox" value="1">
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="name">
+                          <a class="icon icon-checked no-tooltip" href="#" onclick="toggleCheckboxesBySelector(&#39;table.transitions-assignee input[type=checkbox]:not(:disabled).old-status-3&#39;); return false;" title="Check all / Uncheck all">
+                            <svg aria-hidden="true" class="s18 icon-svg">
+                              <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                            </svg>
+                            <span class="icon-label"></span>
+                          </a>
+                          Resolved
+                        </td>
+                        <td class="no-tooltip" title="Resolved » New">
+                          <input autocomplete="off" name="transitions[3][1][assignee]" type="hidden" value="0">
+                          <input class="old-status-3 new-status-1" id="transitions_3_1_assignee" name="transitions[3][1][assignee]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip" title="Resolved » Assigned">
+                          <input autocomplete="off" name="transitions[3][2][assignee]" type="hidden" value="0">
+                          <input class="old-status-3 new-status-2" id="transitions_3_2_assignee" name="transitions[3][2][assignee]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip enabled" title="Resolved » Resolved">
+                          <input checked="checked" class="old-status-3 new-status-3" disabled="disabled" id="transitions_3_3_assignee" name="transitions[3][3][assignee]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip enabled" title="Resolved » Feedback">
+                          <input autocomplete="off" name="transitions[3][4][assignee]" type="hidden" value="0">
+                          <input checked="checked" class="old-status-3 new-status-4" id="transitions_3_4_assignee" name="transitions[3][4][assignee]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip" title="Resolved » Closed">
+                          <input autocomplete="off" name="transitions[3][5][assignee]" type="hidden" value="0">
+                          <input class="old-status-3 new-status-5" id="transitions_3_5_assignee" name="transitions[3][5][assignee]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip" title="Resolved » Rejected">
+                          <input autocomplete="off" name="transitions[3][6][assignee]" type="hidden" value="0">
+                          <input class="old-status-3 new-status-6" id="transitions_3_6_assignee" name="transitions[3][6][assignee]" type="checkbox" value="1">
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="name">
+                          <a class="icon icon-checked no-tooltip" href="#" onclick="toggleCheckboxesBySelector(&#39;table.transitions-assignee input[type=checkbox]:not(:disabled).old-status-4&#39;); return false;" title="Check all / Uncheck all">
+                            <svg aria-hidden="true" class="s18 icon-svg">
+                              <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                            </svg>
+                            <span class="icon-label"></span>
+                          </a>
+                          Feedback
+                        </td>
+                        <td class="no-tooltip" title="Feedback » New">
+                          <input autocomplete="off" name="transitions[4][1][assignee]" type="hidden" value="0">
+                          <input class="old-status-4 new-status-1" id="transitions_4_1_assignee" name="transitions[4][1][assignee]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip enabled" title="Feedback » Assigned">
+                          <input autocomplete="off" name="transitions[4][2][assignee]" type="hidden" value="0">
+                          <input checked="checked" class="old-status-4 new-status-2" id="transitions_4_2_assignee" name="transitions[4][2][assignee]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip" title="Feedback » Resolved">
+                          <input autocomplete="off" name="transitions[4][3][assignee]" type="hidden" value="0">
+                          <input class="old-status-4 new-status-3" id="transitions_4_3_assignee" name="transitions[4][3][assignee]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip enabled" title="Feedback » Feedback">
+                          <input checked="checked" class="old-status-4 new-status-4" disabled="disabled" id="transitions_4_4_assignee" name="transitions[4][4][assignee]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip" title="Feedback » Closed">
+                          <input autocomplete="off" name="transitions[4][5][assignee]" type="hidden" value="0">
+                          <input class="old-status-4 new-status-5" id="transitions_4_5_assignee" name="transitions[4][5][assignee]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip" title="Feedback » Rejected">
+                          <input autocomplete="off" name="transitions[4][6][assignee]" type="hidden" value="0">
+                          <input class="old-status-4 new-status-6" id="transitions_4_6_assignee" name="transitions[4][6][assignee]" type="checkbox" value="1">
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="name">
+                          <a class="icon icon-checked no-tooltip" href="#" onclick="toggleCheckboxesBySelector(&#39;table.transitions-assignee input[type=checkbox]:not(:disabled).old-status-5&#39;); return false;" title="Check all / Uncheck all">
+                            <svg aria-hidden="true" class="s18 icon-svg">
+                              <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                            </svg>
+                            <span class="icon-label"></span>
+                          </a>
+                          Closed
+                        </td>
+                        <td class="no-tooltip" title="Closed » New">
+                          <input autocomplete="off" name="transitions[5][1][assignee]" type="hidden" value="0">
+                          <input class="old-status-5 new-status-1" id="transitions_5_1_assignee" name="transitions[5][1][assignee]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip" title="Closed » Assigned">
+                          <input autocomplete="off" name="transitions[5][2][assignee]" type="hidden" value="0">
+                          <input class="old-status-5 new-status-2" id="transitions_5_2_assignee" name="transitions[5][2][assignee]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip" title="Closed » Resolved">
+                          <input autocomplete="off" name="transitions[5][3][assignee]" type="hidden" value="0">
+                          <input class="old-status-5 new-status-3" id="transitions_5_3_assignee" name="transitions[5][3][assignee]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip" title="Closed » Feedback">
+                          <input autocomplete="off" name="transitions[5][4][assignee]" type="hidden" value="0">
+                          <input class="old-status-5 new-status-4" id="transitions_5_4_assignee" name="transitions[5][4][assignee]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip enabled" title="Closed » Closed">
+                          <input checked="checked" class="old-status-5 new-status-5" disabled="disabled" id="transitions_5_5_assignee" name="transitions[5][5][assignee]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip" title="Closed » Rejected">
+                          <input autocomplete="off" name="transitions[5][6][assignee]" type="hidden" value="0">
+                          <input class="old-status-5 new-status-6" id="transitions_5_6_assignee" name="transitions[5][6][assignee]" type="checkbox" value="1">
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="name">
+                          <a class="icon icon-checked no-tooltip" href="#" onclick="toggleCheckboxesBySelector(&#39;table.transitions-assignee input[type=checkbox]:not(:disabled).old-status-6&#39;); return false;" title="Check all / Uncheck all">
+                            <svg aria-hidden="true" class="s18 icon-svg">
+                              <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                            </svg>
+                            <span class="icon-label"></span>
+                          </a>
+                          Rejected
+                        </td>
+                        <td class="no-tooltip" title="Rejected » New">
+                          <input autocomplete="off" name="transitions[6][1][assignee]" type="hidden" value="0">
+                          <input class="old-status-6 new-status-1" id="transitions_6_1_assignee" name="transitions[6][1][assignee]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip" title="Rejected » Assigned">
+                          <input autocomplete="off" name="transitions[6][2][assignee]" type="hidden" value="0">
+                          <input class="old-status-6 new-status-2" id="transitions_6_2_assignee" name="transitions[6][2][assignee]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip" title="Rejected » Resolved">
+                          <input autocomplete="off" name="transitions[6][3][assignee]" type="hidden" value="0">
+                          <input class="old-status-6 new-status-3" id="transitions_6_3_assignee" name="transitions[6][3][assignee]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip" title="Rejected » Feedback">
+                          <input autocomplete="off" name="transitions[6][4][assignee]" type="hidden" value="0">
+                          <input class="old-status-6 new-status-4" id="transitions_6_4_assignee" name="transitions[6][4][assignee]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip" title="Rejected » Closed">
+                          <input autocomplete="off" name="transitions[6][5][assignee]" type="hidden" value="0">
+                          <input class="old-status-6 new-status-5" id="transitions_6_5_assignee" name="transitions[6][5][assignee]" type="checkbox" value="1">
+                        </td>
+                        <td class="no-tooltip enabled" title="Rejected » Rejected">
+                          <input checked="checked" class="old-status-6 new-status-6" disabled="disabled" id="transitions_6_6_assignee" name="transitions[6][6][assignee]" type="checkbox" value="1">
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </fieldset>
+            </div>
+            <input data-disable-with="Save" name="commit" type="submit" value="Save">
+          </form>
+          <div style="clear:both;"></div>
+        </div>
+      </div>
+      <div id="footer">MASKED</div>
+      <div id="ajax-indicator" style="display:none;">
+        <span class="icon">
+          <svg aria-hidden="true" class="s18 icon-svg svg-loader">
+            <use href="/assets/icons-DIGEST.svg#icon--loader"></use>
+          </svg>
+          <span class="icon-label">Loading...</span>
+        </span>
+      </div>
+      <div id="ajax-modal" style="display:none;"></div>
+      <div id="icon-copy-source" style="display: none;">
+        <svg aria-hidden="true" class="s18 icon-svg">
+          <use href="/assets/icons-DIGEST.svg#icon--"></use>
+        </svg>
+      </div>
+    </div>
+  </body>
+</html>

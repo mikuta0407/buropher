@@ -26,9 +26,11 @@ func (c *Req) Page() *helper.Page {
 		Question:           c.Question,
 		NewRecordProject:   c.NewRecordProject,
 		ProjectNameWas:     c.ProjectNameWas,
+		QuestionSet:        c.QuestionSet,
 		DB:                 a.DB,
 		Now:                a.now,
 		Logger:             a.logger(),
+		PreviewAttachments: c.Attachments,
 	}
 	if c.User != nil {
 		p.Pref = c.Pref()

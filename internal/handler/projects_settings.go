@@ -327,7 +327,7 @@ func projectSettingsTabs(c *Req, p *domain.Project) []helper.Tab {
 				u += sep + strings.Join(q, "&")
 			}
 		}
-		tabs = append(tabs, helper.Tab{Name: d.name, Label: c.L(d.label), Partial: d.partial, URL: u})
+		tabs = append(tabs, helper.Tab{Name: d.name, Label: d.label, Partial: d.partial, URL: u})
 	}
 	return tabs
 }
@@ -440,7 +440,7 @@ func (a *App) projectSettingsData(c *Req, f *projectForm) (map[string]any, error
 		data["CanManageCategories"] = c.AllowedTo(domain.Perm("manage_categories"), p)
 	}
 	if has("repositories") {
-		repos, err := repository.ProjectRepositories(ctx, a.DB, p.ID)
+		repos, err := repository.ProjectRepositoriesForSettings(ctx, a.DB, p.ID)
 		if err != nil {
 			return nil, err
 		}

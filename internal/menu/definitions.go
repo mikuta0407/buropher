@@ -17,6 +17,19 @@ func projectPath(prefix, suffix string) func(Env, Project) string {
 	}
 }
 
+// recallable はリクエストの :project_id を引き継ぐ URL（Env が RecalledProjectID を実装していれば
+// /projects/:project_id を前に付ける。Rails の url_for の recall）。
+func recallable(s string) func(Env, Project) string {
+	return func(e Env, _ Project) string {
+		if r, ok := e.(interface{ RecalledProjectID() string }); ok {
+			if id := r.RecalledProjectID(); id != "" {
+				return "/projects/" + id + s
+			}
+		}
+		return s
+	}
+}
+
 func globalModule(perm, module string) func(Env, Project) bool {
 	return func(e Env, _ Project) bool {
 		return e.AllowedToGlobally(perm) && e.ModuleEnabledInVisibleProject(module)
@@ -61,15 +74,15 @@ func ApplicationMenu() *Menu {
 	m.Push(&Item{Name: "projects", Controller: "projects", Action: "index", URL: path("/projects"),
 		PermMode: PermNone, Caption: "label_project_plural"}, "")
 	m.Push(&Item{Name: "activity", Controller: "activities", Action: "index", URL: path("/activity")}, "")
-	m.Push(&Item{Name: "issues", Controller: "issues", Action: "index", URL: path("/issues"),
+	m.Push(&Item{Name: "issues", Controller: "issues", Action: "index", URL: recallable("/issues"),
 		Cond: globalModule("view_issues", "issue_tracking"), Caption: "label_issue_plural"}, "")
-	m.Push(&Item{Name: "time_entries", Controller: "timelog", Action: "index", URL: path("/time_entries"),
+	m.Push(&Item{Name: "time_entries", Controller: "timelog", Action: "index", URL: recallable("/time_entries"),
 		Cond: globalModule("view_time_entries", "time_tracking"), Caption: "label_spent_time"}, "")
-	m.Push(&Item{Name: "gantt", Controller: "gantts", Action: "show", URL: path("/issues/gantt"),
+	m.Push(&Item{Name: "gantt", Controller: "gantts", Action: "show", URL: recallable("/issues/gantt"),
 		Caption: "label_gantt", Cond: globalModule("view_gantt", "gantt")}, "")
-	m.Push(&Item{Name: "calendar", Controller: "calendars", Action: "show", URL: path("/issues/calendar"),
+	m.Push(&Item{Name: "calendar", Controller: "calendars", Action: "show", URL: recallable("/issues/calendar"),
 		Caption: "label_calendar", Cond: globalModule("view_calendar", "calendar")}, "")
-	m.Push(&Item{Name: "news", Controller: "news", Action: "index", URL: path("/news"),
+	m.Push(&Item{Name: "news", Controller: "news", Action: "index", URL: recallable("/news"),
 		Cond: globalModule("view_news", "news"), Caption: "label_news_plural"}, "")
 	return m
 }

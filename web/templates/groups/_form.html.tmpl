@@ -1,0 +1,21 @@
+{{$f := .f}}
+{{$a := assigns}}
+{{$g := $a.Group}}
+{{error_messages_for $g}}
+
+<div class="box tabular">
+  <p>{{$f.TextField "name" (hash "required" true "size" 60 "disabled" $g.IsBuiltin)}}</p>
+  {{if not $g.IsBuiltin}}
+    <p>{{$f.CheckBox "twofa_required" (hash "disabled" (not $a.TwofaOptional))}}
+      {{if $a.TwofaRequired}}
+        <em class="info">{{l "twofa_text_group_required"}}</em>
+      {{else if not $a.TwofaOptional}}
+        <em class="info">{{l "twofa_text_group_disabled"}}</em>
+      {{end}}
+    </p>
+  {{end}}
+
+  {{range $tag := $g.CustomFieldTags}}
+    <p>{{$tag}}</p>
+  {{end}}
+</div>

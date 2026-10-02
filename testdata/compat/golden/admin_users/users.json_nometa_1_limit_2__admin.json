@@ -1,0 +1,59 @@
+status: 200
+content-type: application/json
+
+{
+  "users": [
+    {
+      "id": 1,
+      "login": "admin",
+      "admin": true,
+      "firstname": "Redmine",
+      "lastname": "Admin",
+      "mail": "admin@somenet.foo",
+      "created_on": "2006-07-19T17:12:21Z",
+      "updated_on": "2006-07-19T20:57:52Z",
+      "last_login_on": "2026-01-15T12:00:00Z",
+      "passwd_changed_on": null,
+      "twofa_scheme": null,
+      "status": 1,
+      "custom_fields": [
+        {
+          "id": 4,
+          "name": "Phone number",
+          "value": null
+        },
+        {
+          "id": 5,
+          "name": "Money",
+          "value": null
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "login": "dlopper",
+      "admin": false,
+      "firstname": "Dave",
+      "lastname": "Lopper",
+      "mail": "dlopper@somenet.foo",
+      "created_on": "2006-07-19T17:33:19Z",
+      "updated_on": "2006-07-19T17:33:19Z",
+      "last_login_on": "2026-01-15T12:00:00Z",
+      "passwd_changed_on": null,
+      "twofa_scheme": null,
+      "status": 1,
+      "custom_fields": [
+        {
+          "id": 4,
+          "name": "Phone number",
+          "value": ""
+        },
+        {
+          "id": 5,
+          "name": "Money",
+          "value": null
+        }
+      ]
+    }
+  ]
+}

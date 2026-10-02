@@ -1,0 +1,44 @@
+{{$name := .table.Name}}
+{{$total := .total}}
+<table class="list workflows transitions transitions-{{$name}}">
+<thead>
+  <tr>
+    <th>
+      {{toggle_checkboxes_link (printf "table.transitions-%s input[type=checkbox]:not(:disabled)" $name) (hash "class" "no-tooltip")}}
+      {{l "label_current_status"}}
+    </th>
+    <th colspan="{{len .statuses}}">{{l "label_new_statuses_allowed"}}</th>
+  </tr>
+  <tr>
+    <td></td>
+    {{range $new := .statuses}}
+    <td style="width:{{$.width}}%;">
+      {{toggle_checkboxes_link (printf "table.transitions-%s input[type=checkbox]:not(:disabled).new-status-%d" $name $new.ID) (hash "class" "no-tooltip")}}
+      {{$new.Name}}
+    </td>
+    {{end}}
+  </tr>
+</thead>
+<tbody>
+  {{range $row := .table.Rows}}
+  <tr>
+    <td class="name">
+      {{toggle_checkboxes_link (printf "table.transitions-%s input[type=checkbox]:not(:disabled).old-status-%d" $name $row.OldID) (hash "class" "no-tooltip")}}
+      {{$oldName := ""}}
+      {{if $row.Old}}
+        {{$oldName = $row.Old.Name}}
+        {{$oldName}}
+      {{else}}
+        {{$oldName = l "label_issue_new"}}
+        {{content_tag "em" $oldName}}
+      {{end}}
+    </td>
+    {{range $cell := $row.Cells}}
+    <td class="no-tooltip {{if $cell.Checked}}enabled{{end}}" title="{{$oldName}} &#187; {{$cell.New.Name}}">
+      {{transition_tag $cell.Count $row.OldID $cell.New.ID $name $total}}
+    </td>
+    {{end}}
+  </tr>
+  {{end}}
+</tbody>
+</table>

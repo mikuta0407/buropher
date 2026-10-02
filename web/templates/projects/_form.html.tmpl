@@ -40,7 +40,7 @@
 <p>{{$f.CheckBox "inherit_members"}}</p>
 {{end}}
 
-{{wikitoolbar_for "project_description"}}
+{{wikitoolbar_for "project_description" "/preview/text"}}
 
 {{range $value := $project.VisibleCFValues}}
   <p>{{custom_field_tag_with_label "project" $value}}</p>
