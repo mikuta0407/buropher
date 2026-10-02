@@ -116,6 +116,10 @@ func TestCalendarReportsBehavior(t *testing.T) {
 			t.Errorf("%s: %d, want %d", path, res.StatusCode, want)
 		}
 	}
+	// 見つからない query_id は rescue されない RecordNotFound（public/404.html）
+	if _, body := get(t, admin, ts.URL+"/issues/calendar?query_id=999"); !strings.Contains(body, "<title>Redmine 404 error</title>") {
+		t.Error("query_id=999: not public 404")
+	}
 	anon := newClient(t)
 	// 非公開プロジェクトは匿名ではログインを要求する
 	for _, path := range []string{"/projects/onlinestore/issues/calendar", "/projects/onlinestore/issues/report"} {

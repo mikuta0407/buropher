@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"html/template"
+	"io/fs"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -21,6 +22,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/textformat/redmine"
 	"github.com/mikuta0407/buropher/internal/view"
 	"github.com/mikuta0407/buropher/internal/view/rails"
+	"github.com/mikuta0407/buropher/web"
 )
 
 // CalendarsController（app/controllers/calendars_controller.rb）。menu_item :calendar。
@@ -176,6 +178,19 @@ func (a *App) calendarGroupAvatar(c *Req) template.HTML {
 		"src", src, "width", "13", "height", "13"))
 }
 
+// renderPublic404 は Rails が rescue されない ActiveRecord::RecordNotFound に返す public/404.html。
+func renderPublic404(c *Req) {
+	c.Halt()
+	b, err := fs.ReadFile(web.Public(), "404.html")
+	if err != nil {
+		http.NotFound(c.W, c.R)
+		return
+	}
+	c.W.Header().Set("Content-Type", "text/html; charset=utf-8")
+	c.W.WriteHeader(http.StatusNotFound)
+	_, _ = c.W.Write(b)
+}
+
 func dateOrNilPtr(d db.NullDate) *time.Time {
 	if !d.Valid {
 		return nil
@@ -217,7 +232,8 @@ func (a *App) CalendarsShow(c *Req) {
 	if err != nil {
 		switch {
 		case errors.Is(err, query.ErrNotFound):
-			c.Render404("")
+			// IssueQuery の find が ActiveRecord::RecordNotFound を投げ、calendars では rescue されない（public/404.html）
+			renderPublic404(c)
 		case errors.Is(err, query.ErrUnauthorized):
 			c.DenyAccess()
 		default:
