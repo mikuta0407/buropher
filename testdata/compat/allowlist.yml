@@ -1,0 +1,11 @@
+# 許容差分リスト（buropher の意図的な差分）。追加時は必ず reason を書き、レビュー対象にする。
+#
+# entries:
+#   - case: "smoke/issues_1__*"        # "<scenario>/<case id>" の glob
+#     reason: "追加機能のボタン"
+#     lines:                            # 差分行（先頭の +/- を除く）がすべていずれかに一致すれば許容
+#       - '^\s*<a class="buropher-extra"'
+#   - case: "smoke/settings__admin"
+#     reason: "設定画面は未実装"
+#     ignore: true                      # ケース全体を許容
+entries: []
