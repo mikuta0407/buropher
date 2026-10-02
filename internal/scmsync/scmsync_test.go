@@ -5,7 +5,10 @@ package scmsync_test
 
 import (
 	"context"
+	"os"
+	"os/exec"
 	"slices"
+	"strings"
 	"testing"
 	"time"
 
@@ -207,6 +210,46 @@ func TestFetchInvalidRepository(t *testing.T) {
 	e.must(e.svc.Fetch(e.ctx, r, nil))
 	if n, _ := repository.CountChangesets(e.ctx, e.d, r.ID); n != 0 {
 		t.Errorf("changesets = %d", n)
+	}
+}
+
+// TestFetchFixesIssue は取り込み時の修正キーワード・作業時間の記録（リポジトリ作成後のコミット）を確認する。
+func TestFetchFixesIssue(t *testing.T) {
+	scmtest.GitRepositoryPath(t) // git が無ければスキップ
+	dir := t.TempDir()
+	run := func(args ...string) {
+		t.Helper()
+		cmd := exec.Command("git", args...)
+		cmd.Dir = dir
+		cmd.Env = append(os.Environ(), "GIT_AUTHOR_NAME=jsmith", "GIT_AUTHOR_EMAIL=jsmith@somenet.foo",
+			"GIT_COMMITTER_NAME=jsmith", "GIT_COMMITTER_EMAIL=jsmith@somenet.foo",
+			"GIT_AUTHOR_DATE=2026-01-15T13:00:00Z", "GIT_COMMITTER_DATE=2026-01-15T13:00:00Z")
+		if out, err := cmd.CombinedOutput(); err != nil {
+			t.Fatalf("git %v: %v\n%s", args, err, out)
+		}
+	}
+	run("init", "-q", "-b", "master")
+	run("commit", "-q", "--allow-empty", "-m", "Fixes #1 @2h")
+	e := setup(t)
+	e.set("commit_update_keywords", []any{map[string]any{"keywords": "fixes", "status_id": "5", "done_ratio": "100"}})
+	e.set("commit_logtime_enabled", "1")
+	e.set("default_language", "en")
+	r := &domain.Repository{ProjectID: 1, SCM: "git", URL: dir + "/.git", IsDefault: false, CreatedOn: frozenNow}
+	r.Identifier = "fixes"
+	e.must(repository.InsertScmRepository(e.ctx, e.d, r))
+	e.must(e.svc.Fetch(e.ctx, r, nil))
+	if st, dr := e.issueStatus(1); st != 5 || dr != 100 {
+		t.Errorf("issue 1 = %d %d", st, dr)
+	}
+	var notes string
+	e.must(e.d.Get(e.ctx, &notes, `SELECT notes FROM issue_journals WHERE issue_id = 1 ORDER BY id DESC LIMIT 1`))
+	if !strings.HasPrefix(notes, "Applied in changeset commit:fixes|") {
+		t.Errorf("notes = %q", notes)
+	}
+	var hours float64
+	e.must(e.d.Get(e.ctx, &hours, `SELECT hours FROM time_entries WHERE issue_id = 1 ORDER BY id DESC LIMIT 1`))
+	if hours != 2 {
+		t.Errorf("hours = %v", hours)
 	}
 }
 

@@ -306,6 +306,50 @@ func TestGitChangesEntryAnnotate(t *testing.T) {
 	}
 }
 
+// test_entry_show_latin_1 / test_diff_latin_1 / test_annotate_latin_1（Setting.repositories_encodings で変換する）。
+func TestGitLatin1Content(t *testing.T) {
+	e := setupGit(t)
+	e.fetch()
+	e.set("repositories_encodings", "UTF-8,ISO-8859-1")
+	base := "/projects/" + gitPrjID + "/repository/" + itoa64(e.repo.ID)
+	for _, r1 := range []string{"57ca437c", "57ca437c0acbbcb749821fdf3726a1367056d364"} {
+		res, doc, body := e.get(base + "/revisions/" + r1 + "/entry/latin-1-dir/test-%C3%9C.txt")
+		expectStatus(t, res, 200, body)
+		if l := sel(doc, "tr#L1 td.line-code"); len(l) != 1 || !strings.Contains(nodeText(l[0]), "test-Ü.txt") {
+			t.Errorf("%s: entry line 1 = %q", r1, texts(l))
+		}
+		for _, dt := range []string{"inline", "sbs"} {
+			_, doc, _ = e.get(base + "/revisions/" + r1 + "/diff?type=" + dt)
+			if th := sel(doc, "table thead th.filename"); len(th) == 0 || !strings.Contains(nodeText(th[0]), "latin-1-dir/test-Ü.txt") {
+				t.Errorf("%s %s: diff filename = %q", r1, dt, texts(th))
+			}
+			found := false
+			for _, td := range sel(doc, "table tbody td.diff_in") {
+				if strings.Contains(nodeText(td), "test-Ü.txt") {
+					found = true
+				}
+			}
+			if !found {
+				t.Errorf("%s %s: diff_in", r1, dt)
+			}
+		}
+		_, doc, _ = e.get(base + "/revisions/" + r1 + "/annotate/latin-1-dir/test-%C3%9C.txt")
+		tr := sel(doc, "tr#L1")
+		if len(tr) != 1 {
+			t.Fatalf("%s: annotate L1 missing", r1)
+		}
+		if a := sel(tr[0], "td.revision a"); len(a) != 1 || nodeText(a[0]) != "57ca437c" {
+			t.Errorf("%s: annotate revision = %q", r1, texts(a))
+		}
+		if a := sel(tr[0], "td.author"); len(a) != 1 || strings.TrimSpace(nodeText(a[0])) != "jsmith" {
+			t.Errorf("%s: annotate author = %q", r1, texts(a))
+		}
+		if a := sel(tr[0], "td.line-code"); len(a) != 1 || strings.TrimSpace(nodeText(a[0])) != "test-Ü.txt" {
+			t.Errorf("%s: annotate line = %q", r1, texts(a))
+		}
+	}
+}
+
 func TestGitAnnotateAtRevisionAndTooBig(t *testing.T) {
 	e := setupGit(t)
 	e.fetch()
