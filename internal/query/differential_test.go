@@ -418,7 +418,11 @@ func TestDifferential(t *testing.T) {
 				pass, fail := 0, 0
 				byKind := map[string][2]int{}
 				var failures []string
-				for _, c := range byScenario[sc] {
+				for i, c := range byScenario[sc] {
+					// -short では 10 件に 1 件だけ比較する
+					if testing.Short() && i%10 != 0 {
+						continue
+					}
 					m := r.run(t, c)
 					st := byKind[c.Kind]
 					if m == "" {
