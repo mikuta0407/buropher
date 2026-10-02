@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 	"sync"
 	"testing"
@@ -183,16 +184,26 @@ func (e *testEnv) options(t *testing.T, st *DBStore, c *corpusCase) Options {
 	return o
 }
 
+// loadCorpus は testdata/corpus*.json（corpus.json: Redmine のテストの移植と境界ケース、
+// corpus_random.json: 固定シードのランダムケース）を読み込む。
 func loadCorpus(t *testing.T) []*corpusCase {
-	b, err := os.ReadFile("testdata/corpus.json")
-	if err != nil {
-		t.Fatal(err)
+	files, err := filepath.Glob("testdata/corpus*.json")
+	if err != nil || len(files) == 0 {
+		t.Fatalf("corpus files: %v", err)
 	}
-	var cs []*corpusCase
-	if err := json.Unmarshal(b, &cs); err != nil {
-		t.Fatal(err)
+	var all []*corpusCase
+	for _, f := range files {
+		b, err := os.ReadFile(f)
+		if err != nil {
+			t.Fatal(err)
+		}
+		var cs []*corpusCase
+		if err := json.Unmarshal(b, &cs); err != nil {
+			t.Fatalf("%s: %v", f, err)
+		}
+		all = append(all, cs...)
 	}
-	return cs
+	return all
 }
 
 // TestCorpus は参照 Redmine の textilizable 出力（testdata/corpus.json）と比較する。

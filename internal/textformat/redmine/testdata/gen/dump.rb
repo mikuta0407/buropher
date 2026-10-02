@@ -1,8 +1,11 @@
 # Redmine 6.1.2 の textilizable で差分テスト用コーパスの期待値を生成する。
 #
+#   ruby internal/textformat/redmine/testdata/gen/cases.rb /tmp/x/cases.json
+#   ruby internal/textformat/redmine/testdata/gen/random_cases.rb /tmp/x/random.json                 # → corpus_random.json
+#   ruby internal/textformat/redmine/testdata/gen/random_cases.rb /tmp/x/random2.json 7 1000 random2 # → corpus_random2.json
 #   cp _reference/redmine-fixtures/db/redmine.pristine.sqlite3 <copy>
-#   COMPAT_FROZEN_TIME='2026-01-15 12:00:00' internal/authz/testdata/gen/runner.sh <copy> \
-#     internal/textformat/redmine/testdata/gen/dump.rb <cases.json> <out.json>
+#   COMPAT_FROZEN_TIME='2026-01-15 12:00:00' bash internal/authz/testdata/gen/runner.sh <copy> \
+#     internal/textformat/redmine/testdata/gen/dump.rb /tmp/x/cases.json internal/textformat/redmine/testdata/corpus.json
 #
 # cases.json は [{id, formatting, user, project, object: {type, id}, options: {...}, text}] の配列。
 # 出力は各ケースに html（エラー時は error）を加えたもの。
