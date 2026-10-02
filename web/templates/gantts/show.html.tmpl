@@ -1,0 +1,191 @@
+<div class="contextual">
+</div>
+
+<h2>{{if .qv.NewRecord}}{{l "label_gantt"}}{{else}}{{.Query.Name}}{{end}}</h2>
+{{if and (not .qv.NewRecord) (present .Query.Description)}}{{content_tag "p" .Query.Description (hash "class" "subtitle")}}{{end}}
+
+{{form_tag .FormAction (hash "method" "get" "id" "query_form")}}
+{{hidden_field_tag "set_filter" "1"}}
+{{hidden_field_tag "gantt" "1"}}
+
+<div id="query_form_with_buttons" class="hide-when-print">
+<div id="query_form_content">
+  <fieldset id="filters" class="collapsible {{if not .qv.NewRecord}}collapsed{{end}}">
+    <legend onclick="toggleFieldset(this);" class="icon icon-{{if .qv.NewRecord}}expanded{{else}}collapsed{{end}}">
+      {{sprite_icon (ternary .qv.NewRecord "angle-down" "angle-right") (hash "rtl" (not .qv.NewRecord))}}
+      {{l "label_filter_plural"}}
+    </legend>
+    <div style="{{if not .qv.NewRecord}}display: none;{{end}}">
+      {{partial "queries/filters" (dict "qv" .qv)}}
+    </div>
+  </fieldset>
+
+  <fieldset id="options" class="collapsible collapsed">
+    <legend onclick="toggleFieldset(this);" class="icon icon-collapsed">
+      {{sprite_icon "angle-right" (hash "rtl" true)}}
+      {{l "label_options"}}
+    </legend>
+    <div style="display: none;">
+      <div>
+            <fieldset>
+              <legend>
+                {{l "field_column_names"}}
+              </legend>
+              <div id="list-definition">
+                <div>
+              <label for="draw_selected_columns">
+                {{.CheckDrawSelectedColumns}}
+                  {{l "label_display"}}
+              </label>
+                </div>
+                <div>
+              {{partial "queries/columns" (dict "qv" .qv "tag_name" "c[]")}}
+                </div>
+              </div>
+            </fieldset>
+            <fieldset>
+              <legend>{{l "label_related_issues"}}</legend>
+              <label for="draw_relations">
+                {{.CheckDrawRelations}}
+                  {{content_tag "span" (raw "&nbsp;&nbsp;&nbsp;") (hash "style" "background-color: #F34F4F")}}
+                  {{l "label_blocks"}}
+                  {{content_tag "span" (raw "&nbsp;&nbsp;&nbsp;") (hash "style" "background-color: #628FEA")}}
+                  {{l "label_precedes"}}
+              </label>
+            </fieldset>
+            <fieldset>
+              <legend>{{l "label_gantt_progress_line"}}</legend>
+              <label for="draw_progress_line">
+                {{.CheckDrawProgressLine}}
+                {{l "label_display"}}
+              </label>
+            </fieldset>
+      </div>
+    </div>
+  </fieldset>
+</div>
+
+<p class="contextual">
+  <span>
+    {{.ZoomIn}}
+    {{.ZoomOut}}
+  </span>
+  <span>
+    {{.PrevMonth}} | {{.NextMonth}}
+  </span>
+</p>
+
+<p class="buttons">
+  {{.MonthsField}}
+  {{l "label_months_from"}}
+  {{.MonthSelect}}
+  {{.YearSelect}}
+  {{hidden_field_tag "zoom" .G.Zoom}}
+
+  {{link_to_function (sprite_icon "checked" (l "button_apply")) "$(\"#query_form\").submit()" (hash "class" "icon icon-checked")}}
+  {{link_to (sprite_icon "reload" (l "button_clear")) .ClearURL (hash "class" "icon icon-reload")}}
+  {{if .CanSave}}
+    {{link_to_function (sprite_icon "save" (capitalize (l "button_save_object" (hash "object_name" (l "label_query"))))) (printf "$('#query_form').attr('action', '%s').submit();" .qv.NewQueryPath) (hash "class" "icon icon-save")}}
+  {{end}}
+{{if .Editable}}
+  {{link_to (sprite_icon "edit" (capitalize (l "button_edit_object" (hash "object_name" (l "label_query"))))) .EditQueryURL (hash "class" "icon icon-edit")}}
+  {{link_to (sprite_icon "del" (capitalize (l "button_delete_object" (hash "object_name" (l "label_query"))))) .QueryURL (hash "method" "delete" "data" (hash "confirm" (l "text_are_you_sure")) "class" "icon icon-del")}}
+{{end}}
+</p>
+</div>
+{{end_form}}
+
+{{render_error_messages .qv.ErrorMessages}}
+{{if .Valid}}
+
+{{if .Truncated}}
+  <p class="warning">{{.TruncatedNotice}}</p>
+{{end}}
+
+<table class='gantt-table'>
+<tr>
+<td style="width:{{.SubjectTDWidth}}px;" class="gantt_subjects_column">
+  {{content_tag_open "div" (hash "style" .SubjectsContainerStyle "class" .SubjectsContainerClass)}}
+    {{content_tag "div" "" (hash "style" .SubjectsHdrStyle1 "class" "gantt_hdr")}}
+    {{content_tag "div" "" (hash "style" .SubjectsHdrStyle2 "class" "gantt_hdr")}}
+    {{content_tag_open "div" (hash "class" "gantt_subjects")}}
+      {{form_tag request_path (hash "data" (hash "cm_url" "/issues/context_menu")) -}}
+        {{hidden_field_tag "back_url" .BackURL (hash "id" nil)}}
+        {{.Subjects}}
+      {{end_form}}
+    {{end_tag "div"}}
+  {{end_tag "div"}}
+</td>
+{{range $col := .Columns}}
+  <td class="gantt_{{$col.Name}}_column gantt_selected_column {{if $col.Last}}last_gantt_selected_column{{end}}" id="{{$col.Name}}">
+    {{content_tag_open "div" (hash "style" $.ColumnContainerStyle "class" (printf "gantt_%s_container gantt_selected_column_container" $col.Name))}}
+      {{content_tag "div" "" (hash "style" $.ColumnHdrStyle1 "class" "gantt_hdr")}}
+      {{content_tag "div" (content_tag "p" $col.Caption (hash "class" "gantt_hdr_selected_column_name")) (hash "style" $.ColumnHdrStyle2 "class" "gantt_hdr")}}
+      {{content_tag_open "div" (hash "class" (printf "gantt_%s gantt_selected_column_content" $col.Name))}}
+        {{$col.Content}}
+      {{end_tag "div"}}
+    {{end_tag "div"}}
+  </td>
+{{end}}
+<td>
+<div style="position:relative;height:{{.AreaHeight}}px;overflow:auto;" id="gantt_area">
+{{.AreaHeaders}}{{form_tag request_path (hash "data" (hash "cm_url" "/issues/context_menu")) -}}
+  {{hidden_field_tag "back_url" .BackURL (hash "id" nil)}}
+  {{.Lines}}
+{{end_form}}
+
+{{if .TodayStyle}}
+  {{content_tag "div" (raw "&nbsp;") (hash "style" .TodayStyle "id" "today_line")}}
+{{end}}
+{{content_tag "div" "" (hash "style" .DrawAreaStyle "id" "gantt_draw_area")}}
+</div>
+</td>
+</tr>
+</table>
+
+<span class="pagination">
+  <ul class="pages">
+    <li class="previous page">
+      {{link_to (printf "« %s" (l "label_previous")) .PrevURL}}
+    </li><li class="next page">
+      {{link_to (printf "%s »" (l "label_next")) .NextURL}}
+    </li>
+  </ul>
+</span>
+
+<p class="other-formats hide-when-print">{{l "label_export_to"}}  <span>{{link_to "PDF" .PDFURL (hash "class" "pdf" "rel" "nofollow")}}</span>
+
+</p>
+{{end}}
+
+{{define "gantts/show#sidebar"}}
+  {{partial "issues/sidebar" .}}
+{{end}}
+{{content_for "sidebar" (capture "gantts/show#sidebar")}}
+
+{{html_title (l "label_gantt")}}
+
+{{define "gantts/show#header_tags"}}
+  {{javascript_include_tag "raphael"}}
+  {{javascript_include_tag "gantt"}}
+{{end}}
+{{content_for "header_tags" (capture "gantts/show#header_tags")}}
+
+{{define "gantts/show#js"}}
+
+  var issue_relation_type = {{raw .DrawTypesJSON}};
+  $(function() {
+    disable_unavailable_columns('{{.UnavailableColumns}}'.split(','));
+    drawGanttHandler();
+    resizableSubjectColumn();
+    drawSelectedColumns();
+    $("#draw_relations, #draw_progress_line, #draw_selected_columns").change(drawGanttHandler);
+    $('div.gantt_subjects .expander').on('click', ganttEntryClick);
+  });
+  $(window).resize(function() {
+    drawGanttHandler();
+    resizableSubjectColumn();
+  });
+{{end}}
+{{javascript_tag (capture "gantts/show#js")}}
+{{context_menu}}
