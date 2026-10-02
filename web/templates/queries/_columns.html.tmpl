@@ -1,0 +1,33 @@
+{{$qv := .qv}}
+{{$tag_id := columns_tag_id .tag_name}}
+{{$available_tag_id := printf "available_%s" $tag_id}}
+{{$selected_tag_id := printf "selected_%s" $tag_id}}
+
+<div class="query-columns">
+      {{label_tag $available_tag_id (l "description_available_columns")}}
+      {{select_tag "available_columns" $qv.AvailableInlineColumnsOptions (hash "id" $available_tag_id "multiple" true "size" 10 "ondblclick" (printf "moveOptions(this.form.%s, this.form.%s);" $available_tag_id $selected_tag_id))}}
+</div>
+<div class="buttons">
+      <button type="button" class="move-right" onclick="moveOptions(this.form.{{$available_tag_id}}, this.form.{{$selected_tag_id}});">{{sprite_icon "arrow-narrow-right" (hash "rtl" true)}}</button>
+      <button type="button" class="move-left" onclick="moveOptions(this.form.{{$selected_tag_id}}, this.form.{{$available_tag_id}});">{{sprite_icon "arrow-narrow-left" (hash "rtl" true)}}</button>
+</div>
+<div class="query-columns">
+      {{label_tag $selected_tag_id (l "description_selected_columns")}}
+      {{select_tag .tag_name $qv.SelectedInlineColumnsOptions (hash "id" $selected_tag_id "multiple" true "size" 10 "ondblclick" (printf "moveOptions(this.form.%s, this.form.%s);" $selected_tag_id $available_tag_id))}}
+</div>
+<div class="buttons">
+      <button type="button" onclick="moveOptionTop(this.form.{{$selected_tag_id}});">&#8648;</button>
+      <button type="button" onclick="moveOptionUp(this.form.{{$selected_tag_id}});">&#8593;</button>
+      <button type="button" onclick="moveOptionDown(this.form.{{$selected_tag_id}});">&#8595;</button>
+      <button type="button" onclick="moveOptionBottom(this.form.{{$selected_tag_id}});">&#8650;</button>
+</div>
+
+{{define "queries/_columns#js"}}
+
+$(document).ready(function(){
+  $('.query-columns').closest('form').submit(function(){
+    $('#{{.selected_tag_id}} option:not(:disabled)').prop('selected', true);
+  });
+});
+{{end}}
+{{javascript_tag (capture "queries/_columns#js" (dict "selected_tag_id" $selected_tag_id)) -}}

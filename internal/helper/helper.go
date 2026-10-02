@@ -93,6 +93,10 @@ type Page struct {
 	theme      *assets.Theme
 	themeSet   bool
 	leaf       map[int64]bool
+	// calendarHeadersIncluded は include_calendar_headers_tags の @calendar_headers_tags_included。
+	calendarHeadersIncluded bool
+	// contextMenuIncluded は context_menu の @context_menu_included。
+	contextMenuIncluded bool
 }
 
 // Params は Rails の params。

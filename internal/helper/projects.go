@@ -41,6 +41,51 @@ type Tab struct {
 func (d *Deps) projectsFuncs(r *view.Render, pg func() *Page) ttemplate.FuncMap {
 	return ttemplate.FuncMap{
 		"actions_dropdown": func(content any) html { return d.actionsDropdownHTML(pg(), content) },
+		// render_project_action_links は ProjectsHelper#render_project_action_links（引数は add_project の可否）。
+		"render_project_action_links": func(canAdd bool) html {
+			p := pg()
+			var links html
+			if canAdd {
+				links += rails.LinkTo(d.spriteIcon(p, "add", p.l("label_project_new"), nil), "/projects/new", rails.NewHash("class", "icon icon-add"))
+			}
+			if p.admin() {
+				links += rails.LinkTo(d.spriteIcon(p, "settings", p.l("label_administration"), nil), "/admin/projects", rails.NewHash("class", "icon icon-settings"))
+			}
+			return links
+		},
+		// columns_tag_id は queries/_columns の tag_name.gsub(/[\[\]]+/, '_').sub(/_+$/, '')。
+		"columns_tag_id": func(name string) string {
+			return strings.TrimRight(bracketsRe.ReplaceAllString(name, "_"), "_")
+		},
+		// link_to_context_menu は ApplicationHelper#link_to_context_menu。
+		"link_to_context_menu": func() html {
+			p := pg()
+			return rails.LinkTo(d.spriteIcon(p, "3-bullets", p.l("button_actions"), nil), "#",
+				rails.NewHash("title", p.l("button_actions"), "class", "icon-only icon-actions js-contextmenu"))
+		},
+		// context_menu は ApplicationHelper#context_menu（header_tags に context_menu の JS / CSS を 1 回だけ追加）。
+		"context_menu": func() html {
+			p := pg()
+			if !p.contextMenuIncluded {
+				p.contextMenuIncluded = true
+				tags := d.jsInclude("context_menu") + d.stylesheetLinkTag(p, "context_menu")
+				r.ContentFor("header_tags", tags)
+				if p.l("direction") == "rtl" {
+					r.ContentFor("header_tags", d.stylesheetLinkTag(p, "context_menu_rtl"))
+				}
+			}
+			return ""
+		},
+		// capitalize は String#capitalize（先頭を大文字、残りを小文字）。
+		"capitalize": func(s any) string { return RubyCapitalize(rails.ToS(s)) },
+		// error_messages_for_list は error_messages_for（エラーメッセージの配列を渡す版）。
+		"error_messages_for_list": func(msgs []string) html { return RenderErrorMessages(d, pg(), msgs) },
+		// include_calendar_headers_tags は ApplicationHelper#include_calendar_headers_tags
+		// （出力なし。テンプレートでは {{$_ := include_calendar_headers_tags}} の形で行ごと消す）。
+		"include_calendar_headers_tags": func() string {
+			d.includeCalendarHeadersTagsOnce(r, pg())
+			return ""
+		},
 		"link_to_principal": func(v any, args ...any) html {
 			return d.linkToPrincipalHTML(pg(), v, optHash(args))
 		},
@@ -242,15 +287,71 @@ func (d *Deps) bookmarkLinkHTML(p *Page, pr *domain.Project) html {
 		rails.NewHash("remote", true, "method", method, "class", css))
 }
 
+// RubyCapitalize は String#capitalize。
+func RubyCapitalize(s string) string {
+	if s == "" {
+		return s
+	}
+	rs := []rune(strings.ToLower(s))
+	rs[0] = []rune(strings.ToUpper(string(rs[0])))[0]
+	return string(rs)
+}
+
+// includeCalendarHeadersTagsOnce は include_calendar_headers_tags（1 リクエストに 1 回だけ header_tags に追加）。
+func (d *Deps) includeCalendarHeadersTagsOnce(r *view.Render, p *Page) {
+	if r == nil || p.calendarHeadersIncluded {
+		return
+	}
+	p.calendarHeadersIncluded = true
+	sow := p.setting("start_of_week")
+	if strings.TrimSpace(sow) == "" {
+		sow = p.l("general_first_day_of_week")
+		if sow == "general_first_day_of_week" || sow == "" {
+			sow = "1"
+		}
+	}
+	n, _ := strconv.Atoi(strings.TrimSpace(sow))
+	tags := rails.JavascriptTag("var datepickerOptions={dateFormat: 'yy-mm-dd', firstDay: "+strconv.Itoa(n%7)+", "+
+		"showOn: 'button', buttonImageOnly: true, buttonImage: '"+d.assetPath("calendar.png")+
+		"', showButtonPanel: true, showWeek: true, showOtherMonths: true, "+
+		"selectOtherMonths: true, changeMonth: true, changeYear: true, "+
+		"beforeShow: beforeShowDatePicker};", nil)
+	loc := ""
+	if p.Loc != nil {
+		loc = p.Loc.L("jquery.locale")
+		if loc == "" || strings.Contains(loc, "jquery.locale") {
+			loc = p.Loc.Lang
+		}
+	}
+	if loc != "en" && loc != "" {
+		tags += d.jsInclude("i18n/datepicker-" + loc + ".js")
+	}
+	r.ContentFor("header_tags", tags)
+}
+
+// SpriteIconHTML は sprite_icon(name, label)（ハンドラで HTML を組み立てる場合に使う）。
+func (d *Deps) SpriteIconHTML(p *Page, name string, label any) template.HTML {
+	return d.spriteIcon(p, name, label, nil)
+}
+
+// SpriteIconOnly は sprite_icon(name, label, icon_only: true)。
+func (d *Deps) SpriteIconOnly(p *Page, name string, label any) template.HTML {
+	return d.spriteIcon(p, name, label, rails.NewHash("icon_only", true))
+}
+
 // BookmarkLink は bookmark_link（bookmark.js の応答で使う）。
-func (d *Deps) BookmarkLink(p *Page, pr *domain.Project) template.HTML { return d.bookmarkLinkHTML(p, pr) }
+func (d *Deps) BookmarkLink(p *Page, pr *domain.Project) template.HTML {
+	return d.bookmarkLinkHTML(p, pr)
+}
 
 // RenderProjectsForJumpBox は render_projects_for_jump_box（autocomplete.js / bookmark.js の応答で使う）。
 func (d *Deps) RenderProjectsForJumpBox(p *Page, jb *JumpBox, selected *domain.Project) template.HTML {
 	return d.renderProjectsForJumpBox(p, jb, selected)
 }
 
-var safeSchemeRe = regexp.MustCompile(`^([a-zA-Z][a-zA-Z0-9+.\-]*):`)
+var bracketsRe = regexp.MustCompile(`[\[\]]+`)
+
+var safeSchemeRe =regexp.MustCompile(`^([a-zA-Z][a-zA-Z0-9+.\-]*):`)
 
 // URIWithSafeScheme は ApplicationHelper#uri_with_safe_scheme?（スキームなし、または
 // Setting / 既定の安全なスキーム http, https, ftp, mailto, なし）。
