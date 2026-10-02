@@ -17,7 +17,7 @@ import (
 // Atom / API / CSV）の互換テスト。
 // testdata/issues_read/ の期待値は共用の参照 Redmine（3998）から
 // `go run ./tools/compat fetch -base http://127.0.0.1:3998 -raw -user <user> <path>` で取得し、
-// ベース URL を {{BASE}} に置換したもの（data/_tmp/fetch_goldens.sh 相当）。
+// ベース URL を {{BASE}} に置換したもの（各ケースの user と path で取得する）。
 //
 // HTML はタグ間の空白を詰めて比較する（ERB と Go テンプレートの改行位置の差は互換テストの正規化でも無視される）。
 // ヘッダーのジャンプボックス（最近使ったプロジェクト）は参照インスタンスの利用履歴に依存するため、
