@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"regexp"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -11,6 +12,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/authz"
 	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/helper"
+	"github.com/mikuta0407/buropher/internal/i18n"
 	"github.com/mikuta0407/buropher/internal/query"
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/textformat/redmine"
@@ -612,10 +614,163 @@ func (l *myIssueList) columnContent(col *query.Column, is *query.IssueRow) rails
 				redmine.Options{Project: l.projects[is.ProjectID]}), rails.NewHash("class", "wiki"))
 		}
 	}
+	switch col.Name {
+	case "relations":
+		return l.relationsContent(is)
+	case "attachments":
+		return l.attachmentsContent(is)
+	}
 	if col.CustomField != nil {
-		return rails.H(strings.Join(is.CustomValues[col.CustomField.ID], ", "))
+		return l.customFieldContent(col, is)
 	}
 	return ""
+}
+
+// myRelationTypes は IssueRelation::TYPES（name / sym_name / order / sym）。
+var myRelationTypes = map[string]struct {
+	name, symName string
+	order         int
+	sym           string
+}{
+	"relates":     {"label_relates_to", "label_relates_to", 1, "relates"},
+	"duplicates":  {"label_duplicates", "label_duplicated_by", 2, "duplicated"},
+	"duplicated":  {"label_duplicated_by", "label_duplicates", 3, "duplicates"},
+	"blocks":      {"label_blocks", "label_blocked_by", 4, "blocked"},
+	"blocked":     {"label_blocked_by", "label_blocks", 5, "blocks"},
+	"precedes":    {"label_precedes", "label_follows", 6, "follows"},
+	"follows":     {"label_follows", "label_precedes", 7, "precedes"},
+	"copied_to":   {"label_copied_to", "label_copied_from", 8, "copied_from"},
+	"copied_from": {"label_copied_from", "label_copied_to", 9, "copied_to"},
+}
+
+// relationsContent は relations 列（相手が可視な関連。IssueRelation#<=> の順に
+// "<ラベル> (<遅延>) #<id>" を span.rel-<type> で並べる）。
+func (l *myIssueList) relationsContent(is *query.IssueRow) rails.HTML {
+	if len(is.RelationIDs) == 0 {
+		return ""
+	}
+	ctx := l.c.Ctx()
+	rels, err := repository.MyPageRelationsByIDs(ctx, l.a.DB, is.RelationIDs)
+	if err != nil {
+		l.a.logger().Error("issue relations", "err", err)
+		return ""
+	}
+	var list []*repository.MyPageRelation
+	var others []int64
+	for _, id := range is.RelationIDs {
+		if r := rels[id]; r != nil {
+			list = append(list, r)
+			if r.IssueFromID == is.ID {
+				others = append(others, r.IssueToID)
+			} else {
+				others = append(others, r.IssueFromID)
+			}
+		}
+	}
+	slices.SortStableFunc(list, func(a, b *repository.MyPageRelation) int {
+		if d := myRelationTypes[a.RelationType].order - myRelationTypes[b.RelationType].order; d != 0 {
+			return d
+		}
+		return int(a.ID - b.ID)
+	})
+	refs, err := repository.RefIssuesByIDs(ctx, l.a.DB, others)
+	if err != nil {
+		l.a.logger().Error("issue relations", "err", err)
+		return ""
+	}
+	var parts []string
+	for _, r := range list {
+		t := myRelationTypes[r.RelationType]
+		label, typ, other := t.name, r.RelationType, r.IssueToID
+		if r.IssueFromID != is.ID {
+			label, typ, other = t.symName, t.sym, r.IssueFromID
+		}
+		text := []string{l.c.L(label)}
+		if r.Delay.Valid && r.Delay.Int64 != 0 {
+			text = append(text, "("+l.c.L("datetime.distance_in_words.x_days", map[string]any{"count": r.Delay.Int64})+")")
+		}
+		if ref := refs[other]; ref != nil {
+			text = append(text, string(l.r.LinkToIssue(ref, redmine.LinkToIssueOptions{NoSubject: true, NoTracker: true})))
+		} else {
+			text = append(text, "#"+itoa(other))
+		}
+		parts = append(parts, string(rails.ContentTag("span", rails.HTML(strings.Join(text, " ")), rails.NewHash("class", "rel-"+typ))))
+	}
+	return rails.HTML(strings.Join(parts, ", "))
+}
+
+// attachmentsContent は attachments 列（format_object(Attachment) を空白区切りで並べる）。
+func (l *myIssueList) attachmentsContent(is *query.IssueRow) rails.HTML {
+	atts, err := repository.MyPageIssueAttachments(l.c.Ctx(), l.a.DB, is.ID)
+	if err != nil {
+		l.a.logger().Error("issue attachments", "err", err)
+		return ""
+	}
+	var parts []string
+	for _, a := range atts {
+		link := l.r.LinkToAttachment(a, redmine.LinkToAttachmentOptions{})
+		dl := l.r.LinkToAttachment(a, redmine.LinkToAttachmentOptions{Icon: "download", Download: true,
+			HTML: rails.NewHash("class", "icon-only icon-download", "title", l.c.L("button_download"))})
+		parts = append(parts, string(rails.ContentTag("span", link+dl, rails.NewHash("class", "attachment-filename"))))
+	}
+	return rails.HTML(strings.Join(parts, " "))
+}
+
+// customFieldContent はカスタムフィールド列（format_object(CustomValue)：formatted_custom_value を format_object する）。
+func (l *myIssueList) customFieldContent(col *query.Column, is *query.IssueRow) rails.HTML {
+	cf := col.CustomField
+	vals := is.CustomValues[cf.ID]
+	if len(vals) == 0 {
+		return ""
+	}
+	// 複数値は value.to_s の順
+	vals = slices.Clone(vals)
+	slices.Sort(vals)
+	env := l.a.cfEnv(l.c)
+	thousands := cf.Setting("thousands_delimiter") == "1"
+	var parts []string
+	for _, v := range vals {
+		f := cf.Format().FormattedValue(env, cf, v, nil, true)
+		parts = append(parts, string(l.formatObject(f, thousands)))
+	}
+	return rails.HTML(strings.Join(parts, ", "))
+}
+
+// formatObject は ApplicationHelper#format_object(object, html: true, thousands_delimiter:)。
+func (l *myIssueList) formatObject(v any, thousands bool) rails.HTML {
+	c := l.c
+	opts := i18n.NumberOptions{}
+	if !thousands {
+		opts["delimiter"] = ""
+	}
+	switch x := v.(type) {
+	case nil:
+		return ""
+	case rails.HTML:
+		return x
+	case string:
+		return rails.H(x)
+	case []any:
+		var parts []string
+		for _, e := range x {
+			parts = append(parts, string(l.formatObject(e, thousands)))
+		}
+		return rails.HTML(strings.Join(parts, ", "))
+	case time.Time:
+		return rails.H(c.Loc.FormatDate(x))
+	case int64:
+		return rails.H(c.Loc.NumberWithDelimiter(x, opts))
+	case int:
+		return rails.H(c.Loc.NumberWithDelimiter(int64(x), opts))
+	case float64:
+		return rails.H(c.Loc.NumberWithDelimiter(fmt.Sprintf("%.2f", x), opts))
+	case bool:
+		if x {
+			return rails.H(c.L("general_text_Yes"))
+		}
+		return rails.H(c.L("general_text_No"))
+	}
+	return rails.H(rails.ToS(v))
 }
 
 // issueVisible は issue.visible?（親チケットの表示用）。

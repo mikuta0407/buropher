@@ -169,6 +169,24 @@ requests:
     user: jsmith
     form: {"settings[nonexistent][days]": "3"}
     headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, */*; q=0.01"}
+  - id: add_issuequery_2
+    path: /my/add_block
+    method: POST
+    user: jsmith
+    form: {block: issuequery__2}
+    expect_status: 302
+  - id: settings_query_project
+    path: /my/page
+    method: POST
+    user: jsmith
+    form: {"settings[issuequery__2][query_id]": "7", "settings[issuequery__2][columns][]": [project, subject, parent, parent.subject, spent_hours, total_spent_hours, last_updated_by, watcher_users, relations, attachments, estimated_remaining_hours, total_estimated_hours, closed_on, description, last_notes]}
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, */*; q=0.01"}
+  - id: settings_reported_columns
+    path: /my/page
+    method: POST
+    user: jsmith
+    form: {"settings[issuesreportedbyme][columns][]": [subject, parent, spent_hours, total_spent_hours, last_updated_by, watcher_users, relations, attachments, cf_1, cf_2, cf_6, cf_8, cf_9, description], "settings[issuesreportedbyme][sort]": "id"}
+    headers: {X-Requested-With: XMLHttpRequest, Accept: "text/javascript, application/javascript, */*; q=0.01"}
   - path: /my/page
     id: page_after_settings
     users: [jsmith]

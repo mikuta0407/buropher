@@ -230,6 +230,44 @@ func MyPageNamesByIDs(ctx context.Context, q db.Queryer, table string, ids []int
 	return out, nil
 }
 
+// MyPageIssueAttachments は issue.attachments（created_on, id 順）。
+func MyPageIssueAttachments(ctx context.Context, q db.Queryer, issueID int64) ([]*RefAttachment, error) {
+	var rows []*RefAttachment
+	if err := q.Select(ctx, &rows, `SELECT id, filename, description, content_type, filesize, created_at FROM attachments
+WHERE container_kind = 'issue' AND container_id = ? ORDER BY created_at, id`, issueID); err != nil {
+		return nil, err
+	}
+	return rows, nil
+}
+
+// MyPageRelation は issue_relations の行。
+type MyPageRelation struct {
+	ID           int64         `db:"id"`
+	IssueFromID  int64         `db:"issue_from_id"`
+	IssueToID    int64         `db:"issue_to_id"`
+	RelationType string        `db:"relation_type"`
+	Delay        sql.NullInt64 `db:"delay"`
+}
+
+// MyPageRelationsByIDs は id → issue_relations の行。
+func MyPageRelationsByIDs(ctx context.Context, q db.Queryer, ids []int64) (map[int64]*MyPageRelation, error) {
+	out := map[int64]*MyPageRelation{}
+	for _, chunk := range chunkIDs(uniqIDs(ids)) {
+		query, args, err := db.In(`SELECT id, issue_from_id, issue_to_id, relation_type, delay FROM issue_relations WHERE id IN (?)`, chunk)
+		if err != nil {
+			return nil, err
+		}
+		var rows []*MyPageRelation
+		if err := q.Select(ctx, &rows, query, args...); err != nil {
+			return nil, err
+		}
+		for _, r := range rows {
+			out[r.ID] = r
+		}
+	}
+	return out, nil
+}
+
 // MyPageVersion は link_to_version に必要な列。
 type MyPageVersion struct {
 	ID            int64
