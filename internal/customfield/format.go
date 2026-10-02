@@ -235,7 +235,7 @@ func wrap(v any) []string {
 	}
 }
 
-// nonEmpty は Array.wrap(value).reject {|v| v.to_s == ''}。
+// nonEmpty は Array.wrap(value).reject {|v| v.to_s == ”}。
 func nonEmpty(v any) []string {
 	var out []string
 	for _, s := range wrap(v) {

@@ -176,4 +176,3 @@ func SetPossibleValues(cf *domain.CustomField, v any) {
 func splitLines(s string) []string {
 	return strings.FieldsFunc(s, func(r rune) bool { return r == '\n' || r == '\r' })
 }
-
