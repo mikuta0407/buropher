@@ -28,6 +28,10 @@ func TestDebugFixture(t *testing.T) {
 			got = HighlightByLanguage(e.Input, e.Lang)
 		}
 		want := e.ExpectedString()
+		if want == got {
+			t.Logf("IDENTICAL")
+			continue
+		}
 		// 最初の相違箇所を表示する
 		i := 0
 		for i < len(want) && i < len(got) && want[i] == got[i] {

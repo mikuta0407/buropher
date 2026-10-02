@@ -27,7 +27,28 @@ const pWord = `\p{L}\p{M}\p{Nd}\p{Pc}`
 
 const jsID = `[\p{L}\p{Nl}$_][` + pWord + `]*`
 
-func buildJavascript(tag string) *rlexer {
+// jsSets は Javascript 系レキサーのキーワード集合（サブクラスで拡張される）。
+type jsSets struct {
+	keywords, declarations, reserved, constants, builtins map[string]bool
+}
+
+func defaultJSSets() jsSets {
+	return jsSets{jsKeywords, jsDeclarations, jsReserved, jsConstants, jsBuiltins}
+}
+
+// union は集合の和を返す。
+func union(a map[string]bool, words string) map[string]bool {
+	m := map[string]bool{}
+	for k := range a {
+		m[k] = true
+	}
+	for k := range wordset(words) {
+		m[k] = true
+	}
+	return m
+}
+
+func buildJavascript(tag string, sets jsSets) *rlexer {
 	l := &rlexer{tag: tag}
 	l.state("multiline_comment",
 		rule(`[*]/`, "cm", "#pop"),
@@ -91,7 +112,7 @@ func buildJavascript(tag string) *rlexer {
 		ruleG(`(function)((?:\s|\\\s)+)(`+jsID+`)`, toks("kd", "", "nf")),
 		rule(`function(?=(\(.*\)))`, "kd"),
 		ruleF(`(?m)(#?`+jsID+`)[ \t]*(?=(\(.*\)))`, func(c *rctx) {
-			if jsKeywords[c.group(1)] {
+			if sets.keywords[c.group(1)] {
 				c.token("k")
 			} else {
 				c.token("nf")
@@ -101,17 +122,17 @@ func buildJavascript(tag string) *rlexer {
 		ruleF(`#?`+jsID, func(c *rctx) {
 			w := c.m.String()
 			switch {
-			case jsKeywords[w]:
+			case sets.keywords[w]:
 				c.token("k")
 				c.push("expr_start")
-			case jsDeclarations[w]:
+			case sets.declarations[w]:
 				c.token("kd")
 				c.push("expr_start")
-			case jsReserved[w]:
+			case sets.reserved[w]:
 				c.token("kr")
-			case jsConstants[w]:
+			case sets.constants[w]:
 				c.token("kc")
-			case jsBuiltins[w]:
+			case sets.builtins[w]:
 				c.token("nb")
 			default:
 				c.token("nx")
@@ -172,5 +193,108 @@ func buildJavascript(tag string) *rlexer {
 }
 
 func init() {
-	registerRouge("javascript", func() *rlexer { return buildJavascript("javascript") })
+	registerRouge("javascript", func() *rlexer { return buildJavascript("javascript", defaultJSSets()) })
+	registerRouge("typescript", func() *rlexer {
+		l := buildJavascript("typescript", tsSets())
+		applyTypescriptCommon(l)
+		return l
+	})
+	registerRouge("jsx", func() *rlexer { return buildJSX("jsx", defaultJSSets()) })
+	registerRouge("tsx", func() *rlexer {
+		l := buildJSX("tsx", tsSets())
+		applyTypescriptCommon(l)
+		l.prependRules("element_name",
+			ruleF(`(\w+)(,)`, func(c *rctx) { c.groups("nx", "p"); c.pop(3) }),
+			rule(`<`, "p", "type"),
+		)
+		l.state("type",
+			mixin("object"),
+			rule(`>`, "p", "#pop"),
+		)
+		return l
+	})
+}
+
+// tsSets は TypescriptCommon のキーワード集合。
+func tsSets() jsSets {
+	return jsSets{
+		keywords:     union(jsKeywords, `is namespace static private protected public implements readonly`),
+		declarations: union(jsDeclarations, `type abstract`),
+		reserved:     union(jsReserved, `string any void number namespace module declare default interface keyof`),
+		constants:    jsConstants,
+		builtins: union(jsBuiltins, `Capitalize ConstructorParameters Exclude Extract InstanceType
+Lowercase NonNullable Omit OmitThisParameter Parameters
+Partial Pick Readonly Record Required
+ReturnType ThisParameterType ThisType Uncapitalize Uppercase`),
+	}
+}
+
+// applyTypescriptCommon は TypescriptCommon.extended の prepend。
+func applyTypescriptCommon(l *rlexer) {
+	l.prependRules("root",
+		rule(`[?][.]`, "p"),
+		rule(`[?]{2}`, "o"),
+		rule(`(?<![_$[:alnum:]])(?:(?<=\.\.\.)|(?<!\.))(?:(as)|(satisfies))\s+`, "kd"),
+	)
+	l.prependRules("statement",
+		ruleF(`(`+jsID+`)(\??)(\s*)(:)`, func(c *rctx) {
+			c.groups("nl", "p", "", "p")
+			c.push("expr_start")
+		}),
+	)
+}
+
+// buildJSX は jsx.rb（Javascript のサブクラス）。
+func buildJSX(tag string, sets jsSets) *rlexer {
+	l := buildJavascript(tag, sets)
+	l.start = func(c *rctx) {
+		if s := c.sub("html"); s != nil {
+			s.reset()
+		}
+		c.push("expr_start")
+	}
+	l.prependRules("expr_start", mixin("tag"))
+	l.state("tag",
+		ruleF(`<`, func(c *rctx) {
+			c.token("p")
+			c.push("tag_opening")
+			c.push("element")
+			c.push("element_name")
+		}),
+	)
+	l.state("tag_opening",
+		ruleF(`<\/`, func(c *rctx) {
+			c.token("p")
+			c.gotoState("element")
+			c.push("element_name")
+		}),
+		mixin("tag"),
+		ruleF(`{`, func(c *rctx) { c.token("si"); c.push("interpol"); c.push("expr_start") }),
+		ruleF(`[^<{]+`, func(c *rctx) { c.delegate("html") }),
+	)
+	l.state("element",
+		mixin("comments_and_whitespace"),
+		ruleF(`\/>`, func(c *rctx) { c.token("p"); c.pop(2) }),
+		rule(`>`, "p", "#pop"),
+		ruleF(`{`, func(c *rctx) { c.token("si"); c.push("interpol"); c.push("expr_start") }),
+		rule(`\w[\w-]*`, "na"),
+		rule(`=`, "p"),
+		rule(`(["']).*?(\1)`, "s"),
+	)
+	l.state("element_name",
+		rule(`[A-Z]\w*`, "nc"),
+		rule(`\w+`, "nt"),
+		rule(`\.`, "p"),
+		ruleF(``, func(c *rctx) { c.pop() }),
+	)
+	l.state("interpol",
+		rule(`}`, "si", "#pop"),
+		ruleF(`{`, func(c *rctx) { c.token("p"); c.push("interpol_inner"); c.push("statement") }),
+		mixin("root"),
+	)
+	l.state("interpol_inner",
+		ruleF(`}`, func(c *rctx) { c.token("p"); c.gotoState("statement") }),
+		mixin("root"),
+	)
+	return l
 }
