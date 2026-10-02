@@ -87,10 +87,11 @@ func DocumentCategoryExists(ctx context.Context, q db.Queryer, id int64) (bool, 
 	return n > 0, err
 }
 
-// DefaultDocumentCategoryID は DocumentCategory.default（is_default の最初の行。無ければ 0）。
+// DefaultDocumentCategoryID は DocumentCategory.default（is_default の最初の行、無ければ position 順の
+// 最初の行。どちらも無ければ 0）。
 func DefaultDocumentCategoryID(ctx context.Context, q db.Queryer) (int64, error) {
 	var ids []int64
-	if err := q.Select(ctx, &ids, `SELECT id FROM document_categories WHERE is_default = ? ORDER BY position, id`, true); err != nil {
+	if err := q.Select(ctx, &ids, `SELECT id FROM document_categories ORDER BY is_default DESC, position, id`); err != nil {
 		return 0, err
 	}
 	if len(ids) == 0 {

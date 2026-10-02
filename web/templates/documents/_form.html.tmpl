@@ -1,0 +1,18 @@
+{{$f := .f}}{{$document := (assigns).Document -}}
+{{error_messages_for $document}}
+
+<div class="box tabular">
+  <p>{{$f.Select "category_id" (assigns).Categories}}</p>
+  <p>{{$f.TextField "title" (hash "required" true "size" 60)}}</p>
+  <p>{{$f.TextArea "description" (hash "cols" 60 "rows" 15 "class" "wiki-edit" "data" (merge_hash (hash "auto_complete" true) list_autofill_data_attributes))}}</p>
+
+  {{range $value := $document.CustomFieldValues}}
+    <p>{{custom_field_tag_with_label "document" $value}}</p>
+  {{end}}
+
+  {{if not $document.Persisted}}
+    <p><label>{{l "label_attachment_plural"}}</label>{{partial "attachments/form" (dict "saved_attachments" (assigns).SavedAttachments)}}</p>
+  {{end}}
+</div>
+
+{{wikitoolbar_for "document_description" "/preview/text"}}

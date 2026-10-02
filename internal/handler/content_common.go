@@ -52,21 +52,22 @@ func (f *contentForm) HumanAttributeName(attr string) string {
 func (f *contentForm) ValidationErrors() *validation.Errors { return f.errs }
 
 // Notifier はメール通知のフック（Mailer.deliver_*）。メール送信は未実装のため既定は何もしない。
-// 通知機能を実装するときに App.Notify を差し替える。
+// 通知機能を実装するときに SetContentNotifier で設定する。
 type Notifier interface {
-	// Notify は event（news_added / news_comment_added / document_added / file_added / message_posted /
-	// attachments_added）と対象（*domain.News など）を受け取る。
-	Notify(c *Req, event string, obj any)
+	// Notify は Mailer のアクション名（news_added / news_comment_added / document_added /
+	// attachments_added / message_posted）と対象（*domain.News, *domain.Comment, *domain.Document,
+	// []*domain.Attachment, *domain.Message）を受け取る。
+	Notify(c *Req, action string, obj any)
 }
 
-// notify は Setting.notified_events に event が含まれていれば通知フックを呼ぶ。
-func (a *App) notify(c *Req, event string, obj any) {
+// notify は Setting.notified_events に event が含まれていれば通知フック（Mailer.deliver_<action>）を呼ぶ。
+func (a *App) notify(c *Req, event, action string, obj any) {
 	if contentNotifier == nil {
 		return
 	}
 	for _, e := range a.Settings.Strings("notified_events") {
 		if e == event {
-			contentNotifier.Notify(c, event, obj)
+			contentNotifier.Notify(c, action, obj)
 			return
 		}
 	}

@@ -320,7 +320,7 @@ func (a *App) NewsCreate(c *Req) {
 		a.internalError(c, "create news", err)
 		return
 	}
-	a.notify(c, "news_added", n)
+	a.notify(c, "news_added", "news_added", n)
 	if api {
 		c.RenderAPIOK()
 		return

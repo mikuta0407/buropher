@@ -1,0 +1,41 @@
+{{$doc := .Document.Document -}}
+<div class="contextual">
+{{if .CanEdit}}
+{{link_to (sprite_icon "edit" (l "button_edit")) (printf "/documents/%d/edit" $doc.ID) (hash "class" "icon icon-edit" "accesskey" (accesskey "edit"))}}
+{{end}}
+{{if .CanDelete}}
+{{delete_link (printf "/documents/%d" $doc.ID)}}
+{{end}}
+</div>
+
+<h2>{{$doc.Title}}</h2>
+
+<p><em>{{if $doc.Category}}{{$doc.Category.Name}}{{end}}<br />
+{{format_date $doc.CreatedAt}}</em></p>
+
+{{if .CustomValues}}
+<ul>
+  {{range $cv := .CustomValues}}
+    <li><span class="label">{{$cv.Name}}:</span> {{$cv.Value}}</li>
+  {{end}}
+</ul>
+{{end}}
+
+<div class="wiki">
+{{textilizable $doc.Description (hash "object" (document_text_object $doc) "attachments" (ref_attachments .Attachments))}}
+</div>
+
+<h3>{{l "label_attachment_plural"}}</h3>
+{{link_to_attachments "document" $doc.ID .Attachments (hash "thumbnails" true "editable" .CanEdit "deletable" .CanDelete)}}
+
+{{if authorize_for "documents" "add_attachment"}}
+<p>{{link_to (l "label_attachment_new") request_path (hash "onclick" "$('#add_attachment_form').show(); return false;" "id" "attach_files_link")}}</p>
+  {{form_tag (printf "/documents/%d/add_attachment" $doc.ID) (hash "multipart" true "id" "add_attachment_form" "style" "display:none;")}}
+  <div class="box">
+  <p>{{partial "attachments/form" (dict)}}</p>
+  </div>
+  {{submit_tag (l "button_add")}}
+  {{end_form}}
+{{end}}
+
+{{html_title $doc.Title -}}

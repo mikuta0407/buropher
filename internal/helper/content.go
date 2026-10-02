@@ -55,6 +55,12 @@ func init() {
 			"news_text_object": func(n *domain.News) *redmine.Object {
 				return &redmine.Object{Kind: "news", ID: n.ID, Project: n.Project}
 			},
+			"document_text_object": func(d *domain.Document) *redmine.Object {
+				return &redmine.Object{Kind: "document", ID: d.ID, Project: d.Project}
+			},
+			"message_text_object": func(m *domain.Message, project any) *redmine.Object {
+				return &redmine.Object{Kind: "message", ID: m.ID, Project: toProject(project)}
+			},
 			"comment_text_area": func(name, method, value string, opts *rails.Hash) html {
 				return commentTextArea(name, method, value, opts)
 			},

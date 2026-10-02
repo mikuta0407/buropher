@@ -52,3 +52,29 @@ requests:
     users: [admin]
   - path: /news/2.json
     users: [jsmith]
+
+  # ---- 文書
+  - path: /projects/ecookbook/documents
+    users: [anonymous, admin, jsmith, dlopper]
+  - path: /projects/ecookbook/documents?sort_by=date
+    users: [admin]
+  - path: /projects/ecookbook/documents?sort_by=title
+    users: [admin]
+  - path: /projects/ecookbook/documents?sort_by=author
+    users: [admin]
+  - path: /projects/ecookbook/documents?sort_by=bogus
+    users: [jsmith]
+  - path: /projects/onlinestore/documents
+    users: [anonymous, jsmith]
+  - path: /projects/ecookbook/documents/new
+    users: [admin, dlopper]
+  - path: /documents/1
+    users: [anonymous, admin, jsmith]
+  - path: /documents/2
+    users: [admin]
+  - path: /documents/3
+    users: [admin]
+  - path: /documents/999
+    users: [admin]
+  - path: /documents/1/edit
+    users: [admin, dlopper]

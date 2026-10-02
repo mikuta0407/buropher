@@ -34,4 +34,6 @@ func (a *App) Routes(r Router) {
 	a.routesWiki(r)
 	a.routesWikis(r)
 	a.routesNews(r)
+	a.routesComments(r)
+	a.routesDocuments(r)
 }

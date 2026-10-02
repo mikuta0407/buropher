@@ -1,0 +1,41 @@
+{{$pr := current_project -}}
+<div class="contextual">
+{{if user_allowed_to "add_documents" $pr}}{{link_to (sprite_icon "add" (l "label_document_new")) (printf "/projects/%s/documents/new" $pr.Identifier) (hash "class" "icon icon-add" "onclick" "showAndScrollTo(\"add-document\", \"document_title\"); return false;")}}{{end}}
+</div>
+
+<div id="add-document" style="display:none;">
+<h2>{{l "label_document_new"}}</h2>
+{{$f := labelled_form_for "" .Document (hash "url" (printf "/projects/%s/documents" $pr.Identifier) "html" (hash "multipart" true))}}{{$f.Open}}
+{{partial "documents/form" (dict "f" $f)}}
+<p>
+  {{submit_tag (l "button_create")}}
+  {{link_to (l "button_cancel") "#" (hash "onclick" "$(\"#add-document\").hide(); return false;")}}
+</p>
+{{end_form}}
+</div>
+
+<h2>{{l "label_document_plural"}}</h2>
+
+<div id="document-list">
+{{if not .Groups}}<p class="nodata">{{l "label_no_data"}}</p>{{end}}
+
+{{range $group := .Groups}}
+  <div class="document-group document-group-{{$.SortBy}}">
+    <h3 class="group-name">{{$group.Name}}</h3>
+    {{range $document := $group.Documents}}{{partial "documents/document" (dict "document" $document)}}{{end}}
+  </div>
+{{end}}
+</div>
+
+{{define "documents/index#sidebar"}}
+  <h3>{{l "label_sort_by" ""}}</h3>
+  <ul>
+    <li>{{link_to (l "field_category") (current_path_with (hash "sort_by" "category")) (hash "class" (ternary (eq (assigns).SortBy "category") "selected" nil))}}</li>
+    <li>{{link_to (l "label_date") (current_path_with (hash "sort_by" "date")) (hash "class" (ternary (eq (assigns).SortBy "date") "selected" nil))}}</li>
+    <li>{{link_to (l "field_title") (current_path_with (hash "sort_by" "title")) (hash "class" (ternary (eq (assigns).SortBy "title") "selected" nil))}}</li>
+    <li>{{link_to (l "field_author") (current_path_with (hash "sort_by" "author")) (hash "class" (ternary (eq (assigns).SortBy "author") "selected" nil))}}</li>
+  </ul>
+{{end}}
+{{content_for "sidebar" (capture "documents/index#sidebar")}}
+
+{{html_title (l "label_document_plural") -}}
