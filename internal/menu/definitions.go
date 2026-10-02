@@ -17,6 +17,25 @@ func projectPath(prefix, suffix string) func(Env, Project) string {
 	}
 }
 
+// RecallEnv は Rails の url_for の recall（現在のリクエストのパスパラメータ project_id を引き継ぐ）を
+// 提供する Env（任意）。@project が無い画面（404 / 403）でもパスに project_id があれば
+// アプリケーションメニューの URL がプロジェクト内のパスになる。
+type RecallEnv interface {
+	RecallProjectID() string
+}
+
+// recallPath は path(global) だが、project_id を引き継げるときは "/projects/<id>" + suffix を返す。
+func recallPath(global, suffix string) func(Env, Project) string {
+	return func(e Env, _ Project) string {
+		if r, ok := e.(RecallEnv); ok {
+			if id := r.RecallProjectID(); id != "" {
+				return "/projects/" + id + suffix
+			}
+		}
+		return global
+	}
+}
+
 func globalModule(perm, module string) func(Env, Project) bool {
 	return func(e Env, _ Project) bool {
 		return e.AllowedToGlobally(perm) && e.ModuleEnabledInVisibleProject(module)
@@ -61,15 +80,15 @@ func ApplicationMenu() *Menu {
 	m.Push(&Item{Name: "projects", Controller: "projects", Action: "index", URL: path("/projects"),
 		PermMode: PermNone, Caption: "label_project_plural"}, "")
 	m.Push(&Item{Name: "activity", Controller: "activities", Action: "index", URL: path("/activity")}, "")
-	m.Push(&Item{Name: "issues", Controller: "issues", Action: "index", URL: path("/issues"),
+	m.Push(&Item{Name: "issues", Controller: "issues", Action: "index", URL: recallPath("/issues", "/issues"),
 		Cond: globalModule("view_issues", "issue_tracking"), Caption: "label_issue_plural"}, "")
-	m.Push(&Item{Name: "time_entries", Controller: "timelog", Action: "index", URL: path("/time_entries"),
+	m.Push(&Item{Name: "time_entries", Controller: "timelog", Action: "index", URL: recallPath("/time_entries", "/time_entries"),
 		Cond: globalModule("view_time_entries", "time_tracking"), Caption: "label_spent_time"}, "")
-	m.Push(&Item{Name: "gantt", Controller: "gantts", Action: "show", URL: path("/issues/gantt"),
+	m.Push(&Item{Name: "gantt", Controller: "gantts", Action: "show", URL: recallPath("/issues/gantt", "/issues/gantt"),
 		Caption: "label_gantt", Cond: globalModule("view_gantt", "gantt")}, "")
-	m.Push(&Item{Name: "calendar", Controller: "calendars", Action: "show", URL: path("/issues/calendar"),
+	m.Push(&Item{Name: "calendar", Controller: "calendars", Action: "show", URL: recallPath("/issues/calendar", "/issues/calendar"),
 		Caption: "label_calendar", Cond: globalModule("view_calendar", "calendar")}, "")
-	m.Push(&Item{Name: "news", Controller: "news", Action: "index", URL: path("/news"),
+	m.Push(&Item{Name: "news", Controller: "news", Action: "index", URL: recallPath("/news", "/news"),
 		Cond: globalModule("view_news", "news"), Caption: "label_news_plural"}, "")
 	return m
 }

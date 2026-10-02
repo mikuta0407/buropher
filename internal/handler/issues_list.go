@@ -926,7 +926,7 @@ func (l *issueLookup) issueAttachments(id int64) []*repository.ReadAttachment {
 func (l *issueLookup) formatAttachment(a *repository.ReadAttachment) template.HTML {
 	id := strconv.FormatInt(a.ID, 10)
 	link := rails.LinkTo(a.Filename, "/attachments/"+id, nil)
-	dl := rails.LinkTo(l.icon("download", l.L("button_download")), "/attachments/download/"+id+"/"+url.PathEscape(a.Filename),
+	dl := rails.LinkTo(l.icon("download", a.Filename), "/attachments/download/"+id+"/"+url.PathEscape(a.Filename),
 		rails.NewHash("class", "icon-only icon-download", "title", l.L("button_download")))
 	return rails.ContentTag("span", link+dl, rails.NewHash("class", "attachment-filename"))
 }

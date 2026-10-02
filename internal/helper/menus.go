@@ -1,6 +1,7 @@
 package helper
 
 import (
+	"github.com/mikuta0407/buropher/internal/httpx"
 	"html/template"
 
 	"github.com/mikuta0407/buropher/internal/domain"
@@ -52,6 +53,14 @@ type menuEnv struct {
 var _ menu.Env = menuEnv{}
 
 func (e menuEnv) L(key string) string { return e.p.l(key) }
+
+// RecallProjectID は menu.RecallEnv（パスパラメータ project_id。@project があれば使わない）。
+func (e menuEnv) RecallProjectID() string {
+	if e.p.Project != nil || e.p.Request == nil {
+		return ""
+	}
+	return httpx.PathParams(e.p.Request).String("project_id")
+}
 func (e menuEnv) LOrHumanize(name, prefix string) string {
 	if e.p.Loc == nil {
 		return rails.Humanize(name)

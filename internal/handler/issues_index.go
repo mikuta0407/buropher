@@ -201,11 +201,8 @@ func (a *App) issuesAtomLinks(c *Req, q *query.Query) (string, string) {
 		return base + path
 	}
 	issues := qs(issuesPath(c.Project) + ".atom")
-	jpath := "/issues/changes.atom"
-	if c.Project != nil {
-		jpath = "/projects/" + c.Project.Identifier + "/issues/changes.atom"
-	}
-	return issues, qs(jpath)
+	// journals#index のルート（/issues/changes）は project_id を持たないので引き継がれない
+	return issues, qs("/issues/changes.atom")
 }
 
 // ---------------------------------------------------------------- totals
