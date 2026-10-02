@@ -1,0 +1,6 @@
+status: 200
+content-type: text/javascript
+
+$('#ajax-modal').html('\n  <div>\n  <form class=\"new_email_address\" id=\"new_email_address\" action=\"/users/2/email_addresses\" accept-charset=\"UTF-8\" data-remote=\"true\" name=\"new_email_address-RANDOM\" method=\"post\">\n    <p>Add email address<\/p>\n    \n    <p>\n      <input size=\"40\" type=\"text\" name=\"email_address[address]\" id=\"email_address_address\" />\n      <input type=\"submit\" name=\"commit\" value=\"Add\" data-disable-with=\"Add\" />\n    <\/p>\n<\/form>  <\/div>\n');
+showModal('ajax-modal', '600px', 'Emails');
+$('#email_address_address').focus();

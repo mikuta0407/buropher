@@ -1,0 +1,7 @@
+status: 200
+content-type: text/javascript
+
+$('#tab-content-memberships').html('\n<p><a class=\"icon icon-add\" data-remote=\"true\" href=\"/users/3/memberships/new\"><svg class=\"s18 icon-svg\" aria-hidden=\"true\"><use href=\"/assets/icons-DIGEST.svg#icon--add\"><\/use><\/svg><span class=\"icon-label\">Add projects<\/span><\/a><\/p>\n\n<table class=\"list memberships\">\n  <thead><tr>\n    <th>Project<\/th>\n    <th>Roles<\/th>\n    <th style=\"width:15%\"><\/th>\n      \n  <\/tr><\/thead>\n  <tbody>\n  <tr id=\"member-2\" class=\"class\">\n  <td class=\"project name\">\n    <a href=\"/projects/ecookbook\">eCookbook<\/a>\n  <\/td>\n  <td class=\"roles\">\n    <span id=\"member-2-roles\">Developer, Reporter<\/span>\n    <div id=\"member-2-form\"><\/div>\n  <\/td>\n  <td class=\"buttons\">\n      <a class=\"icon icon-edit\" data-remote=\"true\" href=\"/users/3/memberships/2/edit\"><svg class=\"s18 icon-svg\" aria-hidden=\"true\"><use href=\"/assets/icons-DIGEST.svg#icon--edit\"><\/use><\/svg><span class=\"icon-label\">Edit<\/span><\/a>\n      <a data-confirm=\"Are you sure?\" class=\"icon icon-del\" data-remote=\"true\" rel=\"nofollow\" data-method=\"delete\" href=\"/users/3/memberships/2\"><svg class=\"s18 icon-svg\" aria-hidden=\"true\"><use href=\"/assets/icons-DIGEST.svg#icon--del\"><\/use><\/svg><span class=\"icon-label\">Delete<\/span><\/a>\n  <\/td>\n      \n  <\/tr>\n  <\/tbody>\n<\/table>\n');
+hideOnLoad();
+
+  alert('Failed to save member(s): Role cannot be empty.');
