@@ -159,6 +159,8 @@ do_reset() {
     rm -f "$DIR/db/redmine.sqlite3-wal" "$DIR/db/redmine.sqlite3-shm"
     cp "$DIR/db/redmine.pristine.sqlite3" "$DIR/db/redmine.sqlite3"
     rm -rf "$DIR/tmp/cache/"*
+    # 添付の保存先（test/fixtures/files）も書き戻す（削除系のシナリオがファイルを消すため）
+    rsync -a --delete "$SRC/test/fixtures/files/" "$DIR/test/fixtures/files/"
   fi
   do_start
 }
