@@ -260,6 +260,21 @@ requests:
     user: jsmith
     content_type: application/json
     body: '{"file":{"token":"999.abc"}}'
+  - id: upload_for_file_api
+    path: /uploads.json?filename=api.txt
+    method: POST
+    user: jsmith
+    content_type: application/octet-stream
+    body: 'api file'
+  - id: files_api_create
+    path: /projects/ecookbook/files.json
+    method: POST
+    user: jsmith
+    content_type: application/json
+    body: '{"file":{"token":"29.12de8110f4d42d02f6cebfa52994a52f4628d24e15a774392e330aff373d10c8","version_id":"3","filename":"api2.txt","description":"via api"}}'
+  - path: /projects/ecookbook/files.xml
+    id: files_api_index_after_create
+    users: [jsmith]
 
   # ---- フォーラム ----
   - id: board_create_invalid
