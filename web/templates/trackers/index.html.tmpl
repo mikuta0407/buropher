@@ -1,0 +1,43 @@
+<div class="contextual">
+{{link_to (sprite_icon "add" (l "label_tracker_new")) "/trackers/new" (hash "class" "icon icon-add")}}
+{{link_to (sprite_icon "summary" (l "field_summary")) "/trackers/fields" (hash "class" "icon icon-summary")}}
+</div>
+
+<h2>{{l "label_tracker_plural"}}</h2>
+
+<table class="list trackers">
+  <thead><tr>
+  <th>{{l "label_tracker"}}</th>
+  <th>{{l "field_default_status"}}</th>
+  <th>{{l "field_description"}}</th>
+  <th></th>
+  <th></th>
+  </tr></thead>
+  <tbody>
+{{range $tracker := .Trackers}}
+  <tr>
+  <td class="name">{{link_to $tracker.Name (printf "/trackers/%d/edit" $tracker.ID)}}</td>
+  <td>{{index $.StatusNames $tracker.DefaultStatusID}}</td>
+  <td class="description">{{$tracker.DescriptionString}}</td>
+  <td>
+    {{if not (index $.WorkflowTrackers $tracker.ID)}}
+      <span class="icon icon-warning">
+        {{sprite_icon "warning" (l "text_tracker_no_workflow")}} ({{link_to (l "button_edit") (printf "/workflows/edit?tracker_id=%d" $tracker.ID)}})
+      </span>
+    {{end}}
+  </td>
+  <td class="buttons">
+    {{reorder_handle (printf "/trackers/%d" $tracker.ID) "tracker"}}
+    {{link_to (sprite_icon "copy" (l "button_copy")) (printf "/trackers/new?copy=%d" $tracker.ID) (hash "class" "icon icon-copy")}}
+    {{delete_link (printf "/trackers/%d" $tracker.ID)}}
+  </td>
+  </tr>
+{{end}}
+  </tbody>
+</table>
+
+{{html_title (l "label_tracker_plural") -}}
+
+{{javascript_tag `
+  $(function() { $("table.trackers tbody").positionedItems(); });
+`}}

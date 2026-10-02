@@ -1,14 +1,19 @@
 package domain
 
-// IssueStatus は issue_statuses 行（Redmine IssueStatus）。
+// IssueStatus は issue_statuses 行。
 type IssueStatus struct {
 	ID               int64
 	Name             string
-	Description      string
+	Description      *string
 	IsClosed         bool
 	Position         int
 	DefaultDoneRatio *int
 }
 
-// String は IssueStatus#to_s。
-func (s *IssueStatus) String() string { return s.Name }
+// DescriptionString は description（nil なら空文字列）。
+func (s *IssueStatus) DescriptionString() string {
+	if s.Description == nil {
+		return ""
+	}
+	return *s.Description
+}

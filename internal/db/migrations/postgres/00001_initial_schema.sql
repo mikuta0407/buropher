@@ -15,7 +15,7 @@ CREATE TABLE auth_sources (
   -- LDAP: host, port, tls(ldaps), starttls, verify_peer, account, base_dn, filter, timeout,
   --       attr_login/attr_firstname/attr_lastname/attr_mail, ...
   -- OIDC: issuer, client_id, scopes, claim マッピング, ...
-  config JSONB NOT NULL DEFAULT '{}',
+  config JSON NOT NULL DEFAULT '{}',
   -- 暗号化対象の秘密値 (LDAP の account_password / OIDC の client_secret)。
   -- Redmine 形式 "aes-256-cbc:<b64>--<b64iv>" もそのまま保持できる。
   secret TEXT,
@@ -108,7 +108,7 @@ CREATE TABLE user_identities (
   auth_source_id BIGINT REFERENCES auth_sources (id) ON DELETE CASCADE,
   subject TEXT NOT NULL,
   email TEXT,
-  raw_claims JSONB,
+  raw_claims JSON,
   created_at TIMESTAMPTZ NOT NULL,
   last_login_at TIMESTAMPTZ
 );
@@ -151,7 +151,7 @@ CREATE TABLE sessions (
   ip TEXT,
   user_agent TEXT,
   -- CSRF トークン, back_url, flash 等
-  data JSONB NOT NULL DEFAULT '{}'
+  data JSON NOT NULL DEFAULT '{}'
 );
 CREATE INDEX sessions_user_id ON sessions (user_id);
 CREATE INDEX sessions_expires_at ON sessions (expires_at);
@@ -180,7 +180,7 @@ CREATE TABLE trackers (
   is_in_roadmap BOOLEAN NOT NULL DEFAULT TRUE,
   default_status_id BIGINT NOT NULL REFERENCES issue_statuses (id) ON DELETE RESTRICT,
   -- 無効化された標準フィールド名の配列 (旧 fields_bits)
-  disabled_core_fields JSONB NOT NULL DEFAULT '[]'
+  disabled_core_fields JSON NOT NULL DEFAULT '[]'
 );
 CREATE UNIQUE INDEX trackers_name ON trackers (name);
 CREATE INDEX trackers_position ON trackers (position);
@@ -383,9 +383,9 @@ CREATE TABLE custom_fields (
   multiple BOOLEAN NOT NULL DEFAULT FALSE,
   position INTEGER NOT NULL DEFAULT 1,
   -- list 形式の選択肢 (文字列配列)
-  possible_values JSONB,
+  possible_values JSON,
   -- 旧 format_store (url_pattern, text_formatting, edit_tag_style, user_role, ...)
-  format_settings JSONB NOT NULL DEFAULT '{}'
+  format_settings JSON NOT NULL DEFAULT '{}'
 );
 CREATE UNIQUE INDEX custom_fields_owner_name ON custom_fields (owner_kind, name);
 CREATE INDEX custom_fields_owner_position ON custom_fields (owner_kind, position);
@@ -805,16 +805,16 @@ CREATE TABLE queries (
   -- 0=非公開, 1=ロール限定, 2=公開
   visibility INTEGER NOT NULL DEFAULT 0 CHECK (visibility IN (0, 1, 2)),
   -- {"status_id": {"operator": "o", "values": [""]}, ...}
-  filters JSONB NOT NULL DEFAULT '{}',
+  filters JSON NOT NULL DEFAULT '{}',
   -- NULL = 既定列
-  column_names JSONB,
+  column_names JSON,
   -- [["priority", "desc"], ["id", "asc"]]
-  sort_criteria JSONB,
+  sort_criteria JSON,
   group_by TEXT,
-  totalable_names JSONB,
+  totalable_names JSON,
   display_type TEXT,
   -- 上記以外の options (draw_relations, draw_progress_line, draw_selected_columns, ...)
-  options JSONB NOT NULL DEFAULT '{}'
+  options JSON NOT NULL DEFAULT '{}'
 );
 CREATE INDEX queries_project_id ON queries (project_id);
 CREATE INDEX queries_user_id ON queries (user_id);
@@ -843,12 +843,12 @@ CREATE TABLE user_preferences (
   toolbar_language_options TEXT,
   default_issue_query_id BIGINT REFERENCES queries (id) ON DELETE SET NULL,
   default_project_query_id BIGINT REFERENCES queries (id) ON DELETE SET NULL,
-  auto_watch_on JSONB NOT NULL DEFAULT '[]',
+  auto_watch_on JSON NOT NULL DEFAULT '[]',
   -- NULL = 既定レイアウト
-  my_page_layout JSONB,
-  my_page_settings JSONB,
+  my_page_layout JSON,
+  my_page_settings JSON,
   -- 未知キー・その他 (activity_scope, diff_type, gantt_zoom, gantt_months, ...)
-  extra JSONB NOT NULL DEFAULT '{}'
+  extra JSON NOT NULL DEFAULT '{}'
 );
 CREATE INDEX user_preferences_default_issue_query_id ON user_preferences (default_issue_query_id);
 CREATE INDEX user_preferences_default_project_query_id ON user_preferences (default_project_query_id);
@@ -884,7 +884,7 @@ CREATE TABLE user_notification_settings (
 -- =====================================================================
 CREATE TABLE settings (
   name TEXT PRIMARY KEY,
-  value JSONB NOT NULL,
+  value JSON NOT NULL,
   updated_at TIMESTAMPTZ NOT NULL
 );
 
@@ -911,7 +911,7 @@ CREATE TABLE repositories (
   password TEXT,
   path_encoding TEXT,
   log_encoding TEXT,
-  extra_info JSONB,
+  extra_info JSON,
   identifier TEXT,
   is_default BOOLEAN NOT NULL DEFAULT FALSE,
   created_at TIMESTAMPTZ NOT NULL
@@ -974,7 +974,7 @@ CREATE TABLE imports (
   user_id BIGINT NOT NULL REFERENCES user_accounts (principal_id) ON DELETE CASCADE,
   filename TEXT,
   -- separator, wrapper, encoding, date_format, notifications, mapping, ...
-  settings JSONB NOT NULL DEFAULT '{}',
+  settings JSON NOT NULL DEFAULT '{}',
   total_items INTEGER,
   finished BOOLEAN NOT NULL DEFAULT FALSE,
   created_at TIMESTAMPTZ NOT NULL,
@@ -1055,7 +1055,7 @@ CREATE TABLE jobs (
   queue TEXT NOT NULL DEFAULT 'default',
   -- ジョブ種別 (例 'notify.email', 'notify.discord', 'attachment.thumbnail')
   kind TEXT NOT NULL,
-  payload JSONB NOT NULL DEFAULT '{}',
+  payload JSON NOT NULL DEFAULT '{}',
   state TEXT NOT NULL DEFAULT 'pending' CHECK (state IN ('pending', 'running', 'succeeded', 'failed')),
   priority INTEGER NOT NULL DEFAULT 0,
   run_at TIMESTAMPTZ NOT NULL,

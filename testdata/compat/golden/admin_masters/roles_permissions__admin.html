@@ -1,0 +1,2478 @@
+status: 200
+content-type: text/html
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Permissions report - Roles - Redmine</title>
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta content="Redmine" name="description">
+    <meta content="issue,bug,tracker" name="keywords">
+    <meta content="authenticity_token" name="csrf-param">
+    <meta content="{{CSRF}}" name="csrf-token">
+    <link href="/assets/favicon-DIGEST.ico" rel="shortcut icon" type="image/x-icon">
+    <link href="/assets/jquery/jquery-ui-1.13.2-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/tribute-5.1.3-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/application-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/responsive-DIGEST.css" media="all" rel="stylesheet">
+    <script data-turbo-track="reload" type="importmap">{
+  "imports": {
+    "@rails/request.js": "/assets/requestjs-DIGEST.js",
+    "application": "/assets/application-DIGEST.js",
+    "@hotwired/stimulus": "/assets/stimulus.min-DIGEST.js",
+    "@hotwired/stimulus-loading": "/assets/stimulus-loading-DIGEST.js",
+    "turndown": "/assets/turndown-DIGEST.js",
+    "controllers/api_key_copy_controller": "/assets/controllers/api_key_copy_controller-DIGEST.js",
+    "controllers/application": "/assets/controllers/application-DIGEST.js",
+    "controllers": "/assets/controllers/index-DIGEST.js",
+    "controllers/list_autofill_controller": "/assets/controllers/list_autofill_controller-DIGEST.js",
+    "controllers/quote_reply_controller": "/assets/controllers/quote_reply_controller-DIGEST.js",
+    "controllers/sticky_issue_header_controller": "/assets/controllers/sticky_issue_header_controller-DIGEST.js"
+  }
+}</script>
+    <link href="/assets/requestjs-DIGEST.js" rel="modulepreload">
+    <link href="/assets/application-DIGEST.js" rel="modulepreload">
+    <link href="/assets/stimulus.min-DIGEST.js" rel="modulepreload">
+    <link href="/assets/stimulus-loading-DIGEST.js" rel="modulepreload">
+    <link href="/assets/turndown-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/api_key_copy_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/application-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/index-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/list_autofill_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/quote_reply_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/sticky_issue_header_controller-DIGEST.js" rel="modulepreload">
+    <script type="module">import "application"</script>
+    <script src="/assets/jquery-3.7.1-ui-1.13.3-DIGEST.js"></script>
+    <script src="/assets/rails-ujs-DIGEST.js"></script>
+    <script src="/assets/tribute-5.1.3.min-DIGEST.js"></script>
+    <script src="/assets/application-legacy-DIGEST.js"></script>
+    <script src="/assets/responsive-DIGEST.js"></script>
+    <script>//<![CDATA[
+$(window).on('load', function(){ warnLeavingUnsaved('The current page contains unsaved text that will be lost if you leave this page.'); });
+//]]></script>
+    <script>//<![CDATA[
+rm = window.rm || {};rm.I18n = rm.I18n || {};rm.I18n = Object.freeze({buttonCopy: 'Copy'});
+//]]></script>
+    <script>//<![CDATA[
+rm = window.rm || {};rm.AutoComplete = rm.AutoComplete || {};rm.AutoComplete.dataSources = JSON.parse('{"issues":"/issues/auto_complete?q=","wiki_pages":"/wiki_pages/auto_complete?q="}');
+//]]></script>
+  </head>
+  <body class="controller-roles action-permissions avatars-off" data-text-formatting="common_mark">
+    <div id="wrapper">
+      <div class="flyout-menu js-flyout-menu">
+        <div class="flyout-menu__search">
+          <form accept-charset="UTF-8" action="/search" method="get" name="form-RANDOM">
+            <label class="search-magnifier search-magnifier--flyout" for="flyout-search">
+              <svg aria-hidden="true" class="s18 icon-svg">
+                <use href="/assets/icons-DIGEST.svg#icon--search"></use>
+              </svg>
+              <span class="icon-label hidden">Search</span>
+            </label>
+            <input class="small js-search-input" id="flyout-search" name="q" placeholder="Search" type="text">
+          </form>
+        </div>
+        <div class="flyout-menu__avatar">
+          <a href="/users/1">
+            <span class="avatar-color-1 s40 avatar" role="img">RA</span>
+          </a>
+          <a class="user active" href="/users/1">admin</a>
+        </div>
+        <h3>General</h3>
+        <span class="js-general-menu"></span>
+        <span class="js-sidebar flyout-menu__sidebar"></span>
+        <h3>Profile</h3>
+        <span class="js-profile-menu"></span>
+      </div>
+      <div id="top-menu">
+        <div id="account">
+          <ul>
+            <li>
+              <a class="my-account" href="/my/account">My account</a>
+            </li>
+            <li>
+              <a class="logout" data-method="post" href="/logout" rel="nofollow">Sign out</a>
+            </li>
+          </ul>
+        </div>
+        <div id="loggedas">
+          Logged in as
+          <a class="user active" href="/users/1">admin</a>
+        </div>
+        <ul>
+          <li>
+            <a class="home" href="/">Home</a>
+          </li>
+          <li>
+            <a class="my-page" href="/my/page">My page</a>
+          </li>
+          <li>
+            <a class="projects" href="/projects">Projects</a>
+          </li>
+          <li>
+            <a class="administration" href="/admin">Administration</a>
+          </li>
+          <li>
+            <a class="help" href="https://www.redmine.org/guide" rel="noopener" target="_blank">Help</a>
+          </li>
+        </ul>
+      </div>
+      <div id="header">
+        <a class="mobile-toggle-button js-flyout-menu-toggle-button" href="#"></a>
+        <div id="quick-search">
+          <form accept-charset="UTF-8" action="/search" method="get" name="form-RANDOM">
+            <input autocomplete="off" name="scope" type="hidden">
+            <label for="q">
+              <a accesskey="4" href="/search">Search</a>
+              :
+            </label>
+            <input accesskey="f" class="small" data-auto-complete="true" id="q" name="q" size="20" type="text">
+          </form>
+          <div class="drdn" id="project-jump">
+            <span class="drdn-trigger">Jump to a project...</span>
+            <div class="drdn-content">
+              <div class="quick-search">
+                <svg aria-hidden="true" class="s18 icon-svg">
+                  <use href="/assets/icons-DIGEST.svg#icon--search"></use>
+                </svg>
+                <input autocomplete="off" class="autocomplete" data-automcomplete-url="/projects/autocomplete.js?jump=roles" id="projects-quick-search" name="q" type="text" value="">
+              </div>
+              <div class="drdn-items projects selection">
+                <strong>Bookmarks</strong>
+                <a href="/projects/ecookbook?jump=roles" title="eCookbook">
+                  <span style="padding-inline-start:0px;">eCookbook</span>
+                </a>
+                <a href="/projects/private-child?jump=roles" title="Private child of eCookbook">
+                  <span style="padding-inline-start:16px;">Private child of eCookbook</span>
+                </a>
+                <strong>All Projects</strong>
+                <a href="/projects/private-child?jump=roles" title="Private child of eCookbook">
+                  <span style="padding-inline-start:0px;">Private child of eCookbook</span>
+                </a>
+              </div>
+              <div class="drdn-items all-projects selection">
+                <a href="/projects?jump=roles">All Projects</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <h1>Redmine</h1>
+      </div>
+      <div class="collapsiblesidebar" id="main">
+        <script>//<![CDATA[
+$('#main.collapsiblesidebar').collapsibleSidebar();
+//]]></script>
+        <div id="sidebar">
+          <div id="sidebar-switch-panel" style="visibility: hidden;">
+            <a class="" href="#" id="sidebar-switch-button">
+              <svg aria-hidden="true" class="s20 icon-svg icon-rtl">
+                <use href="/assets/icons-DIGEST.svg#icon--chevrons-right"></use>
+              </svg>
+            </a>
+          </div>
+          <script>//<![CDATA[
+$('#sidebar-switch-panel').css('visibility', 'visible');
+//]]></script>
+          <div id="sidebar-wrapper">
+            <h3>Administration</h3>
+            <div id="admin-menu">
+              <ul>
+                <li>
+                  <a class="icon icon-projects projects" href="/admin/projects">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--projects"></use>
+                    </svg>
+                    <span class="icon-label">Projects</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-user users" href="/users">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--user"></use>
+                    </svg>
+                    <span class="icon-label">Users</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-group groups" href="/groups">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--group"></use>
+                    </svg>
+                    <span class="icon-label">Groups</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-roles roles selected" href="/roles">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--roles"></use>
+                    </svg>
+                    <span class="icon-label">Roles and permissions</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-issue trackers" href="/trackers">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--issue"></use>
+                    </svg>
+                    <span class="icon-label">Trackers</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-issue-edit issue-statuses" href="/issue_statuses">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--issue-edit"></use>
+                    </svg>
+                    <span class="icon-label">Issue statuses</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-workflows workflows" href="/workflows/edit">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--workflows"></use>
+                    </svg>
+                    <span class="icon-label">Workflow</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-custom-fields custom-fields" href="/custom_fields">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--custom-fields"></use>
+                    </svg>
+                    <span class="icon-label">Custom fields</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-list enumerations" href="/enumerations">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--list"></use>
+                    </svg>
+                    <span class="icon-label">Enumerations</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-settings settings" href="/settings">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--settings"></use>
+                    </svg>
+                    <span class="icon-label">Settings</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-server-authentication ldap-authentication" href="/auth_sources">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--server-authentication"></use>
+                    </svg>
+                    <span class="icon-label">LDAP authentication</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-applications applications" href="/oauth/applications">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--apps"></use>
+                    </svg>
+                    <span class="icon-label">Applications</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-plugins plugins" href="/admin/plugins">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--plugins"></use>
+                    </svg>
+                    <span class="icon-label">Plugins</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-help info" href="/admin/info">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--help"></use>
+                    </svg>
+                    <span class="icon-label">Information</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div id="content">
+          <h2>
+            <a href="/roles">Roles</a>
+            » Permissions report
+          </h2>
+          <div class="hide-when-print">
+            <fieldset class="collapsible collapsed" id="filters">
+              <legend class="icon icon-collapsed" onclick="toggleFieldset(this);">
+                <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
+                  <use href="/assets/icons-DIGEST.svg#icon--angle-right"></use>
+                </svg>
+                Filters
+              </legend>
+              <div style="display: none;">
+                <form accept-charset="UTF-8" action="/roles/permissions" method="get" name="form-RANDOM">
+                  <fieldset>
+                    <legend>
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;#filters input[type=checkbox]:enabled&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                    </legend>
+                    <label>
+                      <input checked="checked" id="ids_" name="ids[]" type="checkbox" value="1">
+                      Manager
+                    </label>
+                    <label>
+                      <input checked="checked" id="ids_" name="ids[]" type="checkbox" value="2">
+                      Developer
+                    </label>
+                    <label>
+                      <input checked="checked" id="ids_" name="ids[]" type="checkbox" value="3">
+                      Reporter
+                    </label>
+                    <label>
+                      <input checked="checked" id="ids_" name="ids[]" type="checkbox" value="4">
+                      Non member
+                    </label>
+                    <label>
+                      <input checked="checked" id="ids_" name="ids[]" type="checkbox" value="5">
+                      Anonymous
+                    </label>
+                  </fieldset>
+                  <p>
+                    <input data-disable-with="Apply" type="submit" value="Apply">
+                    <a class="icon icon-reload" href="/roles/permissions">Clear</a>
+                  </p>
+                </form>
+              </div>
+            </fieldset>
+          </div>
+          <form accept-charset="UTF-8" action="/roles/permissions" id="permissions_form" method="post" name="permissions_form-RANDOM">
+            <input autocomplete="off" name="authenticity_token" type="hidden" value="{{CSRF}}">
+            <input autocomplete="off" name="permissions[1][]" type="hidden" value="">
+            <input autocomplete="off" name="permissions[2][]" type="hidden" value="">
+            <input autocomplete="off" name="permissions[3][]" type="hidden" value="">
+            <input autocomplete="off" name="permissions[4][]" type="hidden" value="">
+            <input autocomplete="off" name="permissions[5][]" type="hidden" value="">
+            <div class="autoscroll">
+              <table class="list permissions">
+                <thead>
+                  <tr>
+                    <th>Permissions</th>
+                    <th>
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;input.role-1&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      <span>Manager</span>
+                    </th>
+                    <th>
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;input.role-2&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      <span>Developer</span>
+                    </th>
+                    <th>
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;input.role-3&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      <span>Reporter</span>
+                    </th>
+                    <th>
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;input.role-4&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      <em>Non member</em>
+                    </th>
+                    <th>
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;input.role-5&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      <em>Anonymous</em>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="permission-add_project">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-add_project input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Create project
+                    </td>
+                    <td title="Create project (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="add_project">
+                    </td>
+                    <td title="Create project (Developer)">
+                      <input class="role-2" name="permissions[2][]" type="checkbox" value="add_project">
+                    </td>
+                    <td title="Create project (Reporter)">
+                      <input class="role-3" name="permissions[3][]" type="checkbox" value="add_project">
+                    </td>
+                    <td title="Create project (Non member)">
+                      <input class="role-4" name="permissions[4][]" type="checkbox" value="add_project">
+                    </td>
+                    <td></td>
+                  </tr>
+                  <tr class="permission-edit_project">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-edit_project input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Edit project
+                    </td>
+                    <td title="Edit project (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="edit_project">
+                    </td>
+                    <td title="Edit project (Developer)">
+                      <input checked="checked" class="role-2" name="permissions[2][]" type="checkbox" value="edit_project">
+                    </td>
+                    <td title="Edit project (Reporter)">
+                      <input checked="checked" class="role-3" name="permissions[3][]" type="checkbox" value="edit_project">
+                    </td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr class="permission-close_project">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-close_project input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Close / reopen the project
+                    </td>
+                    <td title="Close / reopen the project (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="close_project">
+                    </td>
+                    <td title="Close / reopen the project (Developer)">
+                      <input class="role-2" name="permissions[2][]" type="checkbox" value="close_project">
+                    </td>
+                    <td title="Close / reopen the project (Reporter)">
+                      <input class="role-3" name="permissions[3][]" type="checkbox" value="close_project">
+                    </td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr class="permission-delete_project">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-delete_project input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Delete the project
+                    </td>
+                    <td title="Delete the project (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="delete_project">
+                    </td>
+                    <td title="Delete the project (Developer)">
+                      <input checked="checked" class="role-2" name="permissions[2][]" type="checkbox" value="delete_project">
+                    </td>
+                    <td title="Delete the project (Reporter)">
+                      <input class="role-3" name="permissions[3][]" type="checkbox" value="delete_project">
+                    </td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr class="permission-select_project_publicity">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-select_project_publicity input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Set project public or private
+                    </td>
+                    <td title="Set project public or private (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="select_project_publicity">
+                    </td>
+                    <td title="Set project public or private (Developer)">
+                      <input checked="checked" class="role-2" name="permissions[2][]" type="checkbox" value="select_project_publicity">
+                    </td>
+                    <td title="Set project public or private (Reporter)">
+                      <input checked="checked" class="role-3" name="permissions[3][]" type="checkbox" value="select_project_publicity">
+                    </td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr class="permission-select_project_modules">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-select_project_modules input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Select project modules
+                    </td>
+                    <td title="Select project modules (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="select_project_modules">
+                    </td>
+                    <td title="Select project modules (Developer)">
+                      <input class="role-2" name="permissions[2][]" type="checkbox" value="select_project_modules">
+                    </td>
+                    <td title="Select project modules (Reporter)">
+                      <input class="role-3" name="permissions[3][]" type="checkbox" value="select_project_modules">
+                    </td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr class="permission-manage_members">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-manage_members input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Manage members
+                    </td>
+                    <td title="Manage members (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="manage_members">
+                    </td>
+                    <td title="Manage members (Developer)">
+                      <input checked="checked" class="role-2" name="permissions[2][]" type="checkbox" value="manage_members">
+                    </td>
+                    <td title="Manage members (Reporter)">
+                      <input checked="checked" class="role-3" name="permissions[3][]" type="checkbox" value="manage_members">
+                    </td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr class="permission-manage_versions">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-manage_versions input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Manage versions
+                    </td>
+                    <td title="Manage versions (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="manage_versions">
+                    </td>
+                    <td title="Manage versions (Developer)">
+                      <input checked="checked" class="role-2" name="permissions[2][]" type="checkbox" value="manage_versions">
+                    </td>
+                    <td title="Manage versions (Reporter)">
+                      <input checked="checked" class="role-3" name="permissions[3][]" type="checkbox" value="manage_versions">
+                    </td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr class="permission-add_subprojects">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-add_subprojects input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Create subprojects
+                    </td>
+                    <td title="Create subprojects (Manager)">
+                      <input class="role-1" name="permissions[1][]" type="checkbox" value="add_subprojects">
+                    </td>
+                    <td title="Create subprojects (Developer)">
+                      <input class="role-2" name="permissions[2][]" type="checkbox" value="add_subprojects">
+                    </td>
+                    <td title="Create subprojects (Reporter)">
+                      <input class="role-3" name="permissions[3][]" type="checkbox" value="add_subprojects">
+                    </td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr class="permission-manage_public_queries">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-manage_public_queries input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Manage public queries
+                    </td>
+                    <td title="Manage public queries (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="manage_public_queries">
+                    </td>
+                    <td title="Manage public queries (Developer)">
+                      <input class="role-2" name="permissions[2][]" type="checkbox" value="manage_public_queries">
+                    </td>
+                    <td title="Manage public queries (Reporter)">
+                      <input class="role-3" name="permissions[3][]" type="checkbox" value="manage_public_queries">
+                    </td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr class="permission-save_queries">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-save_queries input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Save queries
+                    </td>
+                    <td title="Save queries (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="save_queries">
+                    </td>
+                    <td title="Save queries (Developer)">
+                      <input checked="checked" class="role-2" name="permissions[2][]" type="checkbox" value="save_queries">
+                    </td>
+                    <td title="Save queries (Reporter)">
+                      <input checked="checked" class="role-3" name="permissions[3][]" type="checkbox" value="save_queries">
+                    </td>
+                    <td title="Save queries (Non member)">
+                      <input checked="checked" class="role-4" name="permissions[4][]" type="checkbox" value="save_queries">
+                    </td>
+                    <td></td>
+                  </tr>
+                  <tr class="group open">
+                    <td>
+                      <span class="expander icon icon-expanded" onclick="toggleRowGroup(this);">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--angle-down"></use>
+                        </svg>
+                      </span>
+                      Forums
+                    </td>
+                    <td class="role">Manager</td>
+                    <td class="role">Developer</td>
+                    <td class="role">Reporter</td>
+                    <td class="role">Non member</td>
+                    <td class="role">Anonymous</td>
+                  </tr>
+                  <tr class="permission-view_messages">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-view_messages input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      View messages
+                    </td>
+                    <td title="View messages (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="view_messages">
+                    </td>
+                    <td title="View messages (Developer)">
+                      <input checked="checked" class="role-2" name="permissions[2][]" type="checkbox" value="view_messages">
+                    </td>
+                    <td title="View messages (Reporter)">
+                      <input checked="checked" class="role-3" name="permissions[3][]" type="checkbox" value="view_messages">
+                    </td>
+                    <td title="View messages (Non member)">
+                      <input checked="checked" class="role-4" name="permissions[4][]" type="checkbox" value="view_messages">
+                    </td>
+                    <td title="View messages (Anonymous)">
+                      <input checked="checked" class="role-5" name="permissions[5][]" type="checkbox" value="view_messages">
+                    </td>
+                  </tr>
+                  <tr class="permission-add_messages">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-add_messages input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Post messages
+                    </td>
+                    <td title="Post messages (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="add_messages">
+                    </td>
+                    <td title="Post messages (Developer)">
+                      <input checked="checked" class="role-2" name="permissions[2][]" type="checkbox" value="add_messages">
+                    </td>
+                    <td title="Post messages (Reporter)">
+                      <input checked="checked" class="role-3" name="permissions[3][]" type="checkbox" value="add_messages">
+                    </td>
+                    <td title="Post messages (Non member)">
+                      <input checked="checked" class="role-4" name="permissions[4][]" type="checkbox" value="add_messages">
+                    </td>
+                    <td title="Post messages (Anonymous)">
+                      <input class="role-5" name="permissions[5][]" type="checkbox" value="add_messages">
+                    </td>
+                  </tr>
+                  <tr class="permission-edit_messages">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-edit_messages input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Edit messages
+                    </td>
+                    <td title="Edit messages (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="edit_messages">
+                    </td>
+                    <td title="Edit messages (Developer)">
+                      <input class="role-2" name="permissions[2][]" type="checkbox" value="edit_messages">
+                    </td>
+                    <td title="Edit messages (Reporter)">
+                      <input class="role-3" name="permissions[3][]" type="checkbox" value="edit_messages">
+                    </td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr class="permission-edit_own_messages">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-edit_own_messages input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Edit own messages
+                    </td>
+                    <td title="Edit own messages (Manager)">
+                      <input class="role-1" name="permissions[1][]" type="checkbox" value="edit_own_messages">
+                    </td>
+                    <td title="Edit own messages (Developer)">
+                      <input checked="checked" class="role-2" name="permissions[2][]" type="checkbox" value="edit_own_messages">
+                    </td>
+                    <td title="Edit own messages (Reporter)">
+                      <input class="role-3" name="permissions[3][]" type="checkbox" value="edit_own_messages">
+                    </td>
+                    <td title="Edit own messages (Non member)">
+                      <input class="role-4" name="permissions[4][]" type="checkbox" value="edit_own_messages">
+                    </td>
+                    <td></td>
+                  </tr>
+                  <tr class="permission-delete_messages">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-delete_messages input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Delete messages
+                    </td>
+                    <td title="Delete messages (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="delete_messages">
+                    </td>
+                    <td title="Delete messages (Developer)">
+                      <input class="role-2" name="permissions[2][]" type="checkbox" value="delete_messages">
+                    </td>
+                    <td title="Delete messages (Reporter)">
+                      <input class="role-3" name="permissions[3][]" type="checkbox" value="delete_messages">
+                    </td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr class="permission-delete_own_messages">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-delete_own_messages input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Delete own messages
+                    </td>
+                    <td title="Delete own messages (Manager)">
+                      <input class="role-1" name="permissions[1][]" type="checkbox" value="delete_own_messages">
+                    </td>
+                    <td title="Delete own messages (Developer)">
+                      <input checked="checked" class="role-2" name="permissions[2][]" type="checkbox" value="delete_own_messages">
+                    </td>
+                    <td title="Delete own messages (Reporter)">
+                      <input class="role-3" name="permissions[3][]" type="checkbox" value="delete_own_messages">
+                    </td>
+                    <td title="Delete own messages (Non member)">
+                      <input class="role-4" name="permissions[4][]" type="checkbox" value="delete_own_messages">
+                    </td>
+                    <td></td>
+                  </tr>
+                  <tr class="permission-view_message_watchers">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-view_message_watchers input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      View message watchers list
+                    </td>
+                    <td title="View message watchers list (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="view_message_watchers">
+                    </td>
+                    <td title="View message watchers list (Developer)">
+                      <input checked="checked" class="role-2" name="permissions[2][]" type="checkbox" value="view_message_watchers">
+                    </td>
+                    <td title="View message watchers list (Reporter)">
+                      <input checked="checked" class="role-3" name="permissions[3][]" type="checkbox" value="view_message_watchers">
+                    </td>
+                    <td title="View message watchers list (Non member)">
+                      <input class="role-4" name="permissions[4][]" type="checkbox" value="view_message_watchers">
+                    </td>
+                    <td title="View message watchers list (Anonymous)">
+                      <input class="role-5" name="permissions[5][]" type="checkbox" value="view_message_watchers">
+                    </td>
+                  </tr>
+                  <tr class="permission-add_message_watchers">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-add_message_watchers input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Add message watchers
+                    </td>
+                    <td title="Add message watchers (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="add_message_watchers">
+                    </td>
+                    <td title="Add message watchers (Developer)">
+                      <input class="role-2" name="permissions[2][]" type="checkbox" value="add_message_watchers">
+                    </td>
+                    <td title="Add message watchers (Reporter)">
+                      <input class="role-3" name="permissions[3][]" type="checkbox" value="add_message_watchers">
+                    </td>
+                    <td title="Add message watchers (Non member)">
+                      <input class="role-4" name="permissions[4][]" type="checkbox" value="add_message_watchers">
+                    </td>
+                    <td title="Add message watchers (Anonymous)">
+                      <input class="role-5" name="permissions[5][]" type="checkbox" value="add_message_watchers">
+                    </td>
+                  </tr>
+                  <tr class="permission-delete_message_watchers">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-delete_message_watchers input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Delete message watchers
+                    </td>
+                    <td title="Delete message watchers (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="delete_message_watchers">
+                    </td>
+                    <td title="Delete message watchers (Developer)">
+                      <input class="role-2" name="permissions[2][]" type="checkbox" value="delete_message_watchers">
+                    </td>
+                    <td title="Delete message watchers (Reporter)">
+                      <input class="role-3" name="permissions[3][]" type="checkbox" value="delete_message_watchers">
+                    </td>
+                    <td title="Delete message watchers (Non member)">
+                      <input class="role-4" name="permissions[4][]" type="checkbox" value="delete_message_watchers">
+                    </td>
+                    <td title="Delete message watchers (Anonymous)">
+                      <input class="role-5" name="permissions[5][]" type="checkbox" value="delete_message_watchers">
+                    </td>
+                  </tr>
+                  <tr class="permission-manage_boards">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-manage_boards input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Manage forums
+                    </td>
+                    <td title="Manage forums (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="manage_boards">
+                    </td>
+                    <td title="Manage forums (Developer)">
+                      <input checked="checked" class="role-2" name="permissions[2][]" type="checkbox" value="manage_boards">
+                    </td>
+                    <td title="Manage forums (Reporter)">
+                      <input checked="checked" class="role-3" name="permissions[3][]" type="checkbox" value="manage_boards">
+                    </td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr class="group open">
+                    <td>
+                      <span class="expander icon icon-expanded" onclick="toggleRowGroup(this);">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--angle-down"></use>
+                        </svg>
+                      </span>
+                      Calendar
+                    </td>
+                    <td class="role">Manager</td>
+                    <td class="role">Developer</td>
+                    <td class="role">Reporter</td>
+                    <td class="role">Non member</td>
+                    <td class="role">Anonymous</td>
+                  </tr>
+                  <tr class="permission-view_calendar">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-view_calendar input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      View calendar
+                    </td>
+                    <td title="View calendar (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="view_calendar">
+                    </td>
+                    <td title="View calendar (Developer)">
+                      <input checked="checked" class="role-2" name="permissions[2][]" type="checkbox" value="view_calendar">
+                    </td>
+                    <td title="View calendar (Reporter)">
+                      <input checked="checked" class="role-3" name="permissions[3][]" type="checkbox" value="view_calendar">
+                    </td>
+                    <td title="View calendar (Non member)">
+                      <input checked="checked" class="role-4" name="permissions[4][]" type="checkbox" value="view_calendar">
+                    </td>
+                    <td title="View calendar (Anonymous)">
+                      <input checked="checked" class="role-5" name="permissions[5][]" type="checkbox" value="view_calendar">
+                    </td>
+                  </tr>
+                  <tr class="group open">
+                    <td>
+                      <span class="expander icon icon-expanded" onclick="toggleRowGroup(this);">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--angle-down"></use>
+                        </svg>
+                      </span>
+                      Documents
+                    </td>
+                    <td class="role">Manager</td>
+                    <td class="role">Developer</td>
+                    <td class="role">Reporter</td>
+                    <td class="role">Non member</td>
+                    <td class="role">Anonymous</td>
+                  </tr>
+                  <tr class="permission-view_documents">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-view_documents input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      View documents
+                    </td>
+                    <td title="View documents (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="view_documents">
+                    </td>
+                    <td title="View documents (Developer)">
+                      <input checked="checked" class="role-2" name="permissions[2][]" type="checkbox" value="view_documents">
+                    </td>
+                    <td title="View documents (Reporter)">
+                      <input checked="checked" class="role-3" name="permissions[3][]" type="checkbox" value="view_documents">
+                    </td>
+                    <td title="View documents (Non member)">
+                      <input checked="checked" class="role-4" name="permissions[4][]" type="checkbox" value="view_documents">
+                    </td>
+                    <td title="View documents (Anonymous)">
+                      <input checked="checked" class="role-5" name="permissions[5][]" type="checkbox" value="view_documents">
+                    </td>
+                  </tr>
+                  <tr class="permission-add_documents">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-add_documents input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Add documents
+                    </td>
+                    <td title="Add documents (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="add_documents">
+                    </td>
+                    <td title="Add documents (Developer)">
+                      <input checked="checked" class="role-2" name="permissions[2][]" type="checkbox" value="add_documents">
+                    </td>
+                    <td title="Add documents (Reporter)">
+                      <input checked="checked" class="role-3" name="permissions[3][]" type="checkbox" value="add_documents">
+                    </td>
+                    <td title="Add documents (Non member)">
+                      <input class="role-4" name="permissions[4][]" type="checkbox" value="add_documents">
+                    </td>
+                    <td></td>
+                  </tr>
+                  <tr class="permission-edit_documents">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-edit_documents input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Edit documents
+                    </td>
+                    <td title="Edit documents (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="edit_documents">
+                    </td>
+                    <td title="Edit documents (Developer)">
+                      <input checked="checked" class="role-2" name="permissions[2][]" type="checkbox" value="edit_documents">
+                    </td>
+                    <td title="Edit documents (Reporter)">
+                      <input checked="checked" class="role-3" name="permissions[3][]" type="checkbox" value="edit_documents">
+                    </td>
+                    <td title="Edit documents (Non member)">
+                      <input class="role-4" name="permissions[4][]" type="checkbox" value="edit_documents">
+                    </td>
+                    <td></td>
+                  </tr>
+                  <tr class="permission-delete_documents">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-delete_documents input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Delete documents
+                    </td>
+                    <td title="Delete documents (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="delete_documents">
+                    </td>
+                    <td title="Delete documents (Developer)">
+                      <input checked="checked" class="role-2" name="permissions[2][]" type="checkbox" value="delete_documents">
+                    </td>
+                    <td title="Delete documents (Reporter)">
+                      <input checked="checked" class="role-3" name="permissions[3][]" type="checkbox" value="delete_documents">
+                    </td>
+                    <td title="Delete documents (Non member)">
+                      <input class="role-4" name="permissions[4][]" type="checkbox" value="delete_documents">
+                    </td>
+                    <td></td>
+                  </tr>
+                  <tr class="group open">
+                    <td>
+                      <span class="expander icon icon-expanded" onclick="toggleRowGroup(this);">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--angle-down"></use>
+                        </svg>
+                      </span>
+                      Files
+                    </td>
+                    <td class="role">Manager</td>
+                    <td class="role">Developer</td>
+                    <td class="role">Reporter</td>
+                    <td class="role">Non member</td>
+                    <td class="role">Anonymous</td>
+                  </tr>
+                  <tr class="permission-view_files">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-view_files input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      View files
+                    </td>
+                    <td title="View files (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="view_files">
+                    </td>
+                    <td title="View files (Developer)">
+                      <input checked="checked" class="role-2" name="permissions[2][]" type="checkbox" value="view_files">
+                    </td>
+                    <td title="View files (Reporter)">
+                      <input checked="checked" class="role-3" name="permissions[3][]" type="checkbox" value="view_files">
+                    </td>
+                    <td title="View files (Non member)">
+                      <input checked="checked" class="role-4" name="permissions[4][]" type="checkbox" value="view_files">
+                    </td>
+                    <td title="View files (Anonymous)">
+                      <input checked="checked" class="role-5" name="permissions[5][]" type="checkbox" value="view_files">
+                    </td>
+                  </tr>
+                  <tr class="permission-manage_files">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-manage_files input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Manage files
+                    </td>
+                    <td title="Manage files (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="manage_files">
+                    </td>
+                    <td title="Manage files (Developer)">
+                      <input checked="checked" class="role-2" name="permissions[2][]" type="checkbox" value="manage_files">
+                    </td>
+                    <td title="Manage files (Reporter)">
+                      <input checked="checked" class="role-3" name="permissions[3][]" type="checkbox" value="manage_files">
+                    </td>
+                    <td title="Manage files (Non member)">
+                      <input checked="checked" class="role-4" name="permissions[4][]" type="checkbox" value="manage_files">
+                    </td>
+                    <td></td>
+                  </tr>
+                  <tr class="group open">
+                    <td>
+                      <span class="expander icon icon-expanded" onclick="toggleRowGroup(this);">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--angle-down"></use>
+                        </svg>
+                      </span>
+                      Gantt
+                    </td>
+                    <td class="role">Manager</td>
+                    <td class="role">Developer</td>
+                    <td class="role">Reporter</td>
+                    <td class="role">Non member</td>
+                    <td class="role">Anonymous</td>
+                  </tr>
+                  <tr class="permission-view_gantt">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-view_gantt input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      View gantt chart
+                    </td>
+                    <td title="View gantt chart (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="view_gantt">
+                    </td>
+                    <td title="View gantt chart (Developer)">
+                      <input checked="checked" class="role-2" name="permissions[2][]" type="checkbox" value="view_gantt">
+                    </td>
+                    <td title="View gantt chart (Reporter)">
+                      <input checked="checked" class="role-3" name="permissions[3][]" type="checkbox" value="view_gantt">
+                    </td>
+                    <td title="View gantt chart (Non member)">
+                      <input checked="checked" class="role-4" name="permissions[4][]" type="checkbox" value="view_gantt">
+                    </td>
+                    <td title="View gantt chart (Anonymous)">
+                      <input checked="checked" class="role-5" name="permissions[5][]" type="checkbox" value="view_gantt">
+                    </td>
+                  </tr>
+                  <tr class="group open">
+                    <td>
+                      <span class="expander icon icon-expanded" onclick="toggleRowGroup(this);">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--angle-down"></use>
+                        </svg>
+                      </span>
+                      Issue tracking
+                    </td>
+                    <td class="role">Manager</td>
+                    <td class="role">Developer</td>
+                    <td class="role">Reporter</td>
+                    <td class="role">Non member</td>
+                    <td class="role">Anonymous</td>
+                  </tr>
+                  <tr class="permission-view_issues">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-view_issues input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      View Issues
+                    </td>
+                    <td title="View Issues (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="view_issues">
+                    </td>
+                    <td title="View Issues (Developer)">
+                      <input checked="checked" class="role-2" name="permissions[2][]" type="checkbox" value="view_issues">
+                    </td>
+                    <td title="View Issues (Reporter)">
+                      <input checked="checked" class="role-3" name="permissions[3][]" type="checkbox" value="view_issues">
+                    </td>
+                    <td title="View Issues (Non member)">
+                      <input checked="checked" class="role-4" name="permissions[4][]" type="checkbox" value="view_issues">
+                    </td>
+                    <td title="View Issues (Anonymous)">
+                      <input checked="checked" class="role-5" name="permissions[5][]" type="checkbox" value="view_issues">
+                    </td>
+                  </tr>
+                  <tr class="permission-add_issues">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-add_issues input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Add issues
+                    </td>
+                    <td title="Add issues (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="add_issues">
+                    </td>
+                    <td title="Add issues (Developer)">
+                      <input checked="checked" class="role-2" name="permissions[2][]" type="checkbox" value="add_issues">
+                    </td>
+                    <td title="Add issues (Reporter)">
+                      <input checked="checked" class="role-3" name="permissions[3][]" type="checkbox" value="add_issues">
+                    </td>
+                    <td title="Add issues (Non member)">
+                      <input checked="checked" class="role-4" name="permissions[4][]" type="checkbox" value="add_issues">
+                    </td>
+                    <td title="Add issues (Anonymous)">
+                      <input class="role-5" name="permissions[5][]" type="checkbox" value="add_issues">
+                    </td>
+                  </tr>
+                  <tr class="permission-edit_issues">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-edit_issues input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Edit issues
+                    </td>
+                    <td title="Edit issues (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="edit_issues">
+                    </td>
+                    <td title="Edit issues (Developer)">
+                      <input checked="checked" class="role-2" name="permissions[2][]" type="checkbox" value="edit_issues">
+                    </td>
+                    <td title="Edit issues (Reporter)">
+                      <input checked="checked" class="role-3" name="permissions[3][]" type="checkbox" value="edit_issues">
+                    </td>
+                    <td title="Edit issues (Non member)">
+                      <input checked="checked" class="role-4" name="permissions[4][]" type="checkbox" value="edit_issues">
+                    </td>
+                    <td title="Edit issues (Anonymous)">
+                      <input class="role-5" name="permissions[5][]" type="checkbox" value="edit_issues">
+                    </td>
+                  </tr>
+                  <tr class="permission-edit_own_issues">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-edit_own_issues input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Edit own issues
+                    </td>
+                    <td title="Edit own issues (Manager)">
+                      <input class="role-1" name="permissions[1][]" type="checkbox" value="edit_own_issues">
+                    </td>
+                    <td title="Edit own issues (Developer)">
+                      <input class="role-2" name="permissions[2][]" type="checkbox" value="edit_own_issues">
+                    </td>
+                    <td title="Edit own issues (Reporter)">
+                      <input class="role-3" name="permissions[3][]" type="checkbox" value="edit_own_issues">
+                    </td>
+                    <td title="Edit own issues (Non member)">
+                      <input class="role-4" name="permissions[4][]" type="checkbox" value="edit_own_issues">
+                    </td>
+                    <td title="Edit own issues (Anonymous)">
+                      <input class="role-5" name="permissions[5][]" type="checkbox" value="edit_own_issues">
+                    </td>
+                  </tr>
+                  <tr class="permission-copy_issues">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-copy_issues input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Copy issues
+                    </td>
+                    <td title="Copy issues (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="copy_issues">
+                    </td>
+                    <td title="Copy issues (Developer)">
+                      <input checked="checked" class="role-2" name="permissions[2][]" type="checkbox" value="copy_issues">
+                    </td>
+                    <td title="Copy issues (Reporter)">
+                      <input class="role-3" name="permissions[3][]" type="checkbox" value="copy_issues">
+                    </td>
+                    <td title="Copy issues (Non member)">
+                      <input class="role-4" name="permissions[4][]" type="checkbox" value="copy_issues">
+                    </td>
+                    <td title="Copy issues (Anonymous)">
+                      <input class="role-5" name="permissions[5][]" type="checkbox" value="copy_issues">
+                    </td>
+                  </tr>
+                  <tr class="permission-manage_issue_relations">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-manage_issue_relations input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Manage issue relations
+                    </td>
+                    <td title="Manage issue relations (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="manage_issue_relations">
+                    </td>
+                    <td title="Manage issue relations (Developer)">
+                      <input checked="checked" class="role-2" name="permissions[2][]" type="checkbox" value="manage_issue_relations">
+                    </td>
+                    <td title="Manage issue relations (Reporter)">
+                      <input checked="checked" class="role-3" name="permissions[3][]" type="checkbox" value="manage_issue_relations">
+                    </td>
+                    <td title="Manage issue relations (Non member)">
+                      <input checked="checked" class="role-4" name="permissions[4][]" type="checkbox" value="manage_issue_relations">
+                    </td>
+                    <td title="Manage issue relations (Anonymous)">
+                      <input class="role-5" name="permissions[5][]" type="checkbox" value="manage_issue_relations">
+                    </td>
+                  </tr>
+                  <tr class="permission-manage_subtasks">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-manage_subtasks input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Manage subtasks
+                    </td>
+                    <td title="Manage subtasks (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="manage_subtasks">
+                    </td>
+                    <td title="Manage subtasks (Developer)">
+                      <input checked="checked" class="role-2" name="permissions[2][]" type="checkbox" value="manage_subtasks">
+                    </td>
+                    <td title="Manage subtasks (Reporter)">
+                      <input class="role-3" name="permissions[3][]" type="checkbox" value="manage_subtasks">
+                    </td>
+                    <td title="Manage subtasks (Non member)">
+                      <input class="role-4" name="permissions[4][]" type="checkbox" value="manage_subtasks">
+                    </td>
+                    <td title="Manage subtasks (Anonymous)">
+                      <input class="role-5" name="permissions[5][]" type="checkbox" value="manage_subtasks">
+                    </td>
+                  </tr>
+                  <tr class="permission-set_issues_private">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-set_issues_private input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Set issues public or private
+                    </td>
+                    <td title="Set issues public or private (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="set_issues_private">
+                    </td>
+                    <td title="Set issues public or private (Developer)">
+                      <input class="role-2" name="permissions[2][]" type="checkbox" value="set_issues_private">
+                    </td>
+                    <td title="Set issues public or private (Reporter)">
+                      <input class="role-3" name="permissions[3][]" type="checkbox" value="set_issues_private">
+                    </td>
+                    <td title="Set issues public or private (Non member)">
+                      <input class="role-4" name="permissions[4][]" type="checkbox" value="set_issues_private">
+                    </td>
+                    <td title="Set issues public or private (Anonymous)">
+                      <input class="role-5" name="permissions[5][]" type="checkbox" value="set_issues_private">
+                    </td>
+                  </tr>
+                  <tr class="permission-set_own_issues_private">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-set_own_issues_private input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Set own issues public or private
+                    </td>
+                    <td title="Set own issues public or private (Manager)">
+                      <input class="role-1" name="permissions[1][]" type="checkbox" value="set_own_issues_private">
+                    </td>
+                    <td title="Set own issues public or private (Developer)">
+                      <input class="role-2" name="permissions[2][]" type="checkbox" value="set_own_issues_private">
+                    </td>
+                    <td title="Set own issues public or private (Reporter)">
+                      <input class="role-3" name="permissions[3][]" type="checkbox" value="set_own_issues_private">
+                    </td>
+                    <td title="Set own issues public or private (Non member)">
+                      <input class="role-4" name="permissions[4][]" type="checkbox" value="set_own_issues_private">
+                    </td>
+                    <td></td>
+                  </tr>
+                  <tr class="permission-add_issue_notes">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-add_issue_notes input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Add notes
+                    </td>
+                    <td title="Add notes (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="add_issue_notes">
+                    </td>
+                    <td title="Add notes (Developer)">
+                      <input checked="checked" class="role-2" name="permissions[2][]" type="checkbox" value="add_issue_notes">
+                    </td>
+                    <td title="Add notes (Reporter)">
+                      <input checked="checked" class="role-3" name="permissions[3][]" type="checkbox" value="add_issue_notes">
+                    </td>
+                    <td title="Add notes (Non member)">
+                      <input checked="checked" class="role-4" name="permissions[4][]" type="checkbox" value="add_issue_notes">
+                    </td>
+                    <td title="Add notes (Anonymous)">
+                      <input checked="checked" class="role-5" name="permissions[5][]" type="checkbox" value="add_issue_notes">
+                    </td>
+                  </tr>
+                  <tr class="permission-edit_issue_notes">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-edit_issue_notes input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Edit notes
+                    </td>
+                    <td title="Edit notes (Manager)">
+                      <input class="role-1" name="permissions[1][]" type="checkbox" value="edit_issue_notes">
+                    </td>
+                    <td title="Edit notes (Developer)">
+                      <input class="role-2" name="permissions[2][]" type="checkbox" value="edit_issue_notes">
+                    </td>
+                    <td title="Edit notes (Reporter)">
+                      <input class="role-3" name="permissions[3][]" type="checkbox" value="edit_issue_notes">
+                    </td>
+                    <td title="Edit notes (Non member)">
+                      <input class="role-4" name="permissions[4][]" type="checkbox" value="edit_issue_notes">
+                    </td>
+                    <td></td>
+                  </tr>
+                  <tr class="permission-edit_own_issue_notes">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-edit_own_issue_notes input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Edit own notes
+                    </td>
+                    <td title="Edit own notes (Manager)">
+                      <input class="role-1" name="permissions[1][]" type="checkbox" value="edit_own_issue_notes">
+                    </td>
+                    <td title="Edit own notes (Developer)">
+                      <input class="role-2" name="permissions[2][]" type="checkbox" value="edit_own_issue_notes">
+                    </td>
+                    <td title="Edit own notes (Reporter)">
+                      <input class="role-3" name="permissions[3][]" type="checkbox" value="edit_own_issue_notes">
+                    </td>
+                    <td title="Edit own notes (Non member)">
+                      <input class="role-4" name="permissions[4][]" type="checkbox" value="edit_own_issue_notes">
+                    </td>
+                    <td></td>
+                  </tr>
+                  <tr class="permission-view_private_notes">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-view_private_notes input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      View private notes
+                    </td>
+                    <td title="View private notes (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="view_private_notes">
+                    </td>
+                    <td title="View private notes (Developer)">
+                      <input class="role-2" name="permissions[2][]" type="checkbox" value="view_private_notes">
+                    </td>
+                    <td title="View private notes (Reporter)">
+                      <input class="role-3" name="permissions[3][]" type="checkbox" value="view_private_notes">
+                    </td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr class="permission-set_notes_private">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-set_notes_private input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Set notes as private
+                    </td>
+                    <td title="Set notes as private (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="set_notes_private">
+                    </td>
+                    <td title="Set notes as private (Developer)">
+                      <input class="role-2" name="permissions[2][]" type="checkbox" value="set_notes_private">
+                    </td>
+                    <td title="Set notes as private (Reporter)">
+                      <input class="role-3" name="permissions[3][]" type="checkbox" value="set_notes_private">
+                    </td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr class="permission-delete_issues">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-delete_issues input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Delete issues
+                    </td>
+                    <td title="Delete issues (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="delete_issues">
+                    </td>
+                    <td title="Delete issues (Developer)">
+                      <input checked="checked" class="role-2" name="permissions[2][]" type="checkbox" value="delete_issues">
+                    </td>
+                    <td title="Delete issues (Reporter)">
+                      <input class="role-3" name="permissions[3][]" type="checkbox" value="delete_issues">
+                    </td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr class="permission-view_issue_watchers">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-view_issue_watchers input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      View watchers list
+                    </td>
+                    <td title="View watchers list (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="view_issue_watchers">
+                    </td>
+                    <td title="View watchers list (Developer)">
+                      <input checked="checked" class="role-2" name="permissions[2][]" type="checkbox" value="view_issue_watchers">
+                    </td>
+                    <td title="View watchers list (Reporter)">
+                      <input checked="checked" class="role-3" name="permissions[3][]" type="checkbox" value="view_issue_watchers">
+                    </td>
+                    <td title="View watchers list (Non member)">
+                      <input class="role-4" name="permissions[4][]" type="checkbox" value="view_issue_watchers">
+                    </td>
+                    <td title="View watchers list (Anonymous)">
+                      <input class="role-5" name="permissions[5][]" type="checkbox" value="view_issue_watchers">
+                    </td>
+                  </tr>
+                  <tr class="permission-add_issue_watchers">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-add_issue_watchers input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Add watchers
+                    </td>
+                    <td title="Add watchers (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="add_issue_watchers">
+                    </td>
+                    <td title="Add watchers (Developer)">
+                      <input class="role-2" name="permissions[2][]" type="checkbox" value="add_issue_watchers">
+                    </td>
+                    <td title="Add watchers (Reporter)">
+                      <input class="role-3" name="permissions[3][]" type="checkbox" value="add_issue_watchers">
+                    </td>
+                    <td title="Add watchers (Non member)">
+                      <input class="role-4" name="permissions[4][]" type="checkbox" value="add_issue_watchers">
+                    </td>
+                    <td title="Add watchers (Anonymous)">
+                      <input class="role-5" name="permissions[5][]" type="checkbox" value="add_issue_watchers">
+                    </td>
+                  </tr>
+                  <tr class="permission-delete_issue_watchers">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-delete_issue_watchers input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Delete watchers
+                    </td>
+                    <td title="Delete watchers (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="delete_issue_watchers">
+                    </td>
+                    <td title="Delete watchers (Developer)">
+                      <input class="role-2" name="permissions[2][]" type="checkbox" value="delete_issue_watchers">
+                    </td>
+                    <td title="Delete watchers (Reporter)">
+                      <input class="role-3" name="permissions[3][]" type="checkbox" value="delete_issue_watchers">
+                    </td>
+                    <td title="Delete watchers (Non member)">
+                      <input class="role-4" name="permissions[4][]" type="checkbox" value="delete_issue_watchers">
+                    </td>
+                    <td title="Delete watchers (Anonymous)">
+                      <input class="role-5" name="permissions[5][]" type="checkbox" value="delete_issue_watchers">
+                    </td>
+                  </tr>
+                  <tr class="permission-import_issues">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-import_issues input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Import issues
+                    </td>
+                    <td title="Import issues (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="import_issues">
+                    </td>
+                    <td title="Import issues (Developer)">
+                      <input class="role-2" name="permissions[2][]" type="checkbox" value="import_issues">
+                    </td>
+                    <td title="Import issues (Reporter)">
+                      <input class="role-3" name="permissions[3][]" type="checkbox" value="import_issues">
+                    </td>
+                    <td title="Import issues (Non member)">
+                      <input class="role-4" name="permissions[4][]" type="checkbox" value="import_issues">
+                    </td>
+                    <td title="Import issues (Anonymous)">
+                      <input class="role-5" name="permissions[5][]" type="checkbox" value="import_issues">
+                    </td>
+                  </tr>
+                  <tr class="permission-manage_categories">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-manage_categories input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Manage issue categories
+                    </td>
+                    <td title="Manage issue categories (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="manage_categories">
+                    </td>
+                    <td title="Manage issue categories (Developer)">
+                      <input checked="checked" class="role-2" name="permissions[2][]" type="checkbox" value="manage_categories">
+                    </td>
+                    <td title="Manage issue categories (Reporter)">
+                      <input checked="checked" class="role-3" name="permissions[3][]" type="checkbox" value="manage_categories">
+                    </td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr class="group open">
+                    <td>
+                      <span class="expander icon icon-expanded" onclick="toggleRowGroup(this);">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--angle-down"></use>
+                        </svg>
+                      </span>
+                      News
+                    </td>
+                    <td class="role">Manager</td>
+                    <td class="role">Developer</td>
+                    <td class="role">Reporter</td>
+                    <td class="role">Non member</td>
+                    <td class="role">Anonymous</td>
+                  </tr>
+                  <tr class="permission-view_news">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-view_news input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      View news
+                    </td>
+                    <td title="View news (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="view_news">
+                    </td>
+                    <td title="View news (Developer)">
+                      <input checked="checked" class="role-2" name="permissions[2][]" type="checkbox" value="view_news">
+                    </td>
+                    <td title="View news (Reporter)">
+                      <input checked="checked" class="role-3" name="permissions[3][]" type="checkbox" value="view_news">
+                    </td>
+                    <td title="View news (Non member)">
+                      <input checked="checked" class="role-4" name="permissions[4][]" type="checkbox" value="view_news">
+                    </td>
+                    <td title="View news (Anonymous)">
+                      <input checked="checked" class="role-5" name="permissions[5][]" type="checkbox" value="view_news">
+                    </td>
+                  </tr>
+                  <tr class="permission-manage_news">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-manage_news input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Manage news
+                    </td>
+                    <td title="Manage news (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="manage_news">
+                    </td>
+                    <td title="Manage news (Developer)">
+                      <input checked="checked" class="role-2" name="permissions[2][]" type="checkbox" value="manage_news">
+                    </td>
+                    <td title="Manage news (Reporter)">
+                      <input checked="checked" class="role-3" name="permissions[3][]" type="checkbox" value="manage_news">
+                    </td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr class="permission-comment_news">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-comment_news input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Comment news
+                    </td>
+                    <td title="Comment news (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="comment_news">
+                    </td>
+                    <td title="Comment news (Developer)">
+                      <input checked="checked" class="role-2" name="permissions[2][]" type="checkbox" value="comment_news">
+                    </td>
+                    <td title="Comment news (Reporter)">
+                      <input checked="checked" class="role-3" name="permissions[3][]" type="checkbox" value="comment_news">
+                    </td>
+                    <td title="Comment news (Non member)">
+                      <input checked="checked" class="role-4" name="permissions[4][]" type="checkbox" value="comment_news">
+                    </td>
+                    <td title="Comment news (Anonymous)">
+                      <input class="role-5" name="permissions[5][]" type="checkbox" value="comment_news">
+                    </td>
+                  </tr>
+                  <tr class="group open">
+                    <td>
+                      <span class="expander icon icon-expanded" onclick="toggleRowGroup(this);">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--angle-down"></use>
+                        </svg>
+                      </span>
+                      Repository
+                    </td>
+                    <td class="role">Manager</td>
+                    <td class="role">Developer</td>
+                    <td class="role">Reporter</td>
+                    <td class="role">Non member</td>
+                    <td class="role">Anonymous</td>
+                  </tr>
+                  <tr class="permission-view_changesets">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-view_changesets input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      View changesets
+                    </td>
+                    <td title="View changesets (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="view_changesets">
+                    </td>
+                    <td title="View changesets (Developer)">
+                      <input checked="checked" class="role-2" name="permissions[2][]" type="checkbox" value="view_changesets">
+                    </td>
+                    <td title="View changesets (Reporter)">
+                      <input checked="checked" class="role-3" name="permissions[3][]" type="checkbox" value="view_changesets">
+                    </td>
+                    <td title="View changesets (Non member)">
+                      <input checked="checked" class="role-4" name="permissions[4][]" type="checkbox" value="view_changesets">
+                    </td>
+                    <td title="View changesets (Anonymous)">
+                      <input checked="checked" class="role-5" name="permissions[5][]" type="checkbox" value="view_changesets">
+                    </td>
+                  </tr>
+                  <tr class="permission-browse_repository">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-browse_repository input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Browse repository
+                    </td>
+                    <td title="Browse repository (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="browse_repository">
+                    </td>
+                    <td title="Browse repository (Developer)">
+                      <input checked="checked" class="role-2" name="permissions[2][]" type="checkbox" value="browse_repository">
+                    </td>
+                    <td title="Browse repository (Reporter)">
+                      <input checked="checked" class="role-3" name="permissions[3][]" type="checkbox" value="browse_repository">
+                    </td>
+                    <td title="Browse repository (Non member)">
+                      <input checked="checked" class="role-4" name="permissions[4][]" type="checkbox" value="browse_repository">
+                    </td>
+                    <td title="Browse repository (Anonymous)">
+                      <input checked="checked" class="role-5" name="permissions[5][]" type="checkbox" value="browse_repository">
+                    </td>
+                  </tr>
+                  <tr class="permission-commit_access">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-commit_access input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Commit access
+                    </td>
+                    <td title="Commit access (Manager)">
+                      <input class="role-1" name="permissions[1][]" type="checkbox" value="commit_access">
+                    </td>
+                    <td title="Commit access (Developer)">
+                      <input class="role-2" name="permissions[2][]" type="checkbox" value="commit_access">
+                    </td>
+                    <td title="Commit access (Reporter)">
+                      <input class="role-3" name="permissions[3][]" type="checkbox" value="commit_access">
+                    </td>
+                    <td title="Commit access (Non member)">
+                      <input class="role-4" name="permissions[4][]" type="checkbox" value="commit_access">
+                    </td>
+                    <td title="Commit access (Anonymous)">
+                      <input class="role-5" name="permissions[5][]" type="checkbox" value="commit_access">
+                    </td>
+                  </tr>
+                  <tr class="permission-manage_related_issues">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-manage_related_issues input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Manage related issues
+                    </td>
+                    <td title="Manage related issues (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="manage_related_issues">
+                    </td>
+                    <td title="Manage related issues (Developer)">
+                      <input class="role-2" name="permissions[2][]" type="checkbox" value="manage_related_issues">
+                    </td>
+                    <td title="Manage related issues (Reporter)">
+                      <input class="role-3" name="permissions[3][]" type="checkbox" value="manage_related_issues">
+                    </td>
+                    <td title="Manage related issues (Non member)">
+                      <input class="role-4" name="permissions[4][]" type="checkbox" value="manage_related_issues">
+                    </td>
+                    <td title="Manage related issues (Anonymous)">
+                      <input class="role-5" name="permissions[5][]" type="checkbox" value="manage_related_issues">
+                    </td>
+                  </tr>
+                  <tr class="permission-manage_repository">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-manage_repository input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Manage repository
+                    </td>
+                    <td title="Manage repository (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="manage_repository">
+                    </td>
+                    <td title="Manage repository (Developer)">
+                      <input class="role-2" name="permissions[2][]" type="checkbox" value="manage_repository">
+                    </td>
+                    <td title="Manage repository (Reporter)">
+                      <input class="role-3" name="permissions[3][]" type="checkbox" value="manage_repository">
+                    </td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr class="group open">
+                    <td>
+                      <span class="expander icon icon-expanded" onclick="toggleRowGroup(this);">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--angle-down"></use>
+                        </svg>
+                      </span>
+                      Time tracking
+                    </td>
+                    <td class="role">Manager</td>
+                    <td class="role">Developer</td>
+                    <td class="role">Reporter</td>
+                    <td class="role">Non member</td>
+                    <td class="role">Anonymous</td>
+                  </tr>
+                  <tr class="permission-view_time_entries">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-view_time_entries input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      View spent time
+                    </td>
+                    <td title="View spent time (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="view_time_entries">
+                    </td>
+                    <td title="View spent time (Developer)">
+                      <input checked="checked" class="role-2" name="permissions[2][]" type="checkbox" value="view_time_entries">
+                    </td>
+                    <td title="View spent time (Reporter)">
+                      <input checked="checked" class="role-3" name="permissions[3][]" type="checkbox" value="view_time_entries">
+                    </td>
+                    <td title="View spent time (Non member)">
+                      <input checked="checked" class="role-4" name="permissions[4][]" type="checkbox" value="view_time_entries">
+                    </td>
+                    <td title="View spent time (Anonymous)">
+                      <input checked="checked" class="role-5" name="permissions[5][]" type="checkbox" value="view_time_entries">
+                    </td>
+                  </tr>
+                  <tr class="permission-log_time">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-log_time input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Log spent time
+                    </td>
+                    <td title="Log spent time (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="log_time">
+                    </td>
+                    <td title="Log spent time (Developer)">
+                      <input checked="checked" class="role-2" name="permissions[2][]" type="checkbox" value="log_time">
+                    </td>
+                    <td title="Log spent time (Reporter)">
+                      <input checked="checked" class="role-3" name="permissions[3][]" type="checkbox" value="log_time">
+                    </td>
+                    <td title="Log spent time (Non member)">
+                      <input checked="checked" class="role-4" name="permissions[4][]" type="checkbox" value="log_time">
+                    </td>
+                    <td></td>
+                  </tr>
+                  <tr class="permission-edit_time_entries">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-edit_time_entries input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Edit time logs
+                    </td>
+                    <td title="Edit time logs (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="edit_time_entries">
+                    </td>
+                    <td title="Edit time logs (Developer)">
+                      <input class="role-2" name="permissions[2][]" type="checkbox" value="edit_time_entries">
+                    </td>
+                    <td title="Edit time logs (Reporter)">
+                      <input class="role-3" name="permissions[3][]" type="checkbox" value="edit_time_entries">
+                    </td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr class="permission-edit_own_time_entries">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-edit_own_time_entries input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Edit own time logs
+                    </td>
+                    <td title="Edit own time logs (Manager)">
+                      <input class="role-1" name="permissions[1][]" type="checkbox" value="edit_own_time_entries">
+                    </td>
+                    <td title="Edit own time logs (Developer)">
+                      <input checked="checked" class="role-2" name="permissions[2][]" type="checkbox" value="edit_own_time_entries">
+                    </td>
+                    <td title="Edit own time logs (Reporter)">
+                      <input class="role-3" name="permissions[3][]" type="checkbox" value="edit_own_time_entries">
+                    </td>
+                    <td title="Edit own time logs (Non member)">
+                      <input class="role-4" name="permissions[4][]" type="checkbox" value="edit_own_time_entries">
+                    </td>
+                    <td></td>
+                  </tr>
+                  <tr class="permission-manage_project_activities">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-manage_project_activities input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Manage project activities
+                    </td>
+                    <td title="Manage project activities (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="manage_project_activities">
+                    </td>
+                    <td title="Manage project activities (Developer)">
+                      <input class="role-2" name="permissions[2][]" type="checkbox" value="manage_project_activities">
+                    </td>
+                    <td title="Manage project activities (Reporter)">
+                      <input class="role-3" name="permissions[3][]" type="checkbox" value="manage_project_activities">
+                    </td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr class="permission-log_time_for_other_users">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-log_time_for_other_users input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Log spent time for other users
+                    </td>
+                    <td title="Log spent time for other users (Manager)">
+                      <input class="role-1" name="permissions[1][]" type="checkbox" value="log_time_for_other_users">
+                    </td>
+                    <td title="Log spent time for other users (Developer)">
+                      <input class="role-2" name="permissions[2][]" type="checkbox" value="log_time_for_other_users">
+                    </td>
+                    <td title="Log spent time for other users (Reporter)">
+                      <input class="role-3" name="permissions[3][]" type="checkbox" value="log_time_for_other_users">
+                    </td>
+                    <td title="Log spent time for other users (Non member)">
+                      <input class="role-4" name="permissions[4][]" type="checkbox" value="log_time_for_other_users">
+                    </td>
+                    <td title="Log spent time for other users (Anonymous)">
+                      <input class="role-5" name="permissions[5][]" type="checkbox" value="log_time_for_other_users">
+                    </td>
+                  </tr>
+                  <tr class="permission-import_time_entries">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-import_time_entries input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Import time entries
+                    </td>
+                    <td title="Import time entries (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="import_time_entries">
+                    </td>
+                    <td title="Import time entries (Developer)">
+                      <input class="role-2" name="permissions[2][]" type="checkbox" value="import_time_entries">
+                    </td>
+                    <td title="Import time entries (Reporter)">
+                      <input class="role-3" name="permissions[3][]" type="checkbox" value="import_time_entries">
+                    </td>
+                    <td title="Import time entries (Non member)">
+                      <input class="role-4" name="permissions[4][]" type="checkbox" value="import_time_entries">
+                    </td>
+                    <td title="Import time entries (Anonymous)">
+                      <input class="role-5" name="permissions[5][]" type="checkbox" value="import_time_entries">
+                    </td>
+                  </tr>
+                  <tr class="group open">
+                    <td>
+                      <span class="expander icon icon-expanded" onclick="toggleRowGroup(this);">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--angle-down"></use>
+                        </svg>
+                      </span>
+                      Wiki
+                    </td>
+                    <td class="role">Manager</td>
+                    <td class="role">Developer</td>
+                    <td class="role">Reporter</td>
+                    <td class="role">Non member</td>
+                    <td class="role">Anonymous</td>
+                  </tr>
+                  <tr class="permission-view_wiki_pages">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-view_wiki_pages input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      View wiki
+                    </td>
+                    <td title="View wiki (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="view_wiki_pages">
+                    </td>
+                    <td title="View wiki (Developer)">
+                      <input checked="checked" class="role-2" name="permissions[2][]" type="checkbox" value="view_wiki_pages">
+                    </td>
+                    <td title="View wiki (Reporter)">
+                      <input checked="checked" class="role-3" name="permissions[3][]" type="checkbox" value="view_wiki_pages">
+                    </td>
+                    <td title="View wiki (Non member)">
+                      <input checked="checked" class="role-4" name="permissions[4][]" type="checkbox" value="view_wiki_pages">
+                    </td>
+                    <td title="View wiki (Anonymous)">
+                      <input checked="checked" class="role-5" name="permissions[5][]" type="checkbox" value="view_wiki_pages">
+                    </td>
+                  </tr>
+                  <tr class="permission-view_wiki_edits">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-view_wiki_edits input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      View wiki history
+                    </td>
+                    <td title="View wiki history (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="view_wiki_edits">
+                    </td>
+                    <td title="View wiki history (Developer)">
+                      <input checked="checked" class="role-2" name="permissions[2][]" type="checkbox" value="view_wiki_edits">
+                    </td>
+                    <td title="View wiki history (Reporter)">
+                      <input checked="checked" class="role-3" name="permissions[3][]" type="checkbox" value="view_wiki_edits">
+                    </td>
+                    <td title="View wiki history (Non member)">
+                      <input checked="checked" class="role-4" name="permissions[4][]" type="checkbox" value="view_wiki_edits">
+                    </td>
+                    <td title="View wiki history (Anonymous)">
+                      <input checked="checked" class="role-5" name="permissions[5][]" type="checkbox" value="view_wiki_edits">
+                    </td>
+                  </tr>
+                  <tr class="permission-export_wiki_pages">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-export_wiki_pages input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Export wiki pages
+                    </td>
+                    <td title="Export wiki pages (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="export_wiki_pages">
+                    </td>
+                    <td title="Export wiki pages (Developer)">
+                      <input class="role-2" name="permissions[2][]" type="checkbox" value="export_wiki_pages">
+                    </td>
+                    <td title="Export wiki pages (Reporter)">
+                      <input class="role-3" name="permissions[3][]" type="checkbox" value="export_wiki_pages">
+                    </td>
+                    <td title="Export wiki pages (Non member)">
+                      <input class="role-4" name="permissions[4][]" type="checkbox" value="export_wiki_pages">
+                    </td>
+                    <td title="Export wiki pages (Anonymous)">
+                      <input class="role-5" name="permissions[5][]" type="checkbox" value="export_wiki_pages">
+                    </td>
+                  </tr>
+                  <tr class="permission-edit_wiki_pages">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-edit_wiki_pages input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Edit wiki pages
+                    </td>
+                    <td title="Edit wiki pages (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="edit_wiki_pages">
+                    </td>
+                    <td title="Edit wiki pages (Developer)">
+                      <input checked="checked" class="role-2" name="permissions[2][]" type="checkbox" value="edit_wiki_pages">
+                    </td>
+                    <td title="Edit wiki pages (Reporter)">
+                      <input checked="checked" class="role-3" name="permissions[3][]" type="checkbox" value="edit_wiki_pages">
+                    </td>
+                    <td title="Edit wiki pages (Non member)">
+                      <input checked="checked" class="role-4" name="permissions[4][]" type="checkbox" value="edit_wiki_pages">
+                    </td>
+                    <td title="Edit wiki pages (Anonymous)">
+                      <input class="role-5" name="permissions[5][]" type="checkbox" value="edit_wiki_pages">
+                    </td>
+                  </tr>
+                  <tr class="permission-rename_wiki_pages">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-rename_wiki_pages input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Rename wiki pages
+                    </td>
+                    <td title="Rename wiki pages (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="rename_wiki_pages">
+                    </td>
+                    <td title="Rename wiki pages (Developer)">
+                      <input class="role-2" name="permissions[2][]" type="checkbox" value="rename_wiki_pages">
+                    </td>
+                    <td title="Rename wiki pages (Reporter)">
+                      <input class="role-3" name="permissions[3][]" type="checkbox" value="rename_wiki_pages">
+                    </td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr class="permission-delete_wiki_pages">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-delete_wiki_pages input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Delete wiki pages
+                    </td>
+                    <td title="Delete wiki pages (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="delete_wiki_pages">
+                    </td>
+                    <td title="Delete wiki pages (Developer)">
+                      <input checked="checked" class="role-2" name="permissions[2][]" type="checkbox" value="delete_wiki_pages">
+                    </td>
+                    <td title="Delete wiki pages (Reporter)">
+                      <input checked="checked" class="role-3" name="permissions[3][]" type="checkbox" value="delete_wiki_pages">
+                    </td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr class="permission-delete_wiki_pages_attachments">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-delete_wiki_pages_attachments input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Delete attachments
+                    </td>
+                    <td title="Delete attachments (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="delete_wiki_pages_attachments">
+                    </td>
+                    <td title="Delete attachments (Developer)">
+                      <input class="role-2" name="permissions[2][]" type="checkbox" value="delete_wiki_pages_attachments">
+                    </td>
+                    <td title="Delete attachments (Reporter)">
+                      <input class="role-3" name="permissions[3][]" type="checkbox" value="delete_wiki_pages_attachments">
+                    </td>
+                    <td title="Delete attachments (Non member)">
+                      <input class="role-4" name="permissions[4][]" type="checkbox" value="delete_wiki_pages_attachments">
+                    </td>
+                    <td title="Delete attachments (Anonymous)">
+                      <input class="role-5" name="permissions[5][]" type="checkbox" value="delete_wiki_pages_attachments">
+                    </td>
+                  </tr>
+                  <tr class="permission-view_wiki_page_watchers">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-view_wiki_page_watchers input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      View wiki page watchers list
+                    </td>
+                    <td title="View wiki page watchers list (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="view_wiki_page_watchers">
+                    </td>
+                    <td title="View wiki page watchers list (Developer)">
+                      <input checked="checked" class="role-2" name="permissions[2][]" type="checkbox" value="view_wiki_page_watchers">
+                    </td>
+                    <td title="View wiki page watchers list (Reporter)">
+                      <input checked="checked" class="role-3" name="permissions[3][]" type="checkbox" value="view_wiki_page_watchers">
+                    </td>
+                    <td title="View wiki page watchers list (Non member)">
+                      <input class="role-4" name="permissions[4][]" type="checkbox" value="view_wiki_page_watchers">
+                    </td>
+                    <td title="View wiki page watchers list (Anonymous)">
+                      <input class="role-5" name="permissions[5][]" type="checkbox" value="view_wiki_page_watchers">
+                    </td>
+                  </tr>
+                  <tr class="permission-add_wiki_page_watchers">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-add_wiki_page_watchers input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Add wiki page watchers
+                    </td>
+                    <td title="Add wiki page watchers (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="add_wiki_page_watchers">
+                    </td>
+                    <td title="Add wiki page watchers (Developer)">
+                      <input class="role-2" name="permissions[2][]" type="checkbox" value="add_wiki_page_watchers">
+                    </td>
+                    <td title="Add wiki page watchers (Reporter)">
+                      <input class="role-3" name="permissions[3][]" type="checkbox" value="add_wiki_page_watchers">
+                    </td>
+                    <td title="Add wiki page watchers (Non member)">
+                      <input class="role-4" name="permissions[4][]" type="checkbox" value="add_wiki_page_watchers">
+                    </td>
+                    <td title="Add wiki page watchers (Anonymous)">
+                      <input class="role-5" name="permissions[5][]" type="checkbox" value="add_wiki_page_watchers">
+                    </td>
+                  </tr>
+                  <tr class="permission-delete_wiki_page_watchers">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-delete_wiki_page_watchers input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Delete wiki page watchers
+                    </td>
+                    <td title="Delete wiki page watchers (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="delete_wiki_page_watchers">
+                    </td>
+                    <td title="Delete wiki page watchers (Developer)">
+                      <input class="role-2" name="permissions[2][]" type="checkbox" value="delete_wiki_page_watchers">
+                    </td>
+                    <td title="Delete wiki page watchers (Reporter)">
+                      <input class="role-3" name="permissions[3][]" type="checkbox" value="delete_wiki_page_watchers">
+                    </td>
+                    <td title="Delete wiki page watchers (Non member)">
+                      <input class="role-4" name="permissions[4][]" type="checkbox" value="delete_wiki_page_watchers">
+                    </td>
+                    <td title="Delete wiki page watchers (Anonymous)">
+                      <input class="role-5" name="permissions[5][]" type="checkbox" value="delete_wiki_page_watchers">
+                    </td>
+                  </tr>
+                  <tr class="permission-protect_wiki_pages">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-protect_wiki_pages input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Protect wiki pages
+                    </td>
+                    <td title="Protect wiki pages (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="protect_wiki_pages">
+                    </td>
+                    <td title="Protect wiki pages (Developer)">
+                      <input checked="checked" class="role-2" name="permissions[2][]" type="checkbox" value="protect_wiki_pages">
+                    </td>
+                    <td title="Protect wiki pages (Reporter)">
+                      <input class="role-3" name="permissions[3][]" type="checkbox" value="protect_wiki_pages">
+                    </td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr class="permission-manage_wiki">
+                    <td class="name">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;.permission-manage_wiki input&#39;); return false;" title="Check all / Uncheck all">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                        </svg>
+                        <span class="icon-label"></span>
+                      </a>
+                      Manage wiki
+                    </td>
+                    <td title="Manage wiki (Manager)">
+                      <input checked="checked" class="role-1" name="permissions[1][]" type="checkbox" value="manage_wiki">
+                    </td>
+                    <td title="Manage wiki (Developer)">
+                      <input class="role-2" name="permissions[2][]" type="checkbox" value="manage_wiki">
+                    </td>
+                    <td title="Manage wiki (Reporter)">
+                      <input class="role-3" name="permissions[3][]" type="checkbox" value="manage_wiki">
+                    </td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p>
+              <a href="#" onclick="checkAll(&#39;permissions_form&#39;, true); return false;">Check all</a>
+              |
+              <a href="#" onclick="checkAll(&#39;permissions_form&#39;, false); return false;">Uncheck all</a>
+            </p>
+            <p>
+              <input data-disable-with="Save" name="commit" type="submit" value="Save">
+            </p>
+          </form>
+          <p class="other-formats hide-when-print">
+            Also available in:
+            <span>
+              <a class="csv" href="/roles/permissions.csv" onclick="showModal(&#39;csv-export-options&#39;, &#39;330px&#39;); return false;" rel="nofollow">CSV</a>
+            </span>
+          </p>
+          <div id="csv-export-options" style="display: none;">
+            <h3 class="title">CSV export options</h3>
+            <form accept-charset="UTF-8" action="/roles/permissions.csv" id="csv-export-form" method="get" name="csv-export-form-RANDOM">
+              <p>
+                <label>
+                  Encoding
+                  <select id="encoding" name="encoding">
+                    <option selected="selected" value="UTF-8">UTF-8</option>
+                    <option value="ISO-8859-1">ISO-8859-1</option>
+                  </select>
+                </label>
+              </p>
+              <p>
+                <label>
+                  Field separator
+                  <select id="field_separator" name="field_separator">
+                    <option selected="selected" value=",">Comma</option>
+                    <option value=";">Semicolon</option>
+                  </select>
+                </label>
+              </p>
+              <p class="buttons">
+                <input onclick="hideModal(this);" type="submit" value="Export">
+                <a href="#" onclick="hideModal(this);; return false;">Cancel</a>
+              </p>
+            </form>
+          </div>
+          <div style="clear:both;"></div>
+        </div>
+      </div>
+      <div id="footer">MASKED</div>
+      <div id="ajax-indicator" style="display:none;">
+        <span class="icon">
+          <svg aria-hidden="true" class="s18 icon-svg svg-loader">
+            <use href="/assets/icons-DIGEST.svg#icon--loader"></use>
+          </svg>
+          <span class="icon-label">Loading...</span>
+        </span>
+      </div>
+      <div id="ajax-modal" style="display:none;"></div>
+      <div id="icon-copy-source" style="display: none;">
+        <svg aria-hidden="true" class="s18 icon-svg">
+          <use href="/assets/icons-DIGEST.svg#icon--"></use>
+        </svg>
+      </div>
+    </div>
+  </body>
+</html>

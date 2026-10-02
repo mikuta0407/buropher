@@ -1,7 +1,6 @@
 package helper
 
 import (
-	"html/template"
 	"net/url"
 	"strconv"
 	"strings"
@@ -32,28 +31,16 @@ func (h adminH) icon(name string, label any, opts *rails.Hash) html {
 }
 
 // AdminRequestFuncs は管理画面用のテンプレート関数（view.Options.RequestFuncs に追加する）。
+// title / delete_link / reorder_handle / checked_image / error_messages_for などの共通ヘルパーは
+// admin_masters.go（RequestFuncs）のものを使い、ここではワークフロー・カスタムフィールドに固有のものと
+// render_tabs / calendar_for を登録する。
 func (d *Deps) AdminRequestFuncs(r *view.Render) ttemplate.FuncMap {
 	h := adminH{d, r}
 	fm := ttemplate.FuncMap{
-		"title":                         h.title,
-		"toggle_checkboxes_link":        h.toggleCheckboxesLink,
-		"link_to_function":              h.linkToFunction,
-		"delete_link":                   h.deleteLink,
-		"reorder_handle":                h.reorderHandle,
-		"checked_image":                 h.checkedImage,
 		"render_tabs":                   h.renderTabs,
-		"error_messages_for":            h.errorMessagesFor,
 		"calendar_for":                  h.calendarFor,
 		"include_calendar_headers_tags": h.includeCalendarHeadersTags,
-		"l_or_humanize":                 h.lOrHumanize,
 		"progress_bar":                  h.progressBar,
-		// ternary は Ruby の cond ? a : b。
-		"ternary": func(cond any, a, b any) any {
-			if truthy(cond) {
-				return a
-			}
-			return b
-		},
 	}
 	for k, v := range h.workflowFuncs() {
 		fm[k] = v
@@ -88,69 +75,11 @@ func (h adminH) title(args ...any) html {
 	return rails.ContentTag("h2", html(strings.Join(parts, " &#187; ")), nil)
 }
 
-// linkToFunction は link_to_function(name, function, html_options)。
-func (h adminH) linkToFunction(name any, function string, opts ...*rails.Hash) html {
-	o := rails.NewHash("href", "#", "onclick", function+"; return false;")
-	if len(opts) > 0 && opts[0] != nil {
-		o = o.Update(opts[0])
-	}
-	return rails.ContentTag("a", name, o)
-}
 
-// toggleCheckboxesLink は toggle_checkboxes_link(selector, options)。
-func (h adminH) toggleCheckboxesLink(selector string, opts ...*rails.Hash) html {
-	css := "icon icon-checked"
-	if len(opts) > 0 && opts[0] != nil {
-		if c := opts[0].Get("class"); c != nil {
-			css += " " + rails.ToS(c)
-		}
-	}
-	return h.linkToFunction(h.icon("checked", "", nil), "toggleCheckboxesBySelector('"+selector+"')",
-		rails.NewHash("title", h.l("button_check_all")+" / "+h.l("button_uncheck_all"), "class", css))
-}
 
-// deleteLink は delete_link(url, options, button_name)。
-func (h adminH) deleteLink(u string, args ...any) html {
-	o := rails.NewHash("method", "delete", "data", rails.NewHash("confirm", h.l("text_are_you_sure")), "class", "icon icon-del")
-	name := h.l("button_delete")
-	if len(args) > 0 {
-		if opts, ok := args[0].(*rails.Hash); ok && opts != nil {
-			o = o.Update(opts)
-		}
-	}
-	if len(args) > 1 {
-		name = rails.ToS(args[1])
-	}
-	return rails.LinkTo(h.icon("del", name, nil), u, o)
-}
 
-// reorderHandle は reorder_handle(object, :url => url, :param => param)。
-func (h adminH) reorderHandle(u, param string) html {
-	return rails.ContentTag("span", h.icon("reorder", "", nil), rails.NewHash(
-		"class", "icon-only icon-sort-handle sort-handle",
-		"data", rails.NewHash("reorder_url", u, "reorder_param", param),
-		"title", h.l("button_sort")))
-}
 
-// checkedImage は checked_image(checked)。
-func (h adminH) checkedImage(checked ...any) html {
-	if len(checked) > 0 && !truthy(checked[0]) {
-		return ""
-	}
-	return rails.ContentTag("span", h.icon("checked", nil, nil), rails.NewHash("class", "icon-only icon-checked"))
-}
 
-// lOrHumanize は l_or_humanize(s, :prefix => prefix)。
-func (h adminH) lOrHumanize(s any, prefix ...string) string {
-	p := ""
-	if len(prefix) > 0 {
-		p = prefix[0]
-	}
-	if h.pg().Loc == nil {
-		return rails.Humanize(rails.ToS(s))
-	}
-	return h.pg().Loc.LOrHumanize(rails.ToS(s), p)
-}
 
 // progressBar は progress_bar(pct, legend:)（単一値のみ）。
 func (h adminH) progressBar(pct any, opts ...*rails.Hash) html {
@@ -270,32 +199,6 @@ type ErrorMessenger interface {
 	FullErrorMessages() []string
 }
 
-// errorMessagesFor は error_messages_for(*objects)。
-func (h adminH) errorMessagesFor(objects ...any) html {
-	var msgs []string
-	for _, o := range objects {
-		if m, ok := o.(ErrorMessenger); ok && m != nil {
-			msgs = append(msgs, m.FullErrorMessages()...)
-		}
-	}
-	return h.d.RenderErrorMessages(msgs)
-}
-
-// RenderErrorMessages は render_error_messages(errors)。
-func (d *Deps) RenderErrorMessages(msgs []string) template.HTML {
-	if len(msgs) == 0 {
-		return ""
-	}
-	var b strings.Builder
-	b.WriteString("<div id='errorExplanation'>\n")
-	b.WriteString(string(d.noticeIcon(&Page{}, "error")))
-	b.WriteString("<ul>\n")
-	for _, m := range msgs {
-		b.WriteString("<li>" + string(rails.H(m)) + "</li>\n")
-	}
-	b.WriteString("</ul></div>\n")
-	return template.HTML(b.String())
-}
 
 const calendarIncludedKey = "helper.calendar_headers_tags_included"
 

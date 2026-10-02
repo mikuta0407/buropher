@@ -1,0 +1,36 @@
+status: 200
+content-type: application/xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<role>
+  <id>4</id>
+  <name>Non member</name>
+  <assignable>true</assignable>
+  <issues_visibility>default</issues_visibility>
+  <time_entries_visibility>all</time_entries_visibility>
+  <users_visibility>all</users_visibility>
+  <permissions type="array">
+    <permission>view_issues</permission>
+    <permission>add_issues</permission>
+    <permission>edit_issues</permission>
+    <permission>manage_issue_relations</permission>
+    <permission>add_issue_notes</permission>
+    <permission>save_queries</permission>
+    <permission>view_gantt</permission>
+    <permission>view_calendar</permission>
+    <permission>log_time</permission>
+    <permission>view_time_entries</permission>
+    <permission>view_news</permission>
+    <permission>comment_news</permission>
+    <permission>view_documents</permission>
+    <permission>view_wiki_pages</permission>
+    <permission>view_wiki_edits</permission>
+    <permission>edit_wiki_pages</permission>
+    <permission>view_messages</permission>
+    <permission>add_messages</permission>
+    <permission>view_files</permission>
+    <permission>manage_files</permission>
+    <permission>browse_repository</permission>
+    <permission>view_changesets</permission>
+  </permissions>
+</role>

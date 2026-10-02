@@ -33,7 +33,7 @@ func (a *App) routesCustomFields(r Router) {
 		// update アクションは定義されていない（AbstractController::ActionNotFound → 404）
 		a.Handle(r, m, "/custom_fields/{custom_field_id}/enumerations/{id}", CustomFieldEnumerationsController, "update", func(c *Req) { c.Render404("") }, RequireAdmin(), enumFind)
 	}
-	a.Handle(r, http.MethodDelete, "/custom_fields/{custom_field_id}/enumerations/{id}", CustomFieldEnumerationsController, "destroy", a.CustomFieldEnumerationsDestroy, RequireAdmin(), enumFind, Before(a.findEnumeration))
+	a.Handle(r, http.MethodDelete, "/custom_fields/{custom_field_id}/enumerations/{id}", CustomFieldEnumerationsController, "destroy", a.CustomFieldEnumerationsDestroy, RequireAdmin(), enumFind, Before(a.findCFEnumeration))
 	a.Handle(r, http.MethodPut, "/custom_fields/{custom_field_id}/enumerations", CustomFieldEnumerationsController, "update_each", a.CustomFieldEnumerationsUpdateEach, RequireAdmin(), enumFind)
 
 	a.Handle(r, http.MethodGet, "/custom_fields", CustomFieldsController, "index", a.CustomFieldsIndex, RequireAdmin(), AcceptAPIAuth())

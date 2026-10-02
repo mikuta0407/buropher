@@ -1,5 +1,10 @@
 package domain
 
+import "slices"
+
+// TrackerCoreFieldsAll は Tracker::CORE_FIELDS_ALL（CORE_FIELDS_UNDISABLABLE + CORE_FIELDS）。
+var TrackerCoreFieldsAll = append(slices.Clone(TrackerCoreFieldsUndisablable), TrackerCoreFields...)
+
 // WorkflowTransition は workflow_transitions 行（Redmine WorkflowTransition）。
 type WorkflowTransition struct {
 	ID        int64

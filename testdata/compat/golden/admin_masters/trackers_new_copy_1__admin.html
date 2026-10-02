@@ -1,0 +1,507 @@
+status: 200
+content-type: text/html
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>New tracker - Trackers - Redmine</title>
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta content="Redmine" name="description">
+    <meta content="issue,bug,tracker" name="keywords">
+    <meta content="authenticity_token" name="csrf-param">
+    <meta content="{{CSRF}}" name="csrf-token">
+    <link href="/assets/favicon-DIGEST.ico" rel="shortcut icon" type="image/x-icon">
+    <link href="/assets/jquery/jquery-ui-1.13.2-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/tribute-5.1.3-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/application-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/responsive-DIGEST.css" media="all" rel="stylesheet">
+    <script data-turbo-track="reload" type="importmap">{
+  "imports": {
+    "@rails/request.js": "/assets/requestjs-DIGEST.js",
+    "application": "/assets/application-DIGEST.js",
+    "@hotwired/stimulus": "/assets/stimulus.min-DIGEST.js",
+    "@hotwired/stimulus-loading": "/assets/stimulus-loading-DIGEST.js",
+    "turndown": "/assets/turndown-DIGEST.js",
+    "controllers/api_key_copy_controller": "/assets/controllers/api_key_copy_controller-DIGEST.js",
+    "controllers/application": "/assets/controllers/application-DIGEST.js",
+    "controllers": "/assets/controllers/index-DIGEST.js",
+    "controllers/list_autofill_controller": "/assets/controllers/list_autofill_controller-DIGEST.js",
+    "controllers/quote_reply_controller": "/assets/controllers/quote_reply_controller-DIGEST.js",
+    "controllers/sticky_issue_header_controller": "/assets/controllers/sticky_issue_header_controller-DIGEST.js"
+  }
+}</script>
+    <link href="/assets/requestjs-DIGEST.js" rel="modulepreload">
+    <link href="/assets/application-DIGEST.js" rel="modulepreload">
+    <link href="/assets/stimulus.min-DIGEST.js" rel="modulepreload">
+    <link href="/assets/stimulus-loading-DIGEST.js" rel="modulepreload">
+    <link href="/assets/turndown-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/api_key_copy_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/application-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/index-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/list_autofill_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/quote_reply_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/sticky_issue_header_controller-DIGEST.js" rel="modulepreload">
+    <script type="module">import "application"</script>
+    <script src="/assets/jquery-3.7.1-ui-1.13.3-DIGEST.js"></script>
+    <script src="/assets/rails-ujs-DIGEST.js"></script>
+    <script src="/assets/tribute-5.1.3.min-DIGEST.js"></script>
+    <script src="/assets/application-legacy-DIGEST.js"></script>
+    <script src="/assets/responsive-DIGEST.js"></script>
+    <script>//<![CDATA[
+$(window).on('load', function(){ warnLeavingUnsaved('The current page contains unsaved text that will be lost if you leave this page.'); });
+//]]></script>
+    <script>//<![CDATA[
+rm = window.rm || {};rm.I18n = rm.I18n || {};rm.I18n = Object.freeze({buttonCopy: 'Copy'});
+//]]></script>
+    <script>//<![CDATA[
+rm = window.rm || {};rm.AutoComplete = rm.AutoComplete || {};rm.AutoComplete.dataSources = JSON.parse('{"issues":"/issues/auto_complete?q=","wiki_pages":"/wiki_pages/auto_complete?q="}');
+//]]></script>
+  </head>
+  <body class="controller-trackers action-new avatars-off" data-text-formatting="common_mark">
+    <div id="wrapper">
+      <div class="flyout-menu js-flyout-menu">
+        <div class="flyout-menu__search">
+          <form accept-charset="UTF-8" action="/search" method="get" name="form-RANDOM">
+            <label class="search-magnifier search-magnifier--flyout" for="flyout-search">
+              <svg aria-hidden="true" class="s18 icon-svg">
+                <use href="/assets/icons-DIGEST.svg#icon--search"></use>
+              </svg>
+              <span class="icon-label hidden">Search</span>
+            </label>
+            <input class="small js-search-input" id="flyout-search" name="q" placeholder="Search" type="text">
+          </form>
+        </div>
+        <div class="flyout-menu__avatar">
+          <a href="/users/1">
+            <span class="avatar-color-1 s40 avatar" role="img">RA</span>
+          </a>
+          <a class="user active" href="/users/1">admin</a>
+        </div>
+        <h3>General</h3>
+        <span class="js-general-menu"></span>
+        <span class="js-sidebar flyout-menu__sidebar"></span>
+        <h3>Profile</h3>
+        <span class="js-profile-menu"></span>
+      </div>
+      <div id="top-menu">
+        <div id="account">
+          <ul>
+            <li>
+              <a class="my-account" href="/my/account">My account</a>
+            </li>
+            <li>
+              <a class="logout" data-method="post" href="/logout" rel="nofollow">Sign out</a>
+            </li>
+          </ul>
+        </div>
+        <div id="loggedas">
+          Logged in as
+          <a class="user active" href="/users/1">admin</a>
+        </div>
+        <ul>
+          <li>
+            <a class="home" href="/">Home</a>
+          </li>
+          <li>
+            <a class="my-page" href="/my/page">My page</a>
+          </li>
+          <li>
+            <a class="projects" href="/projects">Projects</a>
+          </li>
+          <li>
+            <a class="administration" href="/admin">Administration</a>
+          </li>
+          <li>
+            <a class="help" href="https://www.redmine.org/guide" rel="noopener" target="_blank">Help</a>
+          </li>
+        </ul>
+      </div>
+      <div id="header">
+        <a class="mobile-toggle-button js-flyout-menu-toggle-button" href="#"></a>
+        <div id="quick-search">
+          <form accept-charset="UTF-8" action="/search" method="get" name="form-RANDOM">
+            <input autocomplete="off" name="scope" type="hidden">
+            <label for="q">
+              <a accesskey="4" href="/search">Search</a>
+              :
+            </label>
+            <input accesskey="f" class="small" data-auto-complete="true" id="q" name="q" size="20" type="text">
+          </form>
+          <div class="drdn" id="project-jump">
+            <span class="drdn-trigger">Jump to a project...</span>
+            <div class="drdn-content">
+              <div class="quick-search">
+                <svg aria-hidden="true" class="s18 icon-svg">
+                  <use href="/assets/icons-DIGEST.svg#icon--search"></use>
+                </svg>
+                <input autocomplete="off" class="autocomplete" data-automcomplete-url="/projects/autocomplete.js?jump=trackers" id="projects-quick-search" name="q" type="text" value="">
+              </div>
+              <div class="drdn-items projects selection">
+                <strong>Bookmarks</strong>
+                <a href="/projects/ecookbook?jump=trackers" title="eCookbook">
+                  <span style="padding-inline-start:0px;">eCookbook</span>
+                </a>
+                <a href="/projects/private-child?jump=trackers" title="Private child of eCookbook">
+                  <span style="padding-inline-start:16px;">Private child of eCookbook</span>
+                </a>
+                <strong>All Projects</strong>
+                <a href="/projects/private-child?jump=trackers" title="Private child of eCookbook">
+                  <span style="padding-inline-start:0px;">Private child of eCookbook</span>
+                </a>
+              </div>
+              <div class="drdn-items all-projects selection">
+                <a href="/projects?jump=trackers">All Projects</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <h1>Redmine</h1>
+      </div>
+      <div class="collapsiblesidebar" id="main">
+        <script>//<![CDATA[
+$('#main.collapsiblesidebar').collapsibleSidebar();
+//]]></script>
+        <div id="sidebar">
+          <div id="sidebar-switch-panel" style="visibility: hidden;">
+            <a class="" href="#" id="sidebar-switch-button">
+              <svg aria-hidden="true" class="s20 icon-svg icon-rtl">
+                <use href="/assets/icons-DIGEST.svg#icon--chevrons-right"></use>
+              </svg>
+            </a>
+          </div>
+          <script>//<![CDATA[
+$('#sidebar-switch-panel').css('visibility', 'visible');
+//]]></script>
+          <div id="sidebar-wrapper">
+            <h3>Administration</h3>
+            <div id="admin-menu">
+              <ul>
+                <li>
+                  <a class="icon icon-projects projects" href="/admin/projects">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--projects"></use>
+                    </svg>
+                    <span class="icon-label">Projects</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-user users" href="/users">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--user"></use>
+                    </svg>
+                    <span class="icon-label">Users</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-group groups" href="/groups">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--group"></use>
+                    </svg>
+                    <span class="icon-label">Groups</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-roles roles" href="/roles">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--roles"></use>
+                    </svg>
+                    <span class="icon-label">Roles and permissions</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-issue trackers selected" href="/trackers">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--issue"></use>
+                    </svg>
+                    <span class="icon-label">Trackers</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-issue-edit issue-statuses" href="/issue_statuses">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--issue-edit"></use>
+                    </svg>
+                    <span class="icon-label">Issue statuses</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-workflows workflows" href="/workflows/edit">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--workflows"></use>
+                    </svg>
+                    <span class="icon-label">Workflow</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-custom-fields custom-fields" href="/custom_fields">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--custom-fields"></use>
+                    </svg>
+                    <span class="icon-label">Custom fields</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-list enumerations" href="/enumerations">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--list"></use>
+                    </svg>
+                    <span class="icon-label">Enumerations</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-settings settings" href="/settings">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--settings"></use>
+                    </svg>
+                    <span class="icon-label">Settings</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-server-authentication ldap-authentication" href="/auth_sources">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--server-authentication"></use>
+                    </svg>
+                    <span class="icon-label">LDAP authentication</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-applications applications" href="/oauth/applications">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--apps"></use>
+                    </svg>
+                    <span class="icon-label">Applications</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-plugins plugins" href="/admin/plugins">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--plugins"></use>
+                    </svg>
+                    <span class="icon-label">Plugins</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="icon icon-help info" href="/admin/info">
+                    <svg aria-hidden="true" class="s18 icon-svg">
+                      <use href="/assets/icons-DIGEST.svg#icon--help"></use>
+                    </svg>
+                    <span class="icon-label">Information</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div id="content">
+          <h2>
+            <a href="/trackers">Trackers</a>
+            » New tracker
+          </h2>
+          <form accept-charset="UTF-8" action="/trackers" class="new_tracker" id="new_tracker" method="post" name="new_tracker-RANDOM">
+            <input autocomplete="off" name="authenticity_token" type="hidden" value="{{CSRF}}">
+            <div class="splitcontent">
+              <div class="splitcontentleft">
+                <div class="box tabular">
+                  <p>
+                    <label for="tracker_name">
+                      Name
+                      <span class="required">*</span>
+                    </label>
+                    <input id="tracker_name" name="tracker[name]" type="text" value="">
+                  </p>
+                  <p>
+                    <label for="tracker_default_status_id">
+                      Default status
+                      <span class="required">*</span>
+                    </label>
+                    <select id="tracker_default_status_id" name="tracker[default_status_id]">
+                      <option selected="selected" value="1">New</option>
+                      <option value="2">Assigned</option>
+                      <option value="3">Resolved</option>
+                      <option value="4">Feedback</option>
+                      <option value="5">Closed</option>
+                      <option value="6">Rejected</option>
+                    </select>
+                  </p>
+                  <p>
+                    <label for="tracker_is_in_roadmap">Issues displayed in roadmap</label>
+                    <input autocomplete="off" name="tracker[is_in_roadmap]" type="hidden" value="0">
+                    <input checked="checked" id="tracker_is_in_roadmap" name="tracker[is_in_roadmap]" type="checkbox" value="1">
+                  </p>
+                  <p>
+                    <label for="tracker_description">Description</label>
+                    <textarea id="tracker_description" name="tracker[description]" rows="4">Description for Bug tracker</textarea>
+                  </p>
+                  <p>
+                    <label>Standard fields</label>
+                    <label class="block">
+                      <input checked="checked" name="tracker[core_fields][]" type="checkbox" value="assigned_to_id">
+                      Assignee
+                    </label>
+                    <label class="block">
+                      <input checked="checked" name="tracker[core_fields][]" type="checkbox" value="category_id">
+                      Category
+                    </label>
+                    <label class="block">
+                      <input checked="checked" name="tracker[core_fields][]" type="checkbox" value="fixed_version_id">
+                      Target version
+                    </label>
+                    <label class="block">
+                      <input checked="checked" name="tracker[core_fields][]" type="checkbox" value="parent_issue_id">
+                      Parent task
+                    </label>
+                    <label class="block">
+                      <input checked="checked" name="tracker[core_fields][]" type="checkbox" value="start_date">
+                      Start date
+                    </label>
+                    <label class="block">
+                      <input checked="checked" name="tracker[core_fields][]" type="checkbox" value="due_date">
+                      Due date
+                    </label>
+                    <label class="block">
+                      <input checked="checked" name="tracker[core_fields][]" type="checkbox" value="estimated_hours">
+                      Estimated time
+                    </label>
+                    <label class="block">
+                      <input checked="checked" name="tracker[core_fields][]" type="checkbox" value="done_ratio">
+                      % Done
+                    </label>
+                    <label class="block">
+                      <input checked="checked" name="tracker[core_fields][]" type="checkbox" value="description">
+                      Description
+                    </label>
+                    <label class="block">
+                      <input checked="checked" name="tracker[core_fields][]" type="checkbox" value="priority_id">
+                      Priority
+                    </label>
+                  </p>
+                  <input autocomplete="off" id="tracker_core_fields_" name="tracker[core_fields][]" type="hidden" value="">
+                  <p>
+                    <label>Custom fields</label>
+                    <label class="block">
+                      <input checked="checked" name="tracker[custom_field_ids][]" type="checkbox" value="2">
+                      Searchable field
+                    </label>
+                    <label class="block">
+                      <input checked="checked" name="tracker[custom_field_ids][]" type="checkbox" value="1">
+                      Database
+                    </label>
+                    <label class="block">
+                      <input checked="checked" name="tracker[custom_field_ids][]" type="checkbox" value="6">
+                      Float field
+                    </label>
+                    <label class="block">
+                      <input checked="checked" name="tracker[custom_field_ids][]" type="checkbox" value="8">
+                      Custom date
+                    </label>
+                    <label class="block">
+                      <input checked="checked" name="tracker[custom_field_ids][]" type="checkbox" value="9">
+                      Project 1 cf
+                    </label>
+                  </p>
+                  <input autocomplete="off" id="tracker_custom_field_ids_" name="tracker[custom_field_ids][]" type="hidden" value="">
+                  <p>
+                    <label for="copy_workflow_from">Copy workflow from</label>
+                    <select id="copy_workflow_from" name="copy_workflow_from">
+                      <option></option>
+                      <option selected="selected" value="1">Bug</option>
+                      <option value="2">Feature request</option>
+                      <option value="3">Support request</option>
+                    </select>
+                  </p>
+                </div>
+                <input class="mobile-hide" data-disable-with="Create" name="commit" type="submit" value="Create">
+              </div>
+              <div class="splitcontentright">
+                <fieldset class="box" id="tracker_project_ids">
+                  <legend>
+                    <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;#tracker_project_ids input[type=checkbox]&#39;); return false;" title="Check all / Uncheck all">
+                      <svg aria-hidden="true" class="s18 icon-svg">
+                        <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+                      </svg>
+                      <span class="icon-label"></span>
+                    </a>
+                    Projects
+                  </legend>
+                  <ul class="projects root">
+                    <li class="root">
+                      <div class="root">
+                        <label>
+                          <input checked="checked" name="tracker[project_ids][]" type="checkbox" value="1">
+                          eCookbook
+                        </label>
+                      </div>
+                      <ul class="projects">
+                        <li class="child">
+                          <div class="child">
+                            <label>
+                              <input checked="checked" name="tracker[project_ids][]" type="checkbox" value="5">
+                              Private child of eCookbook
+                            </label>
+                          </div>
+                          <ul class="projects">
+                            <li class="child">
+                              <div class="child">
+                                <label>
+                                  <input checked="checked" name="tracker[project_ids][]" type="checkbox" value="6">
+                                  Child of private child
+                                </label>
+                              </div>
+                            </li>
+                          </ul>
+                        </li>
+                        <li class="child">
+                          <div class="child">
+                            <label>
+                              <input checked="checked" name="tracker[project_ids][]" type="checkbox" value="3">
+                              eCookbook Subproject 1
+                            </label>
+                          </div>
+                        </li>
+                        <li class="child">
+                          <div class="child">
+                            <label>
+                              <input checked="checked" name="tracker[project_ids][]" type="checkbox" value="4">
+                              eCookbook Subproject 2
+                            </label>
+                          </div>
+                        </li>
+                      </ul>
+                    </li>
+                    <li class="root">
+                      <div class="root">
+                        <label>
+                          <input checked="checked" name="tracker[project_ids][]" type="checkbox" value="2">
+                          OnlineStore
+                        </label>
+                      </div>
+                    </li>
+                  </ul>
+                  <input autocomplete="off" name="tracker[project_ids][]" type="hidden" value="">
+                </fieldset>
+              </div>
+            </div>
+            <input class="mobile-show" data-disable-with="Create" name="commit" type="submit" value="Create">
+          </form>
+          <div style="clear:both;"></div>
+        </div>
+      </div>
+      <div id="footer">MASKED</div>
+      <div id="ajax-indicator" style="display:none;">
+        <span class="icon">
+          <svg aria-hidden="true" class="s18 icon-svg svg-loader">
+            <use href="/assets/icons-DIGEST.svg#icon--loader"></use>
+          </svg>
+          <span class="icon-label">Loading...</span>
+        </span>
+      </div>
+      <div id="ajax-modal" style="display:none;"></div>
+      <div id="icon-copy-source" style="display: none;">
+        <svg aria-hidden="true" class="s18 icon-svg">
+          <use href="/assets/icons-DIGEST.svg#icon--"></use>
+        </svg>
+      </div>
+    </div>
+  </body>
+</html>

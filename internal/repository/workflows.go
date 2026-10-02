@@ -408,3 +408,43 @@ func CopyWorkflow(ctx context.Context, q db.Queryer, srcTracker, srcRole, dstTra
 		dstTracker, dstRole, srcTracker, srcRole)
 	return err
 }
+
+// TrackersByIDs は Tracker.where(:id => ids)（position 順。存在しない id は無視）。
+func TrackersByIDs(ctx context.Context, q db.Queryer, ids []int64) ([]*domain.Tracker, error) {
+	if len(ids) == 0 {
+		return nil, nil
+	}
+	query, args, err := db.In(`SELECT `+trackerCols+` FROM trackers WHERE id IN (?) ORDER BY position, id`, uniqIDs(ids))
+	if err != nil {
+		return nil, err
+	}
+	var rows []trackerRow
+	if err := q.Select(ctx, &rows, query, args...); err != nil {
+		return nil, err
+	}
+	out := make([]*domain.Tracker, len(rows))
+	for i := range rows {
+		out[i] = rows[i].tracker()
+	}
+	return out, nil
+}
+
+// IssueStatusesByIDs は IssueStatus.where(:id => ids).sorted。
+func IssueStatusesByIDs(ctx context.Context, q db.Queryer, ids []int64) ([]*domain.IssueStatus, error) {
+	if len(ids) == 0 {
+		return nil, nil
+	}
+	query, args, err := db.In(`SELECT `+issueStatusCols+` FROM issue_statuses WHERE id IN (?) ORDER BY position, id`, uniqIDs(ids))
+	if err != nil {
+		return nil, err
+	}
+	var rows []issueStatusRow
+	if err := q.Select(ctx, &rows, query, args...); err != nil {
+		return nil, err
+	}
+	out := make([]*domain.IssueStatus, len(rows))
+	for i := range rows {
+		out[i] = rows[i].status()
+	}
+	return out, nil
+}

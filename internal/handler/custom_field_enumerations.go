@@ -9,6 +9,7 @@ import (
 
 	"github.com/mikuta0407/buropher/internal/customfield"
 	"github.com/mikuta0407/buropher/internal/db"
+	"github.com/mikuta0407/buropher/internal/helper"
 	"github.com/mikuta0407/buropher/internal/httpx"
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/view"
@@ -34,8 +35,8 @@ func (a *App) findEnumCustomField(c *Req) {
 	c.setCFForm(&cfForm{CF: cf, Errors: &customfield.Errors{}, env: a.cfEnv(c)})
 }
 
-// findEnumeration は find_enumeration（@custom_field.enumerations.find(params[:id])）。
-func (a *App) findEnumeration(c *Req) {
+// findCFEnumeration は find_enumeration（@custom_field.enumerations.find(params[:id])）。
+func (a *App) findCFEnumeration(c *Req) {
 	cf := c.cfFormOf().CF
 	es, err := customfield.Enumerations(c.Ctx(), a.DB, cf.ID, false)
 	if err != nil {
@@ -136,7 +137,7 @@ func (a *App) CustomFieldEnumerationsCreate(c *Req) {
 		}
 		js += "$('#content').html('" + rails.EscapeJavascriptString(string(out)) + "');\n"
 	} else {
-		js += "$('form#add-element').prepend('" + rails.EscapeJavascriptString(string(a.Helpers.RenderErrorMessages(ef.FullErrorMessages()))) + "');\n"
+		js += "$('form#add-element').prepend('" + rails.EscapeJavascriptString(string(helper.RenderErrorMessages(a.Helpers, &helper.Page{}, ef.FullErrorMessages()))) + "');\n"
 	}
 	js += "\n$('#custom_field_enumeration_name').focus();\n"
 	httpx.SetContentType(c.W, "js", true)

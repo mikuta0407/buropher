@@ -1,0 +1,50 @@
+status: 200
+content-type: application/xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<time_entry_activities type="array">
+  <time_entry_activity>
+    <id>9</id>
+    <name>Design</name>
+    <is_default>false</is_default>
+    <active>true</active>
+    <custom_fields type="array">
+      <custom_field id="7" name="Billable">
+        <value/>
+      </custom_field>
+    </custom_fields>
+  </time_entry_activity>
+  <time_entry_activity>
+    <id>10</id>
+    <name>Development</name>
+    <is_default>true</is_default>
+    <active>true</active>
+    <custom_fields type="array">
+      <custom_field id="7" name="Billable">
+        <value>t</value>
+      </custom_field>
+    </custom_fields>
+  </time_entry_activity>
+  <time_entry_activity>
+    <id>11</id>
+    <name>QA</name>
+    <is_default>false</is_default>
+    <active>true</active>
+    <custom_fields type="array">
+      <custom_field id="7" name="Billable">
+        <value>1</value>
+      </custom_field>
+    </custom_fields>
+  </time_entry_activity>
+  <time_entry_activity>
+    <id>14</id>
+    <name>Inactive Activity</name>
+    <is_default>false</is_default>
+    <active>false</active>
+    <custom_fields type="array">
+      <custom_field id="7" name="Billable">
+        <value/>
+      </custom_field>
+    </custom_fields>
+  </time_entry_activity>
+</time_entry_activities>

@@ -1,0 +1,6 @@
+{{title (list (l .Enumeration.OptionName) "/enumerations") .Enumeration.Name}}
+
+{{$f := labelled_form_for "" .Enumeration (hash "as" "enumeration" "url" (printf "/enumerations/%d" .Enumeration.ID) "html" (hash "method" "put" "multipart" true))}}{{$f.Open}}
+  {{partial "enumerations/form" (dict "f" $f)}}
+  {{submit_tag (l "button_save")}}
+{{end_form}}

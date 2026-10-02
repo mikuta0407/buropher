@@ -89,7 +89,7 @@ func (a *App) workflowRoles(c *Req) ([]*domain.Role, error) {
 
 // paramIDs は Array.wrap(params[key]) を id として解釈できるものだけ返す（Rails の where(:id => ids) と同じく
 // 数値でない値は一致しない）。
-func paramIDs(p *httpx.Params, key string) (ids []int64, raw []string) {
+func workflowParamIDs(p *httpx.Params, key string) (ids []int64, raw []string) {
 	raw = p.Strings(key)
 	for _, s := range raw {
 		if n, err := strconv.ParseInt(s, 10, 64); err == nil {
@@ -142,7 +142,7 @@ func (a *App) workflowState(c *Req) *workflowState {
 
 func (a *App) loadWorkflowState(c *Req, st *workflowState) error {
 	p := c.Params()
-	ids, raw := paramIDs(p, "role_id")
+	ids, raw := workflowParamIDs(p, "role_id")
 	switch {
 	case len(raw) == 1 && raw[0] == "all":
 		roles, err := a.workflowRoles(c)
@@ -160,7 +160,7 @@ func (a *App) loadWorkflowState(c *Req, st *workflowState) error {
 	if len(st.Roles) == 0 {
 		st.Roles = nil
 	}
-	ids, raw = paramIDs(p, "tracker_id")
+	ids, raw = workflowParamIDs(p, "tracker_id")
 	switch {
 	case len(raw) == 1 && raw[0] == "all":
 		ts, err := repository.ListTrackers(c.Ctx(), a.DB)
@@ -580,14 +580,14 @@ func (a *App) findSourcesAndTargets(c *Req) (*workflowCopyState, error) {
 		st.SourceRole = r
 	}
 	if v, _ := p.Get("target_tracker_ids"); !httpx.IsBlank(v) {
-		ids, _ := paramIDs(p, "target_tracker_ids")
+		ids, _ := workflowParamIDs(p, "target_tracker_ids")
 		if st.TargetTrackers, err = a.trackersWhereID(c, ids); err != nil {
 			return nil, err
 		}
 		st.targetTrackersGiven = true
 	}
 	if v, _ := p.Get("target_role_ids"); !httpx.IsBlank(v) {
-		ids, _ := paramIDs(p, "target_role_ids")
+		ids, _ := workflowParamIDs(p, "target_role_ids")
 		if st.TargetRoles, err = a.rolesWhereID(c, ids); err != nil {
 			return nil, err
 		}
