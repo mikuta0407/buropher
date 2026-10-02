@@ -48,3 +48,7 @@
   </p>
 </div>
 {{end}}
+{{if $a.SSOEnabled}}
+<h4>{{l "buropher.sso.label_sso"}}</h4>
+<p>{{link_to (l "buropher.sso.label_linked_identities") "/my/sso"}}</p>
+{{end}}

@@ -32,6 +32,11 @@ var recentlyUsedRe = regexp.MustCompile(`<strong>Recently used</strong>.*?(<stro
 
 func stripRecentlyUsed(s string) string { return recentlyUsedRe.ReplaceAllString(s, "$1") }
 
+var buropherExtraRe = regexp.MustCompile(`\n<a class="icon icon-add buropher-extra"[^>]*>[^<]*</a>`)
+
+// stripBuropherExtra は buropher 拡張のリンク（class に buropher-extra を持つ a 要素）を除く。
+func stripBuropherExtra(s string) string { return buropherExtraRe.ReplaceAllString(s, "") }
+
 func TestAuthSourcesPagesMatchRedmine(t *testing.T) {
 	ts, d := newFixtureServer(t)
 	insertFixtureAuthSource(t, d)
@@ -43,7 +48,8 @@ func TestAuthSourcesPagesMatchRedmine(t *testing.T) {
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			// ジャンプボックスの「最近使ったもの」は共用の参照環境の閲覧履歴に依存するため除く
-			compareAdminGolden(t, "../auth_sources/"+tc.name, adminGet(t, c, ts.URL+tc.path), ts.URL, stripRecentlyUsed)
+			// buropher 拡張の「新しい OpenID Connect プロバイダ」リンク（buropher-extra）は参照に無いため除く
+			compareAdminGolden(t, "../auth_sources/"+tc.name, stripBuropherExtra(adminGet(t, c, ts.URL+tc.path)), ts.URL, stripRecentlyUsed)
 		})
 	}
 	// 管理者以外は 403、存在しない id は 404、type が LDAP 以外は 404

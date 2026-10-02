@@ -168,6 +168,18 @@
 //   - メール送信は未実装。ニュース・文書・ファイル・メッセージの作成時は a.notify(c, setting_event, mailer_action, obj)
 //     を呼び、Setting.notified_events に含まれていれば SetContentNotifier で設定した Notifier に渡す（既定は何もしない）。
 //
+// # 規約: 認証・sudo モード・アカウントのメール
+//
+//   - require_sudo_mode は、既存コントローラの宣言を sudo_mode.go の sudoModeTable にまとめてあり（runBeforeActions の最後に適用）、
+//     新しく移植するコントローラでは Handle の opts の before_action の位置に RequireSudoMode(methods...) を置く。
+//     既定では無効（config の [auth] sudo_mode）。
+//   - パスワード再発行・登録・2 要素認証のセキュリティ通知などのメールは a.accountMailer()（AccountMailer。
+//     account_mailer.go）経由で送る。配信基盤は App.Mailer に接続する（nil ならログに記録するだけ）。
+//   - ログイン直後にセッションへ値を入れる処理は handleActiveUser の afterLogin で行う（セッションはリダイレクトの
+//     送出時に保存されるため、リダイレクトの後に Set しても保存されない）。
+//   - c.Params() は呼び出しごとに作り直されるため、before_action で params[:x] ||= ... のように値を足すときは
+//     httpx.BodyParams(c.R).Set を使う。
+//
 // # 規約: 互換テスト
 //
 //   - 画面のテストは internal/server のテストで、internal/testfixtures で Redmine の公式フィクスチャを投入した DB に

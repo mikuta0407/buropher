@@ -1,7 +1,7 @@
 {{call_hook "view_account_login_top"}}
 
 <div id="login-form">
-  {{form_tag "/login" (hash "onsubmit" "return keepAnchorOnSignIn(this);")}}
+  {{if .ShowLocalForm}}{{form_tag "/login" (hash "onsubmit" "return keepAnchorOnSignIn(this);")}}
   {{back_url_hidden_field_tag}}
   
   <label for="username">{{l "field_login"}}</label>
@@ -19,6 +19,19 @@
   
   <input type="submit" name="login" value="{{l "button_login"}}" tabindex="5" id="login-submit" />
   {{end_form}}
+  {{end}}
+  {{/* buropher 拡張: OIDC のログインボタン（OIDC 認証方式が無ければ何も出さない） */}}
+  {{if .SSOButtons}}
+  <div id="sso-login">
+    {{if .ShowLocalForm}}<p class="sso-separator">{{l "buropher.sso.label_or"}}</p>{{end}}
+    {{range $b := .SSOButtons}}
+    <p>{{link_to $b.Label $b.URL (hash "class" "button sso-login-button")}}</p>
+    {{end}}
+    {{if and .SSORequired (not .ShowLocalForm)}}
+    <p class="sso-local-login">{{link_to (l "buropher.sso.label_local_login") "/login?local=1" (hash "class" "lost_password")}}</p>
+    {{end}}
+  </div>
+  {{end}}
 </div>
 
 {{call_hook "view_account_login_bottom"}}

@@ -79,6 +79,9 @@ type Request struct {
 	Normalize normalize.Config `yaml:"normalize"`
 	// Skip が空でなければ実行しない（理由を書く）。
 	Skip string `yaml:"skip"`
+	// CSRF が true なら session 認証以外（anonymous など）でも Form に CSRF トークンを付与する
+	// （未ログインのフォーム送信: パスワード再発行・自己登録など）。
+	CSRF bool `yaml:"csrf"`
 }
 
 // File はシナリオファイル全体。
@@ -108,6 +111,7 @@ type Case struct {
 	Expect    int
 	Normalize normalize.Config
 	Skip      string
+	CSRF      bool
 }
 
 // Load はシナリオファイルを読み込む。拡張子 .txt は簡易形式として扱う。
@@ -275,6 +279,7 @@ func (f *File) Cases() ([]Case, error) {
 				Expect:    r.ExpectStatus,
 				Normalize: f.Normalize.Merge(r.Normalize),
 				Skip:      r.Skip,
+				CSRF:      r.CSRF,
 			})
 		}
 	}

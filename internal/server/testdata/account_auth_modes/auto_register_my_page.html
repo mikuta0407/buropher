@@ -1,0 +1,248 @@
+status: 200
+location: 
+
+<title>My page - Redmine</title>
+----
+<!-- page specific tags -->
+<link rel="alternate" type="application/atom+xml" title="Issues assigned to me" href="/issues.atom?c%5B%5D=project&amp;c%5B%5D=tracker&amp;c%5B%5D=status&amp;c%5B%5D=subject&amp;f%5B%5D=status_id&amp;f%5B%5D=assigned_to_id&amp;f%5B%5D=project.status&amp;key=KEY&amp;op%5Bassigned_to_id%5D=%3D&amp;op%5Bproject.status%5D=%3D&amp;op%5Bstatus_id%5D=o&amp;set_filter=1&amp;sort=priority%3Adesc%2Cupdated_on%3Adesc&amp;v%5Bassigned_to_id%5D%5B%5D=me&amp;v%5Bproject.status%5D%5B%5D=1&amp;v%5Bstatus_id%5D%5B%5D=" />
+<link rel="alternate" type="application/atom+xml" title="Reported issues" href="/issues.atom?c%5B%5D=project&amp;c%5B%5D=tracker&amp;c%5B%5D=status&amp;c%5B%5D=subject&amp;f%5B%5D=status_id&amp;f%5B%5D=author_id&amp;f%5B%5D=project.status&amp;key=KEY&amp;op%5Bauthor_id%5D=%3D&amp;op%5Bproject.status%5D=%3D&amp;op%5Bstatus_id%5D=o&amp;set_filter=1&amp;sort=updated_on%3Adesc&amp;v%5Bauthor_id%5D%5B%5D=me&amp;v%5Bproject.status%5D%5B%5D=1&amp;v%5Bstatus_id%5D%5B%5D=" />
+<script src="/assets/context_menu-DIGEST.js"></script><link rel="stylesheet" href="/assets/context_menu-DIGEST.css" media="screen" /></head>
+----
+<div id="main" class="nosidebar">
+  
+    <div id="sidebar">
+        <div id="sidebar-wrapper">
+          
+          
+        </div>
+    </div>
+
+    <div id="content">
+        <div class="flash notice" id="flash_notice"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--checked"></use></svg>Your account has been activated. You can now log in.</div>
+        <div class="contextual">
+  <form id="block-form" action="/my/add_block" accept-charset="UTF-8" data-remote="true" name="block-form-RANDOM" method="post"><input type="hidden" name="authenticity_token" value="{{CSRF}}" autocomplete="off" />
+    <label for="block-select">Add</label>:
+    <select name="block" id="block-select" onchange="$(&#39;#block-form&#39;).submit();"><option></option><option disabled="disabled">Issues assigned to me</option><option disabled="disabled">Reported issues</option><option value="issuesupdatedbyme">Updated issues</option><option value="issueswatched">Watched issues</option><option value="issuequery">Issues</option><option value="news">Latest news</option><option value="calendar">Calendar</option><option value="documents">Documents</option><option value="timelog">Spent time</option><option value="activity">Activity</option></select>
+</form>  
+</div>
+
+<h2>My page</h2>
+
+<div id="my-page" class="splitcontent">
+  <div id="list-top" class="block-receiver splitcontenttop">
+    
+  </div>
+  <div id="list-left" class="block-receiver splitcontentleft">
+    <div class="mypage-box" id="block-issuesassignedtome"><div class="contextual"><span class="icon-only icon-sort-handle sort-handle" title="Move"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--reorder"></use></svg><span class="icon-label"></span></span><a class="icon-only icon-close" title="Delete" data-remote="true" rel="nofollow" data-method="post" href="/my/remove_block?block=issuesassignedtome"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--close"></use></svg><span class="icon-label">Delete</span></a></div><div class="contextual">
+  <a href="#" onclick="$(&#39;#issuesassignedtome-settings&#39;).toggle();; return false;" class="icon-only icon-settings" title="Options"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--settings"></use></svg><span class="icon-label">Options</span></a>
+</div>
+
+<h3>
+  
+  <a href="/issues?c%5B%5D=project&amp;c%5B%5D=tracker&amp;c%5B%5D=status&amp;c%5B%5D=subject&amp;f%5B%5D=status_id&amp;f%5B%5D=assigned_to_id&amp;f%5B%5D=project.status&amp;op%5Bassigned_to_id%5D=%3D&amp;op%5Bproject.status%5D=%3D&amp;op%5Bstatus_id%5D=o&amp;set_filter=1&amp;sort=priority%3Adesc%2Cupdated_on%3Adesc&amp;v%5Bassigned_to_id%5D%5B%5D=me&amp;v%5Bproject.status%5D%5B%5D=1&amp;v%5Bstatus_id%5D%5B%5D=">Issues assigned to me</a>
+  (0)
+</h3>
+
+<div id="issuesassignedtome-settings" style="display:none;">
+  <form action="/my/page" accept-charset="UTF-8" data-remote="true" name="form-RANDOM" method="post"><input type="hidden" name="authenticity_token" value="{{CSRF}}" autocomplete="off" />
+    <div id="list-definition">
+      <div class="box">
+        
+<div class="query-columns">
+      <label for="available_settings_issuesassignedtome_columns">Available Columns</label>
+      <select name="available_columns[]" id="available_settings_issuesassignedtome_columns" multiple="multiple" size="10" ondblclick="moveOptions(this.form.available_settings_issuesassignedtome_columns, this.form.selected_settings_issuesassignedtome_columns);"><option value="parent">Parent task</option>
+<option value="parent.subject">Parent task subject</option>
+<option value="priority">Priority</option>
+<option value="author">Author</option>
+<option value="assigned_to">Assignee</option>
+<option value="watcher_users">Watchers</option>
+<option value="updated_on">Updated</option>
+<option value="category">Category</option>
+<option value="fixed_version">Target version</option>
+<option value="start_date">Start date</option>
+<option value="due_date">Due date</option>
+<option value="estimated_hours">Estimated time</option>
+<option value="estimated_remaining_hours">Estimated remaining time</option>
+<option value="total_estimated_hours">Total estimated time</option>
+<option value="spent_hours">Spent time</option>
+<option value="total_spent_hours">Total spent time</option>
+<option value="done_ratio">% Done</option>
+<option value="created_on">Created</option>
+<option value="closed_on">Closed</option>
+<option value="last_updated_by">Last updated by</option>
+<option value="relations">Related issues</option>
+<option value="attachments">Files</option>
+<option value="cf_2">Searchable field</option>
+<option value="cf_1">Database</option>
+<option value="cf_6">Float field</option>
+<option value="cf_8">Custom date</option>
+<option value="cf_9">Project 1 cf</option></select>
+</div>
+<div class="buttons">
+      <button type="button" class="move-right" onclick="moveOptions(this.form.available_settings_issuesassignedtome_columns, this.form.selected_settings_issuesassignedtome_columns);"><svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--arrow-narrow-right"></use></svg></button>
+      <button type="button" class="move-left" onclick="moveOptions(this.form.selected_settings_issuesassignedtome_columns, this.form.available_settings_issuesassignedtome_columns);"><svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--arrow-narrow-left"></use></svg></button>
+</div>
+<div class="query-columns">
+      <label for="selected_settings_issuesassignedtome_columns">Selected Columns</label>
+      <select name="settings[issuesassignedtome][columns][]" id="selected_settings_issuesassignedtome_columns" multiple="multiple" size="10" ondblclick="moveOptions(this.form.selected_settings_issuesassignedtome_columns, this.form.available_settings_issuesassignedtome_columns);"><option value="project">Project</option>
+<option value="tracker">Tracker</option>
+<option value="status">Status</option>
+<option value="subject">Subject</option></select>
+</div>
+<div class="buttons">
+      <button type="button" onclick="moveOptionTop(this.form.selected_settings_issuesassignedtome_columns);">&#8648;</button>
+      <button type="button" onclick="moveOptionUp(this.form.selected_settings_issuesassignedtome_columns);">&#8593;</button>
+      <button type="button" onclick="moveOptionDown(this.form.selected_settings_issuesassignedtome_columns);">&#8595;</button>
+      <button type="button" onclick="moveOptionBottom(this.form.selected_settings_issuesassignedtome_columns);">&#8650;</button>
+</div>
+
+<script>
+//<![CDATA[
+
+$(document).ready(function(){
+  $('.query-columns').closest('form').submit(function(){
+    $('#selected_settings_issuesassignedtome_columns option:not(:disabled)').prop('selected', true);
+  });
+});
+
+//]]>
+</script>
+      </div>
+    </div>
+    <p>
+      <input type="submit" name="commit" value="Save" data-disable-with="Save" />
+      <a href="#" onclick="$(&#39;#issuesassignedtome-settings&#39;).toggle();; return false;">Cancel</a>
+    </p>
+</form></div>
+
+  <p class="nodata">No data to display</p>
+
+</div>
+  </div>
+  <div id="list-right" class="block-receiver splitcontentright">
+    <div class="mypage-box" id="block-issuesreportedbyme"><div class="contextual"><span class="icon-only icon-sort-handle sort-handle" title="Move"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--reorder"></use></svg><span class="icon-label"></span></span><a class="icon-only icon-close" title="Delete" data-remote="true" rel="nofollow" data-method="post" href="/my/remove_block?block=issuesreportedbyme"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--close"></use></svg><span class="icon-label">Delete</span></a></div><div class="contextual">
+  <a href="#" onclick="$(&#39;#issuesreportedbyme-settings&#39;).toggle();; return false;" class="icon-only icon-settings" title="Options"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--settings"></use></svg><span class="icon-label">Options</span></a>
+</div>
+
+<h3>
+  
+  <a href="/issues?c%5B%5D=project&amp;c%5B%5D=tracker&amp;c%5B%5D=status&amp;c%5B%5D=subject&amp;f%5B%5D=status_id&amp;f%5B%5D=author_id&amp;f%5B%5D=project.status&amp;op%5Bauthor_id%5D=%3D&amp;op%5Bproject.status%5D=%3D&amp;op%5Bstatus_id%5D=o&amp;set_filter=1&amp;sort=updated_on%3Adesc&amp;v%5Bauthor_id%5D%5B%5D=me&amp;v%5Bproject.status%5D%5B%5D=1&amp;v%5Bstatus_id%5D%5B%5D=">Reported issues</a>
+  (0)
+</h3>
+
+<div id="issuesreportedbyme-settings" style="display:none;">
+  <form action="/my/page" accept-charset="UTF-8" data-remote="true" name="form-RANDOM" method="post"><input type="hidden" name="authenticity_token" value="{{CSRF}}" autocomplete="off" />
+    <div id="list-definition">
+      <div class="box">
+        
+<div class="query-columns">
+      <label for="available_settings_issuesreportedbyme_columns">Available Columns</label>
+      <select name="available_columns[]" id="available_settings_issuesreportedbyme_columns" multiple="multiple" size="10" ondblclick="moveOptions(this.form.available_settings_issuesreportedbyme_columns, this.form.selected_settings_issuesreportedbyme_columns);"><option value="parent">Parent task</option>
+<option value="parent.subject">Parent task subject</option>
+<option value="priority">Priority</option>
+<option value="author">Author</option>
+<option value="assigned_to">Assignee</option>
+<option value="watcher_users">Watchers</option>
+<option value="updated_on">Updated</option>
+<option value="category">Category</option>
+<option value="fixed_version">Target version</option>
+<option value="start_date">Start date</option>
+<option value="due_date">Due date</option>
+<option value="estimated_hours">Estimated time</option>
+<option value="estimated_remaining_hours">Estimated remaining time</option>
+<option value="total_estimated_hours">Total estimated time</option>
+<option value="spent_hours">Spent time</option>
+<option value="total_spent_hours">Total spent time</option>
+<option value="done_ratio">% Done</option>
+<option value="created_on">Created</option>
+<option value="closed_on">Closed</option>
+<option value="last_updated_by">Last updated by</option>
+<option value="relations">Related issues</option>
+<option value="attachments">Files</option>
+<option value="cf_2">Searchable field</option>
+<option value="cf_1">Database</option>
+<option value="cf_6">Float field</option>
+<option value="cf_8">Custom date</option>
+<option value="cf_9">Project 1 cf</option></select>
+</div>
+<div class="buttons">
+      <button type="button" class="move-right" onclick="moveOptions(this.form.available_settings_issuesreportedbyme_columns, this.form.selected_settings_issuesreportedbyme_columns);"><svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--arrow-narrow-right"></use></svg></button>
+      <button type="button" class="move-left" onclick="moveOptions(this.form.selected_settings_issuesreportedbyme_columns, this.form.available_settings_issuesreportedbyme_columns);"><svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--arrow-narrow-left"></use></svg></button>
+</div>
+<div class="query-columns">
+      <label for="selected_settings_issuesreportedbyme_columns">Selected Columns</label>
+      <select name="settings[issuesreportedbyme][columns][]" id="selected_settings_issuesreportedbyme_columns" multiple="multiple" size="10" ondblclick="moveOptions(this.form.selected_settings_issuesreportedbyme_columns, this.form.available_settings_issuesreportedbyme_columns);"><option value="project">Project</option>
+<option value="tracker">Tracker</option>
+<option value="status">Status</option>
+<option value="subject">Subject</option></select>
+</div>
+<div class="buttons">
+      <button type="button" onclick="moveOptionTop(this.form.selected_settings_issuesreportedbyme_columns);">&#8648;</button>
+      <button type="button" onclick="moveOptionUp(this.form.selected_settings_issuesreportedbyme_columns);">&#8593;</button>
+      <button type="button" onclick="moveOptionDown(this.form.selected_settings_issuesreportedbyme_columns);">&#8595;</button>
+      <button type="button" onclick="moveOptionBottom(this.form.selected_settings_issuesreportedbyme_columns);">&#8650;</button>
+</div>
+
+<script>
+//<![CDATA[
+
+$(document).ready(function(){
+  $('.query-columns').closest('form').submit(function(){
+    $('#selected_settings_issuesreportedbyme_columns option:not(:disabled)').prop('selected', true);
+  });
+});
+
+//]]>
+</script>
+      </div>
+    </div>
+    <p>
+      <input type="submit" name="commit" value="Save" data-disable-with="Save" />
+      <a href="#" onclick="$(&#39;#issuesreportedbyme-settings&#39;).toggle();; return false;">Cancel</a>
+    </p>
+</form></div>
+
+  <p class="nodata">No data to display</p>
+
+</div>
+  </div>
+
+</div>
+
+
+
+<script>
+//<![CDATA[
+
+$(document).ready(function(){
+  $('#block-select').val('');
+  $('.block-receiver').sortable({
+    connectWith: '.block-receiver',
+    tolerance: 'pointer',
+    handle: '.sort-handle',
+    start: function(event, ui){$(this).parent().addClass('dragging');},
+    stop: function(event, ui){$(this).parent().removeClass('dragging');},
+    update: function(event, ui){
+      // trigger the call on the list that receives the block only
+      if ($(this).find(ui.item).length > 0) {
+        $.ajax({
+          url: "/my/order_blocks",
+          type: 'post',
+          data: {
+            'group': $(this).attr('id').replace(/^list-/, ''),
+            'blocks': $.map($(this).children(), function(el){return $(el).attr('id').replace(/^block-/, '');})
+          }
+        });
+      }
+    }
+  });
+});
+
+//]]>
+</script>
+
+        
+        <div style="clear:both;"></div>
+    </div>
+</div>
+<div id="footer">

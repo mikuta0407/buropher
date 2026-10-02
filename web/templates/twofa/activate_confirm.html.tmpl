@@ -1,0 +1,27 @@
+<h2>{{l "twofa_label_setup" -}}</h2>
+
+<div class="splitcontentleft">
+  {{form_tag (printf "/my/twofa/%s/activate" .TwofaView.SchemeName) (hash "method" "post" "id" "twofa_form") -}}
+
+    <div class="box">
+      <p>{{raw (l (printf "twofa__%s__text_pairing_info_html" .TwofaView.SchemeName)) -}}</p>
+      <div class="tabular">
+        {{partial (printf "twofa/%s/new" .TwofaView.SchemeName) (dict "twofa_view" .TwofaView) -}}
+        <p>
+          <label for="twofa_code">{{l "twofa_label_code" -}}</label>
+          {{text_field_tag "twofa_code" nil (hash "autocomplete" "one-time-code" "autofocus" true) -}}
+        </p>
+      </div>
+    </div>
+
+    {{submit_tag (l "button_activate") (hash "name" "submit_otp") -}}
+    {{if .TwofaView.Resendable}}{{link_to (l "twofa_resend_code") (printf "/my/twofa/%s/activate/init" .TwofaView.SchemeName) (hash "method" "post")}}{{end -}}
+  {{end_form}}
+</div>
+
+{{define "twofa/activate_confirm#sidebar"}}
+{{partial "my/sidebar"}}
+{{end}}
+{{if not .MustActivateTwofa}}
+{{content_for "sidebar" (capture "twofa/activate_confirm#sidebar")}}
+{{end}}

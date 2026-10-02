@@ -1,0 +1,14 @@
+<h2>{{l "twofa_generate_backup_codes" -}}</h2>
+
+<div class="splitcontentleft">
+  {{form_tag "/my/twofa/backup_codes/create" (hash "method" "post" "id" "twofa_form") -}}
+    {{partial "twofa/twofa_code_form" -}}
+    {{submit_tag (l "button_submit") (hash "name" "submit_otp") -}}
+    {{if .TwofaView.Resendable}}{{link_to (l "twofa_resend_code") "/my/twofa/backup_codes/init" (hash "method" "post")}}{{end -}}
+  {{end_form}}
+</div>
+
+{{define "twofa_backup_codes/confirm#sidebar"}}
+{{partial "my/sidebar"}}
+{{end}}
+{{content_for "sidebar" (capture "twofa_backup_codes/confirm#sidebar")}}

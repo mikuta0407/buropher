@@ -1,0 +1,249 @@
+status: 200
+location: 
+
+<title>My account - Sudo test</title>
+----
+<!-- page specific tags -->
+</head>
+----
+<div id="main" class="collapsiblesidebar">
+  <script>
+//<![CDATA[
+$('#main.collapsiblesidebar').collapsibleSidebar();
+//]]>
+</script>
+    <div id="sidebar">
+          <div id="sidebar-switch-panel" style="visibility: hidden;">
+            <a id="sidebar-switch-button" class="" href="#">
+              <svg class="s20 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--chevrons-right"></use></svg></a>
+          </div>
+          <script>
+//<![CDATA[
+$('#sidebar-switch-panel').css('visibility', 'visible');
+//]]>
+</script>
+        <div id="sidebar-wrapper">
+          <h3>My account</h3>
+
+<p>Login: <strong><a class="user active" href="/users/2">jsmith</a></strong><br />
+Created: 07/19/2006 05:32 PM</p>
+
+  <p><a class="icon icon-del" href="/my/account/destroy"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--del"></use></svg><span class="icon-label">Delete my account</span></a></p>
+
+<h4>Atom access key</h4>
+
+<p>
+Atom access key created less than a minute ago
+(<a rel="nofollow" data-method="post" href="/my/atom_key">Reset</a>)
+</p>
+
+<h4>API access key</h4>
+<div data-controller="api-key-copy">
+  <div class="api-key-actions">
+    <a data-remote="true" href="/my/api_key">Show</a>
+    <a class="copy-api-key-link icon icon-only"
+       title="Copy"
+       aria-label="Copy"
+       href="#"
+       role="button"
+       tabindex="0"
+       style="display: none;"
+       data-action="click->api-key-copy#copy">
+      <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--copy"></use></svg>
+    </a>
+  </div>
+  <pre id='api-access-key' class='autoscroll' data-api-key-copy-target="apiKey"></pre>
+  <script>
+//<![CDATA[
+$('#api-access-key').hide();
+//]]>
+</script>
+  <p>
+  Missing an API access key
+  (<a rel="nofollow" data-method="post" href="/my/api_key">Reset</a>)
+  </p>
+</div>
+
+
+          
+        </div>
+    </div>
+
+    <div id="content">
+        
+        <div class="contextual">
+<a class="icon icon-email-add" data-remote="true" href="/users/2/email_addresses"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--email"></use></svg><span class="icon-label">Emails</span></a>
+<a class="icon icon-passwd" href="/my/password"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--key"></use></svg><span class="icon-label">Change password</span></a>
+<a class="icon icon-applications" href="/oauth/authorized_applications"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--apps"></use></svg><span class="icon-label">Authorized applications</span></a>
+
+</div>
+
+<h2>
+  
+  My account
+</h2>
+
+
+
+<form class="edit_user" id="my_account_form" enctype="multipart/form-data" action="/my/account" accept-charset="UTF-8" name="my_account_form-RANDOM" method="post"><input type="hidden" name="_method" value="put" autocomplete="off" /><input type="hidden" name="authenticity_token" value="{{CSRF}}" autocomplete="off" />
+<div class="splitcontent">
+<div class="splitcontentleft">
+<fieldset class="box tabular">
+  <legend>Information</legend>
+  <p><label for="user_firstname">First name<span class="required"> *</span></label><input type="text" value="John" name="user[firstname]" id="user_firstname" /></p>
+  <p><label for="user_lastname">Last name<span class="required"> *</span></label><input type="text" value="Smith" name="user[lastname]" id="user_lastname" /></p>
+  <p><label for="user_mail">Email<span class="required"> *</span></label><input type="text" value="jsmith@somenet.foo" name="user[mail]" id="user_mail" /></p>
+  <p><label for="user_language">Language</label><select name="user[language]" id="user_language"><option value="">(auto)</option>
+<option value="sq">Albanian (Shqip)</option>
+<option value="ar">Arabic (عربي)</option>
+<option value="az">Azerbaijani (Azeri)</option>
+<option value="eu">Basque (Euskara)</option>
+<option value="bs">Bosnian (Bosanski)</option>
+<option value="bg">Bulgarian (Български)</option>
+<option value="ca">Catalan (Català)</option>
+<option value="zh">Chinese/Simplified (简体中文)</option>
+<option value="zh-TW">Chinese/Traditional (繁體中文)</option>
+<option value="hr">Croatian (Hrvatski)</option>
+<option value="cs">Czech (Čeština)</option>
+<option value="da">Danish (Dansk)</option>
+<option value="nl">Dutch (Nederlands)</option>
+<option selected="selected" value="en">English</option>
+<option value="en-GB">English (British)</option>
+<option value="et">Estonian (Eesti)</option>
+<option value="fi">Finnish (Suomi)</option>
+<option value="fr">French (Français)</option>
+<option value="gl">Galician (Galego)</option>
+<option value="de">German (Deutsch)</option>
+<option value="el">Greek (Ελληνικά)</option>
+<option value="he">Hebrew (עברית)</option>
+<option value="hu">Hungarian (Magyar)</option>
+<option value="id">Indonesian (Bahasa Indonesia)</option>
+<option value="it">Italian (Italiano)</option>
+<option value="ja">Japanese (日本語)</option>
+<option value="ko">Korean (한국어)</option>
+<option value="lv">Latvian (Latviešu)</option>
+<option value="lt">Lithuanian (lietuvių)</option>
+<option value="mk">Macedonian (Македонски)</option>
+<option value="mn">Mongolian (Монгол)</option>
+<option value="no">Norwegian (Norsk bokmål)</option>
+<option value="fa">Persian (فارسی)</option>
+<option value="pl">Polish (Polski)</option>
+<option value="pt">Portuguese (Português)</option>
+<option value="pt-BR">Portuguese/Brazil (Português/Brasil)</option>
+<option value="ro">Romanian (Română)</option>
+<option value="ru">Russian (Русский)</option>
+<option value="sr-YU">Serbian (Srpski)</option>
+<option value="sr">Serbian Cyrillic (Српски)</option>
+<option value="sk">Slovak (Slovenčina)</option>
+<option value="sl">Slovene (Slovenščina)</option>
+<option value="es">Spanish (Español)</option>
+<option value="es-PA">Spanish/Panama (Español/Panamá)</option>
+<option value="sv">Swedish (Svenska)</option>
+<option value="ta-IN">Tamil (தமிழ்)</option>
+<option value="th">Thai (ไทย)</option>
+<option value="tr">Turkish (Türkçe)</option>
+<option value="uk">Ukrainian (Українська)</option>
+<option value="vi">Vietnamese (Tiếng Việt)</option></select></p>
+  <p>
+    <label>Two-factor authentication</label>
+        <a rel="nofollow" data-method="post" href="/my/twofa/totp/activate/init">Enable authenticator app</a><br/>
+  </p>
+
+    <p><label for="user_custom_field_values_4"><span>Phone number</span></label><input type="text" name="user[custom_field_values][4]" id="user_custom_field_values_4" value="01 42 50 00 00" class="string_cf cf_4" /></p>
+    <p><label for="user_custom_field_values_5"><span>Money</span></label><input type="text" name="user[custom_field_values][5]" id="user_custom_field_values_5" class="float_cf cf_5" /></p>
+  
+</fieldset>
+
+<p class="mobile-hide"><input type="submit" name="commit" value="Save" data-disable-with="Save" /></p>
+</div>
+
+<div class="splitcontentright">
+<fieldset class="box">
+  <legend>Email notifications</legend>
+  <p>
+<label class="hidden-for-sighted" for="user_mail_notification">Mail notification settings</label>
+<select name="user[mail_notification]" id="user_mail_notification" onchange="if (this.value == &quot;selected&quot;) {$(&quot;#notified-projects&quot;).show();} else {$(&quot;#notified-projects&quot;).hide();}"><option selected="selected" value="all">For any event on all my projects</option>
+<option value="selected">For any event on the selected projects only...</option>
+<option value="only_my_events">Only for things I watch or I&#39;m involved in</option>
+<option value="only_assigned">Only for things I watch or I am assigned to</option>
+<option value="only_owner">Only for things I watch or I am the owner of</option>
+<option value="none">No events</option></select>
+</p>
+<fieldset id="notified-projects" style="display:none;">
+  <legend><a href="#" onclick="toggleCheckboxesBySelector(&#39;#notified-projects input[type=checkbox]&#39;); return false;" title="Check all / Uncheck all" class="icon icon-checked"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--checked"></use></svg><span class="icon-label"></span></a>Projects</legend>
+  <ul class='projects root'>
+<li class='root'><div class='root'><label><input type="checkbox" name="user[notified_project_ids][]" value="1" checked="checked" /> eCookbook</label></div>
+<ul class='projects '>
+<li class='child'><div class='child'><label><input type="checkbox" name="user[notified_project_ids][]" value="5" checked="checked" /> Private child of eCookbook</label></div>
+</li></ul></li>
+<li class='root'><div class='root'><label><input type="checkbox" name="user[notified_project_ids][]" value="2" checked="checked" /> OnlineStore</label></div>
+</li></ul>
+
+  <input type="hidden" name="user[notified_project_ids][]" id="user_notified_project_ids_" value="" autocomplete="off" />
+  <p><em class="info">For unselected projects, you will only receive notifications about things you watch or you&#39;re involved in (eg. issues you&#39;re the author or assignee).</em></p>
+</fieldset>
+
+
+<p>
+  <input name="pref[notify_about_high_priority_issues]" type="hidden" value="0" autocomplete="off" /><input type="checkbox" value="1" name="pref[notify_about_high_priority_issues]" id="pref_notify_about_high_priority_issues" />
+  <label for="pref_notify_about_high_priority_issues">Also notify me about issues with a priority of <em>high</em> or higher</label>
+</p>
+<p>
+  <input name="pref[no_self_notified]" type="hidden" value="0" autocomplete="off" /><input type="checkbox" value="1" name="pref[no_self_notified]" id="pref_no_self_notified" />
+  <label for="pref_no_self_notified">I don&#39;t want to be notified of changes that I make myself</label>
+</p>
+
+</fieldset>
+
+<fieldset class="box">
+  <legend>Auto watch</legend>
+  
+  <input type="hidden" name="pref[auto_watch_on][]" value="" autocomplete="off" />
+    <p><input type="checkbox" value="issue_created" name="pref[auto_watch_on][]" id="pref_auto_watch_on_issue_created" /> <label for="pref_auto_watch_on_issue_created">Issues I created</label></p>
+
+    <p><input type="checkbox" value="issue_contributed_to" name="pref[auto_watch_on][]" id="pref_auto_watch_on_issue_contributed_to" /> <label for="pref_auto_watch_on_issue_contributed_to">Issues I contributed to</label></p>
+
+</fieldset>
+
+<fieldset class="box tabular">
+  <legend>Preferences</legend>
+  
+<p><label for="pref_hide_mail">Hide my email address</label><input name="pref[hide_mail]" type="hidden" value="0" autocomplete="off" /><input type="checkbox" value="1" checked="checked" name="pref[hide_mail]" id="pref_hide_mail" /></p>
+<!-- time_zone -->
+<p><label for="pref_comments_sorting">Display comments</label><select name="pref[comments_sorting]" id="pref_comments_sorting"><option value="asc">In chronological order</option>
+<option value="desc">In reverse chronological order</option></select></p>
+<p><label for="pref_warn_on_leaving_unsaved">Warn me when leaving a page with unsaved text</label><input name="pref[warn_on_leaving_unsaved]" type="hidden" value="0" autocomplete="off" /><input type="checkbox" value="1" checked="checked" name="pref[warn_on_leaving_unsaved]" id="pref_warn_on_leaving_unsaved" /></p>
+<p><label for="pref_textarea_font">Font used for text areas</label><select name="pref[textarea_font]" id="pref_textarea_font"><option selected="selected" value="">Default font</option>
+<option value="monospace">Monospaced font</option>
+<option value="proportional">Proportional font</option></select></p>
+<p><label for="pref_recently_used_projects">Number of recently used projects in jump box</label><input size="2" type="text" value="3" name="pref[recently_used_projects]" id="pref_recently_used_projects" /></p>
+<p><label for="pref_history_default_tab">Issue's history default tab</label><select name="pref[history_default_tab]" id="pref_history_default_tab"><option value="notes">Notes</option>
+<option value="history">History</option>
+<option value="properties">Property changes</option>
+<option value="time_entries">Spent time</option>
+<option value="changesets">Associated revisions</option>
+<option value="last_tab_visited">Last visited tab</option></select></p>
+<p><label for="pref_toolbar_language_options">Code highlighting toolbar languages</label><textarea rows="4" name="pref[toolbar_language_options]" id="pref_toolbar_language_options">
+c,cpp,csharp,css,diff,go,groovy,html,java,javascript,objc,perl,php,python,r,ruby,sass,scala,shell,sql,swift,xml,yaml</textarea></p>
+<p><label for="pref_default_issue_query">Default issue query</label><select name="pref[default_issue_query]" id="pref_default_issue_query"><option value="">none</option>
+<optgroup label="For all users"><option value="4">Public query for all projects</option>
+<option value="5">Open issues by priority and tracker</option>
+<option value="6">Open issues grouped by tracker</option>
+<option value="9">Open issues grouped by list custom field</option></optgroup><optgroup label="My custom queries"></optgroup></select></p>
+<p><label for="pref_default_project_query">Default project query</label><select name="pref[default_project_query]" id="pref_default_project_query"><option value="">none</option>
+<optgroup label="For all users"><option value="11">Projects as list</option></optgroup><optgroup label="My custom queries"></optgroup></select></p>
+
+  
+</fieldset>
+
+<p class="mobile-show"><input type="submit" name="commit" value="Save" data-disable-with="Save" /></p>
+</div>
+</div>
+</form>
+
+
+        
+        <div style="clear:both;"></div>
+    </div>
+</div>
+<div id="footer">

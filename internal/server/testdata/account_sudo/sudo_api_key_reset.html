@@ -1,0 +1,40 @@
+status: 200
+location: 
+
+<title>Sudo test</title>
+----
+<!-- page specific tags -->
+</head>
+----
+<div id="main" class="nosidebar">
+  
+    <div id="sidebar">
+        <div id="sidebar-wrapper">
+          
+          
+        </div>
+    </div>
+
+    <div id="content">
+        
+        <h2>Confirm your password to continue</h2>
+<p class="nodata" style="font-size: 1em;"><strong>What's happening?</strong> You need to reconfirm your password before taking any administrative actions, this ensures your account stays protected.</p>
+<form class="tabular" id="sudo-form" action="/my/api_key" accept-charset="UTF-8" name="sudo-form-RANDOM" method="post"><input type="hidden" name="authenticity_token" value="{{CSRF}}" autocomplete="off" />
+
+  <input type="hidden" name="_method" id="_method" value="POST" autocomplete="off" />
+  
+
+  <div class="box">
+    <p>
+      <label for="sudo_password">Password<span class="required">*</span></label>
+      <input type="password" name="sudo_password" id="sudo_password" size="25" autocomplete="current-password" autofocus="autofocus" />
+      </br><a class="lost_password" href="/account/lost_password">Lost password</a>
+    </p>
+  </div>
+  <input type="submit" name="commit" value="Submit" data-disable-with="Submit" />
+</form>
+        
+        <div style="clear:both;"></div>
+    </div>
+</div>
+<div id="footer">
