@@ -2,6 +2,7 @@ package handler
 
 import (
 	"errors"
+	"github.com/mikuta0407/buropher/internal/auth/ldap"
 	"net/http"
 	"strings"
 	"time"
@@ -313,35 +314,94 @@ func (a *App) preference(c *Req, u *domain.User) *domain.UserPreference {
 	return p
 }
 
-// tryToLogin は User.try_to_login!(login, password, active_only)。
-// 該当なし・パスワード不一致は (nil, nil)。
-// TODO(auth): LDAP 等の外部認証（AuthSource.authenticate とオンザフライ登録）。
+// tryToLogin は User.try_to_login(login, password, active_only)（AuthSourceException は記録して nil）。
+// 該当なし・パスワード不一致は (nil, nil)。オンザフライ作成に失敗した未保存のユーザーも nil。
 func (a *App) tryToLogin(c *Req, login, pw string, activeOnly bool) (*domain.User, error) {
+	u, _, err := a.tryToLoginBang(c, login, pw, activeOnly)
+	if err != nil && ldap.IsAuthSourceError(err) {
+		a.logger().Error("An error occured when authenticating "+strings.TrimSpace(login), "err", err)
+		return nil, nil
+	}
+	return u, err
+}
+
+// tryToLoginBang は User.try_to_login!(login, password, active_only)。
+// 該当なし・パスワード不一致は (nil, nil, nil)。未登録ユーザーを認証方式（オンザフライ登録）で認証できたが
+// 保存に失敗した場合は未保存のユーザー（new_record）を 2 番目に返す。認証方式の例外（*ldap.Error）はそのまま返す。
+func (a *App) tryToLoginBang(c *Req, login, pw string, activeOnly bool) (*domain.User, *userModel, error) {
 	login = strings.TrimSpace(login)
 	if login == "" || pw == "" {
-		return nil, nil
+		return nil, nil, nil
 	}
 	u, err := repository.FindUserByLogin(c.Ctx(), a.DB, login)
-	if errors.Is(err, repository.ErrNotFound) {
-		return nil, nil
+	switch {
+	case errors.Is(err, repository.ErrNotFound):
+		// 未登録: オンザフライ登録の認証方式で認証し、ユーザーを作成する
+		attrs := a.authenticateWithAuthSources(c, login, pw)
+		if attrs == nil {
+			return nil, nil, nil
+		}
+		m := a.newUserModel(c)
+		m.Firstname, m.Lastname = attrs.Firstname, attrs.Lastname
+		m.mail, m.mailSet = attrs.Mail, true
+		id := attrs.AuthSourceID
+		m.AuthSourceID = &id
+		m.Login = login
+		m.Language = a.Settings.String("default_language")
+		ok, err := a.saveUser(c, m)
+		if err != nil {
+			return nil, nil, err
+		}
+		if !ok {
+			return nil, m, nil
+		}
+		a.logger().Info("User created from external auth source", "login", m.Login, "auth_source_id", id)
+		if u, err = repository.GetUser(c.Ctx(), a.DB, m.ID); err != nil {
+			return nil, nil, err
+		}
+	case err != nil:
+		return nil, nil, err
+	default:
+		ok, err := a.checkPassword(c, u, pw)
+		if err != nil || !ok {
+			return nil, nil, err
+		}
+		if !u.Active() && activeOnly {
+			return nil, nil, nil
+		}
 	}
-	if err != nil {
-		return nil, err
+	if u.Active() {
+		if err := repository.UpdateLastLogin(c.Ctx(), a.DB, u.ID, a.now()); err != nil {
+			return nil, nil, err
+		}
 	}
+	return u, nil, nil
+}
+
+// checkPassword は User#check_password?（認証方式があればその認証、なければローカルのパスワード）。
+func (a *App) checkPassword(c *Req, u *domain.User, pw string) (bool, error) {
 	if u.AuthSourceID != nil {
-		// 外部認証は未対応
-		return nil, nil
+		rec, err := repository.GetAuthSource(c.Ctx(), a.DB, *u.AuthSourceID)
+		if errors.Is(err, repository.ErrNotFound) {
+			return false, nil
+		}
+		if err != nil {
+			return false, err
+		}
+		src := a.ldapSource(rec)
+		if src == nil || !rec.Enabled {
+			return false, nil
+		}
+		attrs, err := src.Authenticate(u.Login, pw)
+		return attrs != nil, err
 	}
 	ok, err := password.Verify(u.PasswordHash, pw)
 	if err != nil {
-		a.logger().Warn("password verify", "login", login, "err", err)
-		return nil, nil
+		a.logger().Warn("password verify", "login", u.Login, "err", err)
+		return false, nil
 	}
 	if !ok {
-		return nil, nil
-	}
-	if !u.Active() && activeOnly {
-		return nil, nil
+		return false, nil
 	}
 	// Redmine 形式（SHA1）のハッシュはログイン成功時に argon2id へ移行する
 	if password.NeedsRehash(u.PasswordHash) {
@@ -353,10 +413,30 @@ func (a *App) tryToLogin(c *Req, login, pw string, activeOnly bool) (*domain.Use
 			}
 		}
 	}
-	if u.Active() {
-		if err := repository.UpdateLastLogin(c.Ctx(), a.DB, u.ID, a.now()); err != nil {
-			return nil, err
+	return true, nil
+}
+
+// authenticateWithAuthSources は AuthSource.authenticate（オンザフライ登録の認証方式を順に試し、
+// 例外は記録して次へ進む）。
+func (a *App) authenticateWithAuthSources(c *Req, login, pw string) *ldap.Attrs {
+	recs, err := repository.OntheflyAuthSources(c.Ctx(), a.DB)
+	if err != nil {
+		a.logger().Error("Error during authentication", "err", err)
+		return nil
+	}
+	for _, rec := range recs {
+		src := a.ldapSource(rec)
+		if src == nil {
+			continue
+		}
+		attrs, err := src.Authenticate(login, pw)
+		if err != nil {
+			a.logger().Error("Error during authentication", "err", err)
+			continue
+		}
+		if attrs != nil {
+			return attrs
 		}
 	}
-	return u, nil
+	return nil
 }
