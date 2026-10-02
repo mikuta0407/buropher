@@ -39,6 +39,11 @@ requests:
     user: jsmith
     content_type: application/octet-stream
     body: 'hello world'
+  - id: news_create_invalid_with_upload
+    path: /projects/ecookbook/news
+    method: POST
+    user: jsmith
+    form: {"news[title]": "", "news[description]": "d", "attachments[1][token]": "25.b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9", "attachments[1][description]": "readme"}
   - id: news_create
     path: /projects/ecookbook/news
     method: POST
