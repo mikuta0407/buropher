@@ -1,0 +1,28 @@
+{{range $time_entry := .TimeEntries}}
+  <div id="time-entry-{{$time_entry.ID}}" class="time_entry journal">
+    <h4 class="journal-header">
+        <span class="journal-info">
+          {{avatar $time_entry.User (hash "size" "24")}}
+          {{authoring $time_entry.CreatedAt.Time $time_entry.User (hash "label" "label_added_time_by")}}
+        </span>
+      {{if $time_entry.EditableBy}}
+          <span class="journal-meta">
+            {{link_to (sprite_icon "edit" (l "button_edit")) (printf "/time_entries/%d/edit" $time_entry.ID) (hash "title" (l "button_edit") "class" "icon-only icon-edit")}}
+            {{link_to (sprite_icon "del" (l "button_delete")) (printf "/time_entries/%d" $time_entry.ID) (hash "data" (hash "confirm" (l "text_are_you_sure")) "method" "delete" "title" (l "button_delete") "class" "icon-only icon-del")}}
+          </span>
+      {{end}}
+    </h4>
+    <div class="journal-content">
+      <ul class="journal-details">
+        <li>
+          <strong>{{l "label_time_entry_plural"}}</strong>:
+          {{$time_entry.HoursShort}}
+        </li>
+      </ul>
+      <div class="journal-note">
+        {{$time_entry.CommentsString}}
+      </div>
+    </div>
+  </div>
+  {{call_hook "view_issues_history_time_entry_bottom"}}
+{{end}}

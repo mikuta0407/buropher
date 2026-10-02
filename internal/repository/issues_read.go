@@ -710,5 +710,12 @@ WHERE members.project_id = ? AND p.kind = 'user' AND p.status = 1`+where+` ORDER
 	return ids, err
 }
 
+// ChangesetFileCount は changeset.filechanges.count。
+func ChangesetFileCount(ctx context.Context, q db.Queryer, changesetID int64) (int, error) {
+	var n int
+	err := q.Get(ctx, &n, `SELECT COUNT(*) FROM changeset_files WHERE changeset_id = ?`, changesetID)
+	return n, err
+}
+
 // unused guard
 var _ = time.Time{}

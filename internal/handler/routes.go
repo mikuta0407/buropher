@@ -29,4 +29,5 @@ func (a *App) Routes(r Router) {
 	a.routesCustomFields(r)
 	a.routesWorkflows(r)
 	a.routesIssues(r)
+	a.routesJournals(r)
 }

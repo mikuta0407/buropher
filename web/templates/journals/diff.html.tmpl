@@ -1,0 +1,10 @@
+<h2>{{.Heading}}</h2>
+<p>{{authoring .Journal.CreatedAt.Time .User (hash "label" "label_updated_time_by")}}</p>
+
+<pre class="text-diff">{{.Diff}}</pre>
+
+<p>
+  {{link_to (l "button_back") .IssuePath (hash "onclick" "if (document.referrer != \"\") {history.back(); return false;}")}}
+</p>
+
+{{html_title .Title}}

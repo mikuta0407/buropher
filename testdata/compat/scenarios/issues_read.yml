@@ -134,3 +134,45 @@ requests:
   - path: /issues/2
     id: issues_2_after_project_list
     users: [jsmith]
+
+  # ---- タブ（XHR） ----
+  - path: /issues/1/tab/time_entries
+    users: [admin, jsmith]
+    headers: {X-Requested-With: XMLHttpRequest}
+  - path: /issues/1/tab/changesets
+    users: [admin]
+    headers: {X-Requested-With: XMLHttpRequest}
+  - path: /issues/1/tab/time_entries
+    id: issues_1_tab_time_entries_not_xhr
+    users: [admin]
+
+  # ---- Atom ----
+  - path: /issues.atom?set_filter=1&f[]=status_id&op[status_id]=*&sort=id
+    users: [admin, anonymous]
+  - path: /projects/ecookbook/issues.atom
+    users: [jsmith]
+  - path: /issues/1.atom
+    users: [admin, anonymous]
+  - path: /issues/14.atom
+    users: [jsmith]
+  - path: /issues/changes.atom
+    users: [admin, anonymous, jsmith]
+  - path: /issues/changes.atom?project_id=ecookbook
+    users: [dlopper]
+  - path: /issues/changes.atom?query_id=1
+    users: [admin]
+  # 同時刻のジャーナルを含まない条件（同時刻の順序は SQLite の実行計画に依存するため allowlist で許容している）
+  - path: /issues/changes.atom?set_filter=1&f[]=issue_id&op[issue_id]==&v[issue_id][]=1
+    users: [admin, anonymous]
+  - path: /issues/changes.atom?set_filter=1&f[]=issue_id&op[issue_id]==&v[issue_id][]=6
+    users: [admin, dlopper]
+
+  # ---- 説明の差分 ----
+  - path: /journals/3/diff
+    users: [admin, anonymous]
+  - path: /journals/3/diff?detail_id=4
+    users: [jsmith]
+  - path: /journals/1/diff
+    users: [admin]
+  - path: /journals/999/diff
+    users: [admin]

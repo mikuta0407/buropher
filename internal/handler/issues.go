@@ -34,6 +34,8 @@ func (a *App) routesIssues(r Router) {
 		FindOptionalProject(), AcceptAtomAuth(), AcceptAPIAuth())
 	a.Handle(r, http.MethodGet, "/issues/{id}", IssuesController, "show", a.IssuesShow,
 		Before(a.findIssue), Authorize(), AcceptAtomAuth(), AcceptAPIAuth())
+	a.Handle(r, http.MethodGet, "/issues/{id}/tab/{name}", IssuesController, "issue_tab", a.IssuesTab,
+		Before(a.findIssue), Authorize())
 }
 
 // ---------------------------------------------------------------- retrieve_query
