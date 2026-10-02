@@ -27,9 +27,6 @@ func normalizeAdmin(s, base string) string {
 	return adminFormNameRe.ReplaceAllString(s, `name="$1-RANDOM"`)
 }
 
-// trackerProjectsRe はトラッカーのフォームのプロジェクトのツリー（兄弟の並びが参照環境と異なる部分）。
-var trackerProjectsRe = regexp.MustCompile(`(?s)(<fieldset class="box" id="tracker_project_ids">).*?(</fieldset>)`)
-
 // compareAdminGolden は got と testdata/admin_masters/name を正規化して比較する。
 func compareAdminGolden(t *testing.T, name, got, base string, edit ...func(string) string) {
 	t.Helper()
@@ -73,7 +70,6 @@ func adminGet(t *testing.T, c *http.Client, u string) string {
 func TestAdminMastersPagesMatchRedmine(t *testing.T) {
 	ts, _ := newFixtureServer(t)
 	c := login(t, ts, "admin", "admin")
-	noTree := func(s string) string { return trackerProjectsRe.ReplaceAllString(s, "$1(projects)$2") }
 	cases := []struct {
 		name, path string
 		edit       []func(string) string
@@ -88,10 +84,9 @@ func TestAdminMastersPagesMatchRedmine(t *testing.T) {
 		{"roles_permissions_ids.html", "/roles/permissions?ids[]=1&ids[]=5", nil},
 		{"roles.json", "/roles.json", nil},
 		{"roles.xml", "/roles.xml", nil},
-		// プロジェクトの兄弟の並び（docs/schema.md 17）は参照環境の lft と異なるため別途確認する
 		{"trackers_index.html", "/trackers", nil},
-		{"trackers_new.html", "/trackers/new", []func(string) string{noTree}},
-		{"trackers_edit_2.html", "/trackers/2/edit", []func(string) string{noTree}},
+		{"trackers_new.html", "/trackers/new", nil},
+		{"trackers_edit_2.html", "/trackers/2/edit", nil},
 		{"trackers_fields.html", "/trackers/fields", nil},
 		{"trackers.json", "/trackers.json", nil},
 		{"trackers.xml", "/trackers.xml", nil},
@@ -114,24 +109,6 @@ func TestAdminMastersPagesMatchRedmine(t *testing.T) {
 		})
 	}
 
-	t.Run("tracker project tree", func(t *testing.T) {
-		body := adminGet(t, c, ts.URL+"/trackers/2/edit")
-		// 兄弟は名前のバイト順（OnlineStore → eCookbook、'P' < 'e' で Private child が先）
-		want := "<ul class='projects root'>\n" +
-			`<li class='root'><div class='root'><label><input type="checkbox" name="tracker[project_ids][]" value="2" checked="checked" /> OnlineStore</label></div>` + "\n" +
-			`</li><li class='root'><div class='root'><label><input type="checkbox" name="tracker[project_ids][]" value="1" checked="checked" /> eCookbook</label></div>` + "\n" +
-			"<ul class='projects '>\n" +
-			`<li class='child'><div class='child'><label><input type="checkbox" name="tracker[project_ids][]" value="5" checked="checked" /> Private child of eCookbook</label></div>` + "\n" +
-			"<ul class='projects '>\n" +
-			`<li class='child'><div class='child'><label><input type="checkbox" name="tracker[project_ids][]" value="6" /> Child of private child</label></div>` + "\n" +
-			"</li></ul></li>\n" +
-			`<li class='child'><div class='child'><label><input type="checkbox" name="tracker[project_ids][]" value="3" checked="checked" /> eCookbook Subproject 1</label></div>` + "\n" +
-			`</li><li class='child'><div class='child'><label><input type="checkbox" name="tracker[project_ids][]" value="4" checked="checked" /> eCookbook Subproject 2</label></div>` + "\n" +
-			"</li></ul>\n</li></ul>\n"
-		if !strings.Contains(body, want) {
-			t.Errorf("project tree mismatch:\n%s", extract(body, `<fieldset class="box" id="tracker_project_ids">`, `</fieldset>`))
-		}
-	})
 }
 
 // TestAdminMastersAccess は require_admin / require_admin_or_api_request を確認する。

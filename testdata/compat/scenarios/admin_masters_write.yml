@@ -163,11 +163,13 @@ requests:
     form:
       tracker[name]: "A tracker name that is far too long to be valid"
       tracker[description]: ""
+  # Rails UJS と同じく POST + _method で送る（Rack::MethodOverride）
   - id: trackers_update
     path: /trackers/4
-    method: PATCH
+    method: POST
     user: admin
     form:
+      _method: patch
       tracker[name]: "QA2"
       tracker[core_fields][]: [""]
       tracker[project_ids][]: [""]
