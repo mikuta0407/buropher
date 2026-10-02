@@ -1139,6 +1139,10 @@ func TestQueryFilterAnySearchable(t *testing.T) {
 	testReplacedFilterA(t, 1, "any_searchable", "~", "recipe", []int64{1, 2, 3})
 }
 
+func TestQueryFilterAnySearchableShouldSearchSearchableCustomFields(t *testing.T) {
+	testReplacedFilterA(t, 1, "any_searchable", "~", "125", []int64{1, 3})
+}
+
 func TestQueryFilterAnySearchableWithMultipleWords(t *testing.T) {
 	testReplacedFilterA(t, 1, "any_searchable", "~", "recipe categories", []int64{2})
 }
