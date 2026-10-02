@@ -113,7 +113,9 @@ func (i *Issue) SetWatcherUserIDs(ids []int64) {
 
 // AttachSaved は保存時にコンテナとして紐付ける既存 (アップロード済み) の添付ファイルを登録する
 // (save_attachments の結果 saved_attachments)。
-func (i *Issue) AttachSaved(attachmentIDs ...int64) { i.attachIDs = append(i.attachIDs, attachmentIDs...) }
+func (i *Issue) AttachSaved(attachmentIDs ...int64) {
+	i.attachIDs = append(i.attachIDs, attachmentIDs...)
+}
 
 // SetDeletedAttachmentIDs は deleted_attachment_ids=。
 func (i *Issue) SetDeletedAttachmentIDs(ids []int64) { i.deletedAttachmentIDs = ids }

@@ -244,7 +244,9 @@ func (j *Journal) addDetail(property, key string, old, value *string) {
 }
 
 // AddAttributeDetail は add_attribute_detail (create_parent_issue_journal の child_id 等)。
-func (j *Journal) AddAttributeDetail(attr string, old, value *string) { j.addDetail("attr", attr, old, value) }
+func (j *Journal) AddAttributeDetail(attr string, old, value *string) {
+	j.addDetail("attr", attr, old, value)
+}
 
 // JournalizeAttachment は journalize_attachment(attachment, :added / :removed)。
 func (j *Journal) JournalizeAttachment(attachmentID int64, filename string, added bool) {
