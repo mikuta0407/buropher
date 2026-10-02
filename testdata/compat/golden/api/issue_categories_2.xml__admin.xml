@@ -1,0 +1,9 @@
+status: 200
+content-type: application/xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<issue_category>
+  <id>2</id>
+  <project id="1" name="eCookbook"/>
+  <name>Recipes</name>
+</issue_category>

@@ -1,0 +1,88 @@
+status: 200
+content-type: application/json
+
+{
+  "memberships": [
+    {
+      "id": 5,
+      "project": {
+        "id": 5,
+        "name": "Private child of eCookbook"
+      },
+      "user": {
+        "id": 2,
+        "name": "John Smith"
+      },
+      "roles": [
+        {
+          "id": 1,
+          "name": "Manager"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "project": {
+        "id": 5,
+        "name": "Private child of eCookbook"
+      },
+      "group": {
+        "id": 10,
+        "name": "A Team"
+      },
+      "roles": [
+        {
+          "id": 1,
+          "name": "Manager"
+        },
+        {
+          "id": 2,
+          "name": "Developer"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "project": {
+        "id": 5,
+        "name": "Private child of eCookbook"
+      },
+      "user": {
+        "id": 8,
+        "name": "User Misc"
+      },
+      "roles": [
+        {
+          "id": 1,
+          "name": "Manager",
+          "inherited": true
+        },
+        {
+          "id": 2,
+          "name": "Developer",
+          "inherited": true
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "project": {
+        "id": 5,
+        "name": "Private child of eCookbook"
+      },
+      "user": {
+        "id": 1,
+        "name": "Redmine Admin"
+      },
+      "roles": [
+        {
+          "id": 1,
+          "name": "Manager"
+        }
+      ]
+    }
+  ],
+  "total_count": 4,
+  "offset": 0,
+  "limit": 25
+}

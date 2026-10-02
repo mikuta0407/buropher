@@ -1,0 +1,13 @@
+status: 201
+content-type: application/xml
+location: {{BASE}}/memberships/19
+
+<?xml version="1.0" encoding="UTF-8"?>
+<membership>
+  <id>19</id>
+  <project id="1" name="eCookbook"/>
+  <group id="10" name="A Team"/>
+  <roles type="array">
+    <role id="3" name="Reporter"/>
+  </roles>
+</membership>

@@ -1,0 +1,16 @@
+status: 200
+content-type: application/json
+
+{
+  "queries": [
+    {
+      "id": 10,
+      "name": "My spent time",
+      "is_public": true,
+      "project_id": 1
+    }
+  ],
+  "total_count": 1,
+  "offset": 0,
+  "limit": 25
+}

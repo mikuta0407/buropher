@@ -1,0 +1,59 @@
+status: 200
+content-type: application/json
+
+{
+  "time_entry_activities": [
+    {
+      "id": 9,
+      "name": "Design",
+      "is_default": false,
+      "active": true,
+      "custom_fields": [
+        {
+          "id": 7,
+          "name": "Billable",
+          "value": null
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "name": "Development",
+      "is_default": true,
+      "active": true,
+      "custom_fields": [
+        {
+          "id": 7,
+          "name": "Billable",
+          "value": "t"
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "name": "QA",
+      "is_default": false,
+      "active": true,
+      "custom_fields": [
+        {
+          "id": 7,
+          "name": "Billable",
+          "value": "1"
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "name": "Inactive Activity",
+      "is_default": false,
+      "active": false,
+      "custom_fields": [
+        {
+          "id": 7,
+          "name": "Billable",
+          "value": null
+        }
+      ]
+    }
+  ]
+}

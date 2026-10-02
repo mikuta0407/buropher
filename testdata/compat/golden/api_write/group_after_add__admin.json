@@ -1,0 +1,19 @@
+status: 200
+content-type: application/json
+
+{
+  "group": {
+    "id": 16,
+    "name": "API group renamed",
+    "users": [
+      {
+        "id": 2,
+        "name": "John Smith"
+      },
+      {
+        "id": 5,
+        "name": "Dave2 Lopper2"
+      }
+    ]
+  }
+}

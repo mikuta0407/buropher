@@ -1,0 +1,17 @@
+status: 200
+content-type: application/json
+
+{
+  "issue_category": {
+    "id": 5,
+    "project": {
+      "id": 1,
+      "name": "eCookbook"
+    },
+    "name": "API category renamed",
+    "assigned_to": {
+      "id": 2,
+      "name": "John Smith"
+    }
+  }
+}

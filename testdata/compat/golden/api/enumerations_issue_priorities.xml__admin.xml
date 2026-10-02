@@ -1,0 +1,42 @@
+status: 200
+content-type: application/xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<issue_priorities type="array">
+  <issue_priority>
+    <id>4</id>
+    <name>Low</name>
+    <is_default>false</is_default>
+    <active>true</active>
+  </issue_priority>
+  <issue_priority>
+    <id>5</id>
+    <name>Normal</name>
+    <is_default>true</is_default>
+    <active>true</active>
+  </issue_priority>
+  <issue_priority>
+    <id>6</id>
+    <name>High</name>
+    <is_default>false</is_default>
+    <active>true</active>
+  </issue_priority>
+  <issue_priority>
+    <id>7</id>
+    <name>Urgent</name>
+    <is_default>false</is_default>
+    <active>true</active>
+  </issue_priority>
+  <issue_priority>
+    <id>8</id>
+    <name>Immediate</name>
+    <is_default>false</is_default>
+    <active>true</active>
+  </issue_priority>
+  <issue_priority>
+    <id>15</id>
+    <name>Inactive Priority</name>
+    <is_default>false</is_default>
+    <active>false</active>
+  </issue_priority>
+</issue_priorities>

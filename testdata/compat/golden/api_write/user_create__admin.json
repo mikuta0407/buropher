@@ -1,0 +1,33 @@
+status: 201
+content-type: application/json
+location: {{BASE}}/users/14
+
+{
+  "user": {
+    "id": 14,
+    "login": "apiuser",
+    "admin": false,
+    "firstname": "API",
+    "lastname": "User",
+    "mail": "apiuser@example.net",
+    "created_on": "TIMESTAMP",
+    "updated_on": "TIMESTAMP",
+    "last_login_on": null,
+    "passwd_changed_on": "TIMESTAMP",
+    "twofa_scheme": null,
+    "api_key": "MASKED",
+    "status": 1,
+    "custom_fields": [
+      {
+        "id": 4,
+        "name": "Phone number",
+        "value": "01 23 45 67"
+      },
+      {
+        "id": 5,
+        "name": "Money",
+        "value": ""
+      }
+    ]
+  }
+}

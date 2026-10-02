@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="UTF-8"?><queries total_count="7" offset="1" limit="2" type="array"><query><id>5</id><name>Open issues by priority and tracker</name><is_public>true</is_public><project_id/></query><query><id>9</id><name>Open issues grouped by list custom field</name><is_public>true</is_public><project_id/></query></queries>

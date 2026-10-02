@@ -1,0 +1,27 @@
+status: 201
+content-type: application/json
+location: {{BASE}}/memberships/17
+
+{
+  "membership": {
+    "id": 17,
+    "project": {
+      "id": 1,
+      "name": "eCookbook"
+    },
+    "user": {
+      "id": 7,
+      "name": "Some One"
+    },
+    "roles": [
+      {
+        "id": 2,
+        "name": "Developer"
+      },
+      {
+        "id": 3,
+        "name": "Reporter"
+      }
+    ]
+  }
+}

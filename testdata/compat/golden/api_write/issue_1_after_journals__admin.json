@@ -1,0 +1,217 @@
+status: 200
+content-type: application/json
+
+{
+  "issue": {
+    "id": 1,
+    "project": {
+      "id": 1,
+      "name": "eCookbook"
+    },
+    "tracker": {
+      "id": 1,
+      "name": "Bug"
+    },
+    "status": {
+      "id": 1,
+      "name": "New",
+      "is_closed": false
+    },
+    "priority": {
+      "id": 4,
+      "name": "Low"
+    },
+    "author": {
+      "id": 2,
+      "name": "John Smith"
+    },
+    "category": {
+      "id": 1,
+      "name": "Printing"
+    },
+    "subject": "API update",
+    "description": "Unable to print recipes",
+    "start_date": "2026-01-14",
+    "due_date": "2026-01-25",
+    "done_ratio": 0,
+    "is_private": false,
+    "estimated_hours": 200.0,
+    "total_estimated_hours": 200.0,
+    "spent_hours": 154.25,
+    "total_spent_hours": 154.25,
+    "custom_fields": [
+      {
+        "id": 2,
+        "name": "Searchable field",
+        "value": "125"
+      },
+      {
+        "id": 1,
+        "name": "Database",
+        "value": null
+      },
+      {
+        "id": 6,
+        "name": "Float field",
+        "value": "2.1"
+      },
+      {
+        "id": 8,
+        "name": "Custom date",
+        "value": "2009-12-01"
+      },
+      {
+        "id": 9,
+        "name": "Project 1 cf",
+        "value": null
+      }
+    ],
+    "created_on": "TIMESTAMP",
+    "updated_on": "TIMESTAMP",
+    "closed_on": null,
+    "relations": [
+      {
+        "id": 4,
+        "issue_id": 1,
+        "issue_to_id": 8,
+        "relation_type": "relates",
+        "delay": null
+      }
+    ],
+    "journals": [
+      {
+        "id": 1,
+        "user": {
+          "id": 1,
+          "name": "Redmine Admin"
+        },
+        "notes": "edited via api",
+        "created_on": "TIMESTAMP",
+        "updated_on": "TIMESTAMP",
+        "updated_by": {
+          "id": 1,
+          "name": "Redmine Admin"
+        },
+        "private_notes": false,
+        "details": [
+          {
+            "property": "attr",
+            "name": "status_id",
+            "old_value": "1",
+            "new_value": "2"
+          },
+          {
+            "property": "attr",
+            "name": "done_ratio",
+            "old_value": "40",
+            "new_value": "30"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "user": {
+          "id": 2,
+          "name": "John Smith"
+        },
+        "notes": "xml edited",
+        "created_on": "TIMESTAMP",
+        "updated_on": "TIMESTAMP",
+        "updated_by": {
+          "id": 1,
+          "name": "Redmine Admin"
+        },
+        "private_notes": false,
+        "details": []
+      },
+      {
+        "id": 6,
+        "user": {
+          "id": 2,
+          "name": "John Smith"
+        },
+        "notes": "note via api",
+        "created_on": "TIMESTAMP",
+        "updated_on": "TIMESTAMP",
+        "private_notes": false,
+        "details": [
+          {
+            "property": "attachment",
+            "name": "26",
+            "old_value": null,
+            "new_value": "second.txt"
+          },
+          {
+            "property": "attr",
+            "name": "subject",
+            "old_value": "Cannot print recipes",
+            "new_value": "API update"
+          }
+        ]
+      },
+      {
+        "id": 10,
+        "user": {
+          "id": 2,
+          "name": "John Smith"
+        },
+        "notes": "",
+        "created_on": "TIMESTAMP",
+        "updated_on": "TIMESTAMP",
+        "private_notes": false,
+        "details": [
+          {
+            "property": "relation",
+            "name": "precedes",
+            "old_value": null,
+            "new_value": "7"
+          }
+        ]
+      },
+      {
+        "id": 11,
+        "user": {
+          "id": 2,
+          "name": "John Smith"
+        },
+        "notes": "",
+        "created_on": "TIMESTAMP",
+        "updated_on": "TIMESTAMP",
+        "private_notes": false,
+        "details": [
+          {
+            "property": "relation",
+            "name": "relates",
+            "old_value": null,
+            "new_value": "8"
+          }
+        ]
+      },
+      {
+        "id": 13,
+        "user": {
+          "id": 2,
+          "name": "John Smith"
+        },
+        "notes": "",
+        "created_on": "TIMESTAMP",
+        "updated_on": "TIMESTAMP",
+        "private_notes": false,
+        "details": [
+          {
+            "property": "relation",
+            "name": "precedes",
+            "old_value": "7",
+            "new_value": null
+          }
+        ]
+      }
+    ],
+    "watchers": [
+      {
+        "id": 8,
+        "name": "User Misc"
+      }
+    ]
+  }
+}

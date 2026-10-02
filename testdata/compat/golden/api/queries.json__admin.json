@@ -1,0 +1,46 @@
+status: 200
+content-type: application/json
+
+{
+  "queries": [
+    {
+      "id": 1,
+      "name": "Multiple custom fields query",
+      "is_public": true,
+      "project_id": 1
+    },
+    {
+      "id": 5,
+      "name": "Open issues by priority and tracker",
+      "is_public": true,
+      "project_id": null
+    },
+    {
+      "id": 9,
+      "name": "Open issues grouped by list custom field",
+      "is_public": true,
+      "project_id": null
+    },
+    {
+      "id": 6,
+      "name": "Open issues grouped by tracker",
+      "is_public": true,
+      "project_id": null
+    },
+    {
+      "id": 4,
+      "name": "Public query for all projects",
+      "is_public": true,
+      "project_id": null
+    },
+    {
+      "id": 7,
+      "name": "Public query for project 2",
+      "is_public": true,
+      "project_id": 2
+    }
+  ],
+  "total_count": 6,
+  "offset": 0,
+  "limit": 25
+}

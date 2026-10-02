@@ -246,13 +246,32 @@ func defaultHeaders(next http.Handler) http.Handler {
 }
 
 // notFound はルートが無い場合の public/404.html。
+// ActionDispatch::PublicExceptions と同じく、request.formats の先頭が json / xml なら
+// {status: 404, error: "Not Found"} を to_json / to_xml した本文を返す（Accept: application/json 等）。
 func notFound(w http.ResponseWriter, r *http.Request) {
+	w.Header().Del("Cache-Control")
+	// ルートに一致していないので params[:format] は無い（chi がメソッド違いで残したパスパラメータは使わない）
+	// （ルーティング済みでパスパラメータが空の文脈にして、拡張子を params[:format] とみなさないようにする）
+	rctx := chi.NewRouteContext()
+	rctx.RoutePatterns = []string{"/*"}
+	nr := r.WithContext(context.WithValue(r.Context(), chi.RouteCtxKey, rctx))
+	switch httpx.Format(nr) {
+	case "json":
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(http.StatusNotFound)
+		_, _ = w.Write([]byte(`{"status":404,"error":"Not Found"}`))
+		return
+	case "xml":
+		w.Header().Set("Content-Type", "application/xml; charset=utf-8")
+		w.WriteHeader(http.StatusNotFound)
+		_, _ = w.Write([]byte("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<hash>\n  <status type=\"integer\">404</status>\n  <error>Not Found</error>\n</hash>\n"))
+		return
+	}
 	b, err := fs.ReadFile(web.Public(), "404.html")
 	if err != nil {
 		http.NotFound(w, r)
 		return
 	}
-	w.Header().Del("Cache-Control")
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.WriteHeader(http.StatusNotFound)
 	_, _ = w.Write(b)

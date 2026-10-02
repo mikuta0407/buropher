@@ -653,6 +653,21 @@ func (a *App) WikiUpdate(c *Req) {
 					page.ParentID = &id
 				}
 			}
+			// parent_title=（空なら親なし、それ以外は wiki.find_page(t)。見つからなければ親なし）
+			if v, ok := wp.Get("parent_title"); ok {
+				page.ParentID = nil
+				if t := wp.String("parent_title"); !httpx.IsBlank(v) && t != "" {
+					parent, _, err := a.findPage(c, ws.Wiki, t, true)
+					if err != nil {
+						a.wikiError(c, err)
+						return
+					}
+					if parent != nil {
+						id := parent.ID
+						page.ParentID = &id
+					}
+				}
+			}
 		}
 		if c.AllowedTo(domain.Perm("manage_wiki"), c.wikiPageProject(page)) && wp.Has("is_start_page") {
 			v := wp.String("is_start_page")
@@ -829,9 +844,9 @@ func (a *App) WikiUpdate(c *Req) {
 	}
 
 	// attachments = Attachment.attach_files(@page, params[:attachments] || params[:wiki_page][:uploads])
-	attParams := c.Params().Map("attachments")
+	attParams := paramAttachments(c)
 	if attParams == nil && wp != nil {
-		attParams = wp.Map("uploads")
+		attParams, _ = wp.Get("uploads")
 	}
 	a.wikiAttachFiles(c, page, attParams)
 
@@ -1726,7 +1741,7 @@ func (a *App) WikiAddAttachment(c *Req) {
 		c.Render403("")
 		return
 	}
-	a.wikiAttachFiles(c, page, c.Params().Map("attachments"))
+	a.wikiAttachFiles(c, page, paramAttachments(c))
 	c.Redirect(wikiPagePath(c.Project, page.Title))
 }
 

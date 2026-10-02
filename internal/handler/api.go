@@ -123,3 +123,29 @@ func (c *Req) APIOffsetAndLimit() (offset, limit int) {
 	p := c.Params()
 	return pagination.APIOffsetAndLimit(p.String("offset"), p.String("limit"), p.String("page"))
 }
+
+// renderAPIWithoutExtension は accept_api_auth のアクションに拡張子（params[:format]）なしで
+// Accept: application/xml / application/json の GET が来た場合の応答。Redmine では respond_to の
+// format.api が選ばれ、.api.rsb の Builders.for(params[:format]) が nil になるため 406 と
+// NoFormatMessage を返す（Content-Type はネゴシエーションした形式）。応答した場合 true。
+// ファイルを返すアクション（attachments#download / thumbnail）は respond_to を使わないので対象外。
+func (a *App) renderAPIWithoutExtension(c *Req) bool {
+	if !c.cfg.acceptAPIAuth || (c.R.Method != http.MethodGet && c.R.Method != http.MethodHead) || httpx.IsAPIRequest(c.R) {
+		return false
+	}
+	if c.Controller != nil && c.Controller.Name == "attachments" && (c.Action == "download" || c.Action == "thumbnail") {
+		return false
+	}
+	if _, ok := c.Params().Get("format"); ok {
+		return false
+	}
+	f := httpx.Negotiate(c.R, "html", "xml", "json")
+	if f != "xml" && f != "json" {
+		return false
+	}
+	httpx.SetContentType(c.W, f, true)
+	c.W.WriteHeader(http.StatusNotAcceptable)
+	_, _ = c.W.Write([]byte(apibuilder.NoFormatMessage))
+	c.halted = true
+	return true
+}

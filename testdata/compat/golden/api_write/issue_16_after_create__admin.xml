@@ -1,0 +1,45 @@
+status: 200
+content-type: application/xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<issue>
+  <id>16</id>
+  <project id="1" name="eCookbook"/>
+  <tracker id="1" name="Bug"/>
+  <status id="1" is_closed="false" name="New"/>
+  <priority id="5" name="Normal"/>
+  <author id="2" name="John Smith"/>
+  <subject>XML issue</subject>
+  <description/>
+  <start_date>2026-01-15</start_date>
+  <due_date/>
+  <done_ratio>0</done_ratio>
+  <is_private>false</is_private>
+  <estimated_hours/>
+  <total_estimated_hours/>
+  <spent_hours>0.0</spent_hours>
+  <total_spent_hours>0.0</total_spent_hours>
+  <custom_fields type="array">
+    <custom_field id="2" name="Searchable field">
+      <value>Default string</value>
+    </custom_field>
+    <custom_field id="1" name="Database">
+      <value/>
+    </custom_field>
+    <custom_field id="6" name="Float field">
+      <value/>
+    </custom_field>
+    <custom_field id="8" name="Custom date">
+      <value/>
+    </custom_field>
+    <custom_field id="9" name="Project 1 cf">
+      <value/>
+    </custom_field>
+  </custom_fields>
+  <created_on>TIMESTAMP</created_on>
+  <updated_on>TIMESTAMP</updated_on>
+  <closed_on/>
+  <watchers type="array">
+    <user id="3" name="Dave Lopper"/>
+  </watchers>
+</issue>

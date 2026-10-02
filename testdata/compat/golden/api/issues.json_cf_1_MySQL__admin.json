@@ -1,0 +1,78 @@
+status: 200
+content-type: application/json
+
+{
+  "issues": [
+    {
+      "id": 3,
+      "project": {
+        "id": 1,
+        "name": "eCookbook"
+      },
+      "tracker": {
+        "id": 1,
+        "name": "Bug"
+      },
+      "status": {
+        "id": 1,
+        "name": "New",
+        "is_closed": false
+      },
+      "priority": {
+        "id": 4,
+        "name": "Low"
+      },
+      "author": {
+        "id": 2,
+        "name": "John Smith"
+      },
+      "assigned_to": {
+        "id": 3,
+        "name": "Dave Lopper"
+      },
+      "subject": "Error 281 when updating a recipe",
+      "description": "Error 281 is encountered when saving a recipe",
+      "start_date": "2025-12-31",
+      "due_date": "2026-01-10",
+      "done_ratio": 0,
+      "is_private": false,
+      "estimated_hours": 1.0,
+      "total_estimated_hours": 1.0,
+      "spent_hours": 1.0,
+      "total_spent_hours": 1.0,
+      "custom_fields": [
+        {
+          "id": 2,
+          "name": "Searchable field",
+          "value": "125"
+        },
+        {
+          "id": 1,
+          "name": "Database",
+          "value": "MySQL"
+        },
+        {
+          "id": 6,
+          "name": "Float field",
+          "value": "11.65"
+        },
+        {
+          "id": 8,
+          "name": "Custom date",
+          "value": null
+        },
+        {
+          "id": 9,
+          "name": "Project 1 cf",
+          "value": null
+        }
+      ],
+      "created_on": "2006-07-19T19:07:27Z",
+      "updated_on": "2006-07-19T19:07:27Z",
+      "closed_on": null
+    }
+  ],
+  "total_count": 1,
+  "offset": 0,
+  "limit": 25
+}

@@ -386,8 +386,11 @@ func (l *issueLookup) allowedTargetProjectsAny() bool {
 
 // ---------------------------------------------------------------- 時間
 
-// SpentHours は Issue#spent_hours。
+// SpentHours は Issue#spent_hours（Issue.load_visible_spent_hours 済み（Row.SpentHours）ならその値）。
 func (m *issueModel) SpentHours() float64 {
+	if m.Row != nil && m.Row.SpentHours != nil {
+		return *m.Row.SpentHours
+	}
 	if m.I == nil {
 		return 0
 	}
@@ -396,8 +399,11 @@ func (m *issueModel) SpentHours() float64 {
 	return v
 }
 
-// TotalSpentHours は Issue#total_spent_hours。
+// TotalSpentHours は Issue#total_spent_hours（load_visible_total_spent_hours 済みならその値）。
 func (m *issueModel) TotalSpentHours() float64 {
+	if m.Row != nil && m.Row.TotalSpentHours != nil {
+		return *m.Row.TotalSpentHours
+	}
 	if m.I == nil {
 		return 0
 	}

@@ -1,0 +1,30 @@
+status: 200
+content-type: application/xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<results limit="3" offset="2" total_count="15" type="array">
+  <result>
+    <id>6</id>
+    <title>Bug #6 (New): Issue of a private subproject</title>
+    <type>issue</type>
+    <url>{{BASE}}/issues/6</url>
+    <description>This is an issue of a private subproject of cookbook</description>
+    <datetime>2026-01-15T11:59:00Z</datetime>
+  </result>
+  <result>
+    <id>12</id>
+    <title>Bug #12 (Closed): Closed issue on a locked version</title>
+    <type>issue-closed</type>
+    <url>{{BASE}}/issues/12</url>
+    <description/>
+    <datetime>2026-01-12T12:00:00Z</datetime>
+  </result>
+  <result>
+    <id>11</id>
+    <title>Bug #11 (Closed): Closed issue on a closed version</title>
+    <type>issue-closed</type>
+    <url>{{BASE}}/issues/11</url>
+    <description/>
+    <datetime>2026-01-12T12:00:00Z</datetime>
+  </result>
+</results>

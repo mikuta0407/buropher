@@ -1,13 +1,15 @@
 package handler
 
-// AutoCompletesController（app/controllers/auto_completes_controller.rb）の issues。
+// AutoCompletesController（app/controllers/auto_completes_controller.rb）の issues / wiki_pages。
 
 import (
+	"errors"
 	"net/http"
 	"regexp"
 	"strconv"
 	"strings"
 
+	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/query"
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/view/rails"
@@ -19,10 +21,42 @@ var AutoCompletesController = &Controller{Name: "auto_completes", MainMenu: true
 // routesAutoCompletes は
 //
 //	match '/issues/auto_complete', :to => 'auto_completes#issues', :via => :get, :as => 'auto_complete_issues'
+//	match '/wiki_pages/auto_complete', :to => 'auto_completes#wiki_pages', :via => :get, :as => 'auto_complete_wiki_pages'
 func (a *App) routesAutoCompletes(r Router) {
 	// before_action :find_project
 	a.Handle(r, http.MethodGet, "/issues/auto_complete", AutoCompletesController, "issues", a.AutoCompletesIssues,
 		Before(a.findAutoCompleteProject))
+	a.Handle(r, http.MethodGet, "/wiki_pages/auto_complete", AutoCompletesController, "wiki_pages", a.AutoCompletesWikiPages,
+		Before(a.findAutoCompleteProject))
+}
+
+// AutoCompletesWikiPages は auto_completes#wiki_pages（JSON 配列 {id, label, value}。新しい順に 10 件）。
+// Wiki が無い（プロジェクト未指定を含む）か view_wiki_pages が無ければ []。
+func (a *App) AutoCompletesWikiPages(c *Req) {
+	out := make([]any, 0, 10)
+	if c.Project == nil || !c.AllowedTo(domain.Perm("view_wiki_pages"), c.Project) {
+		renderJSON(c, out)
+		return
+	}
+	wiki, err := repository.FindWiki(c.Ctx(), a.DB, c.Project.ID)
+	if err != nil {
+		if !errors.Is(err, repository.ErrNotFound) {
+			a.internalError(c, "auto complete wiki", err)
+			return
+		}
+		renderJSON(c, out)
+		return
+	}
+	q := strings.TrimSpace(c.Params().String("q"))
+	pages, err := repository.AutoCompleteWikiPages(c.Ctx(), a.DB, wiki.ID, q, 10)
+	if err != nil {
+		a.internalError(c, "auto complete wiki", err)
+		return
+	}
+	for _, p := range pages {
+		out = append(out, rails.NewHash("id", p.ID, "label", rubyTruncate(p.Title, 255), "value", p.Title))
+	}
+	renderJSON(c, out)
 }
 
 // findAutoCompleteProject は AutoCompletesController#find_project（project_id があれば Project.find。無ければ 404）。

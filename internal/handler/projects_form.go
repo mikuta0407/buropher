@@ -169,6 +169,24 @@ func enabledModuleNames(names []string) []string {
 	return out
 }
 
+// replaceModuleNames は self.enabled_modules = [...] の結果の並び（has_many の replace は、現在の要素のうち
+// 残るものを元の順で保ち、新しい要素を指定順で後ろに足す）。新規作成時の現在の要素は
+// Setting.default_projects_modules なので、作成されるモジュールの順（id 順）もこれに従う。
+func replaceModuleNames(cur, names []string) []string {
+	out := []string{}
+	for _, n := range cur {
+		if slices.Contains(names, n) {
+			out = append(out, n)
+		}
+	}
+	for _, n := range names {
+		if !slices.Contains(out, n) {
+			out = append(out, n)
+		}
+	}
+	return out
+}
+
 // defaultMemberRole は Project.default_member_role（Setting.new_project_user_role_id の givable ロール、無ければ最初の givable）。
 func (a *App) defaultMemberRole(c *Req) (*domain.Role, error) {
 	roles, err := repository.GivableRoles(c.Ctx(), a.DB)
@@ -347,7 +365,7 @@ func (a *App) assignProject(c *Req, f *projectForm, attrs *httpx.Params) error {
 			}
 		case "enabled_module_names":
 			if f.safeModules {
-				p.EnabledModuleNames = enabledModuleNames(attrs.Strings(key))
+				p.EnabledModuleNames = replaceModuleNames(p.EnabledModuleNames, enabledModuleNames(attrs.Strings(key)))
 			}
 		case "inherit_members":
 			if f.safeInheritMembers {
@@ -359,6 +377,25 @@ func (a *App) assignProject(c *Req, f *projectForm, attrs *httpx.Params) error {
 				return err
 			}
 			assignProjectCFValues(vis, attrs.Map(key))
+			f.cfChanged = true
+		case "custom_fields":
+			// acts_as_customizable#custom_fields=（API の [{"id": 3, "value": "Beta"}]）は
+			// id と value を持つ要素を {id => value} にして custom_field_values= に渡す
+			m := httpx.NewParams()
+			for _, e := range attrs.Slice(key) {
+				em, ok := e.(*httpx.Params)
+				if !ok {
+					continue
+				}
+				if v, ok := em.Get("value"); ok && em.String("id") != "" {
+					m.Set(em.String("id"), v)
+				}
+			}
+			vis, err := a.visibleCustomFieldValues(c, f.Project, f.CFValues)
+			if err != nil {
+				return err
+			}
+			assignProjectCFValues(vis, m)
 			f.cfChanged = true
 		}
 	}

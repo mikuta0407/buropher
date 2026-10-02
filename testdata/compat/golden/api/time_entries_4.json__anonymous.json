@@ -1,0 +1,32 @@
+status: 200
+content-type: application/json
+
+{
+  "time_entry": {
+    "id": 4,
+    "project": {
+      "id": 3,
+      "name": "eCookbook Subproject 1"
+    },
+    "user": {
+      "id": 1,
+      "name": "Redmine Admin"
+    },
+    "activity": {
+      "id": 10,
+      "name": "Development"
+    },
+    "hours": 7.65,
+    "comments": "Time spent on a subproject",
+    "spent_on": "2007-04-22",
+    "created_on": "2007-04-22T10:20:48Z",
+    "updated_on": "2007-04-22T10:20:48Z",
+    "custom_fields": [
+      {
+        "id": 10,
+        "name": "Overtime",
+        "value": null
+      }
+    ]
+  }
+}

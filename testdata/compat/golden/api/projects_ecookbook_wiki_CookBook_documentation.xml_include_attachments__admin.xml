@@ -1,0 +1,37 @@
+status: 200
+content-type: application/xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<wiki_page>
+  <title>CookBook_documentation</title>
+  <text>h1. CookBook documentation&#xA;&#xA;{{child_pages}}&#xA;&#xA;Some updated [[documentation]] here with gzipped history</text>
+  <version>3</version>
+  <author id="1" name="Redmine Admin"/>
+  <comments>Gzip compression activated</comments>
+  <created_on>2007-03-06T23:08:07Z</created_on>
+  <updated_on>2007-03-06T23:10:51Z</updated_on>
+  <attachments type="array">
+    <attachment>
+      <id>23</id>
+      <filename>ecookbook-gantt.pdf</filename>
+      <filesize>31620</filesize>
+      <content_type>application/pdf</content_type>
+      <description>Gantt chart as of May 11</description>
+      <content_url>{{BASE}}/attachments/download/23/ecookbook-gantt.pdf</content_url>
+      <thumbnail_url>{{BASE}}/attachments/thumbnail/23</thumbnail_url>
+      <author id="2" name="John Smith"/>
+      <created_on>2019-05-11T05:18:19Z</created_on>
+    </attachment>
+    <attachment>
+      <id>24</id>
+      <filename>logo.webp</filename>
+      <filesize>74974</filesize>
+      <content_type>image/webp</content_type>
+      <description>WebP image</description>
+      <content_url>{{BASE}}/attachments/download/24/logo.webp</content_url>
+      <thumbnail_url>{{BASE}}/attachments/thumbnail/24</thumbnail_url>
+      <author id="2" name="John Smith"/>
+      <created_on>2023-01-11T08:46:41Z</created_on>
+    </attachment>
+  </attachments>
+</wiki_page>

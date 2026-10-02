@@ -1,0 +1,25 @@
+status: 201
+content-type: application/json
+location: {{BASE}}/projects/7
+
+{
+  "project": {
+    "id": 7,
+    "name": "API project",
+    "identifier": "api-project",
+    "description": "desc",
+    "homepage": "",
+    "status": 1,
+    "is_public": true,
+    "inherit_members": false,
+    "custom_fields": [
+      {
+        "id": 3,
+        "name": "Development status",
+        "value": "Beta"
+      }
+    ],
+    "created_on": "TIMESTAMP",
+    "updated_on": "TIMESTAMP"
+  }
+}

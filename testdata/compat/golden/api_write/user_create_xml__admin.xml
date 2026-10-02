@@ -1,0 +1,28 @@
+status: 201
+content-type: application/xml
+location: {{BASE}}/users/15
+
+<?xml version="1.0" encoding="UTF-8"?>
+<user>
+  <id>15</id>
+  <login>xmluser</login>
+  <admin>false</admin>
+  <firstname>XML</firstname>
+  <lastname>User</lastname>
+  <mail>xmluser@example.net</mail>
+  <created_on>TIMESTAMP</created_on>
+  <updated_on>TIMESTAMP</updated_on>
+  <last_login_on/>
+  <passwd_changed_on>TIMESTAMP</passwd_changed_on>
+  <twofa_scheme/>
+  <api_key>MASKED</api_key>
+  <status>1</status>
+  <custom_fields type="array">
+    <custom_field id="4" name="Phone number">
+      <value/>
+    </custom_field>
+    <custom_field id="5" name="Money">
+      <value/>
+    </custom_field>
+  </custom_fields>
+</user>

@@ -258,3 +258,29 @@ func TestRedmineRouteCoverage(t *testing.T) {
 		_ = os.WriteFile(out, []byte(strings.Join(report, "\n")+"\n"), 0o644)
 	}
 }
+
+// TestRoutingNotFoundFormats はルートが無い場合の 404 が ActionDispatch::PublicExceptions と同じく
+// request.formats（Accept またはパスの拡張子）に従って JSON / XML / HTML になることを確認する
+// （参照 Redmine の出力と同じ本文）。
+func TestRoutingNotFoundFormats(t *testing.T) {
+	ts, _ := newFixtureServer(t)
+	cases := []struct {
+		path, accept, ctype, body string
+	}{
+		{"/nonexistent", "application/json", "application/json; charset=utf-8", `{"status":404,"error":"Not Found"}`},
+		{"/nonexistent", "application/xml", "application/xml; charset=utf-8",
+			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<hash>\n  <status type=\"integer\">404</status>\n  <error>Not Found</error>\n</hash>\n"},
+		// curl の既定 Accept（*/*）は Mime::ALL なので拡張子があっても HTML
+		{"/issues/1/time_entries.json", "*/*", "text/html; charset=utf-8", ""},
+		{"/nonexistent", "text/javascript", "text/html; charset=utf-8", ""},
+	}
+	for _, c := range cases {
+		res := apiGet(t, ts, c.path, apiHeader("Accept", c.accept))
+		if res.Status != 404 || res.Header.Get("Content-Type") != c.ctype {
+			t.Errorf("%s (Accept %s): %d %s", c.path, c.accept, res.Status, res.Header.Get("Content-Type"))
+		}
+		if c.body != "" && res.Body != c.body {
+			t.Errorf("%s (Accept %s): body %q", c.path, c.accept, res.Body)
+		}
+	}
+}

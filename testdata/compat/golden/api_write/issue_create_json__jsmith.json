@@ -1,0 +1,53 @@
+status: 201
+content-type: application/json
+location: {{BASE}}/issues/15
+
+{
+  "issue": {
+    "id": 15,
+    "project": {
+      "id": 1,
+      "name": "eCookbook"
+    },
+    "tracker": {
+      "id": 2,
+      "name": "Feature request"
+    },
+    "status": {
+      "id": 3,
+      "name": "Resolved",
+      "is_closed": false
+    },
+    "priority": {
+      "id": 4,
+      "name": "Low"
+    },
+    "author": {
+      "id": 2,
+      "name": "John Smith"
+    },
+    "subject": "API test",
+    "description": "API description",
+    "start_date": "2026-01-15",
+    "due_date": null,
+    "done_ratio": 0,
+    "is_private": false,
+    "estimated_hours": null,
+    "total_estimated_hours": null,
+    "custom_fields": [
+      {
+        "id": 6,
+        "name": "Float field",
+        "value": ""
+      },
+      {
+        "id": 8,
+        "name": "Custom date",
+        "value": ""
+      }
+    ],
+    "created_on": "TIMESTAMP",
+    "updated_on": "TIMESTAMP",
+    "closed_on": null
+  }
+}

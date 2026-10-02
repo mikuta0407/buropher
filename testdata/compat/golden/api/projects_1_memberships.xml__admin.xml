@@ -1,0 +1,30 @@
+status: 200
+content-type: application/xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<memberships limit="25" offset="0" total_count="3" type="array">
+  <membership>
+    <id>1</id>
+    <project id="1" name="eCookbook"/>
+    <user id="2" name="John Smith"/>
+    <roles type="array">
+      <role id="1" name="Manager"/>
+    </roles>
+  </membership>
+  <membership>
+    <id>2</id>
+    <project id="1" name="eCookbook"/>
+    <user id="3" name="Dave Lopper"/>
+    <roles type="array">
+      <role id="2" name="Developer"/>
+    </roles>
+  </membership>
+  <membership>
+    <id>4</id>
+    <project id="1" name="eCookbook"/>
+    <user id="5" name="Dave2 Lopper2"/>
+    <roles type="array">
+      <role id="2" name="Developer"/>
+    </roles>
+  </membership>
+</memberships>

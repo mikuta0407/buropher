@@ -1,0 +1,22 @@
+status: 200
+content-type: application/xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <id>8</id>
+  <name>XML project</name>
+  <identifier>xml-project</identifier>
+  <description/>
+  <homepage/>
+  <parent id="1" name="eCookbook"/>
+  <status>1</status>
+  <is_public>true</is_public>
+  <inherit_members>true</inherit_members>
+  <custom_fields type="array">
+    <custom_field id="3" name="Development status">
+      <value/>
+    </custom_field>
+  </custom_fields>
+  <created_on>TIMESTAMP</created_on>
+  <updated_on>TIMESTAMP</updated_on>
+</project>

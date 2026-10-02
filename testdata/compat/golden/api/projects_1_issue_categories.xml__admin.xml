@@ -1,0 +1,17 @@
+status: 200
+content-type: application/xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<issue_categories total_count="2" type="array">
+  <issue_category>
+    <id>1</id>
+    <project id="1" name="eCookbook"/>
+    <name>Printing</name>
+    <assigned_to id="2" name="John Smith"/>
+  </issue_category>
+  <issue_category>
+    <id>2</id>
+    <project id="1" name="eCookbook"/>
+    <name>Recipes</name>
+  </issue_category>
+</issue_categories>

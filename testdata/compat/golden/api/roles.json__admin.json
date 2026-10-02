@@ -1,0 +1,19 @@
+status: 200
+content-type: application/json
+
+{
+  "roles": [
+    {
+      "id": 1,
+      "name": "Manager"
+    },
+    {
+      "id": 2,
+      "name": "Developer"
+    },
+    {
+      "id": 3,
+      "name": "Reporter"
+    }
+  ]
+}

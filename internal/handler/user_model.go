@@ -707,7 +707,13 @@ func (a *App) saveUser(c *Req, m *userModel) (bool, error) {
 		}
 		// acts_as_customizable: save_custom_field_values
 		for _, cv := range m.customValues {
-			if cv.Field.Multiple || cv.Value == nil {
+			if cv.Field.Multiple {
+				if _, err := repository.SetPrincipalCustomValues(c.Ctx(), tx, m.ID, cv.Field.ID, cv.Values); err != nil {
+					return err
+				}
+				continue
+			}
+			if cv.Value == nil {
 				continue
 			}
 			if _, err := repository.SetPrincipalCustomValue(c.Ctx(), tx, m.ID, cv.Field.ID, *cv.Value); err != nil {

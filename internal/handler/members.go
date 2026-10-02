@@ -566,6 +566,14 @@ func (a *App) MembersUpdate(c *Req) {
 			return
 		}
 		if len(roles) == 0 && !m.Member.AnyInheritedRole() {
+			// Member#role_ids= は外したロールの member_roles を destroy し、MemberRole#remove_member_if_empty が
+			// ロールの無くなったメンバー自体を削除する。その後の save は validate_role で失敗する（422 だが削除は残る）。
+			if len(directRoleIDs(m.Member)) > 0 {
+				if err := a.DB.WithTx(ctx, func(tx *db.Tx) error { return repository.DestroyMember(ctx, tx, m.Member.ID) }); err != nil {
+					a.internalError(c, "destroy member", err)
+					return
+				}
+			}
 			saveErrs = append(saveErrs, c.L("field_role")+" "+c.L("activerecord.errors.messages.empty"))
 		} else {
 			err := a.DB.WithTx(ctx, func(tx *db.Tx) error { return repository.SetMemberRoles(ctx, tx, m.Member.ID, roles) })

@@ -1,0 +1,14 @@
+status: 200
+content-type: application/xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<groups type="array">
+  <group>
+    <id>10</id>
+    <name>A Team</name>
+  </group>
+  <group>
+    <id>11</id>
+    <name>B Team</name>
+  </group>
+</groups>

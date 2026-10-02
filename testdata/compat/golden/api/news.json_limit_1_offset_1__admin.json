@@ -1,0 +1,25 @@
+status: 200
+content-type: application/json
+
+{
+  "news": [
+    {
+      "id": 2,
+      "project": {
+        "id": 1,
+        "name": "eCookbook"
+      },
+      "author": {
+        "id": 2,
+        "name": "John Smith"
+      },
+      "title": "100,000 downloads for eCookbook",
+      "summary": "eCookbook 1.0 have downloaded 100,000 times",
+      "description": "eCookbook 1.0 have downloaded 100,000 times",
+      "created_on": "2006-07-19T20:42:58Z"
+    }
+  ],
+  "total_count": 3,
+  "offset": 1,
+  "limit": 1
+}

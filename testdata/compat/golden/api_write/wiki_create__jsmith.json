@@ -1,0 +1,18 @@
+status: 201
+content-type: application/json
+location: /projects/ecookbook/wiki/New_API_page
+
+{
+  "wiki_page": {
+    "title": "New_API_page",
+    "text": "Hello *API*",
+    "version": 1,
+    "author": {
+      "id": 2,
+      "name": "Johnny Smith"
+    },
+    "comments": "created via api",
+    "created_on": "TIMESTAMP",
+    "updated_on": "TIMESTAMP"
+  }
+}

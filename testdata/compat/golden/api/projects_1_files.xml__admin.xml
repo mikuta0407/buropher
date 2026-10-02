@@ -1,0 +1,56 @@
+status: 200
+content-type: application/xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<files type="array">
+  <file>
+    <id>8</id>
+    <filename>project_file.zip</filename>
+    <filesize>320</filesize>
+    <content_type>application/octet-stream</content_type>
+    <description/>
+    <content_url>{{BASE}}/attachments/download/8/project_file.zip</content_url>
+    <author id="2" name="John Smith"/>
+    <created_on>2006-07-19T19:07:27Z</created_on>
+    <digest>b91e08d0cf966d5c6ff411bd8c4cc3a2</digest>
+    <downloads>0</downloads>
+  </file>
+  <file>
+    <id>22</id>
+    <filename>redmine_logo.ai.unknown</filename>
+    <filesize>4994</filesize>
+    <content_type/>
+    <description>unknown type</description>
+    <content_url>{{BASE}}/attachments/download/22/redmine_logo.ai.unknown</content_url>
+    <author id="1" name="Redmine Admin"/>
+    <created_on>2019-04-30T00:23:44Z</created_on>
+    <digest>68d90c016f0806d88234a6f16530fdf0b7f1d2481354798f1a5fd165dca6b04f</digest>
+    <downloads>0</downloads>
+  </file>
+  <file>
+    <id>9</id>
+    <filename>version_file.zip</filename>
+    <filesize>452</filesize>
+    <content_type>application/octet-stream</content_type>
+    <description/>
+    <content_url>{{BASE}}/attachments/download/9/version_file.zip</content_url>
+    <author id="2" name="John Smith"/>
+    <created_on>2006-07-19T19:07:27Z</created_on>
+    <version id="1" name="0.1"/>
+    <digest>b91e08d0cf966d5c6ff411bd8c4cc3a2</digest>
+    <downloads>0</downloads>
+  </file>
+  <file>
+    <id>12</id>
+    <filename>version_file.zip</filename>
+    <filesize>452</filesize>
+    <content_type>application/octet-stream</content_type>
+    <description/>
+    <content_url>{{BASE}}/attachments/download/12/version_file.zip</content_url>
+    <author id="2" name="John Smith"/>
+    <created_on>2006-07-19T19:07:27Z</created_on>
+    <version id="1" name="0.1"/>
+    <digest>b91e08d0cf966d5c6ff411bd8c4cc3a2</digest>
+    <downloads>0</downloads>
+  </file>
+</files>

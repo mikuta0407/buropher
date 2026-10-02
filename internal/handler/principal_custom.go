@@ -157,33 +157,48 @@ func renderAPICustomValues(b apibuilder.Builder, cvs []principalCustomValue) {
 	})
 }
 
-// assignCustomFieldValues は custom_field_values=（params[prefix][custom_field_values]）。
+// assignCustomFieldValues は custom_field_values=（params[prefix][custom_field_values]）と
+// custom_fields=（API の [{"id": 1, "value": "x"}, ...]。acts_as_customizable の custom_fields=）。
 func assignCustomFieldValues(cvs []principalCustomValue, p *httpx.Params) []principalCustomValue {
 	if p == nil {
 		return cvs
 	}
-	m := p.Map("custom_field_values")
-	if m == nil {
-		return cvs
-	}
-	for i := range cvs {
-		f := cvs[i].Field
-		v, ok := m.Get(itoa(f.ID))
-		if !ok || !f.Editable {
-			continue
-		}
-		if f.Multiple {
-			var vals []string
-			for _, e := range anySlice(v) {
-				if s := httpx.ValueString(e); s != "" {
-					vals = append(vals, s)
-				}
+	set := func(id string, v any) {
+		for i := range cvs {
+			f := cvs[i].Field
+			if itoa(f.ID) != id || !f.Editable {
+				continue
 			}
-			cvs[i].Values = vals
+			if f.Multiple {
+				var vals []string
+				for _, e := range anySlice(v) {
+					if s := httpx.ValueString(e); s != "" {
+						vals = append(vals, s)
+					}
+				}
+				cvs[i].Values = vals
+				continue
+			}
+			s := httpx.ValueString(v)
+			cvs[i].Value = &s
+		}
+	}
+	if m := p.Map("custom_field_values"); m != nil {
+		for i := range cvs {
+			id := itoa(cvs[i].Field.ID)
+			if v, ok := m.Get(id); ok {
+				set(id, v)
+			}
+		}
+	}
+	for _, e := range p.Slice("custom_fields") {
+		em, ok := e.(*httpx.Params)
+		if !ok {
 			continue
 		}
-		s := httpx.ValueString(v)
-		cvs[i].Value = &s
+		if v, ok := em.Get("value"); ok {
+			set(em.String("id"), v)
+		}
 	}
 	return cvs
 }

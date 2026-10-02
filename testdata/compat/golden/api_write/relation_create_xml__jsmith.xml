@@ -1,0 +1,12 @@
+status: 201
+content-type: application/xml
+location: {{BASE}}/relations/4
+
+<?xml version="1.0" encoding="UTF-8"?>
+<relation>
+  <id>4</id>
+  <issue_id>1</issue_id>
+  <issue_to_id>8</issue_to_id>
+  <relation_type>relates</relation_type>
+  <delay/>
+</relation>

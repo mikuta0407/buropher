@@ -1,0 +1,21 @@
+status: 201
+content-type: application/xml
+location: {{BASE}}/time_entries/7
+
+<?xml version="1.0" encoding="UTF-8"?>
+<time_entry>
+  <id>7</id>
+  <project id="1" name="eCookbook"/>
+  <user id="2" name="Johnny Smith"/>
+  <activity id="9" name="Design"/>
+  <hours>1.25</hours>
+  <comments/>
+  <spent_on>2026-01-11</spent_on>
+  <created_on>TIMESTAMP</created_on>
+  <updated_on>TIMESTAMP</updated_on>
+  <custom_fields type="array">
+    <custom_field id="10" name="Overtime">
+      <value>0</value>
+    </custom_field>
+  </custom_fields>
+</time_entry>

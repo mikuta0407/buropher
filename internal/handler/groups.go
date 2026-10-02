@@ -192,7 +192,13 @@ func (a *App) saveGroup(c *Req, m *groupModel) (bool, error) {
 			}
 		}
 		for _, cv := range m.customValues {
-			if cv.Field.Multiple || cv.Value == nil {
+			if cv.Field.Multiple {
+				if _, err := repository.SetPrincipalCustomValues(c.Ctx(), tx, m.ID, cv.Field.ID, cv.Values); err != nil {
+					return err
+				}
+				continue
+			}
+			if cv.Value == nil {
 				continue
 			}
 			if _, err := repository.SetPrincipalCustomValue(c.Ctx(), tx, m.ID, cv.Field.ID, *cv.Value); err != nil {

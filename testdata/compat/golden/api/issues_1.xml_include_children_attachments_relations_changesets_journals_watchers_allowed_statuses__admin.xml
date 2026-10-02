@@ -1,0 +1,82 @@
+status: 200
+content-type: application/xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<issue>
+  <id>1</id>
+  <project id="1" name="eCookbook"/>
+  <tracker id="1" name="Bug"/>
+  <status id="1" is_closed="false" name="New"/>
+  <priority id="4" name="Low"/>
+  <author id="2" name="John Smith"/>
+  <category id="1" name="Printing"/>
+  <subject>Cannot print recipes</subject>
+  <description>Unable to print recipes</description>
+  <start_date>2026-01-14</start_date>
+  <due_date>2026-01-25</due_date>
+  <done_ratio>0</done_ratio>
+  <is_private>false</is_private>
+  <estimated_hours>200.0</estimated_hours>
+  <total_estimated_hours>200.0</total_estimated_hours>
+  <spent_hours>154.25</spent_hours>
+  <total_spent_hours>154.25</total_spent_hours>
+  <custom_fields type="array">
+    <custom_field id="2" name="Searchable field">
+      <value>125</value>
+    </custom_field>
+    <custom_field id="1" name="Database">
+      <value/>
+    </custom_field>
+    <custom_field id="6" name="Float field">
+      <value>2.1</value>
+    </custom_field>
+    <custom_field id="8" name="Custom date">
+      <value>2009-12-01</value>
+    </custom_field>
+    <custom_field id="9" name="Project 1 cf">
+      <value/>
+    </custom_field>
+  </custom_fields>
+  <created_on>2026-01-12T12:00:00Z</created_on>
+  <updated_on>2026-01-14T12:00:00Z</updated_on>
+  <closed_on/>
+  <attachments type="array"/>
+  <changesets type="array"/>
+  <journals type="array">
+    <journal id="1">
+      <user id="1" name="Redmine Admin"/>
+      <notes>Journal notes</notes>
+      <created_on>2026-01-13T00:00:00Z</created_on>
+      <updated_on>2026-01-14T00:00:00Z</updated_on>
+      <updated_by id="1" name="Redmine Admin"/>
+      <private_notes>false</private_notes>
+      <details type="array">
+        <detail name="status_id" property="attr">
+          <old_value>1</old_value>
+          <new_value>2</new_value>
+        </detail>
+        <detail name="done_ratio" property="attr">
+          <old_value>40</old_value>
+          <new_value>30</new_value>
+        </detail>
+      </details>
+    </journal>
+    <journal id="2">
+      <user id="2" name="John Smith"/>
+      <notes>Some notes with Redmine links: #2, r2.</notes>
+      <created_on>2026-01-14T00:00:00Z</created_on>
+      <updated_on>2026-01-14T00:00:00Z</updated_on>
+      <private_notes>false</private_notes>
+      <details type="array"/>
+    </journal>
+  </journals>
+  <watchers type="array"/>
+  <allowed_statuses type="array">
+    <status id="1" is_closed="false" name="New"/>
+    <status id="2" is_closed="false" name="Assigned"/>
+    <status id="3" is_closed="false" name="Resolved"/>
+    <status id="4" is_closed="false" name="Feedback"/>
+    <status id="5" is_closed="true" name="Closed"/>
+    <status id="6" is_closed="true" name="Rejected"/>
+  </allowed_statuses>
+</issue>

@@ -92,10 +92,6 @@ func writeXMLArrayMeta(b *strings.Builder, e *apiEl) {
 		b.WriteString(" " + a[0].(string) + `="` + xmlAttrEscaper.Replace(s) + `"`)
 	}
 	b.WriteString(` type="array"`)
-	if len(e.children) == 0 {
-		b.WriteString("/>")
-		return
-	}
 	b.WriteString(">")
 	for _, ch := range e.children {
 		writeXML(b, ch)

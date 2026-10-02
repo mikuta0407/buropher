@@ -1,0 +1,13 @@
+status: 200
+content-type: application/xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<wiki_page>
+  <title>New_API_page</title>
+  <text>Hello *API*</text>
+  <version>1</version>
+  <author id="2" name="Johnny Smith"/>
+  <comments>created via api</comments>
+  <created_on>TIMESTAMP</created_on>
+  <updated_on>TIMESTAMP</updated_on>
+</wiki_page>

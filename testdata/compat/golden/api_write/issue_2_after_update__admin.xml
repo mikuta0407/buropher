@@ -1,0 +1,71 @@
+status: 200
+content-type: application/xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<issue>
+  <id>2</id>
+  <project id="1" name="eCookbook"/>
+  <tracker id="2" name="Feature request"/>
+  <status id="2" is_closed="false" name="Assigned"/>
+  <priority id="5" name="Normal"/>
+  <author id="2" name="John Smith"/>
+  <assigned_to id="3" name="Dave Lopper"/>
+  <fixed_version id="2" name="1.0"/>
+  <subject>Add ingredients categories</subject>
+  <description>Ingredients of the recipe should be classified by categories</description>
+  <start_date>2026-01-13</start_date>
+  <due_date/>
+  <done_ratio>50</done_ratio>
+  <is_private>false</is_private>
+  <estimated_hours>0.5</estimated_hours>
+  <total_estimated_hours>0.5</total_estimated_hours>
+  <spent_hours>0.0</spent_hours>
+  <total_spent_hours>0.0</total_spent_hours>
+  <custom_fields type="array">
+    <custom_field id="6" name="Float field">
+      <value>2.05</value>
+    </custom_field>
+    <custom_field id="8" name="Custom date">
+      <value/>
+    </custom_field>
+  </custom_fields>
+  <created_on>TIMESTAMP</created_on>
+  <updated_on>TIMESTAMP</updated_on>
+  <closed_on/>
+  <journals type="array">
+    <journal id="3">
+      <user id="2" name="John Smith"/>
+      <notes>A comment with inline image: !picture.jpg! and a reference to #1 and r2.</notes>
+      <created_on>TIMESTAMP</created_on>
+      <updated_on>TIMESTAMP</updated_on>
+      <private_notes>false</private_notes>
+      <details type="array">
+        <detail name="description" property="attr">
+          <old_value>This word was removed and an other was</old_value>
+          <new_value>This word was and an other was added</new_value>
+        </detail>
+        <detail name="2" property="cf">
+          <old_value>Old value</old_value>
+          <new_value>New value</new_value>
+        </detail>
+        <detail name="4" property="attachment">
+          <old_value/>
+          <new_value>060719210727_picture.jpg</new_value>
+        </detail>
+      </details>
+    </journal>
+    <journal id="7">
+      <user id="2" name="John Smith"/>
+      <notes>xml note</notes>
+      <created_on>TIMESTAMP</created_on>
+      <updated_on>TIMESTAMP</updated_on>
+      <private_notes>false</private_notes>
+      <details type="array">
+        <detail name="done_ratio" property="attr">
+          <old_value>30</old_value>
+          <new_value>50</new_value>
+        </detail>
+      </details>
+    </journal>
+  </journals>
+</issue>

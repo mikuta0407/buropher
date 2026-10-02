@@ -1,0 +1,25 @@
+status: 200
+content-type: application/json
+
+{
+  "groups": [
+    {
+      "id": 10,
+      "name": "A Team"
+    },
+    {
+      "id": 11,
+      "name": "B Team"
+    },
+    {
+      "id": 13,
+      "name": "Anonymous users",
+      "builtin": "anonymous"
+    },
+    {
+      "id": 12,
+      "name": "Non member users",
+      "builtin": "non_member"
+    }
+  ]
+}

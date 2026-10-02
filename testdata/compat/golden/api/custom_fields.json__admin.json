@@ -1,0 +1,310 @@
+status: 200
+content-type: application/json
+
+{
+  "custom_fields": [
+    {
+      "id": 1,
+      "name": "Database",
+      "description": "Select one of the databases",
+      "customized_type": "issue",
+      "field_format": "list",
+      "regexp": "",
+      "min_length": null,
+      "max_length": null,
+      "is_required": false,
+      "is_filter": true,
+      "searchable": false,
+      "multiple": false,
+      "default_value": "",
+      "visible": true,
+      "editable": true,
+      "possible_values": [
+        {
+          "value": "MySQL",
+          "label": "MySQL"
+        },
+        {
+          "value": "PostgreSQL",
+          "label": "PostgreSQL"
+        },
+        {
+          "value": "Oracle",
+          "label": "Oracle"
+        }
+      ],
+      "trackers": [
+        {
+          "id": 1,
+          "name": "Bug"
+        }
+      ],
+      "roles": []
+    },
+    {
+      "id": 2,
+      "name": "Searchable field",
+      "description": null,
+      "customized_type": "issue",
+      "field_format": "string",
+      "regexp": "",
+      "min_length": 1,
+      "max_length": 100,
+      "is_required": false,
+      "is_filter": true,
+      "searchable": true,
+      "multiple": false,
+      "default_value": "Default string",
+      "visible": true,
+      "editable": true,
+      "trackers": [
+        {
+          "id": 1,
+          "name": "Bug"
+        },
+        {
+          "id": 3,
+          "name": "Support request"
+        }
+      ],
+      "roles": []
+    },
+    {
+      "id": 3,
+      "name": "Development status",
+      "description": null,
+      "customized_type": "project",
+      "field_format": "list",
+      "regexp": "",
+      "min_length": null,
+      "max_length": null,
+      "is_required": false,
+      "is_filter": true,
+      "searchable": false,
+      "multiple": false,
+      "default_value": "",
+      "visible": true,
+      "editable": true,
+      "possible_values": [
+        {
+          "value": "Stable",
+          "label": "Stable"
+        },
+        {
+          "value": "Beta",
+          "label": "Beta"
+        },
+        {
+          "value": "Alpha",
+          "label": "Alpha"
+        },
+        {
+          "value": "Planning",
+          "label": "Planning"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Phone number",
+      "description": null,
+      "customized_type": "user",
+      "field_format": "string",
+      "regexp": "",
+      "min_length": null,
+      "max_length": null,
+      "is_required": false,
+      "is_filter": false,
+      "searchable": false,
+      "multiple": false,
+      "default_value": "",
+      "visible": true,
+      "editable": true
+    },
+    {
+      "id": 5,
+      "name": "Money",
+      "description": null,
+      "customized_type": "user",
+      "field_format": "float",
+      "regexp": "",
+      "min_length": null,
+      "max_length": null,
+      "is_required": false,
+      "is_filter": false,
+      "searchable": false,
+      "multiple": false,
+      "default_value": "",
+      "visible": true,
+      "editable": true
+    },
+    {
+      "id": 6,
+      "name": "Float field",
+      "description": null,
+      "customized_type": "issue",
+      "field_format": "float",
+      "regexp": "",
+      "min_length": null,
+      "max_length": null,
+      "is_required": false,
+      "is_filter": false,
+      "searchable": false,
+      "multiple": false,
+      "default_value": "",
+      "visible": true,
+      "editable": true,
+      "trackers": [
+        {
+          "id": 1,
+          "name": "Bug"
+        },
+        {
+          "id": 2,
+          "name": "Feature request"
+        },
+        {
+          "id": 3,
+          "name": "Support request"
+        }
+      ],
+      "roles": []
+    },
+    {
+      "id": 7,
+      "name": "Billable",
+      "description": null,
+      "customized_type": "time_entry_activity",
+      "field_format": "bool",
+      "regexp": "",
+      "min_length": null,
+      "max_length": null,
+      "is_required": false,
+      "is_filter": true,
+      "searchable": false,
+      "multiple": false,
+      "default_value": "",
+      "visible": true,
+      "editable": true,
+      "possible_values": [
+        {
+          "value": "1",
+          "label": "Yes"
+        },
+        {
+          "value": "0",
+          "label": "No"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "name": "Custom date",
+      "description": null,
+      "customized_type": "issue",
+      "field_format": "date",
+      "regexp": "",
+      "min_length": null,
+      "max_length": null,
+      "is_required": false,
+      "is_filter": false,
+      "searchable": false,
+      "multiple": false,
+      "default_value": "",
+      "visible": true,
+      "editable": true,
+      "trackers": [
+        {
+          "id": 1,
+          "name": "Bug"
+        },
+        {
+          "id": 2,
+          "name": "Feature request"
+        },
+        {
+          "id": 3,
+          "name": "Support request"
+        }
+      ],
+      "roles": []
+    },
+    {
+      "id": 9,
+      "name": "Project 1 cf",
+      "description": null,
+      "customized_type": "issue",
+      "field_format": "date",
+      "regexp": "",
+      "min_length": null,
+      "max_length": null,
+      "is_required": false,
+      "is_filter": true,
+      "searchable": false,
+      "multiple": false,
+      "default_value": "",
+      "visible": true,
+      "editable": true,
+      "trackers": [
+        {
+          "id": 1,
+          "name": "Bug"
+        }
+      ],
+      "roles": []
+    },
+    {
+      "id": 10,
+      "name": "Overtime",
+      "description": null,
+      "customized_type": "time_entry",
+      "field_format": "bool",
+      "regexp": "",
+      "min_length": null,
+      "max_length": null,
+      "is_required": false,
+      "is_filter": false,
+      "searchable": false,
+      "multiple": false,
+      "default_value": "0",
+      "visible": true,
+      "editable": true,
+      "possible_values": [
+        {
+          "value": "1",
+          "label": "Yes"
+        },
+        {
+          "value": "0",
+          "label": "No"
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "name": "Binary",
+      "description": null,
+      "field_format": "list",
+      "regexp": "",
+      "min_length": null,
+      "max_length": null,
+      "is_required": false,
+      "is_filter": false,
+      "searchable": false,
+      "multiple": false,
+      "default_value": null,
+      "visible": true,
+      "editable": true,
+      "possible_values": [
+        {
+          "value": "Heélçjksd€654ù",
+          "label": "Heélçjksd€654ù"
+        },
+        {
+          "value": "Other value",
+          "label": "Other value"
+        }
+      ]
+    }
+  ]
+}

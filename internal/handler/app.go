@@ -252,6 +252,9 @@ func (a *App) Handle(r chi.Router, method, pattern string, ctrl *Controller, act
 		if a.runBeforeActions(c, cfg) {
 			return
 		}
+		if a.renderAPIWithoutExtension(c) {
+			return
+		}
 		fn(c)
 		a.recordProjectUsage(c)
 	})

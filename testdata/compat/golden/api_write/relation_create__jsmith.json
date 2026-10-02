@@ -1,0 +1,13 @@
+status: 201
+content-type: application/json
+location: {{BASE}}/relations/3
+
+{
+  "relation": {
+    "id": 3,
+    "issue_id": 1,
+    "issue_to_id": 7,
+    "relation_type": "precedes",
+    "delay": 2
+  }
+}

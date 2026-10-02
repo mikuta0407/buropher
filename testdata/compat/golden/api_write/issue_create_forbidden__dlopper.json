@@ -1,0 +1,10 @@
+status: 422
+content-type: application/json
+
+{
+  "errors": [
+    "Project cannot be blank",
+    "Tracker cannot be blank",
+    "Status cannot be blank"
+  ]
+}

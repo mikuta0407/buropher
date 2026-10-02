@@ -1,0 +1,15 @@
+status: 201
+content-type: application/xml
+location: /projects/ecookbook/wiki/XML_child
+
+<?xml version="1.0" encoding="UTF-8"?>
+<wiki_page>
+  <title>XML_child</title>
+  <parent title="CookBook_documentation"/>
+  <text>XML child</text>
+  <version>1</version>
+  <author id="2" name="Johnny Smith"/>
+  <comments/>
+  <created_on>TIMESTAMP</created_on>
+  <updated_on>TIMESTAMP</updated_on>
+</wiki_page>

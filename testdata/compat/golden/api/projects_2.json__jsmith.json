@@ -1,0 +1,24 @@
+status: 200
+content-type: application/json
+
+{
+  "project": {
+    "id": 2,
+    "name": "OnlineStore",
+    "identifier": "onlinestore",
+    "description": "E-commerce web site",
+    "homepage": "",
+    "status": 1,
+    "is_public": false,
+    "inherit_members": false,
+    "custom_fields": [
+      {
+        "id": 3,
+        "name": "Development status",
+        "value": null
+      }
+    ],
+    "created_on": "2006-07-19T17:14:19Z",
+    "updated_on": "2006-07-19T17:14:19Z"
+  }
+}

@@ -1,0 +1,20 @@
+status: 200
+content-type: application/json
+
+{
+  "news": {
+    "id": 1,
+    "project": {
+      "id": 1,
+      "name": "eCookbook"
+    },
+    "author": {
+      "id": 2,
+      "name": "John Smith"
+    },
+    "title": "eCookbook first release !",
+    "summary": "First version was released...",
+    "description": "eCookbook 1.0 has been released.\n\nVisit http://ecookbook.somenet.foo/",
+    "created_on": "2006-07-19T20:40:26Z"
+  }
+}

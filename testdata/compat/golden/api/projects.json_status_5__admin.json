@@ -1,0 +1,9 @@
+status: 200
+content-type: application/json
+
+{
+  "projects": [],
+  "total_count": 0,
+  "offset": 0,
+  "limit": 25
+}

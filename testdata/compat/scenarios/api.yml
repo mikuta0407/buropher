@@ -1,0 +1,371 @@
+# REST API（app/views/**/*.api.rsb の全テンプレートと test/integration/api_test の読み取り系）の互換シナリオ。
+# GET のみで状態を変えないため、共用の参照環境（3998）に対して流してよい（reset 不要）。
+# 書き込み系は api_write.yml（専用の参照インスタンスで reset して流す）。
+name: api
+
+users:
+  admin: {login: admin, password: admin}
+  jsmith: {login: jsmith, password: jsmith}
+  dlopper: {login: dlopper, password: foo}
+
+normalize:
+  # API キーは参照側では既存のトークン、候補側では生成値になる。
+  # 共用の参照環境では他の利用者のログインで last_login_on が変わる（ログイン時刻は admin_users で確認する）
+  # ため値を伏せる。
+  mask_keys: [api_key, last_login_on]
+
+requests:
+  # ---- issues（issues/index.api.rsb, issues/show.api.rsb）
+  - path: /issues.json
+    users: [anonymous, admin, jsmith]
+  - path: /issues.xml
+    users: [anonymous, admin]
+  - path: /issues.json?limit=3&offset=2
+    users: [admin]
+  - path: /issues.xml?limit=3&page=2
+    users: [admin]
+  - path: /issues.json?nometa=1&limit=2
+    users: [admin]
+  - id: issues_json_nometa_header
+    path: /issues.json?limit=2
+    user: admin
+    headers: {X-Redmine-Nometa: "1"}
+  - path: /issues.json?project_id=1&status_id=*&sort=id
+    users: [admin]
+  - path: /issues.json?project_id=ecookbook&subproject_id=!*
+    users: [admin]
+  - path: /issues.json?tracker_id=2&status_id=closed
+    users: [admin]
+  - path: /issues.json?assigned_to_id=me
+    users: [jsmith]
+  - path: /issues.json?cf_1=MySQL
+    users: [admin]
+  - path: /issues.json?issue_id=1,2,3&status_id=*
+    users: [admin]
+  - path: /issues.json?f[]=subject&op[subject]=~&v[subject][]=recipe
+    users: [admin]
+  - path: /issues.json?sort=priority:desc,id&limit=5
+    users: [admin]
+  - path: /issues.json?include=relations,attachments&status_id=*&limit=8
+    users: [admin]
+  - path: /issues.xml?include=relations,attachments&status_id=*&limit=8
+    users: [admin]
+  - path: /issues.json?query_id=1
+    users: [admin]
+  - path: /issues.json?limit=abc&offset=-3
+    users: [admin]
+  - path: /projects/ecookbook/issues.json
+    users: [anonymous, admin]
+  - path: /projects/onlinestore/issues.json
+    users: [anonymous, jsmith]
+  - path: /projects/999/issues.json
+    users: [admin]
+  - path: /issues/1.json
+    users: [anonymous, admin, jsmith]
+  - path: /issues/1.xml
+    users: [admin]
+  - path: /issues/1.json?include=children,attachments,relations,changesets,journals,watchers,allowed_statuses
+    users: [admin, jsmith]
+  - path: /issues/1.xml?include=children,attachments,relations,changesets,journals,watchers,allowed_statuses
+    users: [admin]
+  - path: /issues/2.json?include=journals,relations
+    users: [admin, dlopper]
+  - path: /issues/3.xml?include=attachments,journals
+    users: [admin]
+  - path: /issues/6.json
+    users: [anonymous, admin, jsmith]
+  - path: /issues/14.json?include=journals
+    users: [admin, jsmith]
+  - path: /issues/999.json
+    users: [admin]
+  - path: /issues/999.xml
+    users: [anonymous]
+
+  # ---- issue_relations
+  - path: /issues/2/relations.json
+    users: [admin]
+  - path: /issues/3/relations.xml
+    users: [admin]
+  - path: /relations/1.json
+    users: [admin]
+  - path: /relations/2.xml
+    users: [admin]
+  - path: /relations/999.json
+    users: [admin]
+
+  # ---- projects
+  - path: /projects.json
+    users: [anonymous, admin, jsmith]
+  - path: /projects.xml
+    users: [admin]
+  - path: /projects.json?include=trackers,issue_categories,enabled_modules,time_entry_activities,issue_custom_fields
+    users: [admin]
+  - path: /projects.xml?include=trackers,issue_categories,enabled_modules,time_entry_activities,issue_custom_fields
+    users: [admin]
+  - path: /projects.json?limit=2&offset=1
+    users: [admin]
+  - path: /projects.json?status=5
+    users: [admin]
+  - path: /projects/1.json
+    users: [anonymous, admin]
+  - path: /projects/ecookbook.xml
+    users: [admin]
+  - path: /projects/1.json?include=trackers,issue_categories,enabled_modules,time_entry_activities,issue_custom_fields
+    users: [admin, jsmith]
+  - path: /projects/1.xml?include=trackers,issue_categories,enabled_modules,time_entry_activities,issue_custom_fields
+    users: [admin]
+  - path: /projects/2.json
+    users: [anonymous, jsmith]
+  - path: /projects/5.json
+    users: [anonymous, admin]
+  - path: /projects/999.json
+    users: [admin]
+
+  # ---- memberships
+  - path: /projects/1/memberships.json
+    users: [admin, jsmith]
+  - path: /projects/1/memberships.xml
+    users: [admin]
+  - path: /projects/1/memberships.json?limit=1&offset=1
+    users: [admin]
+  - path: /projects/5/memberships.json
+    users: [admin, anonymous]
+  - path: /memberships/2.json
+    users: [admin]
+  - path: /memberships/2.xml
+    users: [admin]
+  - path: /memberships/999.json
+    users: [admin]
+
+  # ---- issue_categories
+  - path: /projects/1/issue_categories.json
+    users: [admin, jsmith]
+  - path: /projects/1/issue_categories.xml
+    users: [admin]
+  - path: /issue_categories/2.json
+    users: [admin]
+  - path: /issue_categories/2.xml
+    users: [admin]
+  - path: /issue_categories/999.json
+    users: [admin]
+
+  # ---- versions
+  - path: /projects/1/versions.json
+    users: [anonymous, admin]
+  - path: /projects/1/versions.xml
+    users: [admin]
+  - path: /versions/2.json
+    users: [admin]
+  - path: /versions/2.xml
+    users: [admin]
+  - path: /versions/3.json
+    users: [admin]
+  - path: /versions/999.json
+    users: [admin]
+
+  # ---- trackers / issue_statuses / enumerations / roles / custom_fields
+  - path: /trackers.json
+    users: [admin]
+  - path: /trackers.xml
+    users: [admin]
+  - path: /issue_statuses.json
+    users: [admin]
+  - path: /issue_statuses.xml
+    users: [admin]
+  - path: /enumerations/issue_priorities.json
+    users: [admin]
+  - path: /enumerations/issue_priorities.xml
+    users: [admin]
+  - path: /enumerations/time_entry_activities.json
+    users: [admin]
+  - path: /enumerations/document_categories.xml
+    users: [admin]
+  - path: /enumerations/invalid_subclass.json
+    users: [admin]
+  - path: /roles.json
+    users: [admin]
+  - path: /roles.xml
+    users: [admin]
+  - path: /roles/1.json
+    users: [admin]
+  - path: /roles/1.xml
+    users: [admin]
+  - path: /roles/999.json
+    users: [admin]
+  - path: /custom_fields.json
+    users: [admin, jsmith]
+  - path: /custom_fields.xml
+    users: [admin]
+
+  # ---- users / groups / my
+  - path: /users.json
+    users: [admin, jsmith]
+  - path: /users.xml
+    users: [admin]
+  - path: /users.json?status=&limit=3&offset=2
+    users: [admin]
+  - path: /users.json?name=jsmith
+    users: [admin]
+  - path: /users.json?group_id=10
+    users: [admin]
+  - path: /users/2.json
+    users: [anonymous, admin, jsmith]
+  - path: /users/2.xml?include=memberships,groups
+    users: [admin]
+  - path: /users/2.json?include=memberships,groups
+    users: [admin, jsmith]
+  - path: /users/5.json
+    users: [admin, jsmith]
+  - path: /users/current.json
+    users: [anonymous, admin, jsmith]
+  - path: /users/current.xml
+    users: [jsmith]
+  - path: /users/999.json
+    users: [admin]
+  - path: /groups.json
+    users: [admin, jsmith]
+  - path: /groups.xml
+    users: [admin]
+  - path: /groups.json?builtin=1
+    users: [admin]
+  - path: /groups/10.json?include=users,memberships
+    users: [admin]
+  - path: /groups/10.xml?include=users,memberships
+    users: [admin]
+  - path: /groups/12.json
+    users: [admin]
+  - path: /groups/999.json
+    users: [admin]
+  - path: /my/account.json
+    users: [anonymous, jsmith]
+  - path: /my/account.xml
+    users: [jsmith]
+
+  # ---- news
+  - path: /news.json
+    users: [anonymous, admin]
+  - path: /news.xml
+    users: [admin]
+  - path: /news.json?limit=1&offset=1
+    users: [admin]
+  - path: /projects/ecookbook/news.json
+    users: [admin]
+  - path: /projects/onlinestore/news.xml
+    users: [anonymous, jsmith]
+  - path: /news/1.json
+    users: [admin]
+  - path: /news/1.json?include=comments,attachments
+    users: [admin]
+  - path: /news/1.xml?include=comments,attachments
+    users: [admin]
+  - path: /news/3.json
+    users: [anonymous]
+  - path: /news/999.json
+    users: [admin]
+
+  # ---- time_entries
+  - path: /time_entries.json
+    users: [anonymous, admin, jsmith]
+  - path: /time_entries.xml
+    users: [admin]
+  - path: /time_entries.json?limit=2&offset=1
+    users: [admin]
+  - path: /time_entries.json?project_id=1
+    users: [admin]
+  - path: /time_entries.json?user_id=2&from=2007-03-01&to=2007-04-30
+    users: [admin]
+  - path: /projects/ecookbook/time_entries.json
+    users: [admin]
+  - path: /issues/1/time_entries.json
+    users: [admin]
+  - path: /time_entries/2.json
+    users: [admin, jsmith]
+  - path: /time_entries/2.xml
+    users: [admin]
+  - path: /time_entries/4.json
+    users: [anonymous]
+  - path: /time_entries/999.json
+    users: [admin]
+
+  # ---- attachments / files
+  - path: /attachments/1.json
+    users: [admin]
+  - path: /attachments/1.xml
+    users: [admin]
+  - path: /attachments/7.json
+    users: [admin]
+  - path: /attachments/16.json
+    users: [admin]
+  - path: /attachments/4.json
+    users: [anonymous]
+  - path: /attachments/999.json
+    users: [admin]
+  - path: /projects/1/files.json
+    users: [admin]
+  - path: /projects/1/files.xml
+    users: [admin]
+  - path: /projects/ecookbook/files.json
+    users: [anonymous]
+
+  # ---- wiki
+  - path: /projects/ecookbook/wiki/index.json
+    users: [anonymous, admin]
+  - path: /projects/ecookbook/wiki/index.xml
+    users: [admin]
+  - path: /projects/ecookbook/wiki/CookBook_documentation.json
+    users: [admin]
+  - path: /projects/ecookbook/wiki/CookBook_documentation.xml?include=attachments
+    users: [admin]
+  - path: /projects/ecookbook/wiki/Page_with_an_inline_image.json?include=attachments
+    users: [admin]
+  - path: /projects/ecookbook/wiki/CookBook_documentation/1.json
+    users: [admin]
+  - path: /projects/ecookbook/wiki/CookBook_documentation/2.xml
+    users: [admin]
+  - path: /projects/ecookbook/wiki/Another_page.json
+    users: [admin]
+  - path: /projects/ecookbook/wiki/Child_1.json
+    users: [admin]
+  - path: /projects/ecookbook/wiki/Invalid_Page.json
+    users: [admin]
+  - path: /projects/ecookbook/wiki/CookBook_documentation/999.json
+    users: [admin]
+  - path: /projects/onlinestore/wiki/index.json
+    users: [anonymous]
+
+  # ---- queries / search
+  - path: /queries.json
+    users: [anonymous, admin, jsmith]
+  - path: /queries.xml
+    users: [admin]
+  - path: /queries.json?type=TimeEntryQuery
+    users: [admin]
+  - path: /search.json?q=recipe&limit=3
+    users: [admin]
+  - path: /search.xml?q=issue&offset=2&limit=3
+    users: [admin]
+
+  # ---- 認証・ヘッダ・エラー形式
+  - id: switch_user_jsmith
+    path: /users/current.json
+    user: admin
+    headers: {X-Redmine-Switch-User: jsmith}
+  - id: switch_user_invalid
+    path: /users/current.json
+    user: admin
+    headers: {X-Redmine-Switch-User: foobar}
+  - id: switch_user_by_non_admin
+    path: /users/current.json
+    user: jsmith
+    headers: {X-Redmine-Switch-User: admin}
+  - id: wrong_password
+    path: /users/current.json
+    user: admin
+    auth: none
+    headers: {Authorization: "Basic YWRtaW46d3Jvbmc="}
+  - id: users_json_anonymous_forbidden
+    path: /users.json
+    user: anonymous
+  - id: jsonp_disabled_callback
+    path: /trackers.json?callback=handler
+    user: admin
