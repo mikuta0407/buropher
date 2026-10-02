@@ -146,8 +146,15 @@ type issueNewState struct {
 	saved *attachments.SaveResult
 }
 
+// issuesNewTabController は「新しいチケット」タブが有効なときの new / create（current_menu_item が :new_issue）。
+var issuesNewTabController = &Controller{Name: "issues", MainMenu: true, DefaultSearchScope: "issues",
+	MenuItem: func(string) string { return "new_issue" }}
+
 // buildNewIssueFromParams は IssuesController#build_new_issue_from_params（失敗時は描画済みで nil）。
 func (a *App) buildNewIssueFromParams(c *Req) *issueNewState {
+	if a.Settings.String("new_item_menu_tab") == "1" {
+		c.Controller = issuesNewTabController
+	}
 	ctx := c.Ctx()
 	env := a.writeIssuesEnv(c, a.DB)
 	st := &issueNewState{env: env}
