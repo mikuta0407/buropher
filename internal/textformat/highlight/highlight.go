@@ -132,6 +132,13 @@ func chromaLexer(l *rougeLexer) chroma.Lexer {
 
 // tokens は text を字句解析し (Rouge の短縮クラス名, 値) の列を返す（同種トークンは結合）。
 func tokens(text string, l *rougeLexer) [][2]string {
+	tag := "plaintext"
+	if l != nil {
+		tag = l.Tag
+	}
+	if out, ok := rougeTokens(text, tag); ok {
+		return out
+	}
 	var lx chroma.Lexer
 	if l == nil || l.Tag == "plaintext" {
 		lx = lexers.Get("plaintext")
