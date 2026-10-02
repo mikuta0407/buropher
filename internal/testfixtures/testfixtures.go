@@ -21,7 +21,11 @@
 //   - watchers.watchable_type → watchable_kind
 //   - user_preferences.others (YAML) → 列 (warn_on_leaving_unsaved 等) と
 //     bookmarked_project_ids / recently_used_project_ids → user_project_bookmarks / user_recent_projects
-//   - wikis.status は捨てる、boards.last_message_id は messages 未対応のため NULL
+//   - wikis.status は捨てる、boards.last_message_id は messages 投入時に設定する (messages なしなら NULL)
+//   - wiki_pages / wiki_content_versions / wiki_contents → wiki_pages + wiki_page_versions
+//     (同じ版は wiki_contents が優先、wiki_pages.current_version = wiki_contents.version)
+//   - attachments.container_type → container_kind、journals → issue_journals、journal_details → issue_journal_details、
+//     comments → news_comments、changes → changeset_files (変換規則は internal/redmineimport と同じ)
 //   - repositories.type (Repository::Subversion 等) → scm
 //
 // ERB の相対日時 (<%= 2.days.ago.to_fs(:db) %> 等) は Load 呼び出し時刻 (UTC) を基準に評価する。
@@ -53,6 +57,8 @@ var order = []string{
 	"projects", "enabled_modules", "projects_trackers", "versions", "issue_categories",
 	"roles", "members", "member_roles", "issues", "workflows", "watchers",
 	"news", "user_preferences", "wikis", "boards", "repositories",
+	"documents", "wiki_pages", "wiki_content_versions", "wiki_contents", "messages", "comments",
+	"journals", "journal_details", "changesets", "changes", "attachments",
 }
 
 var defs = map[string]fixtureDef{
@@ -79,6 +85,19 @@ var defs = map[string]fixtureDef{
 	"wikis":            {deps: []string{"projects"}, tables: []string{"wikis"}, load: loadWikis},
 	"boards":           {deps: []string{"projects"}, tables: []string{"boards"}, load: loadBoards},
 	"repositories":     {deps: []string{"projects"}, tables: []string{"repositories"}, load: loadRepositories},
+	// テキスト系コンテンツ (convert_text.go)
+	"documents":             {deps: []string{"projects", "enumerations"}, tables: []string{"documents"}, load: loadDocuments},
+	"wiki_pages":            {deps: []string{"wikis"}, tables: []string{"wiki_pages"}, load: loadWikiPages},
+	"wiki_content_versions": {deps: []string{"wiki_pages", "users"}, tables: []string{"wiki_page_versions"}, load: loadWikiContentVersions},
+	"wiki_contents":         {deps: []string{"wiki_pages", "users"}, tables: []string{"wiki_page_versions"}, load: loadWikiContents},
+	"messages":              {deps: []string{"boards", "users"}, tables: []string{"messages"}, load: loadMessages},
+	"comments":              {deps: []string{"news", "users"}, tables: []string{"news_comments"}, load: loadComments},
+	"journals":              {deps: []string{"issues", "users"}, tables: []string{"issue_journals"}, load: loadJournals},
+	"journal_details":       {deps: []string{"journals"}, tables: []string{"issue_journal_details"}, load: loadJournalDetails},
+	"changesets":            {deps: []string{"repositories", "users"}, tables: []string{"changesets"}, load: loadChangesets},
+	"changes":               {deps: []string{"changesets"}, tables: []string{"changeset_files"}, load: loadChanges},
+	"attachments": {deps: []string{"users", "projects", "versions", "issues", "wiki_pages", "messages", "news", "documents"},
+		tables: []string{"attachments"}, load: loadAttachments},
 }
 
 // Supported は変換に対応しているフィクスチャ名を投入順で返す。
