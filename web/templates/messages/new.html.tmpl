@@ -1,0 +1,6 @@
+<h2>{{link_to .Board.Name (printf "/projects/%s/boards/%d" current_project.Identifier .Board.ID)}} &#187; {{l "label_message_new"}}</h2>
+
+{{$f := form_for "" .Message (hash "url" (printf "/boards/%d/topics/new" .Board.ID) "html" (hash "multipart" true "id" "message-form"))}}{{$f.Open}}
+  {{partial "messages/form" (dict "f" $f "replying" false)}}
+  {{submit_tag (l "button_create")}}
+{{end_form}}

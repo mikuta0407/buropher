@@ -1,0 +1,78 @@
+{{$pr := current_project}}{{$board := .Board}}{{$topic := .Topic -}}
+{{board_breadcrumb $pr .Ancestors $board}}
+
+<div data-controller="quote-reply">
+  <div class="contextual">
+    {{content_watcher_link "message" $topic.ID}}
+    {{if .CanReply}}{{quote_reply_button (printf "/boards/%d/topics/quote/%d.js" $board.ID $topic.ID) false}}{{end}}
+    {{if .Editable}}{{link_to (sprite_icon "edit" (l "button_edit")) (printf "/boards/%d/topics/%d/edit" $board.ID $topic.ID) (hash "class" "icon icon-edit")}}{{end}}
+    {{if .Destroyable}}{{link_to (sprite_icon "del" (l "button_delete")) (printf "/boards/%d/topics/%d/destroy" $board.ID $topic.ID) (hash "method" "post" "data" (hash "confirm" (l "text_are_you_sure")) "class" "icon icon-del")}}{{end}}
+  </div>
+
+  <h2>{{avatar $topic.Author}}{{$topic.Subject}}</h2>
+
+  <div class="message">
+    <div class="reaction">
+      {{reaction_button "message" $topic.ID}}
+    </div>
+    <p><span class="author">{{authoring $topic.CreatedAt $topic.Author}}</span></p>
+    <div id="message_topic_wiki" class="wiki" data-quote-reply-target="content">
+      {{textilizable $topic.Content (hash "object" (message_text_object $topic $pr))}}
+    </div>
+    {{link_to_attachments "message" $topic.ID .TopicAttachments (hash "author" false "thumbnails" true "editable" .AttachEditable "deletable" .AttachEditable)}}
+  </div>
+</div>
+<br/>
+
+{{if .Replies}}
+  <div id="replies" class="journals">
+    <h3 class="comments icon icon-comments">{{sprite_icon "comments" (l "label_reply_plural")}}
+      ({{.ReplyCount}})</h3>
+    {{if and .CanReply (ge (len .Replies) 3)}}
+      <p>{{toggle_link (l "button_reply") "reply" (hash "focus" "message_content" "scroll" "message_content")}}</p>
+    {{end}}
+    {{range $message := .Replies}}
+      <div class="message reply journal" id="message-{{$message.ID}}" data-controller="quote-reply">
+        <h4 class='reply-header journal-header'>
+    <span class="journal-info">
+      {{avatar $message.Author}}
+      {{link_to $message.Subject (printf "/boards/%d/topics/%d?r=%d#message-%d" $board.ID $topic.ID $message.ID $message.ID)}}
+      -
+      {{authoring $message.CreatedAt $message.Author}}
+    </span>
+          <span class="journal-meta">
+            {{reaction_button "message" $message.ID}}
+            {{if $.CanReply}}{{quote_reply_button (printf "/boards/%d/topics/quote/%d.js" $board.ID $message.ID) true}}{{end}}
+            {{if $message.Editable}}{{link_to (sprite_icon "edit" (l "button_edit") (hash "icon_only" true)) (printf "/boards/%d/topics/%d/edit" $board.ID $message.ID) (hash "title" (l "button_edit") "class" "icon icon-edit")}}{{end}}
+            {{if $message.Destroyable}}{{link_to (sprite_icon "del" (l "button_delete") (hash "icon_only" true)) (printf "/boards/%d/topics/%d/destroy" $board.ID $message.ID) (hash "method" "post" "data" (hash "confirm" (l "text_are_you_sure")) "title" (l "button_delete") "class" "icon icon-del")}}{{end}}
+          </span>
+        </h4>
+        <div class="wiki journal-content" data-quote-reply-target="content">
+          {{textilizable $message.Content (hash "object" (message_text_object $message.Message $pr) "attachments" (ref_attachments $message.Attachments))}}
+        </div>
+        {{link_to_attachments "message" $message.ID $message.Attachments (hash "author" false "thumbnails" true "editable" $.AttachEditable "deletable" $.AttachEditable)}}
+      </div>
+    {{end}}
+  </div>
+  <span class="pagination">{{pagination_links_full .Pages .ReplyCount (hash "per_page_links" false)}}</span>
+{{end}}
+
+{{if .CanReply}}
+  <p>{{toggle_link (l "button_reply") "reply" (hash "focus" "message_content")}}</p>
+  <div id="reply" style="display:none;">
+    {{$f := form_for "" .Reply (hash "as" "reply" "url" (printf "/boards/%d/topics/%d/replies" $board.ID $topic.ID) "html" (hash "multipart" true "id" "message-form"))}}{{$f.Open}}
+      {{partial "messages/form" (dict "f" $f "replying" true)}}
+      {{submit_tag (l "button_submit")}}
+    {{end_form}}
+  </div>
+{{end}}
+
+{{html_title $topic.Subject}}
+{{define "messages/show#sidebar"}}
+  {{if (assigns).ShowWatchers}}
+    <div id="watchers">
+      {{partial "watchers/watchers" (dict "kind" "message" "id" (assigns).Topic.ID)}}
+    </div>
+  {{end}}
+{{end}}
+{{content_for "sidebar" (capture "messages/show#sidebar")}}

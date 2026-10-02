@@ -1,0 +1,4 @@
+$('#message_subject').val("{{raw (j .Subject)}}");
+$('#message_content').val("{{raw (j .Content)}}");
+showAndScrollTo("reply", "message_content");
+$('#message_content').scrollTop = $('#message_content').scrollHeight - $('#message_content').clientHeight;

@@ -99,3 +99,63 @@ requests:
     users: [admin]
   - path: /projects/ecookbook/files.xml
     users: [jsmith]
+
+  # ---- フォーラム
+  - path: /projects/ecookbook/boards
+    users: [anonymous, admin, jsmith, dlopper]
+  - path: /projects/onlinestore/boards
+    users: [anonymous, jsmith]
+  - path: /projects/ecookbook/boards/1
+    users: [anonymous, admin, jsmith, dlopper]
+  - path: /projects/ecookbook/boards/1?sort=replies
+    users: [admin]
+  - path: /projects/ecookbook/boards/1?sort=created_on:desc
+    users: [admin]
+  - path: /projects/ecookbook/boards/1?per_page=1&page=2
+    users: [admin]
+  - path: /projects/ecookbook/boards/2
+    users: [admin]
+  - path: /projects/ecookbook/boards/3
+    users: [admin]
+  - path: /projects/ecookbook/boards/1.atom
+    users: [anonymous]
+  - path: /projects/ecookbook/boards/new
+    users: [admin, dlopper]
+  - path: /projects/ecookbook/boards/1/edit
+    users: [admin]
+  - path: /boards/1/topics/1
+    users: [anonymous, admin, jsmith, dlopper]
+  - path: /boards/1/topics/4
+    users: [admin]
+  - path: /boards/1/topics/1?r=3
+    users: [admin]
+  - path: /boards/1/topics/2
+    users: [admin]
+  - path: /boards/2/topics/1
+    users: [admin]
+  - path: /boards/1/topics/999
+    users: [admin]
+  - path: /boards/1/topics/new
+    users: [anonymous, admin, jsmith]
+  - path: /boards/1/topics/1/edit
+    users: [admin, jsmith, dlopper]
+  - path: /boards/1/topics/2/edit
+    users: [admin]
+  - path: /boards/1/topics/quote/1
+    users: [admin]
+  - path: /boards/1/topics/quote/1.js
+    users: [admin]
+  - path: /boards/1/topics/quote/2.js
+    users: [jsmith]
+  - path: /boards/1/topics/quote/3.js
+    id: boards_1_topics_quote_3_xhr
+    users: [admin]
+    headers: {X-Requested-With: XMLHttpRequest}
+  - path: /boards/1/topics/quote/1.js?quote=partial%20text
+    id: boards_1_topics_quote_1_partial_xhr
+    users: [admin]
+    headers: {X-Requested-With: XMLHttpRequest}
+  - path: /projects/ecookbook/boards/1
+    id: projects_ecookbook_boards_1_xhr
+    users: [admin]
+    headers: {X-Requested-With: XMLHttpRequest}

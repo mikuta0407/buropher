@@ -171,6 +171,6 @@ func nilIfEmptyString(s string) any {
 
 // respondNotAcceptable は respond_to に該当する形式が無い場合（ActionController::UnknownFormat → 406）。
 func respondNotAcceptable(c *Req) {
-	httpx.Head(c.W, c.R, http.StatusNotAcceptable)
+	httpx.HeadAs(c.W, c.R, http.StatusNotAcceptable, "html")
 	c.Halt()
 }

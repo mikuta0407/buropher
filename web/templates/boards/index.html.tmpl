@@ -1,0 +1,49 @@
+{{$pr := current_project -}}
+<div class="contextual">
+  {{if .ManageBoards}}{{link_to_if_authorized (sprite_icon "settings" (l "label_settings")) "projects" "settings" (printf "/projects/%s/settings/boards" $pr.Identifier) (hash "class" "icon icon-settings")}}{{end}}
+</div>
+
+<h2>{{l "label_board_plural"}}</h2>
+
+<table class="list boards">
+  <thead><tr>
+    <th>{{l "label_board"}}</th>
+    <th>{{l "label_topic_plural"}}</th>
+    <th>{{l "label_message_plural"}}</th>
+    <th>{{l "label_message_last"}}</th>
+  </tr></thead>
+  <tbody>
+{{range $bl := .Tree}}
+{{$board := $bl.Board}}
+  {{if gt $bl.Level 0}}
+    <tr class="board idnt idnt-{{$bl.Level}}">
+  {{else}}
+    <tr class="board">
+  {{end}}
+    <td class="name">
+      {{link_to (sprite_icon "comment" $board.Name) (printf "/projects/%s/boards/%d" $pr.Identifier $board.ID) (hash "class" "board icon icon-comment")}}
+      <p class="description">{{$board.Description}}</p>
+    </td>
+    <td class="topic-count">{{$board.TopicsCount}}</td>
+    <td class="message-count">{{$board.MessagesCount}}</td>
+    <td class="last-message">
+      {{if $board.LastMessage}}
+      {{authoring $board.LastMessage.CreatedAt $board.LastMessage.Author}}<br />
+      {{link_to_message $board.LastMessage}}
+      {{end}}
+    </td>
+  </tr>
+{{end}}
+  </tbody>
+</table>
+
+{{other_formats_open -}}
+  {{other_format_link "Atom" (board_activity_atom_path $pr .AtomKey false)}}
+{{other_formats_close -}}
+
+{{define "boards/index#header_tags"}}
+  {{auto_discovery_link_tag "atom" (board_activity_atom_path current_project (assigns).AtomKey true)}}
+{{end}}
+{{content_for "header_tags" (capture "boards/index#header_tags")}}
+
+{{html_title (l "label_board_plural")}}

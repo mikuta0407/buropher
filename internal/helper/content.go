@@ -12,6 +12,7 @@ import (
 
 	"github.com/mikuta0407/buropher/internal/authz"
 	"github.com/mikuta0407/buropher/internal/domain"
+	"github.com/mikuta0407/buropher/internal/httpx"
 	"github.com/mikuta0407/buropher/internal/query"
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/textformat/redmine"
@@ -66,6 +67,54 @@ func init() {
 			"sort_header_tag": func(criteria query.SortCriteria, column string, args ...any) html {
 				return d.sortHeaderTag(pg(), criteria, column, optHash(args))
 			},
+			// board_breadcrumb(item)（board が nil ならフォーラム自身、そうでなければメッセージの表示）
+			"board_breadcrumb": func(project any, ancestors []*domain.Board, board *domain.Board) html {
+				pr := toProject(project)
+				if pr == nil {
+					return ""
+				}
+				links := []html{rails.LinkTo(pg().l("label_board_plural"), "/projects/"+pr.Identifier+"/boards", nil)}
+				list := append([]*domain.Board(nil), ancestors...)
+				if board != nil {
+					list = append(list, board)
+				}
+				for _, b := range list {
+					links = append(links, rails.LinkTo(rails.H(b.Name), "/projects/"+pr.Identifier+"/boards/"+strconv.FormatInt(b.ID, 10), nil))
+				}
+				return breadcrumb(links)
+			},
+			// {:controller => 'activities', :action => 'index', :id => @project, :show_messages => 1, :key => ...}
+			"board_activity_atom_path": func(project any, key string, full bool) string {
+				pr := toProject(project)
+				q := url.Values{"show_messages": {"1"}}
+				if key != "" {
+					q.Set("key", key)
+				}
+				u := "/projects/" + pr.Identifier + "/activity.atom?" + q.Encode()
+				if full {
+					u = pg().baseURL() + u
+				}
+				return u
+			},
+			// {:format => 'atom', :key => User.current.atom_key}（フォーラムの Atom）
+			"board_atom_path": func(path string, key string, full bool) string {
+				u := path
+				if key != "" {
+					u += "?key=" + url.QueryEscape(key)
+				}
+				if full {
+					u = pg().baseURL() + u
+				}
+				return u
+			},
+			// preview_board_message_path(:board_id => @board, :id => @message)
+			"message_preview_path": func(b *domain.Board, m any) string {
+				u := "/boards/" + strconv.FormatInt(b.ID, 10) + "/topics/preview"
+				if msg, ok := m.(*domain.Message); ok && msg != nil && msg.ID != 0 {
+					u += "?id=" + strconv.FormatInt(msg.ID, 10)
+				}
+				return u
+			},
 			"comment_text_area": func(name, method, value string, opts *rails.Hash) html {
 				return commentTextArea(name, method, value, opts)
 			},
@@ -84,6 +133,14 @@ func init() {
 			},
 		}
 	})
+}
+
+// baseURL は request.base_url。
+func (p *Page) baseURL() string {
+	if p.Request == nil {
+		return ""
+	}
+	return httpx.RequestBaseURL(p.Request)
 }
 
 // newsIndexPath は project_news_index_path(project) / news_index_path。

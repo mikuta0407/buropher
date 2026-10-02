@@ -1,0 +1,33 @@
+{{$f := .f}}{{$message := (assigns).Message -}}
+{{error_messages_for $message}}
+{{$replying := .replying}}
+
+<div class="box">
+<!--[form:message]-->
+<p><label for="message_subject">{{l "field_subject"}}</label><br />
+{{$f.TextField "subject" (hash "size" 120 "id" "message_subject")}}
+
+{{if not $replying}}
+  {{if $f.Object.SafeAttribute "sticky"}}
+    {{$f.CheckBox "sticky"}} {{label_tag "message_sticky" (l "label_board_sticky")}}
+  {{end}}
+  {{if $f.Object.SafeAttribute "locked"}}
+    {{$f.CheckBox "locked"}} {{label_tag "message_locked" (l "label_board_locked")}}
+  {{end}}
+{{end}}
+</p>
+
+{{if and (not $replying) $f.Object.Persisted ($f.Object.SafeAttribute "board_id")}}
+  <p><label>{{l "label_board"}}</label><br />
+  {{$f.Select "board_id" (boards_options_for_select (assigns).ProjectBoards)}}</p>
+{{end}}
+
+<p>
+{{label_tag "message_content" (l "description_message_content") (hash "class" "hidden-for-sighted")}}
+{{$f.TextArea "content" (hash "cols" 80 "rows" 15 "class" "wiki-edit" "id" "message_content" "accesskey" (accesskey "edit") "data" (merge_hash (hash "auto_complete" true) list_autofill_data_attributes))}}</p>
+{{wikitoolbar_for "message_content" (message_preview_path (assigns).Board (assigns).PreviewMessage)}}
+<!--[eoform:message]-->
+
+<p>{{l "label_attachment_plural"}}<br />
+{{partial "attachments/form" (dict "saved_attachments" (assigns).SavedAttachments)}}</p>
+</div>
