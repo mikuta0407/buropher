@@ -220,7 +220,9 @@ func TestMailGolden(t *testing.T) {
 					t.Fatal(err)
 				}
 				compareMail(t, gm, m)
-				if os.Getenv("MAIL_DUMP") != "" { t.Logf("%s\n%s\n%s", m.Subject, m.Text, m.HTML) }
+				if os.Getenv("MAIL_DUMP") != "" {
+					t.Logf("%s\n%s\n%s", m.Subject, m.Text, m.HTML)
+				}
 			}
 		})
 	}

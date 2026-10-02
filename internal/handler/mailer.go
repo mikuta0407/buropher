@@ -245,7 +245,7 @@ func (m *mailer) tokenFor(o tokenObject, user *domain.User) string {
 
 var mailFromHostRe = regexp.MustCompile(`(?m)^.*@|>`)
 
-// mailFromHost は Setting.mail_from.to_s.strip.gsub(%r{^.*@|>}, '')。
+// mailFromHost は Setting.mail_from.to_s.strip.gsub(%r{^.*@|>}, ”)。
 func mailFromHost(s string) string {
 	return mailFromHostRe.ReplaceAllString(strings.TrimSpace(s), "")
 }
