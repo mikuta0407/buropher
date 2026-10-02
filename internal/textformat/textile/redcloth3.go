@@ -9,6 +9,7 @@
 package textile
 
 import (
+	"regexp"
 	"strconv"
 	"strings"
 
@@ -30,13 +31,15 @@ type redcloth struct {
 // ---- 定数 (redcloth3.rb:340-354) ----
 
 const (
-	aHlgn  = `(?:(?:<>|<|>|=|[()]+)+)` // A_HLGN
-	aVlgn  = `[\-^~]`                  // A_VLGN
-	cClas  = `(?:\([^")]+\))`          // C_CLAS
-	cLnge  = `(?:\[[a-z\-_]+\])`       // C_LNGE
-	cStyl  = `(?:\{[^{][^"}]+\})`      // C_STYL
-	sCspn  = `(?:\\[0-9]+)`            // S_CSPN
-	sRspn  = `(?:/[0-9]+)`             // S_RSPN
+	// A_HLGN: 原典は (?:(?:<>|<|>|\=|[()]+)+) だが、入れ子の量指定子は regexp2 で指数的な
+	// バックトラックを起こすため、同じ言語・同じ最長一致になる単純な形に書き換える
+	aHlgn  = `(?:[<>=()]+)`
+	aVlgn  = `[\-^~]`             // A_VLGN
+	cClas  = `(?:\([^")]+\))`     // C_CLAS
+	cLnge  = `(?:\[[a-z\-_]+\])`  // C_LNGE
+	cStyl  = `(?:\{[^{][^"}]+\})` // C_STYL
+	sCspn  = `(?:\\[0-9]+)`       // S_CSPN
+	sRspn  = `(?:/[0-9]+)`        // S_RSPN
 	reA    = `(?:` + aHlgn + `?` + aVlgn + `?|` + aVlgn + `?` + aHlgn + `?)`
 	reSpan = `(?:` + sCspn + `?` + sRspn + `|` + sRspn + `?` + sCspn + `?)` // S
 	reC    = `(?:` + cClas + `?` + cStyl + `?` + cLnge + `?|` + cStyl + `?` + cLnge + `?` + cClas + `?|` + cLnge + `?` + cStyl + `?` + cClas + `?)`
@@ -250,7 +253,9 @@ func (rc *redcloth) pba(textIn *string, element string) string {
 }
 
 // STYLES_RE (redcloth3.rb:514)
-var reStyles = rxi(`^(color|(?>(min-|max-)?)(width|height)|border|background|padding|margin|font|text|float)(-[a-z]+)*:` +
+// 真偽判定にしか使わないので、バックトラックしない RE2 (regexp パッケージ) で評価する
+// (所有量指定子 (min-|max-)?+ は後続と排他的なため通常の ? と等価)。
+var reStyles = regexp.MustCompile(`(?im)^(color|(min-|max-)?(width|height)|border|background|padding|margin|font|text|float)(-[a-z]+)*:` +
 	reS + `*((` + `[0-9]+%?|[0-9]+px|[0-9]+(\.[0-9]+)?em|#[0-9a-f]+|[a-z]+` + `)` + reS + `*)+$`)
 
 // sanitize_styles (redcloth3.rb:516-522)
@@ -258,7 +263,7 @@ func sanitizeStyles(str string) string {
 	var res []string
 	for _, s := range splitStr(str, ";") {
 		s = rubyStrip(s)
-		if matches(reStyles, s) {
+		if reStyles.MatchString(s) {
 			res = append(res, s)
 		}
 	}
@@ -275,6 +280,10 @@ var (
 
 // block_textile_table (redcloth3.rb:527-553): テーブルブロックの解析
 func (rc *redcloth) blockTextileTable(text string) (string, bool) {
+	// TABLE_RE は "|" を 2 つ以上必要とする (高速化のための必要条件チェック)
+	if strings.Count(text, "|") < 2 {
+		return text, false
+	}
 	return gsubB(reTable, text, func(m md) string {
 		tattsSrc, fullrow := m.opt(1), m.s(2)
 		tatts := rc.pba(tattsSrc, "table")
@@ -553,15 +562,17 @@ var reSpanAtts = rx(`^(` + reC + `)(.+)$`)
 // inline_textile_span (redcloth3.rb:787-807): *strong* などのフレーズ修飾
 func (rc *redcloth) inlineTextileSpan(text string) string {
 	for _, q := range qtags {
+		// 正規表現 q.re と同じ結果を線形時間で求める専用マッチャを使う (qtags.go)
+		text = rc.qtagGsub(text, q)
+	}
+	return text
+}
+
+// inlineTextileSpanRegexp は原典どおり正規表現で処理する版 (検証用)。
+func (rc *redcloth) inlineTextileSpanRegexp(text string) string {
+	for _, q := range qtags {
 		text = gsub(q.re, text, func(m md) string {
-			sta, oqs, content, oqa := m.s(1), m.s(2), m.s(4), m.s(5)
-			var atts *string
-			if cm := match(reSpanAtts, content); cm != nil {
-				atts = cm.opt(1)
-				content = cm.s(2)
-			}
-			a := rc.shelve(rc.pba(atts, ""))
-			return sta + oqs + "<" + q.ht + a + ">" + content + "</" + q.ht + ">" + oqa
+			return rc.qtagReplace(q, m.s(1), m.s(2), m.s(4), m.s(5))
 		})
 	}
 	return text
@@ -622,7 +633,7 @@ var reImage = rx(`(>|` + reS + `|^)` + // start of line?
 	`!` + // opening
 	`(<|=|>)?` + // optional alignment atts
 	`(` + reC + `)` + // optional style,class atts
-	`(?:\. )?` + // optional dot-space
+	`(?:\.)?` + // optional dot-space (原典は /x のため空白は無視され、実際はドットのみ)
 	`([^` + spIn + `(!]+?)` + // presume this is the src
 	reS + `?` + // optional space
 	`(?:\(((?:[^\(\)]|\([^\)]+\))+?)\))?` + // optional title

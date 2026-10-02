@@ -5,7 +5,6 @@ package textile
 
 import (
 	"encoding/json"
-	"html"
 	"os"
 	"slices"
 	"testing"
@@ -53,5 +52,34 @@ func TestFixtures(t *testing.T) {
 		t.Errorf("%s\n--- input:\n%s\n--- want:\n%s\n--- got:\n%s", c.Name, c.Input, c.HTML, got)
 	}
 	t.Logf("exact match: %d/%d", pass, len(cases))
-	_ = html.EscapeString
+}
+
+// TestFuzzFile は tools/gen-textile-fuzz.rb が生成したランダム入力で差分テストを行う
+// (環境変数 TEXTILE_FUZZ_FILE が設定されているときのみ)。
+func TestFuzzFile(t *testing.T) {
+	path := os.Getenv("TEXTILE_FUZZ_FILE")
+	if path == "" {
+		t.Skip("TEXTILE_FUZZ_FILE not set")
+	}
+	b, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var cases []fixtureCase
+	if err := json.Unmarshal(b, &cases); err != nil {
+		t.Fatal(err)
+	}
+	pass, shown := 0, 0
+	for _, c := range cases {
+		got := Format(c.Input, fakeOpts)
+		if got == c.HTML {
+			pass++
+			continue
+		}
+		if shown < 15 {
+			shown++
+			t.Errorf("%s\n--- input:\n%q\n--- want:\n%q\n--- got:\n%q", c.Name, c.Input, c.HTML, got)
+		}
+	}
+	t.Logf("fuzz exact match: %d/%d", pass, len(cases))
 }
