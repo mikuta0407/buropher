@@ -1,6 +1,20 @@
 package issues
 
-// test/unit/issue_test.rb の移植 (前半: 作成・検証)。
+// test/unit/issue_test.rb の移植 (34〜239 行: 初期化・作成・検証)。
+//
+// 移植したテスト:
+//   test_initialize, test_create, test_create_minimal, test_create_with_all_fields_disabled,
+//   test_create_with_no_priority_defined (優先度の削除の代わりに既定・有効な優先度を無くす),
+//   test_default_priority_should_be_set_when_priority_field_is_disabled,
+//   test_start_date_format_should_be_validated / test_due_date_format_should_be_validated (1 関数),
+//   test_due_date_lesser_than_start_date_should_not_validate,
+//   test_start_date_lesser_than_soonest_start_should_not_validate_on_create /
+//     ..._on_update_if_changed / ..._should_validate_on_update_if_unchanged (stub は soonestStartStub),
+//   test_estimated_hours_should_be_validated, test_create_with_required_custom_field,
+//   test_create_with_group_assignment, test_create_with_parent_issue_id / test_create_with_sharp_parent_issue_id,
+//   test_create_with_invalid_parent_issue_id / test_create_with_invalid_sharp_parent_issue_id,
+//   test_create_with_emoji_character
+// 移植しなかったテスト: なし (エラーは翻訳済みの全文ではなく属性とキーで確認する)。
 
 import (
 	"testing"
