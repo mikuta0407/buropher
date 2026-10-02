@@ -33,4 +33,5 @@ func (a *App) Routes(r Router) {
 	a.routesAttachments(r)
 	a.routesWiki(r)
 	a.routesWikis(r)
+	a.routesCalendars(r)
 }
