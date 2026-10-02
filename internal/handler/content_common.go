@@ -149,7 +149,11 @@ func renderAPIAttachmentAttributes(c *Req, b apibuilder.Builder, att *domain.Att
 	b.Value("filename", att.Filename)
 	b.Value("filesize", att.Filesize)
 	b.Value("content_type", nilIfEmptyString(att.ContentType))
-	b.Value("description", nilIfEmptyString(att.Description))
+	if att.DescriptionNull {
+		b.Value("description", nil)
+	} else {
+		b.Value("description", att.Description)
+	}
 	b.Value("content_url", base+downloadNamedAttachmentPath(att))
 	if att.Thumbnailable() {
 		b.Value("thumbnail_url", base+"/attachments/thumbnail/"+strconv.FormatInt(att.ID, 10))

@@ -96,13 +96,9 @@ VALUES (?, ?, ?, ?, ?, ?, ?)`, owner, fmt.Sprintf("Custom field C%d", seqC.Add(1
 	return id
 }
 
-// addCVC はカスタム値を追加する (” は NULL)。
+// addCVC はカスタム値を追加する (空文字列もそのまま保存する。D-17)。
 func addCVC(tdb *testDB, kind string, customizedID, cfID int64, value string) {
-	var v any
-	if value != "" {
-		v = value
-	}
-	tdb.exec(`INSERT INTO custom_values (customized_kind, customized_id, custom_field_id, value) VALUES (?, ?, ?, ?)`, kind, customizedID, cfID, v)
+	tdb.exec(`INSERT INTO custom_values (customized_kind, customized_id, custom_field_id, value) VALUES (?, ?, ?, ?)`, kind, customizedID, cfID, value)
 }
 
 // genTimeEntryC は TimeEntry.generate! (user 2、今日、アクティビティ 9)。

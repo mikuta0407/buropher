@@ -134,7 +134,7 @@ func (im *imp) importIssues() error {
 		}
 		im.st.issues[id] = project
 		return ins.add(id, project, tracker, status, priority, author, assignee, category, version,
-			nullIfZero(parent[id]), root, hierPath(chain), r.str("subject"), r.strNull("description", true),
+			nullIfZero(parent[id]), root, hierPath(chain), r.str("subject"), r.strNull("description", false),
 			im.dateNull(t, id, r, "start_date"), im.dateNull(t, id, r, "due_date"), ratio, est,
 			r.bool("is_private", false), r.intOr("lock_version", 0),
 			im.tsOr(t, id, r, "created_on", "updated_on"), im.tsOr(t, id, r, "updated_on", "created_on"), im.tsNull(t, id, r, "closed_on"))
@@ -232,7 +232,7 @@ func (im *imp) importJournals() error {
 			}
 		}
 		im.st.journals.add(id)
-		return ins.add(id, issue, user, r.strNull("notes", true), r.bool("private_notes", false),
+		return ins.add(id, issue, user, r.strNull("notes", false), r.bool("private_notes", false),
 			im.tsOr(t, id, r, "created_on"), im.tsNull(t, id, r, "updated_on"), upd)
 	})
 	if err != nil {
@@ -341,7 +341,7 @@ func (im *imp) importTimeEntries() error {
 		d, _ := time.Parse("2006-01-02", spent)
 		_, week := d.ISOWeek()
 		im.st.timeEntries.add(id)
-		return ins.add(id, project, user, author, issue, hours, r.strNull("comments", true), act, spent,
+		return ins.add(id, project, user, author, issue, hours, r.strNull("comments", false), act, spent,
 			d.Year(), int(d.Month()), week, im.tsOr(t, id, r, "created_on", "updated_on"), im.tsOr(t, id, r, "updated_on", "created_on"))
 	})
 	if err != nil {

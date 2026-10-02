@@ -258,14 +258,14 @@ func (q *Query) Save(ctx context.Context) error {
 		display = q.displayType
 	}
 	opts, _ := json.Marshal(q.Options)
+	// group_by は params に無ければ既存値（新規は nil）のまま、フォームの空選択なら "" になる (Redmine は両方あり得る)。
+	// buropher の Query は両者を区別せず、どちらも blank として扱われ表示に差が無いため空は NULL で保存する。
 	var groupBy any
 	if q.GroupBy != "" {
 		groupBy = q.GroupBy
 	}
-	var desc any
-	if q.Description != "" {
-		desc = q.Description
-	}
+	// description はフォームの text_field から常に送られるので "" もそのまま保存する (D-17)
+	desc := q.Description
 	return withTx(ctx, q.env.Q, func(tx db.Queryer) error {
 		if q.ID == 0 {
 			id, err := tx.InsertReturningID(ctx, `INSERT INTO queries (kind, project_id, user_id, name, description, visibility, filters,

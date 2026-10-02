@@ -2,6 +2,7 @@ package issues
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"slices"
 	"strconv"
@@ -53,23 +54,31 @@ func defaultValue(cf *customfield.CustomField) *string {
 
 // storedValue は DB の custom_values から field の値を作る (行が無ければ ok = false)。
 func (iss *Issue) storedValue(cf *customfield.CustomField) (CFValue, bool) {
-	var vals []string
+	var vals []sql.NullString
 	found := false
 	for _, r := range iss.cvRows {
 		if r.FieldID != cf.ID {
 			continue
 		}
 		found = true
-		// '' は NULL で保存しているので NULL は '' として読む
-		vals = append(vals, r.Value.String)
+		vals = append(vals, r.Value)
 	}
 	if !found {
 		return CFValue{}, false
 	}
 	if cf.Multiple {
-		return ArrayValue(vals...), true
+		// 複数値の NULL 要素 (Redmine では nil) は配列に nil を持てないため "" として読む
+		ss := make([]string, len(vals))
+		for i, v := range vals {
+			ss[i] = v.String
+		}
+		return ArrayValue(ss...), true
 	}
-	return StrValue(vals[0]), true
+	// NULL は nil (D-17: '' と NULL は保存値のまま区別する)
+	if !vals[0].Valid {
+		return NilValue(), true
+	}
+	return StrValue(vals[0].String), true
 }
 
 // CustomFieldValues は custom_field_values (遅延計算)。
@@ -339,33 +348,24 @@ func (e *Env) saveCustomFieldValues(ctx context.Context, iss *Issue) (bool, erro
 		if !built || slices.ContainsFunc(existing, func(r cvRow) bool { return r.FieldID == cv.Field.ID }) {
 			continue
 		}
-		bv := b.String()
-		var val any
-		if bv != "" {
-			val = bv
-		}
+		// 組み立て済みの値が nil (既定値なし) なら NULL、それ以外は空文字列もそのまま保存する
+		val := cfNullString(b)
 		id, err := e.Q.InsertReturningID(ctx, `INSERT INTO custom_values (customized_kind, customized_id, custom_field_id, value) VALUES ('issue', ?, ?, ?)`,
 			iss.ID, cv.Field.ID, val)
 		if err != nil {
 			return false, err
 		}
-		r := cvRow{ID: id, FieldID: cv.Field.ID}
-		r.Value.String, r.Value.Valid = bv, bv != ""
+		r := cvRow{ID: id, FieldID: cv.Field.ID, Value: val}
 		existing = append(existing, r)
 	}
 	iss.builtValues = nil
-	insert := func(fieldID int64, v string) error {
-		var val any
-		if v != "" {
-			val = v
-		}
+	insert := func(fieldID int64, val sql.NullString) error {
 		id, err := e.Q.InsertReturningID(ctx, `INSERT INTO custom_values (customized_kind, customized_id, custom_field_id, value) VALUES ('issue', ?, ?, ?)`,
 			iss.ID, fieldID, val)
 		if err != nil {
 			return err
 		}
-		r := cvRow{ID: id, FieldID: fieldID}
-		r.Value.String, r.Value.Valid = v, v != ""
+		r := cvRow{ID: id, FieldID: fieldID, Value: val}
 		keep = append(keep, r)
 		// save_custom_field_values で新たに組み立てた行 (複数値の追加分) は保存で変更ありになる
 		changed = true
@@ -382,13 +382,13 @@ func (e *Env) saveCustomFieldValues(ctx context.Context, iss *Issue) (bool, erro
 					keep = append(keep, existing[idx])
 					continue
 				}
-				if err := insert(cv.Field.ID, v); err != nil {
+				if err := insert(cv.Field.ID, sql.NullString{String: v, Valid: true}); err != nil {
 					return false, err
 				}
 			}
 			continue
 		}
-		v := cv.Value.String()
+		v := cfNullString(cv.Value)
 		idx := slices.IndexFunc(existing, func(r cvRow) bool { return !used[r.ID] && r.FieldID == cv.Field.ID })
 		if idx < 0 {
 			if err := insert(cv.Field.ID, v); err != nil {
@@ -398,15 +398,12 @@ func (e *Env) saveCustomFieldValues(ctx context.Context, iss *Issue) (bool, erro
 		}
 		r := existing[idx]
 		used[r.ID] = true
-		if r.Value.String != v {
-			var val any
-			if v != "" {
-				val = v
-			}
-			if _, err := e.Q.Exec(ctx, `UPDATE custom_values SET value = ? WHERE id = ?`, val, r.ID); err != nil {
+		if r.Value != v {
+			// target.value = custom_field_value.value (nil → "" も変更として保存する)
+			if _, err := e.Q.Exec(ctx, `UPDATE custom_values SET value = ? WHERE id = ?`, v, r.ID); err != nil {
 				return false, err
 			}
-			r.Value.String, r.Value.Valid = v, v != ""
+			r.Value = v
 			changed = true
 		}
 		keep = append(keep, r)
@@ -425,6 +422,14 @@ func (e *Env) saveCustomFieldValues(ctx context.Context, iss *Issue) (bool, erro
 	}
 	iss.cfvChanged = false
 	return changed, nil
+}
+
+// cfNullString は単一値の CustomValue#value として保存する値 (nil は NULL、"" は "")。
+func cfNullString(v CFValue) sql.NullString {
+	if v.IsNil() {
+		return sql.NullString{}
+	}
+	return sql.NullString{String: v.String(), Valid: true}
 }
 
 // rubyToS は Ruby の to_s 相当の文字列化 (params の値用)。

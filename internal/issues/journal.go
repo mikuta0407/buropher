@@ -314,10 +314,7 @@ func (e *Env) insertJournal(ctx context.Context, j *Journal, iss *Issue, st *sav
 	if j.CreatedAt.IsZero() {
 		j.CreatedAt = e.now()
 	}
-	var notes any
-	if j.Notes != "" {
-		notes = j.Notes
-	}
+	notes := journalNotesArg(&j.Journal)
 	// Rails のタイムスタンプは作成時に updated_on も created_on と同じ値にする (編集表示は両者の比較で判定)
 	if j.UpdatedAt == nil {
 		t := j.CreatedAt
@@ -403,6 +400,14 @@ func (e *Env) autoWatchOn(ctx context.Context, userID int64) ([]string, error) {
 
 // ---------------------------------------------------------------- 読み込み・表示
 
+// journalNotesArg は notes の保存値（NotesNull で空なら NULL、それ以外は "" もそのまま。D-17）。
+func journalNotesArg(j *domain.Journal) any {
+	if j.NotesNull && j.Notes == "" {
+		return nil
+	}
+	return j.Notes
+}
+
 type journalRow struct {
 	ID           int64          `db:"id"`
 	IssueID      int64          `db:"issue_id"`
@@ -417,6 +422,7 @@ type journalRow struct {
 func (r *journalRow) journal() *Journal {
 	j := &Journal{persisted: true}
 	j.ID, j.IssueID, j.UserID, j.Notes, j.PrivateNotes = r.ID, r.IssueID, r.UserID, r.Notes.String, r.PrivateNotes
+	j.NotesNull = !r.Notes.Valid
 	j.CreatedAt, j.UpdatedAt, j.UpdatedByID = r.CreatedAt.Time, r.UpdatedAt.Ptr(), nullID(r.UpdatedByID)
 	return j
 }
@@ -655,7 +661,7 @@ func (e *Env) UpdateJournalNotes(ctx context.Context, j *Journal, notes string, 
 		j.UpdatedByID = ptrInt64(u.ID)
 		changed = true
 	}
-	j.Notes = notes
+	j.Notes, j.NotesNull = notes, false
 	return e.inTx(ctx, func() error {
 		if strings.TrimSpace(j.Notes) == "" && len(j.Details) == 0 {
 			// save は空のジャーナルを保存せず、コントローラが destroy する
@@ -667,10 +673,7 @@ func (e *Env) UpdateJournalNotes(ctx context.Context, j *Journal, notes string, 
 		}
 		now := e.now()
 		j.UpdatedAt = &now
-		var nv any
-		if j.Notes != "" {
-			nv = j.Notes
-		}
+		nv := journalNotesArg(&j.Journal)
 		var ua any
 		if j.UpdatedAt != nil {
 			ua = db.NewTime(*j.UpdatedAt)

@@ -114,7 +114,7 @@ func (im *imp) importIssueStatuses() error {
 		}
 		name := names.take(t, id, nil, r.str("name"), "Status %d")
 		im.st.statuses.add(id)
-		if err := ins.add(id, name, r.strNull("description", true), r.bool("is_closed", false), pos[id], ratio); err != nil {
+		if err := ins.add(id, name, r.strNull("description", false), r.bool("is_closed", false), pos[id], ratio); err != nil {
 			return err
 		}
 	}
@@ -164,7 +164,7 @@ func (im *imp) importTrackers() error {
 		im.st.trackers.add(id)
 		im.st.trackerDefault[id] = ds
 		kept = append(kept, r)
-		if err := ins.add(id, name, r.strNull("description", true), pos[id], r.bool("is_in_roadmap", true), ds, toJSON(disabled)); err != nil {
+		if err := ins.add(id, name, r.strNull("description", false), pos[id], r.bool("is_in_roadmap", true), ds, toJSON(disabled)); err != nil {
 			return err
 		}
 	}

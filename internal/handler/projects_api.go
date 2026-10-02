@@ -115,7 +115,7 @@ func (a *App) projectAPIEl(c *Req, p *domain.Project, show bool) (*apiEl, error)
 		apiField("id", p.ID),
 		apiField("name", p.Name),
 		apiField("identifier", p.Identifier),
-		apiField("description", nullIfEmpty(p.Description)),
+		apiField("description", projectDescriptionValue(p)),
 		apiField("homepage", p.Homepage),
 	)
 	if p.ParentID != nil {
@@ -175,11 +175,12 @@ func (a *App) projectAPIEl(c *Req, p *domain.Project, show bool) (*apiEl, error)
 	return el, nil
 }
 
-func nullIfEmpty(s string) any {
-	if s == "" {
+// projectDescriptionValue は API の description（NULL なら null）。
+func projectDescriptionValue(p *domain.Project) any {
+	if p.DescriptionNull {
 		return nil
 	}
-	return s
+	return p.Description
 }
 
 // includeInAPIResponseMin は include_in_api_response?(arg)。

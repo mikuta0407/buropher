@@ -87,8 +87,9 @@ func checkFixtureFacts(t *testing.T, d *db.DB, rep *Report, filesDir string) {
 	if n := q1[int](t, d, `SELECT depth FROM project_closure WHERE ancestor_id = 1 AND descendant_id = 6`); n != 2 {
 		t.Errorf("depth = %d", n)
 	}
-	if h := q1[*string](t, d, `SELECT homepage FROM projects WHERE id = 2`); h != nil {
-		t.Errorf("homepage '' should be NULL, got %q", *h)
+	// 空文字列と NULL はそのまま保持する (D-17)
+	if h := q1[*string](t, d, `SELECT homepage FROM projects WHERE id = 2`); h == nil || *h != "" {
+		t.Errorf("homepage '' should stay '', got %v", h)
 	}
 	// --- principals / passwords
 	for login, pw := range map[string]string{"admin": "admin", "jsmith": "jsmith"} {
@@ -191,8 +192,17 @@ func checkFixtureFacts(t *testing.T, d *db.DB, rep *Report, filesDir string) {
 	if v := q1[string](t, d, `SELECT value FROM custom_values WHERE customized_kind = 'issue' AND customized_id = 1 AND custom_field_id = 2`); v != "125" {
 		t.Errorf("issue 1 cf 2 = %q", v)
 	}
-	if v := q1[*string](t, d, `SELECT value FROM custom_values WHERE id = 1`); v != nil {
-		t.Errorf("empty value should be NULL, got %q", *v)
+	if v := q1[*string](t, d, `SELECT value FROM custom_values WHERE id = 1`); v == nil || *v != "" {
+		t.Errorf("empty value should stay '', got %v", v)
+	}
+	if v := q1[*string](t, d, `SELECT description FROM attachments WHERE id = 16`); v == nil || *v != "" {
+		t.Errorf("attachment 16 description '' should stay '', got %v", v)
+	}
+	if v := q1[*string](t, d, `SELECT description FROM attachments WHERE id = 2`); v != nil {
+		t.Errorf("attachment 2 description NULL should stay NULL, got %q", *v)
+	}
+	if v := q1[*string](t, d, `SELECT summary FROM news WHERE id = 3`); v != nil {
+		t.Errorf("news 3 summary NULL should stay NULL, got %q", *v)
 	}
 	if v := q1[string](t, d, `SELECT value FROM custom_values WHERE id = 15`); v != "1" {
 		t.Errorf("bool 't' should be normalized to '1', got %q", v)

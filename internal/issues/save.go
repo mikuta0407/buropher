@@ -264,8 +264,9 @@ func (iss *Issue) savedAnyChange() bool {
 }
 
 func (e *Env) issueArgs(iss *Issue) []any {
+	// description は nil なら NULL、"" は "" のまま保存する (D-17)
 	var desc any
-	if iss.Description != nil && *iss.Description != "" {
+	if iss.Description != nil {
 		desc = *iss.Description
 	}
 	var sd, dd db.NullDate

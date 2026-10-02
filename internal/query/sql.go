@@ -20,12 +20,6 @@ var dateColumns = map[string]bool{
 	"time_entries.spent_on": true,
 }
 
-// emptyAsNull は Redmine で空文字を保存し、buropher では NULL に変換される任意入力のテキスト列。
-var emptyAsNull = map[string]bool{
-	"issue_journals.notes": true, "time_entries.comments": true,
-	"projects.description": true, "projects.homepage": true, "attachments.description": true,
-}
-
 // intColumns は整数列。PostgreSQL で文字列値を比較して型エラーにならないよう、
 // "=" / "!" の値を整数に解釈できるものだけに絞る (SQLite の Redmine では一致しないだけ)。
 func isIntColumn(table, col string) bool {
@@ -108,11 +102,6 @@ func (q *Query) sqlForField(ctx context.Context, field, operator string, value [
 		s := col + " IS NULL"
 		if isCustom || typ == "text" || typ == "string" {
 			s += " OR " + col + " = ''"
-			if isCustom {
-				// Redmine の連鎖 CF フィルタは括弧なしで連結するため "... AND value IS NULL OR value = ''" となり、
-				// 後半は種別を問わず空文字 (buropher では NULL) の値に一致する。その挙動を再現する。
-				s += " OR " + col + " IS NULL"
-			}
 		}
 		return raw(s), nil
 	case "*":
@@ -220,15 +209,7 @@ func (q *Query) sqlForField(ctx context.Context, field, operator string, value [
 	case "~":
 		return q.sqlContains(col, first, containsOpts{}), nil
 	case "!~":
-		// buropher は Redmine の '' を NULL として保存するため、NULL を '' とみなして否定一致を評価する
-		// (Redmine では '' は「含まない」に一致し、NULL は一致しない)。CF は値の行があるものだけ。
-		if isCustom || emptyAsNull[col] {
-			f := q.sqlContains("COALESCE("+col+", '')", first, containsOpts{notMatch: true})
-			if table == "custom_values" {
-				return concat(raw("custom_values.id IS NOT NULL AND ("), f, raw(")")), nil
-			}
-			return f, nil
-		}
+		// '' は「含まない」に一致し、NULL は一致しない (Redmine と同じく保存値のまま評価する。D-17)
 		return q.sqlContains(col, first, containsOpts{notMatch: true}), nil
 	case "*~":
 		return q.sqlContains(col, first, containsOpts{anyWord: true}), nil

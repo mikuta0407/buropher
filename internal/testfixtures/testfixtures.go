@@ -6,7 +6,7 @@
 //
 // 名前は Redmine のフィクスチャ名 (= 旧テーブル名)。外部キーを満たすため依存する
 // フィクスチャは自動的に追加され (例: issues → projects, trackers, users ...)、
-// 指定順に関係なく依存順で投入される。変換規則は付録 A のマッピングに従う (custom_values.value 等の空文字は NULL):
+// 指定順に関係なく依存順で投入される。変換規則は付録 A のマッピングに従う (空文字列と NULL は Redmine のフィクスチャ投入と同じく区別する。D-17):
 //   - users.type → principals.kind、ユーザ属性は user_accounts、グループ名は principals.name
 //   - users.hashed_password/salt → user_accounts.password_hash ("redmine-sha1$salt$hash")
 //   - users.mail_notification → user_notification_settings

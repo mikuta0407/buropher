@@ -214,9 +214,18 @@ Decisions taken where the planning documents were silent or contradictory:
    (`*.created_at`, `members.created_at`, `time_entries.author_id`, positions, `versions.name/status`,
    `roles.name`, `messages.locked/sticky`, `news.project_id`, `boards.description`, ...). The importer
    fills defaults as specified in Appendix A §4.7.
-10. **`''` → NULL** for optional text (`homepage`, `language`, `time_zone`, `notes`, `description`,
-    `regexp`, `default_value`, `custom_values.value`, ...). `issue_journal_details` values are kept
-    verbatim.
+10. **Empty strings are stored exactly as Redmine stores them** (D-17, reversing the former
+    "`''` → NULL" rule): if Redmine saves `''` the column keeps `''`, if Redmine saves NULL it keeps
+    NULL. Rails keeps `""` from blank form fields, and Redmine's `default: ""` columns (`homepage`,
+    `news.summary`, `versions.description`, `users.language`, `custom_fields.regexp`, wiki
+    `comments`, ...) start as `''`, so the importer, the test-fixture loader and the write paths
+    keep both values verbatim (Redmine's own data, e.g. the fixtures, mixes NULL and `''` in
+    `journals.notes`, `attachments.description`, `custom_values.value`, ...). Readers that need
+    Redmine's `blank?` semantics must treat both as empty (`COALESCE`, `IS NULL OR = ''`); readers
+    that reproduce `nil` vs `""` (API `null`, `value=""` attributes) see the stored value. NULL is
+    used only where Redmine stores NULL, or where a buropher domain column has no `''` value
+    (`twofa_scheme`, `user_notification_settings.mail_notification`, `repositories.identifier`
+    for the default repository, enum-like columns guarded by CHECK).
 11. **Uniqueness enforced in the DB** that Redmine only validates in the application: status /
     tracker / role / priority / document category names, (owner_kind, name) for custom fields,
     (project_id, name) for versions and categories, activity names per project, one wiki per project,
