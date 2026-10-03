@@ -421,11 +421,7 @@ func (a *App) renderBulkEdit(c *Req, v *bulkEditView) {
 			a.internalError(c, "bulk_edit.js", err)
 			return
 		}
-		js := "$('#content').html('" + rails.EscapeJavascriptString(string(out)) + "');\n"
-		httpx.SetContentType(c.W, "js", true)
-		c.W.WriteHeader(http.StatusOK)
-		_, _ = c.W.Write([]byte(js))
-		c.Halt()
+		c.WriteJS("$('#content').html('" + rails.EscapeJavascriptString(string(out)) + "');\n")
 		return
 	}
 	c.Render("issues/bulk_edit", data)

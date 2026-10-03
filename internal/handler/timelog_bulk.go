@@ -244,10 +244,7 @@ func (a *App) teRenderBulkEdit(c *Req, v *teBulkView) {
 			a.internalError(c, "render bulk_edit", err)
 			return
 		}
-		c.halted = true
-		httpx.SetContentType(c.W, "js", true)
-		c.W.WriteHeader(http.StatusOK)
-		_, _ = c.W.Write([]byte("$('#content').html('" + rails.EscapeJavascriptString(string(out)) + "');\n"))
+		c.WriteJS("$('#content').html('" + rails.EscapeJavascriptString(string(out)) + "');\n")
 		return
 	}
 	c.Render("timelog/bulk_edit", data)

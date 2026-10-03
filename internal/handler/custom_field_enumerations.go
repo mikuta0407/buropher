@@ -143,10 +143,7 @@ func (a *App) CustomFieldEnumerationsCreate(c *Req) {
 		js += "$('form#add-element').prepend('" + rails.EscapeJavascriptString(string(helper.RenderErrorMessages(a.Helpers, &helper.Page{}, ef.FullErrorMessages()))) + "');\n"
 	}
 	js += "\n$('#custom_field_enumeration_name').focus();\n"
-	httpx.SetContentType(c.W, "js", true)
-	c.W.WriteHeader(http.StatusOK)
-	_, _ = c.W.Write([]byte(js))
-	c.Halt()
+	c.WriteJS(js)
 }
 
 // CustomFieldEnumerationsUpdateEach は custom_field_enumerations#update_each（PUT /custom_fields/:id/enumerations）。

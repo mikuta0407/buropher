@@ -4,11 +4,133 @@
 package server_test
 
 import (
+	"context"
+	"io"
 	"net/http"
 	"net/url"
+	"strings"
 	"testing"
 	"time"
+
+	"github.com/mikuta0407/buropher/internal/db"
 )
+
+// sendForm は任意のヘッダ付きでフォームを送る。
+func sendForm(t *testing.T, c *http.Client, method, u string, form url.Values, hdr map[string]string) (*http.Response, string) {
+	t.Helper()
+	req, err := http.NewRequest(method, u, strings.NewReader(form.Encode()))
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	for k, v := range hdr {
+		req.Header.Set(k, v)
+	}
+	res, err := c.Do(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer res.Body.Close()
+	b, _ := io.ReadAll(res.Body)
+	return res, string(b)
+}
+
+func userFirstname(t *testing.T, d *db.DB, login string) string {
+	t.Helper()
+	var fn string
+	if err := d.Get(context.Background(), &fn, `SELECT p.firstname FROM principals p JOIN user_accounts u ON u.principal_id = p.id WHERE u.login = ?`, login); err != nil {
+		t.Fatal(err)
+	}
+	return fn
+}
+
+func sessionCookie(c *http.Client, u *url.URL) string {
+	for _, ck := range c.Jar.Cookies(u) {
+		if ck.Name == "_redmine_session" {
+			return ck.Value
+		}
+	}
+	return ""
+}
+
+// TestCSRFNotSkippedByAuthHeadersWithSessionCookie は、ログイン済みのセッションクッキーを持つ
+// ブラウザに対するクロスサイトのフォーム送信で、偽の API キーヘッダ・Basic・Bearer・key パラメータを
+// 付けても CSRF 検証が省略されない（かつセッションで認証された更新が行われない）ことを確認する。
+func TestCSRFNotSkippedByAuthHeadersWithSessionCookie(t *testing.T) {
+	ts, d := newFixtureServer(t)
+	before := userFirstname(t, d, "jsmith")
+	cases := []struct {
+		name string
+		hdr  map[string]string
+		path string
+	}{
+		{"api-key-header", map[string]string{"X-Redmine-API-Key": "bogus"}, "/my/account"},
+		{"buropher-api-key-header", map[string]string{"X-Buropher-API-Key": "bogus"}, "/my/account"},
+		{"basic", map[string]string{"Authorization": "Basic Ym9ndXM6Ym9ndXM="}, "/my/account"},
+		{"bearer", map[string]string{"Authorization": "Bearer bogus"}, "/my/account"},
+		{"key-param", nil, "/my/account?key=bogus"},
+		{"method-override-header", map[string]string{"X-HTTP-Method-Override": "PUT"}, "/my/account"},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			c := login(t, ts, "jsmith", "jsmith")
+			res, _ := sendForm(t, c, "POST", ts.URL+tc.path, url.Values{"_method": {"put"}, "user[firstname]": {"Pwned"}}, tc.hdr)
+			if res.StatusCode != http.StatusUnprocessableEntity {
+				t.Errorf("status %d, want 422 (CSRF)", res.StatusCode)
+			}
+			if got := userFirstname(t, d, "jsmith"); got != before {
+				t.Fatalf("firstname changed to %q without CSRF token", got)
+			}
+		})
+	}
+}
+
+// TestAPIRequestDoesNotUseSessionCookie は、.json / .xml の API リクエスト（CSRF 検証なし）が
+// セッションクッキーで認証されないことを確認する（CSRF 省略とセッション認証の組み合わせの防止）。
+func TestAPIRequestDoesNotUseSessionCookie(t *testing.T) {
+	ts, d := newFixtureServer(t)
+	c := login(t, ts, "jsmith", "jsmith")
+	before := userFirstname(t, d, "jsmith")
+	for _, p := range []string{"/my/account.json", "/my/account.xml", "/my/account?format=json"} {
+		res, _ := sendForm(t, c, "PUT", ts.URL+p, url.Values{"user[firstname]": {"Pwned"}}, nil)
+		if res.StatusCode != http.StatusUnauthorized {
+			t.Errorf("%s: status %d, want 401", p, res.StatusCode)
+		}
+	}
+	if got := userFirstname(t, d, "jsmith"); got != before {
+		t.Fatalf("firstname changed to %q via API with session cookie", got)
+	}
+}
+
+// TestLogoutInvalidatesServerSession は、ログイン時にセッション ID が変わることと、ログアウト後に
+// 以前のセッションクッキーを再送してもログイン状態に戻らない（サーバ側で破棄されている）ことを確認する。
+func TestLogoutInvalidatesServerSession(t *testing.T) {
+	ts, _ := newFixtureServer(t)
+	c := newClient(t)
+	_, body := get(t, c, ts.URL+"/login")
+	u, _ := url.Parse(ts.URL)
+	pre := sessionCookie(c, u)
+	res, _ := post(t, c, ts.URL+"/login", url.Values{"authenticity_token": {csrfToken(t, body)}, "username": {"jsmith"}, "password": {"jsmith"}})
+	if res.StatusCode != http.StatusFound {
+		t.Fatalf("login status %d", res.StatusCode)
+	}
+	loggedIn := sessionCookie(c, u)
+	if loggedIn == "" || loggedIn == pre {
+		t.Fatalf("session cookie not rotated on login: %q -> %q", pre, loggedIn)
+	}
+	_, body = get(t, c, ts.URL+"/my/page")
+	res, _ = post(t, c, ts.URL+"/logout", url.Values{"authenticity_token": {csrfMeta(t, body)}})
+	if res.StatusCode != http.StatusFound {
+		t.Fatalf("logout status %d", res.StatusCode)
+	}
+	// 盗んだクッキーの再利用
+	c2 := newClient(t)
+	c2.Jar.SetCookies(u, []*http.Cookie{{Name: "_redmine_session", Value: loggedIn}})
+	res, _ = get(t, c2, ts.URL+"/my/page")
+	if res.StatusCode == http.StatusOK {
+		t.Fatal("old session cookie still authenticates after logout")
+	}
+}
 
 // このファイルは認証・セッション・トークンまわりの攻撃を再現するテスト（セキュリティ監査で追加）。
 
@@ -49,5 +171,33 @@ func TestLoginTimingDoesNotRevealAccounts(t *testing.T) {
 	}
 	if legacy*3 < existing {
 		t.Errorf("legacy-hash user answered much faster (%v) than argon2id user (%v)", legacy, existing)
+	}
+}
+
+// TestNonXHRGetJavaScriptBlocked は、XHR でない GET への JavaScript 応答（<script src> で別オリジンから
+// 読み込める）が 422 になり、フォームの CSRF トークンなどを含む本文を返さないことを確認する
+// （Rails の verify_same_origin_request。SameSite=Lax のクッキーは同一サイトの別オリジン
+// ＝兄弟サブドメインからの <script> 読み込みにも送られるため、CSRF トークンを盗まれる）。
+func TestNonXHRGetJavaScriptBlocked(t *testing.T) {
+	ts, _ := newFixtureServer(t)
+	c := login(t, ts, "admin", "admin")
+	for _, p := range []string{"/custom_fields/new.js?type=IssueCustomField", "/time_entries/bulk_edit.js?ids[]=1"} {
+		t.Run(p, func(t *testing.T) {
+			res, body := get(t, c, ts.URL+p)
+			if res.StatusCode != http.StatusUnprocessableEntity || strings.Contains(body, "authenticity_token") {
+				t.Errorf("status %d content-type %q, body leaks token=%v", res.StatusCode, res.Header.Get("Content-Type"), strings.Contains(body, "authenticity_token"))
+			}
+			// XHR なら従来どおり返す
+			req, _ := http.NewRequest("GET", ts.URL+p, nil)
+			req.Header.Set("X-Requested-With", "XMLHttpRequest")
+			res2, err := c.Do(req)
+			if err != nil {
+				t.Fatal(err)
+			}
+			res2.Body.Close()
+			if res2.StatusCode != http.StatusOK {
+				t.Errorf("xhr status %d", res2.StatusCode)
+			}
+		})
 	}
 }
