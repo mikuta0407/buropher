@@ -395,7 +395,8 @@ func (a *App) renderIssueNewJS(c *Req, st *issueNewState) {
 		} else if cat != nil && cat.AssignedToID != nil {
 			if u := l.principal(*cat.AssignedToID); u != nil {
 				if n := l.principalName(u); n != "" {
-					html = template.HTML(rails.EscapeJavascriptString(n))
+					// <%= escape_javascript(name) %> は ERB が HTML エスケープする（名前は .html() に渡る）
+					html = template.HTML(rails.EscapeString(rails.EscapeJavascriptString(n)))
 				}
 			}
 		}
