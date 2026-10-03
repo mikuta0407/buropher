@@ -27,6 +27,8 @@ type Options struct {
 
 // Format は Textile ソースを HTML に変換する (Formatter.new(src).to_html 相当)。
 func Format(src string, opts *Options) string {
+	// 不正な UTF-8 は U+FFFD にする（extractSections と同じ理由）
+	src = strings.ToValidUTF8(src, "�")
 	rc := newFormatter(opts)
 	return rc.toHTML(src)
 }
