@@ -59,7 +59,7 @@ func loadRoles(ctx context.Context, q db.Queryer, where string, args ...any) ([]
 		ids[i] = r.ID
 	}
 	for _, chunk := range chunkIDs(ids) {
-		query, a, err := db.In(`SELECT role_id, permission, all_trackers FROM role_permissions WHERE role_id IN (?) ORDER BY role_id, permission`, chunk)
+		query, a, err := db.In(`SELECT role_id, permission, all_trackers FROM role_permissions WHERE role_id IN (?) ORDER BY role_id, position, permission`, chunk)
 		if err != nil {
 			return nil, err
 		}
@@ -253,7 +253,8 @@ func SetRolePermissions(ctx context.Context, q db.Queryer, roleID int64, perms [
 		}
 		seen = append(seen, p)
 		trackers, isRestricted := restricted[p]
-		if _, err := q.Exec(ctx, `INSERT INTO role_permissions (role_id, permission, all_trackers) VALUES (?, ?, ?)`, roleID, p, !isRestricted); err != nil {
+		// position は渡された順（Role#permissions= はフォームの送信順のまま YAML 配列に保存する）
+		if _, err := q.Exec(ctx, `INSERT INTO role_permissions (role_id, permission, all_trackers, position) VALUES (?, ?, ?, ?)`, roleID, p, !isRestricted, len(seen)); err != nil {
 			return err
 		}
 		for _, t := range uniqIDs(trackers) {

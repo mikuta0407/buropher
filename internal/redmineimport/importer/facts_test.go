@@ -204,8 +204,8 @@ func checkFixtureFacts(t *testing.T, d *db.DB, rep *Report, filesDir string) {
 	if v := q1[*string](t, d, `SELECT summary FROM news WHERE id = 3`); v != nil {
 		t.Errorf("news 3 summary NULL should stay NULL, got %q", *v)
 	}
-	if v := q1[string](t, d, `SELECT value FROM custom_values WHERE id = 15`); v != "1" {
-		t.Errorf("bool 't' should be normalized to '1', got %q", v)
+	if v := q1[string](t, d, `SELECT value FROM custom_values WHERE id = 15`); v != "t" {
+		t.Errorf("bool 't' should be kept as is, got %q", v)
 	}
 	if k := q1[string](t, d, `SELECT customized_kind FROM custom_values WHERE id = 3`); k != "principal" {
 		t.Errorf("customized_kind = %q", k)

@@ -120,8 +120,8 @@ func loadDefaultData(ctx context.Context, tx *db.Tx, p *defaultdata.Plan, builti
 			}
 			roleIDs = append(roleIDs, id)
 		}
-		for _, perm := range r.Permissions {
-			if _, err := tx.Exec(ctx, `INSERT INTO role_permissions (role_id, permission) VALUES (?, ?)`, id, perm); err != nil {
+		for i, perm := range r.Permissions {
+			if _, err := tx.Exec(ctx, `INSERT INTO role_permissions (role_id, permission, position) VALUES (?, ?, ?)`, id, perm, i+1); err != nil {
 				return fmt.Errorf("role permission: %w", err)
 			}
 		}

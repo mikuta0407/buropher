@@ -345,11 +345,12 @@ func (im *imp) importRoles() error {
 	names := newNamer(false)
 	ins := im.ins(t, "roles", "id", "name", "position", "assignable", "builtin", "issues_visibility", "users_visibility",
 		"time_entries_visibility", "all_roles_managed", "default_time_entry_activity_id")
-	pins := im.ins(t, "role_permissions", "role_id", "permission", "all_trackers")
+	pins := im.ins(t, "role_permissions", "role_id", "permission", "all_trackers", "position")
 	tins := im.ins(t, "role_permission_trackers", "role_id", "permission", "tracker_id")
 	type permRow struct {
 		role     int64
 		perm     string
+		pos      int
 		all      bool
 		trackers []int64
 	}
@@ -414,7 +415,8 @@ func (im *imp) importRoles() error {
 				t.repair(id, "unknown permission %q dropped", p)
 				continue
 			}
-			pr := permRow{role: id, perm: p, all: true}
+			// position は YAML 配列内の順（Redmine は保存順のまま API 等に出す）
+			pr := permRow{role: id, perm: p, pos: len(seen), all: true}
 			if v, ok := allMap.Get(p); ok {
 				if s, _ := toStr(rubyyaml.Plain(v)); s == "0" {
 					pr.all = false
@@ -445,7 +447,7 @@ func (im *imp) importRoles() error {
 		return err
 	}
 	for _, p := range perms {
-		if err := pins.add(p.role, p.perm, p.all); err != nil {
+		if err := pins.add(p.role, p.perm, p.all, p.pos); err != nil {
 			return err
 		}
 	}

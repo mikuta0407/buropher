@@ -306,6 +306,8 @@ CREATE TABLE role_permissions (
   permission TEXT NOT NULL,
   -- トラッカー限定可能な権限で false の場合は role_permission_trackers のトラッカーのみ
   all_trackers INTEGER NOT NULL DEFAULT 1 CHECK (all_trackers IN (0, 1)),
+  -- roles.permissions（YAML 配列）での並び順。API などは保存順で出す（Role#permissions= はフォーム順、add_permission! は末尾追加）
+  position INTEGER NOT NULL DEFAULT 0,
   PRIMARY KEY (role_id, permission)
 );
 CREATE INDEX role_permissions_permission ON role_permissions (permission);

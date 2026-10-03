@@ -174,7 +174,9 @@ func (im *imp) customizedExists(kind, owner string, id int64) (ok bool, reason s
 	return true, ""
 }
 
-// normalizeCFValue は §4.13 の正規化(空文字列はそのまま保持、bool の表記揺れ、数値の前後空白)。
+// normalizeCFValue は §4.13 の正規化(空文字列はそのまま保持、数値の前後空白)。
+// bool の表記揺れ('t' / 'true' 等)は正規化しない: Redmine は保存値のまま扱い、
+// bool 形式は '1' / '0' とだけ比較する('t' は未選択・空表示になる)。
 func normalizeCFValue(format string, v any) (any, bool) {
 	s, ok := toStr(v)
 	if !ok {
@@ -184,13 +186,6 @@ func normalizeCFValue(format string, v any) (any, bool) {
 	case "int", "float", "progressbar":
 		if ts := strings.TrimSpace(s); ts != s {
 			return ts, true
-		}
-	case "bool":
-		switch strings.ToLower(strings.TrimSpace(s)) {
-		case "1", "t", "true":
-			return "1", s != "1"
-		case "0", "f", "false":
-			return "0", s != "0"
 		}
 	}
 	return s, false

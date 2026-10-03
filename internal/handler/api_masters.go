@@ -3,14 +3,12 @@ package handler
 import (
 	"encoding/json"
 	"net/http"
-	"slices"
 	"strconv"
 	"strings"
 
 	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/helper"
 	"github.com/mikuta0407/buropher/internal/httpx"
-	"github.com/mikuta0407/buropher/internal/permission"
 	"github.com/mikuta0407/buropher/internal/repository"
 )
 
@@ -236,14 +234,8 @@ func (a *App) renderRolesAPI(c *Req, roles []*domain.Role) {
 // renderRoleAPI は roles/show.api.rsb。
 func (a *App) renderRoleAPI(c *Req, r *domain.Role) {
 	perms := apiArr("permissions")
-	// buropher は権限の保存順を持たないため、Redmine::AccessControl の定義順で出す
-	// （フィクスチャ・既定データの順序。Redmine で画面から保存した場合はモジュール名順になる）
-	order := map[string]int{}
-	for i, p := range permission.All() {
-		order[p.Name] = i
-	}
-	names := slices.Clone(r.Permissions)
-	slices.SortStableFunc(names, func(x, y string) int { return order[x] - order[y] })
+	// role.permissions は保存順（role_permissions.position）
+	names := r.Permissions
 	for _, p := range names {
 		perms.children = append(perms.children, apiField("permission", p))
 	}
