@@ -4,6 +4,7 @@
 package handler
 
 import (
+	"html"
 	"slices"
 	"strconv"
 	"strings"
@@ -356,9 +357,11 @@ func (a *App) oidcSourcesTestConnection(c *Req, rec *domain.AuthSourceRecord) {
 	oidc.Forget(rec.ID)
 	p, err := oidc.New(c.Ctx(), a.OIDCHTTPClient, a.oidcConfig(c, rec))
 	if err != nil {
-		c.Flash().SetError(c.L("error_unable_to_connect", map[string]any{"value": err.Error()}))
+		// フラッシュは raw HTML として描画されるため、接続エラー文言や IdP 由来の
+		// issuer（攻撃者/悪意ある IdP が制御しうる）はエスケープする。
+		c.Flash().SetError(c.L("error_unable_to_connect", map[string]any{"value": html.EscapeString(err.Error())}))
 	} else {
-		c.Flash().SetNotice(c.L("buropher.sso.notice_discovery_succeeded", map[string]any{"issuer": p.Config().Issuer}))
+		c.Flash().SetNotice(c.L("buropher.sso.notice_discovery_succeeded", map[string]any{"issuer": html.EscapeString(p.Config().Issuer)}))
 	}
 	c.Redirect("/auth_sources")
 }

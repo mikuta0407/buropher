@@ -129,23 +129,14 @@ func encodeEntities(s string, attr bool) string {
 		c := s[i]
 		switch {
 		case c == '<':
-			if attr && strings.HasPrefix(s[i:], "<!--") {
-				if end := strings.Index(s[i:], "-->"); end >= 0 {
-					sb.WriteString(s[i : i+end+3])
-					i += end + 2
-					continue
-				}
-			}
+			// 注意: 旧 libxml2 の xmlEscapeEntities は属性値内の <!--...--> と &{...}（SSI/
+			// サーバサイドインクルード）をそのまま出力する特例を持っていたが、現行の
+			// libxml2 2.13 系（参照 Redmine の Nokogiri 1.19 が同梱）はこの特例を削除しており、
+			// 属性値でも < > & を常にエスケープする。buropher も参照に合わせて常にエスケープする。
 			sb.WriteString("&lt;")
 		case c == '>':
 			sb.WriteString("&gt;")
 		case c == '&':
-			if attr && i+1 < len(s) && s[i+1] == '{' && strings.IndexByte(s[i:], '}') >= 0 {
-				end := strings.IndexByte(s[i:], '}')
-				sb.WriteString(s[i : i+end+1])
-				i += end
-				continue
-			}
 			sb.WriteString("&amp;")
 		case (c >= 0x20 && c < 0x80) || c == '\n' || c == '\t' || c == '\r':
 			sb.WriteByte(c)

@@ -21,6 +21,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"html"
 	"net/http"
 	"slices"
 	"strconv"
@@ -499,9 +500,11 @@ func (a *App) AuthSourcesSync(c *Req) {
 	}
 	res, err := a.syncLDAPSource(c.Ctx(), rec)
 	if err != nil {
-		c.Flash().SetError(c.L("buropher.ldap.error_sync", map[string]any{"value": err.Error()}))
+		// フラッシュは raw HTML として描画されるため、LDAP 由来のエラー文言や
+		// サマリ（ユーザー名等を含みうる）はエスケープする。
+		c.Flash().SetError(c.L("buropher.ldap.error_sync", map[string]any{"value": html.EscapeString(err.Error())}))
 	} else {
-		c.Flash().SetNotice(c.L("buropher.ldap.notice_sync", map[string]any{"value": res.Summary()}))
+		c.Flash().SetNotice(c.L("buropher.ldap.notice_sync", map[string]any{"value": html.EscapeString(res.Summary())}))
 	}
 	c.Redirect("/auth_sources/" + strconv.FormatInt(rec.ID, 10) + "/edit")
 }

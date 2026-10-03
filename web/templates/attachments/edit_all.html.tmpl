@@ -27,6 +27,6 @@
   </div>
   <p>
     {{submit_tag (l "button_save")}}
-    {{if present back_url}}{{link_to (l "button_cancel") back_url}}{{end}}
+    {{if present safe_back_url}}{{link_to (l "button_cancel") safe_back_url}}{{end}}
   </p>
 {{end_form}}

@@ -1,0 +1,51 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
+package mail
+
+import (
+	"bytes"
+	"strings"
+	"testing"
+)
+
+// TestBytesHeaderInjection は Subject・From・追加ヘッダに CR/LF を混ぜても
+// 新しいヘッダが挿入されない（ヘッダインジェクションにならない）ことを確認する。
+func TestBytesHeaderInjection(t *testing.T) {
+	m := &Message{
+		From:    FormatAddress("Evil\r\nBcc: victim@example.com", "from@example.com"),
+		To:      []string{"to@example.com"},
+		Subject: "Hello\r\nReply-To: attacker@example.com\r\n\r\n<injected body>",
+		Text:    "body",
+		Headers: []Header{{Name: "X-Test", Value: "a\r\nX-Injected: 1"}},
+	}
+	raw, err := m.Bytes()
+	if err != nil {
+		t.Fatal(err)
+	}
+	// ヘッダ部（最初の空行まで）を取り出す
+	headerPart := raw
+	if i := bytes.Index(raw, []byte("\r\n\r\n")); i >= 0 {
+		headerPart = raw[:i]
+	}
+	// 生の CR/LF が値に残っていないこと（= 新しいヘッダ行が増えていないこと）を、
+	// 各行の先頭のヘッダ名で確認する（継続行は WSP 始まり）。
+	allowed := map[string]bool{
+		"Date": true, "From": true, "To": true, "Cc": true, "Message-ID": true,
+		"In-Reply-To": true, "References": true, "Subject": true, "Mime-Version": true,
+		"Content-Type": true, "Content-Transfer-Encoding": true, "X-Test": true,
+	}
+	for _, line := range strings.Split(string(headerPart), "\r\n") {
+		if line == "" || line[0] == ' ' || line[0] == '\t' {
+			continue // 継続行
+		}
+		name, _, ok := strings.Cut(line, ":")
+		if !ok || !allowed[name] {
+			t.Errorf("unexpected header line (injection?): %q\nfull:\n%s", line, headerPart)
+		}
+	}
+	// 本来の Subject の可読部分は残る
+	if !bytes.Contains(headerPart, []byte("Subject: Hello")) {
+		t.Errorf("Subject lost:\n%s", headerPart)
+	}
+}
