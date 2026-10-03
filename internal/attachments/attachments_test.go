@@ -278,4 +278,12 @@ func TestCreateAttachFilesAndDelete(t *testing.T) {
 			t.Errorf("file left: %s", e.Name())
 		}
 	}
+	// サイズ不明の本文は上限 + 1 バイトまでしか読まない（ディスクを使い尽くさない）
+	big := strings.NewReader(strings.Repeat("x", 1<<20))
+	if _, errs, err := s.Create(ctx, d, Upload{Filename: "huge.bin", Body: big, Size: -1}, admin, l); err != nil || !errs.Any() {
+		t.Fatalf("huge: %v", err)
+	}
+	if read := int64(1<<20) - int64(big.Len()); read > 1025 {
+		t.Errorf("read %d bytes of an oversized chunked upload (want <= 1025)", read)
+	}
 }
