@@ -360,6 +360,8 @@ func (a *App) tryToLoginBang(c *Req, login, pw string, activeOnly bool) (*domain
 	u, err := repository.FindUserByLogin(c.Ctx(), a.DB, login)
 	switch {
 	case errors.Is(err, repository.ErrNotFound):
+		// 応答時間でログイン名の有無を推測されないよう、実在ユーザーと同じくパスワード照合 1 回分の時間をかける
+		password.DummyVerify(pw)
 		// 未登録: オンザフライ登録の認証方式で認証し、ユーザーを作成する
 		attrs := a.authenticateWithAuthSources(c, login, pw)
 		if attrs == nil {
