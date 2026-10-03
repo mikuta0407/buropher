@@ -361,7 +361,8 @@ func (a *App) oidcResolveUser(c *Req, rec *domain.AuthSourceRecord, prov *oidc.P
 			user = u
 		}
 	case "mail":
-		if id.Mail != "" {
+		// 未検証のメールアドレス（email_verified=false）では既存ユーザーに紐付けない
+		if id.Mail != "" && !id.MailUnverified {
 			u, err := repository.FindUserByMail(ctx, a.DB, id.Mail)
 			if err != nil && !errors.Is(err, repository.ErrNotFound) {
 				return nil, err

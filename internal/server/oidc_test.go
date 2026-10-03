@@ -526,3 +526,25 @@ func TestOIDCSudoReauth(t *testing.T) {
 		t.Fatal("sudo should be active after re-authentication")
 	}
 }
+
+// メール一致での初回紐付けは、IdP が email_verified=false を返したメールでは行わない
+// （未検証のメールアドレスを名乗るだけで既存アカウントを乗っ取れないようにする）。
+func TestOIDCUnverifiedEmailIsNotMatched(t *testing.T) {
+	e := newSSOEnv(t, nil)
+	for _, v := range []any{false, "false"} {
+		e.idp.SetClaims(map[string]any{"sub": "sub-attacker", "email": "jsmith@somenet.foo", "email_verified": v})
+		c := newClient(t)
+		if msg := e.flashAfter(c, e.ssoLogin(c, "")); !strings.Contains(msg, "No account is linked") {
+			t.Fatalf("email_verified=%v: %q", v, msg)
+		}
+		if u := e.currentUser(c); u == "Logged in as jsmith" {
+			t.Fatalf("email_verified=%v: logged in as jsmith", v)
+		}
+	}
+	// email_verified=true（または無し）は従来どおり紐付ける
+	e.idp.SetClaims(map[string]any{"sub": "sub-jsmith", "email": "jsmith@somenet.foo", "email_verified": true})
+	c := newClient(t)
+	if res := e.ssoLogin(c, ""); res.StatusCode != 302 || e.currentUser(c) != "Logged in as jsmith" {
+		t.Fatalf("verified: %d %q", res.StatusCode, e.currentUser(c))
+	}
+}
