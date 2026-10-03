@@ -563,7 +563,8 @@ func (g *Git) Annotate(ctx context.Context, path, identifier string) *Annotate {
 	if strings.TrimSpace(identifier) == "" {
 		identifier = "HEAD"
 	}
-	out, err := g.gitCmd(ctx, []string{"blame", "--encoding=UTF-8", "-p", g.toRepo(identifier), "--", g.toRepo(path)}, nil)
+	// --no-textconv: git blame は既定で textconv ドライバを使う（リポジトリの設定でコマンドを実行させない）
+	out, err := g.gitCmd(ctx, []string{"blame", "--no-textconv", "--encoding=UTF-8", "-p", g.toRepo(identifier), "--", g.toRepo(path)}, nil)
 	if err != nil {
 		return nil
 	}
