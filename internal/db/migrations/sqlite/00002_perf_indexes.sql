@@ -4,8 +4,10 @@
 
 -- プロジェクト (とその子孫) のチケットをステータスで絞る件数・一覧・集計
 -- (チケット一覧の件数、プロジェクト概要のトラッカー別件数、ガントチャート等)。
+-- 後ろの列は Issue.visible_condition (is_private / author_id / assigned_to_id) とトラッカー別の集計に使い、
+-- 表を読まずにインデックスだけで絞り込めるようにする。
 -- issues_project_id (project_id) はこのインデックスの先頭列で代替できるので削除する。
-CREATE INDEX issues_project_status ON issues (project_id, status_id);
+CREATE INDEX issues_project_status ON issues (project_id, status_id, tracker_id, is_private, author_id, assigned_to_id);
 DROP INDEX issues_project_id;
 
 -- +goose Down

@@ -142,14 +142,28 @@ func (a *App) loadVersionIssueSet(ctx context.Context, issueVis string, versionI
 // loadVersionIssueSets は versionIDs の各バージョンについて loadVersionIssueSet をまとめて行う
 // （チケットと子孫の見積時間の合計をバージョン数・チケット数によらない回数のクエリで読む）。
 func (a *App) loadVersionIssueSets(ctx context.Context, issueVis string, versionIDs []int64, visibleCond string) (map[int64]*versionIssueSet, error) {
-	out := make(map[int64]*versionIssueSet, len(versionIDs))
-	for _, id := range versionIDs {
-		out[id] = &versionIssueSet{totalEst: map[int64]float64{}}
-	}
 	// 並びは issues.id（バージョンごとに分けても id 順のまま）
 	rows, err := repository.VersionIssues(ctx, a.DB, versionIDs, visibleCond, "", "")
 	if err != nil {
 		return nil, err
+	}
+	sets, err := a.versionIssueSets(ctx, issueVis, versionIDs, rows, func(*repository.VersionIssue) bool { return true })
+	if err != nil {
+		return nil, err
+	}
+	return sets[0], nil
+}
+
+// versionIssueSets は rows を versionIDs ごとの集計に分ける。filters の数だけ集合を作り、
+// 各行は filters[k] が真の集合 k に入る。子を持つチケットの見積時間は子孫の合計（issueVis で可視なもの）。
+func (a *App) versionIssueSets(ctx context.Context, issueVis string, versionIDs []int64, rows []*repository.VersionIssue,
+	filters ...func(*repository.VersionIssue) bool) ([]map[int64]*versionIssueSet, error) {
+	out := make([]map[int64]*versionIssueSet, len(filters))
+	for k := range filters {
+		out[k] = make(map[int64]*versionIssueSet, len(versionIDs))
+		for _, id := range versionIDs {
+			out[k][id] = &versionIssueSet{totalEst: map[int64]float64{}}
+		}
 	}
 	var parents []int64
 	for _, i := range rows {
@@ -162,15 +176,17 @@ func (a *App) loadVersionIssueSets(ctx context.Context, issueVis string, version
 		return nil, err
 	}
 	for _, i := range rows {
-		s := out[i.FixedVersionID]
-		if s == nil {
-			continue
-		}
-		s.Issues = append(s.Issues, i)
+		est := i.EstimatedHours.Float64
 		if i.HasChildren {
-			s.totalEst[i.ID] = sums[i.ID]
-		} else {
-			s.totalEst[i.ID] = i.EstimatedHours.Float64
+			est = sums[i.ID]
+		}
+		for k, f := range filters {
+			s := out[k][i.FixedVersionID]
+			if s == nil || !f(i) {
+				continue
+			}
+			s.Issues = append(s.Issues, i)
+			s.totalEst[i.ID] = est
 		}
 	}
 	return out, nil
@@ -237,12 +253,18 @@ func (vc *versionCtx) preload(versions []*domain.Version) error {
 	for i, v := range versions {
 		ids[i] = v.ID
 	}
-	var err error
-	if vc.all, err = vc.a.loadVersionIssueSets(ctx, vc.issueVis, ids, ""); err != nil {
+	rows, err := repository.VersionIssuesWithVisibility(ctx, vc.a.DB, ids, vc.issueVis)
+	if err != nil {
 		return err
 	}
-	vc.visible, err = vc.a.loadVersionIssueSets(ctx, vc.issueVis, ids, vc.issueVis)
-	return err
+	sets, err := vc.a.versionIssueSets(ctx, vc.issueVis, ids, rows,
+		func(*repository.VersionIssue) bool { return true },
+		func(i *repository.VersionIssue) bool { return i.Visible })
+	if err != nil {
+		return err
+	}
+	vc.all, vc.visible = sets[0], sets[1]
+	return nil
 }
 
 func (a *App) newVersionCtx(c *Req) (*versionCtx, error) {

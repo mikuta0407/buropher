@@ -183,11 +183,26 @@ type VersionIssue struct {
 	HierPath       string          `db:"hier_path"`
 	TrackerPos     int             `db:"tracker_position"`
 	FixedVersionID int64           `db:"fixed_version_id"`
+	// Visible は VersionIssues の visibleCond を満たすか（visibleCond を渡したときだけ設定される）。
+	Visible bool `db:"visible"`
 }
 
 // VersionIssues は versionIDs を対象バージョンとするチケットを返す。cond は可視性の SQL（空なら全件）、
 // extra は追加の条件。並びは order（空なら issues.id）。
 func VersionIssues(ctx context.Context, q db.Queryer, versionIDs []int64, cond, extra, order string, args ...any) ([]*VersionIssue, error) {
+	return versionIssues(ctx, q, versionIDs, cond, extra, order, "", args...)
+}
+
+// VersionIssuesWithVisibility は VersionIssues(versionIDs, "", "", "") の各行に、visibleCond を満たすか
+// （VersionIssue.Visible）を付けて返す（fixed_issues と visible_fixed_issues を 1 回で読む）。
+func VersionIssuesWithVisibility(ctx context.Context, q db.Queryer, versionIDs []int64, visibleCond string) ([]*VersionIssue, error) {
+	if visibleCond == "" {
+		visibleCond = "1=1"
+	}
+	return versionIssues(ctx, q, versionIDs, "", "", "", ",\n  CASE WHEN ("+visibleCond+") THEN 1 ELSE 0 END AS visible")
+}
+
+func versionIssues(ctx context.Context, q db.Queryer, versionIDs []int64, cond, extra, order, extraCols string, args ...any) ([]*VersionIssue, error) {
 	if len(versionIDs) == 0 {
 		return nil, nil
 	}
@@ -208,7 +223,7 @@ func VersionIssues(ctx context.Context, q db.Queryer, versionIDs []int64, cond, 
   issues.subject, issues.author_id, issues.assigned_to_id, issues.parent_id,
   EXISTS (SELECT 1 FROM issues c WHERE c.parent_id = issues.id) AS has_children,
   issues.is_private, issues.start_date, issues.due_date, issues.done_ratio,
-  issues.estimated_hours, issues.root_id, issues.hier_path, trackers.position AS tracker_position, issues.fixed_version_id
+  issues.estimated_hours, issues.root_id, issues.hier_path, trackers.position AS tracker_position, issues.fixed_version_id`+extraCols+`
 FROM issues
 JOIN projects ON projects.id = issues.project_id
 JOIN trackers ON trackers.id = issues.tracker_id
