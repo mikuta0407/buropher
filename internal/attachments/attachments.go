@@ -280,9 +280,8 @@ func (s *Store) Create(ctx context.Context, q db.Queryer, up Upload, author *dom
 	if up.Size < 0 && body != nil {
 		// サイズが分からない（chunked）本文は上限 + 1 バイトで打ち切る。超えた分は書き込み後の
 		// 検証で too big になる（上限なしに書き続けてディスクを埋められないように）。
-		if max := s.MaxSizeBytes(); max > 0 {
-			body = io.LimitReader(body, max+1)
-		}
+		// 上限 0（以下）は空でないファイルをすべて拒否する設定なので、1 バイトで打ち切る
+		body = io.LimitReader(body, max(s.MaxSizeBytes(), 0)+1)
 	}
 	if err := s.writeFile(a, body); err != nil {
 		return a, nil, err

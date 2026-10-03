@@ -290,6 +290,15 @@ func TestCreateAttachFilesAndDelete(t *testing.T) {
 	if cr.n > 1025 {
 		t.Errorf("read %d bytes of an oversized upload", cr.n)
 	}
+	// 上限 0 でも打ち切る（空でないファイルはすべて大きすぎる）
+	s.Settings = newSettings(t, map[string]string{"attachment_max_size": "0"})
+	cr = &countReader{r: io.LimitReader(zeroReader{}, 64<<20)}
+	if _, errs, err := s.Create(ctx, d, Upload{Filename: "huge.bin", Body: cr, Size: -1}, admin, l); err != nil || !errs.Any() {
+		t.Fatalf("huge (max 0): %v %v", err, errs)
+	}
+	if cr.n > 1 {
+		t.Errorf("read %d bytes of an upload with attachment_max_size=0", cr.n)
+	}
 }
 
 func TestDiskfileStaysInsideRoot(t *testing.T) {
