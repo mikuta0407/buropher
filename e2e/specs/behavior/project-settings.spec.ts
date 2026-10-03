@@ -16,7 +16,7 @@ dualTest('project settings: members modal (search, add), edit roles inline, remo
   await page.locator('#principal_search').pressSequentially('mis', { delay: 60 });
   await page.waitForTimeout(800);
   await s.ajaxIdle();
-  s.noteRequests('search');
+  s.noteLastRequest('search');
   s.note('principals after search', await s.texts('#principals_for_new_member label'));
   await page.check('#principals_for_new_member input[type=checkbox] >> nth=0');
   await page.check('#ajax-modal .roles-selection input >> nth=0');

@@ -27,7 +27,7 @@ dualTest('watchers: watch/unwatch toggle, add via modal autocomplete, remove', a
   await page.locator('#user_search').pressSequentially('smi', { delay: 50 });
   await page.waitForTimeout(800);
   await s.ajaxIdle();
-  s.noteRequests('autocomplete');
+  s.noteLastRequest('autocomplete');
   s.note('candidates after search', await s.texts('#users_for_watcher label'));
   await page.check('#users_for_watcher input[type=checkbox] >> nth=0');
   await page.click('#new-watcher-form input[type=submit]');

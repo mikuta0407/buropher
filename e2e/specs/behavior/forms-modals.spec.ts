@@ -36,7 +36,7 @@ dualTest('new issue: inline new category and version modals, parent autocomplete
   await page.locator('#issue_parent_issue_id').pressSequentially('cann', { delay: 60 });
   await page.waitForSelector('ul.ui-autocomplete li', { state: 'visible' });
   await s.ajaxIdle();
-  s.noteRequests('parent autocomplete');
+  s.noteLastRequest('parent autocomplete');
   s.note('parent suggestions', await page.locator('ul.ui-autocomplete:visible li').allInnerTexts());
   await page.locator('ul.ui-autocomplete:visible li').first().click();
   await s.ajaxIdle();
@@ -158,9 +158,11 @@ dualTest('admin: group users modal, role permission toggles, project archive wit
   await page.waitForSelector('#ajax-modal #user_search', { state: 'visible' });
   await s.ajaxIdle();
   s.note('candidates', await s.texts('#ajax-modal #users label'));
+  s.noteRequests('open add users modal');
   await page.locator('#user_search').pressSequentially('rob', { delay: 60 });
   await page.waitForTimeout(800);
   await s.ajaxIdle();
+  s.noteLastRequest('user search');
   s.note('candidates after search', await s.texts('#ajax-modal #users label'));
   await page.check('#ajax-modal #users input[type=checkbox] >> nth=0');
   await page.click('#ajax-modal input[type=submit]');

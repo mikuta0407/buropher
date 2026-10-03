@@ -53,7 +53,7 @@ dualTest('issue notes: mention, issue and wiki page autocomplete (tribute)', asy
   await notes.pressSequentially('Hello @jsm', { delay: 60 });
   await page.waitForSelector('.tribute-container li', { state: 'visible' });
   await s.ajaxIdle();
-  s.noteRequests('mention lookup');
+  s.noteLastRequest('mention lookup');
   s.note('mention suggestions', await page.locator('.tribute-container li').allInnerTexts());
   await page.keyboard.press('Enter');
   s.note('after mention', await notes.inputValue());
@@ -61,7 +61,7 @@ dualTest('issue notes: mention, issue and wiki page autocomplete (tribute)', asy
   await notes.pressSequentially(' see #rec', { delay: 60 });
   await page.waitForSelector('.tribute-container li', { state: 'visible' });
   await s.ajaxIdle();
-  s.noteRequests('issue lookup');
+  s.noteLastRequest('issue lookup');
   s.note('issue suggestions', await page.locator('.tribute-container li').allInnerTexts());
   await page.keyboard.press('Enter');
   s.note('after issue', await notes.inputValue());
@@ -69,7 +69,7 @@ dualTest('issue notes: mention, issue and wiki page autocomplete (tribute)', asy
   await notes.pressSequentially(' and [[Ano', { delay: 60 });
   await page.waitForSelector('.tribute-container li', { state: 'visible' });
   await s.ajaxIdle();
-  s.noteRequests('wiki lookup');
+  s.noteLastRequest('wiki lookup');
   s.note('wiki suggestions', await page.locator('.tribute-container li').allInnerTexts());
   await page.keyboard.press('Enter');
   s.note('after wiki', await notes.inputValue());

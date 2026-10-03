@@ -10,7 +10,7 @@ dualTest('time entry: issue autocomplete, project/activity refresh, create', asy
   await page.locator('#time_entry_issue_id').pressSequentially('rec', { delay: 60 });
   await page.waitForSelector('ul.ui-autocomplete li', { state: 'visible' });
   await s.ajaxIdle();
-  s.noteRequests('autocomplete');
+  s.noteLastRequest('autocomplete');
   s.note('suggestions', await page.locator('ul.ui-autocomplete li').allInnerTexts());
   await page.locator('ul.ui-autocomplete li').first().click();
   await s.ajaxIdle();

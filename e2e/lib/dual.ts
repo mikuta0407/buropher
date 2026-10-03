@@ -107,6 +107,15 @@ export class Session {
     this.note(`${key} requests`, this.takeRequests());
   }
 
+  /**
+   * Records only the last request since the previous call. For type-ahead searches whose
+   * intermediate requests depend on typing speed versus response time (observeSearchfield).
+   */
+  noteLastRequest(key: string) {
+    const r = this.takeRequests();
+    this.note(`${key} last request`, r[r.length - 1] ?? null);
+  }
+
   path(): string {
     return normalizeURL(this.page.url());
   }
