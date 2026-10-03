@@ -9,6 +9,7 @@ package handler
 
 import (
 	"crypto/rand"
+	"crypto/subtle"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
@@ -261,7 +262,7 @@ func (a *App) DiscordCallback(c *Req) {
 	}
 	s := c.Session()
 	state := c.Params().String("state")
-	if s == nil || state == "" || s.GetString(discordStateKey) != state {
+	if s == nil || state == "" || subtle.ConstantTimeCompare([]byte(s.GetString(discordStateKey)), []byte(state)) != 1 {
 		c.Flash().SetError(c.L("buropher.discord.error_invalid_state"))
 		c.Redirect("/my/account")
 		return

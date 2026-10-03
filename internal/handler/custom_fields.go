@@ -633,11 +633,7 @@ func (a *App) CustomFieldsNew(c *Req) {
 			a.renderErr(c, "custom field new.js", err)
 			return
 		}
-		js := "$('#content').html('" + rails.EscapeJavascriptString(string(out)) + "')\n"
-		httpx.SetContentType(c.W, "js", true)
-		c.W.WriteHeader(http.StatusOK)
-		_, _ = c.W.Write([]byte(js))
-		c.Halt()
+		c.WriteJS("$('#content').html('" + rails.EscapeJavascriptString(string(out)) + "')\n")
 		return
 	}
 	a.renderCustomFieldForm(c, "new", form, 0)

@@ -21,10 +21,18 @@ func DataDir(c *Config) string {
 	return "data"
 }
 
+// minSecretKeyLen はこれより短い server.secret_key に警告を出す長さ（バイト）。
+const minSecretKeyLen = 32
+
 // SecretKey は server.secret_key を返す。未設定ならデータディレクトリの secret_key を読み、
 // なければ生成して保存する（serve と redmine import が同じ鍵を使うようにするため共通化している）。
 func SecretKey(c *Config) ([]byte, error) {
 	if c.Server.SecretKey != "" {
+		if len(c.Server.SecretKey) < minSecretKeyLen {
+			// 短い鍵はクッキー（署名・暗号化された未ログインセッション）からオフラインで総当たりされ、
+			// セッションデータ（オンザフライ登録の情報等）を偽造されるおそれがある
+			slog.Warn("server.secret_key is too short; use at least 32 random characters (e.g. `openssl rand -hex 64`)", "length", len(c.Server.SecretKey))
+		}
 		return []byte(c.Server.SecretKey), nil
 	}
 	path := filepath.Join(DataDir(c), "secret_key")

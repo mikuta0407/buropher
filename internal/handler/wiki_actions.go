@@ -967,10 +967,7 @@ func (a *App) WikiNew(c *Req) {
 				path += "?parent=" + queryEscape(p)
 			}
 			if httpx.Format(c.R) == "js" {
-				httpx.SetContentType(c.W, "js", true)
-				c.W.WriteHeader(http.StatusOK)
-				_, _ = c.W.Write([]byte("window.location = " + jsonString(urlroot.Path(path))))
-				c.Halt()
+				c.WriteJS("window.location = " + jsonString(urlroot.Path(path)))
 				return
 			}
 			c.Redirect(path)

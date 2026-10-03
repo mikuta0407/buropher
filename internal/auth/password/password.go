@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"runtime"
 	"strings"
+	"sync"
 
 	"golang.org/x/crypto/argon2"
 )
@@ -65,10 +66,29 @@ func Hash(pw string) (string, error) {
 // ErrUnknownFormat は未知のハッシュ形式。
 var ErrUnknownFormat = errors.New("password: unknown hash format")
 
+// dummyHash は DummyVerify が照合に使う argon2id ハッシュ（初回利用時に生成する）。
+var dummyHash = sync.OnceValue(func() string {
+	h, err := Hash("buropher-dummy-password")
+	if err != nil {
+		panic(err)
+	}
+	return h
+})
+
+// DummyVerify は結果を捨てて argon2id の照合を 1 回行う。存在しないユーザーやローカルのパスワードを
+// 持たないユーザーのログイン試行でも、実在ユーザーのパスワード照合と同程度の時間をかけ、
+// 応答時間の差からアカウントの有無を推測されないようにする。
+func DummyVerify(pw string) {
+	_, _ = verifyArgon2(dummyHash(), pw)
+}
+
 // Verify は pw が hash に一致するかを返す。hash が空ならパスワード未設定として false。
+// 応答時間からハッシュの有無・形式を推測されないよう、argon2id 以外で不一致の場合も
+// DummyVerify で argon2id 1 回分の時間をかける（一致した Redmine 形式は呼び出し側の再ハッシュで同程度になる）。
 func Verify(hash, pw string) (bool, error) {
 	switch {
 	case hash == "":
+		DummyVerify(pw)
 		return false, nil
 	case strings.HasPrefix(hash, "$argon2id$"):
 		return verifyArgon2(hash, pw)
@@ -81,7 +101,11 @@ func Verify(hash, pw string) (bool, error) {
 		if parts[0] == "redmine-sha1-nosalt" {
 			want = sha1hex(pw)
 		}
-		return subtle.ConstantTimeCompare([]byte(want), []byte(strings.ToLower(parts[2]))) == 1, nil
+		ok := subtle.ConstantTimeCompare([]byte(want), []byte(strings.ToLower(parts[2]))) == 1
+		if !ok {
+			DummyVerify(pw)
+		}
+		return ok, nil
 	}
 	return false, ErrUnknownFormat
 }

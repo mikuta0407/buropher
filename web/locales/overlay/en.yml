@@ -121,6 +121,7 @@ en:
       error_no_account: "No account is linked to this identity. Please contact your administrator."
       error_already_linked: "This account is already linked to another identity of this provider."
       error_identity_taken: "This identity is already linked to another account."
+      error_link_required: "Your account uses two-factor authentication. Log in with your password and link this identity from My account."
       error_user_creation_failed: "Your account could not be created automatically. Please contact your administrator."
       error_last_identity: "This is the only way to log in to your account and cannot be unlinked."
     discord:

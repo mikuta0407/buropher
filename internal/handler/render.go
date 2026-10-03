@@ -157,6 +157,20 @@ func (c *Req) Render(name string, data any, opts ...RenderOptions) {
 	_, _ = c.W.Write(out)
 }
 
+// WriteJS は JavaScript の応答（*.js.erb 相当の本文）を 200 で書く。Render と同じく
+// XHR でない GET への JavaScript 応答は verify_same_origin_request により 422（本文なし）にする
+// （別オリジンのページから <script src> で読み込まれ、本文中の CSRF トークン等を盗まれるのを防ぐ）。
+func (c *Req) WriteJS(js string) {
+	c.halted = true
+	if (c.R.Method == http.MethodGet || c.R.Method == http.MethodHead) && !httpx.IsXHR(c.R) {
+		httpx.HeadAs(c.W, c.R, http.StatusUnprocessableEntity, "html")
+		return
+	}
+	httpx.SetContentType(c.W, "js", true)
+	c.W.WriteHeader(http.StatusOK)
+	_, _ = c.W.Write([]byte(js))
+}
+
 // renderInternalError はテンプレート描画に失敗したときの 500（public/500.html 相当）。
 func (c *Req) renderInternalError() {
 	c.W.Header().Set("Content-Type", "text/html; charset=utf-8")

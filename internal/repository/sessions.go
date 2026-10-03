@@ -68,7 +68,8 @@ func (s SessionStore) Get(ctx context.Context, id string) (*httpx.Record, error)
 	return rec, nil
 }
 
-func (s SessionStore) Save(ctx context.Context, rec *httpx.Record) error {
+// sessionColumns は Save / Update が書き込む値（id 以外）を返す。
+func sessionColumns(rec *httpx.Record) ([]any, error) {
 	data := make(map[string]any, len(rec.Data)+1)
 	for k, v := range rec.Data {
 		data[k] = v
@@ -78,7 +79,7 @@ func (s SessionStore) Save(ctx context.Context, rec *httpx.Record) error {
 	}
 	js, err := json.Marshal(data)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	var uid any
 	if rec.UserID != 0 {
@@ -95,11 +96,34 @@ func (s SessionStore) Save(ctx context.Context, rec *httpx.Record) error {
 	if updated.IsZero() {
 		updated = created
 	}
-	cols := []string{"id", "user_id", "created_at", "last_seen_at", "expires_at", "ip", "user_agent", "data"}
-	q := s.DB.Dialect().Upsert("sessions", cols, []string{"id"}, cols[1:])
-	_, err = s.DB.Exec(ctx, q, hashSessionID(rec.ID), uid, db.NewTime(created), db.NewTime(updated), exp,
-		nullString(rec.IP), nullString(rec.UserAgent), string(js))
+	return []any{uid, db.NewTime(created), db.NewTime(updated), exp, nullString(rec.IP), nullString(rec.UserAgent), string(js)}, nil
+}
+
+var sessionCols = []string{"id", "user_id", "created_at", "last_seen_at", "expires_at", "ip", "user_agent", "data"}
+
+func (s SessionStore) Save(ctx context.Context, rec *httpx.Record) error {
+	vals, err := sessionColumns(rec)
+	if err != nil {
+		return err
+	}
+	q := s.DB.Dialect().Upsert("sessions", sessionCols, []string{"id"}, sessionCols[1:])
+	_, err = s.DB.Exec(ctx, q, append([]any{hashSessionID(rec.ID)}, vals...)...)
 	return err
+}
+
+// Update は既存の行だけを更新する（削除済みなら false。httpx.Store.Update）。
+func (s SessionStore) Update(ctx context.Context, rec *httpx.Record) (bool, error) {
+	vals, err := sessionColumns(rec)
+	if err != nil {
+		return false, err
+	}
+	res, err := s.DB.Exec(ctx, `UPDATE sessions SET user_id = ?, created_at = ?, last_seen_at = ?, expires_at = ?, ip = ?, user_agent = ?, data = ? WHERE id = ?`,
+		append(vals, hashSessionID(rec.ID))...)
+	if err != nil {
+		return false, err
+	}
+	n, err := res.RowsAffected()
+	return n > 0, err
 }
 
 func (s SessionStore) Destroy(ctx context.Context, id string) error {

@@ -39,6 +39,9 @@ var sudoModeTable = map[string][]sudoRequirement{
 	"my": {
 		{actions: []string{"account"}, methods: []string{http.MethodPut}},
 		{actions: []string{"reset_atom_key", "reset_api_key", "show_api_key", "destroy"}},
+		// buropher 拡張: 外部 ID（OIDC）の連携解除と Discord の連携・解除もログイン手段・通知先を変えるため、
+		// メールアドレスの追加・削除と同じく sudo を求める（OIDC の連携開始は OIDCStart で判定する）
+		{actions: []string{"sso_unlink", "discord_link", "discord_unlink"}},
 	},
 	"projects": {{actions: []string{"destroy", "bulk_destroy"}}},
 	"groups":   {{actions: []string{"add_users", "remove_user", "create", "update", "destroy", "edit_membership", "destroy_membership"}}},

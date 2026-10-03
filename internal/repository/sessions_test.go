@@ -61,5 +61,21 @@ func TestSessionStore(t *testing.T) {
 		if g, _ := st.Get(ctx, "missing"); g != nil {
 			t.Error("missing should be nil")
 		}
+		// Update は既存行のみ更新し、削除済みのセッションを作り直さない
+		if ok, err := st.Update(ctx, &httpx.Record{ID: "other", UserID: adminID, CreatedAt: now}); err != nil || ok {
+			t.Errorf("update of destroyed session = %v, %v", ok, err)
+		}
+		if g, _ := st.Get(ctx, "other"); g != nil {
+			t.Error("destroyed session resurrected by Update")
+		}
+		if err := st.Save(ctx, &httpx.Record{ID: "live", UserID: adminID, CreatedAt: now}); err != nil {
+			t.Fatal(err)
+		}
+		if ok, err := st.Update(ctx, &httpx.Record{ID: "live", UserID: adminID, CreatedAt: now, Data: map[string]any{"k": "v"}}); err != nil || !ok {
+			t.Errorf("update of live session = %v, %v", ok, err)
+		}
+		if g, _ := st.Get(ctx, "live"); g == nil || g.Data["k"] != "v" {
+			t.Errorf("live session after update: %+v", g)
+		}
 	})
 }

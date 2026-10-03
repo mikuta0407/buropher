@@ -66,7 +66,8 @@ func (a *App) mailHandlerCheckCredential(next http.HandlerFunc) http.HandlerFunc
 	return func(w http.ResponseWriter, r *http.Request) {
 		key := httpx.ParamsOf(r).String("key")
 		apiKey := a.Settings.String("mail_handler_api_key")
-		if !a.Settings.Bool("mail_handler_api_enabled") || subtle.ConstantTimeCompare([]byte(key), []byte(apiKey)) != 1 {
+		// buropher 独自（セキュリティ）: 鍵が未設定（空）なら空の key で通さない
+		if !a.Settings.Bool("mail_handler_api_enabled") || apiKey == "" || subtle.ConstantTimeCompare([]byte(key), []byte(apiKey)) != 1 {
 			w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 			w.WriteHeader(http.StatusForbidden)
 			_, _ = w.Write([]byte("Access denied. Incoming emails WS is disabled or key is invalid."))
