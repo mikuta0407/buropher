@@ -79,6 +79,10 @@ func lcs(a, b []string) []int {
 		bmatches[b[i]] = append(bmatches[b[i]], i)
 	}
 
+	if !withinMatchBudget(a[astart:afinish+1], bmatches) {
+		// 一致の組が多すぎる（同じ行の繰り返し）。先頭・末尾の共通部分だけを一致とし、中間はすべて変更とする
+		bmatches = nil
+	}
 	var thresh []int
 	var links []*lcsLink
 	getLink := func(i int) *lcsLink {
@@ -203,4 +207,20 @@ func DiffStrings(from, to []string) [][]Change {
 	}
 	match()
 	return diffs
+}
+
+// maxMatchPairs は LCS の計算で調べる一致の組の数の上限（textdiff.MaxMatchPairs と同じ理由）。
+// 同じ行を繰り返したページの差分・注釈で二乗の時間がかかるのを防ぐ。
+const maxMatchPairs = 10_000_000
+
+// withinMatchBudget は a の各要素について b 側の一致位置の数を合計し、maxMatchPairs 以下か。
+func withinMatchBudget(a []string, bmatches map[string][]int) bool {
+	total := 0
+	for _, s := range a {
+		total += len(bmatches[s])
+		if total > maxMatchPairs {
+			return false
+		}
+	}
+	return true
 }

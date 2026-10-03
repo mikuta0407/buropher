@@ -49,6 +49,10 @@ func lcs(a, b []string) []int {
 	for i := bstart; i <= bfinish; i++ {
 		bmatches[b[i]] = append(bmatches[b[i]], i)
 	}
+	if !withinMatchBudget(a[astart:afinish+1], bmatches) {
+		// 一致の組が多すぎる（同じ要素の繰り返し）。先頭・末尾の共通部分だけを一致とし、中間はすべて変更とする
+		bmatches = nil
+	}
 	var thresh []int
 	type link struct {
 		prev   *link
@@ -184,9 +188,10 @@ func splitWords(s string) []string {
 	return res
 }
 
-func h(s string) string {
-	return strings.NewReplacer("&", "&amp;", `"`, "&quot;", "'", "&#39;", "<", "&lt;", ">", "&gt;").Replace(s)
-}
+// htmlReplacer は h のエスケープ（呼び出しごとに Replacer を作ると長文で遅い）。
+var htmlReplacer = strings.NewReplacer("&", "&amp;", `"`, "&quot;", "'", "&#39;", "<", "&lt;", ">", "&gt;")
+
+func h(s string) string { return htmlReplacer.Replace(s) }
 
 var _ = html.EscapeString
 
@@ -195,14 +200,16 @@ func ToHTML(contentTo, contentFrom string) string {
 	words := splitWords(contentTo)
 	from := splitWords(contentFrom)
 	diffs := Diff(from, words)
-	out := make([]string, len(words))
+	escaped := make([]string, len(words))
 	for i, w := range words {
-		out[i] = h(w)
+		escaped[i] = h(w)
 	}
+	out := &gapList{rest: escaped}
 	wordsAdd, wordsDel, dels, delOff := 0, 0, 0, 0
+	var deleted strings.Builder
 	for _, d := range diffs {
 		addAt, addTo, delAt := -1, -1, -1
-		deleted := ""
+		deleted.Reset()
 		for _, ch := range d {
 			pos := ch.Pos
 			if ch.Op == '+' {
@@ -215,34 +222,90 @@ func ToHTML(contentTo, contentFrom string) string {
 				if delAt < 0 {
 					delAt = pos
 				}
-				if deleted != "" {
-					deleted += " "
+				if deleted.Len() > 0 {
+					deleted.WriteByte(' ')
 				}
-				deleted += ch.Elem
+				deleted.WriteString(ch.Elem)
 				wordsDel++
 			}
 		}
 		if addAt >= 0 {
-			out[addAt] = `<span class="diff_in">` + out[addAt]
-			out[addTo] = out[addTo] + `</span>`
+			out.set(addAt, `<span class="diff_in">`+out.get(addAt))
+			out.set(addTo, out.get(addTo)+`</span>`)
 		}
 		if delAt >= 0 {
 			idx := delAt - delOff + dels + wordsAdd
-			ins := `<span class="diff_out">` + h(deleted) + `</span>`
+			ins := `<span class="diff_out">` + h(deleted.String()) + `</span>`
 			if idx < 0 {
-				idx += len(out) + 1
+				idx += out.len() + 1
 			}
-			if idx > len(out) {
-				// Ruby の Array#insert は末尾より先なら nil で埋める
-				for len(out) < idx {
-					out = append(out, "")
-				}
-			}
-			out = append(out[:idx], append([]string{ins}, out[idx:]...)...)
+			// Ruby の Array#insert は末尾より先なら nil で埋める（insert が処理する）
+			out.insert(idx, ins)
 			dels++
 			delOff += wordsDel
 			wordsDel = 0
 		}
 	}
-	return strings.Join(out, " ")
+	return out.join(" ")
+}
+
+// gapList は Array#insert を繰り返す ToHTML 用の列。挿入位置はほぼ単調に増えるため、
+// 挿入位置より前を res、後ろを rest に分けて持ち、各挿入を償却 O(1) にする
+// （単純な slice への挿入では変更の多い長文で二乗の時間がかかる）。
+type gapList struct {
+	res, rest []string
+}
+
+func (g *gapList) len() int { return len(g.res) + len(g.rest) }
+
+func (g *gapList) get(i int) string {
+	if i < len(g.res) {
+		return g.res[i]
+	}
+	return g.rest[i-len(g.res)]
+}
+
+func (g *gapList) set(i int, v string) {
+	if i < len(g.res) {
+		g.res[i] = v
+		return
+	}
+	g.rest[i-len(g.res)] = v
+}
+
+// insert は Array#insert(idx, v)（0 <= idx。末尾より先なら "" で埋める）。
+func (g *gapList) insert(idx int, v string) {
+	if idx < len(g.res) {
+		// 稀な後戻り: 通常の slice 挿入
+		g.res = append(g.res[:idx], append([]string{v}, g.res[idx:]...)...)
+		return
+	}
+	n := min(idx-len(g.res), len(g.rest))
+	g.res = append(g.res, g.rest[:n]...)
+	g.rest = g.rest[n:]
+	for len(g.res) < idx {
+		g.res = append(g.res, "")
+	}
+	g.res = append(g.res, v)
+}
+
+func (g *gapList) join(sep string) string {
+	return strings.Join(append(g.res, g.rest...), sep)
+}
+
+// MaxMatchPairs は LCS の計算で調べる一致の組の数の上限。Hunt-Szymanski 法は一致の組の数に比例する
+// 時間がかかり、同じ行・単語を繰り返した文章では二乗に膨らむ（数百 KB の説明でサーバーを数分止められる）。
+// 上限を超えたら中間部分の対応付けを諦める（差分は正しいが最小ではなくなる）。
+const MaxMatchPairs = 10_000_000
+
+// withinMatchBudget は a の各要素について b 側の一致位置の数を合計し、MaxMatchPairs 以下か。
+func withinMatchBudget(a []string, bmatches map[string][]int) bool {
+	total := 0
+	for _, s := range a {
+		total += len(bmatches[s])
+		if total > MaxMatchPairs {
+			return false
+		}
+	}
+	return true
 }
