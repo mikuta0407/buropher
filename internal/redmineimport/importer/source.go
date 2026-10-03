@@ -9,10 +9,14 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"regexp"
 	"strings"
 
 	"github.com/mikuta0407/buropher/internal/redmineimport/archive"
 )
+
+// tableNameRe はマニフェストのテーブル名として受け付ける形式（Redmine のテーブル名）。
+var tableNameRe = regexp.MustCompile(`^[a-z][a-z0-9_]*$`)
 
 // source はアーカイブを一度だけ先頭から読み、テーブルを一時ディレクトリへ展開したもの。
 // 変換は FK 依存順に行うため(アーカイブはテーブル名順)、テーブルは展開後に任意の順で何度でも読める。
@@ -66,6 +70,10 @@ func openSource(ctx context.Context, archivePath, tempDir, stageDir string) (*so
 		}
 		switch e.Kind {
 		case archive.KindTable:
+			// テーブル名はマニフェスト由来なので、一時ディレクトリの外に書かないよう検証する
+			if !tableNameRe.MatchString(e.Name) {
+				return nil, fmt.Errorf("invalid table name in manifest: %q", e.Name)
+			}
 			p := filepath.Join(dir, e.Name+".ndjson")
 			if err := writeFile(p, e.Reader()); err != nil {
 				return nil, err

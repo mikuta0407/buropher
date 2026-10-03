@@ -540,7 +540,7 @@ func (a *App) versionsShowText(c *Req, v *domain.Version) {
 	parts = append(parts, b.String())
 	body := strings.Join(parts, "\n\n")
 	c.W.Header().Set("Content-Type", "text/plain")
-	c.W.Header().Set("Content-Disposition", `attachment; filename="`+v.Name+`.txt"; filename*=UTF-8''`+url.PathEscape(v.Name)+".txt")
+	c.W.Header().Set("Content-Disposition", httpx.ContentDisposition("attachment", v.Name+".txt"))
 	c.W.WriteHeader(http.StatusOK)
 	_, _ = c.W.Write([]byte(body))
 	c.Halt()

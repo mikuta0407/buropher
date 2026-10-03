@@ -523,6 +523,35 @@ func TestEncodeAndSafeScheme(t *testing.T) {
 	}
 }
 
+// URL として解析できない値でも、javascript: などの危険なスキームのリンクは href を付けない
+// （Redmine の SanitizationFilter は uri_with_link_safe_scheme? の正規表現で判定する）。
+func TestLinkUnsafeSchemeWithUnparsableURL(t *testing.T) {
+	env := testEnv(t)
+	for _, v := range []string{"javascript://%0Aalert(1)", "JaVaScRiPt://x%0Aalert(1)//{", "vbscript://x|", "data://x%0A"} {
+		for name, cf := range map[string]*CustomField{
+			"link":    field("link"),
+			"pattern": field("string", withSetting("url_pattern", "%value%")),
+		} {
+			if got := formatted(env, cf, v, nil, true); strings.Contains(got, "href") {
+				t.Errorf("%s %q => %s", name, v, got)
+			}
+		}
+	}
+}
+
+func TestLinkValueHTML(t *testing.T) {
+	for v, want := range map[string]string{
+		"javascript:alert(document.cookie)": `<a href="http://javascript:alert(document.cookie)">javascript:alert(document.cookie)</a>`,
+		"javascript://%0Aalert(1)":          `<a>javascript://%0Aalert(1)</a>`,
+		"www.example.com":                   `<a href="http://www.example.com" class="external">www.example.com</a>`,
+		"https://example.com/?a=1&b=<x>":    `<a href="https://example.com/?a=1&amp;b=&lt;x&gt;">https://example.com/?a=1&amp;b=&lt;x&gt;</a>`,
+	} {
+		if got := string(LinkValueHTML(v)); got != want {
+			t.Errorf("%q:\n got %s\nwant %s", v, got, want)
+		}
+	}
+}
+
 func TestSetPossibleValues(t *testing.T) {
 	cf := field("list")
 	SetPossibleValues(cf, "a\r\n b \n\n c")

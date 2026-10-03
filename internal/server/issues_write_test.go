@@ -356,6 +356,25 @@ func TestIssuesEditForm(t *testing.T) {
 	}
 }
 
+// カテゴリの既定担当者の名前は .html() に渡るので HTML エスケープしてから JS エスケープする（XSS）。
+func TestIssuesNewJSCategoryAssigneeEscaped(t *testing.T) {
+	ts, d, _ := newIssuesWriteServer(t)
+	// カテゴリ 1 の担当者は jsmith（id 2）
+	if _, err := d.Exec(context.Background(), `UPDATE principals SET lastname = '<img src=x onerror=alert(1)>' WHERE id = 2`); err != nil {
+		t.Fatal(err)
+	}
+	c := login(t, ts, "jsmith", "jsmith")
+	res, body := projSubmit(t, c, ts, http.MethodPost, "/projects/ecookbook/issues/new.js", url.Values{
+		"form_update_triggered_by": {"issue_category_id"}, "issue[tracker_id]": {"1"}, "issue[category_id]": {"1"},
+	}, true)
+	if res.StatusCode != http.StatusOK {
+		t.Fatalf("new.js: status %d", res.StatusCode)
+	}
+	if strings.Contains(body, "<img src=x") || !strings.Contains(body, "'John &lt;img src=x onerror=alert(1)&gt;'") {
+		t.Errorf("assignee name not escaped:\n%s", body[strings.LastIndex(body, ".html("):])
+	}
+}
+
 func TestIssuesAPIWrite(t *testing.T) {
 	ts, d, n := newIssuesWriteServer(t)
 	res, body := issuesAPIRequest(t, ts, http.MethodPost, "/issues.json", "jsmith", "jsmith", "application/json",

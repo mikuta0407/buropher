@@ -293,6 +293,9 @@ type Identity struct {
 	GroupsOverage bool
 	// AuthTime は auth_time クレーム（無ければゼロ値）。
 	AuthTime time.Time
+	// MailUnverified は email_verified クレームが明示的に false（IdP がメールアドレスを検証していない）。
+	// クレームが無い場合（Entra など）は false。
+	MailUnverified bool
 	// IDToken は生の ID トークン（RP-Initiated Logout の id_token_hint 用）。
 	IDToken string
 	// Claims は全クレーム。
@@ -400,6 +403,12 @@ func (p *Provider) identity(issuer string, claims map[string]any) *Identity {
 	}
 	if v, ok := claims["auth_time"].(float64); ok {
 		id.AuthTime = time.Unix(int64(v), 0)
+	}
+	switch v := claims["email_verified"].(type) {
+	case bool:
+		id.MailUnverified = !v
+	case string:
+		id.MailUnverified = strings.EqualFold(v, "false")
 	}
 	// Entra でメールが無い場合は preferred_username（UPN）をメールとして使う
 	if id.Mail == "" && c.Preset == PresetEntra && strings.Contains(id.Login, "@") {

@@ -1073,9 +1073,11 @@ func importTotal(m *importModel) int {
 	return *m.TotalItems
 }
 
-// simpleFormatWithoutParagraph は ApplicationHelper#simple_format_without_paragraph（エスケープしない）。
+// simpleFormatWithoutParagraph は ApplicationHelper#simple_format_without_paragraph。
+// buropher では < > & をエスケープする（メッセージは CSV の値を含みうるため）。
 func simpleFormatWithoutParagraph(text string) template.HTML {
-	s := strings.ReplaceAll(text, "\r\n", "\n")
+	s := strings.NewReplacer("&", "&amp;", "<", "&lt;", ">", "&gt;").Replace(text)
+	s = strings.ReplaceAll(s, "\r\n", "\n")
 	s = strings.ReplaceAll(s, "\r", "\n")
 	s = regexp.MustCompile(`\n\n+`).ReplaceAllString(s, "<br /><br />")
 	// ([^\n]\n)(?=[^\n]) → '\1<br />'
