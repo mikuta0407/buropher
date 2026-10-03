@@ -438,7 +438,30 @@ func (a *App) validateRepository(c *Req, f *repositoryForm) error {
 	if strings.TrimSpace(r.URL) == "" {
 		errs.Add("url", "blank")
 	}
+	if f.newRecord && !a.validRepositoryPath(r) {
+		errs.Add("url", "invalid")
+	}
 	return nil
+}
+
+// validRepositoryPath は Repository#validate_repository_path（scm_git_path_regexp に全体一致するか。
+// 未設定なら常に真）。正規表現が不正なら安全側に倒して拒否する。
+func (a *App) validRepositoryPath(r *domain.Repository) bool {
+	pat := strings.TrimSpace(a.GitPathRegexp)
+	if pat == "" {
+		return true
+	}
+	ident := ""
+	if r.Project != nil {
+		ident = r.Project.Identifier
+	}
+	pat = strings.ReplaceAll(pat, "%project%", regexp.QuoteMeta(ident))
+	re, err := regexp.Compile(`\A(?:` + pat + `)\z`)
+	if err != nil {
+		a.logger().Error("invalid scm.git_path_regexp", "err", err)
+		return false
+	}
+	return re.MatchString(r.URL)
 }
 
 // saveRepository は repository.save（検証 → check_default → INSERT / UPDATE）。

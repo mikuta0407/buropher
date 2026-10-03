@@ -84,6 +84,8 @@ type App struct {
 	PDFFonts *pdf.FontSet
 	// GitCommand は git の実行ファイル（設定 scm.git_command。空なら "git"。repositories.go）。
 	GitCommand string
+	// GitPathRegexp はリポジトリのパスとして許可する正規表現（設定 scm.git_path_regexp。空なら制限しない）。
+	GitPathRegexp string
 	// AuthRealm は WWW-Authenticate の realm（config の server.auth_realm。空なら "Redmine"）。
 	AuthRealm string
 	// MailOmitRedmineHeaders は送信メールに X-Redmine-* を付けず X-Buropher-* だけにする

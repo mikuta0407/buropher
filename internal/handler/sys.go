@@ -124,7 +124,7 @@ func (a *App) SysCreateProjectRepository(w http.ResponseWriter, r *http.Request)
 		}
 	}
 	if repo.URL == "" || len(repo.URL) > 255 || (repo.Identifier != "" && (!domain.RepositoryIdentifierRe.MatchString(repo.Identifier) ||
-		domain.RepositoryIdentifierAllDigits.MatchString(repo.Identifier))) {
+		domain.RepositoryIdentifierAllDigits.MatchString(repo.Identifier))) || !a.validRepositoryPath(repo) {
 		httpx.Head(w, r, http.StatusUnprocessableEntity)
 		return
 	}

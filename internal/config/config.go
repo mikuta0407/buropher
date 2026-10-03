@@ -182,6 +182,9 @@ type SCM struct {
 	// FetchInterval はチェンジセットを定期的に取り込む間隔（"15m" など。空なら定期取り込みしない。
 	// Redmine の cron による Repository.fetch_changesets 相当）。
 	FetchInterval string `toml:"fetch_interval"`
+	// GitPathRegexp はリポジトリのパス（url）として許可する正規表現（Redmine の scm_git_path_regexp。
+	// 全体一致。%project% はプロジェクトの識別子に置き換わる。空なら制限しない）。
+	GitPathRegexp string `toml:"git_path_regexp"`
 }
 
 // MailReceive はサーバー内でのメールの定期受信（Redmine の rake redmine:email:receive_imap / receive_pop3 を
@@ -255,6 +258,7 @@ func Load(path string) (*Config, error) {
 		"BUROPHER_PDF_FONT_DIR":           &c.PDF.FontDir,
 		"BUROPHER_SCM_GIT_COMMAND":        &c.SCM.GitCommand,
 		"BUROPHER_SCM_FETCH_INTERVAL":     &c.SCM.FetchInterval,
+		"BUROPHER_SCM_GIT_PATH_REGEXP":    &c.SCM.GitPathRegexp,
 		"BUROPHER_THEMES_DIR":             &c.Web.ThemesDir,
 	}
 	for k, p := range env {
