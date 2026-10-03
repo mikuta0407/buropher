@@ -502,6 +502,9 @@ func (a *App) settingsMembers(c *Req, p *domain.Project) ([]settingsMember, erro
 		}
 		return pos
 	}
+	// 削除済みのユーザー・グループを指すメンバー（移行したデータに残る孤児）は表示しない。
+	// 並べ替えの比較が Principal を参照するので、並べ替えより前に除く
+	members = slices.DeleteFunc(slices.Clone(members), func(m *repository.MemberPrincipal) bool { return m.Principal() == nil })
 	sort.SliceStable(members, func(i, j int) bool {
 		pi, pj := minPos(members[i]), minPos(members[j])
 		if pi != pj {
@@ -521,9 +524,6 @@ func (a *App) settingsMembers(c *Req, p *domain.Project) ([]settingsMember, erro
 	})
 	var out []settingsMember
 	for _, m := range members {
-		if m.Principal() == nil {
-			continue
-		}
 		var roles []*domain.Role
 		for _, id := range m.Member.RoleIDs() {
 			if r := roleByID[id]; r != nil {

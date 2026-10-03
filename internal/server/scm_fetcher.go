@@ -6,6 +6,7 @@ package server
 import (
 	"context"
 	"log/slog"
+	"runtime/debug"
 	"time"
 
 	"github.com/mikuta0407/buropher/internal/repository"
@@ -37,10 +38,18 @@ func (s *Server) startSCMFetcher(ctx context.Context) {
 					slog.Error("scm fetch: anonymous user", "err", err)
 					continue
 				}
-				// 通知先（メール・Discord の有効・無効）は管理画面で変わるので毎回作る
-				if err := app.SCMService().FetchAll(ctx, anon); err != nil {
-					slog.Error("scm fetch", "err", err)
-				}
+				func() {
+					// 任意のリポジトリの出力を解析するので、panic してもサーバ全体を落とさず次の回に再試行する
+					defer func() {
+						if r := recover(); r != nil {
+							slog.Error("scm fetch: panic", "err", r, "stack", string(debug.Stack()))
+						}
+					}()
+					// 通知先（メール・Discord の有効・無効）は管理画面で変わるので毎回作る
+					if err := app.SCMService().FetchAll(ctx, anon); err != nil {
+						slog.Error("scm fetch", "err", err)
+					}
+				}()
 			}
 		}
 	})
