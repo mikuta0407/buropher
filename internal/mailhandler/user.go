@@ -192,7 +192,13 @@ func (r *receiver) createUserFromEmail(ctx context.Context) (*domain.User, strin
 	u.PasswordHash = hash
 	u.PasswordChangedAt = &changed
 	n := &domain.UserNotification{MailNotification: nu.MailNotification, NoSelfNotified: h.Settings.Bool("default_users_no_self_notified")}
-	if _, err := repository.InsertUser(ctx, h.DB, u, nu.Mail, n, now); err != nil {
+	// principals・user_accounts・email_addresses・通知設定の行は 1 トランザクションで作る（途中で失敗して
+	// ログインもメールアドレスも無い principals の行が残らないように）
+	if err := h.DB.WithTx(ctx, func(tx *db.Tx) error {
+		_, err := repository.InsertUser(ctx, tx, u, nu.Mail, n, now)
+		return err
+	}); err != nil {
+		u.ID = 0
 		return nil, "", err
 	}
 	u.Mail = nu.Mail
@@ -222,7 +228,10 @@ func (r *receiver) addUserToGroup(ctx context.Context, defaultGroup string) erro
 			r.h.logger().Warn("MailHandler: could not add user to [" + name + "], group not found")
 			continue
 		}
-		if err := repository.AddUserToGroup(ctx, r.h.DB, found.ID, r.user.ID); err != nil {
+		// グループのメンバーシップ・ロールのコピーを含むので 1 グループずつトランザクションにする
+		if err := r.h.DB.WithTx(ctx, func(tx *db.Tx) error {
+			return repository.AddUserToGroup(ctx, tx, found.ID, r.user.ID)
+		}); err != nil {
 			return err
 		}
 	}
