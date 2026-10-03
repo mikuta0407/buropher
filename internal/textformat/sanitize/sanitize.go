@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package sanitize は Redmine の CommonMark 用サニタイズ処理を移植したもの。
 //
 //   - Redmine::WikiFormatting::CommonMark::SanitizationFilter

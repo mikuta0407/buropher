@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package query は Redmine のクエリシステム (app/models/query.rb, issue_query.rb,
 // time_entry_query.rb, project_query.rb, project_admin_query.rb, user_query.rb) を移植する。
 //

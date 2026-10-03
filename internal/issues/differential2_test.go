@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package issues
 
 // 差分シナリオ 2 (testdata/gen/dump_scenario2.rb): 複数値カスタムフィールド、ワークフローの必須・読み取り専用、

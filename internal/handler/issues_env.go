@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package handler
 
 // チケットの書き込み系（IssuesController の作成・更新・削除、IssueRelationsController、WatchersController、

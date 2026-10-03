@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package notify
 
 // チケット以外のイベント通知（モデルの after_create_commit 等で Mailer.deliver_* を呼ぶ部分）。

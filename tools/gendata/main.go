@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // gendata は性能測定用に、マイグレーション済みの buropher DB へ現実的な規模のデータを投入する。
 //
 // 既定の規模 (-scale 1): プロジェクト 200 (入れ子), ユーザー 500, グループ 50, チケット 10 万

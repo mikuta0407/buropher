@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package importer は Redmine エクスポートアーカイブ(internal/redmineimport/archive)を
 // buropher の新スキーマへ取り込む(`buropher redmine import`)。
 //

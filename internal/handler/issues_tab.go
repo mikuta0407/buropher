@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package handler
 
 // IssuesController#issue_tab（チケット詳細の作業時間・関連リビジョンのタブを XHR で返す）。

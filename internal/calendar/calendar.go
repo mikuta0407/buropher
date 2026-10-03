@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package calendar は Redmine::Helpers::Calendar（lib/redmine/helpers/calendar.rb）の移植。
 //
 // 月表示（CalendarsController#show）と週表示（マイページのカレンダーブロック）の開始日・終了日を求め、

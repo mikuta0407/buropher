@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package issues
 
 // test/unit/issue_test.rb の移植 (240〜1352 行: 可視性スコープ・編集権限・カスタムフィールド・

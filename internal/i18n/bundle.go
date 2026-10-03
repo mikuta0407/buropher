@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package i18n は Rails I18n（i18n gem 1.14 + Fallbacks + Pluralization）と
 // Redmine::I18n 互換のローカライズ機能を提供する。
 //
@@ -6,7 +9,8 @@
 //
 //  1. rails/{activesupport,activemodel,activerecord,actionview}.en.yml（Rails gem 同梱の既定訳）
 //  2. rails/doorkeeper.*.yml（doorkeeper-i18n gem）、rails/doorkeeper-gem.en.yml（doorkeeper gem 本体）
-//  3. redmine/*.yml（Redmine 本体。無改変）
+//  3. redmine/*.yml（Redmine 本体。ファイルは無改変で、読み込み時に訳文の値の製品名 "Redmine" を
+//     "Buropher" に置換する。brand.SubstituteLocale / brand.LocaleExcluded を参照）
 //  4. overlay/*.yml（buropher 独自キー）
 //
 // 利用可能ロケール（valid_languages）は redmine/*.yml のファイル名で決まる。
@@ -21,6 +25,7 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/mikuta0407/buropher/internal/brand"
 	"github.com/mikuta0407/buropher/web"
 )
 
@@ -109,6 +114,13 @@ func Load(fsys fs.FS) (*Bundle, error) {
 		if err != nil {
 			return nil, fmt.Errorf("i18n: %s: %w", f, err)
 		}
+		if strings.HasPrefix(f, "redmine/") {
+			for _, v := range tree {
+				if m, ok := v.(map[string]any); ok {
+					rebrand(m, "")
+				}
+			}
+		}
 		for loc, v := range tree {
 			m, ok := v.(map[string]any)
 			if !ok {
@@ -127,6 +139,44 @@ func Load(fsys fs.FS) (*Bundle, error) {
 	}
 	sort.Strings(b.available)
 	return b, nil
+}
+
+// rebrand は Redmine 本体の訳文ツリーの文字列値（配列要素を含む）に brand.SubstituteLocale を適用する。
+// キーは変えない。prefix はロケールを除いたドット区切りのキー。
+func rebrand(m map[string]any, prefix string) {
+	for k, v := range m {
+		key := k
+		if prefix != "" {
+			key = prefix + "." + k
+		}
+		if brand.LocaleExcluded(key) {
+			continue
+		}
+		m[k] = rebrandValue(v, key)
+	}
+}
+
+func rebrandValue(v any, key string) any {
+	switch x := v.(type) {
+	case string:
+		return brand.SubstituteLocale(x)
+	case map[string]any:
+		rebrand(x, key)
+	case []any:
+		for i, e := range x {
+			x[i] = rebrandValue(e, key)
+		}
+	}
+	return v
+}
+
+// RebrandLocaleValue は Redmine 本体の訳文の値 v（キー key）に読み込み時と同じブランド置換を適用した値を返す。
+// Redmine から生成したゴールデンデータとの比較に使う。
+func RebrandLocaleValue(key string, v any) any {
+	if brand.LocaleExcluded(key) {
+		return v
+	}
+	return rebrandValue(v, key)
 }
 
 // deepMerge は I18n::Utils.deep_merge! と同じく、両方がハッシュなら再帰し、それ以外は後勝ちで上書きする。

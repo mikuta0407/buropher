@@ -38,6 +38,8 @@ cp "$GEMS"/doorkeeper-5.*/config/locales/en.yml web/locales/rails/doorkeeper-gem
 # 静的エラーページ
 mkdir -p web/public
 cp "$SRC/public/404.html" "$SRC/public/500.html" web/public/
+# 製品名の置換（Buropher のブランディング。ロケールは internal/i18n が読み込み時に置換する）
+sed -i 's/Redmine/Buropher/g' web/public/404.html web/public/500.html
 # バージョン記録
 grep -E "MAJOR|MINOR|TINY" "$SRC/lib/redmine/version.rb" | head -3 > web/UPSTREAM_VERSION
 echo "synced from $SRC"

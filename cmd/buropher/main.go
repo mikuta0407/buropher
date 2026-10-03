@@ -1,4 +1,7 @@
-// Command buropher は Redmine 互換チケットシステムの単一バイナリ。
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
+// Command buropher は Redmine 互換のプロジェクト管理システム Buropher の単一バイナリ。
 package main
 
 import (
@@ -18,6 +21,7 @@ import (
 	"syscall"
 
 	"github.com/mikuta0407/buropher/internal/bootstrap"
+	"github.com/mikuta0407/buropher/internal/brand"
 	"github.com/mikuta0407/buropher/internal/config"
 	"github.com/mikuta0407/buropher/internal/db"
 	"github.com/mikuta0407/buropher/internal/redmineimport/export"
@@ -63,11 +67,14 @@ func printVersion(w io.Writer) {
 	if d == "" {
 		d = "unknown"
 	}
-	fmt.Fprintf(w, "buropher %s\ncommit: %s\nbuilt: %s\ngo: %s %s/%s\n", version, c, d, runtime.Version(), runtime.GOOS, runtime.GOARCH)
+	fmt.Fprintf(w, "%s %s (Redmine %s compatible)\ncommit: %s\nbuilt: %s\ngo: %s %s/%s\n", brand.Name, version, brand.UpstreamVersion, c, d, runtime.Version(), runtime.GOOS, runtime.GOARCH)
+	fmt.Fprintln(w, brand.LicenseLine())
 }
 
 func usage() {
-	fmt.Fprintf(os.Stderr, `usage: buropher <command> [options]
+	fmt.Fprintf(os.Stderr, `Buropher - Redmine-compatible project management (`+brand.License+`)
+
+usage: buropher <command> [options]
 
 commands:
   serve     start the web server
@@ -78,7 +85,7 @@ commands:
   reminders send due date reminders (rake redmine:send_reminders: -days -tracker -project -users -version)
   jobs      run pending background jobs once (jobs run)
   mail      receive emails (mail receive -stdin | -imap | -pop3 [options])
-  version   print version, commit, build date and Go version
+  version   print version, commit, build date, Go version and license
 `)
 }
 

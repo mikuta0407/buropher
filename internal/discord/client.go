@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package discord は Discord REST API（v10）の最小限のクライアント（Bot による DM 送信、OAuth2 での
 // アカウント連携、Guild への参加）。依存を増やさないよう net/http だけで実装する。
 //

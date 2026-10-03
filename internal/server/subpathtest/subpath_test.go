@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package subpathtest はサブパス配置（server.relative_url_root）のサーバを確認する。
 // relative_url_root はプロセス全体の設定（urlroot）なので、ほかのサーバテストと同じテストバイナリで
 // 並列に動かさないよう独立したパッケージにしている。

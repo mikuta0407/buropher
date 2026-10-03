@@ -1,8 +1,10 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package server_test
 
 import (
 	"context"
-	"io"
 	"io/fs"
 	"net/http"
 	"strings"
@@ -26,7 +28,7 @@ func getWithLang(t *testing.T, c *http.Client, u, lang string) (*http.Response, 
 		t.Fatal(err)
 	}
 	defer res.Body.Close()
-	b, _ := io.ReadAll(res.Body)
+	b, _ := readUnbranded(res.Body)
 	return res, string(b)
 }
 

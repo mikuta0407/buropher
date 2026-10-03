@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: GPL-2.0-or-later AND MIT
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+// Portions ported from libxml2 (https://gitlab.gnome.org/GNOME/libxml2),
+// Copyright (C) 1998-2012 Daniel Veillard, MIT License.
+
 package htmldom
 
 import (

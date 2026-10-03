@@ -1,5 +1,5 @@
-// Copyright (C) 2026 buropher contributors
 // SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
 
 // Package scm は Redmine の SCM アダプタ（lib/redmine/scm/adapters/abstract_adapter.rb,
 // git_adapter.rb）の移植。buropher は Git のみ対応する（D-15）。

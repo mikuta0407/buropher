@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package domain は Redmine のモデルに相当するドメイン型を定義する。
 //
 // 型名・メソッド名は Redmine の語彙 (Principal / User / Group / Project / Role /

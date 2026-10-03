@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package mail
 
 // HTML メールの CSS インライン化（Redmine の Mailer が include する Roadie::Rails::Automatic の移植）。

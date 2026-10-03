@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package permission は Redmine::AccessControl（lib/redmine/access_control.rb）の移植。
 //
 // 権限定義は lib/redmine/preparation.rb を Redmine 実行時にダンプした permissions.json

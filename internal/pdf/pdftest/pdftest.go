@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package pdftest は buropher が生成した PDF をテストで調べるための簡易な解析器
 // （ページ数と、各ページの Tj で描いた文字列。fpdf の UTF-8 フォントは UTF-16BE で書かれる）。
 package pdftest

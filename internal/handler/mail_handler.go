@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package handler
 
 import (
@@ -113,7 +116,7 @@ var mailHandlerNewTemplate = template.Must(template.New("mail_handler/new").Pars
 </style>
 </head>
 <body>
-<h1>Redmine Mail Handler</h1>
+<h1>Buropher Mail Handler</h1>
 
 <form enctype="multipart/form-data" action="{{.Action}}" accept-charset="UTF-8" method="post"><input type="hidden" name="authenticity_token" value="{{.Token}}" autocomplete="off" />
   <input type="hidden" name="key" id="key" value="{{.Key}}" autocomplete="off" />

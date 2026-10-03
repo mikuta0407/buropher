@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package export は Redmine 6.1.x の DB を読み取り専用で読み、中立形式のアーカイブ
 // (internal/redmineimport/archive)へ書き出す。Ruby 環境は不要。
 //

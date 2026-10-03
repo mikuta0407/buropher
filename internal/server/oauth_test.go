@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package server_test
 
 import (
@@ -74,7 +77,7 @@ func oauthDo(t *testing.T, c *http.Client, method, u string, form url.Values, he
 		t.Fatal(err)
 	}
 	defer res.Body.Close()
-	b, _ := io.ReadAll(res.Body)
+	b, _ := readUnbranded(res.Body)
 	return res, string(b)
 }
 

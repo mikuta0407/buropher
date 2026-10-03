@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package customfield は Redmine のカスタムフィールド（app/models/custom_field.rb とサブクラス、
 // custom_field_enumeration.rb、lib/redmine/field_format.rb）の移植。
 //

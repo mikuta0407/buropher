@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package clock はアプリ全体の現在時刻を提供する。
 //
 // 通常は time.Now() を返すが、互換テスト用に環境変数 BUROPHER_FAKE_NOW（RFC3339）を設定すると

@@ -54,6 +54,50 @@ Every accepted difference is listed with a reason in
 
 The extra UI elements are marked with the CSS class `buropher-extra`.
 
+## Branding and compatibility identifiers
+
+The user-visible product name is **Buropher** ("Redmine-compatible"); the binary, Go
+module and config/env prefixes stay lowercase `buropher`.
+
+Renamed (user-visible):
+
+- Default `app_title` setting ("Buropher") and default `welcome_text`. Installations
+  imported from Redmine keep their stored values; the fixture-based compat DB has no
+  stored `app_title`, so it shows the new default.
+- `<meta name="description">` (app name), footer ("Powered by Buropher, based on Redmine
+  © 2006-… Jean-Philippe Lang", same markup), Atom `<generator>`, PDF creator, `X-Mailer`,
+  test e-mail text, mail handler page title, static error pages (`web/public/*.html`,
+  rewritten by `tools/sync-upstream.sh`), the default administrator created by
+  `buropher init` ("Buropher Admin"), Administration > Information (version, "Based on
+  Redmine 6.1.2", license and source link), `buropher version` / usage text.
+- Translations: Redmine's `web/locales/redmine/*.yml` files stay unmodified; at load time
+  `internal/i18n` replaces the product name "Redmine" with "Buropher" in translation
+  *values* of those files (never in keys, URLs such as `redmine.org`, identifiers such as
+  `X-Redmine-…`, or words such as Basque "Redmineko"; rules in `brand.SubstituteLocale`).
+  Excluded keys, which describe Redmine's own `config/configuration.yml` and therefore
+  keep the original wording: `text_scm_config`, `text_setting_config_change`,
+  `text_email_delivery_not_configured`. Buropher's own `overlay/*.yml` is not rewritten.
+  The i18n golden tests apply the same substitution to the expected values.
+
+Kept as Redmine (machine-facing or intentionally referring to Redmine), with Buropher
+aliases where noted:
+
+| Identifier | Behavior |
+|---|---|
+| `X-Redmine-API-Key`, `X-Redmine-Switch-User` request headers | Accepted as before. `X-Buropher-API-Key` / `X-Buropher-Switch-User` are accepted as aliases; if both are given, `X-Buropher-*` wins. `X-Redmine-Nometa` / `X-Buropher-Nometa` likewise. |
+| `X-Redmine-*` mail headers (`X-Redmine-Project`, `-Issue-Id`, `-Host`, `-Site`, ...) | Every header is also sent as `X-Buropher-*` with the same value, right after its `X-Redmine-*` counterpart. `[mail] redmine_compat_headers = false` (env `BUROPHER_MAIL_REDMINE_HEADERS=false`) sends only `X-Buropher-*`. The mail handler does not depend on either family. |
+| `Message-ID` / `References` tokens `redmine.<class>-<id>.<time>[.<user>]@<host>` | Default prefix stays `redmine` so replies to mails sent by Redmine before the migration keep threading; `[mail] message_id_prefix = "buropher"` switches new mails. Incoming replies are matched with either prefix. |
+| `WWW-Authenticate` realm (`Basic realm="Redmine API"`, `Bearer realm="Redmine"`) | Kept by default for API clients; configurable with `[server] auth_realm`. |
+| REST API element names, form parameter names, CSS classes/ids, JavaScript globals, session/autologin cookie names | Unchanged (Redmine clients, themes and scripts depend on them). |
+| Help menu link to `https://www.redmine.org/guide`, wiki syntax help pages | Kept: they are Redmine's documentation, which applies to Buropher's compatible behavior. |
+| `buropher redmine export/import/verify` | Refer to the original Redmine (migration source). |
+| Fixture/user data such as "Redmine Admin" in imported databases | Data, not branding; unchanged. |
+
+The compat harness (`tools/compat`) normalizes only these branded strings on both sides
+(`normalize.Brand`: app title positions, footer, Atom generator, welcome text and the
+locale strings changed by the substitution), so the goldens generated from Redmine keep
+passing without per-case allowlisting.
+
 ## Supported databases and sources
 
 | | Supported |

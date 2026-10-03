@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package rails は Redmine のビューが使う ActionView ヘルパー（Rails 7.2）を
 // バイト単位で互換に再実装する。
 //

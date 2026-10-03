@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package helper
 
 // チケット画面のテンプレート関数（ApplicationHelper / IssuesHelper のうちモデルに依存しないもの）。

@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package oidctest はテスト用の OpenID Connect プロバイダ（httptest）を提供する。
 //
 // ディスカバリ（/.well-known/openid-configuration）・認可（/authorize）・トークン（/token）・JWKS（/jwks）・

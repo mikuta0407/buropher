@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package notify は通知（Redmine の Mailer の deliver_* と Redmine::Notifiable）の配送層。
 //
 // 流れ（_planning/07_notifications.md）:

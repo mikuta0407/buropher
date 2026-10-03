@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package oidc は OpenID Connect によるシングルサインオン（buropher 拡張。Redmine には無い）の
 // プロトコル部分を実装する。認可コードフロー + PKCE（S256）、state / nonce の検証、ID トークンの署名検証
 // （JWKS はプロバイダごとにキャッシュ）を github.com/coreos/go-oidc/v3 と golang.org/x/oauth2 で行う。

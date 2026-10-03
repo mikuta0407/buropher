@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package issues
 
 // Redmine との差分テスト: testdata/gen/dump_scenario.rb と同じ操作列 (作成・更新・ワークフロー・

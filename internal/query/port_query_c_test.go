@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package query
 
 // test/unit/query_test.rb (test_sort_criteria_should_have_only_first_three_elements 以降、末尾まで) の移植。

@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package handler
 
 // JournalsController の書き込み系: new（引用返信）・edit（注記の編集フォーム）・update（注記の更新・削除）。

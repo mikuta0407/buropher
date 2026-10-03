@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package handler
 
 // IssuesController#show（html / atom / pdf / api）と issue_tab、およびチケット詳細画面の HTML 部品

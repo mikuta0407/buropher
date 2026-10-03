@@ -1,5 +1,5 @@
-// Copyright (C) 2026 buropher contributors
 // SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
 
 // Package textile は Redmine 6.1.2 の Textile フォーマッタ
 // (Redmine::WikiFormatting::Textile::Formatter = RedCloth3 + Redmine の拡張) の移植である。

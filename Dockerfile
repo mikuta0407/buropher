@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-# buropher container image.
+# Buropher (Redmine-compatible, GPL-2.0-or-later) container image.
 #   docker build -t buropher --build-arg VERSION=$(git describe --tags --always) .
 # Data (SQLite DB, attachments, generated secret key) lives in /data.
 
@@ -16,6 +16,10 @@ RUN CGO_ENABLED=0 go build -trimpath \
       -o /out/buropher ./cmd/buropher
 
 FROM alpine:3.22
+LABEL org.opencontainers.image.title="Buropher" \
+      org.opencontainers.image.description="Redmine-compatible project management (derivative work of Redmine)" \
+      org.opencontainers.image.licenses="GPL-2.0-or-later" \
+      org.opencontainers.image.source="https://github.com/mikuta0407/buropher"
 # git: repository browsing (SCM), tzdata: server-local time for scheduled reminders, ca-certificates: SMTP/OIDC/Discord over TLS
 RUN apk add --no-cache git ca-certificates tzdata \
  && addgroup -S -g 10001 buropher \
@@ -23,6 +27,7 @@ RUN apk add --no-cache git ca-certificates tzdata \
  && mkdir -p /data \
  && chown buropher:buropher /data
 COPY --from=build /out/buropher /usr/local/bin/buropher
+COPY LICENSE NOTICE THIRD_PARTY_NOTICES.md /usr/share/doc/buropher/
 ENV BUROPHER_ADDR=:3000 \
     BUROPHER_DB_DRIVER=sqlite \
     BUROPHER_DB_DSN=/data/buropher.db \

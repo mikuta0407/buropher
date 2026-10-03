@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package server_test
 
 // 画面操作（HTTP）から通知の配送（メール / Discord DM）までの結合テスト。
@@ -15,6 +18,7 @@ import (
 	"testing"
 
 	"github.com/mikuta0407/buropher/internal/auth/totp"
+	"github.com/mikuta0407/buropher/internal/brand/brandtest"
 	"github.com/mikuta0407/buropher/internal/config"
 	"github.com/mikuta0407/buropher/internal/mail"
 	"github.com/mikuta0407/buropher/internal/mail/smtptest"
@@ -359,7 +363,7 @@ func TestNotifyWiringAccountMails(t *testing.T) {
 	w.form(c, "/my/twofa/totp/activate/confirm", "/my/twofa/totp/activate", url.Values{"twofa_code": {totp.Now(key, frozenTime)}})
 	w.run()
 	ms = w.sender.Messages()
-	if len(ms) != 1 || strings.Join(ms[0].To, ",") != "jsmith@somenet.foo" || ms[0].Subject != "[Redmine] Security notification" {
+	if len(ms) != 1 || strings.Join(ms[0].To, ",") != "jsmith@somenet.foo" || ms[0].Subject != "[Buropher] Security notification" {
 		t.Fatalf("twofa mails = %v", recipients(ms))
 	}
 	for _, s := range []string{"Two-factor authentication successfully enabled using Authenticator app.", "User: jsmith", "IP address: 127.0.0.1", "http://localhost:3000/my/account"} {
@@ -410,7 +414,7 @@ func TestNotifyWiringImports(t *testing.T) {
 	subjects := map[string]bool{gs["account_information"].Mails[0].Subject: true, "Redmine アカウント登録の確認": true}
 	var info []string
 	for _, m := range w.sender.Messages() {
-		if subjects[m.Subject] {
+		if subjects[brandtest.Unbrand(m.Subject)] {
 			info = append(info, strings.Join(m.To, ","))
 		}
 	}

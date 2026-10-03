@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package i18n
 
 import (
@@ -12,6 +15,10 @@ import (
 )
 
 // ゴールデンデータは testdata/gen_golden.rb で実際の Redmine 6.1.2（Rails I18n）から生成したもの。
+//
+// buropher は Redmine 本体の訳文の値に含まれる製品名 "Redmine" を読み込み時に "Buropher" へ置換する
+// （brand.SubstituteLocale）。ゴールデンは Redmine の出力そのままなので、訳文を返す関数（l / ll / lu /
+// l_or_humanize）と訳文ダンプの期待値には同じ置換（RebrandLocaleValue）を適用してから比較する。
 
 type goldenCase struct {
 	Fn     string `json:"fn"`
@@ -110,7 +117,7 @@ func TestTranslationsDump(t *testing.T) {
 	for loc, m := range dump {
 		for key, raw := range m {
 			total++
-			want := fromJSON(raw)
+			want := RebrandLocaleValue(key, fromJSON(raw))
 			if em, ok := want.(map[string]any); ok {
 				if _, isErr := em["__error"]; isErr {
 					continue
@@ -196,6 +203,14 @@ func TestGolden(t *testing.T) {
 	for _, c := range g.Cases {
 		args := toArgs(c.Args)
 		want := normalize(fromJSON(c.Want))
+		switch c.Fn {
+		case "l", "l_or_humanize":
+			want = RebrandLocaleValue(argString(args[0]), want)
+		case "ll":
+			want = RebrandLocaleValue(argString(args[1]), want)
+		case "lu":
+			want = RebrandLocaleValue(argString(args[2]), want)
+		}
 		if m, ok := want.(map[string]any); ok {
 			if e, isErr := m["__error"]; isErr {
 				// Ruby で例外になるケース。複数形データ不備のみ想定し、Go 側はエラーメッセージ文字列を返す。

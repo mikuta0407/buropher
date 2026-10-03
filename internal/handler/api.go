@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package handler
 
 import (
@@ -86,7 +89,7 @@ func (c *Req) IncludeInAPIResponse(arg string) bool {
 
 // APIMeta は api_meta(options)（nometa パラメータか X-Redmine-Nometa ヘッダがあれば nil）。
 func (c *Req) APIMeta(attrs apibuilder.Attrs) apibuilder.Attrs {
-	if c.Params().Present("nometa") || c.R.Header.Get("X-Redmine-Nometa") != "" {
+	if c.Params().Present("nometa") || nometaHeader(c.R) {
 		return nil
 	}
 	return attrs

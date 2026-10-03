@@ -1,9 +1,11 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package server_test
 
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 	"io/fs"
 	"net/http"
 	"os"
@@ -234,7 +236,7 @@ func TestRedmineRouteCoverage(t *testing.T) {
 					if err != nil {
 						t.Fatal(err)
 					}
-					body, _ := io.ReadAll(res.Body)
+					body, _ := readUnbranded(res.Body)
 					res.Body.Close()
 					switch {
 					case res.StatusCode == http.StatusNotFound && string(body) == string(generic404):

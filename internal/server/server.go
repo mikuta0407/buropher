@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package server は HTTP サーバとルーティング（Redmine の routes.rb 相当）を定義する。
 //
 // ミドルウェアの順序（httpx の推奨に従う）:
@@ -143,6 +146,9 @@ func New(cfg *config.Config, d *db.DB, opts ...Options) (*Server, error) {
 	app.BaseURL = cfg.Server.BaseURL
 	app.PDFFonts = pdf.NewFontSet(pdf.Config{Dir: cfg.PDF.FontDir, Fonts: cfg.PDF.Fonts, Logger: o.Logger})
 	app.GitCommand = cfg.SCM.GitCommand
+	app.AuthRealm = cfg.Server.AuthRealm
+	app.MailOmitRedmineHeaders = !cfg.Mail.SendRedmineHeaders()
+	app.MessageIDPrefix = cfg.Mail.MessageIDPrefix
 	if box, err := secretbox.New(string(secret)); err == nil {
 		app.Secrets = box
 	}

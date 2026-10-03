@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package query
 
 // test/unit/query_test.rb (1114 行目 test_filter_any_searchable_with_my_projects 〜

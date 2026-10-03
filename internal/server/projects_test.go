@@ -1,7 +1,9 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package server_test
 
 import (
-	"io"
 	"net/http"
 	"net/url"
 	"os"
@@ -123,7 +125,7 @@ func TestProjectsPagesMatchRedmine(t *testing.T) {
 				if res, err = newClient(t).Do(req); err != nil {
 					t.Fatal(err)
 				}
-				b, _ := io.ReadAll(res.Body)
+				b, _ := readUnbranded(res.Body)
 				res.Body.Close()
 				body = string(b)
 			} else {

@@ -10,7 +10,7 @@
 import re
 import sys
 
-HEADER = '// Code generated from Rouge 4.7 %s by tools/textformat/mkrougewords.py. DO NOT EDIT.\n\npackage highlight\n'
+HEADER = '// SPDX-License-Identifier: GPL-2.0-or-later AND MIT\n// Copyright (C) 2026 mikuta0407 and Buropher contributors\n// Portions ported from Rouge (https://github.com/rouge-ruby/rouge),\n// Copyright (c) 2012 Jeanine Adkisson and contributors, MIT License.\n\n// Code generated from Rouge 4.7 %s by tools/textformat/mkrougewords.py. DO NOT EDIT.\n\npackage highlight\n'
 
 
 def css(path):

@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // migrationgen コマンドは internal/db の go:generate から呼ばれ、
 // migrations/src のテンプレートから dialect 別マイグレーションを生成する。
 package main

@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package notify
 
 // アカウント・セキュリティ系のメール（常にメールで送る）。s が nil なら何もしない。

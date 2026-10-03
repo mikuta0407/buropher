@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package textdiff は Redmine::StringArrayDiff（lib/redmine/string_array_diff）と
 // Redmine::Helpers::Diff（単語単位の差分の HTML。チケットの説明の差分表示に使う）の移植。
 //

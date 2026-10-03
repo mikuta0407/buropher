@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package server_test
 
 // test/integration/api_test/authentication_test.rb の移植。
@@ -156,6 +159,23 @@ func TestAPIAuthentication(t *testing.T) {
 	t.Run("switch_to_locked_user_412", func(t *testing.T) {
 		// users(5) dlopper2 はロック済み
 		apiGet(t, ts, "/users/current", apiKeyHeader(adminKey), apiHeader("X-Redmine-Switch-User", "dlopper2")).expectStatus(t, http.StatusPreconditionFailed)
+	})
+	// buropher 拡張: X-Buropher-* ヘッダも同じ意味で受け付け、両方あれば X-Buropher-* を優先する
+	t.Run("buropher_api_key_header", func(t *testing.T) {
+		id, _ := authGenerateUser(t, ts, "")
+		key := authCreateToken(t, d, id, "api")
+		apiGet(t, ts, "/users/current.xml", apiHeader("X-Buropher-API-Key", key)).expectStatus(t, http.StatusOK)
+		apiGet(t, ts, "/users/current.json", apiHeader("X-Buropher-API-Key", jsmithKey), apiKeyHeader("wrong")).expectStatus(t, http.StatusOK)
+		res := apiGet(t, ts, "/users/current.json", apiHeader("X-Buropher-API-Key", jsmithKey), apiKeyHeader(adminKey))
+		assertJSON(t, res.JSON(t), "user.login", "jsmith")
+	})
+	t.Run("buropher_switch_user_header", func(t *testing.T) {
+		res := apiGet(t, ts, "/users/current.json", apiKeyHeader(adminKey), apiHeader("X-Buropher-Switch-User", "rhill"))
+		res.expectStatus(t, http.StatusOK)
+		assertJSON(t, res.JSON(t), "user.login", "rhill")
+		res = apiGet(t, ts, "/users/current.json", apiKeyHeader(adminKey), apiHeader("X-Buropher-Switch-User", "jsmith"), apiHeader("X-Redmine-Switch-User", "rhill"))
+		assertJSON(t, res.JSON(t), "user.login", "jsmith")
+		apiGet(t, ts, "/users/current.json", apiKeyHeader(adminKey), apiHeader("X-Buropher-Switch-User", "foobar")).expectStatus(t, http.StatusPreconditionFailed)
 	})
 	t.Run("switch_user_header_ignored_for_non_admin", func(t *testing.T) {
 		res := apiGet(t, ts, "/users/current", apiKeyHeader(jsmithKey), apiHeader("X-Redmine-Switch-User", "rhill"))

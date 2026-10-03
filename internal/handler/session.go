@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package handler
 
 import (
@@ -121,15 +124,15 @@ func (a *App) findCurrentUser(c *Req) *domain.User {
 			}
 			user = u
 		}
-		// 管理者による X-Redmine-Switch-User
+		// 管理者による X-Redmine-Switch-User（X-Buropher-Switch-User も受け付け、両方あれば X-Buropher-* を優先）
 		if user != nil && user.IsAdmin() {
-			if login := strings.TrimSpace(c.R.Header.Get("X-Redmine-Switch-User")); login != "" {
+			if name, login := brandRequestHeader(c.R, "Switch-User"); login != "" {
 				su, err := repository.FindUserByLogin(c.Ctx(), a.DB, login)
 				if err == nil && su.Active() {
 					a.logger().Info("User switched", "by", user.Login, "id", user.ID)
 					user = su
 				} else {
-					c.RenderError(http.StatusPreconditionFailed, "Invalid X-Redmine-Switch-User header")
+					c.RenderError(http.StatusPreconditionFailed, "Invalid "+name+" header")
 					return nil
 				}
 			}
@@ -143,7 +146,19 @@ func apiKeyFromRequest(c *Req) string {
 	if p := c.Params(); p.Present("key") {
 		return p.String("key")
 	}
-	return strings.TrimSpace(c.R.Header.Get("X-Redmine-API-Key"))
+	_, key := brandRequestHeader(c.R, "API-Key")
+	return key
+}
+
+// brandRequestHeader は X-Buropher-<suffix> と Redmine 互換の X-Redmine-<suffix> のうち、空でない方の
+// ヘッダ名と値（前後の空白を除く）を返す。両方あれば X-Buropher-* を優先する。
+func brandRequestHeader(r *http.Request, suffix string) (name, value string) {
+	for _, n := range []string{"X-Buropher-" + suffix, "X-Redmine-" + suffix} {
+		if v := strings.TrimSpace(r.Header.Get(n)); v != "" {
+			return n, v
+		}
+	}
+	return "", ""
 }
 
 // findTokenUser は Token.find_active_user(action, key, validity_days)（無ければ nil）。
@@ -454,4 +469,9 @@ func (a *App) authenticateWithAuthSources(c *Req, login, pw string) *ldap.Attrs 
 		}
 	}
 	return nil
+}
+
+// nometaHeader は X-Redmine-Nometa（または X-Buropher-Nometa）ヘッダが指定されているか。
+func nometaHeader(r *http.Request) bool {
+	return r.Header.Get("X-Redmine-Nometa") != "" || r.Header.Get("X-Buropher-Nometa") != ""
 }

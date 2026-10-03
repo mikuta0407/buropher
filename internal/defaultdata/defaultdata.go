@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package defaultdata は Redmine::DefaultData::Loader（lib/redmine/default_data/loader.rb）の移植。
 //
 // DB には依存せず、投入すべきデータ一式（Plan）を組み立てるだけにする。

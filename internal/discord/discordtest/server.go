@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package discordtest はテスト用の偽 Discord API サーバ（httptest）。
 //
 // /users/@me/channels（DM 作成）、/channels/{id}/messages（送信）、/oauth2/token、/users/@me、

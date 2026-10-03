@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package server_test
 
 // test/integration/api_test/attachments_test.rb の移植。
@@ -8,7 +11,6 @@ import (
 	"image"
 	"image/color"
 	"image/png"
-	"io"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -114,7 +116,7 @@ func rawUpload(t *testing.T, ts *httptest.Server, path, content string, opts ...
 		t.Fatal(err)
 	}
 	defer hr.Body.Close()
-	b, _ := io.ReadAll(hr.Body)
+	b, _ := readUnbranded(hr.Body)
 	return apiResp{Status: hr.StatusCode, Header: hr.Header, Body: string(b)}
 }
 

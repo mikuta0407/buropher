@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package commonmark は Redmine 6.1.2 の CommonMark 整形
 // （Redmine::WikiFormatting::CommonMark::Formatter）を移植したもの。
 //

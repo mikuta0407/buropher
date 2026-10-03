@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package ldaptest はテスト用の最小限の LDAP サーバ（プロセス内）。
 //
 // 対応する操作は simple bind / search（フィルタは and / or / not / equality / substrings / present /

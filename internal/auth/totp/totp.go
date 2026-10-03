@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package totp は Redmine の 2 要素認証 TOTP 方式（lib/redmine/twofa/totp.rb, ROTP 6.3）の移植。
 //
 //   - 鍵: ROTP::Base32.random（20 バイト乱数の Base32。32 文字・パディングなし・大文字）

@@ -1,5 +1,5 @@
-// Copyright (C) 2026 buropher contributors
 // SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
 
 // Package unifieddiff は Redmine::UnifiedDiff / Redmine::DiffTable / Redmine::Diff
 // （lib/redmine/unified_diff.rb, diff_table.rb, diff.rb）の移植。unified diff を解析して

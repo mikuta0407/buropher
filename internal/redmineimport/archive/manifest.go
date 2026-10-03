@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package archive は Redmine エクスポートアーカイブ(tar + zstd)の形式定義と
 // ストリーミング読み書きを提供する。形式の仕様は docs/export-format.md を参照。
 //

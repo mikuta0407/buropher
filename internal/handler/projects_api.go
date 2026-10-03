@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package handler
 
 import (
@@ -46,7 +49,7 @@ func apiOffsetAndLimitMin(c *Req) (offset, limit int) {
 
 // apiMetaMin は api_meta(:total_count => .., :offset => .., :limit => ..)（nometa なら nil）。
 func apiMetaMin(c *Req, total, offset, limit int) [][2]any {
-	if c.Params().Present("nometa") || c.R.Header.Get("X-Redmine-Nometa") != "" {
+	if c.Params().Present("nometa") || nometaHeader(c.R) {
 		return nil
 	}
 	return [][2]any{{"total_count", total}, {"offset", offset}, {"limit", limit}}

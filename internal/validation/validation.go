@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package validation は ActiveModel::Errors（モデルの検証エラー）の移植。
 //
 // Redmine のモデルの検証（validates_presence_of 等）は Go ではモデルごとの Validate 関数で行い、

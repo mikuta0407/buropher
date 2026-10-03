@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package mailhandler は Redmine のメール受信（app/models/mail_handler.rb）の移植。
 //
 // 受信したメールを解析し、送信者のユーザーで新しいチケット・チケットへの返信（ノート）・
@@ -187,7 +190,7 @@ func (r *receiver) receive(ctx context.Context) (any, error) {
 	// Redmine の送信元アドレスからのメールは無視する（ループ防止）
 	emission := strings.TrimSpace(emissionAddressRe.ReplaceAllString(r.h.Settings.String("mail_from"), ""))
 	if strings.EqualFold(sender, emission) {
-		log.Info("MailHandler: ignoring email from Redmine emission address [" + sender + "]")
+		log.Info("MailHandler: ignoring email from emission address [" + sender + "]")
 		return nil, nil
 	}
 	// 自動送信のメールは無視する
@@ -247,7 +250,9 @@ func (r *receiver) receive(ctx context.Context) (any, error) {
 }
 
 var (
-	messageIDRe           = regexp.MustCompile(`^<?redmine\.([a-z0-9_]+)\-(\d+)\.\d+(\.[a-f0-9]+)?@`)
+	// messageIDRe は Redmine / buropher が送ったメールの Message-ID（接頭辞は mail.message_id_prefix により
+	// "redmine." または "buropher."）。どちらの接頭辞の返信も受け付ける。
+	messageIDRe           = regexp.MustCompile(`^<?(?:redmine|buropher)\.([a-z0-9_]+)\-(\d+)\.\d+(\.[a-f0-9]+)?@`)
 	issueReplySubjectRe   = regexp.MustCompile(`\[(?:[^\]]*\s+)?#(\d+)\]`)
 	messageReplySubjectRe = regexp.MustCompile(`\[[^\]]*msg(\d+)\]`)
 )

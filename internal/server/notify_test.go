@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package server_test
 
 // 通知の結合テスト: イベント → 受信者計算 → チャネル決定 → ジョブ → 描画 → 配送（SMTP / 偽 Discord API）。
@@ -307,7 +310,7 @@ func TestNotifyAdminTestEmail(t *testing.T) {
 		t.Fatal(err)
 	}
 	ms := smtp.Messages()
-	if len(ms) != 1 || ms[0].To[0] != "admin@somenet.foo" || ms[0].Auth != "LOGIN" || !strings.Contains(ms[0].Data, "Subject: Redmine test") {
+	if len(ms) != 1 || ms[0].To[0] != "admin@somenet.foo" || ms[0].Auth != "LOGIN" || !strings.Contains(ms[0].Data, "Subject: Buropher test") {
 		t.Fatalf("messages = %+v", ms)
 	}
 }

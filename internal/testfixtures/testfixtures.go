@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package testfixtures は Redmine の公式テストフィクスチャ (test/fixtures/*.yml) を
 // buropher の新スキーマへ変換して投入するテスト用ローダ。
 //

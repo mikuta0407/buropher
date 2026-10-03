@@ -1,6 +1,10 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package settings は Redmine の Setting モデル（app/models/setting.rb）の移植。
 //
-// 設定項目の定義は Redmine の config/settings.yml を無改変で埋め込む。
+// 設定項目の定義は Redmine の config/settings.yml を埋め込む（製品名を含む既定値 app_title / welcome_text のみ
+// "Buropher" に変更している。Redmine から移行したインストールは保存済みの値を使う）。
 // 値の表現は Redmine に合わせ、非シリアライズ項目は常に文字列（Ruby の value.to_s）、
 // serialized 項目は配列/ハッシュ（[]any / map[string]any）として扱う。
 // 永続化は Store インタフェース経由（DB では settings.value に JSON で保存）。

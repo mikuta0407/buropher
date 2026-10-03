@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package server_test
 
 // test/functional/mail_handler_controller_test.rb の移植。
@@ -130,11 +133,11 @@ func TestMailHandlerShouldNotAllowWithWrongKey(t *testing.T) {
 
 func TestMailHandlerNew(t *testing.T) {
 	base, _ := newMailHandlerServer(t, "1")
-	res, body := get(t, newClient(t), base+"/mail_handler?key=secret")
+	res, body := getRaw(t, newClient(t), base+"/mail_handler?key=secret")
 	if res.StatusCode != http.StatusOK {
 		t.Fatalf("status = %d", res.StatusCode)
 	}
-	if !strings.Contains(body, "<h1>Redmine Mail Handler</h1>") || !strings.Contains(body, `<input type="hidden" name="key" id="key" value="secret" autocomplete="off" />`) {
+	if !strings.Contains(body, "<h1>Buropher Mail Handler</h1>") || !strings.Contains(body, `<input type="hidden" name="key" id="key" value="secret" autocomplete="off" />`) {
 		t.Errorf("body = %s", body)
 	}
 }

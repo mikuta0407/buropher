@@ -1,8 +1,10 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package server_test
 
 import (
 	"context"
-	"io"
 	"net/http"
 	"net/http/cookiejar"
 	"net/http/httptest"
@@ -85,7 +87,7 @@ func get(t *testing.T, c *http.Client, u string) (*http.Response, string) {
 		t.Fatal(err)
 	}
 	defer res.Body.Close()
-	b, _ := io.ReadAll(res.Body)
+	b, _ := readUnbranded(res.Body)
 	return res, string(b)
 }
 
@@ -96,7 +98,7 @@ func post(t *testing.T, c *http.Client, u string, form url.Values) (*http.Respon
 		t.Fatal(err)
 	}
 	defer res.Body.Close()
-	b, _ := io.ReadAll(res.Body)
+	b, _ := readUnbranded(res.Body)
 	return res, string(b)
 }
 
@@ -279,7 +281,7 @@ func TestLocalization(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	b, _ := io.ReadAll(res.Body)
+	b, _ := readUnbranded(res.Body)
 	res.Body.Close()
 	if !strings.Contains(string(b), `<html lang="ja">`) || !strings.Contains(string(b), "ログイン") {
 		t.Error("Accept-Language not applied")

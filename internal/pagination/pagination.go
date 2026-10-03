@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package pagination は Redmine::Pagination::Paginator（lib/redmine/pagination.rb）と
 // ApplicationController の per_page_option / api_offset_and_limit の移植。
 //

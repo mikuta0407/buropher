@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package handler
 
 import (
@@ -133,7 +136,7 @@ func (a *App) OAuthTokenCreate(w http.ResponseWriter, r *http.Request) {
 		res.err = a.newOAuthError(oauthTokenLang, "unsupported_grant_type", p.String("state"), "")
 	}
 	if res.err != nil {
-		res.err.setHeaders(w, true)
+		res.err.setHeaders(w, a.Realm())
 		renderOAuthJSON(w, res.err.Status, jsonObject(res.err.Body()))
 		return
 	}
@@ -386,7 +389,7 @@ func (a *App) OAuthTokenInfo(w http.ResponseWriter, r *http.Request) {
 	now := a.now()
 	if tok == nil || !tok.Accessible(now) {
 		e := a.newOAuthInvalidToken(oauthTokenLang, "unknown")
-		e.setHeaders(w, true)
+		e.setHeaders(w, a.Realm())
 		renderOAuthJSON(w, e.Status, jsonObject(e.Body()))
 		return
 	}

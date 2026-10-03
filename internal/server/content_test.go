@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package server_test
 
 import (
@@ -6,7 +9,6 @@ import (
 	"image"
 	"image/color"
 	"image/png"
-	"io"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -114,7 +116,7 @@ func (a apiClient) get(t *testing.T, u string) (*http.Response, string) {
 		t.Fatal(err)
 	}
 	defer res.Body.Close()
-	b, _ := io.ReadAll(res.Body)
+	b, _ := readUnbranded(res.Body)
 	return res, string(b)
 }
 
@@ -271,7 +273,7 @@ func TestNewsAndComments(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	b, _ := io.ReadAll(apiRes.Body)
+	b, _ := readUnbranded(apiRes.Body)
 	apiRes.Body.Close()
 	if apiRes.StatusCode != 422 || string(b) != `{"errors":["Title cannot be blank","Description cannot be blank"]}` {
 		t.Errorf("api invalid create: %d %s", apiRes.StatusCode, b)
@@ -395,7 +397,7 @@ func TestBoardsAndMessages(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	qb, _ := io.ReadAll(qres.Body)
+	qb, _ := readUnbranded(qres.Body)
 	qres.Body.Close()
 	want := "$('#message_subject').val(\"RE: First post\");\n$('#message_content').val(\"Redmine Admin wrote:\\n> This is the very first post\\n> in the forum\\n\\n\");\n"
 	if qres.StatusCode != 200 || !strings.HasPrefix(string(qb), want) {
@@ -418,7 +420,7 @@ func TestWatchersWatchUnwatch(t *testing.T) {
 			t.Fatal(err)
 		}
 		defer res.Body.Close()
-		b, _ := io.ReadAll(res.Body)
+		b, _ := readUnbranded(res.Body)
 		return res.StatusCode, string(b)
 	}
 	status, body := send(http.MethodPost)

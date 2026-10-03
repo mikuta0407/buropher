@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package handler
 
 // issues/_list（チケット一覧の表）と QueriesHelper#column_content / csv_content / grouped_query_results /

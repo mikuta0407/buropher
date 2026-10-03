@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package mail はメールメッセージの組み立て（MIME）と配送（SMTP / sendmail）を行う。
 //
 // Redmine は ActionMailer（mail gem）でメールを組み立てる。ここでは Redmine の Mailer が出すヘッダと

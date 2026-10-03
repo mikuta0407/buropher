@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package search は Redmine の検索（Redmine::Search::Fetcher / Tokenizer と acts_as_searchable の
 // search_result_ranks_and_ids）の移植。
 //

@@ -42,6 +42,11 @@
 #pprof = false
 #pprof_addr = "127.0.0.1:6060"
 
+# Realm sent in WWW-Authenticate for the REST API (Basic: "<realm> API") and OAuth
+# (Bearer: "<realm>"). Kept as Redmine's "Redmine" by default for API client compatibility.
+# env: BUROPHER_AUTH_REALM
+#auth_realm = "Redmine"
+
 [database]
 # "sqlite" or "postgres". env: BUROPHER_DB_DRIVER
 #driver = "sqlite"
@@ -65,6 +70,17 @@
 # "smtp", "sendmail" or "none". Empty = e-mails are not delivered (like Redmine without
 # email_delivery). env: BUROPHER_MAIL_DELIVERY
 #delivery_method = ""
+
+# Outgoing e-mails carry X-Buropher-* headers (X-Buropher-Project, -Issue-Id, ...). When true,
+# the Redmine-compatible X-Redmine-* headers are sent as well (each X-Buropher-* header follows
+# its X-Redmine-* counterpart) so existing mail filters keep working. false = X-Buropher-* only.
+# env: BUROPHER_MAIL_REDMINE_HEADERS
+#redmine_compat_headers = true
+
+# Prefix of Message-ID / References tokens of notification e-mails: "redmine" (default; keeps
+# reply threading with e-mails sent before migrating from Redmine) or "buropher".
+# Incoming replies are matched with either prefix. env: BUROPHER_MAIL_MESSAGE_ID_PREFIX
+#message_id_prefix = "redmine"
 
 [mail.smtp]
 #address = ""                   # env: BUROPHER_SMTP_ADDRESS
