@@ -191,13 +191,17 @@ func joinIDs(ids []int64) string {
 	return strings.Join(parts, ",")
 }
 
+// maxCalendarYear はカレンダー・ガントで受け付ける年の上限。
+const maxCalendarYear = 9999
+
 // CalendarsShow は calendars#show（GET /issues/calendar, /projects/:project_id/issues/calendar）。
 func (a *App) CalendarsShow(c *Req) {
 	ctx := c.Ctx()
 	p := c.Params()
 	today := a.userToday(c)
 	year, month := 0, 0
-	if y := int(httpx.RubyToI(p.String("year"))); y > 1900 {
+	// 上限は buropher の制限（time.Date は巨大な年を黙って折り返し、前後の年の列挙も溢れる）
+	if y := int(httpx.RubyToI(p.String("year"))); y > 1900 && y <= maxCalendarYear {
 		year = y
 		if m := int(httpx.RubyToI(p.String("month"))); m > 0 && m < 13 {
 			month = m
@@ -360,7 +364,8 @@ func selectMonthHTML(c *Req, month int) rails.HTML {
 func selectYearHTML(year int) rails.HTML {
 	var b strings.Builder
 	b.WriteString(`<select id="year" name="year">` + "\n")
-	for y := year - 5; y <= year+5; y++ {
+	for d := -5; d <= 5; d++ {
+		y := year + d
 		sel := ""
 		if y == year {
 			sel = ` selected="selected"`

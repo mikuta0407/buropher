@@ -12,6 +12,7 @@
 package pagination
 
 import (
+	"math"
 	"strconv"
 	"strings"
 )
@@ -34,10 +35,18 @@ func New(itemCount, perPage int, page any, pageParam ...string) *Paginator {
 	if p.PerPage < 1 {
 		p.PerPage = 1
 	}
+	p.Page = ClampPage(p.Page, p.PerPage)
 	if len(pageParam) > 0 && pageParam[0] != "" {
 		p.PageParam = pageParam[0]
 	}
 	return p
+}
+
+// ClampPage は page を (page-1)*perPage や page+2 が int で溢れない範囲に収める（ページ番号は利用者の入力。
+// 溢れると offset が負になって先頭ページが表示されたり、前後のページを列挙するループが終わらなくなる）。
+// そこまで大きいページはどのみち空なので、表示は Redmine と変わらない。
+func ClampPage(page, perPage int) int {
+	return min(page, math.MaxInt32/max(perPage, 1))
 }
 
 // toI は Ruby の to_i（先頭の数字のみ。nil は 0）。
@@ -135,8 +144,8 @@ func (p *Paginator) LinkedPages() []int {
 	for _, n := range []int{first, p.Page, last} {
 		set[n] = true
 	}
-	for n := p.Page - 2; n <= p.Page+2; n++ {
-		if n > first && n < last {
+	for d := -2; d <= 2; d++ {
+		if n := p.Page + d; n > first && n < last {
 			set[n] = true
 		}
 	}

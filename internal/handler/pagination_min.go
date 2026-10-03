@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/mikuta0407/buropher/internal/pagination"
 	"github.com/mikuta0407/buropher/internal/view/rails"
 )
 
@@ -29,7 +30,7 @@ func newMinPaginator(count, perPage int, page string) *minPaginator {
 	if perPage < 1 {
 		perPage = 25
 	}
-	return &minPaginator{ItemCount: count, PerPage: perPage, Page: p}
+	return &minPaginator{ItemCount: count, PerPage: perPage, Page: pagination.ClampPage(p, perPage)}
 }
 
 // rubyToI は String#to_i。
@@ -82,8 +83,8 @@ func (p *minPaginator) linkedPages() []int {
 	add(first)
 	add(p.Page)
 	add(last)
-	for n := p.Page - 2; n <= p.Page+2; n++ {
-		if n > first && n < last {
+	for d := -2; d <= 2; d++ {
+		if n := p.Page + d; n > first && n < last {
 			add(n)
 		}
 	}

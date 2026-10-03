@@ -130,7 +130,7 @@ func (a *App) newGanttChart(c *Req) (*ganttChart, error) {
 	ctx := c.Ctx()
 	p := c.Params()
 	g := &ganttChart{a: a, c: c, today: a.userToday(c), columns: map[string]*strings.Builder{}}
-	if y := int(httpx.RubyToI(p.String("year"))); p.Has("year") && y > 0 {
+	if y := int(httpx.RubyToI(p.String("year"))); p.Has("year") && y > 0 && y <= maxCalendarYear {
 		g.YearFrom = y
 		if m := int(httpx.RubyToI(p.String("month"))); p.Has("month") && m >= 1 && m <= 12 {
 			g.MonthFrom = m
