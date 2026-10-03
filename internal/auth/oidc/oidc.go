@@ -389,6 +389,19 @@ func claimStrings(claims map[string]any, name string) []string {
 	return nil
 }
 
+// claimTrue は真偽値のクレームが true（true / "true" / "1"）か。
+func claimTrue(v any) bool {
+	switch x := v.(type) {
+	case bool:
+		return x
+	case string:
+		return strings.EqualFold(x, "true") || x == "1"
+	case float64:
+		return x == 1
+	}
+	return false
+}
+
 // identity はクレームを設定のクレーム名で取り出す。
 func (p *Provider) identity(issuer string, claims map[string]any) *Identity {
 	c := p.cfg
@@ -417,7 +430,13 @@ func (p *Provider) identity(issuer string, claims map[string]any) *Identity {
 	case string:
 		id.MailUnverified = strings.EqualFold(v, "false")
 	}
+	// マルチテナントの Entra では email クレームを他テナントの管理者が任意に設定できる（nOAuth）。
+	// email_verified は送られないので、ドメイン所有を確認済みを示す xms_edov が true でなければ未検証とみなす
+	if id.Mail != "" && c.multiTenant() && !claimTrue(claims["xms_edov"]) {
+		id.MailUnverified = true
+	}
 	// Entra でメールが無い場合は preferred_username（UPN）をメールとして使う
+	// （UPN のドメインはテナントで所有を確認済みのもの）
 	if id.Mail == "" && c.Preset == PresetEntra && strings.Contains(id.Login, "@") {
 		id.Mail = id.Login
 	}

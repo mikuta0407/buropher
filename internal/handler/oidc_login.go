@@ -276,7 +276,7 @@ func (a *App) OIDCCallback(c *Req) {
 		a.oidcLink(c, rec, prov, id)
 		return
 	case "sudo":
-		a.oidcSudo(c, rec, prov, id)
+		a.oidcSudo(c, rec, prov, id, time.Unix(created, 0))
 		return
 	}
 	user, err := a.oidcResolveUser(c, rec, prov, id)
@@ -505,15 +505,18 @@ func (a *App) oidcLink(c *Req, rec *domain.AuthSourceRecord, prov *oidc.Provider
 	c.Redirect("/my/sso")
 }
 
-// oidcSudo は sudo モードの再認証（ログイン中のユーザーと同じ外部 ID なら sudo を有効にする）。
-// oidcSudoMaxAge は sudo モードの再認証として受け付ける auth_time の古さの上限。
-const oidcSudoMaxAge = 10 * time.Minute
+// oidcSudoClockSkew は sudo モードの再認証で auth_time に許す IdP との時計のずれ。
+const oidcSudoClockSkew = time.Minute
 
-func (a *App) oidcSudo(c *Req, rec *domain.AuthSourceRecord, prov *oidc.Provider, id *oidc.Identity) {
+// oidcSudo は sudo モードの再認証（ログイン中のユーザーと同じ外部 ID なら sudo を有効にする）。
+// started は認可リクエストを始めた時刻（セッションに保存した created_at）。
+func (a *App) oidcSudo(c *Req, rec *domain.AuthSourceRecord, prov *oidc.Provider, id *oidc.Identity, started time.Time) {
 	ident, err := repository.FindUserIdentity(c.Ctx(), a.DB, oidcProviderKey(rec), oidcSubject(prov, id))
 	// prompt=login / max_age=0 を IdP が無視して既存の IdP セッションで応答した場合は再認証とみなさない
-	// （max_age を要求したときは auth_time が必須。直近の認証であること）
-	reauthenticated := !id.AuthTime.IsZero() && a.now().Sub(id.AuthTime) < oidcSudoMaxAge && id.AuthTime.Sub(a.now()) < time.Minute
+	// （max_age を要求したときは auth_time が必須。auth_time はこの認可リクエストを始めた後であること。
+	// 「直近 N 分以内」で判定すると、N 分以内に IdP にログインしていれば再認証なしで sudo になる）
+	reauthenticated := !id.AuthTime.IsZero() && !id.AuthTime.Before(started.Add(-oidcSudoClockSkew)) &&
+		!id.AuthTime.After(a.now().Add(oidcSudoClockSkew))
 	if err != nil || ident.UserID != c.User.ID || !reauthenticated {
 		c.Flash().SetError(c.L("notice_account_wrong_password"))
 	} else {

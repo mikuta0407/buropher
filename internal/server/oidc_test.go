@@ -517,7 +517,9 @@ func TestOIDCSudoReauth(t *testing.T) {
 		t.Fatalf("sudo form with re-auth button:\n%s", body)
 	}
 	// IdP が再認証せずに（auth_time が無い・古い）応答した場合は sudo にしない
-	for _, claims := range []map[string]any{{"sub": "dl-sub"}, {"sub": "dl-sub", "auth_time": frozenTime.Add(-time.Hour).Unix()}} {
+	// 認可リクエストを始める数分前の IdP ログイン（既存の IdP セッション）も再認証とみなさない
+	for _, claims := range []map[string]any{{"sub": "dl-sub"}, {"sub": "dl-sub", "auth_time": frozenTime.Add(-time.Hour).Unix()},
+		{"sub": "dl-sub", "auth_time": frozenTime.Add(-5 * time.Minute).Unix()}, {"sub": "dl-sub", "auth_time": frozenTime.Add(time.Hour).Unix()}} {
 		e.idp.SetClaims(claims)
 		e.ssoLogin(c, "?mode=sudo&back_url=%2Fmy%2Faccount%2Fdestroy")
 		if _, body := get(t, c, e.ts.URL+"/my/account/destroy"); !strings.Contains(body, "sudo-form") {
