@@ -446,6 +446,7 @@ func (d *DB) Optimize(ctx context.Context, all bool) error {
 	if _, err := conn.ExecContext(ctx, fmt.Sprintf(`PRAGMA analysis_limit=%d`, sqliteAnalysisLimit)); err != nil {
 		return err
 	}
+	done := 0
 	for _, t := range tables {
 		if analyzed[t] {
 			continue
@@ -453,6 +454,24 @@ func (d *DB) Optimize(ctx context.Context, all bool) error {
 		if _, err := conn.ExecContext(ctx, `ANALYZE "`+strings.ReplaceAll(t, `"`, `""`)+`"`); err != nil {
 			return fmt.Errorf("db: analyze %s: %w", t, err)
 		}
+		done++
 	}
-	return nil
+	if done == 0 {
+		return nil
+	}
+	// ANALYZE が統計を読み直させるのは実行した接続だけで、プールの他の接続は古い統計
+	// (初回は統計なし) のまま使い続ける。スキーマを変更して (一時的なテーブルの作成と削除。
+	// トランザクション内なので他の接続からは見えない) スキーマのバージョンを進め、
+	// 全接続が次の文でスキーマと統計を読み直すようにする。
+	tx, err := conn.BeginTxx(ctx, nil)
+	if err != nil {
+		return err
+	}
+	for _, q := range []string{`CREATE TABLE buropher_reload_stats (x INTEGER)`, `DROP TABLE buropher_reload_stats`} {
+		if _, err := tx.ExecContext(ctx, q); err != nil {
+			_ = tx.Rollback()
+			return fmt.Errorf("db: reload stats: %w", err)
+		}
+	}
+	return tx.Commit()
 }

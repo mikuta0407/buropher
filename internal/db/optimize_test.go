@@ -51,8 +51,23 @@ func TestOptimizeSQLite(t *testing.T) {
 	if !statIdx()["a_x2"] {
 		t.Fatalf("a_x2 not analyzed")
 	}
+	// 統計を更新したらスキーマのバージョンを進め、他の接続にも統計を読み直させる
+	var before, after int64
+	if err := d.Get(ctx, &before, `PRAGMA schema_version`); err != nil {
+		t.Fatal(err)
+	}
 	if err := d.Optimize(ctx, true); err != nil {
 		t.Fatal(err)
+	}
+	if err := d.Get(ctx, &after, `PRAGMA schema_version`); err != nil {
+		t.Fatal(err)
+	}
+	if after <= before {
+		t.Errorf("schema_version %d -> %d; other connections would keep stale statistics", before, after)
+	}
+	var n int
+	if err := d.Get(ctx, &n, `SELECT COUNT(*) FROM sqlite_schema WHERE name = 'buropher_reload_stats'`); err != nil || n != 0 {
+		t.Errorf("temporary table left: n=%d err=%v", n, err)
 	}
 }
 
