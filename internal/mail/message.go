@@ -133,6 +133,10 @@ func (m *Message) Bytes() ([]byte, error) {
 		if value == "" {
 			return
 		}
+		// ヘッダインジェクション対策: 値中の CR/LF を除去する（mail gem も
+		// フィールド値に生の改行を書かず符号化・畳み込みする）。件名や差出人表示名は
+		// ASCII のまま検証をすり抜けうるため、折り畳み前にここで無害化する。
+		value = stripHeaderCRLF(value)
 		buf.WriteString(name)
 		buf.WriteString(": ")
 		buf.WriteString(foldHeader(len(name)+2, value))
@@ -276,6 +280,15 @@ func encodeAddressList(list []string) string {
 }
 
 // foldHeader は 998 文字を超えないよう空白位置でヘッダを折り返す（78 文字目安）。
+// stripHeaderCRLF はヘッダ値から CR/LF（および行区切りになりうる他の制御文字）を取り除く。
+// これによりヘッダインジェクション（Subject/From 等への \r\n 混入）を防ぐ。
+func stripHeaderCRLF(v string) string {
+	if !strings.ContainsAny(v, "\r\n") {
+		return v
+	}
+	return strings.NewReplacer("\r", "", "\n", "").Replace(v)
+}
+
 func foldHeader(prefix int, v string) string {
 	if prefix+len(v) <= 78 {
 		return v
