@@ -2,6 +2,7 @@ package attachments
 
 import (
 	"bytes"
+	"fmt"
 	"image"
 	"image/gif"
 	"image/jpeg"
@@ -71,11 +72,22 @@ func (s *Store) Thumbnail(a *domain.Attachment, size int) (string, bool) {
 	return target, true
 }
 
+// maxThumbnailSourcePixels はサムネイルを作る元画像の画素数の上限（RGBA で約 200MB）。
+const maxThumbnailSourcePixels = 50_000_000
+
 // generateThumbnail は Redmine::Thumbnail.generate(source, target, size)。
 func (s *Store) generateThumbnail(source, target string, size int) error {
 	raw, err := os.ReadFile(source)
 	if err != nil {
 		return err
+	}
+	// 画素数の上限を先に確かめる（ヘッダで巨大な寸法を宣言した小さな画像を展開すると、メモリを使い尽くす）
+	cfg, _, err := image.DecodeConfig(bytes.NewReader(raw))
+	if err != nil {
+		return err
+	}
+	if cfg.Width <= 0 || cfg.Height <= 0 || int64(cfg.Width)*int64(cfg.Height) > maxThumbnailSourcePixels {
+		return fmt.Errorf("image too large to thumbnail (%dx%d)", cfg.Width, cfg.Height)
 	}
 	img, format, err := image.Decode(bytes.NewReader(raw))
 	if err != nil {
@@ -109,11 +121,26 @@ func (s *Store) generateThumbnail(source, target string, size int) error {
 	if err != nil {
 		return err
 	}
-	tmp := target + ".tmp"
-	if err := os.WriteFile(tmp, out.Bytes(), 0o644); err != nil {
+	// 同じサムネイルを並行して生成しても互いの一時ファイルを壊さないよう、一時ファイル名は一意にする
+	f, err := os.CreateTemp(filepath.Dir(target), filepath.Base(target)+".*.tmp")
+	if err != nil {
 		return err
 	}
-	return os.Rename(tmp, target)
+	tmp := f.Name()
+	_, err = f.Write(out.Bytes())
+	if cerr := f.Close(); err == nil {
+		err = cerr
+	}
+	if err == nil {
+		err = os.Chmod(tmp, 0o644)
+	}
+	if err == nil {
+		err = os.Rename(tmp, target)
+	}
+	if err != nil {
+		_ = os.Remove(tmp)
+	}
+	return err
 }
 
 // deleteThumbnails は delete_from_disk! のサムネイル削除（Dir[thumbnail_path("*")]）。
