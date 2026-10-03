@@ -776,7 +776,9 @@ func (a *App) WikiUpdate(c *Req) {
 	saved := false
 	if !conflict && pageErrs.Empty() && contentErrs.Empty() {
 		now := a.now()
+		var removedAttachments []*domain.Attachment
 		err := a.DB.WithTx(c.Ctx(), func(tx *db.Tx) error {
+			removedAttachments = nil
 			if wasNew {
 				if err := repository.CreateWikiPage(c.Ctx(), tx, page, now); err != nil {
 					return err
@@ -790,7 +792,7 @@ func (a *App) WikiUpdate(c *Req) {
 				}
 			}
 			if len(deletedAttachmentIDs) > 0 {
-				if err := a.deleteWikiAttachments(c, tx, page, deletedAttachmentIDs); err != nil {
+				if err := a.deleteWikiAttachments(c, tx, page, deletedAttachmentIDs, &removedAttachments); err != nil {
 					return err
 				}
 			}
@@ -818,6 +820,7 @@ func (a *App) WikiUpdate(c *Req) {
 			return
 		default:
 			saved = true
+			a.deleteAttachmentsAfterCommit(c, removedAttachments)
 		}
 	}
 	if saved && textChanged {
@@ -1517,7 +1520,9 @@ func (a *App) WikiDestroy(c *Req) {
 			}
 		}
 	}
+	var removedAttachments []*domain.Attachment
 	err = a.DB.WithTx(c.Ctx(), func(tx *db.Tx) error {
+		removedAttachments = nil
 		if reassignTo != nil {
 			children, err := repository.WikiPageChildPages(c.Ctx(), tx, page.ID)
 			if err != nil {
@@ -1537,16 +1542,17 @@ func (a *App) WikiDestroy(c *Req) {
 			if err != nil {
 				return err
 			}
-			if err := a.destroyWikiPage(c, tx, p); err != nil {
+			if err := a.destroyWikiPage(c, tx, p, &removedAttachments); err != nil {
 				return err
 			}
 		}
-		return a.destroyWikiPage(c, tx, page)
+		return a.destroyWikiPage(c, tx, page, &removedAttachments)
 	})
 	if err != nil {
 		a.wikiError(c, err)
 		return
 	}
+	a.deleteAttachmentsAfterCommit(c, removedAttachments)
 	if httpx.IsAPIRequest(c.R) {
 		c.RenderAPIOK()
 		return
@@ -1556,11 +1562,12 @@ func (a *App) WikiDestroy(c *Req) {
 }
 
 // destroyWikiPage は WikiPage#destroy（before_destroy :delete_redirects、content・添付・ウォッチャーの削除、子は nullify）。
-func (a *App) destroyWikiPage(c *Req, tx *db.Tx, page *domain.WikiPage) error {
+// 削除した添付は *pending に足す（ファイルはコミット後に呼び出し側が消す）。
+func (a *App) destroyWikiPage(c *Req, tx *db.Tx, page *domain.WikiPage, pending *[]*domain.Attachment) error {
 	if err := repository.DeleteWikiRedirectsTo(c.Ctx(), tx, page.WikiID, page.Title); err != nil {
 		return err
 	}
-	if err := a.deleteWikiAttachments(c, tx, page, nil); err != nil {
+	if err := a.deleteWikiAttachments(c, tx, page, nil, pending); err != nil {
 		return err
 	}
 	if err := repository.DeleteWatchers(c.Ctx(), tx, "wiki_page", []int64{page.ID}); err != nil {
@@ -1615,13 +1622,15 @@ func (a *App) WikiDestroyVersion(c *Req) {
 		a.wikiError(c, err)
 		return
 	}
+	var removedAttachments []*domain.Attachment
 	err := a.DB.WithTx(c.Ctx(), func(tx *db.Tx) error {
+		removedAttachments = nil
 		deleted, err := repository.DeleteWikiVersion(c.Ctx(), tx, page.ID, vn)
 		if err != nil {
 			return err
 		}
 		if deleted {
-			return a.destroyWikiPage(c, tx, page)
+			return a.destroyWikiPage(c, tx, page, &removedAttachments)
 		}
 		return nil
 	})
@@ -1629,6 +1638,7 @@ func (a *App) WikiDestroyVersion(c *Req) {
 		a.wikiError(c, err)
 		return
 	}
+	a.deleteAttachmentsAfterCommit(c, removedAttachments)
 	// redirect_to_referer_or history_project_wiki_page_path
 	if ref := c.R.Referer(); ref != "" {
 		c.Redirect(ref)

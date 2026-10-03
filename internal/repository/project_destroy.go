@@ -24,14 +24,14 @@ func ScheduleProjectDeletion(ctx context.Context, q db.Queryer, id int64) error 
 // ポリモーフィックな関連（カスタム値・ウォッチャー・添付・リアクション）を先に削除し、
 // 作業時間（作業分類への RESTRICT 参照があるため）を消してから projects 行を削除する。
 //
-// TODO: 添付ファイルの実ファイル削除（他から参照されていない場合）は添付ファイルの移植で行う。
-func DestroyProject(ctx context.Context, q db.Queryer, id int64) error {
+// 削除した添付の行を返す（実ファイルはコミット後に呼び出し側が Store.DeleteFromDisk で消す）。
+func DestroyProject(ctx context.Context, q db.Queryer, id int64) ([]*domain.Attachment, error) {
 	var ids []int64
 	if err := q.Select(ctx, &ids, `SELECT descendant_id FROM project_closure WHERE ancestor_id = ? ORDER BY depth DESC`, id); err != nil {
-		return err
+		return nil, err
 	}
 	if len(ids) == 0 {
-		return ErrNotFound
+		return nil, ErrNotFound
 	}
 	parts := make([]string, len(ids))
 	for i, x := range ids {
@@ -92,10 +92,25 @@ func DestroyProject(ctx context.Context, q db.Queryer, id int64) error {
 		`DELETE FROM issues WHERE project_id IN ` + in,
 		`DELETE FROM projects WHERE id IN ` + in,
 	}
+	var rows []attachmentRow
+	if err := q.Select(ctx, &rows, attachmentSelect+` WHERE (attachments.container_kind = 'issue' AND attachments.container_id IN (`+issues+`))
+OR (attachments.container_kind = 'project' AND attachments.container_id IN `+in+`)
+OR (attachments.container_kind = 'version' AND attachments.container_id IN (`+versions+`))
+OR (attachments.container_kind = 'wiki_page' AND attachments.container_id IN (`+pages+`))
+OR (attachments.container_kind = 'message' AND attachments.container_id IN (`+messages+`))
+OR (attachments.container_kind = 'news' AND attachments.container_id IN (`+news+`))
+OR (attachments.container_kind = 'document' AND attachments.container_id IN (`+documents+`))
+ORDER BY attachments.id`); err != nil {
+		return nil, err
+	}
+	atts := make([]*domain.Attachment, len(rows))
+	for i := range rows {
+		atts[i] = rows[i].attachment()
+	}
 	for _, s := range stmts {
 		if _, err := q.Exec(ctx, s); err != nil {
-			return err
+			return nil, err
 		}
 	}
-	return nil
+	return atts, nil
 }

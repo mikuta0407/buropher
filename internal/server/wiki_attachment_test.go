@@ -5,10 +5,25 @@ package server_test
 
 import (
 	"context"
+	"net/http"
+	"net/url"
+	"os"
 	"regexp"
+	"strconv"
 	"strings"
 	"testing"
+
+	"github.com/mikuta0407/buropher/internal/domain"
 )
+
+func mustParseID(t *testing.T, s string) int64 {
+	t.Helper()
+	n, err := strconv.ParseInt(s, 10, 64)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return n
+}
 
 // TestWikiAddAttachment はアップロードのトークンで Wiki ページに添付を追加し、表示されることを確認する。
 func TestWikiAddAttachment(t *testing.T) {
@@ -57,5 +72,88 @@ func TestWikiAddAttachment(t *testing.T) {
 	var n int
 	if err := d.Get(context.Background(), &n, `SELECT COUNT(*) FROM attachments WHERE filename = 'note.txt'`); err != nil || n != 0 {
 		t.Errorf("attachment should be deleted: %d %v", n, err)
+	}
+}
+
+// 添付の削除を含む Wiki の更新がロールバックされたら（編集の競合など）、添付のファイルも残る
+// （ファイルはコミット後に消す。after_commit :delete_from_disk）。成功すればファイルも消える。
+func TestWikiUpdateRollbackKeepsAttachmentFile(t *testing.T) {
+	srv, ts, d := newFixtureServerFull(t)
+	ctx := context.Background()
+	if d.Dialect().Name() != "sqlite" {
+		t.Skip("uses an SQLite trigger to make the update fail")
+	}
+	res, body := upload(t, newClient(t), ts.URL+"/uploads.json?filename=keep.txt", "application/octet-stream", "keep me", map[string]string{"basic": "admin"})
+	if res.StatusCode != 201 {
+		t.Fatalf("upload: %d %s", res.StatusCode, body)
+	}
+	token := regexp.MustCompile(`"token":"([^"]+)"`).FindStringSubmatch(body)[1]
+	c := login(t, ts, "admin", "admin")
+	res, _ = post(t, c, ts.URL+"/projects/ecookbook/wiki/Another_page/add_attachment", wikiForm(t, c, ts, "attachments[1][token]", token))
+	if res.StatusCode != 302 {
+		t.Fatalf("add_attachment: %d", res.StatusCode)
+	}
+	var id string
+	if err := d.Get(ctx, &id, `SELECT CAST(id AS TEXT) FROM attachments WHERE filename = 'keep.txt'`); err != nil {
+		t.Fatal(err)
+	}
+	att := &domain.Attachment{}
+	if err := d.QueryRow(ctx, `SELECT COALESCE(disk_directory, ''), disk_filename FROM attachments WHERE id = ?`, mustParseID(t, id)).Scan(&att.DiskDirectory, &att.DiskFilename); err != nil {
+		t.Fatal(err)
+	}
+	path := srv.App().AttachmentStore.Diskfile(att)
+	if _, err := os.Stat(path); err != nil {
+		t.Fatal(err)
+	}
+	// 本文のバージョンの保存（添付の削除の後）を失敗させる
+	if _, err := d.Exec(ctx, `CREATE TRIGGER fail_wiki_version BEFORE INSERT ON wiki_page_versions BEGIN SELECT RAISE(ABORT, 'boom'); END`); err != nil {
+		t.Fatal(err)
+	}
+	update := func() *http.Response {
+		res, _ := post(t, c, ts.URL+"/projects/ecookbook/wiki/Another_page", wikiForm(t, c, ts,
+			"_method", "put", "content[text]", "changed again", "content[version]", "1", "wiki_page[deleted_attachment_ids][]", id))
+		return res
+	}
+	if res := update(); res.StatusCode == 302 {
+		t.Fatalf("update should fail")
+	}
+	if _, err := os.Stat(path); err != nil {
+		t.Errorf("attachment file removed although the update was rolled back: %v", err)
+	}
+	if _, err := d.Exec(ctx, `DROP TRIGGER fail_wiki_version`); err != nil {
+		t.Fatal(err)
+	}
+	if res := update(); res.StatusCode != 302 {
+		t.Fatalf("update: %d", res.StatusCode)
+	}
+	if _, err := os.Stat(path); !os.IsNotExist(err) {
+		t.Errorf("attachment file should be removed after commit: %v", err)
+	}
+}
+
+// プロジェクトの削除で、そのプロジェクトの添付の実ファイルも消える（以前は行だけ消えてファイルが残った）。
+func TestProjectDestroyRemovesAttachmentFiles(t *testing.T) {
+	srv, ts, d := newFixtureServerFull(t)
+	ctx := context.Background()
+	res, body := upload(t, newClient(t), ts.URL+"/uploads.json?filename=proj.txt", "application/octet-stream", "project file", map[string]string{"basic": "admin"})
+	if res.StatusCode != 201 {
+		t.Fatalf("upload: %d %s", res.StatusCode, body)
+	}
+	att := &domain.Attachment{}
+	if err := d.QueryRow(ctx, `SELECT COALESCE(disk_directory, ''), disk_filename FROM attachments WHERE filename = 'proj.txt'`).Scan(&att.DiskDirectory, &att.DiskFilename); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := d.Exec(ctx, `UPDATE attachments SET container_kind = 'project', container_id = 6 WHERE filename = 'proj.txt'`); err != nil {
+		t.Fatal(err)
+	}
+	path := srv.App().AttachmentStore.Diskfile(att)
+	if _, err := os.Stat(path); err != nil {
+		t.Fatal(err)
+	}
+	admin := login(t, ts, "admin", "admin")
+	res, _ = projSubmit(t, admin, ts, http.MethodDelete, "/projects/private-child", url.Values{"confirm": {"private-child"}}, false)
+	expectRedirect(t, res, "/admin/projects")
+	if _, err := os.Stat(path); !os.IsNotExist(err) {
+		t.Errorf("attachment file should be removed with the project: %v", err)
 	}
 }

@@ -32,6 +32,14 @@ func TestPaginator(t *testing.T) {
 	if got := New(5, 10, "1").LinkedPages(); got != nil {
 		t.Errorf("single page linked %v", got)
 	}
+	// 巨大なページ番号で offset が溢れたり、前後ページの列挙が終わらなくなったりしない
+	p = New(150, 10, "9223372036854775805")
+	if p.Offset() < 0 || p.FirstItem() <= 150 {
+		t.Errorf("huge page: offset %d first item %d", p.Offset(), p.FirstItem())
+	}
+	if got := p.LinkedPages(); len(got) != 3 || got[0] != 1 || got[1] != 15 {
+		t.Errorf("huge page linked %v", got)
+	}
 }
 
 func TestPerPageOptions(t *testing.T) {

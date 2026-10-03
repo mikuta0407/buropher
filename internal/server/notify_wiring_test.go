@@ -424,3 +424,12 @@ func TestNotifyWiringImports(t *testing.T) {
 		t.Fatalf("users = %d", len(uids))
 	}
 }
+
+// コミットメッセージのキーワードによるチケット更新（定期取り込み・sys・リポジトリ画面）も、チケットの画面操作と
+// 同じ通知先（メールが有効なら notify.Service）に配送される（App.Notifier はテスト用の上書きで本番では nil）。
+func TestSCMServiceUsesIssueNotifier(t *testing.T) {
+	e := newNotifyEnv(t)
+	if got := e.srv.App().SCMService().Notifier; got != e.svc {
+		t.Fatalf("scm notifier = %#v, want notify.Service", got)
+	}
+}

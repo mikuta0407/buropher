@@ -1135,16 +1135,22 @@ func (a *App) VersionsDestroy(c *Req) {
 	ctx := c.Ctx()
 	v := c.version()
 	api := httpx.IsAPIRequest(c.R)
-	deletable, err := a.versionDeletable(ctx, v.ID)
+	// 削除できるか（チケット・カスタムフィールド・添付から参照されていないか）の判定と削除は同じトランザクションで行う
+	// （判定の後に割り当てられたチケットの対象バージョンが、記録なしに消えないように）
+	deletable := false
+	err := a.DB.WithTx(ctx, func(tx *db.Tx) error {
+		ok, err := a.versionDeletable(ctx, tx, v.ID)
+		if err != nil || !ok {
+			return err
+		}
+		deletable = true
+		return repository.DeleteVersion(ctx, tx, v.ID)
+	})
 	if err != nil {
 		a.internalError(c, "destroy version", err)
 		return
 	}
 	if deletable {
-		if err := a.DB.WithTx(ctx, func(tx *db.Tx) error { return repository.DeleteVersion(ctx, tx, v.ID) }); err != nil {
-			a.internalError(c, "destroy version", err)
-			return
-		}
 		if api {
 			c.RenderAPIOK()
 			return
@@ -1161,11 +1167,11 @@ func (a *App) VersionsDestroy(c *Req) {
 }
 
 // versionDeletable は deletable?。
-func (a *App) versionDeletable(ctx context.Context, id int64) (bool, error) {
+func (a *App) versionDeletable(ctx context.Context, q db.Queryer, id int64) (bool, error) {
 	for _, f := range []func(context.Context, db.Queryer, int64) (bool, error){
 		repository.VersionHasFixedIssues, repository.VersionReferencedByCustomField, repository.VersionHasAttachments,
 	} {
-		b, err := f(ctx, a.DB, id)
+		b, err := f(ctx, q, id)
 		if err != nil || b {
 			return false, err
 		}

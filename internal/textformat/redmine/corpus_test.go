@@ -62,7 +62,7 @@ func TestMain(m *testing.M) {
 }
 
 // fixtureDatabase は公式フィクスチャを固定時刻で投入した DB（パッケージ内で共有。読み取り専用で使う）。
-func fixtureDatabase(t *testing.T) *db.DB {
+func fixtureDatabase(t testing.TB) *db.DB {
 	t.Helper()
 	fixtureOnce.Do(func() {
 		dir, err := os.MkdirTemp("", "redmine-textformat-*")
@@ -95,11 +95,11 @@ type testEnv struct {
 	users map[string]*domain.User
 }
 
-func newTestEnv(t *testing.T) *testEnv {
+func newTestEnv(t testing.TB) *testEnv {
 	return &testEnv{d: fixtureDatabase(t), users: map[string]*domain.User{}}
 }
 
-func (e *testEnv) user(t *testing.T, login string) *domain.User {
+func (e *testEnv) user(t testing.TB, login string) *domain.User {
 	if u, ok := e.users[login]; ok {
 		return u
 	}
@@ -118,7 +118,7 @@ func (e *testEnv) user(t *testing.T, login string) *domain.User {
 	return u
 }
 
-func (e *testEnv) renderer(t *testing.T, login, project, formatting string) (*Renderer, *DBStore) {
+func (e *testEnv) renderer(t testing.TB, login, project, formatting string) (*Renderer, *DBStore) {
 	ctx := context.Background()
 	u := e.user(t, login)
 	st := NewDBStore(ctx, e.d, authz.New(e.d, u))

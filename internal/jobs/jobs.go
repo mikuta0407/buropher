@@ -27,8 +27,10 @@ import (
 	mrand "math/rand/v2"
 	"os"
 	"runtime/debug"
+	"strconv"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/mikuta0407/buropher/internal/clock"
@@ -126,6 +128,8 @@ type Queue struct {
 	handlers map[string]HandlerFunc
 	wake     chan struct{}
 	workerID string
+	// claimSeq は取得ごとの連番（locked_by = workerID:連番。同じプロセスで取り直したジョブとも区別する）。
+	claimSeq atomic.Int64
 	running  sync.WaitGroup
 }
 
@@ -262,7 +266,9 @@ func (q *Queue) Run(ctx context.Context) {
 	if n <= 0 {
 		n = 2
 	}
-	_ = q.RecoverStale(ctx)
+	if err := q.RecoverStale(ctx); err != nil && ctx.Err() == nil {
+		q.logger().Error("jobs: recover stale failed", "err", err)
+	}
 	for i := 0; i < n; i++ {
 		q.running.Add(1)
 		go func() {
@@ -270,7 +276,32 @@ func (q *Queue) Run(ctx context.Context) {
 			q.loop(ctx)
 		}()
 	}
+	// プロセスが落ちて running のまま残ったジョブは起動時だけでなく定期的に戻す
+	// （起動時点では LockTimeout を過ぎていないジョブが、次の再起動まで失われないように）。
+	q.running.Add(1)
+	go func() {
+		defer q.running.Done()
+		t := time.NewTicker(q.lockTimeout() / 2)
+		defer t.Stop()
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			case <-t.C:
+				if err := q.RecoverStale(ctx); err != nil && ctx.Err() == nil {
+					q.logger().Error("jobs: recover stale failed", "err", err)
+				}
+			}
+		}
+	}()
 	q.running.Wait()
+}
+
+func (q *Queue) lockTimeout() time.Duration {
+	if q.Opts.LockTimeout > 0 {
+		return q.Opts.LockTimeout
+	}
+	return 15 * time.Minute
 }
 
 func (q *Queue) pollInterval() time.Duration {
@@ -308,10 +339,7 @@ func (q *Queue) loop(ctx context.Context) {
 
 // RecoverStale は LockTimeout を過ぎた running のジョブを pending に戻す（プロセスが落ちた場合）。
 func (q *Queue) RecoverStale(ctx context.Context) error {
-	lt := q.Opts.LockTimeout
-	if lt <= 0 {
-		lt = 15 * time.Minute
-	}
+	lt := q.lockTimeout()
 	now := q.now()
 	_, err := q.DB.Exec(ctx, `UPDATE jobs SET state = 'pending', locked_by = NULL, locked_at = NULL, updated_at = ?
 WHERE state = 'running' AND locked_at < ?`, db.NewTime(now), db.NewTime(now.Add(-lt)))
@@ -339,7 +367,7 @@ func (q *Queue) claim(ctx context.Context) (*Job, error) {
 			return nil, nil
 		}
 		res, err := q.DB.Exec(ctx, `UPDATE jobs SET state = 'running', locked_by = ?, locked_at = ?, attempts = attempts + 1, updated_at = ?
-WHERE id = ? AND state = 'pending'`, q.workerID, db.NewTime(now), db.NewTime(now), ids[0])
+WHERE id = ? AND state = 'pending'`, q.workerID+":"+strconv.FormatInt(q.claimSeq.Add(1), 10), db.NewTime(now), db.NewTime(now), ids[0])
 		if err != nil {
 			return nil, err
 		}
@@ -361,8 +389,51 @@ func (q *Queue) RunOne(ctx context.Context) (bool, error) {
 	if err != nil || j == nil {
 		return false, err
 	}
+	stop := q.heartbeat(ctx, j)
 	err = q.execute(ctx, j)
-	return true, q.finish(ctx, j, err)
+	stop()
+	if err != nil && ctx.Err() != nil && !IsPermanent(err) {
+		// 停止（ctx のキャンセル）で中断されたジョブは失敗として数えず、すぐに再実行できるよう戻す
+		err = Retry(0, err)
+	}
+	// 結果の記録は停止中でも行う（記録できないと running のまま LockTimeout 後に再実行され、二重に実行される）
+	fctx, cancel := context.WithTimeout(context.WithoutCancel(ctx), 30*time.Second)
+	defer cancel()
+	return true, q.finish(fctx, j, err)
+}
+
+// lockOwner は claim で記録した locked_by（finish・heartbeat はこれが一致する場合だけ更新する）。
+func lockOwner(j *Job) string {
+	if j.LockedBy == nil {
+		return ""
+	}
+	return *j.LockedBy
+}
+
+// heartbeat は実行中のジョブの locked_at を定期的に更新する（LockTimeout より長く動くジョブが RecoverStale で
+// pending に戻され、別のワーカーで二重に実行されないように）。戻り値で止める。
+func (q *Queue) heartbeat(ctx context.Context, j *Job) (stop func()) {
+	done := make(chan struct{})
+	finished := make(chan struct{})
+	go func() {
+		defer close(finished)
+		t := time.NewTicker(q.lockTimeout() / 3)
+		defer t.Stop()
+		for {
+			select {
+			case <-done:
+				return
+			case <-ctx.Done():
+				return
+			case <-t.C:
+				if _, err := q.DB.Exec(ctx, `UPDATE jobs SET locked_at = ? WHERE id = ? AND locked_by = ? AND state = 'running'`,
+					db.NewTime(q.now()), j.ID, lockOwner(j)); err != nil && ctx.Err() == nil {
+					q.logger().Warn("jobs: heartbeat failed", "id", j.ID, "err", err)
+				}
+			}
+		}
+	}()
+	return func() { close(done); <-finished }
 }
 
 // RunPending は実行可能なジョブが無くなるまで同期的に処理する（テスト・CLI 用）。処理件数を返す。
@@ -403,9 +474,11 @@ func (q *Queue) Backoff(attempts int) time.Duration {
 	if maxD <= 0 {
 		maxD = 6 * time.Hour
 	}
-	d := time.Duration(float64(base) * math.Pow(2, float64(max(attempts-1, 0))))
-	if d > maxD || d <= 0 {
-		d = maxD
+	// float64 のまま上限と比べる（Duration への変換で溢れると値が処理系依存になる）
+	f := float64(base) * math.Pow(2, float64(max(attempts-1, 0)))
+	d := maxD
+	if f < float64(maxD) {
+		d = time.Duration(f)
 	}
 	if !q.Opts.NoJitter {
 		d = time.Duration(float64(d) * (0.8 + 0.4*mrand.Float64()))
@@ -416,8 +489,8 @@ func (q *Queue) Backoff(attempts int) time.Duration {
 func (q *Queue) finish(ctx context.Context, j *Job, err error) error {
 	now := q.now()
 	if err == nil {
-		_, e := q.DB.Exec(ctx, `UPDATE jobs SET state = 'succeeded', locked_by = NULL, locked_at = NULL, last_error = NULL, updated_at = ?, finished_at = ? WHERE id = ?`,
-			db.NewTime(now), db.NewTime(now), j.ID)
+		_, e := q.DB.Exec(ctx, `UPDATE jobs SET state = 'succeeded', locked_by = NULL, locked_at = NULL, last_error = NULL, updated_at = ?, finished_at = ? WHERE id = ? AND locked_by = ?`,
+			db.NewTime(now), db.NewTime(now), j.ID, lockOwner(j))
 		return e
 	}
 	msg := err.Error()
@@ -428,18 +501,18 @@ func (q *Queue) finish(ctx context.Context, j *Job, err error) error {
 	switch {
 	case errors.As(err, &re):
 		// 回数を数えずに延期する
-		_, e := q.DB.Exec(ctx, `UPDATE jobs SET state = 'pending', locked_by = NULL, locked_at = NULL, attempts = attempts - 1, last_error = ?, run_at = ?, updated_at = ? WHERE id = ?`,
-			msg, db.NewTime(now.Add(re.after)), db.NewTime(now), j.ID)
+		_, e := q.DB.Exec(ctx, `UPDATE jobs SET state = 'pending', locked_by = NULL, locked_at = NULL, attempts = attempts - 1, last_error = ?, run_at = ?, updated_at = ? WHERE id = ? AND locked_by = ?`,
+			msg, db.NewTime(now.Add(re.after)), db.NewTime(now), j.ID, lockOwner(j))
 		q.logger().Info("jobs: rescheduled", "id", j.ID, "kind", j.Kind, "after", re.after, "err", re.err)
 		return e
 	case IsPermanent(err) || j.Attempts >= j.MaxAttempts:
-		_, e := q.DB.Exec(ctx, `UPDATE jobs SET state = 'failed', locked_by = NULL, locked_at = NULL, last_error = ?, updated_at = ?, finished_at = ? WHERE id = ?`,
-			msg, db.NewTime(now), db.NewTime(now), j.ID)
+		_, e := q.DB.Exec(ctx, `UPDATE jobs SET state = 'failed', locked_by = NULL, locked_at = NULL, last_error = ?, updated_at = ?, finished_at = ? WHERE id = ? AND locked_by = ?`,
+			msg, db.NewTime(now), db.NewTime(now), j.ID, lockOwner(j))
 		q.logger().Error("jobs: failed", "id", j.ID, "kind", j.Kind, "attempts", j.Attempts, "err", err)
 		return e
 	default:
-		_, e := q.DB.Exec(ctx, `UPDATE jobs SET state = 'pending', locked_by = NULL, locked_at = NULL, last_error = ?, run_at = ?, updated_at = ? WHERE id = ?`,
-			msg, db.NewTime(now.Add(q.Backoff(j.Attempts))), db.NewTime(now), j.ID)
+		_, e := q.DB.Exec(ctx, `UPDATE jobs SET state = 'pending', locked_by = NULL, locked_at = NULL, last_error = ?, run_at = ?, updated_at = ? WHERE id = ? AND locked_by = ?`,
+			msg, db.NewTime(now.Add(q.Backoff(j.Attempts))), db.NewTime(now), j.ID, lockOwner(j))
 		q.logger().Warn("jobs: will retry", "id", j.ID, "kind", j.Kind, "attempts", j.Attempts, "err", err)
 		return e
 	}

@@ -63,9 +63,6 @@ func loadMailGoldens(t *testing.T) map[string]goldenCase {
 // newMailApp は公式フィクスチャを投入した DB の App（固定時刻・TZ=UTC）。
 func newMailApp(t *testing.T) (*handler.App, *db.DB, *settings.Settings) {
 	t.Helper()
-	saved := time.Local
-	time.Local = time.UTC
-	t.Cleanup(func() { time.Local = saved })
 	ctx := context.Background()
 	d := dbtest.New(t)
 	if err := testfixtures.LoadContext(ctx, d, frozenTime, testfixtures.All()...); err != nil {

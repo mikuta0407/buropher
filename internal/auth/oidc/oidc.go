@@ -203,6 +203,10 @@ func Forget(id int64) {
 	cacheMu.Unlock()
 }
 
+// defaultHTTPClient はプロバイダとの通信の既定のクライアント（http.DefaultClient にはタイムアウトが無く、
+// 応答しないプロバイダでログインの処理が止まり続ける）。
+var defaultHTTPClient = &http.Client{Timeout: 30 * time.Second}
+
 // New はディスカバリしてプロバイダを作る。
 func New(ctx context.Context, client *http.Client, cfg Config) (*Provider, error) {
 	cfg = cfg.Defaults()
@@ -210,7 +214,7 @@ func New(ctx context.Context, client *http.Client, cfg Config) (*Provider, error
 		return nil, fail("configuration", errors.New("issuer is empty"))
 	}
 	if client == nil {
-		client = http.DefaultClient
+		client = defaultHTTPClient
 	}
 	ctx = gooidc.ClientContext(ctx, client)
 	if cfg.multiTenant() {

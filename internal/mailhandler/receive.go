@@ -417,7 +417,8 @@ func (r *receiver) receiveNewsReply(ctx context.Context, newsID int64) (any, err
 	if strings.TrimSpace(comment.Content) == "" {
 		return nil, recordInvalid("Validation failed: Comment cannot be blank")
 	}
-	if err := repository.InsertComment(ctx, q, comment); err != nil {
+	// コメントの行と news.comments_count の更新は 1 トランザクションで行う
+	if err := r.h.DB.WithTx(ctx, func(tx *db.Tx) error { return repository.InsertComment(ctx, tx, comment) }); err != nil {
 		return nil, err
 	}
 	r.notifyContent(ctx, "news_comment_added", "news_comment_added", comment)

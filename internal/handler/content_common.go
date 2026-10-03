@@ -113,7 +113,7 @@ func paramAttachments(c *Req) any {
 
 // deleteAttachmentsAfterCommit はコンテナ削除のトランザクション後にファイルを消す（after_commit :delete_from_disk）。
 func (a *App) deleteAttachmentsAfterCommit(c *Req, atts []*domain.Attachment) {
-	if len(atts) == 0 {
+	if len(atts) == 0 || a.AttachmentStore == nil {
 		return
 	}
 	if err := a.AttachmentStore.DeleteFromDisk(c.Ctx(), a.DB, atts...); err != nil {

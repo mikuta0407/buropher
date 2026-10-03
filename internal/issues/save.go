@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"slices"
 	"strconv"
+	"sync/atomic"
 
 	"github.com/mikuta0407/buropher/internal/db"
 	"github.com/mikuta0407/buropher/internal/domain"
@@ -89,12 +90,12 @@ func (e *Env) saveTop(ctx context.Context, iss *Issue, validate bool) (bool, *Sa
 	return ok, st.result, nil
 }
 
-var savepointSeq int
+// savepointSeq はセーブポイント名の連番（並行するリクエストから更新されるので atomic）。
+var savepointSeq atomic.Int64
 
 // savepoint は fn をセーブポイント内で実行し、エラーならセーブポイントまで戻す。
 func (e *Env) savepoint(ctx context.Context, fn func() error) error {
-	savepointSeq++
-	name := "issues_sp_" + strconv.Itoa(savepointSeq)
+	name := "issues_sp_" + strconv.FormatInt(savepointSeq.Add(1), 10)
 	if _, err := e.Q.Exec(ctx, "SAVEPOINT "+name); err != nil {
 		return err
 	}

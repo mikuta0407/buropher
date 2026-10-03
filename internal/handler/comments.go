@@ -7,6 +7,7 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/mikuta0407/buropher/internal/db"
 	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/httpx"
 	"github.com/mikuta0407/buropher/internal/repository"
@@ -45,7 +46,8 @@ func (a *App) CommentsCreate(c *Req) {
 	if !httpx.IsBlank(content) {
 		now := a.now()
 		cm := &domain.Comment{NewsID: n.ID, AuthorID: c.User.ID, Content: content, CreatedAt: now, UpdatedAt: now}
-		if err := repository.InsertComment(c.Ctx(), a.DB, cm); err != nil {
+		// コメントの行と news.comments_count の更新は 1 トランザクションで行う
+		if err := a.withTx(c, func(tx *db.Tx) error { return repository.InsertComment(c.Ctx(), tx, cm) }); err != nil {
 			a.internalError(c, "create comment", err)
 			return
 		}
@@ -64,7 +66,7 @@ func (a *App) CommentsDestroy(c *Req) {
 		c.Render404("")
 		return
 	}
-	if err := repository.DeleteComment(c.Ctx(), a.DB, n.ID, id); err != nil {
+	if err := a.withTx(c, func(tx *db.Tx) error { return repository.DeleteComment(c.Ctx(), tx, n.ID, id) }); err != nil {
 		if errors.Is(err, repository.ErrNotFound) {
 			// @news.comments.find は ActiveRecord::RecordNotFound を投げ、コントローラで処理されないため
 			// public/404.html になる

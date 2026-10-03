@@ -55,6 +55,9 @@ var reSections = rxm(`(((?:.*?)(\A|\r?\n` + reS + `*\r?\n))(h([0-9]+)(` + reA + 
 // extractSections は Formatter#extract_sections (formatter.rb:47-93) の移植。
 // [前, 対象セクション, 後] を返す。<pre> 等の中の見出しは無視する。
 func extractSections(src string, index int) [3]string {
+	// 正規表現（regexp2）はルーン単位で照合し、不正な UTF-8 は U+FFFD（3 バイト）として返すため、
+	// バイト位置の計算がずれる（範囲外アクセス）。Ruby も不正なバイト列には正規表現を適用できない。
+	src = strings.ToValidUTF8(src, "�")
 	rc := newFormatter(nil)
 	rc.preList = nil
 	text := rc.ripOfftags(src, false, false)

@@ -119,6 +119,17 @@ func TestCalendarReportsBehavior(t *testing.T) {
 			t.Errorf("%s: %d, want %d", path, res.StatusCode, want)
 		}
 	}
+	// 巨大な年・ページ番号で前後の年・ページを列挙するループが終わらなくならない
+	for _, path := range []string{
+		"/projects/ecookbook/issues/calendar?year=9223372036854775802&month=1",
+		"/projects/ecookbook/issues/gantt?year=9223372036854775802",
+		"/news?page=9223372036854775805",
+		"/issues?page=9223372036854775805&per_page=25",
+	} {
+		if res, _ := get(t, admin, ts.URL+path); res.StatusCode != 200 {
+			t.Errorf("%s: %d", path, res.StatusCode)
+		}
+	}
 	// 見つからない query_id は rescue されない RecordNotFound（public/404.html）
 	if _, body := get(t, admin, ts.URL+"/issues/calendar?query_id=999"); !strings.Contains(body, "<title>Redmine 404 error</title>") {
 		t.Error("query_id=999: not public 404")

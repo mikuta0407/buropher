@@ -20,6 +20,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime/debug"
+	"sync"
 	"text/template"
 	"time"
 
@@ -56,6 +57,25 @@ type Server struct {
 	sessions *httpx.SessionManager
 	queue    *jobs.Queue
 	notify   *notify.Service
+	// bg は Run が起動したバックグラウンド処理（ジョブワーカー・定期実行・SCM 取り込み・DB の統計更新）。
+	bg sync.WaitGroup
+	// extraBG は RunInBackground で登録した処理（Run が bg として起動する）。
+	extraBG []func(ctx context.Context)
+}
+
+// RunInBackground は Run の間だけ動かす処理を登録する（Run より前に呼ぶ）。fn にはサーバの停止時に
+// HTTP の処理が終わってからキャンセルされる ctx が渡され、Run は fn の終了を待ってから戻る（メールの定期受信など）。
+func (s *Server) RunInBackground(fn func(ctx context.Context)) {
+	s.extraBG = append(s.extraBG, fn)
+}
+
+// goBG は fn をバックグラウンドで実行し、Run の終了時に完了を待つ対象にする。
+func (s *Server) goBG(fn func()) {
+	s.bg.Add(1)
+	go func() {
+		defer s.bg.Done()
+		fn()
+	}()
 }
 
 // Options は New の追加設定（主にテスト用）。
@@ -362,15 +382,34 @@ func healthz(d *db.DB) http.HandlerFunc {
 }
 
 // Run は ctx がキャンセルされるまでサーバを動かす。
+//
+// 停止の順序: HTTP サーバを Shutdown して処理中のリクエストを終わらせてから（リクエストが積んだジョブや
+// トランザクションを途中で切らない）、バックグラウンド処理を止め、実行中のジョブが結果を記録し終えるのを待つ
+// （呼び出し側は Run の後に DB を閉じるため）。
 func (s *Server) Run(ctx context.Context) error {
 	if err := s.startPprof(ctx); err != nil {
 		return err
 	}
-	s.startDBOptimizer(ctx)
-	s.runWorkers(ctx)
-	srv := &http.Server{Addr: s.cfg.Server.Addr, Handler: s.handler, ReadHeaderTimeout: 10 * time.Second}
+	bgCtx, bgCancel := context.WithCancel(context.WithoutCancel(ctx))
+	defer func() {
+		bgCancel()
+		done := make(chan struct{})
+		go func() { s.bg.Wait(); close(done) }()
+		select {
+		case <-done:
+		case <-time.After(30 * time.Second):
+			slog.Warn("shutdown: background tasks did not stop in time")
+		}
+	}()
+	s.startDBOptimizer(bgCtx)
+	s.runWorkers(bgCtx)
+	// IdleTimeout: keep-alive の接続を放置し続けない（ReadTimeout は大きな添付のアップロードを切るので設けない）
+	srv := &http.Server{Addr: s.cfg.Server.Addr, Handler: s.handler, ReadHeaderTimeout: 10 * time.Second, IdleTimeout: 2 * time.Minute}
 	errc := make(chan error, 1)
-	s.startSCMFetcher(ctx)
+	s.startSCMFetcher(bgCtx)
+	for _, fn := range s.extraBG {
+		s.goBG(func() { fn(bgCtx) })
+	}
 	go func() {
 		slog.Info("listening", "addr", s.cfg.Server.Addr)
 		errc <- srv.ListenAndServe()

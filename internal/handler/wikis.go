@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/mikuta0407/buropher/internal/db"
+	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/repository"
 )
 
@@ -36,6 +37,7 @@ func (a *App) WikisDestroy(c *Req) {
 			return
 		}
 		if w != nil {
+			var removedAttachments []*domain.Attachment
 			err := a.DB.WithTx(c.Ctx(), func(tx *db.Tx) error {
 				ids, err := repository.WikiPageIDs(c.Ctx(), tx, w.ID)
 				if err != nil {
@@ -45,11 +47,8 @@ func (a *App) WikisDestroy(c *Req) {
 				if err != nil {
 					return err
 				}
-				if a.AttachmentStore != nil {
-					if err := a.AttachmentStore.DeleteFromDisk(c.Ctx(), tx, deleted...); err != nil {
-						return err
-					}
-				}
+				// ファイルはコミット後に消す（ロールバックで行が戻ってもファイルが失われないように）
+				removedAttachments = deleted
 				if err := repository.DeleteWatchers(c.Ctx(), tx, "wiki_page", ids); err != nil {
 					return err
 				}
@@ -64,6 +63,7 @@ func (a *App) WikisDestroy(c *Req) {
 				a.wikiError(c, err)
 				return
 			}
+			a.deleteAttachmentsAfterCommit(c, removedAttachments)
 			c.Redirect("/projects/" + projectParam(c.Project))
 			return
 		}

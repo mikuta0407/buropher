@@ -217,20 +217,24 @@ func (s *Service) enqueue(ctx context.Context, channel string, p Payload) error 
 		p.Event = p.Kind
 	}
 	kind, oid := objectOf(&p)
-	id, err := repository.CreateNotificationDelivery(ctx, s.DB, p.UserID, channel, p.Event, kind, oid, strings.Join(p.Addresses, ", "), s.now())
-	if err != nil {
-		return err
-	}
-	p.DeliveryID = id
 	job := JobEmail
 	if channel == ChannelDiscord {
 		job = JobDiscord
 	}
-	jid, err := s.Queue.Enqueue(ctx, nil, job, p)
-	if err != nil {
-		return err
-	}
-	return repository.SetNotificationDeliveryJob(ctx, s.DB, id, jid)
+	// 配送ログ・ジョブ・その対応付けは 1 トランザクションで作る（途中で落ちてジョブの無い配送ログが残ったり、
+	// job_id を記録する前にジョブが実行されたりしないように）
+	return s.DB.WithTx(ctx, func(tx *db.Tx) error {
+		id, err := repository.CreateNotificationDelivery(ctx, tx, p.UserID, channel, p.Event, kind, oid, strings.Join(p.Addresses, ", "), s.now())
+		if err != nil {
+			return err
+		}
+		p.DeliveryID = id
+		jid, err := s.Queue.Enqueue(ctx, tx, job, p)
+		if err != nil {
+			return err
+		}
+		return repository.SetNotificationDeliveryJob(ctx, tx, id, jid)
+	})
 }
 
 // deliverToUsers は各受信者のチャネルへ積む（アカウント系は常にメール）。

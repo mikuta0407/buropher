@@ -254,6 +254,11 @@ func (p *alertParser) Open(parent ast.Node, reader text.Reader, pc parser.Contex
 		return nil, parser.NoChildren
 	}
 	l := line[pos:]
+	// '>' が 1 つのときだけアラートになる（下の fence_length の判定）。先に安く弾かないと、'>' が深く
+	// 入れ子になった行で入れ子の段数ごとに行全体を正規表現で走査し、入力の 2 乗の時間がかかる
+	if !bytes.HasPrefix(l, []byte("> [")) {
+		return nil, parser.NoChildren
+	}
 	m := reAlertStart.FindSubmatchIndex(l)
 	if m == nil {
 		return nil, parser.NoChildren

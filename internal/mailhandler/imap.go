@@ -86,6 +86,10 @@ func CheckIMAP(ctx context.Context, o IMAPOptions, receive ReceiveFunc, logger *
 	}
 	section := &imap.FetchItemBodySection{}
 	for _, uid := range data.AllUIDs() {
+		if ctx.Err() != nil {
+			// 停止中: 残りは未読のまま次回に回す（処理済みの分は下の EXPUNGE で確定する）
+			break
+		}
 		set := imap.UIDSetNum(uid)
 		msgs, err := c.Fetch(set, &imap.FetchOptions{BodySection: []*imap.FetchItemBodySection{section}}).Collect()
 		if err != nil {
@@ -106,6 +110,9 @@ func CheckIMAP(ctx context.Context, o IMAPOptions, receive ReceiveFunc, logger *
 			if err := c.Store(set, &imap.StoreFlags{Op: imap.StoreFlagsAdd, Flags: []imap.Flag{imap.FlagSeen, imap.FlagDeleted}}, nil).Close(); err != nil {
 				return fmt.Errorf("imap: store %d: %w", uid, err)
 			}
+		} else if ctx.Err() != nil {
+			// 停止（ctx のキャンセル）で受信が中断された: 処理できなかったとはみなさず、未読のまま残す
+			break
 		} else {
 			logger.Debug(fmt.Sprintf("Message %d can not be processed", uid))
 			if err := c.Store(set, &imap.StoreFlags{Op: imap.StoreFlagsAdd, Flags: []imap.Flag{imap.FlagSeen}}, nil).Close(); err != nil {

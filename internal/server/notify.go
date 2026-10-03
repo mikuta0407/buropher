@@ -131,9 +131,9 @@ func (s *Server) runWorkers(ctx context.Context) {
 	if err != nil {
 		slog.Error("jobs: scheduler disabled", "err", err)
 	} else {
-		go sch.Run(ctx)
+		s.goBG(func() { sch.Run(ctx) })
 	}
-	go s.queue.Run(ctx)
+	s.goBG(func() { s.queue.Run(ctx) })
 }
 
 // Jobs はジョブキュー（テスト・CLI 用）。
