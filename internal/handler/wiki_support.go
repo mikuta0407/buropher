@@ -109,16 +109,16 @@ func (a *App) wikiAttachmentsDeletable(c *Req, page *domain.WikiPage) bool {
 	return c.wikiEditable(page) && c.AllowedTo(domain.Perm("delete_wiki_pages_attachments"), c.wikiPageProject(page))
 }
 
-// deleteWikiAttachments はページの添付を削除する（ids が nil ならすべて）。
-func (a *App) deleteWikiAttachments(c *Req, tx *db.Tx, page *domain.WikiPage, ids []int64) error {
+// deleteWikiAttachments はページの添付の行を削除する（ids が nil ならすべて）。削除した添付は *pending に足す。
+// ファイルはトランザクションのコミット後に a.deleteAttachmentsAfterCommit(c, *pending) で消す
+// （after_commit :delete_from_disk。ロールバック（編集の競合など）で行が戻ってもファイルが失われないように）。
+func (a *App) deleteWikiAttachments(c *Req, tx *db.Tx, page *domain.WikiPage, ids []int64, pending *[]*domain.Attachment) error {
 	if ids == nil {
 		deleted, err := repository.DeleteContainerAttachments(c.Ctx(), tx, "wiki_page", []int64{page.ID})
 		if err != nil {
 			return err
 		}
-		if a.AttachmentStore != nil {
-			return a.AttachmentStore.DeleteFromDisk(c.Ctx(), tx, deleted...)
-		}
+		*pending = append(*pending, deleted...)
 		return nil
 	}
 	atts, err := repository.ContainerAttachmentList(c.Ctx(), tx, "wiki_page", page.ID)
@@ -136,11 +136,7 @@ func (a *App) deleteWikiAttachments(c *Req, tx *db.Tx, page *domain.WikiPage, id
 		if err := repository.DeleteAttachment(c.Ctx(), tx, at.ID); err != nil {
 			return err
 		}
-		if a.AttachmentStore != nil {
-			if err := a.AttachmentStore.DeleteFromDisk(c.Ctx(), tx, at); err != nil {
-				return err
-			}
-		}
+		*pending = append(*pending, at)
 	}
 	return nil
 }
