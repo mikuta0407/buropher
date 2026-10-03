@@ -587,6 +587,9 @@ var (
 	cfDateRe        = regexp.MustCompile(`^\d{4}-\d{2}-\d{2}$`)
 )
 
+// cfRegexpTimeout はカスタムフィールドの正規表現 1 回の照合の上限時間。
+const cfRegexpTimeout = time.Second
+
 // validateSingleValue は validate_single_value (Unbounded / Int / Float / Date / Progressbar)。
 func validateSingleValue(cf *customfield.CustomField, value string) []CFError {
 	var errs []CFError
@@ -600,6 +603,9 @@ func validateSingleValue(cf *customfield.CustomField, value string) []CFError {
 	}
 	if cf.Regexp != nil && *cf.Regexp != "" {
 		if re, err := regexp2.Compile(*cf.Regexp, regexp2.None); err == nil {
+			// 管理者が設定した正規表現（(a+)+$ 等）で利用者の値の照合が指数時間にならないよう上限を設ける。
+			// 時間切れ（err != nil）は不一致として扱う。
+			re.MatchTimeout = cfRegexpTimeout
 			if ok, _ := re.MatchString(value); !ok {
 				errs = append(errs, CFError{Key: "invalid"})
 			}

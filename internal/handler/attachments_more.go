@@ -5,7 +5,6 @@ package handler
 
 import (
 	"archive/zip"
-	"bytes"
 	"crypto/md5"
 	"encoding/hex"
 	"fmt"
@@ -790,37 +789,6 @@ func (a *App) AttachmentsDownloadAll(c *Req) {
 		c.Render404("")
 		return
 	}
-	var buf bytes.Buffer
-	zw := zip.NewWriter(&buf)
-	used := map[string]bool{}
-	for _, att := range st.Attachments {
-		name := att.Filename
-		for n := 1; used[name]; n++ {
-			ext := filepath.Ext(att.Filename)
-			name = strings.TrimSuffix(att.Filename, ext) + "(" + strconv.Itoa(n) + ")" + ext
-		}
-		used[name] = true
-		w, err := zw.Create(name)
-		if err != nil {
-			a.internalError(c, "zip", err)
-			return
-		}
-		f, err := a.AttachmentStore.Open(att)
-		if err != nil {
-			a.internalError(c, "zip open", err)
-			return
-		}
-		_, err = io.Copy(w, f)
-		f.Close()
-		if err != nil {
-			a.internalError(c, "zip copy", err)
-			return
-		}
-	}
-	if err := zw.Close(); err != nil {
-		a.internalError(c, "zip", err)
-		return
-	}
 	// "#{@container.class.to_s.downcase}-#{@container.id}-attachments.zip"
 	cls := map[string]string{
 		domain.AttachmentContainerWikiPage: "wikipage",
@@ -828,9 +796,58 @@ func (a *App) AttachmentsDownloadAll(c *Req) {
 	if cls == "" {
 		cls = st.Container.Kind
 	}
-	name := cls + "-" + strconv.FormatInt(st.Container.ID, 10) + "-attachments.zip"
-	sendData(c, buf.Bytes(), mimetype.Of(name), name)
+	zipName := cls + "-" + strconv.FormatInt(st.Container.ID, 10) + "-attachments.zip"
+	// Redmine は ZIP 全体をメモリに作ってから送るが、bulk_download_max_size（既定 200MB）の ZIP を
+	// 並行して要求されるとメモリを使い尽くすため、応答へ直接書き出す。
+	// 読めない添付は find_downloadable_attachments で除いてある（書き出し開始後は 500 を返せないため、
+	// その後に開けなくなった場合はログに残して途中で打ち切る）。
+	h := c.W.Header()
+	h.Set("Content-Type", mimetype.Of(zipName))
+	h.Set("Content-Disposition", ContentDisposition("attachment", filenameForContentDisposition(c, zipName)))
+	h.Set("Content-Transfer-Encoding", "binary")
+	c.W.WriteHeader(http.StatusOK)
 	c.Halt()
+	zw := zip.NewWriter(c.W)
+	used := map[string]bool{}
+	for _, att := range st.Attachments {
+		base := zipEntryName(att.Filename)
+		name := base
+		for n := 1; used[name]; n++ {
+			ext := filepath.Ext(base)
+			name = strings.TrimSuffix(base, ext) + "(" + strconv.Itoa(n) + ")" + ext
+		}
+		used[name] = true
+		w, err := zw.Create(name)
+		if err != nil {
+			a.logger().Error("zip", "err", err)
+			return
+		}
+		f, err := a.AttachmentStore.Open(att)
+		if err != nil {
+			a.logger().Error("zip open", "id", att.ID, "err", err)
+			return
+		}
+		_, err = io.Copy(w, f)
+		f.Close()
+		if err != nil {
+			a.logger().Error("zip copy", "err", err)
+			return
+		}
+	}
+	if err := zw.Close(); err != nil {
+		a.logger().Error("zip", "err", err)
+	}
+}
+
+// zipEntryName は download_all の ZIP のエントリ名。通常の添付のファイル名はそのまま
+// （sanitize_filename 済みで "/" "\" を含まない）だが、取り込んだデータなどで "/" や ".." を含む場合に
+// 展開先の外へ書かれない（zip slip）よう、パス部分を除き "." / ".." / 空は "_" にする。
+func zipEntryName(filename string) string {
+	n := attachments.SanitizeFilename(filename)
+	if strings.TrimSpace(n) == "" || n == "." || n == ".." {
+		return "_"
+	}
+	return n
 }
 
 // weakETag は stale?(:etag => value) の ETag（W/"md5(value)"）。

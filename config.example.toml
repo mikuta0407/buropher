@@ -150,6 +150,11 @@
 # in Administration > Settings > Repositories, or via /sys/fetch_changesets).
 # env: BUROPHER_SCM_FETCH_INTERVAL
 #fetch_interval = ""
+# Restrict repository paths (url) that project managers may register, like Redmine's
+# scm_git_path_regexp (whole-string match; %project% is replaced by the project identifier).
+# Empty = no restriction. e.g. '/var/git/%project%(\.[a-z0-9_-]+)?\.git'
+# env: BUROPHER_SCM_GIT_PATH_REGEXP
+#git_path_regexp = ""
 
 [web]
 # Directory of additional themes (each <theme>/stylesheets/application.css), like Redmine's themes/.

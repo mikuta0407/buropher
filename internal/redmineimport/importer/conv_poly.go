@@ -6,6 +6,7 @@ package importer
 import (
 	"fmt"
 	"path"
+	"regexp"
 	"strings"
 	"time"
 
@@ -293,10 +294,13 @@ func (im *imp) importAttachments() error {
 		dir := r.strNull("disk_directory", false)
 		var digest, algo any
 		if d := strings.ToLower(strings.TrimSpace(r.str("digest"))); d != "" {
-			switch len(d) {
-			case 64:
+			// digest はサムネイルのファイル名に使われるため 16 進以外（"../" など）は受け付けない
+			switch {
+			case !reHexDigest.MatchString(d):
+				t.repair(id, "digest is not hexadecimal; set NULL")
+			case len(d) == 64:
 				digest, algo = d, "sha256"
-			case 32:
+			case len(d) == 32:
 				digest, algo = d, "md5"
 			default:
 				t.repair(id, "digest of unknown length; set NULL")
@@ -328,6 +332,9 @@ func (im *imp) importAttachments() error {
 	}
 	return im.checkFiles()
 }
+
+// reHexDigest は attachments.digest として受け付ける形式。
+var reHexDigest = regexp.MustCompile(`^[0-9a-f]+$`)
 
 // ---------------------------------------------------------------- watchers / reactions
 

@@ -16,6 +16,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"runtime"
 	"strings"
 
 	"golang.org/x/crypto/argon2"
@@ -32,13 +33,32 @@ const (
 
 var b64 = base64.RawStdEncoding
 
+// argon2Sem は同時に実行する argon2id の数の上限（1 回あたり memory KiB を確保するため、
+// ログイン試行や Basic 認証の API リクエストを大量に並行して送られるとメモリを使い尽くす）。
+// 超えた分は空くまで待つ。
+var argon2Sem = make(chan struct{}, max(2, runtime.NumCPU()))
+
+// 検証時に受け付ける argon2id のパラメータの上限（保存済みハッシュに過大な値があっても資源を使い尽くさない）。
+const (
+	maxVerifyMemory = 256 * 1024 // KiB
+	maxVerifyTime   = 16
+	maxVerifyKeyLen = 128
+)
+
+// idKey は同時実行数を制限して argon2.IDKey を計算する。
+func idKey(pw, salt []byte, t, m uint32, p uint8, n uint32) []byte {
+	argon2Sem <- struct{}{}
+	defer func() { <-argon2Sem }()
+	return argon2.IDKey(pw, salt, t, m, p, n)
+}
+
 // Hash は argon2id でハッシュした文字列を返す。
 func Hash(pw string) (string, error) {
 	salt := make([]byte, saltLen)
 	if _, err := rand.Read(salt); err != nil {
 		return "", err
 	}
-	key := argon2.IDKey([]byte(pw), salt, time, memory, threads, keyLen)
+	key := idKey([]byte(pw), salt, time, memory, threads, keyLen)
 	return fmt.Sprintf("$argon2id$v=%d$m=%d,t=%d,p=%d$%s$%s", argon2.Version, memory, time, threads, b64.EncodeToString(salt), b64.EncodeToString(key)), nil
 }
 
@@ -101,6 +121,9 @@ func verifyArgon2(hash, pw string) (bool, error) {
 	if err != nil {
 		return false, ErrUnknownFormat
 	}
-	got := argon2.IDKey([]byte(pw), salt, t, m, p, uint32(len(want)))
+	if m > maxVerifyMemory || t == 0 || t > maxVerifyTime || p == 0 || len(want) == 0 || len(want) > maxVerifyKeyLen {
+		return false, ErrUnknownFormat
+	}
+	got := idKey([]byte(pw), salt, t, m, p, uint32(len(want)))
 	return subtle.ConstantTimeCompare(got, want) == 1, nil
 }

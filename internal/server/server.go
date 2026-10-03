@@ -166,6 +166,7 @@ func New(cfg *config.Config, d *db.DB, opts ...Options) (*Server, error) {
 	app.BaseURL = cfg.Server.BaseURL
 	app.PDFFonts = pdf.NewFontSet(pdf.Config{Dir: cfg.PDF.FontDir, Fonts: cfg.PDF.Fonts, Logger: o.Logger})
 	app.GitCommand = cfg.SCM.GitCommand
+	app.GitPathRegexp = cfg.SCM.GitPathRegexp
 	app.AuthRealm = cfg.Server.AuthRealm
 	app.MailOmitRedmineHeaders = !cfg.Mail.SendRedmineHeaders()
 	app.MessageIDPrefix = cfg.Mail.MessageIDPrefix

@@ -13,6 +13,7 @@ import (
 	"math"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strconv"
 
 	"golang.org/x/image/bmp"
@@ -58,13 +59,27 @@ func (s *Store) ThumbnailSize(size int) int {
 	return size
 }
 
+// reHexDigest は digest として受け付ける形式。digest はサムネイルのファイル名に使うため、
+// 取り込んだデータなどで "../" を含む値が入っていても保存先の外を指さないよう 16 進に限る。
+var reHexDigest = regexp.MustCompile(`\A[0-9a-fA-F]+\z`)
+
+// thumbnailGenSem はサムネイルの同時生成数の上限。元画像の展開は 1 枚で最大約 200MB
+// （maxThumbnailSourcePixels）使うため、サイズ違いを並行して要求されてもメモリを使い尽くさないようにする。
+var thumbnailGenSem = make(chan struct{}, 2)
+
 // Thumbnail は Attachment#thumbnail(:size => size)（生成済みならそのパス、生成できなければ false）。
 func (s *Store) Thumbnail(a *domain.Attachment, size int) (string, bool) {
-	if !a.Thumbnailable() || !s.Readable(a) || a.IsPDF() {
+	if !a.Thumbnailable() || !s.Readable(a) || a.IsPDF() || !reHexDigest.MatchString(a.Digest) {
 		return "", false
 	}
 	size = s.ThumbnailSize(size)
 	target := s.thumbnailPath(a, size)
+	if st, err := os.Stat(target); err == nil && st.Size() > 0 {
+		return target, true
+	}
+	thumbnailGenSem <- struct{}{}
+	defer func() { <-thumbnailGenSem }()
+	// 待っている間に他の要求が同じサムネイルを作っていればそれを使う
 	if st, err := os.Stat(target); err == nil && st.Size() > 0 {
 		return target, true
 	}
@@ -148,6 +163,9 @@ func (s *Store) generateThumbnail(source, target string, size int) error {
 
 // deleteThumbnails は delete_from_disk! のサムネイル削除（Dir[thumbnail_path("*")]）。
 func (s *Store) deleteThumbnails(a *domain.Attachment) {
+	if !reHexDigest.MatchString(a.Digest) {
+		return
+	}
 	matches, _ := filepath.Glob(filepath.Join(s.thumbnailsDir(), a.Digest+"_"+strconv.FormatInt(a.Filesize, 10)+"_*.thumb"))
 	for _, m := range matches {
 		_ = os.Remove(m)

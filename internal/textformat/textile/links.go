@@ -10,6 +10,7 @@ package textile
 import (
 	"strings"
 	"sync"
+	"sync/atomic"
 
 	"github.com/dlclark/regexp2"
 )
@@ -66,14 +67,26 @@ func autoLink(text string) string {
 
 var reMail = rx(`([` + wIn + `\.!#\$%\-+./]{1,64}@[A-Za-z0-9\-]{1,63}(\.[A-Za-z0-9\-]{1,63})+)`)
 
-var mailInLinkCache sync.Map // map[string]*regexp2.Regexp
+var (
+	mailInLinkCache sync.Map // map[string]*regexp2.Regexp
+	// mailInLinkCached は mailInLinkCache の件数。本文中のメールアドレスは利用者が自由に書けるため、
+	// 上限なしに溜めるとメモリを使い尽くせる（プレビューに異なるアドレスを大量に送るだけで増える）。
+	mailInLinkCached atomic.Int64
+)
+
+// mailInLinkCacheMax は mailInLinkCache に保持する正規表現の上限（超えたら都度コンパイルする）。
+const mailInLinkCacheMax = 256
 
 func mailInLinkRe(mail string) *regexp2.Regexp {
 	if v, ok := mailInLinkCache.Load(mail); ok {
 		return v.(*regexp2.Regexp)
 	}
 	re := rx(`<a` + reB + `[^>]*>(.*)(` + regexp2.Escape(mail) + `)(.*)</a>`)
-	mailInLinkCache.Store(mail, re)
+	if mailInLinkCached.Load() < mailInLinkCacheMax {
+		if _, loaded := mailInLinkCache.LoadOrStore(mail, re); !loaded {
+			mailInLinkCached.Add(1)
+		}
+	}
 	return re
 }
 

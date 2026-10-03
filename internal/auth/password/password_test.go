@@ -3,7 +3,10 @@
 
 package password
 
-import "testing"
+import (
+	"testing"
+	stdtime "time"
+)
 
 func TestArgon2(t *testing.T) {
 	h, err := Hash("secret")
@@ -38,5 +41,44 @@ func TestRedmineSHA1(t *testing.T) {
 	}
 	if ok, _ := Verify("", "x"); ok {
 		t.Error("empty hash accepted")
+	}
+}
+
+// TestArgon2Concurrency は argon2id の同時実行数が制限されること（並行ログインによるメモリ枯渇の防止）。
+func TestArgon2Concurrency(t *testing.T) {
+	h, err := Hash("secret")
+	if err != nil {
+		t.Fatal(err)
+	}
+	// 枠をすべて埋めると Verify は待たされる
+	for range cap(argon2Sem) {
+		argon2Sem <- struct{}{}
+	}
+	done := make(chan struct{})
+	go func() {
+		_, _ = Verify(h, "secret")
+		close(done)
+	}()
+	select {
+	case <-done:
+		t.Fatal("Verify ran beyond the concurrency limit")
+	case <-stdtime.After(100 * stdtime.Millisecond):
+	}
+	for range cap(argon2Sem) {
+		<-argon2Sem
+	}
+	<-done
+}
+
+// TestArgon2HugeParams は保存済みハッシュの過大なパラメータを拒否すること。
+func TestArgon2HugeParams(t *testing.T) {
+	for _, h := range []string{
+		"$argon2id$v=19$m=4194304,t=2,p=1$c2FsdHNhbHRzYWx0$aGFzaGhhc2hoYXNoaGFzaGhhc2hoYXNoaGFzaGhhc2g",
+		"$argon2id$v=19$m=19456,t=100000,p=1$c2FsdHNhbHRzYWx0$aGFzaGhhc2hoYXNoaGFzaGhhc2hoYXNoaGFzaGhhc2g",
+		"$argon2id$v=19$m=19456,t=2,p=0$c2FsdHNhbHRzYWx0$aGFzaGhhc2hoYXNoaGFzaGhhc2hoYXNoaGFzaGhhc2g",
+	} {
+		if ok, err := Verify(h, "x"); ok || err == nil {
+			t.Errorf("%s: ok=%v err=%v", h, ok, err)
+		}
 	}
 }

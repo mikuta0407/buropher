@@ -8,6 +8,7 @@ import (
 	"bytes"
 	"context"
 	"io"
+	"os"
 	"os/exec"
 	"regexp"
 	"sort"
@@ -115,9 +116,43 @@ func (g *Git) versionAbove(want ...int) bool { return versionAbove(ClientVersion
 
 // ---------------------------------------------------------------- 実行
 
+// safeConfigArgs はリポジトリ側の設定（リポジトリの中身を用意できる者が書ける）で任意のコマンドを
+// 実行させないための上書き（コマンドラインの -c はリポジトリの config より優先される）。
+//   - core.fsmonitor: インデックスを読むコマンドで fsmonitor フックを起動させない
+//   - log.showSignature: 署名付きコミットの表示で gpg.program を起動させない
+//   - protocol.allow: 部分クローンの遅延取得等でトランスポート（ext:: 等）を使わせない
+//   - core.hooksPath: 念のためフックを無効化する
+var safeConfigArgs = []string{
+	"-c", "core.fsmonitor=false",
+	"-c", "log.showSignature=false",
+	"-c", "protocol.allow=never",
+	"-c", "core.hooksPath=" + os.DevNull,
+}
+
+// safeEnv は git に追加する環境変数（遅延取得・端末での認証入力・ページャを無効化する）。
+var safeEnv = []string{"GIT_NO_LAZY_FETCH=1", "GIT_TERMINAL_PROMPT=0", "GIT_PAGER=cat", "GIT_PROTOCOL_FROM_USER=0"}
+
+// isOptionLike はリビジョン・パスとして渡す値が git にオプションとして解釈され得るか
+// （"-" で始まる、改行・NUL を含む）。呼び出し側（コントローラ）でも検証するが、多重の防御としてアダプタでも拒否する。
+func isOptionLike(vals ...string) bool {
+	for _, v := range vals {
+		if strings.HasPrefix(v, "-") || strings.ContainsAny(v, "\n\r\x00") {
+			return true
+		}
+	}
+	return false
+}
+
 // gitCmd は git_cmd（--git-dir と -c オプションを付けて実行し、標準出力を返す）。
 // 0 以外の終了は ErrCommandAborted。stdin が nil でなければ標準入力に渡す。
 func (g *Git) gitCmd(ctx context.Context, args []string, stdin []byte) ([]byte, error) {
+	var out bytes.Buffer
+	err := g.gitCmdTo(ctx, args, stdin, &out)
+	return out.Bytes(), err
+}
+
+// gitCmdTo は gitCmd の標準出力を w に書き出す版（大きな出力をメモリに溜めない）。
+func (g *Git) gitCmdTo(ctx context.Context, args []string, stdin []byte, w io.Writer) error {
 	repo := g.RootURL
 	if repo == "" {
 		repo = g.URL
@@ -126,19 +161,20 @@ func (g *Git) gitCmd(ctx context.Context, args []string, stdin []byte) ([]byte, 
 	if g.versionAbove(1, 7, 2) {
 		full = append(full, "-c", "core.quotepath=false", "-c", "log.decorate=no")
 	}
+	full = append(full, safeConfigArgs...)
 	full = append(full, args...)
 	cmd := exec.CommandContext(ctx, g.command(), full...)
+	cmd.Env = append(os.Environ(), safeEnv...)
 	if stdin != nil {
 		cmd.Stdin = bytes.NewReader(stdin)
 	}
-	var out bytes.Buffer
-	cmd.Stdout = &out
+	cmd.Stdout = w
 	cmd.Stderr = io.Discard
 	if err := cmd.Run(); err != nil {
 		// Redmine はシェル経由で起動するため、コマンドが見つからない場合も終了コード 127 で ScmCommandAborted になる
-		return out.Bytes(), ErrCommandAborted
+		return ErrCommandAborted
 	}
-	return out.Bytes(), nil
+	return nil
 }
 
 // toRepo は scm_iconv(@path_encoding, 'UTF-8', s)。
@@ -304,6 +340,9 @@ func (g *Git) Entries(ctx context.Context, path, identifier string, reportLastCo
 	if identifier == "" {
 		identifier = "HEAD"
 	}
+	if isOptionLike(identifier) {
+		return nil, false
+	}
 	out, err := g.gitCmd(ctx, []string{"ls-tree", "-l", g.toRepo(identifier) + ":" + p}, nil)
 	if err != nil {
 		return nil, false
@@ -360,6 +399,9 @@ func (g *Git) Lastrev(ctx context.Context, path, rev string) *Revision {
 	args := []string{"log", "--no-color", "--encoding=UTF-8", "--date=iso", "--pretty=fuller", "--no-merges", "-n", "1"}
 	if g.versionAbove(2, 9) {
 		args = append(args, "--no-renames")
+	}
+	if isOptionLike(rev) {
+		return nil
 	}
 	if rev != "" {
 		args = append(args, rev)
@@ -435,6 +477,9 @@ func (g *Git) Revisions(ctx context.Context, path, from, to string, o RevisionsO
 	}
 	if path != "" {
 		args = append(args, "--", g.toRepo(path))
+	}
+	if isOptionLike(from, to) || isOptionLike(o.Includes...) || isOptionLike(o.Excludes...) {
+		return nil
 	}
 	var revs []string
 	if from != "" || to != "" {
@@ -531,6 +576,9 @@ func (g *Git) parseLog(out []byte) []*Revision {
 
 // Diff は diff(path, identifier_from, identifier_to)（行の配列。失敗時は ok=false）。
 func (g *Git) Diff(ctx context.Context, path, from, to string) ([]string, bool) {
+	if isOptionLike(from, to) || (from == "" && to == "") {
+		return nil, false
+	}
 	var args []string
 	if to != "" {
 		args = []string{"diff", "--no-color", "--no-ext-diff", "--no-textconv", to, from}
@@ -563,7 +611,11 @@ func (g *Git) Annotate(ctx context.Context, path, identifier string) *Annotate {
 	if strings.TrimSpace(identifier) == "" {
 		identifier = "HEAD"
 	}
-	out, err := g.gitCmd(ctx, []string{"blame", "--encoding=UTF-8", "-p", g.toRepo(identifier), "--", g.toRepo(path)}, nil)
+	if isOptionLike(identifier) {
+		return nil
+	}
+	// --no-textconv: リポジトリの設定（diff.<driver>.textconv）でコマンドを実行させない
+	out, err := g.gitCmd(ctx, []string{"blame", "--no-textconv", "--encoding=UTF-8", "-p", g.toRepo(identifier), "--", g.toRepo(path)}, nil)
 	if err != nil {
 		return nil
 	}
@@ -597,16 +649,30 @@ func (g *Git) Cat(ctx context.Context, path, identifier string) ([]byte, bool) {
 	if identifier == "" {
 		identifier = "HEAD"
 	}
-	out, err := g.gitCmd(ctx, []string{"show", "--no-color", g.toRepo(identifier) + ":" + g.toRepo(path)}, nil)
+	if isOptionLike(identifier) {
+		return nil, false
+	}
+	out, err := g.gitCmd(ctx, []string{"show", "--no-color", "--no-textconv", g.toRepo(identifier) + ":" + g.toRepo(path)}, nil)
 	if err != nil {
 		return nil, false
 	}
 	return out, true
 }
 
+// CatTo は Cat の内容を w に書き出す（raw のダウンロードで大きなファイルをメモリに読み込まない）。
+func (g *Git) CatTo(ctx context.Context, path, identifier string, w io.Writer) bool {
+	if identifier == "" {
+		identifier = "HEAD"
+	}
+	if isOptionLike(identifier) {
+		return false
+	}
+	return g.gitCmdTo(ctx, []string{"show", "--no-color", "--no-textconv", g.toRepo(identifier) + ":" + g.toRepo(path)}, nil, w) == nil
+}
+
 // ValidName は valid_name?（ブランチ・タグとして存在する名前か）。
 func (g *Git) ValidName(ctx context.Context, name string) bool {
-	if strings.HasPrefix(name, "-") || strings.HasPrefix(name, "/") || strings.HasPrefix(name, "refs/heads/") ||
+	if isOptionLike(name) || strings.HasPrefix(name, "/") || strings.HasPrefix(name, "refs/heads/") ||
 		strings.HasPrefix(name, "refs/remotes/") || name == "HEAD" {
 		return false
 	}

@@ -28,6 +28,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 	"slices"
@@ -205,7 +206,52 @@ func Forget(id int64) {
 
 // defaultHTTPClient はプロバイダとの通信の既定のクライアント（http.DefaultClient にはタイムアウトが無く、
 // 応答しないプロバイダでログインの処理が止まり続ける）。
-var defaultHTTPClient = &http.Client{Timeout: 30 * time.Second}
+// 応答の本文は maxResponseBytes までに制限する（go-oidc はディスカバリ文書・JWKS を上限なしで読み込むため、
+// 巨大な応答でメモリを使い果たさないように）。
+var defaultHTTPClient = &http.Client{Timeout: 30 * time.Second, Transport: limitedTransport{base: http.DefaultTransport}}
+
+// maxResponseBytes はプロバイダの応答本文の上限。
+const maxResponseBytes = 4 << 20
+
+// errResponseTooLarge は応答本文が maxResponseBytes を超えた。
+var errResponseTooLarge = errors.New("oidc: response body too large")
+
+// limitedTransport は応答本文の大きさを制限する RoundTripper。
+type limitedTransport struct{ base http.RoundTripper }
+
+func (t limitedTransport) RoundTrip(req *http.Request) (*http.Response, error) {
+	res, err := t.base.RoundTrip(req)
+	if err != nil {
+		return nil, err
+	}
+	res.Body = &limitedBody{rc: res.Body, n: maxResponseBytes}
+	return res, nil
+}
+
+// limitedBody は n バイトを超えて読もうとするとエラーにする io.ReadCloser。
+type limitedBody struct {
+	rc io.ReadCloser
+	n  int64
+}
+
+func (b *limitedBody) Read(p []byte) (int, error) {
+	if b.n <= 0 {
+		// 上限ちょうどで終わっているかを 1 バイト読んで確かめる
+		var one [1]byte
+		if n, _ := b.rc.Read(one[:]); n > 0 {
+			return 0, errResponseTooLarge
+		}
+		return 0, io.EOF
+	}
+	if int64(len(p)) > b.n {
+		p = p[:b.n]
+	}
+	n, err := b.rc.Read(p)
+	b.n -= int64(n)
+	return n, err
+}
+
+func (b *limitedBody) Close() error { return b.rc.Close() }
 
 // New はディスカバリしてプロバイダを作る。
 func New(ctx context.Context, client *http.Client, cfg Config) (*Provider, error) {

@@ -79,12 +79,58 @@ func TestPathologicalInputs(t *testing.T) {
 	}
 	for i, in := range inputs {
 		start := time.Now()
-		Format(in, fakeOpts)
-		GetSection(in, 2)
+		formatOrTimeout(t, in)
 		d := time.Since(start)
 		t.Logf("input %d: %v", i, d)
 		if d > 5*time.Second {
 			t.Errorf("input %d took %v", i, d)
 		}
+	}
+}
+
+// formatOrTimeout は Format と GetSection を実行する。照合の時間切れ（ErrMatchTimeout の panic。
+// -race 等で遅い環境では起こり得る）は上限内に打ち切られたものとして許容する。
+func formatOrTimeout(t *testing.T, in string) {
+	t.Helper()
+	defer func() {
+		if rec := recover(); rec != nil && rec != ErrMatchTimeout { //nolint:errorlint // 番兵値そのものとの比較
+			panic(rec)
+		}
+	}()
+	Format(in, fakeOpts)
+	GetSection(in, 2)
+}
+
+// TestMatchTimeoutBoundsQuadratic は閉じ記号の無い "@" を大量に含む本文
+// （CODE_RE の遅延量指定子で入力長の 2 乗の時間がかかる）の照合が時間切れで打ち切られることを確かめる。
+func TestMatchTimeoutBoundsQuadratic(t *testing.T) {
+	in := strings.Repeat("\n@a", 20000)
+	start := time.Now()
+	func() {
+		defer func() {
+			if rec := recover(); rec != ErrMatchTimeout { //nolint:errorlint // 番兵値そのものとの比較
+				t.Errorf("recover = %v, want ErrMatchTimeout", rec)
+			}
+		}()
+		Format(in, fakeOpts)
+	}()
+	if d := time.Since(start); d > 30*time.Second {
+		t.Errorf("took %v", d)
+	}
+}
+
+// TestMailInLinkCacheBounded は本文中の異なるメールアドレスごとの正規表現のキャッシュが上限を超えないことを確かめる。
+func TestMailInLinkCacheBounded(t *testing.T) {
+	var b strings.Builder
+	b.WriteString(`<a href="x">x</a> `)
+	for i := range 2*mailInLinkCacheMax + 10 {
+		b.WriteString("u" + strconv.Itoa(i) + "@example.com ")
+	}
+	out := autoMailto(b.String())
+	if !strings.Contains(out, `href="mailto:u0@example.com"`) {
+		t.Fatalf("mail not linked: %.200s", out)
+	}
+	if n := mailInLinkCached.Load(); n > mailInLinkCacheMax {
+		t.Fatalf("cached %d > %d", n, mailInLinkCacheMax)
 	}
 }

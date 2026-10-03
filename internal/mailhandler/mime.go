@@ -108,6 +108,14 @@ func splitHeaderBody(raw []byte) ([]byte, []byte) {
 // parseHeader はヘッダを行ごとに分け、折り返しを戻す（継続行の改行のみを除く）。
 func parseHeader(b []byte) []HeaderField {
 	var fields []HeaderField
+	// 継続行は Builder に積む（Value += line だと継続行の多いヘッダで二乗時間になる）
+	var cur strings.Builder
+	flush := func() {
+		if len(fields) > 0 {
+			fields[len(fields)-1].Value = strings.TrimSpace(cur.String())
+		}
+		cur.Reset()
+	}
 	lines := strings.Split(strings.ReplaceAll(string(b), "\r\n", "\n"), "\n")
 	for _, line := range lines {
 		line = strings.TrimSuffix(line, "\r")
@@ -115,19 +123,19 @@ func parseHeader(b []byte) []HeaderField {
 			continue
 		}
 		if (line[0] == ' ' || line[0] == '\t') && len(fields) > 0 {
-			fields[len(fields)-1].Value += line
+			cur.WriteString(line)
 			continue
 		}
 		i := strings.IndexByte(line, ':')
 		if i <= 0 {
 			continue
 		}
+		flush()
 		name := strings.TrimSpace(line[:i])
-		fields = append(fields, HeaderField{Name: name, Value: line[i+1:]})
+		fields = append(fields, HeaderField{Name: name})
+		cur.WriteString(line[i+1:])
 	}
-	for i := range fields {
-		fields[i].Value = strings.TrimSpace(fields[i].Value)
-	}
+	flush()
 	return fields
 }
 
@@ -360,18 +368,26 @@ func (p *Part) AllParts() []*Part {
 }
 
 // Attachments は attachments（Mail::AttachmentsList。message/rfc822 は中のメールの添付）。
-func (p *Part) Attachments() []*Part {
+func (p *Part) Attachments() []*Part { return p.attachments(0) }
+
+// maxRFC822Depth は添付を探す message/rfc822 の入れ子の上限。中のメールは段ごとに解析し直すため、
+// 上限が無いと入れ子を重ねたメールで二乗時間・深い再帰になる（buropher の DoS 対策）。
+const maxRFC822Depth = 10
+
+func (p *Part) attachments(rfc822Depth int) []*Part {
 	var out []*Part
 	for _, c := range p.Parts {
 		switch {
 		case c.MimeType() == "message/rfc822":
-			out = append(out, Parse(c.DecodedBody()).Attachments()...)
+			if rfc822Depth < maxRFC822Depth {
+				out = append(out, Parse(c.DecodedBody()).attachments(rfc822Depth+1)...)
+			}
 		case len(c.Parts) == 0:
 			if c.IsAttachment() {
 				out = append(out, c)
 			}
 		default:
-			out = append(out, c.Attachments()...)
+			out = append(out, c.attachments(rfc822Depth)...)
 		}
 	}
 	return out

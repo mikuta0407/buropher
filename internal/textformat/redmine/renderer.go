@@ -216,10 +216,11 @@ type heading struct {
 }
 
 // Textilizable は textilizable(text, options)。
-func (r *Renderer) Textilizable(text string, opts Options) template.HTML {
+func (r *Renderer) Textilizable(text string, opts Options) (out template.HTML) {
 	if blank(text) {
 		return ""
 	}
+	defer recoverMatchTimeout(text, &out)
 	obj := opts.Object
 	project := opts.Project
 	if project == nil {
@@ -253,6 +254,28 @@ func (r *Renderer) Textilizable(text string, opts Options) template.HTML {
 		text = r.replaceTOC(text, st.parsedHeadings)
 	}
 	return template.HTML(text)
+}
+
+// recoverMatchTimeout は正規表現の照合時間切れ（textile.ErrMatchTimeout）の panic を回収し、
+// 結果を装飾なしのテキスト（エスケープして段落と改行だけを付けたもの）に置き換える。
+// 悪意のある本文でページの表示ごとに CPU を長時間占有されるのを防ぐ。defer で直接呼ぶこと。
+func recoverMatchTimeout(text string, out *template.HTML) {
+	if rec := recover(); rec != nil {
+		*out = fallbackOnMatchTimeout(rec, text)
+	}
+}
+
+// fallbackOnMatchTimeout は recover した値が時間切れなら装飾なしのテキストを返す（それ以外は再 panic）。
+func fallbackOnMatchTimeout(rec any, text string) template.HTML {
+	if err, ok := rec.(error); !ok || err != textile.ErrMatchTimeout { //nolint:errorlint // 番兵値そのものとの比較
+		panic(rec)
+	}
+	return plainFallback(text)
+}
+
+// plainFallback は時間切れ時の表示（simple_format(h(text))。正規表現を使わない）。
+func plainFallback(text string) template.HTML {
+	return template.HTML(rails.SimpleFormat(template.HTML(h(text)), nil, rails.NewHash("sanitize", false))) //nolint:gosec // h でエスケープ済み
 }
 
 // toHTML は Redmine::WikiFormatting.to_html(Setting.text_formatting, text)。

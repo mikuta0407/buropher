@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"html/template"
+	"io"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -640,11 +641,6 @@ func (a *App) entryAndRaw(c *Req, isRaw bool) {
 		return
 	}
 	if isRaw {
-		content, ok := s.git.Cat(ctx, s.path, s.rev)
-		if !ok {
-			a.showErrorNotFound(c)
-			return
-		}
 		name := s.path
 		if i := strings.LastIndex(name, "/"); i >= 0 {
 			name = name[i+1:]
@@ -664,11 +660,21 @@ func (a *App) entryAndRaw(c *Req, isRaw bool) {
 		h.Set("Content-Type", typ)
 		h.Set("Content-Disposition", httpx.ContentDisposition(disposition, name))
 		h.Set("Content-Transfer-Encoding", "binary")
-		c.Halt()
-		c.W.WriteHeader(http.StatusOK)
-		if c.R.Method != http.MethodHead {
-			_, _ = c.W.Write(content)
+		// 内容はメモリに溜めずに流す（最初の書き込みで 200 を送る。git が何も出力せず失敗したら 404）
+		lw := &lazyStatusWriter{w: c.W}
+		var dst io.Writer = lw
+		if c.R.Method == http.MethodHead {
+			dst = io.Discard
 		}
+		if !s.git.CatTo(ctx, s.path, s.rev, dst) && !lw.started {
+			for _, k := range []string{"Content-Type", "Content-Disposition", "Content-Transfer-Encoding"} {
+				h.Del(k)
+			}
+			a.showErrorNotFound(c)
+			return
+		}
+		c.Halt()
+		lw.start()
 		return
 	}
 	data := a.repoCommonData(c, s)
@@ -1115,4 +1121,22 @@ func (a *App) graphCommitsPerAuthor(c *Req, repo *domain.Repository) (map[string
 		labels[len(fields)-1-i] = reMailInName.ReplaceAllString(f, "")
 	}
 	return map[string]any{"labels": labels, "commits": reverseInts(cdata), "changes": reverseInts(chdata)}, nil
+}
+
+// lazyStatusWriter は最初の書き込みの直前に 200 を送る http.ResponseWriter のラッパ。
+type lazyStatusWriter struct {
+	w       http.ResponseWriter
+	started bool
+}
+
+func (l *lazyStatusWriter) start() {
+	if !l.started {
+		l.started = true
+		l.w.WriteHeader(http.StatusOK)
+	}
+}
+
+func (l *lazyStatusWriter) Write(b []byte) (int, error) {
+	l.start()
+	return l.w.Write(b)
 }
