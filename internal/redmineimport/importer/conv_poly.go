@@ -308,7 +308,9 @@ func (im *imp) importAttachments() error {
 				im.st.attachmentPaths[c] = id
 			}
 		} else {
-			t.repair(id, "unsafe disk path; file will not be copied")
+			// 保存先の外を指すパスを行に残すと、ダウンロード・削除で任意のファイルに触れてしまう
+			t.drop(id, "unsafe disk path %q", rel)
+			return nil
 		}
 		author := im.authorOr(t, id, "author_id", r.ref("author_id"))
 		im.st.attachments.add(id)

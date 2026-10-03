@@ -289,6 +289,18 @@ func TestCreateAttachFilesAndDelete(t *testing.T) {
 	}
 }
 
+func TestDiskfileStaysInsideRoot(t *testing.T) {
+	s := &Store{Root: t.TempDir()}
+	for _, c := range [][2]string{{"../../etc", "passwd"}, {"", "../secret"}, {"/etc", "passwd"}, {"2026/01", "../../../x"}} {
+		if got := s.Diskfile(&domain.Attachment{DiskDirectory: c[0], DiskFilename: c[1]}); got != "" {
+			t.Errorf("Diskfile(%q, %q) = %q, want empty", c[0], c[1], got)
+		}
+	}
+	if got, want := s.Diskfile(&domain.Attachment{DiskDirectory: "2026/01", DiskFilename: "1_a.txt"}), filepath.Join(s.Root, "2026", "01", "1_a.txt"); got != want {
+		t.Errorf("Diskfile = %q, want %q", got, want)
+	}
+}
+
 type zeroReader struct{}
 
 func (zeroReader) Read(p []byte) (int, error) { clear(p); return len(p), nil }

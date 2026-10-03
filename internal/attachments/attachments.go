@@ -157,8 +157,13 @@ func FindByToken(ctx context.Context, q db.Queryer, token string) (*domain.Attac
 }
 
 // Diskfile は Attachment#diskfile（Root/disk_directory/disk_filename）。
+// disk_directory / disk_filename が保存先の外を指す（".." や絶対パスを含む）場合は ""（開けない・消せない）。
 func (s *Store) Diskfile(a *domain.Attachment) string {
-	return filepath.Join(s.Root, filepath.FromSlash(a.DiskDirectory), filepath.FromSlash(a.DiskFilename))
+	rel := filepath.Join(filepath.FromSlash(a.DiskDirectory), filepath.FromSlash(a.DiskFilename))
+	if !filepath.IsLocal(rel) {
+		return ""
+	}
+	return filepath.Join(s.Root, rel)
 }
 
 // Readable は Attachment#readable?（disk_filename があり、ファイルを読める）。
