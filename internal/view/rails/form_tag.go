@@ -316,11 +316,11 @@ func SelectTag(name any, optionTags any, options *Hash) HTML {
 			blankOpts.Set("label", " ")
 		}
 		if truthy(ib) {
-			optionTags = ContentTag("option", ib, blankOpts) + HTML(ToS(optionTags))
+			optionTags = ContentTag("option", ib, blankOpts) + H(optionTags) // html_safe でない文字列はエスケープする（Rails の SafeBuffer#+）
 		}
 	}
 	if prompt := opts.Del("prompt"); truthy(prompt) {
-		optionTags = ContentTag("option", prompt, NewHash("value", "")) + HTML(ToS(optionTags))
+		optionTags = ContentTag("option", prompt, NewHash("value", "")) + H(optionTags) // html_safe でない文字列はエスケープする（Rails の SafeBuffer#+）
 	}
 	return ContentTag("select", optionTags, NewHash("name", htmlName, "id", SanitizeToID(name)).Update(opts))
 }
