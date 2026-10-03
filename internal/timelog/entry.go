@@ -1110,27 +1110,40 @@ func (e *Env) Save(ctx context.Context, t *Entry) (bool, error) {
 		IssueID: t.IssueID, Hours: *t.Hours, Comments: t.Comments, ActivityID: *t.ActivityID, CreatedAt: t.CreatedAt, UpdatedAt: t.UpdatedAt}
 	r.SetSpentOn(*t.SpentOn)
 	now := e.now()
-	if t.NewRecord() {
-		if err := repository.TimeEntryInsert(ctx, e.Q, r, now); err != nil {
-			return false, err
+	write := func(q db.Queryer) error {
+		if t.NewRecord() {
+			if err := repository.TimeEntryInsert(ctx, q, r, now); err != nil {
+				return err
+			}
+		} else {
+			touch := t.Changed()
+			if err := repository.TimeEntryUpdate(ctx, q, r, now, touch); err != nil {
+				return err
+			}
 		}
-	} else {
-		touch := t.Changed()
-		if err := repository.TimeEntryUpdate(ctx, e.Q, r, now, touch); err != nil {
-			return false, err
+		for _, id := range t.cfOrder {
+			if !t.NewRecord() && slices.Equal(t.CFValues[id], t.cfWas[id]) {
+				continue
+			}
+			vals := t.CFValues[id]
+			if len(vals) == 0 {
+				vals = []string{""}
+			}
+			if err := repository.SetCustomValues(ctx, q, "time_entry", r.ID, id, vals); err != nil {
+				return err
+			}
 		}
+		return nil
 	}
-	for _, id := range t.cfOrder {
-		if !t.NewRecord() && slices.Equal(t.CFValues[id], t.cfWas[id]) {
-			continue
-		}
-		vals := t.CFValues[id]
-		if len(vals) == 0 {
-			vals = []string{""}
-		}
-		if err := repository.SetCustomValues(ctx, e.Q, "time_entry", r.ID, id, vals); err != nil {
-			return false, err
-		}
+	// 行とカスタム値は 1 トランザクションで保存する（e.Q が *db.DB のとき。呼び出し側のトランザクションならそのまま）
+	var err error
+	if d, ok := e.Q.(*db.DB); ok {
+		err = d.WithTx(ctx, func(tx *db.Tx) error { return write(tx) })
+	} else {
+		err = write(e.Q)
+	}
+	if err != nil {
+		return false, err
 	}
 	t.ID, t.CreatedAt, t.UpdatedAt = r.ID, r.CreatedAt, r.UpdatedAt
 	o := *r
