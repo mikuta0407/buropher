@@ -6,6 +6,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"io"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -278,4 +279,27 @@ func TestCreateAttachFilesAndDelete(t *testing.T) {
 			t.Errorf("file left: %s", e.Name())
 		}
 	}
+	// サイズ不明の本文は上限 + 1 バイトまでしか読まない（ディスクを埋められない）
+	cr := &countReader{r: io.LimitReader(zeroReader{}, 64<<20)}
+	if _, errs, err := s.Create(ctx, d, Upload{Filename: "huge.bin", Body: cr, Size: -1}, admin, l); err != nil || !errs.Any() {
+		t.Fatalf("huge: %v %v", err, errs)
+	}
+	if cr.n > 1025 {
+		t.Errorf("read %d bytes of an oversized upload", cr.n)
+	}
+}
+
+type zeroReader struct{}
+
+func (zeroReader) Read(p []byte) (int, error) { clear(p); return len(p), nil }
+
+type countReader struct {
+	r io.Reader
+	n int64
+}
+
+func (c *countReader) Read(p []byte) (int, error) {
+	n, err := c.r.Read(p)
+	c.n += int64(n)
+	return n, err
 }

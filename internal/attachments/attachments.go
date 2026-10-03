@@ -268,7 +268,15 @@ func (s *Store) Create(ctx context.Context, q db.Queryer, up Upload, author *dom
 	if errs := s.Validate(a, up.Size, true, l); errs.Any() {
 		return a, errs, nil
 	}
-	if err := s.writeFile(a, up.Body); err != nil {
+	body := up.Body
+	if up.Size < 0 && body != nil {
+		// サイズが分からない（chunked）本文は上限 + 1 バイトで打ち切る。超えた分は書き込み後の
+		// 検証で too big になる（上限なしに書き続けてディスクを埋められないように）。
+		if max := s.MaxSizeBytes(); max > 0 {
+			body = io.LimitReader(body, max+1)
+		}
+	}
+	if err := s.writeFile(a, body); err != nil {
 		return a, nil, err
 	}
 	if up.Size < 0 {
