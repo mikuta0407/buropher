@@ -37,10 +37,7 @@ func newFixtureServer(t *testing.T, extra ...func(a *handler.App, r chi.Router))
 // newFixtureServerFull は newFixtureServer と同じ。*server.Server（ルータ・App）も返す。
 func newFixtureServerFull(t *testing.T, extra ...func(a *handler.App, r chi.Router)) (*server.Server, *httptest.Server, *db.DB) {
 	t.Helper()
-	// 参照環境は TZ=UTC（タイムゾーン未設定ユーザーの時刻はサーバのローカル時刻で表示される）
-	saved := time.Local
-	time.Local = time.UTC
-	t.Cleanup(func() { time.Local = saved })
+	// TZ=UTC は TestMain（main_test.go）で設定する
 	ctx := context.Background()
 	d := dbtest.New(t)
 	if err := testfixtures.LoadContext(ctx, d, frozenTime, testfixtures.All()...); err != nil {

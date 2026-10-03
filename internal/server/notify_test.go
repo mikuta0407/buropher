@@ -41,9 +41,6 @@ type notifyEnv struct {
 // newNotifyEnv はフィクスチャ投入済み DB と、メールを TestSender に送るサーバ。
 func newNotifyEnv(t *testing.T, mutate ...func(cfg *config.Config, o *server.Options)) *notifyEnv {
 	t.Helper()
-	saved := time.Local
-	time.Local = time.UTC
-	t.Cleanup(func() { time.Local = saved })
 	ctx := context.Background()
 	d := dbtest.New(t)
 	if err := testfixtures.LoadContext(ctx, d, frozenTime, testfixtures.All()...); err != nil {

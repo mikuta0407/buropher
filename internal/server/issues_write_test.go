@@ -48,9 +48,6 @@ func (n *fakeNotifier) take() []issues.Notification {
 // newIssuesWriteServer は newFixtureServer と同じ環境で、通知を fakeNotifier に集める。
 func newIssuesWriteServer(t *testing.T) (*httptest.Server, *db.DB, *fakeNotifier) {
 	t.Helper()
-	saved := time.Local
-	time.Local = time.UTC
-	t.Cleanup(func() { time.Local = saved })
 	ctx := context.Background()
 	d := dbtest.New(t)
 	if err := testfixtures.LoadContext(ctx, d, frozenTime, testfixtures.All()...); err != nil {
