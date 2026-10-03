@@ -122,7 +122,8 @@ func tagfilter(lit string) bool {
 	if lit[i] == '/' {
 		i++
 	}
-	lc := strings.ToLower(lit[i:])
+	// タグ名の比較に要る先頭だけを小文字にする（'<' ごとに残り全体を変換すると 2 乗の時間がかかる）
+	lc := strings.ToLower(lit[i:min(len(lit), i+16)])
 	for _, t := range tagfilterNames {
 		if strings.HasPrefix(lc, t) {
 			j := i + len(t)
