@@ -132,6 +132,13 @@ func (a *App) MyAccount(c *Req) {
 	api := httpx.IsAPIRequest(c.R)
 	if c.R.Method == http.MethodPut {
 		m.assignSafeAttributes(c.Params().Map("user"), c.User)
+		// buropher 独自（セキュリティ）: OAuth のトークンではメールアドレスを変更させない。
+		// Redmine の OAuth スコープにはアカウント情報の権限が無く、どのスコープのトークンでも
+		// メールアドレスを攻撃者のものに変えてパスワード再設定で乗っ取れてしまうため。
+		if c.User.AuthorizedByOAuth() && !strings.EqualFold(m.mail, m.mailWas) {
+			c.DenyAccess()
+			return
+		}
 		m.assignPref(c.Params().Map("pref"))
 		ok, err := a.saveUser(c, m)
 		if err != nil {
@@ -165,6 +172,8 @@ func (a *App) MyAccount(c *Req) {
 		// レイアウト（アバターの頭文字など）にも表れる
 		c.User = m.User
 	} else if api {
+		// my/account.api.rsb の @user は User.current（OAuth のスコープを持つ）
+		m.User.OAuthScope = c.User.OAuthScope
 		a.renderMyAccountAPI(c, m.User)
 		return
 	}
@@ -178,10 +187,17 @@ func (a *App) MyAccount(c *Req) {
 
 // renderMyAccountAPI は my/account.api.rsb。
 func (a *App) renderMyAccountAPI(c *Req, u *domain.User) {
-	apiKey, err := repository.APIKey(c.Ctx(), a.DB, u.ID)
-	if err != nil {
-		a.serverError(c, err)
-		return
+	// buropher 独自（セキュリティ）: OAuth のトークンには API キーを返さない（users/show.api.rsb と同じ条件）。
+	// Redmine 6.1.2 の my/account.api.rsb は常に返すため、スコープを限定したトークンから
+	// スコープの制限を受けない API キーを取得できてしまう。
+	var apiKey any
+	if !u.AuthorizedByOAuth() {
+		k, err := repository.APIKey(c.Ctx(), a.DB, u.ID)
+		if err != nil {
+			a.serverError(c, err)
+			return
+		}
+		apiKey = k
 	}
 	cvs, err := a.loadPrincipalCustomValues(c, "user", []*domain.User{u})
 	if err != nil {
@@ -198,7 +214,9 @@ func (a *App) renderMyAccountAPI(c *Req, u *domain.User) {
 			b.Value("mail", nilIfEmpty(u.Mail))
 			b.Value("created_on", u.CreatedAt)
 			b.Value("last_login_on", u.LastLoginAt)
-			b.Value("api_key", apiKey)
+			if apiKey != nil {
+				b.Value("api_key", apiKey)
+			}
 			renderAPICustomValues(b, cvs[u.ID])
 		})
 	})
