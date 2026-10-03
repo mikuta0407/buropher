@@ -100,7 +100,7 @@ func (t *twofaTotp) verifyOTP(code string) (bool, error) {
 	if !ok {
 		return false, nil
 	}
-	if err := repository.SetTwofaTotpLastUsed(t.c.Ctx(), t.a.DB, t.user.ID, at); err != nil {
+	if fresh, err := repository.SetTwofaTotpLastUsed(t.c.Ctx(), t.a.DB, t.user.ID, at); err != nil || !fresh {
 		return false, err
 	}
 	t.st.TotpLastUsedAt = &at
@@ -148,7 +148,11 @@ func (t *twofaTotp) confirmPairing(code string) (bool, error) {
 	if err != nil || !ok {
 		return false, err
 	}
-	if err := repository.ActivateTwofa(t.c.Ctx(), t.a.DB, t.user.ID, t.SchemeName(), t.a.now()); err != nil {
+	// 方式の設定とトークン（セッション・自動ログイン）の削除は 1 トランザクションで行う
+	// （途中で失敗して 2 要素認証が有効なのに古いセッションが残ることがないように）
+	if err := t.a.DB.WithTx(t.c.Ctx(), func(tx *db.Tx) error {
+		return repository.ActivateTwofa(t.c.Ctx(), tx, t.user.ID, t.SchemeName(), t.a.now())
+	}); err != nil {
 		return false, err
 	}
 	t.user.TwofaScheme = t.SchemeName()
@@ -169,7 +173,9 @@ func (t *twofaTotp) destroyPairing(code string) (bool, error) {
 
 // destroyPairingWithoutVerify は destroy_pairing_without_verify!。
 func (t *twofaTotp) destroyPairingWithoutVerify() error {
-	if err := repository.DeactivateTwofa(t.c.Ctx(), t.a.DB, t.user.ID, t.a.now()); err != nil {
+	if err := t.a.DB.WithTx(t.c.Ctx(), func(tx *db.Tx) error {
+		return repository.DeactivateTwofa(t.c.Ctx(), tx, t.user.ID, t.a.now())
+	}); err != nil {
 		return err
 	}
 	t.user.TwofaScheme = ""

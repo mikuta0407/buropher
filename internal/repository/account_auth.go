@@ -58,9 +58,16 @@ func SetTwofaTotpKey(ctx context.Context, q db.Queryer, userID int64, sealedKey 
 }
 
 // SetTwofaTotpLastUsed は twofa_totp_last_used_at を設定する（Totp#verify_otp!）。
-func SetTwofaTotpLastUsed(ctx context.Context, q db.Queryer, userID, at int64) error {
-	_, err := q.Exec(ctx, `UPDATE user_accounts SET twofa_totp_last_used_at = ? WHERE principal_id = ?`, at, userID)
-	return err
+// 保存済みの値が at 以上なら（同じコードを並行するリクエストで先に使われた）更新せず false を返す
+// （読み込み済みの値での判定と更新の間に同じコードが二度通らないように）。
+func SetTwofaTotpLastUsed(ctx context.Context, q db.Queryer, userID, at int64) (bool, error) {
+	res, err := q.Exec(ctx, `UPDATE user_accounts SET twofa_totp_last_used_at = ? WHERE principal_id = ?
+AND (twofa_totp_last_used_at IS NULL OR twofa_totp_last_used_at < ?)`, at, userID, at)
+	if err != nil {
+		return false, err
+	}
+	n, err := res.RowsAffected()
+	return n > 0, err
 }
 
 // ActivateTwofa は confirm_pairing!（twofa_scheme を設定し、after_save :destroy_tokens で
