@@ -216,13 +216,13 @@ func (n *Normalizer) Normalize(format Format, body []byte) (string, error) {
 	case FormatJSON:
 		out, err := n.JSON(body)
 		if err != nil {
-			return n.Text(body), nil
+			return n.Text(body), nil //nolint:nilerr // パースできなければテキストとして比較
 		}
 		return out, nil
 	case FormatXML:
 		out, err := n.XML(body)
 		if err != nil {
-			return n.Text(body), nil
+			return n.Text(body), nil //nolint:nilerr // パースできなければテキストとして比較
 		}
 		return out, nil
 	default:

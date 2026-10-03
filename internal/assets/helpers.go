@@ -182,9 +182,9 @@ func (p *Pipeline) buildImportmap(idx *index) importmapData {
 	}
 	for _, dir := range pinAllFrom {
 		var files []string
-		fs.WalkDir(p.fsys, dir.dir, func(name string, de fs.DirEntry, err error) error {
+		_ = fs.WalkDir(p.fsys, dir.dir, func(name string, de fs.DirEntry, err error) error {
 			if err != nil {
-				return nil
+				return nil //nolint:nilerr // 読めないディレクトリは pin しない
 			}
 			if !de.IsDir() && (strings.HasSuffix(name, ".js") || strings.HasSuffix(name, ".jsm")) {
 				files = append(files, name)

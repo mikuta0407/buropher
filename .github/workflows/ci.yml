@@ -12,6 +12,31 @@ jobs:
       - run: make build
       - run: ./bin/buropher version
 
+  # 静的解析（.golangci.yml）。現状 0 件なので新しい指摘は CI を失敗させる。
+  # 意図的な箇所は //nolint:<linter> // 理由 か .golangci.yml の exclusions に追加する。
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - uses: golangci/golangci-lint-action@v8
+        with:
+          version: v2.14.0
+          args: --timeout=15m
+
+  # 依存モジュール・標準ライブラリの既知の脆弱性。新しい脆弱性の公開で突然失敗し得るため非ブロッキング。
+  govulncheck:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - run: go run golang.org/x/vuln/cmd/govulncheck@v1.8.0 ./...
+
   test:
     runs-on: ubuntu-latest
     strategy:

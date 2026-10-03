@@ -287,8 +287,6 @@ type teCriteriaFormatter struct {
 	a        *App
 	c        *Req
 	report   *teReport
-	ids      map[string][]int64
-	projects map[string]string
 	names    map[string]map[int64]string
 	lookup   *teLookup
 	versions map[int64]*repository.TimelogVersionRef

@@ -6,6 +6,7 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"strings"
 	"time"
 
@@ -295,7 +296,7 @@ func FindChangesetByRevisionPrefix(ctx context.Context, q db.Queryer, repoID int
 // PreviousChangeset は Changeset#previous（id が小さい直前のもの）。
 func PreviousChangeset(ctx context.Context, q db.Queryer, cs *domain.Changeset) (*domain.Changeset, error) {
 	c, err := getChangeset(ctx, q, `changesets.id < ? AND changesets.repository_id = ? ORDER BY changesets.id DESC`, cs.ID, cs.RepositoryID)
-	if err == ErrNotFound {
+	if errors.Is(err, ErrNotFound) {
 		return nil, nil
 	}
 	return c, err
@@ -304,7 +305,7 @@ func PreviousChangeset(ctx context.Context, q db.Queryer, cs *domain.Changeset) 
 // NextChangeset は Changeset#next（id が大きい直後のもの）。
 func NextChangeset(ctx context.Context, q db.Queryer, cs *domain.Changeset) (*domain.Changeset, error) {
 	c, err := getChangeset(ctx, q, `changesets.id > ? AND changesets.repository_id = ? ORDER BY changesets.id ASC`, cs.ID, cs.RepositoryID)
-	if err == ErrNotFound {
+	if errors.Is(err, ErrNotFound) {
 		return nil, nil
 	}
 	return c, err
@@ -540,7 +541,7 @@ func CommitterMappedUserID(ctx context.Context, q db.Queryer, repoID int64, comm
 	var v sql.NullInt64
 	err := q.Get(ctx, &v, `SELECT changesets.user_id FROM changesets LEFT JOIN principals ON principals.id = changesets.user_id
 WHERE changesets.repository_id = ? AND changesets.committer = ?`+ChangesetOrder+` LIMIT 1`, repoID, committer)
-	if err == sql.ErrNoRows || !v.Valid {
+	if errors.Is(err, sql.ErrNoRows) || !v.Valid {
 		return nil, nil
 	}
 	if err != nil {
@@ -558,7 +559,7 @@ WHERE principals.kind = 'user' AND LOWER(user_accounts.login) = LOWER(?) ORDER B
 	if err == nil {
 		return &id, nil
 	}
-	if err != sql.ErrNoRows {
+	if !errors.Is(err, sql.ErrNoRows) {
 		return nil, err
 	}
 	if mail == "" {
@@ -566,7 +567,7 @@ WHERE principals.kind = 'user' AND LOWER(user_accounts.login) = LOWER(?) ORDER B
 	}
 	err = q.Get(ctx, &id, `SELECT principals.id FROM principals JOIN email_addresses ON email_addresses.user_id = principals.id
 WHERE principals.kind = 'user' AND LOWER(email_addresses.address) = LOWER(?) ORDER BY email_addresses.is_default DESC, principals.id LIMIT 1`, mail)
-	if err == sql.ErrNoRows {
+	if errors.Is(err, sql.ErrNoRows) {
 		return nil, nil
 	}
 	if err != nil {

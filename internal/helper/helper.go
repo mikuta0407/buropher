@@ -114,8 +114,6 @@ type Page struct {
 	leaf         map[int64]bool
 	// contextMenuIncluded は @context_menu_included（context_menu ヘルパー）。
 	contextMenuIncluded bool
-	// calendarHeadersIncluded は @calendar_headers_tags_included。
-	calendarHeadersIncluded bool
 }
 
 // Params は Rails の params。

@@ -284,10 +284,8 @@ func compareMail(t *testing.T, gm goldenMail, m *mail.Message) {
 	if m.References != "" {
 		got["References"] = m.References
 	}
-	var order []string
 	for _, h := range m.Headers {
 		got[h.Name] = brandtest.Unbrand(h.Value)
-		order = append(order, h.Name)
 	}
 	for k, want := range gm.Headers {
 		switch k {
@@ -307,12 +305,7 @@ func compareMail(t *testing.T, gm goldenMail, m *mail.Message) {
 			t.Errorf("%s: unexpected header %s: %q", who, k, got[k])
 		}
 	}
-	// X-Redmine-* などのヘッダの順序
-	var wantOrder []string
-	for _, h := range []string{} {
-		wantOrder = append(wantOrder, h)
-	}
-	_ = wantOrder
+	// NOTE: ヘッダの順序は検証しない（golden の Headers は map で順序を保持しないため）。
 	if gm.Text != nil {
 		if g, w := normalizeCRLF(brandtest.Unbrand(m.Text)), normalizeCRLF(*gm.Text); g != w {
 			t.Errorf("%s: text mismatch\n%s", who, lineDiff(w, g))

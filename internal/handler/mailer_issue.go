@@ -249,7 +249,10 @@ func (m *mailer) issueEdit() (*mail.Message, error) {
 	}
 	env := ic.l.issuesEnv()
 	j, err := env.FindJournal(m.ctx, m.p.JournalID)
-	if err != nil || j == nil {
+	if err != nil {
+		return nil, err
+	}
+	if j == nil {
 		return nil, nil
 	}
 	r := ic.row

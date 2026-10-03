@@ -8,7 +8,6 @@ import (
 	"math/big"
 	"reflect"
 	"strings"
-	"unicode"
 	"unicode/utf8"
 )
 
@@ -462,16 +461,4 @@ func writeJSONUnicodeEscape(buf *bytes.Buffer, r rune) {
 	buf.WriteByte(hexdigits[(r>>8)&0xf])
 	buf.WriteByte(hexdigits[(r>>4)&0xf])
 	buf.WriteByte(hexdigits[r&0xf])
-}
-
-// validTagName は ensure_valid_html5_tag_name の判定。
-func validTagName(name string) bool {
-	if name == "" {
-		return false
-	}
-	r, _ := utf8.DecodeRuneInString(name)
-	if r > unicode.MaxASCII || !unicode.IsLetter(r) {
-		return false
-	}
-	return !strings.ContainsAny(name, " \t\n\r\f/>")
 }

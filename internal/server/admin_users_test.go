@@ -348,7 +348,7 @@ func TestGroupsAndMemberships(t *testing.T) {
 	if res.StatusCode != 200 || !strings.Contains(body, `-roles").html("Developer, Reporter")`) {
 		t.Fatalf("membership update js: %d %s", res.StatusCode, body)
 	}
-	res, body = send(t, c, ts.URL, "PUT", "/groups/"+uitoa(gid)+"/memberships/"+uitoa(mid)+".js", url.Values{"membership[role_ids][]": {""}})
+	_, body = send(t, c, ts.URL, "PUT", "/groups/"+uitoa(gid)+"/memberships/"+uitoa(mid)+".js", url.Values{"membership[role_ids][]": {""}})
 	if !strings.Contains(body, "alert('Failed to save member(s): Role cannot be empty.');") && !strings.Contains(body, "alert(") {
 		t.Errorf("empty roles: %s", body)
 	}

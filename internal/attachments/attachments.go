@@ -322,7 +322,7 @@ func (s *Store) reuseExistingFileIfPossible(ctx context.Context, q db.Queryer, a
 	originalName := a.DiskFilename
 	same, err := identicalFiles(original, s.Diskfile(existing))
 	if err != nil || !same {
-		return nil
+		return nil //nolint:nilerr // 比較できなければ重複排除しない
 	}
 	if err := repository.UpdateAttachmentDiskfile(ctx, q, a.ID, existing.DiskDirectory, existing.DiskFilename); err != nil {
 		return err
@@ -369,7 +369,7 @@ func identicalFiles(a, b string) (bool, error) {
 			return false, nil
 		}
 		if ea != nil || eb != nil {
-			done := func(e error) bool { return e == io.EOF || e == io.ErrUnexpectedEOF }
+			done := func(e error) bool { return errors.Is(e, io.EOF) || errors.Is(e, io.ErrUnexpectedEOF) }
 			if done(ea) && done(eb) {
 				return true, nil
 			}

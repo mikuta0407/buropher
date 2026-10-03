@@ -127,7 +127,7 @@ func (p *Pipeline) scanThemes() ([]*Theme, error) {
 		}
 		entries, err := fs.ReadDir(fsys, root)
 		if err != nil {
-			return nil
+			return nil //nolint:nilerr // テーマディレクトリが無ければ空
 		}
 		for _, e := range entries {
 			if !e.IsDir() {

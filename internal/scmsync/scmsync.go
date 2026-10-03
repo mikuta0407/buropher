@@ -8,6 +8,7 @@ package scmsync
 
 import (
 	"context"
+	"errors"
 	"log/slog"
 	"slices"
 	"strings"
@@ -215,7 +216,7 @@ func (s *Service) saveRevision(ctx context.Context, tx *db.Tx, repo *domain.Repo
 	// validates_uniqueness_of :revision
 	if c, err := repository.FindChangesetByRevision(ctx, tx, repo.ID, rev.Identifier); err == nil && c != nil {
 		return nil, nil
-	} else if err != nil && err != repository.ErrNotFound {
+	} else if err != nil && !errors.Is(err, repository.ErrNotFound) {
 		return nil, err
 	}
 	committer := scm.ToUTF8(truncate(rev.Author, 255), repo.RepoLogEncoding())
@@ -291,7 +292,7 @@ func FindChangesetByName(ctx context.Context, q db.Queryer, repo *domain.Reposit
 	var err error
 	if repo.IsGit() {
 		cs, err = repository.FindChangesetByRevision(ctx, q, repo.ID, name)
-		if err == repository.ErrNotFound {
+		if errors.Is(err, repository.ErrNotFound) {
 			cs, err = repository.FindChangesetByScmidPrefix(ctx, q, repo.ID, name)
 		}
 	} else if isDigits(name) {
@@ -299,7 +300,7 @@ func FindChangesetByName(ctx context.Context, q db.Queryer, repo *domain.Reposit
 	} else {
 		cs, err = repository.FindChangesetByRevisionPrefix(ctx, q, repo.ID, name)
 	}
-	if err == repository.ErrNotFound {
+	if errors.Is(err, repository.ErrNotFound) {
 		return nil, nil
 	}
 	return cs, err

@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"errors"
 	"html/template"
 	"slices"
 	"sort"
@@ -11,6 +12,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/authz"
 	"github.com/mikuta0407/buropher/internal/csvimport"
 	"github.com/mikuta0407/buropher/internal/customfield"
+	"github.com/mikuta0407/buropher/internal/db"
 	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/httpx"
 	"github.com/mikuta0407/buropher/internal/repository"
@@ -291,8 +293,11 @@ func (m *importModel) teIssueProject(ctx context.Context, issueID string) (*doma
 	id := rubyStrToI(issueID)
 	var pid int64
 	err := m.a.DB.Get(ctx, &pid, `SELECT project_id FROM issues WHERE id = ? LIMIT 1`, id)
-	if err != nil {
+	if errors.Is(err, db.ErrNoRows) {
 		return nil, nil
+	}
+	if err != nil {
+		return nil, err
 	}
 	st := m.teState()
 	if p, ok := st.projectsCache[pid]; ok {

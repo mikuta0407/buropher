@@ -421,7 +421,7 @@ func parseMultipart(r *http.Request, o *ParseOptions, rp *RequestParams) (*Param
 	var buffered int64
 	for {
 		part, err := mr.NextRawPart()
-		if err == io.EOF {
+		if errors.Is(err, io.EOF) {
 			break
 		}
 		if err != nil {

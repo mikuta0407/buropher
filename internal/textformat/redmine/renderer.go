@@ -148,7 +148,6 @@ type Renderer struct {
 
 	onlyPath          bool
 	includedWikiPages []int64
-	issueCSS          map[int64]string
 	groupIDs          []int64
 	groupIDsLoaded    bool
 }

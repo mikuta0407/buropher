@@ -536,7 +536,6 @@ func TestMiscDifferential(t *testing.T) {
 	})
 
 	t.Run("defaults", func(t *testing.T) {
-		type key struct{ scenario string }
 		scenarios := map[string]func(tdb *testDB){
 			"none":            func(*testDB) {},
 			"setting":         func(tdb *testDB) { tdb.setting("default_issue_query", "4"); tdb.setting("default_project_query", "11") },

@@ -65,7 +65,7 @@ func (p *emphasisParser) Parse(parent ast.Node, block text.Reader, pc parser.Con
 func comrakBeforeChar(parent ast.Node, block text.Reader) rune {
 	src := block.Source()
 	l, pos := block.Position()
-	lineStart := pos.Start
+	var lineStart int
 	if lines := parent.Lines(); lines != nil && l < lines.Len() && lines.At(l).Start <= pos.Start {
 		lineStart = lines.At(l).Start
 	} else {

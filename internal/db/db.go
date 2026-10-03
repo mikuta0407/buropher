@@ -232,7 +232,7 @@ func (d *DB) Query(ctx context.Context, q string, args ...any) (*sqlx.Rows, erro
 	if statsEnabled.Load() {
 		defer traceQuery(time.Now(), q)
 	}
-	return d.x.QueryxContext(ctx, d.dialect.Rebind(q), args...)
+	return d.x.QueryxContext(ctx, d.dialect.Rebind(q), args...) //nolint:sqlclosecheck // 呼び出し側で Close する
 }
 
 func (d *DB) QueryRow(ctx context.Context, q string, args ...any) *sqlx.Row {
@@ -336,7 +336,7 @@ func (t *Tx) Query(ctx context.Context, q string, args ...any) (*sqlx.Rows, erro
 	if statsEnabled.Load() {
 		defer traceQuery(time.Now(), q)
 	}
-	return t.x.QueryxContext(ctx, t.dialect.Rebind(q), args...)
+	return t.x.QueryxContext(ctx, t.dialect.Rebind(q), args...) //nolint:sqlclosecheck // 呼び出し側で Close する
 }
 
 func (t *Tx) QueryRow(ctx context.Context, q string, args ...any) *sqlx.Row {

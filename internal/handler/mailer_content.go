@@ -4,6 +4,7 @@ package handler
 // wiki_content_added / wiki_content_updated。
 
 import (
+	"errors"
 	"html"
 	"html/template"
 	"net/url"
@@ -44,7 +45,7 @@ func (m *mailer) userMailTo() ([]string, error) {
 func (m *mailer) documentAdded() (*mail.Message, error) {
 	d, err := repository.GetMailDocument(m.ctx, m.a.DB, m.p.DocumentID)
 	if err != nil {
-		return nil, nil
+		return skipMissing(err)
 	}
 	p := m.project(d.ProjectID)
 	if p == nil {
@@ -89,7 +90,7 @@ func (m *mailer) attachmentsAdded() (*mail.Message, error) {
 	case "version":
 		pid, name, err := repository.VersionProject(m.ctx, m.a.DB, *first.ContainerID)
 		if err != nil {
-			return nil, nil
+			return skipMissing(err)
 		}
 		p = m.project(pid)
 		if p == nil {
@@ -100,7 +101,7 @@ func (m *mailer) attachmentsAdded() (*mail.Message, error) {
 	case "document":
 		d, err := repository.GetMailDocument(m.ctx, m.a.DB, *first.ContainerID)
 		if err != nil {
-			return nil, nil
+			return skipMissing(err)
 		}
 		p = m.project(d.ProjectID)
 		if p == nil {
@@ -127,7 +128,7 @@ func (m *mailer) attachmentsAdded() (*mail.Message, error) {
 func (m *mailer) newsAdded() (*mail.Message, error) {
 	n, err := repository.GetMailNews(m.ctx, m.a.DB, m.p.NewsID)
 	if err != nil {
-		return nil, nil
+		return skipMissing(err)
 	}
 	p := m.project(n.ProjectID)
 	if p == nil {
@@ -161,11 +162,11 @@ func (m *mailer) newsAdded() (*mail.Message, error) {
 func (m *mailer) newsCommentAdded() (*mail.Message, error) {
 	c, err := repository.GetMailComment(m.ctx, m.a.DB, m.p.CommentID)
 	if err != nil {
-		return nil, nil
+		return skipMissing(err)
 	}
 	n, err := repository.GetMailNews(m.ctx, m.a.DB, c.NewsID)
 	if err != nil {
-		return nil, nil
+		return skipMissing(err)
 	}
 	p := m.project(n.ProjectID)
 	if p == nil {
@@ -194,7 +195,7 @@ func (m *mailer) newsCommentAdded() (*mail.Message, error) {
 func (m *mailer) messagePosted() (*mail.Message, error) {
 	msg, err := repository.GetMailMessage(m.ctx, m.a.DB, m.p.MessageID)
 	if err != nil {
-		return nil, nil
+		return skipMissing(err)
 	}
 	p := m.project(msg.ProjectID)
 	if p == nil {
@@ -241,7 +242,7 @@ func (m *mailer) messagePosted() (*mail.Message, error) {
 func (m *mailer) wikiContent(updated bool) (*mail.Message, error) {
 	w, err := repository.GetMailWikiContent(m.ctx, m.a.DB, m.p.WikiPageID, m.p.WikiVersion)
 	if err != nil {
-		return nil, nil
+		return skipMissing(err)
 	}
 	p := m.project(w.ProjectID)
 	if p == nil {
@@ -271,4 +272,13 @@ func (m *mailer) wikiContent(updated bool) (*mail.Message, error) {
 		return nil, err
 	}
 	return m.finish(to, "["+p.Name+"] "+m.l(subjKey, i18n.Vars{"id": pretty}), view)
+}
+
+// skipMissing は配送時点でレコードが消えていればメールを送らず (nil, nil)、
+// それ以外の DB エラーは呼び出し元へ返す。
+func skipMissing(err error) (*mail.Message, error) {
+	if errors.Is(err, repository.ErrNotFound) {
+		return nil, nil
+	}
+	return nil, err
 }

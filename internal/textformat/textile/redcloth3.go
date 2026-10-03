@@ -396,7 +396,7 @@ func (rc *redcloth) blockTextileLists(text string) (string, bool) {
 	}
 	return gsubB(reLists, text, func(m md) string {
 		lines := splitStr(m.all(), "\n")
-		lastLine := -1
+		var lastLine int
 		var depth []string
 		for lineID, line := range lines {
 			if lm := match(reListsContent, line); lm != nil {

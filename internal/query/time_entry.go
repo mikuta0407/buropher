@@ -361,9 +361,9 @@ func (timeEntryKind) sqlForSpecialField(ctx context.Context, q *Query, field, op
 		if err != nil {
 			return frag{}, true, err
 		}
-		members, err := q.groupMembersAndSelf(ctx, groups, false)
-		if err != nil {
-			return frag{}, true, err
+		members, merr := q.groupMembersAndSelf(ctx, groups, false)
+		if merr != nil {
+			return frag{}, true, merr
 		}
 		f, err = q.sqlForField(ctx, "user_id", operator, members, "time_entries", "user_id", false)
 		f = f.wrap("(", ")")

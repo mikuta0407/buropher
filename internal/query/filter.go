@@ -301,5 +301,3 @@ func (q *Query) versionStatusOptions() []Option {
 	}
 	return out
 }
-
-func boolPtr(b bool) *bool { return &b }

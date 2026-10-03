@@ -82,7 +82,7 @@ var ErrNotInitialized = errors.New("database is not initialized: run `buropher i
 func CheckInitialized(ctx context.Context, d *db.DB) error {
 	st, err := db.Status(ctx, d)
 	if err != nil {
-		return fmt.Errorf("%w (%v)", ErrNotInitialized, err)
+		return fmt.Errorf("%w (%w)", ErrNotInitialized, err)
 	}
 	for _, s := range st {
 		if !s.Applied {
@@ -91,7 +91,7 @@ func CheckInitialized(ctx context.Context, d *db.DB) error {
 	}
 	var n int
 	if err := d.Get(ctx, &n, `SELECT COUNT(*) FROM principals WHERE kind = 'user'`); err != nil {
-		return fmt.Errorf("%w (%v)", ErrNotInitialized, err)
+		return fmt.Errorf("%w (%w)", ErrNotInitialized, err)
 	}
 	if n == 0 {
 		return ErrNotInitialized
@@ -329,7 +329,7 @@ func recoverer(logger *slog.Logger) func(http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			defer func() {
 				if rec := recover(); rec != nil {
-					if rec == http.ErrAbortHandler {
+					if rec == http.ErrAbortHandler { //nolint:errorlint // recover() の値（error とは限らない）との比較
 						panic(rec)
 					}
 					logger.Error("panic", "err", rec, "path", r.URL.Path, "stack", string(debug.Stack()))

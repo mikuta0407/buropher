@@ -235,10 +235,11 @@ func normalizeKeys(key string) []string {
 
 // lookup は単一ロケールでキーを引く（I18n::Backend::Simple#lookup）。値がシンボルならリンクとして解決する。
 func (b *Bundle) lookup(locale string, keys []string, depth int) any {
-	var cur any = b.trees[locale]
-	if cur == nil {
+	tree := b.trees[locale]
+	if tree == nil {
 		return nil
 	}
+	var cur any = tree
 	for _, k := range keys {
 		m, ok := cur.(map[string]any)
 		if !ok {

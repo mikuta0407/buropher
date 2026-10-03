@@ -7,7 +7,6 @@ import (
 	ttemplate "text/template"
 	"time"
 
-	"github.com/mikuta0407/buropher/internal/authz"
 	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/textformat/redmine"
 	"github.com/mikuta0407/buropher/internal/urlroot"
@@ -417,12 +416,4 @@ func updateDataSourcesForAutoComplete(sources *rails.Hash) html {
 	}
 	b.WriteString("}")
 	return rails.JavascriptTag("rm.AutoComplete.dataSources = Object.assign(rm.AutoComplete.dataSources, JSON.parse('"+b.String()+"'));", nil)
-}
-
-// newAuthorizer は user の Authorizer（DB が無ければ nil）。
-func newAuthorizer(p *Page, u *domain.User) *authz.Authorizer {
-	if p.DB == nil {
-		return nil
-	}
-	return authz.New(p.DB, u)
 }

@@ -33,7 +33,6 @@ type teLookup struct {
 	extras        map[int64]*repository.TimelogIssueExtra
 	// cvs は customized_kind → 所有者 id → custom_field_id → 値。
 	cvs map[string]map[int64]map[int64][]string
-	cfs map[int64]*customfield.CustomField
 }
 
 // newTELookup は entries の関連を読み込む。

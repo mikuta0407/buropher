@@ -16,6 +16,7 @@ package handler
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 	"slices"
@@ -351,7 +352,7 @@ func (a *App) syncLDAPSource(ctx context.Context, rec *domain.AuthSourceRecord) 
 		if err != nil {
 			res.Errors++
 			res.logf("%s: error: %v", u.Login, err)
-			if err == ldap.ErrNotSearchable {
+			if errors.Is(err, ldap.ErrNotSearchable) {
 				break
 			}
 			continue
