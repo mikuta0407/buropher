@@ -27,7 +27,7 @@ func (s *Server) startSCMFetcher(ctx context.Context) {
 	app := s.app
 	svc := &scmsync.Service{DB: app.DB, Settings: app.Settings, GitCommand: app.GitCommand, Bundle: app.Bundle,
 		Now: app.Now, Notifier: app.Notifier, Logger: app.Logger}
-	go func() {
+	s.goBG(func() {
 		t := time.NewTicker(d)
 		defer t.Stop()
 		for {
@@ -45,5 +45,5 @@ func (s *Server) startSCMFetcher(ctx context.Context) {
 				}
 			}
 		}
-	}()
+	})
 }

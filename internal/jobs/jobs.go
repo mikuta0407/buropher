@@ -259,7 +259,9 @@ func (q *Queue) Run(ctx context.Context) {
 	if n <= 0 {
 		n = 2
 	}
-	_ = q.RecoverStale(ctx)
+	if err := q.RecoverStale(ctx); err != nil && ctx.Err() == nil {
+		q.logger().Error("jobs: recover stale failed", "err", err)
+	}
 	for i := 0; i < n; i++ {
 		q.running.Add(1)
 		go func() {
@@ -267,7 +269,32 @@ func (q *Queue) Run(ctx context.Context) {
 			q.loop(ctx)
 		}()
 	}
+	// プロセスが落ちて running のまま残ったジョブは起動時だけでなく定期的に戻す
+	// （起動時点では LockTimeout を過ぎていないジョブが、次の再起動まで失われないように）。
+	q.running.Add(1)
+	go func() {
+		defer q.running.Done()
+		t := time.NewTicker(q.lockTimeout() / 2)
+		defer t.Stop()
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			case <-t.C:
+				if err := q.RecoverStale(ctx); err != nil && ctx.Err() == nil {
+					q.logger().Error("jobs: recover stale failed", "err", err)
+				}
+			}
+		}
+	}()
 	q.running.Wait()
+}
+
+func (q *Queue) lockTimeout() time.Duration {
+	if q.Opts.LockTimeout > 0 {
+		return q.Opts.LockTimeout
+	}
+	return 15 * time.Minute
 }
 
 func (q *Queue) pollInterval() time.Duration {
@@ -305,10 +332,7 @@ func (q *Queue) loop(ctx context.Context) {
 
 // RecoverStale は LockTimeout を過ぎた running のジョブを pending に戻す（プロセスが落ちた場合）。
 func (q *Queue) RecoverStale(ctx context.Context) error {
-	lt := q.Opts.LockTimeout
-	if lt <= 0 {
-		lt = 15 * time.Minute
-	}
+	lt := q.lockTimeout()
 	now := q.now()
 	_, err := q.DB.Exec(ctx, `UPDATE jobs SET state = 'pending', locked_by = NULL, locked_at = NULL, updated_at = ?
 WHERE state = 'running' AND locked_at < ?`, db.NewTime(now), db.NewTime(now.Add(-lt)))
@@ -359,7 +383,14 @@ func (q *Queue) RunOne(ctx context.Context) (bool, error) {
 		return false, err
 	}
 	err = q.execute(ctx, j)
-	return true, q.finish(ctx, j, err)
+	if err != nil && ctx.Err() != nil && !IsPermanent(err) {
+		// 停止（ctx のキャンセル）で中断されたジョブは失敗として数えず、すぐに再実行できるよう戻す
+		err = Retry(0, err)
+	}
+	// 結果の記録は停止中でも行う（記録できないと running のまま LockTimeout 後に再実行され、二重に実行される）
+	fctx, cancel := context.WithTimeout(context.WithoutCancel(ctx), 30*time.Second)
+	defer cancel()
+	return true, q.finish(fctx, j, err)
 }
 
 // RunPending は実行可能なジョブが無くなるまで同期的に処理する（テスト・CLI 用）。処理件数を返す。
@@ -400,9 +431,11 @@ func (q *Queue) Backoff(attempts int) time.Duration {
 	if maxD <= 0 {
 		maxD = 6 * time.Hour
 	}
-	d := time.Duration(float64(base) * math.Pow(2, float64(max(attempts-1, 0))))
-	if d > maxD || d <= 0 {
-		d = maxD
+	// float64 のまま上限と比べる（Duration への変換で溢れると値が処理系依存になる）
+	f := float64(base) * math.Pow(2, float64(max(attempts-1, 0)))
+	d := maxD
+	if f < float64(maxD) {
+		d = time.Duration(f)
 	}
 	if !q.Opts.NoJitter {
 		d = time.Duration(float64(d) * (0.8 + 0.4*mrand.Float64()))

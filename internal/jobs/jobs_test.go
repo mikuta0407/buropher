@@ -247,3 +247,36 @@ func TestScheduler(t *testing.T) {
 		t.Error("ParseDaily must reject 25:00")
 	}
 }
+
+// 停止（ctx のキャンセル）で中断されたジョブは結果を記録でき（running のまま残らない）、試行回数に数えない。
+func TestCanceledJobIsRequeued(t *testing.T) {
+	dbtest.ForEachDialect(t, func(t *testing.T, d *db.DB) {
+		q, _ := newQueue(t, d)
+		ctx, cancel := context.WithCancel(context.Background())
+		q.Register("slow", func(ctx context.Context, j *Job) error {
+			cancel()
+			<-ctx.Done()
+			return ctx.Err()
+		})
+		id, err := q.Enqueue(context.Background(), nil, "slow", nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if ok, err := q.RunOne(ctx); !ok || err != nil {
+			t.Fatal(ok, err)
+		}
+		j, _ := q.Get(context.Background(), id)
+		if j.State != StatePending || j.Attempts != 0 || j.LockedBy != nil {
+			t.Errorf("job = %+v (want pending, attempts 0)", j)
+		}
+	})
+}
+
+func TestBackoffLargeAttempts(t *testing.T) {
+	q := New(nil, Options{NoJitter: true, BackoffBase: time.Minute, BackoffMax: time.Hour})
+	for _, n := range []int{0, 1, 7, 64, 1000, 1 << 30} {
+		if d := q.Backoff(n); d <= 0 || d > time.Hour {
+			t.Errorf("Backoff(%d) = %v", n, d)
+		}
+	}
+}

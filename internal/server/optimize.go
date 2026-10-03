@@ -14,7 +14,7 @@ const dbOptimizeInterval = 6 * time.Hour
 // 起動を遅らせないようバックグラウンドで実行する。
 func (s *Server) startDBOptimizer(ctx context.Context) {
 	d := s.app.DB
-	go func() {
+	s.goBG(func() {
 		t := time.NewTicker(dbOptimizeInterval)
 		defer t.Stop()
 		// 起動時は統計の無いテーブルだけ、以後は全テーブルを更新する
@@ -36,5 +36,5 @@ func (s *Server) startDBOptimizer(ctx context.Context) {
 			case <-t.C:
 			}
 		}
-	}()
+	})
 }
