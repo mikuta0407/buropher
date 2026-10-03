@@ -3,6 +3,7 @@ package issues
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"slices"
 	"strconv"
 
@@ -155,7 +156,7 @@ AND (`+cond+`) ORDER BY issues.id`, args...); err != nil {
 				iss.FixedVersionID = nil
 				st := &saveState{result: res}
 				ok, err := e.save(ctx, iss, true, st)
-				if err == ErrStale && !retried {
+				if errors.Is(err, ErrStale) && !retried {
 					continue
 				}
 				if err != nil {

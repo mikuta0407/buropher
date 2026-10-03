@@ -82,16 +82,6 @@ func principalIDs(ps []*PrincipalRef) []int64 {
 	return out
 }
 
-func notifRecipients(res *SaveResult, event string) [][]int64 {
-	var out [][]int64
-	for _, n := range res.Notifications {
-		if n.Event == event {
-			out = append(out, n.Recipients)
-		}
-	}
-	return out
-}
-
 // deliveries は配信数 (受信者ごとに 1 通)。
 func deliveries(res *SaveResult) int {
 	n := 0

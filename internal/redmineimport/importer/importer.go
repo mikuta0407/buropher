@@ -109,7 +109,7 @@ func Run(ctx context.Context, d *db.DB, archivePath string, opt Options) (*Repor
 	rep.SourceDBKind = m.Source.DBKind
 	loc, err := time.LoadLocation(m.Source.Timezone)
 	if err != nil || m.Source.Timezone == "" {
-		return rep, fmt.Errorf("importer: invalid source timezone %q in manifest: %v", m.Source.Timezone, err)
+		return rep, fmt.Errorf("importer: invalid source timezone %q in manifest: %w", m.Source.Timezone, err)
 	}
 	if m.Source.AcceptanceForced {
 		rep.warnf("the archive was exported with --force (acceptance check failed); results may be incomplete")

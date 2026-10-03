@@ -16,6 +16,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"hash"
 	"io"
@@ -132,8 +133,6 @@ type mapping struct {
 	source, target string
 	// filter はソース行のうち target に対応するもの(nil なら全行)。
 	filter func(archive.Row) bool
-	// where は target 側の条件(SQL)。
-	where string
 	// pair は ID を持たない結合テーブル(件数のみ比較)。
 	pair bool
 	// generated は新 DB 側で生成されうる行(extra を失敗にしない)。
@@ -229,12 +228,10 @@ type nested struct {
 }
 
 type attachment struct {
-	id       int64
-	path     string
-	size     int64
-	digest   string
-	hasFile  bool
-	archived bool
+	id     int64
+	path   string
+	size   int64
+	digest string
 }
 
 func toInt(v any) int64 {
@@ -264,7 +261,7 @@ func loadSource(archivePath string) (*srcData, *archive.Manifest, error) {
 	}
 	for {
 		e, err := r.Next()
-		if err == io.EOF {
+		if errors.Is(err, io.EOF) {
 			break
 		}
 		if err != nil {

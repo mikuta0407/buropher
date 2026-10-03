@@ -245,16 +245,6 @@ func (m *importModel) filepath() string {
 	return filepath.Join(m.a.importsDir(), m.Filename)
 }
 
-// fileExists は file_exists?。
-func (m *importModel) fileExists() bool {
-	p := m.filepath()
-	if p == "" {
-		return false
-	}
-	_, err := os.Stat(p)
-	return err == nil
-}
-
 // content はファイルの内容（無ければ nil, false）。
 func (m *importModel) content() ([]byte, bool, error) {
 	if !m.loaded {
@@ -282,8 +272,6 @@ func (m *importModel) removeFile() {
 	}
 	m.data, m.loaded = nil, true
 }
-
-func (m *importModel) settings() map[string]any { return m.Settings.V }
 
 // SettingValue は settings[key]（テンプレートの選択値）。
 func (m *importModel) SettingValue(key string) any { return m.Settings.V[key] }

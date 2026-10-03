@@ -2,6 +2,7 @@ package issues
 
 import (
 	"context"
+	"errors"
 	"regexp"
 	"slices"
 	"strconv"
@@ -165,7 +166,7 @@ func (e *Env) SafeAssign(ctx context.Context, iss *Issue, params Params, u *doma
 					pr, err := repository.FindProjectByIdentifier(ctx, e.Q, s)
 					if err == nil {
 						pid = pr.ID
-					} else if err != repository.ErrNotFound {
+					} else if !errors.Is(err, repository.ErrNotFound) {
 						return err
 					}
 				} else {

@@ -144,7 +144,7 @@ func (r *Renderer) parseWikiLinks(text string, project *domain.Project, obj *Obj
 			page = pm.s(2)
 			linkProject = r.findProjectByIdentifierOrName(identifier)
 			if !hasTitle && blank(page) {
-				title, hasTitle = identifier, true
+				title = identifier
 				titlePresent = !blank(title)
 			}
 		}

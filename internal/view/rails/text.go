@@ -79,7 +79,6 @@ func toInt(v any) int {
 
 var (
 	paraSplit = regexp.MustCompile(`\n\n+`)
-	lineBreak = regexp.MustCompile(`([^\n]\n)([^\n])`)
 )
 
 // splitParagraphs は TextHelper#split_paragraphs。

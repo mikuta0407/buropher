@@ -58,7 +58,7 @@ func openSource(ctx context.Context, archivePath, tempDir, stageDir string) (*so
 			return nil, err
 		}
 		e, err := r.Next()
-		if err == io.EOF {
+		if errors.Is(err, io.EOF) {
 			break
 		}
 		if err != nil {
@@ -157,7 +157,7 @@ func (s *source) each(table string, fn func(rec) error) error {
 				return fmt.Errorf("importer: %s line %d: %w", table, n, derr)
 			}
 			if ferr := fn(rec{row}); ferr != nil {
-				if ferr == errStop {
+				if errors.Is(ferr, errStop) {
 					return nil
 				}
 				return ferr

@@ -37,8 +37,6 @@ func (n *xmlNode) merge(k string, v any) {
 	n.vals[k] = v
 }
 
-func (n *xmlNode) get(k string) (any, bool) { v, ok := n.vals[k]; return v, ok }
-
 func (n *xmlNode) str(k string) (string, bool) {
 	v, ok := n.vals[k]
 	if !ok {
@@ -83,7 +81,7 @@ func HashFromXML(raw []byte) (*Params, error) {
 	depth := 0
 	for {
 		tok, err := dec.Token()
-		if err == io.EOF {
+		if errors.Is(err, io.EOF) {
 			break
 		}
 		if err != nil {

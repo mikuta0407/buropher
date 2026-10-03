@@ -5,6 +5,7 @@ package scmsync
 
 import (
 	"context"
+	"errors"
 	"regexp"
 	"slices"
 	"strconv"
@@ -155,7 +156,7 @@ func (s *Service) FindReferencedIssueByID(ctx context.Context, q db.Queryer, pro
 		return nil, nil
 	}
 	iss, err := repository.GetRefIssueProject(ctx, q, id)
-	if err == repository.ErrNotFound {
+	if errors.Is(err, repository.ErrNotFound) {
 		return nil, nil
 	}
 	if err != nil {
@@ -215,7 +216,7 @@ func (s *Service) changesetUser(ctx context.Context, q db.Queryer, cs *domain.Ch
 		if err == nil {
 			return u, nil
 		}
-		if err != repository.ErrNotFound {
+		if !errors.Is(err, repository.ErrNotFound) {
 			return nil, err
 		}
 	}
@@ -231,7 +232,7 @@ func (s *Service) fixIssue(ctx context.Context, tx db.Queryer, repo *domain.Repo
 	env.Translate = loc.L
 	iss, err := env.Load(ctx, issueID)
 	if err != nil {
-		if err == issues.ErrNotFound {
+		if errors.Is(err, issues.ErrNotFound) {
 			return nil, nil
 		}
 		return nil, err
@@ -302,7 +303,7 @@ func (s *Service) logTime(ctx context.Context, tx db.Queryer, repo *domain.Repos
 	issEnv := env.Issues()
 	iss, err := issEnv.Load(ctx, issueID)
 	if err != nil {
-		if err == issues.ErrNotFound {
+		if errors.Is(err, issues.ErrNotFound) {
 			return nil
 		}
 		return err

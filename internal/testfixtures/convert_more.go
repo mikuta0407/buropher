@@ -264,11 +264,6 @@ func loadIssueRelations(c *loadCtx, rows []row) error {
 	return nil
 }
 
-var containerKinds = map[string]string{
-	"Issue": "issue", "Project": "project", "Version": "version", "WikiPage": "wiki_page", "Message": "message",
-	"News": "news", "Document": "document", "CustomValue": "custom_value",
-}
-
 func loadUserPreferences(c *loadCtx, rows []row) error {
 	for _, r := range rows {
 		uid := r.int("user_id", 0)

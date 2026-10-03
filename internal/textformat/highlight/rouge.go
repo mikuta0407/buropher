@@ -355,20 +355,6 @@ func (lx *rlexer) prependRules(name string, rules ...rrule) {
 	s.rules = append(append([]rrule{}, rules...), s.rules...)
 }
 
-func (lx *rlexer) appendRules(name string, rules ...rrule) {
-	s := lx.get(name)
-	s.rules = append(s.rules, rules...)
-}
-
-// clone は状態を複製したレキサーを返す（Rouge のサブクラス化）。
-func (lx *rlexer) clone(tag string) *rlexer {
-	n := &rlexer{tag: tag, states: map[string]*rstate{}, start: lx.start, init: lx.init, stream: lx.stream}
-	for k, v := range lx.states {
-		n.states[k] = &rstate{name: v.name, rules: append([]rrule{}, v.rules...)}
-	}
-	return n
-}
-
 // ---- 正規表現の変換 ----
 
 const (

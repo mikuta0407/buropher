@@ -114,16 +114,6 @@ func optionalID(s string) *int64 {
 	return &v
 }
 
-// validateName は validates_presence_of :name と validates_length_of :name, maximum: max。
-func validateName(errs *domain.ValidationErrors, name string, max int) {
-	if strings.TrimSpace(name) == "" {
-		errs.Add("name", "blank", nil)
-	}
-	if max > 0 && len([]rune(name)) > max {
-		errs.Add("name", "too_long", map[string]any{"count": max})
-	}
-}
-
 // permissionGroup は権限をモジュール単位にまとめたもの（setable_permissions.group_by(&:project_module)）。
 type permissionGroup struct {
 	// Module はモジュール名（空ならプロジェクト）。

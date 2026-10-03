@@ -43,8 +43,6 @@ type issueEditForm struct {
 	ConflictJournals []*journalView
 	// saved は save_attachments の結果（saved_attachments の再表示）。
 	saved *attachments.SaveResult
-
-	cfEnvCache map[int64]*customfield.Env
 }
 
 // newIssueEditForm は編集フォームのデータを作る。
@@ -765,11 +763,10 @@ func jsonForJS(v any) string { return rails.ToJSON(v) }
 // customFieldTagWithLabel は custom_field_tag_with_label(prefix, value, :required => ...)。
 func (f *issueEditForm) customFieldTagWithLabel(prefix string, v *issueCFValue, cz *customfield.Customized, required bool) template.HTML {
 	tag := f.customFieldTag(prefix, v, cz)
-	var forID any = prefix + "_custom_field_values_" + strconv.FormatInt(v.CF.ID, 10)
+	// custom_field_label_tag には :for_tag_id => tag_id（nil を含む）を渡すので既定の id は使われない
+	var forID any
 	if ids := tagIDRe.FindAllStringSubmatch(string(tag), -1); len(ids) == 1 {
 		forID = ids[0][1]
-	} else {
-		forID = nil
 	}
 	content := customFieldNameTag(v.CF)
 	if required || v.CF.IsRequired {

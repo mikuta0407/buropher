@@ -510,6 +510,7 @@ func TestDiscordLinkFlow(t *testing.T) {
 	}
 	// 不正な state は拒否
 	res, _ = c.Get(ts.URL + "/my/discord/callback?code=code-1&state=bad")
+	res.Body.Close()
 	if id, _ := repository.GetDiscordIdentity(e.ctx, e.d, 2); id != nil {
 		t.Fatal("linked with invalid state")
 	}

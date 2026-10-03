@@ -104,7 +104,6 @@ type fakePOP3 struct {
 	mu       sync.Mutex
 	messages []string
 	deleted  map[int]bool
-	apop     bool
 	commands []string
 }
 

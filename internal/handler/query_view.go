@@ -636,14 +636,6 @@ func railsToQuery(v url.Values) string {
 
 // ---------------------------------------------------------------- サイドバー（render_sidebar_queries）
 
-// sidebarQueryLink はサイドバーのクエリ 1 件。
-type sidebarQueryLink struct {
-	Q        query.SavedQuery
-	CSS      string
-	URL      string
-	ClearURL string
-}
-
 // SidebarQueriesHTML は render_sidebar_queries(klass, project)。
 func (a *App) sidebarQueriesHTML(c *Req, kind query.Kind, current *query.Query, listPath string) (template.HTML, error) {
 	ctx := c.Ctx()

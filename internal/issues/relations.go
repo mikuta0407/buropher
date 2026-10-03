@@ -3,6 +3,7 @@ package issues
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"slices"
 	"strconv"
 	"strings"
@@ -326,7 +327,7 @@ func (e *Env) rescheduleOnBang(ctx context.Context, iss *Issue, date time.Time, 
 			}
 			e.RescheduleOn(iss, date)
 			if _, err := e.save(ctx, iss, true, st); err != nil {
-				if err != ErrStale {
+				if !errors.Is(err, ErrStale) {
 					return err
 				}
 				if err := e.Reload(ctx, iss); err != nil {
@@ -579,7 +580,7 @@ func (e *Env) CreateRelation(ctx context.Context, r *Relation) (bool, *SaveResul
 			return e.runCommitCallbacks(ctx, st)
 		})
 	})
-	if err == errRollback {
+	if errors.Is(err, errRollback) {
 		return false, st.result, nil
 	}
 	if err != nil {
