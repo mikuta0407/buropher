@@ -68,7 +68,11 @@ func (f *Fetcher) findEvents(ctx context.Context, eventType string, pv Provider,
 	case ProviderIssue:
 		return l.Issues(ctx, cond, args, order)
 	case ProviderJournal:
-		cond = "(issue_journal_details.prop_key = 'status_id' OR issue_journals.notes <> '') AND " + cond
+		// Redmine は LEFT OUTER JOIN journal_details + DISTINCT で「ステータス変更の詳細を持つか注記がある」
+		// ジャーナルを選ぶ。結果は同じなので、詳細の有無は EXISTS で判定する
+		// (注記の本文を含む行の DISTINCT は大きな活動で重い)。
+		cond = "(EXISTS (SELECT 1 FROM issue_journal_details WHERE issue_journal_details.journal_id = issue_journals.id" +
+			" AND issue_journal_details.prop_key = 'status_id') OR issue_journals.notes <> '') AND " + cond
 		return l.Journals(ctx, cond, args, order)
 	case ProviderChangeset:
 		return l.Changesets(ctx, cond, args, order)

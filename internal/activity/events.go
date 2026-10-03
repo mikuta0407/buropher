@@ -176,14 +176,13 @@ type journalRow struct {
 	CreatedAt db.Time        `db:"created_at"`
 }
 
-// Journals は Journal の Event を返す（FROM issue_journals JOIN issues JOIN projects
-// LEFT JOIN issue_journal_details。重複は除く）。
+// Journals は Journal の Event を返す（FROM issue_journals JOIN issues JOIN projects）。
+// 詳細 (issue_journal_details) の条件は cond に EXISTS で書く（結合しないので行は重複しない）。
 func (l *Loader) Journals(ctx context.Context, cond string, args []any, order string) ([]*Event, error) {
 	var rows []journalRow
-	q := `SELECT DISTINCT issue_journals.id, issue_journals.issue_id, issue_journals.user_id, issue_journals.notes, issue_journals.created_at
+	q := `SELECT issue_journals.id, issue_journals.issue_id, issue_journals.user_id, issue_journals.notes, issue_journals.created_at
 FROM issue_journals INNER JOIN issues ON issues.id = issue_journals.issue_id
-  INNER JOIN projects ON projects.id = issues.project_id
-  LEFT OUTER JOIN issue_journal_details ON issue_journal_details.journal_id = issue_journals.id` + where(cond) + " " + order
+  INNER JOIN projects ON projects.id = issues.project_id` + where(cond) + " " + order
 	if err := l.Q.Select(ctx, &rows, q, args...); err != nil {
 		return nil, err
 	}

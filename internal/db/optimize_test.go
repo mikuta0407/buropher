@@ -56,6 +56,28 @@ func TestOptimizeSQLite(t *testing.T) {
 	}
 }
 
+func TestSQLiteConnectionPragmas(t *testing.T) {
+	ctx := context.Background()
+	d, err := db.Open(ctx, "sqlite", filepath.Join(t.TempDir(), "pragma.db"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer d.Close()
+	for pragma, want := range map[string]int64{
+		"mmap_size":  256 << 20,
+		"cache_size": -32 * 1024,
+		"temp_store": 2, // MEMORY
+	} {
+		var got int64
+		if err := d.Get(ctx, &got, "PRAGMA "+pragma); err != nil {
+			t.Fatal(err)
+		}
+		if got != want {
+			t.Errorf("PRAGMA %s = %d, want %d", pragma, got, want)
+		}
+	}
+}
+
 func TestOptimizeMemoryNoop(t *testing.T) {
 	ctx := context.Background()
 	d, err := db.Open(ctx, "sqlite", ":memory:")

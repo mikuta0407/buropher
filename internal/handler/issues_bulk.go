@@ -112,9 +112,7 @@ func (a *App) buildBulkEdit(c *Req, rows []*query.IssueRow) (*bulkEditView, erro
 	if n, ok := p.Get("notes"); ok {
 		v.Notes = n
 	}
-	for _, r := range rows {
-		v.models = append(v.models, l.model(r))
-	}
+	v.models = l.models(rows)
 	if l.err != nil {
 		return nil, l.err
 	}
