@@ -459,6 +459,9 @@ func parseMultipart(r *http.Request, o *ParseOptions, rp *RequestParams) (*Param
 		if !hasFilename {
 			b, err := io.ReadAll(io.LimitReader(part, o.MultipartBufferedLimit-buffered+1))
 			if err != nil {
+				if o.MaxUploadBytes > 0 && cr.n > o.MaxUploadBytes {
+					return nil, &ParamError{Kind: ParamTooLarge, Msg: "multipart body too large"}
+				}
 				return nil, &ParamError{Kind: ParamParse, Msg: "bad content body"}
 			}
 			buffered += int64(len(b))
@@ -477,6 +480,10 @@ func parseMultipart(r *http.Request, o *ParseOptions, rp *RequestParams) (*Param
 		}
 		uf, err := readUploadedFile(part, o)
 		if err != nil {
+			// 本文全体の上限で打ち切られた場合は 413（パースエラーではなく）
+			if o.MaxUploadBytes > 0 && cr.n > o.MaxUploadBytes {
+				return nil, &ParamError{Kind: ParamTooLarge, Msg: "multipart body too large"}
+			}
 			return nil, err
 		}
 		if filename == "" {

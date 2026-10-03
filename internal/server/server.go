@@ -199,7 +199,7 @@ func New(cfg *config.Config, d *db.DB, opts ...Options) (*Server, error) {
 	// Params と MethodOverride はルーティングより前に適用する（chi は Group の middleware より先に
 	// メソッドとパスでルートを決めるため、Group 内で _method を反映してもルートが変わらない）。
 	r.Use(recoverer(o.Logger), httpx.RequestIDMiddleware, httpx.RemoteIPMiddleware(nil), defaultHeaders,
-		httpx.ParamsMiddleware(&httpx.ParseOptions{TempDir: tempDir}, nil),
+		httpx.ParamsMiddleware(&httpx.ParseOptions{TempDir: tempDir, MaxUploadBytes: cfg.Server.MaxRequestBodyMB << 20}, nil),
 		httpx.MethodOverride)
 	r.NotFound(notFound)
 	r.MethodNotAllowed(notFound)

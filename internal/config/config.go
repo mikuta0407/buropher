@@ -43,6 +43,10 @@ type Server struct {
 	RelativeURLRoot string `toml:"relative_url_root"`
 	// SecretKey はセッション・CSRF・暗号化に使う。
 	SecretKey string `toml:"secret_key"`
+	// MaxRequestBodyMB は multipart（ファイルアップロード等）のリクエスト本文全体の上限（MiB）。
+	// 0 なら無制限（Redmine/Rack と同じ）。本文は認証前に一時ファイルへ書かれるため、
+	// リバースプロキシで制限しない場合はここで上限を設けることを推奨する。
+	MaxRequestBodyMB int64 `toml:"max_request_body_mb"`
 	// Pprof は net/http/pprof のエンドポイントを PprofAddr で公開する（性能調査用。既定 false）。
 	Pprof bool `toml:"pprof"`
 	// PprofAddr は pprof の待ち受けアドレス（空なら 127.0.0.1:6060）。ループバック以外は拒否する。
@@ -261,6 +265,11 @@ func Load(path string) (*Config, error) {
 	if v, ok := os.LookupEnv("BUROPHER_SMTP_PORT"); ok {
 		if _, err := fmt.Sscanf(v, "%d", &c.Mail.SMTP.Port); err != nil {
 			return nil, fmt.Errorf("config: BUROPHER_SMTP_PORT: %w", err)
+		}
+	}
+	if v, ok := os.LookupEnv("BUROPHER_MAX_REQUEST_BODY_MB"); ok {
+		if _, err := fmt.Sscanf(v, "%d", &c.Server.MaxRequestBodyMB); err != nil {
+			return nil, fmt.Errorf("config: BUROPHER_MAX_REQUEST_BODY_MB: %w", err)
 		}
 	}
 	if v, ok := os.LookupEnv("BUROPHER_DB_MAX_OPEN_CONNS"); ok {

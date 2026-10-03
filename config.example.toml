@@ -14,6 +14,10 @@
 [server]
 # Listen address. env: BUROPHER_ADDR
 #addr = ":3000"
+# Upper limit for multipart request bodies (form uploads) in MiB; 0 = unlimited like Redmine.
+# Bodies are spooled to temp files before authentication, so set this (or a reverse-proxy
+# limit such as nginx client_max_body_size) on public servers. env: BUROPHER_MAX_REQUEST_BODY_MB
+#max_request_body_mb = 0
 
 # Public base URL without trailing slash, e.g. "https://redmine.example.com".
 # Used for OIDC redirect URIs. Links in e-mails use "Host name and path" and "Protocol"
