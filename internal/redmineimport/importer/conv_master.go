@@ -6,7 +6,6 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/mikuta0407/buropher/internal/permission"
 	"github.com/mikuta0407/buropher/internal/redmineimport/rubyyaml"
 )
 
@@ -411,10 +410,9 @@ func (im *imp) importRoles() error {
 				continue
 			}
 			seen[p] = true
-			if permission.Get(p) == nil {
-				t.repair(id, "unknown permission %q dropped", p)
-				continue
-			}
+			// 未知の権限（廃止された権限・プラグインの権限）も Redmine と同じく保持する。
+			// Redmine は roles.permissions をそのまま API に出し、権限判定・画面では無視する
+			// （ロールの編集画面から保存すると消える）。
 			// position は YAML 配列内の順（Redmine は保存順のまま API 等に出す）
 			pr := permRow{role: id, perm: p, pos: len(seen), all: true}
 			if v, ok := allMap.Get(p); ok {

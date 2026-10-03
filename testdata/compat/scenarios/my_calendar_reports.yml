@@ -33,12 +33,8 @@ requests:
     users: [anonymous, admin, jsmith, dlopper]
   - path: /my
     users: [jsmith]
-  # time_zone_select の Casablanca の基準オフセットは tzinfo の評価時刻で変わる（internal/i18n の
-  # 生成データは +00:00、参照環境の固定時刻では +01:00）ため選択肢を比較から外す。
   - path: /my/account
     users: [anonymous, admin, jsmith, dlopper]
-    normalize:
-      strip_selectors: ["#pref_time_zone"]
   - path: /my/password
     users: [anonymous, admin, jsmith, dlopper]
   - path: /my/api_key

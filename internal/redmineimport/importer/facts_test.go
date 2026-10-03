@@ -155,19 +155,17 @@ func checkFixtureFacts(t *testing.T, d *db.DB, rep *Report, filesDir string) {
 	}
 	// --- roles / workflows
 	perms := qs[string](t, d, `SELECT permission FROM role_permissions WHERE role_id = 1`)
-	if len(perms) != 66 {
-		t.Errorf("role 1 permissions = %d, want 66", len(perms))
+	if len(perms) != 67 {
+		t.Errorf("role 1 permissions = %d, want 67", len(perms))
 	}
 	has := map[string]bool{}
 	for _, p := range perms {
 		has[p] = true
 	}
-	if !has["add_project"] || !has["manage_members"] || !has["view_issues"] || has["delete_time_entries"] {
+	if !has["add_project"] || !has["manage_members"] || !has["view_issues"] || !has["delete_time_entries"] {
 		t.Errorf("role 1 permissions = %v", perms)
 	}
-	if rt := rep.Lookup("roles"); rt.Find(`unknown permission "delete_time_entries"`) == nil {
-		t.Error("unknown permission not reported")
-	}
+	// 未知の権限（delete_time_entries）は Redmine と同じく保持する
 	if n := q1[int](t, d, `SELECT builtin FROM roles WHERE id = 5`); n != 2 {
 		t.Errorf("role 5 builtin = %d", n)
 	}

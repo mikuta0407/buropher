@@ -125,7 +125,6 @@ func (e *authEnv) do(user, method, path string, form url.Values, golden string) 
 		s = authTotpKeyRe.ReplaceAllString(s, "<code>TOTPKEY</code>")
 		s = authBackupRe.ReplaceAllString(s, "<li><code>BACKUPCODE</code></li>")
 		s = authSessionRe.ReplaceAllString(s, "TOKEN40")
-		s = myTimeZoneRe.ReplaceAllString(s, "<!-- time_zone -->")
 		e.out[golden] = fmt.Sprintf("status: %d\nlocation: %s\n\n%s", res.StatusCode, loc, s)
 		e.order = append(e.order, golden)
 	}

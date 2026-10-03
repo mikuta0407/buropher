@@ -21,8 +21,6 @@ normalize:
     - "#footer"
   strip_selectors:
     - "#project-jump"
-    # time_zone_select の Casablanca の基準オフセットは評価時刻で変わる（my_calendar_reports.yml 参照）
-    - "#pref_time_zone"
   regex:
     - {pattern: '[0-9a-f]{40}', replace: 'KEY40'}
     # JS 応答（テキスト）内の CSRF トークンとフォーム名

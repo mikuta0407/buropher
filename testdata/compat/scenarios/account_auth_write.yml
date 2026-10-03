@@ -21,7 +21,6 @@ normalize:
     - "#footer"
   strip_selectors:
     - "#project-jump"
-    - "#pref_time_zone"
 
 requests:
   # ---- パスワード再発行

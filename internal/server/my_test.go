@@ -26,7 +26,6 @@ import (
 //
 // どちらも先に /my/account.json を取得して API キーを作る（共有の参照環境では既に作られていることがあるため。
 // 固定時刻なのでどちらも「1 分未満前に作成」と表示される）。
-// time_zone_select は Casablanca の基準オフセットが評価時刻で変わるため比較から外す（myNormalize）。
 
 var myCases = []asCase{
 	{"admin", "/my/page", "page_admin.html"},
@@ -42,13 +41,11 @@ var myCases = []asCase{
 }
 
 var (
-	myTimeZoneRe = regexp.MustCompile(`(?s)<p><label for="pref_time_zone">.*?</select></p>`)
-	myKeyRe      = regexp.MustCompile(`[0-9a-f]{40}`)
+	myKeyRe = regexp.MustCompile(`[0-9a-f]{40}`)
 )
 
 func myNormalize(body, base string) string {
 	s := asNormalize(body, base)
-	s = myTimeZoneRe.ReplaceAllString(s, "<!-- time_zone -->")
 	return myKeyRe.ReplaceAllString(s, "KEY")
 }
 
