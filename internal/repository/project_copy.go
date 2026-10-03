@@ -12,8 +12,9 @@ import (
 // このファイルは Project#copy の各 copy_*（members / versions / issue_categories / queries / boards /
 // wiki / documents）の移植。
 //
-// TODO: copy_issues（チケットのドメインサービスの移植後に追加する）、添付ファイルの複製
-// （プロジェクト・バージョン・Wiki ページ・文書の attachments.copy）。
+// copy_issues は internal/issues（Env.CopyProjectIssues）にある。
+//
+// TODO: 添付ファイルの複製（プロジェクト・バージョン・Wiki ページ・文書の attachments.copy）。
 
 // CopyCounts は projects/copy の各項目の件数（@source_project.members.count など）。
 type CopyCounts struct {

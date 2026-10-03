@@ -151,11 +151,14 @@ var datepickerOptions={dateFormat: 'yy-mm-dd', firstDay: 0, showOn: 'button', bu
                   <span style="padding-inline-start:0px;">OnlineStore</span>
                 </a>
                 <strong>Recently used</strong>
-                <a href="/projects/copied?jump=projects" title="Copied">
-                  <span style="padding-inline-start:0px;">Copied</span>
+                <a href="/projects/copied-issues?jump=projects" title="Copied with issues">
+                  <span style="padding-inline-start:0px;">Copied with issues</span>
                 </a>
                 <a href="/projects/ecookbook?jump=projects" title="eCookbook">
                   <span style="padding-inline-start:0px;">eCookbook</span>
+                </a>
+                <a href="/projects/copied?jump=projects" title="Copied">
+                  <span style="padding-inline-start:0px;">Copied</span>
                 </a>
                 <strong>All Projects</strong>
                 <a href="/projects/private-child?jump=projects" title="Private child of eCookbook">
@@ -527,7 +530,25 @@ $(function ($) {
                       </a>
                     </td>
                   </tr>
-                  <tr class="even hascontextmenu project root parent public" id="project-1">
+                  <tr class="even hascontextmenu project root leaf public" id="project-12">
+                    <td class="checkbox hide-when-print">
+                      <input name="ids[]" type="checkbox" value="12">
+                    </td>
+                    <td class="name">
+                      <a href="/projects/copied-issues">Copied with issues</a>
+                    </td>
+                    <td class="identifier">copied-issues</td>
+                    <td class="short_description"></td>
+                    <td class="buttons">
+                      <a class="icon-only icon-actions js-contextmenu" href="#" title="Actions">
+                        <svg aria-hidden="true" class="s18 icon-svg">
+                          <use href="/assets/icons-DIGEST.svg#icon--3-bullets"></use>
+                        </svg>
+                        <span class="icon-label">Actions</span>
+                      </a>
+                    </td>
+                  </tr>
+                  <tr class="odd hascontextmenu project root parent public" id="project-1">
                     <td class="checkbox hide-when-print">
                       <input name="ids[]" type="checkbox" value="1">
                     </td>
@@ -549,7 +570,7 @@ $(function ($) {
                       </a>
                     </td>
                   </tr>
-                  <tr class="odd hascontextmenu project child parent idnt idnt-1" id="project-5">
+                  <tr class="even hascontextmenu project child parent idnt idnt-1" id="project-5">
                     <td class="checkbox hide-when-print">
                       <input name="ids[]" type="checkbox" value="5">
                     </td>
@@ -583,7 +604,7 @@ $(function ($) {
                       </a>
                     </td>
                   </tr>
-                  <tr class="even hascontextmenu project child leaf public idnt idnt-2" id="project-6">
+                  <tr class="odd hascontextmenu project child leaf public idnt idnt-2" id="project-6">
                     <td class="checkbox hide-when-print">
                       <input name="ids[]" type="checkbox" value="6">
                     </td>
@@ -605,7 +626,7 @@ $(function ($) {
                       </a>
                     </td>
                   </tr>
-                  <tr class="odd hascontextmenu project child leaf public idnt idnt-1" id="project-3">
+                  <tr class="even hascontextmenu project child leaf public idnt idnt-1" id="project-3">
                     <td class="checkbox hide-when-print">
                       <input name="ids[]" type="checkbox" value="3">
                     </td>
@@ -627,7 +648,7 @@ $(function ($) {
                       </a>
                     </td>
                   </tr>
-                  <tr class="even hascontextmenu project child leaf public idnt idnt-1" id="project-4">
+                  <tr class="odd hascontextmenu project child leaf public idnt idnt-1" id="project-4">
                     <td class="checkbox hide-when-print">
                       <input name="ids[]" type="checkbox" value="4">
                     </td>
@@ -649,7 +670,7 @@ $(function ($) {
                       </a>
                     </td>
                   </tr>
-                  <tr class="odd hascontextmenu project root leaf" id="project-2">
+                  <tr class="even hascontextmenu project root leaf" id="project-2">
                     <td class="checkbox hide-when-print">
                       <input name="ids[]" type="checkbox" value="2">
                     </td>
@@ -684,7 +705,7 @@ $(function ($) {
           <span class="pagination">
             <ul class="pages"></ul>
             <span>
-              <span class="items">(1-7/7)</span>
+              <span class="items">(1-8/8)</span>
             </span>
           </span>
           <div id="csv-export-options" style="display:none;">

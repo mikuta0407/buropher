@@ -382,7 +382,8 @@ func TestRoleRepository(t *testing.T) {
 		e.must(repository.SaveRole(e.ctx, e.d, role))
 		got, err := repository.GetRole(e.ctx, e.d, role.ID)
 		e.must(err)
-		if !slices.Equal(got.Permissions, []string{"edit_issues", "view_issues"}) {
+		// 保存順（Role#permissions= の配列順）で読み込む
+		if !slices.Equal(got.Permissions, []string{"view_issues", "edit_issues"}) {
 			t.Errorf("permissions = %v", got.Permissions)
 		}
 		if !got.PermissionsTrackerIDsInclude("view_issues", 2) || got.PermissionsAllTrackers("view_issues") || !got.PermissionsAllTrackers("edit_issues") {

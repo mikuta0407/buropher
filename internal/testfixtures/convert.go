@@ -283,9 +283,10 @@ VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 				return fmt.Errorf("%s: settings: %w", r.label, err)
 			}
 		}
-		for _, p := range ParsePermissions(r.str("permissions")) {
+		for i, p := range ParsePermissions(r.str("permissions")) {
 			all := fmt.Sprint(st.PermissionsAllTrackers[p]) != "0"
-			if err := c.exec(`INSERT INTO role_permissions (role_id, permission, all_trackers) VALUES (?, ?, ?)`, id, p, all); err != nil {
+			// position は YAML 配列内の順
+			if err := c.exec(`INSERT INTO role_permissions (role_id, permission, all_trackers, position) VALUES (?, ?, ?, ?)`, id, p, all, i+1); err != nil {
 				return err
 			}
 			if all {

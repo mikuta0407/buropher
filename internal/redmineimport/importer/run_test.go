@@ -168,7 +168,7 @@ func TestValueHelpers(t *testing.T) {
 	if b := breakCycles(parent); len(b) != 1 || b[0] != 1 || parent[1] != 0 {
 		t.Errorf("breakCycles = %v %v", b, parent)
 	}
-	if v, changed := normalizeCFValue("bool", "t"); v != "1" || !changed {
+	if v, changed := normalizeCFValue("bool", "t"); v != "t" || changed {
 		t.Errorf("bool = %v", v)
 	}
 	if v, _ := normalizeCFValue("int", " 12 "); v != "12" {

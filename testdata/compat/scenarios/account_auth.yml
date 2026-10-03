@@ -12,8 +12,6 @@ normalize:
     - "#footer"
   strip_selectors:
     - "#project-jump"
-    # time_zone_select の Casablanca の基準オフセットは評価時刻で変わる（my_calendar_reports.yml 参照）
-    - "#pref_time_zone"
 
 requests:
   # ---- ログイン・パスワード再発行・登録（未ログイン）

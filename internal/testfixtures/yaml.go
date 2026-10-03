@@ -81,6 +81,15 @@ func readFixture(name string, now time.Time) ([]row, error) {
 				continue
 			}
 			s := v.Value
+			if v.ShortTag() == "!!bool" {
+				// Rails のフィクスチャ投入は真偽値を文字列列へ "t" / "f" で入れる
+				// (ActiveModel::Type::String の cast)。custom_values.value 等はその値のまま保存される
+				if strings.EqualFold(s, "true") {
+					s = "t"
+				} else {
+					s = "f"
+				}
+			}
 			r.cols[k] = &s
 		}
 		rows = append(rows, r)

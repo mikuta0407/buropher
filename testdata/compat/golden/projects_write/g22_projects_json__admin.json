@@ -23,6 +23,25 @@ content-type: application/json
       "updated_on": "TIMESTAMP"
     },
     {
+      "id": 12,
+      "name": "Copied with issues",
+      "identifier": "copied-issues",
+      "description": null,
+      "homepage": "",
+      "status": 1,
+      "is_public": true,
+      "inherit_members": false,
+      "custom_fields": [
+        {
+          "id": 3,
+          "name": "Development status",
+          "value": ""
+        }
+      ],
+      "created_on": "TIMESTAMP",
+      "updated_on": "TIMESTAMP"
+    },
+    {
       "id": 1,
       "name": "eCookbook",
       "identifier": "ecookbook",
@@ -153,7 +172,7 @@ content-type: application/json
       "updated_on": "TIMESTAMP"
     }
   ],
-  "total_count": 7,
+  "total_count": 8,
   "offset": 0,
   "limit": 25
 }

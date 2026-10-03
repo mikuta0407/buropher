@@ -1,0 +1,68 @@
+status: 200
+content-type: application/json
+
+{
+  "versions": [
+    {
+      "id": 7,
+      "project": {
+        "id": 2,
+        "name": "OnlineStore"
+      },
+      "name": "Systemwide visible version",
+      "description": null,
+      "status": "open",
+      "due_date": null,
+      "sharing": "system",
+      "wiki_page_title": null,
+      "created_on": "2006-07-19T19:00:07Z",
+      "updated_on": "2006-07-19T19:00:07Z"
+    },
+    {
+      "id": 11,
+      "project": {
+        "id": 12,
+        "name": "Copied with issues"
+      },
+      "name": "0.1",
+      "description": "Beta",
+      "status": "closed",
+      "due_date": "2006-07-01",
+      "sharing": "none",
+      "wiki_page_title": null,
+      "created_on": "2026-01-15T12:00:00Z",
+      "updated_on": "2026-01-15T12:00:00Z"
+    },
+    {
+      "id": 12,
+      "project": {
+        "id": 12,
+        "name": "Copied with issues"
+      },
+      "name": "1.0",
+      "description": "Stable release",
+      "status": "locked",
+      "due_date": "2026-02-04",
+      "sharing": "none",
+      "wiki_page_title": "ECookBookV1",
+      "created_on": "2026-01-15T12:00:00Z",
+      "updated_on": "2026-01-15T12:00:00Z"
+    },
+    {
+      "id": 13,
+      "project": {
+        "id": 12,
+        "name": "Copied with issues"
+      },
+      "name": "2.0",
+      "description": "Future version",
+      "status": "open",
+      "due_date": null,
+      "sharing": "none",
+      "wiki_page_title": null,
+      "created_on": "2026-01-15T12:00:00Z",
+      "updated_on": "2026-01-15T12:00:00Z"
+    }
+  ],
+  "total_count": 4
+}

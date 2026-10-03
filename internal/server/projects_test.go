@@ -20,9 +20,7 @@ import (
 var (
 	projectJumpRe = regexp.MustCompile(`<div id="project-jump".*</div></div></div>`)
 	repoURLRe     = regexp.MustCompile(`file:///[^<"]*/tmp/test/`)
-	// フィクスチャのカスタム値 true は参照（SQLite）では 't'、テスト用フィクスチャでは '1' になる
-	boolCFRe = regexp.MustCompile(`<option (selected="selected" )?value="1">Yes</option>`)
-	pngRe    = regexp.MustCompile(`-[0-9a-f]{8}\.png`)
+	pngRe         = regexp.MustCompile(`-[0-9a-f]{8}\.png`)
 	// テスト用フィクスチャの相対日時の一部（作業時間等）は参照と時刻がずれるため最終活動日は伏せる
 	lastActivityRe = regexp.MustCompile(`<td class="last_activity_date">.*</td>`)
 )
@@ -31,9 +29,6 @@ func maskProjectJump(s string) string {
 	return projectJumpRe.ReplaceAllString(s, `<div id="project-jump">JUMP</div>`)
 }
 func maskRepoURL(s string) string { return repoURLRe.ReplaceAllString(s, "file:///REPO/tmp/test/") }
-func maskBoolCF(s string) string {
-	return boolCFRe.ReplaceAllString(s, `<option value="1">Yes</option>`)
-}
 
 // compareProjectsGolden は got と testdata/projects/name を比較する（ジャンプボックスは常に伏せる）。
 func compareProjectsGolden(t *testing.T, name, got, base string, edit ...func(string) string) {
@@ -95,8 +90,8 @@ func TestProjectsPagesMatchRedmine(t *testing.T) {
 		{"anonymous", "/projects/ecookbook", "show_ecookbook_anonymous.html", nil},
 		{"admin", "/projects/new", "new_admin.html", nil},
 		{"jsmith", "/projects/new?parent_id=ecookbook", "new_parent_jsmith.html", nil},
-		{"admin", "/projects/ecookbook/settings", "settings_ecookbook_admin.html", []func(string) string{maskRepoURL, maskBoolCF}},
-		{"jsmith", "/projects/onlinestore/settings", "settings_onlinestore_jsmith.html", []func(string) string{maskBoolCF}},
+		{"admin", "/projects/ecookbook/settings", "settings_ecookbook_admin.html", []func(string) string{maskRepoURL}},
+		{"jsmith", "/projects/onlinestore/settings", "settings_onlinestore_jsmith.html", nil},
 		// テスト用フィクスチャ（internal/testfixtures）は documents を投入しない
 		{"admin", "/projects/ecookbook/copy", "copy_ecookbook_admin.html", []func(string) string{func(s string) string {
 			s = strings.Replace(s, "Documents (3)", "Documents (0)", 1)

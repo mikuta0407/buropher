@@ -1,0 +1,18 @@
+status: 200
+content-type: application/json
+
+{
+  "role": {
+    "id": 3,
+    "name": "Reporter",
+    "assignable": true,
+    "issues_visibility": "default",
+    "time_entries_visibility": "all",
+    "users_visibility": "all",
+    "permissions": [
+      "view_wiki_pages",
+      "add_issues",
+      "view_issues"
+    ]
+  }
+}
