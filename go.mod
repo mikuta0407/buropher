@@ -2,6 +2,8 @@ module github.com/mikuta0407/buropher
 
 go 1.26.1
 
+toolchain go1.26.6
+
 require (
 	github.com/BurntSushi/toml v1.6.0
 	github.com/Masterminds/squirrel v1.5.4
@@ -65,7 +67,7 @@ require (
 	github.com/klauspost/compress v1.19.2
 	github.com/microsoft/go-mssqldb v1.11.0
 	github.com/yuin/goldmark v1.8.6
-	golang.org/x/image v0.26.0
+	golang.org/x/image v0.46.0
 	golang.org/x/oauth2 v0.37.0
 	golang.org/x/text v0.42.0
 )
