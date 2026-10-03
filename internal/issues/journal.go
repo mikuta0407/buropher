@@ -448,42 +448,77 @@ FROM issue_journals WHERE `+where+` ORDER BY id`, args...); err != nil {
 		return nil, err
 	}
 	out := make([]*Journal, len(rows))
+	ids := make([]int64, len(rows))
 	for i := range rows {
 		out[i] = rows[i].journal()
-		ds, err := e.journalDetails(ctx, out[i].ID)
-		if err != nil {
-			return nil, err
+		ids[i] = out[i].ID
+	}
+	details, err := e.journalDetailsMap(ctx, ids)
+	if err != nil {
+		return nil, err
+	}
+	for _, j := range out {
+		j.Details = details[j.ID]
+		if j.Details == nil {
+			j.Details = []*domain.JournalDetail{}
 		}
-		out[i].Details = ds
 	}
 	return out, nil
 }
 
-func (e *Env) journalDetails(ctx context.Context, journalID int64) ([]*domain.JournalDetail, error) {
-	var rows []struct {
-		ID        int64          `db:"id"`
-		JournalID int64          `db:"journal_id"`
-		Property  string         `db:"property"`
-		PropKey   string         `db:"prop_key"`
-		OldValue  sql.NullString `db:"old_value"`
-		Value     sql.NullString `db:"value"`
-	}
-	if err := e.Q.Select(ctx, &rows, `SELECT id, journal_id, property, prop_key, old_value, value FROM issue_journal_details
-WHERE journal_id = ? ORDER BY id`, journalID); err != nil {
-		return nil, err
-	}
-	out := make([]*domain.JournalDetail, len(rows))
-	for i, r := range rows {
-		d := &domain.JournalDetail{ID: r.ID, JournalID: r.JournalID, Property: r.Property, PropKey: r.PropKey}
-		if r.OldValue.Valid {
-			d.OldValue = ptrString(r.OldValue.String)
+// journalDetailsMap は ids の各ジャーナルの details（id 順）をまとめて読み込む。
+func (e *Env) journalDetailsMap(ctx context.Context, ids []int64) (map[int64][]*domain.JournalDetail, error) {
+	out := make(map[int64][]*domain.JournalDetail, len(ids))
+	for len(ids) > 0 {
+		n := min(len(ids), 500)
+		chunk := ids[:n]
+		ids = ids[n:]
+		parts := make([]string, len(chunk))
+		for i, id := range chunk {
+			parts[i] = strconv.FormatInt(id, 10)
 		}
-		if r.Value.Valid {
-			d.Value = ptrString(r.Value.String)
+		var rows []journalDetailRow
+		if err := e.Q.Select(ctx, &rows, `SELECT id, journal_id, property, prop_key, old_value, value FROM issue_journal_details
+WHERE journal_id IN (`+strings.Join(parts, ",")+`) ORDER BY id`); err != nil {
+			return nil, err
 		}
-		out[i] = d
+		for _, r := range rows {
+			out[r.JournalID] = append(out[r.JournalID], r.detail())
+		}
 	}
 	return out, nil
+}
+
+type journalDetailRow struct {
+	ID        int64          `db:"id"`
+	JournalID int64          `db:"journal_id"`
+	Property  string         `db:"property"`
+	PropKey   string         `db:"prop_key"`
+	OldValue  sql.NullString `db:"old_value"`
+	Value     sql.NullString `db:"value"`
+}
+
+func (r journalDetailRow) detail() *domain.JournalDetail {
+	d := &domain.JournalDetail{ID: r.ID, JournalID: r.JournalID, Property: r.Property, PropKey: r.PropKey}
+	if r.OldValue.Valid {
+		d.OldValue = ptrString(r.OldValue.String)
+	}
+	if r.Value.Valid {
+		d.Value = ptrString(r.Value.String)
+	}
+	return d
+}
+
+// journalDetails は 1 件のジャーナルの details（id 順）。
+func (e *Env) journalDetails(ctx context.Context, journalID int64) ([]*domain.JournalDetail, error) {
+	m, err := e.journalDetailsMap(ctx, []int64{journalID})
+	if err != nil {
+		return nil, err
+	}
+	if m[journalID] == nil {
+		return []*domain.JournalDetail{}, nil
+	}
+	return m[journalID], nil
 }
 
 // LastJournalID は last_journal_id (新規または無ければ 0)。
@@ -517,6 +552,14 @@ FROM issue_journals WHERE issue_id = ? ORDER BY created_at, id`, iss.ID); err !=
 	if err != nil {
 		return nil, err
 	}
+	ids := make([]int64, len(rows))
+	for i := range rows {
+		ids[i] = rows[i].ID
+	}
+	details, err := e.journalDetailsMap(ctx, ids)
+	if err != nil {
+		return nil, err
+	}
 	var out []*Journal
 	for i := range rows {
 		j := rows[i].journal()
@@ -524,11 +567,10 @@ FROM issue_journals WHERE issue_id = ? ORDER BY created_at, id`, iss.ID); err !=
 		if !viewPrivate && j.PrivateNotes && j.UserID != u.ID {
 			continue
 		}
-		ds, err := e.journalDetails(ctx, j.ID)
-		if err != nil {
-			return nil, err
+		j.Details = details[j.ID]
+		if j.Details == nil {
+			j.Details = []*domain.JournalDetail{}
 		}
-		j.Details = ds
 		vd, err := e.VisibleDetails(ctx, j, iss, u)
 		if err != nil {
 			return nil, err

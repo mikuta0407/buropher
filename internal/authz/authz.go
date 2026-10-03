@@ -38,6 +38,8 @@ type Authorizer struct {
 	groupIDsLoaded    bool
 	visibleProjectIDs []int64
 	vpLoaded          bool
+	principalVisCond  string
+	pvcLoaded         bool
 }
 
 // New は user を主体とする Authorizer を返す。

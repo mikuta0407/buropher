@@ -40,12 +40,18 @@ type Server struct {
 	RelativeURLRoot string `toml:"relative_url_root"`
 	// SecretKey はセッション・CSRF・暗号化に使う。
 	SecretKey string `toml:"secret_key"`
+	// Pprof は net/http/pprof のエンドポイントを PprofAddr で公開する（性能調査用。既定 false）。
+	Pprof bool `toml:"pprof"`
+	// PprofAddr は pprof の待ち受けアドレス（空なら 127.0.0.1:6060）。ループバック以外は拒否する。
+	PprofAddr string `toml:"pprof_addr"`
 }
 
 type Database struct {
 	// Driver は "sqlite" または "postgres"。
 	Driver string `toml:"driver"`
 	DSN    string `toml:"dsn"`
+	// MaxOpenConns は DB の同時接続数の上限（0 なら無制限。PostgreSQL の max_connections に合わせて絞る用）。
+	MaxOpenConns int `toml:"max_open_conns"`
 }
 
 type Storage struct {
@@ -211,6 +217,7 @@ func Load(path string) (*Config, error) {
 		"BUROPHER_BASE_URL":           &c.Server.BaseURL,
 		"BUROPHER_RELATIVE_URL_ROOT":  &c.Server.RelativeURLRoot,
 		"BUROPHER_SECRET_KEY":         &c.Server.SecretKey,
+		"BUROPHER_PPROF_ADDR":         &c.Server.PprofAddr,
 		"BUROPHER_DB_DRIVER":          &c.Database.Driver,
 		"BUROPHER_DB_DSN":             &c.Database.DSN,
 		"BUROPHER_ATTACHMENTS_PATH":   &c.Storage.AttachmentsPath,
@@ -236,6 +243,14 @@ func Load(path string) (*Config, error) {
 		if _, err := fmt.Sscanf(v, "%d", &c.Mail.SMTP.Port); err != nil {
 			return nil, fmt.Errorf("config: BUROPHER_SMTP_PORT: %w", err)
 		}
+	}
+	if v, ok := os.LookupEnv("BUROPHER_DB_MAX_OPEN_CONNS"); ok {
+		if _, err := fmt.Sscanf(v, "%d", &c.Database.MaxOpenConns); err != nil {
+			return nil, fmt.Errorf("config: BUROPHER_DB_MAX_OPEN_CONNS: %w", err)
+		}
+	}
+	if v, ok := os.LookupEnv("BUROPHER_PPROF"); ok {
+		c.Server.Pprof = v == "1" || strings.EqualFold(v, "true")
 	}
 	if v, ok := os.LookupEnv("BUROPHER_SUDO_MODE"); ok {
 		c.Auth.SudoMode = v == "1" || strings.EqualFold(v, "true")

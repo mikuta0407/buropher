@@ -197,9 +197,28 @@ func (timeEntryKind) baseScope(ctx context.Context, q *Query) (string, frag, err
 	}
 	from := "time_entries INNER JOIN projects ON projects.id = time_entries.project_id" +
 		" INNER JOIN principals users ON users.id = time_entries.user_id" +
-		" LEFT OUTER JOIN time_entry_activities ON time_entry_activities.id = time_entries.activity_id" +
-		" LEFT OUTER JOIN issues ON issues.id = time_entries.issue_id AND (" + ivis + ")"
+		teActivityJoin + teIssueJoinPrefix + ivis + ")"
 	return from, joinFrags(" AND ", raw("("+vis+")"), paren(st)), nil
+}
+
+// base_scope の includes(:activity) と left_join_issue の結合 (teIssueJoinPrefix は FROM の末尾に置く)。
+const (
+	teActivityJoin    = " LEFT OUTER JOIN time_entry_activities ON time_entry_activities.id = time_entries.activity_id"
+	teIssueJoinPrefix = " LEFT OUTER JOIN issues ON issues.id = time_entries.issue_id AND ("
+)
+
+// pruneJoins は件数・合計で参照されていない活動・チケットの LEFT OUTER JOIN を除く。
+// どちらも主キーへの結合なので作業時間の行は増減しない。
+func (timeEntryKind) pruneJoins(from, used string) string {
+	if !strings.Contains(used, "issues.") && !strings.Contains(used, "issues ") {
+		if i := strings.Index(from, teIssueJoinPrefix); i >= 0 {
+			from = from[:i]
+		}
+	}
+	if !strings.Contains(used, "time_entry_activities") {
+		from = strings.Replace(from, teActivityJoin, "", 1)
+	}
+	return from
 }
 
 func (timeEntryKind) joinsForOrderStatement(ctx context.Context, q *Query, order string) ([]string, error) {

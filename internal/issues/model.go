@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"slices"
+	"strconv"
 	"strings"
 	"time"
 
@@ -451,14 +452,32 @@ func (e *Env) LoadMany(ctx context.Context, where string, args ...any) ([]*Issue
 		return nil, err
 	}
 	out := make([]*Issue, len(rows))
+	byID := make(map[int64]*Issue, len(rows))
+	ids := make([]string, len(rows))
 	for k := range rows {
 		iss := &Issue{Issue: rows[k].issue()}
 		o := iss.Issue
 		iss.orig = &o
 		out[k] = iss
-		if err := e.Q.Select(ctx, &iss.cvRows, `SELECT id, custom_field_id, value FROM custom_values
-WHERE customized_kind = 'issue' AND customized_id = ? ORDER BY id`, iss.ID); err != nil {
+		byID[iss.ID] = iss
+		ids[k] = strconv.FormatInt(iss.ID, 10)
+	}
+	// カスタム値はまとめて読み込む (チケットごとに id 順)
+	for len(ids) > 0 {
+		n := min(len(ids), 500)
+		var cvs []struct {
+			cvRow
+			CustomizedID int64 `db:"customized_id"`
+		}
+		if err := e.Q.Select(ctx, &cvs, `SELECT id, custom_field_id, value, customized_id FROM custom_values
+WHERE customized_kind = 'issue' AND customized_id IN (`+strings.Join(ids[:n], ",")+`) ORDER BY id`); err != nil {
 			return nil, err
+		}
+		ids = ids[n:]
+		for _, cv := range cvs {
+			if iss := byID[cv.CustomizedID]; iss != nil {
+				iss.cvRows = append(iss.cvRows, cv.cvRow)
+			}
 		}
 	}
 	return out, nil

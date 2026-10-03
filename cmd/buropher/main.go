@@ -154,7 +154,12 @@ func openDB(ctx context.Context, cfg *config.Config) (*db.DB, error) {
 			return nil, err
 		}
 	}
-	return db.Open(ctx, cfg.Database.Driver, cfg.Database.DSN)
+	d, err := db.Open(ctx, cfg.Database.Driver, cfg.Database.DSN)
+	if err != nil {
+		return nil, err
+	}
+	d.SetMaxConns(cfg.Database.MaxOpenConns)
+	return d, nil
 }
 
 func migrate(args []string) error {

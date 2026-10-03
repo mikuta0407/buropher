@@ -48,6 +48,11 @@ func (m *issueModel) visibleJournals() []*journalView {
 		}
 	}
 	m.l.preloadPrincipals(uids)
+	ids := make([]int64, len(js))
+	for i, j := range js {
+		ids[i] = j.ID
+	}
+	m.l.preloadReactions("journal", ids)
 	out := make([]*journalView, 0, len(js))
 	for _, j := range js {
 		out = append(out, &journalView{Journal: j, l: m.l, issue: m, User: m.l.principal(j.UserID)})
@@ -612,15 +617,55 @@ func (l *issueLookup) reactionButton(kind string, id int64, issue *issueModel) t
 		rails.NewHash("remote", true, "method", "post", "class", cls("icon reaction-button"), "title", tooltip)))
 }
 
-// reactionDetail は Reaction.build_detail_map_for（可視なユーザー、id の降順）と自分のリアクションの id。
-func (l *issueLookup) reactionDetail(kind string, id int64) ([]*domain.User, int64, error) {
+// preloadReactions は ids のリアクションをまとめて読み込む（reaction_button を一覧で描くときの N+1 を避ける）。
+func (l *issueLookup) preloadReactions(kind string, ids []int64) {
+	if len(ids) == 0 || !l.a.Settings.Bool("reactions_enabled") {
+		return
+	}
 	vis, err := l.c.Authz().PrincipalVisibleCondition(l.ctx)
 	if err != nil {
-		return nil, 0, err
+		l.fail(err)
+		return
 	}
-	rows, err := repository.ReactionsFor(l.ctx, l.a.DB, kind, id, vis)
+	m, err := repository.ReactionsForMany(l.ctx, l.a.DB, kind, ids, vis)
 	if err != nil {
-		return nil, 0, err
+		l.fail(err)
+		return
+	}
+	if l.reactions == nil {
+		l.reactions = map[string]map[int64][]*repository.ReactionRow{}
+		l.reactionsLoaded = map[string]map[int64]bool{}
+	}
+	if l.reactions[kind] == nil {
+		l.reactions[kind] = map[int64][]*repository.ReactionRow{}
+		l.reactionsLoaded[kind] = map[int64]bool{}
+	}
+	for _, id := range ids {
+		l.reactions[kind][id] = m[id]
+		l.reactionsLoaded[kind][id] = true
+	}
+	var uids []int64
+	for _, rows := range m {
+		for _, r := range rows {
+			uids = append(uids, r.UserID)
+		}
+	}
+	l.preloadPrincipals(uids)
+}
+
+// reactionDetail は Reaction.build_detail_map_for（可視なユーザー、id の降順）と自分のリアクションの id。
+func (l *issueLookup) reactionDetail(kind string, id int64) ([]*domain.User, int64, error) {
+	var rows []*repository.ReactionRow
+	if l.reactionsLoaded[kind][id] {
+		rows = l.reactions[kind][id]
+	} else {
+		vis, err := l.c.Authz().PrincipalVisibleCondition(l.ctx)
+		if err != nil {
+			return nil, 0, err
+		}
+		if rows, err = repository.ReactionsFor(l.ctx, l.a.DB, kind, id, vis); err != nil {
+			return nil, 0, err
+		}
 	}
 	var uids []int64
 	for _, r := range rows {

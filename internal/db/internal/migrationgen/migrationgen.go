@@ -37,6 +37,7 @@ type lateFK struct {
 }
 
 // Render はテンプレート文字列を指定 dialect の SQL に展開し、Down セクションを付与して返す。
+// テンプレートに "-- +goose Down" があれば Down は自動生成しない。
 func Render(name, src, dialect string) (string, error) {
 	if dialect != SQLite && dialect != Postgres {
 		return "", fmt.Errorf("migrationgen: unknown dialect %q", dialect)
@@ -146,6 +147,10 @@ func Render(name, src, dialect string) (string, error) {
 		return "", fmt.Errorf("migrationgen: execute %s: %w", name, err)
 	}
 	up := strings.TrimRight(buf.String(), "\n") + "\n"
+	if strings.Contains(up, "-- +goose Down") {
+		// Down を明示したテンプレート (テーブルを作らない変更など) はそのまま使う
+		return header(name) + up, nil
+	}
 	return header(name) + up + "\n" + downSection(up, sqlite), nil
 }
 

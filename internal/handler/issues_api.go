@@ -42,10 +42,7 @@ func (a *App) renderIssuesIndexAPI(c *Req, q *query.Query) {
 	}
 	incAttachments := c.IncludeInAPIResponse("attachments")
 	incRelations := c.IncludeInAPIResponse("relations")
-	var models []*issueModel
-	for _, r := range rows {
-		models = append(models, l.model(r))
-	}
+	models := l.models(rows)
 	if l.err != nil {
 		a.internalError(c, "issues api", l.err)
 		return

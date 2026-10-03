@@ -6,6 +6,7 @@ package handler
 import (
 	"slices"
 	"strconv"
+	"strings"
 
 	"github.com/mikuta0407/buropher/internal/customfield"
 	"github.com/mikuta0407/buropher/internal/domain"
@@ -81,6 +82,33 @@ func (l *issueLookup) model(r *query.IssueRow) *issueModel {
 	l.fail(err)
 	m.I = iss
 	return m
+}
+
+// models は rows の各行について model と同じものを作る（チケットとカスタム値をまとめて読み込む）。
+func (l *issueLookup) models(rows []*query.IssueRow) []*issueModel {
+	if len(rows) == 0 {
+		return nil
+	}
+	ids := make([]string, len(rows))
+	for i, r := range rows {
+		ids[i] = strconv.FormatInt(r.ID, 10)
+	}
+	byID := map[int64]*issues.Issue{}
+	for len(ids) > 0 {
+		n := min(len(ids), 500)
+		loaded, err := l.issuesEnv().LoadMany(l.ctx, "issues.id IN ("+strings.Join(ids[:n], ",")+")")
+		l.fail(err)
+		for _, iss := range loaded {
+			byID[iss.ID] = iss
+		}
+		ids = ids[n:]
+	}
+	out := make([]*issueModel, len(rows))
+	for i, r := range rows {
+		out[i] = &issueModel{l: l, Row: r, Project: l.project(r.ProjectID), Tracker: l.tracker(r.TrackerID),
+			Status: l.status(r.StatusID), Priority: l.priority(r.PriorityID), I: byID[r.ID]}
+	}
+	return out
 }
 
 func (m *issueModel) env() *issues.Env { return m.l.issuesEnv() }

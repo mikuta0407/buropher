@@ -357,6 +357,10 @@ func healthz(d *db.DB) http.HandlerFunc {
 
 // Run は ctx がキャンセルされるまでサーバを動かす。
 func (s *Server) Run(ctx context.Context) error {
+	if err := s.startPprof(ctx); err != nil {
+		return err
+	}
+	s.startDBOptimizer(ctx)
 	s.runWorkers(ctx)
 	srv := &http.Server{Addr: s.cfg.Server.Addr, Handler: s.handler, ReadHeaderTimeout: 10 * time.Second}
 	errc := make(chan error, 1)

@@ -34,6 +34,8 @@ Every key is optional; without any configuration buropher listens on `:3000` and
 | `base_url` | `BUROPHER_BASE_URL` | `""` | Public URL without trailing slash (e.g. `https://tracker.example.com`). Used to build OIDC redirect URIs; when empty, the scheme and host of the request are used (honouring `X-Forwarded-*` from trusted proxies). A trailing `/` is removed. Give only scheme and host; the sub-path comes from `relative_url_root` (a `base_url` that already ends with the sub-path is accepted as well). |
 | `relative_url_root` | `BUROPHER_RELATIVE_URL_ROOT` | `""` | Sub-path to serve buropher under, like Redmine's `RAILS_RELATIVE_URL_ROOT` (e.g. `/redmine`). Empty = served at the root of the host. See [Sub-path deployment](#sub-path-deployment). |
 | `secret_key` | `BUROPHER_SECRET_KEY` | `""` | Key for session cookies, CSRF tokens and encryption of stored secrets (TOTP keys, LDAP bind passwords, repository passwords, OIDC and Discord client secrets). If empty, a random key is generated on first start and stored in `<data dir>/secret_key` (`<data dir>` is the directory of the SQLite database file, or `./data` otherwise). Changing it logs everyone out and makes stored secrets undecryptable. |
+| `pprof` | `BUROPHER_PPROF` | `false` | Development / troubleshooting: serve Go's `net/http/pprof` (`/debug/pprof/`) and SQL statistics (`/debug/sqlstats`, see [performance.md](performance.md)) on a separate listener. |
+| `pprof_addr` | `BUROPHER_PPROF_ADDR` | `127.0.0.1:6060` | Listen address of the profiling endpoint. Must be a loopback address (`127.0.0.1`, `::1`, `localhost`); the server refuses to start otherwise. |
 
 ### `[database]`
 
@@ -41,6 +43,7 @@ Every key is optional; without any configuration buropher listens on `:3000` and
 |---|---|---|---|
 | `driver` | `BUROPHER_DB_DRIVER` | `sqlite` | `sqlite` or `postgres`. |
 | `dsn` | `BUROPHER_DB_DSN` | `data/buropher.db` | SQLite: path to the database file (parent directories are created; WAL mode, foreign keys on). PostgreSQL: a pgx DSN such as `postgres://user:pass@host:5432/buropher?sslmode=require`. |
+| `max_open_conns` | `BUROPHER_DB_MAX_OPEN_CONNS` | `0` | Upper limit of open connections (`0` = unlimited). Up to `max(4, 2 × CPUs)` idle connections are kept for reuse. SQLite runs in WAL mode (readers in parallel, writers serialized by `BEGIN IMMEDIATE` and a 10 s busy timeout) with a 32 MiB page cache, 256 MiB mmap and in-memory temp store per connection; its planner statistics are refreshed in the background at startup and every 6 hours. |
 
 ### `[storage]`
 

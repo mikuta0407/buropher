@@ -41,12 +41,28 @@ func stmtErr(err error) error {
 
 // baseSQL は base_scope の "FROM ... WHERE ..." と引数。
 func (q *Query) baseSQL(ctx context.Context, extraJoins []string, opts *ListOptions) (string, []any, error) {
+	return q.baseSQLFor(ctx, extraJoins, opts, "")
+}
+
+// joinPruner は件数・合計のように結果の行を数えるだけの SQL で、使われていない
+// LEFT OUTER JOIN (主キーで高々 1 行に結合するもの) を base_scope の FROM から除く。
+// 除いても行の数と集計値は変わらない (結合先の列を参照していなければ)。
+type joinPruner interface {
+	pruneJoins(from, used string) string
+}
+
+// baseSQLFor は baseSQL と同じだが、aggregate (SELECT する集計式) が空でなければ
+// joinPruner で不要な結合を除く (件数・合計用)。
+func (q *Query) baseSQLFor(ctx context.Context, extraJoins []string, opts *ListOptions, aggregate string) (string, []any, error) {
 	from, where, err := q.impl.baseScope(ctx, q)
 	if err != nil {
 		return "", nil, err
 	}
 	if opts != nil && strings.TrimSpace(opts.Conditions) != "" {
 		where = joinFrags(" AND ", where, sqlf("("+opts.Conditions+")", opts.ConditionArgs...))
+	}
+	if p, ok := q.impl.(joinPruner); ok && aggregate != "" {
+		from = p.pruneJoins(from, aggregate+" "+strings.Join(extraJoins, " ")+" "+where.SQL)
 	}
 	s := " FROM " + from
 	if len(extraJoins) > 0 {
@@ -125,7 +141,7 @@ func (e *Env) nullsOrder(terms []string) []string {
 
 // Count は base_scope.count (IssueQuery#issue_count, ProjectQuery#result_count 等)。
 func (q *Query) Count(ctx context.Context) (int64, error) {
-	s, args, err := q.baseSQL(ctx, nil, nil)
+	s, args, err := q.baseSQLFor(ctx, nil, nil, "COUNT(*)")
 	if err != nil {
 		return 0, err
 	}
@@ -427,7 +443,7 @@ func (q *Query) TotalFor(ctx context.Context, name string) (float64, error) {
 	if err != nil {
 		return 0, err
 	}
-	s, args, err := q.baseSQL(ctx, joins, &ListOptions{Conditions: where})
+	s, args, err := q.baseSQLFor(ctx, joins, &ListOptions{Conditions: where}, agg)
 	if err != nil {
 		return 0, err
 	}

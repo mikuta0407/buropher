@@ -133,23 +133,64 @@ func (s *versionIssueSet) ClosedPercent() float64 {
 // loadVersionIssueSet は versionID の fixed_issues を読み込む（visibleCond が空でなければ visible のみ）。
 // total_estimated_hours の子孫の合計は常に User.current に見えるチケットだけを数える（Issue#total_estimated_hours）。
 func (a *App) loadVersionIssueSet(ctx context.Context, issueVis string, versionID int64, visibleCond string) (*versionIssueSet, error) {
-	rows, err := repository.VersionIssues(ctx, a.DB, []int64{versionID}, visibleCond, "", "")
+	sets, err := a.loadVersionIssueSets(ctx, issueVis, []int64{versionID}, visibleCond)
 	if err != nil {
 		return nil, err
 	}
-	s := &versionIssueSet{Issues: rows, totalEst: map[int64]float64{}}
-	for _, i := range rows {
-		if !i.HasChildren {
-			s.totalEst[i.ID] = i.EstimatedHours.Float64
-			continue
-		}
-		h, err := repository.IssueSubtreeEstimatedHours(ctx, a.DB, i.RootID, i.HierPath, issueVis)
-		if err != nil {
-			return nil, err
-		}
-		s.totalEst[i.ID] = h
+	return sets[versionID], nil
+}
+
+// loadVersionIssueSets は versionIDs の各バージョンについて loadVersionIssueSet をまとめて行う
+// （チケットと子孫の見積時間の合計をバージョン数・チケット数によらない回数のクエリで読む）。
+func (a *App) loadVersionIssueSets(ctx context.Context, issueVis string, versionIDs []int64, visibleCond string) (map[int64]*versionIssueSet, error) {
+	// 並びは issues.id（バージョンごとに分けても id 順のまま）
+	rows, err := repository.VersionIssues(ctx, a.DB, versionIDs, visibleCond, "", "")
+	if err != nil {
+		return nil, err
 	}
-	return s, nil
+	sets, err := a.versionIssueSets(ctx, issueVis, versionIDs, rows, func(*repository.VersionIssue) bool { return true })
+	if err != nil {
+		return nil, err
+	}
+	return sets[0], nil
+}
+
+// versionIssueSets は rows を versionIDs ごとの集計に分ける。filters の数だけ集合を作り、
+// 各行は filters[k] が真の集合 k に入る。子を持つチケットの見積時間は子孫の合計（issueVis で可視なもの）。
+func (a *App) versionIssueSets(ctx context.Context, issueVis string, versionIDs []int64, rows []*repository.VersionIssue,
+	filters ...func(*repository.VersionIssue) bool) ([]map[int64]*versionIssueSet, error) {
+	out := make([]map[int64]*versionIssueSet, len(filters))
+	for k := range filters {
+		out[k] = make(map[int64]*versionIssueSet, len(versionIDs))
+		for _, id := range versionIDs {
+			out[k][id] = &versionIssueSet{totalEst: map[int64]float64{}}
+		}
+	}
+	var parents []int64
+	for _, i := range rows {
+		if i.HasChildren {
+			parents = append(parents, i.ID)
+		}
+	}
+	sums, err := repository.IssuesSubtreeEstimatedHours(ctx, a.DB, parents, issueVis)
+	if err != nil {
+		return nil, err
+	}
+	for _, i := range rows {
+		est := i.EstimatedHours.Float64
+		if i.HasChildren {
+			est = sums[i.ID]
+		}
+		for k, f := range filters {
+			s := out[k][i.FixedVersionID]
+			if s == nil || !f(i) {
+				continue
+			}
+			s.Issues = append(s.Issues, i)
+			s.totalEst[i.ID] = est
+		}
+	}
+	return out, nil
 }
 
 // versionModel は 1 つのバージョンの表示・API に必要な値。
@@ -202,6 +243,29 @@ type versionCtx struct {
 	today    time.Time
 	projects map[int64]*domain.Project
 	pg       *helper.Page
+	// all / visible は preload で読み込んだ fixed_issues / visible_fixed_issues（バージョン id → 集計）。
+	all, visible map[int64]*versionIssueSet
+}
+
+// preload は versions の fixed_issues / visible_fixed_issues をまとめて読み込み、model で使う。
+func (vc *versionCtx) preload(versions []*domain.Version) error {
+	ctx := vc.c.Ctx()
+	ids := make([]int64, len(versions))
+	for i, v := range versions {
+		ids[i] = v.ID
+	}
+	rows, err := repository.VersionIssuesWithVisibility(ctx, vc.a.DB, ids, vc.issueVis)
+	if err != nil {
+		return err
+	}
+	sets, err := vc.a.versionIssueSets(ctx, vc.issueVis, ids, rows,
+		func(*repository.VersionIssue) bool { return true },
+		func(i *repository.VersionIssue) bool { return i.Visible })
+	if err != nil {
+		return err
+	}
+	vc.all, vc.visible = sets[0], sets[1]
+	return nil
 }
 
 func (a *App) newVersionCtx(c *Req) (*versionCtx, error) {
@@ -231,13 +295,14 @@ func (vc *versionCtx) model(v *domain.Version) (*versionModel, error) {
 	if err != nil {
 		return nil, err
 	}
-	all, err := vc.a.loadVersionIssueSet(ctx, vc.issueVis, v.ID, "")
-	if err != nil {
-		return nil, err
-	}
-	visible, err := vc.a.loadVersionIssueSet(ctx, vc.issueVis, v.ID, vc.issueVis)
-	if err != nil {
-		return nil, err
+	all, visible := vc.all[v.ID], vc.visible[v.ID]
+	if all == nil || visible == nil {
+		if all, err = vc.a.loadVersionIssueSet(ctx, vc.issueVis, v.ID, ""); err != nil {
+			return nil, err
+		}
+		if visible, err = vc.a.loadVersionIssueSet(ctx, vc.issueVis, v.ID, vc.issueVis); err != nil {
+			return nil, err
+		}
 	}
 	return &versionModel{Version: v, Project: p, All: all, Visible: visible, today: vc.today}, nil
 }

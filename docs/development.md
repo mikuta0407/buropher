@@ -90,6 +90,7 @@ JSON. Migrations are generated for both dialects from templates in
 | `internal/redmineimport/*` | Redmine export (`export`), archive format (`archive`), import (`importer`), verification (`verify`), Ruby YAML decoding (`rubyyaml`), Redmine ciphering (`rediscipher`) |
 | `internal/testfixtures`, `*/…test` | Redmine test fixtures loader and test servers (SMTP, LDAP, OIDC, Discord) |
 | `tools/compat` | Compatibility harness |
+| `tools/gendata`, `tools/perf` | Large test data generator and HTTP latency benchmark ([performance.md](performance.md)) |
 | `tools/gen`, `tools/golden`, `tools/textformat`, `tools/*.rb` | Generators run against the Redmine reference (schema, permissions, routes, fixtures for formatters) |
 
 ## Compatibility harness

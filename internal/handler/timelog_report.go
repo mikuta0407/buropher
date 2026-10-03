@@ -49,6 +49,21 @@ type teReport struct {
 	Available []*teCriterion
 	Hours     []*teReportRow
 	Periods   []string
+	// uniq は teUniqValues(Hours, key) のキャッシュ (Hours は作成後に変わらない)。
+	uniq map[string][]string
+}
+
+// uniqValues は teUniqValues(r.Hours, key) をキャッシュして返す。
+func (r *teReport) uniqValues(key string) []string {
+	if v, ok := r.uniq[key]; ok {
+		return v
+	}
+	if r.uniq == nil {
+		r.uniq = map[string][]string{}
+	}
+	v := teUniqValues(r.Hours, key)
+	r.uniq[key] = v
+	return v
 }
 
 func (r *teReport) criterion(key string) *teCriterion {
@@ -229,30 +244,37 @@ func teReportKey(v any) string {
 	return fmt.Sprint(v)
 }
 
-// selectHours は select_hours(data, criteria, value)。
-func teSelectHours(data []*teReportRow, key, value string) []*teReportRow {
-	var out []*teReportRow
+// teGroupHours は select_hours(data, criteria, value) を全ての value について一度に行う。
+// 各グループ内の順序は data の順 (select の結果と同じ)。
+// value ごとに data を走査し直すと値の種類 × 行数の計算量になるため、まとめて振り分ける。
+func teGroupHours(data []*teReportRow, key string) map[string][]*teReportRow {
+	out := map[string][]*teReportRow{}
 	for _, r := range data {
-		if r.Values[key] == value {
-			out = append(out, r)
-		}
+		v := r.Values[key]
+		out[v] = append(out[v], r)
 	}
 	return out
 }
 
-func teSumHours(data []*teReportRow) float64 {
-	s := 0.0
+// tePeriodSums は sum_hours(select_hours(data, columns, period)) を全ての period について求める。
+// 加算の順序は data の順なので、period ごとに選んでから合計した値と一致する。
+func tePeriodSums(data []*teReportRow, columns string) map[string]float64 {
+	out := map[string]float64{}
 	for _, r := range data {
-		s += r.Hours
+		out[r.Values[columns]] += r.Hours
 	}
-	return s
+	return out
 }
 
+// teUniqValues は data.collect {|h| h[key]}.uniq（出現順）。
 func teUniqValues(data []*teReportRow, key string) []string {
 	var out []string
+	seen := map[string]bool{}
 	for _, r := range data {
-		if !slices.Contains(out, r.Values[key]) {
-			out = append(out, r.Values[key])
+		v := r.Values[key]
+		if !seen[v] {
+			seen[v] = true
+			out = append(out, v)
 		}
 	}
 	return out
@@ -388,8 +410,9 @@ func (a *App) teReportBody(c *Req, r *teReport, f *teCriteriaFormatter) string {
 	b.WriteString("  <tr class=\"total\">\n  <td>" + string(rails.H(c.L("label_total_time"))) + "</td>\n  ")
 	b.WriteString(strings.Repeat("<td></td>", len(r.Criteria)-1) + "\n")
 	total := 0.0
+	sums := tePeriodSums(r.Hours, r.Columns)
 	for _, p := range r.Periods {
-		sum := teSumHours(teSelectHours(r.Hours, r.Columns, p))
+		sum := sums[p]
 		total += sum
 		b.WriteString("    <td class=\"hours\">")
 		if sum > 0 {
@@ -409,8 +432,9 @@ func (a *App) teReportBody(c *Req, r *teReport, f *teCriteriaFormatter) string {
 func (a *App) teReportCriteria(c *Req, b *strings.Builder, r *teReport, f *teCriteriaFormatter, hours []*teReportRow, level int) {
 	key := r.Criteria[level]
 	cr := r.criterion(key)
-	for _, value := range teUniqValues(r.Hours, key) {
-		hv := teSelectHours(hours, key, value)
+	groups := teGroupHours(hours, key)
+	for _, value := range r.uniqValues(key) {
+		hv := groups[value]
 		if len(hv) == 0 {
 			continue
 		}
@@ -423,8 +447,9 @@ func (a *App) teReportCriteria(c *Req, b *strings.Builder, r *teReport, f *teCri
 		b.WriteString("<td class=\"name\">" + string(rails.H(f.format(cr, value, true))) + "</td>\n")
 		b.WriteString(strings.Repeat("<td></td>", len(r.Criteria)-level-1))
 		total := 0.0
+		sums := tePeriodSums(hv, r.Columns)
 		for _, p := range r.Periods {
-			sum := teSumHours(teSelectHours(hv, r.Columns, p))
+			sum := sums[p]
 			total += sum
 			b.WriteString("    <td class=\"hours\">")
 			if sum > 0 {
@@ -539,8 +564,9 @@ func (a *App) teReportCSV(c *Req, r *teReport, f *teCriteriaFormatter) {
 	rec = func(hours []*teReportRow, level int) {
 		key := r.Criteria[level]
 		cr := r.criterion(key)
+		groups := teGroupHours(hours, key)
 		for _, value := range teUniqValues(hours, key) {
-			hv := teSelectHours(hours, key, value)
+			hv := groups[value]
 			if len(hv) == 0 {
 				continue
 			}
@@ -548,8 +574,9 @@ func (a *App) teReportCSV(c *Req, r *teReport, f *teCriteriaFormatter) {
 			row = append(row, rails.ToS(f.format(cr, value, false)))
 			row = append(row, make([]string, len(r.Criteria)-level-1)...)
 			total := 0.0
+			sums := tePeriodSums(hv, r.Columns)
 			for _, p := range r.Periods {
-				sum := teSumHours(teSelectHours(hv, r.Columns, p))
+				sum := sums[p]
 				total += sum
 				if sum > 0 {
 					row = append(row, num(sum))
@@ -572,8 +599,9 @@ func (a *App) teReportCSV(c *Req, r *teReport, f *teCriteriaFormatter) {
 		row = append(row, make([]string, len(r.Criteria)-1)...)
 	}
 	total := 0.0
+	sums := tePeriodSums(r.Hours, r.Columns)
 	for _, p := range r.Periods {
-		sum := teSumHours(teSelectHours(r.Hours, r.Columns, p))
+		sum := sums[p]
 		total += sum
 		if sum > 0 {
 			row = append(row, num(sum))

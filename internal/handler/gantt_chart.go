@@ -248,19 +248,26 @@ func (g *ganttChart) load(ctx context.Context) error {
 	if q == nil {
 		return nil
 	}
-	// issues: order projects.lft ASC, issues.id ASC, limit max_rows
-	rows, err := q.Issues(ctx, query.ListOptions{Order: []string{"issues.id ASC"}})
-	if err != nil {
-		return err
-	}
 	ns, err := repository.ProjectNestedSet(ctx, g.a.DB)
 	if err != nil {
 		return err
 	}
 	g.nested = ns
-	slices.SortStableFunc(rows, func(a, b *query.IssueRow) int { return ns[a.ProjectID].Lft - ns[b.ProjectID].Lft })
-	if g.hasMaxRows {
-		rows = rows[:max(0, min(len(rows), g.MaxRows))]
+	// issues: order projects.lft ASC, issues.id ASC, limit max_rows
+	// 並べ替えと件数制限は SQL で行う (全件を読み込んでから切り詰めると大規模データで遅い)。
+	var rows []*query.IssueRow
+	if !g.hasMaxRows || g.MaxRows > 0 {
+		lft, err := q.ProjectsLftOrder(ctx)
+		if err != nil {
+			return err
+		}
+		opts := query.ListOptions{Order: []string{lft, "issues.id ASC"}}
+		if g.hasMaxRows {
+			opts.Limit = g.MaxRows
+		}
+		if rows, err = q.Issues(ctx, opts); err != nil {
+			return err
+		}
 	}
 	g.issues = rows
 	g.l.addIssues(rows)

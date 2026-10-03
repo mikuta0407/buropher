@@ -123,8 +123,8 @@ func (a *App) ContextMenusIssues(c *Req) {
 	l.addIssues(rows)
 	l.markVisible(rows)
 	cm := &issueContextMenu{l: l}
+	cm.Models = l.models(rows)
 	for _, r := range rows {
-		cm.Models = append(cm.Models, l.model(r))
 		cm.IDs = append(cm.IDs, r.ID)
 	}
 	slices.Sort(cm.IDs)

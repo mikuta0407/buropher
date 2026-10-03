@@ -149,15 +149,27 @@ var (
 // FormatActivityDescription は format_activity_description。
 func FormatActivityDescription(text string) html {
 	s := text
-	if r := []rune(s); len(r) > 10240 {
-		s = string(r[:10240])
+	// 文字数はバイト数以下なので、バイト数が上限以下なら rune への変換は要らない
+	if len(s) > 10240 {
+		if r := []rune(s); len(r) > 10240 {
+			s = string(r[:10240])
+		}
 	}
-	s = reQuotedLines.ReplaceAllString(s, "${1}> ...\n")
-	if loc := rePreCode.FindStringIndex(s); loc != nil {
-		s = s[:loc[0]] + s[loc[1]:]
+	// 正規表現が一致し得ない入力 (引用行・<pre>/<code> を含まない大半の注記) では照合を省く
+	if strings.HasPrefix(s, ">") || strings.Contains(s, "\n>") {
+		s = reQuotedLines.ReplaceAllString(s, "${1}> ...\n")
+	}
+	if strings.Contains(s, "<pre>") || strings.Contains(s, "<code>") {
+		if loc := rePreCode.FindStringIndex(s); loc != nil {
+			s = s[:loc[0]] + s[loc[1]:]
+		}
 	}
 	s = rails.StringTruncate(s, 240, "", nil)
-	return html(reNewlines.ReplaceAllString(string(rails.H(s)), "<br>"))
+	h := string(rails.H(s))
+	if !strings.ContainsAny(h, "\r\n") {
+		return html(h)
+	}
+	return html(reNewlines.ReplaceAllString(h, "<br>"))
 }
 
 // formatActivityDay は format_activity_day（今日なら l(:label_today).titleize）。
