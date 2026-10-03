@@ -39,8 +39,12 @@ type Record struct {
 // 実装はゴルーチン安全であること。Get は存在しなければ (nil, nil) を返す。
 type Store interface {
 	Get(ctx context.Context, id string) (*Record, error)
-	// Save は ID をキーに upsert する。
+	// Save は ID をキーに upsert する（新しい ID のセッションの作成に使う）。
 	Save(ctx context.Context, rec *Record) error
+	// Update は既存のセッションだけを更新する。レコードが無ければ（DestroyAllForUser・Destroy 等で
+	// 削除済みなら）作り直さず false を返す。読み込み後に並行して失効させられたセッションが、
+	// 処理中のリクエストのコミットで復活しないようにするため。
+	Update(ctx context.Context, rec *Record) (bool, error)
 	Destroy(ctx context.Context, id string) error
 	// DestroyAllForUser はユーザの全セッションを削除する（exceptID は残す。空なら全削除）。
 	// パスワード変更・ロック時に使う（Redmine の tokens.action='session' 全削除相当）。
@@ -576,7 +580,18 @@ func (s *Session) Commit(w http.ResponseWriter) {
 		s.rec.UserAgent = s.r.UserAgent()
 	}
 	rec := s.rec
-	if err := s.m.Store.Save(ctx, &rec); err != nil {
+	if s.persisted && !newID {
+		// 読み込んだ既存セッションは更新のみ。処理中にパスワード変更・ロック等で削除されていたら
+		// upsert で復活させない（次のリクエストで Revoked として扱われる）
+		ok, err := s.m.Store.Update(ctx, &rec)
+		if err != nil {
+			s.m.logger().Error("session save failed", "err", err)
+			return
+		}
+		if !ok {
+			return
+		}
+	} else if err := s.m.Store.Save(ctx, &rec); err != nil {
 		s.m.logger().Error("session save failed", "err", err)
 		return
 	}
@@ -668,6 +683,21 @@ func (s *MemoryStore) Save(_ context.Context, rec *Record) error {
 	defer s.mu.Unlock()
 	s.recs[rec.ID] = cp
 	return nil
+}
+
+// Update は Store.Update の実装。
+func (s *MemoryStore) Update(_ context.Context, rec *Record) (bool, error) {
+	cp, err := copyRecord(rec)
+	if err != nil {
+		return false, err
+	}
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if _, ok := s.recs[rec.ID]; !ok {
+		return false, nil
+	}
+	s.recs[rec.ID] = cp
+	return true, nil
 }
 
 // Destroy は Store.Destroy の実装。
