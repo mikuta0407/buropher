@@ -36,7 +36,8 @@ func (a *App) sysHandler(fn func(w http.ResponseWriter, r *http.Request)) http.H
 	return func(w http.ResponseWriter, r *http.Request) {
 		key := httpx.ParamsOf(r).String("key")
 		want := a.Settings.String("sys_api_key")
-		if !a.Settings.Bool("sys_api_enabled") || subtle.ConstantTimeCompare([]byte(key), []byte(want)) != 1 {
+		// buropher 独自（セキュリティ）: 鍵が未設定（空）なら key なし・空の key で通さない
+		if !a.Settings.Bool("sys_api_enabled") || want == "" || subtle.ConstantTimeCompare([]byte(key), []byte(want)) != 1 {
 			w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 			w.WriteHeader(http.StatusForbidden)
 			_, _ = w.Write([]byte("Access denied. Repository management WS is disabled or key is invalid."))

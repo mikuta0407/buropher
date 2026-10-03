@@ -986,7 +986,22 @@ func (a *App) bulkUpdateStatus(c *Req, status int) {
 	for i, u := range users {
 		ids[i] = u.ID
 	}
-	if err := repository.SetUsersStatus(c.Ctx(), a.DB, ids, status); err != nil {
+	if err := a.DB.WithTx(c.Ctx(), func(tx *db.Tx) error {
+		if err := repository.SetUsersStatus(c.Ctx(), tx, ids, status); err != nil {
+			return err
+		}
+		if status != domain.StatusLocked {
+			return nil
+		}
+		// buropher 独自（セキュリティ）: Redmine の update_all はコールバックを通らずセッション等が残り、
+		// ロック解除で以前のセッション・自動ログインが復活する。users#destroy の lock と同じく破棄する。
+		for _, id := range ids {
+			if err := repository.DeleteUserTokensByActions(c.Ctx(), tx, id, "recovery", "autologin", "session"); err != nil {
+				return err
+			}
+		}
+		return nil
+	}); err != nil {
 		a.serverError(c, err)
 		return
 	}

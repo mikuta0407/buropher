@@ -374,6 +374,10 @@ func (a *App) syncLDAPSource(ctx context.Context, rec *domain.AuthSourceRecord) 
 				if err := repository.SetUsersStatus(ctx, a.DB, []int64{u.ID}, domain.StatusLocked); err != nil {
 					return nil, err
 				}
+				// ロックしたユーザーのセッション・自動ログイン・パスワード再設定のトークンを破棄する
+				if err := repository.DeleteUserTokensByActions(ctx, a.DB, u.ID, "recovery", "autologin", "session"); err != nil {
+					return nil, err
+				}
 				res.Locked++
 				res.logf("%s: %s, locked", u.Login, reason)
 			}

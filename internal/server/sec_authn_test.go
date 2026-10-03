@@ -12,7 +12,10 @@ import (
 	"testing"
 	"time"
 
+	"github.com/go-chi/chi/v5"
+
 	"github.com/mikuta0407/buropher/internal/db"
+	"github.com/mikuta0407/buropher/internal/handler"
 )
 
 // sendForm は任意のヘッダ付きでフォームを送る。
@@ -171,6 +174,47 @@ func TestLoginTimingDoesNotRevealAccounts(t *testing.T) {
 	}
 	if legacy*3 < existing {
 		t.Errorf("legacy-hash user answered much faster (%v) than argon2id user (%v)", legacy, existing)
+	}
+}
+
+// TestBlankWSKeyRejected は、リポジトリ管理・受信メールの WS を有効にしたまま鍵を設定していない場合に、
+// key なし・空の key で WS を呼べないことを確認する（未認証でのリポジトリ作成・課題作成の防止）。
+func TestBlankWSKeyRejected(t *testing.T) {
+	var app *handler.App
+	ts, _ := newFixtureServer(t, func(a *handler.App, _ chi.Router) { app = a })
+	ctx := context.Background()
+	for k, v := range map[string]string{"sys_api_enabled": "1", "sys_api_key": "", "mail_handler_api_enabled": "1", "mail_handler_api_key": ""} {
+		if err := app.Settings.Set(ctx, k, v); err != nil {
+			t.Fatal(err)
+		}
+	}
+	c := newClient(t)
+	for _, p := range []string{"/sys/projects", "/sys/projects?key=", "/sys/fetch_changesets?key="} {
+		if res, _ := get(t, c, ts.URL+p); res.StatusCode != http.StatusForbidden {
+			t.Errorf("%s: status %d, want 403", p, res.StatusCode)
+		}
+	}
+	res, _ := post(t, c, ts.URL+"/mail_handler", url.Values{"key": {""}, "email": {"From: jsmith@somenet.foo\r\nSubject: x\r\n\r\nProject: ecookbook\r\n"}})
+	if res.StatusCode != http.StatusForbidden {
+		t.Errorf("mail_handler: status %d, want 403", res.StatusCode)
+	}
+}
+
+// TestBulkLockDestroysSessions は、ユーザー一覧の一括ロックでロックしたユーザーのセッションが破棄され、
+// ロック解除後に以前のセッションクッキーでログイン状態に戻らないことを確認する。
+func TestBulkLockDestroysSessions(t *testing.T) {
+	ts, _ := newFixtureServer(t)
+	victim := login(t, ts, "jsmith", "jsmith")
+	admin := login(t, ts, "admin", "admin")
+	for _, action := range []string{"bulk_lock", "bulk_unlock"} {
+		_, body := get(t, admin, ts.URL+"/users")
+		res, _ := post(t, admin, ts.URL+"/users/"+action, url.Values{"authenticity_token": {csrfMeta(t, body)}, "ids[]": {"2"}})
+		if res.StatusCode != http.StatusFound {
+			t.Fatalf("%s: status %d", action, res.StatusCode)
+		}
+	}
+	if res, _ := get(t, victim, ts.URL+"/my/page"); res.StatusCode == http.StatusOK {
+		t.Fatal("session of locked user revived after unlock")
 	}
 }
 
