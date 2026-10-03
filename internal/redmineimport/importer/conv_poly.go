@@ -293,10 +293,13 @@ func (im *imp) importAttachments() error {
 		dir := r.strNull("disk_directory", false)
 		var digest, algo any
 		if d := strings.ToLower(strings.TrimSpace(r.str("digest"))); d != "" {
-			switch len(d) {
-			case 64:
+			switch {
+			case !isHex(d):
+				// digest はサムネイルのファイル名に使われる（"../" などを含むとサムネイルの保存先の外に書き込める）
+				t.repair(id, "digest is not hexadecimal; set NULL")
+			case len(d) == 64:
 				digest, algo = d, "sha256"
-			case 32:
+			case len(d) == 32:
 				digest, algo = d, "md5"
 			default:
 				t.repair(id, "digest of unknown length; set NULL")
@@ -549,4 +552,14 @@ func (im *imp) importOAuth() error {
 	}
 	_, err = ains.close()
 	return err
+}
+
+// isHex は s が 16 進数字（小文字）だけからなるか。
+func isHex(s string) bool {
+	for _, r := range s {
+		if !('0' <= r && r <= '9' || 'a' <= r && r <= 'f') {
+			return false
+		}
+	}
+	return true
 }
