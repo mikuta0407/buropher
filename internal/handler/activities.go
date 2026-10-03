@@ -162,7 +162,9 @@ func (a *App) ActivitiesIndex(c *Req) {
 		f.SetScopeAll()
 	}
 
-	if httpx.Format(c.R) == "atom" {
+	// respond_to format.html / format.atom（Accept: */* は最初の html）
+	format := httpx.Negotiate(c.R, "html", "atom")
+	if format == "atom" {
 		events, err := f.Events(ctx, nil, nil, int(settings.RubyToI(a.Settings.String("feeds_limit"))))
 		if err != nil {
 			a.serverError(c, err)
@@ -182,7 +184,7 @@ func (a *App) ActivitiesIndex(c *Req) {
 		a.renderFeed(c, events, prefix+": "+title)
 		return
 	}
-	if httpx.Format(c.R) != "html" && httpx.Format(c.R) != "" {
+	if format != "html" && httpx.Format(c.R) != "" {
 		c.RenderError(http.StatusNotAcceptable, "")
 		return
 	}

@@ -387,8 +387,15 @@ func (a *App) projectDeletable(c *Req, p *domain.Project) (bool, error) {
 
 // ProjectsEdit は projects#edit（GET /projects/:id/edit）。
 func (a *App) ProjectsEdit(c *Req) {
-	// Redmine 6.1 には projects/edit ビューが無く ActionController::MissingExactTemplate（406、本文なし）
-	c.unknownFormat()
+	// Redmine 6.1 には projects/edit ビューが無い。default_render はブラウザの通常の GET（html・非 XHR）なら
+	// ActionController::MissingExactTemplate（406、本文なし）、それ以外（Accept: */* や XHR）は head :no_content
+	f := httpx.Format(c.R)
+	if (c.R.Method == http.MethodGet || c.R.Method == http.MethodHead) && (f == "html" || f == "") && !httpx.IsXHR(c.R) {
+		c.unknownFormat()
+		return
+	}
+	httpx.Head(c.W, c.R, http.StatusNoContent)
+	c.Halt()
 }
 
 // ProjectsBookmark は projects#bookmark（POST / DELETE /projects/:id/bookmark）。

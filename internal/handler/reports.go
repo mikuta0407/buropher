@@ -338,6 +338,7 @@ func (a *App) ReportsIssueReportDetails(c *Req) {
 	}
 	t := a.buildReportTable(c, r.field, statuses, r.rows, r.data)
 	reportPath := "/projects/" + c.Project.Identifier + "/issues/report"
+	// respond_to format.html / format.csv（Accept: */* は html）
 	switch httpx.Format(c.R) {
 	case "csv":
 		// issue_report_details_to_csv
@@ -356,7 +357,7 @@ func (a *App) ReportsIssueReportDetails(c *Req) {
 			rows = append(rows, line)
 		}
 		c.sendCSV("report-"+detail+".csv", rows, false)
-	case "", "html":
+	case "", "html", httpx.FormatAll:
 		c.Render("reports/issue_report_details", map[string]any{
 			"Table":       t,
 			"ReportTitle": r.title,
