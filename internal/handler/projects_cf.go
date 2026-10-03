@@ -246,7 +246,8 @@ func formatCFSingle(c *Req, cf *domain.CustomFieldInfo, s string, html bool) tem
 		}
 	case "link":
 		if html {
-			return rails.LinkTo(s, s, nil)
+			// javascript: などのスキームを href に出さない（Redmine は sanitize_html で除く）
+			return customfield.LinkValueHTML(s)
 		}
 	case "text":
 		if html {

@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/mikuta0407/buropher/internal/textformat/sanitize"
 	"github.com/mikuta0407/buropher/internal/view/rails"
 )
 
@@ -112,6 +113,16 @@ func formattedLink(f *Format, env *Env, cf *CustomField, value any, customized *
 }
 
 var schemeRe = regexp.MustCompile(`(?i)\A[a-z]+://`)
+
+// LinkValueHTML は url_pattern の無いリンク形式の値の HTML（formatted_value の link 形式。
+// スキームが無ければ http:// を補い、危険なスキームの href は付けない）。
+func LinkValueHTML(s string) rails.HTML {
+	u := s
+	if !schemeRe.MatchString(u) {
+		u = "http://" + u
+	}
+	return sanitizedLink(rails.H(rails.StringTruncate(s, 40, "...", nil)), u)
+}
 
 func formattedProgressbar(f *Format, env *Env, cf *CustomField, value any, customized *Customized, html bool) any {
 	if !html {
@@ -254,6 +265,10 @@ func sanitizedLink(text rails.HTML, u string) rails.HTML {
 		}
 	}
 	// 利用者が設定した URL（Redmine では link_to に文字列で渡すため relative_url_root を前置しない）
+	if !sanitize.URIWithLinkSafeScheme(strings.TrimSpace(u)) {
+		// SanitizationFilter の uri_with_link_safe_scheme?（URL として解析できない値も正規表現で判定する）
+		return rails.ContentTag("a", text, attrs)
+	}
 	switch scheme {
 	case "":
 		attrs.Set("href", rails.RawURL(u))

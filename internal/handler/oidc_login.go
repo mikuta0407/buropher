@@ -361,7 +361,8 @@ func (a *App) oidcResolveUser(c *Req, rec *domain.AuthSourceRecord, prov *oidc.P
 			user = u
 		}
 	case "mail":
-		if id.Mail != "" {
+		// 未検証のメールアドレス（email_verified=false）では既存ユーザーに紐付けない
+		if id.Mail != "" && !id.MailUnverified {
 			u, err := repository.FindUserByMail(ctx, a.DB, id.Mail)
 			if err != nil && !errors.Is(err, repository.ErrNotFound) {
 				return nil, err
@@ -502,9 +503,15 @@ func (a *App) oidcLink(c *Req, rec *domain.AuthSourceRecord, prov *oidc.Provider
 }
 
 // oidcSudo は sudo モードの再認証（ログイン中のユーザーと同じ外部 ID なら sudo を有効にする）。
+// oidcSudoMaxAge は sudo モードの再認証として受け付ける auth_time の古さの上限。
+const oidcSudoMaxAge = 10 * time.Minute
+
 func (a *App) oidcSudo(c *Req, rec *domain.AuthSourceRecord, prov *oidc.Provider, id *oidc.Identity) {
 	ident, err := repository.FindUserIdentity(c.Ctx(), a.DB, oidcProviderKey(rec), oidcSubject(prov, id))
-	if err != nil || ident.UserID != c.User.ID {
+	// prompt=login / max_age=0 を IdP が無視して既存の IdP セッションで応答した場合は再認証とみなさない
+	// （max_age を要求したときは auth_time が必須。直近の認証であること）
+	reauthenticated := !id.AuthTime.IsZero() && a.now().Sub(id.AuthTime) < oidcSudoMaxAge && id.AuthTime.Sub(a.now()) < time.Minute
+	if err != nil || ident.UserID != c.User.ID || !reauthenticated {
 		c.Flash().SetError(c.L("notice_account_wrong_password"))
 	} else {
 		a.updateSudoTimestamp(c)

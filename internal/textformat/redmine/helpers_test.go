@@ -83,6 +83,23 @@ func TestLinkHelpers(t *testing.T) {
 	}
 }
 
+// 添付の説明は title / alt 属性に入り、その後に Redmine リンク（#1 など）の置換が文字列全体に走る。
+// 説明は HTML エスケープしてから属性に入れる。
+func TestInlineAttachmentDescriptionEscaped(t *testing.T) {
+	e := newTestEnv(t)
+	r, _ := e.renderer(t, "admin", "ecookbook", "textile")
+	atts, err := repository.AttachmentsByIDs(context.Background(), e.d, []int64{3})
+	if err != nil || len(atts) != 1 {
+		t.Fatal(err)
+	}
+	a := *atts[0]
+	a.Description.String, a.Description.Valid = ` #1 <img src=x onerror=alert(1)>`, true
+	got := string(r.Textilizable("!logo.gif!", Options{Attachments: []*Attachment{&a}}))
+	if strings.Contains(got, "<img src=x") {
+		t.Errorf("description injected raw HTML:\n%s", got)
+	}
+}
+
 func TestQuoteReply(t *testing.T) {
 	q := QuoteBuilder{DefaultLanguage: "en"}
 	tests := []struct{ name, got, want string }{

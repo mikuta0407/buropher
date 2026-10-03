@@ -30,6 +30,8 @@ var (
 	reTitleAndAlt = rxi(`[` + spIn + `]+(title|alt)="([^"]*)"`)
 )
 
+var descAngleEscaper = strings.NewReplacer("<", "&lt;", ">", "&gt;")
+
 // parseInlineAttachments は parse_inline_attachments。
 func (r *Renderer) parseInlineAttachments(text string, obj *Object, opts Options) string {
 	if opts.NoInlineAttachments {
@@ -49,7 +51,9 @@ func (r *Renderer) parseInlineAttachments(text string, obj *Object, opts Options
 			return m.all()
 		}
 		imageURL := r.downloadNamedAttachmentURL(found)
-		desc := strings.ReplaceAll(found.Description.String, `"`, "")
+		// Redmine は '"' を除くだけだが、後段のリンク置換（#1 → <a class="...">）で属性が閉じて
+		// 説明の残りが生の HTML になるため、< と > もエスケープする（XSS 対策。含まない説明は同じ出力）
+		desc := descAngleEscaper.Replace(strings.ReplaceAll(found.Description.String, `"`, ""))
 		// title / alt を取り出してから取り除く（scan(...).to_h：同じキーは最初の位置に後の値）
 		var keys []string
 		vals := map[string]string{}

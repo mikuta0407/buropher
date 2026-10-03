@@ -533,10 +533,11 @@ func (g *Git) parseLog(out []byte) []*Revision {
 func (g *Git) Diff(ctx context.Context, path, from, to string) ([]string, bool) {
 	var args []string
 	if to != "" {
-		args = []string{"diff", "--no-color", to, from}
+		args = []string{"diff", "--no-color", "--no-ext-diff", "--no-textconv", to, from}
 	} else {
-		args = []string{"show", "--no-color", from}
+		args = []string{"show", "--no-color", "--no-ext-diff", "--no-textconv", from}
 	}
+	// --no-ext-diff / --no-textconv: リポジトリの設定（diff.external・textconv ドライバ）でコマンドを実行させない
 	if g.versionAbove(2, 9) {
 		args = append(args, "--no-renames")
 	}

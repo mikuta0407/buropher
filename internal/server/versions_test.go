@@ -1,6 +1,7 @@
 package server_test
 
 import (
+	"context"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -108,5 +109,23 @@ func TestVersionsMatchRedmine(t *testing.T) {
 				}
 			}
 		})
+	}
+}
+
+// versions#show.txt の Content-Disposition はバージョン名をそのまま連結せず、send_data と同じ書式で
+// エスケープする（名前の引用符でファイル名を差し替えられないように）。
+func TestVersionTextContentDisposition(t *testing.T) {
+	ts, d := newFixtureServer(t)
+	if _, err := d.Exec(context.Background(), `UPDATE versions SET name = 'v"; filename=evil.html' WHERE id = 2`); err != nil {
+		t.Fatal(err)
+	}
+	res, err := http.Get(ts.URL + "/versions/2.txt")
+	if err != nil {
+		t.Fatal(err)
+	}
+	res.Body.Close()
+	want := `attachment; filename="v%22%3B filename%3Devil.html.txt"; filename*=UTF-8''v%22%3B%20filename%3Devil.html.txt`
+	if got := res.Header.Get("Content-Disposition"); res.StatusCode != 200 || got != want {
+		t.Errorf("status %d Content-Disposition %q", res.StatusCode, got)
 	}
 }
