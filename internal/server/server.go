@@ -56,6 +56,14 @@ type Server struct {
 	notify   *notify.Service
 	// bg は Run が起動したバックグラウンド処理（ジョブワーカー・定期実行・SCM 取り込み・DB の統計更新）。
 	bg sync.WaitGroup
+	// extraBG は RunInBackground で登録した処理（Run が bg として起動する）。
+	extraBG []func(ctx context.Context)
+}
+
+// RunInBackground は Run の間だけ動かす処理を登録する（Run より前に呼ぶ）。fn にはサーバの停止時に
+// HTTP の処理が終わってからキャンセルされる ctx が渡され、Run は fn の終了を待ってから戻る（メールの定期受信など）。
+func (s *Server) RunInBackground(fn func(ctx context.Context)) {
+	s.extraBG = append(s.extraBG, fn)
 }
 
 // goBG は fn をバックグラウンドで実行し、Run の終了時に完了を待つ対象にする。
@@ -392,6 +400,9 @@ func (s *Server) Run(ctx context.Context) error {
 	srv := &http.Server{Addr: s.cfg.Server.Addr, Handler: s.handler, ReadHeaderTimeout: 10 * time.Second}
 	errc := make(chan error, 1)
 	s.startSCMFetcher(bgCtx)
+	for _, fn := range s.extraBG {
+		s.goBG(func() { fn(bgCtx) })
+	}
 	go func() {
 		slog.Info("listening", "addr", s.cfg.Server.Addr)
 		errc <- srv.ListenAndServe()

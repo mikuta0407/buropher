@@ -207,6 +207,35 @@ func TestCheckPOP3(t *testing.T) {
 	}
 }
 
+// 停止（ctx のキャンセル）で中断された受信は「処理できなかった」とはみなさず、delete_unprocessed でも削除しない。
+func TestCheckPOP3CanceledKeepsMessages(t *testing.T) {
+	srv := &fakePOP3{messages: []string{
+		"Message-ID: <a@x>\r\nSubject: ok\r\n\r\nbody\r\n",
+		"Message-ID: <b@x>\r\nSubject: ok\r\n\r\nbody\r\n",
+	}, deleted: map[int]bool{}}
+	ln, err := net.Listen("tcp", "127.0.0.1:0")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer ln.Close()
+	go srv.serve(t, ln)
+	host, port, _ := net.SplitHostPort(ln.Addr().String())
+	ctx, cancel := context.WithCancel(context.Background())
+	calls := 0
+	receive := func(ctx context.Context, raw []byte) bool {
+		calls++
+		cancel() // 受信中に停止した
+		return false
+	}
+	err = CheckPOP3(ctx, POP3Options{Host: host, Port: port, Username: "u", Password: "p", DeleteUnprocessed: true}, receive, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if calls != 1 || len(srv.deleted) != 0 {
+		t.Errorf("calls = %d, deleted = %v (want 1 call, nothing deleted)", calls, srv.deleted)
+	}
+}
+
 func TestCheckPOP3APOP(t *testing.T) {
 	srv := &fakePOP3{deleted: map[int]bool{}}
 	ln, err := net.Listen("tcp", "127.0.0.1:0")

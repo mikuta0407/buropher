@@ -73,6 +73,10 @@ func CheckPOP3(ctx context.Context, o POP3Options, receive ReceiveFunc, logger *
 	} else {
 		logger.Debug(fmt.Sprintf("%d email(s) to process...", len(ids)))
 		for _, id := range ids {
+			if ctx.Err() != nil {
+				// 停止中: 残りはサーバに残す（QUIT で処理済みの分の削除を確定する）
+				break
+			}
 			msg, err := c.retr(id)
 			if err != nil {
 				return err
@@ -81,7 +85,12 @@ func CheckPOP3(ctx context.Context, o POP3Options, receive ReceiveFunc, logger *
 			if m := popMessageIDRe.FindSubmatch(msg); m != nil {
 				messageID = strings.TrimSpace(string(m[1]))
 			}
-			if receive(ctx, msg) {
+			ok := receive(ctx, msg)
+			if !ok && ctx.Err() != nil {
+				// 停止（ctx のキャンセル）で受信が中断された: 処理できなかったとはみなさず、削除しない
+				break
+			}
+			if ok {
 				if err := c.dele(id); err != nil {
 					return err
 				}

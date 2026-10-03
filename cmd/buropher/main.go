@@ -142,7 +142,7 @@ func serve(args []string) error {
 	}
 	// [mail_receive] があればメールを定期受信する
 	if pc, ok := mailPollConfig(cfg.MailReceive); ok {
-		go srv.App().MailHandler().Poll(ctx, pc)
+		srv.RunInBackground(func(ctx context.Context) { srv.App().MailHandler().Poll(ctx, pc) })
 	}
 	return srv.Run(ctx)
 }
