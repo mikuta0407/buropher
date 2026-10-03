@@ -1,6 +1,9 @@
 <h2>{{l "label_information_plural"}}</h2>
 
 <p><strong>{{.VersionedName}}</strong></p>
+<p class="buropher-license">Licensed under <a href="{{.LicenseURL}}" class="external">{{.License}}</a>.
+Based on <a href="{{.UpstreamURL}}" class="external">{{.Upstream}}</a> ({{.UpstreamCopyright}}).
+Source code: <a href="{{.SourceURL}}" class="external">{{.SourceURL}}</a></p>
 
 <table class="list">
 {{range .Checklist}}

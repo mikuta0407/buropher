@@ -151,15 +151,16 @@ func (e *oauthError) Location() string {
 }
 
 // AuthenticateInfo は WWW-Authenticate ヘッダの値。
-func (e *oauthError) AuthenticateInfo() string {
-	return `Bearer realm="` + doorkeeper.Realm + `", error="` + e.Name + `", error_description="` + e.Description + `"`
+func (e *oauthError) AuthenticateInfo(realm string) string {
+	return `Bearer realm="` + realm + `", error="` + e.Name + `", error_description="` + e.Description + `"`
 }
 
 // setHeaders は ErrorResponse#headers（Cache-Control は Rails が no-store に正規化する）。
-func (e *oauthError) setHeaders(w http.ResponseWriter, withAuthenticate bool) {
+// realm が空でなければ WWW-Authenticate も付ける。
+func (e *oauthError) setHeaders(w http.ResponseWriter, realm string) {
 	w.Header().Set("Cache-Control", "no-store")
-	if withAuthenticate {
-		w.Header().Set("WWW-Authenticate", e.AuthenticateInfo())
+	if realm != "" {
+		w.Header().Set("WWW-Authenticate", e.AuthenticateInfo(realm))
 	}
 }
 
@@ -307,7 +308,7 @@ func (a *App) oauthCurrentUser(c *Req, tok *domain.OAuthAccessToken, user **doma
 	if !tok.Accessible(a.now()) {
 		// user_setup は set_localization より前なので I18n.locale は既定（en）
 		e := a.oauthTokenError("en", tok)
-		e.setHeaders(c.W, true)
+		e.setHeaders(c.W, a.Realm())
 		httpx.HeadAs(c.W, c.R, http.StatusUnauthorized, "html")
 		c.Halt()
 		return false

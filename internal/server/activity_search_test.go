@@ -1,7 +1,6 @@
 package server_test
 
 import (
-	"io"
 	"net/http"
 	"net/url"
 	"os"
@@ -117,7 +116,7 @@ func asFetch(t *testing.T, base string, clients map[string]*http.Client, user, p
 		t.Fatal(err)
 	}
 	defer res.Body.Close()
-	b, _ := io.ReadAll(res.Body)
+	b, _ := readUnbranded(res.Body)
 	return res.StatusCode, string(b)
 }
 

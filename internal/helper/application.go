@@ -11,6 +11,7 @@ import (
 	ttemplate "text/template"
 	"time"
 
+	"github.com/mikuta0407/buropher/internal/brand"
 	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/httpx"
 	"github.com/mikuta0407/buropher/internal/repository"
@@ -33,6 +34,8 @@ func (d *Deps) RequestFuncs(r *view.Render) ttemplate.FuncMap {
 		"login_required": func() bool { return pg().settingBool("login_required") },
 		"app_name":       func() string { return AppName },
 		"app_url":        func() string { return AppURL },
+		"upstream_name":  func() string { return brand.Upstream },
+		"upstream_url":   func() string { return brand.UpstreamURL },
 		"param": func(key string) any {
 			if v, ok := pg().Params().Get(key); ok {
 				return v

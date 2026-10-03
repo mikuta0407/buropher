@@ -12,6 +12,7 @@ import (
 
 	"github.com/mikuta0407/buropher/internal/auth/password"
 	"github.com/mikuta0407/buropher/internal/bootstrap"
+	"github.com/mikuta0407/buropher/internal/brand"
 	"github.com/mikuta0407/buropher/internal/db"
 	"github.com/mikuta0407/buropher/internal/repository"
 )
@@ -134,9 +135,15 @@ func (a *App) AdminInfo(c *Req) {
 		{c.L("text_all_migrations_have_been_run"), migrated},
 	}
 	c.renderAdmin("admin/info", map[string]any{
-		"VersionedName": "buropher " + a.version(),
-		"Checklist":     checks,
-		"Environment":   a.environmentInfo(),
+		"VersionedName":     brand.Name + " " + a.version(),
+		"Checklist":         checks,
+		"Environment":       a.environmentInfo(),
+		"License":           brand.License,
+		"LicenseURL":        brand.LicenseURL,
+		"SourceURL":         brand.SourceURL,
+		"Upstream":          brand.Upstream + " " + brand.UpstreamVersion,
+		"UpstreamURL":       brand.UpstreamURL,
+		"UpstreamCopyright": brand.UpstreamCopyright,
 	}, false)
 }
 
@@ -184,20 +191,22 @@ func (a *App) environmentInfo() string {
 	var b strings.Builder
 	row := func(k, v string) { fmt.Fprintf(&b, "  %-30s %s\n", k, v) }
 	b.WriteString("Environment:\n")
-	row("buropher version", a.version())
+	row(brand.Name+" version", a.version())
+	row("Based on", brand.Upstream+" "+brand.UpstreamVersion)
+	row("License", brand.License)
 	row("Go version", runtime.Version())
 	row("OS/Arch", runtime.GOOS+"/"+runtime.GOARCH)
 	row("Database adapter", adapter)
 	row("Mailer delivery", "none")
-	b.WriteString("Redmine settings:\n")
-	row("Redmine theme", theme)
+	b.WriteString(brand.Name + " settings:\n")
+	row(brand.Name+" theme", theme)
 	b.WriteString("SCM:\n")
 	if ok, v := gitCommandVersion(context.Background()); ok {
 		row("Git", v)
 	} else {
 		row("Git", "")
 	}
-	b.WriteString("Redmine plugins:\n")
+	b.WriteString(brand.Name + " plugins:\n")
 	b.WriteString("  no plugin installed")
 	return b.String()
 }

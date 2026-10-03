@@ -36,6 +36,7 @@ Every key is optional; without any configuration buropher listens on `:3000` and
 | `secret_key` | `BUROPHER_SECRET_KEY` | `""` | Key for session cookies, CSRF tokens and encryption of stored secrets (TOTP keys, LDAP bind passwords, repository passwords, OIDC and Discord client secrets). If empty, a random key is generated on first start and stored in `<data dir>/secret_key` (`<data dir>` is the directory of the SQLite database file, or `./data` otherwise). Changing it logs everyone out and makes stored secrets undecryptable. |
 | `pprof` | `BUROPHER_PPROF` | `false` | Development / troubleshooting: serve Go's `net/http/pprof` (`/debug/pprof/`) and SQL statistics (`/debug/sqlstats`, see [performance.md](performance.md)) on a separate listener. |
 | `pprof_addr` | `BUROPHER_PPROF_ADDR` | `127.0.0.1:6060` | Listen address of the profiling endpoint. Must be a loopback address (`127.0.0.1`, `::1`, `localhost`); the server refuses to start otherwise. |
+| `auth_realm` | `BUROPHER_AUTH_REALM` | `Redmine` | Realm of the `WWW-Authenticate` response header: `Basic realm="<realm> API"` for the REST API, `Bearer realm="<realm>"` for OAuth. The default stays Redmine's value so existing API clients keep working. |
 
 ### `[database]`
 
@@ -58,6 +59,8 @@ Equivalent to `email_delivery` in Redmine's `configuration.yml`.
 | Key | Env | Default | Description |
 |---|---|---|---|
 | `mail.delivery_method` | `BUROPHER_MAIL_DELIVERY` | `""` | `smtp`, `sendmail` or `none`. Empty means no e-mail is delivered (Redmine without `email_delivery`). |
+| `mail.redmine_compat_headers` | `BUROPHER_MAIL_REDMINE_HEADERS` | `true` | Outgoing e-mails always carry `X-Buropher-*` headers. When `true`, the Redmine-compatible `X-Redmine-*` headers are sent too (each `X-Buropher-*` header right after its `X-Redmine-*` counterpart, same value), so existing mail filters keep working. `false` sends only `X-Buropher-*`. See [compatibility.md](compatibility.md). |
+| `mail.message_id_prefix` | `BUROPHER_MAIL_MESSAGE_ID_PREFIX` | `redmine` | Prefix of the `Message-ID` / `References` tokens of notification e-mails (`redmine.issue-1.20260101000000.2@host`): `redmine` or `buropher`. The default keeps reply threading with e-mails sent by Redmine before the migration. Incoming replies are matched with either prefix. |
 | `mail.smtp.address` | `BUROPHER_SMTP_ADDRESS` | `""` | SMTP server host. |
 | `mail.smtp.port` | `BUROPHER_SMTP_PORT` | `0` | `0` = 25 (465 when `tls = true`). |
 | `mail.smtp.domain` | `BUROPHER_SMTP_DOMAIN` | `""` | HELO/EHLO domain. |

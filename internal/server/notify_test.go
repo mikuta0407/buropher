@@ -307,7 +307,7 @@ func TestNotifyAdminTestEmail(t *testing.T) {
 		t.Fatal(err)
 	}
 	ms := smtp.Messages()
-	if len(ms) != 1 || ms[0].To[0] != "admin@somenet.foo" || ms[0].Auth != "LOGIN" || !strings.Contains(ms[0].Data, "Subject: Redmine test") {
+	if len(ms) != 1 || ms[0].To[0] != "admin@somenet.foo" || ms[0].Auth != "LOGIN" || !strings.Contains(ms[0].Data, "Subject: Buropher test") {
 		t.Fatalf("messages = %+v", ms)
 	}
 }

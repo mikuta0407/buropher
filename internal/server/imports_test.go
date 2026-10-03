@@ -3,7 +3,6 @@ package server_test
 import (
 	"bytes"
 	"context"
-	"io"
 	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
@@ -66,7 +65,7 @@ func importUploadRaw(t *testing.T, c *http.Client, ts *httptest.Server, typ, fil
 	if err != nil {
 		t.Fatal(err)
 	}
-	b, _ := io.ReadAll(res.Body)
+	b, _ := readUnbranded(res.Body)
 	res.Body.Close()
 	return res, string(b)
 }

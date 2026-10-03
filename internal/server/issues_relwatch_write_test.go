@@ -1,7 +1,6 @@
 package server_test
 
 import (
-	"io"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -52,7 +51,7 @@ func anonAPI(t *testing.T, method, u, body string) (*http.Response, string) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	b, _ := io.ReadAll(res.Body)
+	b, _ := readUnbranded(res.Body)
 	res.Body.Close()
 	return res, string(b)
 }

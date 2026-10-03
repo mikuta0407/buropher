@@ -18,6 +18,8 @@ import (
 	"unicode"
 
 	"github.com/go-pdf/fpdf"
+
+	"github.com/mikuta0407/buropher/internal/brand"
 )
 
 const (
@@ -108,7 +110,7 @@ func New(fs *FontSet, o Options) *Doc {
 	}
 	f.SetCreationDate(created)
 	f.SetModificationDate(created)
-	f.SetCreator("Redmine", true)
+	f.SetCreator(brand.Name, true)
 	f.SetProducer("buropher", true)
 	f.SetDisplayMode("default", "OneColumn")
 	f.SetAutoPageBreak(false, 0)

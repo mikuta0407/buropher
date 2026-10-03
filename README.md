@@ -1,6 +1,10 @@
-# buropher
+# Buropher
 
-Redmine 6.1.2 互換のチケットシステムを Go で再実装したものです。シングルバイナリで動作します。
+Buropher は Redmine 6.1.2 互換（Redmine-compatible）のプロジェクト管理・チケットシステムを Go で再実装したものです。
+シングルバイナリ（`buropher`）で動作します。
+
+Buropher is a Redmine-compatible project management web application written in Go
+(a derivative work of [Redmine](https://www.redmine.org/), GPL-2.0-or-later).
 
 - 見た目・標準機能・使い勝手は Redmine 6.1.2 と互換
 - DB は専用スキーマ（SQLite / PostgreSQL）。既存 Redmine からは export → import で移行
@@ -36,7 +40,16 @@ make build        # bin/buropher
 tools/sync-upstream.sh <redmine-src> <gems-dir>
 ```
 
-## ライセンス
+## ライセンス / License
 
-GNU General Public License v2 またはそれ以降（[LICENSE](LICENSE)）。
-Redmine (Copyright (C) Jean-Philippe Lang) の派生物です。同梱の JavaScript ライブラリとフォントはそれぞれのライセンスに従います。
+Copyright (C) 2026 mikuta0407 and Buropher contributors
+
+GNU General Public License v2 またはそれ以降（GPL-2.0-or-later、[LICENSE](LICENSE)）。
+Buropher は Redmine（Copyright (C) 2006- Jean-Philippe Lang）の派生物です。Redmine から取り込んだ部分
+（テンプレート・CSS/JS/画像・ロケール・移植したロジック・テスト用フィクスチャ）は [NOTICE](NOTICE)、
+同梱のサードパーティ製コンポーネント（JavaScript ライブラリ・フォント・Go モジュール等）とそのライセンス、
+GPL との互換性の考え方は [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) を参照してください。
+Go のソースファイルには SPDX ライセンス識別子を付けています。
+
+「Redmine」は派生元プロジェクトの名称で、Buropher は Redmine プロジェクトとは無関係の独立したプロジェクトです。
+互換性のため、X-Redmine-* ヘッダなど機械向けの識別子は Redmine の名称のまま維持しています（[docs/compatibility.md](docs/compatibility.md)）。

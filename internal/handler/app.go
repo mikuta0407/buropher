@@ -15,6 +15,7 @@ import (
 
 	"github.com/mikuta0407/buropher/internal/assets"
 	"github.com/mikuta0407/buropher/internal/attachments"
+	"github.com/mikuta0407/buropher/internal/auth/doorkeeper"
 	"github.com/mikuta0407/buropher/internal/authz"
 	"github.com/mikuta0407/buropher/internal/clock"
 	"github.com/mikuta0407/buropher/internal/crypto/secretbox"
@@ -80,9 +81,24 @@ type App struct {
 	PDFFonts *pdf.FontSet
 	// GitCommand は git の実行ファイル（設定 scm.git_command。空なら "git"。repositories.go）。
 	GitCommand string
+	// AuthRealm は WWW-Authenticate の realm（config の server.auth_realm。空なら "Redmine"）。
+	AuthRealm string
+	// MailOmitRedmineHeaders は送信メールに X-Redmine-* を付けず X-Buropher-* だけにする
+	// （config の mail.redmine_compat_headers = false）。
+	MailOmitRedmineHeaders bool
+	// MessageIDPrefix は送信メールの Message-ID の接頭辞（config の mail.message_id_prefix。空なら "redmine"）。
+	MessageIDPrefix string
 
 	// routeTable は Handle で登録したルート（ルート網羅テスト用。RouteTable）。
 	routeTable []RouteEntry
+}
+
+// Realm は WWW-Authenticate の realm（server.auth_realm。既定は Redmine と同じ doorkeeper.Realm = "Redmine"）。
+func (a *App) Realm() string {
+	if a.AuthRealm != "" {
+		return a.AuthRealm
+	}
+	return doorkeeper.Realm
 }
 
 // RouteEntry は Handle で登録した 1 ルート（メソッド・chi のパターン・controller#action）。
@@ -459,13 +475,13 @@ func (a *App) requireLogin(c *Req) bool {
 		c.W.WriteHeader(http.StatusFound)
 	case format == "xml" || format == "json":
 		if a.Settings.Bool("rest_api_enabled") && c.cfg.acceptAPIAuth {
-			c.W.Header().Set("WWW-Authenticate", `Basic realm="Redmine API"`)
+			c.W.Header().Set("WWW-Authenticate", `Basic realm="`+a.Realm()+` API"`)
 			httpx.Head(c.W, c.R, http.StatusUnauthorized)
 		} else {
 			httpx.Head(c.W, c.R, http.StatusForbidden)
 		}
 	case format == "js":
-		c.W.Header().Set("WWW-Authenticate", `Basic realm="Redmine API"`)
+		c.W.Header().Set("WWW-Authenticate", `Basic realm="`+a.Realm()+` API"`)
 		httpx.Head(c.W, c.R, http.StatusUnauthorized)
 	default:
 		httpx.Head(c.W, c.R, http.StatusUnauthorized)

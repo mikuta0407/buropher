@@ -79,7 +79,7 @@ func (e *authEnv) csrf(c *http.Client) string {
 		if err != nil {
 			e.t.Fatal(err)
 		}
-		b, _ := io.ReadAll(res.Body)
+		b, _ := readUnbranded(res.Body)
 		res.Body.Close()
 		if m := authMetaCSRF.FindStringSubmatch(string(b)); m != nil {
 			return m[1]
@@ -115,7 +115,7 @@ func (e *authEnv) do(user, method, path string, form url.Values, golden string) 
 	if err != nil {
 		e.t.Fatal(err)
 	}
-	b, _ := io.ReadAll(res.Body)
+	b, _ := readUnbranded(res.Body)
 	res.Body.Close()
 	loc := strings.Replace(res.Header.Get("Location"), e.base, "", 1)
 	loc = strings.ReplaceAll(loc, url.QueryEscape(e.base), "{{BASE}}")

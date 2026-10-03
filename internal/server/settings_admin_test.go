@@ -91,14 +91,16 @@ func TestSettingsPagesMatchRedmine(t *testing.T) {
 	})
 	t.Run("info", func(t *testing.T) {
 		// 意図的な差異: 環境情報は buropher のものを表示する（レイアウトと CSS クラスのみ比較する）
-		body := adminGet(t, c, ts.URL+"/admin/info")
+		_, body := getRaw(t, c, ts.URL+"/admin/info")
 		for _, want := range []string{
 			"<h2>Information</h2>",
-			"<p><strong>buropher dev</strong></p>",
+			"<p><strong>Buropher dev</strong></p>",
+			`Licensed under <a href="https://www.gnu.org/licenses/old-licenses/gpl-2.0.html" class="external">GPL-2.0-or-later</a>.`,
+			`Source code: <a href="https://github.com/mikuta0407/buropher" class="external">https://github.com/mikuta0407/buropher</a>`,
 			`<td class="name">Default administrator account changed</td>`,
 			`<td class="name">Attachments directory writable</td>`,
 			`<span class="icon-only icon-ok">`,
-			`<div class="box autoscroll">` + "\n<pre>Environment:\n  buropher version",
+			`<div class="box autoscroll">` + "\n<pre>Environment:\n  Buropher version",
 			"Database adapter               SQLite",
 		} {
 			if !strings.Contains(body, want) {

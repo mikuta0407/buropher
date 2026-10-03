@@ -16,14 +16,18 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 
+# buropher: derived from Redmine's config/settings.yml. Modified defaults:
+#   app_title / welcome_text: product name "Redmine" -> "Buropher"
+#   (installations imported from Redmine keep their stored values).
+
 # DO NOT MODIFY THIS FILE !!!
 # Settings can be defined through the application in Admin -> Settings
 
 app_title:
-  default: Redmine
+  default: Buropher
 welcome_text:
   default: |-
-    Welcome to Redmine, an open-source, flexible project management software.
+    Welcome to Buropher, an open-source, flexible project management software.
 
     Note: You can modify this message in the "Welcome text" setting (Administration > Settings > General).
 login_required:

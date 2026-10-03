@@ -18,6 +18,7 @@ import (
 
 	"github.com/mikuta0407/buropher/internal/assets"
 	"github.com/mikuta0407/buropher/internal/authz"
+	"github.com/mikuta0407/buropher/internal/brand"
 	"github.com/mikuta0407/buropher/internal/clock"
 	"github.com/mikuta0407/buropher/internal/db"
 	"github.com/mikuta0407/buropher/internal/domain"
@@ -32,11 +33,11 @@ import (
 // PageKey は view.Context.Values で Page を格納するキー。
 const PageKey = "helper.page"
 
-// AppName は Redmine::Info.app_name。
-const AppName = "Redmine"
+// AppName は Redmine::Info.app_name 相当（製品名 "Buropher"）。
+const AppName = brand.Name
 
-// AppURL は Redmine::Info.url。
-const AppURL = "https://www.redmine.org/"
+// AppURL は Redmine::Info.url 相当（buropher のソースコードの入手先）。
+var AppURL = brand.SourceURL
 
 // JumpProject はプロジェクトジャンプボックスの 1 項目。
 // Lft / Rgt はネストセット相当の値（project_tree の is_descendant_of 判定と並び順に使う）。

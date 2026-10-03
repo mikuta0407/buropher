@@ -44,6 +44,9 @@ type Server struct {
 	Pprof bool `toml:"pprof"`
 	// PprofAddr は pprof の待ち受けアドレス（空なら 127.0.0.1:6060）。ループバック以外は拒否する。
 	PprofAddr string `toml:"pprof_addr"`
+	// AuthRealm は REST API / OAuth の WWW-Authenticate に出す realm（空なら Redmine と同じ "Redmine"。
+	// Basic 認証は "<realm> API"、OAuth の Bearer は "<realm>"）。既存の API クライアントとの互換のため既定は変えない。
+	AuthRealm string `toml:"auth_realm"`
 }
 
 type Database struct {
@@ -66,6 +69,17 @@ type Mail struct {
 	DeliveryMethod string   `toml:"delivery_method"`
 	SMTP           SMTP     `toml:"smtp"`
 	Sendmail       Sendmail `toml:"sendmail"`
+	// RedmineCompatHeaders は X-Buropher-* ヘッダに加えて Redmine 互換の X-Redmine-* ヘッダも送る
+	// （nil なら true。既存のメールフィルタとの互換用。false なら X-Buropher-* のみ）。
+	RedmineCompatHeaders *bool `toml:"redmine_compat_headers"`
+	// MessageIDPrefix は送信メールの Message-ID / References の接頭辞（"redmine"（既定）/ "buropher"）。
+	// 移行前に Redmine が送ったメールとスレッドを繋げるため既定は "redmine"。受信時はどちらも受け付ける。
+	MessageIDPrefix string `toml:"message_id_prefix"`
+}
+
+// SendRedmineHeaders は X-Redmine-* ヘッダを送るか（redmine_compat_headers。既定 true）。
+func (m Mail) SendRedmineHeaders() bool {
+	return m.RedmineCompatHeaders == nil || *m.RedmineCompatHeaders
 }
 
 // SMTP は smtp_settings。
@@ -213,26 +227,28 @@ func Load(path string) (*Config, error) {
 		}
 	}
 	env := map[string]*string{
-		"BUROPHER_ADDR":               &c.Server.Addr,
-		"BUROPHER_BASE_URL":           &c.Server.BaseURL,
-		"BUROPHER_RELATIVE_URL_ROOT":  &c.Server.RelativeURLRoot,
-		"BUROPHER_SECRET_KEY":         &c.Server.SecretKey,
-		"BUROPHER_PPROF_ADDR":         &c.Server.PprofAddr,
-		"BUROPHER_DB_DRIVER":          &c.Database.Driver,
-		"BUROPHER_DB_DSN":             &c.Database.DSN,
-		"BUROPHER_ATTACHMENTS_PATH":   &c.Storage.AttachmentsPath,
-		"BUROPHER_DEV_WEB_DIR":        &c.DevWebDir,
-		"BUROPHER_MAIL_DELIVERY":      &c.Mail.DeliveryMethod,
-		"BUROPHER_SMTP_ADDRESS":       &c.Mail.SMTP.Address,
-		"BUROPHER_SMTP_DOMAIN":        &c.Mail.SMTP.Domain,
-		"BUROPHER_SMTP_USER_NAME":     &c.Mail.SMTP.UserName,
-		"BUROPHER_SMTP_PASSWORD":      &c.Mail.SMTP.Password,
-		"BUROPHER_SMTP_AUTH":          &c.Mail.SMTP.Authentication,
-		"BUROPHER_DISCORD_API_BASE":   &c.Discord.APIBase,
-		"BUROPHER_PDF_FONT_DIR":       &c.PDF.FontDir,
-		"BUROPHER_SCM_GIT_COMMAND":    &c.SCM.GitCommand,
-		"BUROPHER_SCM_FETCH_INTERVAL": &c.SCM.FetchInterval,
-		"BUROPHER_THEMES_DIR":         &c.Web.ThemesDir,
+		"BUROPHER_ADDR":                   &c.Server.Addr,
+		"BUROPHER_BASE_URL":               &c.Server.BaseURL,
+		"BUROPHER_RELATIVE_URL_ROOT":      &c.Server.RelativeURLRoot,
+		"BUROPHER_SECRET_KEY":             &c.Server.SecretKey,
+		"BUROPHER_PPROF_ADDR":             &c.Server.PprofAddr,
+		"BUROPHER_AUTH_REALM":             &c.Server.AuthRealm,
+		"BUROPHER_MAIL_MESSAGE_ID_PREFIX": &c.Mail.MessageIDPrefix,
+		"BUROPHER_DB_DRIVER":              &c.Database.Driver,
+		"BUROPHER_DB_DSN":                 &c.Database.DSN,
+		"BUROPHER_ATTACHMENTS_PATH":       &c.Storage.AttachmentsPath,
+		"BUROPHER_DEV_WEB_DIR":            &c.DevWebDir,
+		"BUROPHER_MAIL_DELIVERY":          &c.Mail.DeliveryMethod,
+		"BUROPHER_SMTP_ADDRESS":           &c.Mail.SMTP.Address,
+		"BUROPHER_SMTP_DOMAIN":            &c.Mail.SMTP.Domain,
+		"BUROPHER_SMTP_USER_NAME":         &c.Mail.SMTP.UserName,
+		"BUROPHER_SMTP_PASSWORD":          &c.Mail.SMTP.Password,
+		"BUROPHER_SMTP_AUTH":              &c.Mail.SMTP.Authentication,
+		"BUROPHER_DISCORD_API_BASE":       &c.Discord.APIBase,
+		"BUROPHER_PDF_FONT_DIR":           &c.PDF.FontDir,
+		"BUROPHER_SCM_GIT_COMMAND":        &c.SCM.GitCommand,
+		"BUROPHER_SCM_FETCH_INTERVAL":     &c.SCM.FetchInterval,
+		"BUROPHER_THEMES_DIR":             &c.Web.ThemesDir,
 	}
 	for k, p := range env {
 		if v, ok := os.LookupEnv(k); ok {
@@ -251,6 +267,15 @@ func Load(path string) (*Config, error) {
 	}
 	if v, ok := os.LookupEnv("BUROPHER_PPROF"); ok {
 		c.Server.Pprof = v == "1" || strings.EqualFold(v, "true")
+	}
+	if v, ok := os.LookupEnv("BUROPHER_MAIL_REDMINE_HEADERS"); ok {
+		b := v == "1" || strings.EqualFold(v, "true")
+		c.Mail.RedmineCompatHeaders = &b
+	}
+	switch c.Mail.MessageIDPrefix {
+	case "", "redmine", "buropher":
+	default:
+		return nil, fmt.Errorf("config: mail.message_id_prefix must be \"redmine\" or \"buropher\": %q", c.Mail.MessageIDPrefix)
 	}
 	if v, ok := os.LookupEnv("BUROPHER_SUDO_MODE"); ok {
 		c.Auth.SudoMode = v == "1" || strings.EqualFold(v, "true")

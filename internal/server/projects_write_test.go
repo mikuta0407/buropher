@@ -1,7 +1,6 @@
 package server_test
 
 import (
-	"io"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -41,7 +40,7 @@ func projSubmit(t *testing.T, c *http.Client, ts *httptest.Server, method, path 
 	if err != nil {
 		t.Fatal(err)
 	}
-	b, _ := io.ReadAll(res.Body)
+	b, _ := readUnbranded(res.Body)
 	res.Body.Close()
 	return res, string(b)
 }
@@ -58,7 +57,7 @@ func projectsAPIRequest(t *testing.T, ts *httptest.Server, method, path, user, b
 	if err != nil {
 		t.Fatal(err)
 	}
-	b, _ := io.ReadAll(res.Body)
+	b, _ := readUnbranded(res.Body)
 	res.Body.Close()
 	return res, string(b)
 }

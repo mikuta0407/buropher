@@ -339,7 +339,8 @@ func runCompare(cmd string, args []string) (int, error) {
 			if cmd == "diff" {
 				writeNormalized(cf.out, "ref", c, want[i].format, want[i].doc)
 			}
-			res.Diff = udiff.Unified(want[i].doc, got[i].doc, want[i].name, got[i].name, cf.context)
+			// 製品名（Redmine / Buropher）は比較の直前に両側を同じ形にそろえる（normalize.Brand）
+			res.Diff = udiff.Unified(normalize.Brand(want[i].doc), normalize.Brand(got[i].doc), want[i].name, got[i].name, cf.context)
 			if res.Diff == "" {
 				res.Status = report.Pass
 			} else if reason, ok := al.Allowed(c.Scenario, c.ID, res.Diff); ok {

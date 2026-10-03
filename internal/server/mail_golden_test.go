@@ -13,6 +13,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/mikuta0407/buropher/internal/brand/brandtest"
 	"github.com/mikuta0407/buropher/internal/config"
 	"github.com/mikuta0407/buropher/internal/db"
 	"github.com/mikuta0407/buropher/internal/db/dbtest"
@@ -255,10 +256,28 @@ func compareMail(t *testing.T, gm goldenMail, m *mail.Message) {
 	if strings.Join(m.To, ", ") != strings.Join(gm.To, ", ") {
 		t.Errorf("%s: To = %v, want %v", who, m.To, gm.To)
 	}
-	if m.Subject != gm.Subject {
+	// 製品名（既定の app_title・X-Mailer・テストメールの文面）は Redmine の表記に戻して比べる（brandtest.Unbrand）
+	if g := brandtest.Unbrand(m.Subject); g != gm.Subject {
 		t.Errorf("%s: Subject = %q, want %q", who, m.Subject, gm.Subject)
 	}
-	got := map[string]string{"From": m.From}
+	// buropher は X-Redmine-<k> の直後に同じ値の X-Buropher-<k> を付ける（mail.redmine_compat_headers）。
+	// ゴールデン（Redmine の出力）の X-Redmine-* ごとに X-Buropher-* も期待する。
+	wantHeaders := map[string]string{}
+	for k, v := range gm.Headers {
+		wantHeaders[k] = v
+		if rest, ok := strings.CutPrefix(k, "X-Redmine-"); ok {
+			wantHeaders["X-Buropher-"+rest] = v
+		}
+	}
+	for i, h := range m.Headers {
+		if rest, ok := strings.CutPrefix(h.Name, "X-Redmine-"); ok {
+			if i+1 >= len(m.Headers) || m.Headers[i+1].Name != "X-Buropher-"+rest {
+				t.Errorf("%s: %s is not followed by X-Buropher-%s", who, h.Name, rest)
+			}
+		}
+	}
+	gm.Headers = wantHeaders
+	got := map[string]string{"From": brandtest.Unbrand(m.From)}
 	if m.MessageID != "" {
 		got["Message-ID"] = "<" + m.MessageID + ">"
 	}
@@ -267,7 +286,7 @@ func compareMail(t *testing.T, gm goldenMail, m *mail.Message) {
 	}
 	var order []string
 	for _, h := range m.Headers {
-		got[h.Name] = h.Value
+		got[h.Name] = brandtest.Unbrand(h.Value)
 		order = append(order, h.Name)
 	}
 	for k, want := range gm.Headers {
@@ -295,7 +314,7 @@ func compareMail(t *testing.T, gm goldenMail, m *mail.Message) {
 	}
 	_ = wantOrder
 	if gm.Text != nil {
-		if g, w := normalizeCRLF(m.Text), normalizeCRLF(*gm.Text); g != w {
+		if g, w := normalizeCRLF(brandtest.Unbrand(m.Text)), normalizeCRLF(*gm.Text); g != w {
 			t.Errorf("%s: text mismatch\n%s", who, lineDiff(w, g))
 		}
 	}
@@ -303,7 +322,7 @@ func compareMail(t *testing.T, gm goldenMail, m *mail.Message) {
 		if m.HTML != "" {
 			t.Errorf("%s: unexpected html part", who)
 		}
-	} else if g, w := normalizeCRLF(m.HTML), normalizeCRLF(*gm.HTML); g != w {
+	} else if g, w := normalizeCRLF(brandtest.Unbrand(m.HTML)), normalizeCRLF(*gm.HTML); g != w {
 		t.Errorf("%s: html mismatch\n%s", who, lineDiff(w, g))
 	}
 }

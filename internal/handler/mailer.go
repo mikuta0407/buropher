@@ -18,6 +18,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/mikuta0407/buropher/internal/brand"
 	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/httpx"
 	"github.com/mikuta0407/buropher/internal/i18n"
@@ -226,8 +227,17 @@ func (m *mailer) redmineHeaders(kv ...any) {
 		default:
 			v = fmt.Sprint(x)
 		}
+		m.brandHeader(k, v)
+	}
+}
+
+// brandHeader は X-Buropher-<k> ヘッダを設定する。mail.redmine_compat_headers（既定 true）のときは
+// Redmine 互換の X-Redmine-<k> も同じ値で設定し、X-Buropher-<k> をその直後に置く。
+func (m *mailer) brandHeader(k, v string) {
+	if !m.a.MailOmitRedmineHeaders {
 		m.setHeader("X-Redmine-"+k, v)
 	}
+	m.setHeader("X-Buropher-"+k, v)
 }
 
 func (m *mailer) setHeader(name, value string) {
@@ -251,16 +261,24 @@ func (m *mailer) header(name string) string {
 
 // tokenFor は Mailer.token_for(object, user)。
 func (m *mailer) tokenFor(o tokenObject, user *domain.User) string {
-	parts := []string{"redmine", o.class + "-" + strconv.FormatInt(o.id, 10), o.at.UTC().Format("20060102150405")}
+	parts := []string{m.a.messageIDPrefix(), o.class + "-" + strconv.FormatInt(o.id, 10), o.at.UTC().Format("20060102150405")}
 	if user != nil {
 		parts = append(parts, strconv.FormatInt(user.ID, 10))
 	}
 	host := mailFromHost(m.a.Settings.String("mail_from"))
 	if host == "" {
 		h, _ := os.Hostname()
-		host = h + ".redmine"
+		host = h + "." + m.a.messageIDPrefix()
 	}
 	return strings.Join(parts, ".") + "@" + host
+}
+
+// messageIDPrefix は Message-ID / References の接頭辞（config の mail.message_id_prefix。既定 "redmine"）。
+func (a *App) messageIDPrefix() string {
+	if a.MessageIDPrefix != "" {
+		return a.MessageIDPrefix
+	}
+	return "redmine"
 }
 
 var mailFromHostRe = regexp.MustCompile(`(?m)^.*@|>`)
@@ -345,7 +363,7 @@ func (m *mailer) finish(to []string, subject, view string) (*mail.Message, error
 		}
 		from = mail.FormatAddress(name, addr.Address)
 		fromAddr := strings.ReplaceAll(addr.Address, "@", ".")
-		if p := m.header("X-Redmine-Project"); p != "" {
+		if p := m.header("X-Buropher-Project"); p != "" {
 			listID = "<" + p + "." + fromAddr + ">"
 		} else {
 			listID = "<" + fromAddr + ">"
@@ -384,9 +402,9 @@ func (m *mailer) finish(to []string, subject, view string) (*mail.Message, error
 	if len(to) == 0 {
 		return nil, nil
 	}
-	m.setHeader("X-Mailer", "Redmine")
-	m.setHeader("X-Redmine-Host", st.String("host_name"))
-	m.setHeader("X-Redmine-Site", st.String("app_title"))
+	m.setHeader("X-Mailer", brand.Name)
+	m.brandHeader("Host", st.String("host_name"))
+	m.brandHeader("Site", st.String("app_title"))
 	m.setHeader("X-Auto-Response-Suppress", "All")
 	m.setHeader("Auto-Submitted", "auto-generated")
 	m.setHeader("List-Id", listID)
@@ -456,5 +474,5 @@ func (m *mailer) testEmail() (*mail.Message, error) {
 	if err != nil {
 		return nil, err
 	}
-	return m.finish(to, "Redmine test", "test_email")
+	return m.finish(to, brand.Name+" test", "test_email")
 }

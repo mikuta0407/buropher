@@ -80,7 +80,7 @@ func apiCall(t *testing.T, ts *httptest.Server, method, path, ctype, body string
 		t.Fatal(err)
 	}
 	defer res.Body.Close()
-	b, _ := io.ReadAll(res.Body)
+	b, _ := readUnbranded(res.Body)
 	return apiResp{Status: res.StatusCode, Header: res.Header, Body: string(b)}
 }
 

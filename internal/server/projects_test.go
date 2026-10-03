@@ -1,7 +1,6 @@
 package server_test
 
 import (
-	"io"
 	"net/http"
 	"net/url"
 	"os"
@@ -123,7 +122,7 @@ func TestProjectsPagesMatchRedmine(t *testing.T) {
 				if res, err = newClient(t).Do(req); err != nil {
 					t.Fatal(err)
 				}
-				b, _ := io.ReadAll(res.Body)
+				b, _ := readUnbranded(res.Body)
 				res.Body.Close()
 				body = string(b)
 			} else {

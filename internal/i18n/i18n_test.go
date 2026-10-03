@@ -31,6 +31,21 @@ func TestOverlay(t *testing.T) {
 	}
 }
 
+// Redmine 本体の訳文は読み込み時に製品名だけ Buropher へ置換される（キーと除外キーは変えない）。
+func TestRebrand(t *testing.T) {
+	b := Default()
+	cases := []struct{ loc, key, want string }{
+		{"en", "label_oauth_permission_admin", "Administrate this Buropher"},
+		{"ja", "label_oauth_permission_admin", "このBuropherの管理"},
+		{"ja", "text_scm_config", "バージョン管理システムのコマンドをconfig/configuration.ymlで設定できます。設定後、Redmineを再起動してください。"},
+	}
+	for _, c := range cases {
+		if got := b.T(c.loc, c.key, nil); got != c.want {
+			t.Errorf("%s %s = %q, want %q", c.loc, c.key, got, c.want)
+		}
+	}
+}
+
 func TestPsychTokenize(t *testing.T) {
 	cases := []struct {
 		in   string

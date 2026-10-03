@@ -22,7 +22,7 @@ func newTest(t *testing.T, vals map[string]string) *Settings {
 
 func TestDefaults(t *testing.T) {
 	s := newTest(t, nil)
-	if got := s.String("app_title"); got != "Redmine" {
+	if got := s.String("app_title"); got != "Buropher" {
 		t.Errorf("app_title = %q", got)
 	}
 	// 既定値は Ruby の to_s 済みの文字列になる

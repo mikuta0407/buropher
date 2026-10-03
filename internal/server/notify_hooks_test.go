@@ -32,7 +32,7 @@ func TestNotifyHooksFromActions(t *testing.T) {
 			"settings[login_required]": {"1"}})
 		e.run()
 		got := subjectsTo(e.sender.Messages())
-		if !slices.Equal(got, []string{"admin@somenet.foo [Redmine] Security notification"}) {
+		if !slices.Equal(got, []string{"admin@somenet.foo [Buropher] Security notification"}) {
 			t.Fatalf("mails = %v", got)
 		}
 		if !strings.Contains(e.sender.Messages()[0].Text, "* Authentication required") {
@@ -82,8 +82,8 @@ func TestNotifyHooksFromActions(t *testing.T) {
 		e.run()
 		got := subjectsTo(e.sender.Messages())
 		want := []string{
-			"admin@somenet.foo [Redmine] Security notification",
-			"newadmin@example.net Your Redmine account activation",
+			"admin@somenet.foo [Buropher] Security notification",
+			"newadmin@example.net Your Buropher account activation",
 		}
 		for _, w := range want {
 			if !slices.Contains(got, w) {
@@ -91,7 +91,7 @@ func TestNotifyHooksFromActions(t *testing.T) {
 			}
 		}
 		for _, m := range e.sender.Messages() {
-			if m.Subject == "Your Redmine account activation" && !strings.Contains(m.Text, "* Password: secret123") {
+			if m.Subject == "Your Buropher account activation" && !strings.Contains(m.Text, "* Password: secret123") {
 				t.Errorf("account information text = %s", m.Text)
 			}
 		}

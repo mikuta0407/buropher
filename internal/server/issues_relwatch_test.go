@@ -48,7 +48,7 @@ func xhr(t *testing.T, c *http.Client, method, u string, form url.Values) (*http
 	if err != nil {
 		t.Fatal(err)
 	}
-	b, _ := io.ReadAll(res.Body)
+	b, _ := readUnbranded(res.Body)
 	res.Body.Close()
 	return res, string(b)
 }

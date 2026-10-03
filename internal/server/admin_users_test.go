@@ -3,7 +3,6 @@ package server_test
 import (
 	"context"
 	"encoding/json"
-	"io"
 	"net/http"
 	"net/url"
 	"os"
@@ -422,7 +421,7 @@ func apiRequest(t *testing.T, method, u, contentType, body string) (*http.Respon
 		t.Fatal(err)
 	}
 	defer res.Body.Close()
-	b, _ := io.ReadAll(res.Body)
+	b, _ := readUnbranded(res.Body)
 	return res, string(b)
 }
 

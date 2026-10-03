@@ -8,7 +8,6 @@ import (
 	"image"
 	"image/color"
 	"image/png"
-	"io"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -114,7 +113,7 @@ func rawUpload(t *testing.T, ts *httptest.Server, path, content string, opts ...
 		t.Fatal(err)
 	}
 	defer hr.Body.Close()
-	b, _ := io.ReadAll(hr.Body)
+	b, _ := readUnbranded(hr.Body)
 	return apiResp{Status: hr.StatusCode, Header: hr.Header, Body: string(b)}
 }
 

@@ -12,6 +12,7 @@ import (
 	"fmt"
 
 	"github.com/mikuta0407/buropher/internal/auth/password"
+	"github.com/mikuta0407/buropher/internal/brand"
 	"github.com/mikuta0407/buropher/internal/db"
 	"github.com/mikuta0407/buropher/internal/defaultdata"
 	"github.com/mikuta0407/buropher/internal/i18n"
@@ -72,8 +73,8 @@ func Init(ctx context.Context, d *db.DB, opt Options) error {
 				return fmt.Errorf("builtin group: %w", err)
 			}
 		}
-		// 管理者（Redmine の 001_setup と同じ氏名）
-		adminID, err := tx.InsertReturningID(ctx, `INSERT INTO principals (kind, status, firstname, lastname, created_at, updated_at) VALUES ('user', 1, 'Redmine', 'Admin', ?, ?)`, now, now)
+		// 管理者（Redmine の 001_setup の "Redmine Admin" に倣い、製品名 + Admin）
+		adminID, err := tx.InsertReturningID(ctx, `INSERT INTO principals (kind, status, firstname, lastname, created_at, updated_at) VALUES ('user', 1, ?, 'Admin', ?, ?)`, brand.Name, now, now)
 		if err != nil {
 			return fmt.Errorf("admin: %w", err)
 		}

@@ -2,7 +2,6 @@ package server_test
 
 import (
 	"context"
-	"io"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -331,7 +330,7 @@ func TestWikiAPI(t *testing.T) {
 			t.Fatal(err)
 		}
 		defer res.Body.Close()
-		b, _ := io.ReadAll(res.Body)
+		b, _ := readUnbranded(res.Body)
 		return res, string(b)
 	}
 	res, body := do("PUT", "/projects/ecookbook/wiki/Api_page.json", `{"wiki_page":{"text":"API text","comments":"via api"}}`)

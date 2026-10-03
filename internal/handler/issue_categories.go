@@ -108,7 +108,7 @@ func (a *App) IssueCategoriesIndex(c *Req) {
 		arr.children = append(arr.children, el)
 	}
 	var meta [][2]any
-	if !(c.Params().Present("nometa") || c.R.Header.Get("X-Redmine-Nometa") != "") {
+	if !(c.Params().Present("nometa") || nometaHeader(c.R)) {
 		meta = [][2]any{{"total_count", len(cats)}}
 	}
 	c.renderAPIRoot(arr, meta, http.StatusOK)

@@ -173,6 +173,13 @@ requests:
   `pre`/`textarea` の中身は保持、`script`/`style` は行末空白と前後の空行のみ除去。
 - JSON: キー順を保ったまま 2 スペースインデント（数値は元の表記のまま、`200.0` と `200` は区別）。
 - XML: 要素順を保ったまま整形、属性ソート、空要素は `<a/>`。
+- 製品名（`normalize.Brand`。比較の直前に参照/ゴールデン・候補の両側へ適用し、ゴールデンファイル自体は Redmine の出力のまま）:
+  参照は "Redmine"、候補は "Buropher" を表示する特定の箇所だけを `{{BRAND}}` にそろえる —
+  html_title / Atom の `<title>`・`<author><name>`・auto discovery の title（既定の app_title）、
+  `<meta name="description">`、ヘッダの `<h1>`、設定画面の app_title 欄、welcome_text の既定値、
+  Atom の `<generator>`（URL は `{{BRAND_URL}}`）、フッター全体（`{{FOOTER}}`）、静的エラーページの title、
+  および internal/i18n が製品名を置換する Redmine の訳文の断片（docs/compatibility.md）。
+  利用者名 "Redmine Admin" などのデータや `X-Redmine-*` 等の互換識別子は対象外。
 
 設定可能（`normalize:`。リストは上位設定に追記、bool は上書き）:
 
