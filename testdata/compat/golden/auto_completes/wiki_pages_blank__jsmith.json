@@ -1,0 +1,45 @@
+status: 200
+content-type: application/json
+
+[
+  {
+    "id": 12,
+    "label": "Child_1_1",
+    "value": "Child_1_1"
+  },
+  {
+    "id": 11,
+    "label": "Page_with_sections",
+    "value": "Page_with_sections"
+  },
+  {
+    "id": 10,
+    "label": "Этика_менеджмента",
+    "value": "Этика_менеджмента"
+  },
+  {
+    "id": 6,
+    "label": "Child_2",
+    "value": "Child_2"
+  },
+  {
+    "id": 5,
+    "label": "Child_1",
+    "value": "Child_1"
+  },
+  {
+    "id": 4,
+    "label": "Page_with_an_inline_image",
+    "value": "Page_with_an_inline_image"
+  },
+  {
+    "id": 2,
+    "label": "Another_page",
+    "value": "Another_page"
+  },
+  {
+    "id": 1,
+    "label": "CookBook_documentation",
+    "value": "CookBook_documentation"
+  }
+]

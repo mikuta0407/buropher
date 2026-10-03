@@ -114,6 +114,51 @@ go run ./tools/compat check -cand http://127.0.0.1:3000   # against golden files
 Typical workflow for a feature: add or extend a scenario, `snapshot` the reference, implement until
 `diff`/`check` is clean, and allowlist only intentional differences.
 
+## Browser E2E tests (Playwright)
+
+The compat harness compares HTML; `e2e/` checks what Redmine's JavaScript does with buropher's
+responses in a real browser (headless Chromium), and how the pages render. Every behavior spec runs
+the **same scenario** against the reference Redmine and against buropher and asserts that the
+recorded observations are identical: DOM state after interactions, URLs reached, document/XHR
+requests made (method, path, query and form fields), dialogs (`confirm`, `beforeunload`),
+JavaScript errors and HTTP errors (4xx/5xx, e.g. a missing route used by an XHR).
+
+Requirements: Node.js 22, the `_reference/` checkout used by the compat harness (Ruby, Redmine
+6.1.2 with its bundle) and Go.
+
+```sh
+cd e2e
+npm install
+npm run install-browsers   # Chromium headless shell into _reference/playwright-browsers (~260 MB, not /tmp)
+npm run servers:start      # reference Redmine on :4035 (_reference/ref-e2e) + buropher on :4135 (data/cand)
+npm test                   # behavior + visual; or: npm run test:behavior / npm run test:visual
+npm run servers:destroy    # stop both and delete _reference/ref-e2e
+```
+
+- Specs run serially. A spec that modifies data resets both servers to the pristine fixtures first
+  (`redmine-ref.sh reset` / `buropher-cand.sh reset`, about 20 s each); `readOnly` specs skip it.
+- `E2E_NO_RESET=1` skips the resets, `E2E_ONLY=ref` (or `cand`) runs a single side — useful while
+  writing a scenario against already running servers. Ports and directories follow the compat
+  scripts' variables (`COMPAT_REF_PORT`, `COMPAT_REF_DIR`, `BUROPHER_CAND_PORT`, `BUROPHER_CAND_DIR`).
+- Output goes to `e2e/test-results/`: `observations/<spec>.json` holds both sides' observations
+  (diffed by the test on failure), `artifacts/` holds Playwright traces of failures
+  (`npx playwright show-trace …`).
+- Behavior specs live in `e2e/specs/behavior/` and use `dualTest()` from `e2e/lib/dual.ts`:
+  the scenario receives a `Session` with `note()`, `noteText()`, `noteRequests()`, `noteURL()`,
+  `ajaxIdle()` (waits for jQuery and rails-ujs XHRs) and `nav()`. Only record things that are
+  deterministic on both sides; the origin/port is normalized automatically.
+- Access keys: headless Chromium does not dispatch `accesskey` from synthetic key events, so the
+  keyboard spec activates the element the browser would pick (first element with that key).
+
+### Visual comparison
+
+`e2e/specs/visual/screens.spec.ts` takes full-page screenshots of ~40 key pages at 1280 px and
+375 px (mobile emulation) from both servers, with the browser clock frozen, and compares them with
+[pixelmatch](https://github.com/mapbox/pixelmatch) (anti-aliasing ignored, colour threshold 0.1).
+Pages whose differing-pixel ratio exceeds `E2E_VISUAL_THRESHOLD` (default `0.005`) or whose page
+size differs are reported as soft failures; their `-ref.png`, `-cand.png` and `-diff.png` and a
+`summary.md` table are written to `e2e/test-results/visual/`.
+
 ## Upstream sync
 
 `web/assets` (images, fonts, JavaScript, stylesheets, themes), `web/locales/redmine`,

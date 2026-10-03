@@ -183,7 +183,8 @@ func (c *Req) currentIssue() *query.IssueRow {
 // formatOf は params[:format]（空なら html）。
 func formatOf(c *Req) string {
 	f := strings.ToLower(httpx.Format(c.R))
-	if f == "" {
+	// Accept: */*（Mime::ALL）は respond_to の最初の形式。formatOf を使うアクションはどれも format.html が先頭
+	if f == "" || f == httpx.FormatAll {
 		return "html"
 	}
 	return f

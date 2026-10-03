@@ -566,8 +566,9 @@ func (a *App) GroupsNewUsers(c *Req) {
 // GroupsAutocompleteForUser は groups#autocomplete_for_user（js のみ）。
 func (a *App) GroupsAutocompleteForUser(c *Req) {
 	g := c.value(groupCtxKey{}).(*domain.Group)
-	if f := httpx.Format(c.R); f != "js" {
-		// respond_to format.js のみ（それ以外は 406）
+	if httpx.Negotiate(c.R, "js") != "js" {
+		// respond_to format.js のみ（それ以外は 406）。observeSearchfield の XHR は Accept: */*
+		// なので request.format は Mime::ALL になり、format.js が選ばれる
 		httpx.Head(c.W, c.R, http.StatusNotAcceptable)
 		c.Halt()
 		return

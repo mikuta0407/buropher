@@ -1,0 +1,21 @@
+{
+  "name": "buropher-e2e",
+  "private": true,
+  "description": "Runs the same browser scenarios against a reference Redmine and buropher and compares behavior and rendering",
+  "scripts": {
+    "install-browsers": "./servers.sh install-browsers",
+    "servers:start": "./servers.sh start",
+    "servers:stop": "./servers.sh stop",
+    "servers:destroy": "./servers.sh destroy",
+    "test": "playwright test",
+    "test:behavior": "playwright test --project=behavior",
+    "test:visual": "playwright test --project=visual"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0",
+    "@types/node": "^22.0.0",
+    "@types/pngjs": "^6.0.5",
+    "pixelmatch": "^7.1.0",
+    "pngjs": "^7.0.0"
+  }
+}

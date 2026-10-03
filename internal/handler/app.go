@@ -445,7 +445,8 @@ func (a *App) requireLogin(c *Req) bool {
 	}
 	signin := "/login?back_url=" + url.QueryEscape(back)
 	switch format := httpx.Format(c.R); {
-	case format == "html" || format == "":
+	// Accept: */*（Mime::ALL）は respond_to の最初の format.html
+	case format == "html" || format == "" || format == httpx.FormatAll:
 		if httpx.IsXHR(c.R) {
 			httpx.Head(c.W, c.R, http.StatusUnauthorized)
 		} else {

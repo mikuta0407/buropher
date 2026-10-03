@@ -35,6 +35,12 @@ requests:
   - path: /groups/10/autocomplete_for_user.js
     users: [admin]
     format: text
+  # observeSearchfield の XHR（拡張子なし・Accept: */*）。request.format が Mime::ALL で format.js になる
+  - id: groups_10_autocomplete_for_user_accept_all
+    path: /groups/10/autocomplete_for_user?q=rob
+    users: [admin]
+    headers: {Accept: "*/*"}
+    format: text
   - id: m_xhr_membership_create
     path: /users/3/memberships.js?membership[project_ids][]=1&membership[role_ids][]=3
     method: POST

@@ -1,0 +1,229 @@
+# 保存クエリ（QueriesController: new / create / edit / update / destroy / filter）の互換シナリオ。
+# 参照は専用インスタンスで実行前に reset すること:
+#   COMPAT_REF_DIR=_reference/ref-e2e COMPAT_REF_PORT=4035 tools/compat/redmine-ref.sh start
+#   go run ./tools/compat diff -ref http://127.0.0.1:4035 -cand http://127.0.0.1:4135 \
+#     -reset-ref 'COMPAT_REF_DIR=... COMPAT_REF_PORT=4035 tools/compat/redmine-ref.sh reset' \
+#     -reset-cand 'BUROPHER_CAND_PORT=4135 BUROPHER_CAND_DIR=... tools/compat/buropher-cand.sh reset' \
+#     testdata/compat/scenarios/queries_write.yml
+# ケースは記述順に実行され、前のケースの結果に依存する。
+name: queries_write
+
+users:
+  admin: {login: admin, password: admin}
+  jsmith: {login: jsmith, password: jsmith}
+  dlopper: {login: dlopper, password: foo}
+
+normalize:
+  mask_text_selectors:
+    - "#footer"
+  strip_selectors:
+    - "#project-jump"
+
+requests:
+  # ---- queries#filter（フィルタ UI の remote な選択肢）
+  - id: filter_assigned_to
+    path: /queries/filter?project_id=1&type=IssueQuery&name=assigned_to_id
+    users: [admin, jsmith]
+    format: json
+  - id: filter_cf_list
+    path: /queries/filter?project_id=1&type=IssueQuery&name=cf_1
+    user: admin
+    format: json
+  - id: filter_status_global
+    path: /queries/filter?type=IssueQuery&name=status_id
+    user: jsmith
+    format: json
+  - id: filter_fixed_version
+    path: /queries/filter?project_id=1&type=IssueQuery&name=fixed_version_id
+    user: jsmith
+    format: json
+  - id: filter_relation
+    path: /queries/filter?project_id=1&type=IssueQuery&name=relates
+    user: jsmith
+    format: json
+  - id: filter_unknown
+    path: /queries/filter?project_id=1&type=IssueQuery&name=bogus
+    user: jsmith
+    format: json
+  - id: filter_time_entry_user
+    path: /queries/filter?project_id=1&type=TimeEntryQuery&name=user_id
+    user: jsmith
+    format: json
+  - id: filter_project_identifier
+    path: /queries/filter?project_id=ecookbook&type=IssueQuery&name=author_id
+    user: jsmith
+    format: json
+  - id: filter_missing_project
+    path: /queries/filter?project_id=999&type=IssueQuery&name=author_id
+    user: jsmith
+  - id: filter_anonymous
+    path: /queries/filter?project_id=2&type=IssueQuery&name=author_id
+    user: anonymous
+    format: json
+
+  # ---- queries#new
+  - id: new_project_issue_query
+    path: /projects/ecookbook/queries/new
+    users: [admin, jsmith, dlopper]
+  - id: new_project_with_params
+    path: /projects/ecookbook/queries/new?set_filter=1&type=IssueQuery&f[]=status_id&op[status_id]=o&f[]=priority_id&op[priority_id]==&v[priority_id][]=4&c[]=tracker&c[]=subject&group_by=tracker&t[]=estimated_hours&sort=priority:desc,id
+    user: jsmith
+  - id: new_global
+    path: /queries/new
+    user: admin
+  - id: new_gantt
+    path: /projects/ecookbook/queries/new?gantt=1
+    user: admin
+  - id: new_calendar
+    path: /projects/ecookbook/queries/new?calendar=1
+    user: admin
+  - id: new_time_entry
+    path: /projects/ecookbook/queries/new?type=TimeEntryQuery
+    user: jsmith
+  - id: new_project_query
+    path: /queries/new?type=ProjectQuery
+    user: admin
+  - id: new_project_admin_query
+    path: /queries/new?type=ProjectAdminQuery
+    user: admin
+  - id: new_user_query
+    path: /queries/new?type=UserQuery
+    user: admin
+  - id: new_anonymous
+    path: /projects/ecookbook/queries/new
+    user: anonymous
+
+  # ---- queries#create
+  - id: create_invalid
+    path: /projects/ecookbook/queries
+    method: POST
+    user: jsmith
+    form:
+      type: IssueQuery
+      "query[name]": ""
+      "query[visibility]": "1"
+      "query[role_ids][]": ["1", ""]
+      "f[]": ["status_id", ""]
+      "op[status_id]": "o"
+      "query[group_by]": "tracker"
+  - id: create_valid
+    path: /projects/ecookbook/queries
+    method: POST
+    user: jsmith
+    form:
+      type: IssueQuery
+      "query[name]": "Compat query"
+      "query[description]": "desc"
+      "query[visibility]": "1"
+      "query[role_ids][]": ["1", ""]
+      "f[]": ["status_id", "priority_id", ""]
+      "op[status_id]": "o"
+      "op[priority_id]": "="
+      "v[priority_id][]": "4"
+      "c[]": ["tracker", "subject"]
+      "query[group_by]": "tracker"
+      "t[]": ["estimated_hours", ""]
+      "query[sort_criteria][0][]": ["priority", "desc"]
+      "query[sort_criteria][1][]": ["id", "asc"]
+      "query[sort_criteria][2][]": ["", ""]
+    expect_status: 302
+  - id: issues_with_created_query
+    path: /projects/ecookbook/issues?query_id=13
+    user: jsmith
+  - id: create_global_gantt
+    path: /queries
+    method: POST
+    user: admin
+    form:
+      type: IssueQuery
+      gantt: "1"
+      "query[name]": "Gantt query"
+      "query[visibility]": "2"
+      query_is_for_all: "1"
+      default_columns: "1"
+      "query[draw_relations]": ["0", "1"]
+      "query[draw_progress_line]": "0"
+      "f[]": ["status_id", ""]
+      "op[status_id]": "*"
+    expect_status: 302
+  - id: create_time_entry
+    path: /projects/ecookbook/queries
+    method: POST
+    user: jsmith
+    form:
+      type: TimeEntryQuery
+      "query[name]": "Time query"
+      "query[visibility]": "0"
+      "f[]": ["spent_on", ""]
+      "op[spent_on]": "*"
+      "c[]": ["spent_on", "hours"]
+    expect_status: 302
+  - id: create_user_query
+    path: /queries
+    method: POST
+    user: admin
+    form:
+      type: UserQuery
+      "query[name]": "Users query"
+      "query[visibility]": "2"
+      "f[]": ["status", ""]
+      "op[status]": "="
+      "v[status][]": "1"
+    expect_status: 302
+
+  # ---- queries#edit / update / destroy
+  - id: edit_own
+    path: /queries/13/edit
+    user: jsmith
+  - id: edit_public_admin
+    path: /queries/1/edit
+    users: [admin, jsmith, dlopper]
+  - id: edit_gantt
+    path: /queries/14/edit?gantt=1
+    user: admin
+  - id: edit_user_query
+    path: /queries/16/edit
+    user: admin
+  - id: edit_missing
+    path: /queries/999/edit
+    user: admin
+  - id: update_invalid
+    path: /queries/13
+    method: PUT
+    user: jsmith
+    form:
+      "query[name]": ""
+      "f[]": ["status_id", ""]
+      "op[status_id]": "c"
+  - id: update_valid
+    path: /queries/13
+    method: PUT
+    user: jsmith
+    form:
+      "query[name]": "Renamed"
+      "query[visibility]": "0"
+      "f[]": ["status_id", ""]
+      "op[status_id]": "c"
+      default_columns: "1"
+    expect_status: 302
+  - id: issues_with_updated_query
+    path: /projects/ecookbook/issues?query_id=13
+    user: jsmith
+  - id: update_forbidden
+    path: /queries/13
+    method: PUT
+    user: dlopper
+    form:
+      "query[name]": "x"
+  - id: destroy
+    path: /queries/13
+    method: DELETE
+    user: jsmith
+    form: {_dummy: "1"}
+    expect_status: 302
+  - id: destroy_user_query
+    path: /queries/16
+    method: DELETE
+    user: admin
+    form: {_dummy: "1"}
+    expect_status: 302

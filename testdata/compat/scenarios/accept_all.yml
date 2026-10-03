@@ -1,0 +1,34 @@
+# Accept: */*（curl や jQuery の dataType なし $.ajax）の要求。Rails では request.format が Mime::ALL になり、
+# respond_to は最初に宣言した形式（多くは html）を選ぶ。require_login も html と同じくログイン画面へリダイレクトする。
+name: accept_all
+
+users:
+  admin: {login: admin, password: admin}
+  jsmith: {login: jsmith, password: jsmith}
+
+headers:
+  Accept: "*/*"
+
+normalize:
+  mask_text_selectors:
+    - "#footer"
+  strip_selectors:
+    - "#project-jump"
+
+requests:
+  - path: /projects/ecookbook/issues
+    users: [jsmith]
+  - path: /issues/1
+    users: [jsmith]
+  - path: /projects/ecookbook/activity
+    users: [jsmith]
+  - path: /projects/ecookbook/issues/report/tracker
+    users: [jsmith]
+  - path: /projects/ecookbook/issues/gantt
+    users: [jsmith]
+  - path: /users
+    users: [anonymous]
+  - path: /my/page
+    users: [anonymous]
+  - path: /projects/ecookbook/edit
+    users: [admin]

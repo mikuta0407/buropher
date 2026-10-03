@@ -1,0 +1,21 @@
+status: 200
+content-type: application/json
+
+[
+  [
+    "eCookbook",
+    "1"
+  ],
+  [
+    "-- Child of private child",
+    "6"
+  ],
+  [
+    "-- eCookbook Subproject 1",
+    "3"
+  ],
+  [
+    "-- eCookbook Subproject 2",
+    "4"
+  ]
+]
