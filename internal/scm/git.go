@@ -146,6 +146,13 @@ func isOptionLike(vals ...string) bool {
 // gitCmd は git_cmd（--git-dir と -c オプションを付けて実行し、標準出力を返す）。
 // 0 以外の終了は ErrCommandAborted。stdin が nil でなければ標準入力に渡す。
 func (g *Git) gitCmd(ctx context.Context, args []string, stdin []byte) ([]byte, error) {
+	var out bytes.Buffer
+	err := g.gitCmdTo(ctx, args, stdin, &out)
+	return out.Bytes(), err
+}
+
+// gitCmdTo は gitCmd の標準出力を w に書き出す版（大きな出力をメモリに溜めない）。
+func (g *Git) gitCmdTo(ctx context.Context, args []string, stdin []byte, w io.Writer) error {
 	repo := g.RootURL
 	if repo == "" {
 		repo = g.URL
@@ -161,14 +168,13 @@ func (g *Git) gitCmd(ctx context.Context, args []string, stdin []byte) ([]byte, 
 	if stdin != nil {
 		cmd.Stdin = bytes.NewReader(stdin)
 	}
-	var out bytes.Buffer
-	cmd.Stdout = &out
+	cmd.Stdout = w
 	cmd.Stderr = io.Discard
 	if err := cmd.Run(); err != nil {
 		// Redmine はシェル経由で起動するため、コマンドが見つからない場合も終了コード 127 で ScmCommandAborted になる
-		return out.Bytes(), ErrCommandAborted
+		return ErrCommandAborted
 	}
-	return out.Bytes(), nil
+	return nil
 }
 
 // toRepo は scm_iconv(@path_encoding, 'UTF-8', s)。
@@ -651,6 +657,17 @@ func (g *Git) Cat(ctx context.Context, path, identifier string) ([]byte, bool) {
 		return nil, false
 	}
 	return out, true
+}
+
+// CatTo は Cat の内容を w に書き出す（raw のダウンロードで大きなファイルをメモリに読み込まない）。
+func (g *Git) CatTo(ctx context.Context, path, identifier string, w io.Writer) bool {
+	if identifier == "" {
+		identifier = "HEAD"
+	}
+	if isOptionLike(identifier) {
+		return false
+	}
+	return g.gitCmdTo(ctx, []string{"show", "--no-color", "--no-textconv", g.toRepo(identifier) + ":" + g.toRepo(path)}, nil, w) == nil
 }
 
 // ValidName は valid_name?（ブランチ・タグとして存在する名前か）。

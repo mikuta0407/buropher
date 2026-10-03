@@ -131,6 +131,13 @@ func TestGitMaliciousRepoConfigDoesNotExecute(t *testing.T) {
 	if b, ok := g.Cat(ctx, "f.txt", ""); !ok || string(b) != "a\nc\n" {
 		t.Errorf("cat = %q %v", b, ok)
 	}
+	var buf strings.Builder
+	if ok := g.CatTo(ctx, "f.txt", "", &buf); !ok || buf.String() != "a\nc\n" {
+		t.Errorf("cat to = %q %v", buf.String(), ok)
+	}
+	if g.CatTo(ctx, "nope.txt", "", &buf) {
+		t.Error("cat to of a missing path succeeded")
+	}
 	g.Lastrev(ctx, "f.txt", "")
 	g.ValidName(ctx, bs[0])
 	// 存在しないオブジェクト（promisor リモートからの遅延取得を誘う）
