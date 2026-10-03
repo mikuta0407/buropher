@@ -214,8 +214,9 @@ func detectContentType(att *domain.Attachment, isThumb bool) string {
 }
 
 // attachmentDisposition は AttachmentsController#disposition（PDF は inline）。
+// 拡張子に加えて、送る Content-Type も PDF の場合に限って inline にする。
 func attachmentDisposition(att *domain.Attachment) string {
-	if att.IsPDF() {
+	if att.IsPDF() && detectContentType(att, false) == "application/pdf" {
 		return "inline"
 	}
 	return "attachment"

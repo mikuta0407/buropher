@@ -11,9 +11,53 @@ import (
 	"image/png"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"testing"
+
+	"github.com/mikuta0407/buropher/internal/domain"
 )
+
+// digest が 16 進でない（取り込んだデータ等で "../" を含む）添付は、サムネイルの保存先の外に
+// 書き込んだり削除したりしない。
+func TestThumbnailRejectsNonHexDigest(t *testing.T) {
+	dir := t.TempDir()
+	root := filepath.Join(dir, "files")
+	thumbs := filepath.Join(dir, "thumbs")
+	if err := os.MkdirAll(filepath.Join(root, "2026", "01"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	var buf bytes.Buffer
+	if err := png.Encode(&buf, image.NewRGBA(image.Rect(0, 0, 300, 200))); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(root, "2026", "01", "x.png"), buf.Bytes(), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	s := &Store{Root: root, ThumbnailsRoot: thumbs}
+	a := &domain.Attachment{Filename: "x.png", DiskDirectory: "2026/01", DiskFilename: "x.png", Filesize: int64(buf.Len()),
+		Digest: "../escape"}
+	if p, ok := s.Thumbnail(a, 100); ok {
+		t.Errorf("thumbnail generated at %s", p)
+	}
+	if m, _ := filepath.Glob(filepath.Join(dir, "escape*")); len(m) > 0 {
+		t.Errorf("file written outside thumbnails dir: %v", m)
+	}
+	// 削除側も保存先の外のファイルに触れない
+	victim := filepath.Join(dir, "escape_"+strconv.FormatInt(a.Filesize, 10)+"_100.thumb")
+	if err := os.WriteFile(victim, []byte("x"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	s.deleteThumbnails(a)
+	if _, err := os.Stat(victim); err != nil {
+		t.Errorf("file outside thumbnails dir deleted: %v", err)
+	}
+	// 正しい digest なら作れる
+	a.Digest = strings.Repeat("ab", 32)
+	if _, ok := s.Thumbnail(a, 100); !ok {
+		t.Error("thumbnail not generated for hex digest")
+	}
+}
 
 // 寸法だけが巨大な画像（展開するとメモリを使い尽くす）はサムネイルを作らない。
 func TestGenerateThumbnailRejectsHugeDimensions(t *testing.T) {

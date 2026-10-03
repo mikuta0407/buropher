@@ -64,7 +64,8 @@ var messySQL = []string{
 	`INSERT INTO attachments (id, container_id, container_type, filename, disk_filename, filesize, digest, downloads, author_id, created_on, disk_directory) VALUES
 	   (100, 999, 'Issue', 'a.txt', 'x_a.txt', 1, '', 0, 2, '2026-01-01 00:00:00', '2026/01'),
 	   (101, NULL, NULL, 'b.txt', 'x_b.txt', 1, '0123', 0, 999, NULL, ''),
-	   (102, NULL, NULL, 'c.txt', 'passwd', 1, '', 0, 2, '2026-01-01 00:00:00', '../../../../etc')`,
+	   (102, NULL, NULL, 'c.txt', 'passwd', 1, '', 0, 2, '2026-01-01 00:00:00', '../../../../etc'),
+	   (103, NULL, NULL, 'd.png', 'x_d.png', 1, '../../../../../../../../tmp/pwn1', 0, 2, '2026-01-01 00:00:00', '2026/01')`,
 	// メッセージ: 返信への返信
 	`INSERT INTO messages (id, board_id, parent_id, subject, content, author_id, replies_count, created_on, updated_on, locked, sticky) VALUES
 	   (100, 1, 2, 'RE: RE', 'nested', 999, 0, '2026-01-01 00:00:00', '2026-01-01 00:00:00', NULL, 1)`,
@@ -242,6 +243,11 @@ func TestImportMessy(t *testing.T) {
 		}
 		find("attachments", "container (Issue) is missing")
 		find("attachments", "digest of unknown length")
+		// digest はサムネイルのファイル名に使うため、16 進でない値（パス）は NULL にする
+		if dg := q1[*string](t, d, `SELECT digest FROM attachments WHERE id = 103`); dg != nil {
+			t.Errorf("non-hex digest imported: %q", *dg)
+		}
+		find("attachments", "digest is not hexadecimal")
 		// 保存先の外を指すパスの行は取り込まない（ダウンロード・削除で任意のファイルに触れないように）
 		if n := q1[int](t, d, `SELECT COUNT(*) FROM attachments WHERE id = 102`); n != 0 {
 			t.Error("attachment with an unsafe disk path should be dropped")

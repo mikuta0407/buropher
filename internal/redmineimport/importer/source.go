@@ -5,6 +5,7 @@ package importer
 
 import (
 	"bufio"
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
@@ -160,8 +161,11 @@ func (s *source) each(table string, fn func(rec) error) error {
 	br := bufio.NewReaderSize(f, 1<<20)
 	var n int64
 	for {
-		line, err := br.ReadBytes('\n')
-		if len(strings.TrimSpace(string(line))) > 0 {
+		line, err := archive.ReadLine(br)
+		if errors.Is(err, archive.ErrRowTooLong) {
+			return fmt.Errorf("importer: %s line %d: %w", table, n+1, err)
+		}
+		if len(bytes.TrimSpace(line)) > 0 {
 			n++
 			row, derr := archive.DecodeRow(line)
 			if derr != nil {
@@ -174,7 +178,7 @@ func (s *source) each(table string, fn func(rec) error) error {
 				return ferr
 			}
 		}
-		if err == io.EOF {
+		if errors.Is(err, io.EOF) {
 			return nil
 		}
 		if err != nil {

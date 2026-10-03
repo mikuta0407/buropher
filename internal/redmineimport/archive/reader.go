@@ -85,8 +85,40 @@ func NewReader(src io.Reader) (*Reader, error) {
 	return newReader(src, nil)
 }
 
+// maxZstdWindow は受け付ける zstd のウィンドウサイズの上限。Writer（SpeedDefault）は 8MB、
+// zstd コマンドの --long（既定 27）は 128MB なので、それを超える要求は悪意のあるアーカイブとみなす
+// （伸長時にウィンドウ分のメモリを確保させない）。
+const maxZstdWindow = 1 << 28
+
+// maxManifestBytes は manifest.json の大きさの上限（添付 100 万件でも数百 MB に収まる）。
+const maxManifestBytes = 512 << 20
+
+// MaxRowBytes は ndjson の 1 行の上限。巨大な 1 行で全体をメモリに読み込ませない（テストで変更する）。
+var MaxRowBytes = 256 << 20
+
+// ErrRowTooLong は 1 行が MaxRowBytes を超えた。
+var ErrRowTooLong = errors.New("archive: ndjson line too long")
+
+// ReadLine は改行までの 1 行を読む（改行を含む）。MaxRowBytes を超えたら ErrRowTooLong。
+// 終端では最後の行と io.EOF を返す（bufio.Reader.ReadBytes('\n') と同じ）。
+func ReadLine(br *bufio.Reader) ([]byte, error) {
+	var line []byte
+	for {
+		frag, err := br.ReadSlice('\n')
+		if len(line)+len(frag) > MaxRowBytes {
+			return nil, ErrRowTooLong
+		}
+		line = append(line, frag...)
+		if errors.Is(err, bufio.ErrBufferFull) {
+			continue
+		}
+		return line, err
+	}
+}
+
 func newReader(src io.Reader, closer io.Closer) (*Reader, error) {
-	zr, err := zstd.NewReader(bufio.NewReaderSize(src, 1<<20), zstd.WithDecoderConcurrency(1), zstd.WithDecoderMaxWindow(1<<30))
+	zr, err := zstd.NewReader(bufio.NewReaderSize(src, 1<<20), zstd.WithDecoderConcurrency(1),
+		zstd.WithDecoderMaxWindow(maxZstdWindow), zstd.WithDecoderMaxMemory(maxZstdWindow))
 	if err != nil {
 		return nil, err
 	}
@@ -101,7 +133,7 @@ func newReader(src io.Reader, closer io.Closer) (*Reader, error) {
 		return nil, fmt.Errorf("archive: first entry is %q, want %s", h.Name, ManifestPath)
 	}
 	var m Manifest
-	if err := json.NewDecoder(io.LimitReader(r.tr, 1<<30)).Decode(&m); err != nil {
+	if err := json.NewDecoder(io.LimitReader(r.tr, maxManifestBytes)).Decode(&m); err != nil {
 		zr.Close()
 		return nil, fmt.Errorf("archive: manifest: %w", err)
 	}
@@ -173,11 +205,23 @@ func (r *Reader) Next() (*Entry, error) {
 		default:
 			return nil, fmt.Errorf("archive: entry %s is not listed in manifest", h.Name)
 		}
+		// 展開する前にマニフェストのサイズと照合する（小さいと宣言して巨大な内容を書き出させない）
+		if want := e.wantSize(); h.Size != want {
+			return nil, fmt.Errorf("archive: size mismatch for %s (header %d, manifest %d)", h.Name, h.Size, want)
+		}
 		r.seen[h.Name] = true
 		e.hr = &hashingReader{r: r.tr, h: sha256.New()}
 		r.cur = e
 		return e, nil
 	}
+}
+
+// wantSize はマニフェストに記載されたサイズ。
+func (e *Entry) wantSize() int64 {
+	if e.Table != nil {
+		return e.Table.Size
+	}
+	return e.File.Size
 }
 
 func (r *Reader) finishCurrent() error {
@@ -248,9 +292,13 @@ func (rs *Rows) Next() bool {
 	if rs.err != nil {
 		return false
 	}
-	line, err := rs.br.ReadBytes('\n')
+	line, err := ReadLine(rs.br)
+	if errors.Is(err, ErrRowTooLong) {
+		rs.err = fmt.Errorf("%w: %s line %d", err, rs.table, rs.line+1)
+		return false
+	}
 	if len(bytes.TrimSpace(line)) == 0 {
-		if err != nil && err != io.EOF {
+		if err != nil && !errors.Is(err, io.EOF) {
 			rs.err = err
 		}
 		if err == nil {
