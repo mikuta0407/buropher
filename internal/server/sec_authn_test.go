@@ -177,6 +177,21 @@ func TestLoginTimingDoesNotRevealAccounts(t *testing.T) {
 	}
 }
 
+// TestLoginRequiresCSRFToken は、ログインフォームの送信に CSRF トークンが必要なこと
+// （攻撃者のアカウントで被害者をログインさせるログイン CSRF の防止）を確認する。
+func TestLoginRequiresCSRFToken(t *testing.T) {
+	ts, _ := newFixtureServer(t)
+	c := newClient(t)
+	get(t, c, ts.URL+"/login")
+	res, _ := post(t, c, ts.URL+"/login", url.Values{"username": {"jsmith"}, "password": {"jsmith"}})
+	if res.StatusCode != http.StatusUnprocessableEntity {
+		t.Errorf("login without token: status %d, want 422", res.StatusCode)
+	}
+	if res, _ := get(t, c, ts.URL+"/my/page"); res.StatusCode == http.StatusOK {
+		t.Error("logged in without CSRF token")
+	}
+}
+
 // TestBlankWSKeyRejected は、リポジトリ管理・受信メールの WS を有効にしたまま鍵を設定していない場合に、
 // key なし・空の key で WS を呼べないことを確認する（未認証でのリポジトリ作成・課題作成の防止）。
 func TestBlankWSKeyRejected(t *testing.T) {
