@@ -15,7 +15,17 @@ import (
 	"unicode"
 
 	"github.com/dlclark/regexp2"
+
+	"github.com/mikuta0407/buropher/internal/textformat/textile"
 )
+
+// compile は textile.MatchTimeout 付きで正規表現をコンパイルする（リンク・マクロの解析も
+// 遅延量指定子が多く、閉じ記号の無い入力で 2 乗の時間がかかるため）。
+func compile(p string, opts regexp2.RegexOptions) *regexp2.Regexp {
+	re := regexp2.MustCompile(p, opts)
+	re.MatchTimeout = textile.MatchTimeout
+	return re
+}
 
 const (
 	// Ruby \s（ASCII 空白）
@@ -54,15 +64,15 @@ func rangeTableClass(t *unicode.RangeTable) string {
 	return b.String()
 }
 
-func rx(p string) *regexp2.Regexp { return regexp2.MustCompile(p, regexp2.Multiline) }
+func rx(p string) *regexp2.Regexp { return compile(p, regexp2.Multiline) }
 func rxm(p string) *regexp2.Regexp {
-	return regexp2.MustCompile(p, regexp2.Multiline|regexp2.Singleline)
+	return compile(p, regexp2.Multiline|regexp2.Singleline)
 }
 func rxi(p string) *regexp2.Regexp {
-	return regexp2.MustCompile(p, regexp2.Multiline|regexp2.IgnoreCase)
+	return compile(p, regexp2.Multiline|regexp2.IgnoreCase)
 }
 func rxmi(p string) *regexp2.Regexp {
-	return regexp2.MustCompile(p, regexp2.Multiline|regexp2.Singleline|regexp2.IgnoreCase)
+	return compile(p, regexp2.Multiline|regexp2.Singleline|regexp2.IgnoreCase)
 }
 
 // md は Ruby の MatchData 相当。
@@ -97,7 +107,7 @@ func (x md) all() string { return x.m.String() }
 func match(re *regexp2.Regexp, s string) *md {
 	m, err := re.FindStringMatch(s)
 	if err != nil {
-		panic(err)
+		panic(textile.ErrMatchTimeout)
 	}
 	if m == nil {
 		return nil
@@ -108,7 +118,7 @@ func match(re *regexp2.Regexp, s string) *md {
 func matches(re *regexp2.Regexp, s string) bool {
 	ok, err := re.MatchString(s)
 	if err != nil {
-		panic(err)
+		panic(textile.ErrMatchTimeout)
 	}
 	return ok
 }
@@ -116,7 +126,7 @@ func matches(re *regexp2.Regexp, s string) bool {
 func gsub(re *regexp2.Regexp, s string, f func(m md) string) string {
 	out, err := re.ReplaceFunc(s, func(m regexp2.Match) string { return f(md{&m}) }, -1, -1)
 	if err != nil {
-		panic(err)
+		panic(textile.ErrMatchTimeout)
 	}
 	return out
 }
@@ -129,7 +139,7 @@ func scan(re *regexp2.Regexp, s string) []md {
 		m, err = re.FindNextMatch(m)
 	}
 	if err != nil {
-		panic(err)
+		panic(textile.ErrMatchTimeout)
 	}
 	return res
 }

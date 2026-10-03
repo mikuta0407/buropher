@@ -16,11 +16,36 @@ package textile
 //   - POSIX ブラケット ([[:word:]] 等) は Unicode 版の Onigmo 定義に合わせて展開
 
 import (
+	"errors"
 	"strings"
+	"time"
 	"unicode"
 
 	"github.com/dlclark/regexp2"
 )
+
+// MatchTimeout は本パッケージ（と redmine パッケージ）の正規表現 1 回の照合の上限時間。
+// RedCloth 由来の正規表現には遅延量指定子（.+? 等）が多く、閉じ記号の無い入力では
+// 入力長の 2 乗の時間がかかる（例: "\n@a" を数千回繰り返した本文で数十秒）。
+// 利用者が書いた本文で CPU を占有されないよう、照合ごとに上限を設ける。
+const MatchTimeout = time.Second
+
+// ErrMatchTimeout は照合が MatchTimeout を超えたときに補助関数が panic する値。
+// textilizable 側で recover して装飾なしのテキストに切り替える。
+var ErrMatchTimeout = errors.New("textformat: regexp match timeout")
+
+// compile は MatchTimeout 付きで正規表現をコンパイルする。
+func compile(p string, opts regexp2.RegexOptions) *regexp2.Regexp {
+	re := regexp2.MustCompile(p, opts)
+	re.MatchTimeout = MatchTimeout
+	return re
+}
+
+// rxFail は照合エラー（regexp2 では時間切れのみ）で panic する。
+// regexp2 のエラーには入力全体が含まれるため、短い番兵値に置き換える。
+func rxFail() {
+	panic(ErrMatchTimeout)
+}
 
 // 文字クラス断片 (ブラケットの内側に埋め込む用)
 const (
@@ -80,22 +105,22 @@ func rangeTableClass(t *unicode.RangeTable) string {
 
 // rx は Ruby の正規表現 (オプションなし) 相当をコンパイルする。
 func rx(p string) *regexp2.Regexp {
-	return regexp2.MustCompile(p, regexp2.Multiline)
+	return compile(p, regexp2.Multiline)
 }
 
 // rxm は Ruby の /m 付き正規表現相当をコンパイルする。
 func rxm(p string) *regexp2.Regexp {
-	return regexp2.MustCompile(p, regexp2.Multiline|regexp2.Singleline)
+	return compile(p, regexp2.Multiline|regexp2.Singleline)
 }
 
 // rxi は Ruby の /i 付き正規表現相当をコンパイルする。
 func rxi(p string) *regexp2.Regexp {
-	return regexp2.MustCompile(p, regexp2.Multiline|regexp2.IgnoreCase)
+	return compile(p, regexp2.Multiline|regexp2.IgnoreCase)
 }
 
 // rxmi は Ruby の /mi 付き正規表現相当をコンパイルする。
 func rxmi(p string) *regexp2.Regexp {
-	return regexp2.MustCompile(p, regexp2.Multiline|regexp2.Singleline|regexp2.IgnoreCase)
+	return compile(p, regexp2.Multiline|regexp2.Singleline|regexp2.IgnoreCase)
 }
 
 // md は Ruby の MatchData 相当の薄いラッパ。
@@ -136,7 +161,7 @@ func (x md) all() string {
 func match(re *regexp2.Regexp, s string) *md {
 	m, err := re.FindStringMatch(s)
 	if err != nil {
-		panic(err)
+		rxFail()
 	}
 	if m == nil {
 		return nil
@@ -148,7 +173,7 @@ func match(re *regexp2.Regexp, s string) *md {
 func matches(re *regexp2.Regexp, s string) bool {
 	ok, err := re.MatchString(s)
 	if err != nil {
-		panic(err)
+		rxFail()
 	}
 	return ok
 }
@@ -157,7 +182,7 @@ func matches(re *regexp2.Regexp, s string) bool {
 func gsub(re *regexp2.Regexp, s string, f func(m md) string) string {
 	out, err := re.ReplaceFunc(s, func(m regexp2.Match) string { return f(md{&m}) }, -1, -1)
 	if err != nil {
-		panic(err)
+		rxFail()
 	}
 	return out
 }
@@ -180,7 +205,7 @@ func sub(re *regexp2.Regexp, s string, f func(m md) string) (string, bool) {
 		return f(md{&m})
 	}, -1, 1)
 	if err != nil {
-		panic(err)
+		rxFail()
 	}
 	return out, changed
 }
@@ -194,7 +219,7 @@ func scan(re *regexp2.Regexp, s string) []md {
 		m, err = re.FindNextMatch(m)
 	}
 	if err != nil {
-		panic(err)
+		rxFail()
 	}
 	return res
 }
@@ -222,7 +247,7 @@ func splitRe(re *regexp2.Regexp, s string) []string {
 		m, err = re.FindNextMatch(m)
 	}
 	if err != nil {
-		panic(err)
+		rxFail()
 	}
 	parts = append(parts, string(runes[prev:]))
 	return trimTrailingEmpty(parts)
