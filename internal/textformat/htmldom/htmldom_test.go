@@ -33,6 +33,10 @@ func TestRoundTrip(t *testing.T) {
 		{`<foo><bar>t</bar></foo>`, `<foo><bar>t</bar></foo>`},
 		// 対応しない終了タグは無視
 		{`text </div> stray`, `text  stray`},
+		// 属性値内の <!--...--> / &{...}（旧 libxml2 の SSI 特例）は常にエスケープする。
+		// libxml2 2.13 系はこの特例を削除している。
+		{`<span title="a &{<img src=x onerror=alert(1)>}">q</span>`, `<span title="a &amp;{&lt;img src=x onerror=alert(1)&gt;}">q</span>`},
+		{`<span title="a <!-- x --><img> b">q</span>`, `<span title="a &lt;!-- x --&gt;&lt;img&gt; b">q</span>`},
 	}
 	for _, c := range cases {
 		if got := Render(ParseFragment(c[0])); got != c[1] {
