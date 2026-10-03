@@ -181,26 +181,7 @@ func (qv *queryView) AvailableFiltersJSON() (template.HTML, error) {
 			if err != nil {
 				return "", err
 			}
-			if vals == nil {
-				f.set("values", nil)
-			} else if def.CustomField != nil && def.CustomField.FieldFormat == "list" {
-				// ListFormat#possible_values_options は文字列の配列（[label, value] ではない）
-				arr := make([]string, len(vals))
-				for i, v := range vals {
-					arr[i] = v.Value
-				}
-				f.set("values", arr)
-			} else {
-				arr := make([][]string, len(vals))
-				for i, v := range vals {
-					if v.Group != "" {
-						arr[i] = []string{v.Label, v.Value, v.Group}
-					} else {
-						arr[i] = []string{v.Label, v.Value}
-					}
-				}
-				f.set("values", arr)
-			}
+			f.set("values", filterValuesJSON(def, vals))
 		}
 		o.set(def.Field, f)
 	}
@@ -718,7 +699,10 @@ func (a *App) sidebarQueriesHTML(c *Req, kind query.Kind, current *query.Query, 
 // ---------------------------------------------------------------- retrieve_query
 
 // queryParams は Rails の params を query.Params にする（クエリ文字列と本文）。
-func queryParams(c *Req) query.Params {
+func queryParams(c *Req) query.Params { return query.ParseParams(railsParamValues(c)) }
+
+// railsParamValues はクエリ文字列と本文のパラメータを Rails 形式のキーの url.Values にする。
+func railsParamValues(c *Req) url.Values {
 	v := url.Values{}
 	for k, vals := range c.R.URL.Query() {
 		v[k] = append(v[k], vals...)
@@ -727,8 +711,44 @@ func queryParams(c *Req) query.Params {
 		for k, vals := range c.R.PostForm {
 			v[k] = append(v[k], vals...)
 		}
+	} else if body := httpx.BodyParams(c.R); body.Len() > 0 {
+		// 本文はネストした Params として解析済みなので Rails 形式のキー（f[], op[x], query[sort_criteria][0][] ...）に戻す
+		flattenParams(v, "", body)
 	}
-	return query.ParseParams(v)
+	return v
+}
+
+// flattenParams はネストした Params を Rails 形式のキーの url.Values に展開する。
+func flattenParams(out url.Values, prefix string, p *httpx.Params) {
+	p.Each(func(k string, val any) {
+		key := k
+		if prefix != "" {
+			key = prefix + "[" + k + "]"
+		}
+		flattenParamValue(out, key, val)
+	})
+}
+
+func flattenParamValue(out url.Values, key string, val any) {
+	switch x := val.(type) {
+	case *httpx.Params:
+		flattenParams(out, key, x)
+	case []any:
+		for _, e := range x {
+			if sub, ok := e.(*httpx.Params); ok {
+				flattenParams(out, key+"[]", sub)
+			} else {
+				flattenParamValue(out, key+"[]", e)
+			}
+		}
+	case nil:
+		out[key] = append(out[key], "")
+	case string:
+		out[key] = append(out[key], x)
+	case *httpx.UploadedFile:
+	default:
+		out[key] = append(out[key], httpx.ValueString(x))
+	}
 }
 
 // queryEnv は User.current の query.Env。

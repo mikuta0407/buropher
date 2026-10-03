@@ -1,0 +1,10 @@
+status: 200
+content-type: application/json
+
+[
+  {
+    "id": 2,
+    "label": "Another_page",
+    "value": "Another_page"
+  }
+]

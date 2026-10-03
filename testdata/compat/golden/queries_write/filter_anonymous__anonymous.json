@@ -1,0 +1,4 @@
+status: 302
+content-type: text/html
+location: {{BASE}}/login?back_url={{BASE}}%2Fqueries%2Ffilter%3Fproject_id%3D2%26type%3DIssueQuery%26name%3Dauthor_id
+

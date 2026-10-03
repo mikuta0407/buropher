@@ -1,0 +1,15 @@
+status: 200
+content-type: application/json
+
+[
+  [
+    "Dave Lopper",
+    "3",
+    "active"
+  ],
+  [
+    "John Smith",
+    "2",
+    "active"
+  ]
+]

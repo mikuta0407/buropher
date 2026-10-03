@@ -18,10 +18,11 @@ import (
 	"github.com/mikuta0407/buropher/internal/view/rails"
 )
 
-// QueriesController（app/controllers/queries_controller.rb）。menu_item :issues。
-// current_menu_item は @query.queried_class の複数形（admin レイアウトのクエリでは nil）で、
-// 描画時に setQueryMenu で上書きする。
-var QueriesController = &Controller{Name: "queries", MainMenu: true}
+// QueriesController（app/controllers/queries_controller.rb）。menu_item :issues だが
+// current_menu_item を上書きしており、@query が無ければ nil（queries#filter や find_query の 404）。
+// @query があれば queried_class の複数形（admin レイアウトのクエリでは nil）で、setQueryMenu で上書きする。
+var QueriesController = &Controller{Name: "queries", MainMenu: true,
+	MenuItem: func(string) string { return helper.NoMenuItem }}
 
 // routesQueries は queries コントローラのルートを登録する。
 //
@@ -116,6 +117,8 @@ func (a *App) findQueryFilter(c *Req) {
 		return
 	}
 	c.Project = q.Project
+	// render_403 でも current_menu_item / current_menu は @query で決まる
+	setQueryMenu(c, q.Kind)
 	ok, err = q.EditableBy(c.Ctx(), c.Authz())
 	if err != nil {
 		a.internalError(c, "query editable", err)
@@ -227,7 +230,7 @@ func (a *App) QueriesNew(c *Req) {
 		a.internalError(c, "new query", err)
 		return
 	}
-	qp := queryFormParams(c)
+	qp := queryParams(c)
 	if err := q.BuildFromParams(c.Ctx(), qp, nil); err != nil {
 		a.internalError(c, "query params", err)
 		return
@@ -316,7 +319,7 @@ func (a *App) updateQueryFromParams(c *Req, q *query.Query) error {
 	} else {
 		q.SetProject(c.Project)
 	}
-	if err := q.BuildFromParams(c.Ctx(), queryFormParams(c), nil); err != nil {
+	if err := q.BuildFromParams(c.Ctx(), queryParams(c), nil); err != nil {
 		return err
 	}
 	if p.Present("default_columns") {
@@ -350,7 +353,7 @@ func (a *App) updateQueryFromParams(c *Req, q *query.Query) error {
 	return nil
 }
 
-// querySortCriteriaParam は params[:query][:sort_criteria]（{"0" => [key, order], ...} の値を添字順に、
+// querySortCriteriaParam は params[:query][:sort_criteria]（{"0" => [key, order], ...} の値を送信順に、
 // または "priority:desc,id" 形式の文字列）。
 func querySortCriteriaParam(p *httpx.Params) (query.SortCriteria, bool) {
 	v, ok := p.Lookup("query", "sort_criteria")
@@ -364,10 +367,9 @@ func querySortCriteriaParam(p *httpx.Params) (query.SortCriteria, bool) {
 	if m == nil {
 		return nil, false
 	}
-	keys := m.Keys()
-	slices.SortFunc(keys, func(x, y string) int { return int(rubyStringToI(x) - rubyStringToI(y)) })
+	// SortCriteria.new(hash) は hash.values（送信された順。キーでは並べ替えない）
 	var sc query.SortCriteria
-	for _, k := range keys {
+	for _, k := range m.Keys() {
 		vals := m.Strings(k)
 		var pair [2]string
 		if len(vals) > 0 {
@@ -414,45 +416,6 @@ func (a *App) redirectToQueryItems(c *Req, q *query.Query, opts url.Values) {
 		path = "/users"
 	}
 	c.Redirect(path + qs)
-}
-
-// queryFormParams は query.Params（クエリ文字列と本文。本文は Rails の params を "f[]" / "op[x]" /
-// "query[sort_criteria][0][]" 形式のキーに戻して渡す）。
-func queryFormParams(c *Req) query.Params {
-	v := url.Values{}
-	for k, vals := range c.R.URL.Query() {
-		v[k] = append(v[k], vals...)
-	}
-	flattenParams(v, "", httpx.BodyParams(c.R))
-	return query.ParseParams(v)
-}
-
-// flattenParams は入れ子の params を Rack 形式のキーの url.Values に展開する。
-func flattenParams(out url.Values, prefix string, p *httpx.Params) {
-	key := func(k string) string {
-		if prefix == "" {
-			return k
-		}
-		return prefix + "[" + k + "]"
-	}
-	p.Each(func(k string, val any) {
-		switch x := val.(type) {
-		case *httpx.Params:
-			flattenParams(out, key(k), x)
-		case []any:
-			for _, e := range x {
-				if sub, ok := e.(*httpx.Params); ok {
-					flattenParams(out, key(k)+"[]", sub)
-				} else {
-					out.Add(key(k)+"[]", httpx.ValueString(e))
-				}
-			}
-		case nil:
-			out.Add(key(k), "")
-		default:
-			out.Add(key(k), httpx.ValueString(x))
-		}
-	})
 }
 
 // QueriesFilter は queries#filter（フィルタの選択肢を JSON で返す）。
@@ -508,28 +471,34 @@ func (a *App) QueriesFilter(c *Req) {
 			a.internalError(c, "query filter values", err)
 			return
 		}
-		switch {
-		case vals == nil:
-			out = nil
-		case def.CustomField != nil && def.CustomField.FieldFormat == "list":
-			arr := make([]any, len(vals))
-			for i, v := range vals {
-				arr[i] = v.Value
-			}
-			out = arr
-		default:
-			arr := make([]any, len(vals))
-			for i, v := range vals {
-				if v.Group != "" {
-					arr[i] = []any{v.Label, v.Value, v.Group}
-				} else {
-					arr[i] = []any{v.Label, v.Value}
-				}
-			}
-			out = arr
-		}
+		out = filterValuesJSON(def, vals)
 	}
 	renderJSON(c, out)
+}
+
+// filterValuesJSON は filter.values の JSON 表現（list 形式のカスタムフィールドは文字列の配列、
+// それ以外は [label, value] / [label, value, group] の配列。値が無ければ nil）。
+func filterValuesJSON(def *query.FilterDef, vals []query.Option) any {
+	if vals == nil {
+		return nil
+	}
+	if def.CustomField != nil && def.CustomField.FieldFormat == "list" {
+		// ListFormat#possible_values_options は文字列の配列（[label, value] ではない）
+		arr := make([]string, len(vals))
+		for i, v := range vals {
+			arr[i] = v.Value
+		}
+		return arr
+	}
+	arr := make([][]string, len(vals))
+	for i, v := range vals {
+		if v.Group != "" {
+			arr[i] = []string{v.Label, v.Value, v.Group}
+		} else {
+			arr[i] = []string{v.Label, v.Value}
+		}
+	}
+	return arr
 }
 
 // ---------------------------------------------------------------- フォーム（queries/_form）
@@ -548,6 +517,8 @@ type queryFormView struct {
 	CanSetVisibility bool
 	// Roles は Role.givable.sorted。
 	Roles []*domain.Role
+	// NameSet / DescriptionSet は name / description が nil でない（text_field が value 属性を出す）。
+	NameSet, DescriptionSet bool
 }
 
 // renderQueryForm は queries/new または edit を描画する。
@@ -568,6 +539,13 @@ func (a *App) renderQueryForm(c *Req, action string, q *query.Query, errs []stri
 		}
 	} else {
 		f.Action = "/queries/" + strconv.FormatInt(q.ID, 10)
+	}
+	// 新規・保存済みの name は "" 以上（queries.name の既定値）。description は保存値が空なら nil。
+	// create / update では params[:query][:name] / [:description] がそのまま代入される（無ければ nil）。
+	f.NameSet, f.DescriptionSet = true, q.Description != ""
+	if c.R.Method != http.MethodGet {
+		_, f.NameSet = c.Params().StringOK("query", "name")
+		_, f.DescriptionSet = c.Params().StringOK("query", "description")
 	}
 	f.Gantt = c.Params().Present("gantt")
 	f.Calendar = c.Params().Present("calendar")
@@ -594,15 +572,19 @@ func (f *queryFormView) IsProjectQuery() bool {
 	return f.QV.Q.Kind == query.KindProject || f.QV.Q.Kind == query.KindProjectAdmin
 }
 
-// NameField は text_field 'query', 'name', :size => 80（name は常に値を持つ）。
+// NameField は text_field 'query', 'name', :size => 80（nil なら value なし）。
 func (f *queryFormView) NameField() template.HTML {
-	return rails.Tag("input", rails.NewHash("size", 80, "type", "text", "value", f.QV.Q.Name, "name", "query[name]", "id", "query_name"))
+	var v any
+	if f.NameSet {
+		v = f.QV.Q.Name
+	}
+	return rails.Tag("input", rails.NewHash("size", 80, "type", "text", "value", v, "name", "query[name]", "id", "query_name"))
 }
 
 // DescriptionField は text_field 'query', 'description', :size => 80（nil なら value なし）。
 func (f *queryFormView) DescriptionField() template.HTML {
 	var v any
-	if f.QV.Q.Description != "" {
+	if f.DescriptionSet {
 		v = f.QV.Q.Description
 	}
 	return rails.Tag("input", rails.NewHash("size", 80, "type", "text", "value", v, "name", "query[description]", "id", "query_description"))
