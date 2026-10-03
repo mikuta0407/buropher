@@ -8,7 +8,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"mime/multipart"
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
@@ -48,7 +47,6 @@ type resp struct {
 }
 
 var reCSRF = regexp.MustCompile(`<meta name="csrf-token" content="([^"]+)"`)
-var reCSRFInput = regexp.MustCompile(`name="authenticity_token" value="([^"]+)"`)
 
 func (c *client) do(req *http.Request) (*resp, error) {
 	r, err := c.hc.Do(req)
@@ -132,34 +130,6 @@ func (c *client) post(path string, form url.Values, xhr bool) (*resp, error) {
 		req.Header.Set("X-Requested-With", "XMLHttpRequest")
 		req.Header.Set("Accept", "text/javascript, application/javascript, */*")
 	}
-	return c.do(req)
-}
-
-// postMultipart はファイル付きフォームを POST する。
-func (c *client) postMultipart(path string, form url.Values, fileField, fileName string, content []byte) (*resp, error) {
-	if c.token == "" {
-		if _, err := c.get("/", false); err != nil {
-			return nil, err
-		}
-	}
-	var buf bytes.Buffer
-	mw := multipart.NewWriter(&buf)
-	_ = mw.WriteField("authenticity_token", c.token)
-	for k, vs := range form {
-		for _, v := range vs {
-			_ = mw.WriteField(k, v)
-		}
-	}
-	if fileField != "" {
-		w, _ := mw.CreateFormFile(fileField, fileName)
-		_, _ = w.Write(content)
-	}
-	_ = mw.Close()
-	req, err := http.NewRequest("POST", c.abs(path), &buf)
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Set("Content-Type", mw.FormDataContentType())
 	return c.do(req)
 }
 

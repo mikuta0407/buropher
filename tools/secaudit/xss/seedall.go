@@ -229,10 +229,6 @@ func seedSettings(s *server, reg *registry) {
 }
 
 func seedAttachments(s *server, reg *registry) {
-	pid := s.ids["project"]
-	if pid == "" {
-		pid = "xssproj"
-	}
 	// HTML/SVG ファイルをアップロードし、添付ファイルとして課題に付ける。
 	// ファイル名・説明がリンクに出る。content-type（inline 実行）も検査対象。
 	iid := s.ids["issue"]

@@ -98,7 +98,8 @@ func (a *App) DiscordSettingsPage(c *Req) {
 		ctx := c.Ctx()
 		set := func(name string, v any) bool {
 			if err := a.Settings.Set(ctx, name, v); err != nil {
-				c.Flash().Now("error", err.Error())
+				// フラッシュは raw HTML として描画されるため動的値はエスケープする
+				c.Flash().Now("error", template.HTMLEscapeString(err.Error()))
 				return false
 			}
 			return true
@@ -269,7 +270,9 @@ func (a *App) DiscordCallback(c *Req) {
 	s.Delete(discordStateKey)
 	fail := func(err error) {
 		a.logger().Warn("discord link failed", "user", c.User.Login, "err", err)
-		c.Flash().SetError(c.L("buropher.discord.error_link_failed", err.Error()))
+		// err は OAuth の error パラメータ（攻撃者が制御可）を含みうる。フラッシュは
+		// raw HTML として描画されるためエスケープする。
+		c.Flash().SetError(c.L("buropher.discord.error_link_failed", template.HTMLEscapeString(err.Error())))
 		c.Redirect("/my/account")
 	}
 	if e := c.Params().String("error"); e != "" {
@@ -324,7 +327,7 @@ func (a *App) discordErrorMessage(c *Req, err error) string {
 	if errors.As(err, &ae) && ae.Code == discord.CodeCannotSendToUser {
 		return c.L("buropher.discord.error_test_failed", c.L("buropher.discord.error_cannot_dm"))
 	}
-	return c.L("buropher.discord.error_test_failed", err.Error())
+	return c.L("buropher.discord.error_test_failed", template.HTMLEscapeString(err.Error()))
 }
 
 // DiscordUnlink は連携を解除する。
