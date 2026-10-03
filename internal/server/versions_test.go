@@ -5,6 +5,7 @@ package server_test
 
 import (
 	"context"
+	"io"
 	"net/http"
 	"net/url"
 	"os"
@@ -148,5 +149,33 @@ func TestCSVContentDispositionEscapesQueryName(t *testing.T) {
 		if res.StatusCode != 200 || !strings.HasPrefix(got, `attachment; filename="x%22_filename%3Devilhtml.csv"; filename*=UTF-8''x%22_filename%3Devilhtml.csv`) {
 			t.Errorf("%s: status %d Content-Disposition %q", p, res.StatusCode, got)
 		}
+	}
+}
+
+// プロジェクトのリンク形式のカスタムフィールドは、危険なスキームの値に href を付けない（XSS）。
+func TestProjectLinkCustomFieldUnsafeScheme(t *testing.T) {
+	ts, d := newFixtureServer(t)
+	ctx := context.Background()
+	res, err := d.Exec(ctx, `INSERT INTO custom_fields (owner_kind, name, field_format, position) VALUES ('project', 'Site', 'link', 100)`)
+	if err != nil {
+		t.Fatal(err)
+	}
+	id, _ := res.LastInsertId()
+	if _, err := d.Exec(ctx, `INSERT INTO custom_values (customized_kind, customized_id, custom_field_id, value) VALUES ('project', 1, ?, ?)`,
+		id, "javascript://%0Aalert(1)"); err != nil {
+		t.Fatal(err)
+	}
+	r, err := http.Get(ts.URL + "/projects/ecookbook")
+	if err != nil {
+		t.Fatal(err)
+	}
+	b, _ := io.ReadAll(r.Body)
+	r.Body.Close()
+	body := string(b)
+	if !strings.Contains(body, "javascript://%0Aalert(1)") {
+		t.Fatalf("custom field value not shown (status %d)", r.StatusCode)
+	}
+	if strings.Contains(body, `href="javascript:`) {
+		t.Error("unsafe scheme rendered as a link")
 	}
 }
