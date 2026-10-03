@@ -11,6 +11,7 @@ import (
 
 	"github.com/mikuta0407/buropher/internal/auth/ldap"
 	"github.com/mikuta0407/buropher/internal/crypto/secretbox"
+	"github.com/mikuta0407/buropher/internal/db"
 	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/httpx"
 	"github.com/mikuta0407/buropher/internal/i18n"
@@ -492,13 +493,22 @@ func (a *App) saveLDAPSource(c *Req, f *ldapSourceForm) (bool, error) {
 		p := f.password
 		rec.Secret = &p
 	}
-	if err := repository.SaveAuthSource(c.Ctx(), a.DB, rec); err != nil {
-		return false, err
-	}
-	if f.mappingsChanged {
-		if err := repository.ReplaceAuthSourceGroupMappings(c.Ctx(), a.DB, rec.ID, f.mappings); err != nil {
-			return false, err
+	// 認証方式とグループの対応付けは 1 トランザクションで保存する（対応付けだけが消えたまま残ると、
+	// 次の同期でユーザーがグループから外される）
+	wasNew := rec.ID == 0
+	if err := a.DB.WithTx(c.Ctx(), func(tx *db.Tx) error {
+		if err := repository.SaveAuthSource(c.Ctx(), tx, rec); err != nil {
+			return err
 		}
+		if f.mappingsChanged {
+			return repository.ReplaceAuthSourceGroupMappings(c.Ctx(), tx, rec.ID, f.mappings)
+		}
+		return nil
+	}); err != nil {
+		if wasNew {
+			rec.ID = 0
+		}
+		return false, err
 	}
 	return true, nil
 }
