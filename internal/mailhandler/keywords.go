@@ -7,6 +7,7 @@ import (
 	"slices"
 	"strconv"
 	"strings"
+	"unicode/utf8"
 
 	"github.com/mikuta0407/buropher/internal/customfield"
 	"github.com/mikuta0407/buropher/internal/db"
@@ -76,13 +77,8 @@ func humanize(s string) string {
 		return s
 	}
 	// \A\w の先頭 1 文字を大文字に
-	for i, r := range s {
-		if isWordRune(r) {
-			if i == 0 {
-				return strings.ToUpper(string(r)) + s[len(string(r)):]
-			}
-		}
-		break
+	if r, size := utf8.DecodeRuneInString(s); isWordRune(r) {
+		return strings.ToUpper(string(r)) + s[size:]
 	}
 	return s
 }
