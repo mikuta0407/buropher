@@ -61,6 +61,29 @@ func TestEntraMultiTenant(t *testing.T) {
 	if err := p.Authorize(id); err != nil {
 		t.Fatal(err)
 	}
+	// マルチテナントでは preferred_username（UPN）も変更可能で認可に使えない（Microsoft の指針）ため、
+	// xms_edov（ドメイン所有の確認済み）が true でなければ UPN 由来のメールも未検証として扱う（nOAuth）
+	if !id.MailUnverified {
+		t.Error("UPN fallback mail without xms_edov should be unverified in multi-tenant mode")
+	}
+	for _, c := range []struct {
+		edov       any
+		unverified bool
+	}{{nil, true}, {false, true}, {true, false}, {"1", false}} {
+		claims := map[string]any{"oid": "object-id", "tid": tid, "preferred_username": "alice@contoso.com", "email": "admin@victim.example"}
+		if c.edov != nil {
+			claims["xms_edov"] = c.edov
+		}
+		idp.SetClaims(claims)
+		req := oidc.NewAuthRequest()
+		id, err := p.Exchange(context.Background(), authorize(t, p, req), req)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if id.MailUnverified != c.unverified {
+			t.Errorf("xms_edov=%v: MailUnverified = %v", c.edov, id.MailUnverified)
+		}
+	}
 	// 別テナントの ID トークン（iss と tid が一致しない）は拒否
 	idp.SetClaims(map[string]any{"oid": "x", "tid": "other-tenant"})
 	req = oidc.NewAuthRequest()

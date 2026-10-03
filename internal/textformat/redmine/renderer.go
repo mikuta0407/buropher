@@ -400,7 +400,8 @@ func (r *Renderer) parseHeadings(st *pageState, text string, obj *Object, opts O
 		item := rubyStrip(string(rails.StripTags(content)))
 		anchor := sanitizeAnchorName(item)
 		if opts.WikiLinks == "anchor" && obj.isWikiContent() {
-			anchor = obj.Page.Title + "_" + anchor
+			// ページ名は " < > を含みうる（anchor は name / href 属性にそのまま入るのでエスケープする）
+			anchor = rails.EscapeString(obj.Page.Title) + "_" + anchor
 		}
 		st.headingAnchors[anchor]++
 		if idx := st.headingAnchors[anchor]; idx > 1 {

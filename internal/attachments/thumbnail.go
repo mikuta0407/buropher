@@ -38,8 +38,23 @@ func (s *Store) thumbnailsDir() string {
 }
 
 // thumbnailPath は thumbnail_path(size)（"#{digest}_#{filesize}_#{size}.thumb"）。
+// digest が 16 進文字列でなければ ""（取り込んだデータの digest に "../" や "*" があると、
+// サムネイルの書き込み・削除がサムネイルの保存先の外に及ぶため）。
 func (s *Store) thumbnailPath(a *domain.Attachment, size int) string {
+	if !thumbnailDigestOK(a.Digest) {
+		return ""
+	}
 	return filepath.Join(s.thumbnailsDir(), a.Digest+"_"+strconv.FormatInt(a.Filesize, 10)+"_"+strconv.Itoa(size)+".thumb")
+}
+
+// thumbnailDigestOK は digest がサムネイルのファイル名に使える（空または 16 進数字のみ）か。
+func thumbnailDigestOK(d string) bool {
+	for _, r := range d {
+		if !('0' <= r && r <= '9' || 'a' <= r && r <= 'f' || 'A' <= r && r <= 'F') {
+			return false
+		}
+	}
+	return true
 }
 
 // ThumbnailSize は Attachment#thumbnail のサイズの正規化（50 単位に切り上げ、最大 800、
@@ -74,6 +89,9 @@ func (s *Store) Thumbnail(a *domain.Attachment, size int) (string, bool) {
 	}
 	size = s.ThumbnailSize(size)
 	target := s.thumbnailPath(a, size)
+	if target == "" {
+		return "", false
+	}
 	if st, err := os.Stat(target); err == nil && st.Size() > 0 {
 		return target, true
 	}

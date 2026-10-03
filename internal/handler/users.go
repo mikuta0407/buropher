@@ -278,7 +278,7 @@ func (a *App) sendUsersCSV(c *Req, v *userQueryView, users []*domain.User) {
 	name := a.filenameForExport(c, v.q, "users")
 	c.halted = true
 	c.W.Header().Set("Content-Type", "text/csv; header=present")
-	c.W.Header().Set("Content-Disposition", contentDisposition(name+".csv"))
+	c.W.Header().Set("Content-Disposition", httpx.ContentDisposition("attachment", name+".csv"))
 	c.W.WriteHeader(http.StatusOK)
 	_, _ = c.W.Write(w.Bytes())
 }

@@ -94,7 +94,7 @@ ja:
       text_issuer: "<issuer>/.well-known/openid-configuration からディスカバリ文書を読みます。Entra ID では空欄にするとテナントから組み立てます。"
       text_tenant: "Entra ID のテナント ID またはドメイン（マルチテナントは common / organizations。許可するテナントで制限してください）。"
       text_redirect_uri: "作成後に表示されます（/auth/oidc/<id>/callback）。"
-      text_match_by: "初回ログイン時に既存ユーザーと紐付けるときだけ使います。以後はサブジェクトのクレームで識別します。"
+      text_match_by: "初回ログイン時に既存ユーザーと紐付けるときだけ使います。以後はサブジェクトのクレームで識別します。ログインIDは、利用者が IdP でそのクレームを変更できない場合だけ選んでください（未検証のメールアドレスでは紐付けません）。"
       text_allowed_tenants: "1 行に 1 つのテナント ID（tid クレーム）。空欄なら制限しません。"
       text_allowed_groups: "1 行に 1 つのグループ（groups クレームの値）。いずれかに所属している必要があります。空欄なら制限しません。"
       text_sso_required: "パスワードのログインフォームを隠します。管理者だけはローカルログインのリンクからパスワードでログインできます。"

@@ -181,7 +181,7 @@ func (a *App) teIndexCSV(c *Req, q *query.Query) {
 	name := teFilenameForExport(p.String("query_name"), q, "timelog")
 	c.halted = true
 	c.W.Header().Set("Content-Type", "text/csv; header=present")
-	c.W.Header().Set("Content-Disposition", contentDisposition(name+".csv"))
+	c.W.Header().Set("Content-Disposition", httpx.ContentDisposition("attachment", name+".csv"))
 	c.W.WriteHeader(http.StatusOK)
 	_, _ = c.W.Write(w.Bytes())
 }

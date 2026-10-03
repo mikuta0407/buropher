@@ -555,6 +555,15 @@ func TestImportsController(t *testing.T) {
 	if !strings.Contains(body, `<table id="unsaved-items" class="list">`) || strings.Count(body, "Subject cannot be blank") != 3 {
 		t.Error("show with errors mismatch")
 	}
+	// エラーメッセージは CSV の値を含みうるので HTML エスケープする（改行は <br /> のまま）
+	if _, err := d.Exec(context.Background(), `UPDATE import_items SET message = ? WHERE obj_id IS NULL AND import_id = (SELECT id FROM imports WHERE filename = ?)`,
+		"Status is invalid: <img src=x onerror=alert(1)>\nSecond line", errs); err != nil {
+		t.Fatal(err)
+	}
+	_, body = get(t, jsmith, ts.URL+"/imports/"+errs)
+	if strings.Contains(body, "<img src=x") || !strings.Contains(body, "Status is invalid: &lt;img src=x onerror=alert(1)&gt;\n<br />Second line") {
+		t.Error("import error message is not escaped")
+	}
 }
 
 func TestTimeEntryImport(t *testing.T) {

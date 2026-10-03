@@ -128,6 +128,8 @@ func encodeEntities(s string, attr bool) string {
 	for i := 0; i < len(s); i++ {
 		c := s[i]
 		switch {
+		// 属性値の中でも "<" は常にエスケープする（後段の Redmine リンクの置換が属性値の中に
+		// 生の "<" を見ないようにする）
 		case c == '<':
 			// 注意: 旧 libxml2 の xmlEscapeEntities は属性値内の <!--...--> と &{...}（SSI/
 			// サーバサイドインクルード）をそのまま出力する特例を持っていたが、現行の

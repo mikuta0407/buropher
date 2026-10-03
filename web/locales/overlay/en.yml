@@ -96,7 +96,7 @@ en:
       text_issuer: "The discovery document is read from <issuer>/.well-known/openid-configuration. Leave empty for Entra ID to build it from the tenant."
       text_tenant: "Entra ID tenant ID or domain (common / organizations for multi-tenant applications; restrict them with allowed tenants)."
       text_redirect_uri: "Shown after the provider is created (/auth/oidc/<id>/callback)."
-      text_match_by: "Used only on the first login to link an existing user; afterwards the account is identified by the subject claim."
+      text_match_by: "Used only on the first login to link an existing user; afterwards the account is identified by the subject claim. Choose Login only if users cannot change the login claim at the IdP (an unverified email address is never matched)."
       text_allowed_tenants: "One tenant ID (tid claim) per line. Empty: no restriction."
       text_allowed_groups: "One group (groups claim value) per line. Users must belong to at least one. Empty: no restriction."
       text_sso_required: "Hides the password login form; only administrators can still log in with a password (local login link)."

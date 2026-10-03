@@ -233,7 +233,7 @@ func (c *Req) sendCSV(filename string, rows [][]string, withSeparatorParam bool)
 		out = e.Bytes()
 	}
 	c.W.Header().Set("Content-Type", "text/csv; header=present")
-	c.W.Header().Set("Content-Disposition", `attachment; filename="`+filename+`"; filename*=UTF-8''`+url.PathEscape(filename))
+	c.W.Header().Set("Content-Disposition", httpx.ContentDisposition("attachment", filename))
 	c.W.WriteHeader(http.StatusOK)
 	_, _ = c.W.Write(out)
 	c.Halt()

@@ -253,6 +253,11 @@ func TestImportMessy(t *testing.T) {
 			t.Error("attachment with an unsafe disk path should be dropped")
 		}
 		find("attachments", "unsafe disk path")
+		// 16 進でない digest はサムネイルのファイル名に使えないので NULL にする
+		if n := q1[int](t, d, `SELECT COUNT(*) FROM attachments WHERE id = 103 AND digest IS NULL`); n != 1 {
+			t.Error("non-hexadecimal digest should be set NULL")
+		}
+		find("attachments", "digest is not hexadecimal")
 		if rep.Files.Source != "dir" || rep.Files.Copied == 0 {
 			t.Errorf("files = %+v", rep.Files)
 		}
