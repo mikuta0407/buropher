@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -177,13 +178,21 @@ func (a *App) destroyProjects(c *Req, projects []*domain.Project) error {
 		if ds, err := repository.ProjectDescendants(ctx, a.DB, p.ID); err == nil && len(ds) > 0 {
 			msg = "mail_destroy_project_with_subprojects_successful"
 		}
-		err := a.DB.WithTx(ctx, func(tx *db.Tx) error { return repository.DestroyProject(ctx, tx, p.ID) })
-		if err == repository.ErrNotFound {
+		var removed []*domain.Attachment
+		err := a.DB.WithTx(ctx, func(tx *db.Tx) error {
+			var err error
+			removed, err = repository.DestroyProject(ctx, tx, p.ID)
+			return err
+		})
+		if errors.Is(err, repository.ErrNotFound) {
 			continue
 		}
 		if err != nil {
 			a.logger().Error("destroy project job", "project", p.ID, "err", err)
 			msg = "mail_destroy_project_failed"
+		} else {
+			// 添付の実ファイルはコミット後に消す（他の添付と共有していれば残る）
+			a.deleteAttachmentsAfterCommit(c, removed)
 		}
 		a.Notify.SecurityNotification(ctx, []int64{c.User.ID}, c.User, c.remoteIP(), notify.SecurityOptions{
 			Message: msg, Value: p.Name, URL: "/admin/projects", Title: "label_project_plural"})

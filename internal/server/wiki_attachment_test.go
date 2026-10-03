@@ -3,6 +3,7 @@ package server_test
 import (
 	"context"
 	"net/http"
+	"net/url"
 	"os"
 	"regexp"
 	"strconv"
@@ -124,5 +125,32 @@ func TestWikiUpdateRollbackKeepsAttachmentFile(t *testing.T) {
 	}
 	if _, err := os.Stat(path); !os.IsNotExist(err) {
 		t.Errorf("attachment file should be removed after commit: %v", err)
+	}
+}
+
+// プロジェクトの削除で、そのプロジェクトの添付の実ファイルも消える（以前は行だけ消えてファイルが残った）。
+func TestProjectDestroyRemovesAttachmentFiles(t *testing.T) {
+	srv, ts, d := newFixtureServerFull(t)
+	ctx := context.Background()
+	res, body := upload(t, newClient(t), ts.URL+"/uploads.json?filename=proj.txt", "application/octet-stream", "project file", map[string]string{"basic": "admin"})
+	if res.StatusCode != 201 {
+		t.Fatalf("upload: %d %s", res.StatusCode, body)
+	}
+	att := &domain.Attachment{}
+	if err := d.QueryRow(ctx, `SELECT COALESCE(disk_directory, ''), disk_filename FROM attachments WHERE filename = 'proj.txt'`).Scan(&att.DiskDirectory, &att.DiskFilename); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := d.Exec(ctx, `UPDATE attachments SET container_kind = 'project', container_id = 6 WHERE filename = 'proj.txt'`); err != nil {
+		t.Fatal(err)
+	}
+	path := srv.App().AttachmentStore.Diskfile(att)
+	if _, err := os.Stat(path); err != nil {
+		t.Fatal(err)
+	}
+	admin := login(t, ts, "admin", "admin")
+	res, _ = projSubmit(t, admin, ts, http.MethodDelete, "/projects/private-child", url.Values{"confirm": {"private-child"}}, false)
+	expectRedirect(t, res, "/admin/projects")
+	if _, err := os.Stat(path); !os.IsNotExist(err) {
+		t.Errorf("attachment file should be removed with the project: %v", err)
 	}
 }
