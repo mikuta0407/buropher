@@ -892,11 +892,12 @@ func (a *App) UsersDestroy(c *Req) {
 	p := c.Params()
 	if httpx.IsAPIRequest(c.R) || p.Present("lock") || (p.Has("confirm") && p.String("confirm") == u.Login) {
 		if p.Present("lock") {
-			if err := repository.SetUsersStatus(c.Ctx(), a.DB, []int64{u.ID}, domain.StatusLocked); err != nil {
-				a.serverError(c, err)
-				return
-			}
-			if err := repository.DeleteUserTokensByActions(c.Ctx(), a.DB, u.ID, "recovery", "autologin", "session"); err != nil {
+			if err := a.DB.WithTx(c.Ctx(), func(tx *db.Tx) error {
+				if err := repository.SetUsersStatus(c.Ctx(), tx, []int64{u.ID}, domain.StatusLocked); err != nil {
+					return err
+				}
+				return repository.DeleteUserTokensByActions(c.Ctx(), tx, u.ID, "recovery", "autologin", "session")
+			}); err != nil {
 				a.serverError(c, err)
 				return
 			}
