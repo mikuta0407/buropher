@@ -397,7 +397,8 @@ func (s *Server) Run(ctx context.Context) error {
 	}()
 	s.startDBOptimizer(bgCtx)
 	s.runWorkers(bgCtx)
-	srv := &http.Server{Addr: s.cfg.Server.Addr, Handler: s.handler, ReadHeaderTimeout: 10 * time.Second}
+	// IdleTimeout: keep-alive の接続を放置し続けない（ReadTimeout は大きな添付のアップロードを切るので設けない）
+	srv := &http.Server{Addr: s.cfg.Server.Addr, Handler: s.handler, ReadHeaderTimeout: 10 * time.Second, IdleTimeout: 2 * time.Minute}
 	errc := make(chan error, 1)
 	s.startSCMFetcher(bgCtx)
 	for _, fn := range s.extraBG {
