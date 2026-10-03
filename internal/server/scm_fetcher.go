@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"github.com/mikuta0407/buropher/internal/repository"
-	"github.com/mikuta0407/buropher/internal/scmsync"
 )
 
 // startSCMFetcher は設定 scm.fetch_interval ごとに Repository.fetch_changesets を実行する
@@ -25,8 +24,6 @@ func (s *Server) startSCMFetcher(ctx context.Context) {
 		return
 	}
 	app := s.app
-	svc := &scmsync.Service{DB: app.DB, Settings: app.Settings, GitCommand: app.GitCommand, Bundle: app.Bundle,
-		Now: app.Now, Notifier: app.Notifier, Logger: app.Logger}
 	s.goBG(func() {
 		t := time.NewTicker(d)
 		defer t.Stop()
@@ -40,7 +37,8 @@ func (s *Server) startSCMFetcher(ctx context.Context) {
 					slog.Error("scm fetch: anonymous user", "err", err)
 					continue
 				}
-				if err := svc.FetchAll(ctx, anon); err != nil {
+				// 通知先（メール・Discord の有効・無効）は管理画面で変わるので毎回作る
+				if err := app.SCMService().FetchAll(ctx, anon); err != nil {
 					slog.Error("scm fetch", "err", err)
 				}
 			}

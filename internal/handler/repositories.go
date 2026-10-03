@@ -137,11 +137,15 @@ func (c *Req) repoState() *repoState {
 	return s
 }
 
-// scmService はチェンジセット取り込みの Service（User.current の通知先を使う）。
+// scmService はチェンジセット取り込みの Service（チケットと同じ通知先 a.issueNotifier() を使う。
+// App.Notifier はテスト用の上書きで、本番では nil のため、それを渡すとキーワードによる更新が通知されない）。
 func (a *App) scmService() *scmsync.Service {
 	return &scmsync.Service{DB: a.DB, Settings: a.Settings, GitCommand: a.GitCommand, Bundle: a.Bundle, Now: a.Now,
-		Notifier: a.Notifier, Logger: a.Logger}
+		Notifier: a.issueNotifier(), Logger: a.Logger}
 }
+
+// SCMService は定期取り込み（server の scm.fetch_interval）用の scmService。通知先は呼び出し時点の設定で決まる。
+func (a *App) SCMService() *scmsync.Service { return a.scmService() }
 
 // gitAdapter は repository.scm。
 func (a *App) gitAdapter(repo *domain.Repository) *scm.Git {
