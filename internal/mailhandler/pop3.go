@@ -128,6 +128,7 @@ func dialPOP3(addr, host, ssl string) (*pop3Conn, error) {
 		return nil, fmt.Errorf("pop3: connect %s: %w", addr, err)
 	}
 	c := &pop3Conn{conn: conn, r: bufio.NewReader(conn)}
+	c.setDeadline()
 	line, err := c.readOK()
 	if err != nil {
 		conn.Close()
@@ -138,6 +139,11 @@ func dialPOP3(addr, host, ssl string) (*pop3Conn, error) {
 }
 
 func (c *pop3Conn) close() { _ = c.conn.Close() }
+
+// pop3CommandTimeout は 1 コマンド（応答の受信まで）の上限。応答しなくなったサーバで受信が止まり続けないように。
+const pop3CommandTimeout = 5 * time.Minute
+
+func (c *pop3Conn) setDeadline() { _ = c.conn.SetDeadline(time.Now().Add(pop3CommandTimeout)) }
 
 func (c *pop3Conn) readLine() (string, error) {
 	line, err := c.r.ReadString('\n')
@@ -159,6 +165,7 @@ func (c *pop3Conn) readOK() (string, error) {
 }
 
 func (c *pop3Conn) cmd(format string, args ...any) (string, error) {
+	c.setDeadline()
 	if _, err := fmt.Fprintf(c.conn, format+"\r\n", args...); err != nil {
 		return "", fmt.Errorf("pop3: write: %w", err)
 	}
