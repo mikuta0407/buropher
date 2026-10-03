@@ -114,6 +114,7 @@ func (d *Deps) RequestFuncs(r *view.Render) ttemplate.FuncMap {
 
 		// --- forms / misc ---
 		"back_url":                  func() string { return backURL(pg()) },
+		"safe_back_url":             func() string { return safeBackURL(pg()) },
 		"back_url_hidden_field_tag": func() html { return backURLHiddenFieldTag(pg()) },
 		"textilizable":              func(text any, args ...any) html { return d.textilizable(pg(), text, args...) },
 		"link_to_project": func(p any, args ...any) html {
@@ -775,6 +776,20 @@ func backURL(p *Page) string {
 		}
 	}
 	return ""
+}
+
+// safeBackURL はリンク先に使える back_url を返す（検証に通らなければ空）。
+// edit_all ビューの params[:back_url] は link_to に渡す前に ValidateBackURL で検証する。
+// 正当な同一ホストの相対 URL はそのまま返るので通常の出力は変わらない。
+func safeBackURL(p *Page) string {
+	if p.Request == nil {
+		return ""
+	}
+	u, ok := httpx.ValidateBackURL(p.Request, backURL(p), "")
+	if !ok {
+		return ""
+	}
+	return u
 }
 
 // backURLHiddenFieldTag は ApplicationHelper#back_url_hidden_field_tag。

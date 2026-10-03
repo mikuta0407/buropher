@@ -273,13 +273,12 @@ func (a *App) sendUsersCSV(c *Req, v *userQueryView, users []*domain.User) {
 		}
 		w.Row(row...)
 	}
-	name := p.String("query_name")
-	if name == "" || name == "_" {
-		name = "users"
-	}
+	// filename_for_export + filename_for_content_disposition（query_name の " や制御文字で
+	// Content-Disposition を細工されないよう、issues.csv 等と同じ安全な書式にする）。
+	name := a.filenameForExport(c, v.q, "users")
 	c.halted = true
 	c.W.Header().Set("Content-Type", "text/csv; header=present")
-	c.W.Header().Set("Content-Disposition", `attachment; filename="`+strings.ToLower(name)+`.csv"; filename*=UTF-8''`+strings.ToLower(name)+".csv")
+	c.W.Header().Set("Content-Disposition", contentDisposition(name+".csv"))
 	c.W.WriteHeader(http.StatusOK)
 	_, _ = c.W.Write(w.Bytes())
 }
