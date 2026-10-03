@@ -150,6 +150,21 @@ func DeleteToken(ctx context.Context, q db.Queryer, userID int64, action, value 
 	return err
 }
 
+// ConsumeToken はアクション・値が一致するトークンを削除し、このリクエストが削除した（まだ使われていなかった）
+// なら true を返す。並列のリクエストが同じ使い捨てトークンを同時に使えないようにするため、
+// 検索と削除を分けずに DELETE の件数で判定する。
+func ConsumeToken(ctx context.Context, q db.Queryer, action, value string) (bool, error) {
+	if action == "" || !tokenKeyRe.MatchString(value) {
+		return false, nil
+	}
+	res, err := q.Exec(ctx, `DELETE FROM tokens WHERE action = ? AND value = ?`, action, value)
+	if err != nil {
+		return false, err
+	}
+	n, err := res.RowsAffected()
+	return n > 0, err
+}
+
 // DeleteUserTokens はユーザのアクションのトークンをすべて消す (アクション "" なら全アクション)。
 func DeleteUserTokens(ctx context.Context, q db.Queryer, userID int64, action string) error {
 	if action == "" {

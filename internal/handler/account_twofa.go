@@ -117,7 +117,20 @@ func (a *App) setupTwofaSession(c *Req, user *domain.User, previousTries int64) 
 
 // preventTwofaSessionReplay は prevent_twofa_session_replay（twofa_session トークンを 1 リクエストで使い捨てにする）。
 func (a *App) preventTwofaSessionReplay(c *Req) {
-	tries := c.Session().GetInt("twofa_tries_counter") + 1
+	s := c.Session()
+	tries := s.GetInt("twofa_tries_counter") + 1
+	// twofa_setup で見つけたトークンを原子的に消費する。並列に送られた同じクッキーのリクエストのうち
+	// 消費に失敗したもの（既に別のリクエストが使った）は、試行回数の制限を回避できないよう拒否する
+	ok, err := repository.ConsumeToken(c.Ctx(), a.DB, repository.TokenTwofaSession, s.GetString("twofa_session_token"))
+	if err != nil {
+		a.serverError(c, err)
+		return
+	}
+	if !ok {
+		a.destroyTwofaSession(c)
+		c.Redirect("/")
+		return
+	}
 	a.destroyTwofaSession(c)
 	if err := a.setupTwofaSession(c, c.twofaUser(), tries); err != nil {
 		a.serverError(c, err)

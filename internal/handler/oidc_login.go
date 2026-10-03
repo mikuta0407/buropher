@@ -203,6 +203,13 @@ func (a *App) OIDCStart(c *Req) {
 	if (mode == "link" || mode == "sudo") && !c.User.Logged() {
 		mode = ""
 	}
+	if mode == "link" {
+		// 攻撃者の IdP アカウントを連携されると、乗っ取ったセッションからパスワード変更後も残るログイン手段を
+		// 作れてしまうため、sudo モードが有効ならパスワードの再確認を求める
+		if a.sudoRequestFilter(c, nil); c.Halted() {
+			return
+		}
+	}
 	req := oidc.NewAuthRequest()
 	if mode == "sudo" {
 		req.Prompt = "login"
