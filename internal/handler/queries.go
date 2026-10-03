@@ -18,10 +18,11 @@ import (
 	"github.com/mikuta0407/buropher/internal/view/rails"
 )
 
-// QueriesController（app/controllers/queries_controller.rb）。menu_item :issues。
-// current_menu_item は @query.queried_class の複数形（admin レイアウトのクエリでは nil）で、
-// 描画時に setQueryMenu で上書きする。
-var QueriesController = &Controller{Name: "queries", MainMenu: true}
+// QueriesController（app/controllers/queries_controller.rb）。menu_item :issues だが
+// current_menu_item を上書きしており、@query が無ければ nil（queries#filter や find_query の 404）。
+// @query があれば queried_class の複数形（admin レイアウトのクエリでは nil）で、setQueryMenu で上書きする。
+var QueriesController = &Controller{Name: "queries", MainMenu: true,
+	MenuItem: func(string) string { return helper.NoMenuItem }}
 
 // routesQueries は queries コントローラのルートを登録する。
 //
