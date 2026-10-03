@@ -175,11 +175,6 @@ func downloadNamedAttachmentPath(att *domain.Attachment) string {
 	return "/attachments/download/" + strconv.FormatInt(att.ID, 10) + "/" + escapePathSegment(att.Filename)
 }
 
-// namedAttachmentPath は named_attachment_path(attachment, attachment.filename)。
-func namedAttachmentPath(att *domain.Attachment) string {
-	return "/attachments/" + strconv.FormatInt(att.ID, 10) + "/" + escapePathSegment(att.Filename)
-}
-
 func nilIfEmptyString(s string) any {
 	if s == "" {
 		return nil

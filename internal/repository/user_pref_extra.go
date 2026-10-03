@@ -69,7 +69,7 @@ func userPrefExtraMap(ctx context.Context, q db.Queryer, userID int64) (map[stri
 	m := map[string]any{}
 	if raw[0] != "" {
 		if err := json.Unmarshal([]byte(raw[0]), &m); err != nil {
-			return nil, true, nil
+			return nil, true, nil //nolint:nilerr // 壊れた JSON は空の設定として扱う
 		}
 	}
 	return m, true, nil

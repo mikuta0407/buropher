@@ -244,7 +244,7 @@ func (e *Env) SetProject(ctx context.Context, iss *Issue, p *domain.Project, kee
 			return err
 		}
 		if !ok {
-			e.SetParentIssueID(ctx, iss, "")
+			_ = e.SetParentIssueID(ctx, iss, "") // 空文字は常に成功する
 		}
 		if err := e.reassignCustomFieldValues(ctx, iss); err != nil {
 			return err

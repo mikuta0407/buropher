@@ -745,7 +745,7 @@ func (v *bulkEditView) customFieldTag(cf *customfield.CustomField) template.HTML
 		d.Update(listAutofillHash(l))
 		data = d
 	}
-	var value any = ""
+	var value any
 	if m := v.IssueParams.Map("custom_field_values"); m != nil {
 		if x, ok := m.Get(strconv.FormatInt(cf.ID, 10)); ok {
 			if xs, isArr := x.([]any); isArr {

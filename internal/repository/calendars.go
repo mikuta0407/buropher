@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"errors"
 
 	"github.com/mikuta0407/buropher/internal/db"
 	"github.com/mikuta0407/buropher/internal/domain"
@@ -97,7 +98,7 @@ func PrincipalMapByIDs(ctx context.Context, q db.Queryer, ids []int64) (map[int6
 	for _, id := range uniqIDs(ids) {
 		p, err := GetPrincipal(ctx, q, id)
 		if err != nil {
-			if err == ErrNotFound || err == sql.ErrNoRows {
+			if errors.Is(err, ErrNotFound) || errors.Is(err, sql.ErrNoRows) {
 				continue
 			}
 			return nil, err

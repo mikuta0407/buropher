@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"io/fs"
-	"path"
 	"sort"
 	"strings"
 	"sync"
@@ -266,15 +265,6 @@ func execute(set *template.Template, name string, data any) (string, error) {
 		return "", err
 	}
 	return buf.String(), nil
-}
-
-// splitFormat は "issues/show.html" を ("issues/show", "html") に分ける（拡張子がなければ format は ""）。
-func splitFormat(name string) (string, string) {
-	base := path.Base(name)
-	if i := strings.LastIndexByte(base, '.'); i > 0 {
-		return name[:len(name)-len(base)+i], base[i+1:]
-	}
-	return name, ""
 }
 
 // builtinNames は text/template の組み込み関数名（解析時の存在検査用）。

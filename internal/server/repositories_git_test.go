@@ -148,7 +148,7 @@ func TestGitCreateAndUpdate(t *testing.T) {
 	if !strings.Contains(body, "Identifier has already been taken") {
 		t.Errorf("uniqueness error missing\n%s", contentMain(body))
 	}
-	res, body = post(t, e.admin, e.ts.URL+"/projects/subproject1/repositories", contentForm(t, e.admin, e.ts,
+	_, body = post(t, e.admin, e.ts.URL+"/projects/subproject1/repositories", contentForm(t, e.admin, e.ts,
 		"repository_scm", "Git", "repository[url]", "", "repository[identifier]", "diff"))
 	if !strings.Contains(body, "Path to repository cannot be blank") || !strings.Contains(body, "Identifier is reserved") {
 		t.Errorf("errors missing\n%s", contentMain(body))

@@ -344,14 +344,6 @@ func (a *App) findWatchersProject(c *Req) {
 	}
 }
 
-// watchersProjects は @projects（@project があればそれのみ）。
-func (c *Req) watchersProjects() []*domain.Project {
-	if c.Project != nil {
-		return []*domain.Project{c.Project}
-	}
-	return c.Projects
-}
-
 // authorizeForWatchableType は authorize_for_watchable_type(action)（拒否なら 403 を描画して false）。
 func (a *App) authorizeForWatchableType(c *Req, action string) bool {
 	for _, w := range c.watchables() {

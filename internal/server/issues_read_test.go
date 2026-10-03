@@ -112,12 +112,6 @@ func alignIssuesFixtures(t *testing.T, d *db.DB) {
 func TestIssuesReadPagesMatchRedmine(t *testing.T) {
 	ts, d := newFixtureServer(t)
 	alignIssuesFixtures(t, d)
-	clients := map[string]*http.Client{
-		"admin":     login(t, ts, "admin", "admin"),
-		"jsmith":    login(t, ts, "jsmith", "jsmith"),
-		"dlopper":   login(t, ts, "dlopper", "foo"),
-		"anonymous": newClient(t),
-	}
 	cases := []struct {
 		name, user, path string
 		status           int
@@ -147,7 +141,7 @@ func TestIssuesReadPagesMatchRedmine(t *testing.T) {
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
 			// 別のケースで保存されたセッションのクエリ（前後のチケットのリンク）の影響を避けるため、ログインし直す
-			c := clients[tc.user]
+			var c *http.Client
 			switch tc.user {
 			case "admin":
 				c = login(t, ts, "admin", "admin")

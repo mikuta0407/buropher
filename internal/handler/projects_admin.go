@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -178,7 +179,7 @@ func (a *App) destroyProjects(c *Req, projects []*domain.Project) error {
 			msg = "mail_destroy_project_with_subprojects_successful"
 		}
 		err := a.DB.WithTx(ctx, func(tx *db.Tx) error { return repository.DestroyProject(ctx, tx, p.ID) })
-		if err == repository.ErrNotFound {
+		if errors.Is(err, repository.ErrNotFound) {
 			continue
 		}
 		if err != nil {

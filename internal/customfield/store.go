@@ -151,7 +151,7 @@ func RemovePosition(ctx context.Context, q db.Queryer, kind OwnerKind, previous 
 // ShiftPositions は acts_as_positioned#shift_positions（[min, max] の他の行を offset ずらし、
 // 更新件数が max - min でなければ reset_positions_in_list で 1 から振り直す）。
 func ShiftPositions(ctx context.Context, q db.Queryer, kind OwnerKind, id int64, from, to int) error {
-	offset := 1
+	var offset int
 	if from > to {
 		offset = 1
 	} else if from < to {

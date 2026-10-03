@@ -51,8 +51,6 @@ func (a *App) routesMembers(r Router) {
 	a.Handle(r, http.MethodDelete, "/memberships/{id}", ctrl, "destroy", a.MembersDestroy, findMember, Authorize(), AcceptAPIAuth())
 }
 
-type memberKey struct{}
-
 // findMemberFilter は find_model_object + find_project_from_association。
 func (a *App) findMemberFilter(c *Req) {
 	id, ok := c.Params().IntStrict("id")

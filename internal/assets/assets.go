@@ -230,7 +230,7 @@ func (p *Pipeline) build() (*index, error) {
 
 	walkInto := func(fsys fs.FS, root string, fn func(rel, name string)) error {
 		if _, err := fs.Stat(fsys, root); err != nil {
-			return nil
+			return nil //nolint:nilerr // ルートが無いソースは空として扱う
 		}
 		return fs.WalkDir(fsys, root, func(name string, d fs.DirEntry, err error) error {
 			if err != nil {
@@ -501,8 +501,8 @@ func gzipIfUseful(a *Asset) []byte {
 	}
 	var buf bytes.Buffer
 	w, _ := gzip.NewWriterLevel(&buf, gzip.DefaultCompression)
-	w.Write(a.content)
-	w.Close()
+	_, _ = w.Write(a.content) // bytes.Buffer への書き込みは失敗しない
+	_ = w.Close()
 	if buf.Len() >= len(a.content)*9/10 {
 		return nil
 	}

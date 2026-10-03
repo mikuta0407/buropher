@@ -5,7 +5,6 @@ import (
 	"io/fs"
 	"net/http"
 	"strconv"
-	"strings"
 
 	"github.com/mikuta0407/buropher/internal/apibuilder"
 	"github.com/mikuta0407/buropher/internal/db"
@@ -442,9 +441,6 @@ func (a *App) TimelogDestroy(c *Req) {
 	}
 	c.RedirectBackOrDefault(teTimeEntriesPath(first), true)
 }
-
-// teBackURLPresent は params[:back_url] があるか。
-func teBackURLPresent(c *Req) bool { return strings.TrimSpace(c.Params().String("back_url")) != "" }
 
 // teRecordNotFound は rescue されない ActiveRecord::RecordNotFound の応答（ActionDispatch::ShowExceptions。
 // json / xml は {status, error}、それ以外は public/404.html）。

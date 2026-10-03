@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"net/http"
 	"net/url"
 	"slices"
@@ -567,14 +568,14 @@ func (a *App) findSourcesAndTargets(c *Req) (*workflowCopyState, error) {
 	p := c.Params()
 	if s := p.String("source_tracker_id"); !httpx.IsBlank(s) && s != "any" {
 		t, err := repository.GetTracker(c.Ctx(), a.DB, httpx.RubyToI(s))
-		if err != nil && err != repository.ErrNotFound {
+		if err != nil && !errors.Is(err, repository.ErrNotFound) {
 			return nil, err
 		}
 		st.SourceTracker = t
 	}
 	if s := p.String("source_role_id"); !httpx.IsBlank(s) && s != "any" {
 		r, err := repository.GetRole(c.Ctx(), a.DB, httpx.RubyToI(s))
-		if err != nil && err != repository.ErrNotFound {
+		if err != nil && !errors.Is(err, repository.ErrNotFound) {
 			return nil, err
 		}
 		st.SourceRole = r

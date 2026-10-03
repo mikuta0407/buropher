@@ -510,8 +510,6 @@ func wikiTitleParam(t string) string {
 	return url.PathEscape(wikiTitleize(t))
 }
 
-var wikiTitleizeRe = regexp.MustCompile(`[ \t\r\n]+`)
-
 // versionsShowText は format.text（version_to_text）。
 func (a *App) versionsShowText(c *Req, v *domain.Version) {
 	ctx := c.Ctx()

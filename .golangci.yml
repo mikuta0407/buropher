@@ -1,0 +1,124 @@
+# golangci-lint v2 設定（CI の lint ジョブと `make lint` が使う）。
+# 方針: バグにつながる指摘に絞る。スタイル系（QF*/ST*/S1*）は対象外。
+# 意図的な箇所は `//nolint:<linter> // 理由` で個別に抑止する。
+version: "2"
+
+run:
+  timeout: 15m
+  tests: true
+
+linters:
+  default: none
+  enable:
+    - errcheck
+    - govet
+    - staticcheck
+    - unused
+    - ineffassign
+    - bodyclose
+    - rowserrcheck
+    - sqlclosecheck
+    - nilerr
+    - errorlint
+    - gosec
+    - durationcheck
+
+  settings:
+    errcheck:
+      # 失敗しても回復手段のないもの（エラー経路でのクローズ、診断出力、クリーンアップ）は除外する。
+      # 書き込み先ファイルの Close など結果が重要なものは呼び出し側で明示的に検査している。
+      exclude-functions:
+        - fmt.Fprint
+        - fmt.Fprintf
+        - fmt.Fprintln
+        - fmt.Sscan
+        - (io.Closer).Close
+        - (io.ReadCloser).Close
+        - (*os.File).Close
+        - (net.Conn).Close
+        - (net.Listener).Close
+        - (*database/sql.DB).Close
+        - (*database/sql.Rows).Close
+        - (*database/sql.Conn).Close
+        - (*database/sql.Tx).Rollback
+        - (*github.com/jmoiron/sqlx.Rows).Close
+        - (*github.com/mikuta0407/buropher/internal/db.DB).Close
+        - (*github.com/mikuta0407/buropher/internal/redmineimport/archive.Reader).Close
+        - (*github.com/go-ldap/ldap/v3.Conn).Close
+        - (*net/smtp.Client).Close
+        - (*github.com/emersion/go-imap/v2/imapclient.Client).Close
+        - (*flag.FlagSet).Parse
+        - (net/http.ResponseWriter).Write
+        - (*bufio.Writer).WriteString
+        - (*bufio.Writer).Flush
+        - (*strings.Builder).WriteString
+        - (*bytes.Buffer).WriteString
+        - os.Remove
+        - os.RemoveAll
+    govet:
+      enable-all: true
+      disable:
+        # 構造体のフィールド順の最適化提案・シャドーイングはノイズが多いので対象外
+        - fieldalignment
+        - shadow
+    staticcheck:
+      checks:
+        - all
+        - -QF*
+        - -ST*
+        - -S1*
+        # LOWER(name) = LOWER(arg) の移植など ToLower 同士の比較は意図的
+        - -SA6005
+    gosec:
+      excludes:
+        - G101 # 定数名・正規表現断片の誤検知（hardcoded credentials）
+        - G104 # errcheck と重複
+        - G115 # 整数変換（値域はコード上で保証済み）
+        - G203 # template.HTML は Rails の html_safe の移植で、エスケープ済み文字列にのみ使う
+        - G301 # ディレクトリ権限（運用側で umask を設定する前提）
+        - G302
+        - G304 # 設定・添付ストア配下のパス（呼び出し側で検証）
+        - G306
+        - G401 # MD5/SHA1 は Redmine 互換のダイジェスト/ETag 用で、認証には使わない
+        - G404 # リトライのジッター等、暗号用途でない乱数
+        - G501
+        - G505
+        - G124 # 削除用 Cookie（MaxAge=-1）まで指摘されるため。発行側は HttpOnly/SameSite/Secure を設定済み
+
+  exclusions:
+    generated: lax
+    rules:
+      # テストは httptest のレスポンスやテスト用フィクスチャの後始末が多いので一部の linter を外す
+      - path: _test\.go
+        linters:
+          - bodyclose
+          - errcheck
+          - gosec
+          - ineffassign
+          - errorlint
+      # 開発用ツール（互換性チェッカ・性能計測・データ生成）
+      - path: ^tools/
+        linters:
+          - gosec
+          - errcheck
+      # 以下は gosec の指摘を個別に確認した結果の誤検知・意図的な箇所
+      - path: internal/auth/oidc/oidctest/
+        linters: [gosec]
+      - linters: [gosec]
+        text: "G402" # 証明書検証の無効化は Redmine 互換の設定項目（LDAP verify_peer / IMAP・POP3 の ssl=force）でのみ
+        path: internal/(auth/ldap/ldap_ext|mailhandler/(imap|pop3))\.go
+      - linters: [gosec]
+        text: "G204" # 実行するのは管理者が設定した SCM / sendmail コマンド（引数は配列で渡しシェルを経由しない）
+        path: internal/(scm/|mail/sender\.go|handler/settings\.go)
+      - linters: [gosec]
+        text: "G202" # 識別子は quoteIdent / 定数式のみを連結（値はプレースホルダ）
+        path: internal/redmineimport/export/export\.go
+      - linters: [gosec]
+        text: "G70[356]" # taint 解析の誤検知（text/plain の応答・一時ファイルの削除・構造化ログ）
+        path: (cmd/buropher/main\.go|internal/server/(server|pprof)\.go|internal/httpx/body\.go)
+      - linters: [gosec]
+        text: "G118" # pprof サーバの終了待ちはサーバのライフサイクルの ctx を使う
+        path: internal/server/pprof\.go
+
+formatters:
+  enable: []

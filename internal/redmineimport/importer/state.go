@@ -3,10 +3,9 @@ package importer
 // idset は取り込んだ行の ID 集合。
 type idset map[int64]struct{}
 
-func (s idset) add(id int64)         { s[id] = struct{}{} }
-func (s idset) has(id int64) bool    { _, ok := s[id]; return ok }
-func (s idset) hasRef(id int64) bool { return id > 0 && s.has(id) }
-func newIDSet() idset                { return idset{} }
+func (s idset) add(id int64)      { s[id] = struct{}{} }
+func (s idset) has(id int64) bool { _, ok := s[id]; return ok }
+func newIDSet() idset             { return idset{} }
 
 // state は変換中に参照する取り込み済みデータ。
 type state struct {

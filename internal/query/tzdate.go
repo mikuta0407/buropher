@@ -48,7 +48,7 @@ func sqliteTZDate(_ *sqlite.FunctionContext, args []driver.Value) (driver.Value,
 	}
 	t, err := db.ParseTime(s)
 	if err != nil {
-		return nil, nil
+		return nil, nil //nolint:nilerr // 解釈できない日時は NULL（SQL 関数）
 	}
 	name, _ := args[1].(string)
 	return t.In(loadTZ(name)).Format("2006-01-02"), nil
