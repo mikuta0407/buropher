@@ -44,6 +44,12 @@ type Provider struct {
 	SignWithOtherKey bool
 	// OmitIDToken が true ならトークン応答に id_token を入れない。
 	OmitIDToken bool
+	// Audience が nil でなければ aud をこの値にする（複数の aud の検証用）。
+	Audience any
+	// SignHS256 が true ならクライアントシークレットを鍵に HS256 で署名する（alg の取り違えの検証用）。
+	SignHS256 bool
+	// Unsigned が true なら alg=none の署名なし ID トークンを返す。
+	Unsigned bool
 
 	key, otherKey *rsa.PrivateKey
 	codes         map[string]authCode
@@ -182,6 +188,9 @@ func (p *Provider) token(w http.ResponseWriter, r *http.Request) {
 		now := time.Now()
 		claims["iss"] = p.issuer()
 		claims["aud"] = p.ClientID
+		if p.Audience != nil {
+			claims["aud"] = p.Audience
+		}
 		if p.TamperAudience {
 			claims["aud"] = "someone-else"
 		}
@@ -191,16 +200,27 @@ func (p *Provider) token(w http.ResponseWriter, r *http.Request) {
 		if p.TamperNonce {
 			claims["nonce"] = "tampered"
 		}
-		key := p.key
-		if p.SignWithOtherKey {
-			key = p.otherKey
+		payload, _ := json.Marshal(claims)
+		if p.Unsigned {
+			hdr := base64.RawURLEncoding.EncodeToString([]byte(`{"alg":"none","kid":"test"}`))
+			resp["id_token"] = hdr + "." + base64.RawURLEncoding.EncodeToString(payload) + "."
+			writeJSON(w, resp)
+			return
 		}
-		signer, err := jose.NewSigner(jose.SigningKey{Algorithm: jose.RS256, Key: key}, (&jose.SignerOptions{}).WithHeader("kid", "test"))
+		var sk jose.SigningKey
+		switch {
+		case p.SignHS256:
+			sk = jose.SigningKey{Algorithm: jose.HS256, Key: []byte(p.ClientSecret)}
+		case p.SignWithOtherKey:
+			sk = jose.SigningKey{Algorithm: jose.RS256, Key: p.otherKey}
+		default:
+			sk = jose.SigningKey{Algorithm: jose.RS256, Key: p.key}
+		}
+		signer, err := jose.NewSigner(sk, (&jose.SignerOptions{}).WithHeader("kid", "test"))
 		if err != nil {
 			http.Error(w, err.Error(), 500)
 			return
 		}
-		payload, _ := json.Marshal(claims)
 		jws, err := signer.Sign(payload)
 		if err != nil {
 			http.Error(w, err.Error(), 500)

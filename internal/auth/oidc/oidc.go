@@ -301,7 +301,7 @@ type Identity struct {
 	// AuthTime は auth_time クレーム（無ければゼロ値）。
 	AuthTime time.Time
 	// MailUnverified は email_verified クレームが明示的に false（IdP がメールアドレスを検証していない）。
-	// クレームが無い場合（Entra など）は false。
+	// クレームが無い場合（Entra など）は false。ただしマルチテナントの Entra では xms_edov が true でなければ true。
 	MailUnverified bool
 	// IDToken は生の ID トークン（RP-Initiated Logout の id_token_hint 用）。
 	IDToken string
@@ -335,6 +335,13 @@ func (p *Provider) Exchange(ctx context.Context, code string, req AuthRequest) (
 	claims := map[string]any{}
 	if err := idt.Claims(&claims); err != nil {
 		return nil, fail("id_token", err)
+	}
+	// azp（OIDC Core 3.1.3.7）: go-oidc は aud にクライアント ID が含まれることしか確認しない。
+	// aud が複数なら azp が必須で、azp があればこのクライアントでなければならない
+	// （別のクライアント向けに発行されたトークンの使い回しを防ぐ）
+	azp, _ := claims["azp"].(string)
+	if (len(idt.Audience) > 1 && azp == "") || (azp != "" && azp != p.cfg.ClientID) {
+		return nil, fail("id_token", fmt.Errorf("azp %q does not match the client", azp))
 	}
 	id := p.identity(idt.Issuer, claims)
 	id.IDToken = raw
@@ -389,6 +396,17 @@ func claimStrings(claims map[string]any, name string) []string {
 	return nil
 }
 
+// claimTrue は真偽値のクレームが true（または文字列 "true" / "1"）か。
+func claimTrue(claims map[string]any, name string) bool {
+	switch v := claims[name].(type) {
+	case bool:
+		return v
+	case string:
+		return strings.EqualFold(v, "true") || v == "1"
+	}
+	return false
+}
+
 // identity はクレームを設定のクレーム名で取り出す。
 func (p *Provider) identity(issuer string, claims map[string]any) *Identity {
 	c := p.cfg
@@ -420,6 +438,12 @@ func (p *Provider) identity(issuer string, claims map[string]any) *Identity {
 	// Entra でメールが無い場合は preferred_username（UPN）をメールとして使う
 	if id.Mail == "" && c.Preset == PresetEntra && strings.Contains(id.Login, "@") {
 		id.Mail = id.Login
+	}
+	// マルチテナントの Entra ID では、任意のテナントの管理者が email / preferred_username を自由な値にできる
+	// （nOAuth。email_verified も送られない）。xms_edov（メールのドメイン所有者による検証済み）が true の
+	// 場合だけ検証済みとみなし、それ以外は既存ユーザーとのメールでの突合に使わない
+	if c.multiTenant() && !claimTrue(claims, "xms_edov") {
+		id.MailUnverified = true
 	}
 	return id
 }

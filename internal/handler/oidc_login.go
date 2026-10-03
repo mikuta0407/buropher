@@ -271,7 +271,13 @@ func (a *App) OIDCCallback(c *Req) {
 	if v := str("autologin"); v != "" {
 		httpx.BodyParams(c.R).Set("autologin", v)
 	}
-	switch str("mode") {
+	mode := str("mode")
+	if (mode == "link" || mode == "sudo") && !c.User.Logged() {
+		// 連携・再認証はログイン中のユーザーに対してのみ（匿名ユーザーに外部 ID を紐付けない）
+		a.oidcFail(c, "state", errors.New("not logged in for "+mode))
+		return
+	}
+	switch mode {
 	case "link":
 		a.oidcLink(c, rec, prov, id)
 		return
@@ -377,6 +383,12 @@ func (a *App) oidcResolveUser(c *Req, rec *domain.AuthSourceRecord, prov *oidc.P
 		// 既に同じ認証方式の別の ID と連携しているユーザーには紐付けない（なりすまし防止）
 		if _, err := repository.UserIdentityForSource(ctx, a.DB, user.ID, providerKey); err == nil {
 			return nil, &oidc.Error{Reason: "already_linked", Err: errors.New("user is linked to another identity of this provider")}
+		}
+		// IdP の多要素認証を信頼する設定（skip_twofa）では、クレーム（メール / ログイン ID）の一致だけで
+		// buropher の 2 要素認証を有効にしているユーザーに紐付けると、以後その 2 要素認証を迂回できてしまう。
+		// その場合は自動では紐付けず、パスワード + 2 要素認証でログインしてからマイアカウントで連携させる
+		if user.TwofaActive() && set.SkipTwofa() && a.Settings.String("twofa") != "0" {
+			return nil, &oidc.Error{Reason: "link_required", Err: errors.New("automatic linking to a user with two-factor authentication is not allowed")}
 		}
 	} else {
 		if !rec.OntheflyRegister {
