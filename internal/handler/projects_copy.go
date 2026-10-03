@@ -6,6 +6,7 @@ import (
 
 	"github.com/mikuta0407/buropher/internal/db"
 	"github.com/mikuta0407/buropher/internal/domain"
+	"github.com/mikuta0407/buropher/internal/issues"
 	"github.com/mikuta0407/buropher/internal/repository"
 )
 
@@ -33,7 +34,9 @@ func (a *App) ProjectsCopy(c *Req) {
 			return
 		}
 	} else {
-		// Mailer.with_deliveries(params[:notifications] == '1')（通知は未移植）
+		// Mailer.with_deliveries(params[:notifications] == '1'): '1' のときだけコピーで作られたチケット・
+		// Wiki ページ・文書の通知をコミット後に配送する
+		deliver := c.Params().String("notifications") == "1"
 		f, err = a.newProjectForm(c)
 		if err != nil {
 			a.internalError(c, "new project", err)
@@ -64,11 +67,14 @@ func (a *App) ProjectsCopy(c *Req) {
 				}
 				only = ordered
 			}
+			var res *issues.SaveResult
 			err := a.DB.WithTx(ctx, func(tx *db.Tx) error {
 				if err := a.saveProject(c, f, tx); err != nil {
 					return err
 				}
-				return a.copyProjectItems(c, tx, src, f.Project.ID, only)
+				var err error
+				res, err = a.copyProjectItems(c, tx, src, f.Project.ID, only)
+				return err
 			})
 			if errors.Is(err, repository.ErrInvalidParent) {
 				f.errs.Add("parent_id", "invalid", nil)
@@ -76,6 +82,10 @@ func (a *App) ProjectsCopy(c *Req) {
 				a.internalError(c, "copy project", err)
 				return
 			} else {
+				if deliver {
+					a.dispatchIssueNotifications(c, res)
+					a.notifyCopiedContents(c, f.Project.ID, only)
+				}
 				c.ResetAuthz()
 				if np, err := repository.GetProject(ctx, a.DB, f.Project.ID); err == nil {
 					c.Project = np
@@ -121,9 +131,10 @@ func (a *App) copyFromProject(c *Req, src *domain.Project) (*projectForm, error)
 	return f, nil
 }
 
-// copyProjectItems は Project#copy の copy_* を順に実行する。
-func (a *App) copyProjectItems(c *Req, tx *db.Tx, src *domain.Project, dstID int64, only []string) error {
+// copyProjectItems は Project#copy の copy_* を順に実行する。返り値はコピーしたチケットの通知。
+func (a *App) copyProjectItems(c *Req, tx *db.Tx, src *domain.Project, dstID int64, only []string) (*issues.SaveResult, error) {
 	ctx := c.Ctx()
+	res := &issues.SaveResult{}
 	for _, name := range only {
 		var err error
 		switch name {
@@ -136,7 +147,15 @@ func (a *App) copyProjectItems(c *Req, tx *db.Tx, src *domain.Project, dstID int
 		case "issue_categories":
 			err = repository.CopyProjectIssueCategories(ctx, tx, src.ID, dstID)
 		case "issues":
-			// TODO: copy_issues はチケットのドメインサービス（Issue#copy_from）の移植後に実装する。
+			// メンバー・バージョン・カテゴリのコピー後の状態で判定するため、ここで Env を作る
+			var r *issues.ProjectCopyResult
+			r, err = a.writeIssuesEnv(c, tx).CopyProjectIssues(ctx, src.ID, dstID)
+			if err == nil {
+				res.Notifications = append(res.Notifications, r.Notifications...)
+				for _, id := range r.Failed {
+					a.logger().Info("Project#copy_issues: issue could not be copied", "issue_id", id)
+				}
+			}
 		case "queries":
 			err = repository.CopyProjectQueries(ctx, tx, src, dstID)
 		case "boards":
@@ -145,10 +164,38 @@ func (a *App) copyProjectItems(c *Req, tx *db.Tx, src *domain.Project, dstID int
 			err = repository.CopyProjectDocuments(ctx, tx, src.ID, dstID)
 		}
 		if err != nil {
-			return err
+			return nil, err
 		}
 	}
-	return nil
+	return res, nil
+}
+
+// notifyCopiedContents はコピーで作られた Wiki ページ（WikiContent#send_notification_create）と
+// 文書（Document#send_notification）の通知を配送する（コミット後。イベントが無効なら何もしない）。
+func (a *App) notifyCopiedContents(c *Req, dstID int64, only []string) {
+	ctx := c.Ctx()
+	if slices.Contains(only, "wiki") && a.Notify != nil {
+		var pages []struct {
+			ID      int64 `db:"id"`
+			Version int   `db:"current_version"`
+		}
+		if err := a.DB.Select(ctx, &pages, `SELECT p.id, p.current_version FROM wiki_pages p JOIN wikis w ON w.id = p.wiki_id
+WHERE w.project_id = ? ORDER BY p.id`, dstID); err != nil {
+			a.logger().Error("copy: wiki notification", "err", err)
+		}
+		for _, p := range pages {
+			a.Notify.WikiContentAdded(ctx, p.ID, p.Version, c.User)
+		}
+	}
+	if slices.Contains(only, "documents") {
+		var ids []int64
+		if err := a.DB.Select(ctx, &ids, `SELECT id FROM documents WHERE project_id = ? ORDER BY id`, dstID); err != nil {
+			a.logger().Error("copy: document notification", "err", err)
+		}
+		for _, id := range ids {
+			a.notify(c, "document_added", "document_added", &domain.Document{ID: id})
+		}
+	}
 }
 
 func (a *App) renderProjectCopy(c *Req, f *projectForm, src *domain.Project) {

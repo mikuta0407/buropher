@@ -390,6 +390,49 @@ requests:
   - id: g20_copied_memberships_json
     path: /projects/copied/memberships.json
     user: admin
+  # チケットも含めたコピー（Project#copy_issues: バージョン・カテゴリの名前での付け替え、親子・関連の再現、通知あり）
+  # 事前に親子関係・遅延付きの先行関係・ロックされたバージョンを作る
+  - id: copy_prep_parent
+    path: /issues/3
+    method: PATCH
+    user: admin
+    form:
+      issue[parent_issue_id]: "7"
+  - id: copy_prep_relation
+    path: /issues/1/relations
+    method: POST
+    user: admin
+    form:
+      relation[relation_type]: "precedes"
+      relation[issue_to_id]: "8"
+      relation[delay]: "2"
+  - id: copy_prep_lock_version
+    path: /versions/2
+    method: PATCH
+    user: admin
+    form:
+      version[status]: "locked"
+  - id: copy_with_issues
+    path: /projects/ecookbook/copy
+    method: POST
+    user: admin
+    form:
+      project[name]: "Copied with issues"
+      project[identifier]: "copied-issues"
+      project[enabled_module_names][]: ["issue_tracking", "wiki", ""]
+      project[tracker_ids][]: ["1", "2", "3"]
+      project[issue_custom_field_ids][]: ["1", "2", "6", "8", ""]
+      only[]: ["members", "versions", "issue_categories", "issues", "wiki", ""]
+      notifications: "1"
+  - id: g20a_copied_issues_json
+    path: /issues.json?project_id=copied-issues&status_id=*&sort=id&include=relations
+    user: admin
+  - id: g20b_copied_issues_html
+    path: /projects/copied-issues/issues?set_filter=1&status_id=*&sort=id&c[]=tracker&c[]=status&c[]=subject&c[]=fixed_version&c[]=category&c[]=parent&c[]=relations&c[]=author&c[]=assigned_to&c[]=cf_2
+    user: admin
+  - id: g20c_copied_versions_json
+    path: /projects/copied-issues/versions.json
+    user: admin
 
   # ---- 削除 ----
   - id: destroy_confirm_page
