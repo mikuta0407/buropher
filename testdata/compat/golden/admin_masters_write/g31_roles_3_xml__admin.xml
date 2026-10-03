@@ -1,0 +1,17 @@
+status: 200
+content-type: application/xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<role>
+  <id>3</id>
+  <name>Reporter</name>
+  <assignable>true</assignable>
+  <issues_visibility>default</issues_visibility>
+  <time_entries_visibility>all</time_entries_visibility>
+  <users_visibility>all</users_visibility>
+  <permissions type="array">
+    <permission>edit_issues</permission>
+    <permission>view_issues</permission>
+    <permission>add_issue_notes</permission>
+  </permissions>
+</role>

@@ -360,3 +360,22 @@ requests:
   - id: g29_enumerations_issue_priorities_json
     path: /enumerations/issue_priorities.json
     user: admin
+  # ---- ロールの権限の保存順（Role#permissions= は送信順のまま保存し、API は保存順で出す）
+  - id: roles_update_permissions_order
+    path: /roles/permissions
+    method: POST
+    user: admin
+    form:
+      permissions[3][]: ["view_wiki_pages", "add_issues", "view_issues", ""]
+  - id: g30_roles_3_json
+    path: /roles/3.json
+    user: admin
+  - id: roles_update_order
+    path: /roles/3
+    method: PATCH
+    user: admin
+    form:
+      role[permissions][]: ["edit_issues", "view_issues", "add_issue_notes", ""]
+  - id: g31_roles_3_xml
+    path: /roles/3.xml
+    user: admin
