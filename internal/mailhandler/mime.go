@@ -182,7 +182,8 @@ func splitMultipart(body []byte, boundary string, ascii bool, depth int) []*Part
 	}
 	var parts []*Part
 	for k := 0; k+1 < len(starts); k++ {
-		seg := body[starts[k]:ends[k+1]]
+		// 境界が連続する（間に行が無い）と、次の境界の前の改行を除いた終端が開始より前になる（空のパート）
+		seg := body[starts[k]:max(ends[k+1], starts[k])]
 		if k > 0 && len(bytes.TrimSpace(seg)) == 0 {
 			continue
 		}
