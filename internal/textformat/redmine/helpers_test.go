@@ -100,6 +100,23 @@ func TestInlineAttachmentDescriptionEscaped(t *testing.T) {
 	}
 }
 
+// CommonMark の属性値の "&{...}" や "<!--...-->"（libxml2 の SSI の名残）もエスケープして出力し、
+// 後段の Redmine リンク置換（#1・[[Wiki]] など）の後も属性値のままであることを確かめる。
+func TestCommonMarkAttributeLinkSubstitutionXSS(t *testing.T) {
+	e := newTestEnv(t)
+	r, _ := e.renderer(t, "admin", "ecookbook", "common_mark")
+	for _, src := range []string{
+		`<span title="a #1 &{<img src=x onerror=alert(1)>}">z</span>`,
+		`![a #1 &{<img src=x onerror=alert(1)>}](x.png)`,
+		`[foo](http://x "a [[Wiki]] &{<img src=x onerror=alert(1)>}")`,
+		`<span title="a #1 <!--a--!><img src=x onerror=alert(1)>-->">z</span>`,
+	} {
+		if got := string(r.Textilizable(src, Options{})); strings.Contains(got, "<img src=x") {
+			t.Errorf("%s\n=> raw HTML injected:\n%s", src, got)
+		}
+	}
+}
+
 func TestQuoteReply(t *testing.T) {
 	q := QuoteBuilder{DefaultLanguage: "en"}
 	tests := []struct{ name, got, want string }{

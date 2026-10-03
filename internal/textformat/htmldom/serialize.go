@@ -128,24 +128,13 @@ func encodeEntities(s string, attr bool) string {
 	for i := 0; i < len(s); i++ {
 		c := s[i]
 		switch {
+		// 属性値の中でも "<" は常にエスケープする（後段の Redmine リンクの置換が属性値の中に
+		// 生の "<" を見ないようにする）
 		case c == '<':
-			if attr && strings.HasPrefix(s[i:], "<!--") {
-				if end := strings.Index(s[i:], "-->"); end >= 0 {
-					sb.WriteString(s[i : i+end+3])
-					i += end + 2
-					continue
-				}
-			}
 			sb.WriteString("&lt;")
 		case c == '>':
 			sb.WriteString("&gt;")
 		case c == '&':
-			if attr && i+1 < len(s) && s[i+1] == '{' && strings.IndexByte(s[i:], '}') >= 0 {
-				end := strings.IndexByte(s[i:], '}')
-				sb.WriteString(s[i : i+end+1])
-				i += end
-				continue
-			}
 			sb.WriteString("&amp;")
 		case (c >= 0x20 && c < 0x80) || c == '\n' || c == '\t' || c == '\r':
 			sb.WriteByte(c)
