@@ -272,6 +272,57 @@ func TestCanceledJobIsRequeued(t *testing.T) {
 	})
 }
 
+// 実行中に LockTimeout を過ぎて別の取得で取り直されたジョブの結果は、元の実行が上書きしない。
+// heartbeat は実行中の locked_at を進め、RecoverStale で戻されないようにする。
+func TestStaleOwnerCannotFinishAndHeartbeat(t *testing.T) {
+	dbtest.ForEachDialect(t, func(t *testing.T, d *db.DB) {
+		ctx := context.Background()
+		q, _ := newQueue(t, d)
+		q.Opts.LockTimeout = 30 * time.Millisecond
+		q.Now = nil // heartbeat の時刻は実時間
+		var runs atomic.Int32
+		q.Register("k", func(ctx context.Context, j *Job) error {
+			runs.Add(1)
+			time.Sleep(100 * time.Millisecond) // LockTimeout より長い
+			if err := q.RecoverStale(ctx); err != nil {
+				return err
+			}
+			got, _ := q.Get(ctx, j.ID)
+			if got.State != StateRunning {
+				t.Errorf("heartbeat did not keep the job running: %+v", got)
+			}
+			return nil
+		})
+		id, err := q.Enqueue(ctx, nil, "k", nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if _, err := q.RunOne(ctx); err != nil {
+			t.Fatal(err)
+		}
+		if j, _ := q.Get(ctx, id); j.State != StateSucceeded || runs.Load() != 1 {
+			t.Errorf("job = %+v runs = %d", j, runs.Load())
+		}
+
+		// 取り直された（locked_by が変わった）ジョブへの finish は無視される
+		q2, _ := newQueue(t, d)
+		id2, _ := q2.Enqueue(ctx, nil, "k", nil)
+		j, err := q2.claim(ctx)
+		if err != nil || j == nil || j.ID != id2 {
+			t.Fatal(j, err)
+		}
+		if _, err := d.Exec(ctx, `UPDATE jobs SET locked_by = 'other' WHERE id = ?`, id2); err != nil {
+			t.Fatal(err)
+		}
+		if err := q2.finish(ctx, j, nil); err != nil {
+			t.Fatal(err)
+		}
+		if got, _ := q2.Get(ctx, id2); got.State != StateRunning {
+			t.Errorf("stale finish overwrote the new owner's job: %+v", got)
+		}
+	})
+}
+
 func TestBackoffLargeAttempts(t *testing.T) {
 	q := New(nil, Options{NoJitter: true, BackoffBase: time.Minute, BackoffMax: time.Hour})
 	for _, n := range []int{0, 1, 7, 64, 1000, 1 << 30} {
