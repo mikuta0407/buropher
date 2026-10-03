@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package authz_test
 
 // test/unit/issue_test.rb の test_visible_scope_* と test/unit/principal_test.rb の

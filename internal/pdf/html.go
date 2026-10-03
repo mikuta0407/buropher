@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package pdf
 
 // writeHTMLCell（TCPDF の HTML 描画）の近似。textilizable の出力（p, br, strong, em, ins, del, code, pre,

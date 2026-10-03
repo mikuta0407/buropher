@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package handler
 
 // PDF 出力の共通部分（Redmine::Export::PDF::ITCPDF の生成・send_file_headers!・get_image_filename）。

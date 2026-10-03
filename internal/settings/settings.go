@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package settings は Redmine の Setting モデル（app/models/setting.rb）の移植。
 //
 // 設定項目の定義は Redmine の config/settings.yml を埋め込む（製品名を含む既定値 app_title / welcome_text のみ

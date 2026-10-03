@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package rails
 
 // View はリクエスト単位の状態を持つ ActionView のビューコンテキスト相当。

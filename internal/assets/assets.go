@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package assets は Propshaft 互換のアセットパイプラインを提供する。
 //
 // web/assets（embed もしくは開発時のディスク）からファイルを集め、Redmine 6.1.2

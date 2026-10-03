@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package normalize は Redmine と buropher のレスポンスを比較可能な形へ正規化する。
 //
 // HTML は DOM に変換したうえで 1 要素 1 行のインデント形式に整形し、

@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package jobs は DB（jobs テーブル）を使う永続ジョブキューとワーカー、定期実行スケジューラ。
 //
 // Redmine は ActiveJob（既定はプロセス内 async アダプタ）でメールを deliver_later するが、

@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package handler
 
 // チケット詳細・編集フォーム・コンテキストメニューで使う Issue モデル。権限・ワークフロー・割り当て候補などの

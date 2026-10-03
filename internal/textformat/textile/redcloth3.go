@@ -1,6 +1,6 @@
-// Copyright (C) 2026 buropher contributors
 // SPDX-License-Identifier: GPL-2.0-or-later
-//
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // 本ファイルは Redmine 6.1.2 の lib/redmine/wiki_formatting/textile/redcloth3.rb
 // (RedCloth 3.0.4 を Redmine 向けに改変したもの) を Go へ移植したものである。
 // 元の RedCloth は (cc) 2004 why the lucky stiff による BSD ライセンスのコード。

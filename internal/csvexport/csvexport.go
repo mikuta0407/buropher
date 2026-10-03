@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package csvexport は Redmine::Export::CSV（lib/redmine/export/csv.rb）の移植。
 //
 // Ruby の CSV（:col_sep, :encoding）と同じ規則で出力する:

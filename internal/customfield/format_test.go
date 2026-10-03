@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package customfield
 
 // test/unit/custom_field_test.rb と test/unit/lib/redmine/field_format/*_test.rb のうち

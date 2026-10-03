@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package migrationgen は dialect 共通のマイグレーションテンプレート
 // (internal/db/migrations/src/*.sql.tmpl) から SQLite / PostgreSQL 用の
 // goose マイグレーションファイルを生成する。

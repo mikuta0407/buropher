@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package brand は製品名・ライセンス表記など、buropher のブランディングに関する定数と
 // Redmine 由来の訳文に対するブランド置換を提供する。
 //

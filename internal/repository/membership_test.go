@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package repository_test
 
 // test/unit/member_test.rb, group_test.rb, project_members_inheritance_test.rb の移植。

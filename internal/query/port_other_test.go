@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package query
 
 // Redmine の test/unit/time_entry_query_test.rb, project_query_test.rb, project_admin_query_test.rb,

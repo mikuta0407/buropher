@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package brandtest は Redmine の出力から作ったゴールデンと buropher の出力を比べるテスト用に、
 // buropher の製品名表記（"Buropher"）を Redmine の表記へ戻す。
 //

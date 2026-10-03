@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package urlroot はサブパス配置（Rails の config.relative_url_root / RAILS_RELATIVE_URL_ROOT）の
 // ルートパスを保持し、アプリが生成する絶対パスへ前置する。
 //

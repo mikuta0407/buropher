@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package report は比較結果の集計と Markdown/HTML レポート出力、許容差分リストを扱う。
 package report
 

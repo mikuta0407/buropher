@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package apibuilder は Redmine::Views::Builders（lib/redmine/views/builders/*.rb）の移植。
 //
 // Redmine の REST API は .api.rsb テンプレートの DSL（api.id 1 / api.user do ... end /

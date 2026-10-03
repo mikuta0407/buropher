@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: GPL-2.0-or-later AND MIT
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+// Portions ported from Rouge (https://github.com/rouge-ruby/rouge),
+// Copyright (c) 2012 Jeanine Adkisson and contributors, MIT License.
+
 package highlight
 
 // Rouge 4.7 の objective_c.rb / objective_c/common.rb の移植。

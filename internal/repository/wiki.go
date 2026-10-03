@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package repository
 
 // Wiki（WikiController / WikisController）の読み書き。textilizable 用の参照（RefWiki 等）は wikitext.go。

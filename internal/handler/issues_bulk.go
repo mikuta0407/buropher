@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package handler
 
 // IssuesController の一括編集・一括更新・削除（bulk_edit / bulk_update / destroy）。

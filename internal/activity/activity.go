@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package activity は Redmine の活動（Redmine::Activity, Redmine::Activity::Fetcher,
 // acts_as_activity_provider, acts_as_event）の移植。
 //

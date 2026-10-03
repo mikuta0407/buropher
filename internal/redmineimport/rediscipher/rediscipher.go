@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package rediscipher は Redmine の暗号化列(Redmine::Ciphering)と同じ形式の
 // 暗号化・復号を実装する。
 //

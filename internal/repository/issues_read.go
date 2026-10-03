@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package repository
 
 // このファイルはチケットの参照系画面（issues#index / show、journals#index / diff、context_menus#issues）が

@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package bootstrap は `buropher init`（初期データ投入と管理者作成）を実装する。
 //
 // Redmine の 001_setup マイグレーション（管理者・組込みロール）、

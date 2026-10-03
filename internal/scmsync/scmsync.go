@@ -1,5 +1,5 @@
-// Copyright (C) 2026 buropher contributors
 // SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
 
 // Package scmsync はリポジトリのチェンジセット取り込み（Repository::Git#fetch_changesets,
 // Repository.fetch_changesets）と、コミットメッセージからのチケット参照の解析

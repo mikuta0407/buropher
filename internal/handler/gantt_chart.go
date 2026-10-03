@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package handler
 
 // このファイルは Redmine::Helpers::Gantt（lib/redmine/helpers/gantt.rb）の HTML 形式の移植。

@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package issues
 
 // フォームの再表示（IssuesController#new / edit / update の検証エラー時）で使う読み取り用のアクセサ。

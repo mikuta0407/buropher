@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package smtptest はテスト用のプロセス内 SMTP サーバ（外部ネットワーク不要）。
 //
 // EHLO / STARTTLS / AUTH（PLAIN, LOGIN, CRAM-MD5）/ MAIL / RCPT / DATA / RSET / NOOP / QUIT を扱い、

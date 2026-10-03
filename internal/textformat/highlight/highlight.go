@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package highlight は Redmine::SyntaxHighlighting（Rouge アダプタ）を移植したもの。
 //
 // 対応言語の判定（language_supported?）とファイル名からのレキサー推定は

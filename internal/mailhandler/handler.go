@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package mailhandler は Redmine のメール受信（app/models/mail_handler.rb）の移植。
 //
 // 受信したメールを解析し、送信者のユーザーで新しいチケット・チケットへの返信（ノート）・

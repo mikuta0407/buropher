@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package repository
 
 // textilizable（Redmine リンク・Wiki リンク・マクロの解決）が参照するデータの読み込み。

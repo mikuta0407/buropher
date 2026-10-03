@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // perf は buropher の主要画面に HTTP リクエストを繰り返し送り、レイテンシの p50 / p95 を測る。
 //
 // tools/gendata で作ったデータを前提にしている (ログイン情報・API キー・プロジェクト識別子)。

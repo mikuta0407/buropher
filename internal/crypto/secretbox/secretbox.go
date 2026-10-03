@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package secretbox は DB に保存する秘密値(TOTP シークレット、LDAP バインドパスワード、
 // リポジトリのパスワード、OIDC クライアントシークレット等)を buropher の秘密鍵で暗号化する。
 //

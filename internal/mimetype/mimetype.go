@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package mimetype は Redmine::MimeType（lib/redmine/mime_type.rb）の移植。
 //
 // Redmine 独自の表（MIME_TYPES）に無い拡張子は MiniMime（mini_mime gem の DB）で引く。

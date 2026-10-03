@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package handler
 
 // JournalsController（app/controllers/journals_controller.rb）の参照系: index（Atom）と diff。

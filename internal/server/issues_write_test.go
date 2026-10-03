@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package server_test
 
 // チケットの作成・更新（IssuesController#new / create / edit / update と REST API）の振る舞いのテスト。

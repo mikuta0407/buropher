@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package helper
 
 // ApplicationHelper#textilizable のテンプレート関数（本体は internal/textformat/redmine）。

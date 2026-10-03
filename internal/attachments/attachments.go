@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package attachments は Redmine の Attachment モデル（app/models/attachment.rb）のうち、
 // ディスク上のファイルの保存・検証・削除と、acts_as_attachable の save_attachments /
 // attach_saved_attachments（Attachment.attach_files）の移植。

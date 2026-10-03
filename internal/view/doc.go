@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package view は Redmine の ERB ビューを移植した Go テンプレートの描画エンジン。
 //
 // # 配置と名前

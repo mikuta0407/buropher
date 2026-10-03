@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package server_test
 
 // 画面操作（HTTP）から通知の配送（メール / Discord DM）までの結合テスト。

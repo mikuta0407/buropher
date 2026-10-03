@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package handler は Redmine のコントローラ（app/controllers）の移植。
 //
 // ApplicationController の before_action（session_expiration, user_setup,

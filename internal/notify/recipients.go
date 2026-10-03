@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package notify
 
 // チケット以外の通知の受信者計算（Redmine のモデルの notified_users / notified_watchers / notified_mentions）。

@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package dbtest はテスト用に、マイグレーション済みの新しい DB を 1 テストごとに用意する。
 //
 //   - SQLite: t.TempDir() 配下のファイル DB (テスト終了時に削除)。

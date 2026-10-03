@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package pdf は Redmine::Export::PDF::ITCPDF（rbpdf / TCPDF）の近似実装。
 //
 // Redmine の PDF 出力（issue_to_pdf / issues_to_pdf / wiki_page_to_pdf / Gantt#to_pdf）が使う

@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package issues
 
 // test/unit/issue_test.rb の移植 (1353-2632 行: コピー・移動・重複クローズ・バージョン・移動先・通知先・削除・

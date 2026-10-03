@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package helper
 
 // このファイルはチケット画面（handler の issues*.go）が HTML を組み立てるときに使う、

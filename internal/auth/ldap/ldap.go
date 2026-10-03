@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package ldap は Redmine の AuthSourceLdap（app/models/auth_source_ldap.rb）の認証・検索部分を
 // github.com/go-ldap/ldap/v3 で移植したもの。
 //

@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package i18n は Rails I18n（i18n gem 1.14 + Fallbacks + Pluralization）と
 // Redmine::I18n 互換のローカライズ機能を提供する。
 //

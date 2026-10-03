@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package handler
 
 // AccountMailer を通知の配送層（internal/notify）で実装する。アカウント系のメールは notify 側で常に

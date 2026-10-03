@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package handler
 
 // buropher 独自: Discord DM 通知の設定画面（管理 > プラグイン > Discord 通知。Redmine のプラグイン設定画面

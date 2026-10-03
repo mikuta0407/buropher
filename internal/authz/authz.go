@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package authz は Redmine の権限判定 (User#allowed_to?, User#roles_for_project,
 // Project.allowed_to_condition, 各種 visible スコープ) を移植する。
 //

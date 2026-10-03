@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // compat は本物の Redmine（参照）と buropher（候補）のレスポンスを正規化して比較する互換テストハーネス。
 //
 // 使い方:

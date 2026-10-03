@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package server_test
 
 // REST API テスト（api_*_test.go。Redmine の test/integration/api_test/*.rb の移植）の共通ヘルパー。

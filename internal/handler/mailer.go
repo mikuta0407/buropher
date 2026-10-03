@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package handler
 
 // Mailer（app/models/mailer.rb）の移植。notify.Renderer を実装し、受信者を User.current・受信者の言語を

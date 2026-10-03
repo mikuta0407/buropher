@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package pdf
 
 // 文字列の折り返し（TCPDF の MultiCell / writeHTML の行分割の近似）。

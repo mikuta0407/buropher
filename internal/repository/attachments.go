@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package repository
 
 // 添付ファイル（Attachment モデル）の読み書き。ディスク上のファイル操作は internal/attachments が行う。

@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package httpx は Redmine (Rails/Rack) 互換の HTTP リクエスト/レスポンス基盤を提供する。
 //
 // 主な機能:

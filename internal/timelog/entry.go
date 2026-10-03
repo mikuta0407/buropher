@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package timelog は Redmine の工数（app/models/time_entry.rb, time_entry_activity.rb の一部）の
 // ドメインロジック（safe_attributes=、検証、保存、可視性・編集可否）を移植する。
 //

@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package db は buropher の DB アクセス基盤 (接続, dialect 抽象化, トランザクション,
 // 時刻型, マイグレーション) を提供する。
 //

@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 // Package csvimport は Redmine の CSV インポート（app/models/import.rb）のうち、モデルや DB に依存しない部分
 // （Ruby の CSV ライブラリと同じ規則での CSV 解析・文字コード変換、Date.strptime 互換の日付解析、
 // set_default_settings の区切り文字・文字コードの推定）を移植する。

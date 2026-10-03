@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
 package mailhandler
 
 // test/unit/mail_handler_test.rb の移植（返信・無視するメール・ユーザー作成の補助）。
