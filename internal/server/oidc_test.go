@@ -513,7 +513,15 @@ func TestOIDCSudoReauth(t *testing.T) {
 	if !strings.Contains(body, "sudo-form") || !strings.Contains(body, "/auth/oidc/"+e.id+"/start?mode=sudo&amp;back_url=%2Fmy%2Faccount%2Fdestroy") {
 		t.Fatalf("sudo form with re-auth button:\n%s", body)
 	}
-	e.idp.SetClaims(map[string]any{"sub": "dl-sub"})
+	// IdP が再認証せずに（auth_time が無い・古い）応答した場合は sudo にしない
+	for _, claims := range []map[string]any{{"sub": "dl-sub"}, {"sub": "dl-sub", "auth_time": frozenTime.Add(-time.Hour).Unix()}} {
+		e.idp.SetClaims(claims)
+		e.ssoLogin(c, "?mode=sudo&back_url=%2Fmy%2Faccount%2Fdestroy")
+		if _, body := get(t, c, e.ts.URL+"/my/account/destroy"); !strings.Contains(body, "sudo-form") {
+			t.Fatalf("sudo granted without re-authentication (%v)", claims)
+		}
+	}
+	e.idp.SetClaims(map[string]any{"sub": "dl-sub", "auth_time": frozenTime.Unix()})
 	res := e.ssoLogin(c, "?mode=sudo&back_url=%2Fmy%2Faccount%2Fdestroy")
 	if !strings.HasSuffix(res.Header.Get("Location"), "/my/account/destroy") {
 		t.Fatalf("sudo reauth redirect: %s", res.Header.Get("Location"))
