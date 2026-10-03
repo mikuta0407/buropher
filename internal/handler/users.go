@@ -279,7 +279,8 @@ func (a *App) sendUsersCSV(c *Req, v *userQueryView, users []*domain.User) {
 	}
 	c.halted = true
 	c.W.Header().Set("Content-Type", "text/csv; header=present")
-	c.W.Header().Set("Content-Disposition", `attachment; filename="`+strings.ToLower(name)+`.csv"; filename*=UTF-8''`+strings.ToLower(name)+".csv")
+	// query_name パラメータは利用者が指定できるので send_data と同じ書式でエスケープする
+	c.W.Header().Set("Content-Disposition", httpx.ContentDisposition("attachment", strings.ToLower(name)+".csv"))
 	c.W.WriteHeader(http.StatusOK)
 	_, _ = c.W.Write(w.Bytes())
 }

@@ -7,12 +7,12 @@ package handler
 
 import (
 	"net/http"
-	"net/url"
 	"strconv"
 	"strings"
 
 	"github.com/mikuta0407/buropher/internal/csvexport"
 	"github.com/mikuta0407/buropher/internal/domain"
+	"github.com/mikuta0407/buropher/internal/httpx"
 	"github.com/mikuta0407/buropher/internal/i18n"
 	"github.com/mikuta0407/buropher/internal/query"
 	"github.com/mikuta0407/buropher/internal/repository"
@@ -61,7 +61,7 @@ func (a *App) renderIssuesIndexCSV(c *Req, q *query.Query) {
 	name := a.filenameForExport(c, q, "issues")
 	c.Halt()
 	c.W.Header().Set("Content-Type", "text/csv; header=present")
-	c.W.Header().Set("Content-Disposition", contentDisposition(name+".csv"))
+	c.W.Header().Set("Content-Disposition", httpx.ContentDisposition("attachment", name+".csv"))
 	c.W.WriteHeader(http.StatusOK)
 	_, _ = c.W.Write(w.Bytes())
 }
@@ -76,17 +76,6 @@ func (a *App) filenameForExport(c *Req, q *query.Query, def string) string {
 		name = def
 	}
 	return strings.ToLower(redmine.Titleize(name))
-}
-
-// contentDisposition は send_data の Content-Disposition（attachment; filename="..."; filename*=UTF-8”...）。
-func contentDisposition(name string) string {
-	ascii := strings.Map(func(r rune) rune {
-		if r > 127 || r == '"' {
-			return '?'
-		}
-		return r
-	}, name)
-	return `attachment; filename="` + ascii + `"; filename*=UTF-8''` + url.PathEscape(name)
 }
 
 // csvContent は csv_content(column, issue)。

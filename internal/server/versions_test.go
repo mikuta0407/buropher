@@ -6,6 +6,7 @@ package server_test
 import (
 	"context"
 	"net/http"
+	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
@@ -130,5 +131,22 @@ func TestVersionTextContentDisposition(t *testing.T) {
 	want := `attachment; filename="v%22%3B filename%3Devil.html.txt"; filename*=UTF-8''v%22%3B%20filename%3Devil.html.txt`
 	if got := res.Header.Get("Content-Disposition"); res.StatusCode != 200 || got != want {
 		t.Errorf("status %d Content-Disposition %q", res.StatusCode, got)
+	}
+}
+
+// CSV の Content-Disposition のファイル名は query_name パラメータ由来なので、send_data と同じ書式で
+// エスケープする（引用符でファイル名を差し替えられないように）。
+func TestCSVContentDispositionEscapesQueryName(t *testing.T) {
+	ts, _ := newFixtureServer(t)
+	for _, p := range []string{"/issues.csv", "/time_entries.csv"} {
+		res, err := http.Get(ts.URL + p + "?query_name=" + url.QueryEscape(`x"; filename=evil.html`))
+		if err != nil {
+			t.Fatal(err)
+		}
+		res.Body.Close()
+		got := res.Header.Get("Content-Disposition")
+		if res.StatusCode != 200 || !strings.HasPrefix(got, `attachment; filename="x%22_filename%3Devilhtml.csv"; filename*=UTF-8''x%22_filename%3Devilhtml.csv`) {
+			t.Errorf("%s: status %d Content-Disposition %q", p, res.StatusCode, got)
+		}
 	}
 }
