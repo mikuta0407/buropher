@@ -200,7 +200,7 @@ func TestValidateSingleValues(t *testing.T) {
 	env := testEnv(t)
 	pb := Find("progressbar")
 	cf := field("progressbar")
-	for v, want := range map[string]string{"abc": "is not a number", "-10": "is invalid", "150": "is invalid", "50": "", "0": "", "100": "", "": ""} {
+	for v, want := range map[string]string{"abc": "is not a number", "abc\n5": "is not a number", "-10": "is invalid", "150": "is invalid", "50": "", "0": "", "100": "", "": ""} {
 		errs := pb.ValidateSingleValue(env, cf, v, nil)
 		if want == "" && len(errs) > 0 || want != "" && !contains(errs, want) {
 			t.Errorf("progressbar %q: %v", v, errs)
@@ -210,19 +210,23 @@ func TestValidateSingleValues(t *testing.T) {
 		t.Errorf("progressbar 120: %v", errs)
 	}
 	intF := Find("int")
-	for v, ok := range map[string]bool{"12": true, " +3 ": true, "-1": true, "1.5": false, "x": false} {
+	for v, ok := range map[string]bool{"12": true, " +3 ": true, "-1": true, "1.5": false, "x": false,
+		// 行単位の一致や decimal(30,3) に収まらない値は PostgreSQL の CAST を失敗させる（Redmine は受け付ける）
+		"abc\n1": false, "1\nabc": false, strings.Repeat("9", 27): true, strings.Repeat("9", 28): false} {
 		if got := len(intF.ValidateSingleValue(env, field("int"), v, nil)) == 0; got != ok {
 			t.Errorf("int %q: %v", v, got)
 		}
 	}
 	floatF := Find("float")
-	for v, ok := range map[string]bool{"1.5": true, "1e3": true, " 2 ": true, "1_000.5": true, "0x1A": true, "3,33": false, "abc": false, "1.": false} {
+	for v, ok := range map[string]bool{"1.5": true, "1e3": true, " 2 ": true, "3,33": false, "abc": false, "1.": false,
+		// Kernel.Float は受け付けるが PostgreSQL の numeric に CAST できない値（Redmine は受け付ける）
+		"1_000.5": false, "0x1A": false, "1e30": false, "-1e27": false, "1e26": true, "abc\n1": false} {
 		if got := len(floatF.ValidateSingleValue(env, field("float"), v, nil)) == 0; got != ok {
 			t.Errorf("float %q: %v", v, got)
 		}
 	}
 	dateF := Find("date")
-	for v, ok := range map[string]bool{"2026-01-15": true, "2026-02-30": false, "2026-1-5": false, "x": false} {
+	for v, ok := range map[string]bool{"2026-01-15": true, "2026-02-30": false, "2026-1-5": false, "x": false, "x\n2026-01-15": false} {
 		if got := len(dateF.ValidateSingleValue(env, field("date"), v, nil)) == 0; got != ok {
 			t.Errorf("date %q: %v", v, got)
 		}

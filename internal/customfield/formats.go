@@ -4,6 +4,7 @@
 package customfield
 
 import (
+	"math"
 	"regexp"
 	"slices"
 	"strconv"
@@ -66,7 +67,7 @@ var (
 		castSingle: func(env *Env, cf *CustomField, v string, c *Customized) any { return RubyToF(v) },
 		validateSingle: func(env *Env, cf *CustomField, v string, c *Customized) []string {
 			errs := validateUnbounded(env, cf, v, c)
-			if _, ok := kernelFloat(v); !ok {
+			if f, ok := kernelFloat(v); !ok || !sqlNumericSafe(v, f) {
 				errs = append(errs, env.l("activerecord.errors.messages.invalid"))
 			}
 			return errs
@@ -296,9 +297,14 @@ func init() {
 var recordListKinds = []OwnerKind{KindIssue, KindTimeEntry, KindVersion, KindDocument, KindProject}
 
 var (
-	intRe        = regexp.MustCompile(`(?m)^[+-]?\d+$`)
-	dateRe       = regexp.MustCompile(`(?m)^\d{4}-\d{2}-\d{2}$`)
-	digitsOnlyRe = regexp.MustCompile(`(?m)^\d*$`)
+	// Redmine の /^...$/ は行単位で一致するため "abc\n1" も数値として保存され、PostgreSQL では
+	// 並べ替え・合計・数値フィルタの CAST(value AS decimal(30,3)) が失敗してチケット一覧が 500 になった。
+	// 値全体で一致させ、整数は decimal(30,3) に収まる 27 桁までにする。
+	intRe        = regexp.MustCompile(`\A[+-]?\d{1,27}\z`)
+	dateRe       = regexp.MustCompile(`\A\d{4}-\d{2}-\d{2}\z`)
+	digitsOnlyRe = regexp.MustCompile(`\A\d*\z`)
+	// plainDecimalRe は PostgreSQL の numeric が解釈できる浮動小数点数の書式（Kernel.Float は 0x / _ も受け付ける）。
+	plainDecimalRe = regexp.MustCompile(`\A[+-]?(?:\d+(?:\.\d+)?|\.\d+)(?:[eE][+-]?\d+)?\z`)
 )
 
 // ---------------------------------------------------------------- 値の設定・キャスト
@@ -755,6 +761,12 @@ func likeMatch(name, pattern string) bool {
 // ---------------------------------------------------------------- 数値変換（Ruby 互換）
 
 var kernelFloatRe = regexp.MustCompile(`^[ \t\n\v\f\r]*[+-]?(?:\d+(?:_\d+)*(?:\.\d+(?:_\d+)*)?(?:[eE][+-]?\d+(?:_\d+)*)?|0[xX][0-9a-fA-F]+(?:_[0-9a-fA-F]+)*)[ \t\n\v\f\r]*$`)
+
+// sqlNumericSafe は float 書式の値が CAST(value AS decimal(30,3)) で失敗しないか
+// （16 進・桁区切りの _・decimal(30,3) の範囲外を除く）。
+func sqlNumericSafe(v string, f float64) bool {
+	return plainDecimalRe.MatchString(trimSpace(v)) && math.Abs(f) < 1e27
+}
 
 // kernelFloat は Kernel.Float(value, exception: false)（厳密な浮動小数点数の解析）。
 func kernelFloat(s string) (float64, bool) {
