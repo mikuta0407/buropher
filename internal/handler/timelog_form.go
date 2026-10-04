@@ -509,7 +509,7 @@ func (a *App) TimelogCreate(c *Req) {
 	}
 	if api {
 		c.W.Header().Set("Location", httpx.RequestBaseURL(c.R)+urlroot.Path("/time_entries/"+strconv.FormatInt(t.ID, 10)))
-		a.teRenderShowAPI(c, t, http.StatusCreated, true)
+		a.teRenderShowAPI(c, t, http.StatusCreated)
 		return
 	}
 	c.Flash().SetNotice(c.L("notice_successful_create"))

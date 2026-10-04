@@ -305,11 +305,12 @@ func (a *App) TimelogShow(c *Req) {
 		return
 	}
 	t := c.value(teEntryKey{}).(*timelog.Entry)
-	a.teRenderShowAPI(c, t, 0, true)
+	a.teRenderShowAPI(c, t, 0)
 }
 
-// teRenderShowAPI は show.api.rsb。allCFs は custom_field_values（show）か visible_custom_field_values か。
-func (a *App) teRenderShowAPI(c *Req, t *timelog.Entry, status int, allCFs bool) {
+// teRenderShowAPI は show.api.rsb。本家は custom_field_values（非表示・ロール限定のカスタムフィールドも含む）を
+// 出すが、閲覧できない値が漏れるため visible_custom_field_values にする。
+func (a *App) teRenderShowAPI(c *Req, t *timelog.Entry, status int) {
 	ctx := c.Ctx()
 	env := a.teEnv(c)
 	l, err := a.newTELookup(c, []*timelog.Entry{t})
@@ -317,12 +318,7 @@ func (a *App) teRenderShowAPI(c *Req, t *timelog.Entry, status int, allCFs bool)
 		a.internalError(c, "time entry lookup", err)
 		return
 	}
-	var cvs []*domain.CustomFieldValue
-	if allCFs {
-		cvs, err = env.CustomFieldValues(ctx, t)
-	} else {
-		cvs, err = env.VisibleCustomFieldValues(ctx, t, c.User)
-	}
+	cvs, err := env.VisibleCustomFieldValues(ctx, t, c.User)
 	if err != nil {
 		a.internalError(c, "time entry custom values", err)
 		return
