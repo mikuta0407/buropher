@@ -281,12 +281,13 @@ func TestStaleOwnerCannotFinishAndHeartbeat(t *testing.T) {
 	dbtest.ForEachDialect(t, func(t *testing.T, d *db.DB) {
 		ctx := context.Background()
 		q, _ := newQueue(t, d)
-		q.Opts.LockTimeout = 30 * time.Millisecond
+		// 負荷の高い環境（PostgreSQL・並列テスト）でも heartbeat の UPDATE が間に合うよう余裕を持たせる
+		q.Opts.LockTimeout = 300 * time.Millisecond
 		q.Now = nil // heartbeat の時刻は実時間
 		var runs atomic.Int32
 		q.Register("k", func(ctx context.Context, j *Job) error {
 			runs.Add(1)
-			time.Sleep(100 * time.Millisecond) // LockTimeout より長い
+			time.Sleep(time.Second) // LockTimeout より長い
 			if err := q.RecoverStale(ctx); err != nil {
 				return err
 			}
