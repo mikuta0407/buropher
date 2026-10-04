@@ -6,9 +6,42 @@ package server_test
 import (
 	"context"
 	"net/http"
+	"net/url"
 	"strings"
 	"testing"
 )
+
+// TestOAuthAddRelatedIssueRequiresViewIssuesScope は、view_issues スコープの無い OAuth トークンでは
+// リビジョンにチケットを関連付けられないことを確認する（Redmine は @issue.visible? でトークンのスコープも見る）。
+// 関連付けできると、チケットを見る権限の無いトークンでチケットの存在確認・関連の改変ができてしまう。
+func TestOAuthAddRelatedIssueRequiresViewIssuesScope(t *testing.T) {
+	f := newContentFixture(t)
+	admin := login(t, f.ts, "admin", "admin")
+	jsmith := login(t, f.ts, "jsmith", "jsmith")
+	post := func(access string) int {
+		t.Helper()
+		res, body := oauthDo(t, newClient(t), http.MethodPost, f.ts.URL+"/projects/1/repository/10/revisions/4/issues.json",
+			url.Values{"issue_id": {"2"}}, bearer(access))
+		if res.StatusCode/100 == 5 {
+			t.Fatalf("status %d %s", res.StatusCode, body)
+		}
+		return res.StatusCode
+	}
+	noView := oauthTokenFor(t, f.ts.URL, admin, jsmith, "manage_related_issues", "view_changesets", "browse_repository")
+	if st := post(noView); st != http.StatusUnprocessableEntity {
+		t.Errorf("without view_issues: status %d, want 422", st)
+	}
+	if s := repoChangesetIssues(t, f); s != "" {
+		t.Errorf("issue linked without view_issues scope: %q", s)
+	}
+	withView := oauthTokenFor(t, f.ts.URL, admin, jsmith, "manage_related_issues", "view_changesets", "browse_repository", "view_issues")
+	if st := post(withView); st != http.StatusNoContent {
+		t.Errorf("with view_issues: status %d, want 204", st)
+	}
+	if s := repoChangesetIssues(t, f); s != "2" {
+		t.Errorf("issues %q, want 2", s)
+	}
+}
 
 // oauthTokenFor は管理者がアプリケーションを作り、user が scopes で同意したアクセストークンを返す。
 func oauthTokenFor(t *testing.T, ts string, admin, user *http.Client, scopes ...string) string {
