@@ -99,3 +99,43 @@ func TestQuerySQLInjection(t *testing.T) {
 		tdb.ints(`SELECT id FROM issues WHERE id = 1`)
 	})
 }
+
+// TestStoredFilterKeyIsNotSQL は DB に直接入った filters のキー（Redmine からのインポート等で
+// AddFilter の検査を経ないもの）が列名として SQL に連結されないことを確かめる。
+func TestStoredFilterKeyIsNotSQL(t *testing.T) {
+	forEachDB(t, func(t *testing.T, tdb *testDB) {
+		ctx := context.Background()
+		base := tdb.newQuery(2, KindIssue, 0)
+		base.Filters = NewFilters()
+		all, err := base.IDs(ctx, ListOptions{})
+		if err != nil {
+			t.Fatal(err)
+		}
+		for _, key := range []string{
+			"id IS NULL) OR 1=1 OR (issues.id",
+			"id IS NULL OR 1=1",
+			"subject) OR (1=1",
+		} {
+			q := tdb.newQuery(2, KindIssue, 0)
+			q.Filters = NewFilters()
+			q.Filters.Set(key, Filter{Operator: "*", Values: []string{""}})
+			q.Filters.Set("status_id", Filter{Operator: "c", Values: []string{""}})
+			ids, err := q.IDs(ctx, ListOptions{})
+			if err != nil {
+				t.Fatalf("%q: %v", key, err)
+			}
+			for _, id := range ids {
+				if !slices.Contains(all, id) {
+					t.Fatalf("%q: id %d outside visible set", key, id)
+				}
+			}
+			stmt, _, err := q.Statement(ctx)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if strings.Contains(stmt, "1=1") {
+				t.Fatalf("%q: key reached SQL: %s", key, stmt)
+			}
+		}
+	})
+}
