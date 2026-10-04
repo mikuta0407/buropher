@@ -79,8 +79,7 @@ func (a *App) SettingsEdit(c *Req) {
 			},
 		})
 		if err != nil {
-			a.logger().Error("settings update", "err", err)
-			c.RenderError(http.StatusInternalServerError, err.Error())
+			a.serverError(c, err)
 			return
 		}
 		if len(ferrs) == 0 {
@@ -105,8 +104,7 @@ func (a *App) SettingsEdit(c *Req) {
 	}
 	v, err := a.newSettingsView(c, errs)
 	if err != nil {
-		a.logger().Error("settings view", "err", err)
-		c.RenderError(http.StatusInternalServerError, err.Error())
+		a.serverError(c, err)
 		return
 	}
 	c.renderAdmin("settings/edit", v, false)

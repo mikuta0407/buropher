@@ -6,6 +6,7 @@ package handler
 import (
 	"net/http"
 
+	"github.com/mikuta0407/buropher/internal/auth/ldap"
 	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/httpx"
 	"github.com/mikuta0407/buropher/internal/repository"
@@ -74,6 +75,11 @@ func (a *App) passwordAuthentication(c *Req) {
 	if err != nil {
 		// rescue AuthSourceException => e（login アクション）: render_error :message => e.message
 		a.logger().Error("An error occurred when authenticating "+p.String("username"), "err", err)
+		if !ldap.IsAuthSourceError(err) {
+			// AuthSourceException 以外（DB のエラー等）は捕捉されない例外と同じく詳細を見せない
+			a.serverError(c, err)
+			return
+		}
 		c.RenderError(http.StatusInternalServerError, err.Error())
 		return
 	}

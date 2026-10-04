@@ -96,6 +96,30 @@ func defaultErrorPage(w http.ResponseWriter, status int, message string) {
 	_, _ = w.Write([]byte(b.String()))
 }
 
+// WritePublicException は ActionDispatch::PublicExceptions 相当: 捕捉されない例外（500）や
+// ルート無し（404）の応答。request.formats の先頭が json / xml なら {status, error} を
+// to_json / to_xml した本文、それ以外は public/<status>.html（htmlBody）を返す。
+// 内部のエラー文（SQL・ファイルパス等）は本文に含めない。
+func WritePublicException(w http.ResponseWriter, r *http.Request, status int, htmlBody []byte) {
+	text := http.StatusText(status)
+	switch Format(r) {
+	case "json":
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(status)
+		_, _ = w.Write([]byte(`{"status":` + strconv.Itoa(status) + `,"error":"` + text + `"}`))
+		return
+	case "xml":
+		w.Header().Set("Content-Type", "application/xml; charset=utf-8")
+		w.WriteHeader(status)
+		_, _ = w.Write([]byte("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<hash>\n  <status type=\"integer\">" +
+			strconv.Itoa(status) + "</status>\n  <error>" + text + "</error>\n</hash>\n"))
+		return
+	}
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.WriteHeader(status)
+	_, _ = w.Write(htmlBody)
+}
+
 // bodilessStatus は Rack::Utils::STATUS_WITH_NO_ENTITY_BODY（1xx, 204, 304）。
 func bodilessStatus(status int) bool {
 	return (status >= 100 && status < 200) || status == http.StatusNoContent || status == http.StatusNotModified

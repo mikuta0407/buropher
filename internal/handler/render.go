@@ -171,11 +171,10 @@ func (c *Req) WriteJS(js string) {
 	_, _ = c.W.Write([]byte(js))
 }
 
-// renderInternalError はテンプレート描画に失敗したときの 500（public/500.html 相当）。
+// renderInternalError は想定外のエラー（捕捉されない例外）の 500（public/500.html 相当。
+// json / xml の要求には {status, error} の本文）。エラーの詳細は応答に含めない。
 func (c *Req) renderInternalError() {
-	c.W.Header().Set("Content-Type", "text/html; charset=utf-8")
-	c.W.WriteHeader(http.StatusInternalServerError)
-	_, _ = c.W.Write(InternalErrorPage)
+	httpx.WritePublicException(c.W, c.R, http.StatusInternalServerError, InternalErrorPage)
 }
 
 // InternalErrorPage は public/500.html の内容（server が設定する）。

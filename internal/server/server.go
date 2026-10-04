@@ -204,7 +204,7 @@ func New(cfg *config.Config, d *db.DB, opts ...Options) (*Server, error) {
 		httpx.MethodOverride)
 	r.NotFound(notFound)
 	r.MethodNotAllowed(notFound)
-	r.Get("/healthz", healthz(d))
+	r.Get("/healthz", healthz(d, o.Logger))
 	r.Handle(assets.DefaultPrefix+"/*", ap.Handler())
 	r.Group(func(r chi.Router) {
 		r.Use(sessions.Middleware)
@@ -322,26 +322,11 @@ func notFound(w http.ResponseWriter, r *http.Request) {
 	rctx := chi.NewRouteContext()
 	rctx.RoutePatterns = []string{"/*"}
 	nr := r.WithContext(context.WithValue(r.Context(), chi.RouteCtxKey, rctx))
-	switch httpx.Format(nr) {
-	case "json":
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.WriteHeader(http.StatusNotFound)
-		_, _ = w.Write([]byte(`{"status":404,"error":"Not Found"}`))
-		return
-	case "xml":
-		w.Header().Set("Content-Type", "application/xml; charset=utf-8")
-		w.WriteHeader(http.StatusNotFound)
-		_, _ = w.Write([]byte("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<hash>\n  <status type=\"integer\">404</status>\n  <error>Not Found</error>\n</hash>\n"))
-		return
-	}
 	b, err := fs.ReadFile(web.Public(), "404.html")
 	if err != nil {
-		http.NotFound(w, r)
-		return
+		b = []byte("Not Found")
 	}
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	w.WriteHeader(http.StatusNotFound)
-	_, _ = w.Write(b)
+	httpx.WritePublicException(w, nr, http.StatusNotFound, b)
 }
 
 // recoverer は panic を記録して public/500.html を返す。
@@ -368,14 +353,19 @@ func recoverer(logger *slog.Logger) func(http.Handler) http.Handler {
 }
 
 // healthz は DB への疎通を確認する。
-func healthz(d *db.DB) http.HandlerFunc {
+// 認証なしで到達できるため、DB のエラー文（ホスト名・ファイルパス・ドライバの詳細）は応答に含めずログにだけ残す。
+func healthz(d *db.DB, logger *slog.Logger) http.HandlerFunc {
+	if logger == nil {
+		logger = slog.Default()
+	}
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx, cancel := context.WithTimeout(r.Context(), 2*time.Second)
 		defer cancel()
 		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 		if err := d.Ping(ctx); err != nil {
+			logger.Error("healthz: database ping failed", "err", err)
 			w.WriteHeader(http.StatusServiceUnavailable)
-			_, _ = w.Write([]byte("db: " + err.Error()))
+			_, _ = w.Write([]byte("db: unavailable"))
 			return
 		}
 		_, _ = w.Write([]byte("ok"))
