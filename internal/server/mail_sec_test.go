@@ -36,3 +36,35 @@ func TestMailParentIssueNotLeaked(t *testing.T) {
 		t.Errorf("visible parent subject missing:\n%s", body)
 	}
 }
+
+// 非公開の注記は view_private_notes の無い受信者（説明文で新たにメンションされたユーザーを含む）へのメールに
+// 載せない。見える変更も無ければメール自体を送らない。
+func TestMailPrivateNotesNotLeaked(t *testing.T) {
+	a, d, _ := newMailApp(t)
+	ctx := context.Background()
+	if _, err := d.Exec(ctx, `UPDATE issue_journals SET private_notes = ? WHERE id IN (1, 2)`, true); err != nil {
+		t.Fatal(err)
+	}
+	render := func(addr string, journalID int64) string {
+		m, err := a.RenderMail(ctx, &notify.Payload{Kind: notify.KindIssueEdit, IssueID: 1, JournalID: journalID,
+			UserID: userIDByMail(t, d, addr)})
+		if err != nil {
+			t.Fatalf("render: %v", err)
+		}
+		if m == nil {
+			return ""
+		}
+		return m.Text + m.HTML
+	}
+	// journal 1: 注記 + 状態の変更。dlopper（Developer）には変更だけ
+	if body := render("dlopper@somenet.foo", 1); body == "" || strings.Contains(body, "Journal notes") {
+		t.Errorf("private notes leaked or mail missing:\n%s", body)
+	}
+	// journal 2: 注記のみ。dlopper には送らない
+	if body := render("dlopper@somenet.foo", 2); body != "" {
+		t.Errorf("notes-only private journal sent:\n%s", body)
+	}
+	if body := render("jsmith@somenet.foo", 1); !strings.Contains(body, "Journal notes") {
+		t.Errorf("private notes missing for allowed user:\n%s", body)
+	}
+}

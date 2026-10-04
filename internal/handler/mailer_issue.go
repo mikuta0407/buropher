@@ -285,6 +285,14 @@ func (m *mailer) issueEdit() (*mail.Message, error) {
 	}
 	m.data["DetailsText"] = textDetails
 	m.data["DetailsHTML"] = ic.l.detailsToStrings(details, ic.im, false, false)
+	if j.PrivateNotes && j.HasNotes() && !m.c.AllowedTo(domain.Perm("view_private_notes"), ic.im.Project) {
+		// 受信者が見られない注記は載せず、見える変更も無ければ送らない
+		if len(details) == 0 {
+			return nil, nil
+		}
+		j.Notes = ""
+		j.PrivateNotes = false
+	}
 	m.data["PrivateNotes"] = j.PrivateNotes
 	m.data["Notes"] = j.Notes
 	m.data["HasNotes"] = j.HasNotes()
