@@ -70,7 +70,7 @@ func SameOriginPath(base, href string) error {
 		// net/url が解析できない値でもブラウザは寛容に解析する。曖昧なのでスキーム相対だけは別に判定する
 		v := strings.TrimLeft(strings.NewReplacer("\t", "", "\n", "", "\r", "", `\`, "/").Replace(href), "\x00\x01\x02\x03\x04\x05\x06\x07\x08\x0b\x0c\x0e\x0f\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f ")
 		if strings.HasPrefix(v, "//") || URLScheme(href) != "" {
-			return fmt.Errorf("%q leaves the origin (unparsable by net/url: %v)", href, err)
+			return fmt.Errorf("%q leaves the origin (unparsable by net/url: %w)", href, err)
 		}
 		return nil
 	}
