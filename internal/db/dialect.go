@@ -72,6 +72,18 @@ func DialectFor(name DialectName) (Dialect, error) {
 	return nil, fmt.Errorf("db: unknown dialect %q", name)
 }
 
+// ForUpdate は行ロックの句を返す: PostgreSQL では " FOR UPDATE"、SQLite では ""。
+// PostgreSQL の既定（READ COMMITTED）では、トランザクション内で読んだ値に基づく検査と更新の間に
+// 他のトランザクションが同じ行を更新できるため、検査の前に対象の行をロックするのに使う。
+// SQLite の書き込みトランザクションは BEGIN IMMEDIATE で直列化されるのでロックは不要。
+// 複数プロセスが同じ DB を使うことがあるため、プロセス内のミューテックスではなく DB のロックで直列化する。
+func ForUpdate(q interface{ Dialect() Dialect }) string {
+	if q.Dialect().Name() == Postgres {
+		return " FOR UPDATE"
+	}
+	return ""
+}
+
 // EscapeLike は LIKE パターン中の特殊文字 (\ % _) をエスケープする。
 func EscapeLike(s string) string {
 	r := strings.NewReplacer(`\`, `\\`, `%`, `\%`, `_`, `\_`)

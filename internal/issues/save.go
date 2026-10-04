@@ -26,6 +26,9 @@ type saveState struct {
 	// records はトランザクションに参加したレコード (保存開始順)。コミット後コールバックの実行順。
 	records []*commitRecord
 	result  *SaveResult
+	// recalculating は親の再計算（recalculate_attributes_for）中のチケット id。parent_id が循環した
+	// データ（並行更新で作られた既存の破損）で再計算が無限に再帰しないよう、同じチケットに戻ったら打ち切る。
+	recalculating map[int64]bool
 }
 
 type commitRecord struct {
@@ -113,6 +116,10 @@ func (e *Env) savepoint(ctx context.Context, fn func() error) error {
 // save は 1 チケットの保存 (コールバック込み)。入れ子の保存は同じ st を使う。
 func (e *Env) save(ctx context.Context, iss *Issue, validate bool, st *saveState) (bool, error) {
 	rec := st.addIssue(iss)
+	// 親の検証の前に関係する木をロックする（並行する親変更で parent_id が循環しないように）
+	if err := e.lockHierarchy(ctx, iss); err != nil {
+		return false, err
+	}
 	if validate {
 		ok, err := e.Validate(ctx, iss)
 		if err != nil || !ok {
