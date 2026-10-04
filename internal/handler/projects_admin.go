@@ -38,7 +38,8 @@ var ContextMenusProjectsController = &Controller{Name: "context_menus", MainMenu
 func (a *App) routesAdminProjects(r Router) {
 	a.Handle(r, http.MethodGet, "/admin/projects", AdminProjectsController, "projects", a.AdminProjects, RequireAdmin())
 	for _, m := range []string{http.MethodGet, http.MethodPost} {
-		a.Handle(r, m, "/admin/projects_context_menu", ContextMenusProjectsController, "projects", a.ContextMenusProjects)
+		// 本家は管理者に限定しておらず、非公開プロジェクトの名前・識別子・アーカイブ状態が任意の id で分かる
+		a.Handle(r, m, "/admin/projects_context_menu", ContextMenusProjectsController, "projects", a.ContextMenusProjects, RequireAdmin())
 	}
 }
 

@@ -259,6 +259,10 @@ func (l *teLookup) cfValuesOf(col *query.Column, t *timelog.Entry) ([]string, bo
 	case query.ColumnAssocCF:
 		switch col.Association {
 		case "issue":
+			// 見えないチケットのカスタムフィールドは出さない
+			if t.IssueID != nil && !l.visibleIssues[*t.IssueID] {
+				return nil, false
+			}
 			kind, id = "issue", t.IssueID
 		case "project":
 			kind, id = "project", t.ProjectID
@@ -351,6 +355,11 @@ func (l *teLookup) columnValue(col *query.Column, t *timelog.Entry, html bool) a
 	var issue *repository.RefIssue
 	if t.IssueID != nil {
 		issue = l.issues[*t.IssueID]
+		// QueryAssociationColumn#value_object（assoc.visible? のときだけ）。工数は見えるがチケットは
+		// 見えない場合に、チケットのトラッカー・状態・カテゴリ・バージョン・親を出さない
+		if issue != nil && !l.visibleIssues[issue.ID] {
+			issue = nil
+		}
 	}
 	switch col.Kind {
 	case query.ColumnCustomField, query.ColumnAssocCF:

@@ -384,6 +384,11 @@ func (l *issueLookup) renderAPIIssueChildren(b apibuilder.Builder, r *query.Issu
 		for _, ch := range children {
 			cr := issueRowFromRead(ch)
 			l.addIssues([]*query.IssueRow{cr})
+			// 本家は issue.children をすべて出す（見えない非公開・他プロジェクトの子チケットの件名が漏れる）。
+			// 画面（issue.descendants.visible）に合わせて見えない子チケットとその下は出さない
+			if !l.issueVisible(cr) {
+				continue
+			}
 			b.ObjectAttrs("issue", apibuilder.A("id", cr.ID), func() {
 				b.Attrs("tracker", apibuilder.A("id", cr.TrackerID, "name", l.tracker(cr.TrackerID).Name))
 				b.Value("subject", cr.Subject)

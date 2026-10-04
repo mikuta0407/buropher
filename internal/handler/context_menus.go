@@ -18,7 +18,8 @@ var ContextMenusController = &Controller{Name: "context_menus", MainMenu: true}
 func (a *App) routesContextMenus(r Router) {
 	for _, m := range []string{http.MethodGet, http.MethodPost} {
 		// match '/users/context_menu', to: 'context_menus#users', via: [:get, :post]
-		a.Handle(r, m, "/users/context_menu", ContextMenusController, "users", a.ContextMenusUsers)
+		// 本家は管理者に限定しておらず、任意の id のユーザーの存在とロック状態が分かる（一覧は管理者専用）
+		a.Handle(r, m, "/users/context_menu", ContextMenusController, "users", a.ContextMenusUsers, RequireAdmin())
 	}
 }
 
