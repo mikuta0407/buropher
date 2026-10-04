@@ -9,6 +9,27 @@ import (
 	"testing"
 )
 
+// TestBytesNoBareCR は本文の単独の CR / LF を CRLF にそろえること（"\r.\r\n" のような並びを中継 MTA が
+// 本文の終わりと解釈する SMTP smuggling を利用者の入力から作れないように）。
+func TestBytesNoBareCR(t *testing.T) {
+	for _, html := range []string{"", "<p>x</p>"} {
+		m := &Message{From: "from@example.com", To: []string{"to@example.com"}, Subject: "s",
+			Text: "line1\r.\r\nMAIL FROM:<evil@example.com>\rline3\nline4", HTML: html}
+		raw, err := m.Bytes()
+		if err != nil {
+			t.Fatal(err)
+		}
+		for i, c := range raw {
+			if c == '\r' && (i+1 >= len(raw) || raw[i+1] != '\n') {
+				t.Fatalf("html=%q: bare CR at %d in %q", html, i, raw)
+			}
+			if c == '\n' && (i == 0 || raw[i-1] != '\r') {
+				t.Fatalf("html=%q: bare LF at %d in %q", html, i, raw)
+			}
+		}
+	}
+}
+
 // TestBytesHeaderInjection は Subject・From・追加ヘッダに CR/LF を混ぜても
 // 新しいヘッダが挿入されない（ヘッダインジェクションにならない）ことを確認する。
 func TestBytesHeaderInjection(t *testing.T) {
