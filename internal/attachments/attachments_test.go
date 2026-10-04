@@ -57,6 +57,10 @@ func TestSanitizeFilename(t *testing.T) {
 		"日本語 ファイル.txt":                    "日本語 ファイル.txt",
 		"trailing/":                       "",
 		"a\rb":                            "a_b",
+		// buropher 独自: NUL などの制御文字も置き換える（PostgreSQL は NUL を含む文字列を保存できず、
+		// メール受信全体が失敗していた。ファジングで発見）。タブは Redmine と同じくそのまま
+		"../../etc/passwd\x00.txt": "passwd_.txt",
+		"a\x01\x1b\x7fb\tc":        "a_b\tc",
 	}
 	for in, want := range cases {
 		if got := SanitizeFilename(in); got != want {
