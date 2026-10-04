@@ -206,6 +206,12 @@ func loadCorpus(t *testing.T) []*corpusCase {
 	return all
 }
 
+// corpusDeviations は意図して Redmine と異なる出力にしているケース（ID → 理由）。
+var corpusDeviations = map[string]string{
+	// a 要素の href の中に置いた {{include}} を実行しない（TestMacroInsideAttributeIsNotExecuted）
+	"random/0046-tx": "macro inside an attribute value",
+}
+
 // TestCorpus は参照 Redmine の textilizable 出力（testdata/corpus.json）と比較する。
 func TestCorpus(t *testing.T) {
 	e := newTestEnv(t)
@@ -218,6 +224,10 @@ func TestCorpus(t *testing.T) {
 			continue
 		}
 		if c.HTML == nil {
+			continue
+		}
+		if _, ok := corpusDeviations[c.ID]; ok {
+			pass++
 			continue
 		}
 		f := "textile"

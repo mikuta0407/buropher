@@ -20,6 +20,8 @@ var (
 	reCF          = regexp.MustCompile(`cf_(\d+)$`)
 	reCFAttribute = regexp.MustCompile(`^cf_(\d+)\.(.+)$`)
 	reAssocCF     = regexp.MustCompile(`^(.+)\.cf_`)
+	// reIdentField は列名としてそのまま SQL に入れてよいフィルタ名。
+	reIdentField = regexp.MustCompile(`\A[a-z0-9_]+(\.[a-z0-9_]+)?\z`)
 )
 
 // meFields は "me" を User.current の id に置き換えるフィールド。
@@ -67,6 +69,12 @@ func (q *Query) statement(ctx context.Context) (frag, error) {
 				var handled bool
 				c, handled, err = q.impl.sqlForSpecialField(ctx, q, field, operator, v)
 				if err == nil && !handled {
+					// 保存済みクエリの filters のキーは Web/API からは AddFilter で検査されるが、
+					// Redmine からのインポート等で DB に直接入った任意の文字列が列名として
+					// SQL に連結されないよう、識別子の形でなければ無視する。
+					if !reIdentField.MatchString(field) {
+						continue
+					}
 					table, col := q.impl.columnFor(field)
 					c, err = q.sqlForField(ctx, field, operator, v, table, col, false)
 					if !c.empty() {

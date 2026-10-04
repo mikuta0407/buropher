@@ -32,3 +32,27 @@ func TestRedpreTagWithAttributesIsEscaped(t *testing.T) {
 		t.Errorf("Format(<redpre#0>0) = %q", got)
 	}
 }
+
+// 利用者が書いた ":redsh#N:"（shelve の目印と同じ形）は retrieve で展開せず、そのまま出力する。
+func TestUserWrittenShelfMarkerIsNotRetrieved(t *testing.T) {
+	for _, src := range []string{
+		`"x":http://a/onmouseover=alert(1)// ABC(q :redsh#1:)`,
+		`"x":http://a/onmouseover=alert(1)// <pre><code class="q :redsh#1:">z</code></pre>`,
+		"\"x\":http://a/onmouseover=alert(1)// ABC(q :redsh#1:) ABC(q :redsh#0:) ABC(q :redsh#-1:)",
+		"p(c). \"x\":http://a/onmouseover=alert(1)//\n\n<code> :redsh#1:</code> @ :redsh#2:@",
+	} {
+		out := Format(src, nil)
+		if err := secoracle.CheckHTML(out, secoracle.HTMLPolicy{}); err != nil {
+			t.Errorf("Format(%q) = %q\n%v", src, out, err)
+		}
+		if !strings.Contains(out, ":redsh#") {
+			t.Errorf("Format(%q) = %q: user text :redsh# lost", src, out)
+		}
+		if strings.Contains(out, "\uFFFF") {
+			t.Errorf("Format(%q) = %q: internal marker leaked", src, out)
+		}
+	}
+	if got := Format("a :redsh#1: b", nil); got != "<p>a :redsh#1: b</p>" {
+		t.Errorf("Format(a :redsh#1: b) = %q", got)
+	}
+}
