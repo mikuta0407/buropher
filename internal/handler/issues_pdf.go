@@ -633,8 +633,11 @@ func (l *issueLookup) pdfRowValues(cols []*query.Column, r *query.IssueRow, leve
 				s = strings.Repeat("  ", level) + r.Subject
 			case "parent":
 				if r.ParentID != nil {
-					if p := l.issue(*r.ParentID); p != nil {
+					// 見えなければ番号だけにする（HTML・CSV と同じ）
+					if p := l.issue(*r.ParentID); p != nil && l.issueVisible(p) {
 						s = l.tracker(p.TrackerID).Name + " #" + strconv.FormatInt(p.ID, 10) + ": " + p.Subject
+					} else {
+						s = "#" + strconv.FormatInt(*r.ParentID, 10)
 					}
 				}
 			case "estimated_hours":
