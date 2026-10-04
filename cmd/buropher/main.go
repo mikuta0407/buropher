@@ -218,9 +218,13 @@ func initCmd(args []string) error {
 	lang := fs.String("lang", "en", "language of the default data")
 	login := fs.String("admin-login", "admin", "administrator login")
 	email := fs.String("admin-email", "admin@example.net", "administrator email")
-	pw := fs.String("admin-password", os.Getenv("BUROPHER_ADMIN_PASSWORD"), "administrator password (random if empty)")
+	// 環境変数のパスワードをフラグの既定値にすると -h の使い方に表示されるため、解析後に補う
+	pw := fs.String("admin-password", "", "administrator password (default: $BUROPHER_ADMIN_PASSWORD; random if empty)")
 	noData := fs.Bool("no-default-data", false, "do not load default roles/trackers/statuses")
 	fs.Parse(args)
+	if *pw == "" {
+		*pw = os.Getenv("BUROPHER_ADMIN_PASSWORD")
+	}
 	cfg, err := config.Load(*cfgPath)
 	if err != nil {
 		return err
