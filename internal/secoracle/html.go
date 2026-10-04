@@ -27,7 +27,7 @@ type HTMLPolicy struct {
 	// SVG が true なら svg > use（アイコンスプライト）を許可する。
 	SVG bool
 	// StrictURL が true なら URL 属性のスキームを http / https / mailto / ftp / 相対 に限る。
-	// false なら javascript / vbscript / data / livescript 等の危険なスキームのみ拒否する
+	// false なら javascript / vbscript / data の危険なスキームのみ拒否する
 	// （Redmine の uri_with_link_safe_scheme? と同じく、それ以外の独自スキームは許す）。
 	StrictURL bool
 	// AllowDataImage が true なら img[src] の data:image/(png|gif|jpeg|webp) を許す。
@@ -70,8 +70,10 @@ var urlAttrs = toSet("href", "src", "action", "formaction", "cite", "longdesc", 
 var forbiddenAttrs = toSet("srcdoc", "srcset", "http-equiv", "xmlns", "xmlns:xlink", "is", "autofocus",
 	"formtarget", "attributename", "values", "from", "to", "by")
 
-// dangerousSchemes はブラウザでスクリプトの実行・内容の注入につながるスキーム。
-var dangerousSchemes = toSet("javascript", "vbscript", "data", "livescript", "mocha", "jar", "blob", "filesystem")
+// dangerousSchemes は現行のブラウザでスクリプトの実行・内容の注入につながるスキーム（Redmine の
+// uri_with_link_safe_scheme? が拒否するものと同じ）。jar: / blob: / filesystem: / livescript: 等は
+// 現行のブラウザでは利用者が他オリジンに作れない・実行されないため含めない。
+var dangerousSchemes = toSet("javascript", "vbscript", "data")
 
 var strictSchemes = toSet("http", "https", "mailto", "ftp")
 
