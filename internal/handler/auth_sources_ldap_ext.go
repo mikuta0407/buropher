@@ -418,13 +418,15 @@ func (a *App) syncLDAPSource(ctx context.Context, rec *domain.AuthSourceRecord) 
 func (a *App) updateLDAPUserAttrs(ctx context.Context, u *domain.User, info *ldap.UserInfo, now time.Time, res *ldapSyncResult) (bool, error) {
 	changed := false
 	if (info.Firstname != "" && info.Firstname != u.Firstname) || (info.Lastname != "" && info.Lastname != u.Lastname) {
+		// 氏名だけを保存する（同期の間に管理者が行ったロック・降格を読み込み時の値で戻さない）
+		orig := *u
 		if info.Firstname != "" {
 			u.Firstname = info.Firstname
 		}
 		if info.Lastname != "" {
 			u.Lastname = info.Lastname
 		}
-		if err := repository.UpdateUser(ctx, a.DB, u, true, now); err != nil {
+		if err := repository.UpdateUser(ctx, a.DB, u, &orig, true, now); err != nil {
 			return false, err
 		}
 		changed = true

@@ -152,22 +152,62 @@ func nullTimePtr(t *time.Time) any {
 	return db.NewTime(*t)
 }
 
-// UpdateUser はユーザーの属性（principals / user_accounts）を保存する。touch が true なら updated_at を now にする。
-func UpdateUser(ctx context.Context, q db.Queryer, u *domain.User, touch bool, now time.Time) error {
+// UpdateUser はユーザーの属性（principals / user_accounts）のうち orig（読み込み時の値）から変わった列だけを
+// 保存する（ActiveRecord の部分更新）。touch が true なら updated_at を now にする。orig が nil なら全列を保存する。
+// 全列を書き戻すと、読み込んでから保存するまでの間に他のリクエストが行った変更（管理者による降格・ロック、
+// パスワード変更など）を古い値で取り消してしまう。
+func UpdateUser(ctx context.Context, q db.Queryer, u, orig *domain.User, touch bool, now time.Time) error {
+	all := orig == nil
+	if all {
+		orig = &domain.User{}
+	}
+	var sets []string
+	var args []any
+	set := func(changed bool, col string, v any) {
+		if all || changed {
+			sets = append(sets, col+" = ?")
+			args = append(args, v)
+		}
+	}
+	set(u.Status != orig.Status, "status", u.Status)
+	set(u.Firstname != orig.Firstname, "firstname", u.Firstname)
+	set(u.Lastname != orig.Lastname, "lastname", u.Lastname)
 	if touch {
-		if _, err := q.Exec(ctx, `UPDATE principals SET status = ?, firstname = ?, lastname = ?, updated_at = ? WHERE id = ?`,
-			u.Status, u.Firstname, u.Lastname, db.NewTime(now), u.ID); err != nil {
+		sets = append(sets, "updated_at = ?")
+		args = append(args, db.NewTime(now))
+	}
+	if len(sets) > 0 {
+		if _, err := q.Exec(ctx, `UPDATE principals SET `+strings.Join(sets, ", ")+` WHERE id = ?`, append(args, u.ID)...); err != nil {
 			return err
 		}
-	} else if _, err := q.Exec(ctx, `UPDATE principals SET status = ?, firstname = ?, lastname = ? WHERE id = ?`,
-		u.Status, u.Firstname, u.Lastname, u.ID); err != nil {
-		return err
 	}
-	_, err := q.Exec(ctx, `UPDATE user_accounts SET login = ?, password_hash = ?, password_changed_at = ?, must_change_password = ?, admin = ?,
-  language = ?, auth_source_id = ? WHERE principal_id = ?`,
-		u.Login, nullString(u.PasswordHash), nullTimePtr(u.PasswordChangedAt), u.MustChangePassword, u.AdminFlag,
-		u.Language, u.AuthSourceID, u.ID)
+	sets, args = nil, nil
+	set(u.Login != orig.Login, "login", u.Login)
+	set(u.PasswordHash != orig.PasswordHash, "password_hash", nullString(u.PasswordHash))
+	set(!sameTimePtr(u.PasswordChangedAt, orig.PasswordChangedAt), "password_changed_at", nullTimePtr(u.PasswordChangedAt))
+	set(u.MustChangePassword != orig.MustChangePassword, "must_change_password", u.MustChangePassword)
+	set(u.AdminFlag != orig.AdminFlag, "admin", u.AdminFlag)
+	set(u.Language != orig.Language, "language", u.Language)
+	set(!sameInt64Ptr(u.AuthSourceID, orig.AuthSourceID), "auth_source_id", u.AuthSourceID)
+	if len(sets) == 0 {
+		return nil
+	}
+	_, err := q.Exec(ctx, `UPDATE user_accounts SET `+strings.Join(sets, ", ")+` WHERE principal_id = ?`, append(args, u.ID)...)
 	return err
+}
+
+func sameTimePtr(a, b *time.Time) bool {
+	if a == nil || b == nil {
+		return a == nil && b == nil
+	}
+	return a.Equal(*b)
+}
+
+func sameInt64Ptr(a, b *int64) bool {
+	if a == nil || b == nil {
+		return a == nil && b == nil
+	}
+	return *a == *b
 }
 
 // SetDefaultEmail は既定のメールアドレスを address にする（行が無ければ作成）。変更があれば true。

@@ -74,6 +74,72 @@ func TestRaceActivationVsLock(t *testing.T) {
 	})
 }
 
+// TestRaceDemotionVsAccountSave は、ユーザー自身の「個人設定」の保存の処理中に管理者がそのユーザーの
+// 管理者権限を外し・ロックしても、保存が読み込み時の admin / status で上書きして元に戻さないことを確認する。
+// 修正前の UpdateUser は変更していない列も含めて全列を書き戻していたため（Redmine は変更した属性だけを
+// 更新する）、降格される管理者が /my/account の保存を送り続けるだけで降格・ロックを取り消せた。
+func TestRaceDemotionVsAccountSave(t *testing.T) {
+	raceForEachDB(t, func(t *testing.T, d *db.DB) {
+		_, ts := newFixtureServerOn(t, d)
+		ctx := context.Background()
+		const uid = 2 // jsmith
+		if _, err := d.Exec(ctx, `UPDATE user_accounts SET admin = TRUE WHERE principal_id = ?`, uid); err != nil {
+			t.Fatal(err)
+		}
+		c := login(t, ts, "jsmith", "jsmith")
+		_, body := get(t, c, ts.URL+"/my/account")
+		token := csrfToken(t, body)
+		// 管理者による降格・ロック: 行をロックしたトランザクションを開いたままにする
+		tx, err := d.Begin(ctx)
+		if err != nil {
+			t.Fatal(err)
+		}
+		defer func() { _ = tx.Rollback() }()
+		for _, q := range []string{`SELECT id FROM principals WHERE id = ?`, `SELECT principal_id FROM user_accounts WHERE principal_id = ?`} {
+			if _, err := tx.Exec(ctx, q+db.ForUpdate(tx), uid); err != nil {
+				t.Fatal(err)
+			}
+		}
+		done := make(chan int, 1)
+		go func() {
+			res, err := c.PostForm(ts.URL+"/my/account", url.Values{"_method": {"put"}, "authenticity_token": {token}, "user[firstname]": {"Renamed"}})
+			if err != nil {
+				t.Error(err)
+				done <- 0
+				return
+			}
+			res.Body.Close()
+			done <- res.StatusCode
+		}()
+		time.Sleep(700 * time.Millisecond) // 保存がユーザーを読み、書き込みで待つまで
+		for _, q := range []string{`UPDATE user_accounts SET admin = FALSE WHERE principal_id = ?`, `UPDATE principals SET status = 3 WHERE id = ?`} {
+			if _, err := tx.Exec(ctx, q, uid); err != nil {
+				t.Fatal(err)
+			}
+		}
+		if err := tx.Commit(); err != nil {
+			t.Fatal(err)
+		}
+		if code := <-done; code != 302 {
+			t.Fatalf("account save: %d", code)
+		}
+		var r struct {
+			Admin     bool   `db:"admin"`
+			Status    int    `db:"status"`
+			Firstname string `db:"firstname"`
+		}
+		if err := d.Get(ctx, &r, `SELECT a.admin, p.status, p.firstname FROM principals p JOIN user_accounts a ON a.principal_id = p.id WHERE p.id = ?`, uid); err != nil {
+			t.Fatal(err)
+		}
+		if r.Admin || r.Status != 3 {
+			t.Fatalf("after demotion+lock during the user's own save: admin=%v status=%d (want false, 3)", r.Admin, r.Status)
+		}
+		if r.Firstname != "Renamed" {
+			t.Errorf("firstname = %q, want Renamed", r.Firstname)
+		}
+	})
+}
+
 // TestRaceAutologinSessionAfterPasswordChange は、盗んだ autologin クッキーで処理中だったリクエストが、
 // その間に行われたパスワード変更（全セッション・autologin トークンの破棄）の後で
 // 新しいログインセッションを作れないことを確認する。
