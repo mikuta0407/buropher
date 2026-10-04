@@ -44,7 +44,7 @@ func SecretKey(c *Config) ([]byte, error) {
 		return nil, err
 	}
 	key := hex.EncodeToString(buf[:])
-	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
+	if err := os.MkdirAll(filepath.Dir(path), 0o750); err != nil {
 		return nil, err
 	}
 	if err := os.WriteFile(path, []byte(key+"\n"), 0o600); err != nil {

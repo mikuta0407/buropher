@@ -157,7 +157,7 @@ func serve(args []string) error {
 // openDB は設定の DB を開く。SQLite の場合は親ディレクトリを作成する。
 func openDB(ctx context.Context, cfg *config.Config) (*db.DB, error) {
 	if cfg.Database.Driver == "sqlite" && !strings.HasPrefix(cfg.Database.DSN, "file:") && cfg.Database.DSN != ":memory:" {
-		if err := os.MkdirAll(filepath.Dir(cfg.Database.DSN), 0o755); err != nil {
+		if err := os.MkdirAll(filepath.Dir(cfg.Database.DSN), 0o750); err != nil {
 			return nil, err
 		}
 	}

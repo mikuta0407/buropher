@@ -17,7 +17,9 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"io/fs"
 	"net/url"
+	"os"
 	"runtime"
 	"strings"
 	"time"
@@ -121,6 +123,11 @@ func Open(ctx context.Context, driver, dsn string) (*DB, error) {
 		if err != nil {
 			return nil, err
 		}
+		if !mem {
+			if err := createSQLiteFile(dsn); err != nil {
+				return nil, err
+			}
+		}
 		sdb, err := sql.Open("sqlite", full)
 		if err != nil {
 			return nil, fmt.Errorf("db: open sqlite: %w", err)
@@ -154,6 +161,42 @@ func Open(ctx context.Context, driver, dsn string) (*DB, error) {
 		return nil, fmt.Errorf("db: ping %s: %w", driver, err)
 	}
 	return &DB{x: x, dialect: d, memory: memory}, nil
+}
+
+// createSQLiteFile は SQLite の DB ファイルが無ければ所有者だけが読み書きできるモード（0600）で作る。
+// SQLite 自身は 0644 で作るため、パスワードのハッシュ・API キー・セッションを含む DB が同じホストの
+// 他の利用者から読めてしまう。-wal / -shm は SQLite が DB ファイルと同じモードで作る。
+// 既存のファイルのモードは変えない（運用者の設定を尊重する）。
+func createSQLiteFile(dsn string) error {
+	path := dsn
+	if strings.HasPrefix(path, "file:") {
+		path = strings.TrimPrefix(path, "file:")
+		if i := strings.IndexByte(path, '?'); i >= 0 {
+			if q, err := url.ParseQuery(path[i+1:]); err != nil || q.Get("mode") != "" {
+				// mode=ro などファイルの作成を伴わない指定は SQLite に任せる
+				return nil
+			}
+			path = path[:i]
+		}
+		if strings.HasPrefix(path, "//") {
+			// file://host/path 形式などは SQLite に任せる
+			return nil
+		}
+		if p, err := url.PathUnescape(path); err == nil {
+			path = p
+		}
+	}
+	if path == "" {
+		return nil
+	}
+	f, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_EXCL, 0o600)
+	if err != nil {
+		if errors.Is(err, fs.ErrExist) {
+			return nil
+		}
+		return fmt.Errorf("db: create sqlite file: %w", err)
+	}
+	return f.Close()
 }
 
 // sqliteDSN はパスまたは file: URI に接続ごとのプラグマを付与する。
