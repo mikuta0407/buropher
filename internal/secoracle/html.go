@@ -107,6 +107,10 @@ func (p *HTMLPolicy) urlOK(el, attr, value string) error {
 	if el == "img" && attr == "src" && p.AllowDataImage && reDataImage.MatchString(strings.TrimSpace(value)) {
 		return nil
 	}
+	// 内容の無い "data:" は何も実行・表示しない（Loofah も残す）
+	if scheme == "data" && strings.TrimFunc(value, func(r rune) bool { return r <= 0x20 })[len("data:"):] == "" {
+		return nil
+	}
 	if dangerousSchemes[scheme] {
 		return fmt.Errorf("<%s %s> has dangerous scheme %q: %q", el, attr, scheme, value)
 	}
