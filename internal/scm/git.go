@@ -158,6 +158,7 @@ func (g *Git) gitCmd(ctx context.Context, args []string, stdin []byte) ([]byte, 
 }
 
 // gitCmdTo は gitCmd の標準出力を w に書き出す版（大きな出力をメモリに溜めない）。
+// w はサーバ内のバッファであること（クライアントへ直接書く場合は gitStreamTo）。
 func (g *Git) gitCmdTo(ctx context.Context, args []string, stdin []byte, w io.Writer) error {
 	// 同時に動かす git の数を制限する（Redmine はアプリケーションサーバのスレッド数で自然に制限される）
 	select {
@@ -166,6 +167,13 @@ func (g *Git) gitCmdTo(ctx context.Context, args []string, stdin []byte, w io.Wr
 	case <-ctx.Done():
 		return ErrCommandAborted
 	}
+	return g.gitStreamTo(ctx, args, stdin, w)
+}
+
+// gitStreamTo は gitCmdTo の同時実行数の制限を受けない版。HTTP レスポンスへ直接書き出す
+// ダウンロード（raw・.diff）用で、読み出しの遅いクライアントが gitSem の枠を占有して
+// 他の利用者のリポジトリ閲覧を止められないようにする（出力はメモリに溜めない）。
+func (g *Git) gitStreamTo(ctx context.Context, args []string, stdin []byte, w io.Writer) error {
 	repo := g.RootURL
 	if repo == "" {
 		repo = g.URL
@@ -653,7 +661,7 @@ func (g *Git) DiffTo(ctx context.Context, path, from, to string, w io.Writer) bo
 	if !ok {
 		return false
 	}
-	return g.gitCmdTo(ctx, args, nil, w) == nil
+	return g.gitStreamTo(ctx, args, nil, w) == nil
 }
 
 // diffArgs は diff の git の引数（不正な識別子なら ok=false）。
@@ -745,7 +753,7 @@ func (g *Git) CatTo(ctx context.Context, path, identifier string, w io.Writer) b
 	if isOptionLike(identifier) {
 		return false
 	}
-	return g.gitCmdTo(ctx, []string{"show", "--no-color", "--no-textconv", g.toRepo(identifier) + ":" + g.toRepo(path)}, nil, w) == nil
+	return g.gitStreamTo(ctx, []string{"show", "--no-color", "--no-textconv", g.toRepo(identifier) + ":" + g.toRepo(path)}, nil, w) == nil
 }
 
 // ValidName は valid_name?（ブランチ・タグとして存在する名前か）。
