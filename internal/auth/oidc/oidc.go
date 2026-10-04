@@ -24,6 +24,7 @@ import (
 	"context"
 	"crypto/rand"
 	"crypto/sha256"
+	"crypto/subtle"
 	"encoding/base64"
 	"encoding/json"
 	"errors"
@@ -375,7 +376,7 @@ func (p *Provider) Exchange(ctx context.Context, code string, req AuthRequest) (
 	if err != nil {
 		return nil, fail("id_token", err)
 	}
-	if idt.Nonce == "" || idt.Nonce != req.Nonce {
+	if idt.Nonce == "" || subtle.ConstantTimeCompare([]byte(idt.Nonce), []byte(req.Nonce)) != 1 {
 		return nil, fail("nonce", errors.New("nonce mismatch"))
 	}
 	claims := map[string]any{}
