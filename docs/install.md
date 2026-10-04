@@ -133,6 +133,29 @@ After switching to HTTPS:
   used for links in e-mails and the Discord redirect URI,
 - raise the proxy's request body limit to at least the attachment size limit.
 
+Hardening notes:
+
+- Bind buropher to loopback when the proxy runs on the same host (`server.addr = "127.0.0.1:3000"`).
+  Because forwarded headers are accepted from any private address, a client on the same private
+  network that can reach buropher directly can otherwise choose its own logged IP address and the
+  host name used in generated links (as with Rails). The same applies to a container whose port
+  is published directly: Docker's NAT makes every client appear to come from the (private) bridge
+  gateway, so put a reverse proxy in front instead of exposing port 3000 to the Internet.
+- buropher sends the same security headers as Redmine (`X-Frame-Options: SAMEORIGIN`,
+  `X-Content-Type-Options: nosniff`, `Referrer-Policy`, ...) but no `Strict-Transport-Security`;
+  add HSTS in the TLS-terminating proxy (e.g. nginx
+  `add_header Strict-Transport-Security "max-age=31536000" always;`).
+- Session and autologin cookies get the `Secure` flag when the request arrived over HTTPS
+  (directly or via `X-Forwarded-Proto: https` from a trusted proxy), so make sure the proxy sets it.
+- `/healthz` is unauthenticated and returns only `ok` / `db: unavailable`; restrict it at the proxy
+  if you do not want it public.
+- For a PostgreSQL server on another host use `sslmode=verify-full` (pgx defaults to `prefer`, which
+  does not verify the certificate), and pass the DSN through `BUROPHER_DB_DSN` in a root-owned
+  `EnvironmentFile` (mode `0600`) or the `0640` config file rather than on the command line.
+- New SQLite databases are created with mode `0600` and data directories with `0750`; the secret key
+  file (`<data dir>/secret_key`) is `0600`. Attachments follow the process umask (`UMask=0027` in the
+  systemd unit keeps them private to the service group).
+
 To serve buropher under a sub-path instead of the root of a host name, see
 [Sub-path behind a reverse proxy](#sub-path-behind-a-reverse-proxy).
 

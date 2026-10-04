@@ -38,6 +38,15 @@ ProtectControlGroups=true
 RestrictSUIDSGID=true
 RestrictNamespaces=true
 LockPersonality=true
+# Keep the database, attachments and exports private to the service user/group.
+UMask=0027
+CapabilityBoundingSet=
+ProtectClock=true
+ProtectHostname=true
+ProtectKernelLogs=true
+RestrictRealtime=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+SystemCallArchitectures=native
 ReadWritePaths=/var/lib/buropher
 # Add the directories of local Git repositories (read-only is enough):
 #ReadOnlyPaths=/srv/git
