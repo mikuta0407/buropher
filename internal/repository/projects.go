@@ -414,6 +414,40 @@ VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 }
 
 // projectDescriptionArg は description の保存値（DescriptionNull で空なら NULL、それ以外は "" もそのまま。D-17）。
+// mergeUnchangedProjectAttrs は p のうち orig から変わっていない属性を cur（現在の DB の値）にする。
+func mergeUnchangedProjectAttrs(p, orig, cur *domain.Project) {
+	if sameID(p.ParentID, orig.ParentID) {
+		p.ParentID = cur.ParentID
+	}
+	if p.Name == orig.Name {
+		p.Name = cur.Name
+	}
+	if p.Description == orig.Description && p.DescriptionNull == orig.DescriptionNull {
+		p.Description, p.DescriptionNull = cur.Description, cur.DescriptionNull
+	}
+	if p.Homepage == orig.Homepage {
+		p.Homepage = cur.Homepage
+	}
+	if p.IsPublic == orig.IsPublic {
+		p.IsPublic = cur.IsPublic
+	}
+	if p.Status == orig.Status {
+		p.Status = cur.Status
+	}
+	if p.InheritMembers == orig.InheritMembers {
+		p.InheritMembers = cur.InheritMembers
+	}
+	if sameID(p.DefaultVersionID, orig.DefaultVersionID) {
+		p.DefaultVersionID = cur.DefaultVersionID
+	}
+	if sameID(p.DefaultAssignedToID, orig.DefaultAssignedToID) {
+		p.DefaultAssignedToID = cur.DefaultAssignedToID
+	}
+	if sameID(p.DefaultIssueQueryID, orig.DefaultIssueQueryID) {
+		p.DefaultIssueQueryID = cur.DefaultIssueQueryID
+	}
+}
+
 func projectDescriptionArg(p *domain.Project) any {
 	if p.DescriptionNull && p.Description == "" {
 		return nil
@@ -448,10 +482,23 @@ SELECT ancestor_id, ?, depth + 1 FROM project_closure WHERE descendant_id = ?`, 
 //
 // TODO: after_update update_versions_from_hierarchy_change
 // (Issue.update_versions_from_hierarchy_change) はチケット移植時に追加する。
-func UpdateProject(ctx context.Context, q db.Queryer, p *domain.Project) error {
+//
+// orig はリクエストで読み込んだときの値（nil 可）。orig から変えていない属性は現在の DB の値を保つ
+// （ActiveRecord の部分更新）。全属性を書き戻すと、読み込んでから保存するまでの間に管理者が行った
+// アーカイブ・終了・非公開化などを読み込み時の値で取り消してしまう。
+func UpdateProject(ctx context.Context, q db.Queryer, p, orig *domain.Project) error {
+	// 現在の値を読む前に行をロックする（PostgreSQL。読んでから更新するまでの他の更新を失わないように）
+	if f := db.ForUpdate(q); f != "" {
+		if _, err := q.Exec(ctx, `SELECT id FROM projects WHERE id = ?`+f, p.ID); err != nil {
+			return err
+		}
+	}
 	old, err := GetProject(ctx, q, p.ID)
 	if err != nil {
 		return err
+	}
+	if orig != nil {
+		mergeUnchangedProjectAttrs(p, orig, old)
 	}
 	parentChanged := !sameID(old.ParentID, p.ParentID)
 	if parentChanged && p.ParentID != nil {

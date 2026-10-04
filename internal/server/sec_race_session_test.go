@@ -140,6 +140,63 @@ func TestRaceDemotionVsAccountSave(t *testing.T) {
 	})
 }
 
+// TestRaceArchiveVsProjectSave は、プロジェクトの設定の保存の処理中に管理者がプロジェクトをアーカイブし
+// 非公開にしても、保存が読み込み時の status / is_public で上書きして元に戻さないことを確認する
+// （Redmine は変更した属性だけを更新する）。
+func TestRaceArchiveVsProjectSave(t *testing.T) {
+	raceForEachDB(t, func(t *testing.T, d *db.DB) {
+		_, ts := newFixtureServerOn(t, d)
+		ctx := context.Background()
+		c := login(t, ts, "jsmith", "jsmith") // eCookbook の管理者
+		_, body := get(t, c, ts.URL+"/projects/ecookbook/settings")
+		token := csrfToken(t, body)
+		tx, err := d.Begin(ctx)
+		if err != nil {
+			t.Fatal(err)
+		}
+		defer func() { _ = tx.Rollback() }()
+		if _, err := tx.Exec(ctx, `SELECT id FROM projects WHERE id = 1`+db.ForUpdate(tx)); err != nil {
+			t.Fatal(err)
+		}
+		done := make(chan int, 1)
+		go func() {
+			res, err := c.PostForm(ts.URL+"/projects/ecookbook", url.Values{"_method": {"patch"}, "authenticity_token": {token},
+				"project[description]": {"edited"}, "project[is_public]": {"1"}})
+			if err != nil {
+				t.Error(err)
+				done <- 0
+				return
+			}
+			res.Body.Close()
+			done <- res.StatusCode
+		}()
+		time.Sleep(700 * time.Millisecond)
+		if _, err := tx.Exec(ctx, `UPDATE projects SET status = 9, is_public = FALSE WHERE id = 1`); err != nil {
+			t.Fatal(err)
+		}
+		if err := tx.Commit(); err != nil {
+			t.Fatal(err)
+		}
+		if code := <-done; code != 302 {
+			t.Fatalf("project save: %d", code)
+		}
+		var r struct {
+			Status      int    `db:"status"`
+			IsPublic    bool   `db:"is_public"`
+			Description string `db:"description"`
+		}
+		if err := d.Get(ctx, &r, `SELECT status, is_public, description FROM projects WHERE id = 1`); err != nil {
+			t.Fatal(err)
+		}
+		if r.Status != 9 || r.IsPublic {
+			t.Fatalf("after archiving during a settings save: status=%d is_public=%v (want 9, false)", r.Status, r.IsPublic)
+		}
+		if r.Description != "edited" {
+			t.Errorf("description = %q", r.Description)
+		}
+	})
+}
+
 // TestRaceAutologinSessionAfterPasswordChange は、盗んだ autologin クッキーで処理中だったリクエストが、
 // その間に行われたパスワード変更（全セッション・autologin トークンの破棄）の後で
 // 新しいログインセッションを作れないことを確認する。
