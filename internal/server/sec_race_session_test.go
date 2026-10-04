@@ -197,6 +197,59 @@ func TestRaceArchiveVsProjectSave(t *testing.T) {
 	})
 }
 
+// TestRaceProtectVsWikiEdit は、Wiki ページの編集の保存の処理中に管理者がページを保護しても、
+// 保存が読み込み時の protected（保護なし）で上書きして保護を外さないことを確認する。
+// 修正前の編集は wiki_pages の protected も含めて書き戻していたため、保護の権限の無い編集者の
+// 処理中の保存で保護が外れ、以後も保護されたページを編集できた。
+func TestRaceProtectVsWikiEdit(t *testing.T) {
+	raceForEachDB(t, func(t *testing.T, d *db.DB) {
+		_, ts := newFixtureServerOn(t, d)
+		ctx := context.Background()
+		c := login(t, ts, "jsmith", "jsmith")
+		form := wikiForm(t, c, ts, "_method", "put", "content[text]", "# Another page\n\nedited", "content[version]", "1")
+		var pageID int64
+		if err := d.Get(ctx, &pageID, `SELECT id FROM wiki_pages WHERE wiki_id = 1 AND title = 'Another_page'`); err != nil {
+			t.Fatal(err)
+		}
+		tx, err := d.Begin(ctx)
+		if err != nil {
+			t.Fatal(err)
+		}
+		defer func() { _ = tx.Rollback() }()
+		if _, err := tx.Exec(ctx, `SELECT id FROM wiki_pages WHERE id = ?`+db.ForUpdate(tx), pageID); err != nil {
+			t.Fatal(err)
+		}
+		done := make(chan int, 1)
+		go func() {
+			res, err := c.PostForm(ts.URL+"/projects/ecookbook/wiki/Another_page", form)
+			if err != nil {
+				t.Error(err)
+				done <- 0
+				return
+			}
+			res.Body.Close()
+			done <- res.StatusCode
+		}()
+		time.Sleep(700 * time.Millisecond)
+		if _, err := tx.Exec(ctx, `UPDATE wiki_pages SET protected = TRUE WHERE id = ?`, pageID); err != nil {
+			t.Fatal(err)
+		}
+		if err := tx.Commit(); err != nil {
+			t.Fatal(err)
+		}
+		if code := <-done; code != 302 {
+			t.Fatalf("wiki save: %d", code)
+		}
+		var protected bool
+		if err := d.Get(ctx, &protected, `SELECT protected FROM wiki_pages WHERE id = ?`, pageID); err != nil {
+			t.Fatal(err)
+		}
+		if !protected {
+			t.Fatal("protection set during an edit was removed by the edit's save")
+		}
+	})
+}
+
 // TestRaceAutologinSessionAfterPasswordChange は、盗んだ autologin クッキーで処理中だったリクエストが、
 // その間に行われたパスワード変更（全セッション・autologin トークンの破棄）の後で
 // 新しいログインセッションを作れないことを確認する。

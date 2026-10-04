@@ -312,10 +312,12 @@ VALUES (?, ?, ?, ?, 0, ?)`, p.WikiID, p.Title, p.ParentID, p.Protected, db.NewTi
 	return nil
 }
 
-// UpdateWikiPageAttrs はページの title / wiki_id / parent_id / protected を保存する。
+// UpdateWikiPageAttrs はページの title / wiki_id / parent_id を保存する。
+// protected は書かない（変更は SetWikiPageProtected のみ）: 編集・名前変更の保存が読み込み時の値を書き戻すと、
+// その処理中に行われた保護を外してしまうため（Redmine は変更した属性だけを更新する）。
 func UpdateWikiPageAttrs(ctx context.Context, q db.Queryer, p *domain.WikiPage) error {
-	_, err := q.Exec(ctx, `UPDATE wiki_pages SET wiki_id = ?, title = ?, parent_id = ?, protected = ? WHERE id = ?`,
-		p.WikiID, p.Title, p.ParentID, p.Protected, p.ID)
+	_, err := q.Exec(ctx, `UPDATE wiki_pages SET wiki_id = ?, title = ?, parent_id = ? WHERE id = ?`,
+		p.WikiID, p.Title, p.ParentID, p.ID)
 	return err
 }
 
