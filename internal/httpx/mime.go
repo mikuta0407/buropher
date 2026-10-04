@@ -450,6 +450,12 @@ func ShouldVaryAccept(r *http.Request) bool {
 	return validAcceptHeader(r)
 }
 
+// ParamFormat は params[:format]（ルートの拡張子、無ければクエリ/ボディの format。Accept ヘッダは見ない）。
+func ParamFormat(r *http.Request) string {
+	f, _ := paramFormat(r)
+	return f
+}
+
 // IsAPIRequest は Redmine の api_request?（params[:format] が xml か json）を返す。
 func IsAPIRequest(r *http.Request) bool {
 	f, ok := paramFormat(r)

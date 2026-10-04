@@ -217,11 +217,12 @@ func (a *App) oauthAuthorizationCodeGrant(r *http.Request, p oauthParams) oauthT
 	} else {
 		switch grant.CodeChallengeMethod {
 		case "S256":
-			if grant.CodeChallenge != doorkeeper.CodeChallengeS256(verifier) {
+			// 秘密値の比較は定数時間で行う
+			if !doorkeeper.SecureCompare(grant.CodeChallenge, doorkeeper.CodeChallengeS256(verifier)) {
 				return invalidGrant
 			}
 		case "plain":
-			if grant.CodeChallenge != verifier {
+			if !doorkeeper.SecureCompare(grant.CodeChallenge, verifier) {
 				return invalidGrant
 			}
 		default:

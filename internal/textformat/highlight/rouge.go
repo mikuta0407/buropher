@@ -60,7 +60,7 @@ type rctx struct {
 	budget *lexBudget
 }
 
-// lexBudget は 1 回の字句解析の時間制限。
+// lexBudget は字句解析の時間制限（Budget で複数のコードブロックに共有できる）。
 type lexBudget struct {
 	deadline time.Time
 	steps    int
@@ -565,13 +565,16 @@ func rougeLexerByTag(tag string) *rlexer {
 }
 
 // rougeTokens は移植済みレキサーで字句解析する（未移植なら ok=false）。
-func rougeTokens(text, tag string) ([][2]string, bool) {
+func rougeTokens(text, tag string, budget *lexBudget) ([][2]string, bool) {
 	lx := rougeLexerByTag(tag)
 	if lx == nil {
 		return nil, false
 	}
+	if budget.exceeded {
+		return [][2]string{{"", text}}, true
+	}
 	c := newCtx(lx)
-	c.budget = &lexBudget{deadline: time.Now().Add(lexTimeout)}
+	c.budget = budget
 	var out [][2]string
 	c.continueLex(text, func(t rtok, v string) {
 		out = append(out, [2]string{t, v})
@@ -584,7 +587,7 @@ func rougeTokens(text, tag string) ([][2]string, bool) {
 }
 
 const (
-	// lexTimeout は 1 回のハイライト全体の上限時間。
+	// lexTimeout は 1 回のハイライト全体（Budget を共有する場合はそれらの合計）の上限時間。
 	lexTimeout = 3 * time.Second
 	// regexTimeout は 1 回の正規表現照合の上限時間。
 	regexTimeout = 500 * time.Millisecond

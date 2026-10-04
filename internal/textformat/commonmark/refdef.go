@@ -23,6 +23,10 @@ func (refDefTransformer) Transform(node *ast.Paragraph, reader text.Reader, pc p
 	if v, ok := node.AttributeString("cm-no-refdefs"); ok && v == true {
 		return
 	}
+	if blank, batched := extractRefDefsInBatches(node, reader, pc); batched {
+		// 2 回目以降の呼び出しで先頭の定義に段落の「直前の空行」が写らないようにしていたのを戻す
+		defer node.SetBlankPreviousLines(blank)
+	}
 	src := reader.Source()
 	lines := node.Lines()
 	var content []byte
@@ -81,6 +85,82 @@ func (refDefTransformer) Transform(node *ast.Paragraph, reader text.Reader, pc p
 		}
 	}
 	node.Lines().AppendAll(rest)
+}
+
+// refDefBatch は goldmark のリンク参照定義抽出に 1 回で渡す定義の数の上限。
+var refDefBatch = 64 // テストで変更する
+
+// extractRefDefsInBatches は段落の先頭に定義が多数並ぶとき、refDefBatch 個ずつ goldmark に抽出させる。
+// goldmark の linkReferenceParagraphTransformer は定義 1 つごとに残りの行を詰め直すため、
+// 定義の数の 2 乗の時間がかかる（"[a]: b\n" を 2 万行並べると数秒）。行末で終わる定義の境界で
+// 区切って渡しても結果は変わらない。最後の refDefBatch 個以下の定義と残りの行は呼び出し元が処理する。
+// 区切って処理したときは元の「直前の空行」の値と true を返す（呼び出し元が最後に戻す）。
+func extractRefDefsInBatches(node *ast.Paragraph, reader text.Reader, pc parser.Context) (bool, bool) {
+	src := reader.Source()
+	lines := node.Lines()
+	if lines.Len() <= refDefBatch {
+		return false, false
+	}
+	// 各行の終わりの位置（Transform と同じ内容の組み立て）
+	var content []byte
+	lineEnds := make([]int, lines.Len())
+	for i := 0; i < lines.Len(); i++ {
+		seg := lines.At(i)
+		v := bytes.TrimLeft(seg.Value(src), " \t")
+		content = append(content, v...)
+		if len(v) == 0 || v[len(v)-1] != '\n' {
+			content = append(content, '\n')
+		}
+		lineEnds[i] = len(content)
+	}
+	// 行末で終わる定義ごとに、そこまでの行数を求める
+	var cuts []int
+	pos, li := 0, 0
+	for pos < len(content) && content[pos] == '[' {
+		n, ok := scanReferenceDef(content[pos:])
+		if !ok {
+			break
+		}
+		pos += n
+		for li < len(lineEnds) && lineEnds[li] < pos {
+			li++
+		}
+		if li < len(lineEnds) && lineEnds[li] == pos {
+			cuts = append(cuts, li+1)
+		}
+	}
+	if len(cuts) <= refDefBatch {
+		return false, false
+	}
+	blank := node.HasBlankPreviousLines()
+	all := append([]text.Segment(nil), lines.Sliced(0, lines.Len())...)
+	done := 0
+	for k := refDefBatch; k < len(cuts); k += refDefBatch {
+		cut := cuts[k-1]
+		if cut <= done {
+			continue
+		}
+		parent, next := node.Parent(), node.NextSibling()
+		node.Lines().Clear()
+		node.Lines().AppendAll(all[done:cut])
+		parser.LinkReferenceParagraphTransformer.Transform(node, reader, pc)
+		if node.Parent() != nil {
+			// goldmark がすべてを定義と見なさなかった（通常は起きない）。残りを戻して呼び出し元に任せる
+			node.Lines().AppendAll(all[cut:])
+			return blank, true
+		}
+		if next != nil {
+			parent.InsertBefore(parent, next, node)
+		} else {
+			parent.AppendChild(parent, node)
+		}
+		// 一度に処理した場合、2 つ目以降の定義には段落の「直前の空行」は写らない
+		node.SetBlankPreviousLines(false)
+		done = cut
+	}
+	node.Lines().Clear()
+	node.Lines().AppendAll(all[done:])
+	return blank, true
 }
 
 // scanReferenceDef は comrak の parse_reference_inline の受理判定。

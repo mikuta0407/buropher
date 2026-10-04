@@ -41,7 +41,11 @@ func (f *fenceLexer) lex(c *rctx, text string) {
 		c.emit("sb", text)
 	default:
 		tag := strings.TrimPrefix(f.fallback, "chroma:")
-		for _, t := range chromaTokens(text, registry[tag]) {
+		b := c.budget
+		if b == nil {
+			b = (*Budget)(nil).lex()
+		}
+		for _, t := range chromaTokens(text, registry[tag], b) {
 			c.emit(t[0], t[1])
 		}
 	}

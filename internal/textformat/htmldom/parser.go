@@ -64,6 +64,20 @@ type parser struct {
 	doc   *Node
 	html  int // ctxt->html
 	depth int // ctxt->depth
+
+	// textNode は直前に文字データを追記したテキストノード、textBuf はその内容（解析の終わりに Data へ書き戻す）。
+	// 細切れの文字データ（"a&lt;" の繰り返し等）ごとに Data += s とすると 2 乗の時間になるため。
+	// 解析中にテキストノードの Data を読む箇所は無い。
+	textNode *Node
+	textBuf  []byte
+}
+
+// flushText は追記中のテキストノードの内容を Data に書き戻す。
+func (p *parser) flushText() {
+	if p.textNode != nil {
+		p.textNode.Data = string(p.textBuf)
+		p.textNode = nil
+	}
 }
 
 func isBlankCh(c byte) bool { return c == 0x20 || c == 0x09 || c == 0x0A || c == 0x0D }
@@ -203,7 +217,12 @@ func (p *parser) characters(s string, typ NodeType) {
 		return
 	}
 	if last := parent.LastChild; last != nil && last.Type == typ {
-		last.Data += s
+		if last != p.textNode {
+			p.flushText()
+			p.textNode = last
+			p.textBuf = append(p.textBuf[:0], last.Data...)
+		}
+		p.textBuf = append(p.textBuf, s...)
 		return
 	}
 	parent.AppendChild(&Node{Type: typ, Data: s})
@@ -1048,6 +1067,7 @@ func isBooleanAttr(name string) bool {
 func ParseFragment(html string) *Node {
 	p := &parser{in: []byte("<html><body>" + html), doc: &Node{Type: FragmentNode}}
 	p.parseDocument()
+	p.flushText()
 	frag := &Node{Type: FragmentNode}
 	bodyItself := isBodyStart(html)
 	for h := p.doc.FirstChild; h != nil; h = h.NextSibling {

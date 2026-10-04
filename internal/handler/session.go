@@ -92,7 +92,7 @@ func (a *App) findCurrentUser(c *Req) *domain.User {
 			user = a.findActiveUser(c, s.UserID())
 		} else if u := a.tryToAutologin(c); u != nil {
 			user = u
-		} else if httpx.Format(c.R) == "atom" && p.Present("key") && c.R.Method == http.MethodGet && c.cfg.acceptAtomAuth {
+		} else if httpx.ParamFormat(c.R) == "atom" && p.Present("key") && c.R.Method == http.MethodGet && c.cfg.acceptAtomAuth {
 			// atom キーの認証はセッションを開始しない
 			user = a.findTokenUser(c, repository.TokenFeeds, p.String("key"), 0)
 		}

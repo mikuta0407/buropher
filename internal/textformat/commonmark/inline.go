@@ -525,13 +525,16 @@ func processFootnotes(doc *ast.Document) {
 func postprocessText(node ast.Node, inBracket bool) {
 	for c := node.FirstChild(); c != nil; {
 		if s, ok := c.(*Str); ok {
-			for {
-				ns, ok := s.NextSibling().(*Str)
-				if !ok {
-					break
+			// 隣接するテキストを 1 つにまとめる（+= の繰り返しは 2 乗の時間になるので Builder で連結する）
+			if ns, ok := s.NextSibling().(*Str); ok {
+				var b strings.Builder
+				b.WriteString(s.Value)
+				for ok {
+					b.WriteString(ns.Value)
+					node.RemoveChild(node, ns)
+					ns, ok = s.NextSibling().(*Str)
 				}
-				s.Value += ns.Value
-				node.RemoveChild(node, ns)
+				s.Value = b.String()
 			}
 			processTasklist(s)
 			if !inBracket {
@@ -710,8 +713,34 @@ func autolinkDelim(data []byte, linkEnd int) int {
 }
 
 // processEmailAutolinks は comrak の process_email_autolinks。
+// comrak は残りのテキストを新しいノードにして再帰するが、ここでは残りを複製せずにループで処理する
+// （メールアドレスが多数並ぶテキストで残り全体の複製と再帰が繰り返され 2 乗の時間になるのを防ぐ）。
 func processEmailAutolinks(s *Str) {
 	contents := []byte(s.Value)
+	first := true
+	for {
+		post, start, end := findEmailAutolink(contents)
+		if post == nil {
+			if !first {
+				s.Value = string(contents)
+			}
+			return
+		}
+		parent := s.Parent()
+		parent.InsertAfter(parent, s, post)
+		s.Value = string(contents[:start])
+		if end >= len(contents) {
+			return
+		}
+		after := &Str{}
+		parent.InsertAfter(parent, post, after)
+		s, contents, first = after, contents[end:], false
+	}
+}
+
+// findEmailAutolink は contents の中の最初のメールアドレスの自動リンクを探す
+// （リンクと、置き換える範囲 contents[start:end]。無ければ nil）。
+func findEmailAutolink(contents []byte) (*Link, int, int) {
 	n := len(contents)
 	i := 0
 	for i < n {
@@ -738,23 +767,12 @@ func processEmailAutolinks(s *Str) {
 			i++
 		}
 		if post == nil {
-			return
+			return nil, 0, 0
 		}
 		i -= reverse
-		parent := s.Parent()
-		parent.InsertAfter(parent, s, post)
-		remain := ""
-		if i+skip < n {
-			remain = string(contents[i+skip:])
-		}
-		s.Value = string(contents[:i])
-		if remain != "" {
-			after := &Str{Value: remain}
-			parent.InsertAfter(parent, post, after)
-			processEmailAutolinks(after)
-		}
-		return
+		return post, i, i + skip
 	}
+	return nil, 0, 0
 }
 
 func emailMatch(contents []byte, i int) (*Link, int, int, bool) {
