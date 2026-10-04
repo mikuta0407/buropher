@@ -82,7 +82,7 @@ type Upload struct {
 }
 
 var (
-	reSanitizePath  = regexp.MustCompile(`(?s)\A.*(\\|/)`)
+	reSanitizePath = regexp.MustCompile(`(?s)\A.*(\\|/)`)
 	// Redmine の [\/\?\%\*\:\|\"\'<>\n\r]+ に、タブ以外の制御文字（NUL など）を加えたもの。
 	// NUL を含む名前は PostgreSQL に保存できず、メール受信・アップロードが失敗するため
 	reSanitizeChars = regexp.MustCompile(`[/?%*:|"'<>\n\r\x00-\x08\x0b\x0c\x0e-\x1f\x7f]+`)

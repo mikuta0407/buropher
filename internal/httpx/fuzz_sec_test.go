@@ -24,10 +24,12 @@ var backURLSeeds = []string{
 //
 //   - リンク（attachments/edit_all の safe_back_url）・hidden の値として相対 URL のまま使われる:
 //     ブラウザの規則（"\" → "/"、タブ・改行の除去）で現在のページに対して解決してもホストが変わらない
+//
 //   - redirect_to で使われる: RedirectLocation の結果が同一オリジン
+//
 //   - 結果は "/" で始まり CR / LF / NUL を含まない
 //
-//	go test -run '^$' -fuzz FuzzValidateBackURL ./internal/httpx
+//     go test -run '^$' -fuzz FuzzValidateBackURL ./internal/httpx
 func FuzzValidateBackURL(f *testing.F) {
 	for _, s := range backURLSeeds {
 		f.Add(s, "")
