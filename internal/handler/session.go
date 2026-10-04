@@ -136,6 +136,11 @@ func (a *App) findCurrentUser(c *Req) *domain.User {
 				su, err := repository.FindUserByLogin(c.Ctx(), a.DB, login)
 				if err == nil && su.Active() {
 					a.logger().Info("User switched", "by", user.Login, "id", user.ID)
+					// buropher 独自（セキュリティ）: OAuth のトークン（admin スコープ）で切り替えた場合は、
+					// 切り替え先にもトークンのスコープを引き継ぐ。
+					if user.AuthorizedByOAuth() {
+						su.OAuthScope = user.OAuthScope
+					}
 					user = su
 				} else {
 					c.RenderError(http.StatusPreconditionFailed, "Invalid "+name+" header")

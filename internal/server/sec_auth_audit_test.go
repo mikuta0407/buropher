@@ -1,0 +1,146 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Copyright (C) 2026 mikuta0407 and Buropher contributors
+
+package server_test
+
+import (
+	"context"
+	"net/http"
+	"net/url"
+	"strings"
+	"testing"
+	"time"
+
+	"github.com/go-chi/chi/v5"
+
+	"github.com/mikuta0407/buropher/internal/db"
+	"github.com/mikuta0407/buropher/internal/handler"
+)
+
+// TestOAuthSwitchUserKeepsTokenScope は、admin スコープの OAuth トークンで X-Redmine-Switch-User を使っても、
+// 切り替え先のユーザーにトークンのスコープが引き継がれることを確認する。
+func TestOAuthSwitchUserKeepsTokenScope(t *testing.T) {
+	ts, _ := newFixtureServer(t)
+	admin := login(t, ts, "admin", "admin")
+	access := oauthTokenFor(t, ts.URL, admin, admin, "admin")
+	for _, name := range []string{"admin", "jsmith"} {
+		h := bearer(access)
+		h["X-Redmine-Switch-User"] = name
+		res, body := oauthDo(t, newClient(t), http.MethodGet, ts.URL+"/my/account.json", nil, h)
+		if res.StatusCode != 200 {
+			t.Fatalf("switch to %s: my/account.json: %d %s", name, res.StatusCode, body)
+		}
+		u, _ := decodeJSON(t, body)["user"].(map[string]any)
+		if u["login"] != name {
+			t.Errorf("switch to %s: login = %v", name, u["login"])
+		}
+		if k, ok := u["api_key"]; ok {
+			t.Errorf("switch to %s: api_key leaked to OAuth token: %v", name, k)
+		}
+		if name == "admin" {
+			// 管理者は admin スコープがあれば何でもできる（User#allowed_to? の admin?）
+			continue
+		}
+		// view_issues スコープが無いので、管理者でない切り替え先ではチケットを見られない
+		res, body = oauthDo(t, newClient(t), http.MethodGet, ts.URL+"/issues/1.json", nil, h)
+		if res.StatusCode != http.StatusForbidden {
+			t.Errorf("switch to %s: issues/1.json without view_issues scope: %d %s", name, res.StatusCode, body)
+		}
+	}
+}
+
+// TestLostPasswordAPIFormatNeedsCSRF は、パスワード再設定の途中（セッションに recovery トークンがある）の
+// 利用者に対し、format=json の付いた POST（API リクエストとして CSRF 検証が省かれる）でパスワードを
+// 書き換えられないことを確認する。API 形式の変更系リクエストは CSRF の検証を省く代わりに、ブラウザの
+// セッションの状態（password_recovery_token 等）を使わない。
+func TestLostPasswordAPIFormatNeedsCSRF(t *testing.T) {
+	ts, d := newFixtureServer(t)
+	ctx := context.Background()
+	if _, err := d.Exec(ctx, `INSERT INTO tokens (user_id, action, value, created_at, updated_at) VALUES (2, 'recovery', 'abcdef0123456789abcdef0123456789abcdef01', ?, ?)`,
+		db.NewTime(time.Now()), db.NewTime(time.Now())); err != nil {
+		t.Fatal(err)
+	}
+	victim := newClient(t)
+	if res, _ := get(t, victim, ts.URL+"/account/lost_password?token=abcdef0123456789abcdef0123456789abcdef01"); res.StatusCode != 302 {
+		t.Fatalf("token link: %d", res.StatusCode)
+	}
+	for _, p := range []string{"/account/lost_password.json", "/account/lost_password?format=json", "/account/lost_password.xml"} {
+		if res, body := post(t, victim, ts.URL+p, url.Values{"new_password": {"hijacked1"}, "new_password_confirmation": {"hijacked1"}}); res.StatusCode/100 == 5 {
+			t.Fatalf("%s: %d %s", p, res.StatusCode, body)
+		}
+	}
+	tryLogin := func(pw string) bool {
+		c := newClient(t)
+		_, page := get(t, c, ts.URL+"/login")
+		res, _ := post(t, c, ts.URL+"/login", url.Values{"authenticity_token": {csrfMeta(t, page)}, "username": {"jsmith"}, "password": {pw}})
+		return res.StatusCode == 302 && !strings.Contains(res.Header.Get("Location"), "/login")
+	}
+	if tryLogin("hijacked1") {
+		t.Fatal("password changed by a POST without CSRF token")
+	}
+	// 通常のフォーム（CSRF トークン付き）では従来どおり再設定できる
+	_, page := get(t, victim, ts.URL+"/account/lost_password")
+	if !strings.Contains(page, "new_password") {
+		t.Fatal("recovery form is not shown after the API-format POSTs")
+	}
+	res, _ := post(t, victim, ts.URL+"/account/lost_password", url.Values{"authenticity_token": {csrfMeta(t, page)},
+		"new_password": {"changed12"}, "new_password_confirmation": {"changed12"}})
+	if res.StatusCode != 302 || !tryLogin("changed12") {
+		t.Errorf("password recovery with a CSRF token: status %d", res.StatusCode)
+	}
+}
+
+// TestSudoModeBulkUserAndRoleActions は sudo モードが有効なとき、ユーザーの一括削除・一括ロック／ロック解除と
+// ロールの権限の一括編集が（destroy・update と同じく）パスワードの再確認を求めることを確認する。
+func TestSudoModeBulkUserAndRoleActions(t *testing.T) {
+	var app *handler.App
+	ts, d := newFixtureServer(t, func(a *handler.App, _ chi.Router) { a.SudoMode = true; app = a })
+	ctx := context.Background()
+	if err := app.Settings.Set(ctx, "autologin", "7"); err != nil {
+		t.Fatal(err)
+	}
+	ae := &authEnv{t: t, base: ts.URL, clients: map[string]*http.Client{}, out: map[string]string{}}
+	ae.autologinClient("hijacked", "admin")
+	status := func() int {
+		var st int
+		if err := d.Get(ctx, &st, `SELECT status FROM principals WHERE id = 2`); err != nil {
+			t.Fatal(err)
+		}
+		return st
+	}
+	perms := func() int {
+		var n int
+		if err := d.Get(ctx, &n, `SELECT COUNT(*) FROM role_permissions WHERE role_id = 1`); err != nil {
+			t.Fatal(err)
+		}
+		return n
+	}
+	before := perms()
+	for _, tc := range []struct {
+		path string
+		form url.Values
+	}{
+		{"/users/bulk_lock", url.Values{"ids[]": {"2"}}},
+		{"/users/bulk_unlock", url.Values{"ids[]": {"2"}}},
+		{"/users/bulk_destroy", url.Values{"_method": {"delete"}, "ids[]": {"2"}, "confirm": {"Yes"}}},
+		{"/roles/permissions", url.Values{"permissions[1][]": {"view_issues"}}},
+	} {
+		st, loc, body := ae.do("hijacked", "POST", tc.path, tc.form, "")
+		if !strings.Contains(body, `name="sudo_password"`) {
+			t.Errorf("POST %s: sudo form not shown (status %d, location %q)", tc.path, st, loc)
+		}
+	}
+	if st := status(); st != 1 {
+		t.Errorf("user 2 status = %d after bulk actions without sudo", st)
+	}
+	if n := perms(); n != before {
+		t.Errorf("role 1 permissions changed without sudo: %d -> %d", before, n)
+	}
+	// パスワードを再入力すればロックできる
+	if st, _, _ := ae.do("hijacked", "POST", "/users/bulk_lock", url.Values{"ids[]": {"2"}, "sudo_password": {"admin"}}, ""); st != 302 {
+		t.Errorf("bulk_lock after sudo: %d", st)
+	}
+	if st := status(); st != 3 {
+		t.Errorf("user 2 status = %d after sudo bulk_lock, want 3", st)
+	}
+}
