@@ -118,6 +118,14 @@ func ratFromFloat(f float64) *big.Rat {
 
 // recalculateAttributesFor は recalculate_attributes_for(issue_id): 子から優先度・日付・進捗率を導出して保存する。
 func (e *Env) recalculateAttributesFor(ctx context.Context, issueID int64, st *saveState) error {
+	if st.recalculating[issueID] {
+		return nil
+	}
+	if st.recalculating == nil {
+		st.recalculating = map[int64]bool{}
+	}
+	st.recalculating[issueID] = true
+	defer delete(st.recalculating, issueID)
 	p, err := e.Find(ctx, issueID)
 	if err != nil || p == nil {
 		return err

@@ -696,7 +696,7 @@ func (a *App) saveUser(c *Req, m *userModel) (bool, error) {
 			if changed {
 				m.UpdatedAt = now
 			}
-			if err := repository.UpdateUser(c.Ctx(), tx, m.User, changed, now); err != nil {
+			if err := repository.UpdateUser(c.Ctx(), tx, m.User, &m.orig, changed, now); err != nil {
 				return err
 			}
 			if err := repository.SaveUserNotification(c.Ctx(), tx, m.notification); err != nil {

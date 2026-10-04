@@ -40,9 +40,16 @@ func newFixtureServer(t *testing.T, extra ...func(a *handler.App, r chi.Router))
 // newFixtureServerFull は newFixtureServer と同じ。*server.Server（ルータ・App）も返す。
 func newFixtureServerFull(t *testing.T, extra ...func(a *handler.App, r chi.Router)) (*server.Server, *httptest.Server, *db.DB) {
 	t.Helper()
+	srv, ts := newFixtureServerOn(t, dbtest.New(t), extra...)
+	return srv, ts, srv.App().DB
+}
+
+// newFixtureServerOn は与えた DB（マイグレーション済み・空）にフィクスチャを投入してサーバを起動する
+// （PostgreSQL でも同じテストを動かすため）。
+func newFixtureServerOn(t *testing.T, d *db.DB, extra ...func(a *handler.App, r chi.Router)) (*server.Server, *httptest.Server) {
+	t.Helper()
 	// TZ=UTC は TestMain（main_test.go）で設定する
 	ctx := context.Background()
-	d := dbtest.New(t)
 	if err := testfixtures.LoadContext(ctx, d, frozenTime, testfixtures.All()...); err != nil {
 		t.Fatal(err)
 	}
@@ -66,7 +73,7 @@ func newFixtureServerFull(t *testing.T, extra ...func(a *handler.App, r chi.Rout
 	}
 	ts := httptest.NewServer(srv.Handler())
 	t.Cleanup(ts.Close)
-	return srv, ts, d
+	return srv, ts
 }
 
 var feedKeyRe = regexp.MustCompile(`key=[0-9a-f]{40}`)

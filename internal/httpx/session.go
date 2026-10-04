@@ -413,6 +413,40 @@ func (s *Session) SetUserID(id int64) {
 	s.rec.CreatedAt = now
 	s.rec.UpdatedAt = now
 	s.dirty = true
+	s.persistLogin()
+}
+
+// persistLogin は開始したログインセッションの行をその場で Store に保存する（Redmine の
+// start_user_session が session トークンを直ちに作るのと同じ）。レスポンス送出時（Commit）まで
+// 保存を遅らせると、認証（autologin・パスワード等）の後、処理中にパスワード変更・2 要素認証の有効化・
+// ロックで全セッションが破棄されても、Commit の upsert でこのリクエストのセッションが新しく作られ、
+// 失効後も使えるログインが残った。先に保存しておけば破棄で消え、Commit は既存の行の更新だけを行う
+// （消えていれば Cookie も出さない）。
+func (s *Session) persistLogin() {
+	if s.rec.UserID == 0 || s.persisted || s.r == nil {
+		return
+	}
+	now := s.m.now()
+	rec := s.rec
+	if rec.ID == "" {
+		rec.ID = newSessionID()
+	}
+	rec.ExpiresAt = s.m.policy().expiresAt(&rec)
+	if rec.IP == "" {
+		rec.IP = RemoteIP(s.r)
+		rec.UserAgent = s.r.UserAgent()
+	}
+	if rec.UpdatedAt.IsZero() {
+		rec.UpdatedAt = now
+	}
+	if err := s.m.Store.Save(context.WithoutCancel(s.r.Context()), &rec); err != nil {
+		// 保存できなければ従来どおり Commit で保存する
+		s.m.logger().Error("session save failed", "err", err)
+		return
+	}
+	s.rec.ID, s.rec.ExpiresAt, s.rec.IP, s.rec.UserAgent = rec.ID, rec.ExpiresAt, rec.IP, rec.UserAgent
+	s.persisted = true
+	s.fromClient = false
 }
 
 // SudoAt は sudo モードの最終確認時刻を返す。

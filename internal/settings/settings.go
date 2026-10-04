@@ -146,11 +146,18 @@ type Store interface {
 	Save(ctx context.Context, name string, value json.RawMessage) error
 }
 
+// Versioner は設定の版を返せる Store（任意）。版が変わったら他のプロセスが設定を変更したとみなす。
+type Versioner interface {
+	Version(ctx context.Context) (string, error)
+}
+
 // Settings はキャッシュ付きの設定アクセサ（Setting[] / Setting.xxx 相当）。
 type Settings struct {
 	store Store
 	mu    sync.RWMutex
 	cache map[string]any
+	// version は最後に読み込んだときの Store の版（Versioner の場合）。
+	version string
 }
 
 // New は store から全設定を読み込む。
@@ -164,6 +171,14 @@ func New(ctx context.Context, store Store) (*Settings, error) {
 
 // Reload はキャッシュを破棄して再読み込みする（Setting.clear_cache 相当）。
 func (s *Settings) Reload(ctx context.Context) error {
+	// 版は読み込みの前に取る（間に変更が入っても次の CheckCache で読み直す）
+	var version string
+	if v, ok := s.store.(Versioner); ok {
+		var err error
+		if version, err = v.Version(ctx); err != nil {
+			return err
+		}
+	}
 	raw, err := s.store.LoadAll(ctx)
 	if err != nil {
 		return err
@@ -185,8 +200,31 @@ func (s *Settings) Reload(ctx context.Context) error {
 	}
 	s.mu.Lock()
 	s.cache = cache
+	s.version = version
 	s.mu.Unlock()
 	return nil
+}
+
+// CheckCache は Setting.check_cache: Store の版が最後に読み込んだときから変わっていれば
+// キャッシュを読み直す。リクエストごとに呼ぶ（ApplicationController#user_setup と同じ）。
+// 複数のプロセスが同じ DB を使う場合に、別のプロセスでの設定変更（REST API の無効化・
+// ログイン必須・自己登録の停止など）が、そのプロセスを再起動するまで反映されないことを防ぐ。
+func (s *Settings) CheckCache(ctx context.Context) error {
+	v, ok := s.store.(Versioner)
+	if !ok {
+		return nil
+	}
+	version, err := v.Version(ctx)
+	if err != nil {
+		return err
+	}
+	s.mu.RLock()
+	same := version == s.version
+	s.mu.RUnlock()
+	if same {
+		return nil
+	}
+	return s.Reload(ctx)
 }
 
 // Get は設定値を返す（Setting[name]）。未定義の名前は panic（Redmine も例外）。

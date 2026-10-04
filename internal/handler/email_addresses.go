@@ -128,6 +128,12 @@ func (a *App) EmailAddressesCreate(c *Req) {
 	form := &emailAddressForm{errors: validation.New("email_address"), c: c}
 	saved := false
 	err := a.DB.WithTx(c.Ctx(), func(tx *db.Tx) error {
+		// 件数の確認と追加の間に並行する追加が入らないよう、ユーザーの行をロックする（PostgreSQL）
+		if f := db.ForUpdate(tx); f != "" {
+			if _, err := tx.Exec(c.Ctx(), `SELECT id FROM principals WHERE id = ?`+f, u.ID); err != nil {
+				return err
+			}
+		}
 		n, err := repository.CountUserEmailAddresses(c.Ctx(), tx, u.ID)
 		if err != nil {
 			return err

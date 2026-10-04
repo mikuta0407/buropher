@@ -85,7 +85,7 @@ func updateProject(ctx context.Context, t *testing.T, q db.Queryer, id int64, f 
 	t.Helper()
 	p := mustProject(ctx, t, q, id)
 	f(p)
-	must(t, repository.UpdateProject(ctx, q, p))
+	must(t, repository.UpdateProject(ctx, q, p, nil))
 }
 
 func updateRole(ctx context.Context, t *testing.T, q db.Queryer, id int64, f func(r *domain.Role)) {

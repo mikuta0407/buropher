@@ -106,7 +106,7 @@ func (e *env) updateProject(id int64, f func(p *domain.Project)) {
 	e.t.Helper()
 	p := e.project(id)
 	f(p)
-	e.must(repository.UpdateProject(e.ctx, e.d, p))
+	e.must(repository.UpdateProject(e.ctx, e.d, p, nil))
 }
 
 func (e *env) updateRole(id int64, f func(r *domain.Role)) {

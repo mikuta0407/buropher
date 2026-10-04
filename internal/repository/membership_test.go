@@ -126,7 +126,7 @@ func (e *env) setInherit(id int64, v bool) {
 	e.t.Helper()
 	p := e.project(id)
 	p.InheritMembers = v
-	e.must(repository.UpdateProject(e.ctx, e.d, p))
+	e.must(repository.UpdateProject(e.ctx, e.d, p, nil))
 }
 
 func (e *env) setParent(id int64, parent int64) error {
@@ -136,7 +136,7 @@ func (e *env) setParent(id int64, parent int64) error {
 	if parent != 0 {
 		p.ParentID = &parent
 	}
-	return repository.UpdateProject(e.ctx, e.d, p)
+	return repository.UpdateProject(e.ctx, e.d, p, nil)
 }
 
 func (e *env) projectMembers(id int64) []*domain.Member {

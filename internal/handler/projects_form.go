@@ -47,6 +47,8 @@ type projectForm struct {
 	// identifierWas は保存済みの識別子（identifier_frozen? の判定と変更検出に使う）。
 	identifierWas string
 	parentWas     *int64
+	// orig は読み込んだときのプロジェクト（保存時に変えていない属性を上書きしないため）。
+	orig *domain.Project
 	// unallowedParentID は safe_attributes= で許可されない親が指定された（@unallowed_parent_id）。
 	unallowedParentID bool
 	// parentParam は params の parent_id（parent_project_select_tag の選択値）。
@@ -147,7 +149,8 @@ func (a *App) loadProjectForm(c *Req, p *domain.Project) (*projectForm, error) {
 	ctx := c.Ctx()
 	cp := *p
 	cp.EnabledModuleNames = slices.Clone(p.EnabledModuleNames)
-	f := &projectForm{formModel: newFormModel(c, "project", p.ID), Project: &cp, identifierWas: p.Identifier, parentWas: p.ParentID}
+	orig := *p
+	f := &projectForm{formModel: newFormModel(c, "project", p.ID), Project: &cp, identifierWas: p.Identifier, parentWas: p.ParentID, orig: &orig}
 	var err error
 	if f.TrackerIDs, err = repository.ProjectTrackerIDs(ctx, a.DB, p.ID); err != nil {
 		return nil, err
@@ -503,7 +506,7 @@ func (a *App) saveProject(c *Req, f *projectForm, tx *db.Tx) error {
 			}
 		}
 	} else {
-		if err := repository.UpdateProject(ctx, tx, p); err != nil {
+		if err := repository.UpdateProject(ctx, tx, p, f.orig); err != nil {
 			return err
 		}
 		if err := repository.SetEnabledModules(ctx, tx, p.ID, p.EnabledModuleNames); err != nil {

@@ -320,13 +320,19 @@ func (s *Store) reuseExistingFileIfPossible(ctx context.Context, q db.Queryer, a
 	if err != nil {
 		return err
 	}
+	// existing.with_lock: 比較と付け替えの間に既存の添付が削除されないよう行をロックする（PostgreSQL。
+	// トランザクション外では効かないので、付け替えも既存の行がある場合だけ行う）
+	if ok, err := repository.LockAttachment(ctx, q, existing.ID); err != nil || !ok {
+		return err
+	}
 	original := s.Diskfile(a)
 	originalName := a.DiskFilename
 	same, err := identicalFiles(original, s.Diskfile(existing))
 	if err != nil || !same {
 		return nil //nolint:nilerr // 比較できなければ重複排除しない
 	}
-	if err := repository.UpdateAttachmentDiskfile(ctx, q, a.ID, existing.DiskDirectory, existing.DiskFilename); err != nil {
+	if ok, err := repository.ReuseAttachmentDiskfile(ctx, q, a.ID, existing.ID, existing.DiskDirectory, existing.DiskFilename); err != nil || !ok {
+		// 既存の添付が削除された（そのファイルは削除側が消す）なら自分のファイルを使い続ける
 		return err
 	}
 	a.DiskDirectory, a.DiskFilename = existing.DiskDirectory, existing.DiskFilename
