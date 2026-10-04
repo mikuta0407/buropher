@@ -44,15 +44,20 @@ func isHex(c byte) bool {
 	return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F')
 }
 
-// fixPercent は後ろに 16 進 2 桁が続かない "%" を "%25" にする。
+// fixPercent は後ろに 16 進 2 桁が続かない "%" を "%25" にし、制御文字・DEL・空白をパーセントエンコードする
+// （ブラウザの URL パーサはこれらを符号化して受け入れるが、net/url は解析を拒否する）。
 func fixPercent(s string) string {
 	var b strings.Builder
 	for i := 0; i < len(s); i++ {
-		if s[i] == '%' && (i+2 >= len(s) || !isHex(s[i+1]) || !isHex(s[i+2])) {
+		c := s[i]
+		switch {
+		case c == '%' && (i+2 >= len(s) || !isHex(s[i+1]) || !isHex(s[i+2])):
 			b.WriteString("%25")
-			continue
+		case c <= 0x20 || c == 0x7f:
+			fmt.Fprintf(&b, "%%%02X", c)
+		default:
+			b.WriteByte(c)
 		}
-		b.WriteByte(s[i])
 	}
 	return b.String()
 }
