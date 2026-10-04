@@ -12,6 +12,7 @@ import (
 	"os"
 	"os/exec"
 	"regexp"
+	"runtime"
 	"sort"
 	"strconv"
 	"strings"
@@ -144,6 +145,10 @@ func isOptionLike(vals ...string) bool {
 	return false
 }
 
+// gitSem は同時に実行する git の数の上限。リポジトリを誰でも閲覧できる場合、注釈・差分などを大量に並行して
+// 要求されると git のプロセスがその数だけ起動され、CPU・メモリ・プロセス数を使い尽くすため。
+var gitSem = make(chan struct{}, max(8, 2*runtime.NumCPU()))
+
 // gitCmd は git_cmd（--git-dir と -c オプションを付けて実行し、標準出力を返す）。
 // 0 以外の終了は ErrCommandAborted。stdin が nil でなければ標準入力に渡す。
 func (g *Git) gitCmd(ctx context.Context, args []string, stdin []byte) ([]byte, error) {
@@ -154,6 +159,13 @@ func (g *Git) gitCmd(ctx context.Context, args []string, stdin []byte) ([]byte, 
 
 // gitCmdTo は gitCmd の標準出力を w に書き出す版（大きな出力をメモリに溜めない）。
 func (g *Git) gitCmdTo(ctx context.Context, args []string, stdin []byte, w io.Writer) error {
+	// 同時に動かす git の数を制限する（Redmine はアプリケーションサーバのスレッド数で自然に制限される）
+	select {
+	case gitSem <- struct{}{}:
+		defer func() { <-gitSem }()
+	case <-ctx.Done():
+		return ErrCommandAborted
+	}
 	repo := g.RootURL
 	if repo == "" {
 		repo = g.URL
