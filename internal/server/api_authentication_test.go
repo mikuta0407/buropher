@@ -185,3 +185,19 @@ func TestAPIAuthentication(t *testing.T) {
 		}
 	})
 }
+
+// TestAtomKeyRequiresAtomFormatParam は、Atom のキー（key パラメータ）による認証が params[:format] == 'atom'
+// （.atom の拡張子か format パラメータ）のときだけ行われ、Accept ヘッダだけでは行われないことを確認する（Redmine と同じ）。
+func TestAtomKeyRequiresAtomFormatParam(t *testing.T) {
+	ts, d := newFixtureServer(t)
+	key := authCreateToken(t, d, 2, "feeds") // jsmith（非公開プロジェクト onlinestore のメンバー）
+	res := apiGet(t, ts, "/projects/onlinestore/issues.atom?key="+key)
+	res.expectStatus(t, http.StatusOK)
+	if !strings.Contains(res.Body, "<feed") {
+		t.Fatalf("atom with key: %.200s", res.Body)
+	}
+	res = apiGet(t, ts, "/projects/onlinestore/issues?key="+key, apiHeader("Accept", "application/atom+xml"))
+	if res.Status == http.StatusOK || strings.Contains(res.Body, "<feed") {
+		t.Errorf("atom key accepted via Accept header: %d %.200s", res.Status, res.Body)
+	}
+}
