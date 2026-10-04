@@ -238,9 +238,10 @@ func TimelogDefaultActivity(ctx context.Context, q db.Queryer) (*domain.Enumerat
 
 // TimelogRoleDefaultActivityIDs は user のプロジェクトでのロールの default_time_entry_activity_id
 // （roles.sort の順。user_membership.roles.where.not(default_time_entry_activity_id: nil).sort.pluck）。
+// pluck と同じく重複は除かない（PostgreSQL は SELECT DISTINCT に選択していない列での ORDER BY を許さない）。
 func TimelogRoleDefaultActivityIDs(ctx context.Context, q db.Queryer, userID, projectID int64) ([]int64, error) {
 	var ids []int64
-	err := q.Select(ctx, &ids, `SELECT DISTINCT r.default_time_entry_activity_id FROM roles r
+	err := q.Select(ctx, &ids, `SELECT r.default_time_entry_activity_id FROM roles r
   INNER JOIN member_roles mr ON mr.role_id = r.id
   INNER JOIN members m ON m.id = mr.member_id
   WHERE m.principal_id = ? AND m.project_id = ? AND r.default_time_entry_activity_id IS NOT NULL
