@@ -315,6 +315,12 @@ func (a *App) oidcSourcesNew(c *Req) {
 
 // oidcSourcesCreate は auth_sources#create（type=AuthSourceOidc）。
 func (a *App) oidcSourcesCreate(c *Req) {
+	// buropher 拡張: OIDC 認証方式は既存ユーザー（管理者を含む）にメールアドレス等で紐付くため、作成は
+	// 更新・削除（require_sudo_mode :update, :destroy）と同じく sudo を求める
+	// （LDAP の作成は既存ユーザーのログイン手段を変えないため Redmine どおり求めない）
+	if a.sudoRequestFilter(c, nil); c.Halted() {
+		return
+	}
 	f := a.newOIDCSourceForm(c, &domain.AuthSourceRecord{Kind: domain.AuthSourceKindOIDC, Config: map[string]any{}})
 	f.assign(c.Params().Map("auth_source"), c.Params())
 	ok, err := a.saveOIDCSource(c, f)

@@ -162,3 +162,40 @@ func TestSudoModeOIDCLinkAndUnlink(t *testing.T) {
 		t.Errorf("link after sudo: %d %q", st, loc)
 	}
 }
+
+// TestSudoModeOIDCSourceCreate は sudo モードが有効なとき、OIDC 認証方式の作成がパスワードの再確認を求めることを
+// 確認する。match_by = mail（既定）の OIDC 認証方式は既存ユーザー（管理者を含む）にメールアドレスで紐付くため、
+// 乗っ取った管理者セッションから攻撃者の IdP を登録できると全アカウントへのログイン手段を作れてしまう
+// （更新・削除は Redmine と同じく require_sudo_mode 済み）。
+func TestSudoModeOIDCSourceCreate(t *testing.T) {
+	var app *handler.App
+	e := newSSOEnv(t, nil, func(a *handler.App, _ chi.Router) { a.SudoMode = true; app = a })
+	if err := app.Settings.Set(context.Background(), "autologin", "7"); err != nil {
+		t.Fatal(err)
+	}
+	ae := &authEnv{t: t, base: e.ts.URL, clients: map[string]*http.Client{}, out: map[string]string{}}
+	ae.autologinClient("hijacked", "admin")
+	form := url.Values{
+		"type": {"AuthSourceOidc"}, "auth_source[name]": {"Evil IdP"}, "auth_source[enabled]": {"1"},
+		"auth_source[preset]": {"generic"}, "auth_source[issuer]": {"https://evil.example"}, "auth_source[client_id]": {"x"},
+		"auth_source[match_by]": {"mail"},
+	}
+	st, loc, body := ae.do("hijacked", "POST", "/auth_sources", form, "")
+	if !strings.Contains(body, `name="sudo_password"`) {
+		t.Errorf("create OIDC source: sudo form not shown (status %d, location %q)", st, loc)
+	}
+	var n int
+	_ = e.d.Get(context.Background(), &n, `SELECT COUNT(*) FROM auth_sources WHERE name = 'Evil IdP'`)
+	if n != 0 {
+		t.Fatal("OIDC auth source created without sudo")
+	}
+	// パスワードを再入力すれば作成できる
+	form.Set("sudo_password", "admin")
+	if st, _, _ := ae.do("hijacked", "POST", "/auth_sources", form, ""); st != 302 {
+		t.Errorf("create after sudo: %d", st)
+	}
+	_ = e.d.Get(context.Background(), &n, `SELECT COUNT(*) FROM auth_sources WHERE name = 'Evil IdP'`)
+	if n != 1 {
+		t.Error("OIDC auth source not created after sudo")
+	}
+}
