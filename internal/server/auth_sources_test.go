@@ -363,3 +363,31 @@ func TestLDAPLoginSubstitutionAndAutocomplete(t *testing.T) {
 		t.Errorf("$login search: %s", body)
 	}
 }
+
+// TestAuthSourcesTestConnectionEscapesServerMessage は接続テストのフラッシュ（raw HTML として描画される）に
+// LDAP サーバの応答（StartTLS 拒否の diagnosticMessage。平文区間の中間者でも差し込める）を
+// エスケープせずに入れないことを確認する（管理画面の XSS）。
+func TestAuthSourcesTestConnectionEscapesServerMessage(t *testing.T) {
+	ts, d := newFixtureServer(t)
+	insertFixtureAuthSource(t, d)
+	c := login(t, ts, "admin", "admin")
+	srv := &ldaptest.Server{RejectStartTLS: `<img src=x onerror=alert(1)>`}
+	addr, err := srv.Start()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer srv.Close()
+	_, p, _ := net.SplitHostPort(addr)
+	if _, err := d.Exec(context.Background(), `UPDATE auth_sources SET config = ? WHERE id = 1`,
+		`{"host":"127.0.0.1","port":`+p+`,"attr_login":"uid","starttls":true}`); err != nil {
+		t.Fatal(err)
+	}
+	if res, _ := get(t, c, ts.URL+"/auth_sources/1/test_connection"); res.StatusCode != 302 {
+		t.Fatalf("test_connection: %d", res.StatusCode)
+	}
+	body := adminGet(t, c, ts.URL+"/auth_sources")
+	flash := extract(body, `<div class="flash`, "</div>")
+	if strings.Contains(flash, "<img") || !strings.Contains(flash, "&lt;img src=x onerror=alert(1)&gt;") {
+		t.Errorf("test_connection flash not escaped:\n%s", flash)
+	}
+}

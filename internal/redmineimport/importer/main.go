@@ -28,11 +28,13 @@ func mainWith(args []string, stdout, stderr io.Writer) error {
 	var opt Options
 	var driver, dsn, archivePath, reportJSON string
 	var quiet, migrate bool
+	// 秘密を含みうる値（DSN のパスワード・鍵）は環境変数をフラグの既定値にしない。
+	// 既定値は -h やフラグの誤りで表示される使い方に出てしまう
 	fs.StringVar(&driver, "driver", envOr("BUROPHER_DB_DRIVER", "sqlite"), "target database driver (sqlite / postgres)")
-	fs.StringVar(&dsn, "dsn", envOr("BUROPHER_DB_DSN", "data/buropher.db"), "target database DSN (SQLite path or PostgreSQL DSN)")
+	fs.StringVar(&dsn, "dsn", "", "target database DSN (SQLite path or PostgreSQL DSN; default: $BUROPHER_DB_DSN or data/buropher.db)")
 	fs.StringVar(&archivePath, "archive", "", "export archive (.tar.zst) created by `buropher redmine export` (or give it as the argument)")
-	fs.StringVar(&opt.CipherKey, "cipher-key", os.Getenv("REDMINE_CIPHER_KEY"), "Redmine database_cipher_key (decrypts TOTP secrets, LDAP and repository passwords)")
-	fs.StringVar(&opt.NewCipherKey, "secret-key", os.Getenv("BUROPHER_SECRET_KEY"), "buropher server.secret_key used to re-encrypt secret values")
+	fs.StringVar(&opt.CipherKey, "cipher-key", "", "Redmine database_cipher_key (decrypts TOTP secrets, LDAP and repository passwords; default: $REDMINE_CIPHER_KEY)")
+	fs.StringVar(&opt.NewCipherKey, "secret-key", "", "buropher server.secret_key used to re-encrypt secret values (default: $BUROPHER_SECRET_KEY)")
 	fs.StringVar(&opt.FilesDir, "files-dir", envOr("BUROPHER_ATTACHMENTS_PATH", "data/files"), "buropher attachments directory (files are copied here; empty = do not copy)")
 	fs.StringVar(&opt.SourceFilesDir, "source-files-dir", "", "Redmine files directory, used when the archive was exported with --no-files")
 	fs.StringVar(&opt.TempDir, "temp-dir", "", "directory for temporary files (default: next to the archive)")
@@ -58,6 +60,15 @@ func mainWith(args []string, stdout, stderr io.Writer) error {
 		fs.Usage()
 		return fmt.Errorf("archive is required")
 	}
+	if dsn == "" {
+		dsn = envOr("BUROPHER_DB_DSN", "data/buropher.db")
+	}
+	if opt.CipherKey == "" {
+		opt.CipherKey = os.Getenv("REDMINE_CIPHER_KEY")
+	}
+	if opt.NewCipherKey == "" {
+		opt.NewCipherKey = os.Getenv("BUROPHER_SECRET_KEY")
+	}
 	if opt.NewCipherKey == "" {
 		// serve と同じ鍵（設定 → データディレクトリの secret_key → 生成）を使う
 		key, err := config.SecretKey(&config.Config{Database: config.Database{Driver: driver, DSN: dsn}})
@@ -74,6 +85,9 @@ func mainWith(args []string, stdout, stderr io.Writer) error {
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
+	if err := config.PrepareSQLite(driver, dsn); err != nil {
+		return err
+	}
 	d, err := db.Open(ctx, driver, dsn)
 	if err != nil {
 		return err

@@ -43,7 +43,8 @@ func mainWith(args []string, stdout, stderr io.Writer) error {
 	var driver, dsn, archivePath, reportJSON string
 	pws := passwordFlags{}
 	fs.StringVar(&driver, "driver", envOr("BUROPHER_DB_DRIVER", "sqlite"), "target database driver (sqlite / postgres)")
-	fs.StringVar(&dsn, "dsn", envOr("BUROPHER_DB_DSN", "data/buropher.db"), "target database DSN")
+	// DSN はパスワードを含みうるので環境変数をフラグの既定値にしない（-h の使い方に表示される）
+	fs.StringVar(&dsn, "dsn", "", "target database DSN (default: $BUROPHER_DB_DSN or data/buropher.db)")
 	fs.StringVar(&archivePath, "archive", "", "export archive (or give it as the argument)")
 	fs.StringVar(&opt.FilesDir, "files-dir", "", "buropher attachments directory (checks file existence and size)")
 	fs.BoolVar(&opt.Digests, "digests", false, "also verify attachment digests (slow)")
@@ -67,6 +68,9 @@ func mainWith(args []string, stdout, stderr io.Writer) error {
 	if archivePath == "" {
 		fs.Usage()
 		return fmt.Errorf("archive is required")
+	}
+	if dsn == "" {
+		dsn = envOr("BUROPHER_DB_DSN", "data/buropher.db")
 	}
 	opt.Passwords = pws
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)

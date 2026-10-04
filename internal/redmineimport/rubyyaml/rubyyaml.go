@@ -125,7 +125,9 @@ func DecodeWith(src string, opt Options) (v any, err error) {
 	if err := yaml.Unmarshal([]byte(src), &doc); err != nil {
 		return nil, fmt.Errorf("rubyyaml: %w", err)
 	}
-	d := &decoder{opt: opt}
+	// エイリアスの展開で入力に比例しない量の値を作らせない（billion laughs）。
+	// エイリアスがなければノード数は入力の長さ以下なので、通常の値がこの上限に達することはない
+	d := &decoder{opt: opt, budget: 10*len(src) + 100000}
 	defer func() {
 		if r := recover(); r != nil {
 			if e, ok := r.(decodeError); ok {
@@ -143,6 +145,8 @@ type decodeError struct{ err error }
 type decoder struct {
 	opt   Options
 	depth int
+	// budget は残りの展開ノード数（エイリアス・マージキーの展開を含む）。
+	budget int
 }
 
 const maxDepth = 2000
@@ -151,12 +155,21 @@ func (d *decoder) fail(format string, args ...any) {
 	panic(decodeError{fmt.Errorf("rubyyaml: "+format, args...)})
 }
 
-func (d *decoder) node(n *yaml.Node) any {
+// enter はノード 1 つ分の深さと展開量を消費する（戻り値の関数で深さを戻す）。
+func (d *decoder) enter() func() {
 	d.depth++
-	defer func() { d.depth-- }()
 	if d.depth > maxDepth {
 		d.fail("nesting too deep (recursive alias?)")
 	}
+	d.budget--
+	if d.budget < 0 {
+		d.fail("too many nodes (alias expansion)")
+	}
+	return func() { d.depth-- }
+}
+
+func (d *decoder) node(n *yaml.Node) any {
+	defer d.enter()()
 	switch n.Kind {
 	case yaml.DocumentNode:
 		if len(n.Content) == 0 {
@@ -310,15 +323,17 @@ func keyString(k any) string {
 
 // mapItems は Mapping ノードを挿入順の (キー, 値) 列にする(マージキー展開込み)。
 func (d *decoder) mapItems(n *yaml.Node) OrderedMap {
+	// マージキーは node を経由せず再帰するため、ここでも深さ（自己参照するマージの循環）と展開量を数える
+	defer d.enter()()
 	var items OrderedMap
+	pos := map[string]int{}
 	set := func(k string, v any) {
-		for i := range items {
-			if items[i].Key == k {
-				// Ruby の Hash#[]= は既存キーの位置を保ったまま値を更新する
-				items[i].Value = v
-				return
-			}
+		if i, ok := pos[k]; ok {
+			// Ruby の Hash#[]= は既存キーの位置を保ったまま値を更新する
+			items[i].Value = v
+			return
 		}
+		pos[k] = len(items)
 		items = append(items, MapItem{k, v})
 	}
 	for i := 0; i+1 < len(n.Content); i += 2 {

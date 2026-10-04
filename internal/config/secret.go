@@ -6,7 +6,9 @@ package config
 import (
 	"crypto/rand"
 	"encoding/hex"
+	"errors"
 	"fmt"
+	"io/fs"
 	"log/slog"
 	"os"
 	"path/filepath"
@@ -19,6 +21,27 @@ func DataDir(c *Config) string {
 		return filepath.Dir(c.Database.DSN)
 	}
 	return "data"
+}
+
+// PrepareSQLite は SQLite のファイル DB の親ディレクトリ（0700）と、まだなければ DB ファイル（0600）を作る。
+// SQLite は新しい DB ファイルを 0644 で作り、-wal / -shm も DB ファイルと同じ権限で作るため、
+// 事前に作っておかないとパスワードハッシュ・API キー・セッションを含む DB が他のローカルユーザーに読める。
+// SQLite 以外・インメモリ・file: URI では何もしない。
+func PrepareSQLite(driver, dsn string) error {
+	if driver != "sqlite" || dsn == "" || dsn == ":memory:" || strings.HasPrefix(dsn, "file:") {
+		return nil
+	}
+	if err := os.MkdirAll(filepath.Dir(dsn), 0o700); err != nil {
+		return err
+	}
+	f, err := os.OpenFile(dsn, os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0o600)
+	if errors.Is(err, fs.ErrExist) {
+		return nil
+	}
+	if err != nil {
+		return err
+	}
+	return f.Close()
 }
 
 // minSecretKeyLen はこれより短い server.secret_key に警告を出す長さ（バイト）。
@@ -44,7 +67,8 @@ func SecretKey(c *Config) ([]byte, error) {
 		return nil, err
 	}
 	key := hex.EncodeToString(buf[:])
-	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
+	// データディレクトリは DB・秘密鍵・添付を置くため本人以外に読ませない（既存のディレクトリはそのまま）
+	if err := os.MkdirAll(filepath.Dir(path), 0o700); err != nil {
 		return nil, err
 	}
 	if err := os.WriteFile(path, []byte(key+"\n"), 0o600); err != nil {

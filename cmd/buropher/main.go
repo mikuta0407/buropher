@@ -17,7 +17,6 @@ import (
 	"path/filepath"
 	"runtime"
 	"runtime/debug"
-	"strings"
 	"syscall"
 
 	"github.com/mikuta0407/buropher/internal/bootstrap"
@@ -154,12 +153,10 @@ func serve(args []string) error {
 	return srv.Run(ctx)
 }
 
-// openDB は設定の DB を開く。SQLite の場合は親ディレクトリを作成する。
+// openDB は設定の DB を開く。SQLite の場合は親ディレクトリと DB ファイルを本人だけが読める権限で作成する。
 func openDB(ctx context.Context, cfg *config.Config) (*db.DB, error) {
-	if cfg.Database.Driver == "sqlite" && !strings.HasPrefix(cfg.Database.DSN, "file:") && cfg.Database.DSN != ":memory:" {
-		if err := os.MkdirAll(filepath.Dir(cfg.Database.DSN), 0o755); err != nil {
-			return nil, err
-		}
+	if err := config.PrepareSQLite(cfg.Database.Driver, cfg.Database.DSN); err != nil {
+		return nil, err
 	}
 	d, err := db.Open(ctx, cfg.Database.Driver, cfg.Database.DSN)
 	if err != nil {
@@ -221,9 +218,13 @@ func initCmd(args []string) error {
 	lang := fs.String("lang", "en", "language of the default data")
 	login := fs.String("admin-login", "admin", "administrator login")
 	email := fs.String("admin-email", "admin@example.net", "administrator email")
-	pw := fs.String("admin-password", os.Getenv("BUROPHER_ADMIN_PASSWORD"), "administrator password (random if empty)")
+	// 環境変数のパスワードをフラグの既定値にすると -h の使い方に表示されるため、解析後に補う
+	pw := fs.String("admin-password", "", "administrator password (default: $BUROPHER_ADMIN_PASSWORD; random if empty)")
 	noData := fs.Bool("no-default-data", false, "do not load default roles/trackers/statuses")
 	fs.Parse(args)
+	if *pw == "" {
+		*pw = os.Getenv("BUROPHER_ADMIN_PASSWORD")
+	}
 	cfg, err := config.Load(*cfgPath)
 	if err != nil {
 		return err

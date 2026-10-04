@@ -189,9 +189,12 @@ func randomHex(n int) string {
 	return hex.EncodeToString(b)
 }
 
-// toCRLF は改行を CRLF にそろえる。
+// toCRLF は改行を CRLF にそろえる（mail gem の to_crlf と同じく単独の CR も改行とみなす）。
+// 単独の CR を本文に残すと、"\r.\r\n" のように中継 MTA によっては本文の終わりと解釈される並びを
+// 利用者の入力（チケットの説明等）から作れてしまう（SMTP smuggling）。
 func toCRLF(s string) string {
 	s = strings.ReplaceAll(s, "\r\n", "\n")
+	s = strings.ReplaceAll(s, "\r", "\n")
 	return strings.ReplaceAll(s, "\n", "\r\n")
 }
 

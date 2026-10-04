@@ -11,6 +11,7 @@ import (
 	"os"
 	"reflect"
 	"strconv"
+	"strings"
 	"testing"
 	"time"
 )
@@ -240,6 +241,61 @@ func TestRecursiveAliasFails(t *testing.T) {
 	_, err := Decode("--- &a\n- *a\n")
 	if err == nil {
 		t.Fatal("expected error for recursive alias")
+	}
+}
+
+// 自己参照するマージキーはスタックを使い果たしてプロセスごと落ちていた（recover できない）。
+func TestMergeKeyCycle(t *testing.T) {
+	if _, err := Decode("a: &a\n  x: 1\n  <<: *a\n"); err == nil {
+		t.Fatal("expected error for recursive merge key")
+	}
+}
+
+// エイリアスを重ねた小さな入力（billion laughs）で指数的な量の値を作らせない。
+func TestAliasBomb(t *testing.T) {
+	var sb strings.Builder
+	sb.WriteString("a0: &a0 [x,x,x,x,x,x,x,x,x,x]\n")
+	for i := 1; i < 9; i++ {
+		fmt.Fprintf(&sb, "a%d: &a%d [", i, i)
+		for j := range 10 {
+			if j > 0 {
+				sb.WriteString(",")
+			}
+			fmt.Fprintf(&sb, "*a%d", i-1)
+		}
+		sb.WriteString("]\n")
+	}
+	start := time.Now()
+	if _, err := Decode(sb.String()); err == nil {
+		t.Fatal("expected error for alias bomb")
+	}
+	if d := time.Since(start); d > 5*time.Second {
+		t.Fatalf("alias bomb took %v", d)
+	}
+	// 通常のエイリアスは展開する
+	v, err := Decode("a: &x [1, 2]\nb: *x\n")
+	want := map[string]any{"a": []any{int64(1), int64(2)}, "b": []any{int64(1), int64(2)}}
+	if err != nil || !reflect.DeepEqual(v, want) {
+		t.Fatalf("alias: %#v %v", v, err)
+	}
+}
+
+// キーの多い Hash を二乗時間かけずに読む。
+func TestManyKeys(t *testing.T) {
+	var sb strings.Builder
+	for i := range 200000 {
+		fmt.Fprintf(&sb, "k%d: %d\n", i, i)
+	}
+	start := time.Now()
+	v, err := DecodeWith(sb.String(), Options{Ordered: true})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if m := v.(OrderedMap); len(m) != 200000 {
+		t.Fatalf("len = %d", len(m))
+	}
+	if d := time.Since(start); d > 10*time.Second {
+		t.Fatalf("decoding took %v", d)
 	}
 }
 
