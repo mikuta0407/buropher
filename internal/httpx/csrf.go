@@ -207,7 +207,20 @@ func CSRFMiddleware(opts CSRFOptions) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			skip, _ := r.Context().Value(ctxSkipCSRF).(bool)
-			if skip || (opts.Skip != nil && opts.Skip(r)) || isAPI(r) || VerifiedRequest(r) {
+			if skip || (opts.Skip != nil && opts.Skip(r)) {
+				next.ServeHTTP(w, r)
+				return
+			}
+			if isAPI(r) {
+				// buropher 独自（セキュリティ）: 検証を省いた API 形式の変更系リクエストには、ブラウザの
+				// セッション（クッキー）の状態を使わせない。
+				if r.Method != http.MethodGet && r.Method != http.MethodHead {
+					r = DetachSession(r)
+				}
+				next.ServeHTTP(w, r)
+				return
+			}
+			if VerifiedRequest(r) {
 				next.ServeHTTP(w, r)
 				return
 			}

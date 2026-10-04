@@ -9,9 +9,11 @@ import (
 	"net/url"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/go-chi/chi/v5"
 
+	"github.com/mikuta0407/buropher/internal/db"
 	"github.com/mikuta0407/buropher/internal/handler"
 )
 
@@ -44,6 +46,47 @@ func TestOAuthSwitchUserKeepsTokenScope(t *testing.T) {
 		if res.StatusCode != http.StatusForbidden {
 			t.Errorf("switch to %s: issues/1.json without view_issues scope: %d %s", name, res.StatusCode, body)
 		}
+	}
+}
+
+// TestLostPasswordAPIFormatNeedsCSRF は、パスワード再設定の途中（セッションに recovery トークンがある）の
+// 利用者に対し、format=json の付いた POST（API リクエストとして CSRF 検証が省かれる）でパスワードを
+// 書き換えられないことを確認する。API 形式の変更系リクエストは CSRF の検証を省く代わりに、ブラウザの
+// セッションの状態（password_recovery_token 等）を使わない。
+func TestLostPasswordAPIFormatNeedsCSRF(t *testing.T) {
+	ts, d := newFixtureServer(t)
+	ctx := context.Background()
+	if _, err := d.Exec(ctx, `INSERT INTO tokens (user_id, action, value, created_at, updated_at) VALUES (2, 'recovery', 'abcdef0123456789abcdef0123456789abcdef01', ?, ?)`,
+		db.NewTime(time.Now()), db.NewTime(time.Now())); err != nil {
+		t.Fatal(err)
+	}
+	victim := newClient(t)
+	if res, _ := get(t, victim, ts.URL+"/account/lost_password?token=abcdef0123456789abcdef0123456789abcdef01"); res.StatusCode != 302 {
+		t.Fatalf("token link: %d", res.StatusCode)
+	}
+	for _, p := range []string{"/account/lost_password.json", "/account/lost_password?format=json", "/account/lost_password.xml"} {
+		if res, body := post(t, victim, ts.URL+p, url.Values{"new_password": {"hijacked1"}, "new_password_confirmation": {"hijacked1"}}); res.StatusCode/100 == 5 {
+			t.Fatalf("%s: %d %s", p, res.StatusCode, body)
+		}
+	}
+	tryLogin := func(pw string) bool {
+		c := newClient(t)
+		_, page := get(t, c, ts.URL+"/login")
+		res, _ := post(t, c, ts.URL+"/login", url.Values{"authenticity_token": {csrfMeta(t, page)}, "username": {"jsmith"}, "password": {pw}})
+		return res.StatusCode == 302 && !strings.Contains(res.Header.Get("Location"), "/login")
+	}
+	if tryLogin("hijacked1") {
+		t.Fatal("password changed by a POST without CSRF token")
+	}
+	// 通常のフォーム（CSRF トークン付き）では従来どおり再設定できる
+	_, page := get(t, victim, ts.URL+"/account/lost_password")
+	if !strings.Contains(page, "new_password") {
+		t.Fatal("recovery form is not shown after the API-format POSTs")
+	}
+	res, _ := post(t, victim, ts.URL+"/account/lost_password", url.Values{"authenticity_token": {csrfMeta(t, page)},
+		"new_password": {"changed12"}, "new_password_confirmation": {"changed12"}})
+	if res.StatusCode != 302 || !tryLogin("changed12") {
+		t.Errorf("password recovery with a CSRF token: status %d", res.StatusCode)
 	}
 }
 

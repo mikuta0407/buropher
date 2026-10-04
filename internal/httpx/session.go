@@ -290,6 +290,7 @@ type Session struct {
 	oldIDs     []string
 	flash      *Flash
 	committed  bool
+	detached   bool // DetachSession で作った使い捨てのセッション（保存しない）
 	r          *http.Request
 }
 
@@ -343,6 +344,21 @@ func (m *SessionManager) Middleware(next http.Handler) http.Handler {
 		next.ServeHTTP(cw, r)
 		cw.doCommit()
 	})
+}
+
+// DetachSession は、リクエストのセッションを空の使い捨てのセッションに差し替えたリクエストを返す。
+// クッキーから読み込んだ値（ログイン・flash・処理途中のトークン等）は見えず、書き込みは保存されない
+// （Store にもクッキーにも反映しない）。元のセッションはそのまま残る。セッションが無ければ r を返す。
+func DetachSession(r *http.Request) *http.Request {
+	s := SessionOf(r)
+	if s == nil {
+		return r
+	}
+	now := s.m.now()
+	d := &Session{m: s.m, rec: Record{Data: map[string]any{}, CreatedAt: now, UpdatedAt: now}, detached: true, committed: true}
+	r = r.WithContext(context.WithValue(r.Context(), ctxSession, d))
+	d.r = r
+	return r
 }
 
 // ID はセッション ID を返す（未保存の新規セッションは空）。
@@ -423,7 +439,7 @@ func (s *Session) SetUserID(id int64) {
 // 失効後も使えるログインが残った。先に保存しておけば破棄で消え、Commit は既存の行の更新だけを行う
 // （消えていれば Cookie も出さない）。
 func (s *Session) persistLogin() {
-	if s.rec.UserID == 0 || s.persisted || s.r == nil {
+	if s.rec.UserID == 0 || s.persisted || s.r == nil || s.detached {
 		return
 	}
 	now := s.m.now()
