@@ -17,7 +17,8 @@ import (
 // ワークフローを考慮するロール (add_issues / edit_issues を持つ) のみ。
 func (e *Env) rolesForWorkflow(ctx context.Context, iss *Issue, u *domain.User) ([]*domain.Role, error) {
 	var roles []*domain.Role
-	if u.AdminFlag {
+	// OAuth では admin スコープが無ければ管理者として扱わない (IsAdmin。OAuth 以外では AdminFlag と同じ)
+	if u.IsAdmin() {
 		rs, err := repository.ListRoles(ctx, e.Q)
 		if err != nil {
 			return nil, err
@@ -36,9 +37,16 @@ func (e *Env) rolesForWorkflow(ctx context.Context, iss *Issue, u *domain.User) 
 	}
 	var out []*domain.Role
 	for _, r := range roles {
-		if r.ConsiderWorkflow() {
-			out = append(out, r)
+		if !r.ConsiderWorkflow() {
+			continue
 		}
+		// OAuth のトークンは add_issues / edit_issues のどちらもスコープに無ければワークフローのロールにしない
+		// (notes だけのスコープでステータスを変更できないように。admin スコープは全権。domain.User.OAuthScopeAllows 参照)
+		if !u.IsAdmin() && !(r.HasPermission("add_issues") && u.OAuthScopeAllows("add_issues")) &&
+			!(r.HasPermission("edit_issues") && u.OAuthScopeAllows("edit_issues")) {
+			continue
+		}
+		out = append(out, r)
 	}
 	return out, nil
 }

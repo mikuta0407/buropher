@@ -41,6 +41,7 @@ Every accepted difference is listed with a reason in
 | Deployment | Sub-path deployment is supported with `server.relative_url_root` (Redmine's `RAILS_RELATIVE_URL_ROOT`); see [configuration.md](configuration.md#sub-path-deployment). |
 | Rake tasks | Replaced by subcommands: `buropher reminders` (`redmine:send_reminders`), `buropher mail receive` (`redmine:email:receive_*`), `buropher jobs run`, and built-in schedulers for reminders, mail polling, LDAP sync and `fetch_changesets`. Other rake tasks (e.g. attachment digest updates, plugin tasks) have no equivalent. |
 | Sessions | Login sessions are not migrated from Redmine; users log in again once. |
+| OAuth2 token scopes | Issue field edits and workflow transitions also respect the token scope. In Redmine, a token with only *Add notes* can still change the subject, status and other fields, because those checks ignore the scope. In buropher, such a token can only add notes; changing fields needs `edit_issues` / `add_issues` (or `admin`) in the scope. |
 
 ## Extensions (not in Redmine)
 

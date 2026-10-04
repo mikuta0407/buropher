@@ -90,3 +90,64 @@ func TestOAuthMyAccountCannotChangeMail(t *testing.T) {
 		t.Errorf("firstname change via OAuth: status %d", st)
 	}
 }
+
+// TestOAuthNotesScopeCannotEditIssueAttributes は、view_issues + add_issue_notes だけのスコープのトークンで
+// PUT /issues/:id.json を呼んでも、注記の追加だけができ、題名・ステータス等の属性は変更できないことを確認する。
+// buropher は Issue#user_tracker_permission? とワークフローのロールの判定でもトークンのスコープを見る。
+func TestOAuthNotesScopeCannotEditIssueAttributes(t *testing.T) {
+	ts, d := newFixtureServer(t)
+	admin := login(t, ts, "admin", "admin")
+	jsmith := login(t, ts, "jsmith", "jsmith")
+	for _, tc := range []struct {
+		name   string
+		user   *http.Client
+		scopes []string
+		edit   bool
+	}{
+		{"jsmith notes only", jsmith, []string{"view_issues", "add_issue_notes"}, false},
+		// admin スコープの無い管理者も同様
+		{"admin notes only", admin, []string{"view_issues", "add_issue_notes"}, false},
+		// edit_issues を含むスコープなら従来どおり変更できる
+		{"jsmith edit", jsmith, []string{"view_issues", "add_issue_notes", "edit_issues"}, true},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			if _, err := d.Exec(context.Background(), `UPDATE issues SET subject = 'orig', status_id = 1 WHERE id = 2`); err != nil {
+				t.Fatal(err)
+			}
+			access := oauthTokenFor(t, ts.URL, admin, tc.user, tc.scopes...)
+			req, err := http.NewRequest(http.MethodPut, ts.URL+"/issues/2.json",
+				strings.NewReader(`{"issue":{"subject":"changed by oauth","status_id":2,"notes":"oauth note"}}`))
+			if err != nil {
+				t.Fatal(err)
+			}
+			req.Header.Set("Authorization", "Bearer "+access)
+			req.Header.Set("Content-Type", "application/json")
+			res, err := newClient(t).Do(req)
+			if err != nil {
+				t.Fatal(err)
+			}
+			res.Body.Close()
+			if res.StatusCode/100 != 2 {
+				t.Fatalf("status %d", res.StatusCode)
+			}
+			var row struct {
+				Subject  string `db:"subject"`
+				StatusID int64  `db:"status_id"`
+			}
+			if err := d.Get(context.Background(), &row, `SELECT subject, status_id FROM issues WHERE id = 2`); err != nil {
+				t.Fatal(err)
+			}
+			changed := row.Subject != "orig" || row.StatusID != 1
+			if changed != tc.edit {
+				t.Errorf("subject=%q status=%d, want edited=%v", row.Subject, row.StatusID, tc.edit)
+			}
+			var notes int
+			if err := d.Get(context.Background(), &notes, `SELECT COUNT(*) FROM issue_journals WHERE issue_id = 2 AND notes = 'oauth note'`); err != nil {
+				t.Fatal(err)
+			}
+			if notes == 0 {
+				t.Errorf("note was not added")
+			}
+		})
+	}
+}

@@ -216,7 +216,8 @@ func (a *Authorizer) UserTrackerPermission(ctx context.Context, p *domain.Projec
 		return false, err
 	}
 	for _, r := range roles {
-		if r.HasPermission(perm) && (r.PermissionsAllTrackers(perm) || r.PermissionsTrackerIDsInclude(perm, trackerID)) {
+		// OAuth のトークンはスコープに含まれる権限だけ (buropher の強化。domain.User.OAuthScopeAllows 参照)
+		if r.HasPermission(perm) && a.user.OAuthScopeAllows(perm) && (r.PermissionsAllTrackers(perm) || r.PermissionsTrackerIDsInclude(perm, trackerID)) {
 			return true, nil
 		}
 	}
