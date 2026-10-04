@@ -163,7 +163,12 @@ func (m *mailer) emailIssueAttributes(ic *issueContext, htmlMode bool) []string 
 		case "parent_issue":
 			if r.ParentID != nil {
 				if p := l.issue(*r.ParentID); p != nil {
-					v = l.tracker(p.TrackerID).Name + " #" + strconv.FormatInt(p.ID, 10) + ": " + p.Subject
+					// 受信者に見えなければ番号だけにする
+					if l.issueVisible(p) {
+						v = l.tracker(p.TrackerID).Name + " #" + strconv.FormatInt(p.ID, 10) + ": " + p.Subject
+					} else {
+						v = "#" + strconv.FormatInt(p.ID, 10)
+					}
 				}
 			}
 		}
