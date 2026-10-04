@@ -6,6 +6,7 @@ package handler
 import (
 	"encoding/json"
 	"errors"
+	"html"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -670,7 +671,8 @@ func (a *App) AuthSourcesTestConnection(c *Req) {
 		err = src.TestConnection(c.L("error_ldap_bind_credentials"))
 	}
 	if err != nil {
-		c.Flash().SetError(c.L("error_unable_to_connect", map[string]any{"value": err.Error()}))
+		// フラッシュは raw HTML として描画されるため、接続エラーの文言（ホスト名・LDAP サーバの診断メッセージ）はエスケープする
+		c.Flash().SetError(c.L("error_unable_to_connect", map[string]any{"value": html.EscapeString(err.Error())}))
 	} else {
 		c.Flash().SetNotice(c.L("notice_successful_connection"))
 	}

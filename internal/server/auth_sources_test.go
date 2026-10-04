@@ -188,6 +188,16 @@ func TestAuthSourcesWrite(t *testing.T) {
 	if !strings.Contains(body, "Unable to connect (LDAP: Connection refused - connect(2) for 127.0.0.1:"+strconv.Itoa(port)+")") {
 		t.Errorf("test_connection flash:\n%s", extract(body, `<div class="flash`, "</div>"))
 	}
+	// 接続エラーの文言（ホスト名や LDAP サーバ由来の診断メッセージを含みうる）はエスケープしてフラッシュに出す
+	// （フラッシュは raw HTML として描画される）
+	if _, err := d.Exec(ctx, `UPDATE auth_sources SET config = ? WHERE id = ?`, `{"host":"x<img src=x onerror=alert(1)>","port":389,"attr_login":"uid"}`, id); err != nil {
+		t.Fatal(err)
+	}
+	get(t, c, ts.URL+"/auth_sources/"+strconv.Itoa(id)+"/test_connection")
+	body = adminGet(t, c, ts.URL+"/auth_sources")
+	if flash := extract(body, `<div class="flash`, "</div>"); strings.Contains(flash, "<img") || !strings.Contains(flash, "&lt;img") {
+		t.Errorf("test_connection flash not escaped:\n%s", flash)
+	}
 	// 接続テスト（成功）
 	srv := &ldaptest.Server{}
 	addr, err := srv.Start()
