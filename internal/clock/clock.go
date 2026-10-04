@@ -8,6 +8,7 @@
 package clock
 
 import (
+	"log/slog"
 	"os"
 	"sync"
 	"time"
@@ -21,9 +22,16 @@ var (
 
 func load() {
 	if v := os.Getenv("BUROPHER_FAKE_NOW"); v != "" {
-		if t, err := time.Parse(time.RFC3339, v); err == nil {
-			fixed = t
+		t, err := time.Parse(time.RFC3339, v)
+		if err != nil {
+			slog.Warn("BUROPHER_FAKE_NOW is set but is not RFC3339; ignored", "value", v)
+			return
 		}
+		fixed = t
+		// 時刻が進まないとセッション・トークン・sudo モードの有効期限が切れなくなる。
+		// 互換テスト専用の設定が本番で誤って有効になっていることに気付けるよう、目立つ警告を出す。
+		slog.Warn("BUROPHER_FAKE_NOW is set: the clock is frozen (sessions and tokens never expire). "+
+			"This is for compatibility testing only; unset it in production", "now", t)
 	}
 }
 
