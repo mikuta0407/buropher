@@ -31,11 +31,30 @@ func BrowserResolve(base, href string) (*url.URL, error) {
 		}
 		return r
 	}, v)
-	ref, err := url.Parse(v)
+	// ブラウザは不正なパーセントエスケープ（"%" の後が 16 進 2 桁でない）をそのまま残すが、net/url は解析を拒否する。
+	// 同じ結果になるよう "%" を "%25" にしてから解析する
+	ref, err := url.Parse(fixPercent(v))
 	if err != nil {
 		return nil, err
 	}
 	return b.ResolveReference(ref), nil
+}
+
+func isHex(c byte) bool {
+	return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F')
+}
+
+// fixPercent は後ろに 16 進 2 桁が続かない "%" を "%25" にする。
+func fixPercent(s string) string {
+	var b strings.Builder
+	for i := 0; i < len(s); i++ {
+		if s[i] == '%' && (i+2 >= len(s) || !isHex(s[i+1]) || !isHex(s[i+2])) {
+			b.WriteString("%25")
+			continue
+		}
+		b.WriteByte(s[i])
+	}
+	return b.String()
 }
 
 // SameOriginPath は href を base に対してブラウザと同じく解決した結果が base と同じオリジン
