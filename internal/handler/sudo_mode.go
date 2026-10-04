@@ -45,9 +45,11 @@ var sudoModeTable = map[string][]sudoRequirement{
 	},
 	"projects": {{actions: []string{"destroy", "bulk_destroy"}}},
 	"groups":   {{actions: []string{"add_users", "remove_user", "create", "update", "destroy", "edit_membership", "destroy_membership"}}},
-	"users":    {{actions: []string{"create", "update", "destroy"}}},
-	"roles":    {{actions: []string{"create", "update", "destroy"}}},
-	"members":  {{actions: []string{"create", "update", "destroy"}}},
+	// buropher 拡張: 一括削除・一括ロック／ロック解除と権限の一括編集は destroy・update（ステータス・権限の変更）と
+	// 同じ操作のため sudo を求める
+	"users":   {{actions: []string{"create", "update", "destroy", "bulk_destroy", "bulk_lock", "bulk_unlock"}}},
+	"roles":   {{actions: []string{"create", "update", "destroy", "update_permissions"}}},
+	"members": {{actions: []string{"create", "update", "destroy"}}},
 }
 
 // adminLayoutControllers は require_sudo_mode を宣言するコントローラのうち layout 'admin' のもの。
