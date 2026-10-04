@@ -410,6 +410,16 @@ func (d *decoder) mapping(n *yaml.Node) any {
 			}
 		case "Set", "SortedSet":
 			if h, ok := items.Get("hash"); ok {
+				// 非順序モードでは hash が Go の map になり要素の順序が実行ごとに変わるため、
+				// 順序付きで読み直して Ruby の Set と同じ挿入順にする
+				if !d.opt.Ordered {
+					if hn := mapValueNode(n, "hash"); hn != nil {
+						od := *d
+						od.opt.Ordered = true
+						h = od.node(hn)
+						d.budget = od.budget
+					}
+				}
 				return setKeys(h)
 			}
 		case "Date":
@@ -432,6 +442,16 @@ func (d *decoder) mapping(n *yaml.Node) any {
 	}
 	// 無タグ / !ruby/hash:<Class> / !ruby/struct / !ruby/exception / 未知タグ → Hash
 	return d.finishMap(d.mapItems(n))
+}
+
+// mapValueNode はマッピングノード n のキー key に対応する値ノードを返す（無ければ nil）。
+func mapValueNode(n *yaml.Node, key string) *yaml.Node {
+	for i := 0; i+1 < len(n.Content); i += 2 {
+		if kn := n.Content[i]; kn.Kind == yaml.ScalarNode && kn.Value == key {
+			return n.Content[i+1]
+		}
+	}
+	return nil
 }
 
 // setKeys は Set#hash 表現({要素 => true}) から要素配列を取り出す。
