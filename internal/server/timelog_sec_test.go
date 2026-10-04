@@ -37,3 +37,29 @@ func TestTimeEntryShowAPIHidesInvisibleCustomFields(t *testing.T) {
 		t.Errorf("admin should see the value: %s", res.Body)
 	}
 }
+
+// 工数一覧のチケットの属性列（issue.category 等。QueryAssociationColumn）とチケットのカスタムフィールド列は、
+// 工数は見えてもチケットが見えなければ空にする。
+func TestTimeEntryListHidesInvisibleIssueAttributes(t *testing.T) {
+	ts, d := newFixtureServer(t)
+	ctx := context.Background()
+	// #1（カテゴリ Printing、カスタムフィールド 2 = 125）を dlopper が見られない非公開チケットにする
+	if _, err := d.Exec(ctx, `UPDATE issues SET is_private = ?, author_id = 1, assigned_to_id = NULL, category_id = 1 WHERE id = 1`, true); err != nil {
+		t.Fatal(err)
+	}
+	u := ts.URL + "/projects/ecookbook/time_entries.csv?set_filter=1&f[]=issue_id&op[issue_id]=%3D&v[issue_id][]=1" +
+		"&c[]=issue&c[]=issue.category&c[]=issue.status&c[]=issue.cf_2&c[]=hours"
+	res, body := get(t, login(t, ts, "dlopper", "foo"), u)
+	if res.StatusCode != 200 || !strings.Contains(body, "#1") {
+		t.Fatalf("status %d: %s", res.StatusCode, body)
+	}
+	for _, s := range []string{"Printing", "125", "New"} {
+		if strings.Contains(body, s) {
+			t.Errorf("invisible issue attribute %q leaked: %s", s, body)
+		}
+	}
+	_, body = get(t, login(t, ts, "jsmith", "jsmith"), u)
+	if !strings.Contains(body, "Printing") || !strings.Contains(body, "125") {
+		t.Errorf("visible issue attribute missing: %s", body)
+	}
+}
