@@ -9,6 +9,7 @@
 package domain
 
 import (
+	"slices"
 	"time"
 )
 
@@ -130,6 +131,18 @@ func (u *User) Anonymous() bool { return !u.Logged() }
 
 // AuthorizedByOAuth は User#authorized_by_oauth?。
 func (u *User) AuthorizedByOAuth() bool { return u.OAuthScope != nil }
+
+// OAuthScopeAllows は OAuth 認証時にトークンのスコープが権限 perm を含むか (OAuth 認証でない、
+// またはスコープが空なら true。Role#allowed_permissions(scope) と同じく空のスコープは制限しない)。
+// Redmine は Role#has_permission? で判定する箇所 (Issue#user_tracker_permission?・ワークフローのロール) で
+// スコープを見ないため、notes だけを許可したトークンでも題名・ステータス等を変更できてしまう。buropher ではそれらの
+// 判定にもスコープを適用する。
+func (u *User) OAuthScopeAllows(perm string) bool {
+	if u == nil || !u.AuthorizedByOAuth() || len(u.OAuthScope) == 0 {
+		return true
+	}
+	return slices.Contains(u.OAuthScope, perm)
+}
 
 // IsAdmin は User#admin?。匿名ユーザは常に false。OAuth 認証時は :admin スコープがある場合のみ true。
 func (u *User) IsAdmin() bool {
