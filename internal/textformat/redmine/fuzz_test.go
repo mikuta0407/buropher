@@ -22,6 +22,7 @@ var textilizableSeeds = []string{
 	"{{issue(1, project=true)}} {{recent_pages(time=true, days=0)}} {{macro_list}} {{hello_world(a,b)}}",
 	"\"#1\":http://x/#2 [[#3]] !{{toc}}! {{collapse(\"><img src=x onerror=alert(1)>, x)\nr1\n}} h2. #1 \"x\":javascript:alert(1)",
 	"[#1](javascript:alert(1)) <a href=\"#1\" title=\"r1 [[Wiki]]\">x</a> ![r1](#2) [[Foo|<script>]] {{child_pages(Foo\" onclick=\"x)}}",
+	"![x](http://a/i.png \"{{include(Another page)}}\") !http://a/i.png({{include(Another page)}})! <span title=\"{{collapse(a)}}\">y</span>",
 }
 
 // FuzzTextilizable は textilizable（Redmine のリンク・マクロ・書式）が任意の入力で panic しないことを確かめる。

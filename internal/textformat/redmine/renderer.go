@@ -341,7 +341,7 @@ func (r *Renderer) parseNonPreBlocks(text string, obj *Object, macros map[int]st
 		if len(tags) == 0 {
 			chunk = f(chunk)
 			if len(macros) > 0 {
-				chunk = r.injectMacros(chunk, obj, macros, true, opts)
+				chunk = r.injectMacrosOutsideTags(chunk, obj, macros, opts)
 			}
 		} else if len(macros) > 0 {
 			chunk = r.injectMacros(chunk, obj, macros, false, opts)
@@ -366,6 +366,84 @@ func (r *Renderer) parseNonPreBlocks(text string, obj *Object, macros map[int]st
 		parsed.WriteString("</" + tags[i] + ">")
 	}
 	return parsed.String()
+}
+
+// injectMacrosOutsideTags は inject_macros(chunk, obj, macros)（実行あり）を、タグの外側のテキストにだけ適用する。
+// タグ（属性値）や HTML コメントの中に置かれた {{macro(N)}} は実行せず、元の記述をエスケープして戻す
+// （マクロの出力 HTML が属性値の中に入らないようにする）。
+func (r *Renderer) injectMacrosOutsideTags(text string, obj *Object, macros map[int]string, opts Options) string {
+	if !strings.Contains(text, "{{macro(") {
+		return text
+	}
+	var b strings.Builder
+	for len(text) > 0 {
+		start, end := nextMarkup(text)
+		if start < 0 {
+			b.WriteString(r.injectMacros(text, obj, macros, true, opts))
+			break
+		}
+		b.WriteString(r.injectMacros(text[:start], obj, macros, true, opts))
+		b.WriteString(r.injectMacros(text[start:end], obj, macros, false, opts))
+		text = text[end:]
+	}
+	return b.String()
+}
+
+// nextMarkup は text 中の最初のタグ・コメント・宣言の範囲 [start, end) を返す（無ければ -1）。
+// 属性値の引用符を HTML の字句解析と同じ規則でたどり、引用符内の '>' ではタグを閉じない。
+// 閉じていなければ末尾までをタグとみなす。
+func nextMarkup(text string) (int, int) {
+	for i := 0; i+1 < len(text); i++ {
+		if text[i] != '<' {
+			continue
+		}
+		c := text[i+1]
+		switch {
+		case strings.HasPrefix(text[i:], "<!--"):
+			if j := strings.Index(text[i+4:], "-->"); j >= 0 {
+				return i, i + 4 + j + 3
+			}
+			return i, len(text)
+		case c == '!' || c == '?':
+			if j := strings.IndexByte(text[i:], '>'); j >= 0 {
+				return i, i + j + 1
+			}
+			return i, len(text)
+		case c == '/' || (c|0x20 >= 'a' && c|0x20 <= 'z'):
+			return i, tagEnd(text, i+1)
+		}
+	}
+	return -1, -1
+}
+
+// tagEnd は text[from:] から始まるタグの終わり（'>' の次の位置）を返す。
+func tagEnd(text string, from int) int {
+	afterEq := false
+	for i := from; i < len(text); i++ {
+		c := text[i]
+		switch {
+		case c == '>':
+			return i + 1
+		case c == '=':
+			afterEq = true
+			continue
+		case c == ' ' || c == '\t' || c == '\n' || c == '\f' || c == '\r':
+			continue
+		case afterEq && (c == '"' || c == '\''):
+			j := strings.IndexByte(text[i+1:], c)
+			if j < 0 {
+				return len(text)
+			}
+			i += j + 1
+		case afterEq:
+			// 引用符なしの値は空白か '>' まで
+			for i+1 < len(text) && !strings.ContainsRune(" \t\n\f\r>", rune(text[i+1])) {
+				i++
+			}
+		}
+		afterEq = false
+	}
+	return len(text)
 }
 
 // ---- parse_sections / parse_headings / replace_toc ----
