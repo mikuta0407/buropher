@@ -3,7 +3,11 @@
 
 package rubyyaml
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/mikuta0407/buropher/internal/secoracle"
+)
 
 func FuzzDecode(f *testing.F) {
 	for _, s := range []string{
@@ -13,9 +17,13 @@ func FuzzDecode(f *testing.F) {
 	} {
 		f.Add(s)
 	}
+	// エイリアスの展開による指数的な増加（billion laughs）
+	f.Add("a: &a [x,x,x,x,x,x,x,x,x]\nb: &b [*a,*a,*a,*a,*a,*a,*a,*a,*a]\nc: &c [*b,*b,*b,*b,*b,*b,*b,*b,*b]\nd: &d [*c,*c,*c,*c,*c,*c,*c,*c,*c]\ne: [*d,*d,*d,*d,*d,*d,*d,*d,*d]\n")
 	f.Fuzz(func(t *testing.T, src string) {
-		if v, err := Decode(src); err == nil {
-			_ = Plain(v)
-		}
+		secoracle.Bounded(t, len(src), 4096, func() {
+			if v, err := Decode(src); err == nil {
+				_ = Plain(v)
+			}
+		})
 	})
 }
