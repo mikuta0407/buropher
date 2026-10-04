@@ -4,6 +4,7 @@
 package mailhandler
 
 import (
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -27,8 +28,13 @@ func FuzzParse(f *testing.F) {
 			for _, a := range p.Attachments() {
 				name := a.Filename()
 				san := attachments.SanitizeFilename(name)
-				if strings.ContainsAny(san, "/\\\x00") || san == "." || san == ".." {
+				if strings.ContainsAny(san, "/\\\x00") {
 					t.Fatalf("attachment filename %q sanitizes to unsafe %q", name, san)
+				}
+				// 保存先のファイル名（createDiskfile: "<タイムスタンプ>_" + DiskFilenameBase）はパスの 1 要素に収まる
+				// （表示名が "." や ".." でも、前置により保存先の外は指さない）
+				if disk := "260101000000_" + attachments.DiskFilenameBase(san); !filepath.IsLocal(disk) || strings.ContainsAny(disk, "/\\") {
+					t.Fatalf("attachment filename %q gives disk name %q", name, disk)
 				}
 				_ = a.DecodedBody()
 			}
