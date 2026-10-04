@@ -36,9 +36,34 @@ func TestValidateBackURLMatchesRedmine(t *testing.T) {
 		if wantOK {
 			_ = json.Unmarshal(rec.R, &want)
 		}
+		// 意図的な相違: ブラウザがリンクとして別ホストへ解決する戻り先（"/\\x//..." など）は拒否する
+		if wantOK && !ok && browserProtocolRelative(want) {
+			continue
+		}
 		if ok != wantOK || got != want {
 			t.Errorf("root=%q url=%q: got (%q,%v) want (%q,%v)", rec.Root, rec.URL, got, ok, want, wantOK)
 		}
+	}
+}
+
+// browserProtocolRelative はブラウザの規則（タブ・改行の除去、"\\" → "/"）で "//" 始まりになるか。
+func browserProtocolRelative(p string) bool {
+	return strings.HasPrefix(strings.NewReplacer("\t", "", "\n", "", "\r", "", `\`, "/").Replace(p), "//")
+}
+
+// back_url の検証を通った値は safe_back_url としてリンクにも使われる。ブラウザは "\\" を "/" とみなし、
+// タブ・改行を除いて解決するため、これらは //evil.com（別ホスト）へのリンクになっていた（オープンリダイレクト）。
+func TestValidateBackURLRejectsBrowserProtocolRelative(t *testing.T) {
+	req := httptest.NewRequest("GET", "http://test.host/login", nil)
+	for _, u := range []string{"/\\evil.com", "/\t/evil.com", "/\n/evil.com", "/\r/evil.com", "http://test.host/\\evil.com",
+		"/%5Cevil.com" /* 復号しないので値は "/%5Cevil.com" のまま（同一ホスト）*/} {
+		got, ok := ValidateBackURL(req, u, "")
+		if ok && browserProtocolRelative(got) {
+			t.Errorf("ValidateBackURL(%q) = %q accepted", u, got)
+		}
+	}
+	if got, ok := ValidateBackURL(req, "/issues/1?a=\\b", ""); !ok || got != "/issues/1?a=\\b" {
+		t.Errorf("ordinary path rejected: %q %v", got, ok)
 	}
 }
 

@@ -206,6 +206,11 @@ func sanitizeAttrs(s string) string {
 			if pm := protocolRe.FindStringSubmatch(check); pm != nil && !allowedProtocols[strings.ToLower(pm[1])] {
 				continue
 			}
+			// Loofah は data: をメディアタイプ（ALLOWED_URI_DATA_MEDIATYPES）で絞るが、その分割の都合で
+			// 内容を持つ data: URI は実質すべて除かれる。同じく除く（data:text/html 等を残さない）
+			if pm := protocolRe.FindStringSubmatch(check); pm != nil && strings.EqualFold(pm[1], "data") && len(check) > len("data:") {
+				continue
+			}
 		}
 		b.WriteString(" " + name + `="` + escapeAttrValue(val) + `"`)
 	}

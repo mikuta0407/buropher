@@ -121,7 +121,8 @@ func writeFile(p string, r io.Reader) error {
 // cleanRelPath は添付の相対パスを検証する(絶対パス・.. を拒否)。
 func cleanRelPath(p string) (string, error) {
 	c := path.Clean(strings.ReplaceAll(p, "\\", "/"))
-	if c == "." || strings.HasPrefix(c, "/") || c == ".." || strings.HasPrefix(c, "../") || strings.Contains(c, "/../") {
+	if c == "." || strings.HasPrefix(c, "/") || c == ".." || strings.HasPrefix(c, "../") || strings.Contains(c, "/../") ||
+		strings.ContainsRune(c, 0) {
 		return "", fmt.Errorf("importer: unsafe attachment path %q", p)
 	}
 	return c, nil

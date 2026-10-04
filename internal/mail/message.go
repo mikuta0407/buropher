@@ -285,11 +285,24 @@ func encodeAddressList(list []string) string {
 // foldHeader は 998 文字を超えないよう空白位置でヘッダを折り返す（78 文字目安）。
 // stripHeaderCRLF はヘッダ値から CR/LF（および行区切りになりうる他の制御文字）を取り除く。
 // これによりヘッダインジェクション（Subject/From 等への \r\n 混入）を防ぐ。
+// CR/LF 以外の C0 制御文字（タブを除く）と DEL も、生のままでは RFC 5322 違反で MTA に拒否・切り詰められうるため除く。
 func stripHeaderCRLF(v string) string {
-	if !strings.ContainsAny(v, "\r\n") {
+	clean := true
+	for i := 0; i < len(v); i++ {
+		if c := v[i]; (c < 0x20 && c != '\t') || c == 0x7f {
+			clean = false
+			break
+		}
+	}
+	if clean {
 		return v
 	}
-	return strings.NewReplacer("\r", "", "\n", "").Replace(v)
+	return strings.Map(func(r rune) rune {
+		if (r < 0x20 && r != '\t') || r == 0x7f {
+			return -1
+		}
+		return r
+	}, v)
 }
 
 func foldHeader(prefix int, v string) string {

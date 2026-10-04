@@ -70,3 +70,20 @@ func TestBytesHeaderInjection(t *testing.T) {
 		t.Errorf("Subject lost:\n%s", headerPart)
 	}
 }
+
+// TestBytesHeaderControlChars は CR/LF 以外の制御文字（NUL・VT・FF など）もヘッダ値に生のまま出ないことを確認する。
+// 生の NUL 等を含むヘッダは RFC 5322 違反で、MTA によっては拒否・切り詰められる（ファジングで発見）。
+func TestBytesHeaderControlChars(t *testing.T) {
+	m := &Message{From: "from@example.com", To: []string{"to@example.com"}, Subject: "a\x00b\x0bc\x0cd\x1be\x7ff\tg", Text: "body"}
+	m.SetHeader("X-Redmine-Project", "p\x00\x0b\x0c")
+	raw, err := m.Bytes()
+	if err != nil {
+		t.Fatal(err)
+	}
+	head := raw[:bytes.Index(raw, []byte("\r\n\r\n"))]
+	for _, c := range head {
+		if (c < 0x20 && c != '\r' && c != '\n' && c != '\t') || c == 0x7f {
+			t.Fatalf("raw control byte %#x in header section:\n%q", c, head)
+		}
+	}
+}

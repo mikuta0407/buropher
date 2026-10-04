@@ -195,4 +195,8 @@ func TestValueHelpers(t *testing.T) {
 	if _, err := cleanRelPath("../etc/passwd"); err == nil {
 		t.Error("cleanRelPath should reject ..")
 	}
+	// NUL を含むパスは OS が拒否し、取り込み全体が途中で失敗していた（ファジングで発見）
+	if _, err := cleanRelPath("2026/01/a\x00.txt"); err == nil {
+		t.Error("cleanRelPath should reject NUL")
+	}
 }
