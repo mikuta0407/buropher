@@ -280,6 +280,12 @@ func ValidateBackURL(r *http.Request, backURL, relativeURLRoot string) (string, 
 	if !backURLPathRe.MatchString(path) {
 		return "", false
 	}
+	// ブラウザは相対 URL のタブ・改行を除き、"\" を "/" とみなすため、"/\evil.com" や "/<TAB>/evil.com" は
+	// リンク（safe_back_url など）として使われると //evil.com（別ホスト）へ解決される。Redmine は redirect_to に
+	// しか使わないため素通しだが、buropher はリンクにも使うので拒否する（Redmine と異なる）
+	if browserPath := strings.NewReplacer("\t", "", "\n", "", "\r", "", `\`, "/").Replace(path); !backURLPathRe.MatchString(browserPath) {
+		return "", false
+	}
 	if backURLForbiddenRe.MatchString(path) {
 		return "", false
 	}
