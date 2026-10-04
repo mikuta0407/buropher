@@ -16,7 +16,63 @@ import (
 
 	"github.com/mikuta0407/buropher/internal/db"
 	"github.com/mikuta0407/buropher/internal/handler"
+	"github.com/mikuta0407/buropher/internal/repository"
 )
+
+// TestRaceActivationVsLock は、登録の有効化リンクの処理中に管理者がそのユーザーをロックしても、
+// 有効化がロックを上書きしてユーザーを有効にしないことを確認する。
+// 修正前は「トークンとユーザー（登録済み）を読む → status を無条件に有効へ更新」だったため、
+// 読んだ後にコミットされたロックが失われた。管理者のロックのトランザクションを、有効化が
+// ユーザーを読んだ後もコミットせずに保持して再現する。
+func TestRaceActivationVsLock(t *testing.T) {
+	raceForEachDB(t, func(t *testing.T, d *db.DB) {
+		srv, ts := newFixtureServerOn(t, d)
+		ctx := context.Background()
+		if err := srv.App().Settings.Set(ctx, "self_registration", "1"); err != nil {
+			t.Fatal(err)
+		}
+		const uid = 7 // someone
+		if _, err := d.Exec(ctx, `UPDATE principals SET status = 2 WHERE id = ?`, uid); err != nil {
+			t.Fatal(err)
+		}
+		tok, err := repository.CreateToken(ctx, d, uid, repository.TokenRegister)
+		if err != nil {
+			t.Fatal(err)
+		}
+		// 管理者のロック: 行をロックしたトランザクションを開いたままにする
+		tx, err := d.Begin(ctx)
+		if err != nil {
+			t.Fatal(err)
+		}
+		defer func() { _ = tx.Rollback() }()
+		if _, err := tx.Exec(ctx, `SELECT id FROM principals WHERE id = ?`+db.ForUpdate(tx), uid); err != nil {
+			t.Fatal(err)
+		}
+		done := make(chan struct{})
+		go func() {
+			defer close(done)
+			res, err := newClient(t).Get(ts.URL + "/account/activate?token=" + tok.Value)
+			if err == nil {
+				res.Body.Close()
+			}
+		}()
+		time.Sleep(700 * time.Millisecond) // 有効化がトークンとユーザーを読み、更新で待つまで
+		if _, err := tx.Exec(ctx, `UPDATE principals SET status = 3 WHERE id = ?`, uid); err != nil {
+			t.Fatal(err)
+		}
+		if err := tx.Commit(); err != nil {
+			t.Fatal(err)
+		}
+		<-done
+		var status int
+		if err := d.Get(ctx, &status, `SELECT status FROM principals WHERE id = ?`, uid); err != nil {
+			t.Fatal(err)
+		}
+		if status != 3 {
+			t.Fatalf("status = %d after the admin locked the user during activation, want 3 (locked)", status)
+		}
+	})
+}
 
 // TestRaceAutologinSessionAfterPasswordChange は、盗んだ autologin クッキーで処理中だったリクエストが、
 // その間に行われたパスワード変更（全セッション・autologin トークンの破棄）の後で

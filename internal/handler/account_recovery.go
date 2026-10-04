@@ -10,6 +10,7 @@ import (
 	"net/url"
 	"strings"
 
+	"github.com/mikuta0407/buropher/internal/db"
 	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/repository"
 )
@@ -387,6 +388,9 @@ func (a *App) registerManuallyByAdministrator(c *Req, m *userModel) bool {
 	return true
 }
 
+// errActivationRollback は有効化のトランザクションを取り消す（ユーザーが登録済みでなくなっていた）。
+var errActivationRollback = errors.New("activation: user is no longer registered")
+
 // AccountActivate は account#activate（GET /account/activate?token=）。
 func (a *App) AccountActivate(c *Req) {
 	tok := c.Params().String("token")
@@ -404,12 +408,31 @@ func (a *App) AccountActivate(c *Req) {
 		c.Redirect("/")
 		return
 	}
-	if err := repository.UpdateUserStatus(c.Ctx(), a.DB, user.ID, domain.StatusActive, a.now()); err != nil {
+	// トークンの消費と「登録済み → 有効」の変更を 1 トランザクションで条件付きに行う。読み込んだ後に
+	// 管理者がロックした（status が変わった）場合や、同じトークンが並行して使われた場合は有効にしない
+	activated := false
+	err = a.DB.WithTx(c.Ctx(), func(tx *db.Tx) error {
+		ok, err := repository.ConsumeToken(c.Ctx(), tx, repository.TokenRegister, token.Value)
+		if err != nil || !ok {
+			return err
+		}
+		ok, err = repository.UpdateUserStatusFrom(c.Ctx(), tx, user.ID, domain.StatusRegistered, domain.StatusActive, a.now())
+		if err != nil {
+			return err
+		}
+		if !ok {
+			return errActivationRollback
+		}
+		activated = true
+		return nil
+	})
+	if err != nil && !errors.Is(err, errActivationRollback) {
 		a.serverError(c, err)
 		return
 	}
-	if err := repository.DeleteToken(c.Ctx(), a.DB, user.ID, repository.TokenRegister, token.Value); err != nil {
-		a.logger().Error("delete register token", "err", err)
+	if !activated {
+		c.Redirect("/")
+		return
 	}
 	c.Flash().SetNotice(c.L("notice_account_activated"))
 	c.Redirect("/login")

@@ -34,6 +34,17 @@ func UpdateUserStatus(ctx context.Context, q db.Queryer, userID int64, status in
 	return err
 }
 
+// UpdateUserStatusFrom は status が from のときだけ status を変更し、変更したら true を返す
+// （読み込んだ後に他のリクエストが status を変えていたら上書きしない）。
+func UpdateUserStatusFrom(ctx context.Context, q db.Queryer, userID int64, from, status int, now time.Time) (bool, error) {
+	res, err := q.Exec(ctx, `UPDATE principals SET status = ?, updated_at = ? WHERE id = ? AND status = ?`, status, db.NewTime(now), userID, from)
+	if err != nil {
+		return false, err
+	}
+	n, err := res.RowsAffected()
+	return n > 0, err
+}
+
 // ---------------------------------------------------------------- 2 要素認証
 
 // GetTwofaState は user_accounts の twofa_* 列。
