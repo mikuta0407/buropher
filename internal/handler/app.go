@@ -334,6 +334,12 @@ func (a *App) anonymous(ctx context.Context) *domain.User {
 // runBeforeActions は ApplicationController の before_action とコントローラの before_action を
 // 順に実行する。止まった場合 true。
 func (a *App) runBeforeActions(c *Req, cfg *actionConfig) bool {
+	// user_setup の Setting.check_cache（他のプロセスでの設定変更を取り込む）
+	if a.Settings != nil {
+		if err := a.Settings.CheckCache(c.Ctx()); err != nil {
+			a.logger().Error("check settings cache", "err", err)
+		}
+	}
 	if a.sessionExpiration(c); c.halted {
 		return true
 	}

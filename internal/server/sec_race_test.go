@@ -9,13 +9,16 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/http/httptest"
 	"strings"
 	"sync"
 	"testing"
 	"time"
 
+	"github.com/mikuta0407/buropher/internal/config"
 	"github.com/mikuta0407/buropher/internal/db"
 	"github.com/mikuta0407/buropher/internal/db/dbtest"
+	"github.com/mikuta0407/buropher/internal/server"
 )
 
 // このファイルは並行リクエストによる競合状態（同時の親変更・セッション失効中のログイン・
@@ -156,6 +159,53 @@ func TestIssueParentCycleSaveTerminates(t *testing.T) {
 			}
 		case <-time.After(30 * time.Second):
 			t.Fatal("saving an issue in a parent_id cycle did not terminate")
+		}
+	})
+}
+
+// TestSettingsChangeSeenByOtherProcess は、同じ DB を使う別のプロセス（ここでは同じ DB に繋いだ
+// 2 つ目のサーバ）で設定を変えると、次のリクエストから反映されることを確認する（Setting.check_cache）。
+// 修正前は設定のキャッシュを起動時にしか読まないため、REST API の無効化やログイン必須化が
+// 他のプロセスでは再起動まで効かず、無効にしたはずの API キー認証が通り続けた。
+func TestSettingsChangeSeenByOtherProcess(t *testing.T) {
+	raceForEachDB(t, func(t *testing.T, d *db.DB) {
+		srvA, _ := newFixtureServerOn(t, d)
+		cfg := config.Default()
+		cfg.Server.SecretKey = "test-secret"
+		cfg.Storage.AttachmentsPath = t.TempDir()
+		srvB, err := server.New(cfg, d, server.Options{TempDir: t.TempDir(), Now: func() time.Time { return frozenTime }})
+		if err != nil {
+			t.Fatal(err)
+		}
+		tsB := httptest.NewServer(srvB.Handler())
+		t.Cleanup(tsB.Close)
+		if code, _ := raceAPI(t, tsB.URL, "GET", "/issues.json", "jsmith", "jsmith", ""); code != 200 {
+			t.Fatalf("API before change: %d", code)
+		}
+		ctx := context.Background()
+		// プロセス A で REST API を無効にし、ログインを必須にする
+		if err := srvA.App().Settings.Set(ctx, "rest_api_enabled", "0"); err != nil {
+			t.Fatal(err)
+		}
+		if err := srvA.App().Settings.Set(ctx, "login_required", "1"); err != nil {
+			t.Fatal(err)
+		}
+		if code, _ := raceAPI(t, tsB.URL, "GET", "/issues.json", "jsmith", "jsmith", ""); code != 403 {
+			t.Errorf("API on the other process after disabling REST API: %d, want 403", code)
+		}
+		res, _ := get(t, newClient(t), tsB.URL+"/projects")
+		if res.StatusCode != 302 || !strings.Contains(res.Header.Get("Location"), "/login") {
+			t.Errorf("anonymous /projects on the other process after login_required: %d %s", res.StatusCode, res.Header.Get("Location"))
+		}
+		// 同じマイクロ秒内の連続した変更も検出する（版が必ず進む）
+		for _, v := range []string{"1", "0"} {
+			if err := srvA.App().Settings.Set(ctx, "login_required", v); err != nil {
+				t.Fatal(err)
+			}
+		}
+		res, _ = get(t, newClient(t), tsB.URL+"/projects")
+		if res.StatusCode != 200 {
+			t.Errorf("anonymous /projects after login_required was turned off again: %d", res.StatusCode)
 		}
 	})
 }
