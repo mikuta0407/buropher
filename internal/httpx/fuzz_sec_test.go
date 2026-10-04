@@ -4,8 +4,10 @@
 package httpx
 
 import (
+	"bytes"
 	"mime"
 	"net/http/httptest"
+	"os"
 	"strings"
 	"testing"
 	"unicode/utf8"
@@ -57,6 +59,47 @@ func FuzzValidateBackURL(f *testing.F) {
 		}
 		if err := secoracle.SameOriginPath(page, loc); err != nil {
 			t.Fatalf("ValidateBackURL(%q) = %q, Location %q: %v", back, got, loc, err)
+		}
+	})
+}
+
+// FuzzParseRequest はリクエスト本文（multipart / urlencoded / JSON / XML）の解析が panic せず、
+// 時間・割り当てが本文の長さに比例する範囲に収まること、解析の成否に関わらず Cleanup 後に
+// アップロードの一時ファイルが残らないこと、ファイル名にパス区切りが残らないことを確かめる。
+//
+//	go test -run '^$' -fuzz FuzzParseRequest ./internal/httpx
+func FuzzParseRequest(f *testing.F) {
+	mp := "--B\r\nContent-Disposition: form-data; name=\"issue[subject]\"\r\n\r\nx\r\n" +
+		"--B\r\nContent-Disposition: form-data; name=\"attachments[1][file]\"; filename=\"C:\\\\dir\\\\..\\\\a.txt\"\r\nContent-Type: text/plain\r\n\r\n0123456789abcdefghijklmnopqrstuvwxyz\r\n" +
+		"--B\r\nContent-Disposition: form-data; name=\"f\"; filename*=UTF-8''..%2F..%2Fx\r\n\r\nyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy\r\n--B--\r\n"
+	f.Add(uint8(0), []byte(mp))
+	f.Add(uint8(0), []byte("--B\r\nContent-Disposition: form-data; name=\"a[][b]\"\r\n\r\n1\r\n--B\r\nContent-Disposition: form-data; name=\"a[][b]\"; filename=\"\"\r\n\r\n\r\n--B--"))
+	f.Add(uint8(1), []byte("issue[subject]=a&a[b][c][d]=1&x[]=1&x[]=2"))
+	f.Add(uint8(2), []byte(`{"issue":{"subject":"a","custom_fields":[{"id":1,"value":["x"]}]}}`))
+	f.Add(uint8(3), []byte(`<issue><subject>a</subject><x type="array"><y>1</y></x></issue>`))
+	cts := []string{"multipart/form-data; boundary=B", "application/x-www-form-urlencoded", "application/json", "application/xml"}
+	f.Fuzz(func(t *testing.T, ct uint8, body []byte) {
+		dir := t.TempDir()
+		opts := &ParseOptions{TempDir: dir, MaxMemoryPerFile: 16, MultipartPartLimit: 64, MultipartFileLimit: 8}
+		r := httptest.NewRequest("POST", "/issues?x[y]=1", bytes.NewReader(body))
+		r.Header.Set("Content-Type", cts[int(ct)%len(cts)])
+		secoracle.Bounded(t, len(body), 256, func() {
+			rp, err := ParseRequest(r, opts)
+			if err == nil {
+				for _, k := range rp.Body.Keys() {
+					if uf := rp.Body.File(k); uf != nil && strings.ContainsAny(uf.Filename, `/\`) {
+						t.Fatalf("uploaded filename %q keeps a path separator", uf.Filename)
+					}
+				}
+				rp.Cleanup()
+			}
+		})
+		ents, err := os.ReadDir(dir)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if len(ents) != 0 {
+			t.Fatalf("temporary upload files left behind: %d (body %q)", len(ents), body)
 		}
 	})
 }
