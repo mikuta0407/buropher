@@ -297,7 +297,7 @@ func (a *App) DiscordCallback(c *Req) {
 		return
 	}
 	if owner, err := repository.DiscordIdentityOwner(ctx, a.DB, du.ID); err != nil {
-		fail(err)
+		a.serverError(c, err)
 		return
 	} else if owner != 0 && owner != c.User.ID {
 		c.Flash().SetError(c.L("buropher.discord.error_already_linked"))

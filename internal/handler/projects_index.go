@@ -169,7 +169,9 @@ func (c *Req) renderPublic404() {
 func (a *App) queryStatementError(c *Req, err error) {
 	var qe *query.QueryError
 	if errors.As(err, &qe) {
-		c.RenderError(http.StatusInternalServerError, qe.Error())
+		// Redmine は l(:error_query_statement_invalid) を表示する（SQL のエラー文は見せない）
+		a.logger().Error("Query::StatementInvalid", "err", qe)
+		c.RenderError(http.StatusInternalServerError, c.L("error_query_statement_invalid"))
 		return
 	}
 	a.internalError(c, "query", err)

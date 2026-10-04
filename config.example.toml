@@ -56,7 +56,8 @@
 #driver = "sqlite"
 
 # SQLite: file path (parent directories are created). PostgreSQL: a libpq/pgx DSN,
-# e.g. "postgres://buropher:secret@localhost:5432/buropher?sslmode=disable".
+# e.g. "postgres://buropher:secret@localhost:5432/buropher?sslmode=disable"
+# (use sslmode=verify-full for a server on another host).
 # env: BUROPHER_DB_DSN
 #dsn = "data/buropher.db"
 

@@ -228,10 +228,12 @@ func (a *App) prepareUserView(c *Req, v *userQueryView, users []*domain.User) er
 	return nil
 }
 
-// serverError は予期しないエラー（500）。
+// serverError は予期しないエラー（500）。Rails で捕捉されない例外と同じく public/500.html を返し、
+// エラー文（SQL・DB の接続先・ファイルパス等）は利用者に見せずログにだけ残す。
 func (a *App) serverError(c *Req, err error) {
 	a.logger().Error("internal error", "controller", c.Controller.Name, "action", c.Action, "err", err)
-	c.RenderError(http.StatusInternalServerError, err.Error())
+	c.renderInternalError()
+	c.Halt()
 }
 
 // userIndexData は users/index のデータ。

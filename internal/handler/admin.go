@@ -44,7 +44,7 @@ func (a *App) routesAdmin(r Router) {
 func (a *App) AdminIndex(c *Req) {
 	noData, err := repository.NoConfigurationData(c.Ctx(), a.DB)
 	if err != nil {
-		c.RenderError(http.StatusInternalServerError, err.Error())
+		a.serverError(c, err)
 		return
 	}
 	c.renderAdmin("admin/index", map[string]any{"NoConfigurationData": noData}, false)
