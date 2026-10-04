@@ -781,11 +781,20 @@ func (a *App) RepositoriesAnnotate(c *Req) {
 	}
 	data := a.repoCommonData(c, s)
 	data["Entry"] = entry
-	ann := s.git.Annotate(ctx, s.path, s.rev)
+	maxChars := a.Settings.Int("file_max_size_displayed") * 1024
+	var ann *scm.Annotate
+	// buropher 独自（DoS 対策）: 表示上限（文字数）を必ず超えるほど大きなファイルは git blame を実行しない
+	// （blame の出力は丸ごとメモリに読み込むため、巨大なファイルの注釈を並行に要求されるとメモリを使い尽くす）。
+	// UTF-8 の 1 文字は 4 バイト以下なので、改行の多いファイルを除けば Redmine と同じ判定になる。
+	if entry.Size == nil || *entry.Size <= 4*int64(maxChars) {
+		ann = s.git.Annotate(ctx, s.path, s.rev)
+	}
 	switch {
+	case ann == nil && entry.Size != nil && *entry.Size > 4*int64(maxChars):
+		data["ErrorMessage"] = c.L("error_scm_annotate_big_text_file")
 	case ann == nil || ann.Empty():
 		data["ErrorMessage"] = c.L("error_scm_annotate")
-	case annotateSize(ann) > a.Settings.Int("file_max_size_displayed")*1024:
+	case annotateSize(ann) > maxChars:
 		data["ErrorMessage"] = c.L("error_scm_annotate_big_text_file")
 	default:
 		hasPrevious := ann.HasPrevious()
@@ -863,11 +872,6 @@ func (a *App) RepositoriesDiff(c *Req) {
 		format = c.Params().String("format")
 	}
 	if format == "diff" {
-		diff, ok := s.git.Diff(ctx, s.path, s.rev, s.revTo)
-		if !ok {
-			a.showErrorNotFound(c)
-			return
-		}
 		filename := "changeset_r" + s.rev
 		if s.revTo != "" {
 			filename += "_r" + s.revTo
@@ -876,11 +880,21 @@ func (a *App) RepositoriesDiff(c *Req) {
 		h.Set("Content-Type", "text/x-patch")
 		h.Set("Content-Disposition", httpx.ContentDisposition("attachment", filename+".diff"))
 		h.Set("Content-Transfer-Encoding", "binary")
-		c.Halt()
-		c.W.WriteHeader(http.StatusOK)
-		if c.R.Method != http.MethodHead {
-			_, _ = c.W.Write([]byte(strings.Join(diff, "")))
+		// 差分はメモリに溜めずに流す（最初の書き込みで 200 を送る。git が何も出力せず失敗したら 404）
+		lw := &lazyStatusWriter{w: c.W}
+		var dst io.Writer = lw
+		if c.R.Method == http.MethodHead {
+			dst = io.Discard
 		}
+		if !s.git.DiffTo(ctx, s.path, s.rev, s.revTo, dst) && !lw.started {
+			for _, k := range []string{"Content-Type", "Content-Disposition", "Content-Transfer-Encoding"} {
+				h.Del(k)
+			}
+			a.showErrorNotFound(c)
+			return
+		}
+		c.Halt()
+		lw.start()
 		return
 	}
 	if format != "" && format != "html" {
@@ -906,7 +920,14 @@ func (a *App) RepositoriesDiff(c *Req) {
 			a.logger().Error("save diff type", "err", err)
 		}
 	}
-	diff, ok := s.git.Diff(ctx, s.path, s.rev, s.revTo)
+	// 画面には diff_max_lines_displayed 行までしか出さない（Redmine::UnifiedDiff の max_lines）ため、
+	// その先は読まない（巨大なファイルの差分を丸ごとメモリに読み込ませない）。
+	// 末尾の git の署名 2 行の除去と、上限を超えたことの判定に使う 1 行の分を余分に読む。
+	headLines := 0
+	if n := a.Settings.Int("diff_max_lines_displayed"); n > 0 {
+		headLines = n + 3
+	}
+	diff, ok := s.git.DiffHead(ctx, s.path, s.rev, s.revTo, headLines)
 	if !ok {
 		a.showErrorNotFound(c)
 		return

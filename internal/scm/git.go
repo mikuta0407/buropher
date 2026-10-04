@@ -7,6 +7,7 @@ import (
 	"bufio"
 	"bytes"
 	"context"
+	"errors"
 	"io"
 	"os"
 	"os/exec"
@@ -576,6 +577,75 @@ func (g *Git) parseLog(out []byte) []*Revision {
 
 // Diff は diff(path, identifier_from, identifier_to)（行の配列。失敗時は ok=false）。
 func (g *Git) Diff(ctx context.Context, path, from, to string) ([]string, bool) {
+	return g.DiffHead(ctx, path, from, to, 0)
+}
+
+// errDiffLimit は DiffHead が maxLines 行を読み終えたことを示す（git を止めるための内部エラー）。
+var errDiffLimit = errors.New("scm: diff line limit reached")
+
+// lineLimitWriter は maxLines 行を受け取ったら cancel で git を止め、以降の書き込みを拒否する。
+type lineLimitWriter struct {
+	buf      bytes.Buffer
+	maxLines int
+	lines    int
+	cancel   context.CancelFunc
+	full     bool
+}
+
+func (w *lineLimitWriter) Write(p []byte) (int, error) {
+	if w.full {
+		return 0, errDiffLimit
+	}
+	for i, b := range p {
+		if b != '\n' {
+			continue
+		}
+		w.lines++
+		if w.lines >= w.maxLines {
+			w.buf.Write(p[:i+1])
+			w.full = true
+			w.cancel()
+			return 0, errDiffLimit
+		}
+	}
+	return w.buf.Write(p)
+}
+
+// DiffHead は Diff と同じ差分の先頭 maxLines 行だけを読む（maxLines が 0 以下なら全体）。
+// 画面に出すのは diff_max_lines_displayed 行までなので、巨大なファイルを含む変更の差分を
+// 丸ごとメモリに読み込まないように使う（誰でも閲覧できるリポジトリで並行に要求されるとメモリを使い尽くす）。
+func (g *Git) DiffHead(ctx context.Context, path, from, to string, maxLines int) ([]string, bool) {
+	args, ok := g.diffArgs(path, from, to)
+	if !ok {
+		return nil, false
+	}
+	if maxLines <= 0 {
+		out, err := g.gitCmd(ctx, args, nil)
+		if err != nil {
+			return nil, false
+		}
+		return splitLinesKeep(out), true
+	}
+	cctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+	w := &lineLimitWriter{maxLines: maxLines, cancel: cancel}
+	if err := g.gitCmdTo(cctx, args, nil, w); err != nil && !w.full {
+		return nil, false
+	}
+	return splitLinesKeep(w.buf.Bytes()), true
+}
+
+// DiffTo は Diff の出力を w に書き出す（.diff のダウンロードで差分全体をメモリに読み込まない）。
+func (g *Git) DiffTo(ctx context.Context, path, from, to string, w io.Writer) bool {
+	args, ok := g.diffArgs(path, from, to)
+	if !ok {
+		return false
+	}
+	return g.gitCmdTo(ctx, args, nil, w) == nil
+}
+
+// diffArgs は diff の git の引数（不正な識別子なら ok=false）。
+func (g *Git) diffArgs(path, from, to string) ([]string, bool) {
 	if isOptionLike(from, to) || (from == "" && to == "") {
 		return nil, false
 	}
@@ -592,11 +662,7 @@ func (g *Git) Diff(ctx context.Context, path, from, to string) ([]string, bool) 
 	if path != "" {
 		args = append(args, "--", g.toRepo(path))
 	}
-	out, err := g.gitCmd(ctx, args, nil)
-	if err != nil {
-		return nil, false
-	}
-	return splitLinesKeep(out), true
+	return args, true
 }
 
 var (
