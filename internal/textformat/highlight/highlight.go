@@ -14,6 +14,7 @@ import (
 	"path"
 	"regexp"
 	"strings"
+	"time"
 
 	"github.com/alecthomas/chroma/v2"
 	"github.com/alecthomas/chroma/v2/lexers"
@@ -133,20 +134,51 @@ func chromaLexer(l *rougeLexer) chroma.Lexer {
 	return lexers.Get("plaintext")
 }
 
+// Budget はハイライトの時間制限を複数の呼び出しで共有する（1 つの本文に含まれる全コードブロックの合計を
+// lexTimeout に抑える）。コードブロックごとに制限していると、遅い入力のブロックを多数並べた本文で
+// 表示のたびに「ブロック数 × 制限時間」の CPU を使われる。制限を超えた後のブロックは装飾しない
+// （時間切れの場合の Redmine の例外時と同じ扱い）。
+type Budget struct{ b lexBudget }
+
+// NewBudget は lexTimeout の時間制限を返す（時間は最初のハイライトから数える）。
+func NewBudget() *Budget { return &Budget{} }
+
+func (b *Budget) lex() *lexBudget {
+	if b == nil {
+		return &lexBudget{deadline: time.Now().Add(lexTimeout)}
+	}
+	if b.b.deadline.IsZero() {
+		b.b.deadline = time.Now().Add(lexTimeout)
+	}
+	return &b.b
+}
+
+// optBudget は可変長引数の Budget（省略時は呼び出しごとの制限）。
+func optBudget(bs []*Budget) *lexBudget {
+	if len(bs) > 0 {
+		return bs[0].lex()
+	}
+	return (*Budget)(nil).lex()
+}
+
 // tokens は text を字句解析し (Rouge の短縮クラス名, 値) の列を返す（同種トークンは結合）。
-func tokens(text string, l *rougeLexer) [][2]string {
+func tokens(text string, l *rougeLexer, budget *lexBudget) [][2]string {
 	tag := "plaintext"
 	if l != nil {
 		tag = l.Tag
 	}
-	if out, ok := rougeTokens(text, tag); ok {
+	if out, ok := rougeTokens(text, tag, budget); ok {
 		return out
 	}
-	return chromaTokens(text, l)
+	return chromaTokens(text, l, budget)
 }
 
 // chromaTokens は chroma で字句解析する（Rouge のレキサーを移植していない言語用）。
-func chromaTokens(text string, l *rougeLexer) [][2]string {
+// chroma は 1 回の照合にしか時間制限が無いため、トークンを 1 つずつ取り出して全体の時間制限を確かめる。
+func chromaTokens(text string, l *rougeLexer, budget *lexBudget) [][2]string {
+	if budget.exceeded {
+		return [][2]string{{"", text}}
+	}
 	var lx chroma.Lexer
 	if l == nil || l.Tag == "plaintext" {
 		lx = lexers.Get("plaintext")
@@ -159,17 +191,32 @@ func chromaTokens(text string, l *rougeLexer) [][2]string {
 		return [][2]string{{"", text}}
 	}
 	var out [][2]string
-	for _, t := range it.Tokens() {
+	// 同じクラスの連続するトークンは Builder で結合する（+= の繰り返しは 2 乗の時間になる）
+	var cur strings.Builder
+	curCls, has := "", false
+	flush := func() {
+		if has {
+			out = append(out, [2]string{curCls, cur.String()})
+			cur.Reset()
+			has = false
+		}
+	}
+	for t := it(); t != chroma.EOF; t = it() {
+		if budget.steps++; budget.steps%64 == 0 && time.Now().After(budget.deadline) {
+			budget.exceeded = true
+			return [][2]string{{"", text}}
+		}
 		if t.Value == "" {
 			continue
 		}
 		cls := shortName(t.Type, l)
-		if n := len(out); n > 0 && out[n-1][0] == cls {
-			out[n-1][1] += t.Value
-			continue
+		if has && curCls != cls {
+			flush()
 		}
-		out = append(out, [2]string{cls, t.Value})
+		curCls, has = cls, true
+		cur.WriteString(t.Value)
 	}
+	flush()
 	return out
 }
 
@@ -204,10 +251,11 @@ func shortName(tt chroma.TokenType, l *rougeLexer) string {
 var htmlEscaper = strings.NewReplacer("&", "&amp;", "<", "&lt;", ">", "&gt;")
 
 // HighlightByLanguage は Redmine::SyntaxHighlighting.highlight_by_language（外側の pre/code は含まない）。
-func HighlightByLanguage(text, language string) string {
+// budget を渡すと時間制限を他の呼び出しと共有する。
+func HighlightByLanguage(text, language string, budget ...*Budget) string {
 	l := findLexer(strings.ToLower(language))
 	var sb strings.Builder
-	for _, t := range tokens(text, l) {
+	for _, t := range tokens(text, l, optBudget(budget)) {
 		if t[0] == "" {
 			sb.WriteString(htmlEscaper.Replace(t[1]))
 		} else {
@@ -219,7 +267,8 @@ func HighlightByLanguage(text, language string) string {
 
 // Nodes は HighlightByLanguage の結果を DOM ノード列として返す（node.inner_html= 用）。
 // 制御文字など libxml2 が捨てる文字はここでは考慮しない（入力は DOM のテキストのため既に除去済み）。
-func Nodes(text, language string) []*htmldom.Node {
+// budget を渡すと時間制限を他の呼び出しと共有する。
+func Nodes(text, language string, budget ...*Budget) []*htmldom.Node {
 	l := findLexer(strings.ToLower(language))
 	var out []*htmldom.Node
 	// 連続する装飾なしのトークンは 1 つのテキストにまとめる（+= の繰り返しは 2 乗の時間になるので Builder で連結する）
@@ -230,7 +279,7 @@ func Nodes(text, language string) []*htmldom.Node {
 			plain.Reset()
 		}
 	}
-	for _, t := range tokens(text, l) {
+	for _, t := range tokens(text, l, optBudget(budget)) {
 		if t[0] == "" {
 			plain.WriteString(t[1])
 			continue
@@ -648,7 +697,7 @@ func HighlightByFilename(text, filename string) string {
 		sb.WriteString("\n")
 		line = line[:0]
 	}
-	for _, t := range tokens(text, l) {
+	for _, t := range tokens(text, l, optBudget(nil)) {
 		v := t[1]
 		for v != "" {
 			if v[0] == '\n' {

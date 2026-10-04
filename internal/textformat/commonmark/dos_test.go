@@ -155,3 +155,17 @@ func TestRefDefBatchesEquivalent(t *testing.T) {
 		}
 	}
 }
+
+// 字句解析の遅いコードブロックを多数並べても、ハイライトの時間制限は本文全体で共有される
+// （ブロックごとの制限だと「ブロック数 × 制限時間」かかっていた）。
+func TestSyntaxHighlightBudgetPerDocument(t *testing.T) {
+	block := "```c\n" + strings.Repeat("*", 5000) + "\n```\n\n"
+	start := time.Now()
+	out := Format(strings.Repeat(block, 6), Options{})
+	if d := time.Since(start); d > 6*time.Second {
+		t.Errorf("6 slow blocks took %v", d)
+	}
+	if n := strings.Count(out, `class="c syntaxhl"`); n != 6 {
+		t.Errorf("code blocks = %d, want 6", n)
+	}
+}

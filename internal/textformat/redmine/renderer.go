@@ -282,7 +282,7 @@ func plainFallback(text string) template.HTML {
 func (r *Renderer) toHTML(text string) string {
 	switch r.TextFormatting {
 	case "textile":
-		return textile.Format(text, &textile.Options{Highlight: textileHighlighter})
+		return textile.Format(text, &textile.Options{Highlight: textileHighlighter(highlight.NewBudget())})
 	case "common_mark":
 		return commonmark.Format(text, commonmark.Options{
 			DisableHardBreaks: r.DisableHardBreaks,
@@ -294,11 +294,14 @@ func (r *Renderer) toHTML(text string) string {
 	}
 }
 
-func textileHighlighter(lang, code string) (string, bool) {
-	if !highlight.LanguageSupported(lang) {
-		return "", false
+// textileHighlighter は本文 1 つ分のコードブロックのハイライト（時間制限は本文内のブロックで共有する）。
+func textileHighlighter(budget *highlight.Budget) func(lang, code string) (string, bool) {
+	return func(lang, code string) (string, bool) {
+		if !highlight.LanguageSupported(lang) {
+			return "", false
+		}
+		return highlight.HighlightByLanguage(code, lang, budget), true
 	}
-	return highlight.HighlightByLanguage(code, lang), true
 }
 
 func (r *Renderer) iconsPath() string {

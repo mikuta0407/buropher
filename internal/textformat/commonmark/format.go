@@ -162,6 +162,8 @@ func SyntaxHighlightFilter(frag *htmldom.Node) {
 	codes := frag.FindAll(func(n *htmldom.Node) bool {
 		return n.IsElement("code") && n.Parent != nil && n.Parent.IsElement("pre")
 	})
+	// 時間制限は本文内のコードブロックで共有する（遅いブロックを多数並べても合計が制限内に収まる）
+	budget := highlight.NewBudget()
 	for _, node := range codes {
 		cls := node.AttrVal("class")
 		if strings.TrimSpace(cls) == "" {
@@ -177,7 +179,7 @@ func SyntaxHighlightFilter(frag *htmldom.Node) {
 			node.SetAttr("data-language", lang)
 		}
 		if highlight.LanguageSupported(lang) {
-			nodes := highlight.Nodes(txt, lang)
+			nodes := highlight.Nodes(txt, lang, budget)
 			node.RemoveChildren()
 			for _, c := range nodes {
 				node.AppendChild(c)
