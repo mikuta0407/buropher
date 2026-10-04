@@ -10,6 +10,7 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"strings"
 	"sync"
 	"testing"
@@ -206,6 +207,40 @@ func TestSettingsChangeSeenByOtherProcess(t *testing.T) {
 		res, _ = get(t, newClient(t), tsB.URL+"/projects")
 		if res.StatusCode != 200 {
 			t.Errorf("anonymous /projects after login_required was turned off again: %d", res.StatusCode)
+		}
+	})
+}
+
+// TestRaceAdditionalEmailLimit は、追加メールアドレスの作成を並列に送っても max_additional_emails を
+// 超えて作れないことを確認する（PostgreSQL では件数の確認と追加の間に他のトランザクションの追加が入り込めた）。
+func TestRaceAdditionalEmailLimit(t *testing.T) {
+	raceForEachDB(t, func(t *testing.T, d *db.DB) {
+		srv, ts := newFixtureServerOn(t, d)
+		ctx := context.Background()
+		var n int
+		if err := d.Get(ctx, &n, `SELECT COUNT(*) FROM email_addresses WHERE user_id = 2`); err != nil {
+			t.Fatal(err)
+		}
+		// 既存の件数 = 上限（あと 1 件だけ追加できる）
+		if err := srv.App().Settings.Set(ctx, "max_additional_emails", fmt.Sprint(n)); err != nil {
+			t.Fatal(err)
+		}
+		c := login(t, ts, "jsmith", "jsmith")
+		_, body := get(t, c, ts.URL+"/my/account")
+		token := csrfToken(t, body)
+		raceParallel(10, func(i int) {
+			res, err := c.PostForm(ts.URL+"/users/2/email_addresses", url.Values{"authenticity_token": {token},
+				"email_address[address]": {fmt.Sprintf("race%d@example.net", i)}})
+			if err == nil {
+				res.Body.Close()
+			}
+		})
+		var after int
+		if err := d.Get(ctx, &after, `SELECT COUNT(*) FROM email_addresses WHERE user_id = 2`); err != nil {
+			t.Fatal(err)
+		}
+		if after > n+1 {
+			t.Fatalf("%d addresses after parallel creation, limit allows %d", after, n+1)
 		}
 	})
 }
