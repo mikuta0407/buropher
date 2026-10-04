@@ -5,6 +5,7 @@ package handler
 
 import (
 	"archive/zip"
+	"bufio"
 	"crypto/md5"
 	"encoding/hex"
 	"fmt"
@@ -363,7 +364,7 @@ func (a *App) AttachmentsShow(c *Req) {
 	}
 	switch {
 	case att.IsDiff():
-		raw, err := os.ReadFile(a.AttachmentStore.Diskfile(att))
+		raw, err := readDiffHead(a.AttachmentStore.Diskfile(att), a.Settings.Int("diff_max_lines_displayed"))
 		if err != nil {
 			c.Render404("")
 			return
@@ -854,4 +855,31 @@ func zipEntryName(filename string) string {
 func weakETag(v string) string {
 	sum := md5.Sum([]byte(v))
 	return `W/"` + hex.EncodeToString(sum[:]) + `"`
+}
+
+// readDiffHead は差分の添付を表示に要る分だけ読む。画面には diff_max_lines_displayed 行までしか出さない
+// （Redmine::UnifiedDiff の max_lines）ため、巨大なパッチの添付を丸ごとメモリに読み込まない。
+// 末尾の git の署名 2 行の除去と、上限を超えたことの判定に使う 1 行の分を余分に読む。maxLines が 0 以下なら全体。
+func readDiffHead(path string, maxLines int) ([]byte, error) {
+	if maxLines <= 0 {
+		return os.ReadFile(path)
+	}
+	f, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+	r := bufio.NewReader(f)
+	var out []byte
+	for range maxLines + 3 {
+		line, err := r.ReadBytes('\n')
+		out = append(out, line...)
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return nil, err
+		}
+	}
+	return out, nil
 }

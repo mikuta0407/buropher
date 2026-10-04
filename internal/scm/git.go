@@ -7,10 +7,12 @@ import (
 	"bufio"
 	"bytes"
 	"context"
+	"errors"
 	"io"
 	"os"
 	"os/exec"
 	"regexp"
+	"runtime"
 	"sort"
 	"strconv"
 	"strings"
@@ -143,6 +145,10 @@ func isOptionLike(vals ...string) bool {
 	return false
 }
 
+// gitSem は同時に実行する git の数の上限。リポジトリを誰でも閲覧できる場合、注釈・差分などを大量に並行して
+// 要求されると git のプロセスがその数だけ起動され、CPU・メモリ・プロセス数を使い尽くすため。
+var gitSem = make(chan struct{}, max(8, 2*runtime.NumCPU()))
+
 // gitCmd は git_cmd（--git-dir と -c オプションを付けて実行し、標準出力を返す）。
 // 0 以外の終了は ErrCommandAborted。stdin が nil でなければ標準入力に渡す。
 func (g *Git) gitCmd(ctx context.Context, args []string, stdin []byte) ([]byte, error) {
@@ -152,7 +158,22 @@ func (g *Git) gitCmd(ctx context.Context, args []string, stdin []byte) ([]byte, 
 }
 
 // gitCmdTo は gitCmd の標準出力を w に書き出す版（大きな出力をメモリに溜めない）。
+// w はサーバ内のバッファであること（クライアントへ直接書く場合は gitStreamTo）。
 func (g *Git) gitCmdTo(ctx context.Context, args []string, stdin []byte, w io.Writer) error {
+	// 同時に動かす git の数を制限する（Redmine はアプリケーションサーバのスレッド数で自然に制限される）
+	select {
+	case gitSem <- struct{}{}:
+		defer func() { <-gitSem }()
+	case <-ctx.Done():
+		return ErrCommandAborted
+	}
+	return g.gitStreamTo(ctx, args, stdin, w)
+}
+
+// gitStreamTo は gitCmdTo の同時実行数の制限を受けない版。HTTP レスポンスへ直接書き出す
+// ダウンロード（raw・.diff）用で、読み出しの遅いクライアントが gitSem の枠を占有して
+// 他の利用者のリポジトリ閲覧を止められないようにする（出力はメモリに溜めない）。
+func (g *Git) gitStreamTo(ctx context.Context, args []string, stdin []byte, w io.Writer) error {
 	repo := g.RootURL
 	if repo == "" {
 		repo = g.URL
@@ -576,6 +597,75 @@ func (g *Git) parseLog(out []byte) []*Revision {
 
 // Diff は diff(path, identifier_from, identifier_to)（行の配列。失敗時は ok=false）。
 func (g *Git) Diff(ctx context.Context, path, from, to string) ([]string, bool) {
+	return g.DiffHead(ctx, path, from, to, 0)
+}
+
+// errDiffLimit は DiffHead が maxLines 行を読み終えたことを示す（git を止めるための内部エラー）。
+var errDiffLimit = errors.New("scm: diff line limit reached")
+
+// lineLimitWriter は maxLines 行を受け取ったら cancel で git を止め、以降の書き込みを拒否する。
+type lineLimitWriter struct {
+	buf      bytes.Buffer
+	maxLines int
+	lines    int
+	cancel   context.CancelFunc
+	full     bool
+}
+
+func (w *lineLimitWriter) Write(p []byte) (int, error) {
+	if w.full {
+		return 0, errDiffLimit
+	}
+	for i, b := range p {
+		if b != '\n' {
+			continue
+		}
+		w.lines++
+		if w.lines >= w.maxLines {
+			w.buf.Write(p[:i+1])
+			w.full = true
+			w.cancel()
+			return 0, errDiffLimit
+		}
+	}
+	return w.buf.Write(p)
+}
+
+// DiffHead は Diff と同じ差分の先頭 maxLines 行だけを読む（maxLines が 0 以下なら全体）。
+// 画面に出すのは diff_max_lines_displayed 行までなので、巨大なファイルを含む変更の差分を
+// 丸ごとメモリに読み込まないように使う（誰でも閲覧できるリポジトリで並行に要求されるとメモリを使い尽くす）。
+func (g *Git) DiffHead(ctx context.Context, path, from, to string, maxLines int) ([]string, bool) {
+	args, ok := g.diffArgs(path, from, to)
+	if !ok {
+		return nil, false
+	}
+	if maxLines <= 0 {
+		out, err := g.gitCmd(ctx, args, nil)
+		if err != nil {
+			return nil, false
+		}
+		return splitLinesKeep(out), true
+	}
+	cctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+	w := &lineLimitWriter{maxLines: maxLines, cancel: cancel}
+	if err := g.gitCmdTo(cctx, args, nil, w); err != nil && !w.full {
+		return nil, false
+	}
+	return splitLinesKeep(w.buf.Bytes()), true
+}
+
+// DiffTo は Diff の出力を w に書き出す（.diff のダウンロードで差分全体をメモリに読み込まない）。
+func (g *Git) DiffTo(ctx context.Context, path, from, to string, w io.Writer) bool {
+	args, ok := g.diffArgs(path, from, to)
+	if !ok {
+		return false
+	}
+	return g.gitStreamTo(ctx, args, nil, w) == nil
+}
+
+// diffArgs は diff の git の引数（不正な識別子なら ok=false）。
+func (g *Git) diffArgs(path, from, to string) ([]string, bool) {
 	if isOptionLike(from, to) || (from == "" && to == "") {
 		return nil, false
 	}
@@ -592,11 +682,7 @@ func (g *Git) Diff(ctx context.Context, path, from, to string) ([]string, bool) 
 	if path != "" {
 		args = append(args, "--", g.toRepo(path))
 	}
-	out, err := g.gitCmd(ctx, args, nil)
-	if err != nil {
-		return nil, false
-	}
-	return splitLinesKeep(out), true
+	return args, true
 }
 
 var (
@@ -667,7 +753,7 @@ func (g *Git) CatTo(ctx context.Context, path, identifier string, w io.Writer) b
 	if isOptionLike(identifier) {
 		return false
 	}
-	return g.gitCmdTo(ctx, []string{"show", "--no-color", "--no-textconv", g.toRepo(identifier) + ":" + g.toRepo(path)}, nil, w) == nil
+	return g.gitStreamTo(ctx, []string{"show", "--no-color", "--no-textconv", g.toRepo(identifier) + ":" + g.toRepo(path)}, nil, w) == nil
 }
 
 // ValidName は valid_name?（ブランチ・タグとして存在する名前か）。
