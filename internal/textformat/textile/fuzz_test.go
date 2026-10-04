@@ -23,6 +23,7 @@ func FuzzFormat(f *testing.F) {
 		"p[en\" onclick=\"x]. a\n\np(cls\" onclick=\"x#id\"x). b\n\n!(cls\"x)img.png(t\"itle)!:http://x\" onclick=\"y",
 		"<pre><code class=\"ruby\" onclick=\"x\">a</code></pre> <pre onclick=x>y</pre> <redpre#1> @<script>@",
 		"\"a\":http://x/\"onmouseover=\"alert(1) http://x/\"><script>alert(1)</script> www.x.com/\"<b>",
+		"\"x\":http://a/onmouseover=alert(1)// ABC(q :redsh#1:) <pre><code class=\"q :redsh#1:\">z</code></pre>",
 	} {
 		f.Add(s)
 	}

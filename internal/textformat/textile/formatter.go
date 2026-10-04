@@ -70,10 +70,16 @@ var inlineRules = []inlineRule{
 
 var reNotextileTag = rx(`</?notextile>`)
 
+// userRedshMarker は利用者の入力中の ":redsh#"（shelve の目印）を retrieve から隠すための置き換え。
+const userRedshMarker = ":redsh\uFFFF#"
+
 // toHTML は RedCloth3#to_html (redcloth3.rb:269-320) に Formatter#to_html の規則を与えたもの。
 func (rc *redcloth) toHTML(src string) string {
 	text := strings.ToValidUTF8(src, "�")
 	rc.shelf = nil
+	// 利用者が書いた ":redsh#N:" は shelve の目印と同じ形のため、retrieve の対象にならない形にしておき、
+	// retrieve の後で元に戻す（retrieve が展開するのは shelve が置いた目印だけ）。
+	text = strings.ReplaceAll(text, ":redsh#", userRedshMarker)
 
 	// 標準的なクリーンアップ
 	text = incomingEntities(text)
@@ -94,6 +100,7 @@ func (rc *redcloth) toHTML(src string) string {
 	text = rc.smoothOfftags(text)
 
 	text = rc.retrieve(text)
+	text = strings.ReplaceAll(text, userRedshMarker, ":redsh#")
 
 	text = gsub(reNotextileTag, text, func(md) string { return "" })
 	text = strings.ReplaceAll(text, "x%x%", "&#38;")
