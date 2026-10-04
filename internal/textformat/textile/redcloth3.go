@@ -964,6 +964,16 @@ func (rc *redcloth) ripOfftags(text string, escapeAftertag, escapeLine bool) str
 	}
 	codepre := 0
 	used := map[string]bool{}
+	// tail は rc.preList の最後の要素への追記分（Ruby の << と違い Go の += は毎回複製するため、
+	// 入れ子のタグが多数並ぶと 2 乗の時間になる。まとめて書き戻す）
+	var tail strings.Builder
+	flushTail := func() {
+		if tail.Len() > 0 {
+			rc.preList[len(rc.preList)-1] += tail.String()
+			tail.Reset()
+		}
+	}
+	defer flushTail()
 	return gsub(reOfftagMatch, text, func(m md) string {
 		line := m.all()
 		if m.ok(3) {
@@ -974,7 +984,7 @@ func (rc *redcloth) ripOfftags(text string, escapeAftertag, escapeLine bool) str
 				if escapeLine {
 					line = htmlesc(line, escNoQuotes)
 				}
-				rc.preList[len(rc.preList)-1] += line
+				tail.WriteString(line)
 				line = ""
 			} else {
 				// ハイライト対象の <code class="..."> の中身はエスケープしない
@@ -991,6 +1001,7 @@ func (rc *redcloth) ripOfftags(text string, escapeAftertag, escapeLine bool) str
 				if cm := match(reClassAttr, attrs); cm != nil && tag == "code" {
 					tag += " " + cm.s(1)
 				}
+				flushTail()
 				rc.preList = append(rc.preList, "<"+tag+">"+aftertag)
 			}
 		} else if m.ok(1) && codepre > 0 {
@@ -998,7 +1009,7 @@ func (rc *redcloth) ripOfftags(text string, escapeAftertag, escapeLine bool) str
 				if escapeLine {
 					line = htmlesc(line, escNoQuotes)
 				}
-				rc.preList[len(rc.preList)-1] += line
+				tail.WriteString(line)
 				line = ""
 			}
 			if codepre != 0 {

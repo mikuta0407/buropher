@@ -3,7 +3,37 @@
 
 package htmldom
 
-import "testing"
+import (
+	"strings"
+	"testing"
+	"time"
+)
+
+// TestParseFragmentLinearText は細切れの文字データ（エンティティと文字の繰り返し）を
+// テキストノードへ連結する処理が 2 乗の時間にならず、内容が正しく連結されることを確かめる。
+func TestParseFragmentLinearText(t *testing.T) {
+	measure := func(in string) time.Duration {
+		best := time.Duration(1 << 62)
+		for range 3 {
+			start := time.Now()
+			_ = Render(ParseFragment(in))
+			best = min(best, time.Since(start))
+		}
+		return best
+	}
+	small := measure(strings.Repeat("a&lt;", 4000))
+	large := measure(strings.Repeat("a&lt;", 40000))
+	if large > 40*max(small, 2*time.Millisecond) {
+		t.Errorf("10x input took %v vs %v (superlinear)", large, small)
+	}
+	frag := ParseFragment("<p>a&lt;b&amp;c</p>x&gt;<b>y</b>z&#65;")
+	if got, want := Render(frag), "<p>a&lt;b&amp;c</p>x&gt;<b>y</b>zA"; got != want {
+		t.Errorf("Render = %q, want %q", got, want)
+	}
+	if p := frag.FirstChild; p == nil || p.FirstChild == nil || p.FirstChild.Data != "a<b&c" || p.FirstChild.NextSibling != nil {
+		t.Errorf("text node not merged: %#v", p.FirstChild)
+	}
+}
 
 // libxml2（Nokogiri::HTML4::DocumentFragment）の解析・直列化結果と一致することを確認する。
 // 期待値は Redmine 環境の Nokogiri 1.19 / libxml2 2.13.9 で確認したもの。

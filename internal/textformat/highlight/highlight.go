@@ -222,19 +222,25 @@ func HighlightByLanguage(text, language string) string {
 func Nodes(text, language string) []*htmldom.Node {
 	l := findLexer(strings.ToLower(language))
 	var out []*htmldom.Node
+	// 連続する装飾なしのトークンは 1 つのテキストにまとめる（+= の繰り返しは 2 乗の時間になるので Builder で連結する）
+	var plain strings.Builder
+	flush := func() {
+		if plain.Len() > 0 {
+			out = append(out, htmldom.NewText(plain.String()))
+			plain.Reset()
+		}
+	}
 	for _, t := range tokens(text, l) {
 		if t[0] == "" {
-			if n := len(out); n > 0 && out[n-1].Type == htmldom.TextNode {
-				out[n-1].Data += t[1]
-				continue
-			}
-			out = append(out, htmldom.NewText(t[1]))
+			plain.WriteString(t[1])
 			continue
 		}
+		flush()
 		span := htmldom.NewElement("span", htmldom.Attr{Name: "class", Value: t[0]})
 		span.AppendChild(htmldom.NewText(t[1]))
 		out = append(out, span)
 	}
+	flush()
 	return out
 }
 

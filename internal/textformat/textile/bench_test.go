@@ -134,3 +134,24 @@ func TestMailInLinkCacheBounded(t *testing.T) {
 		t.Fatalf("cached %d > %d", n, mailInLinkCacheMax)
 	}
 }
+
+// TestOfftagsLinear は入れ子の <pre> / <notextile> を大量に並べた本文で、退避した内容への追記
+// （rc.preList の最後の要素への +=）が 2 乗の時間にならないことを確かめる。
+func TestOfftagsLinear(t *testing.T) {
+	measure := func(in string) time.Duration {
+		best := time.Duration(1 << 62)
+		for range 3 {
+			start := time.Now()
+			formatOrTimeout(t, in)
+			best = min(best, time.Since(start))
+		}
+		return best
+	}
+	for _, tag := range []string{"<pre>", "<notextile>"} {
+		small := measure(strings.Repeat(tag, 2000))
+		large := measure(strings.Repeat(tag, 20000))
+		if large > 40*max(small, 2*time.Millisecond) {
+			t.Errorf("%s: 10x input took %v vs %v (superlinear)", tag, large, small)
+		}
+	}
+}
