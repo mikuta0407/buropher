@@ -1038,7 +1038,9 @@ var allowedTags = map[string]bool{"pre": true, "code": true, "kbd": true, "notex
 func escapeHTMLTags(text string) string {
 	return gsub(reEscapeHTMLTags, text, func(m md) string {
 		all, tag, cl := m.s(1), m.s(2), m.s(3)
-		if !blank(cl) && (allowedTags[tag] || matches(reRedpreTag, tag)) {
+		// <redpre#N> は rip_offtags が pre を退避した跡のプレースホルダ。そのまま残すのは属性なしの
+		// ものに限り、属性付きのものはエスケープする
+		if !blank(cl) && (allowedTags[tag] || (matches(reRedpreTag, tag) && all == tag)) {
 			return "<" + htmlesc(all, escQuotes) + cl
 		}
 		r := "&lt;" + htmlesc(all, escQuotes)

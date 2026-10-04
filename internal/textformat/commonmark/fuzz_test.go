@@ -7,12 +7,43 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/mikuta0407/buropher/internal/secoracle"
+	"github.com/mikuta0407/buropher/internal/textformat/htmldom"
+	"github.com/mikuta0407/buropher/internal/textformat/sanitize"
 )
+
+// commonmarkPolicy は CommonMark の出力に許す内容（サニタイザの許可要素とアラートのアイコン SVG）。
+var commonmarkPolicy = secoracle.HTMLPolicy{SVG: true}
 
 func FuzzFormat(f *testing.F) {
 	f.Add("# h\n\n> [!NOTE]\n> x\n\n- [ ] a\n- [x] b\n\n| a | b |\n|---|---|\n| 1 | 2 |\n\n```ruby\nx\n```\n\n[a]: http://x \"t\"\n\n<div>raw</div> ~~s~~ **b** _e_ `c` <http://auto> www.example.com[^1]\n\n[^1]: fn")
+	for _, s := range []string{
+		"[x](javascript:alert(1)) [y]( JaVaScRiPt:x) <a href=\"vbscript:x\">v</a> ![i](javascript:x) <javascript:alert(1)>",
+		"<img src=x onerror=alert(1)><script>alert(1)</script><style>*{}</style><iframe src=x></iframe>",
+		"[a](<java\nscript:x>) [b](&#106;avascript:x) [c](java&#x09;script:x) [d][r]\n\n[r]: javascript:x",
+		"<div style=\"background:url(javascript:x)\">a</div> <p style=\"color:red;x:expression(alert(1))\">b</p>",
+		"> [!NOTE]\n> <svg onload=alert(1)>\n\n```js\n</code><script>x</script>\n```",
+		"<!-- --!><script>x</script> --> <noscript><p title=\"</noscript><img src=x onerror=alert(1)>\"></noscript>",
+	} {
+		f.Add(s)
+	}
 	f.Fuzz(func(t *testing.T, src string) {
-		_ = Format(src, Options{})
+		var out string
+		secoracle.Bounded(t, len(src), 0, func() { out = Format(src, Options{}) })
+		if err := secoracle.CheckHTML(out, commonmarkPolicy); err != nil {
+			t.Fatalf("input %q\noutput %q\n%v", src, out, err)
+		}
+		// Format と同じ手順で作った木と、その直列化をブラウザが解析した木の差分
+		frag := htmldom.ParseFragment(MarkdownToHTML(src, true))
+		sanitize.Node(frag)
+		SyntaxHighlightFilter(frag)
+		FixupAutoLinksFilter(frag)
+		sanitize.ExternalLinks(frag)
+		AlertsIconsFilter(frag, Options{})
+		if err := secoracle.CheckDOMRender(frag); err != nil {
+			t.Fatalf("input %q\n%v", src, err)
+		}
 		_, _ = GetSection(src, 1)
 		_, _ = UpdateSection(src, 1, "x", "")
 	})
