@@ -209,6 +209,15 @@ func (r *receiver) receiveIssueReply(ctx context.Context, issueID int64, fromJou
 			return unauthorized("not possible to add notes to project [%s]", project.Name)
 		}
 		if !r.opts.noPermissionCheck {
+			// 本家は notes_addable? だけを見るため、見えない（非公開・他人の）チケットにも件名の番号だけで
+			// 注記・属性変更・添付・ウォッチャー追加ができる。画面・API と同じく見えるチケットに限る
+			vis, err := env.Visible(ctx, iss, r.user)
+			if err != nil {
+				return err
+			}
+			if !vis {
+				return unauthorized("not allowed to view issue #%d", iss.ID)
+			}
 			ok, err := env.NotesAddable(ctx, iss, r.user)
 			if err != nil {
 				return err
