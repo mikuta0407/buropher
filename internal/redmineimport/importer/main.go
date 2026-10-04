@@ -74,6 +74,9 @@ func mainWith(args []string, stdout, stderr io.Writer) error {
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
+	if err := config.PrepareSQLite(driver, dsn); err != nil {
+		return err
+	}
 	d, err := db.Open(ctx, driver, dsn)
 	if err != nil {
 		return err
