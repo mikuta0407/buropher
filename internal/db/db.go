@@ -172,7 +172,11 @@ func createSQLiteFile(dsn string) error {
 	if strings.HasPrefix(path, "file:") {
 		path = strings.TrimPrefix(path, "file:")
 		if i := strings.IndexByte(path, '?'); i >= 0 {
-			if q, err := url.ParseQuery(path[i+1:]); err != nil || q.Get("mode") != "" {
+			q, err := url.ParseQuery(path[i+1:])
+			if err != nil {
+				return fmt.Errorf("db: sqlite dsn query: %w", err)
+			}
+			if q.Get("mode") != "" {
 				// mode=ro などファイルの作成を伴わない指定は SQLite に任せる
 				return nil
 			}
