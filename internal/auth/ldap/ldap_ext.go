@@ -244,7 +244,9 @@ func (ss *session) searchGroups(conn *goldap.Conn, cond string) ([]string, error
 	req := goldap.NewSearchRequest(s.groupBase(), goldap.ScopeWholeSubtree, goldap.NeverDerefAliases, 0, 0, false,
 		"(&"+s.groupFilter()+cond+")", []string{"dn"}, nil)
 	res, err := conn.Search(req)
-	if err != nil && (res == nil || !searchResultUsable(err)) {
+	if err != nil {
+		// 結果コードが成功以外（busy / insufficientAccessRights 等）でも「グループなし」とはしない
+		// （同期で所属が削除されるため。呼び出し側はグループを取得しなかったものとして扱う）
 		return nil, err
 	}
 	var out []string
@@ -338,7 +340,9 @@ func (s *Source) Lookup(login string) (*UserInfo, error) {
 		req := goldap.NewSearchRequest(s.BaseDN, goldap.ScopeWholeSubtree, goldap.NeverDerefAliases, 0, 0, false,
 			s.searchFilter(eqFilter(s.AttrLogin, login)), attrNames, nil)
 		res, err := conn.Search(req)
-		if err != nil && (res == nil || !searchResultUsable(err)) {
+		if err != nil {
+			// 認証（net-ldap 互換）と違い、検索の失敗を「見つからない」とはしない。
+			// 一時的な障害（busy / unavailable）や ACL・検索ベースの誤りで定期同期が全員をロックしないように
 			return err
 		}
 		if len(res.Entries) == 0 {

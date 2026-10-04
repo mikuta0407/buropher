@@ -50,10 +50,17 @@ type Server struct {
 	RequireTLS bool
 	// CertPEM は Start が作る自己署名証明書（127.0.0.1 / localhost 用）の PEM。
 	CertPEM []byte
+	// RejectStartTLS が空でなければ、StartTLS を unavailable（52）で拒否し、この文字列を
+	// diagnosticMessage に入れる（悪意あるサーバ・平文区間の中間者の再現用）。
+	RejectStartTLS string
 
 	mu    sync.Mutex
 	ln    net.Listener
 	binds []string
+	// searchFailCode が 0 でなければ、検索ベースが searchFailBase で終わる検索（空ならすべて）は
+	// エントリを返さずにこの結果コードで失敗する（SetSearchResultCode）。
+	searchFailCode int64
+	searchFailBase string
 	// Searches は受け付けた検索のフィルタ（デバッグ・検証用）。
 	searches []string
 	tlsConf  *tls.Config
@@ -178,7 +185,16 @@ func (s *Server) serve(c net.Conn) {
 				wanted = append(wanted, ber.DecodeString(a.Data.Bytes()))
 			}
 			n := int64(0)
-			code := int64(0)
+			s.mu.Lock()
+			code := s.searchFailCode
+			if !strings.HasSuffix(base, strings.ToLower(s.searchFailBase)) {
+				code = 0
+			}
+			s.mu.Unlock()
+			if code != 0 {
+				s.write(c, id, result(5, code))
+				continue
+			}
 			for _, e := range s.Entries {
 				if base != "" && !strings.HasSuffix(strings.ToLower(e.DN), base) {
 					continue
@@ -203,6 +219,10 @@ func (s *Server) serve(c net.Conn) {
 				s.write(c, id, result(24, 2)) // protocolError
 				continue
 			}
+			if s.RejectStartTLS != "" {
+				s.write(c, id, resultMsg(24, 52, s.RejectStartTLS)) // unavailable
+				continue
+			}
 			s.write(c, id, result(24, 0))
 			tc := tls.Server(c, s.tlsConf)
 			if err := tc.Handshake(); err != nil {
@@ -213,6 +233,15 @@ func (s *Server) serve(c net.Conn) {
 			return
 		}
 	}
+}
+
+// SetSearchResultCode は以降の検索（検索ベースが base で終わるもの。空ならすべて）を
+// エントリなし・結果コード code で失敗させる（0 で元に戻す）。
+// 一時的な障害（busy / unavailable）や権限の誤り（insufficientAccessRights）の再現用。
+func (s *Server) SetSearchResultCode(code int64, base string) {
+	s.mu.Lock()
+	s.searchFailCode, s.searchFailBase = code, base
+	s.mu.Unlock()
 }
 
 func (s *Server) find(dn string) *Entry {
@@ -231,11 +260,14 @@ func (s *Server) write(c net.Conn, id any, op *ber.Packet) {
 	_, _ = c.Write(msg.Bytes())
 }
 
-func result(tag ber.Tag, code int64) *ber.Packet {
+func result(tag ber.Tag, code int64) *ber.Packet { return resultMsg(tag, code, "") }
+
+// resultMsg は diagnosticMessage 付きの LDAPResult。
+func resultMsg(tag ber.Tag, code int64, msg string) *ber.Packet {
 	p := ber.Encode(ber.ClassApplication, ber.TypeConstructed, tag, nil, "Result")
 	p.AppendChild(ber.NewInteger(ber.ClassUniversal, ber.TypePrimitive, ber.TagEnumerated, code, "resultCode"))
 	p.AppendChild(ber.NewString(ber.ClassUniversal, ber.TypePrimitive, ber.TagOctetString, "", "matchedDN"))
-	p.AppendChild(ber.NewString(ber.ClassUniversal, ber.TypePrimitive, ber.TagOctetString, "", "diagnosticMessage"))
+	p.AppendChild(ber.NewString(ber.ClassUniversal, ber.TypePrimitive, ber.TagOctetString, msg, "diagnosticMessage"))
 	return p
 }
 
