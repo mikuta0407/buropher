@@ -845,7 +845,14 @@ func (l *issueLookup) sharedVersionOptions(projectID int64, statuses []string) [
 	if len(statuses) > 0 {
 		var qs []string
 		for _, s := range statuses {
-			qs = append(qs, "'"+strings.ReplaceAll(s, "'", "''")+"'")
+			// SQL に埋め込むのは既知のステータスだけ（設定値をリテラルとして連結しない）
+			switch s {
+			case "open", "locked", "closed":
+				qs = append(qs, "'"+s+"'")
+			}
+		}
+		if len(qs) == 0 {
+			qs = append(qs, "NULL")
 		}
 		where += " AND versions.status IN (" + strings.Join(qs, ",") + ")"
 	}
