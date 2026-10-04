@@ -102,10 +102,27 @@ WHERE id = ?`, kind, cid, a.Filename, attachmentDescriptionArg(a), nullStr(a.Con
 	return err
 }
 
-// UpdateAttachmentDiskfile は disk_directory / disk_filename を変更する（update_columns。重複ファイルの再利用）。
-func UpdateAttachmentDiskfile(ctx context.Context, q db.Queryer, id int64, dir, filename string) error {
-	_, err := q.Exec(ctx, `UPDATE attachments SET disk_directory = ?, disk_filename = ? WHERE id = ?`, nullStr(dir), filename, id)
-	return err
+// ReuseAttachmentDiskfile は重複排除で添付 id のファイルを既存の添付 existingID のファイル（dir, filename）に
+// 向ける。既存の添付がまだそのファイルで存在する場合だけ更新し、更新したら true を返す
+// （比較の間に既存の添付が削除されていたら、削除側がファイルを消すので共有しない）。
+func ReuseAttachmentDiskfile(ctx context.Context, q db.Queryer, id, existingID int64, dir, filename string) (bool, error) {
+	res, err := q.Exec(ctx, `UPDATE attachments SET disk_directory = ?, disk_filename = ? WHERE id = ?
+AND EXISTS (SELECT 1 FROM attachments e WHERE e.id = ? AND e.disk_filename = ?)`, nullStr(dir), filename, id, existingID, filename)
+	if err != nil {
+		return false, err
+	}
+	n, err := res.RowsAffected()
+	return n > 0, err
+}
+
+// LockAttachment は添付の行をロックする（PostgreSQL の SELECT ... FOR UPDATE。Attachment#with_lock）。
+// 行が無ければ false。SQLite では存在の確認だけを行う（書き込みトランザクションは直列化される）。
+func LockAttachment(ctx context.Context, q db.Queryer, id int64) (bool, error) {
+	var ids []int64
+	if err := q.Select(ctx, &ids, `SELECT id FROM attachments WHERE id = ?`+db.ForUpdate(q), id); err != nil {
+		return false, err
+	}
+	return len(ids) > 0, nil
 }
 
 // IncrementAttachmentDownloads は Attachment#increment_download。
