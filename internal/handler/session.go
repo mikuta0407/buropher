@@ -111,6 +111,12 @@ func (a *App) findCurrentUser(c *Req) *domain.User {
 			if err != nil {
 				a.logger().Error("basic authentication", "err", err)
 			}
+			if u != nil && !a.localLoginAllowed(c, u) {
+				// buropher 拡張（セキュリティ）: SSO 必須モードでは管理者以外のパスワードによる認証を
+				// HTTP Basic でも受け付けない（IdP 側で無効化・MFA を強制しても、ローカルのパスワードで
+				// API を使い続けられてしまうため）。API キーによる Basic 認証は下で従来どおり確認する
+				u = nil
+			}
 			if u != nil && u.TwofaActive() {
 				c.RenderError(http.StatusUnauthorized, "HTTP Basic authentication is not allowed. Use API key instead")
 				return nil
