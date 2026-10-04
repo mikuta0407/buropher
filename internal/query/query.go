@@ -268,7 +268,12 @@ func (q *Query) AddFilter(ctx context.Context, field, operator string, values []
 	if values == nil {
 		values = []string{""}
 	}
-	q.Filters.Set(field, Filter{Operator: operator, Values: slices.Clone(values)})
+	// PostgreSQL は文字列中の NUL を受け付けず SQL エラー（500）になるため、フィルタ値からは取り除く
+	vs := make([]string, len(values))
+	for i, v := range values {
+		vs[i] = strings.ReplaceAll(v, "\x00", "")
+	}
+	q.Filters.Set(field, Filter{Operator: operator, Values: vs})
 	return nil
 }
 
