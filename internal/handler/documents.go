@@ -214,7 +214,9 @@ func (a *App) saveDocumentCustomValues(c *Req, tx *db.Tx, f *documentForm, isNew
 
 // documentGroup は index のグループ（@grouped の 1 キー分）。
 type documentGroup struct {
-	Name      string
+	Name string
+	// Day は日付順のときのグループの日付（Redmine 7.0 は format_activity_day で表示する）。
+	Day       time.Time
 	Documents []*domain.Document
 }
 
@@ -317,6 +319,9 @@ func groupDocuments(c *Req, docs []*domain.Document, sortBy string) []documentGr
 	out := make([]documentGroup, len(groups))
 	for i, g := range groups {
 		out[i] = documentGroup{Name: g.name, Documents: g.docs}
+		if sortBy == "date" {
+			out[i].Day, _ = time.Parse("2006-01-02", g.name)
+		}
 	}
 	return out
 }

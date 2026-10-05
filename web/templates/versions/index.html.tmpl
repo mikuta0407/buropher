@@ -14,12 +14,12 @@
   <div id="roadmap">
   {{range $version := .Versions}}
   <article class="version-article {{$version.CSSClasses}}">
-    {{if $version.Editable}}
-      <div class="contextual">
-        {{link_to (sprite_icon "edit" (l "button_edit")) (printf "/versions/%d/edit" $version.ID) (hash "title" (l "button_edit") "class" "icon-only icon-edit")}}
-      </div>
-    {{end}}
-    <header>
+    <header id="version-{{$version.ID}}">
+      {{if $version.Editable}}
+        <div class="contextual">
+          {{link_to (sprite_icon "edit" (l "button_edit")) (printf "/versions/%d/edit" $version.ID) (hash "title" (l "button_edit") "class" "icon-only icon-edit")}}
+        </div>
+      {{end}}
       <h3 class="icon icon-package version inline-flex">
         {{sprite_icon "package"}}
         {{$version.Link}}
