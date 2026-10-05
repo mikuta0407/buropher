@@ -21,7 +21,7 @@ func TestCoreDefinitions(t *testing.T) {
 		last, release string
 	}{
 		{"6.1", 56, 322, "20250611092227", "6.1.0-6.1.5"},
-		{"7.0", 58, 327, "20260520164915", "7.0.0-7.0.1"},
+		{"7.0", 58, 327, "20260520164915", "7.0.0-7.0.2"},
 	}
 	for _, c := range cases {
 		sv := LookupSchema(c.name)

@@ -1,6 +1,6 @@
 # 互換テストハーネス (tools/compat)
 
-本物の Redmine 7.0.1（参照）と buropher（候補）に同じリクエスト列を流し、
+本物の Redmine 7.0.2（参照）と buropher（候補）に同じリクエスト列を流し、
 レスポンスを正規化して unified diff で比較する。設計は `_planning/08_testing.md`。
 
 ```

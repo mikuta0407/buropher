@@ -1,4 +1,4 @@
-// Targets: the reference Redmine 7.0.1 (with test fixtures) and the buropher candidate
+// Targets: the reference Redmine 7.0.2 (with test fixtures) and the buropher candidate
 // (the same fixtures exported and imported). Both are reset to their pristine databases
 // before each scenario so that both sides start from identical state.
 import { execFileSync } from 'node:child_process';

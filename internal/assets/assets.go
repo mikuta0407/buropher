@@ -3,7 +3,7 @@
 
 // Package assets は Propshaft 互換のアセットパイプラインを提供する。
 //
-// web/assets（embed もしくは開発時のディスク）からファイルを集め、Redmine 7.0.1
+// web/assets（embed もしくは開発時のディスク）からファイルを集め、Redmine 7.0.2
 // （Propshaft + Redmine::AssetPath）と同じ論理パスを割り当て、
 // `/assets/<論理パス(拡張子除く)>-<digest>.<ext>` で配信する。
 // CSS/JS 内の url() / sourceMappingURL は Propshaft のコンパイラと同様に書き換える。

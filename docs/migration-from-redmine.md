@@ -16,7 +16,7 @@ described in [export-format.md](export-format.md); the conversion rules in [impo
 
 ## 1. Prerequisites
 
-- **Redmine 6.1.x or 7.0.x** (6.1.0 – 6.1.5 share one database schema, 7.0.0 and 7.0.1 another;
+- **Redmine 6.1.x or 7.0.x** (6.1.0 – 6.1.5 share one database schema, 7.0.0 – 7.0.2 another;
   all are accepted). Older versions: upgrade Redmine to 6.1.x or 7.0.x and run
   `bundle exec rake db:migrate RAILS_ENV=production` first. The exporter compares `schema_migrations`
   with the 322 core migrations of 6.1 and the 327 of 7.0 and refuses any other set.
