@@ -33,6 +33,7 @@
   {{if .CanExport}}
   {{other_format_link "PDF" (printf "/projects/%s/wiki/export.pdf" .ProjectKey)}}
   {{other_format_link "HTML" (printf "/projects/%s/wiki/export.html" .ProjectKey)}}
+  {{other_format_link "ZIP" (printf "/projects/%s/wiki/export.zip" .ProjectKey)}}
   {{end}}
   {{other_format_link "Atom" (wiki_activity_atom_url .ProjectKey .AtomKey false)}}
 {{other_formats_close -}}

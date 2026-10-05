@@ -138,7 +138,12 @@ func (userKind) defaultFilters() *Filters {
 func (userKind) defaultSortCriteria() SortCriteria     { return SortCriteria{{"login", "asc"}} }
 func (userKind) availableDisplayTypes(*Query) []string { return []string{"list"} }
 func (userKind) defaultDisplayType(*Query) string      { return "list" }
-func (userKind) defaultColumnNames(*Query) []string {
+func (userKind) defaultColumnNames(q *Query) []string {
+	// #4507: 表示書式が姓を先にするなら姓の列を名の前に置く（User.lastname_before_firstname?）
+	switch q.env.setting("user_format") {
+	case "lastname_firstname", "lastnamefirstname", "lastname_comma_firstname":
+		return []string{"login", "lastname", "firstname", "mail", "admin", "created_on", "last_login_on"}
+	}
 	return []string{"login", "firstname", "lastname", "mail", "admin", "created_on", "last_login_on"}
 }
 func (userKind) defaultTotalableNames(*Query) []string { return nil }

@@ -62,14 +62,14 @@ $('#sidebar-switch-panel').css('visibility', 'visible');
 <h3>Versions</h3>
 <ul>
   <li>
-    <a href="#1.0">1.0</a>
+    <a href="#version-2">1.0</a>
   </li>
   <li>
-    <a href="#2.0">2.0</a>
+    <a href="#version-3">2.0</a>
   </li>
 </ul>
 <p>
-  <a href="#" onclick="$(&quot;#toggle-completed-versions&quot;).toggleClass(&quot;icon-collapsed icon-expanded&quot;); $(&quot;#completed-versions&quot;).toggle(); toggleExpendCollapseIcon(this);; return false;" id="toggle-completed-versions" class="icon icon-collapsed collapsible"><svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--angle-right"></use></svg><span class="icon-label">Completed versions</span></a>
+  <a href="#" onclick="$(&quot;#toggle-completed-versions&quot;).toggleClass(&quot;icon-collapsed icon-expanded&quot;); $(&quot;#completed-versions&quot;).toggle(); toggleExpandCollapseIcon(this);; return false;" id="toggle-completed-versions" class="icon icon-collapsed collapsible"><svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--angle-right"></use></svg><span class="icon-label">Completed versions</span></a>
   <ul id = "completed-versions" style = "display:none;">
       <li><a title="07/01/2006" href="/versions/1">0.1</a></li>
   </ul>
@@ -92,10 +92,10 @@ $('#sidebar-switch-panel').css('visibility', 'visible');
 
   <div id="roadmap">
   <article class="version-article version-incompleted version-locked">
-      <div class="contextual">
-        <a title="Edit" class="icon-only icon-edit" href="/versions/2/edit"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--edit"></use></svg><span class="icon-label">Edit</span></a>
-      </div>
-    <header>
+    <header id="version-2">
+        <div class="contextual">
+          <a title="Edit" class="icon-only icon-edit" href="/versions/2/edit"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--edit"></use></svg><span class="icon-label">Edit</span></a>
+        </div>
       <h3 class="icon icon-package version inline-flex">
         <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--package"></use></svg>
         <a title="02/04/2026" name="1.0" href="/versions/2">1.0</a>
@@ -130,10 +130,10 @@ $('#sidebar-switch-panel').css('visibility', 'visible');
 </form>    
   </article>
   <article class="version-article version-incompleted version-open">
-      <div class="contextual">
-        <a title="Edit" class="icon-only icon-edit" href="/versions/3/edit"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--edit"></use></svg><span class="icon-label">Edit</span></a>
-      </div>
-    <header>
+    <header id="version-3">
+        <div class="contextual">
+          <a title="Edit" class="icon-only icon-edit" href="/versions/3/edit"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--edit"></use></svg><span class="icon-label">Edit</span></a>
+        </div>
       <h3 class="icon icon-package version inline-flex">
         <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--package"></use></svg>
         <a name="2.0" href="/versions/3">2.0</a>

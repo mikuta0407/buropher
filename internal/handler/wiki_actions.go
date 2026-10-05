@@ -62,6 +62,8 @@ func (a *App) WikiIndex(c *Req) {
 							}
 						}
 						b.Value("version", wikiPageVersionValue(p))
+						// #43569 / #44353: 所属プロジェクトを含める
+						b.Attrs("project", apibuilder.A("id", c.Project.ID, "name", c.Project.Name))
 						b.Value("created_on", p.CreatedAt)
 						b.Value("updated_on", wikiPageUpdatedOnValue(p))
 					})
@@ -1732,11 +1734,11 @@ func (a *App) WikiDestroyVersion(c *Req) {
 
 // ---------------------------------------------------------------- export / preview / add_attachment
 
-// WikiExport は wiki#export（Wiki 全体の HTML / PDF）。
+// WikiExport は wiki#export（Wiki 全体の HTML / PDF / ZIP）。
 func (a *App) WikiExport(c *Req) {
 	format := c.Params().String("format")
 	switch format {
-	case "", "html", "pdf":
+	case "", "html", "pdf", "zip":
 	default:
 		wikiNotAcceptable(c)
 		c.Halt()
@@ -1749,6 +1751,10 @@ func (a *App) WikiExport(c *Req) {
 	}
 	if format == "pdf" {
 		a.wikiExportPDF(c, pages)
+		return
+	}
+	if format == "zip" {
+		a.wikiExportZIP(c, pages)
 		return
 	}
 	type exported struct {

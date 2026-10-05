@@ -82,7 +82,15 @@ func GuessSeparator(content []byte) string {
 	return ","
 }
 
-// GuessWrapper は ['"', "'"].max_by {|q| content.count(q)}。
+// GuessNewline は content.index("\r\n") ? "\r\n" : ''（#41434。空は row_sep: :auto）。
+func GuessNewline(content []byte) string {
+	if bytes.Contains(content, []byte("\r\n")) {
+		return "\r\n"
+	}
+	return ""
+}
+
+// GuessWrapper は ['"', "'"].max_by {|quote_char| content.count(quote_char)}。
 func GuessWrapper(content []byte) string {
 	if bytes.Count(content, []byte("'")) > bytes.Count(content, []byte(`"`)) {
 		return "'"

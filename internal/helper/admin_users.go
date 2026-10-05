@@ -47,6 +47,8 @@ func init() {
 				return langOptionsForSelect(pg(), len(blank) == 0 || blank[0])
 			},
 			"time_zone_options": func() [][2]string { return i18n.TimeZoneOptions() },
+			// users/_form の User.lastname_before_firstname?（#4507: 姓・名の入力欄の順序を表示書式に合わせる）
+			"users_form_lastname_first": func() bool { return lastnameBeforeFirstname(pg().userFormat()) },
 			"render_project_nested_lists": func(projects []*domain.Project, partial string, locals ...map[string]any) (html, error) {
 				return renderProjectNestedLists(r, pg(), projects, partial, locals...)
 			},
@@ -487,3 +489,13 @@ func RolesToS(p *Page, roles []*domain.Role) string {
 }
 
 var _ = fmt.Sprint
+
+// lastnameBeforeFirstname は User.lastname_before_firstname?(formatter)（#4507）。
+// USER_FORMATS の :order で姓・名の両方を含み、姓が先に来る書式なら true。
+func lastnameBeforeFirstname(format string) bool {
+	switch format {
+	case "lastname_firstname", "lastnamefirstname", "lastname_comma_firstname":
+		return true
+	}
+	return false
+}

@@ -435,9 +435,9 @@ func TestImportsController(t *testing.T) {
 
 	// set_default_settings: 区切り文字・囲み文字の推定、利用者の言語の日付書式・文字コード
 	for _, c := range []struct{ lang, file, want string }{
-		{"fr", "import_issues_single_quotation.csv", `"date_format":"%d/%m/%Y","encoding":"UTF-8","notifications":"0","separator":";","wrapper":"'"`},
-		{"ja", "import_iso8859-1.csv", `"date_format":"%Y/%m/%d","encoding":"CP932","notifications":"0","separator":";","wrapper":"\""`},
-		{"en", "import_dates.csv", `"date_format":"%m/%d/%Y","encoding":"UTF-8","notifications":"0","separator":";","wrapper":"\""`},
+		{"fr", "import_issues_single_quotation.csv", `"date_format":"%d/%m/%Y","encoding":"UTF-8","newline":"","notifications":"0","separator":";","wrapper":"'"`},
+		{"ja", "import_iso8859-1.csv", `"date_format":"%Y/%m/%d","encoding":"CP932","newline":"","notifications":"0","separator":";","wrapper":"\""`},
+		{"en", "import_dates.csv", `"date_format":"%m/%d/%Y","encoding":"UTF-8","newline":"","notifications":"0","separator":";","wrapper":"\""`},
 	} {
 		if _, err := d.Exec(context.Background(), `UPDATE user_accounts SET language = ? WHERE principal_id = 2`, c.lang); err != nil {
 			t.Fatal(err)
@@ -502,6 +502,17 @@ func TestImportsController(t *testing.T) {
 	if _, body := importSettings(t, jsmith, ts, unclosed, map[string]string{"separator": ";", "wrapper": `"`, "encoding": "US-ASCII"}, nil); !strings.Contains(body, "The file is not a CSV file or does not match the settings below (Unclosed quoted field in line 2.)") {
 		t.Error("malformed CSV error not shown")
 	}
+	// test_post_settings_with_crlf_and_newline_in_quoted_header_should_not_fail（#41434）:
+	// 先頭行の引用符内に LF があっても、CRLF のファイルなら row_sep を "\r\n" に固定して読める
+	crlf := importUpload(t, jsmith, ts, "IssueImport", "import_crlf_with_newline_in_quoted_header.csv", "")
+	if s := queryString(t, d, `SELECT settings FROM imports WHERE filename = ?`, crlf); !strings.Contains(s, `"newline":"\r\n"`) {
+		t.Errorf("crlf newline setting = %s", s)
+	}
+	res, _ = importSettings(t, jsmith, ts, crlf, map[string]string{"separator": ",", "wrapper": `"`, "encoding": "UTF-8"}, nil)
+	expectRedirect(t, res, "/imports/"+crlf+"/mapping")
+	if n := queryInt(t, d, `SELECT total_items FROM imports WHERE filename = ?`, crlf); n != 1 {
+		t.Errorf("crlf total_items = %d", n)
+	}
 	nodata := importUpload(t, jsmith, ts, "IssueImport", "import_issues_no_data_row.csv", "")
 	if _, body := importSettings(t, jsmith, ts, nodata, map[string]string{"separator": ";", "wrapper": `"`, "encoding": "ISO-8859-1"}, nil); !strings.Contains(body, "The file does not contain any data") {
 		t.Error("no data error not shown")
@@ -560,6 +571,10 @@ func TestImportsController(t *testing.T) {
 	_, body = get(t, jsmith, ts.URL+"/imports/"+errs)
 	if !strings.Contains(body, `<table id="unsaved-items" class="list">`) || strings.Count(body, "Subject cannot be blank") != 3 {
 		t.Error("show with errors mismatch")
+	}
+	// #43363: エラー件数は flash error（警告アイコン付き）で表示する
+	if !regexp.MustCompile(`<div class="flash error">\s*<svg[^>]*>\s*<use href="[^"]*#icon--warning"></use>\s*</svg>\s*3 out of \d+ items could not be imported\s*</div>`).MatchString(body) {
+		t.Error("import errors are not shown as flash error")
 	}
 	// エラーメッセージは CSV の値を含みうるので HTML エスケープする（改行は <br /> のまま）
 	if _, err := d.Exec(context.Background(), `UPDATE import_items SET message = ? WHERE obj_id IS NULL AND import_id = (SELECT id FROM imports WHERE filename = ?)`,
