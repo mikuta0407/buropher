@@ -71,6 +71,37 @@ func TestAttachmentsDownloadAllRequiresViewFiles(t *testing.T) {
 	}
 }
 
+// チケットの CSV インポートは import_issues の無いプロジェクトに取り込まず、そこにカテゴリ・バージョンも作らない
+// （チケットのプロジェクトは import.project に揃える）。
+func TestIssueImportProjectWithoutImportPermission(t *testing.T) {
+	ts, d := newFixtureServer(t)
+	ctx := context.Background()
+	// jsmith は project 2 で Developer（add_issues あり、import_issues なし）。カテゴリ・バージョンの管理も外す
+	if _, err := d.Exec(ctx, `DELETE FROM role_permissions WHERE role_id = 2 AND permission IN ('manage_categories', 'manage_versions', 'import_issues')`); err != nil {
+		t.Fatal(err)
+	}
+	jsmith := login(t, ts, "jsmith", "jsmith")
+	v0 := queryInt(t, d, `SELECT MAX(id) FROM versions`)
+	c0 := queryInt(t, d, `SELECT MAX(id) FROM issue_categories`)
+	_, ids := runImport(t, jsmith, ts, d, "IssueImport", "import_issues.csv", "issues", utf8Semicolon,
+		merge(issueImportMapping, map[string]string{"project_id": "2", "fixed_version": "9", "create_versions": "1",
+			"category": "10", "create_categories": "1"}))
+	if len(ids) != 3 {
+		t.Fatalf("issues = %d", len(ids))
+	}
+	for _, id := range ids {
+		if p := queryInt(t, d, `SELECT project_id FROM issues WHERE id = ?`, id); p == 2 {
+			t.Errorf("issue %d imported into a project without import_issues", id)
+		}
+	}
+	if n := queryInt(t, d, `SELECT COUNT(*) FROM versions WHERE id > ? AND project_id = 2`, v0); n != 0 {
+		t.Errorf("version created in project 2 without manage_versions")
+	}
+	if n := queryInt(t, d, `SELECT COUNT(*) FROM issue_categories WHERE id > ? AND project_id = 2`, c0); n != 0 {
+		t.Errorf("category created in project 2 without manage_categories")
+	}
+}
+
 // チケット削除で工数を付け替える先に、見えないチケット（非公開）は指定できない。
 func TestIssueDestroyReassignToInvisible(t *testing.T) {
 	ts, d := newFixtureServer(t)

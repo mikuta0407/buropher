@@ -238,8 +238,15 @@ func (m *importModel) issueBuildAndSave(ctx context.Context, row csvimport.Row, 
 			}
 		}
 	}
+	// チケットのプロジェクトは import.project に揃える（権限・カテゴリ・バージョンの作成可否と同じプロジェクト）
+	var importProjectID any
+	if ip, err := m.issueProject(); err != nil {
+		return importResult{}, err
+	} else if ip != nil {
+		importProjectID = strconv.FormatInt(ip.ID, 10)
+	}
 	attrs := issues.Params{
-		"project_id":  m.mappingValue("project_id"),
+		"project_id":  importProjectID,
 		"tracker_id":  trackerID,
 		"subject":     strPtrAny(m.rowValue(row, "subject")),
 		"description": strPtrAny(m.rowValue(row, "description")),
