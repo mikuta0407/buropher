@@ -5,6 +5,8 @@ package redmine
 
 import (
 	"database/sql"
+	"fmt"
+	"strconv"
 	"strings"
 	"sync/atomic"
 	"testing"
@@ -68,5 +70,59 @@ func TestChildPagesParentCycle(t *testing.T) {
 		if !strings.Contains(out, "pages-hierarchy") {
 			t.Errorf("%s: %q", src, out)
 		}
+	}
+}
+
+// fanoutStore は P0..P3 の各ページが次のページを fan 回 include する Wiki（展開数は fan^3）。
+type fanoutStore struct {
+	*DBStore
+	fan   int
+	texts atomic.Int64
+}
+
+func (s *fanoutStore) FindWikiPage(w *Wiki, title string) (*WikiPage, error) {
+	n, err := strconv.Atoi(strings.TrimPrefix(title, "P"))
+	if err != nil || !strings.HasPrefix(title, "P") {
+		return s.DBStore.FindWikiPage(w, title)
+	}
+	p, err := s.DBStore.FindWikiPage(w, "Another_page")
+	if p == nil || err != nil {
+		return p, err
+	}
+	cp := *p
+	cp.ID = int64(8000 + n)
+	cp.Title = title
+	return &cp, nil
+}
+
+func (s *fanoutStore) WikiPageText(id int64) (string, bool, error) {
+	s.texts.Add(1)
+	n := int(id - 8000)
+	if n >= 3 {
+		return "leaf", true, nil
+	}
+	return strings.Repeat(fmt.Sprintf("{{include(P%d)}}\n\n", n+1), s.fan), true, nil
+}
+
+// TestIncludeFanoutIsBounded は同じページを何度も include するページを入れ子にしても、
+// 1 回の描画で展開する include の数が上限で止まること（指数的な描画による DoS の防止）。
+func TestIncludeFanoutIsBounded(t *testing.T) {
+	e := newTestEnv(t)
+	r, st := e.renderer(t, "admin", "ecookbook", "textile")
+	fs := &fanoutStore{DBStore: st, fan: 30}
+	r.Store = fs
+	out := string(r.Textilizable("{{include(P0)}}", Options{}))
+	if n := fs.texts.Load(); n > 100 {
+		t.Errorf("included %d pages in one render", n)
+	}
+	if !strings.Contains(out, "Too many wiki pages are included") {
+		t.Error("limit error is not shown")
+	}
+	// 次の最上位の描画では数え直す
+	fs.texts.Store(0)
+	fs.fan = 2
+	out = string(r.Textilizable("{{include(P0)}}", Options{}))
+	if strings.Contains(out, "Too many") || fs.texts.Load() != 1+2+4+8 {
+		t.Errorf("small fan-out: %d pages, %q", fs.texts.Load(), out)
 	}
 }

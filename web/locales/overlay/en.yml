@@ -49,6 +49,8 @@ en:
       label_sync_last_at: "Last synchronization"
       notice_sync: "Synchronization completed (%{value})."
       error_sync: "Synchronization failed: %{value}"
+    wiki:
+      error_too_many_inclusions: "Too many wiki pages are included (more than %{count})"
     sso:
       label_sso: "Single sign-on"
       button_login_with: "Log in with %{provider}"

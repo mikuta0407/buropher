@@ -539,6 +539,9 @@ func macroRecentPages(c *MacroContext) (any, error) {
 	return template.HTML(b.String()), nil
 }
 
+// MaxIncludesPerRender は 1 つのテキストの描画で展開する {{include}} の上限（入れ子を含む合計）。
+const MaxIncludesPerRender = 100
+
 func macroInclude(c *MacroContext) (any, error) {
 	r := c.R
 	project := c.currentProject()
@@ -555,6 +558,15 @@ func macroInclude(c *MacroContext) (any, error) {
 			return nil, errors.New(r.l("error_circular_inclusion"))
 		}
 	}
+	// buropher 独自（セキュリティ）: 循環の検査だけでは、同じページを何度も include するページを入れ子にすると
+	// 展開数が指数的に増える（N 個の include を k 段で N^k 回の描画）。最上位の描画ごとに展開数を制限する
+	if len(r.includedWikiPages) == 0 {
+		r.includeCount = 0
+	}
+	if r.includeCount >= MaxIncludesPerRender {
+		return nil, errors.New(r.l("buropher.wiki.error_too_many_inclusions", map[string]any{"count": MaxIncludesPerRender}))
+	}
+	r.includeCount++
 	r.includedWikiPages = append(r.includedWikiPages, page.ID)
 	text, _, err := r.Store.WikiPageText(page.ID)
 	r.logErr("wiki text", err)

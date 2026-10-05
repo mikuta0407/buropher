@@ -47,6 +47,8 @@ ja:
       label_sync_last_at: "最後の同期"
       notice_sync: "同期しました（%{value}）。"
       error_sync: "同期に失敗しました: %{value}"
+    wiki:
+      error_too_many_inclusions: "取り込む Wiki ページが多すぎます（%{count} 件を超えています）"
     sso:
       label_sso: "シングルサインオン"
       button_login_with: "%{provider} でログイン"
