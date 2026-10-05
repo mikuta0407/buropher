@@ -4,7 +4,6 @@
 package handler
 
 import (
-	"errors"
 	"net/http"
 	"strconv"
 	"strings"
@@ -285,34 +284,33 @@ func assignMessage(c *Req, f *messageForm, key string) {
 	}
 }
 
+// messageBoardPostable は board へ移動・投稿してよいか。他プロジェクトのフォーラムは移動先の
+// プロジェクトでも edit_messages が要る（Redmine は board_id の safe_attribute を元のプロジェクトの
+// 権限だけで許し、権限の無い非公開プロジェクトのフォーラムへトピックを移動・投稿できる）。
+func (a *App) messageBoardPostable(c *Req, b *domain.Board) bool {
+	if c.Project != nil && b.ProjectID == c.Project.ID {
+		return true
+	}
+	p, err := repository.GetProject(c.Ctx(), a.DB, b.ProjectID)
+	if err != nil {
+		return false
+	}
+	return c.AllowedTo(domain.Perm("edit_messages"), p)
+}
+
 // validateMessage は Message の検証（board・subject・content 必須、subject 255 文字以内、
 // ロックされたトピックへの返信不可）。
 func (a *App) validateMessage(c *Req, f *messageForm, topic *domain.Message, res *attachments.SaveResult) error {
 	e := f.errs
 	m := f.Message
 	b, err := repository.GetBoard(c.Ctx(), a.DB, m.BoardID)
-	var bp *domain.Project
-	if err == nil {
-		bp = c.Project
-		if c.Project == nil || b.ProjectID != c.Project.ID {
-			// 他プロジェクトのフォーラムへの移動・投稿は、移動先のプロジェクトでも edit_messages が要る
-			// （Redmine は board_id の safe_attribute を元のプロジェクトの権限だけで許し、権限の無い
-			// 非公開プロジェクトのフォーラムへトピックを移動・投稿できる）
-			bp, err = repository.GetProject(c.Ctx(), a.DB, b.ProjectID)
-			if err != nil && !errors.Is(err, repository.ErrNotFound) {
-				return err
-			}
-			if err == nil && !c.AllowedTo(domain.Perm("edit_messages"), bp) {
-				err = repository.ErrNotFound
-			}
-		}
-	} else if !errors.Is(err, repository.ErrNotFound) {
-		return err
+	if err == nil && !a.messageBoardPostable(c, b) {
+		err = repository.ErrNotFound
 	}
 	if err != nil {
 		e.Add("board", "blank")
 	} else if m.Board == nil || m.Board.ID != b.ID {
-		b.Project = bp
+		b.Project = c.Project
 		m.Board = b
 	}
 	if httpx.IsBlank(m.Subject) {
