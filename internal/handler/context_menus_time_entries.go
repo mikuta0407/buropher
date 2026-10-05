@@ -95,16 +95,22 @@ func (a *App) ContextMenusTimeEntries(c *Req) {
 		a.internalError(c, "time entries", err)
 		return
 	}
-	if len(rs) == 0 {
-		c.Render404("")
-		return
-	}
 	env := a.teEnv(c)
 	var entries []*timelog.Entry
 	var projects []*domain.Project
 	editable := true
 	for _, r := range rs {
 		t := timelog.FromRecord(r)
+		// 本家は TimeEntry.where(:id => ...) で可視性を見ないため、見えない工数の存在とそのプロジェクトの
+		// 作業分類名が分かった。見えない工数は無いものとして扱う
+		vis, err := env.Visible(ctx, t, c.User)
+		if err != nil {
+			a.internalError(c, "time entry visible", err)
+			return
+		}
+		if !vis {
+			continue
+		}
 		entries = append(entries, t)
 		p, err := env.Project(ctx, t.ProjectID)
 		if err != nil {
@@ -120,6 +126,10 @@ func (a *App) ContextMenusTimeEntries(c *Req) {
 			return
 		}
 		editable = editable && ok
+	}
+	if len(entries) == 0 {
+		c.Render404("")
+		return
 	}
 	if len(projects) == 1 {
 		c.Project = projects[0]

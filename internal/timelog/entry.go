@@ -142,6 +142,8 @@ type Entry struct {
 	orig           *domain.TimeEntry
 	invalidIssueID bool
 	invalidUserID  bool
+	// invalidProjectID は既存の工数を log_time の無いプロジェクトへ移そうとした。
+	invalidProjectID bool
 
 	// Errors は検証エラー。
 	Errors *validation.Errors
@@ -822,6 +824,15 @@ func (e *Env) SafeAssign(ctx context.Context, t *Entry, attrs Attrs, user *domai
 	if err != nil {
 		return err
 	}
+	// 既存の工数の project_id を変更するときは、移動先にも log_time を要求する
+	t.invalidProjectID = false
+	if t.orig != nil && t.ProjectIDChanged() && p != nil {
+		ok, err := e.allowed(ctx, user, "log_time", p)
+		if err != nil {
+			return err
+		}
+		t.invalidProjectID = !ok
+	}
 	if t.UserIDChanged() && !eqID(t.UserID, t.AuthorID) {
 		ok, err := e.allowed(ctx, user, "log_time_for_other_users", p)
 		if err != nil {
@@ -971,7 +982,7 @@ func (e *Env) Validate(ctx context.Context, t *Entry) error {
 			}
 		}
 	}
-	if project == nil {
+	if project == nil || t.invalidProjectID {
 		errs.Add("project_id", "invalid")
 	}
 	if t.invalidUserID || (t.UserIDChanged() && !eqID(t.UserID, t.AuthorID) && !e.userAssignable(ctx, t)) {

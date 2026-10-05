@@ -238,8 +238,15 @@ func (m *importModel) issueBuildAndSave(ctx context.Context, row csvimport.Row, 
 			}
 		}
 	}
+	// チケットのプロジェクトは import.project に揃える（権限・カテゴリ・バージョンの作成可否と同じプロジェクト）
+	var importProjectID any
+	if ip, err := m.issueProject(); err != nil {
+		return importResult{}, err
+	} else if ip != nil {
+		importProjectID = strconv.FormatInt(ip.ID, 10)
+	}
 	attrs := issues.Params{
-		"project_id":  m.mappingValue("project_id"),
+		"project_id":  importProjectID,
 		"tracker_id":  trackerID,
 		"subject":     strPtrAny(m.rowValue(row, "subject")),
 		"description": strPtrAny(m.rowValue(row, "description")),
@@ -620,6 +627,16 @@ func (m *importModel) issueCreateRelation(ctx context.Context, fromID, toID int6
 	if toID != 0 {
 		if r.To, err = env.Find(ctx, toID); err != nil {
 			return false, err
+		}
+		// 見えないチケットは無いものとして扱う（関連は検証エラーで保存されない）
+		if r.To != nil {
+			vis, err := env.Visible(ctx, r.To, m.user)
+			if err != nil {
+				return false, err
+			}
+			if !vis {
+				r.To = nil
+			}
 		}
 	}
 	if s := importToS(delay); s != "" {

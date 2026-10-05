@@ -654,12 +654,22 @@ func (a *App) findDownloadableAttachments(c *Req) {
 	}
 	var readable []*domain.Attachment
 	var total int64
+	denied := false
 	for _, att := range list {
+		// 個別のダウンロードと同じく attachment.visible? も確認する
+		if !c.AttachmentVisible(att) {
+			denied = true
+			continue
+		}
 		// attachments.select(&:readable?)
 		if a.AttachmentStore.Readable(att) {
 			readable = append(readable, att)
 			total += att.Filesize
 		}
+	}
+	if denied && len(readable) == 0 {
+		c.DenyAccess()
+		return
 	}
 	max := int64(a.Settings.Int("bulk_download_max_size")) * 1024
 	if total > max {

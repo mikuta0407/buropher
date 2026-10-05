@@ -1016,6 +1016,20 @@ func (a *App) IssuesDestroy(c *Req) {
 		case issues.TimeEntriesDestroy, issues.TimeEntriesNullify:
 		case issues.TimeEntriesReassign:
 			opts.ReassignToID = customfield.RubyToI(p.String("reassign_to_id"))
+			// 見えないチケットは「見つからない」扱いにする
+			if t, err := e.Find(ctx, opts.ReassignToID); err != nil {
+				a.internalError(c, "issue destroy", err)
+				return
+			} else if t != nil {
+				ok, err := e.Visible(ctx, t, c.User)
+				if err != nil {
+					a.internalError(c, "issue destroy", err)
+					return
+				}
+				if !ok {
+					opts.ReassignToID = 0
+				}
+			}
 		default:
 			if !api {
 				a.renderIssuesDestroy(c, rows, hours)
