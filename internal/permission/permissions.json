@@ -181,6 +181,8 @@
       "versions/index",
       "versions/show",
       "versions/status_by",
+      "issue_categories/index",
+      "issue_categories/show",
       "journals/index",
       "journals/diff",
       "queries/index",
