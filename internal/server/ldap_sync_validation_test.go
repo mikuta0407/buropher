@@ -75,3 +75,35 @@ func TestLDAPSyncValidatesDirectoryAttributes(t *testing.T) {
 		t.Fatalf("denied domain saved: %q", mail)
 	}
 }
+
+// memberOf モードでも group_base_dn の外にある同じ CN のグループは対応表に一致させない
+// （ディレクトリの別の OU にグループを作れるユーザーが、対応する buropher のグループに入れた）。
+func TestLDAPMemberOfRespectsGroupBase(t *testing.T) {
+	ts, d := newFixtureServer(t)
+	srv := newLDAPGroupFixture(t, d, true, `,"group_mode":"memberof","group_base_dn":"`+ldapGroupBase+`"`)
+	ctx := context.Background()
+	if _, err := d.Exec(ctx, `UPDATE user_accounts SET auth_source_id = 1 WHERE principal_id = 2`); err != nil {
+		t.Fatal(err)
+	}
+	for _, e := range srv.Entries {
+		if strings.HasPrefix(e.DN, "uid=jsmith,") {
+			e.Attrs["memberOf"] = []string{"cn=devs,ou=selfservice,dc=redmine,dc=org"}
+		}
+		if strings.HasPrefix(e.DN, "uid=example1,") {
+			e.Attrs["memberOf"] = []string{"CN=Staff," + strings.ToUpper(ldapGroupBase)}
+		}
+	}
+	if _, res, _ := tryLogin(t, ts.URL, "jsmith", "ldappw"); res.StatusCode != 302 {
+		t.Fatalf("login: %d", res.StatusCode)
+	}
+	if got := userGroupIDs(t, d, "jsmith"); len(got) != 0 {
+		t.Errorf("jsmith groups = %v, want none (group outside group_base_dn)", got)
+	}
+	// 検索ベースの下のグループは従来どおり一致する（DN の大文字小文字は区別しない）
+	if _, res, _ := tryLogin(t, ts.URL, "example1", "123456"); res.StatusCode != 302 {
+		t.Fatalf("onthefly login: %d", res.StatusCode)
+	}
+	if got := userGroupIDs(t, d, "example1"); len(got) != 1 || got[0] != 11 {
+		t.Errorf("example1 groups = %v, want [11]", got)
+	}
+}

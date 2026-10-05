@@ -65,7 +65,8 @@ buropher の LDAP 認証は Redmine の「LDAP 認証」（AuthSourceLdap）と�
 - **グループの所属**:
   - 同期しない（既定）
   - ユーザーの memberOf 属性: ユーザーのエントリの `memberOf`（属性名は「memberOf 属性」で変更可）を使う。
-    OpenLDAP では `memberof` オーバーレイが必要。
+    OpenLDAP では `memberof` オーバーレイが必要。「グループのベース DN」を指定すると、その下のグループだけを使う
+    （対応表を CN で書く場合は、ユーザーがグループを作れる OU と区別するために指定することを推奨）。
   - グループを検索: 「グループのベース DN」（空ならベース DN）以下を `(&<グループのフィルタ>(<メンバー属性>=<値>))`
     で検索する。メンバー属性が `member` / `uniqueMember` なら値はユーザーの DN、`memberUid`（posixGroup）なら
     ログイン名。
