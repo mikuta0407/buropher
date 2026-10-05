@@ -220,7 +220,7 @@ $('#sidebar-switch-panel').css('visibility', 'visible');
 
 
 
-    <div id="watchers">
+    <div id="watchers" data-watchable-id="2">
       <div class="contextual">
 <a data-remote="true" data-method="get" href="/watchers/new?object_id=2&amp;object_type=issue">Add</a>
 </div>
@@ -276,8 +276,8 @@ $('#sidebar-switch-panel').css('visibility', 'visible');
         </p>
 
 <div class="attributes">
-<div class="splitcontent"><div class="splitcontentleft"><div class="status attribute"><div class="label">Status:</div><div class="value">Assigned</div></div><div class="priority attribute"><div class="label">Priority:</div><div class="value">Normal</div></div><div class="assigned-to attribute"><div class="label">Assignee:</div><div class="value"><a class="user active" href="/users/3">Dave Lopper</a></div></div><div class="category attribute"><div class="label">Category:</div><div class="value">-</div></div><div class="fixed-version attribute"><div class="label">Target version:</div><div class="value"><a title="02/04/2026" href="/versions/2">1.0</a></div></div></div><div class="splitcontentleft"><div class="start-date attribute"><div class="label">Start date:</div><div class="value">01/13/2026</div></div><div class="due-date attribute"><div class="label">Due date:</div><div class="value"></div></div><div class="progress attribute"><div class="label">% Done:</div><div class="value"><table class="progress progress-30"><tr><td style="width: 30%;" class="closed" title="30%"></td><td style="width: 70%;" class="todo"></td></tr></table><p class="percent">30%</p></div></div><div class="estimated-hours attribute"><div class="label">Estimated time:</div><div class="value">0:30 h</div></div></div></div>
-<div class="splitcontent"><div class="splitcontentleft"><div class="float_cf cf_6 attribute"><div class="label"><span>Float field</span>:</div><div class="value">2.05</div></div></div><div class="splitcontentleft"><div class="date_cf cf_8 attribute"><div class="label"><span>Custom date</span>:</div><div class="value"></div></div></div></div>
+<div class="splitcontent"><div class="splitcontentleft"><div class="status attribute"><div class="label">Status:</div><div class="value">Assigned</div></div><div class="priority attribute"><div class="label">Priority:</div><div class="value">Normal</div></div><div class="assigned-to attribute"><div class="label">Assignee:</div><div class="value"><a class="user active" href="/users/3">Dave Lopper</a></div></div><div class="category attribute"><div class="label">Category:</div><div class="value">-</div></div><div class="fixed-version attribute"><div class="label">Target version:</div><div class="value"><a title="02/04/2026" href="/versions/2">1.0</a></div></div></div><div class="splitcontentright"><div class="start-date attribute"><div class="label">Start date:</div><div class="value">01/13/2026</div></div><div class="due-date attribute"><div class="label">Due date:</div><div class="value"></div></div><div class="progress attribute"><div class="label">% Done:</div><div class="value"><table class="progress progress-30"><tr><td style="width: 30%;" class="closed" title="30%"></td><td style="width: 70%;" class="todo"></td></tr></table><p class="percent">30%</p></div></div><div class="estimated-hours attribute"><div class="label">Estimated time:</div><div class="value">0:30 h</div></div></div></div>
+<div class="splitcontent"><div class="splitcontentleft"><div class="float_cf cf_6 attribute"><div class="label"><span>Float field</span>:</div><div class="value">2.05</div></div></div><div class="splitcontentright"><div class="date_cf cf_8 attribute"><div class="label"><span>Custom date</span>:</div><div class="value"></div></div></div></div>
 
 </div>
 
@@ -338,7 +338,7 @@ $('#sidebar-switch-panel').css('visibility', 'visible');
 <hr />
 <div id="issue_tree" class="">
   <div class="contextual">
-  <a href="/projects/ecookbook/issues/new?back_url=%2Fissues%2F2&amp;issue%5Bparent_issue_id%5D=2&amp;issue%5Btracker_id%5D=2">Add</a>
+  <a class="icon icon-add" href="/projects/ecookbook/issues/new?back_url=%2Fissues%2F2&amp;issue%5Bparent_issue_id%5D=2&amp;issue%5Btracker_id%5D=2"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--add"></use></svg><span class="icon-label">Add</span></a>
 </div>
 
 <p>
@@ -355,7 +355,7 @@ $('#sidebar-switch-panel').css('visibility', 'visible');
 <hr />
 <div id="relations" class="">
   <div class="contextual">
-  <a onclick="$(&#39;#new-relation-form&#39;).toggle(); $(&#39;#relation_issue_to_id:visible&#39;).focus(); return false;" href="#">Add</a>
+  <a class="icon icon-link-add" onclick="$(&#39;#new-relation-form&#39;).toggle(); $(&#39;#relation_issue_to_id:visible&#39;).focus(); return false;" href="#"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--link-add"></use></svg><span class="icon-label">Add</span></a>
 </div>
 
 <p>

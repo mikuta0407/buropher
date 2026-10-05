@@ -220,7 +220,7 @@ $('#sidebar-switch-panel').css('visibility', 'visible');
 
 
 
-    <div id="watchers">
+    <div id="watchers" data-watchable-id="3">
       <div class="contextual">
 <a data-remote="true" data-method="get" href="/watchers/new?object_id=3&amp;object_type=issue">Add</a>
 </div>
@@ -275,8 +275,8 @@ $('#sidebar-switch-panel').css('visibility', 'visible');
         </p>
 
 <div class="attributes">
-<div class="splitcontent"><div class="splitcontentleft"><div class="status attribute"><div class="label">Status:</div><div class="value">New</div></div><div class="priority attribute"><div class="label">Priority:</div><div class="value">Low</div></div><div class="assigned-to attribute"><div class="label">Assignee:</div><div class="value"><a class="user active" href="/users/3">Dave Lopper</a></div></div><div class="category attribute"><div class="label">Category:</div><div class="value">-</div></div><div class="fixed-version attribute"><div class="label">Target version:</div><div class="value">-</div></div></div><div class="splitcontentleft"><div class="start-date attribute"><div class="label">Start date:</div><div class="value">12/31/2025</div></div><div class="due-date attribute"><div class="label">Due date:</div><div class="value">01/10/2026 (5 days late)</div></div><div class="progress attribute"><div class="label">% Done:</div><div class="value"><table class="progress progress-0"><tr><td style="width: 100%;" class="todo"></td></tr></table><p class="percent">0%</p></div></div><div class="estimated-hours attribute"><div class="label">Estimated time:</div><div class="value">1:00 h</div></div><div class="spent-time attribute"><div class="label">Spent time:</div><div class="value"><a href="/projects/ecookbook/time_entries?issue_id=~3">1:00 h</a></div></div></div></div>
-<div class="splitcontent"><div class="splitcontentleft"><div class="string_cf cf_2 attribute"><div class="label"><span>Searchable field</span>:</div><div class="value">125</div></div><div class="list_cf cf_1 attribute"><div class="label"><span title="Select one of the databases" class="field-description">Database</span>:</div><div class="value">MySQL</div></div><div class="float_cf cf_6 attribute"><div class="label"><span>Float field</span>:</div><div class="value">11.65</div></div></div><div class="splitcontentleft"><div class="date_cf cf_8 attribute"><div class="label"><span>Custom date</span>:</div><div class="value"></div></div><div class="date_cf cf_9 attribute"><div class="label"><span>Project 1 cf</span>:</div><div class="value"></div></div></div></div>
+<div class="splitcontent"><div class="splitcontentleft"><div class="status attribute"><div class="label">Status:</div><div class="value">New</div></div><div class="priority attribute"><div class="label">Priority:</div><div class="value">Low</div></div><div class="assigned-to attribute"><div class="label">Assignee:</div><div class="value"><a class="user active" href="/users/3">Dave Lopper</a></div></div><div class="category attribute"><div class="label">Category:</div><div class="value">-</div></div><div class="fixed-version attribute"><div class="label">Target version:</div><div class="value">-</div></div></div><div class="splitcontentright"><div class="start-date attribute"><div class="label">Start date:</div><div class="value">12/31/2025</div></div><div class="due-date attribute"><div class="label">Due date:</div><div class="value">01/10/2026 (5 days late)</div></div><div class="progress attribute"><div class="label">% Done:</div><div class="value"><table class="progress progress-0"><tr><td style="width: 100%;" class="todo"></td></tr></table><p class="percent">0%</p></div></div><div class="estimated-hours attribute"><div class="label">Estimated time:</div><div class="value">1:00 h</div></div><div class="spent-time attribute"><div class="label">Spent time:</div><div class="value"><a href="/projects/ecookbook/time_entries?issue_id=~3">1:00 h</a></div></div></div></div>
+<div class="splitcontent"><div class="splitcontentleft"><div class="string_cf cf_2 attribute"><div class="label"><span>Searchable field</span>:</div><div class="value">125</div></div><div class="list_cf cf_1 attribute"><div class="label"><span title="Select one of the databases" class="field-description">Database</span>:</div><div class="value">MySQL</div></div><div class="float_cf cf_6 attribute"><div class="label"><span>Float field</span>:</div><div class="value">11.65</div></div></div><div class="splitcontentright"><div class="date_cf cf_8 attribute"><div class="label"><span>Custom date</span>:</div><div class="value"></div></div><div class="date_cf cf_9 attribute"><div class="label"><span>Project 1 cf</span>:</div><div class="value"></div></div></div></div>
 
 </div>
 
@@ -358,7 +358,7 @@ $('#sidebar-switch-panel').css('visibility', 'visible');
 <hr />
 <div id="issue_tree" class="">
   <div class="contextual">
-  <a href="/projects/ecookbook/issues/new?back_url=%2Fissues%2F3&amp;issue%5Bparent_issue_id%5D=3&amp;issue%5Btracker_id%5D=1">Add</a>
+  <a class="icon icon-add" href="/projects/ecookbook/issues/new?back_url=%2Fissues%2F3&amp;issue%5Bparent_issue_id%5D=3&amp;issue%5Btracker_id%5D=1"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--add"></use></svg><span class="icon-label">Add</span></a>
 </div>
 
 <p>
@@ -375,7 +375,7 @@ $('#sidebar-switch-panel').css('visibility', 'visible');
 <hr />
 <div id="relations" class="">
   <div class="contextual">
-  <a onclick="$(&#39;#new-relation-form&#39;).toggle(); $(&#39;#relation_issue_to_id:visible&#39;).focus(); return false;" href="#">Add</a>
+  <a class="icon icon-link-add" onclick="$(&#39;#new-relation-form&#39;).toggle(); $(&#39;#relation_issue_to_id:visible&#39;).focus(); return false;" href="#"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--link-add"></use></svg><span class="icon-label">Add</span></a>
 </div>
 
 <p>
