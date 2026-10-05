@@ -507,17 +507,22 @@ func (a *App) TimelogCreate(c *Req) {
 	if p.Present("continue") {
 		q := rails.NewHash()
 		te := rails.NewHash()
-		te.Set("project_id", p.String("time_entry", "project_id"))
+		// params[:time_entry][:project_id] / @time_entry.issue_id / activity_id（nil は Rails 8 の to_query でキーだけになる）
+		if v, ok := p.Lookup("time_entry", "project_id"); ok {
+			te.Set("project_id", rails.ToS(v))
+		} else {
+			te.Set("project_id", nil)
+		}
 		if t.IssueID != nil {
 			te.Set("issue_id", *t.IssueID)
 		} else {
-			te.Set("issue_id", "")
+			te.Set("issue_id", nil)
 		}
 		te.Set("spent_on", t.SpentOn.Format("2006-01-02"))
 		if t.ActivityID != nil {
 			te.Set("activity_id", *t.ActivityID)
 		} else {
-			te.Set("activity_id", "")
+			te.Set("activity_id", nil)
 		}
 		var path string
 		switch {

@@ -251,7 +251,7 @@ func toQueryValue(v any, key string) []string {
 	if ents := queryEntries(v); ents != nil || isHashLike(v) {
 		var out []string
 		for _, kv := range ents {
-			// Hash#to_query は nil の値を含める（"key%5Bsub%5D="）が、空のハッシュは何も出さない
+			// Hash#to_query は nil の値を含める（Rails 8 では "key%5Bsub%5D"）が、空のハッシュは何も出さない
 			out = append(out, toQueryValue(kv.v, key+"["+kv.k+"]")...)
 		}
 		if len(out) == 0 {
@@ -260,12 +260,13 @@ func toQueryValue(v any, key string) []string {
 		}
 		return out
 	}
-	s := ""
-	if v != nil {
-		s = httpx.ValueString(v)
-		if b, ok := v.(bool); ok {
-			s = strconv.FormatBool(b)
-		}
+	if v == nil {
+		// Rails 8 (ActiveSupport 8): NilClass#to_query(key) は "=" を付けずにキーだけを返す
+		return []string{url.QueryEscape(key)}
+	}
+	s := httpx.ValueString(v)
+	if b, ok := v.(bool); ok {
+		s = strconv.FormatBool(b)
 	}
 	return []string{url.QueryEscape(key) + "=" + url.QueryEscape(s)}
 }
