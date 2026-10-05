@@ -177,7 +177,11 @@ var (
 			if env != nil && env.Enumerations != nil {
 				all = env.Enumerations(cf.ID, false)
 			}
-			return parseKeyword(cf, keyword, func(k string) (string, bool) {
+			labels := make([]string, len(all))
+			for i, e := range all {
+				labels[i] = e.Name
+			}
+			return parseKeyword(cf, keyword, labels, func(k string) (string, bool) {
 				for _, e := range all {
 					if likeMatch(e.Name, k) {
 						return strconv.FormatInt(e.ID, 10), true
@@ -210,7 +214,11 @@ var (
 		beforeSave:         func(env *Env, cf *CustomField) { compactListSetting(cf, "user_role") },
 		valueFromKeyword: func(f *Format, env *Env, cf *CustomField, keyword string, object any) any {
 			users := userRecords(env, cf, object)
-			return parseKeyword(cf, keyword, func(k string) (string, bool) {
+			labels := make([]string, len(users))
+			for i, u := range users {
+				labels[i] = u.Label
+			}
+			return parseKeyword(cf, keyword, labels, func(k string) (string, bool) {
 				for _, u := range users {
 					if strings.EqualFold(u.Label, k) {
 						return u.Value, true
@@ -700,7 +708,11 @@ func (f *Format) ValueFromKeyword(env *Env, cf *CustomField, keyword string, obj
 	if len(opts) == 0 {
 		return keyword
 	}
-	return parseKeyword(cf, keyword, func(k string) (string, bool) {
+	labels := make([]string, len(opts))
+	for i, o := range opts {
+		labels[i] = o.Label
+	}
+	return parseKeyword(cf, keyword, labels, func(k string) (string, bool) {
 		for _, o := range opts {
 			if strings.EqualFold(k, o.Label) {
 				return o.Value, true
@@ -710,8 +722,27 @@ func (f *Format) ValueFromKeyword(env *Env, cf *CustomField, keyword string, obj
 	})
 }
 
-// parseKeyword は Base#parse_keyword（複数値はカンマ区切りを最長一致で分割する）。
-func parseKeyword(cf *CustomField, keyword string, find func(k string) (string, bool)) any {
+// parseKeyword は labels のカンマの最大数を上限にした ParseKeyword。
+func parseKeyword(cf *CustomField, keyword string, labels []string, find func(k string) (string, bool)) any {
+	return ParseKeyword(cf, keyword, MaxCommas(labels...), find)
+}
+
+// MaxCommas は labels に含まれるカンマの数の最大値（ParseKeyword の maxCommas）。
+func MaxCommas(labels ...string) int {
+	n := 0
+	for _, l := range labels {
+		n = max(n, strings.Count(l, ","))
+	}
+	return n
+}
+
+// ParseKeyword は Base#parse_keyword（複数値はカンマ区切りを最長一致で分割する）。
+//
+// Redmine は残りのキーワード全体から末尾の要素を 1 つずつ外して照合するため、一致しない
+// "x,x,x,..." では長さの 2 乗（ユーザーの照合では 3 乗）の時間がかかる（メール受信・CSV インポートの DoS）。
+// 候補のラベルが含むカンマは高々 maxCommas 個なので、それより多いカンマを含む接頭辞はどのラベルとも
+// 一致しない。照合する接頭辞を先頭の maxCommas+1 要素までに限って同じ結果を線形時間で求める。
+func ParseKeyword(cf *CustomField, keyword string, maxCommas int, find func(k string) (string, bool)) any {
 	if !cf.Multiple {
 		if v, ok := find(trimSpace(keyword)); ok {
 			return v
@@ -721,6 +752,17 @@ func parseKeyword(cf *CustomField, keyword string, find func(k string) (string, 
 	values := []string{}
 	for len(keyword) > 0 {
 		k := keyword
+		for end, n := 0, 0; ; n++ {
+			i := strings.IndexByte(keyword[end:], ',')
+			if i < 0 {
+				break
+			}
+			if n == maxCommas {
+				k = keyword[:end+i]
+				break
+			}
+			end += i + 1
+		}
 		for {
 			if v, ok := find(trimSpace(k)); ok {
 				values = append(values, v)

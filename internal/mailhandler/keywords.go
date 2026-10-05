@@ -311,7 +311,7 @@ func (r *receiver) cfValueFromKeyword(ctx context.Context, q db.Queryer, cf *cus
 			r.h.logger().Error("MailHandler: user custom field", "err", err)
 		}
 		ps := r.keywordPrincipalsFromUsers(users)
-		return parseKeyword(cf, keyword, func(k string) (string, bool) {
+		return customfield.ParseKeyword(cf, keyword, keywordMaxCommas(ps), func(k string) (string, bool) {
 			if p := detectByKeyword(ps, k); p != nil {
 				return strconv.FormatInt(p.ID, 10), true
 			}
@@ -329,35 +329,6 @@ func cfRoleIDs(cf *customfield.CustomField) []int64 {
 		}
 	}
 	return ids
-}
-
-// parseKeyword は CustomFieldFormat::Base#parse_keyword（複数値はカンマ区切りを最長一致で分割する）。
-func parseKeyword(cf *customfield.CustomField, keyword string, find func(string) (string, bool)) any {
-	if !cf.Multiple {
-		if v, ok := find(strings.TrimSpace(keyword)); ok {
-			return v
-		}
-		return nil
-	}
-	values := []string{}
-	for len(keyword) > 0 {
-		k := keyword
-		for {
-			if v, ok := find(strings.TrimSpace(k)); ok {
-				values = append(values, v)
-				break
-			}
-			i := strings.LastIndex(k, ",")
-			if i < 0 {
-				break
-			}
-			k = k[:i]
-		}
-		// keyword.slice!(/\A#{Regexp.escape k},?/)
-		keyword = strings.TrimPrefix(keyword, k)
-		keyword = strings.TrimPrefix(keyword, ",")
-	}
-	return values
 }
 
 // cfEnv はカスタムフィールドの選択肢の取得（customfield.Env）。
@@ -446,13 +417,45 @@ type keywordPrincipal struct {
 	Name      string
 }
 
+// keywordMaxCommas は detectByKeyword が一致しうるキーワードのカンマの最大数（customfield.ParseKeyword の上限）。
+// 「名 姓」の照合は 3 語目以降を見ないため、3 語目以降にカンマがあるキーワードでは Redmine と分割位置が
+// 変わりうるが、通常のキーワードの結果は変わらない。
+func keywordMaxCommas(ps []keywordPrincipal) int {
+	n := 0
+	for i := range ps {
+		p := &ps[i]
+		n = max(n, customfield.MaxCommas(p.Login, p.Mail, p.Name), strings.Count(p.Firstname, ",")+strings.Count(p.Lastname, ","))
+	}
+	return n
+}
+
+// asciiEqualFold は String#casecmp == 0（ASCII の大文字小文字のみ同一視する。コピーせずに比べる）。
+func asciiEqualFold(a, b string) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	for i := 0; i < len(a); i++ {
+		x, y := a[i], b[i]
+		if x >= 'A' && x <= 'Z' {
+			x += 32
+		}
+		if y >= 'A' && y <= 'Z' {
+			y += 32
+		}
+		if x != y {
+			return false
+		}
+	}
+	return true
+}
+
 // detectByKeyword は Principal.detect_by_keyword(principals, keyword)（login → メールアドレス →
 // "名 姓" → 表示名の順に、大文字小文字を区別せずに探す）。
 func detectByKeyword(ps []keywordPrincipal, keyword string) *keywordPrincipal {
 	if strings.TrimSpace(keyword) == "" {
 		return nil
 	}
-	eq := func(a, b string) bool { return asciiLower(a) == asciiLower(b) }
+	eq := asciiEqualFold
 	for i := range ps {
 		if eq(keyword, ps[i].Login) {
 			return &ps[i]
@@ -484,17 +487,6 @@ func detectByKeyword(ps []keywordPrincipal, keyword string) *keywordPrincipal {
 		}
 	}
 	return nil
-}
-
-// asciiLower は String#casecmp の比較（ASCII の大文字小文字のみ同一視する）。
-func asciiLower(s string) string {
-	b := []byte(s)
-	for i, c := range b {
-		if c >= 'A' && c <= 'Z' {
-			b[i] = c + 32
-		}
-	}
-	return string(b)
 }
 
 func (r *receiver) keywordPrincipalsFromRefs(ctx context.Context, q db.Queryer, refs []*issues.PrincipalRef) ([]keywordPrincipal, error) {

@@ -704,12 +704,44 @@ type keywordPrincipal struct {
 	Name      string
 }
 
+// keywordMaxCommas は detectByKeyword が一致しうるキーワードのカンマの最大数（customfield.ParseKeyword の上限）。
+// 「名 姓」の照合は 3 語目以降を見ないため、3 語目以降にカンマがあるキーワードでは Redmine と分割位置が
+// 変わりうるが、通常のキーワードの結果は変わらない。
+func keywordMaxCommas(ps []keywordPrincipal) int {
+	n := 0
+	for i := range ps {
+		p := &ps[i]
+		n = max(n, customfield.MaxCommas(p.Login, p.Mail, p.Name), strings.Count(p.Firstname, ",")+strings.Count(p.Lastname, ","))
+	}
+	return n
+}
+
+// asciiEqualFold は String#casecmp == 0（ASCII の大文字小文字のみ同一視する。コピーせずに比べる）。
+func asciiEqualFold(a, b string) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	for i := 0; i < len(a); i++ {
+		x, y := a[i], b[i]
+		if x >= 'A' && x <= 'Z' {
+			x += 32
+		}
+		if y >= 'A' && y <= 'Z' {
+			y += 32
+		}
+		if x != y {
+			return false
+		}
+	}
+	return true
+}
+
 // detectByKeyword は Principal.detect_by_keyword(principals, keyword)。
 func detectByKeyword(ps []keywordPrincipal, keyword string) *keywordPrincipal {
 	if strings.TrimSpace(keyword) == "" {
 		return nil
 	}
-	eq := func(a, b string) bool { return asciiLower(a) == asciiLower(b) }
+	eq := asciiEqualFold
 	for i := range ps {
 		if eq(keyword, ps[i].Login) {
 			return &ps[i]
@@ -812,7 +844,7 @@ func (m *importModel) cfValueFromKeyword(ctx context.Context, cf *customfield.Cu
 			}
 			return "", false
 		}
-		return importParseKeyword(cf, keyword, find)
+		return customfield.ParseKeyword(cf, keyword, keywordMaxCommas(ps), find)
 	}
 	env := l.cfEnv(cf)
 	env.ProjectUsers = func(projectID int64, roleIDs []int64) []customfield.Option {
@@ -826,34 +858,6 @@ func (m *importModel) cfValueFromKeyword(ctx context.Context, cf *customfield.Cu
 		obj = cz
 	}
 	return customfield.FindFormat(cf.FieldFormat).ValueFromKeyword(env, cf, keyword, obj)
-}
-
-// importParseKeyword は Base#parse_keyword（複数値はカンマ区切りを最長一致で分割する）。
-func importParseKeyword(cf *customfield.CustomField, keyword string, find func(string) (string, bool)) any {
-	if !cf.Multiple {
-		if v, ok := find(strings.TrimSpace(keyword)); ok {
-			return v
-		}
-		return nil
-	}
-	values := []string{}
-	for len(keyword) > 0 {
-		k := keyword
-		for {
-			if v, ok := find(strings.TrimSpace(k)); ok {
-				values = append(values, v)
-				break
-			}
-			i := strings.LastIndex(k, ",")
-			if i < 0 {
-				break
-			}
-			k = k[:i]
-		}
-		keyword = strings.TrimPrefix(keyword, k)
-		keyword = strings.TrimPrefix(keyword, ",")
-	}
-	return values
 }
 
 // ---------------------------------------------------------------- 表示
