@@ -644,7 +644,7 @@ func (g *Git) DiffHead(ctx context.Context, path, from, to string, maxLines int)
 		if err != nil {
 			return nil, false
 		}
-		return splitLinesKeep(out), true
+		return discardHeaderOnlyDiff(path, splitLinesKeep(out)), true
 	}
 	cctx, cancel := context.WithCancel(ctx)
 	defer cancel()
@@ -652,7 +652,60 @@ func (g *Git) DiffHead(ctx context.Context, path, from, to string, maxLines int)
 	if err := g.gitCmdTo(cctx, args, nil, w); err != nil && !w.full {
 		return nil, false
 	}
-	return splitLinesKeep(w.buf.Bytes()), true
+	lines := splitLinesKeep(w.buf.Bytes())
+	if w.full {
+		// 途中で読むのをやめた出力は、以降に差分があるかどうか分からないのでそのまま返す
+		return lines, true
+	}
+	return discardHeaderOnlyDiff(path, lines), true
+}
+
+// discardHeaderOnlyDiff は GitAdapter#diff の
+// return [] if !path.empty? && diff.none? {|line| line.start_with?('diff --')}（Redmine 7.0 #44354）。
+// Git 2.55.0 の show は指定したパスをコミットが変更していなくてもコミットのヘッダーを出力するため、
+// 他の版と同じく空の差分にする。
+func discardHeaderOnlyDiff(path string, lines []string) []string {
+	if path == "" {
+		return lines
+	}
+	for _, l := range lines {
+		if strings.HasPrefix(l, "diff --") {
+			return lines
+		}
+	}
+	return []string{}
+}
+
+// diffHeaderFilter は DiffTo で discardHeaderOnlyDiff と同じことをする。"diff --" で始まる行が
+// 出るまで出力を溜め、出たら溜めた分を書き出して以降は素通しする（出なければ何も書かない）。
+type diffHeaderFilter struct {
+	w       io.Writer
+	buf     bytes.Buffer
+	started bool
+}
+
+func (f *diffHeaderFilter) Write(p []byte) (int, error) {
+	if f.started {
+		return f.w.Write(p)
+	}
+	f.buf.Write(p)
+	b := f.buf.Bytes()
+	for off := 0; off < len(b); {
+		if bytes.HasPrefix(b[off:], []byte("diff --")) {
+			f.started = true
+			if _, err := f.w.Write(b); err != nil {
+				return 0, err
+			}
+			f.buf.Reset()
+			return len(p), nil
+		}
+		i := bytes.IndexByte(b[off:], '\n')
+		if i < 0 {
+			break
+		}
+		off += i + 1
+	}
+	return len(p), nil
 }
 
 // DiffTo は Diff の出力を w に書き出す（.diff のダウンロードで差分全体をメモリに読み込まない）。
@@ -660,6 +713,9 @@ func (g *Git) DiffTo(ctx context.Context, path, from, to string, w io.Writer) bo
 	args, ok := g.diffArgs(path, from, to)
 	if !ok {
 		return false
+	}
+	if path != "" {
+		w = &diffHeaderFilter{w: w}
 	}
 	return g.gitStreamTo(ctx, args, nil, w) == nil
 }

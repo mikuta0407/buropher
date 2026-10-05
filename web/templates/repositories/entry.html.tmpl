@@ -11,6 +11,8 @@
 
 {{if eq .Kind "image"}}
   {{image_tag .RawURL (hash "alt" .Path "class" "filecontent image")}}
+{{else if eq .Kind "pdf"}}
+  {{partial "common/pdf" (dict "path" .RawURL)}}
 {{else if eq .Kind "markup"}}
   <div class="filecontent wiki">
   {{.Markup}}

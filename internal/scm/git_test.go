@@ -105,6 +105,10 @@ func TestGitDiffAnnotateCat(t *testing.T) {
 	if !ok || !strings.Contains(strings.Join(diff, ""), "def remove") {
 		t.Errorf("diff ok=%v", ok)
 	}
+	// test_diff_path_invalid: コミットが変更していないパスの差分は空（nil ではない）
+	if d, ok := g.Diff(ctx, "invalid", "713f4944648826f5", ""); !ok || d == nil || len(d) != 0 {
+		t.Errorf("diff path invalid = %q ok=%v", d, ok)
+	}
 	a := g.Annotate(ctx, "sources/watchers_controller.rb", "")
 	if a == nil || len(a.Lines) < 23 || !strings.HasPrefix(a.Revisions[22].Identifier, "2f9c0091") || a.Revisions[22].Author != "jsmith" {
 		t.Errorf("annotate = %+v", a)
