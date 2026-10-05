@@ -13,6 +13,7 @@ Module,Permissions,Manager,Developer,Reporter,Non member,Anonymous
 "",Create subprojects,No,No,No,"",""
 "",Manage public queries,Yes,No,No,"",""
 "",Save queries,Yes,Yes,No,Yes,""
+"",Use webhooks,No,No,No,"",""
 Forums,View messages,Yes,Yes,No,Yes,No
 Forums,Post messages,Yes,Yes,No,Yes,No
 Forums,Edit messages,Yes,No,No,"",""

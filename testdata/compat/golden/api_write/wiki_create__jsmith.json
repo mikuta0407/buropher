@@ -12,6 +12,10 @@ location: /projects/ecookbook/wiki/New_API_page
       "name": "Johnny Smith"
     },
     "comments": "created via api",
+    "project": {
+      "id": 1,
+      "name": "eCookbook"
+    },
     "created_on": "TIMESTAMP",
     "updated_on": "TIMESTAMP"
   }

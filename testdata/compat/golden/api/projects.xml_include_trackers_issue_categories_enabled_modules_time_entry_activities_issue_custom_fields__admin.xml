@@ -74,11 +74,6 @@ content-type: application/xml
       <tracker id="3" name="Support request"/>
     </trackers>
     <issue_categories type="array"/>
-    <time_entry_activities type="array">
-      <time_entry_activity id="9" name="Design"/>
-      <time_entry_activity id="10" name="Development"/>
-      <time_entry_activity id="11" name="QA"/>
-    </time_entry_activities>
     <enabled_modules type="array">
       <enabled_module id="14" name="issue_tracking"/>
       <enabled_module id="23" name="calendar"/>
@@ -108,20 +103,7 @@ content-type: application/xml
         <value/>
       </custom_field>
     </custom_fields>
-    <trackers type="array"/>
-    <issue_categories type="array"/>
-    <time_entry_activities type="array">
-      <time_entry_activity id="9" name="Design"/>
-      <time_entry_activity id="10" name="Development"/>
-      <time_entry_activity id="11" name="QA"/>
-    </time_entry_activities>
     <enabled_modules type="array"/>
-    <issue_custom_fields type="array">
-      <custom_field id="2" name="Searchable field"/>
-      <custom_field id="1" name="Database"/>
-      <custom_field id="6" name="Float field"/>
-      <custom_field id="8" name="Custom date"/>
-    </issue_custom_fields>
     <created_on>2006-07-19T17:15:51Z</created_on>
     <updated_on>2006-07-19T17:17:07Z</updated_on>
   </project>
@@ -183,20 +165,7 @@ content-type: application/xml
         <value/>
       </custom_field>
     </custom_fields>
-    <trackers type="array"/>
-    <issue_categories type="array"/>
-    <time_entry_activities type="array">
-      <time_entry_activity id="9" name="Design"/>
-      <time_entry_activity id="10" name="Development"/>
-      <time_entry_activity id="11" name="QA"/>
-    </time_entry_activities>
     <enabled_modules type="array"/>
-    <issue_custom_fields type="array">
-      <custom_field id="2" name="Searchable field"/>
-      <custom_field id="1" name="Database"/>
-      <custom_field id="6" name="Float field"/>
-      <custom_field id="8" name="Custom date"/>
-    </issue_custom_fields>
     <created_on>2006-07-19T17:15:51Z</created_on>
     <updated_on>2006-07-19T17:17:07Z</updated_on>
   </project>
@@ -223,11 +192,6 @@ content-type: application/xml
       <issue_category id="4" name="Printing"/>
       <issue_category id="3" name="Stock management"/>
     </issue_categories>
-    <time_entry_activities type="array">
-      <time_entry_activity id="9" name="Design"/>
-      <time_entry_activity id="10" name="Development"/>
-      <time_entry_activity id="11" name="QA"/>
-    </time_entry_activities>
     <enabled_modules type="array">
       <enabled_module id="11" name="issue_tracking"/>
       <enabled_module id="15" name="wiki"/>

@@ -41,7 +41,7 @@ content-type: application/xml
       <attachment>
         <id>15</id>
         <filename>private.diff</filename>
-        <filesize>687</filesize>
+        <filesize>691</filesize>
         <content_type>text/x-diff</content_type>
         <description>attachment of a private issue</description>
         <content_url>{{BASE}}/attachments/download/15/private.diff</content_url>

@@ -2,7 +2,7 @@ status: 200
 content-type: text/html
 
 <!DOCTYPE html>
-<html lang="en">
+<html dir="ltr" lang="en">
   <head>
     <meta charset="utf-8">
     <title>Gantt - eCookbook - Redmine</title>
@@ -15,6 +15,7 @@ content-type: text/html
     <link href="/assets/jquery/jquery-ui-1.13.2-DIGEST.css" media="all" rel="stylesheet">
     <link href="/assets/tribute-5.1.3-DIGEST.css" media="all" rel="stylesheet">
     <link href="/assets/application-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/dropdown-DIGEST.css" media="all" rel="stylesheet">
     <link href="/assets/responsive-DIGEST.css" media="all" rel="stylesheet">
     <script data-turbo-track="reload" type="importmap">{
   "imports": {
@@ -23,12 +24,27 @@ content-type: text/html
     "@hotwired/stimulus": "/assets/stimulus.min-DIGEST.js",
     "@hotwired/stimulus-loading": "/assets/stimulus-loading-DIGEST.js",
     "turndown": "/assets/turndown-DIGEST.js",
+    "tablesort": "/assets/tablesort.min-DIGEST.js",
+    "tablesort.number": "/assets/tablesort.number.min-DIGEST.js",
+    "chart.js": "/assets/chart.min-DIGEST.js",
     "controllers/api_key_copy_controller": "/assets/controllers/api_key_copy_controller-DIGEST.js",
     "controllers/application": "/assets/controllers/application-DIGEST.js",
+    "controllers/clipboard_controller": "/assets/controllers/clipboard_controller-DIGEST.js",
+    "controllers/custom_field_default_value_controller": "/assets/controllers/custom_field_default_value_controller-DIGEST.js",
+    "controllers/dropdown_controller": "/assets/controllers/dropdown_controller-DIGEST.js",
+    "controllers/gantt/chart_controller": "/assets/controllers/gantt/chart_controller-DIGEST.js",
+    "controllers/gantt/column_controller": "/assets/controllers/gantt/column_controller-DIGEST.js",
+    "controllers/gantt/options_controller": "/assets/controllers/gantt/options_controller-DIGEST.js",
+    "controllers/gantt/subjects_controller": "/assets/controllers/gantt/subjects_controller-DIGEST.js",
     "controllers": "/assets/controllers/index-DIGEST.js",
     "controllers/list_autofill_controller": "/assets/controllers/list_autofill_controller-DIGEST.js",
     "controllers/quote_reply_controller": "/assets/controllers/quote_reply_controller-DIGEST.js",
-    "controllers/sticky_issue_header_controller": "/assets/controllers/sticky_issue_header_controller-DIGEST.js"
+    "controllers/reports/details_controller": "/assets/controllers/reports/details_controller-DIGEST.js",
+    "controllers/repositories/stats_controller": "/assets/controllers/repositories/stats_controller-DIGEST.js",
+    "controllers/selection_indent_controller": "/assets/controllers/selection_indent_controller-DIGEST.js",
+    "controllers/sticky_issue_header_controller": "/assets/controllers/sticky_issue_header_controller-DIGEST.js",
+    "controllers/table_paste_controller": "/assets/controllers/table_paste_controller-DIGEST.js",
+    "controllers/tablesort_controller": "/assets/controllers/tablesort_controller-DIGEST.js"
   }
 }</script>
     <link href="/assets/requestjs-DIGEST.js" rel="modulepreload">
@@ -36,12 +52,26 @@ content-type: text/html
     <link href="/assets/stimulus.min-DIGEST.js" rel="modulepreload">
     <link href="/assets/stimulus-loading-DIGEST.js" rel="modulepreload">
     <link href="/assets/turndown-DIGEST.js" rel="modulepreload">
+    <link href="/assets/tablesort.min-DIGEST.js" rel="modulepreload">
+    <link href="/assets/tablesort.number.min-DIGEST.js" rel="modulepreload">
     <link href="/assets/controllers/api_key_copy_controller-DIGEST.js" rel="modulepreload">
     <link href="/assets/controllers/application-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/clipboard_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/custom_field_default_value_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/dropdown_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/gantt/chart_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/gantt/column_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/gantt/options_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/gantt/subjects_controller-DIGEST.js" rel="modulepreload">
     <link href="/assets/controllers/index-DIGEST.js" rel="modulepreload">
     <link href="/assets/controllers/list_autofill_controller-DIGEST.js" rel="modulepreload">
     <link href="/assets/controllers/quote_reply_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/reports/details_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/repositories/stats_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/selection_indent_controller-DIGEST.js" rel="modulepreload">
     <link href="/assets/controllers/sticky_issue_header_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/table_paste_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/tablesort_controller-DIGEST.js" rel="modulepreload">
     <script type="module">import "application"</script>
     <script src="/assets/jquery-3.7.1-ui-1.13.3-DIGEST.js"></script>
     <script src="/assets/rails-ujs-DIGEST.js"></script>
@@ -60,12 +90,11 @@ rm = window.rm || {};rm.AutoComplete = rm.AutoComplete || {};rm.AutoComplete.dat
     <script>//<![CDATA[
 var datepickerOptions={dateFormat: 'yy-mm-dd', firstDay: 0, showOn: 'button', buttonImageOnly: true, buttonImage: '/assets/calendar-DIGEST.png', showButtonPanel: true, showWeek: true, showOtherMonths: true, selectOtherMonths: true, changeMonth: true, changeYear: true, beforeShow: beforeShowDatePicker};
 //]]></script>
-    <script src="/assets/raphael-DIGEST.js"></script>
-    <script src="/assets/gantt-DIGEST.js"></script>
+    <link href="/assets/gantt-DIGEST.css" media="all" rel="stylesheet">
     <script src="/assets/context_menu-DIGEST.js"></script>
     <link href="/assets/context_menu-DIGEST.css" media="screen" rel="stylesheet">
   </head>
-  <body class="project-ecookbook has-main-menu controller-gantts action-show avatars-off" data-text-formatting="common_mark">
+  <body class="project-ecookbook has-main-menu controller-gantts action-show" data-text-formatting="common_mark">
     <div id="wrapper">
       <div class="flyout-menu js-flyout-menu">
         <div class="flyout-menu__search">
@@ -93,36 +122,54 @@ var datepickerOptions={dateFormat: 'yy-mm-dd', firstDay: 0, showOn: 'button', bu
         <h3>Profile</h3>
         <span class="js-profile-menu"></span>
       </div>
-      <div id="top-menu">
-        <div id="account">
-          <ul>
-            <li>
-              <a class="my-account" href="/my/account">My account</a>
-            </li>
-            <li>
-              <a class="logout" data-method="post" href="/logout" rel="nofollow">Sign out</a>
-            </li>
-          </ul>
+      <nav class="top-menu" id="top-menu">
+        <div class="general-menu">
+          <div class="top-menu__links">
+            <ul>
+              <li>
+                <a class="home" href="/">Home</a>
+              </li>
+              <li>
+                <a class="my-page" href="/my/page">My page</a>
+              </li>
+              <li>
+                <a class="projects" href="/projects">Projects</a>
+              </li>
+              <li>
+                <a class="help" href="https://www.redmine.org/guide" rel="noopener" target="_blank">Help</a>
+              </li>
+            </ul>
+          </div>
         </div>
-        <div id="loggedas">
-          Logged in as
-          <a class="user active" href="/users/2">jsmith</a>
+        <div class="profile-menu">
+          <div class="dropdown" data-controller="dropdown" id="account">
+            <a class="dropdown-trigger" data-action="click-&gt;dropdown#toggle" href="#">
+              <span class="avatar-color-2 s22 avatar" role="img">JS</span>
+              <svg aria-hidden="true" class="s14 icon-svg">
+                <use href="/assets/icons-DIGEST.svg#icon--angle-down"></use>
+              </svg>
+            </a>
+            <div class="dropdown-content hidden" data-dropdown-target="content">
+              <div class="user-info">
+                <span class="user-name">John Smith</span>
+                <span class="user-login">@jsmith</span>
+              </div>
+              <div class="dropdown-divider"></div>
+              <ul>
+                <li>
+                  <a class="my-profile" href="/users/current">Profile</a>
+                </li>
+                <li>
+                  <a class="my-account" href="/my/account">My account</a>
+                </li>
+                <li>
+                  <a class="logout" data-method="post" href="/logout" rel="nofollow">Sign out</a>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
-        <ul>
-          <li>
-            <a class="home" href="/">Home</a>
-          </li>
-          <li>
-            <a class="my-page" href="/my/page">My page</a>
-          </li>
-          <li>
-            <a class="projects" href="/projects">Projects</a>
-          </li>
-          <li>
-            <a class="help" href="https://www.redmine.org/guide" rel="noopener" target="_blank">Help</a>
-          </li>
-        </ul>
-      </div>
+      </nav>
       <div id="header">
         <a class="mobile-toggle-button js-flyout-menu-toggle-button" href="#"></a>
         <div id="quick-search">
@@ -265,7 +312,7 @@ $('#sidebar-switch-panel').css('visibility', 'visible');
         <div id="content">
           <div class="contextual"></div>
           <h2>Gantt</h2>
-          <form accept-charset="UTF-8" action="/projects/ecookbook/issues/gantt?month=12&amp;months=2&amp;year=2025" id="query_form" method="get" name="query_form-RANDOM">
+          <form accept-charset="UTF-8" action="/projects/ecookbook/issues/gantt?month=12&amp;months=2&amp;year=2025" data-gantt-target="form" id="query_form" method="get" name="query_form-RANDOM">
             <input autocomplete="off" id="set_filter" name="set_filter" type="hidden" value="1">
             <input autocomplete="off" id="gantt" name="gantt" type="hidden" value="1">
             <div class="hide-when-print" id="query_form_with_buttons">
@@ -281,8 +328,8 @@ $('#sidebar-switch-panel').css('visibility', 'visible');
                     <script>//<![CDATA[
 
 var operatorLabels = {"=":"is","!":"is not","o":"open","c":"closed","!*":"none","*":"any","\u003e=":"\u003e=","\u003c=":"\u003c=","\u003e\u003c":"between","\u003ct+":"in less than","\u003et+":"in more than","\u003e\u003ct+":"in the next","t+":"in","nd":"tomorrow","t":"today","ld":"yesterday","nw":"next week","w":"this week","lw":"last week","l2w":"last 2 weeks","nm":"next month","m":"this month","lm":"last month","y":"this year","\u003et-":"less than days ago","\u003ct-":"more than days ago","\u003e\u003ct-":"in the past","t-":"days ago","~":"contains","!~":"doesn't contain","*~":"contains any of","^":"starts with","$":"ends with","=p":"any issues in project","=!p":"any issues not in project","!p":"no issues in project","*o":"any open issues","!o":"no open issues","ev":"has been","!ev":"has never been","cf":"changed from"};
-var operatorByType = {"list":["=","!"],"list_with_history":["=","!","ev","!ev","cf"],"list_status":["o","=","!","ev","!ev","cf","c","*"],"list_optional":["=","!","!*","*"],"list_optional_with_history":["=","!","ev","!ev","cf","!*","*"],"list_subprojects":["*","!*","=","!"],"date":["=","\u003e=","\u003c=","\u003e\u003c","\u003ct+","\u003et+","\u003e\u003ct+","t+","nd","t","ld","nw","w","lw","l2w","nm","m","lm","y","\u003et-","\u003ct-","\u003e\u003ct-","t-","!*","*"],"date_past":["=","\u003e=","\u003c=","\u003e\u003c","\u003et-","\u003ct-","\u003e\u003ct-","t-","t","ld","w","lw","l2w","m","lm","y","!*","*"],"string":["~","*~","=","!~","!","^","$","!*","*"],"text":["~","*~","!~","^","$","!*","*"],"search":["~","*~","!~"],"integer":["=","\u003e=","\u003c=","\u003e\u003c","!*","*"],"float":["=","\u003e=","\u003c=","\u003e\u003c","!*","*"],"relation":["=","!","=p","=!p","!p","*o","!o","!*","*"],"tree":["=","~","!*","*"]};
-var availableFilters = {"status_id":{"type":"list_status","name":"Status","remote":true,"values":[["New","1"],["Assigned","2"],["Resolved","3"],["Feedback","4"],["Closed","5"],["Rejected","6"]]},"tracker_id":{"type":"list_with_history","name":"Tracker","values":[["Bug","1"],["Feature request","2"],["Support request","3"]]},"priority_id":{"type":"list_with_history","name":"Priority","values":[["Low","4"],["Normal","5"],["High","6"],["Urgent","7"],["Immediate","8"],["Inactive Priority","15"]]},"author_id":{"type":"list","name":"Author","remote":true},"author.group":{"type":"list","name":"Author's Group","remote":true},"author.role":{"type":"list","name":"Author's Role","remote":true},"assigned_to_id":{"type":"list_optional_with_history","name":"Assignee","remote":true},"member_of_group":{"type":"list_optional","name":"Assignee's group","remote":true},"assigned_to_role":{"type":"list_optional","name":"Assignee's role","remote":true},"fixed_version_id":{"type":"list_optional_with_history","name":"Target version","remote":true},"fixed_version.due_date":{"type":"date","name":"Target version's Due date","values":null},"fixed_version.status":{"type":"list","name":"Target version's Status","values":[["open","open"],["locked","locked"],["closed","closed"]]},"category_id":{"type":"list_optional_with_history","name":"Category","remote":true},"subject":{"type":"text","name":"Subject","values":null},"description":{"type":"text","name":"Description","values":null},"notes":{"type":"text","name":"Notes","values":null},"created_on":{"type":"date_past","name":"Created","values":null},"updated_on":{"type":"date_past","name":"Updated","values":null},"closed_on":{"type":"date_past","name":"Closed","values":null},"start_date":{"type":"date","name":"Start date","values":null},"due_date":{"type":"date","name":"Due date","values":null},"estimated_hours":{"type":"float","name":"Estimated time","values":null},"spent_time":{"type":"float","name":"Spent time","values":null},"done_ratio":{"type":"integer","name":"% Done","values":null},"is_private":{"type":"list","name":"Private","values":[["yes","1"],["no","0"]]},"attachment":{"type":"text","name":"File","values":null},"attachment_description":{"type":"text","name":"File description","values":null},"watcher_id":{"type":"list","name":"Watcher","remote":true},"updated_by":{"type":"list","name":"Updated by","remote":true},"last_updated_by":{"type":"list","name":"Last updated by","remote":true},"subproject_id":{"type":"list_subprojects","name":"Subproject","remote":true},"project.status":{"type":"list","name":"Project's Status","remote":true},"cf_2":{"type":"string","name":"Searchable field","values":null},"cf_1":{"type":"list_optional","name":"Database","remote":true},"cf_9":{"type":"date","name":"Project 1 cf","values":null},"project.cf_3":{"type":"list_optional","name":"Project's Development status","remote":true},"relates":{"type":"relation","name":"Related to","remote":true},"duplicates":{"type":"relation","name":"Is duplicate of","remote":true},"duplicated":{"type":"relation","name":"Has duplicate","remote":true},"blocks":{"type":"relation","name":"Blocks","remote":true},"blocked":{"type":"relation","name":"Blocked by","remote":true},"precedes":{"type":"relation","name":"Precedes","remote":true},"follows":{"type":"relation","name":"Follows","remote":true},"copied_to":{"type":"relation","name":"Copied to","remote":true},"copied_from":{"type":"relation","name":"Copied from","remote":true},"parent_id":{"type":"tree","name":"Parent task","values":null},"child_id":{"type":"tree","name":"Subtasks","values":null},"issue_id":{"type":"integer","name":"Issue","values":null},"any_searchable":{"type":"search","name":"Any searchable text","values":null}};
+var operatorByType = {"list":["=","!"],"list_with_history":["=","!","ev","!ev","cf"],"list_status":["o","=","!","ev","!ev","cf","c","*"],"list_optional":["=","!","!*","*"],"list_optional_with_history":["=","!","ev","!ev","cf","!*","*"],"list_subprojects":["*","!*","=","!"],"date":["=","\u003e=","\u003c=","\u003e\u003c","\u003ct+","\u003et+","\u003e\u003ct+","t+","nd","t","ld","nw","w","lw","l2w","nm","m","lm","y","\u003et-","\u003ct-","\u003e\u003ct-","t-","!*","*"],"date_past":["=","\u003e=","\u003c=","\u003e\u003c","\u003et-","\u003ct-","\u003e\u003ct-","t-","t","ld","w","lw","l2w","m","lm","y","!*","*"],"string":["~","*~","=","!~","!","^","$","!*","*"],"text":["~","*~","!~","^","$","!*","*"],"search":["~","*~","!~"],"integer":["=","\u003e=","\u003c=","\u003e\u003c","!*","*"],"float":["=","\u003e=","\u003c=","\u003e\u003c","!*","*"],"hour":["=","\u003e=","\u003c=","\u003e\u003c","!*","*"],"relation":["=","!","=p","=!p","!p","*o","!o","!*","*"],"tree":["=","~","!*","*"]};
+var availableFilters = {"status_id":{"type":"list_status","name":"Status","remote":true,"values":[["New","1"],["Assigned","2"],["Resolved","3"],["Feedback","4"],["Closed","5"],["Rejected","6"]]},"tracker_id":{"type":"list_with_history","name":"Tracker","values":[["Bug","1"],["Feature request","2"],["Support request","3"]]},"priority_id":{"type":"list_with_history","name":"Priority","values":[["Low","4"],["Normal","5"],["High","6"],["Urgent","7"],["Immediate","8"],["Inactive Priority","15"]]},"author_id":{"type":"list","name":"Author","remote":true},"author.group":{"type":"list","name":"Author's Group","remote":true},"author.role":{"type":"list","name":"Author's Role","remote":true},"assigned_to_id":{"type":"list_optional_with_history","name":"Assignee","remote":true},"member_of_group":{"type":"list_optional","name":"Assignee's group","remote":true},"assigned_to_role":{"type":"list_optional","name":"Assignee's role","remote":true},"fixed_version_id":{"type":"list_optional_with_history","name":"Target version","remote":true},"fixed_version.due_date":{"type":"date","name":"Target version's Due date","values":null},"fixed_version.status":{"type":"list","name":"Target version's Status","values":[["open","open"],["locked","locked"],["closed","closed"]]},"category_id":{"type":"list_optional_with_history","name":"Category","remote":true},"subject":{"type":"text","name":"Subject","values":null},"description":{"type":"text","name":"Description","values":null},"notes":{"type":"text","name":"Notes","values":null},"created_on":{"type":"date_past","name":"Created","values":null},"updated_on":{"type":"date_past","name":"Updated","values":null},"closed_on":{"type":"date_past","name":"Closed","values":null},"start_date":{"type":"date","name":"Start date","values":null},"due_date":{"type":"date","name":"Due date","values":null},"estimated_hours":{"type":"hour","name":"Estimated time","values":null},"spent_time":{"type":"hour","name":"Spent time","values":null},"done_ratio":{"type":"integer","name":"% Done","values":null},"is_private":{"type":"list","name":"Private","values":[["yes","1"],["no","0"]]},"attachment":{"type":"text","name":"File","values":null},"attachment_description":{"type":"text","name":"File description","values":null},"watcher_id":{"type":"list","name":"Watcher","remote":true},"updated_by":{"type":"list","name":"Updated by","remote":true},"last_updated_by":{"type":"list","name":"Last updated by","remote":true},"subproject_id":{"type":"list_subprojects","name":"Subproject","remote":true},"project.status":{"type":"list","name":"Project's Status","remote":true},"cf_2":{"type":"string","name":"Searchable field","values":null},"cf_1":{"type":"list_optional","name":"Database","remote":true},"cf_9":{"type":"date","name":"Project 1 cf","values":null},"project.cf_3":{"type":"list_optional","name":"Project's Development status","remote":true},"relates":{"type":"relation","name":"Related to","remote":true},"duplicates":{"type":"relation","name":"Is duplicate of","remote":true},"duplicated":{"type":"relation","name":"Has duplicate","remote":true},"blocks":{"type":"relation","name":"Blocks","remote":true},"blocked":{"type":"relation","name":"Blocked by","remote":true},"precedes":{"type":"relation","name":"Precedes","remote":true},"follows":{"type":"relation","name":"Follows","remote":true},"copied_to":{"type":"relation","name":"Copied to","remote":true},"copied_from":{"type":"relation","name":"Copied from","remote":true},"parent_id":{"type":"tree","name":"Parent task","values":null},"child_id":{"type":"tree","name":"Subtasks","values":null},"issue_id":{"type":"integer","name":"Issue","values":null},"any_searchable":{"type":"search","name":"Any searchable text","values":null}};
 var labelDayPlural = "days";
 
 var filtersUrl = "\/queries\/filter?project_id=1\u0026type=IssueQuery";
@@ -370,7 +417,7 @@ $(document).ready(function(){
                     <input autocomplete="off" id="f_" name="f[]" type="hidden" value="">
                   </div>
                 </fieldset>
-                <fieldset class="collapsible collapsed" id="options">
+                <fieldset class="collapsible collapsed" data-controller="gantt--options" data-gantt--options-unavailable-columns-value="[&#34;tracker&#34;,&#34;id&#34;,&#34;subject&#34;]" id="options">
                   <legend class="icon icon-collapsed" onclick="toggleFieldset(this);">
                     <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
                       <use href="/assets/icons-DIGEST.svg#icon--angle-right"></use>
@@ -385,7 +432,7 @@ $(document).ready(function(){
                           <div>
                             <label for="draw_selected_columns">
                               <input autocomplete="off" name="query[draw_selected_columns]" type="hidden" value="0">
-                              <input data-enables="#list-definition .query-columns select, #list-definition .query-columns input" id="draw_selected_columns" name="query[draw_selected_columns]" type="checkbox" value="1">
+                              <input data-action="change-&gt;gantt--options#toggleDisplay" data-enables="#list-definition .query-columns select, #list-definition .query-columns input" data-gantt--options-target="display" id="draw_selected_columns" name="query[draw_selected_columns]" type="checkbox" value="1">
                               Display
                             </label>
                           </div>
@@ -466,10 +513,10 @@ $(document).ready(function(){
                         <legend>Related issues</legend>
                         <label for="draw_relations">
                           <input autocomplete="off" name="query[draw_relations]" type="hidden" value="0">
-                          <input checked="checked" id="draw_relations" name="query[draw_relations]" type="checkbox" value="1">
-                          <span style="background-color: #F34F4F"></span>
+                          <input checked="checked" data-action="change-&gt;gantt--options#toggleRelations" data-gantt--options-target="relations" id="draw_relations" name="query[draw_relations]" type="checkbox" value="1">
+                          <span style="background-color: #fa5252"></span>
                           Blocks
-                          <span style="background-color: #628FEA"></span>
+                          <span style="background-color: #228be6"></span>
                           Precedes
                         </label>
                       </fieldset>
@@ -477,7 +524,7 @@ $(document).ready(function(){
                         <legend>Progress line</legend>
                         <label for="draw_progress_line">
                           <input autocomplete="off" name="query[draw_progress_line]" type="hidden" value="0">
-                          <input id="draw_progress_line" name="query[draw_progress_line]" type="checkbox" value="1">
+                          <input data-action="change-&gt;gantt--options#toggleProgress" data-gantt--options-target="progress" id="draw_progress_line" name="query[draw_progress_line]" type="checkbox" value="1">
                           Display
                         </label>
                       </fieldset>
@@ -558,20 +605,20 @@ $(document).ready(function(){
               </p>
             </div>
           </form>
-          <table class="gantt-table">
+          <table class="gantt-table" data-action="gantt--options:toggle-display@document-&gt;gantt--chart#handleOptionsDisplay gantt--options:toggle-relations@document-&gt;gantt--chart#handleOptionsRelations gantt--options:toggle-progress@document-&gt;gantt--chart#handleOptionsProgress gantt--subjects:toggle-tree-&gt;gantt--chart#handleSubjectTreeChanged resize@window-&gt;gantt--chart#handleWindowResize" data-controller="gantt--chart" data-gantt--chart-issue-relation-types-value="{&#34;blocks&#34;:{&#34;landscape_margin&#34;:16,&#34;color&#34;:&#34;#fa5252&#34;},&#34;precedes&#34;:{&#34;landscape_margin&#34;:20,&#34;color&#34;:&#34;#228be6&#34;}}" data-gantt--chart-show-progress-value="false" data-gantt--chart-show-relations-value="true" data-gantt--chart-show-selected-columns-value="false">
             <tbody>
               <tr>
-                <td class="gantt_subjects_column" style="width:332px;">
-                  <div class="gantt_subjects_container" style="position:relative;height: 628px;width: 331px;">
-                    <div class="gantt_hdr" style="width: 331px;height: 54px;background: #eee;"></div>
+                <td class="gantt_subjects_column" data-action="resize@window-&gt;gantt--column#handleWindowResize" data-controller="gantt--column" data-gantt--column-column-value="subjects" data-gantt--column-min-width-value="100" style="width:332px;">
+                  <div class="gantt_subjects_container" data-gantt--chart-target="subjectsContainer" style="position:relative;height: 628px;width: 331px;">
+                    <div class="gantt_hdr" style="width: 331px;height: 54px;background: #f1f3f5;"></div>
                     <div class="gantt_hdr" style="z-index: 1;width: 331px;height: 604px;overflow: hidden;"></div>
-                    <div class="gantt_subjects">
+                    <div class="gantt_subjects" data-action="gantt--column:resize-column-subjects@document-&gt;gantt--subjects#handleResizeColumn" data-controller="gantt--subjects">
                       <form accept-charset="UTF-8" action="/projects/ecookbook/issues/gantt" data-cm-url="/issues/context_menu" method="post" name="form-RANDOM">
                         <input autocomplete="off" name="authenticity_token" type="hidden" value="{{CSRF}}">
                         <input autocomplete="off" name="back_url" type="hidden" value="/projects/ecookbook/issues/gantt?month=12&amp;months=2&amp;year=2025&amp;zoom=3">
-                        <div class="project-name open" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;project-1&#34;}" data-number-of-rows="0" style="position: absolute;top:62px;left:4px;width:326px;">
-                          <span class="icon icon-expanded expander">
-                            <svg aria-hidden="true" class="s18 icon-svg">
+                        <div class="project-name open" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;project-1&#34;}" data-number-of-rows="0" style="position: absolute;inset-block-start:62px;inset-inline-start:4px;width:326px;">
+                          <span class="icon icon-expanded expander" data-action="click-&gt;gantt--subjects#handleEntryClick">
+                            <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
                               <use href="/assets/icons-DIGEST.svg#icon--angle-down"></use>
                             </svg>
                           </span>
@@ -582,7 +629,7 @@ $(document).ready(function(){
                             <a href="/projects/ecookbook">eCookbook</a>
                           </span>
                         </div>
-                        <div class="issue-subject hascontextmenu" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;issue-3&#34;}" data-number-of-rows="1" id="issue-3" style="position: absolute;top:82px;left:42px;width:288px;" title="Error 281 when updating a recipe">
+                        <div class="issue-subject hascontextmenu" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;issue-3&#34;}" data-number-of-rows="1" id="issue-3" style="position: absolute;inset-block-start:82px;inset-inline-start:42px;width:288px;" title="Error 281 when updating a recipe">
                           <span class="issue-overdue issue-behind-schedule">
                             <span class="avatar-color-3 s13 avatar icon-avatar" role="img" title="Assignee: Dave Lopper">DL</span>
                             <a class="issue tracker-1 status-1 priority-4 priority-lowest overdue behind-schedule created-by-me" href="/issues/3">Bug #3</a>
@@ -590,7 +637,7 @@ $(document).ready(function(){
                             <input class="toggle-selection" name="ids[]" style="display:none;" type="checkbox" value="3">
                           </span>
                         </div>
-                        <div class="issue-subject hascontextmenu" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;issue-7&#34;}" data-number-of-rows="2" id="issue-7" style="position: absolute;top:102px;left:42px;width:288px;" title="Issue due today">
+                        <div class="issue-subject hascontextmenu" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;issue-7&#34;}" data-number-of-rows="2" id="issue-7" style="position: absolute;inset-block-start:102px;inset-inline-start:42px;width:288px;" title="Issue due today">
                           <span class="issue-behind-schedule icon icon-issue">
                             <svg aria-hidden="true" class="s18 icon-svg">
                               <use href="/assets/icons-DIGEST.svg#icon--issue"></use>
@@ -600,7 +647,7 @@ $(document).ready(function(){
                             <input class="toggle-selection" name="ids[]" style="display:none;" type="checkbox" value="7">
                           </span>
                         </div>
-                        <div class="issue-subject hascontextmenu" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;issue-1&#34;}" data-number-of-rows="3" id="issue-1" style="position: absolute;top:122px;left:42px;width:288px;" title="Cannot print recipes">
+                        <div class="issue-subject hascontextmenu" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;issue-1&#34;}" data-number-of-rows="3" id="issue-1" style="position: absolute;inset-block-start:122px;inset-inline-start:42px;width:288px;" title="Cannot print recipes">
                           <span class="issue-behind-schedule icon icon-issue">
                             <svg aria-hidden="true" class="s18 icon-svg">
                               <use href="/assets/icons-DIGEST.svg#icon--issue"></use>
@@ -610,9 +657,9 @@ $(document).ready(function(){
                             <input class="toggle-selection" name="ids[]" style="display:none;" type="checkbox" value="1">
                           </span>
                         </div>
-                        <div class="version-name open" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;version-2&#34;}" data-number-of-rows="4" id="version-2" style="position: absolute;top:142px;left:24px;width:306px;">
-                          <span class="icon icon-expanded expander">
-                            <svg aria-hidden="true" class="s18 icon-svg">
+                        <div class="version-name open" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;version-2&#34;}" data-number-of-rows="4" id="version-2" style="position: absolute;inset-block-start:142px;inset-inline-start:24px;width:306px;">
+                          <span class="icon icon-expanded expander" data-action="click-&gt;gantt--subjects#handleEntryClick">
+                            <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
                               <use href="/assets/icons-DIGEST.svg#icon--angle-down"></use>
                             </svg>
                           </span>
@@ -623,7 +670,7 @@ $(document).ready(function(){
                             <a href="/versions/2" title="02/04/2026">1.0</a>
                           </span>
                         </div>
-                        <div class="issue-subject hascontextmenu" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;issue-2&#34;}" data-number-of-rows="5" id="issue-2" style="position: absolute;top:162px;left:62px;width:268px;" title="Add ingredients categories">
+                        <div class="issue-subject hascontextmenu" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;issue-2&#34;}" data-number-of-rows="5" id="issue-2" style="position: absolute;inset-block-start:162px;inset-inline-start:62px;width:268px;" title="Add ingredients categories">
                           <span class="">
                             <span class="avatar-color-3 s13 avatar icon-avatar" role="img" title="Assignee: Dave Lopper">DL</span>
                             <a class="issue tracker-2 status-2 priority-5 priority-default created-by-me" href="/issues/2">Feature request #2</a>
@@ -631,9 +678,9 @@ $(document).ready(function(){
                             <input class="toggle-selection" name="ids[]" style="display:none;" type="checkbox" value="2">
                           </span>
                         </div>
-                        <div class="project-name open" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;project-5&#34;}" data-number-of-rows="6" style="position: absolute;top:182px;left:24px;width:306px;">
-                          <span class="icon icon-expanded expander">
-                            <svg aria-hidden="true" class="s18 icon-svg">
+                        <div class="project-name open" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;project-5&#34;}" data-number-of-rows="6" style="position: absolute;inset-block-start:182px;inset-inline-start:24px;width:306px;">
+                          <span class="icon icon-expanded expander" data-action="click-&gt;gantt--subjects#handleEntryClick">
+                            <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
                               <use href="/assets/icons-DIGEST.svg#icon--angle-down"></use>
                             </svg>
                           </span>
@@ -644,7 +691,7 @@ $(document).ready(function(){
                             <a href="/projects/private-child">Private child of eCookbook</a>
                           </span>
                         </div>
-                        <div class="issue-subject hascontextmenu" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;issue-6&#34;}" data-number-of-rows="7" id="issue-6" style="position: absolute;top:202px;left:62px;width:268px;" title="Issue of a private subproject">
+                        <div class="issue-subject hascontextmenu" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;issue-6&#34;}" data-number-of-rows="7" id="issue-6" style="position: absolute;inset-block-start:202px;inset-inline-start:62px;width:268px;" title="Issue of a private subproject">
                           <span class="issue-behind-schedule icon icon-issue">
                             <svg aria-hidden="true" class="s18 icon-svg">
                               <use href="/assets/icons-DIGEST.svg#icon--issue"></use>
@@ -654,7 +701,7 @@ $(document).ready(function(){
                             <input class="toggle-selection" name="ids[]" style="display:none;" type="checkbox" value="6">
                           </span>
                         </div>
-                        <div class="issue-subject hascontextmenu" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;issue-9&#34;}" data-number-of-rows="8" id="issue-9" style="position: absolute;top:222px;left:62px;width:268px;" title="Blocked Issue">
+                        <div class="issue-subject hascontextmenu" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;issue-9&#34;}" data-number-of-rows="8" id="issue-9" style="position: absolute;inset-block-start:222px;inset-inline-start:62px;width:268px;" title="Blocked Issue">
                           <span class="issue-behind-schedule icon icon-issue">
                             <svg aria-hidden="true" class="s18 icon-svg">
                               <use href="/assets/icons-DIGEST.svg#icon--issue"></use>
@@ -664,7 +711,7 @@ $(document).ready(function(){
                             <input class="toggle-selection" name="ids[]" style="display:none;" type="checkbox" value="9">
                           </span>
                         </div>
-                        <div class="issue-subject hascontextmenu" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;issue-10&#34;}" data-number-of-rows="9" id="issue-10" style="position: absolute;top:242px;left:62px;width:268px;" title="Issue Doing the Blocking">
+                        <div class="issue-subject hascontextmenu" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;issue-10&#34;}" data-number-of-rows="9" id="issue-10" style="position: absolute;inset-block-start:242px;inset-inline-start:62px;width:268px;" title="Issue Doing the Blocking">
                           <span class="issue-behind-schedule icon icon-issue">
                             <svg aria-hidden="true" class="s18 icon-svg">
                               <use href="/assets/icons-DIGEST.svg#icon--issue"></use>
@@ -674,9 +721,9 @@ $(document).ready(function(){
                             <input class="toggle-selection" name="ids[]" style="display:none;" type="checkbox" value="10">
                           </span>
                         </div>
-                        <div class="project-name open" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;project-3&#34;}" data-number-of-rows="10" style="position: absolute;top:262px;left:24px;width:306px;">
-                          <span class="icon icon-expanded expander">
-                            <svg aria-hidden="true" class="s18 icon-svg">
+                        <div class="project-name open" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;project-3&#34;}" data-number-of-rows="10" style="position: absolute;inset-block-start:262px;inset-inline-start:24px;width:306px;">
+                          <span class="icon icon-expanded expander" data-action="click-&gt;gantt--subjects#handleEntryClick">
+                            <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
                               <use href="/assets/icons-DIGEST.svg#icon--angle-down"></use>
                             </svg>
                           </span>
@@ -687,7 +734,7 @@ $(document).ready(function(){
                             <a href="/projects/subproject1">eCookbook Subproject 1</a>
                           </span>
                         </div>
-                        <div class="issue-subject hascontextmenu" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;issue-5&#34;}" data-number-of-rows="11" id="issue-5" style="position: absolute;top:282px;left:62px;width:268px;" title="Subproject issue">
+                        <div class="issue-subject hascontextmenu" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;issue-5&#34;}" data-number-of-rows="11" id="issue-5" style="position: absolute;inset-block-start:282px;inset-inline-start:62px;width:268px;" title="Subproject issue">
                           <span class="icon icon-issue">
                             <svg aria-hidden="true" class="s18 icon-svg">
                               <use href="/assets/icons-DIGEST.svg#icon--issue"></use>
@@ -697,7 +744,7 @@ $(document).ready(function(){
                             <input class="toggle-selection" name="ids[]" style="display:none;" type="checkbox" value="5">
                           </span>
                         </div>
-                        <div class="issue-subject hascontextmenu" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;issue-13&#34;}" data-number-of-rows="12" id="issue-13" style="position: absolute;top:302px;left:62px;width:268px;" title="Subproject issue two">
+                        <div class="issue-subject hascontextmenu" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;issue-13&#34;}" data-number-of-rows="12" id="issue-13" style="position: absolute;inset-block-start:302px;inset-inline-start:62px;width:268px;" title="Subproject issue two">
                           <span class="icon icon-issue">
                             <svg aria-hidden="true" class="s18 icon-svg">
                               <use href="/assets/icons-DIGEST.svg#icon--issue"></use>
@@ -707,7 +754,7 @@ $(document).ready(function(){
                             <input class="toggle-selection" name="ids[]" style="display:none;" type="checkbox" value="13">
                           </span>
                         </div>
-                        <div class="issue-subject hascontextmenu" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;issue-14&#34;}" data-number-of-rows="13" id="issue-14" style="position: absolute;top:322px;left:62px;width:268px;" title="Private issue on public project">
+                        <div class="issue-subject hascontextmenu" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;issue-14&#34;}" data-number-of-rows="13" id="issue-14" style="position: absolute;inset-block-start:322px;inset-inline-start:62px;width:268px;" title="Private issue on public project">
                           <span class="icon icon-issue">
                             <svg aria-hidden="true" class="s18 icon-svg">
                               <use href="/assets/icons-DIGEST.svg#icon--issue"></use>
@@ -721,197 +768,197 @@ $(document).ready(function(){
                     </div>
                   </div>
                 </td>
-                <td class="gantt_status_column gantt_selected_column" id="status">
+                <td class="gantt_status_column gantt_selected_column" data-action="resize@window-&gt;gantt--column#handleWindowResize" data-controller="gantt--column" data-gantt--column-column-value="status" data-gantt--column-min-width-value="20" id="status">
                   <div class="gantt_status_container gantt_selected_column_container" style="position: relative;height: 628px;">
                     <div class="gantt_hdr" style="height: 604px;overflow: hidden;"></div>
-                    <div class="gantt_hdr" style="height: 54px;background: #eee;">
+                    <div class="gantt_hdr" style="height: 54px;background: #f1f3f5;">
                       <p class="gantt_hdr_selected_column_name">Status</p>
                     </div>
                     <div class="gantt_status gantt_selected_column_content">
-                      <div class="issue_status" data-collapse-expand="issue-3" data-number-of-rows="1" id="status_issue_3" style="position: absolute;top: 82px; font-size: 0.8em;">New</div>
-                      <div class="issue_status" data-collapse-expand="issue-7" data-number-of-rows="2" id="status_issue_7" style="position: absolute;top: 102px; font-size: 0.8em;">New</div>
-                      <div class="issue_status" data-collapse-expand="issue-1" data-number-of-rows="3" id="status_issue_1" style="position: absolute;top: 122px; font-size: 0.8em;">New</div>
-                      <div class="issue_status" data-collapse-expand="issue-2" data-number-of-rows="5" id="status_issue_2" style="position: absolute;top: 162px; font-size: 0.8em;">Assigned</div>
-                      <div class="issue_status" data-collapse-expand="issue-6" data-number-of-rows="7" id="status_issue_6" style="position: absolute;top: 202px; font-size: 0.8em;">New</div>
-                      <div class="issue_status" data-collapse-expand="issue-9" data-number-of-rows="8" id="status_issue_9" style="position: absolute;top: 222px; font-size: 0.8em;">New</div>
-                      <div class="issue_status" data-collapse-expand="issue-10" data-number-of-rows="9" id="status_issue_10" style="position: absolute;top: 242px; font-size: 0.8em;">New</div>
-                      <div class="issue_status" data-collapse-expand="issue-5" data-number-of-rows="11" id="status_issue_5" style="position: absolute;top: 282px; font-size: 0.8em;">New</div>
-                      <div class="issue_status" data-collapse-expand="issue-13" data-number-of-rows="12" id="status_issue_13" style="position: absolute;top: 302px; font-size: 0.8em;">New</div>
-                      <div class="issue_status" data-collapse-expand="issue-14" data-number-of-rows="13" id="status_issue_14" style="position: absolute;top: 322px; font-size: 0.8em;">New</div>
+                      <div class="issue_status" data-collapse-expand="issue-3" data-number-of-rows="1" id="status_issue_3" style="position: absolute;inset-block-start: 82px; font-size: 0.8em;">New</div>
+                      <div class="issue_status" data-collapse-expand="issue-7" data-number-of-rows="2" id="status_issue_7" style="position: absolute;inset-block-start: 102px; font-size: 0.8em;">New</div>
+                      <div class="issue_status" data-collapse-expand="issue-1" data-number-of-rows="3" id="status_issue_1" style="position: absolute;inset-block-start: 122px; font-size: 0.8em;">New</div>
+                      <div class="issue_status" data-collapse-expand="issue-2" data-number-of-rows="5" id="status_issue_2" style="position: absolute;inset-block-start: 162px; font-size: 0.8em;">Assigned</div>
+                      <div class="issue_status" data-collapse-expand="issue-6" data-number-of-rows="7" id="status_issue_6" style="position: absolute;inset-block-start: 202px; font-size: 0.8em;">New</div>
+                      <div class="issue_status" data-collapse-expand="issue-9" data-number-of-rows="8" id="status_issue_9" style="position: absolute;inset-block-start: 222px; font-size: 0.8em;">New</div>
+                      <div class="issue_status" data-collapse-expand="issue-10" data-number-of-rows="9" id="status_issue_10" style="position: absolute;inset-block-start: 242px; font-size: 0.8em;">New</div>
+                      <div class="issue_status" data-collapse-expand="issue-5" data-number-of-rows="11" id="status_issue_5" style="position: absolute;inset-block-start: 282px; font-size: 0.8em;">New</div>
+                      <div class="issue_status" data-collapse-expand="issue-13" data-number-of-rows="12" id="status_issue_13" style="position: absolute;inset-block-start: 302px; font-size: 0.8em;">New</div>
+                      <div class="issue_status" data-collapse-expand="issue-14" data-number-of-rows="13" id="status_issue_14" style="position: absolute;inset-block-start: 322px; font-size: 0.8em;">New</div>
                     </div>
                   </div>
                 </td>
-                <td class="gantt_priority_column gantt_selected_column" id="priority">
+                <td class="gantt_priority_column gantt_selected_column" data-action="resize@window-&gt;gantt--column#handleWindowResize" data-controller="gantt--column" data-gantt--column-column-value="priority" data-gantt--column-min-width-value="20" id="priority">
                   <div class="gantt_priority_container gantt_selected_column_container" style="position: relative;height: 628px;">
                     <div class="gantt_hdr" style="height: 604px;overflow: hidden;"></div>
-                    <div class="gantt_hdr" style="height: 54px;background: #eee;">
+                    <div class="gantt_hdr" style="height: 54px;background: #f1f3f5;">
                       <p class="gantt_hdr_selected_column_name">Priority</p>
                     </div>
                     <div class="gantt_priority gantt_selected_column_content">
-                      <div class="issue_priority" data-collapse-expand="issue-3" data-number-of-rows="1" id="priority_issue_3" style="position: absolute;top: 82px; font-size: 0.8em;">Low</div>
-                      <div class="issue_priority" data-collapse-expand="issue-7" data-number-of-rows="2" id="priority_issue_7" style="position: absolute;top: 102px; font-size: 0.8em;">Normal</div>
-                      <div class="issue_priority" data-collapse-expand="issue-1" data-number-of-rows="3" id="priority_issue_1" style="position: absolute;top: 122px; font-size: 0.8em;">Low</div>
-                      <div class="issue_priority" data-collapse-expand="issue-2" data-number-of-rows="5" id="priority_issue_2" style="position: absolute;top: 162px; font-size: 0.8em;">Normal</div>
-                      <div class="issue_priority" data-collapse-expand="issue-6" data-number-of-rows="7" id="priority_issue_6" style="position: absolute;top: 202px; font-size: 0.8em;">Low</div>
-                      <div class="issue_priority" data-collapse-expand="issue-9" data-number-of-rows="8" id="priority_issue_9" style="position: absolute;top: 222px; font-size: 0.8em;">Normal</div>
-                      <div class="issue_priority" data-collapse-expand="issue-10" data-number-of-rows="9" id="priority_issue_10" style="position: absolute;top: 242px; font-size: 0.8em;">Normal</div>
-                      <div class="issue_priority" data-collapse-expand="issue-5" data-number-of-rows="11" id="priority_issue_5" style="position: absolute;top: 282px; font-size: 0.8em;">Low</div>
-                      <div class="issue_priority" data-collapse-expand="issue-13" data-number-of-rows="12" id="priority_issue_13" style="position: absolute;top: 302px; font-size: 0.8em;">Low</div>
-                      <div class="issue_priority" data-collapse-expand="issue-14" data-number-of-rows="13" id="priority_issue_14" style="position: absolute;top: 322px; font-size: 0.8em;">Normal</div>
+                      <div class="issue_priority" data-collapse-expand="issue-3" data-number-of-rows="1" id="priority_issue_3" style="position: absolute;inset-block-start: 82px; font-size: 0.8em;">Low</div>
+                      <div class="issue_priority" data-collapse-expand="issue-7" data-number-of-rows="2" id="priority_issue_7" style="position: absolute;inset-block-start: 102px; font-size: 0.8em;">Normal</div>
+                      <div class="issue_priority" data-collapse-expand="issue-1" data-number-of-rows="3" id="priority_issue_1" style="position: absolute;inset-block-start: 122px; font-size: 0.8em;">Low</div>
+                      <div class="issue_priority" data-collapse-expand="issue-2" data-number-of-rows="5" id="priority_issue_2" style="position: absolute;inset-block-start: 162px; font-size: 0.8em;">Normal</div>
+                      <div class="issue_priority" data-collapse-expand="issue-6" data-number-of-rows="7" id="priority_issue_6" style="position: absolute;inset-block-start: 202px; font-size: 0.8em;">Low</div>
+                      <div class="issue_priority" data-collapse-expand="issue-9" data-number-of-rows="8" id="priority_issue_9" style="position: absolute;inset-block-start: 222px; font-size: 0.8em;">Normal</div>
+                      <div class="issue_priority" data-collapse-expand="issue-10" data-number-of-rows="9" id="priority_issue_10" style="position: absolute;inset-block-start: 242px; font-size: 0.8em;">Normal</div>
+                      <div class="issue_priority" data-collapse-expand="issue-5" data-number-of-rows="11" id="priority_issue_5" style="position: absolute;inset-block-start: 282px; font-size: 0.8em;">Low</div>
+                      <div class="issue_priority" data-collapse-expand="issue-13" data-number-of-rows="12" id="priority_issue_13" style="position: absolute;inset-block-start: 302px; font-size: 0.8em;">Low</div>
+                      <div class="issue_priority" data-collapse-expand="issue-14" data-number-of-rows="13" id="priority_issue_14" style="position: absolute;inset-block-start: 322px; font-size: 0.8em;">Normal</div>
                     </div>
                   </div>
                 </td>
-                <td class="gantt_assigned_to_column gantt_selected_column" id="assigned_to">
+                <td class="gantt_assigned_to_column gantt_selected_column" data-action="resize@window-&gt;gantt--column#handleWindowResize" data-controller="gantt--column" data-gantt--column-column-value="assigned_to" data-gantt--column-min-width-value="20" id="assigned_to">
                   <div class="gantt_assigned_to_container gantt_selected_column_container" style="position: relative;height: 628px;">
                     <div class="gantt_hdr" style="height: 604px;overflow: hidden;"></div>
-                    <div class="gantt_hdr" style="height: 54px;background: #eee;">
+                    <div class="gantt_hdr" style="height: 54px;background: #f1f3f5;">
                       <p class="gantt_hdr_selected_column_name">Assignee</p>
                     </div>
                     <div class="gantt_assigned_to gantt_selected_column_content">
-                      <div class="issue_assigned_to" data-collapse-expand="issue-3" data-number-of-rows="1" id="assigned_to_issue_3" style="position: absolute;top: 82px; font-size: 0.8em;">
+                      <div class="issue_assigned_to" data-collapse-expand="issue-3" data-number-of-rows="1" id="assigned_to_issue_3" style="position: absolute;inset-block-start: 82px; font-size: 0.8em;">
                         <a class="user active" href="/users/3">Dave Lopper</a>
                       </div>
-                      <div class="issue_assigned_to" data-collapse-expand="issue-7" data-number-of-rows="2" id="assigned_to_issue_7" style="position: absolute;top: 102px; font-size: 0.8em;"></div>
-                      <div class="issue_assigned_to" data-collapse-expand="issue-1" data-number-of-rows="3" id="assigned_to_issue_1" style="position: absolute;top: 122px; font-size: 0.8em;"></div>
-                      <div class="issue_assigned_to" data-collapse-expand="issue-2" data-number-of-rows="5" id="assigned_to_issue_2" style="position: absolute;top: 162px; font-size: 0.8em;">
+                      <div class="issue_assigned_to" data-collapse-expand="issue-7" data-number-of-rows="2" id="assigned_to_issue_7" style="position: absolute;inset-block-start: 102px; font-size: 0.8em;"></div>
+                      <div class="issue_assigned_to" data-collapse-expand="issue-1" data-number-of-rows="3" id="assigned_to_issue_1" style="position: absolute;inset-block-start: 122px; font-size: 0.8em;"></div>
+                      <div class="issue_assigned_to" data-collapse-expand="issue-2" data-number-of-rows="5" id="assigned_to_issue_2" style="position: absolute;inset-block-start: 162px; font-size: 0.8em;">
                         <a class="user active" href="/users/3">Dave Lopper</a>
                       </div>
-                      <div class="issue_assigned_to" data-collapse-expand="issue-6" data-number-of-rows="7" id="assigned_to_issue_6" style="position: absolute;top: 202px; font-size: 0.8em;"></div>
-                      <div class="issue_assigned_to" data-collapse-expand="issue-9" data-number-of-rows="8" id="assigned_to_issue_9" style="position: absolute;top: 222px; font-size: 0.8em;"></div>
-                      <div class="issue_assigned_to" data-collapse-expand="issue-10" data-number-of-rows="9" id="assigned_to_issue_10" style="position: absolute;top: 242px; font-size: 0.8em;"></div>
-                      <div class="issue_assigned_to" data-collapse-expand="issue-5" data-number-of-rows="11" id="assigned_to_issue_5" style="position: absolute;top: 282px; font-size: 0.8em;"></div>
-                      <div class="issue_assigned_to" data-collapse-expand="issue-13" data-number-of-rows="12" id="assigned_to_issue_13" style="position: absolute;top: 302px; font-size: 0.8em;"></div>
-                      <div class="issue_assigned_to" data-collapse-expand="issue-14" data-number-of-rows="13" id="assigned_to_issue_14" style="position: absolute;top: 322px; font-size: 0.8em;"></div>
+                      <div class="issue_assigned_to" data-collapse-expand="issue-6" data-number-of-rows="7" id="assigned_to_issue_6" style="position: absolute;inset-block-start: 202px; font-size: 0.8em;"></div>
+                      <div class="issue_assigned_to" data-collapse-expand="issue-9" data-number-of-rows="8" id="assigned_to_issue_9" style="position: absolute;inset-block-start: 222px; font-size: 0.8em;"></div>
+                      <div class="issue_assigned_to" data-collapse-expand="issue-10" data-number-of-rows="9" id="assigned_to_issue_10" style="position: absolute;inset-block-start: 242px; font-size: 0.8em;"></div>
+                      <div class="issue_assigned_to" data-collapse-expand="issue-5" data-number-of-rows="11" id="assigned_to_issue_5" style="position: absolute;inset-block-start: 282px; font-size: 0.8em;"></div>
+                      <div class="issue_assigned_to" data-collapse-expand="issue-13" data-number-of-rows="12" id="assigned_to_issue_13" style="position: absolute;inset-block-start: 302px; font-size: 0.8em;"></div>
+                      <div class="issue_assigned_to" data-collapse-expand="issue-14" data-number-of-rows="13" id="assigned_to_issue_14" style="position: absolute;inset-block-start: 322px; font-size: 0.8em;"></div>
                     </div>
                   </div>
                 </td>
-                <td class="gantt_updated_on_column gantt_selected_column last_gantt_selected_column" id="updated_on">
+                <td class="gantt_updated_on_column gantt_selected_column last_gantt_selected_column" data-action="resize@window-&gt;gantt--column#handleWindowResize" data-controller="gantt--column" data-gantt--column-column-value="updated_on" data-gantt--column-min-width-value="20" id="updated_on">
                   <div class="gantt_updated_on_container gantt_selected_column_container" style="position: relative;height: 628px;">
                     <div class="gantt_hdr" style="height: 604px;overflow: hidden;"></div>
-                    <div class="gantt_hdr" style="height: 54px;background: #eee;">
+                    <div class="gantt_hdr" style="height: 54px;background: #f1f3f5;">
                       <p class="gantt_hdr_selected_column_name">Updated</p>
                     </div>
                     <div class="gantt_updated_on gantt_selected_column_content">
-                      <div class="issue_updated_on" data-collapse-expand="issue-3" data-number-of-rows="1" id="updated_on_issue_3" style="position: absolute;top: 82px; font-size: 0.8em;">07/19/2006 07:07 PM</div>
-                      <div class="issue_updated_on" data-collapse-expand="issue-7" data-number-of-rows="2" id="updated_on_issue_7" style="position: absolute;top: 102px; font-size: 0.8em;">01/05/2026 12:00 PM</div>
-                      <div class="issue_updated_on" data-collapse-expand="issue-1" data-number-of-rows="3" id="updated_on_issue_1" style="position: absolute;top: 122px; font-size: 0.8em;">01/14/2026 12:00 PM</div>
-                      <div class="issue_updated_on" data-collapse-expand="issue-2" data-number-of-rows="5" id="updated_on_issue_2" style="position: absolute;top: 162px; font-size: 0.8em;">07/19/2006 07:09 PM</div>
-                      <div class="issue_updated_on" data-collapse-expand="issue-6" data-number-of-rows="7" id="updated_on_issue_6" style="position: absolute;top: 202px; font-size: 0.8em;">01/15/2026 11:59 AM</div>
-                      <div class="issue_updated_on" data-collapse-expand="issue-9" data-number-of-rows="8" id="updated_on_issue_9" style="position: absolute;top: 222px; font-size: 0.8em;">01/15/2026 11:59 AM</div>
-                      <div class="issue_updated_on" data-collapse-expand="issue-10" data-number-of-rows="9" id="updated_on_issue_10" style="position: absolute;top: 242px; font-size: 0.8em;">01/15/2026 11:59 AM</div>
-                      <div class="issue_updated_on" data-collapse-expand="issue-5" data-number-of-rows="11" id="updated_on_issue_5" style="position: absolute;top: 282px; font-size: 0.8em;">01/13/2026 12:00 PM</div>
-                      <div class="issue_updated_on" data-collapse-expand="issue-13" data-number-of-rows="12" id="updated_on_issue_13" style="position: absolute;top: 302px; font-size: 0.8em;">01/13/2026 12:00 PM</div>
-                      <div class="issue_updated_on" data-collapse-expand="issue-14" data-number-of-rows="13" id="updated_on_issue_14" style="position: absolute;top: 322px; font-size: 0.8em;">12/31/2025 12:00 PM</div>
+                      <div class="issue_updated_on" data-collapse-expand="issue-3" data-number-of-rows="1" id="updated_on_issue_3" style="position: absolute;inset-block-start: 82px; font-size: 0.8em;">07/19/2006 07:07 PM</div>
+                      <div class="issue_updated_on" data-collapse-expand="issue-7" data-number-of-rows="2" id="updated_on_issue_7" style="position: absolute;inset-block-start: 102px; font-size: 0.8em;">01/05/2026 12:00 PM</div>
+                      <div class="issue_updated_on" data-collapse-expand="issue-1" data-number-of-rows="3" id="updated_on_issue_1" style="position: absolute;inset-block-start: 122px; font-size: 0.8em;">01/14/2026 12:00 PM</div>
+                      <div class="issue_updated_on" data-collapse-expand="issue-2" data-number-of-rows="5" id="updated_on_issue_2" style="position: absolute;inset-block-start: 162px; font-size: 0.8em;">07/19/2006 07:09 PM</div>
+                      <div class="issue_updated_on" data-collapse-expand="issue-6" data-number-of-rows="7" id="updated_on_issue_6" style="position: absolute;inset-block-start: 202px; font-size: 0.8em;">01/15/2026 11:59 AM</div>
+                      <div class="issue_updated_on" data-collapse-expand="issue-9" data-number-of-rows="8" id="updated_on_issue_9" style="position: absolute;inset-block-start: 222px; font-size: 0.8em;">01/15/2026 11:59 AM</div>
+                      <div class="issue_updated_on" data-collapse-expand="issue-10" data-number-of-rows="9" id="updated_on_issue_10" style="position: absolute;inset-block-start: 242px; font-size: 0.8em;">01/15/2026 11:59 AM</div>
+                      <div class="issue_updated_on" data-collapse-expand="issue-5" data-number-of-rows="11" id="updated_on_issue_5" style="position: absolute;inset-block-start: 282px; font-size: 0.8em;">01/13/2026 12:00 PM</div>
+                      <div class="issue_updated_on" data-collapse-expand="issue-13" data-number-of-rows="12" id="updated_on_issue_13" style="position: absolute;inset-block-start: 302px; font-size: 0.8em;">01/13/2026 12:00 PM</div>
+                      <div class="issue_updated_on" data-collapse-expand="issue-14" data-number-of-rows="13" id="updated_on_issue_14" style="position: absolute;inset-block-start: 322px; font-size: 0.8em;">12/31/2025 12:00 PM</div>
                     </div>
                   </div>
                 </td>
                 <td>
-                  <div id="gantt_area" style="position:relative;height:628px;overflow:auto;">
-                    <div class="gantt_hdr" style="width: 495px;height: 54px;background: #eee;"></div>
-                    <div class="gantt_hdr" style="left: 0px;width: 247px;height: 18px;">
+                  <div data-gantt--chart-target="ganttArea" id="gantt_area" style="position:relative;height:628px;overflow:auto;">
+                    <div class="gantt_hdr" style="width: 495px;height: 54px;background: #f1f3f5;"></div>
+                    <div class="gantt_hdr" style="inset-inline-start: 0px;width: 247px;height: 18px;">
                       <a href="/projects/ecookbook/issues/gantt?month=12&amp;months=2&amp;year=2025&amp;zoom=3" title="December 2025">2025-12</a>
                     </div>
-                    <div class="gantt_hdr" style="left: 248px;width: 247px;height: 18px;">
+                    <div class="gantt_hdr" style="inset-inline-start: 248px;width: 247px;height: 18px;">
                       <a href="/projects/ecookbook/issues/gantt?month=1&amp;months=2&amp;year=2026&amp;zoom=3" title="January 2026">2026-1</a>
                     </div>
-                    <div class="gantt_hdr" style="left: 0px;top: 19px;width: 55px;height: 17px;">
+                    <div class="gantt_hdr" style="inset-inline-start: 0px;inset-block-start: 19px;width: 55px;height: 17px;">
                       <small>49</small>
                     </div>
-                    <div class="gantt_hdr" style="left: 56px;top: 19px;width: 55px;height: 17px;">
+                    <div class="gantt_hdr" style="inset-inline-start: 56px;inset-block-start: 19px;width: 55px;height: 17px;">
                       <small>50</small>
                     </div>
-                    <div class="gantt_hdr" style="left: 112px;top: 19px;width: 55px;height: 17px;">
+                    <div class="gantt_hdr" style="inset-inline-start: 112px;inset-block-start: 19px;width: 55px;height: 17px;">
                       <small>51</small>
                     </div>
-                    <div class="gantt_hdr" style="left: 168px;top: 19px;width: 55px;height: 17px;">
+                    <div class="gantt_hdr" style="inset-inline-start: 168px;inset-block-start: 19px;width: 55px;height: 17px;">
                       <small>52</small>
                     </div>
-                    <div class="gantt_hdr" style="left: 224px;top: 19px;width: 55px;height: 17px;">
+                    <div class="gantt_hdr" style="inset-inline-start: 224px;inset-block-start: 19px;width: 55px;height: 17px;">
                       <small>1</small>
                     </div>
-                    <div class="gantt_hdr" style="left: 280px;top: 19px;width: 55px;height: 17px;">
+                    <div class="gantt_hdr" style="inset-inline-start: 280px;inset-block-start: 19px;width: 55px;height: 17px;">
                       <small>2</small>
                     </div>
-                    <div class="gantt_hdr" style="left: 336px;top: 19px;width: 55px;height: 17px;">
+                    <div class="gantt_hdr" style="inset-inline-start: 336px;inset-block-start: 19px;width: 55px;height: 17px;">
                       <small>3</small>
                     </div>
-                    <div class="gantt_hdr" style="left: 392px;top: 19px;width: 55px;height: 17px;">
+                    <div class="gantt_hdr" style="inset-inline-start: 392px;inset-block-start: 19px;width: 55px;height: 17px;">
                       <small>4</small>
                     </div>
-                    <div class="gantt_hdr" style="left: 448px;top: 19px;width: 47px;height: 17px;">
+                    <div class="gantt_hdr" style="inset-inline-start: 448px;inset-block-start: 19px;width: 47px;height: 17px;">
                       <small>5</small>
                     </div>
-                    <div class="gantt_hdr" style="left: 0px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">M</div>
-                    <div class="gantt_hdr" style="left: 8px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">T</div>
-                    <div class="gantt_hdr" style="left: 16px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">W</div>
-                    <div class="gantt_hdr" style="left: 24px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">T</div>
-                    <div class="gantt_hdr" style="left: 32px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">F</div>
-                    <div class="gantt_hdr nwday" style="left: 40px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">S</div>
-                    <div class="gantt_hdr nwday" style="left: 48px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">S</div>
-                    <div class="gantt_hdr" style="left: 56px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">M</div>
-                    <div class="gantt_hdr" style="left: 64px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">T</div>
-                    <div class="gantt_hdr" style="left: 72px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">W</div>
-                    <div class="gantt_hdr" style="left: 80px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">T</div>
-                    <div class="gantt_hdr" style="left: 88px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">F</div>
-                    <div class="gantt_hdr nwday" style="left: 96px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">S</div>
-                    <div class="gantt_hdr nwday" style="left: 104px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">S</div>
-                    <div class="gantt_hdr" style="left: 112px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">M</div>
-                    <div class="gantt_hdr" style="left: 120px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">T</div>
-                    <div class="gantt_hdr" style="left: 128px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">W</div>
-                    <div class="gantt_hdr" style="left: 136px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">T</div>
-                    <div class="gantt_hdr" style="left: 144px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">F</div>
-                    <div class="gantt_hdr nwday" style="left: 152px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">S</div>
-                    <div class="gantt_hdr nwday" style="left: 160px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">S</div>
-                    <div class="gantt_hdr" style="left: 168px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">M</div>
-                    <div class="gantt_hdr" style="left: 176px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">T</div>
-                    <div class="gantt_hdr" style="left: 184px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">W</div>
-                    <div class="gantt_hdr" style="left: 192px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">T</div>
-                    <div class="gantt_hdr" style="left: 200px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">F</div>
-                    <div class="gantt_hdr nwday" style="left: 208px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">S</div>
-                    <div class="gantt_hdr nwday" style="left: 216px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">S</div>
-                    <div class="gantt_hdr" style="left: 224px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">M</div>
-                    <div class="gantt_hdr" style="left: 232px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">T</div>
-                    <div class="gantt_hdr" style="left: 240px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">W</div>
-                    <div class="gantt_hdr" style="left: 248px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">T</div>
-                    <div class="gantt_hdr" style="left: 256px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">F</div>
-                    <div class="gantt_hdr nwday" style="left: 264px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">S</div>
-                    <div class="gantt_hdr nwday" style="left: 272px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">S</div>
-                    <div class="gantt_hdr" style="left: 280px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">M</div>
-                    <div class="gantt_hdr" style="left: 288px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">T</div>
-                    <div class="gantt_hdr" style="left: 296px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">W</div>
-                    <div class="gantt_hdr" style="left: 304px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">T</div>
-                    <div class="gantt_hdr" style="left: 312px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">F</div>
-                    <div class="gantt_hdr nwday" style="left: 320px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">S</div>
-                    <div class="gantt_hdr nwday" style="left: 328px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">S</div>
-                    <div class="gantt_hdr" style="left: 336px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">M</div>
-                    <div class="gantt_hdr" style="left: 344px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">T</div>
-                    <div class="gantt_hdr" style="left: 352px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">W</div>
-                    <div class="gantt_hdr" style="left: 360px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">T</div>
-                    <div class="gantt_hdr" style="left: 368px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">F</div>
-                    <div class="gantt_hdr nwday" style="left: 376px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">S</div>
-                    <div class="gantt_hdr nwday" style="left: 384px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">S</div>
-                    <div class="gantt_hdr" style="left: 392px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">M</div>
-                    <div class="gantt_hdr" style="left: 400px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">T</div>
-                    <div class="gantt_hdr" style="left: 408px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">W</div>
-                    <div class="gantt_hdr" style="left: 416px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">T</div>
-                    <div class="gantt_hdr" style="left: 424px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">F</div>
-                    <div class="gantt_hdr nwday" style="left: 432px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">S</div>
-                    <div class="gantt_hdr nwday" style="left: 440px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">S</div>
-                    <div class="gantt_hdr" style="left: 448px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">M</div>
-                    <div class="gantt_hdr" style="left: 456px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">T</div>
-                    <div class="gantt_hdr" style="left: 464px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">W</div>
-                    <div class="gantt_hdr" style="left: 472px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">T</div>
-                    <div class="gantt_hdr" style="left: 480px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">F</div>
-                    <div class="gantt_hdr nwday" style="left: 488px;top: 37px;width: 7px;height: 567px;font-size:0.7em;">S</div>
+                    <div class="gantt_hdr" style="inset-inline-start: 0px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">M</div>
+                    <div class="gantt_hdr" style="inset-inline-start: 8px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">T</div>
+                    <div class="gantt_hdr" style="inset-inline-start: 16px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">W</div>
+                    <div class="gantt_hdr" style="inset-inline-start: 24px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">T</div>
+                    <div class="gantt_hdr" style="inset-inline-start: 32px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">F</div>
+                    <div class="gantt_hdr nwday" style="inset-inline-start: 40px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">S</div>
+                    <div class="gantt_hdr nwday" style="inset-inline-start: 48px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">S</div>
+                    <div class="gantt_hdr" style="inset-inline-start: 56px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">M</div>
+                    <div class="gantt_hdr" style="inset-inline-start: 64px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">T</div>
+                    <div class="gantt_hdr" style="inset-inline-start: 72px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">W</div>
+                    <div class="gantt_hdr" style="inset-inline-start: 80px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">T</div>
+                    <div class="gantt_hdr" style="inset-inline-start: 88px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">F</div>
+                    <div class="gantt_hdr nwday" style="inset-inline-start: 96px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">S</div>
+                    <div class="gantt_hdr nwday" style="inset-inline-start: 104px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">S</div>
+                    <div class="gantt_hdr" style="inset-inline-start: 112px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">M</div>
+                    <div class="gantt_hdr" style="inset-inline-start: 120px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">T</div>
+                    <div class="gantt_hdr" style="inset-inline-start: 128px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">W</div>
+                    <div class="gantt_hdr" style="inset-inline-start: 136px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">T</div>
+                    <div class="gantt_hdr" style="inset-inline-start: 144px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">F</div>
+                    <div class="gantt_hdr nwday" style="inset-inline-start: 152px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">S</div>
+                    <div class="gantt_hdr nwday" style="inset-inline-start: 160px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">S</div>
+                    <div class="gantt_hdr" style="inset-inline-start: 168px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">M</div>
+                    <div class="gantt_hdr" style="inset-inline-start: 176px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">T</div>
+                    <div class="gantt_hdr" style="inset-inline-start: 184px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">W</div>
+                    <div class="gantt_hdr" style="inset-inline-start: 192px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">T</div>
+                    <div class="gantt_hdr" style="inset-inline-start: 200px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">F</div>
+                    <div class="gantt_hdr nwday" style="inset-inline-start: 208px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">S</div>
+                    <div class="gantt_hdr nwday" style="inset-inline-start: 216px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">S</div>
+                    <div class="gantt_hdr" style="inset-inline-start: 224px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">M</div>
+                    <div class="gantt_hdr" style="inset-inline-start: 232px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">T</div>
+                    <div class="gantt_hdr" style="inset-inline-start: 240px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">W</div>
+                    <div class="gantt_hdr" style="inset-inline-start: 248px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">T</div>
+                    <div class="gantt_hdr" style="inset-inline-start: 256px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">F</div>
+                    <div class="gantt_hdr nwday" style="inset-inline-start: 264px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">S</div>
+                    <div class="gantt_hdr nwday" style="inset-inline-start: 272px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">S</div>
+                    <div class="gantt_hdr" style="inset-inline-start: 280px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">M</div>
+                    <div class="gantt_hdr" style="inset-inline-start: 288px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">T</div>
+                    <div class="gantt_hdr" style="inset-inline-start: 296px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">W</div>
+                    <div class="gantt_hdr" style="inset-inline-start: 304px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">T</div>
+                    <div class="gantt_hdr" style="inset-inline-start: 312px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">F</div>
+                    <div class="gantt_hdr nwday" style="inset-inline-start: 320px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">S</div>
+                    <div class="gantt_hdr nwday" style="inset-inline-start: 328px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">S</div>
+                    <div class="gantt_hdr" style="inset-inline-start: 336px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">M</div>
+                    <div class="gantt_hdr" style="inset-inline-start: 344px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">T</div>
+                    <div class="gantt_hdr" style="inset-inline-start: 352px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">W</div>
+                    <div class="gantt_hdr" style="inset-inline-start: 360px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">T</div>
+                    <div class="gantt_hdr" style="inset-inline-start: 368px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">F</div>
+                    <div class="gantt_hdr nwday" style="inset-inline-start: 376px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">S</div>
+                    <div class="gantt_hdr nwday" style="inset-inline-start: 384px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">S</div>
+                    <div class="gantt_hdr" style="inset-inline-start: 392px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">M</div>
+                    <div class="gantt_hdr" style="inset-inline-start: 400px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">T</div>
+                    <div class="gantt_hdr" style="inset-inline-start: 408px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">W</div>
+                    <div class="gantt_hdr" style="inset-inline-start: 416px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">T</div>
+                    <div class="gantt_hdr" style="inset-inline-start: 424px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">F</div>
+                    <div class="gantt_hdr nwday" style="inset-inline-start: 432px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">S</div>
+                    <div class="gantt_hdr nwday" style="inset-inline-start: 440px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">S</div>
+                    <div class="gantt_hdr" style="inset-inline-start: 448px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">M</div>
+                    <div class="gantt_hdr" style="inset-inline-start: 456px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">T</div>
+                    <div class="gantt_hdr" style="inset-inline-start: 464px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">W</div>
+                    <div class="gantt_hdr" style="inset-inline-start: 472px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">T</div>
+                    <div class="gantt_hdr" style="inset-inline-start: 480px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">F</div>
+                    <div class="gantt_hdr nwday" style="inset-inline-start: 488px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;">S</div>
                     <form accept-charset="UTF-8" action="/projects/ecookbook/issues/gantt" data-cm-url="/issues/context_menu" method="post" name="form-RANDOM">
                       <input autocomplete="off" name="authenticity_token" type="hidden" value="{{CSRF}}">
                       <input autocomplete="off" name="back_url" type="hidden" value="/projects/ecookbook/issues/gantt?month=12&amp;months=2&amp;year=2025&amp;zoom=3">
-                      <div class="task project task_todo" data-collapse-expand="project-1" data-number-of-rows="0" style="top:62px;left:0px;width:494px;"></div>
-                      <div class="task project label" data-collapse-expand="project-1" data-number-of-rows="0" style="top:62px;left:504px;width:15px;">eCookbook</div>
-                      <div class="task leaf task_todo" data-collapse-expand="issue-3" data-number-of-rows="1" id="task-todo-issue-3" style="top:82px;left:240px;width:86px;"></div>
-                      <div class="task leaf task_late" data-collapse-expand="issue-3" data-number-of-rows="1" style="top:82px;left:240px;width:86px;"></div>
-                      <div class="task leaf label" data-collapse-expand="issue-3" data-number-of-rows="1" style="top:82px;left:336px;width:15px;">New 0%</div>
-                      <div class="tooltip hascontextmenu" data-collapse-expand="issue-3" data-number-of-rows="1" style="position: absolute;top:82px;left:240px;width:88px;height:12px;">
+                      <div class="task project task_todo" data-collapse-expand="project-1" data-number-of-rows="0" style="inset-block-start:62px;inset-inline-start:0px;width:494px;"></div>
+                      <div class="task project label" data-collapse-expand="project-1" data-number-of-rows="0" style="inset-block-start:62px;inset-inline-start:504px;width:15px;">eCookbook</div>
+                      <div class="task leaf task_todo" data-collapse-expand="issue-3" data-number-of-rows="1" id="task-todo-issue-3" style="inset-block-start:82px;inset-inline-start:240px;width:86px;"></div>
+                      <div class="task leaf task_late" data-collapse-expand="issue-3" data-number-of-rows="1" style="inset-block-start:82px;inset-inline-start:240px;width:86px;"></div>
+                      <div class="task leaf label" data-collapse-expand="issue-3" data-number-of-rows="1" style="inset-block-start:82px;inset-inline-start:336px;width:15px;">New 0%</div>
+                      <div class="tooltip hascontextmenu" data-collapse-expand="issue-3" data-number-of-rows="1" style="position: absolute;inset-block-start:82px;inset-inline-start:240px;width:88px;height:12px;">
                         <span class="tip">
                           <a class="issue tracker-1 status-1 priority-4 priority-lowest overdue behind-schedule created-by-me" href="/issues/3">Bug #3</a>
                           : Error 281 when updating a recipe
@@ -940,10 +987,10 @@ $(document).ready(function(){
                         </span>
                         <input class="toggle-selection" name="ids[]" style="display:none;" type="checkbox" value="3">
                       </div>
-                      <div class="task leaf task_todo" data-collapse-expand="issue-7" data-number-of-rows="2" id="task-todo-issue-7" style="top:102px;left:280px;width:86px;"></div>
-                      <div class="task leaf task_late" data-collapse-expand="issue-7" data-number-of-rows="2" style="top:102px;left:280px;width:86px;"></div>
-                      <div class="task leaf label" data-collapse-expand="issue-7" data-number-of-rows="2" style="top:102px;left:376px;width:15px;">New 0%</div>
-                      <div class="tooltip hascontextmenu" data-collapse-expand="issue-7" data-number-of-rows="2" style="position: absolute;top:102px;left:280px;width:88px;height:12px;">
+                      <div class="task leaf task_todo" data-collapse-expand="issue-7" data-number-of-rows="2" id="task-todo-issue-7" style="inset-block-start:102px;inset-inline-start:280px;width:86px;"></div>
+                      <div class="task leaf task_late" data-collapse-expand="issue-7" data-number-of-rows="2" style="inset-block-start:102px;inset-inline-start:280px;width:86px;"></div>
+                      <div class="task leaf label" data-collapse-expand="issue-7" data-number-of-rows="2" style="inset-block-start:102px;inset-inline-start:376px;width:15px;">New 0%</div>
+                      <div class="tooltip hascontextmenu" data-collapse-expand="issue-7" data-number-of-rows="2" style="position: absolute;inset-block-start:102px;inset-inline-start:280px;width:88px;height:12px;">
                         <span class="tip">
                           <a class="issue tracker-1 status-1 priority-5 priority-default behind-schedule created-by-me" href="/issues/7">Bug #7</a>
                           : Issue due today
@@ -970,10 +1017,10 @@ $(document).ready(function(){
                         </span>
                         <input class="toggle-selection" name="ids[]" style="display:none;" type="checkbox" value="7">
                       </div>
-                      <div class="task leaf task_todo" data-collapse-expand="issue-1" data-number-of-rows="3" id="task-todo-issue-1" style="top:122px;left:352px;width:94px;"></div>
-                      <div class="task leaf task_late" data-collapse-expand="issue-1" data-number-of-rows="3" style="top:122px;left:352px;width:14px;"></div>
-                      <div class="task leaf label" data-collapse-expand="issue-1" data-number-of-rows="3" style="top:122px;left:456px;width:15px;">New 0%</div>
-                      <div class="tooltip hascontextmenu" data-collapse-expand="issue-1" data-number-of-rows="3" style="position: absolute;top:122px;left:352px;width:96px;height:12px;">
+                      <div class="task leaf task_todo" data-collapse-expand="issue-1" data-number-of-rows="3" id="task-todo-issue-1" style="inset-block-start:122px;inset-inline-start:352px;width:94px;"></div>
+                      <div class="task leaf task_late" data-collapse-expand="issue-1" data-number-of-rows="3" style="inset-block-start:122px;inset-inline-start:352px;width:14px;"></div>
+                      <div class="task leaf label" data-collapse-expand="issue-1" data-number-of-rows="3" style="inset-block-start:122px;inset-inline-start:456px;width:15px;">New 0%</div>
+                      <div class="tooltip hascontextmenu" data-collapse-expand="issue-1" data-number-of-rows="3" style="position: absolute;inset-block-start:122px;inset-inline-start:352px;width:96px;height:12px;">
                         <span class="tip">
                           <a class="issue tracker-1 status-1 priority-4 priority-lowest behind-schedule created-by-me" href="/issues/1">Bug #1</a>
                           : Cannot print recipes
@@ -1000,14 +1047,14 @@ $(document).ready(function(){
                         </span>
                         <input class="toggle-selection" name="ids[]" style="display:none;" type="checkbox" value="1">
                       </div>
-                      <div class="task version task_todo" data-collapse-expand="version-2" data-number-of-rows="4" id="task-todo-version-2" style="top:142px;left:344px;width:150px;"></div>
-                      <div class="task version task_done" data-collapse-expand="version-2" data-number-of-rows="4" id="task-done-version-2" style="top:142px;left:344px;width:117px;"></div>
-                      <div class="task version marker starting" data-collapse-expand="version-2" data-number-of-rows="4" style="top:142px;left:344px;width:15px;"></div>
-                      <div class="task version label" data-collapse-expand="version-2" data-number-of-rows="4" style="top:142px;left:504px;width:15px;">1.0 65%</div>
-                      <div class="task leaf task_todo" data-collapse-expand="issue-2" data-number-of-rows="5" id="task-todo-issue-2" style="top:162px;left:344px;width:150px;"></div>
-                      <div class="task leaf task_done" data-collapse-expand="issue-2" data-number-of-rows="5" id="task-done-issue-2" style="top:162px;left:344px;width:53px;"></div>
-                      <div class="task leaf label" data-collapse-expand="issue-2" data-number-of-rows="5" style="top:162px;left:504px;width:15px;">Assigned 30%</div>
-                      <div class="tooltip hascontextmenu" data-collapse-expand="issue-2" data-number-of-rows="5" style="position: absolute;top:162px;left:344px;width:152px;height:12px;">
+                      <div class="task version task_todo" data-collapse-expand="version-2" data-number-of-rows="4" id="task-todo-version-2" style="inset-block-start:142px;inset-inline-start:344px;width:150px;"></div>
+                      <div class="task version task_done" data-collapse-expand="version-2" data-number-of-rows="4" id="task-done-version-2" style="inset-block-start:142px;inset-inline-start:344px;width:117px;"></div>
+                      <div class="task version marker starting" data-collapse-expand="version-2" data-number-of-rows="4" style="inset-block-start:142px;inset-inline-start:344px;width:15px;"></div>
+                      <div class="task version label" data-collapse-expand="version-2" data-number-of-rows="4" style="inset-block-start:142px;inset-inline-start:504px;width:15px;">1.0 65%</div>
+                      <div class="task leaf task_todo" data-collapse-expand="issue-2" data-number-of-rows="5" id="task-todo-issue-2" style="inset-block-start:162px;inset-inline-start:344px;width:150px;"></div>
+                      <div class="task leaf task_done" data-collapse-expand="issue-2" data-number-of-rows="5" id="task-done-issue-2" style="inset-block-start:162px;inset-inline-start:344px;width:53px;"></div>
+                      <div class="task leaf label" data-collapse-expand="issue-2" data-number-of-rows="5" style="inset-block-start:162px;inset-inline-start:504px;width:15px;">Assigned 30%</div>
+                      <div class="tooltip hascontextmenu" data-collapse-expand="issue-2" data-number-of-rows="5" style="position: absolute;inset-block-start:162px;inset-inline-start:344px;width:152px;height:12px;">
                         <span class="tip">
                           <a class="issue tracker-2 status-2 priority-5 priority-default created-by-me" href="/issues/2">Feature request #2</a>
                           : Add ingredients categories
@@ -1036,14 +1083,14 @@ $(document).ready(function(){
                         </span>
                         <input class="toggle-selection" name="ids[]" style="display:none;" type="checkbox" value="2">
                       </div>
-                      <div class="task project task_todo" data-collapse-expand="project-5" data-number-of-rows="6" style="top:182px;left:360px;width:14px;"></div>
-                      <div class="task project marker starting" data-collapse-expand="project-5" data-number-of-rows="6" style="top:182px;left:360px;width:15px;"></div>
-                      <div class="task project marker ending" data-collapse-expand="project-5" data-number-of-rows="6" style="top:182px;left:376px;width:15px;"></div>
-                      <div class="task project label" data-collapse-expand="project-5" data-number-of-rows="6" style="top:182px;left:384px;width:15px;">Private child of eCookbook</div>
-                      <div class="task leaf task_todo" data-collapse-expand="issue-6" data-number-of-rows="7" id="task-todo-issue-6" style="top:202px;left:360px;width:14px;"></div>
-                      <div class="task leaf task_late" data-collapse-expand="issue-6" data-number-of-rows="7" style="top:202px;left:360px;width:6px;"></div>
-                      <div class="task leaf label" data-collapse-expand="issue-6" data-number-of-rows="7" style="top:202px;left:384px;width:15px;">New 0%</div>
-                      <div class="tooltip hascontextmenu" data-collapse-expand="issue-6" data-number-of-rows="7" style="position: absolute;top:202px;left:360px;width:16px;height:12px;">
+                      <div class="task project task_todo" data-collapse-expand="project-5" data-number-of-rows="6" style="inset-block-start:182px;inset-inline-start:360px;width:14px;"></div>
+                      <div class="task project marker starting" data-collapse-expand="project-5" data-number-of-rows="6" style="inset-block-start:182px;inset-inline-start:360px;width:15px;"></div>
+                      <div class="task project marker ending" data-collapse-expand="project-5" data-number-of-rows="6" style="inset-block-start:182px;inset-inline-start:376px;width:15px;"></div>
+                      <div class="task project label" data-collapse-expand="project-5" data-number-of-rows="6" style="inset-block-start:182px;inset-inline-start:384px;width:15px;">Private child of eCookbook</div>
+                      <div class="task leaf task_todo" data-collapse-expand="issue-6" data-number-of-rows="7" id="task-todo-issue-6" style="inset-block-start:202px;inset-inline-start:360px;width:14px;"></div>
+                      <div class="task leaf task_late" data-collapse-expand="issue-6" data-number-of-rows="7" style="inset-block-start:202px;inset-inline-start:360px;width:6px;"></div>
+                      <div class="task leaf label" data-collapse-expand="issue-6" data-number-of-rows="7" style="inset-block-start:202px;inset-inline-start:384px;width:15px;">New 0%</div>
+                      <div class="tooltip hascontextmenu" data-collapse-expand="issue-6" data-number-of-rows="7" style="position: absolute;inset-block-start:202px;inset-inline-start:360px;width:16px;height:12px;">
                         <span class="tip">
                           <a class="issue tracker-1 status-1 priority-4 priority-lowest behind-schedule created-by-me" href="/issues/6">Bug #6</a>
                           : Issue of a private subproject
@@ -1070,10 +1117,10 @@ $(document).ready(function(){
                         </span>
                         <input class="toggle-selection" name="ids[]" style="display:none;" type="checkbox" value="6">
                       </div>
-                      <div class="task leaf task_todo" data-collapse-expand="issue-9" data-number-of-rows="8" id="task-todo-issue-9" style="top:222px;left:360px;width:14px;"></div>
-                      <div class="task leaf task_late" data-collapse-expand="issue-9" data-number-of-rows="8" style="top:222px;left:360px;width:6px;"></div>
-                      <div class="task leaf label" data-collapse-expand="issue-9" data-number-of-rows="8" style="top:222px;left:384px;width:15px;">New 0%</div>
-                      <div class="tooltip hascontextmenu" data-collapse-expand="issue-9" data-number-of-rows="8" style="position: absolute;top:222px;left:360px;width:16px;height:12px;">
+                      <div class="task leaf task_todo" data-collapse-expand="issue-9" data-number-of-rows="8" id="task-todo-issue-9" style="inset-block-start:222px;inset-inline-start:360px;width:14px;"></div>
+                      <div class="task leaf task_late" data-collapse-expand="issue-9" data-number-of-rows="8" style="inset-block-start:222px;inset-inline-start:360px;width:6px;"></div>
+                      <div class="task leaf label" data-collapse-expand="issue-9" data-number-of-rows="8" style="inset-block-start:222px;inset-inline-start:384px;width:15px;">New 0%</div>
+                      <div class="tooltip hascontextmenu" data-collapse-expand="issue-9" data-number-of-rows="8" style="position: absolute;inset-block-start:222px;inset-inline-start:360px;width:16px;height:12px;">
                         <span class="tip">
                           <a class="issue tracker-1 status-1 priority-5 priority-default behind-schedule created-by-me" href="/issues/9">Bug #9</a>
                           : Blocked Issue
@@ -1100,10 +1147,10 @@ $(document).ready(function(){
                         </span>
                         <input class="toggle-selection" name="ids[]" style="display:none;" type="checkbox" value="9">
                       </div>
-                      <div class="task leaf task_todo" data-collapse-expand="issue-10" data-number-of-rows="9" data-rels="{&#34;blocks&#34;:[9]}" id="task-todo-issue-10" style="top:242px;left:360px;width:14px;"></div>
-                      <div class="task leaf task_late" data-collapse-expand="issue-10" data-number-of-rows="9" style="top:242px;left:360px;width:6px;"></div>
-                      <div class="task leaf label" data-collapse-expand="issue-10" data-number-of-rows="9" style="top:242px;left:384px;width:15px;">New 0%</div>
-                      <div class="tooltip hascontextmenu" data-collapse-expand="issue-10" data-number-of-rows="9" style="position: absolute;top:242px;left:360px;width:16px;height:12px;">
+                      <div class="task leaf task_todo" data-collapse-expand="issue-10" data-number-of-rows="9" data-rels="{&#34;blocks&#34;:[9]}" id="task-todo-issue-10" style="inset-block-start:242px;inset-inline-start:360px;width:14px;"></div>
+                      <div class="task leaf task_late" data-collapse-expand="issue-10" data-number-of-rows="9" style="inset-block-start:242px;inset-inline-start:360px;width:6px;"></div>
+                      <div class="task leaf label" data-collapse-expand="issue-10" data-number-of-rows="9" style="inset-block-start:242px;inset-inline-start:384px;width:15px;">New 0%</div>
+                      <div class="tooltip hascontextmenu" data-collapse-expand="issue-10" data-number-of-rows="9" style="position: absolute;inset-block-start:242px;inset-inline-start:360px;width:16px;height:12px;">
                         <span class="tip">
                           <a class="issue tracker-1 status-1 priority-5 priority-default behind-schedule created-by-me" href="/issues/10">Bug #10</a>
                           : Issue Doing the Blocking
@@ -1131,8 +1178,8 @@ $(document).ready(function(){
                         <input class="toggle-selection" name="ids[]" style="display:none;" type="checkbox" value="10">
                       </div>
                     </form>
-                    <div id="today_line" style="position: absolute;height: 550px;top: 55px;left: 367px;width:10px;border-left: 1px dashed red;"></div>
-                    <div id="gantt_draw_area" style="position: absolute;height: 550px;top: 55px;left: 0px;width: 495px;"></div>
+                    <div id="today_line" style="position: absolute;height: 550px;inset-block-start: 55px;inset-inline-start: 367px;width:10px;border-inline-start: 1px dashed red;"></div>
+                    <div data-gantt--chart-target="drawArea" id="gantt_draw_area" style="position: absolute;height: 550px;inset-block-start: 55px;inset-inline-start: 0px;width: 495px;"></div>
                   </div>
                 </td>
               </tr>
@@ -1154,23 +1201,6 @@ $(document).ready(function(){
               <a class="pdf" href="/projects/ecookbook/issues/gantt.pdf?month=12&amp;months=2&amp;year=2025&amp;zoom=3" rel="nofollow">PDF</a>
             </span>
           </p>
-          <script>//<![CDATA[
-
-  var issue_relation_type = {"blocks":{"landscape_margin":16,"color":"#F34F4F"},"precedes":{"landscape_margin":20,"color":"#628FEA"}};
-  $(function() {
-    disable_unavailable_columns('tracker,id,subject'.split(','));
-    drawGanttHandler();
-    resizableSubjectColumn();
-    drawSelectedColumns();
-    $("#draw_relations, #draw_progress_line, #draw_selected_columns").change(drawGanttHandler);
-    $('div.gantt_subjects .expander').on('click', ganttEntryClick);
-  });
-  $(window).resize(function() {
-    drawGanttHandler();
-    resizableSubjectColumn();
-  });
-
-//]]></script>
           <div style="clear:both;"></div>
         </div>
       </div>

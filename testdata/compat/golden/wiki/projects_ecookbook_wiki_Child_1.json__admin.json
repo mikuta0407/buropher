@@ -14,6 +14,10 @@ content-type: application/json
       "name": "Redmine Admin"
     },
     "comments": null,
+    "project": {
+      "id": 1,
+      "name": "eCookbook"
+    },
     "created_on": "2007-03-07T23:18:07Z",
     "updated_on": "2007-03-07T23:18:07Z"
   }

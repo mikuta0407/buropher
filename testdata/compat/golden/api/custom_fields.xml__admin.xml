@@ -13,6 +13,7 @@ content-type: application/xml
     <min_length/>
     <max_length/>
     <is_required>false</is_required>
+    <is_for_all>true</is_for_all>
     <is_filter>true</is_filter>
     <searchable>false</searchable>
     <multiple>false</multiple>
@@ -33,6 +34,7 @@ content-type: application/xml
         <label>Oracle</label>
       </possible_value>
     </possible_values>
+    <projects type="array"/>
     <trackers type="array">
       <tracker id="1" name="Bug"/>
     </trackers>
@@ -48,12 +50,14 @@ content-type: application/xml
     <min_length>1</min_length>
     <max_length>100</max_length>
     <is_required>false</is_required>
+    <is_for_all>true</is_for_all>
     <is_filter>true</is_filter>
     <searchable>true</searchable>
     <multiple>false</multiple>
     <default_value>Default string</default_value>
     <visible>true</visible>
     <editable>true</editable>
+    <projects type="array"/>
     <trackers type="array">
       <tracker id="1" name="Bug"/>
       <tracker id="3" name="Support request"/>
@@ -70,6 +74,7 @@ content-type: application/xml
     <min_length/>
     <max_length/>
     <is_required>false</is_required>
+    <is_for_all>false</is_for_all>
     <is_filter>true</is_filter>
     <searchable>false</searchable>
     <multiple>false</multiple>
@@ -94,6 +99,7 @@ content-type: application/xml
         <label>Planning</label>
       </possible_value>
     </possible_values>
+    <roles type="array"/>
   </custom_field>
   <custom_field>
     <id>4</id>
@@ -105,6 +111,7 @@ content-type: application/xml
     <min_length/>
     <max_length/>
     <is_required>false</is_required>
+    <is_for_all>false</is_for_all>
     <is_filter>false</is_filter>
     <searchable>false</searchable>
     <multiple>false</multiple>
@@ -122,6 +129,7 @@ content-type: application/xml
     <min_length/>
     <max_length/>
     <is_required>false</is_required>
+    <is_for_all>false</is_for_all>
     <is_filter>false</is_filter>
     <searchable>false</searchable>
     <multiple>false</multiple>
@@ -139,12 +147,14 @@ content-type: application/xml
     <min_length/>
     <max_length/>
     <is_required>false</is_required>
+    <is_for_all>true</is_for_all>
     <is_filter>false</is_filter>
     <searchable>false</searchable>
     <multiple>false</multiple>
     <default_value/>
     <visible>true</visible>
     <editable>true</editable>
+    <projects type="array"/>
     <trackers type="array">
       <tracker id="1" name="Bug"/>
       <tracker id="2" name="Feature request"/>
@@ -162,6 +172,7 @@ content-type: application/xml
     <min_length/>
     <max_length/>
     <is_required>false</is_required>
+    <is_for_all>false</is_for_all>
     <is_filter>true</is_filter>
     <searchable>false</searchable>
     <multiple>false</multiple>
@@ -189,12 +200,15 @@ content-type: application/xml
     <min_length/>
     <max_length/>
     <is_required>false</is_required>
+    <is_for_all>true</is_for_all>
     <is_filter>false</is_filter>
     <searchable>false</searchable>
     <multiple>false</multiple>
     <default_value/>
+    <default_value_mode>fixed_date</default_value_mode>
     <visible>true</visible>
     <editable>true</editable>
+    <projects type="array"/>
     <trackers type="array">
       <tracker id="1" name="Bug"/>
       <tracker id="2" name="Feature request"/>
@@ -212,12 +226,17 @@ content-type: application/xml
     <min_length/>
     <max_length/>
     <is_required>false</is_required>
+    <is_for_all>false</is_for_all>
     <is_filter>true</is_filter>
     <searchable>false</searchable>
     <multiple>false</multiple>
     <default_value/>
+    <default_value_mode>fixed_date</default_value_mode>
     <visible>true</visible>
     <editable>true</editable>
+    <projects type="array">
+      <project id="1" name="eCookbook"/>
+    </projects>
     <trackers type="array">
       <tracker id="1" name="Bug"/>
     </trackers>
@@ -233,6 +252,7 @@ content-type: application/xml
     <min_length/>
     <max_length/>
     <is_required>false</is_required>
+    <is_for_all>false</is_for_all>
     <is_filter>false</is_filter>
     <searchable>false</searchable>
     <multiple>false</multiple>
@@ -249,6 +269,7 @@ content-type: application/xml
         <label>No</label>
       </possible_value>
     </possible_values>
+    <roles type="array"/>
   </custom_field>
   <custom_field>
     <id>11</id>
@@ -259,6 +280,7 @@ content-type: application/xml
     <min_length/>
     <max_length/>
     <is_required>false</is_required>
+    <is_for_all>false</is_for_all>
     <is_filter>false</is_filter>
     <searchable>false</searchable>
     <multiple>false</multiple>

@@ -62,7 +62,7 @@ content-type: application/json
       {
         "id": 4,
         "filename": "source.rb",
-        "filesize": 153,
+        "filesize": 174,
         "content_type": "application/x-ruby",
         "description": "This is a Ruby source file",
         "content_url": "{{BASE}}/attachments/download/4/source.rb",

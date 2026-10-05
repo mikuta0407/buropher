@@ -2,7 +2,7 @@ status: 200
 content-type: text/html
 
 <!DOCTYPE html>
-<html lang="en">
+<html dir="ltr" lang="en">
   <head>
     <meta charset="utf-8">
     <title>Spent time - Details - Redmine</title>
@@ -15,6 +15,7 @@ content-type: text/html
     <link href="/assets/jquery/jquery-ui-1.13.2-DIGEST.css" media="all" rel="stylesheet">
     <link href="/assets/tribute-5.1.3-DIGEST.css" media="all" rel="stylesheet">
     <link href="/assets/application-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/dropdown-DIGEST.css" media="all" rel="stylesheet">
     <link href="/assets/responsive-DIGEST.css" media="all" rel="stylesheet">
     <script data-turbo-track="reload" type="importmap">{
   "imports": {
@@ -23,12 +24,27 @@ content-type: text/html
     "@hotwired/stimulus": "/assets/stimulus.min-DIGEST.js",
     "@hotwired/stimulus-loading": "/assets/stimulus-loading-DIGEST.js",
     "turndown": "/assets/turndown-DIGEST.js",
+    "tablesort": "/assets/tablesort.min-DIGEST.js",
+    "tablesort.number": "/assets/tablesort.number.min-DIGEST.js",
+    "chart.js": "/assets/chart.min-DIGEST.js",
     "controllers/api_key_copy_controller": "/assets/controllers/api_key_copy_controller-DIGEST.js",
     "controllers/application": "/assets/controllers/application-DIGEST.js",
+    "controllers/clipboard_controller": "/assets/controllers/clipboard_controller-DIGEST.js",
+    "controllers/custom_field_default_value_controller": "/assets/controllers/custom_field_default_value_controller-DIGEST.js",
+    "controllers/dropdown_controller": "/assets/controllers/dropdown_controller-DIGEST.js",
+    "controllers/gantt/chart_controller": "/assets/controllers/gantt/chart_controller-DIGEST.js",
+    "controllers/gantt/column_controller": "/assets/controllers/gantt/column_controller-DIGEST.js",
+    "controllers/gantt/options_controller": "/assets/controllers/gantt/options_controller-DIGEST.js",
+    "controllers/gantt/subjects_controller": "/assets/controllers/gantt/subjects_controller-DIGEST.js",
     "controllers": "/assets/controllers/index-DIGEST.js",
     "controllers/list_autofill_controller": "/assets/controllers/list_autofill_controller-DIGEST.js",
     "controllers/quote_reply_controller": "/assets/controllers/quote_reply_controller-DIGEST.js",
-    "controllers/sticky_issue_header_controller": "/assets/controllers/sticky_issue_header_controller-DIGEST.js"
+    "controllers/reports/details_controller": "/assets/controllers/reports/details_controller-DIGEST.js",
+    "controllers/repositories/stats_controller": "/assets/controllers/repositories/stats_controller-DIGEST.js",
+    "controllers/selection_indent_controller": "/assets/controllers/selection_indent_controller-DIGEST.js",
+    "controllers/sticky_issue_header_controller": "/assets/controllers/sticky_issue_header_controller-DIGEST.js",
+    "controllers/table_paste_controller": "/assets/controllers/table_paste_controller-DIGEST.js",
+    "controllers/tablesort_controller": "/assets/controllers/tablesort_controller-DIGEST.js"
   }
 }</script>
     <link href="/assets/requestjs-DIGEST.js" rel="modulepreload">
@@ -36,12 +52,26 @@ content-type: text/html
     <link href="/assets/stimulus.min-DIGEST.js" rel="modulepreload">
     <link href="/assets/stimulus-loading-DIGEST.js" rel="modulepreload">
     <link href="/assets/turndown-DIGEST.js" rel="modulepreload">
+    <link href="/assets/tablesort.min-DIGEST.js" rel="modulepreload">
+    <link href="/assets/tablesort.number.min-DIGEST.js" rel="modulepreload">
     <link href="/assets/controllers/api_key_copy_controller-DIGEST.js" rel="modulepreload">
     <link href="/assets/controllers/application-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/clipboard_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/custom_field_default_value_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/dropdown_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/gantt/chart_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/gantt/column_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/gantt/options_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/gantt/subjects_controller-DIGEST.js" rel="modulepreload">
     <link href="/assets/controllers/index-DIGEST.js" rel="modulepreload">
     <link href="/assets/controllers/list_autofill_controller-DIGEST.js" rel="modulepreload">
     <link href="/assets/controllers/quote_reply_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/reports/details_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/repositories/stats_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/selection_indent_controller-DIGEST.js" rel="modulepreload">
     <link href="/assets/controllers/sticky_issue_header_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/table_paste_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/tablesort_controller-DIGEST.js" rel="modulepreload">
     <script type="module">import "application"</script>
     <script src="/assets/jquery-3.7.1-ui-1.13.3-DIGEST.js"></script>
     <script src="/assets/rails-ujs-DIGEST.js"></script>
@@ -64,7 +94,7 @@ var datepickerOptions={dateFormat: 'yy-mm-dd', firstDay: 0, showOn: 'button', bu
     <link href="/assets/context_menu-DIGEST.css" media="screen" rel="stylesheet">
     <link href="{{BASE}}/time_entries.atom" rel="alternate" title="Spent time" type="application/atom+xml">
   </head>
-  <body class="has-main-menu controller-timelog action-index avatars-off" data-text-formatting="common_mark">
+  <body class="has-main-menu controller-timelog action-index" data-text-formatting="common_mark">
     <div id="wrapper">
       <div class="flyout-menu js-flyout-menu">
         <div class="flyout-menu__search">
@@ -86,29 +116,35 @@ var datepickerOptions={dateFormat: 'yy-mm-dd', firstDay: 0, showOn: 'button', bu
         <h3>Profile</h3>
         <span class="js-profile-menu"></span>
       </div>
-      <div id="top-menu">
-        <div id="account">
-          <ul>
-            <li>
-              <a class="login" href="/login">Sign in</a>
-            </li>
-            <li>
-              <a class="register" href="/account/register">Register</a>
-            </li>
-          </ul>
+      <nav class="top-menu" id="top-menu">
+        <div class="general-menu">
+          <div class="top-menu__links">
+            <ul>
+              <li>
+                <a class="home" href="/">Home</a>
+              </li>
+              <li>
+                <a class="projects" href="/projects">Projects</a>
+              </li>
+              <li>
+                <a class="help" href="https://www.redmine.org/guide" rel="noopener" target="_blank">Help</a>
+              </li>
+            </ul>
+          </div>
         </div>
-        <ul>
-          <li>
-            <a class="home" href="/">Home</a>
-          </li>
-          <li>
-            <a class="projects" href="/projects">Projects</a>
-          </li>
-          <li>
-            <a class="help" href="https://www.redmine.org/guide" rel="noopener" target="_blank">Help</a>
-          </li>
-        </ul>
-      </div>
+        <div class="profile-menu">
+          <div class="top-menu__links" id="account">
+            <ul>
+              <li>
+                <a class="login" href="/login">Sign in</a>
+              </li>
+              <li>
+                <a class="register" href="/account/register">Register</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
       <div id="header">
         <a class="mobile-toggle-button js-flyout-menu-toggle-button" href="#"></a>
         <div id="quick-search">
@@ -184,8 +220,8 @@ var datepickerOptions={dateFormat: 'yy-mm-dd', firstDay: 0, showOn: 'button', bu
                     <script>//<![CDATA[
 
 var operatorLabels = {"=":"is","!":"is not","o":"open","c":"closed","!*":"none","*":"any","\u003e=":"\u003e=","\u003c=":"\u003c=","\u003e\u003c":"between","\u003ct+":"in less than","\u003et+":"in more than","\u003e\u003ct+":"in the next","t+":"in","nd":"tomorrow","t":"today","ld":"yesterday","nw":"next week","w":"this week","lw":"last week","l2w":"last 2 weeks","nm":"next month","m":"this month","lm":"last month","y":"this year","\u003et-":"less than days ago","\u003ct-":"more than days ago","\u003e\u003ct-":"in the past","t-":"days ago","~":"contains","!~":"doesn't contain","*~":"contains any of","^":"starts with","$":"ends with","=p":"any issues in project","=!p":"any issues not in project","!p":"no issues in project","*o":"any open issues","!o":"no open issues","ev":"has been","!ev":"has never been","cf":"changed from"};
-var operatorByType = {"list":["=","!"],"list_with_history":["=","!","ev","!ev","cf"],"list_status":["o","=","!","ev","!ev","cf","c","*"],"list_optional":["=","!","!*","*"],"list_optional_with_history":["=","!","ev","!ev","cf","!*","*"],"list_subprojects":["*","!*","=","!"],"date":["=","\u003e=","\u003c=","\u003e\u003c","\u003ct+","\u003et+","\u003e\u003ct+","t+","nd","t","ld","nw","w","lw","l2w","nm","m","lm","y","\u003et-","\u003ct-","\u003e\u003ct-","t-","!*","*"],"date_past":["=","\u003e=","\u003c=","\u003e\u003c","\u003et-","\u003ct-","\u003e\u003ct-","t-","t","ld","w","lw","l2w","m","lm","y","!*","*"],"string":["~","*~","=","!~","!","^","$","!*","*"],"text":["~","*~","!~","^","$","!*","*"],"search":["~","*~","!~"],"integer":["=","\u003e=","\u003c=","\u003e\u003c","!*","*"],"float":["=","\u003e=","\u003c=","\u003e\u003c","!*","*"],"relation":["=","!","=p","=!p","!p","*o","!o","!*","*"],"tree":["=","~","!*","*"]};
-var availableFilters = {"spent_on":{"type":"date_past","name":"Date","values":null},"project_id":{"type":"list","name":"Project","remote":true},"issue_id":{"type":"tree","name":"Issue","values":null},"issue.tracker_id":{"type":"list","name":"Issue's Tracker","remote":true},"issue.parent_id":{"type":"tree","name":"Issue's Parent task","values":null},"issue.status_id":{"type":"list","name":"Issue's Status","remote":true},"issue.fixed_version_id":{"type":"list","name":"Issue's Target version","remote":true},"issue.subject":{"type":"text","name":"Issue's Subject","values":null},"user_id":{"type":"list_optional","name":"User","remote":true},"user.group":{"type":"list_optional","name":"User's Group","remote":true},"user.role":{"type":"list_optional","name":"User's Role","remote":true},"author_id":{"type":"list_optional","name":"Author","remote":true},"activity_id":{"type":"list","name":"Activity","values":[["Design","9"],["Development","10"],["QA","11"],["Inactive Activity","14"]]},"project.status":{"type":"list","name":"Project's Status","remote":true},"comments":{"type":"text","name":"Comment","values":null},"hours":{"type":"float","name":"Hours","values":null},"project.cf_3":{"type":"list_optional","name":"Project's Development status","remote":true},"issue.cf_2":{"type":"string","name":"Issue's Searchable field","values":null},"issue.cf_1":{"type":"list_optional","name":"Issue's Database","remote":true},"issue.cf_9":{"type":"date","name":"Issue's Project 1 cf","values":null}};
+var operatorByType = {"list":["=","!"],"list_with_history":["=","!","ev","!ev","cf"],"list_status":["o","=","!","ev","!ev","cf","c","*"],"list_optional":["=","!","!*","*"],"list_optional_with_history":["=","!","ev","!ev","cf","!*","*"],"list_subprojects":["*","!*","=","!"],"date":["=","\u003e=","\u003c=","\u003e\u003c","\u003ct+","\u003et+","\u003e\u003ct+","t+","nd","t","ld","nw","w","lw","l2w","nm","m","lm","y","\u003et-","\u003ct-","\u003e\u003ct-","t-","!*","*"],"date_past":["=","\u003e=","\u003c=","\u003e\u003c","\u003et-","\u003ct-","\u003e\u003ct-","t-","t","ld","w","lw","l2w","m","lm","y","!*","*"],"string":["~","*~","=","!~","!","^","$","!*","*"],"text":["~","*~","!~","^","$","!*","*"],"search":["~","*~","!~"],"integer":["=","\u003e=","\u003c=","\u003e\u003c","!*","*"],"float":["=","\u003e=","\u003c=","\u003e\u003c","!*","*"],"hour":["=","\u003e=","\u003c=","\u003e\u003c","!*","*"],"relation":["=","!","=p","=!p","!p","*o","!o","!*","*"],"tree":["=","~","!*","*"]};
+var availableFilters = {"spent_on":{"type":"date_past","name":"Date","values":null},"project_id":{"type":"list","name":"Project","remote":true},"issue_id":{"type":"tree","name":"Issue","values":null},"issue.tracker_id":{"type":"list","name":"Issue's Tracker","remote":true},"issue.parent_id":{"type":"tree","name":"Issue's Parent task","values":null},"issue.status_id":{"type":"list","name":"Issue's Status","remote":true},"issue.fixed_version_id":{"type":"list","name":"Issue's Target version","remote":true},"issue.subject":{"type":"text","name":"Issue's Subject","values":null},"user_id":{"type":"list_optional","name":"User","remote":true},"user.group":{"type":"list_optional","name":"User's Group","remote":true},"user.role":{"type":"list_optional","name":"User's Role","remote":true},"author_id":{"type":"list_optional","name":"Author","remote":true},"activity_id":{"type":"list","name":"Activity","values":[["Design","9"],["Development","10"],["QA","11"],["Inactive Activity","14"]]},"project.status":{"type":"list","name":"Project's Status","remote":true},"comments":{"type":"text","name":"Comment","values":null},"hours":{"type":"hour","name":"Hours","values":null},"project.cf_3":{"type":"list_optional","name":"Project's Development status","remote":true},"issue.cf_2":{"type":"string","name":"Issue's Searchable field","values":null},"issue.cf_1":{"type":"list_optional","name":"Issue's Database","remote":true},"issue.cf_9":{"type":"date","name":"Issue's Project 1 cf","values":null}};
 var labelDayPlural = "days";
 
 var filtersUrl = "\/queries\/filter?type=TimeEntryQuery";
@@ -355,11 +391,10 @@ $(document).ready(function(){
 $(function ($) {
   $('input[name=display_type]').change(function (e) {
     if ($("#display_type_list").is(':checked')) {
-      $('table#list-definition').show();
+      $('#list-definition').show();
     } else {
-      $('table#list-definition').hide();
+      $('#list-definition').hide();
     }
-
   })
 });
 

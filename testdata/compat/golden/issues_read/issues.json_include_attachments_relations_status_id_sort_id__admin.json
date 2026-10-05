@@ -133,7 +133,7 @@ content-type: application/json
         {
           "id": 4,
           "filename": "source.rb",
-          "filesize": 153,
+          "filesize": 174,
           "content_type": "application/x-ruby",
           "description": "This is a Ruby source file",
           "content_url": "{{BASE}}/attachments/download/4/source.rb",
@@ -252,7 +252,7 @@ content-type: application/json
         {
           "id": 5,
           "filename": "changeset_iso8859-1.diff",
-          "filesize": 687,
+          "filesize": 686,
           "content_type": "text/x-diff",
           "description": null,
           "content_url": "{{BASE}}/attachments/download/5/changeset_iso8859-1.diff",
@@ -278,7 +278,7 @@ content-type: application/json
         {
           "id": 14,
           "filename": "changeset_utf8.diff",
-          "filesize": 687,
+          "filesize": 691,
           "content_type": "text/x-diff",
           "description": null,
           "content_url": "{{BASE}}/attachments/download/14/changeset_utf8.diff",
@@ -1033,7 +1033,7 @@ content-type: application/json
         {
           "id": 15,
           "filename": "private.diff",
-          "filesize": 687,
+          "filesize": 691,
           "content_type": "text/x-diff",
           "description": "attachment of a private issue",
           "content_url": "{{BASE}}/attachments/download/15/private.diff",

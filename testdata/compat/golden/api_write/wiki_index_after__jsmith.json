@@ -6,6 +6,10 @@ content-type: application/json
     {
       "title": "Another_page",
       "version": 1,
+      "project": {
+        "id": 1,
+        "name": "eCookbook"
+      },
       "created_on": "TIMESTAMP",
       "updated_on": "TIMESTAMP"
     },
@@ -15,6 +19,10 @@ content-type: application/json
         "title": "Another_page"
       },
       "version": 1,
+      "project": {
+        "id": 1,
+        "name": "eCookbook"
+      },
       "created_on": "TIMESTAMP",
       "updated_on": "TIMESTAMP"
     },
@@ -24,6 +32,10 @@ content-type: application/json
         "title": "Child_1"
       },
       "version": 1,
+      "project": {
+        "id": 1,
+        "name": "eCookbook"
+      },
       "created_on": "TIMESTAMP",
       "updated_on": "TIMESTAMP"
     },
@@ -33,12 +45,20 @@ content-type: application/json
         "title": "Another_page"
       },
       "version": 1,
+      "project": {
+        "id": 1,
+        "name": "eCookbook"
+      },
       "created_on": "TIMESTAMP",
       "updated_on": "TIMESTAMP"
     },
     {
       "title": "CookBook_documentation",
       "version": 4,
+      "project": {
+        "id": 1,
+        "name": "eCookbook"
+      },
       "created_on": "TIMESTAMP",
       "updated_on": "TIMESTAMP"
     },
@@ -48,12 +68,20 @@ content-type: application/json
         "title": "CookBook_documentation"
       },
       "version": 1,
+      "project": {
+        "id": 1,
+        "name": "eCookbook"
+      },
       "created_on": "TIMESTAMP",
       "updated_on": "TIMESTAMP"
     },
     {
       "title": "Page_with_sections",
       "version": 3,
+      "project": {
+        "id": 1,
+        "name": "eCookbook"
+      },
       "created_on": "TIMESTAMP",
       "updated_on": "TIMESTAMP"
     },
@@ -63,12 +91,20 @@ content-type: application/json
         "title": "CookBook_documentation"
       },
       "version": 1,
+      "project": {
+        "id": 1,
+        "name": "eCookbook"
+      },
       "created_on": "TIMESTAMP",
       "updated_on": "TIMESTAMP"
     },
     {
       "title": "Этика_менеджмента",
       "version": 1,
+      "project": {
+        "id": 1,
+        "name": "eCookbook"
+      },
       "created_on": "TIMESTAMP",
       "updated_on": "TIMESTAMP"
     }

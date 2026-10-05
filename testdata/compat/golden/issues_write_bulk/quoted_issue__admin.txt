@@ -1,7 +1,8 @@
 status: 200
 content-type: text/javascript
 
-showAndScrollTo("update");
+$('#update').show();
+showAndScrollTo("add_notes");
 
 var notes = $('#issue_notes').val();
 if (notes > "") { notes = notes + "\n\n"}

@@ -81,7 +81,7 @@ content-type: text/html
                 <td>
                   <a class="icon icon-attachment" href="/attachments/13">
                     <svg aria-hidden="true" class="s18 icon-svg">
-                      <use href="/assets/icons-DIGEST.svg#icon--attachment"></use>
+                      <use href="/assets/icons-DIGEST.svg#icon--file"></use>
                     </svg>
                     <span class="icon-label">foo.zip</span>
                   </a>
@@ -223,7 +223,7 @@ content-type: text/html
           </p>
           <p>
             <label class="hidden-for-sighted" for="message_content">Message content</label>
-            <textarea accesskey="e" class="wiki-edit" cols="80" data-action="beforeinput-&gt;list-autofill#handleBeforeInput" data-auto-complete="true" data-controller="list-autofill" data-list-autofill-text-formatting-param="common_mark" id="message_content" name="reply[content]" rows="15"></textarea>
+            <textarea accesskey="e" class="wiki-edit" cols="80" data-action="beforeinput-&gt;list-autofill#handleBeforeInput keydown.tab-&gt;selection-indent#run keydown.shift+tab-&gt;selection-indent#run paste-&gt;table-paste#handlePaste" data-auto-complete="true" data-controller="list-autofill selection-indent table-paste" data-list-autofill-text-formatting-param="common_mark" data-selection-indent-text-formatting-param="common_mark" data-table-paste-text-formatting-param="common_mark" id="message_content" name="reply[content]" rows="15"></textarea>
           </p>
           <script>//<![CDATA[
 var wikiToolbar = new jsToolBar(document.getElementById('message_content')); wikiToolbar.setHelpLink('/help/wiki_syntax'); wikiToolbar.setPreviewUrl('/boards/1/topics/preview?id=1'); wikiToolbar.draw();
@@ -237,7 +237,7 @@ var wikiToolbar = new jsToolBar(document.getElementById('message_content')); wik
                   <use href="/assets/icons-DIGEST.svg#icon--del"></use>
                 </svg>
                 <svg aria-hidden="true" class="s16 icon-svg svg-attachment">
-                  <use href="/assets/icons-DIGEST.svg#icon--attachment"></use>
+                  <use href="/assets/icons-DIGEST.svg#icon--file"></use>
                 </svg>
                 <svg aria-hidden="true" class="s16 icon-svg svg-loader">
                   <use href="/assets/icons-DIGEST.svg#icon--loader"></use>

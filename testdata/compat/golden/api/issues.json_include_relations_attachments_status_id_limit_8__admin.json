@@ -65,7 +65,7 @@ content-type: application/json
         {
           "id": 15,
           "filename": "private.diff",
-          "filesize": 687,
+          "filesize": 691,
           "content_type": "text/x-diff",
           "description": "attachment of a private issue",
           "content_url": "{{BASE}}/attachments/download/15/private.diff",

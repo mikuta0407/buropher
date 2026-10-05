@@ -11,6 +11,10 @@ content-type: application/json
       "name": "Johnny Smith"
     },
     "comments": "api update",
+    "project": {
+      "id": 1,
+      "name": "eCookbook"
+    },
     "created_on": "TIMESTAMP",
     "updated_on": "TIMESTAMP"
   }

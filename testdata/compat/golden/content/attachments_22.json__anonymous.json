@@ -5,7 +5,7 @@ content-type: application/json
   "attachment": {
     "id": 22,
     "filename": "redmine_logo.ai.unknown",
-    "filesize": 4994,
+    "filesize": 4762,
     "content_type": null,
     "description": "unknown type",
     "content_url": "{{BASE}}/attachments/download/22/redmine_logo.ai.unknown",

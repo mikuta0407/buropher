@@ -8,6 +8,7 @@ content-type: application/xml
   <version>2</version>
   <author id="1" name="Redmine Admin"/>
   <comments/>
+  <project id="1" name="eCookbook"/>
   <created_on>2026-01-15T12:00:00Z</created_on>
   <updated_on>2026-01-15T12:00:00Z</updated_on>
 </wiki_page>

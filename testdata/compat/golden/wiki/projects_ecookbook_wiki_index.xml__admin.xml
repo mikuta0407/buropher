@@ -6,6 +6,7 @@ content-type: application/xml
   <wiki_page>
     <title>Another_page</title>
     <version>1</version>
+    <project id="1" name="eCookbook"/>
     <created_on>2007-03-07T23:18:07Z</created_on>
     <updated_on>2007-03-07T23:18:07Z</updated_on>
   </wiki_page>
@@ -13,6 +14,7 @@ content-type: application/xml
     <title>Child_1</title>
     <parent title="Another_page"/>
     <version>1</version>
+    <project id="1" name="eCookbook"/>
     <created_on>2007-03-07T23:18:07Z</created_on>
     <updated_on>2007-03-07T23:18:07Z</updated_on>
   </wiki_page>
@@ -20,6 +22,7 @@ content-type: application/xml
     <title>Child_1_1</title>
     <parent title="Child_1"/>
     <version>1</version>
+    <project id="1" name="eCookbook"/>
     <created_on>2007-03-07T23:18:07Z</created_on>
     <updated_on>2007-03-07T23:18:07Z</updated_on>
   </wiki_page>
@@ -27,12 +30,14 @@ content-type: application/xml
     <title>Child_2</title>
     <parent title="Another_page"/>
     <version>1</version>
+    <project id="1" name="eCookbook"/>
     <created_on>2007-03-07T23:18:07Z</created_on>
     <updated_on>2007-03-07T23:18:07Z</updated_on>
   </wiki_page>
   <wiki_page>
     <title>CookBook_documentation</title>
     <version>3</version>
+    <project id="1" name="eCookbook"/>
     <created_on>2007-03-06T23:08:07Z</created_on>
     <updated_on>2007-03-06T23:10:51Z</updated_on>
   </wiki_page>
@@ -40,18 +45,21 @@ content-type: application/xml
     <title>Page_with_an_inline_image</title>
     <parent title="CookBook_documentation"/>
     <version>1</version>
+    <project id="1" name="eCookbook"/>
     <created_on>2007-03-07T23:18:07Z</created_on>
     <updated_on>2007-03-07T23:18:07Z</updated_on>
   </wiki_page>
   <wiki_page>
     <title>Page_with_sections</title>
     <version>3</version>
+    <project id="1" name="eCookbook"/>
     <created_on>2007-03-07T23:18:07Z</created_on>
     <updated_on>2007-03-07T23:18:07Z</updated_on>
   </wiki_page>
   <wiki_page>
     <title>Этика_менеджмента</title>
     <version>1</version>
+    <project id="1" name="eCookbook"/>
     <created_on>2007-03-07T23:18:07Z</created_on>
     <updated_on>2007-03-07T23:18:07Z</updated_on>
   </wiki_page>

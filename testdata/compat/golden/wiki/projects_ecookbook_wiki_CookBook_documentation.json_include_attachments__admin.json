@@ -11,6 +11,10 @@ content-type: application/json
       "name": "Redmine Admin"
     },
     "comments": "Gzip compression activated",
+    "project": {
+      "id": 1,
+      "name": "eCookbook"
+    },
     "created_on": "2007-03-06T23:08:07Z",
     "updated_on": "2007-03-06T23:10:51Z",
     "attachments": [

@@ -6,7 +6,7 @@ content-type: text/html
   <body>
     <ul>
       <li>
-        <a class="icon icon-edit" href="/time_entries/1/edit">
+        <a class="icon icon-edit" href="{{BASE}}/time_entries/1/edit">
           <svg aria-hidden="true" class="s18 icon-svg">
             <use href="/assets/icons-DIGEST.svg#icon--edit"></use>
           </svg>
@@ -30,10 +30,10 @@ content-type: text/html
             </a>
           </li>
           <li>
-            <a class="" data-method="post" href="/time_entries/bulk_update?back_url=%2Ftime_entries&amp;ids%5B%5D=1&amp;time_entry%5Bactivity_id%5D=10" rel="nofollow">Development</a>
+            <a class="" data-method="post" href="{{BASE}}/time_entries/bulk_update?back_url=%2Ftime_entries&amp;ids%5B%5D=1&amp;time_entry%5Bactivity_id%5D=10" rel="nofollow">Development</a>
           </li>
           <li>
-            <a class="" data-method="post" href="/time_entries/bulk_update?back_url=%2Ftime_entries&amp;ids%5B%5D=1&amp;time_entry%5Bactivity_id%5D=11" rel="nofollow">QA</a>
+            <a class="" data-method="post" href="{{BASE}}/time_entries/bulk_update?back_url=%2Ftime_entries&amp;ids%5B%5D=1&amp;time_entry%5Bactivity_id%5D=11" rel="nofollow">QA</a>
           </li>
         </ul>
       </li>
@@ -57,7 +57,7 @@ content-type: text/html
         </ul>
       </li>
       <li>
-        <a class="icon icon-del" data-confirm="Are you sure you want to delete the selected time entr(y/ies)?" data-method="delete" href="/time_entries/destroy?back_url=%2Ftime_entries&amp;ids%5B%5D=1" rel="nofollow">
+        <a class="icon icon-del" data-confirm="Are you sure you want to delete the selected time entr(y/ies)?" data-method="delete" href="{{BASE}}/time_entries/destroy?back_url=%2Ftime_entries&amp;ids%5B%5D=1" rel="nofollow">
           <svg aria-hidden="true" class="s18 icon-svg">
             <use href="/assets/icons-DIGEST.svg#icon--del"></use>
           </svg>

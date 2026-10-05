@@ -13,6 +13,7 @@ content-type: application/json
       "min_length": null,
       "max_length": null,
       "is_required": false,
+      "is_for_all": true,
       "is_filter": true,
       "searchable": false,
       "multiple": false,
@@ -33,6 +34,7 @@ content-type: application/json
           "label": "Oracle"
         }
       ],
+      "projects": [],
       "trackers": [
         {
           "id": 1,
@@ -51,12 +53,14 @@ content-type: application/json
       "min_length": 1,
       "max_length": 100,
       "is_required": false,
+      "is_for_all": true,
       "is_filter": true,
       "searchable": true,
       "multiple": false,
       "default_value": "Default string",
       "visible": true,
       "editable": true,
+      "projects": [],
       "trackers": [
         {
           "id": 1,
@@ -79,6 +83,7 @@ content-type: application/json
       "min_length": null,
       "max_length": null,
       "is_required": false,
+      "is_for_all": false,
       "is_filter": true,
       "searchable": false,
       "multiple": false,
@@ -102,7 +107,8 @@ content-type: application/json
           "value": "Planning",
           "label": "Planning"
         }
-      ]
+      ],
+      "roles": []
     },
     {
       "id": 4,
@@ -114,6 +120,7 @@ content-type: application/json
       "min_length": null,
       "max_length": null,
       "is_required": false,
+      "is_for_all": false,
       "is_filter": false,
       "searchable": false,
       "multiple": false,
@@ -131,6 +138,7 @@ content-type: application/json
       "min_length": null,
       "max_length": null,
       "is_required": false,
+      "is_for_all": false,
       "is_filter": false,
       "searchable": false,
       "multiple": false,
@@ -148,12 +156,14 @@ content-type: application/json
       "min_length": null,
       "max_length": null,
       "is_required": false,
+      "is_for_all": true,
       "is_filter": false,
       "searchable": false,
       "multiple": false,
       "default_value": "",
       "visible": true,
       "editable": true,
+      "projects": [],
       "trackers": [
         {
           "id": 1,
@@ -180,6 +190,7 @@ content-type: application/json
       "min_length": null,
       "max_length": null,
       "is_required": false,
+      "is_for_all": false,
       "is_filter": true,
       "searchable": false,
       "multiple": false,
@@ -207,12 +218,15 @@ content-type: application/json
       "min_length": null,
       "max_length": null,
       "is_required": false,
+      "is_for_all": true,
       "is_filter": false,
       "searchable": false,
       "multiple": false,
       "default_value": "",
+      "default_value_mode": "fixed_date",
       "visible": true,
       "editable": true,
+      "projects": [],
       "trackers": [
         {
           "id": 1,
@@ -239,12 +253,20 @@ content-type: application/json
       "min_length": null,
       "max_length": null,
       "is_required": false,
+      "is_for_all": false,
       "is_filter": true,
       "searchable": false,
       "multiple": false,
       "default_value": "",
+      "default_value_mode": "fixed_date",
       "visible": true,
       "editable": true,
+      "projects": [
+        {
+          "id": 1,
+          "name": "eCookbook"
+        }
+      ],
       "trackers": [
         {
           "id": 1,
@@ -263,6 +285,7 @@ content-type: application/json
       "min_length": null,
       "max_length": null,
       "is_required": false,
+      "is_for_all": false,
       "is_filter": false,
       "searchable": false,
       "multiple": false,
@@ -278,7 +301,8 @@ content-type: application/json
           "value": "0",
           "label": "No"
         }
-      ]
+      ],
+      "roles": []
     },
     {
       "id": 11,
@@ -289,6 +313,7 @@ content-type: application/json
       "min_length": null,
       "max_length": null,
       "is_required": false,
+      "is_for_all": false,
       "is_filter": false,
       "searchable": false,
       "multiple": false,
