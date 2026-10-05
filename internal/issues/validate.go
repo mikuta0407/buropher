@@ -45,11 +45,24 @@ func (e *Env) Validate(ctx context.Context, iss *Issue) (bool, error) {
 }
 
 // defaultAssign は default_assign (担当者未設定ならカテゴリの担当者、なければプロジェクトの既定担当者)。
+// 担当できなくなった既定担当者 (assignable_users に無い) は使わない (7.0.2 #44560)。
 func (e *Env) defaultAssign(ctx context.Context, iss *Issue) error {
 	if iss.AssignedToID != nil {
 		if p, err := e.Principal(ctx, *iss.AssignedToID); err != nil || p != nil {
 			return err
 		}
+	}
+	var assignable []*PrincipalRef
+	loaded := false
+	isAssignable := func(id int64) (bool, error) {
+		if !loaded {
+			var err error
+			if assignable, err = e.AssignableUsers(ctx, iss); err != nil {
+				return false, err
+			}
+			loaded = true
+		}
+		return containsPrincipal(assignable, id), nil
 	}
 	if cat, err := e.Category(ctx, iss.CategoryID); err != nil {
 		return err
@@ -57,8 +70,12 @@ func (e *Env) defaultAssign(ctx context.Context, iss *Issue) error {
 		if p, err := e.Principal(ctx, *cat.AssignedToID); err != nil {
 			return err
 		} else if p != nil {
-			iss.AssignedToID = ptrInt64(p.ID)
-			return nil
+			if ok, err := isAssignable(p.ID); err != nil {
+				return err
+			} else if ok {
+				iss.AssignedToID = ptrInt64(p.ID)
+				return nil
+			}
 		}
 	}
 	p, err := e.ProjectOf(ctx, iss)
@@ -69,7 +86,11 @@ func (e *Env) defaultAssign(ctx context.Context, iss *Issue) error {
 		if pr, err := e.Principal(ctx, *p.DefaultAssignedToID); err != nil {
 			return err
 		} else if pr != nil {
-			iss.AssignedToID = ptrInt64(pr.ID)
+			if ok, err := isAssignable(pr.ID); err != nil {
+				return err
+			} else if ok {
+				iss.AssignedToID = ptrInt64(pr.ID)
+			}
 		}
 	}
 	return nil

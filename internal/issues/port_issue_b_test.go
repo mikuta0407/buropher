@@ -604,6 +604,31 @@ func TestIssueBDefaultAssignedTo(t *testing.T) {
 	}
 }
 
+// 7.0.2 #44560: 担当できなくなった既定担当者は使わない
+func TestIssueBDefaultAssignedToBasedOnCategoryShouldSkipNonAssignableUser(t *testing.T) {
+	c := setup(t)
+	cat, err := c.d.InsertReturningID(c.ctx, `INSERT INTO issue_categories (project_id, name, assigned_to_id) VALUES (1, 'With default assignee', 3)`)
+	c.must(err)
+	c.exec(`UPDATE projects SET default_assigned_to_id = 2 WHERE id = 1`)
+	c.exec(`UPDATE principals SET status = 3 WHERE id = 3`)
+	e := c.env()
+	iss := c.generateSaved(e, Params{"project_id": 1, "category_id": cat})
+	if iss.AssignedToID == nil || *iss.AssignedToID != 2 {
+		t.Errorf("assigned_to = %v", iss.AssignedToID)
+	}
+}
+
+func TestIssueBDefaultAssignedToBasedOnProjectShouldSkipNonAssignableUser(t *testing.T) {
+	c := setup(t)
+	c.exec(`UPDATE projects SET default_assigned_to_id = 3 WHERE id = 1`)
+	c.exec(`UPDATE roles SET assignable = ? WHERE id = 2`, false)
+	e := c.env()
+	iss := c.generateSaved(e, Params{"project_id": 1})
+	if iss.AssignedToID != nil {
+		t.Errorf("assigned_to = %v", *iss.AssignedToID)
+	}
+}
+
 func TestIssueBDefaultAssignedToWithRequiredAssigneeShouldValidate(t *testing.T) {
 	c := setup(t)
 	cat, err := c.d.InsertReturningID(c.ctx, `INSERT INTO issue_categories (project_id, name, assigned_to_id) VALUES (1, 'With default assignee', 3)`)
