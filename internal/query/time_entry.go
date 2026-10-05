@@ -111,7 +111,7 @@ func (timeEntryKind) initializeAvailableFilters(ctx context.Context, q *Query) e
 			Name: e.l("label_attribute_of_project", map[string]any{"name": e.l("field_status")})})
 	}
 	q.addAvailableFilter("comments", filterOpt{Type: "text"})
-	q.addAvailableFilter("hours", filterOpt{Type: "float"})
+	q.addAvailableFilter("hours", filterOpt{Type: "hour"})
 	tcfs, err := q.visibleFilterCustomFields(ctx, "custom_fields.owner_kind = 'time_entry'")
 	if err != nil {
 		return err

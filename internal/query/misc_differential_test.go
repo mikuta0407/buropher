@@ -22,7 +22,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/domain"
 )
 
-// testdata/misc.json.gz は testdata/gen/dump_misc.rb を Redmine 6.1.2 で実行して得た正解データ
+// testdata/misc.json.gz は testdata/gen/dump_misc.rb を Redmine 7.0.1 で実行して得た正解データ（REDMINE_FIXTURES_ROOT=_reference/redmine7-fixtures）
 // (保存クエリの可視性・編集可否、build_from_params、既定クエリ、issues の preload 値、
 // available_filters_as_json、演算子ラベル、列の属性)。
 

@@ -144,7 +144,7 @@ func marshalNoEscapeErr(v any) ([]byte, error) {
 
 // operatorFilterTypes は Query.operators_by_filter_type のキーの順序。
 var operatorFilterTypes = []string{"list", "list_with_history", "list_status", "list_optional", "list_optional_with_history",
-	"list_subprojects", "date", "date_past", "string", "text", "search", "integer", "float", "relation", "tree"}
+	"list_subprojects", "date", "date_past", "string", "text", "search", "integer", "float", "hour", "relation", "tree"}
 
 // OperatorLabelsJSON は raw_json Query.operators_labels。
 func (qv *queryView) OperatorLabelsJSON() template.HTML {

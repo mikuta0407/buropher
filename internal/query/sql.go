@@ -16,7 +16,25 @@ import (
 
 	"github.com/mikuta0407/buropher/internal/customfield"
 	"github.com/mikuta0407/buropher/internal/db"
+	"github.com/mikuta0407/buropher/internal/issues"
 )
+
+// hourValue は String#to_hours（解釈できなければ nil.to_f = 0）。
+func hourValue(s string) float64 {
+	f, _ := issues.ToHours(s)
+	return f
+}
+
+// hourValues は value.map(&:to_hours) を SQL 生成用の文字列に戻したもの。
+func hourValues(value []string) []string {
+	out := make([]string, len(value))
+	for i, v := range value {
+		if f, ok := issues.ToHours(v); ok {
+			out[i] = strconv.FormatFloat(f, 'f', -1, 64)
+		}
+	}
+	return out
+}
 
 // dateColumns は DATE 型の列 (それ以外の日時フィルタ対象列は UTC タイムスタンプ)。
 var dateColumns = map[string]bool{
@@ -55,6 +73,12 @@ func (q *Query) sqlForField(ctx context.Context, field, operator string, value [
 	typ, err := q.TypeFor(ctx, field)
 	if err != nil {
 		return frag{}, err
+	}
+	if typ == "hour" {
+		// sql_for_estimated_hours_field / sql_for_hours_field: value.map(&:to_hours) を渡し、
+		// 以降は :float と同じ SQL（when :float, :hour）。解釈できない値は nil.to_f = 0。
+		value = hourValues(value)
+		typ = "float"
 	}
 	first := ""
 	if len(value) > 0 {
@@ -213,8 +237,13 @@ func (q *Query) sqlForField(ctx context.Context, field, operator string, value [
 	case "~":
 		return q.sqlContains(col, first, containsOpts{}), nil
 	case "!~":
-		// '' は「含まない」に一致し、NULL は一致しない (Redmine と同じく保存値のまま評価する。D-17)
-		return q.sqlContains(col, first, containsOpts{notMatch: true}), nil
+		// '' は「含まない」に一致する (Redmine と同じく保存値のまま評価する。D-17)。
+		// カスタムフィールドでは値が無い (NULL / custom_values 行なし) ものも含める (#38055)。
+		f := q.sqlContains(col, first, containsOpts{notMatch: true})
+		if isCustom {
+			f = concat(f, raw(" OR "+col+" IS NULL"))
+		}
+		return f, nil
 	case "*~":
 		return q.sqlContains(col, first, containsOpts{anyWord: true}), nil
 	case "^":
