@@ -31,8 +31,6 @@ type Webhook struct {
 	UpdatedAt db.Time           `db:"updated_at"`
 	// ProjectIDs は webhook_projects の project_id（id 順）。
 	ProjectIDs []int64 `db:"-"`
-
-	storedSecret *string
 }
 
 type webhookRow struct {
