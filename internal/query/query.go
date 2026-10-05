@@ -569,6 +569,9 @@ func (q *Query) Valid(ctx context.Context) (bool, error) {
 	return len(errs) == 0, err
 }
 
+// anyTypeOperators はフィルタの型によらず使える演算子（filterErrors を参照）。
+var anyTypeOperators = []string{"=", "!*", "*"}
+
 // filterErrors は validate_query_filters。
 func (q *Query) filterErrors(ctx context.Context) ([]string, error) {
 	var errs []string
@@ -582,11 +585,24 @@ func (q *Query) filterErrors(ctx context.Context) ([]string, error) {
 	}
 	for _, field := range q.Filters.Keys() {
 		values := q.ValuesFor(field)
-		if values != nil {
-			typ, err := q.TypeFor(ctx, field)
-			if err != nil {
-				return nil, err
+		// フィルタの型の演算子に含まれない演算子（tracker_id に "~" など）は不正とする。
+		// Redmine はこれを検証せず、型に合わない条件（整数の列に LIKE など）が PostgreSQL では
+		// SQL エラーになるため、公開・既定のクエリとして保存されると誰が開いても 500 になり続けた。
+		// ただし "=" / "!*" / "*" はどの型でも SQL が成り立ち、add_short_filter の既定
+		// （subject=... など）で型の演算子以外に使われるので許す。
+		typ, err := q.TypeFor(ctx, field)
+		if err != nil {
+			return nil, err
+		}
+		if op := q.OperatorFor(field); !slices.Contains(anyTypeOperators, op) {
+			if ops, ok := OperatorsByFilterType[typ]; ok && !slices.Contains(ops, op) {
+				if err := addErr(field, "invalid"); err != nil {
+					return nil, err
+				}
+				continue
 			}
+		}
+		if values != nil {
 			invalid := false
 			switch typ {
 			case "integer":
