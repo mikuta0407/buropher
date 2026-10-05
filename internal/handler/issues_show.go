@@ -635,7 +635,7 @@ func (l *issueLookup) attachmentLinks(containerPath string, id int64, atts []*re
 	for _, a := range atts {
 		aid := strconv.FormatInt(a.ID, 10)
 		b.WriteString("<tr>\n  <td>\n    ")
-		b.WriteString(string(rails.LinkTo(l.icon("attachment", a.Filename), "/attachments/"+aid, rails.NewHash("class", "icon icon-attachment "))))
+		b.WriteString(string(rails.LinkTo(l.icon(helper.IconForMimeType(derefStr(a.ContentType)), a.Filename), "/attachments/"+aid, rails.NewHash("class", "icon icon-attachment "))))
 		b.WriteString("    <span class=\"size\">(")
 		b.WriteString(string(rails.H(l.c.Loc.NumberToHumanSize(a.Filesize))))
 		b.WriteString(")</span>\n    ")
