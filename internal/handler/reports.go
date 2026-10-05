@@ -57,11 +57,12 @@ type reportTable struct {
 	TotalOpen     int
 	TotalClosed   int
 	Total         int
-	// ChartRowsJSON / ChartDatasets1JSON / ChartDatasets2JSON は _details のグラフのデータ。
-	ChartLabelsJSON    rails.HTML
-	ChartDatasets1JSON rails.HTML
-	ChartStatusesJSON  rails.HTML
-	ChartDatasets2JSON rails.HTML
+	// ChartLabelsJSON / ChartDatasets1JSON / ChartStatusesJSON / ChartDatasets2JSON は _details のグラフのデータ
+	// （Redmine 7.0 では <template> の中にエスケープして出力する）。
+	ChartLabelsJSON    string
+	ChartDatasets1JSON string
+	ChartStatusesJSON  string
+	ChartDatasets2JSON string
 }
 
 // Empty は @statuses.empty? or rows.empty?。
@@ -157,10 +158,10 @@ func (a *App) buildReportTable(c *Req, field string, statuses []*domain.IssueSta
 	t.TotalOpen = aggregateReport(data, nil, 0, &f)
 	t.TotalClosed = aggregateReport(data, nil, 0, &tr)
 	t.Total = aggregateReport(data, nil, 0, nil)
-	t.ChartLabelsJSON = rails.HTML(rails.ToJSON(nonNilStrings(labels)))
-	t.ChartDatasets1JSON = rails.HTML(rails.ToJSON(nonNilSlice(ds1)))
-	t.ChartStatusesJSON = rails.HTML(rails.ToJSON(nonNilStrings(statusNames)))
-	t.ChartDatasets2JSON = rails.HTML(rails.ToJSON(nonNilSlice(ds2)))
+	t.ChartLabelsJSON = rails.ToJSON(nonNilStrings(labels))
+	t.ChartDatasets1JSON = rails.ToJSON(nonNilSlice(ds1))
+	t.ChartStatusesJSON = rails.ToJSON(nonNilStrings(statusNames))
+	t.ChartDatasets2JSON = rails.ToJSON(nonNilSlice(ds2))
 	return t
 }
 

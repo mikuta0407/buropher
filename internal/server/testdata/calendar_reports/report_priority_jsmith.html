@@ -1,7 +1,6 @@
 <title>eCookbook - Redmine</title>
 ----
 <!-- page specific tags -->
-  <script src="/assets/chart.min-DIGEST.js"></script>
 </head>
 ----
 <div id="main" class="nosidebar">
@@ -134,61 +133,25 @@
   </p>
 </form></div>
 
-<div class="issue-report-graph hide-when-print">
-  <canvas id="issues_by_priority"></canvas>
+<div class="issue-report-graph hide-when-print" data-controller="reports--details" data-reports--details-title-value="Issues by Priority">
+  <template data-reports--details-target="labels">
+    [&quot;Inactive Priority&quot;,&quot;Immediate&quot;,&quot;Urgent&quot;,&quot;High&quot;,&quot;Normal&quot;,&quot;Low&quot;]
+  </template>
+  <template data-reports--details-target="datasets">
+    [{&quot;label&quot;:&quot;New&quot;,&quot;hidden&quot;:false,&quot;data&quot;:[0,0,0,0,4,5]},{&quot;label&quot;:&quot;Assigned&quot;,&quot;hidden&quot;:false,&quot;data&quot;:[0,0,0,0,1,0]},{&quot;label&quot;:&quot;Resolved&quot;,&quot;hidden&quot;:false,&quot;data&quot;:[0,0,0,0,0,0]},{&quot;label&quot;:&quot;Feedback&quot;,&quot;hidden&quot;:false,&quot;data&quot;:[0,0,0,0,0,0]},{&quot;label&quot;:&quot;Closed&quot;,&quot;hidden&quot;:true,&quot;data&quot;:[0,0,0,0,3,0]},{&quot;label&quot;:&quot;Rejected&quot;,&quot;hidden&quot;:true,&quot;data&quot;:[0,0,0,0,0,0]}]
+  </template>
+  <canvas id="issues_by_priority" data-reports--details-target="canvas"></canvas>
 </div>
-<div class="issue-report-graph hide-when-print">
-  <canvas id="issues_by_status"></canvas>
+<div class="issue-report-graph hide-when-print" data-controller="reports--details" data-reports--details-title-value="Issues by Status">
+  <template data-reports--details-target="labels">
+    [&quot;New&quot;,&quot;Assigned&quot;,&quot;Resolved&quot;,&quot;Feedback&quot;,&quot;Closed&quot;,&quot;Rejected&quot;]
+  </template>
+  <template data-reports--details-target="datasets">
+    [{&quot;label&quot;:&quot;Inactive Priority&quot;,&quot;data&quot;:[0,0,0,0,0,0]},{&quot;label&quot;:&quot;Immediate&quot;,&quot;data&quot;:[0,0,0,0,0,0]},{&quot;label&quot;:&quot;Urgent&quot;,&quot;data&quot;:[0,0,0,0,0,0]},{&quot;label&quot;:&quot;High&quot;,&quot;data&quot;:[0,0,0,0,0,0]},{&quot;label&quot;:&quot;Normal&quot;,&quot;data&quot;:[4,1,0,0,3,0]},{&quot;label&quot;:&quot;Low&quot;,&quot;data&quot;:[5,0,0,0,0,0]}]
+  </template>
+  <canvas id="issues_by_status" data-reports--details-target="canvas"></canvas>
 </div>
-<script>
-//<![CDATA[
 
-  function renderChart(canvas_id, title, chartData){
-    var backgroundColors = ['rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(255, 206, 86, 0.2)', 'rgba(75, 192, 192, 0.2)', 'rgba(153, 102, 255, 0.2)', 'rgba(255, 159, 64, 0.2)'];
-    var borderColors = ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)', 'rgba(255, 206, 86, 1)', 'rgba(75, 192, 192, 1)', 'rgba(153, 102, 255, 1)', 'rgba(255, 159, 64, 1)'];
-    for (var i = 0; i < chartData.datasets.length; i++) {
-      chartData.datasets[i].backgroundColor = backgroundColors[i % backgroundColors.length];
-      chartData.datasets[i].borderColor = borderColors[i % borderColors.length];
-      chartData.datasets[i].borderWidth = 1;
-    }
-    new Chart($(canvas_id), {
-      type: 'bar',
-      data: chartData,
-      options: {
-        indexAxis: 'y',
-        elements: {
-          bar: {borderWidth: 2}
-        },
-        responsive: true,
-        plugins: {
-          legend: {position: 'right'},
-          title: {
-            display: true,
-            text: title
-          }
-        },
-        scales: {
-          yAxis: {stacked: true},
-          xAxis: {stacked: true, ticks: {precision: 0}}
-        }
-      }
-    });
-  }
-  $(document).ready(function(){
-    var chartData1 = {
-      labels: ["Inactive Priority","Immediate","Urgent","High","Normal","Low"],
-      datasets: [{"label":"New","hidden":false,"data":[0,0,0,0,4,5]},{"label":"Assigned","hidden":false,"data":[0,0,0,0,1,0]},{"label":"Resolved","hidden":false,"data":[0,0,0,0,0,0]},{"label":"Feedback","hidden":false,"data":[0,0,0,0,0,0]},{"label":"Closed","hidden":true,"data":[0,0,0,0,3,0]},{"label":"Rejected","hidden":true,"data":[0,0,0,0,0,0]}]
-    };
-    var chartData2 = {
-      labels: ["New","Assigned","Resolved","Feedback","Closed","Rejected"],
-      datasets: [{"label":"Inactive Priority","data":[0,0,0,0,0,0]},{"label":"Immediate","data":[0,0,0,0,0,0]},{"label":"Urgent","data":[0,0,0,0,0,0]},{"label":"High","data":[0,0,0,0,0,0]},{"label":"Normal","data":[4,1,0,0,3,0]},{"label":"Low","data":[5,0,0,0,0,0]}]
-    };
-    renderChart("#issues_by_priority", "Issues by Priority", chartData1);
-    renderChart("#issues_by_status", "Issues by Status", chartData2);
-  });
-
-//]]>
-</script>
 <br />
 <a href="/projects/ecookbook/issues/report">Back</a>
 
