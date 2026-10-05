@@ -70,3 +70,32 @@ func TestSSORequiredAutomaticRegistrationDoesNotLogIn(t *testing.T) {
 		t.Fatal("automatically registered user is logged in under sso_required")
 	}
 }
+
+// Discord の連携はログイン手段ではないため、SSO だけでログインするユーザーの最後の OIDC 連携の解除を
+// 許す理由にならない（解除するとログインできなくなる）。
+func TestMySSOUnlinkIgnoresDiscordIdentity(t *testing.T) {
+	e := newSSOEnv(t, nil)
+	c := login(t, e.ts, "dlopper", "foo")
+	ctx := context.Background()
+	if _, err := e.d.Exec(ctx, `UPDATE user_accounts SET auth_source_id = `+e.id+`, password_hash = NULL WHERE principal_id = 3`); err != nil {
+		t.Fatal(err)
+	}
+	for _, q := range []string{
+		`INSERT INTO user_identities (user_id, provider, auth_source_id, subject, created_at) VALUES (3, 'oidc:` + e.id + `', ` + e.id + `, 'dl-sub', '2026-01-15T12:00:00.000000Z')`,
+		`INSERT INTO user_identities (user_id, provider, subject, raw_claims, created_at) VALUES (3, 'discord', '1234', '{}', '2026-01-15T12:00:00.000000Z')`,
+	} {
+		if _, err := e.d.Exec(ctx, q); err != nil {
+			t.Fatal(err)
+		}
+	}
+	var id string
+	_ = e.d.Get(ctx, &id, `SELECT CAST(id AS TEXT) FROM user_identities WHERE user_id = 3 AND provider LIKE 'oidc:%'`)
+	_, page := get(t, c, e.ts.URL+"/my/sso")
+	res, _ := post(t, c, e.ts.URL+"/my/sso/"+id, url.Values{"_method": {"delete"}, "authenticity_token": {metaCSRF(t, page)}})
+	if msg := e.flashAfter(c, res); !strings.Contains(msg, "only way to log in") {
+		t.Fatalf("unlink: %q", msg)
+	}
+	if n := queryInt(t, e.d, `SELECT COUNT(*) FROM user_identities WHERE user_id = 3 AND provider LIKE 'oidc:%'`); n != 1 {
+		t.Fatalf("oidc identity deleted")
+	}
+}
