@@ -14,6 +14,7 @@ import (
 	"database/sql"
 	"errors"
 	"slices"
+	"strings"
 
 	"github.com/mikuta0407/buropher/internal/crypto/secretbox"
 	"github.com/mikuta0407/buropher/internal/db"
@@ -110,6 +111,25 @@ func loadWebhooks(ctx context.Context, q db.Queryer, box *secretbox.Box, query s
 // ListUserWebhooks は User.current.webhooks.order(:url)。
 func ListUserWebhooks(ctx context.Context, q db.Queryer, box *secretbox.Box, userID int64) ([]*Webhook, error) {
 	return loadWebhooks(ctx, q, box, `SELECT `+webhookColumns+` FROM webhooks w WHERE w.user_id = ? ORDER BY w.url, w.id`, userID)
+}
+
+// ListAllWebhooks は管理画面の一覧（Redmine 7.0.2 Feature #44337）:
+// Webhook.eager_load(:user).order(*User.fields_for_order_statement, :url)。
+func ListAllWebhooks(ctx context.Context, q db.Queryer, box *secretbox.Box, userFormat string) ([]*Webhook, error) {
+	order := append(UserOrderColumns(userFormat), "w.url", "w.id")
+	return loadWebhooks(ctx, q, box, `SELECT `+webhookColumns+` FROM webhooks w
+  LEFT JOIN principals p ON p.id = w.user_id
+  LEFT JOIN user_accounts ua ON ua.principal_id = p.id
+ORDER BY `+strings.Join(order, ", "))
+}
+
+// Editable は Webhook#editable?(user)（管理者か所有者なら編集できる。Redmine 7.0.2）。
+// Webhook.editable(user) スコープもこの判定と同じ。
+func (w *Webhook) Editable(userID int64, admin bool) bool {
+	if userID == 0 {
+		return false
+	}
+	return admin || w.UserID == userID
 }
 
 // GetUserWebhook は User.current.webhooks.find(id)（無ければ ErrNotFound）。

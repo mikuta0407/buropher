@@ -1,9 +1,9 @@
-# Compatibility with Redmine 7.0.1
+# Compatibility with Redmine 7.0.2
 
-buropher aims to be a drop-in replacement for Redmine 7.0.1 for users, administrators and API
+buropher aims to be a drop-in replacement for Redmine 7.0.2 for users, administrators and API
 clients (it was first ported from Redmine 6.1.2 and has since followed the 7.0 release).
 Compatibility is checked by a differential test harness that sends the same requests to a
-real Redmine 7.0.1 (loaded with Redmine's own test fixtures) and to buropher and compares the
+real Redmine 7.0.2 (loaded with Redmine's own test fixtures) and to buropher and compares the
 normalized HTML/JSON/XML responses ([development.md](development.md#compatibility-harness)).
 Every accepted difference is listed with a reason in
 [`testdata/compat/allowlist.yml`](../testdata/compat/allowlist.yml).
@@ -31,8 +31,10 @@ buropher implements the new features of Redmine 7.0, with the same pages and set
 
 - **Webhooks**: enabled in *Administration > Settings > Integrations*; users with the *Use
   webhooks* permission manage their hooks (URL, secret, events, projects) in *My account >
-  Webhooks*. Targets can be restricted with `[webhook] blocklist` (Redmine's
-  `webhook_blocklist`); see [configuration.md](configuration.md#webhook) and the deviations below.
+  Webhooks*. Administrators see the hooks of all users in *Administration > Webhooks* (Redmine
+  7.0.2) and can edit, deactivate or delete them even while webhooks are disabled. Targets can be
+  restricted with `[webhook] blocklist` (Redmine's `webhook_blocklist`); see
+  [configuration.md](configuration.md#webhook) and the deviations below.
 - **Office document preview**: `.docx`/`.odt` (and `.xlsx`/`.pptx` with Pandoc 3.8.3+)
   attachments are previewed as Markdown converted by an external [Pandoc](https://pandoc.org/)
   (`[preview] pandoc_command`, `markdownized_preview_*` limits; see
@@ -64,7 +66,7 @@ buropher implements the new features of Redmine 7.0, with the same pages and set
 | Office preview | Needs an external Pandoc, like Redmine; without it Office attachments show "No preview available". Conversions run with `--sandbox` and a concurrency limit ([configuration.md](configuration.md#preview)). |
 | HTML serialization (Textile/CommonMark output) | Like Redmine 7.0, formatted text is serialized as HTML5, but `<` and `>` inside attribute values are escaped as `&lt;` / `&gt;` (current WHATWG serialization rule; Nokogiri keeps them raw). Rendered output differs only for such attribute values. |
 | Webhooks | Requests send `User-Agent: Buropher` (Redmine: `Redmine`) and an extra `X-Buropher-Signature-256` header with the same value as `X-Redmine-Signature-256`. The target validator is stricter than Redmine's: the whole multicast ranges (`224.0.0.0/4`, `ff00::/8`), `0.0.0.0/8` and `255.255.255.255` are rejected, numeric host forms such as `2130706433` or `127.1` and IPv4 addresses embedded in IPv6 (IPv4-compatible, NAT64 `64:ff9b::/96`, 6to4 `2002::/16`) are checked as IPv4, and deliveries go only to the validated addresses (no proxy, no redirects). |
-| Security fixes from later releases | Fixes from Redmine 7.0.2 / 6.1.5 are already applied: #44468 (memberships in the groups/users API limited by *View members*), #44467 (invisible descendants with `include=children`), #44429 (table paste parses HTML with `DOMParser`; `web/assets/javascript/controllers/table_paste_controller.js` deviates from 7.0.1, see NOTICE), #44560 (unassignable default assignee), #44476 (Git branch names containing 40 hex digits), #44559 (bulk lock/unlock callbacks). |
+| Security fixes from later releases | None at present: buropher follows Redmine 7.0.2, which contains the fixes buropher had applied ahead of its release (#44468, #44467, #44429, #44560, #44476, #44559). When a later Redmine release fixes a security issue before buropher follows it, the fix is listed here and any patched upstream assets are recorded in `tools/upstream-patches/` (see NOTICE). |
 | Sort order on PostgreSQL | Like Redmine itself, text sorting (e.g. project or user names) follows the database collation, so ordering on PostgreSQL can differ from SQLite (byte order). Project tree order is stored and is the same on both. |
 | Ordering ties | Lists sorted only by timestamp (e.g. journals) use the ID as a tie-breaker, which may differ from the database-dependent order in Redmine when timestamps are equal. |
 | Wiki history | Redmine's `wiki_contents` and `wiki_content_versions` are merged into one history table. If they disagree for the same version (only seen in test fixtures), the current content wins. |
@@ -102,7 +104,7 @@ Renamed (user-visible):
   test e-mail text, mail handler page title, static error pages (`web/public/*.html`,
   rewritten by `tools/sync-upstream.sh`), the default administrator created by
   `buropher init` ("Buropher Admin"), Administration > Information (version, "Based on
-  Redmine 7.0.1", license and source link), `buropher version` / usage text.
+  Redmine 7.0.2", license and source link), `buropher version` / usage text.
 - Translations: Redmine's `web/locales/redmine/*.yml` files stay unmodified; at load time
   `internal/i18n` replaces the product name "Redmine" with "Buropher" in translation
   *values* of those files (never in keys, URLs such as `redmine.org`, identifiers such as
@@ -137,4 +139,4 @@ passing without per-case allowlisting.
 | | Supported |
 |---|---|
 | buropher database | SQLite, PostgreSQL |
-| Migration source | Redmine 6.1.0 – 6.1.5 or 7.0.0 – 7.0.1 on MySQL/MariaDB, PostgreSQL, SQLite or SQL Server |
+| Migration source | Redmine 6.1.0 – 6.1.5 or 7.0.0 – 7.0.2 on MySQL/MariaDB, PostgreSQL, SQLite or SQL Server |

@@ -30,8 +30,9 @@ type Theme struct {
 	fsys fs.FS  // テーマディレクトリを含む FS
 	dir  string // fsys 内のテーマディレクトリ
 
-	iconsMu sync.Mutex
-	icons   map[string][]string // スプライト名 → アイコン名（Theme#icons のキャッシュ）
+	iconsMu  sync.Mutex
+	icons    map[string][]string            // スプライト名 → アイコン名（Theme#icons のキャッシュ）
+	iconSets map[string]map[string]struct{} // スプライト名 → アイコン名の集合（HasIcon 用）
 }
 
 var reIconID = regexp.MustCompile(`id=['"]icon--([^'"]+)['"]`)
@@ -44,6 +45,10 @@ func (t *Theme) Icons(sprite string) []string {
 	}
 	t.iconsMu.Lock()
 	defer t.iconsMu.Unlock()
+	return t.loadIconsLocked(sprite)
+}
+
+func (t *Theme) loadIconsLocked(sprite string) []string {
 	if v, ok := t.icons[sprite]; ok {
 		return v
 	}
@@ -60,8 +65,29 @@ func (t *Theme) Icons(sprite string) []string {
 	return names
 }
 
-// HasIcon は Theme#icons(sprite).include?(name)。
-func (t *Theme) HasIcon(sprite, name string) bool { return contains(t.Icons(sprite), name) }
+// HasIcon は IconsHelper#theme_icon_set(sprite).include?(name)（Redmine 7.0.2 #44412 / #44415:
+// アイコンを描くたびに一覧を走査しないよう、スプライトごとの集合を引く）。
+func (t *Theme) HasIcon(sprite, name string) bool {
+	if !t.HasImage(sprite + ".svg") {
+		return false
+	}
+	t.iconsMu.Lock()
+	defer t.iconsMu.Unlock()
+	set, ok := t.iconSets[sprite]
+	if !ok {
+		names := t.loadIconsLocked(sprite)
+		set = make(map[string]struct{}, len(names))
+		for _, n := range names {
+			set[n] = struct{}{}
+		}
+		if t.iconSets == nil {
+			t.iconSets = map[string]map[string]struct{}{}
+		}
+		t.iconSets[sprite] = set
+	}
+	_, ok = set[name]
+	return ok
+}
 
 // AssetPrefix は "themes/<id>/"。
 func (t *Theme) AssetPrefix() string { return "themes/" + t.ID + "/" }

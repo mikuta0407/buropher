@@ -31,7 +31,7 @@ YAML → JSON 等)はすべてインポート側で行う。
     "db_kind": "sqlite",                          // mysql / postgres / sqlite / sqlserver
     "db_version": "3.50.4",
     "timezone": "Asia/Tokyo",                     // --source-timezone(IANA 名、必須)
-    "redmine_version": "7.0.1.stable",            // --redmine-root 指定時のみ
+    "redmine_version": "7.0.2.stable",            // --redmine-root 指定時のみ
     "cipher_key_configured": false,               // --redmine-root 指定時のみ(鍵そのものは書かない)
     "attachments_dir": "/srv/redmine/files",      // 添付の読み取り元
     "acceptance_forced": false                    // --force で受け入れ判定を無視した場合 true
@@ -120,7 +120,7 @@ YAML → JSON 等)はすべてインポート側で行う。
 1. `schema_migrations` のコア版(`^\d+$`)集合が既知のスキーマ版のいずれかと完全一致。
    - 6.1: 322 件。Redmine 6.1.0〜6.1.5 の `db/migrate` は同一(ファイル名・内容とも)。
    - 7.0: 327 件(6.1 + 20251007073256, 20260319062845, 20260319170822, 20260320090000, 20260520164915)。
-     Redmine 7.0.0 / 7.0.1 の `db/migrate` は同一。
+     Redmine 7.0.0〜7.0.2 の `db/migrate` は同一。
    一致しなければ差分が最小の版を基準に、不足 → Redmine を対応版に上げて `db:migrate` するよう案内、
    余剰 → 未対応バージョン。一致した版は manifest の `redmine_schema` に記録する。
 2. プラグイン版(`^\d+-(.+)$`)は警告として記録。

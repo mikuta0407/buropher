@@ -38,7 +38,7 @@
       {{end}}
     </tr>
   {{end}}
-  <tr id="project-{{$row.Project.ID}}" class="{{cycle "odd" "even"}} hascontextmenu {{$row.RowClass}}">
+  <tr id="project-{{$row.Project.ID}}" class="{{cycle "odd" "even"}} {{if $lv.AdminList}}hascontextmenu{{end}} {{$row.RowClass}}">
     {{if $lv.AdminList}}
       {{if not $row.Project.ScheduledForDeletion}}
         <td class="checkbox hide-when-print">{{check_box_tag "ids[]" $row.Project.ID false (hash "id" nil)}}</td>

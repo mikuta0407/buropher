@@ -56,12 +56,12 @@ type SchemaVersion struct {
 
 // schemaVersions は受け入れる Redmine スキーマ版(古い順)。
 //   - 6.1: 6.1.0〜6.1.5 の db/migrate はファイル名・内容とも同一(2026-10 に各タグで確認)。
-//   - 7.0: 7.0.0 / 7.0.1 の db/migrate は同一。6.1 に webhooks / projects_webhooks、
+//   - 7.0: 7.0.0〜7.0.2 の db/migrate は同一。6.1 に webhooks / projects_webhooks、
 //     trackers.private_by_default、users.login の索引、
 //     default_issue_start_date_to_creation_date の設定行保存の 5 件を加えたもの。
 var schemaVersions = []*SchemaVersion{
 	{Name: "6.1", Releases: "6.1.0-6.1.5", Tables: coreTables61, Migrations: coreMigrations61},
-	{Name: "7.0", Releases: "7.0.0-7.0.1", Tables: coreTables70, Migrations: coreMigrations70},
+	{Name: "7.0", Releases: "7.0.0-7.0.2", Tables: coreTables70, Migrations: coreMigrations70},
 }
 
 // LatestSchema は受け入れる最新のスキーマ版。

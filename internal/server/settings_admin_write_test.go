@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"regexp"
 	"strings"
 	"testing"
 	"time"
@@ -236,5 +237,28 @@ func TestAdminLoadDefaultConfiguration(t *testing.T) {
 	// 既定のトラッカーが新規プロジェクトの既定に設定され、設定のキャッシュにも反映される
 	if !strings.Contains(adminGet(t, c, ts.URL+"/settings?tab=projects"), `checked="checked" />Anomalie</label>`) {
 		t.Error("default_projects_tracker_ids not reflected")
+	}
+}
+
+// settings_controller_test.rb test_get_edit_should_show_avatar_server_url_in_info_texts
+// （Redmine 7.0.2 Defect #44488: 頭文字アバターの説明文も avatar_server_url を使う）。
+func TestSettingsAvatarServerURLInfoTexts(t *testing.T) {
+	ts, _ := newFixtureServer(t)
+	c := login(t, ts, "admin", "admin")
+	res, _ := settingsPost(t, c, ts, "/settings/edit?tab=display", url.Values{
+		"tab": {"display"}, "settings[gravatar_enabled]": {"1"}, "settings[gravatar_default]": {"initials"},
+	})
+	if res.StatusCode != 302 {
+		t.Fatalf("status %d", res.StatusCode)
+	}
+	_, body := get(t, c, ts.URL+"/settings?tab=display")
+	link := regexp.QuoteMeta(`<a href="https://www.gravatar.com">https://www.gravatar.com</a>`)
+	for _, re := range []string{
+		`id="settings_gravatar_enabled"[^>]*>[\s\S]*?<em class="info">[^<]*` + link,
+		`id="settings_gravatar_default"[\s\S]*?</select>[\s\S]*?<em class="info">\s*Users' initials are sent to ` + link,
+	} {
+		if !regexp.MustCompile(re).MatchString(body) {
+			t.Errorf("missing %s", re)
+		}
 	}
 }

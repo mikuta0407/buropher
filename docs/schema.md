@@ -1,7 +1,7 @@
 # buropher DB schema
 
 This document describes the database schema of buropher (initial migration `00001_initial_schema`)
-and records where it deviates from Redmine 7.0.1 (originally designed against 6.1.2). The design basis is the internal planning
+and records where it deviates from Redmine 7.0.2 (originally designed against 6.1.2). The design basis is the internal planning
 document "Appendix A: Redmine DB schema analysis"; decisions taken while implementing it
 (gaps, contradictions) are listed in [Decisions and deviations](#decisions-and-deviations).
 

@@ -281,6 +281,38 @@ func TestExtraThemes(t *testing.T) {
 	}
 }
 
+// themes_test.rb / icons_helper_test.rb（Redmine 7.0.2 #44412 / #44415）: テーマの icons.svg に含まれる
+// アイコンだけテーマのスプライトを使い、それ以外は既定のスプライトに戻る。
+func TestThemeIcons(t *testing.T) {
+	extra := fstest.MapFS{
+		"icontheme/stylesheets/application.css": {Data: []byte("body{}")},
+		"icontheme/images/icons.svg":            {Data: []byte(`<svg><symbol id="icon--edit"></symbol><symbol id='icon--del'></symbol></svg>`)},
+		"icontheme/images/custom.svg":           {Data: []byte(`<svg><symbol id="icon--special"></symbol></svg>`)},
+	}
+	p, err := New(web.Assets(), Options{ExtraThemes: extra})
+	if err != nil {
+		t.Fatal(err)
+	}
+	th := p.Theme("icontheme")
+	if th == nil {
+		t.Fatal("theme not found")
+	}
+	if got := strings.Join(th.Icons("icons"), ","); got != "edit,del" {
+		t.Errorf("Icons(icons) = %q", got)
+	}
+	for i := 0; i < 3; i++ {
+		if !th.HasIcon("icons", "edit") || th.HasIcon("icons", "other") || !th.HasIcon("custom", "special") || th.HasIcon("custom", "edit") {
+			t.Fatal("HasIcon mismatch")
+		}
+	}
+	if th.Icons("missing") != nil || th.HasIcon("missing", "edit") {
+		t.Error("missing sprite should have no icons")
+	}
+	if th.ImagePath("icons.svg") != "themes/icontheme/icons.svg" {
+		t.Errorf("ImagePath = %q", th.ImagePath("icons.svg"))
+	}
+}
+
 // curl -s http://127.0.0.1:3998/login（Redmine 7.0.1）の head 部（ダイジェストを正規化）。
 const redmineLoginHead = `<link rel="shortcut icon" type="image/x-icon" href="/assets/favicon-X.ico" />
 <link rel="stylesheet" href="/assets/jquery/jquery-ui-1.13.2-X.css" media="all" />

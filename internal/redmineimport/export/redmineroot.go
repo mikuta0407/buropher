@@ -15,7 +15,7 @@ import (
 
 // redmineRootInfo は --redmine-root から読み取った情報。
 type redmineRootInfo struct {
-	Version             string // 例 "7.0.1.stable"
+	Version             string // 例 "7.0.2.stable"
 	CipherKey           string // database_cipher_key(マニフェストには書かない)
 	AttachmentsPath     string // attachments_storage_path(未設定なら <root>/files)
 	CipherKeyConfigured bool

@@ -34,6 +34,7 @@ cases = {
  "pre_single_nl": '<pre>\nfoo\n</pre>\n<pre><code>\nbar</code></pre>\n',
  "nested_lists": '<ol>\n<li>a\n<ul><li>b</li></ul>\n</li>\n</ol>\n',
  "leading_text": 'text first\n<p>para</p>\ntrailing',
+ "pre_copy_button": '<div class="pre-wrapper" data-controller="sticky-copy-button"><a class="copy-pre-content-link icon-only" data-action="click->sticky-copy-button#copy"><svg class="s18 icon-svg" aria-hidden="true"><use href="http://localhost:3000/assets/icons.svg#icon--copy-pre-content"></use></svg><span class="icon-label hidden">Copy</span></a><pre>foo</pre></div>\n',
 }
 here = os.path.dirname(os.path.abspath(__file__))
 json.dump([{"name": k, "body": v} for k, v in cases.items()], open(os.path.join(here, 'roadie_inputs.json'), 'w'), ensure_ascii=False, indent=1)

@@ -2,6 +2,7 @@
 
 {{$f := labelled_form_for "" .Webhook (hash "url" "/webhooks")}}{{$f.Open}}
   {{partial "webhooks/form" (dict "f" $f)}}
+  {{back_url_hidden_field_tag}}
   {{submit_tag (l "button_create")}}
-  {{link_to (l "button_cancel") "/webhooks"}}
+  {{cancel_button_tag "/webhooks"}}
 {{end_form}}

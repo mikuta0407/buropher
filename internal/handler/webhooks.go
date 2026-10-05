@@ -10,6 +10,7 @@ import (
 	"errors"
 	"net/http"
 	"slices"
+	"strings"
 
 	"github.com/mikuta0407/buropher/internal/authz"
 	"github.com/mikuta0407/buropher/internal/db"
@@ -28,23 +29,32 @@ type webhookCtxKey struct{}
 // routesWebhooks は resources :webhooks, only: [:index, :new, :create, :edit, :update, :destroy]。
 func (a *App) routesWebhooks(r Router) {
 	ctrl := WebhooksController
-	// before_action :require_login / :check_enabled / :authorize、:find_webhook（edit / update / destroy）、
-	// require_sudo_mode :create, :update, :destroy
+	// before_action :require_login、
+	// :check_enabled_or_admin（edit / update / destroy）/ :check_enabled（それ以外）、:authorize、
+	// :find_webhook（edit / update / destroy）、require_sudo_mode :create, :update, :destroy
 	base := []ActionOption{RequireLogin(), Before(a.webhooksCheckEnabled), Before(a.webhooksAuthorize)}
-	find := Before(a.findWebhook)
+	member := []ActionOption{RequireLogin(), Before(a.webhooksCheckEnabledOrAdmin), Before(a.webhooksAuthorize), Before(a.findWebhook)}
 	sudo := RequireSudoMode()
 	a.Handle(r, http.MethodGet, "/webhooks", ctrl, "index", a.WebhooksIndex, base...)
 	a.Handle(r, http.MethodPost, "/webhooks", ctrl, "create", a.WebhooksCreate, append(slices.Clone(base), sudo)...)
 	a.Handle(r, http.MethodGet, "/webhooks/new", ctrl, "new", a.WebhooksNew, base...)
-	a.Handle(r, http.MethodGet, "/webhooks/{id}/edit", ctrl, "edit", a.WebhooksEdit, append(slices.Clone(base), find)...)
-	a.Handle(r, http.MethodPatch, "/webhooks/{id}", ctrl, "update", a.WebhooksUpdate, append(slices.Clone(base), find, sudo)...)
-	a.Handle(r, http.MethodPut, "/webhooks/{id}", ctrl, "update", a.WebhooksUpdate, append(slices.Clone(base), find, sudo)...)
-	a.Handle(r, http.MethodDelete, "/webhooks/{id}", ctrl, "destroy", a.WebhooksDestroy, append(slices.Clone(base), find, sudo)...)
+	a.Handle(r, http.MethodGet, "/webhooks/{id}/edit", ctrl, "edit", a.WebhooksEdit, member...)
+	a.Handle(r, http.MethodPatch, "/webhooks/{id}", ctrl, "update", a.WebhooksUpdate, append(slices.Clone(member), sudo)...)
+	a.Handle(r, http.MethodPut, "/webhooks/{id}", ctrl, "update", a.WebhooksUpdate, append(slices.Clone(member), sudo)...)
+	a.Handle(r, http.MethodDelete, "/webhooks/{id}", ctrl, "destroy", a.WebhooksDestroy, append(slices.Clone(member), sudo)...)
 }
 
 // webhooksCheckEnabled は check_enabled（render_403 unless Webhook.enabled?）。
 func (a *App) webhooksCheckEnabled(c *Req) {
 	if !a.webhooksEnabled() {
+		c.Render403("")
+	}
+}
+
+// webhooksCheckEnabledOrAdmin は check_enabled_or_admin（Redmine 7.0.2: 無効でも管理者は既存のフックを
+// 編集・削除できる。render_403 unless Webhook.enabled? || User.current.admin?）。
+func (a *App) webhooksCheckEnabledOrAdmin(c *Req) {
+	if !a.webhooksEnabled() && !c.User.IsAdmin() {
 		c.Render403("")
 	}
 }
@@ -56,14 +66,18 @@ func (a *App) webhooksAuthorize(c *Req) {
 	}
 }
 
-// findWebhook は find_webhook（User.current.webhooks.find(params[:id])。無ければ 404）。
+// findWebhook は find_webhook（Webhook.editable.find(params[:id])。管理者は全員のフック、
+// それ以外は自分のフックだけ。無ければ 404）。
 func (a *App) findWebhook(c *Req) {
 	id, ok := c.Params().IntStrict("id")
 	if !ok {
 		c.Render404("")
 		return
 	}
-	w, err := repository.GetUserWebhook(c.Ctx(), a.DB, a.Secrets, c.User.ID, id)
+	w, err := repository.GetWebhook(c.Ctx(), a.DB, a.Secrets, id)
+	if err == nil && !w.Editable(c.User.ID, c.User.IsAdmin()) {
+		err = repository.ErrNotFound
+	}
 	if err != nil {
 		if errors.Is(err, repository.ErrNotFound) {
 			c.Render404("")
@@ -81,10 +95,18 @@ type webhookForm struct {
 	W *repository.Webhook
 	// url / secret は代入されていなければ nil（text_field に value 属性を出さない）。
 	url, secret any
+	// Owner は @webhook.user（フォームの「ユーザー」欄と setable_projects に使う）。
+	Owner *domain.User
+	// OtherOwner は @webhook.persisted? && @webhook.user != User.current（管理者が他人のフックを
+	// 編集している。所有者を表示し、secret は表示しない。Redmine 7.0.2）。
+	OtherOwner bool
+	// currentUserID は safe_attributes= の user（User.current）。
+	currentUserID int64
 }
 
-func newWebhookForm(c *Req, w *repository.Webhook) *webhookForm {
-	f := &webhookForm{formModel: newFormModel(c, "webhook", w.ID), W: w}
+func newWebhookForm(c *Req, w *repository.Webhook, owner *domain.User) *webhookForm {
+	f := &webhookForm{formModel: newFormModel(c, "webhook", w.ID), W: w, Owner: owner, currentUserID: c.User.ID}
+	f.OtherOwner = w.ID != 0 && w.UserID != c.User.ID
 	if w.ID != 0 {
 		f.url = w.URL
 		if w.Secret != "" {
@@ -92,6 +114,14 @@ func newWebhookForm(c *Req, w *repository.Webhook) *webhookForm {
 		}
 	}
 	return f
+}
+
+// SecretValue は f.text_field :secret, :value => (他人のフックなら '' / それ以外は @webhook.secret)。
+func (f *webhookForm) SecretValue() any {
+	if f.OtherOwner {
+		return ""
+	}
+	return f.secret
 }
 
 // Send はフォームの属性（url / secret / active）。
@@ -110,14 +140,17 @@ func (f *webhookForm) Send(method string) (any, bool) {
 // HasEvent は @webhook.events.include?(name)。
 func (f *webhookForm) HasEvent(name string) bool { return slices.Contains(f.W.Events.V, name) }
 
-// assign は @webhook.attributes = webhook_params（url / secret / active / events: [] / project_ids: []）。
+// assign は @webhook.safe_attributes = params[:webhook]（url / secret / active / events / project_ids）。
+// 保存済みの他人のフックで secret が空なら secret は変えない（Redmine 7.0.2）。
 func (f *webhookForm) assign(p *httpx.Params) {
 	w := f.W
 	if v, ok := p.StringOK("url"); ok {
 		w.URL, f.url = v, v
 	}
 	if v, ok := p.StringOK("secret"); ok {
-		w.Secret, f.secret = v, v
+		if !(strings.TrimSpace(v) == "" && w.ID != 0 && w.UserID != f.currentUserID) {
+			w.Secret, f.secret = v, v
+		}
 	}
 	if v, ok := p.StringOK("active"); ok {
 		w.Active = castBool(v)
@@ -216,11 +249,12 @@ func (a *App) setableWebhookProjects(c *Req, user *domain.User) ([]*domain.Proje
 // 検証エラーなら false。
 func (a *App) validateAndSaveWebhook(c *Req, f *webhookForm) (bool, error) {
 	w := f.W
-	setable, err := a.setableWebhookProjects(c, c.User)
+	// setable_projects は self.user（所有者）を基準にする
+	setable, err := a.setableWebhookProjects(c, f.Owner)
 	if err != nil {
 		return false, err
 	}
-	// hook.projects = hook.projects.to_a & hook.setable_projects
+	// hook.projects = hook.projects.select {|p| setable_projects の id に含まれる }
 	var keep []int64
 	for _, id := range w.ProjectIDs {
 		if slices.ContainsFunc(setable, func(p *domain.Project) bool { return p.ID == id }) && !slices.Contains(keep, id) {
@@ -244,34 +278,41 @@ func (a *App) validateAndSaveWebhook(c *Req, f *webhookForm) (bool, error) {
 	return true, nil
 }
 
-// webhookRow は index の 1 行。
+// webhookRow は webhooks/_list の 1 行。
 type webhookRow struct {
 	*repository.Webhook
+	// User は webhook.user（show_author のときだけ読み込む）。
+	User     *domain.User
 	Projects []*domain.Project
 }
 
-// WebhooksIndex は index（@webhooks = webhooks.order(:url)）。
-func (a *App) WebhooksIndex(c *Req) {
+// webhookRows は webhooks/_list の行（webhook.projects.to_a.select(&:visible?)）。
+// withUsers なら所有者も読み込む。
+func (a *App) webhookRows(c *Req, ws []*repository.Webhook, withUsers bool) ([]webhookRow, error) {
 	ctx := c.Ctx()
-	ws, err := repository.ListUserWebhooks(ctx, a.DB, a.Secrets, c.User.ID)
-	if err != nil {
-		a.internalError(c, "list webhooks", err)
-		return
-	}
 	visible, err := c.Authz().VisibleProjectIDs(ctx)
 	if err != nil {
-		a.internalError(c, "visible projects", err)
-		return
+		return nil, err
 	}
 	all, err := repository.ListProjects(ctx, a.DB)
 	if err != nil {
-		a.internalError(c, "list projects", err)
-		return
+		return nil, err
 	}
+	users := map[int64]*domain.User{}
 	var rows []webhookRow
 	for _, w := range ws {
 		row := webhookRow{Webhook: w}
-		// webhook.projects.visible（projects_webhooks の行順 = 保存時の project_id 順）
+		if withUsers {
+			u, ok := users[w.UserID]
+			if !ok {
+				if u, err = repository.GetUser(ctx, a.DB, w.UserID); err != nil && !errors.Is(err, repository.ErrNotFound) {
+					return nil, err
+				}
+				users[w.UserID] = u
+			}
+			row.User = u
+		}
+		// projects_webhooks の行順 = 保存時の project_id 順
 		for _, id := range w.ProjectIDs {
 			for _, p := range all {
 				if p.ID == id && slices.Contains(visible, p.ID) {
@@ -281,11 +322,26 @@ func (a *App) WebhooksIndex(c *Req) {
 		}
 		rows = append(rows, row)
 	}
+	return rows, nil
+}
+
+// WebhooksIndex は index（@webhooks = webhooks.preload(:projects).order(:url)）。
+func (a *App) WebhooksIndex(c *Req) {
+	ws, err := repository.ListUserWebhooks(c.Ctx(), a.DB, a.Secrets, c.User.ID)
+	if err != nil {
+		a.internalError(c, "list webhooks", err)
+		return
+	}
+	rows, err := a.webhookRows(c, ws, false)
+	if err != nil {
+		a.internalError(c, "webhook rows", err)
+		return
+	}
 	c.Render("webhooks/index", map[string]any{"Webhooks": rows})
 }
 
 func (a *App) renderWebhookForm(c *Req, tmpl string, f *webhookForm) {
-	projects, err := a.setableWebhookProjects(c, c.User)
+	projects, err := a.setableWebhookProjects(c, f.Owner)
 	if err != nil {
 		a.internalError(c, "webhook projects", err)
 		return
@@ -297,22 +353,24 @@ func (a *App) renderWebhookForm(c *Req, tmpl string, f *webhookForm) {
 	})
 }
 
-// WebhooksNew は new（@webhook = Webhook.new）。
-func (a *App) WebhooksNew(c *Req) {
-	a.renderWebhookForm(c, "webhooks/new", newWebhookForm(c, &repository.Webhook{UserID: c.User.ID}))
+// assignWebhookParams は @webhook.safe_attributes = params[:webhook]（ハッシュでなければ何もしない）。
+func assignWebhookParams(c *Req, f *webhookForm) {
+	if mp := c.Params().Map("webhook"); mp != nil {
+		f.assign(mp)
+	}
 }
 
-// WebhooksCreate は create（webhooks.build(webhook_params)）。
+// WebhooksNew は new（@webhook = Webhook.new; @webhook.safe_attributes = params[:webhook]）。
+func (a *App) WebhooksNew(c *Req) {
+	f := newWebhookForm(c, &repository.Webhook{UserID: c.User.ID}, c.User)
+	assignWebhookParams(c, f)
+	a.renderWebhookForm(c, "webhooks/new", f)
+}
+
+// WebhooksCreate は create（webhooks.build; @webhook.safe_attributes = params[:webhook]）。
 func (a *App) WebhooksCreate(c *Req) {
-	mp := c.Params().Map("webhook")
-	if mp == nil || !c.Params().Present("webhook") {
-		// params.require(:webhook) → ActionController::ParameterMissing（400）
-		httpx.BadRequest(c.W)
-		c.Halt()
-		return
-	}
-	f := newWebhookForm(c, &repository.Webhook{UserID: c.User.ID})
-	f.assign(mp)
+	f := newWebhookForm(c, &repository.Webhook{UserID: c.User.ID}, c.User)
+	assignWebhookParams(c, f)
 	ok, err := a.validateAndSaveWebhook(c, f)
 	if err != nil {
 		a.internalError(c, "save webhook", err)
@@ -322,36 +380,52 @@ func (a *App) WebhooksCreate(c *Req) {
 		a.renderWebhookForm(c, "webhooks/new", f)
 		return
 	}
-	c.Redirect("/webhooks")
+	c.Flash().SetNotice(c.L("notice_successful_create"))
+	c.RedirectBackOrDefault("/webhooks", false)
+}
+
+// editWebhookForm は edit / update の @webhook（所有者 @webhook.user を読み込む）。
+func (a *App) editWebhookForm(c *Req) (*webhookForm, bool) {
+	w := c.value(webhookCtxKey{}).(*repository.Webhook)
+	owner := c.User
+	if w.UserID != c.User.ID {
+		u, err := repository.GetUser(c.Ctx(), a.DB, w.UserID)
+		if err != nil {
+			a.internalError(c, "webhook owner", err)
+			return nil, false
+		}
+		owner = u
+	}
+	return newWebhookForm(c, w, owner), true
 }
 
 // WebhooksEdit は edit。
 func (a *App) WebhooksEdit(c *Req) {
-	w := c.value(webhookCtxKey{}).(*repository.Webhook)
-	a.renderWebhookForm(c, "webhooks/edit", newWebhookForm(c, w))
-}
-
-// WebhooksUpdate は update（@webhook.update(webhook_params)）。
-func (a *App) WebhooksUpdate(c *Req) {
-	mp := c.Params().Map("webhook")
-	if mp == nil || !c.Params().Present("webhook") {
-		httpx.BadRequest(c.W)
-		c.Halt()
+	f, ok := a.editWebhookForm(c)
+	if !ok {
 		return
 	}
-	w := c.value(webhookCtxKey{}).(*repository.Webhook)
-	f := newWebhookForm(c, w)
-	f.assign(mp)
-	ok, err := a.validateAndSaveWebhook(c, f)
+	a.renderWebhookForm(c, "webhooks/edit", f)
+}
+
+// WebhooksUpdate は update（@webhook.safe_attributes = params[:webhook]; @webhook.save）。
+func (a *App) WebhooksUpdate(c *Req) {
+	f, ok := a.editWebhookForm(c)
+	if !ok {
+		return
+	}
+	assignWebhookParams(c, f)
+	saved, err := a.validateAndSaveWebhook(c, f)
 	if err != nil {
 		a.internalError(c, "save webhook", err)
 		return
 	}
-	if !ok {
+	if !saved {
 		a.renderWebhookForm(c, "webhooks/edit", f)
 		return
 	}
-	c.Redirect("/webhooks")
+	c.Flash().SetNotice(c.L("notice_successful_update"))
+	c.RedirectBackOrDefault("/webhooks", false)
 }
 
 // WebhooksDestroy は destroy。
@@ -361,5 +435,22 @@ func (a *App) WebhooksDestroy(c *Req) {
 		a.internalError(c, "delete webhook", err)
 		return
 	}
-	c.Redirect("/webhooks")
+	c.Flash().SetNotice(c.L("notice_successful_delete"))
+	c.RedirectBackOrDefault("/webhooks", false)
+}
+
+// AdminWebhooks は admin#webhooks（Redmine 7.0.2 Feature #44337。全ユーザーのフックの一覧）:
+// @webhooks = Webhook.eager_load(:user).preload(:projects).order(*User.fields_for_order_statement, :url)。
+func (a *App) AdminWebhooks(c *Req) {
+	ws, err := repository.ListAllWebhooks(c.Ctx(), a.DB, a.Secrets, a.Settings.String("user_format"))
+	if err != nil {
+		a.internalError(c, "list webhooks", err)
+		return
+	}
+	rows, err := a.webhookRows(c, ws, true)
+	if err != nil {
+		a.internalError(c, "webhook rows", err)
+		return
+	}
+	c.renderAdmin("admin/webhooks", map[string]any{"Webhooks": rows, "WebhooksEnabled": a.webhooksEnabled()}, false)
 }

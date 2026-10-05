@@ -4,12 +4,16 @@
 <div class="splitcontent">
   <div class="splitcontentleft">
     <div class="box tabular">
+      {{if $webhook.OtherOwner}}
+        <p><label for="webhook_user">{{l "field_user"}}</label>{{text_field_tag "webhook_user" (user_name $webhook.Owner) (hash "disabled" true)}}</p>
+      {{end}}
       <p>{{$f.TextField "url" (hash "required" true "size" 60)}}
         <em class="info">{{l "webhook_url_info"}}</em>
       </p>
       <p>
-        {{$f.TextField "secret"}}
+        {{$f.TextField "secret" (hash "value" $webhook.SecretValue)}}
         <em class="info">{{raw (l "webhook_secret_info_html")}}</em>
+        {{if $webhook.OtherOwner}}<em class="info">{{l "webhook_secret_keep_info"}}</em>{{end}}
       </p>
       <p>{{$f.CheckBox "active"}}</p>
     </div>

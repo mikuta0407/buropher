@@ -25,7 +25,7 @@
 <p>
   {{setting_select "gravatar_default" (gravatar_default_setting_options) (hash "blank" (sym "label_none"))}}
   <em class="{{if eq $v.GravatarDefault "initials"}}info{{else}}hidden{{end}}">
-    {{raw (l "text_setting_gravatar_default_initials_html")}}
+    {{raw (l "text_setting_gravatar_default_initials_html" (hash "url" (h $v.AvatarServerURL)))}}
   </em>
 </p>
 

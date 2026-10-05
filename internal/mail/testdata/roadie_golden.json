@@ -153,5 +153,10 @@
     "name": "leading_text",
     "body": "text first\n<p>para</p>\ntrailing",
     "expected": "<!DOCTYPE html>\n<html>\n<head>\n\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><style>a:link{color:#1864ab}\na:visited{color:#1864ab}\na:hover{color:#c92a2a}\na:active{color:#c92a2a}</style></head>\n\n<body style=\"font-family:sans-serif;font-size:14px;line-height:1.5;color:#212529\">\ntext first\n<p>para</p>\ntrailing</body>\n</html>\n"
+  },
+  {
+    "name": "pre_copy_button",
+    "body": "<div class=\"pre-wrapper\" data-controller=\"sticky-copy-button\"><a class=\"copy-pre-content-link icon-only\" data-action=\"click->sticky-copy-button#copy\"><svg class=\"s18 icon-svg\" aria-hidden=\"true\"><use href=\"http://localhost:3000/assets/icons.svg#icon--copy-pre-content\"></use></svg><span class=\"icon-label hidden\">Copy</span></a><pre>foo</pre></div>\n",
+    "expected": "<!DOCTYPE html>\n<html>\n<head>\n\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><style>a:link{color:#1864ab}\na:visited{color:#1864ab}\na:hover{color:#c92a2a}\na:active{color:#c92a2a}</style></head>\n\n<body style=\"font-family:sans-serif;font-size:14px;line-height:1.5;color:#212529\">\n<div class=\"pre-wrapper\" data-controller=\"sticky-copy-button\"><a class=\"copy-pre-content-link icon-only\" data-action=\"click-&gt;sticky-copy-button#copy\" style=\"color:#1864ab\" href=\"http://localhost:3000\"><svg class=\"s18 icon-svg\" aria-hidden=\"true\" style=\"display:none\"><use href=\"http://localhost:3000/assets/icons.svg#icon--copy-pre-content\"></use></svg><span class=\"icon-label hidden\">Copy</span></a><pre style='font-family:Consolas, Menlo, \"Liberation Mono\", Courier, monospace;margin:1em 1em 1em 1.6em;padding:8px;background-color:#f8f9fa;border:1px solid #ced4da;border-radius:3px;width:auto;overflow-x:auto;overflow-y:hidden'>foo</pre></div>\n</body>\n</html>\n"
   }
 ]
