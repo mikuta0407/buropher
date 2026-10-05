@@ -146,9 +146,32 @@ func TestOAuthMyAccountCannotChangeMail(t *testing.T) {
 	if mail != "jsmith@somenet.foo" {
 		t.Errorf("mail changed to %q", mail)
 	}
-	// メールアドレス以外（同じアドレスの再送信を含む）の更新は従来どおり可能
-	if st := put(`{"user":{"firstname":"Johnny","mail":"JSmith@somenet.foo"}}`); st/100 != 2 {
-		t.Errorf("firstname change via OAuth: status %d", st)
+	// Redmine 7.0.1（#44174）: OAuth のトークンではメールアドレス以外のアカウントの変更もできない
+	if st := put(`{"user":{"firstname":"Johnny"}}`); st != http.StatusForbidden {
+		t.Errorf("firstname change via OAuth: status %d, want 403", st)
+	}
+	var first string
+	if err := d.Get(context.Background(), &first, `SELECT firstname FROM principals WHERE id = 2`); err != nil {
+		t.Fatal(err)
+	}
+	if first != "John" {
+		t.Errorf("firstname changed to %q", first)
+	}
+	// API キーでの更新は従来どおり可能
+	key := authCreateToken(t, d, 2, "api")
+	req, err := http.NewRequest(http.MethodPut, ts.URL+"/my/account.json", strings.NewReader(`{"user":{"firstname":"Renamed"}}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.Header.Set("X-Redmine-API-Key", key)
+	req.Header.Set("Content-Type", "application/json")
+	res, err := newClient(t).Do(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	res.Body.Close()
+	if res.StatusCode != http.StatusNoContent {
+		t.Errorf("PUT via API key: status %d", res.StatusCode)
 	}
 }
 
