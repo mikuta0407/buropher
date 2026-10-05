@@ -7,7 +7,7 @@ package highlight
 
 import "strings"
 
-// Rouge 4.7 の csharp.rb / ini.rb / properties.rb / conf.rb の移植。
+// Rouge 5.1 の csharp.rb / ini.rb / properties.rb / conf.rb の移植。
 
 func init() {
 	registerRouge("csharp", func() *rlexer {

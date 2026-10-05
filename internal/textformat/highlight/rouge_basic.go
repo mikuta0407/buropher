@@ -5,7 +5,7 @@
 
 package highlight
 
-// Rouge 4.7 の plain_text.rb / json.rb / diff.rb の移植。
+// Rouge 5.1 の plain_text.rb / json.rb / diff.rb の移植。
 
 func init() {
 	registerRouge("plaintext", func() *rlexer {

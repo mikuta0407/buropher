@@ -7,7 +7,7 @@ package highlight
 
 import "strings"
 
-// Rouge 4.7 の perl.rb の移植。
+// Rouge 5.1 の perl.rb の移植。
 
 func init() {
 	registerRouge("perl", func() *rlexer {
@@ -38,50 +38,124 @@ split sprintf sqrt srand stat study substr symlink syscall sysopen
 sysread sysseek system syswrite tell telldir tie tied time times
 tr truncate uc ucfirst umask undef unlink unpack unshift untie
 utime values vec wait waitpid wantarray warn write`)
+		keywordSet := wordset(strings.ReplaceAll(keywords, "|", " "))
+		builtinSet := wordset(strings.ReplaceAll(builtins, "|", " "))
+		operatorWords := wordset(`eq lt gt le ge ne not and or cmp`)
 		const re = "sr"
+		// 対になる区切り文字
+		balanced := map[string]string{"{": "}", "(": ")", "[": "]", "<": ">"}
+		openRegex := func(c *rctx, delim string) {
+			if e, ok := balanced[delim]; ok {
+				delim = e
+			}
+			c.vars["regex_end"] = delim
+			c.push("regex")
+		}
+		openRegexOperator := func(c *rctx, delim string) {
+			if _, ok := balanced[delim]; ok {
+				c.push("balanced_regex")
+			} else {
+				c.push("continued_regex")
+			}
+			openRegex(c, delim)
+		}
 		l := &rlexer{tag: "perl"}
 		l.state("balanced_regex",
-			rule(`(?m)/(\\[\\/]|[^/])*/[egimosx]*`, re, "#pop"),
-			rule(`(?m)!(\\[\\!]|[^!])*![egimosx]*`, re, "#pop"),
-			rule(`(?m)\\(\\\\|[^\\])*\\[egimosx]*`, re, "#pop"),
-			rule(`{(\\[\\}]|[^}])*}[egimosx]*`, re, "#pop"),
-			rule(`<(\\[\\>]|[^>])*>[egimosx]*`, re, "#pop"),
-			rule(`\[(\\[\\\]]|[^\]])*\][egimosx]*`, re, "#pop"),
-			rule(`\((\\[\\\)]|[^\)])*\)[egimosx]*`, re, "#pop"),
-			rule(`@(\\[\\@]|[^@])*@[egimosx]*`, re, "#pop"),
-			rule(`%(\\[\\%]|[^%])*%[egimosx]*`, re, "#pop"),
-			rule(`\$(\\[\\\$]|[^\$])*\$[egimosx]*`, re, "#pop"),
+			rule(`\s+`, ""),
+			ruleF(`.`, func(c *rctx) {
+				c.pop()
+				openRegex(c, c.m.String())
+				c.token("dl")
+			}),
 		)
-		l.state("root",
+		l.state("continued_regex", mixin("regex"))
+		l.state("regex_flags",
+			rule(`[msixpodualngcr]+`, "sa"),
+			ruleF(``, func(c *rctx) { c.pop() }),
+		)
+		l.state("regex_escapes",
+			rule(`\\[0-7][0-7][0-7]`, "se"),
+			rule(`\\x\h\h`, "se"),
+			rule(`\\.(?:[{]\w+[}])?`, "se"),
+		)
+		l.state("regex",
+			ruleF(`.`, func(c *rctx) {
+				if end, _ := c.vars["regex_end"].(string); c.m.String() == end {
+					c.token("dl")
+					c.gotoState("regex_flags")
+				} else {
+					c.fallThrough()
+				}
+			}),
+			mixin("regex_escapes"),
+			rule(`[{]\d+(?:,\d+)?[}]`, "o"),
+			rule(`\[\^?`, "p", "regex_char_class"),
+			rule(`[?]|[.]|[|]|[*+][?]?`, "o"),
+			rule(`[(](?:[?][=!<:]?)?`, "p"),
+			rule(`[(][?]<!`, "p"),
+			rule(`[{})]`, "p"),
+			rule(`.`, re),
+		)
+		l.state("regex_char_class",
+			ruleF(`\^`, func(c *rctx) { c.token("p"); c.gotoState("regex_char_class_inner") }),
+			ruleF(`-`, func(c *rctx) { c.token(re); c.gotoState("regex_char_class_inner") }),
+			ruleF(``, func(c *rctx) { c.gotoState("regex_char_class_inner") }),
+		)
+		l.state("regex_char_class_inner",
+			mixin("regex_escapes"),
+			rule(`-(?!\])`, "p"),
+			rule(`\\.`, "se"),
+			rule(`[^-\]\\]+`, re),
+			rule(`\]`, "p", "#pop"),
+		)
+		l.state("expr_start",
+			mixin("whitespace"),
+			ruleF(`/`, func(c *rctx) {
+				openRegex(c, "/")
+				c.token("dl")
+			}),
+			ruleF(``, func(c *rctx) { c.pop() }),
+		)
+		l.state("whitespace",
 			rule(`#.*`, "c1"),
+			rule(`\s+`, ""),
 			rule(`(?m)^=[a-zA-Z0-9]+\s+.*?\n=cut`, "cm"),
-			rule(`(?:`+keywords+`)\b`, "k"),
+		)
+		// \w に一致する区切り文字は演算子との間に空白がある場合のみ（\b で判定する）
+		const regexDelim = `(?:[^\w\s]|\b\w)`
+		l.state("root",
+			mixin("whitespace"),
 			ruleF(`(format)(\s+)([a-zA-Z0-9_]+)(\s*)(=)(\s*\n)`, func(c *rctx) {
 				c.groups("k", "", "n", "", "p", "")
 				c.push("format")
 			}),
-			rule(`(?:eq|lt|gt|le|ge|ne|not|and|or|cmp)\b`, "ow"),
-			rule(`(?:s|tr|y){(\\\\|\\}|[^}])*}\s*`, re, "balanced_regex"),
-			rule(`(?:s|tr|y)<(\\\\|\\>|[^>])*>\s*`, re, "balanced_regex"),
-			rule(`(?:s|tr|y)\[(\\\\|\\\]|[^\]])*\]\s*`, re, "balanced_regex"),
-			rule(`(?:s|tr|y)\((\\\\|\\\)|[^\)])*\)\s*`, re, "balanced_regex"),
-			rule(`(?m)(?:s|tr|y)\s*([^\w\s])((\\\\|\\\1)|[^\x01])*?\1((\\\\|\\\1)|[^\x01])*?\1[msixpodualngcr]*`, re),
-			rule(`(?m)(?:s|tr|y)\s+(\w)((\\\\|\\\1)|[^\x01])*?\1((\\\\|\\\1)|[^\x01])*?\1[msixpodualngcr]*`, re),
-			rule(`m?/(\\\\|\\/|[^/\n])*/[msixpodualngc]*`, re),
-			rule(`m(?=[/!\\{<\[\(@%\$])`, re, "balanced_regex"),
-			rule(`(?m)m\s*([^\w\s])((\\\\|\\\1)|[^\x01])*?\1[msixpodualngc]*`, re),
-			rule(`(?m)m\s+(\w)((\\\\|\\\1)|[^\x01])*?\1[msixpodualngc]*`, re),
-			rule(`((?<==~)|(?<=\())\s*/(\\\\|\\/|[^/])*/[msixpodualngc]*`, re, "balanced_regex"),
-			rule(`\s+`, ""),
+			ruleF(`\w+`, func(c *rctx) {
+				switch w := c.m.String(); {
+				case keywordSet[w]:
+					c.token("k")
+				case operatorWords[w]:
+					c.token("ow")
+				default:
+					c.fallThrough()
+				}
+			}),
 			ruleF(`(?i)(?=[a-z_]\w*(\s*#.*\n)*\s*=>)`, func(c *rctx) { c.push("fat_comma") }),
-			rule(`(?:`+builtins+`)\b`, "nb"),
+			ruleF(`(s|tr|y)(\s*)(`+regexDelim+`)`, func(c *rctx) {
+				openRegexOperator(c, c.group(3))
+				c.groups("sa", "", "dl")
+			}),
+			ruleF(`(m)(\s*)(`+regexDelim+`)`, func(c *rctx) {
+				openRegex(c, c.group(3))
+				c.groups("sa", "", "dl")
+			}),
 			rule(`((__(DIE|WARN)__)|(DATA|STD(IN|OUT|ERR)))\b`, "bp"),
 			rule(`(?m)<<([\'"]?)([a-zA-Z_][a-zA-Z0-9_]*)\1;?\n.*?\n\2\n`, "s"),
 			rule(`(__(END|DATA)__)\b`, "cp", "end_part"),
 			rule(`\$\^[ADEFHILMOPSTWX]`, "vg"),
 			rule("\\$[\\\\\"'\\[\\]&`+*.,;=%~?@$!<>(^\\|\\/_-](?!\\w)", "vg"),
 			rule(`(?i)[$@%&*][$@%&*#_]*(?=[a-z{\[;])`, "nv", "varname"),
-			rule(`[-+\/*%=<>&^\|!\\~]=?`, "o"),
+			rule(`\[\]|\*\*|::|<<|>>|>=|<=|<=>|={3}|!=|=~|!~|&&?|\|\||\.{1,3}`, "o", "expr_start"),
+			rule(`[-+\/*%=<>&^\|!\\~]=?`, "o", "expr_start"),
 			rule(`0_?[0-7]+(_[0-7]+)*`, "mo"),
 			rule(`0x[0-9A-Fa-f]+(_[0-9A-Fa-f]+)*`, "mh"),
 			rule(`0b[01]+(_[01]+)*`, "mb"),
@@ -97,10 +171,17 @@ utime values vec wait waitpid wantarray warn write`)
 			rule(`(q|qq|qw|qr|qx)\[`, "sx", "sb_string"),
 			rule(`(q|qq|qw|qr|qx)<`, "sx", "lt_string"),
 			rule(`(q|qq|qw|qr|qx)(\W)(.|\n)*?\2`, "sx"),
-			rule(`package\s+`, "k", "modulename"),
-			rule(`sub\s+`, "k", "funcname"),
-			rule(`\[\]|\*\*|::|<<|>>|>=|<=|<=>|={3}|!=|=~|!~|&&?|\|\||\.{1,3}`, "o"),
-			rule(`[()\[\]:;,<>\/?{}]`, "p"),
+			rule(`package\b`, "k", "modulename"),
+			rule(`sub\b`, "k", "funcname"),
+			rule(`[(]`, "p", "expr_start"),
+			rule(`[)\[\]:;,<>\/?{}]`, "p"),
+			ruleF(`[a-z]\w*`, func(c *rctx) {
+				if builtinSet[c.m.String()] {
+					c.token("nb")
+				} else {
+					c.fallThrough()
+				}
+			}),
 			ruleF(`(?=\w)`, func(c *rctx) { c.push("name") }),
 		)
 		l.state("format",

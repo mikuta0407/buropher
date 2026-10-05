@@ -4,10 +4,11 @@
 // Package highlight は Redmine::SyntaxHighlighting（Rouge アダプタ）を移植したもの。
 //
 // 対応言語の判定（language_supported?）とファイル名からのレキサー推定は
-// Rouge 4.7 のレキサー定義（rouge_lexers_gen.go）を用いて Redmine と同一の結果を返す。
-// 実際の字句解析は alecthomas/chroma で行い、トークン種別を Rouge の短縮 CSS クラス名
-// （k, nf, s2 など）に対応付けて Rouge::Formatters::HTML と同じ形式で出力する。
-// レキサー自体は Rouge と別実装のため、トークン分割が Rouge と異なる場合がある。
+// Rouge 5.1 のレキサー定義（rouge_lexers_gen.go）を用いて Redmine と同一の結果を返す。
+// 主要言語は Rouge 5.1 のレキサーを移植したもの（rouge*.go）で字句解析し、Rouge と同じ出力になる。
+// それ以外の言語は alecthomas/chroma で字句解析し、トークン種別を Rouge の短縮 CSS クラス名
+// （k, nf, s2 など）に対応付けて Rouge::Formatters::HTML と同じ形式で出力する
+// （レキサーが別実装のため、トークン分割が Rouge と異なる場合がある）。
 package highlight
 
 import (

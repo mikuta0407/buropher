@@ -10,7 +10,7 @@ import (
 	"unicode/utf8"
 )
 
-// Rouge 4.7 の yaml.rb の移植。
+// Rouge 5.1 の yaml.rb の移植。
 
 type yamlState struct {
 	indentStack       []int
@@ -105,8 +105,19 @@ func init() {
 			rule(`\*[\p{L}\p{Nl}\p{Nd}_-]+`, "nv"),
 		)
 		l.state("block_nodes",
+			// 引用符なしの暗黙のキー
 			ruleF(`([^#,?\[\]{}"'\n]+)(:)(?=\s|$)`, func(c *rctx) {
 				c.groups("na", "pi")
+				yst(c).setIndent(c.m.String(), true)
+			}),
+			// 二重引用符の暗黙のキー
+			ruleF(`("(?:[^\n"]|\\")*")(\s*)(:)(?=\s|$)`, func(c *rctx) {
+				c.groups("na", "", "pi")
+				yst(c).setIndent(c.m.String(), true)
+			}),
+			// 単一引用符の暗黙のキー
+			ruleF(`('(?:[^\n']|\\')*')(\s*)(:)(?=\s|$)`, func(c *rctx) {
+				c.groups("na", "", "pi")
 				yst(c).setIndent(c.m.String(), true)
 			}),
 			ruleF(`[\|>][+-]?`, func(c *rctx) {

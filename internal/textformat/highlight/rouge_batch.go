@@ -5,7 +5,7 @@
 
 package highlight
 
-// Rouge 4.7 の batchfile.rb の移植。
+// Rouge 5.1 の batchfile.rb の移植。
 
 var (
 	batKeywords      = wordset(`if else for in do goto call exit`)

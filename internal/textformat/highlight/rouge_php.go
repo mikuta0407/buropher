@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-// Rouge 4.7 の php.rb の移植（TemplateLexer の親は HTML）。
+// Rouge 5.1 の php.rb の移植（TemplateLexer の親は HTML）。
 
 var phpKeywords = wordset(`old_function cfunction
 __class__ __dir__ __file__ __function__ __halt_compiler __line__
@@ -217,7 +217,7 @@ func init() {
 			rule(`=`, "o", "in_assign"),
 			rule(`(?i)\b(?:public|protected|private|readonly)(?:\(set\)|\b)`, "k"),
 			rule(`(?i)\breadonly\b`, "k"),
-			rule(`\??`+id, "kt", "in_assign"),
+			rule(`\??`+id, "kt", "in_property"),
 			mixin("escape"),
 			mixin("whitespace"),
 			mixin("variables"),
@@ -267,7 +267,7 @@ func init() {
 			rule(`(?i)\b(?:public|protected|private)(?:\(set\)|\b)`, "k"),
 			rule(`(?i)\b(?:readonly|static)\b`, "k"),
 			rule(`(?i)(?=(abstract|const|function)\b)`, "k", "#pop"),
-			rule(`\??`+id, "kt", "#pop"),
+			ruleF(`\??`+id, func(c *rctx) { c.token("kt"); c.gotoState("in_property") }),
 			mixin("escape"),
 			mixin("whitespace"),
 			mixin("return"),
@@ -289,6 +289,43 @@ func init() {
 			rule(`\}`, "p", "#pop"),
 			ruleG(`(?i)(case)(\s+)(`+id+`)`, toks("k", "", "no")),
 			mixin("php"),
+		)
+		l.state("in_property",
+			rule(`\$+`+id, "nv"),
+			ruleF(`\{`, func(c *rctx) { c.token("p"); c.gotoState("in_property_hooks") }),
+			rule(`[;,]`, "p", "#pop"),
+			ruleF(`(?==)`, func(c *rctx) { c.pop() }),
+			rule(`[|&]`, "o"),
+			rule(`\??`+id, "kt"),
+			mixin("escape"),
+			mixin("whitespace"),
+			mixin("return"),
+		)
+		l.state("in_property_hooks",
+			rule(`\}`, "p", "#pop"),
+			rule(`(?i)\bfinal\b`, "k"),
+			rule(`&(?=get\b)`, "o"),
+			ruleF(`(\bset\b)(\s*)(\()`, func(c *rctx) {
+				c.groups("k", "", "p")
+				c.push("in_property_hook_params")
+			}),
+			rule(`\b(?:get|set)\b`, "k"),
+			rule(`\{`, "p", "in_function_body"),
+			rule(`[;,\(\)\[\]]`, "p"),
+			mixin("escape"),
+			mixin("whitespace"),
+			mixin("variables"),
+			mixin("values"),
+			mixin("names"),
+			mixin("operators"),
+			rule(`[=?]`, "o"),
+		)
+		l.state("in_property_hook_params",
+			rule(`\)`, "p", "#pop"),
+			rule(`\??`+id, "kt"),
+			mixin("escape"),
+			mixin("whitespace"),
+			mixin("variables"),
 		)
 		return l
 	})

@@ -48,6 +48,13 @@ func ported(l *rougeLexer) bool {
 	return ok
 }
 
+// rougeKnownDiffs は移植済みのレキサーでも一致しないもの（理由付き）。
+var rougeKnownDiffs = map[string]string{
+	// コードフェンス内の latex（tex）は未移植で chroma で代用している。
+	// フェンスを除いたものは sample-markdown-ported-fences で比較する。
+	"rouge-sample-markdown": "fenced latex is not ported",
+}
+
 // TestRougeFixtures は Redmine（Rouge）の出力と比較する。移植済みのレキサー・対応言語の判定・
 // ファイル名の判定は完全一致を求め、chroma で代用する言語は一致率だけを表示する。
 func TestRougeFixtures(t *testing.T) {
@@ -100,6 +107,9 @@ func TestRougeFixtures(t *testing.T) {
 				got = HighlightByFilename(e.Input, e.Filename)
 				l, ambiguous := guessLexer(strings.ReplaceAll(e.Filename, "\r", ""), normalizeNewlines(e.Input))
 				strict = ambiguous || ported(l)
+			}
+			if _, ok := rougeKnownDiffs[e.Name]; ok {
+				strict = false
 			}
 			key := e.Mode
 			if strict {

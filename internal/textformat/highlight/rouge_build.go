@@ -5,7 +5,7 @@
 
 package highlight
 
-// Rouge 4.7 の docker.rb / make.rb / toml.rb の移植。
+// Rouge 5.1 の docker.rb / make.rb / toml.rb の移植。
 
 func init() {
 	registerRouge("docker", func() *rlexer {
