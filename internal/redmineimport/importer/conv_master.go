@@ -139,7 +139,7 @@ func (im *imp) importTrackers() error {
 	}
 	pos := positions(t, rows, "position", nil)
 	names := newNamer(false)
-	ins := im.ins(t, "trackers", "id", "name", "description", "position", "is_in_roadmap", "default_status_id", "disabled_core_fields")
+	ins := im.ins(t, "trackers", "id", "name", "description", "position", "is_in_roadmap", "private_by_default", "default_status_id", "disabled_core_fields")
 	var kept []rec
 	for _, r := range rows {
 		id := r.id()
@@ -166,7 +166,7 @@ func (im *imp) importTrackers() error {
 		im.st.trackers.add(id)
 		im.st.trackerDefault[id] = ds
 		kept = append(kept, r)
-		if err := ins.add(id, name, r.strNull("description", false), pos[id], r.bool("is_in_roadmap", true), ds, toJSON(disabled)); err != nil {
+		if err := ins.add(id, name, r.strNull("description", false), pos[id], r.bool("is_in_roadmap", true), r.bool("private_by_default", false), ds, toJSON(disabled)); err != nil {
 			return err
 		}
 	}

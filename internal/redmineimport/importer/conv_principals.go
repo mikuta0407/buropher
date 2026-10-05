@@ -109,12 +109,24 @@ func (im *imp) importSettings() error {
 			return err
 		}
 	}
+	// Redmine 7.0 のマイグレーション 20260320090000 は、既存インストールで
+	// default_issue_start_date_to_creation_date の行がなければ '1'(6.1 までの既定値)を保存する。
+	// 7.0 で新規インストールの既定は 0 になったため、行のない 6.1 の DB は同じく '1' を保存して挙動を保つ。
+	if !seen[startDateSetting] {
+		im.st.settings[startDateSetting] = "1"
+		if err := ins.add(startDateSetting, toJSON("1"), im.nowStr); err != nil {
+			return err
+		}
+		t.repair(startDateSetting, "missing; stored '1' (previous default, as Redmine 7.0's migration does)")
+	}
 	if _, err := ins.close(); err != nil {
 		return err
 	}
 	_, err = leg.close()
 	return err
 }
+
+const startDateSetting = "default_issue_start_date_to_creation_date"
 
 // setting はソースの設定値(なければ settings.yml の既定値)を文字列で返す。
 func (im *imp) setting(name string) string {
@@ -202,6 +214,8 @@ var principalKinds = map[string]string{
 
 var mailNotificationValues = map[string]bool{
 	"all": true, "selected": true, "only_my_events": true, "only_assigned": true, "only_owner": true, "none": true,
+	"only_my_watches": true, // Redmine 7.0
+
 }
 
 func (im *imp) importUsers() error {

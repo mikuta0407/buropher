@@ -269,6 +269,7 @@ func (im *imp) run() error {
 		{"attachments", im.importAttachments},
 		{"watchers", im.importWatchers},
 		{"reactions", im.importReactions},
+		{"webhooks", im.importWebhooks},
 		{"oauth", im.importOAuth},
 		{"derived values", im.recompute},
 		{"sequences", im.resetSequences},

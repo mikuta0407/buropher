@@ -45,7 +45,7 @@ var idTables = []string{
 	"time_entries", "wikis", "wiki_pages", "wiki_page_versions", "wiki_redirects", "boards", "messages", "news",
 	"news_comments", "documents", "reactions", "attachments", "queries", "legacy_settings", "repositories",
 	"changesets", "changeset_files", "imports", "import_items", "oauth_applications", "oauth_access_grants",
-	"oauth_access_tokens", "jobs", "notification_deliveries",
+	"oauth_access_tokens", "jobs", "notification_deliveries", "webhooks",
 }
 
 func (im *imp) resetSequences() error {
@@ -91,7 +91,7 @@ var sequenceSources = map[string]string{
 	"wiki_redirects": "wiki_redirects", "boards": "boards", "messages": "messages", "news": "news",
 	"news_comments": "comments", "documents": "documents", "reactions": "reactions", "attachments": "attachments",
 	"queries": "queries", "repositories": "repositories", "changesets": "changesets", "changeset_files": "changes",
-	"oauth_applications": "oauth_applications",
+	"oauth_applications": "oauth_applications", "webhooks": "webhooks",
 }
 
 // polyChecks はポリモーフィック参照の孤児検出(種別 → 参照先テーブル)。

@@ -95,7 +95,7 @@ func (a *App) SettingsEdit(c *Req) {
 			return
 		}
 		for _, e := range ferrs {
-			msg := c.L(e.Key)
+			msg := c.L(e.Key, e.Args...)
 			if e.Detail != "" {
 				msg += " (" + e.Detail + ")"
 			}

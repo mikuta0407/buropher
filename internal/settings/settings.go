@@ -320,7 +320,7 @@ type FieldError struct {
 	// Key は Redmine の i18n キー（activerecord.errors.messages.*）。
 	Key    string
 	Detail string
-	// Args はメッセージの補間引数（"count", 0 のようなキーと値の組）。
+	// Args は i18n の l(key, arg) に渡す補間引数（数値は count）。
 	Args []any
 }
 
@@ -373,7 +373,7 @@ func (s *Settings) ValidateAllFromParams(params map[string]any) []FieldError {
 			if n, err := strconv.ParseInt(s, 10, 64); err != nil || !reInteger.MatchString(s) {
 				errs = append(errs, FieldError{Name: "default_issue_due_date_offset", Key: "activerecord.errors.messages.not_a_number"})
 			} else if n < 0 {
-				errs = append(errs, FieldError{Name: "default_issue_due_date_offset", Key: "activerecord.errors.messages.greater_than_or_equal_to", Args: []any{"count", 0}})
+				errs = append(errs, FieldError{Name: "default_issue_due_date_offset", Key: "activerecord.errors.messages.greater_than_or_equal_to", Args: []any{0}})
 			}
 		}
 	}
