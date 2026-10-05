@@ -95,6 +95,11 @@ func (a *App) queriesKindFilter(c *Req) {
 		c.Render404("")
 		return
 	}
+	// 管理画面のクエリ（ユーザー・プロジェクト管理）は管理者に限る
+	if (k == query.KindUser || k == query.KindProjectAdmin) && !c.User.IsAdmin() {
+		c.DenyAccess()
+		return
+	}
 	c.setValue(queryKindKey{}, k)
 }
 

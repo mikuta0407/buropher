@@ -136,6 +136,26 @@ func TestTimeEntryMoveToProjectWithoutLogTime(t *testing.T) {
 	res.expectStatus(t, http.StatusNoContent)
 }
 
+// 管理画面のクエリ（UserQuery / ProjectAdminQuery）は管理者以外は作れない。
+func TestAdminQueryKindsRequireAdmin(t *testing.T) {
+	ts, _ := newFixtureServer(t)
+	c := login(t, ts, "jsmith", "jsmith")
+	for _, typ := range []string{"UserQuery", "ProjectAdminQuery"} {
+		res, body := get(t, c, ts.URL+"/queries/new?type="+typ+"&set_filter=1&f[]=auth_source_id&op[auth_source_id]=%3D&v[auth_source_id][]=1")
+		if res.StatusCode != http.StatusForbidden || strings.Contains(body, "LDAP test server") {
+			t.Errorf("new %s as non-admin: %d", typ, res.StatusCode)
+		}
+		res, _ = projSubmit(t, c, ts, http.MethodPost, "/queries", url.Values{"type": {typ}, "query[name]": {"x"}}, false)
+		if res.StatusCode != http.StatusForbidden {
+			t.Errorf("create %s as non-admin: %d", typ, res.StatusCode)
+		}
+	}
+	res, _ := get(t, login(t, ts, "admin", "admin"), ts.URL+"/queries/new?type=UserQuery")
+	if res.StatusCode != http.StatusOK {
+		t.Errorf("admin new UserQuery: %d", res.StatusCode)
+	}
+}
+
 // チケット削除で工数を付け替える先に、見えないチケット（非公開）は指定できない。
 func TestIssueDestroyReassignToInvisible(t *testing.T) {
 	ts, d := newFixtureServer(t)
