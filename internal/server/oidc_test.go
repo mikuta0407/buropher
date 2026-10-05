@@ -65,7 +65,14 @@ func newSSOEnv(t *testing.T, form url.Values, extra ...func(a *handler.App, r ch
 // ssoLogin は c で SSO ログインし、callback の応答を返す。
 func (e *ssoEnv) ssoLogin(c *http.Client, query string) *http.Response {
 	e.t.Helper()
-	res, _ := get(e.t, c, e.ts.URL+"/auth/oidc/"+e.id+"/start"+query)
+	var res *http.Response
+	if strings.Contains(query, "mode=link") {
+		// 連携の開始は CSRF トークン付きの POST（/my/sso のボタン）
+		_, page := get(e.t, c, e.ts.URL+"/my/account")
+		res, _ = post(e.t, c, e.ts.URL+"/auth/oidc/"+e.id+"/start"+query, url.Values{"authenticity_token": {csrfToken(e.t, page)}})
+	} else {
+		res, _ = get(e.t, c, e.ts.URL+"/auth/oidc/"+e.id+"/start"+query)
+	}
 	if res.StatusCode != 302 || !strings.HasPrefix(res.Header.Get("Location"), e.idp.URL()+"/authorize") {
 		e.t.Fatalf("start: %d %s", res.StatusCode, res.Header.Get("Location"))
 	}
@@ -432,8 +439,12 @@ func TestOIDCMyIdentities(t *testing.T) {
 		t.Fatal("sidebar link missing")
 	}
 	_, body = get(t, c, e.ts.URL+"/my/sso")
-	if !strings.Contains(body, `href="/auth/oidc/`+e.id+`/start?mode=link"`) {
+	if !strings.Contains(body, `action="/auth/oidc/`+e.id+`/start?mode=link"`) {
 		t.Fatalf("link button missing:\n%s", body)
+	}
+	// GET では連携を始めない（外部サイトのリンクから攻撃者の IdP アカウントを連携させられないように）
+	if res, _ := get(t, c, e.ts.URL+"/auth/oidc/"+e.id+"/start?mode=link"); res.StatusCode != 302 || strings.HasPrefix(res.Header.Get("Location"), e.idp.URL()) {
+		t.Fatalf("GET start?mode=link: %d %q", res.StatusCode, res.Header.Get("Location"))
 	}
 	// 連携（ログイン中のユーザーに紐付ける。メールは一致しなくてよい）
 	e.idp.SetClaims(map[string]any{"sub": "dl-sub", "email": "someone-else@example.net"})
