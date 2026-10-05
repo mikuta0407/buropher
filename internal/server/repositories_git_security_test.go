@@ -46,3 +46,26 @@ func TestGitRevArgumentInjection(t *testing.T) {
 		t.Error("git wrote --output file")
 	}
 }
+
+// TestGitRawDownloadSandboxed はリポジトリの raw / diff のダウンロードに、添付ファイルと同じ CSP の sandbox が付くこと
+// （リポジトリに置かれた PDF は inline で表示されるため、このオリジンでスクリプトを動かさせない）。
+func TestGitRawDownloadSandboxed(t *testing.T) {
+	e := setupGit(t)
+	for _, p := range []string{
+		"/raw/sources/watchers_controller.rb",
+		"/revisions/2f9c0091c754a91af7a9c478e36556b4bde8dcf7/diff.diff",
+	} {
+		res, _ := get(t, e.admin, e.base()+p)
+		if res.StatusCode != 200 {
+			t.Fatalf("%s: status %d", p, res.StatusCode)
+		}
+		if csp := res.Header.Get("Content-Security-Policy"); !strings.Contains(csp, "sandbox") || !strings.Contains(csp, "default-src 'none'") {
+			t.Errorf("%s: Content-Security-Policy = %q", p, csp)
+		}
+	}
+	// 見つからない場合は通常のエラーページ（CSP は残さない）
+	res, _ := get(t, e.admin, e.base()+"/raw/no_such_file")
+	if res.StatusCode != 404 || res.Header.Get("Content-Security-Policy") != "" {
+		t.Errorf("missing raw: status %d, csp %q", res.StatusCode, res.Header.Get("Content-Security-Policy"))
+	}
+}

@@ -326,10 +326,18 @@ func (r *Renderer) randomHex(n int) string {
 // RenderPageHierarchy は render_page_hierarchy(pages, node)（タイムスタンプなし）。
 // pages は parent_id → 子ページ（0 はルート）。
 func (r *Renderer) RenderPageHierarchy(pages map[int64][]*WikiPage, node int64) string {
+	return r.renderPageHierarchy(pages, node, map[int64]bool{})
+}
+
+// renderPageHierarchy は RenderPageHierarchy の本体。
+// buropher 独自（セキュリティ）: 親子関係が循環していても（同時の親変更や不整合なインポートで生じうる）
+// 無限に再帰しないよう、描画済みのノードは辿らない。
+func (r *Renderer) renderPageHierarchy(pages map[int64][]*WikiPage, node int64, seen map[int64]bool) string {
 	children, ok := pages[node]
-	if !ok {
+	if !ok || seen[node] {
 		return ""
 	}
+	seen[node] = true
 	var b strings.Builder
 	b.WriteString("<ul class=\"pages-hierarchy\">\n")
 	for _, p := range children {
@@ -341,8 +349,8 @@ func (r *Renderer) RenderPageHierarchy(pages map[int64][]*WikiPage, node int64) 
 			href = WikiPagePath(r.projectOfPage(p), p.Title)
 		}
 		b.WriteString(string(rails.LinkTo(template.HTML(h(PrettyTitle(p.Title))), href, nil)))
-		if _, ok := pages[p.ID]; ok {
-			b.WriteString("\n" + r.RenderPageHierarchy(pages, p.ID))
+		if _, ok := pages[p.ID]; ok && !seen[p.ID] {
+			b.WriteString("\n" + r.renderPageHierarchy(pages, p.ID, seen))
 		}
 		b.WriteString("</li>\n")
 	}
@@ -351,17 +359,28 @@ func (r *Renderer) RenderPageHierarchy(pages map[int64][]*WikiPage, node int64) 
 }
 
 // selfAndDescendants は page.self_and_descendants(depth)（acts_as_tree）。
+// buropher 独自（セキュリティ）: 親子関係が循環していると Redmine と同じ再帰ではスタックを使い果たし、
+// Go ではプロセスごと落ちる（回復できない fatal error）ため、一度辿ったページは再び辿らない。
 func (r *Renderer) selfAndDescendants(p *WikiPage, depth int) []*WikiPage {
-	return append([]*WikiPage{p}, r.descendants(p, depth)...)
+	seen := map[int64]bool{p.ID: true}
+	return append([]*WikiPage{p}, r.descendants(p, depth, seen)...)
 }
 
-func (r *Renderer) descendants(p *WikiPage, depth int) []*WikiPage {
+func (r *Renderer) descendants(p *WikiPage, depth int, seen map[int64]bool) []*WikiPage {
 	children, err := r.Store.WikiPageChildren(p.ID)
 	r.logErr("wiki page children", err)
-	result := append([]*WikiPage(nil), children...)
+	var result, next []*WikiPage
+	for _, c := range children {
+		if seen[c.ID] {
+			continue
+		}
+		seen[c.ID] = true
+		result = append(result, c)
+		next = append(next, c)
+	}
 	if depth != 1 {
-		for _, c := range children {
-			result = append(result, r.descendants(c, depth-1)...)
+		for _, c := range next {
+			result = append(result, r.descendants(c, depth-1, seen)...)
 		}
 	}
 	return result
@@ -520,6 +539,9 @@ func macroRecentPages(c *MacroContext) (any, error) {
 	return template.HTML(b.String()), nil
 }
 
+// MaxIncludesPerRender は 1 つのテキストの描画で展開する {{include}} の上限（入れ子を含む合計）。
+const MaxIncludesPerRender = 100
+
 func macroInclude(c *MacroContext) (any, error) {
 	r := c.R
 	project := c.currentProject()
@@ -536,6 +558,15 @@ func macroInclude(c *MacroContext) (any, error) {
 			return nil, errors.New(r.l("error_circular_inclusion"))
 		}
 	}
+	// buropher 独自（セキュリティ）: 循環の検査だけでは、同じページを何度も include するページを入れ子にすると
+	// 展開数が指数的に増える（N 個の include を k 段で N^k 回の描画）。最上位の描画ごとに展開数を制限する
+	if len(r.includedWikiPages) == 0 {
+		r.includeCount = 0
+	}
+	if r.includeCount >= MaxIncludesPerRender {
+		return nil, errors.New(r.l("buropher.wiki.error_too_many_inclusions", map[string]any{"count": MaxIncludesPerRender}))
+	}
+	r.includeCount++
 	r.includedWikiPages = append(r.includedWikiPages, page.ID)
 	text, _, err := r.Store.WikiPageText(page.ID)
 	r.logErr("wiki text", err)
