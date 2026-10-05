@@ -30,6 +30,11 @@ MIT_PORTS = [
     ]),
 ]
 
+# Files under an MIT_PORTS prefix that are original work (not ported).
+NOT_PORTED = {
+    "internal/textformat/htmldom/html5.go",  # HTML5 parse/serialize on top of the h5 fork (no libxml2 code)
+}
+
 # Old header formats that are replaced by the standard one.
 OLD_HEADERS = [
     ["// Copyright (C) 2026 buropher contributors", "// SPDX-License-Identifier: GPL-2.0-or-later"],
@@ -51,7 +56,7 @@ def header_for(path):
         if path.startswith(prefix):
             return ["// SPDX-License-Identifier: BSD-3-Clause AND GPL-2.0-or-later", COPYRIGHT] + note
     for prefix, note in MIT_PORTS:
-        if path.startswith(prefix) and not path.endswith("_test.go"):
+        if path.startswith(prefix) and not path.endswith("_test.go") and path not in NOT_PORTED:
             return ["// SPDX-License-Identifier: GPL-2.0-or-later AND MIT", COPYRIGHT] + note
     return [GPL, COPYRIGHT]
 
