@@ -124,6 +124,10 @@ func TestValidateIPAddresses(t *testing.T) {
 		"fe80::/10",
 		// buropher: マルチキャスト全域・0.0.0.0/8・ブロードキャスト
 		"239.1.2.3", "[ff02::1]", "[ff05::1]", "0.1.2.3", "255.255.255.255",
+		// IPv4 互換アドレス（Redmine の IPAddr#native は IPv4 として検査する）
+		"[::127.0.0.1]", "[::7f00:1]", "[::169.254.169.254]",
+		// buropher: NAT64（64:ff9b::/96）・6to4（2002::/16）に埋め込まれた IPv4 も検査する
+		"[64:ff9b::127.0.0.1]", "[64:ff9b::a9fe:a9fe]", "[2002:7f00:1::]", "[2002:a9fe:a9fe::1]",
 	} {
 		if v.SafeURL(ctx, ip) {
 			t.Errorf("%s should be invalid without scheme", ip)
@@ -132,14 +136,14 @@ func TestValidateIPAddresses(t *testing.T) {
 			t.Errorf("IP %s should be invalid", ip)
 		}
 	}
-	for _, h := range []string{"[2001:0db8:85a3:0000:0000:8a2e:0370:7334]", "8.8.8.8"} {
+	for _, h := range []string{"[2001:0db8:85a3:0000:0000:8a2e:0370:7334]", "8.8.8.8", "[64:ff9b::8.8.8.8]", "[2002:808:808::1]"} {
 		if !v.SafeURL(ctx, "http://"+h) {
 			t.Errorf("URI host %s should be valid", h)
 		}
 	}
 	// IPv6 のブロックリスト（IPv4 射影アドレスは IPv4 として照合する）
 	v6 := newTestValidator("fc00::/7", "203.0.113.5")
-	for _, u := range []string{"http://[fd00::1]/", "http://203.0.113.5/", "http://[::ffff:203.0.113.5]/"} {
+	for _, u := range []string{"http://[fd00::1]/", "http://203.0.113.5/", "http://[::ffff:203.0.113.5]/", "http://[::203.0.113.5]/", "http://[64:ff9b::203.0.113.5]/"} {
 		if v6.SafeURL(ctx, u) {
 			t.Errorf("%s should be blocked", u)
 		}
