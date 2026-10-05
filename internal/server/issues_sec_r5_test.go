@@ -205,6 +205,37 @@ func TestIssueImportRelationToInvisibleIssue(t *testing.T) {
 	}
 }
 
+// 新しいチケットのフォーム更新（カテゴリ変更）は、他のプロジェクトのカテゴリの担当者名を返さない。
+func TestIssueNewCategoryAssigneeOtherProject(t *testing.T) {
+	ts, d := newFixtureServer(t)
+	ctx := context.Background()
+	// category 3 は非公開プロジェクト 2 のカテゴリ。担当者を miscuser8（User Misc）にする
+	if _, err := d.Exec(ctx, `UPDATE issue_categories SET assigned_to_id = 8 WHERE id = 3`); err != nil {
+		t.Fatal(err)
+	}
+	c := login(t, ts, "dlopper", "foo")
+	xhr := func(cat string) string {
+		req, _ := http.NewRequest(http.MethodGet, ts.URL+"/projects/ecookbook/issues/new.js?form_update_triggered_by=issue_category_id&issue[tracker_id]=1&issue[category_id]="+cat, nil)
+		req.Header.Set("X-Requested-With", "XMLHttpRequest")
+		res, err := c.Do(req)
+		if err != nil {
+			t.Fatal(err)
+		}
+		defer res.Body.Close()
+		b, _ := readUnbranded(res.Body)
+		if res.StatusCode != http.StatusOK {
+			t.Fatalf("status %d", res.StatusCode)
+		}
+		return string(b)
+	}
+	if body := xhr("3"); strings.Contains(body, "User Misc") {
+		t.Errorf("assignee of another project's category leaked")
+	}
+	if body := xhr("1"); !strings.Contains(body, ".html(\n      'John Smith')") && !strings.Contains(body, "'John Smith');") {
+		t.Errorf("assignee of the project's category missing: %s", body[strings.LastIndex(body, "removeAttr"):])
+	}
+}
+
 // チケット削除で工数を付け替える先に、見えないチケット（非公開）は指定できない。
 func TestIssueDestroyReassignToInvisible(t *testing.T) {
 	ts, d := newFixtureServer(t)

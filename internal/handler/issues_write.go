@@ -395,7 +395,8 @@ func (a *App) renderIssueNewJS(c *Req, st *issueNewState) {
 		html := template.HTML("&nbsp;")
 		if cat, err := st.env.Category(c.Ctx(), st.iss.CategoryID); err != nil {
 			l.fail(err)
-		} else if cat != nil && cat.AssignedToID != nil {
+		} else if cat != nil && cat.ProjectID == st.iss.ProjectID && cat.AssignedToID != nil {
+			// チケットのプロジェクトのカテゴリに限る
 			if u := l.principal(*cat.AssignedToID); u != nil {
 				if n := l.principalName(u); n != "" {
 					// <%= escape_javascript(name) %> は ERB が HTML エスケープする（名前は .html() に渡る）
