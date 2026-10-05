@@ -20,8 +20,13 @@
 <div class="splitcontentleft">
 <fieldset class="box tabular">
   <legend>{{l "label_information_plural"}}</legend>
-  <p>{{$f.TextField "firstname" (hash "required" true)}}</p>
-  <p>{{$f.TextField "lastname" (hash "required" true)}}</p>
+  {{if lastname_before_firstname}}
+    <p>{{$f.TextField "lastname" (hash "required" true)}}</p>
+    <p>{{$f.TextField "firstname" (hash "required" true)}}</p>
+  {{else}}
+    <p>{{$f.TextField "firstname" (hash "required" true)}}</p>
+    <p>{{$f.TextField "lastname" (hash "required" true)}}</p>
+  {{end}}
   <p>{{$f.TextField "mail" (hash "required" true)}}</p>
   {{if not $a.ForceDefaultLanguage}}
   <p>{{$f.Select "language" (lang_options_for_select)}}</p>

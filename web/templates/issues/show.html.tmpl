@@ -9,13 +9,33 @@
 <div class="{{$v.CSSClasses}} details">
   {{if or $v.PrevIssueID $v.NextIssueID}}
     <div class="next-prev-links contextual">
-      {{link_to_if $v.PrevIssueID (printf "« %s" (l "label_previous")) $v.PrevPath (hash "title" $v.PrevTitle "accesskey" (accesskey "previous"))}} |
-      {{if and $v.IssuePosition $v.IssueCount}}
-        <span class="position">
-          {{link_to_if $v.QueryPath $v.PositionLabel $v.QueryPath}}
-        </span> |
-      {{end}}
-      {{link_to_if $v.NextIssueID (printf "%s »" (l "label_next")) $v.NextPath (hash "title" $v.NextTitle "accesskey" (accesskey "next"))}}
+      <span class="pagination">
+        <ul class="pages">
+          <li class="{{if $v.PrevIssueID}}previous page{{else}}previous{{end}}">
+            {{if $v.PrevIssueID}}
+              {{link_to (printf "« %s" (l "label_previous")) $v.PrevPath (hash "title" $v.PrevTitle "accesskey" (accesskey "previous"))}}
+            {{else}}
+              {{content_tag "span" (printf "« %s" (l "label_previous"))}}
+            {{end}}
+          </li>
+          {{if and $v.IssuePosition $v.IssueCount}}
+            <li class="page position">
+              {{if $v.QueryPath}}
+                {{link_to $v.PositionLabel $v.QueryPath}}
+              {{else}}
+                <span>{{$v.PositionLabel}}</span>
+              {{end}}
+            </li>
+          {{end}}
+          <li class="{{if $v.NextIssueID}}next page{{else}}next{{end}}">
+            {{if $v.NextIssueID}}
+              {{link_to (printf "%s »" (l "label_next")) $v.NextPath (hash "title" $v.NextTitle "accesskey" (accesskey "next"))}}
+            {{else}}
+              {{content_tag "span" (printf "%s »" (l "label_next"))}}
+            {{end}}
+          </li>
+        </ul>
+      </span>
     </div>
   {{end}}
 
@@ -107,7 +127,7 @@
   {{partial "issues/sidebar" .}}
 
   {{if .V.ShowWatchers}}
-    <div id="watchers">
+    <div id="watchers" data-watchable-id="{{.V.Issue.ID}}">
       {{partial "issues/watchers" (dict "V" .V)}}
     </div>
   {{end}}

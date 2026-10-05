@@ -1,6 +1,6 @@
 {{$v := .V}}
 <div class="contextual">
-  {{if $v.CanManageSubtasks}}{{link_to (l "button_add") $v.NewSubtaskURL}}{{end}}
+  {{if $v.CanManageSubtasks}}{{link_to (sprite_icon "add" (l "button_add")) $v.NewSubtaskURL (hash "class" "icon icon-add")}}{{end}}
 </div>
 
 <p>

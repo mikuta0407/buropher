@@ -1,3 +1,7 @@
 {{$selector := .Selector}}
 $("{{$selector}}").each(function(){$(this).replaceWith("{{j .WatcherLink}}")});
+{{if .IsIssue -}}
+$('#watchers[data-watchable-id="{{.WatchedID}}"]').html('{{j (partial .WatchersPartial .WatchersLocals)}}');
+{{else -}}
 $('#watchers').html('{{j (partial .WatchersPartial .WatchersLocals)}}');
+{{end -}}

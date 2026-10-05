@@ -451,6 +451,7 @@ func (a *App) usersForMention(c *Req) ([]*domain.User, error) {
 	o := repository.AssignableWatchersOptions{VisibleCond: vis, Like: q, UsersOnly: true, UserFormat: a.Settings.String("user_format")}
 	if rails.IsBlank(q) && c.Project != nil {
 		o.ProjectIDs = []int64{c.Project.ID}
+		o.Limit = 100
 	} else {
 		o.Limit = 10
 	}
@@ -567,7 +568,7 @@ func (a *App) setWatcherData(c *Req, ws []*watchable, u *domain.User) (map[strin
 		return nil, err
 	}
 	return map[string]any{"Selector": "." + watcherCSS(ws), "WatcherLink": link,
-		"WatchersPartial": partial, "WatchersLocals": locals}, nil
+		"WatchersPartial": partial, "WatchersLocals": locals, "IsIssue": first.Type == "issue", "WatchedID": first.ID}, nil
 }
 
 // renderWatcherText は render(:html => text, :status => :ok, :layout => true)（redirect_to_referer_or のブロック）。

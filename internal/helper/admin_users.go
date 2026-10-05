@@ -87,6 +87,8 @@ func init() {
 				return false
 			},
 			"auto_watch_on_tags": func(selected []string) html { return autoWatchOnTags(pg(), selected) },
+			// lastname_before_firstname は User.lastname_before_firstname?（Setting.user_format による氏名欄の順序）。
+			"lastname_before_firstname": func() bool { return domain.LastnameBeforeFirstname(pg().setting("user_format")) },
 			"textarea_font_options": func() []any {
 				out := []any{[]any{pg().l("label_font_default"), ""}}
 				for _, o := range domain.TextareaFontOptions {
