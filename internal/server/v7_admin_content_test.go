@@ -8,10 +8,46 @@ package server_test
 // admin_controller_test.rb の該当テストの移植。
 
 import (
+	"context"
+	"net/url"
 	"regexp"
 	"strings"
 	"testing"
+
+	"github.com/mikuta0407/buropher/internal/db"
 )
+
+// test_destroy_should_delete_oauth_access_grants / test_destroy_should_delete_oauth_access_tokens（#44343）:
+// OAuth2 アプリケーションを認可したユーザーも削除でき、認可・トークンも消える。
+func TestUserDestroyDeletesOAuthGrantsAndTokens(t *testing.T) {
+	ts, d := newFixtureServer(t)
+	ctx := context.Background()
+	now := db.NewTime(frozenTime)
+	appID, err := d.InsertReturningID(ctx, `INSERT INTO oauth_applications (name, uid, secret, redirect_uri, scopes, confidential, created_at, updated_at)
+VALUES ('Test App', 'test-app-uid', 'x', 'http://localhost/callback', 'view_issues', ?, ?, ?)`, true, now, now)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := d.Exec(ctx, `INSERT INTO oauth_access_grants (resource_owner_id, application_id, token, expires_in, redirect_uri, created_at, scopes)
+VALUES (2, ?, 'grant-token', 600, 'http://localhost/callback', ?, 'view_issues')`, appID, now); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := d.Exec(ctx, `INSERT INTO oauth_access_tokens (resource_owner_id, application_id, token, expires_in, created_at, scopes)
+VALUES (2, ?, 'access-token', 7200, ?, 'view_issues')`, appID, now); err != nil {
+		t.Fatal(err)
+	}
+	admin := login(t, ts, "admin", "admin")
+	if res, _ := send(t, admin, ts.URL, "DELETE", "/users/2", url.Values{"confirm": {"jsmith"}}); res.StatusCode != 302 {
+		t.Fatalf("destroy: %d", res.StatusCode)
+	}
+	for _, q := range []string{`SELECT COUNT(*) FROM principals WHERE id = 2`,
+		`SELECT COUNT(*) FROM oauth_access_grants WHERE resource_owner_id = 2`,
+		`SELECT COUNT(*) FROM oauth_access_tokens WHERE resource_owner_id = 2`} {
+		if n := uQueryInt(t, d, q); n != 0 {
+			t.Errorf("%s = %d", q, n)
+		}
+	}
+}
 
 // test_new_should_show_lastname_before_firstname_when_user_format_requires_it /
 // test_index_default_columns_should_show_lastname_before_firstname_when_user_format_requires_it（#4507）
