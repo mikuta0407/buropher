@@ -99,6 +99,9 @@ func (a *App) mySidebarData(c *Req, u *domain.User, data map[string]any) error {
 	}
 	if atom != nil {
 		data["AtomTokenAge"] = c.Loc.DistanceOfTimeInWords(a.now(), atom.CreatedAt)
+		if repository.TokenUsed(atom) {
+			data["AtomTokenUsedAge"] = c.Loc.DistanceOfTimeInWords(a.now(), atom.UpdatedAt)
+		}
 	}
 	data["RestAPIEnabled"] = a.Settings.Bool("rest_api_enabled")
 	api, err := repository.UserToken(ctx, a.DB, u.ID, repository.TokenAPI)
@@ -107,6 +110,9 @@ func (a *App) mySidebarData(c *Req, u *domain.User, data map[string]any) error {
 	}
 	if api != nil {
 		data["APITokenAge"] = c.Loc.DistanceOfTimeInWords(a.now(), api.CreatedAt)
+		if repository.TokenUsed(api) {
+			data["APITokenUsedAge"] = c.Loc.DistanceOfTimeInWords(a.now(), api.UpdatedAt)
+		}
 	}
 	return nil
 }
@@ -131,14 +137,14 @@ func (a *App) MyAccount(c *Req) {
 	}
 	api := httpx.IsAPIRequest(c.R)
 	if c.R.Method == http.MethodPut {
-		m.assignSafeAttributes(c.Params().Map("user"), c.User)
-		// buropher 独自（セキュリティ）: OAuth のトークンではメールアドレスを変更させない。
-		// Redmine の OAuth スコープにはアカウント情報の権限が無く、どのスコープのトークンでも
-		// メールアドレスを攻撃者のものに変えてパスワード再設定で乗っ取れてしまうため。
-		if c.User.AuthorizedByOAuth() && !strings.EqualFold(m.mail, m.mailWas) {
-			c.DenyAccess()
+		// before_action :deny_account_modification_via_oauth（Redmine 7.0）: アカウントの変更は権限ではなく
+		// ログインだけで許可されるため、OAuth のスコープでは制限できない。スコープを絞ったトークンから
+		// メールアドレスを変えてパスワード再設定で乗っ取れないよう、OAuth クライアントからの変更は拒否する。
+		if c.User.AuthorizedByOAuth() {
+			c.Render403("")
 			return
 		}
+		m.assignSafeAttributes(c.Params().Map("user"), c.User)
 		m.assignPref(c.Params().Map("pref"))
 		ok, err := a.saveUser(c, m)
 		if err != nil {
