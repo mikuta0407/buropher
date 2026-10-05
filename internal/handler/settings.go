@@ -67,6 +67,10 @@ func (a *App) SettingsEdit(c *Req) {
 		if p := c.Params().Map("settings"); p != nil {
 			params = p.ToMap()
 		}
+		// Redmine 7.0: 期日の既定値のチェックを外したらオフセットを空にする
+		if rails.ToS(params["default_issue_due_date_offset_enabled"]) == "0" {
+			params["default_issue_due_date_offset"] = ""
+		}
 		changed, ferrs, err := a.Settings.SetAllFromParams(c.Ctx(), params, map[string]func(any) any{
 			// Setting.twofa_from_params: 2FA を無効にしたら全ユーザーのペアリングを解除する
 			"twofa": func(v any) any {
@@ -153,7 +157,7 @@ func (a *App) newSettingsView(c *Req, errs []helper.SettingError) (*settingsView
 		{Name: "general", Partial: "settings/general", Label: "label_general"},
 		{Name: "display", Partial: "settings/display", Label: "label_display"},
 		{Name: "authentication", Partial: "settings/authentication", Label: "label_authentication"},
-		{Name: "api", Partial: "settings/api", Label: "label_api"},
+		{Name: "integrations", Partial: "settings/api", Label: "label_integrations"},
 		{Name: "projects", Partial: "settings/projects", Label: "label_project_plural"},
 		{Name: "users", Partial: "settings/users", Label: "label_user_plural"},
 		{Name: "issues", Partial: "settings/issues", Label: "label_issue_tracking"},
@@ -425,14 +429,24 @@ func (v *settingsView) NotificationOptions() []any {
 		[]any{l("label_user_mail_option_only_my_events"), "only_my_events"},
 		[]any{l("label_user_mail_option_only_assigned"), "only_assigned"},
 		[]any{l("label_user_mail_option_only_owner"), "only_owner"},
+		[]any{l("label_user_mail_option_only_my_watches"), "only_my_watches"},
 		[]any{l("label_user_mail_option_none"), "none"},
 	}
+}
+
+// DueDateOffsetEnabled は settings/_issues の default_due_date_offset_enabled（Redmine 7.0）。
+// 送信後の再表示では送信値、それ以外は default_issue_due_date_offset が設定されているか。
+func (v *settingsView) DueDateOffsetEnabled() bool {
+	if p := v.c.Params().Map("settings"); p != nil && v.c.R.Method == http.MethodPost {
+		return rails.ToS(p.ToMap()["default_issue_due_date_offset_enabled"]) != "0"
+	}
+	return strings.TrimSpace(v.a.Settings.String("default_issue_due_date_offset")) != ""
 }
 
 // AutoWatchOnOptions は UserPreference::AUTO_WATCH_ON_OPTIONS の選択肢。
 func (v *settingsView) AutoWatchOnOptions() []any {
 	var out []any
-	for _, o := range []string{"issue_created", "issue_contributed_to"} {
+	for _, o := range domain.AutoWatchOnOptions {
 		out = append(out, []any{v.c.L("label_auto_watch_on_" + o), o})
 	}
 	return out
