@@ -7,6 +7,8 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -172,6 +174,34 @@ func TestTimeEntryContextMenuHidesInvisible(t *testing.T) {
 	res, _ = get(t, login(t, ts, "jsmith", "jsmith"), ts.URL+"/time_entries/context_menu?ids[]=1")
 	if res.StatusCode != http.StatusOK {
 		t.Errorf("context menu of visible time entry: %d", res.StatusCode)
+	}
+}
+
+// チケットの CSV インポートの relation_* 列で、見えないチケットに関連を張れない。
+func TestIssueImportRelationToInvisibleIssue(t *testing.T) {
+	ts, d := newFixtureServer(t)
+	ctx := context.Background()
+	if _, err := d.Exec(ctx, `UPDATE issues SET is_private = ?, author_id = 1, assigned_to_id = NULL WHERE id = 2`, true); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := d.Exec(ctx, `UPDATE roles SET issues_visibility = 'default' WHERE id = 1`); err != nil {
+		t.Fatal(err)
+	}
+	csv := filepath.Join(t.TempDir(), "rel.csv")
+	if err := os.WriteFile(csv, []byte("subject;related\nImported A;#2\nImported B;#3\n"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	jsmith := login(t, ts, "jsmith", "jsmith")
+	_, ids := runImport(t, jsmith, ts, d, "IssueImport", csv, "issues", utf8Semicolon,
+		map[string]string{"project_id": "1", "tracker": "value:1", "subject": "0", "relation_relates": "1"})
+	if len(ids) != 2 {
+		t.Fatalf("issues = %d", len(ids))
+	}
+	if n := queryInt(t, d, `SELECT COUNT(*) FROM issue_relations WHERE issue_from_id = ? OR issue_to_id = ?`, ids[0], ids[0]); n != 0 {
+		t.Errorf("relation to invisible issue created")
+	}
+	if n := queryInt(t, d, `SELECT COUNT(*) FROM issue_relations WHERE issue_from_id = ? OR issue_to_id = ?`, ids[1], ids[1]); n != 1 {
+		t.Errorf("relation to visible issue missing: %d", n)
 	}
 }
 

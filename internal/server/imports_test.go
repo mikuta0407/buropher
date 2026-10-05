@@ -11,6 +11,7 @@ import (
 	"net/http/httptest"
 	"net/url"
 	"os"
+	"path/filepath"
 	"regexp"
 	"strings"
 	"testing"
@@ -54,11 +55,16 @@ func importUploadRaw(t *testing.T, c *http.Client, ts *httptest.Server, typ, fil
 		_ = mw.WriteField("project_id", projectID)
 	}
 	if file != "" {
-		data, err := os.ReadFile(importFilesDir + file)
+		path := importFilesDir + file
+		if strings.HasPrefix(file, "/") {
+			// テストが一時ディレクトリに作った CSV
+			path = file
+		}
+		data, err := os.ReadFile(path)
 		if err != nil {
 			t.Fatal(err)
 		}
-		fw, _ := mw.CreateFormFile("file", file)
+		fw, _ := mw.CreateFormFile("file", filepath.Base(file))
 		_, _ = fw.Write(data)
 	}
 	_ = mw.Close()

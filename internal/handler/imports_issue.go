@@ -628,6 +628,16 @@ func (m *importModel) issueCreateRelation(ctx context.Context, fromID, toID int6
 		if r.To, err = env.Find(ctx, toID); err != nil {
 			return false, err
 		}
+		// 見えないチケットは無いものとして扱う（関連は検証エラーで保存されない）
+		if r.To != nil {
+			vis, err := env.Visible(ctx, r.To, m.user)
+			if err != nil {
+				return false, err
+			}
+			if !vis {
+				r.To = nil
+			}
+		}
 	}
 	if s := importToS(delay); s != "" {
 		if n, err := strconv.Atoi(s); err == nil {
