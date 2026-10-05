@@ -162,28 +162,18 @@ func fixTableCellPipes(doc ast.Node) {
 				if !inCell || s == nil {
 					break
 				}
-				switch s.Value {
-				case "|":
+				if s.Value == "|" {
 					// "\|" → "|"
 					n.ReplaceChild(n, x, &Str{Value: "|"})
-				case "\\":
-					// "\\|" → バックスラッシュが 1 つ除かれ "\|"（エスケープされた '|'）になる
-					if ns, ok := x.NextSibling().(*Str); ok && strings.HasPrefix(ns.Value, "|") {
-						s.Value = "|"
-						ns.Value = ns.Value[1:]
-						if ns.Value == "" {
-							n.RemoveChild(n, ns)
-						}
-						next = x.NextSibling()
-					}
 				}
+				// comrak 0.53 の unescape_pipes は "\\|"（エスケープされたバックスラッシュの後の "|"）を変えない
 			case *Code:
 				if inCell {
-					x.Literal = strings.ReplaceAll(x.Literal, `\|`, "|")
+					x.Literal = unescapePipes(x.Literal)
 				}
 			case *HTMLInline:
 				if inCell {
-					x.Literal = strings.ReplaceAll(x.Literal, `\|`, "|")
+					x.Literal = unescapePipes(x.Literal)
 				}
 			default:
 				walk(c, inCell)
@@ -192,6 +182,31 @@ func fixTableCellPipes(doc ast.Node) {
 		}
 	}
 	walk(doc, false)
+}
+
+// unescapePipes は comrak 0.53 の unescape_pipes（"\|" の "\" を除く。"\\" の 2 文字目は次の文字をエスケープしない）。
+func unescapePipes(s string) string {
+	if !strings.Contains(s, `\|`) {
+		return s
+	}
+	var b strings.Builder
+	last := false
+	for i := 0; i < len(s); i++ {
+		c := s[i]
+		if last {
+			last = false
+			if c == '|' {
+				// 直前のバックスラッシュを取り除く
+				str := b.String()
+				b.Reset()
+				b.WriteString(str[:len(str)-1])
+			}
+		} else if c == '\\' {
+			last = true
+		}
+		b.WriteByte(c)
+	}
+	return b.String()
 }
 
 // convertInline は 1 つのインラインノード c を独自ノードへ置き換える。
@@ -496,8 +511,10 @@ func processFootnotes(doc *ast.Document) {
 	}
 	findRefs(doc)
 
-	if len(defs) > 0 {
-		for _, d := range defOrder {
+	// comrak 0.46 以降: 参照されなかった定義だけを取り除く。同じ名前の定義が複数あるときに
+	// 後の定義に上書きされた定義は、元の位置にそのまま残る（そこで脚注の section が始まる）
+	for _, d := range defOrder {
+		if defs[normalizeLabel(d.Name)] == d && d.Ix == 0 {
 			if p := d.Parent(); p != nil {
 				p.RemoveChild(p, d)
 			}
@@ -705,6 +722,12 @@ func autolinkDelim(data []byte, linkEnd int) int {
 				return linkEnd
 			}
 			linkEnd--
+		case cclose == 0xa9:
+			// U+2069 POP DIRECTIONAL ISOLATE で終わる場合は取り除く（comrak 0.46）
+			if linkEnd >= 3 && data[linkEnd-3] == 0xe2 && data[linkEnd-2] == 0x81 {
+				linkEnd -= 3
+			}
+			return linkEnd
 		default:
 			return linkEnd
 		}

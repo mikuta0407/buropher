@@ -20,6 +20,7 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/yuin/goldmark/parser"
 	"github.com/yuin/goldmark/text"
 
 	"github.com/mikuta0407/buropher/internal/textformat/highlight"
@@ -103,10 +104,52 @@ func MarkdownToHTML(src string, hardbreaks bool) string {
 	}
 	b = capContainerDepth(b)
 	p := newParser()
-	doc := p.Parse(text.NewReader(b))
+	doc := p.Parse(text.NewReader(b), parser.WithContext(newRefBudgetContext(len(src))))
 	r := &renderer{src: b, hardbreaks: hardbreaks}
 	r.render(doc)
 	return strings.TrimRight(r.buf.String(), " \t\n\v\f\r\x00")
+}
+
+// refBudgetContext は comrak の RefMap#lookup の上限（展開した参照の URL とタイトルの合計バイト数を
+// 文書の長さ（最大 100000）までに制限する。comrak 0.53 では min(total_size, 100000)）を再現する。
+type refBudgetContext struct {
+	parser.Context
+	max, used int
+}
+
+func newRefBudgetContext(totalSize int) *refBudgetContext {
+	return &refBudgetContext{Context: parser.NewContext(), max: min(totalSize, 100000)}
+}
+
+// Reference は参照を解決し、その大きさを上限から差し引く（上限を超える場合は未定義として扱う）。
+func (c *refBudgetContext) Reference(label string) (parser.Reference, bool) {
+	r, ok := c.peekReference(label)
+	if ok {
+		c.used += len(r.Destination()) + len(r.Title())
+	}
+	return r, ok
+}
+
+// peekReference は Reference と同じ判定を、上限を消費せずに行う。
+func (c *refBudgetContext) peekReference(label string) (parser.Reference, bool) {
+	r, ok := c.Context.Reference(label)
+	if !ok {
+		return nil, false
+	}
+	if len(r.Destination())+len(r.Title()) > c.max-c.used {
+		return nil, false
+	}
+	return r, true
+}
+
+// peekReference は pc が refBudgetContext なら上限を消費しない判定を、そうでなければ pc.Reference を使う。
+func peekReference(pc parser.Context, label string) bool {
+	if c, ok := pc.(*refBudgetContext); ok {
+		_, found := c.peekReference(label)
+		return found
+	}
+	_, found := pc.Reference(label)
+	return found
 }
 
 // maxContainerMarkers は 1 行の先頭に並べられるコンテナ（引用 ">"・リスト項目 "- " "1. " など）の印の数の上限。

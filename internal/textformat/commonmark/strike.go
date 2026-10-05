@@ -4,6 +4,8 @@
 package commonmark
 
 import (
+	"unicode/utf8"
+
 	"github.com/yuin/goldmark/ast"
 	east "github.com/yuin/goldmark/extension/ast"
 	"github.com/yuin/goldmark/parser"
@@ -51,13 +53,32 @@ func (s *strikeParser) Trigger() []byte { return []byte{'~'} }
 func (s *strikeParser) Parse(parent ast.Node, block text.Reader, pc parser.Context) ast.Node {
 	before := block.PrecendingCharacter()
 	line, segment := block.PeekLine()
-	node := parser.ScanDelimiter(line, before, 1, defaultStrikeProcessor)
-	if node == nil {
+	n := 0
+	for n < len(line) && line[n] == '~' {
+		n++
+	}
+	if n == 0 {
 		return nil
 	}
+	after := '\n'
+	if n < len(line) {
+		after, _ = utf8.DecodeRune(line[n:])
+	}
+	// 区切りの判定は強調と同じ（cjk_friendly_emphasis 有効時の scan_delims）
+	_, beforePos := comrakBeforeCharPos(parent, block)
+	twoBefore := func() rune {
+		if beforePos < 0 {
+			return '\n'
+		}
+		r, _ := beforeCharAt(parent, block, beforePos)
+		return r
+	}
+	canOpen, canClose := scanDelimsCJK('~', n, before, after, twoBefore)
+	node := parser.NewDelimiter(canOpen, canClose, n, '~', defaultStrikeProcessor)
 	node.Segment = segment.WithStop(segment.Start + node.OriginalLength)
 	block.Advance(node.OriginalLength)
-	if !node.CanOpen && !node.CanClose {
+	// comrak 0.45 以降: 3 つ以上連続する "~" は区切りとして扱わない（文字列として残す）
+	if (!node.CanOpen && !node.CanClose) || node.OriginalLength > 2 {
 		return ast.NewTextSegment(node.Segment)
 	}
 	pc.PushDelimiter(node)
