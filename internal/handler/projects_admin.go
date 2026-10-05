@@ -12,11 +12,13 @@ import (
 
 	"github.com/mikuta0407/buropher/internal/db"
 	"github.com/mikuta0407/buropher/internal/domain"
+	"github.com/mikuta0407/buropher/internal/helper"
 	"github.com/mikuta0407/buropher/internal/httpx"
 	"github.com/mikuta0407/buropher/internal/notify"
 	"github.com/mikuta0407/buropher/internal/query"
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/view"
+	"github.com/mikuta0407/buropher/internal/view/rails"
 )
 
 // このファイルは AdminController#projects（ProjectAdminQuery の一覧）と ContextMenus::ProjectsController#index、
@@ -108,11 +110,16 @@ func (a *App) ContextMenusProjects(c *Req) {
 	if len(projects) == 1 {
 		data["Project"] = projects[0]
 	}
-	q := url.Values{}
+	// {controller: 'projects', action: 'bulk_destroy', ids: @projects.map(&:id), back_url: @back}（完全 URL）
+	ids = ids[:0]
 	for _, p := range projects {
-		q.Add("ids[]", strconv.FormatInt(p.ID, 10))
+		ids = append(ids, p.ID)
 	}
-	data["BulkDestroyPath"] = "/projects/bulk_destroy?" + q.Encode()
+	q := rails.NewHash("ids", ids)
+	if b := backURLParam(c); b != "" {
+		q.Set("back_url", b)
+	}
+	data["BulkDestroyPath"] = contextMenuURLFor(c, "/projects/bulk_destroy?"+helper.ToQuery(q))
 	c.Render("context_menus/projects", data, RenderOptions{Layout: view.NoLayout})
 }
 

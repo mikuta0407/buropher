@@ -168,15 +168,16 @@ func (a *App) ContextMenusTimeEntries(c *Req) {
 	}
 	page := c.Page()
 	data := map[string]any{}
+	// 編集・一括編集・作業分類・削除のリンクはハッシュから作るため完全 URL（contextMenuURLFor）
 	if single != nil {
-		data["EditLink"] = teContextMenuLink(c, a.Helpers.Icon(page, "edit", c.L("button_edit"), nil), "/time_entries/"+strconv.FormatInt(single.ID, 10)+"/edit", "icon icon-edit", false, !editable, "", nil)
+		data["EditLink"] = teContextMenuLink(c, a.Helpers.Icon(page, "edit", c.L("button_edit"), nil), contextMenuURLFor(c, "/time_entries/"+strconv.FormatInt(single.ID, 10)+"/edit"), "icon icon-edit", false, !editable, "", nil)
 	} else {
 		data["EditLink"] = teContextMenuLink(c, a.Helpers.Icon(page, "edit", c.L("label_bulk_edit"), nil),
-			helper.URLWithQuery("/time_entries/bulk_edit", rails.NewHash("ids", idList)), "icon icon-edit", false, !editable, "", nil)
+			contextMenuURLFor(c, helper.URLWithQuery("/time_entries/bulk_edit", rails.NewHash("ids", idList))), "icon icon-edit", false, !editable, "", nil)
 	}
 	var actLinks []template.HTML
 	for _, act := range acts {
-		u := helper.URLWithQuery("/time_entries/bulk_update", withBack(rails.NewHash("ids", idList, "time_entry", rails.NewHash("activity_id", act.ID))))
+		u := contextMenuURLFor(c, helper.URLWithQuery("/time_entries/bulk_update", withBack(rails.NewHash("ids", idList, "time_entry", rails.NewHash("activity_id", act.ID)))))
 		sel := single != nil && single.ActivityID != nil && *single.ActivityID == act.ID
 		actLinks = append(actLinks, teContextMenuLink(c, act.Name, u, "", sel, !editable, "post", nil))
 	}
@@ -231,7 +232,7 @@ func (a *App) ContextMenusTimeEntries(c *Req) {
 	}
 	data["Folders"] = folders
 	data["DeleteLink"] = teContextMenuLink(c, a.Helpers.Icon(page, "del", c.L("button_delete"), nil),
-		helper.URLWithQuery("/time_entries/destroy", withBack(rails.NewHash("ids", idList))), "icon icon-del", false, !editable,
+		contextMenuURLFor(c, helper.URLWithQuery("/time_entries/destroy", withBack(rails.NewHash("ids", idList)))), "icon icon-del", false, !editable,
 		"delete", rails.NewHash("confirm", c.L("text_time_entries_destroy_confirmation")))
 	c.Render("context_menus/time_entries", data, RenderOptions{Layout: view.NoLayout})
 }

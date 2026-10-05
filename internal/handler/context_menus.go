@@ -7,23 +7,33 @@ import (
 	"net/http"
 
 	"github.com/mikuta0407/buropher/internal/domain"
+	"github.com/mikuta0407/buropher/internal/helper"
+	"github.com/mikuta0407/buropher/internal/httpx"
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/view"
+	"github.com/mikuta0407/buropher/internal/view/rails"
 )
 
 // Redmine 7.0 #44169 でコンテキストメニューは ContextMenus::BaseController を継承する名前空間付きの
 // コントローラ（app/controllers/context_menus/{issues,projects,time_entries,users}_controller.rb）に分割され、
 // アクションはいずれも index になった（URL は従来どおり）。
+// Name は controller_name（名前空間を除いた名前。エラー画面の body の class・既定の検索対象・選択中のメニューに効く）。
 var (
 	// ContextMenusIssuesController は ContextMenus::IssuesController。
-	ContextMenusIssuesController = &Controller{Name: "context_menus/issues", MainMenu: true}
+	ContextMenusIssuesController = &Controller{Name: "issues", MainMenu: true, DefaultSearchScope: "issues"}
 	// ContextMenusProjectsController は ContextMenus::ProjectsController。
-	ContextMenusProjectsController = &Controller{Name: "context_menus/projects", MainMenu: true}
+	ContextMenusProjectsController = &Controller{Name: "projects", MainMenu: true}
 	// ContextMenusTimeEntriesController は ContextMenus::TimeEntriesController。
-	ContextMenusTimeEntriesController = &Controller{Name: "context_menus/time_entries", MainMenu: true}
+	ContextMenusTimeEntriesController = &Controller{Name: "time_entries", MainMenu: true}
 	// ContextMenusUsersController は ContextMenus::UsersController。
-	ContextMenusUsersController = &Controller{Name: "context_menus/users", MainMenu: true}
+	ContextMenusUsersController = &Controller{Name: "users", MainMenu: true}
 )
+
+// contextMenuURLFor は ContextMenus::BaseController#url_for（helper_method）で作る URL。
+// ハッシュから作る URL は only_path にならず、完全 URL（request.base_url + script_name + パス）になる。
+func contextMenuURLFor(c *Req, path string) string {
+	return httpx.RequestRootURL(c.R) + path
+}
 
 // routesContextMenus は context_menus コントローラのルートを登録する。
 func (a *App) routesContextMenus(r Router) {
@@ -70,6 +80,8 @@ func (a *App) ContextMenusUsers(c *Req) {
 		ids[i] = u.ID
 	}
 	data["IDs"] = ids
+	// {controller: 'users', action: 'bulk_destroy', ids: @users.map(&:id)}
+	data["BulkDestroyURL"] = contextMenuURLFor(c, "/users/bulk_destroy?"+helper.ToQuery(rails.NewHash("ids", ids)))
 	// @groups = Group.givable.sorted.to_a
 	// @common_group_ids = Group.givable.joins(:groups_users).where(groups_users: { user_id: @users.map(&:id) }).distinct.pluck(:id).to_set
 	// （名前に反して、選択したユーザーのいずれかが所属するグループ）

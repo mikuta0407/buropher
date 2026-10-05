@@ -30,7 +30,7 @@
       </li>
     {{end}}
     <li>
-      {{link_to (sprite_icon "del" (l "button_delete")) (printf "/users/bulk_destroy?%s" (to_query (hash "ids" .IDs))) (hash "method" "delete" "class" "icon icon-del")}}
+      {{link_to (sprite_icon "del" (l "button_delete")) .BulkDestroyURL (hash "method" "delete" "class" "icon icon-del")}}
     </li>
   {{end}}
 
