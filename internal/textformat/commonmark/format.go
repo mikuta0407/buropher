@@ -357,13 +357,3 @@ func alertsIcons(node *htmldom.Node, opts Options) {
 
 // blank は Ruby の String#blank?。
 func blank(s string) bool { return strings.TrimSpace(s) == "" }
-
-// hasClass は CSS のクラスセレクタ相当の判定。
-func hasClass(n *htmldom.Node, cls string) bool {
-	for _, c := range strings.Fields(n.AttrVal("class")) {
-		if c == cls {
-			return true
-		}
-	}
-	return false
-}

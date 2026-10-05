@@ -96,6 +96,13 @@ linters:
           - gosec
           - ineffassign
           - errorlint
+      # golang.org/x/net/html のフォーク（上流のコードは手を入れた箇所以外そのまま保つ）
+      - path: internal/textformat/htmldom/internal/h5/
+        linters:
+          - errcheck
+          - errorlint
+          - gosec
+          - unused
       # 開発用ツール（互換性チェッカ・性能計測・データ生成）
       - path: ^tools/
         linters:

@@ -140,12 +140,6 @@ func isCJKAmbiguousPunct(r rune) bool {
 	return r == 0x2018 || r == 0x2019 || r == 0x201c || r == 0x201d
 }
 
-// comrakBeforeChar は comrak の get_before_char（'~' を読み飛ばす）。
-func comrakBeforeChar(parent ast.Node, block text.Reader) rune {
-	r, _ := comrakBeforeCharPos(parent, block)
-	return r
-}
-
 // comrakBeforeCharPos は comrakBeforeChar と同じ文字と、その位置（行内で求められない場合は -1）を返す。
 func comrakBeforeCharPos(parent ast.Node, block text.Reader) (rune, int) {
 	_, pos := block.Position()
