@@ -405,6 +405,12 @@ func (a *App) oidcResolveUser(c *Req, rec *domain.AuthSourceRecord, prov *oidc.P
 		// IdP の多要素認証を信頼する設定（skip_twofa）では、クレーム（メール / ログイン ID）の一致だけで
 		// buropher の 2 要素認証を有効にしているユーザーに紐付けると、以後その 2 要素認証を迂回できてしまう。
 		// その場合は自動では紐付けず、パスワード + 2 要素認証でログインしてからマイアカウントで連携させる
+		// 管理者には自動で紐付けない。突合に使うクレーム（preferred_username は IdP の利用者が変更できることがあり、
+		// OpenID Connect Core も一意・不変を保証しない）を IdP 側で管理者のログイン ID やメールアドレスに
+		// 合わせるだけで管理者になりすませないよう、管理者はパスワードでログインしてからマイアカウントで連携させる
+		if user.IsAdmin() {
+			return nil, &oidc.Error{Reason: "admin_link_required", Err: errors.New("automatic linking to an administrator is not allowed")}
+		}
 		if user.TwofaActive() && set.SkipTwofa() && a.Settings.String("twofa") != "0" {
 			return nil, &oidc.Error{Reason: "link_required", Err: errors.New("automatic linking to a user with two-factor authentication is not allowed")}
 		}
