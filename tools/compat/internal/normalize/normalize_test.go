@@ -122,6 +122,23 @@ func TestHTMLRandomFormName(t *testing.T) {
 	}
 }
 
+// .js レスポンスの JS 文字列に埋め込まれたフォームのランダムな name も -RANDOM に揃える。
+func TestTextJSRandomFormName(t *testing.T) {
+	n := mustNew(t, Config{})
+	a := n.Text([]byte(`$('#x').html('<form id=\"csv-export-form\" action=\"/x.csv\" name=\"csv-export-form-85e3a79e\" method=\"get\"><input name=\"q-deadbeef\">');`))
+	b := n.Text([]byte(`$('#x').html('<form id=\"csv-export-form\" action=\"/x.csv\" name=\"csv-export-form-d5db4191\" method=\"get\"><input name=\"q-deadbeef\">');`))
+	if a != b {
+		t.Errorf("random form names in JS not normalized:\n%s\n---\n%s", a, b)
+	}
+	if !strings.Contains(a, `name=\"csv-export-form-RANDOM\"`) {
+		t.Errorf("unexpected form name:\n%s", a)
+	}
+	// フォーム以外の要素の name は変えない
+	if !strings.Contains(a, `<input name=\"q-deadbeef\">`) {
+		t.Errorf("non-form name changed:\n%s", a)
+	}
+}
+
 func TestHTMLAssetDigestAndBaseURL(t *testing.T) {
 	n := mustNew(t, Config{}, "http://127.0.0.1:3998/")
 	src := `<head><link rel="stylesheet" href="/assets/application-6dc0ec44.css">

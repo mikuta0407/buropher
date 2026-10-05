@@ -267,11 +267,19 @@ func renderSingle(e Env, it *Item, p Project, selected bool) string {
 	if it.Icon != "" {
 		label = e.SpriteIcon(it.Icon, label)
 	}
-	return linkTo(label, url, attrs)
+	href := urlroot.Path(url)
+	// Hash の URL は url_for で作る。コントローラの url_for が helper_method で公開されている画面
+	// （ContextMenus::BaseController のエラー画面）では only_path にならず完全 URL になる。
+	if it.Controller != "" && strings.HasPrefix(href, "/") {
+		if b, ok := e.(interface{ FullURLBase() string }); ok {
+			href = b.FullURLBase() + href
+		}
+	}
+	return linkTo(label, href, attrs)
 }
 
-// linkTo は Rails の link_to（:method 対応）と同じ属性順で <a> を出力する。
-func linkTo(label template.HTML, url string, attrs []Attr) string {
+// linkTo は Rails の link_to（:method 対応）と同じ属性順で <a> を出力する（href は描画済みの値）。
+func linkTo(label template.HTML, href string, attrs []Attr) string {
 	var out []Attr
 	method := ""
 	for _, a := range attrs {
@@ -295,7 +303,7 @@ func linkTo(label template.HTML, url string, attrs []Attr) string {
 		}
 		out = append(out, Attr{"data-method", method})
 	}
-	out = append(out, Attr{"href", urlroot.Path(url)})
+	out = append(out, Attr{"href", href})
 	var b strings.Builder
 	b.WriteString("<a")
 	for _, a := range out {

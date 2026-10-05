@@ -113,3 +113,21 @@ func TestAdminMenuIcons(t *testing.T) {
 		t.Errorf("info not last: %s", got)
 	}
 }
+
+// fullURLEnv は ContextMenus::BaseController（helper_method :url_for）の画面の Env。
+type fullURLEnv struct{ fakeEnv }
+
+func (f *fullURLEnv) FullURLBase() string { return "http://example.net" }
+
+// Hash の URL のメニュー項目だけが完全 URL になる（:home_path / :signout_path / 文字列の URL はそのまま）。
+func TestMenuFullURLBase(t *testing.T) {
+	e := &fullURLEnv{fakeEnv{loggedIn: true, admin: true, labels: labels}}
+	want := `<ul><li><a class="home" href="/">Home</a></li><li><a class="my-page" href="http://example.net/my/page">My page</a></li><li><a class="projects" href="http://example.net/projects">Projects</a></li><li><a class="administration" href="http://example.net/admin">Administration</a></li><li><a target="_blank" rel="noopener" class="help" href="https://www.redmine.org/guide">Help</a></li></ul>`
+	if got := string(TopMenu().Render(e, nil)); got != want {
+		t.Errorf("got  %s\nwant %s", got, want)
+	}
+	want = `<ul><li><a class="my-profile" href="http://example.net/users/current">Profile</a></li><li><a class="my-account" href="http://example.net/my/account">My account</a></li><li><a class="logout" rel="nofollow" data-method="post" href="/logout">Sign out</a></li></ul>`
+	if got := string(AccountMenu().Render(e, nil)); got != want {
+		t.Errorf("got  %s\nwant %s", got, want)
+	}
+}

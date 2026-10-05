@@ -9,6 +9,8 @@ import (
 	"net/url"
 
 	"github.com/go-chi/chi/v5"
+
+	"github.com/mikuta0407/buropher/internal/httpx"
 )
 
 // RecalledProjectID は url_for がリクエストのパスパラメータ :project_id を引き継ぐ（recall）場合の値。
@@ -45,4 +47,13 @@ func (e menuEnv) RecalledType() string {
 	}
 	t, _ := e.p.Request.Context().Value(routeTypeKey{}).(string)
 	return t
+}
+
+// FullURLBase はメニューの Hash の URL を完全 URL にするときの基点（request.base_url）。
+// Page.FullURLFor でない画面では空（only_path のまま）。
+func (e menuEnv) FullURLBase() string {
+	if e.p == nil || !e.p.FullURLFor || e.p.Request == nil {
+		return ""
+	}
+	return httpx.RequestBaseURL(e.p.Request)
 }

@@ -87,6 +87,9 @@ type Page struct {
 	MenuItem string
 	// DefaultSearchScope は controller.default_search_scope（空なら nil）。
 	DefaultSearchScope string
+	// FullURLFor はコントローラの url_for が helper_method で公開されている
+	// （ContextMenus::BaseController）。メニュー等の Hash から作る URL が完全 URL になる。
+	FullURLFor bool
 	// NewRecordProject は @project が未保存のプロジェクト（projects#new / create / copy）。
 	NewRecordProject bool
 	// ProjectNameWas は @project.name_was（空なら Project.Name。ジャンプボックスの表示に使う）。

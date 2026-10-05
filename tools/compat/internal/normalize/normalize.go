@@ -148,6 +148,9 @@ var (
 	reFeedKey = regexp.MustCompile(`([?&](?:amp;)?key=)[0-9a-f]{40}`)
 	// ISO8601 日時
 	reTimestamp = regexp.MustCompile(`\b\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:?\d{2})?`)
+	// JS 文字列（escape_javascript）に埋め込まれたフォームのランダムな name（"<id|form>-<hex8>"）。
+	// HTML のフォームは HTML 側で "-RANDOM" にしているので、.js レスポンスでも同じ表記に揃える。
+	reJSRandomFormName = regexp.MustCompile(`(<form [^>]*?name=\\")([A-Za-z0-9_-]+?)-[0-9a-f]{8}(\\")`)
 	// Redmine (en) の distance_of_time_in_words
 	reRelTime = regexp.MustCompile(`\b(?:less than a minute|less than \d+ seconds|half a minute|(?:about|over|almost) (?:1|an?|\d+) (?:hours?|months?|years?)|\d+ (?:seconds?|minutes?|hours?|days?|months?|years?))\b`)
 )
@@ -199,6 +202,7 @@ func (n *Normalizer) String(s string) string {
 	}
 	s = reAssetDigest.ReplaceAllString(s, PlaceholderDigest+"$1")
 	s = reFeedKey.ReplaceAllString(s, "${1}KEY")
+	s = reJSRandomFormName.ReplaceAllString(s, "${1}${2}-RANDOM${3}")
 	if val(n.cfg.MaskTimestamps) {
 		s = reTimestamp.ReplaceAllString(s, "TIMESTAMP")
 	}
