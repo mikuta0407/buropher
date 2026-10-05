@@ -103,18 +103,29 @@ func TestSessionAnonymousCookieMode(t *testing.T) {
 			t.Error("tampered cookie accepted")
 		}
 	})
-	// 大きいデータはサーバ側へ
+	// 大きいデータはサーバ側へも保存しない（CookieOverflow と同じく今回の変更だけが失われる）
+	do(t, j, h, "GET", "/", "", func(w http.ResponseWriter, r *http.Request) { SessionOf(r).Set("per_page", 25) })
+	before := j.cookies["_redmine_session"].Value
 	do(t, j, h, "GET", "/", "", func(w http.ResponseWriter, r *http.Request) {
 		SessionOf(r).Set("big", strings.Repeat("x", 5000))
 	})
-	if !strings.HasPrefix(j.cookies["_redmine_session"].Value, "s.") || store.Len() != 1 {
-		t.Errorf("large session: %s len=%d", j.cookies["_redmine_session"].Value[:5], store.Len())
+	if j.cookies["_redmine_session"].Value != before || store.Len() != 0 {
+		t.Errorf("large anonymous session: cookie changed=%v stored=%d", j.cookies["_redmine_session"].Value != before, store.Len())
 	}
 	do(t, j, h, "GET", "/", "", func(w http.ResponseWriter, r *http.Request) {
-		if len(SessionOf(r).GetString("big")) != 5000 {
-			t.Error("big value lost")
+		if SessionOf(r).Has("big") || SessionOf(r).GetInt("per_page") != 25 {
+			t.Error("previous session should be kept without the big value")
 		}
 	})
+	// クッキーなしで繰り返しても行は作られない
+	for range 3 {
+		do(t, newJar(), h, "GET", "/", "", func(w http.ResponseWriter, r *http.Request) {
+			SessionOf(r).Set("big", strings.Repeat("y", 100000))
+		})
+	}
+	if store.Len() != 0 {
+		t.Errorf("cookieless large anonymous sessions stored: %d", store.Len())
+	}
 }
 
 func TestSessionLoginRotationAndRevocation(t *testing.T) {

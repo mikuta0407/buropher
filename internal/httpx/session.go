@@ -600,8 +600,14 @@ func (s *Session) Commit(w http.ResponseWriter) {
 			}
 			if err != nil {
 				s.m.logger().Error("session cookie encode failed", "err", err)
+				return
 			}
-			// 大きすぎる場合はサーバ側へ
+			// buropher 独自（セキュリティ）: 大きすぎる未ログインのセッションはサーバ側へも保存しない。
+			// クッキーなしのリクエストを繰り返すだけで（巨大なフィルタ条件の URL など）、認証なしに
+			// 1 件ずつ大きなセッション行を何日分も作らせることができたため。Redmine（CookieStore）も
+			// CookieOverflow で保存しない。直前のクッキーはそのまま残る（今回の変更だけが失われる）
+			s.m.logger().Warn("anonymous session too large for the cookie; not saved", "bytes", len(v), "path", s.r.URL.Path)
+			return
 		} else {
 			return
 		}
