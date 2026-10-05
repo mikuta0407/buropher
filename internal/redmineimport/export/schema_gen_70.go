@@ -5,9 +5,9 @@
 
 package export
 
-// coreTables は Redmine 6.1.2 のコア業務テーブル(56 個)と各列の論理型。
+// coreTables70 は Redmine 7.0.1 のコア業務テーブル(58 個)と各列の論理型。
 // 型は ActiveRecord の型シンボル(integer/string/text/boolean/datetime/date/float/binary/decimal)。
-var coreTables = []tableDef{
+var coreTables70 = []tableDef{
 	{Name: "attachments", PK: "id", Columns: []columnDef{
 		{Name: "id", Type: "integer"},
 		{Name: "container_id", Type: "integer"},
@@ -355,6 +355,11 @@ var coreTables = []tableDef{
 		{Name: "project_id", Type: "integer"},
 		{Name: "tracker_id", Type: "integer"},
 	}},
+	{Name: "projects_webhooks", PK: "id", Columns: []columnDef{
+		{Name: "id", Type: "integer"},
+		{Name: "project_id", Type: "integer"},
+		{Name: "webhook_id", Type: "integer"},
+	}},
 	{Name: "queries", PK: "id", Columns: []columnDef{
 		{Name: "id", Type: "integer"},
 		{Name: "project_id", Type: "integer"},
@@ -452,6 +457,7 @@ var coreTables = []tableDef{
 		{Name: "fields_bits", Type: "integer"},
 		{Name: "default_status_id", Type: "integer"},
 		{Name: "description", Type: "string"},
+		{Name: "private_by_default", Type: "boolean"},
 	}},
 	{Name: "user_preferences", PK: "id", Columns: []columnDef{
 		{Name: "id", Type: "integer"},
@@ -500,6 +506,16 @@ var coreTables = []tableDef{
 		{Name: "watchable_type", Type: "string"},
 		{Name: "watchable_id", Type: "integer"},
 		{Name: "user_id", Type: "integer"},
+	}},
+	{Name: "webhooks", PK: "id", Columns: []columnDef{
+		{Name: "id", Type: "integer"},
+		{Name: "url", Type: "string"},
+		{Name: "secret", Type: "string"},
+		{Name: "events", Type: "text"},
+		{Name: "user_id", Type: "integer"},
+		{Name: "active", Type: "boolean"},
+		{Name: "created_at", Type: "datetime"},
+		{Name: "updated_at", Type: "datetime"},
 	}},
 	{Name: "wiki_content_versions", PK: "id", Columns: []columnDef{
 		{Name: "id", Type: "integer"},
@@ -557,8 +573,8 @@ var coreTables = []tableDef{
 	}},
 }
 
-// coreMigrations は Redmine 6.1.2 で db:migrate 後に得られるコア schema_migrations(322 件)。
-var coreMigrations = []string{
+// coreMigrations70 は Redmine 7.0.1 で db:migrate 後に得られるコア schema_migrations(327 件)。
+var coreMigrations70 = []string{
 	"1", "2", "3", "4", "5", "6", "7", "8",
 	"9", "10", "11", "12", "13", "14", "15", "16",
 	"17", "18", "19", "20", "21", "22", "23", "24",
@@ -599,5 +615,5 @@ var coreMigrations = []string{
 	"20210801211024", "20211213122100", "20211213122101", "20211213122102", "20220224194639", "20220714093000", "20220714093010", "20220806215628",
 	"20221002193055", "20221004172825", "20221012135202", "20221214173537", "20230818020734", "20231012112407", "20231113131245", "20240213101801",
 	"20241007144951", "20241022095140", "20241026031710", "20241103150135", "20241103184550", "20241213003659", "20250423065135", "20250530185658",
-	"20250611092155", "20250611092227",
+	"20250611092155", "20250611092227", "20251007073256", "20260319062845", "20260319170822", "20260320090000", "20260520164915",
 }
