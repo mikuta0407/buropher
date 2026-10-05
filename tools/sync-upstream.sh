@@ -22,6 +22,8 @@ for f in stimulus.min.js stimulus.min.js.map stimulus-loading.js; do
   [ -f "$GEMS"/stimulus-rails-1.*/app/assets/javascripts/$f ] && cp "$GEMS"/stimulus-rails-1.*/app/assets/javascripts/$f web/assets/vendor/$f
 done
 cp "$GEMS"/requestjs-rails-*/app/assets/javascripts/requestjs.js web/assets/vendor/requestjs.js
+# 同梱ライブラリ・アイコン・フォントのライセンス文（Redmine 7.0 から doc/licenses に集約。THIRD_PARTY_NOTICES.md）
+sync "$SRC/doc/licenses" "docs/licenses"
 # ロケール
 sync "$SRC/config/locales" "web/locales/redmine"
 # Rails / doorkeeper-i18n gem 同梱ロケール（Redmine 実行時の I18n.load_path に先に積まれる分。MIT）

@@ -42,6 +42,7 @@ archives:
       - README.md
       - config.example.toml
       - docs/*.md
+      - docs/licenses/*.txt
       - packaging/systemd/buropher.service
 
 checksum:

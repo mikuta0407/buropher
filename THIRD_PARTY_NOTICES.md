@@ -35,25 +35,31 @@ Buropher is distributed under "GPL version 2 or (at your option) any later versi
 - **CC BY 2.5 / CC BY 3.0** (Silk / Fugue icons inherited from Redmine): images are
   distributed with attribution (below), as in Redmine.
 
-## 2. Bundled web assets (`web/assets/`, from Redmine 6.1.2)
+## 2. Bundled web assets (`web/assets/`, from Redmine 7.0.1)
 
-| Component | Version | License | Files |
-|---|---|---|---|
-| [jQuery](https://jquery.com/) | 3.7.1 | MIT (c) OpenJS Foundation and other contributors | `javascripts/jquery-3.7.1-ui-1.13.3.js` |
-| [jQuery UI](https://jqueryui.com/) (incl. datepicker translations and theme) | 1.13.3 (JS), 1.13.2 (CSS) | MIT (c) OpenJS Foundation and other contributors | `javascripts/jquery-3.7.1-ui-1.13.3.js`, `javascripts/i18n/datepicker-*.js`, `stylesheets/jquery/` |
-| [rails-ujs](https://github.com/rails/rails/tree/main/actionview/app/javascript) (actionview gem) | 7.2.3 | MIT (c) David Heinemeier Hansson | `javascripts/rails-ujs.js` |
-| [Stimulus](https://stimulus.hotwired.dev/) (stimulus-rails gem) | 3.2.2 (stimulus-rails 1.3.4) | MIT (c) Basecamp, LLC | `vendor/stimulus.min.js`, `vendor/stimulus.min.js.map`, `vendor/stimulus-loading.js` |
-| [requestjs-rails](https://github.com/rails/requestjs-rails) | 0.0.14 | MIT (c) 2021 Marcelo Lauxen | `vendor/requestjs.js` |
-| [Turndown](https://github.com/mixmark-io/turndown) | 7.2.0 | MIT (c) Dom Christie | `vendor/turndown.js` |
-| [Chart.js](https://www.chartjs.org/) | 3.9.1 | MIT (c) 2022 Chart.js Contributors | `javascripts/chart.min.js` |
-| [Raphaël](https://dmitrybaranovskiy.github.io/raphael/) | 2.3.0 | MIT (c) Dmitry Baranovskiy, Sencha Labs | `javascripts/raphael.js` |
-| [Tribute](https://github.com/zurb/tribute) | 5.1.3 | MIT (c) ZURB, Inc. | `javascripts/tribute-5.1.3.min.js`, `javascripts/tribute.min.js.map`, `stylesheets/tribute-5.1.3.css` |
-| [tablesort](https://github.com/tristen/tablesort) | 5.2.1 | MIT (c) 2020 Tristen Brown | `javascripts/tablesort-5.2.1.min.js`, `javascripts/tablesort-5.2.1.number.min.js` |
-| jsToolBar (from [DotClear](https://dotclear.org/), modified by Jean-Philippe Lang for Redmine) | — | GPL (c) 2005 Nicolas Martin & Olivier Meunier and contributors | `javascripts/jstoolbar/` |
-| [Noto Sans](https://fonts.google.com/noto/specimen/Noto+Sans) | — | SIL Open Font License 1.1 (c) The Noto Project Authors | `fonts/NotoSans-*.woff2`, license: `fonts/OFL.txt` |
-| [Tabler Icons](https://tabler.io/icons) | — | MIT (c) Paweł Kuna | `images/icons.svg` (and other SVG icons) |
-| [Silk Icons](http://www.famfamfam.com/lab/icons/silk/) | — | CC BY 2.5, Mark James | PNG icons in `images/` |
-| [Fugue Icons](https://p.yusukekamiyamane.com/) | — | CC BY 3.0, Yusuke Kamiyamane | PNG icons in `images/` |
+License texts of these components are in [`docs/licenses/`](docs/licenses/) (copied from
+Redmine's `doc/licenses` by `tools/sync-upstream.sh`).
+
+| Component | Version | License | Files | License text |
+|---|---|---|---|---|
+| [jQuery](https://jquery.com/) | 3.7.1 | MIT (c) OpenJS Foundation and other contributors | `javascripts/jquery-3.7.1-ui-1.13.3.js` | `jquery.txt` |
+| [jQuery UI](https://jqueryui.com/) (incl. datepicker translations and theme) | 1.13.3 (JS), 1.13.2 (CSS) | MIT (c) OpenJS Foundation and other contributors | `javascripts/jquery-3.7.1-ui-1.13.3.js`, `javascripts/i18n/datepicker-*.js`, `stylesheets/jquery/` | `jquery-ui.txt` |
+| [rails-ujs](https://github.com/rails/rails/tree/main/actionview/app/javascript) (actionview gem) | 8.1.3.1 | MIT (c) David Heinemeier Hansson | `javascripts/rails-ujs.js` | — |
+| [Stimulus](https://stimulus.hotwired.dev/) (stimulus-rails gem) | 3.2.2 (stimulus-rails 1.3.4) | MIT (c) Basecamp, LLC | `vendor/stimulus.min.js`, `vendor/stimulus.min.js.map`, `vendor/stimulus-loading.js` | — |
+| [requestjs-rails](https://github.com/rails/requestjs-rails) | 0.0.14 | MIT (c) 2021 Marcelo Lauxen | `vendor/requestjs.js` | — |
+| [Turndown](https://github.com/mixmark-io/turndown) | 7.2.0 | MIT (c) 2017 Dom Christie | `vendor/turndown.js` | `turndown.txt` |
+| [Chart.js](https://www.chartjs.org/) | 4.5.1 | MIT (c) 2014-2022 Chart.js Contributors | `vendor/chart.min.js` | `chartjs.txt` |
+| [tablesort](https://github.com/tristen/tablesort) | 5.7.0 (`vendor/`), 5.2.1 (`javascripts/`) | MIT (c) Tristen Brown | `vendor/tablesort.min.js`, `vendor/tablesort.number.min.js`, `javascripts/tablesort-5.2.1.min.js`, `javascripts/tablesort-5.2.1.number.min.js` | `tablesort.txt` |
+| [Tribute](https://github.com/zurb/tribute) | 5.1.3 | MIT (c) 2017-2020 ZURB, Inc., (c) 2014 Jeff Collins | `javascripts/tribute-5.1.3.min.js`, `javascripts/tribute.min.js.map`, `stylesheets/tribute-5.1.3.css` | `tribute.txt` |
+| [Open Color](https://yeun.github.io/open-color/) | 1.9.1 | MIT (c) 2016 heeyeun | `stylesheets/open-color.css` | `open-color.txt` |
+| jsToolBar (from [DotClear](https://dotclear.org/), modified by Jean-Philippe Lang for Redmine) | — | GPL (c) 2005 Nicolas Martin & Olivier Meunier and contributors | `javascripts/jstoolbar/` | — |
+| [Noto Sans](https://fonts.google.com/noto/specimen/Noto+Sans) | — | SIL Open Font License 1.1 (c) 2022 The Noto Project Authors | `fonts/NotoSans-*.woff2` | `notosans.txt` |
+| [Tabler Icons](https://tabler.io/icons) | 3.43.0 | MIT (c) 2020-2025 Paweł Kuna | `images/icons.svg` (and other SVG icons) | `tabler-icons.txt` |
+| [Silk Icons](http://www.famfamfam.com/lab/icons/silk/) | — | CC BY 2.5, Mark James | PNG icons in `images/` | `silk-icons.txt` |
+| [Fugue Icons](https://p.yusukekamiyamane.com/) | — | CC BY 3.0, Yusuke Kamiyamane | PNG icons in `images/` | `fugue-icons.txt` |
+
+Redmine 7.0 removed Raphaël (the old Gantt / revision graph drawing library), `gantt.js` and
+`rtl.css`; they are no longer bundled.
 
 The remaining files in `web/assets/` (Redmine's own stylesheets, scripts, Stimulus
 controllers, themes and images) are part of Redmine (GPL-2.0-or-later); see NOTICE.
@@ -70,7 +76,7 @@ Loaded before Redmine's own translations, exactly as Redmine does at runtime.
 
 | Component | Version | License | Files |
 |---|---|---|---|
-| Ruby on Rails (activesupport, activemodel, activerecord, actionview) | 7.2.x | MIT (c) David Heinemeier Hansson | `activesupport.en.yml`, `activemodel.en.yml`, `activerecord.en.yml`, `actionview.en.yml` |
+| Ruby on Rails (activesupport, activemodel, activerecord, actionview) | 8.1.x | MIT (c) David Heinemeier Hansson | `activesupport.en.yml`, `activemodel.en.yml`, `activerecord.en.yml`, `actionview.en.yml` |
 | [doorkeeper-i18n](https://github.com/doorkeeper-gem/doorkeeper-i18n) | 5.2.9 | MIT (c) Tute Costa | `doorkeeper.<locale>.yml` |
 | [doorkeeper](https://github.com/doorkeeper-gem/doorkeeper) | 5.8.2 | MIT (c) Applicake / Doorkeeper contributors | `doorkeeper-gem.en.yml` |
 
@@ -80,19 +86,20 @@ Loaded before Redmine's own translations, exactly as Redmine does at runtime.
 
 | Component | License | Where |
 |---|---|---|
-| [Rouge](https://github.com/rouge-ruby/rouge) 4.7.0 — syntax highlighting lexers and regex-lexer engine, ported from Ruby to Go | MIT (c) 2012 Jeanine Adkisson and contributors | `internal/textformat/highlight/rouge*.go` (header: `GPL-2.0-or-later AND MIT`), generator `tools/gen-rouge-lexers.rb`, language list `web/templates/help/wiki_syntax/code_highlighting_languages.tsv` |
+| [Rouge](https://github.com/rouge-ruby/rouge) 5.1.0 — syntax highlighting lexers and regex-lexer engine, ported from Ruby to Go | MIT (c) 2012 Jeanine Adkisson and contributors | `internal/textformat/highlight/rouge*.go` (header: `GPL-2.0-or-later AND MIT`), generator `tools/gen-rouge-lexers.rb`, language list `web/templates/help/wiki_syntax/code_highlighting_languages.tsv` |
 | [libxml2](https://gitlab.gnome.org/GNOME/libxml2) 2.13.9 — HTML parser/serializer behavior of `HTMLparser.c` / `HTMLtree.c` (as used by Nokogiri) ported to Go, HTML entity table | MIT (c) Daniel Veillard | `internal/textformat/htmldom/` (header: `GPL-2.0-or-later AND MIT`) |
+| [golang.org/x/net/html](https://pkg.go.dev/golang.org/x/net/html) v0.58.0 — HTML5 tokenizer/parser, forked and modified to reproduce `Nokogiri::HTML5` (gumbo) parsing used by Redmine 7.0's `Loofah.html5_fragment` | BSD-3-Clause (c) 2009 The Go Authors | `internal/textformat/htmldom/internal/h5/` (header: `BSD-3-Clause AND GPL-2.0-or-later`, license text in that directory) |
 | [Loofah](https://github.com/flavorjones/loofah), [rails-html-sanitizer](https://github.com/rails/rails-html-sanitizer), [Nokogiri](https://nokogiri.org/) — sanitizer and HTML handling behavior reproduced (not copied) | MIT | `internal/textformat/sanitize/`, `internal/view/rails/sanitize.go`, `internal/mail/inline.go`, `internal/mailhandler/htmltext.go` |
 | RedCloth 3.0.4 (as modified in Redmine's `redcloth3.rb`) | BSD (c) 2004 why the lucky stiff | `internal/textformat/textile/redcloth3.go` |
-| [comrak](https://github.com/kivikakk/comrak) via [commonmarker](https://github.com/gjtorikian/commonmarker) 2.3.2 — CommonMark/GFM output reproduced on top of goldmark (behavior, not code) | BSD-2-Clause (comrak), MIT (commonmarker) | `internal/textformat/commonmark/` |
+| [comrak](https://github.com/kivikakk/comrak) via [commonmarker](https://github.com/gjtorikian/commonmarker) 2.8.3 — CommonMark/GFM output reproduced on top of goldmark (behavior, not code) | BSD-2-Clause (comrak), MIT (commonmarker) | `internal/textformat/commonmark/` |
 | [goldmark](https://github.com/yuin/goldmark) | MIT | Go module dependency (see below) |
 
 ## 6. Test data (not part of the binary)
 
 | Data | Origin / license |
 |---|---|
-| Redmine test fixtures (`internal/testfixtures/testdata/redmine/`, `internal/mailhandler/testdata/`, `testdata/compat/files/`, ...) | Redmine 6.1.2 `test/fixtures`, GPL-2.0-or-later |
-| Golden outputs (`testdata/compat/golden/`, `internal/*/testdata/`) | generated by running Redmine 6.1.2 (and Rails I18n, Rouge, commonmarker) |
+| Redmine test fixtures (`internal/testfixtures/testdata/redmine/`, `internal/mailhandler/testdata/`, `testdata/compat/files/`, ...) | Redmine 7.0.1 `test/fixtures`, GPL-2.0-or-later |
+| Golden outputs (`testdata/compat/golden/`, `internal/*/testdata/`) | generated by running Redmine 7.0.1 (some with 6.1.2; and Rails I18n, Rouge, commonmarker) |
 | CommonMark spec examples (`internal/textformat/commonmark/testdata/corpus_spec.json`) | [CommonMark Spec](https://spec.commonmark.org/), CC BY-SA 4.0 (c) John MacFarlane |
 | comrak test inputs (`internal/textformat/commonmark/testdata/corpus_comrak.json`) | [comrak](https://github.com/kivikakk/comrak) test suite, BSD-2-Clause (c) Asherah Connor |
 | Git fixture repository for SCM tests | Redmine's `test/fixtures/repositories/git_repository.tar.gz`; **not bundled** (tests extract it from a local Redmine checkout under `_reference/`) |
