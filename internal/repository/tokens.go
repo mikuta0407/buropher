@@ -141,7 +141,17 @@ func FindActiveTokenUser(ctx context.Context, q db.Queryer, action, key string, 
 	if err != nil {
 		return nil, err
 	}
-	return FindActiveUser(ctx, q, t.UserID)
+	u, err := FindActiveUser(ctx, q, t.UserID)
+	if err != nil {
+		return nil, err
+	}
+	// 最終利用日時の記録（#43938）: 書き込みを減らすため 1 分に 1 回まで updated_at を更新する
+	if t.UpdatedAt.IsZero() || !t.UpdatedAt.After(now.Add(-time.Minute)) {
+		if _, err := q.Exec(ctx, `UPDATE tokens SET updated_at = ? WHERE id = ?`, db.NewTime(now), t.ID); err != nil {
+			return nil, err
+		}
+	}
+	return u, nil
 }
 
 // DeleteToken はユーザのアクション・値が一致するトークンを消す (User#delete_autologin_token 等)。

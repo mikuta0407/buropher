@@ -60,6 +60,7 @@ func (a *App) myAccountData(c *Req, m *userModel) (map[string]any, error) {
 		return nil, err
 	}
 	data["ChangePasswordAllowed"] = a.changePasswordAllowed(c, m.User)
+	data["LastnameBeforeFirstname"] = domain.LastnameBeforeFirstname(a.Settings.String("user_format"))
 	data["RestAPIEnabled"] = a.Settings.Bool("rest_api_enabled")
 	data["TwofaSchemes"] = []string{"totp"}
 	// avatar_edit_link（Setting.gravatar_enabled? のときアバターをアバターサーバへのリンクにする）
@@ -99,6 +100,10 @@ func (a *App) mySidebarData(c *Req, u *domain.User, data map[string]any) error {
 	}
 	if atom != nil {
 		data["AtomTokenAge"] = c.Loc.DistanceOfTimeInWords(a.now(), atom.CreatedAt)
+		// 最終利用（#43938）。未使用なら空
+		if atom.Used() {
+			data["AtomTokenLastUsed"] = c.Loc.DistanceOfTimeInWords(a.now(), atom.UpdatedAt)
+		}
 	}
 	data["RestAPIEnabled"] = a.Settings.Bool("rest_api_enabled")
 	api, err := repository.UserToken(ctx, a.DB, u.ID, repository.TokenAPI)
@@ -107,6 +112,9 @@ func (a *App) mySidebarData(c *Req, u *domain.User, data map[string]any) error {
 	}
 	if api != nil {
 		data["APITokenAge"] = c.Loc.DistanceOfTimeInWords(a.now(), api.CreatedAt)
+		if api.Used() {
+			data["APITokenLastUsed"] = c.Loc.DistanceOfTimeInWords(a.now(), api.UpdatedAt)
+		}
 	}
 	return nil
 }

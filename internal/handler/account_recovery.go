@@ -326,6 +326,7 @@ func (a *App) renderRegister(c *Req, m *userModel) {
 		"ForceDefaultLanguage": a.Settings.Bool("force_default_language_for_loggedin"),
 	}
 	a.passwordPolicyData(c, data)
+	data["LastnameBeforeFirstname"] = domain.LastnameBeforeFirstname(a.Settings.String("user_format"))
 	c.Render("account/register", data)
 }
 

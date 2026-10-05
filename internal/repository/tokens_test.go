@@ -61,6 +61,22 @@ func TestTokens(t *testing.T) {
 		if k2, _ := repository.AtomKey(e.ctx, e.d, 2); k2 != k {
 			t.Error("atom key changed")
 		}
+		// test_find_active_user_should_update_updated_on（#43938）: 利用すると updated_at が更新される。
+		// 1 分以内の再利用では更新しない
+		e.must(exec(e, `UPDATE tokens SET created_at = ?, updated_at = ? WHERE value = ?`,
+			now.Add(-48*time.Hour).UTC().Format("2006-01-02T15:04:05.000000Z"), now.Add(-48*time.Hour).UTC().Format("2006-01-02T15:04:05.000000Z"), k))
+		_, err = repository.FindActiveTokenUser(e.ctx, e.d, repository.TokenFeeds, k, 0, now)
+		e.must(err)
+		used, err := repository.UserToken(e.ctx, e.d, 2, repository.TokenFeeds)
+		e.must(err)
+		if !used.UpdatedAt.Equal(now.UTC().Truncate(time.Microsecond)) || !used.Used() {
+			t.Errorf("updated_at = %v, want %v (used=%v)", used.UpdatedAt, now, used.Used())
+		}
+		_, err = repository.FindActiveTokenUser(e.ctx, e.d, repository.TokenFeeds, k, 0, now.Add(30*time.Second))
+		e.must(err)
+		if again, _ := repository.UserToken(e.ctx, e.d, 2, repository.TokenFeeds); !again.UpdatedAt.Equal(used.UpdatedAt) {
+			t.Errorf("updated_at changed within a minute: %v", again.UpdatedAt)
+		}
 		// 別アクション・不正なキー
 		for _, c := range []struct{ action, key string }{
 			{repository.TokenAPI, k}, {repository.TokenFeeds, k + "x"}, {repository.TokenFeeds, "a b"}, {"", k},
