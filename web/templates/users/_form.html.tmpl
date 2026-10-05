@@ -32,13 +32,13 @@
   {{end}}
   <div id="password_fields" style="{{if $u.AuthSourceID}}display:none;{{end}}">
   <p>
-    {{$f.PasswordField "password" (hash "required" $u.NewRecord "size" 25)}}
+    {{$f.PasswordField "password" (hash "required" $u.NewRecord "size" 25 "autocomplete" "new-password")}}
     <em class="info">{{l "text_caracters_minimum" (hash "count" $a.PasswordMinLength)}}</em>
     {{if $a.PasswordCharClasses}}
       <em class="info">{{l "text_characters_must_contain" (hash "character_classes" $a.PasswordCharClasses)}}</em>
     {{end}}
   </p>
-  <p>{{$f.PasswordField "password_confirmation" (hash "required" $u.NewRecord "size" 25)}}</p>
+  <p>{{$f.PasswordField "password_confirmation" (hash "required" $u.NewRecord "size" 25 "autocomplete" "new-password")}}</p>
   <p>{{$f.CheckBox "generate_password"}}</p>
   <p>{{$f.CheckBox "must_change_passwd"}}</p>
   </div>

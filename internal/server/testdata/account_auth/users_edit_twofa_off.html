@@ -301,10 +301,10 @@ $('#sidebar-switch-panel').css('visibility', 'visible');
 <option value="1">LDAP test server</option></select></p>
   <div id="password_fields" style="">
   <p>
-    <label for="user_password">Password</label><input size="25" type="password" name="user[password]" id="user_password" />
+    <label for="user_password">Password</label><input size="25" autocomplete="new-password" type="password" name="user[password]" id="user_password" />
     <em class="info">Must be at least 8 characters long.</em>
   </p>
-  <p><label for="user_password_confirmation">Confirmation</label><input size="25" type="password" name="user[password_confirmation]" id="user_password_confirmation" /></p>
+  <p><label for="user_password_confirmation">Confirmation</label><input size="25" autocomplete="new-password" type="password" name="user[password_confirmation]" id="user_password_confirmation" /></p>
   <p><label for="user_generate_password">Generate password</label><input name="user[generate_password]" type="hidden" value="0" autocomplete="off" /><input type="checkbox" value="1" name="user[generate_password]" id="user_generate_password" /></p>
   <p><label for="user_must_change_passwd">Must change password at next logon</label><input name="user[must_change_passwd]" type="hidden" value="0" autocomplete="off" /><input type="checkbox" value="1" name="user[must_change_passwd]" id="user_must_change_passwd" /></p>
   </div>
