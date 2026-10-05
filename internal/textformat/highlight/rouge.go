@@ -18,15 +18,15 @@ import (
 // 主要言語のレキサーは Rouge のソースからこのエンジン向けに移植している（rouge_*.go）。
 //
 // 正規表現は Ruby（Onigmo）の記法で書き、rubyRegexp で regexp2 用に変換する。
-// StringScanner と同様、現在位置を文字列の先頭とみなして照合する
-// （\A・^・後読みは現在位置より前を見ない）。
+// Rouge 5 の StringScanner.new(str, fixed_anchor: true) と同様、照合は現在位置から始めるが
+// \A・^・\b・後読みは字句解析する文字列全体を基準にする（\A は文字列の先頭でのみ一致し、
+// 後読みは現在位置より前の文字も見る）。
 
 // rtok は Rouge のトークン（短縮クラス名。"" は Text）。
 type rtok = string
 
 type rrule struct {
 	re    *regexp2.Regexp
-	bol   bool   // パターンが ^ で始まる（行頭でのみ試す）
 	mixin string // 空でなければ他の状態を取り込む
 	act   func(c *rctx, m *regexp2.Match)
 }
@@ -58,6 +58,8 @@ type rctx struct {
 	subs  map[string]*rctx // delegate 先のレキサー（インスタンスを保持する）
 	// budget は字句解析全体の時間制限（異常に遅い正規表現への対策）
 	budget *lexBudget
+	// fellThrough は規則の処理中に fallthrough が呼ばれた（Rouge の fallthrough!）
+	fellThrough bool
 }
 
 // lexBudget は字句解析の時間制限（Budget で複数のコードブロックに共有できる）。
@@ -275,17 +277,12 @@ func (c *rctx) step(st *rstate, nullSteps *int) bool {
 			}
 			continue
 		}
-		if r.bol && !(c.pos == 0 || c.runes[c.pos-1] == '\n') {
-			continue
-		}
-		m, err := r.re.FindRunesMatch(c.runes[c.pos:])
+		m, err := r.re.FindRunesMatchStartingAt(c.runes, c.pos)
 		if err != nil || m == nil {
 			continue
 		}
 		size := m.RuneLength
-		c.m = m
-		c.pos += size
-		r.act(c, m)
+		// Rouge 5: 空の一致の回数は規則の処理より先に数える
 		if size == 0 {
 			*nullSteps++
 			if *nullSteps > maxNullScans {
@@ -294,17 +291,30 @@ func (c *rctx) step(st *rstate, nullSteps *int) bool {
 		} else {
 			*nullSteps = 0
 		}
+		c.m = m
+		c.pos += size
+		r.act(c, m)
+		if c.fellThrough {
+			// fallthrough: 一致しなかったものとして次の規則を試す（stream.unscan）
+			c.fellThrough = false
+			c.pos -= size
+			continue
+		}
 		return true
 	}
 	return false
 }
 
+// fallThrough は Rouge の fallthrough!（現在の規則を一致しなかったものとして次の規則へ進む）。
+// 規則の処理の中で、トークンを出力する前に呼ぶ。
+func (c *rctx) fallThrough() { c.fellThrough = true }
+
 // ---- 定義用の DSL ----
 
 // rule は Rouge の rule re, Token[, next_state]。next は "#pop", "#push", 状態名（複数可）。
 func rule(pattern string, tok rtok, next ...string) rrule {
-	re, bol := rubyRegexp(pattern)
-	return rrule{re: re, bol: bol, act: func(c *rctx, m *regexp2.Match) {
+	re := rubyRegexp(pattern)
+	return rrule{re: re, act: func(c *rctx, m *regexp2.Match) {
 		c.token(tok)
 		for _, n := range next {
 			switch n {
@@ -321,14 +331,14 @@ func rule(pattern string, tok rtok, next ...string) rrule {
 
 // ruleF は Rouge の rule re do |m| ... end。
 func ruleF(pattern string, f func(c *rctx)) rrule {
-	re, bol := rubyRegexp(pattern)
-	return rrule{re: re, bol: bol, act: func(c *rctx, m *regexp2.Match) { f(c) }}
+	re := rubyRegexp(pattern)
+	return rrule{re: re, act: func(c *rctx, m *regexp2.Match) { f(c) }}
 }
 
 // ruleG は rule re do groups(...) end（続けて状態遷移も可能）。
 func ruleG(pattern string, toks []rtok, next ...string) rrule {
-	re, bol := rubyRegexp(pattern)
-	return rrule{re: re, bol: bol, act: func(c *rctx, m *regexp2.Match) {
+	re := rubyRegexp(pattern)
+	return rrule{re: re, act: func(c *rctx, m *regexp2.Match) {
 		c.groups(toks...)
 		for _, n := range next {
 			switch n {
@@ -373,10 +383,9 @@ var rxCache sync.Map
 
 // rubyRegexp は Ruby の正規表現を regexp2 用に変換してコンパイルする。
 // 先頭に (?flags) を付けられる（i, x, m=dotall）。
-func rubyRegexp(pattern string) (*regexp2.Regexp, bool) {
+func rubyRegexp(pattern string) *regexp2.Regexp {
 	if v, ok := rxCache.Load(pattern); ok {
-		e := v.(rxEntry)
-		return e.re, e.bol
+		return v.(*regexp2.Regexp)
 	}
 	opts := regexp2.Multiline
 	p := pattern
@@ -398,17 +407,12 @@ func rubyRegexp(pattern string) (*regexp2.Regexp, bool) {
 			p = p[end+1:]
 		}
 	}
-	bol := strings.HasPrefix(p, "^")
 	conv := translateRegexp(p)
-	re := regexp2.MustCompile(`\A(?:`+conv+`)`, opts)
+	// \G で現在位置（照合の開始位置）に固定する
+	re := regexp2.MustCompile(`\G(?:`+conv+`)`, opts)
 	re.MatchTimeout = regexTimeout
-	rxCache.Store(pattern, rxEntry{re, bol})
-	return re, bol
-}
-
-type rxEntry struct {
-	re  *regexp2.Regexp
-	bol bool
+	rxCache.Store(pattern, re)
+	return re
 }
 
 // translateRegexp は \h \w \d \s \b などを Ruby の（ASCII の）意味に置き換える。

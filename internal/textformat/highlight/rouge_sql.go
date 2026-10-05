@@ -16,7 +16,7 @@ func wordset(s string) map[string]bool {
 	return m
 }
 
-// Rouge 4.7 の sql.rb の移植。
+// Rouge 5.1 の sql.rb の移植。
 
 var sqlKeywords = wordset(`
 ABORT ABS ABSOLUTE ACCESS ADA ADD ADMIN AFTER AGGREGATE ALIAS

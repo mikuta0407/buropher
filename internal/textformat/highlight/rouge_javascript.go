@@ -5,7 +5,7 @@
 
 package highlight
 
-// Rouge 4.7 の javascript.rb の移植。
+// Rouge 5.1 の javascript.rb の移植。
 
 var (
 	jsKeywords = wordset(`async await break case catch continue debugger default delete

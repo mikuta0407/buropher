@@ -7,9 +7,10 @@ package highlight
 
 import "strings"
 
-// Rouge 4.7 の apache.rb の移植。
+// Rouge 5.1 の apache.rb の移植。
 
 func apacheTok(tok, tktype string) string {
+	tok = strings.ToLower(tok)
 	if apacheSections[tok] || apacheDirectives[tok] || apacheValues[tok] {
 		return tktype
 	}
@@ -26,11 +27,11 @@ func init() {
 		l.state("root",
 			mixin("whitespace"),
 			ruleF(`(<\/?)(\w+)`, func(c *rctx) {
-				c.groups("p", apacheTok(strings.ToLower(c.group(2)), "nl"))
+				c.groups("p", apacheTok(c.group(2), "nl"))
 				c.push("section")
 			}),
 			ruleF(`\w+`, func(c *rctx) {
-				c.token(apacheTok(strings.ToLower(c.m.String()), "nc"))
+				c.token(apacheTok(c.m.String(), "nc"))
 				c.push("directive")
 			}),
 		)
@@ -41,7 +42,21 @@ func init() {
 		l.state("directive",
 			rule(`\r\n?|\n`, "", "#pop"),
 			mixin("whitespace"),
-			ruleF(`\S+`, func(c *rctx) { c.token(apacheTok(strings.ToLower(c.m.String()), "ss")) }),
+			ruleF(`\S+`, func(c *rctx) {
+				if apacheValues[strings.ToLower(c.m.String())] {
+					c.token("ss")
+				} else {
+					c.fallThrough()
+				}
+			}),
+			ruleF(`(?=\S)`, func(c *rctx) { c.push("value") }),
+		)
+		l.state("value",
+			rule(`[ \t]+`, "", "#pop"),
+			rule(`[^\s%]+`, ""),
+			rule(`%{.*?}`, "nv"),
+			rule(`[%]`, ""),
+			ruleF(`(?=\n)`, func(c *rctx) { c.pop() }),
 		)
 		return l
 	})

@@ -5,7 +5,7 @@
 
 package highlight
 
-// Rouge 4.7 の docker.rb / make.rb / toml.rb の移植。
+// Rouge 5.1 の docker.rb / make.rb / toml.rb の移植。
 
 func init() {
 	registerRouge("docker", func() *rlexer {
@@ -84,6 +84,7 @@ func init() {
 		l.state("block_body",
 			ruleG(`(ifn?def|ifn?eq)([\t ]+)([^#\n]+)(#.*)?(\n)`, toks("k", "", "nv", "c", "")),
 			ruleG(`(else|endif)([\t ]*)(#.*)?(\n)`, toks("k", "", "c", "")),
+			rule(`#.*\n?`, "c"),
 			ruleF(`(\t[\t ]*)([@-]?)`, func(c *rctx) { c.groups("", "p"); c.push("shell_line") }),
 			ruleF(``, func(c *rctx) {
 				if s := c.sub("shell"); s != nil {

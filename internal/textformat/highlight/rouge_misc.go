@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-// Rouge 4.7 の markdown.rb / pascal.rb の移植。
+// Rouge 5.1 の markdown.rb / pascal.rb の移植。
 
 // findFancyTokens は Markdown のフェンス内コードを指定言語で字句解析する
 // （Lexer.find_fancy 相当。未知の言語は Str::Backtick の PlainText）。
@@ -63,10 +63,6 @@ func init() {
 		l.state("root",
 			ruleF(`(?m)\A(---\s*\n.*?\n?)^(---\s*$\n?)`, func(c *rctx) { c.delegateFresh("yaml", c.m.String()) }),
 			rule(`\\.`, "se"),
-			rule(`^[\S ]+\n(?:---*)\n`, "gh"),
-			rule(`^[\S ]+\n(?:===*)\n`, "gu"),
-			rule(`^#(?=[^#]).*?$`, "gh"),
-			rule(`^##*.*?$`, "gu"),
 			ruleF(`(?m)^([ \t]*)(`+"`"+`{3,}|~{3,})([^\n]*\n)((.*?)(\n\1)(\2))?`, func(c *rctx) {
 				m1, m2, m3 := c.group(1), c.group(2), c.group(3)
 				name := strings.Trim(m3, " \t\n\v\f\r\x00")
@@ -103,6 +99,10 @@ func init() {
 			}),
 			rule(`\n\n((    |\t).*?\n|\n)+`, "sb"),
 			rule("(`+)(?:"+edot+`|\n)+?\1`, "sb"),
+			rule(`^[\S ]+\n(?:---*)\n`, "gh"),
+			rule(`^[\S ]+\n(?:===*)\n`, "gu"),
+			rule(`^#(?=[^#]).*?$`, "gh"),
+			rule(`^##*.*?$`, "gu"),
 			rule(`^(\s*[*]){3,}\s*$`, "p"),
 			rule(`^(\s*[-]){3,}\s*$`, "p"),
 			rule(`^\s*[*+-](?=\s)`, "p"),
@@ -133,7 +133,7 @@ func init() {
 		)
 		l.state("link",
 			ruleF(`(\[)(`+edot+`*?)(\])`, func(c *rctx) { c.groups("p", "ss", "p"); c.pop() }),
-			ruleF(`[(]`, func(c *rctx) { c.token("p"); c.push("inline_title"); c.push("inline_url") }),
+			ruleF(`[(]`, func(c *rctx) { c.token("p"); c.pop(); c.push("inline_title"); c.push("inline_url") }),
 			rule(`[ \t]+`, ""),
 			ruleF(``, func(c *rctx) { c.pop() }),
 		)

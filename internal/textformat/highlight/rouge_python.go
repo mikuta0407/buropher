@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-// Rouge 4.7 の python.rb の移植。
+// Rouge 5.1 の python.rb の移植。
 
 var (
 	pyKeywordList = strings.Fields(`assert break continue del elif else except exec
@@ -80,26 +80,34 @@ func (r *pyStrings) last() [2]string {
 
 func init() {
 	registerRouge("python", func() *rlexer {
+		const (
+			// Ruby で埋め込まれる Regexp は (?-mix:...) のグループになるため (?:...) で囲む
+			inlineWS      = `(?:(?:[ \t]|\\\n)*?)`
+			inlineContent = `(?:(?:[^\\\n]|\\[\n.])*?)`
+			operatorWords = `(in|is|and|or|not)\b`
+			operators     = `(<<|>>|//|[*][*])=?|!=|[-~+\/*%=<>&^|@]=?|!=`
+			inlineOps     = `(?:(?:` + operatorWords + `)|if\b|(?:` + operators + `))`
+		)
 		l := &rlexer{tag: "python"}
+		l.start = func(c *rctx) { c.push("newline") }
+		l.state("inline_whitespace",
+			rule(`[ \t]+`, ""),
+			rule(`\\\n`, "se"),
+		)
 		l.state("root",
-			rule(`(?m)\n+`, ""),
+			rule(`(?m)\n+`, "", "newline"),
 			ruleG(`(?mi)^(:)(\s*)([ru]{,2}""".*?""")`, toks("p", "", "sd")),
 			rule(`\.\.\.\B$`, "bp"),
-			rule(`[^\S\n]+`, ""),
-			rule(`#(.*)?\n?`, "c1"),
-			rule(`[\[\]{}:(),;.]`, "p"),
-			rule(`\\\n`, ""),
-			rule(`\\`, ""),
+			mixin("inline_whitespace"),
+			rule(`#(.*)?\n?`, "c1", "newline"),
+			rule(`[\[\]{}:(),;]`, "p"),
+			rule(`[.]`, "p", "post_dot"),
+			rule(`\\`, "se"),
 			rule(`(?i)@`+pyDottedIdent, "nd"),
-			rule(`(in|is|and|or|not)\b`, "ow"),
-			rule(`(<<|>>|\/\/|\*\*)=?`, "o"),
-			rule(`[-~+\/*%=<>&^|@]=?|!=`, "o"),
-			ruleG(`(from)((?:\\\s|\s)+)(`+pyDottedIdent+`)((?:\\\s|\s)+)(import)`, toks("kn", "", "n", "", "kn")),
-			ruleG(`(import)(\s+)(`+pyDottedIdent+`)`, toks("kn", "", "n")),
-			ruleF(`(def)((?:\s|\\\s)+)`, func(c *rctx) { c.groups("k", ""); c.push("funcname") }),
-			ruleF(`(class)((?:\s|\\\s)+)`, func(c *rctx) { c.groups("k", ""); c.push("classname") }),
-			rule(`(?m)([a-z_]\w*)[ \t]*(?=(\(.*\)))`, "nf"),
-			rule(`(?m)([A-Z_]\w*)[ \t]*(?=(\(.*\)))`, "nc"),
+			rule(operatorWords, "ow"),
+			rule(operators, "o"),
+			rule(`def\b`, "k", "funcname"),
+			rule(`class\b`, "k", "classname"),
 			rule("`.*?`", "sb"),
 			ruleF(`(?i)([rtfbu]{0,2})('''|"""|['"])`, func(c *rctx) {
 				c.groups("sa", "sh")
@@ -107,14 +115,13 @@ func init() {
 				*r = append(*r, [2]string{strings.ToLower(c.group(1)), c.group(2)})
 				c.push("generic_string")
 			}),
-			mixin("soft_keywords"),
 			ruleF(`(?<!\.)`+pyIdent, func(c *rctx) {
 				w := c.m.String()
 				switch {
 				case pyKeywords[w]:
 					c.token("k")
 				case pyExceptions[w]:
-					c.token("nb")
+					c.token("ne")
 				case pyBuiltins[w]:
 					c.token("nb")
 				case pyBuiltinsPseudo[w]:
@@ -133,24 +140,51 @@ func init() {
 			rule(`\d+L`, "il"),
 			rule(`([1-9](_?[0-9])*|0(_?0)*)`, "mi"),
 		)
-		l.state("funcname", rule(pyIdent, "nf", "#pop"))
-		l.state("classname", rule(pyIdent, "nc", "#pop"))
-		l.state("soft_keywords",
-			ruleF(`(?x)
-          (^[ \t]*)
-          (match|case)\b
-          (?![ \t]*
-            (?:[:,;=^&|@~)\]}] |
-              (?:`+strings.Join(pyKeywordList, "|")+`)\b))
-        `, func(c *rctx) {
-				c.token("w", c.group(1))
-				c.token("k", c.group(2))
-				c.push("soft_keywords_inner")
-			}),
+		popEmpty := ruleF(``, func(c *rctx) { c.pop() })
+		l.state("import",
+			mixin("inline_whitespace"),
+			rule(pyDottedIdent, "nn", "#pop"),
+			popEmpty,
 		)
-		l.state("soft_keywords_inner",
-			ruleG(`(\s+)([^\n_]*)(_\b)`, toks("w", "", "k")),
-			ruleF(``, func(c *rctx) { c.pop() }),
+		l.state("from",
+			mixin("inline_whitespace"),
+			ruleF(pyDottedIdent, func(c *rctx) { c.token("nn"); c.gotoState("from_import") }),
+			popEmpty,
+		)
+		// from の後の import（import 状態には入らない）
+		l.state("from_import",
+			mixin("inline_whitespace"),
+			rule(`import\b`, "kn", "#pop"),
+			popEmpty,
+		)
+		l.state("post_dot",
+			mixin("inline_whitespace"),
+			rule(`(?m)([A-Z]\w*)(?=`+inlineWS+`[(])`, "nc"),
+			rule(`(?m)(`+pyIdent+`)(?=`+inlineWS+`[(])`, "nf"),
+			popEmpty,
+		)
+		l.state("newline",
+			mixin("inline_whitespace"),
+			rule(`from\b`, "kn", "from"),
+			rule(`import\b`, "kn", "import"),
+			// ソフトキーワード（match / case）の判定は Rouge と同じく先読みによる近似
+			rule(`(?:case|match)(?=`+inlineWS+inlineOps+`)`, "nx", "#pop"),
+			ruleF(`(?:case|match)(?=`+inlineContent+`:`+inlineWS+`[#\n])`, func(c *rctx) {
+				c.token("k")
+				if c.m.String() == "case" {
+					c.gotoState("case_pattern")
+				} else {
+					c.pop()
+				}
+			}),
+			popEmpty,
+		)
+		l.state("funcname", mixin("inline_whitespace"), rule(pyIdent, "nf", "#pop"))
+		l.state("classname", mixin("inline_whitespace"), rule(pyIdent, "nc", "#pop"))
+		l.state("case_pattern",
+			ruleF(`\n`, func(c *rctx) { c.token(""); c.gotoState("newline") }),
+			rule(`_\b`, "k"),
+			mixin("root"),
 		)
 		l.state("raise",
 			rule(`from\b`, "k"),
@@ -162,8 +196,8 @@ func init() {
 		)
 		l.state("yield", mixin("raise"))
 		l.state("generic_string",
-			rule(`^\s*(>>>|\.\.\.)\B`, "gp", "doctest"),
-			rule(`[^'"\\{]+?`, "s"),
+			rule(`\n`, "s", "generic_string_newline"),
+			rule(`[^'"\\{\n]+`, "s"),
 			rule(`{{`, "s"),
 			ruleF(`'''|"""|['"]`, func(c *rctx) {
 				c.token("sh")
@@ -182,6 +216,11 @@ func init() {
 					c.token("s")
 				}
 			}),
+		)
+		l.state("generic_string_newline",
+			rule(`[ \t]+`, "s"),
+			ruleF(`(>>>|\.\.\.)\B`, func(c *rctx) { c.token("gp"); c.gotoState("doctest") }),
+			popEmpty,
 		)
 		l.state("generic_escape",
 			ruleF(`(?x)\\

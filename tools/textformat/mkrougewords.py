@@ -10,7 +10,7 @@
 import re
 import sys
 
-HEADER = '// SPDX-License-Identifier: GPL-2.0-or-later AND MIT\n// Copyright (C) 2026 mikuta0407 and Buropher contributors\n// Portions ported from Rouge (https://github.com/rouge-ruby/rouge),\n// Copyright (c) 2012 Jeanine Adkisson and contributors, MIT License.\n\n// Code generated from Rouge 4.7 %s by tools/textformat/mkrougewords.py. DO NOT EDIT.\n\npackage highlight\n'
+HEADER = '// SPDX-License-Identifier: GPL-2.0-or-later AND MIT\n// Copyright (C) 2026 mikuta0407 and Buropher contributors\n// Portions ported from Rouge (https://github.com/rouge-ruby/rouge),\n// Copyright (c) 2012 Jeanine Adkisson and contributors, MIT License.\n\n// Code generated from Rouge 5.1 %s by tools/textformat/mkrougewords.py. DO NOT EDIT.\n\npackage highlight\n'
 
 
 def css(path):
@@ -26,7 +26,7 @@ def css(path):
 def builtin(path, var):
     src = open(path).read()
     words = set()
-    for m in re.finditer(r'Set\.new \[(.*?)\]', src, re.S):
+    for m in re.finditer(r'Set(?:\.new )?\[(.*?)\]', src, re.S):
         for w in re.findall(r'"((?:[^"\\]|\\.)*)"', m.group(1)):
             words.add(w.replace('\\\\', '\\'))
     out = [HEADER % path.split('lexers/')[-1], 'var %s = map[string]bool{' % var]
@@ -40,7 +40,7 @@ def apache(path):
     src = open(path).read()
     out = [HEADER % 'apache/keywords.rb']
     for name in ['directives', 'sections', 'values']:
-        m = re.search(r'def self\.' + name + r'.*?Set\.new \[(.*?)\]', src, re.S)
+        m = re.search(name.upper() + r' = Set\[(.*?)\]', src, re.S)
         words = re.findall(r'"((?:[^"\\]|\\.)*)"', m.group(1))
         out.append('var apache%s = wordset(`%s`)\n' % (name.capitalize(), ' '.join(words)))
     return '\n'.join(out)

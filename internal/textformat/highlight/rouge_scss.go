@@ -5,7 +5,7 @@
 
 package highlight
 
-// Rouge 4.7 の scss.rb / sass/common.rb の移植。
+// Rouge 5.1 の scss.rb / sass/common.rb の移植。
 
 func init() {
 	registerRouge("scss", func() *rlexer {
@@ -43,6 +43,8 @@ func init() {
 			ruleF(id, func(c *rctx) {
 				if cssBuiltins[c.m.String()] {
 					c.token("nb")
+				} else if cssColors[c.m.String()] {
+					c.token("no")
 				} else {
 					c.token("n")
 				}
