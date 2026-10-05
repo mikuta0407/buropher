@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 #
-# Redmine 6.1.2 の Mailer が生成するメールを JSON に書き出す（buropher のメール互換テストの期待値）。
+# Redmine 7.0.1 の Mailer が生成するメールを JSON に書き出す（buropher のメール互換テストの期待値）。
 # usage: internal/server/testdata/mail/gen/regen.sh
 #
 # 各ケースはメールの配列（受信者ごとに 1 通）を出力する。Date ヘッダと multipart の boundary は出力しない。
@@ -14,7 +14,7 @@ ActionMailer::Base.raise_delivery_errors = true
 $out = []
 
 DUMP_HEADERS = %w(From To Cc Bcc Subject Message-ID In-Reply-To References List-Id Auto-Submitted
-                  X-Mailer X-Auto-Response-Suppress Mime-Version Content-Type).freeze
+                  X-Mailer X-Auto-Response-Suppress Mime-Version MIME-Version Content-Type).freeze
 
 def dump_mail(name, m)
   headers = {}

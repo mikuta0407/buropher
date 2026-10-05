@@ -319,6 +319,83 @@
     }
   },
   {
+    "name": "webhooks",
+    "verb": "GET",
+    "path": "/webhooks(.:format)",
+    "controller": "webhooks",
+    "action": "index",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "POST",
+    "path": "/webhooks(.:format)",
+    "controller": "webhooks",
+    "action": "create",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "new_webhook",
+    "verb": "GET",
+    "path": "/webhooks/new(.:format)",
+    "controller": "webhooks",
+    "action": "new",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "edit_webhook",
+    "verb": "GET",
+    "path": "/webhooks/:id/edit(.:format)",
+    "controller": "webhooks",
+    "action": "edit",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": "webhook",
+    "verb": "PATCH",
+    "path": "/webhooks/:id(.:format)",
+    "controller": "webhooks",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "PUT",
+    "path": "/webhooks/:id(.:format)",
+    "controller": "webhooks",
+    "action": "update",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
+    "name": null,
+    "verb": "DELETE",
+    "path": "/webhooks/:id(.:format)",
+    "controller": "webhooks",
+    "action": "destroy",
+    "defaults": {
+    },
+    "requirements": {
+    }
+  },
+  {
     "name": "preview_news",
     "verb": "GET|POST|PUT|PATCH",
     "path": "/news/preview(.:format)",
@@ -476,8 +553,8 @@
     "name": "issues_context_menu",
     "verb": "GET|POST",
     "path": "/issues/context_menu(.:format)",
-    "controller": "context_menus",
-    "action": "issues",
+    "controller": "context_menus/issues",
+    "action": "index",
     "defaults": {
     },
     "requirements": {
@@ -1011,8 +1088,8 @@
     "name": "users_context_menu",
     "verb": "GET|POST",
     "path": "/users/context_menu(.:format)",
-    "controller": "context_menus",
-    "action": "users",
+    "controller": "context_menus/users",
+    "action": "index",
     "defaults": {
     },
     "requirements": {
@@ -3051,8 +3128,8 @@
     "name": "time_entries_context_menu",
     "verb": "GET|POST",
     "path": "/time_entries/context_menu(.:format)",
-    "controller": "context_menus",
-    "action": "time_entries",
+    "controller": "context_menus/time_entries",
+    "action": "index",
     "defaults": {
     },
     "requirements": {
@@ -3346,7 +3423,7 @@
     "requirements": {
       "format": "(?-mix:html)",
       "path": "(?-mix:.*)",
-      "rev": "(?-mix:[a-z0-9\\.\\-_]+)"
+      "rev": "(?-mix:[a-z0-9.\\-_]+)"
     }
   },
   {
@@ -3361,7 +3438,7 @@
     "requirements": {
       "format": "(?-mix:html)",
       "path": "(?-mix:.*)",
-      "rev": "(?-mix:[a-z0-9\\.\\-_]+)"
+      "rev": "(?-mix:[a-z0-9.\\-_]+)"
     }
   },
   {
@@ -3376,7 +3453,7 @@
     "requirements": {
       "format": "(?-mix:html)",
       "path": "(?-mix:.*)",
-      "rev": "(?-mix:[a-z0-9\\.\\-_]+)"
+      "rev": "(?-mix:[a-z0-9.\\-_]+)"
     }
   },
   {
@@ -3391,7 +3468,7 @@
     "requirements": {
       "format": "(?-mix:html)",
       "path": "(?-mix:.*)",
-      "rev": "(?-mix:[a-z0-9\\.\\-_]+)"
+      "rev": "(?-mix:[a-z0-9.\\-_]+)"
     }
   },
   {
@@ -3406,7 +3483,7 @@
     "requirements": {
       "format": "(?-mix:html)",
       "path": "(?-mix:.*)",
-      "rev": "(?-mix:[a-z0-9\\.\\-_]+)"
+      "rev": "(?-mix:[a-z0-9.\\-_]+)"
     }
   },
   {
@@ -3491,7 +3568,7 @@
     "requirements": {
       "format": "(?-mix:(html|diff))",
       "path": "(?-mix:.*)",
-      "rev": "(?-mix:[a-z0-9\\.\\-_]+)"
+      "rev": "(?-mix:[a-z0-9.\\-_]+)"
     }
   },
   {
@@ -3881,6 +3958,18 @@
     "path": "/groups/:id/users(.:format)",
     "controller": "groups",
     "action": "add_users",
+    "defaults": {
+    },
+    "requirements": {
+      "id": "(?-mix:\\d+)"
+    }
+  },
+  {
+    "name": null,
+    "verb": "DELETE",
+    "path": "/groups/:id/users(.:format)",
+    "controller": "groups",
+    "action": "remove_users",
     "defaults": {
     },
     "requirements": {
@@ -4519,8 +4608,8 @@
     "name": "projects_context_menu",
     "verb": "GET|POST",
     "path": "/admin/projects_context_menu(.:format)",
-    "controller": "context_menus",
-    "action": "projects",
+    "controller": "context_menus/projects",
+    "action": "index",
     "defaults": {
     },
     "requirements": {

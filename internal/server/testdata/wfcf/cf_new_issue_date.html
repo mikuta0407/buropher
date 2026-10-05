@@ -224,12 +224,24 @@ $('#sidebar-switch-panel').css('visibility', 'visible');
 </textarea></p>
 
 
-<p><label for="custom_field_default_value">Default value</label><input max="9999-12-31" size="10" type="date" name="custom_field[default_value]" id="custom_field_default_value" /></p>
-<script>
+<div data-controller="custom-field-default-value">
+  <p>
+    <label for="custom_field_default_value_mode">Default value mode</label><select data-custom-field-default-value-target="mode" data-action="custom-field-default-value#update" name="custom_field[default_value_mode]" id="custom_field_default_value_mode"><option selected="selected" value="fixed_date">Absolute</option>
+<option value="date_offset">Relative</option></select>
+  </p>
+  <p class="indent" data-custom-field-default-value-target="fixedDate" >
+    <label for="custom_field_default_value">Default value</label><input max="9999-12-31" size="10" data-custom-field-default-value-target="fixedDateInput" type="date" name="custom_field[default_value]" id="custom_field_default_value" />
+    <script>
 //<![CDATA[
 $(function() { $('#custom_field_default_value').addClass('date').datepickerFallback(datepickerOptions); });
 //]]>
 </script>
+  </p>
+  <p class="indent" data-custom-field-default-value-target="dateOffset" hidden>
+    <label for="custom_field_default_value">Default value</label><input id="custom_field_default_value_offset" size="6" disabled="disabled" data-custom-field-default-value-target="dateOffsetInput" type="text" name="custom_field[default_value]" />
+    days relative to today
+  </p>
+</div>
 <p><label for="custom_field_url_pattern">Link values to URL</label><input size="50" type="text" name="custom_field[url_pattern]" id="custom_field_url_pattern" /></p>
 
 
