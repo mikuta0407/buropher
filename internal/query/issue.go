@@ -124,11 +124,11 @@ func (k issueKind) initializeAvailableFilters(ctx context.Context, q *Query) err
 	q.addAvailableFilter("closed_on", filterOpt{Type: "date_past"})
 	q.addAvailableFilter("start_date", filterOpt{Type: "date"})
 	q.addAvailableFilter("due_date", filterOpt{Type: "date"})
-	q.addAvailableFilter("estimated_hours", filterOpt{Type: "float"})
+	q.addAvailableFilter("estimated_hours", filterOpt{Type: "hour"})
 	if ok, err := q.allowedTo(ctx, "view_time_entries", q.Project, true); err != nil {
 		return err
 	} else if ok {
-		q.addAvailableFilter("spent_time", filterOpt{Type: "float", Label: "label_spent_time"})
+		q.addAvailableFilter("spent_time", filterOpt{Type: "hour", Label: "label_spent_time"})
 	}
 	q.addAvailableFilter("done_ratio", filterOpt{Type: "integer"})
 	if ok, err := q.canSetPrivate(ctx); err != nil {
@@ -494,10 +494,11 @@ func (q *Query) sqlForLastUpdatedBy(ctx context.Context, field, operator string,
 }
 
 func sqlForSpentTime(operator string, v []string) frag {
-	f1 := customfield.RubyToF(first(v))
+	// value.first.to_s.to_hours（"0:45" や "1h30" も受け付ける。#43968）
+	f1 := hourValue(first(v))
 	var f2 float64
 	if len(v) > 1 {
-		f2 = customfield.RubyToF(v[1])
+		f2 = hourValue(v[1])
 	}
 	const sub = "COALESCE((SELECT ROUND(CAST(SUM(hours) AS DECIMAL(30,3)), 2) FROM time_entries WHERE issue_id = issues.id), 0) "
 	switch operator {
