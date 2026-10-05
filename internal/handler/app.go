@@ -12,6 +12,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -96,6 +97,8 @@ type App struct {
 
 	// routeTable は Handle で登録したルート（ルート網羅テスト用。RouteTable）。
 	routeTable []RouteEntry
+	// discordTestAt はユーザーごとの最後のテスト DM の時刻（user id → time.Time。連打の抑止）。
+	discordTestAt sync.Map
 }
 
 // Realm は WWW-Authenticate の realm（server.auth_realm。既定は Redmine と同じ doorkeeper.Realm = "Redmine"）。

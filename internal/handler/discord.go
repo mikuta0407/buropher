@@ -17,6 +17,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/mikuta0407/buropher/internal/discord"
 	"github.com/mikuta0407/buropher/internal/helper"
@@ -341,6 +342,9 @@ func (a *App) DiscordUnlink(c *Req) {
 	c.Redirect("/my/account")
 }
 
+// discordTestInterval は同じユーザーのテスト DM の最短間隔。
+const discordTestInterval = 30 * time.Second
+
 // DiscordTest はテスト DM を送る（成功したら恒久エラーの連続回数を 0 に戻し、Discord 通知を再開する）。
 func (a *App) DiscordTest(c *Req) {
 	cfg := a.discordConfig()
@@ -355,6 +359,15 @@ func (a *App) DiscordTest(c *Req) {
 		c.Redirect("/my/account")
 		return
 	}
+	// 連打の抑止: DM を受け付けない設定のユーザーが送り続けると Discord への無効なリクエストが積み重なり、
+	// インスタンス全体が Discord（Cloudflare）に一時的に遮断されて全員の通知が止まる
+	now := a.now()
+	if last, ok := a.discordTestAt.Load(c.User.ID); ok && now.Sub(last.(time.Time)) < discordTestInterval {
+		c.Flash().SetError(c.L("buropher.discord.error_test_too_soon"))
+		c.Redirect("/my/account")
+		return
+	}
+	a.discordTestAt.Store(c.User.ID, now)
 	if err := a.Notify.SendDM(ctx, cfg, c.User.ID, ident.Subject, a.DiscordTestMessage(ctx, c.User)); err != nil {
 		c.Flash().SetError(a.discordErrorMessage(c, err))
 	} else {

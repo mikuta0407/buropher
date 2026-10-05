@@ -562,6 +562,14 @@ func TestDiscordLinkFlow(t *testing.T) {
 	if len(fake.SentTo("d-jsmith")) != 2 {
 		t.Errorf("test DM via my/discord/test not sent")
 	}
+	// 続けて送ってもテスト DM は送らない（連打で Discord への無効なリクエストを積み重ねさせない）
+	post(t, c, ts.URL+"/my/discord/test", url.Values{"authenticity_token": {csrfToken(t, body)}})
+	if len(fake.SentTo("d-jsmith")) != 2 {
+		t.Errorf("repeated test DM sent (%d)", len(fake.SentTo("d-jsmith")))
+	}
+	if _, page := get(t, c, ts.URL+"/my/account"); !strings.Contains(page, "Please wait a little") {
+		t.Errorf("no wait message")
+	}
 	post(t, c, ts.URL+"/my/discord/unlink", url.Values{"authenticity_token": {csrfToken(t, body)}})
 	if id, _ := repository.GetDiscordIdentity(e.ctx, e.d, 2); id != nil {
 		t.Fatal("not unlinked")
