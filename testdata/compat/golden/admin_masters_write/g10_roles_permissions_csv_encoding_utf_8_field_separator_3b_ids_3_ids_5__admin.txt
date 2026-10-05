@@ -13,6 +13,7 @@ content-type: text/csv
 "",Create subprojects,No,""
 "",Manage public queries,No,""
 "",Save queries,No,""
+"",Use webhooks,No,""
 Forums,View messages,No,No
 Forums,Post messages,No,No
 Forums,Edit messages,No,""

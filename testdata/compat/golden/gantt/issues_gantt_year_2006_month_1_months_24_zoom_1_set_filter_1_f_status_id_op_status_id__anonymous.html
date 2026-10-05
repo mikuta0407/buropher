@@ -2,7 +2,7 @@ status: 200
 content-type: text/html
 
 <!DOCTYPE html>
-<html lang="en">
+<html dir="ltr" lang="en">
   <head>
     <meta charset="utf-8">
     <title>Gantt - Redmine</title>
@@ -15,6 +15,7 @@ content-type: text/html
     <link href="/assets/jquery/jquery-ui-1.13.2-DIGEST.css" media="all" rel="stylesheet">
     <link href="/assets/tribute-5.1.3-DIGEST.css" media="all" rel="stylesheet">
     <link href="/assets/application-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/dropdown-DIGEST.css" media="all" rel="stylesheet">
     <link href="/assets/responsive-DIGEST.css" media="all" rel="stylesheet">
     <script data-turbo-track="reload" type="importmap">{
   "imports": {
@@ -23,12 +24,27 @@ content-type: text/html
     "@hotwired/stimulus": "/assets/stimulus.min-DIGEST.js",
     "@hotwired/stimulus-loading": "/assets/stimulus-loading-DIGEST.js",
     "turndown": "/assets/turndown-DIGEST.js",
+    "tablesort": "/assets/tablesort.min-DIGEST.js",
+    "tablesort.number": "/assets/tablesort.number.min-DIGEST.js",
+    "chart.js": "/assets/chart.min-DIGEST.js",
     "controllers/api_key_copy_controller": "/assets/controllers/api_key_copy_controller-DIGEST.js",
     "controllers/application": "/assets/controllers/application-DIGEST.js",
+    "controllers/clipboard_controller": "/assets/controllers/clipboard_controller-DIGEST.js",
+    "controllers/custom_field_default_value_controller": "/assets/controllers/custom_field_default_value_controller-DIGEST.js",
+    "controllers/dropdown_controller": "/assets/controllers/dropdown_controller-DIGEST.js",
+    "controllers/gantt/chart_controller": "/assets/controllers/gantt/chart_controller-DIGEST.js",
+    "controllers/gantt/column_controller": "/assets/controllers/gantt/column_controller-DIGEST.js",
+    "controllers/gantt/options_controller": "/assets/controllers/gantt/options_controller-DIGEST.js",
+    "controllers/gantt/subjects_controller": "/assets/controllers/gantt/subjects_controller-DIGEST.js",
     "controllers": "/assets/controllers/index-DIGEST.js",
     "controllers/list_autofill_controller": "/assets/controllers/list_autofill_controller-DIGEST.js",
     "controllers/quote_reply_controller": "/assets/controllers/quote_reply_controller-DIGEST.js",
-    "controllers/sticky_issue_header_controller": "/assets/controllers/sticky_issue_header_controller-DIGEST.js"
+    "controllers/reports/details_controller": "/assets/controllers/reports/details_controller-DIGEST.js",
+    "controllers/repositories/stats_controller": "/assets/controllers/repositories/stats_controller-DIGEST.js",
+    "controllers/selection_indent_controller": "/assets/controllers/selection_indent_controller-DIGEST.js",
+    "controllers/sticky_issue_header_controller": "/assets/controllers/sticky_issue_header_controller-DIGEST.js",
+    "controllers/table_paste_controller": "/assets/controllers/table_paste_controller-DIGEST.js",
+    "controllers/tablesort_controller": "/assets/controllers/tablesort_controller-DIGEST.js"
   }
 }</script>
     <link href="/assets/requestjs-DIGEST.js" rel="modulepreload">
@@ -36,12 +52,26 @@ content-type: text/html
     <link href="/assets/stimulus.min-DIGEST.js" rel="modulepreload">
     <link href="/assets/stimulus-loading-DIGEST.js" rel="modulepreload">
     <link href="/assets/turndown-DIGEST.js" rel="modulepreload">
+    <link href="/assets/tablesort.min-DIGEST.js" rel="modulepreload">
+    <link href="/assets/tablesort.number.min-DIGEST.js" rel="modulepreload">
     <link href="/assets/controllers/api_key_copy_controller-DIGEST.js" rel="modulepreload">
     <link href="/assets/controllers/application-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/clipboard_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/custom_field_default_value_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/dropdown_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/gantt/chart_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/gantt/column_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/gantt/options_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/gantt/subjects_controller-DIGEST.js" rel="modulepreload">
     <link href="/assets/controllers/index-DIGEST.js" rel="modulepreload">
     <link href="/assets/controllers/list_autofill_controller-DIGEST.js" rel="modulepreload">
     <link href="/assets/controllers/quote_reply_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/reports/details_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/repositories/stats_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/selection_indent_controller-DIGEST.js" rel="modulepreload">
     <link href="/assets/controllers/sticky_issue_header_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/table_paste_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/tablesort_controller-DIGEST.js" rel="modulepreload">
     <script type="module">import "application"</script>
     <script src="/assets/jquery-3.7.1-ui-1.13.3-DIGEST.js"></script>
     <script src="/assets/rails-ujs-DIGEST.js"></script>
@@ -60,12 +90,11 @@ rm = window.rm || {};rm.AutoComplete = rm.AutoComplete || {};rm.AutoComplete.dat
     <script>//<![CDATA[
 var datepickerOptions={dateFormat: 'yy-mm-dd', firstDay: 0, showOn: 'button', buttonImageOnly: true, buttonImage: '/assets/calendar-DIGEST.png', showButtonPanel: true, showWeek: true, showOtherMonths: true, selectOtherMonths: true, changeMonth: true, changeYear: true, beforeShow: beforeShowDatePicker};
 //]]></script>
-    <script src="/assets/raphael-DIGEST.js"></script>
-    <script src="/assets/gantt-DIGEST.js"></script>
+    <link href="/assets/gantt-DIGEST.css" media="all" rel="stylesheet">
     <script src="/assets/context_menu-DIGEST.js"></script>
     <link href="/assets/context_menu-DIGEST.css" media="screen" rel="stylesheet">
   </head>
-  <body class="has-main-menu controller-gantts action-show avatars-off" data-text-formatting="common_mark">
+  <body class="has-main-menu controller-gantts action-show" data-text-formatting="common_mark">
     <div id="wrapper">
       <div class="flyout-menu js-flyout-menu">
         <div class="flyout-menu__search">
@@ -87,29 +116,35 @@ var datepickerOptions={dateFormat: 'yy-mm-dd', firstDay: 0, showOn: 'button', bu
         <h3>Profile</h3>
         <span class="js-profile-menu"></span>
       </div>
-      <div id="top-menu">
-        <div id="account">
-          <ul>
-            <li>
-              <a class="login" href="/login">Sign in</a>
-            </li>
-            <li>
-              <a class="register" href="/account/register">Register</a>
-            </li>
-          </ul>
+      <nav class="top-menu" id="top-menu">
+        <div class="general-menu">
+          <div class="top-menu__links">
+            <ul>
+              <li>
+                <a class="home" href="/">Home</a>
+              </li>
+              <li>
+                <a class="projects" href="/projects">Projects</a>
+              </li>
+              <li>
+                <a class="help" href="https://www.redmine.org/guide" rel="noopener" target="_blank">Help</a>
+              </li>
+            </ul>
+          </div>
         </div>
-        <ul>
-          <li>
-            <a class="home" href="/">Home</a>
-          </li>
-          <li>
-            <a class="projects" href="/projects">Projects</a>
-          </li>
-          <li>
-            <a class="help" href="https://www.redmine.org/guide" rel="noopener" target="_blank">Help</a>
-          </li>
-        </ul>
-      </div>
+        <div class="profile-menu">
+          <div class="top-menu__links" id="account">
+            <ul>
+              <li>
+                <a class="login" href="/login">Sign in</a>
+              </li>
+              <li>
+                <a class="register" href="/account/register">Register</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
       <div id="header">
         <a class="mobile-toggle-button js-flyout-menu-toggle-button" href="#"></a>
         <div id="quick-search">
@@ -197,7 +232,7 @@ $('#sidebar-switch-panel').css('visibility', 'visible');
         <div id="content">
           <div class="contextual"></div>
           <h2>Gantt</h2>
-          <form accept-charset="UTF-8" action="/issues/gantt?month=1&amp;months=24&amp;year=2006" id="query_form" method="get" name="query_form-RANDOM">
+          <form accept-charset="UTF-8" action="/issues/gantt?month=1&amp;months=24&amp;year=2006" data-gantt-target="form" id="query_form" method="get" name="query_form-RANDOM">
             <input autocomplete="off" id="set_filter" name="set_filter" type="hidden" value="1">
             <input autocomplete="off" id="gantt" name="gantt" type="hidden" value="1">
             <div class="hide-when-print" id="query_form_with_buttons">
@@ -213,8 +248,8 @@ $('#sidebar-switch-panel').css('visibility', 'visible');
                     <script>//<![CDATA[
 
 var operatorLabels = {"=":"is","!":"is not","o":"open","c":"closed","!*":"none","*":"any","\u003e=":"\u003e=","\u003c=":"\u003c=","\u003e\u003c":"between","\u003ct+":"in less than","\u003et+":"in more than","\u003e\u003ct+":"in the next","t+":"in","nd":"tomorrow","t":"today","ld":"yesterday","nw":"next week","w":"this week","lw":"last week","l2w":"last 2 weeks","nm":"next month","m":"this month","lm":"last month","y":"this year","\u003et-":"less than days ago","\u003ct-":"more than days ago","\u003e\u003ct-":"in the past","t-":"days ago","~":"contains","!~":"doesn't contain","*~":"contains any of","^":"starts with","$":"ends with","=p":"any issues in project","=!p":"any issues not in project","!p":"no issues in project","*o":"any open issues","!o":"no open issues","ev":"has been","!ev":"has never been","cf":"changed from"};
-var operatorByType = {"list":["=","!"],"list_with_history":["=","!","ev","!ev","cf"],"list_status":["o","=","!","ev","!ev","cf","c","*"],"list_optional":["=","!","!*","*"],"list_optional_with_history":["=","!","ev","!ev","cf","!*","*"],"list_subprojects":["*","!*","=","!"],"date":["=","\u003e=","\u003c=","\u003e\u003c","\u003ct+","\u003et+","\u003e\u003ct+","t+","nd","t","ld","nw","w","lw","l2w","nm","m","lm","y","\u003et-","\u003ct-","\u003e\u003ct-","t-","!*","*"],"date_past":["=","\u003e=","\u003c=","\u003e\u003c","\u003et-","\u003ct-","\u003e\u003ct-","t-","t","ld","w","lw","l2w","m","lm","y","!*","*"],"string":["~","*~","=","!~","!","^","$","!*","*"],"text":["~","*~","!~","^","$","!*","*"],"search":["~","*~","!~"],"integer":["=","\u003e=","\u003c=","\u003e\u003c","!*","*"],"float":["=","\u003e=","\u003c=","\u003e\u003c","!*","*"],"relation":["=","!","=p","=!p","!p","*o","!o","!*","*"],"tree":["=","~","!*","*"]};
-var availableFilters = {"status_id":{"type":"list_status","name":"Status","remote":true,"values":[["New","1"],["Assigned","2"],["Resolved","3"],["Feedback","4"],["Closed","5"],["Rejected","6"]]},"project_id":{"type":"list","name":"Project","remote":true},"tracker_id":{"type":"list_with_history","name":"Tracker","values":[["Bug","1"],["Feature request","2"],["Support request","3"]]},"priority_id":{"type":"list_with_history","name":"Priority","values":[["Low","4"],["Normal","5"],["High","6"],["Urgent","7"],["Immediate","8"],["Inactive Priority","15"]]},"author_id":{"type":"list","name":"Author","remote":true},"author.group":{"type":"list","name":"Author's Group","remote":true},"author.role":{"type":"list","name":"Author's Role","remote":true},"assigned_to_id":{"type":"list_optional_with_history","name":"Assignee","remote":true},"member_of_group":{"type":"list_optional","name":"Assignee's group","remote":true},"assigned_to_role":{"type":"list_optional","name":"Assignee's role","remote":true},"fixed_version_id":{"type":"list_optional_with_history","name":"Target version","remote":true},"fixed_version.due_date":{"type":"date","name":"Target version's Due date","values":null},"fixed_version.status":{"type":"list","name":"Target version's Status","values":[["open","open"],["locked","locked"],["closed","closed"]]},"subject":{"type":"text","name":"Subject","values":null},"description":{"type":"text","name":"Description","values":null},"notes":{"type":"text","name":"Notes","values":null},"created_on":{"type":"date_past","name":"Created","values":null},"updated_on":{"type":"date_past","name":"Updated","values":null},"closed_on":{"type":"date_past","name":"Closed","values":null},"start_date":{"type":"date","name":"Start date","values":null},"due_date":{"type":"date","name":"Due date","values":null},"estimated_hours":{"type":"float","name":"Estimated time","values":null},"spent_time":{"type":"float","name":"Spent time","values":null},"done_ratio":{"type":"integer","name":"% Done","values":null},"attachment":{"type":"text","name":"File","values":null},"attachment_description":{"type":"text","name":"File description","values":null},"updated_by":{"type":"list","name":"Updated by","remote":true},"last_updated_by":{"type":"list","name":"Last updated by","remote":true},"project.status":{"type":"list","name":"Project's Status","remote":true},"cf_2":{"type":"string","name":"Searchable field","values":null},"cf_1":{"type":"list_optional","name":"Database","remote":true},"cf_9":{"type":"date","name":"Project 1 cf","values":null},"project.cf_3":{"type":"list_optional","name":"Project's Development status","remote":true},"relates":{"type":"relation","name":"Related to","remote":true},"duplicates":{"type":"relation","name":"Is duplicate of","remote":true},"duplicated":{"type":"relation","name":"Has duplicate","remote":true},"blocks":{"type":"relation","name":"Blocks","remote":true},"blocked":{"type":"relation","name":"Blocked by","remote":true},"precedes":{"type":"relation","name":"Precedes","remote":true},"follows":{"type":"relation","name":"Follows","remote":true},"copied_to":{"type":"relation","name":"Copied to","remote":true},"copied_from":{"type":"relation","name":"Copied from","remote":true},"parent_id":{"type":"tree","name":"Parent task","values":null},"child_id":{"type":"tree","name":"Subtasks","values":null},"issue_id":{"type":"integer","name":"Issue","values":null},"any_searchable":{"type":"search","name":"Any searchable text","values":null}};
+var operatorByType = {"list":["=","!"],"list_with_history":["=","!","ev","!ev","cf"],"list_status":["o","=","!","ev","!ev","cf","c","*"],"list_optional":["=","!","!*","*"],"list_optional_with_history":["=","!","ev","!ev","cf","!*","*"],"list_subprojects":["*","!*","=","!"],"date":["=","\u003e=","\u003c=","\u003e\u003c","\u003ct+","\u003et+","\u003e\u003ct+","t+","nd","t","ld","nw","w","lw","l2w","nm","m","lm","y","\u003et-","\u003ct-","\u003e\u003ct-","t-","!*","*"],"date_past":["=","\u003e=","\u003c=","\u003e\u003c","\u003et-","\u003ct-","\u003e\u003ct-","t-","t","ld","w","lw","l2w","m","lm","y","!*","*"],"string":["~","*~","=","!~","!","^","$","!*","*"],"text":["~","*~","!~","^","$","!*","*"],"search":["~","*~","!~"],"integer":["=","\u003e=","\u003c=","\u003e\u003c","!*","*"],"float":["=","\u003e=","\u003c=","\u003e\u003c","!*","*"],"hour":["=","\u003e=","\u003c=","\u003e\u003c","!*","*"],"relation":["=","!","=p","=!p","!p","*o","!o","!*","*"],"tree":["=","~","!*","*"]};
+var availableFilters = {"status_id":{"type":"list_status","name":"Status","remote":true,"values":[["New","1"],["Assigned","2"],["Resolved","3"],["Feedback","4"],["Closed","5"],["Rejected","6"]]},"project_id":{"type":"list","name":"Project","remote":true},"tracker_id":{"type":"list_with_history","name":"Tracker","values":[["Bug","1"],["Feature request","2"],["Support request","3"]]},"priority_id":{"type":"list_with_history","name":"Priority","values":[["Low","4"],["Normal","5"],["High","6"],["Urgent","7"],["Immediate","8"],["Inactive Priority","15"]]},"author_id":{"type":"list","name":"Author","remote":true},"author.group":{"type":"list","name":"Author's Group","remote":true},"author.role":{"type":"list","name":"Author's Role","remote":true},"assigned_to_id":{"type":"list_optional_with_history","name":"Assignee","remote":true},"member_of_group":{"type":"list_optional","name":"Assignee's group","remote":true},"assigned_to_role":{"type":"list_optional","name":"Assignee's role","remote":true},"fixed_version_id":{"type":"list_optional_with_history","name":"Target version","remote":true},"fixed_version.due_date":{"type":"date","name":"Target version's Due date","values":null},"fixed_version.status":{"type":"list","name":"Target version's Status","values":[["open","open"],["locked","locked"],["closed","closed"]]},"subject":{"type":"text","name":"Subject","values":null},"description":{"type":"text","name":"Description","values":null},"notes":{"type":"text","name":"Notes","values":null},"created_on":{"type":"date_past","name":"Created","values":null},"updated_on":{"type":"date_past","name":"Updated","values":null},"closed_on":{"type":"date_past","name":"Closed","values":null},"start_date":{"type":"date","name":"Start date","values":null},"due_date":{"type":"date","name":"Due date","values":null},"estimated_hours":{"type":"hour","name":"Estimated time","values":null},"spent_time":{"type":"hour","name":"Spent time","values":null},"done_ratio":{"type":"integer","name":"% Done","values":null},"attachment":{"type":"text","name":"File","values":null},"attachment_description":{"type":"text","name":"File description","values":null},"updated_by":{"type":"list","name":"Updated by","remote":true},"last_updated_by":{"type":"list","name":"Last updated by","remote":true},"project.status":{"type":"list","name":"Project's Status","remote":true},"cf_2":{"type":"string","name":"Searchable field","values":null},"cf_1":{"type":"list_optional","name":"Database","remote":true},"cf_9":{"type":"date","name":"Project 1 cf","values":null},"project.cf_3":{"type":"list_optional","name":"Project's Development status","remote":true},"relates":{"type":"relation","name":"Related to","remote":true},"duplicates":{"type":"relation","name":"Is duplicate of","remote":true},"duplicated":{"type":"relation","name":"Has duplicate","remote":true},"blocks":{"type":"relation","name":"Blocks","remote":true},"blocked":{"type":"relation","name":"Blocked by","remote":true},"precedes":{"type":"relation","name":"Precedes","remote":true},"follows":{"type":"relation","name":"Follows","remote":true},"copied_to":{"type":"relation","name":"Copied to","remote":true},"copied_from":{"type":"relation","name":"Copied from","remote":true},"parent_id":{"type":"tree","name":"Parent task","values":null},"child_id":{"type":"tree","name":"Subtasks","values":null},"issue_id":{"type":"integer","name":"Issue","values":null},"any_searchable":{"type":"search","name":"Any searchable text","values":null}};
 var labelDayPlural = "days";
 
 var filtersUrl = "\/queries\/filter?type=IssueQuery";
@@ -299,7 +334,7 @@ $(document).ready(function(){
                     <input autocomplete="off" id="f_" name="f[]" type="hidden" value="">
                   </div>
                 </fieldset>
-                <fieldset class="collapsible collapsed" id="options">
+                <fieldset class="collapsible collapsed" data-controller="gantt--options" data-gantt--options-unavailable-columns-value="[&#34;tracker&#34;,&#34;id&#34;,&#34;subject&#34;]" id="options">
                   <legend class="icon icon-collapsed" onclick="toggleFieldset(this);">
                     <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
                       <use href="/assets/icons-DIGEST.svg#icon--angle-right"></use>
@@ -314,7 +349,7 @@ $(document).ready(function(){
                           <div>
                             <label for="draw_selected_columns">
                               <input autocomplete="off" name="query[draw_selected_columns]" type="hidden" value="0">
-                              <input data-enables="#list-definition .query-columns select, #list-definition .query-columns input" id="draw_selected_columns" name="query[draw_selected_columns]" type="checkbox" value="1">
+                              <input data-action="change-&gt;gantt--options#toggleDisplay" data-enables="#list-definition .query-columns select, #list-definition .query-columns input" data-gantt--options-target="display" id="draw_selected_columns" name="query[draw_selected_columns]" type="checkbox" value="1">
                               Display
                             </label>
                           </div>
@@ -394,10 +429,10 @@ $(document).ready(function(){
                         <legend>Related issues</legend>
                         <label for="draw_relations">
                           <input autocomplete="off" name="query[draw_relations]" type="hidden" value="0">
-                          <input checked="checked" id="draw_relations" name="query[draw_relations]" type="checkbox" value="1">
-                          <span style="background-color: #F34F4F"></span>
+                          <input checked="checked" data-action="change-&gt;gantt--options#toggleRelations" data-gantt--options-target="relations" id="draw_relations" name="query[draw_relations]" type="checkbox" value="1">
+                          <span style="background-color: #fa5252"></span>
                           Blocks
-                          <span style="background-color: #628FEA"></span>
+                          <span style="background-color: #228be6"></span>
                           Precedes
                         </label>
                       </fieldset>
@@ -405,7 +440,7 @@ $(document).ready(function(){
                         <legend>Progress line</legend>
                         <label for="draw_progress_line">
                           <input autocomplete="off" name="query[draw_progress_line]" type="hidden" value="0">
-                          <input id="draw_progress_line" name="query[draw_progress_line]" type="checkbox" value="1">
+                          <input data-action="change-&gt;gantt--options#toggleProgress" data-gantt--options-target="progress" id="draw_progress_line" name="query[draw_progress_line]" type="checkbox" value="1">
                           Display
                         </label>
                       </fieldset>
@@ -480,20 +515,20 @@ $(document).ready(function(){
               </p>
             </div>
           </form>
-          <table class="gantt-table">
+          <table class="gantt-table" data-action="gantt--options:toggle-display@document-&gt;gantt--chart#handleOptionsDisplay gantt--options:toggle-relations@document-&gt;gantt--chart#handleOptionsRelations gantt--options:toggle-progress@document-&gt;gantt--chart#handleOptionsProgress gantt--subjects:toggle-tree-&gt;gantt--chart#handleSubjectTreeChanged resize@window-&gt;gantt--chart#handleWindowResize" data-controller="gantt--chart" data-gantt--chart-issue-relation-types-value="{&#34;blocks&#34;:{&#34;landscape_margin&#34;:16,&#34;color&#34;:&#34;#fa5252&#34;},&#34;precedes&#34;:{&#34;landscape_margin&#34;:20,&#34;color&#34;:&#34;#228be6&#34;}}" data-gantt--chart-show-progress-value="false" data-gantt--chart-show-relations-value="true" data-gantt--chart-show-selected-columns-value="false">
             <tbody>
               <tr>
-                <td class="gantt_subjects_column" style="width:332px;">
-                  <div class="gantt_subjects_container" style="position:relative;height: 572px;width: 331px;">
-                    <div class="gantt_hdr" style="width: 331px;height: 18px;background: #eee;"></div>
+                <td class="gantt_subjects_column" data-action="resize@window-&gt;gantt--column#handleWindowResize" data-controller="gantt--column" data-gantt--column-column-value="subjects" data-gantt--column-min-width-value="100" style="width:332px;">
+                  <div class="gantt_subjects_container" data-gantt--chart-target="subjectsContainer" style="position:relative;height: 572px;width: 331px;">
+                    <div class="gantt_hdr" style="width: 331px;height: 18px;background: #f1f3f5;"></div>
                     <div class="gantt_hdr" style="z-index: 1;width: 331px;height: 548px;overflow: hidden;"></div>
-                    <div class="gantt_subjects">
+                    <div class="gantt_subjects" data-action="gantt--column:resize-column-subjects@document-&gt;gantt--subjects#handleResizeColumn" data-controller="gantt--subjects">
                       <form accept-charset="UTF-8" action="/issues/gantt" data-cm-url="/issues/context_menu" method="post" name="form-RANDOM">
                         <input autocomplete="off" name="authenticity_token" type="hidden" value="{{CSRF}}">
                         <input autocomplete="off" name="back_url" type="hidden" value="/issues/gantt?f%5B%5D=status_id&amp;month=1&amp;months=24&amp;op%5Bstatus_id%5D=%2A&amp;set_filter=1&amp;year=2006&amp;zoom=1">
-                        <div class="project-name open" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;project-1&#34;}" data-number-of-rows="0" style="position: absolute;top:26px;left:4px;width:326px;">
-                          <span class="icon icon-expanded expander">
-                            <svg aria-hidden="true" class="s18 icon-svg">
+                        <div class="project-name open" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;project-1&#34;}" data-number-of-rows="0" style="position: absolute;inset-block-start:26px;inset-inline-start:4px;width:326px;">
+                          <span class="icon icon-expanded expander" data-action="click-&gt;gantt--subjects#handleEntryClick">
+                            <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
                               <use href="/assets/icons-DIGEST.svg#icon--angle-down"></use>
                             </svg>
                           </span>
@@ -504,7 +539,7 @@ $(document).ready(function(){
                             <a href="/projects/ecookbook">eCookbook</a>
                           </span>
                         </div>
-                        <div class="issue-subject hascontextmenu" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;issue-8&#34;}" data-number-of-rows="1" id="issue-8" style="position: absolute;top:46px;left:42px;width:288px;" title="Closed issue">
+                        <div class="issue-subject hascontextmenu" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;issue-8&#34;}" data-number-of-rows="1" id="issue-8" style="position: absolute;inset-block-start:46px;inset-inline-start:42px;width:288px;" title="Closed issue">
                           <span class="icon icon-issue issue-closed">
                             <svg aria-hidden="true" class="s18 icon-svg">
                               <use href="/assets/icons-DIGEST.svg#icon--issue"></use>
@@ -514,7 +549,7 @@ $(document).ready(function(){
                             <input class="toggle-selection" name="ids[]" style="display:none;" type="checkbox" value="8">
                           </span>
                         </div>
-                        <div class="issue-subject hascontextmenu" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;issue-3&#34;}" data-number-of-rows="2" id="issue-3" style="position: absolute;top:66px;left:42px;width:288px;" title="Error 281 when updating a recipe">
+                        <div class="issue-subject hascontextmenu" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;issue-3&#34;}" data-number-of-rows="2" id="issue-3" style="position: absolute;inset-block-start:66px;inset-inline-start:42px;width:288px;" title="Error 281 when updating a recipe">
                           <span class="issue-overdue issue-behind-schedule">
                             <span class="avatar-color-3 s13 avatar icon-avatar" role="img" title="Assignee: Dave Lopper">DL</span>
                             <a class="issue tracker-1 status-1 priority-4 priority-lowest overdue behind-schedule" href="/issues/3">Bug #3</a>
@@ -522,7 +557,7 @@ $(document).ready(function(){
                             <input class="toggle-selection" name="ids[]" style="display:none;" type="checkbox" value="3">
                           </span>
                         </div>
-                        <div class="issue-subject hascontextmenu" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;issue-7&#34;}" data-number-of-rows="3" id="issue-7" style="position: absolute;top:86px;left:42px;width:288px;" title="Issue due today">
+                        <div class="issue-subject hascontextmenu" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;issue-7&#34;}" data-number-of-rows="3" id="issue-7" style="position: absolute;inset-block-start:86px;inset-inline-start:42px;width:288px;" title="Issue due today">
                           <span class="issue-behind-schedule icon icon-issue">
                             <svg aria-hidden="true" class="s18 icon-svg">
                               <use href="/assets/icons-DIGEST.svg#icon--issue"></use>
@@ -532,7 +567,7 @@ $(document).ready(function(){
                             <input class="toggle-selection" name="ids[]" style="display:none;" type="checkbox" value="7">
                           </span>
                         </div>
-                        <div class="issue-subject hascontextmenu" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;issue-1&#34;}" data-number-of-rows="4" id="issue-1" style="position: absolute;top:106px;left:42px;width:288px;" title="Cannot print recipes">
+                        <div class="issue-subject hascontextmenu" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;issue-1&#34;}" data-number-of-rows="4" id="issue-1" style="position: absolute;inset-block-start:106px;inset-inline-start:42px;width:288px;" title="Cannot print recipes">
                           <span class="issue-behind-schedule icon icon-issue">
                             <svg aria-hidden="true" class="s18 icon-svg">
                               <use href="/assets/icons-DIGEST.svg#icon--issue"></use>
@@ -542,9 +577,9 @@ $(document).ready(function(){
                             <input class="toggle-selection" name="ids[]" style="display:none;" type="checkbox" value="1">
                           </span>
                         </div>
-                        <div class="version-name open" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;version-1&#34;}" data-number-of-rows="5" id="version-1" style="position: absolute;top:126px;left:24px;width:306px;">
-                          <span class="icon icon-expanded expander">
-                            <svg aria-hidden="true" class="s18 icon-svg">
+                        <div class="version-name open" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;version-1&#34;}" data-number-of-rows="5" id="version-1" style="position: absolute;inset-block-start:126px;inset-inline-start:24px;width:306px;">
+                          <span class="icon icon-expanded expander" data-action="click-&gt;gantt--subjects#handleEntryClick">
+                            <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
                               <use href="/assets/icons-DIGEST.svg#icon--angle-down"></use>
                             </svg>
                           </span>
@@ -555,7 +590,7 @@ $(document).ready(function(){
                             <a href="/versions/1" title="07/01/2006">eCookbook - 0.1</a>
                           </span>
                         </div>
-                        <div class="issue-subject hascontextmenu" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;issue-11&#34;}" data-number-of-rows="6" id="issue-11" style="position: absolute;top:146px;left:62px;width:268px;" title="Closed issue on a closed version">
+                        <div class="issue-subject hascontextmenu" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;issue-11&#34;}" data-number-of-rows="6" id="issue-11" style="position: absolute;inset-block-start:146px;inset-inline-start:62px;width:268px;" title="Closed issue on a closed version">
                           <span class="icon icon-issue issue-closed">
                             <svg aria-hidden="true" class="s18 icon-svg">
                               <use href="/assets/icons-DIGEST.svg#icon--issue"></use>
@@ -565,9 +600,9 @@ $(document).ready(function(){
                             <input class="toggle-selection" name="ids[]" style="display:none;" type="checkbox" value="11">
                           </span>
                         </div>
-                        <div class="version-name open" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;version-2&#34;}" data-number-of-rows="7" id="version-2" style="position: absolute;top:166px;left:24px;width:306px;">
-                          <span class="icon icon-expanded expander">
-                            <svg aria-hidden="true" class="s18 icon-svg">
+                        <div class="version-name open" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;version-2&#34;}" data-number-of-rows="7" id="version-2" style="position: absolute;inset-block-start:166px;inset-inline-start:24px;width:306px;">
+                          <span class="icon icon-expanded expander" data-action="click-&gt;gantt--subjects#handleEntryClick">
+                            <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
                               <use href="/assets/icons-DIGEST.svg#icon--angle-down"></use>
                             </svg>
                           </span>
@@ -578,7 +613,7 @@ $(document).ready(function(){
                             <a href="/versions/2" title="02/04/2026">eCookbook - 1.0</a>
                           </span>
                         </div>
-                        <div class="issue-subject hascontextmenu" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;issue-2&#34;}" data-number-of-rows="8" id="issue-2" style="position: absolute;top:186px;left:62px;width:268px;" title="Add ingredients categories">
+                        <div class="issue-subject hascontextmenu" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;issue-2&#34;}" data-number-of-rows="8" id="issue-2" style="position: absolute;inset-block-start:186px;inset-inline-start:62px;width:268px;" title="Add ingredients categories">
                           <span class="over-end-date">
                             <span class="avatar-color-3 s13 avatar icon-avatar" role="img" title="Assignee: Dave Lopper">DL</span>
                             <a class="issue tracker-2 status-2 priority-5 priority-default" href="/issues/2">Feature request #2</a>
@@ -586,7 +621,7 @@ $(document).ready(function(){
                             <input class="toggle-selection" name="ids[]" style="display:none;" type="checkbox" value="2">
                           </span>
                         </div>
-                        <div class="issue-subject hascontextmenu" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;issue-12&#34;}" data-number-of-rows="9" id="issue-12" style="position: absolute;top:206px;left:62px;width:268px;" title="Closed issue on a locked version">
+                        <div class="issue-subject hascontextmenu" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;issue-12&#34;}" data-number-of-rows="9" id="issue-12" style="position: absolute;inset-block-start:206px;inset-inline-start:62px;width:268px;" title="Closed issue on a locked version">
                           <span class="icon icon-issue issue-closed">
                             <svg aria-hidden="true" class="s18 icon-svg">
                               <use href="/assets/icons-DIGEST.svg#icon--issue"></use>
@@ -596,9 +631,9 @@ $(document).ready(function(){
                             <input class="toggle-selection" name="ids[]" style="display:none;" type="checkbox" value="12">
                           </span>
                         </div>
-                        <div class="project-name open" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;project-3&#34;}" data-number-of-rows="10" style="position: absolute;top:226px;left:24px;width:306px;">
-                          <span class="icon icon-expanded expander">
-                            <svg aria-hidden="true" class="s18 icon-svg">
+                        <div class="project-name open" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;project-3&#34;}" data-number-of-rows="10" style="position: absolute;inset-block-start:226px;inset-inline-start:24px;width:306px;">
+                          <span class="icon icon-expanded expander" data-action="click-&gt;gantt--subjects#handleEntryClick">
+                            <svg aria-hidden="true" class="s18 icon-svg icon-rtl">
                               <use href="/assets/icons-DIGEST.svg#icon--angle-down"></use>
                             </svg>
                           </span>
@@ -609,7 +644,7 @@ $(document).ready(function(){
                             <a href="/projects/subproject1">eCookbook Subproject 1</a>
                           </span>
                         </div>
-                        <div class="issue-subject hascontextmenu" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;issue-5&#34;}" data-number-of-rows="11" id="issue-5" style="position: absolute;top:246px;left:62px;width:268px;" title="Subproject issue">
+                        <div class="issue-subject hascontextmenu" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;issue-5&#34;}" data-number-of-rows="11" id="issue-5" style="position: absolute;inset-block-start:246px;inset-inline-start:62px;width:268px;" title="Subproject issue">
                           <span class="icon icon-issue">
                             <svg aria-hidden="true" class="s18 icon-svg">
                               <use href="/assets/icons-DIGEST.svg#icon--issue"></use>
@@ -619,7 +654,7 @@ $(document).ready(function(){
                             <input class="toggle-selection" name="ids[]" style="display:none;" type="checkbox" value="5">
                           </span>
                         </div>
-                        <div class="issue-subject hascontextmenu" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;issue-13&#34;}" data-number-of-rows="12" id="issue-13" style="position: absolute;top:266px;left:62px;width:268px;" title="Subproject issue two">
+                        <div class="issue-subject hascontextmenu" data-collapse-expand="{&#34;top_increment&#34;:20,&#34;obj_id&#34;:&#34;issue-13&#34;}" data-number-of-rows="12" id="issue-13" style="position: absolute;inset-block-start:266px;inset-inline-start:62px;width:268px;" title="Subproject issue two">
                           <span class="icon icon-issue">
                             <svg aria-hidden="true" class="s18 icon-svg">
                               <use href="/assets/icons-DIGEST.svg#icon--issue"></use>
@@ -633,214 +668,214 @@ $(document).ready(function(){
                     </div>
                   </div>
                 </td>
-                <td class="gantt_project_column gantt_selected_column" id="project">
+                <td class="gantt_project_column gantt_selected_column" data-action="resize@window-&gt;gantt--column#handleWindowResize" data-controller="gantt--column" data-gantt--column-column-value="project" data-gantt--column-min-width-value="20" id="project">
                   <div class="gantt_project_container gantt_selected_column_container" style="position: relative;height: 572px;">
                     <div class="gantt_hdr" style="height: 548px;overflow: hidden;"></div>
-                    <div class="gantt_hdr" style="height: 18px;background: #eee;">
+                    <div class="gantt_hdr" style="height: 18px;background: #f1f3f5;">
                       <p class="gantt_hdr_selected_column_name">Project</p>
                     </div>
                     <div class="gantt_project gantt_selected_column_content">
-                      <div class="issue_project" data-collapse-expand="issue-8" data-number-of-rows="1" id="project_issue_8" style="position: absolute;top: 46px; font-size: 0.8em;">
+                      <div class="issue_project" data-collapse-expand="issue-8" data-number-of-rows="1" id="project_issue_8" style="position: absolute;inset-block-start: 46px; font-size: 0.8em;">
                         <a href="/projects/ecookbook">eCookbook</a>
                       </div>
-                      <div class="issue_project" data-collapse-expand="issue-3" data-number-of-rows="2" id="project_issue_3" style="position: absolute;top: 66px; font-size: 0.8em;">
+                      <div class="issue_project" data-collapse-expand="issue-3" data-number-of-rows="2" id="project_issue_3" style="position: absolute;inset-block-start: 66px; font-size: 0.8em;">
                         <a href="/projects/ecookbook">eCookbook</a>
                       </div>
-                      <div class="issue_project" data-collapse-expand="issue-7" data-number-of-rows="3" id="project_issue_7" style="position: absolute;top: 86px; font-size: 0.8em;">
+                      <div class="issue_project" data-collapse-expand="issue-7" data-number-of-rows="3" id="project_issue_7" style="position: absolute;inset-block-start: 86px; font-size: 0.8em;">
                         <a href="/projects/ecookbook">eCookbook</a>
                       </div>
-                      <div class="issue_project" data-collapse-expand="issue-1" data-number-of-rows="4" id="project_issue_1" style="position: absolute;top: 106px; font-size: 0.8em;">
+                      <div class="issue_project" data-collapse-expand="issue-1" data-number-of-rows="4" id="project_issue_1" style="position: absolute;inset-block-start: 106px; font-size: 0.8em;">
                         <a href="/projects/ecookbook">eCookbook</a>
                       </div>
-                      <div class="issue_project" data-collapse-expand="issue-11" data-number-of-rows="6" id="project_issue_11" style="position: absolute;top: 146px; font-size: 0.8em;">
+                      <div class="issue_project" data-collapse-expand="issue-11" data-number-of-rows="6" id="project_issue_11" style="position: absolute;inset-block-start: 146px; font-size: 0.8em;">
                         <a href="/projects/ecookbook">eCookbook</a>
                       </div>
-                      <div class="issue_project" data-collapse-expand="issue-2" data-number-of-rows="8" id="project_issue_2" style="position: absolute;top: 186px; font-size: 0.8em;">
+                      <div class="issue_project" data-collapse-expand="issue-2" data-number-of-rows="8" id="project_issue_2" style="position: absolute;inset-block-start: 186px; font-size: 0.8em;">
                         <a href="/projects/ecookbook">eCookbook</a>
                       </div>
-                      <div class="issue_project" data-collapse-expand="issue-12" data-number-of-rows="9" id="project_issue_12" style="position: absolute;top: 206px; font-size: 0.8em;">
+                      <div class="issue_project" data-collapse-expand="issue-12" data-number-of-rows="9" id="project_issue_12" style="position: absolute;inset-block-start: 206px; font-size: 0.8em;">
                         <a href="/projects/ecookbook">eCookbook</a>
                       </div>
-                      <div class="issue_project" data-collapse-expand="issue-5" data-number-of-rows="11" id="project_issue_5" style="position: absolute;top: 246px; font-size: 0.8em;">
+                      <div class="issue_project" data-collapse-expand="issue-5" data-number-of-rows="11" id="project_issue_5" style="position: absolute;inset-block-start: 246px; font-size: 0.8em;">
                         <a href="/projects/subproject1">eCookbook Subproject 1</a>
                       </div>
-                      <div class="issue_project" data-collapse-expand="issue-13" data-number-of-rows="12" id="project_issue_13" style="position: absolute;top: 266px; font-size: 0.8em;">
+                      <div class="issue_project" data-collapse-expand="issue-13" data-number-of-rows="12" id="project_issue_13" style="position: absolute;inset-block-start: 266px; font-size: 0.8em;">
                         <a href="/projects/subproject1">eCookbook Subproject 1</a>
                       </div>
                     </div>
                   </div>
                 </td>
-                <td class="gantt_status_column gantt_selected_column" id="status">
+                <td class="gantt_status_column gantt_selected_column" data-action="resize@window-&gt;gantt--column#handleWindowResize" data-controller="gantt--column" data-gantt--column-column-value="status" data-gantt--column-min-width-value="20" id="status">
                   <div class="gantt_status_container gantt_selected_column_container" style="position: relative;height: 572px;">
                     <div class="gantt_hdr" style="height: 548px;overflow: hidden;"></div>
-                    <div class="gantt_hdr" style="height: 18px;background: #eee;">
+                    <div class="gantt_hdr" style="height: 18px;background: #f1f3f5;">
                       <p class="gantt_hdr_selected_column_name">Status</p>
                     </div>
                     <div class="gantt_status gantt_selected_column_content">
-                      <div class="issue_status" data-collapse-expand="issue-8" data-number-of-rows="1" id="status_issue_8" style="position: absolute;top: 46px; font-size: 0.8em;">Closed</div>
-                      <div class="issue_status" data-collapse-expand="issue-3" data-number-of-rows="2" id="status_issue_3" style="position: absolute;top: 66px; font-size: 0.8em;">New</div>
-                      <div class="issue_status" data-collapse-expand="issue-7" data-number-of-rows="3" id="status_issue_7" style="position: absolute;top: 86px; font-size: 0.8em;">New</div>
-                      <div class="issue_status" data-collapse-expand="issue-1" data-number-of-rows="4" id="status_issue_1" style="position: absolute;top: 106px; font-size: 0.8em;">New</div>
-                      <div class="issue_status" data-collapse-expand="issue-11" data-number-of-rows="6" id="status_issue_11" style="position: absolute;top: 146px; font-size: 0.8em;">Closed</div>
-                      <div class="issue_status" data-collapse-expand="issue-2" data-number-of-rows="8" id="status_issue_2" style="position: absolute;top: 186px; font-size: 0.8em;">Assigned</div>
-                      <div class="issue_status" data-collapse-expand="issue-12" data-number-of-rows="9" id="status_issue_12" style="position: absolute;top: 206px; font-size: 0.8em;">Closed</div>
-                      <div class="issue_status" data-collapse-expand="issue-5" data-number-of-rows="11" id="status_issue_5" style="position: absolute;top: 246px; font-size: 0.8em;">New</div>
-                      <div class="issue_status" data-collapse-expand="issue-13" data-number-of-rows="12" id="status_issue_13" style="position: absolute;top: 266px; font-size: 0.8em;">New</div>
+                      <div class="issue_status" data-collapse-expand="issue-8" data-number-of-rows="1" id="status_issue_8" style="position: absolute;inset-block-start: 46px; font-size: 0.8em;">Closed</div>
+                      <div class="issue_status" data-collapse-expand="issue-3" data-number-of-rows="2" id="status_issue_3" style="position: absolute;inset-block-start: 66px; font-size: 0.8em;">New</div>
+                      <div class="issue_status" data-collapse-expand="issue-7" data-number-of-rows="3" id="status_issue_7" style="position: absolute;inset-block-start: 86px; font-size: 0.8em;">New</div>
+                      <div class="issue_status" data-collapse-expand="issue-1" data-number-of-rows="4" id="status_issue_1" style="position: absolute;inset-block-start: 106px; font-size: 0.8em;">New</div>
+                      <div class="issue_status" data-collapse-expand="issue-11" data-number-of-rows="6" id="status_issue_11" style="position: absolute;inset-block-start: 146px; font-size: 0.8em;">Closed</div>
+                      <div class="issue_status" data-collapse-expand="issue-2" data-number-of-rows="8" id="status_issue_2" style="position: absolute;inset-block-start: 186px; font-size: 0.8em;">Assigned</div>
+                      <div class="issue_status" data-collapse-expand="issue-12" data-number-of-rows="9" id="status_issue_12" style="position: absolute;inset-block-start: 206px; font-size: 0.8em;">Closed</div>
+                      <div class="issue_status" data-collapse-expand="issue-5" data-number-of-rows="11" id="status_issue_5" style="position: absolute;inset-block-start: 246px; font-size: 0.8em;">New</div>
+                      <div class="issue_status" data-collapse-expand="issue-13" data-number-of-rows="12" id="status_issue_13" style="position: absolute;inset-block-start: 266px; font-size: 0.8em;">New</div>
                     </div>
                   </div>
                 </td>
-                <td class="gantt_priority_column gantt_selected_column" id="priority">
+                <td class="gantt_priority_column gantt_selected_column" data-action="resize@window-&gt;gantt--column#handleWindowResize" data-controller="gantt--column" data-gantt--column-column-value="priority" data-gantt--column-min-width-value="20" id="priority">
                   <div class="gantt_priority_container gantt_selected_column_container" style="position: relative;height: 572px;">
                     <div class="gantt_hdr" style="height: 548px;overflow: hidden;"></div>
-                    <div class="gantt_hdr" style="height: 18px;background: #eee;">
+                    <div class="gantt_hdr" style="height: 18px;background: #f1f3f5;">
                       <p class="gantt_hdr_selected_column_name">Priority</p>
                     </div>
                     <div class="gantt_priority gantt_selected_column_content">
-                      <div class="issue_priority" data-collapse-expand="issue-8" data-number-of-rows="1" id="priority_issue_8" style="position: absolute;top: 46px; font-size: 0.8em;">Normal</div>
-                      <div class="issue_priority" data-collapse-expand="issue-3" data-number-of-rows="2" id="priority_issue_3" style="position: absolute;top: 66px; font-size: 0.8em;">Low</div>
-                      <div class="issue_priority" data-collapse-expand="issue-7" data-number-of-rows="3" id="priority_issue_7" style="position: absolute;top: 86px; font-size: 0.8em;">Normal</div>
-                      <div class="issue_priority" data-collapse-expand="issue-1" data-number-of-rows="4" id="priority_issue_1" style="position: absolute;top: 106px; font-size: 0.8em;">Low</div>
-                      <div class="issue_priority" data-collapse-expand="issue-11" data-number-of-rows="6" id="priority_issue_11" style="position: absolute;top: 146px; font-size: 0.8em;">Normal</div>
-                      <div class="issue_priority" data-collapse-expand="issue-2" data-number-of-rows="8" id="priority_issue_2" style="position: absolute;top: 186px; font-size: 0.8em;">Normal</div>
-                      <div class="issue_priority" data-collapse-expand="issue-12" data-number-of-rows="9" id="priority_issue_12" style="position: absolute;top: 206px; font-size: 0.8em;">Normal</div>
-                      <div class="issue_priority" data-collapse-expand="issue-5" data-number-of-rows="11" id="priority_issue_5" style="position: absolute;top: 246px; font-size: 0.8em;">Low</div>
-                      <div class="issue_priority" data-collapse-expand="issue-13" data-number-of-rows="12" id="priority_issue_13" style="position: absolute;top: 266px; font-size: 0.8em;">Low</div>
+                      <div class="issue_priority" data-collapse-expand="issue-8" data-number-of-rows="1" id="priority_issue_8" style="position: absolute;inset-block-start: 46px; font-size: 0.8em;">Normal</div>
+                      <div class="issue_priority" data-collapse-expand="issue-3" data-number-of-rows="2" id="priority_issue_3" style="position: absolute;inset-block-start: 66px; font-size: 0.8em;">Low</div>
+                      <div class="issue_priority" data-collapse-expand="issue-7" data-number-of-rows="3" id="priority_issue_7" style="position: absolute;inset-block-start: 86px; font-size: 0.8em;">Normal</div>
+                      <div class="issue_priority" data-collapse-expand="issue-1" data-number-of-rows="4" id="priority_issue_1" style="position: absolute;inset-block-start: 106px; font-size: 0.8em;">Low</div>
+                      <div class="issue_priority" data-collapse-expand="issue-11" data-number-of-rows="6" id="priority_issue_11" style="position: absolute;inset-block-start: 146px; font-size: 0.8em;">Normal</div>
+                      <div class="issue_priority" data-collapse-expand="issue-2" data-number-of-rows="8" id="priority_issue_2" style="position: absolute;inset-block-start: 186px; font-size: 0.8em;">Normal</div>
+                      <div class="issue_priority" data-collapse-expand="issue-12" data-number-of-rows="9" id="priority_issue_12" style="position: absolute;inset-block-start: 206px; font-size: 0.8em;">Normal</div>
+                      <div class="issue_priority" data-collapse-expand="issue-5" data-number-of-rows="11" id="priority_issue_5" style="position: absolute;inset-block-start: 246px; font-size: 0.8em;">Low</div>
+                      <div class="issue_priority" data-collapse-expand="issue-13" data-number-of-rows="12" id="priority_issue_13" style="position: absolute;inset-block-start: 266px; font-size: 0.8em;">Low</div>
                     </div>
                   </div>
                 </td>
-                <td class="gantt_assigned_to_column gantt_selected_column" id="assigned_to">
+                <td class="gantt_assigned_to_column gantt_selected_column" data-action="resize@window-&gt;gantt--column#handleWindowResize" data-controller="gantt--column" data-gantt--column-column-value="assigned_to" data-gantt--column-min-width-value="20" id="assigned_to">
                   <div class="gantt_assigned_to_container gantt_selected_column_container" style="position: relative;height: 572px;">
                     <div class="gantt_hdr" style="height: 548px;overflow: hidden;"></div>
-                    <div class="gantt_hdr" style="height: 18px;background: #eee;">
+                    <div class="gantt_hdr" style="height: 18px;background: #f1f3f5;">
                       <p class="gantt_hdr_selected_column_name">Assignee</p>
                     </div>
                     <div class="gantt_assigned_to gantt_selected_column_content">
-                      <div class="issue_assigned_to" data-collapse-expand="issue-8" data-number-of-rows="1" id="assigned_to_issue_8" style="position: absolute;top: 46px; font-size: 0.8em;"></div>
-                      <div class="issue_assigned_to" data-collapse-expand="issue-3" data-number-of-rows="2" id="assigned_to_issue_3" style="position: absolute;top: 66px; font-size: 0.8em;">
+                      <div class="issue_assigned_to" data-collapse-expand="issue-8" data-number-of-rows="1" id="assigned_to_issue_8" style="position: absolute;inset-block-start: 46px; font-size: 0.8em;"></div>
+                      <div class="issue_assigned_to" data-collapse-expand="issue-3" data-number-of-rows="2" id="assigned_to_issue_3" style="position: absolute;inset-block-start: 66px; font-size: 0.8em;">
                         <a class="user active" href="/users/3">Dave Lopper</a>
                       </div>
-                      <div class="issue_assigned_to" data-collapse-expand="issue-7" data-number-of-rows="3" id="assigned_to_issue_7" style="position: absolute;top: 86px; font-size: 0.8em;"></div>
-                      <div class="issue_assigned_to" data-collapse-expand="issue-1" data-number-of-rows="4" id="assigned_to_issue_1" style="position: absolute;top: 106px; font-size: 0.8em;"></div>
-                      <div class="issue_assigned_to" data-collapse-expand="issue-11" data-number-of-rows="6" id="assigned_to_issue_11" style="position: absolute;top: 146px; font-size: 0.8em;"></div>
-                      <div class="issue_assigned_to" data-collapse-expand="issue-2" data-number-of-rows="8" id="assigned_to_issue_2" style="position: absolute;top: 186px; font-size: 0.8em;">
+                      <div class="issue_assigned_to" data-collapse-expand="issue-7" data-number-of-rows="3" id="assigned_to_issue_7" style="position: absolute;inset-block-start: 86px; font-size: 0.8em;"></div>
+                      <div class="issue_assigned_to" data-collapse-expand="issue-1" data-number-of-rows="4" id="assigned_to_issue_1" style="position: absolute;inset-block-start: 106px; font-size: 0.8em;"></div>
+                      <div class="issue_assigned_to" data-collapse-expand="issue-11" data-number-of-rows="6" id="assigned_to_issue_11" style="position: absolute;inset-block-start: 146px; font-size: 0.8em;"></div>
+                      <div class="issue_assigned_to" data-collapse-expand="issue-2" data-number-of-rows="8" id="assigned_to_issue_2" style="position: absolute;inset-block-start: 186px; font-size: 0.8em;">
                         <a class="user active" href="/users/3">Dave Lopper</a>
                       </div>
-                      <div class="issue_assigned_to" data-collapse-expand="issue-12" data-number-of-rows="9" id="assigned_to_issue_12" style="position: absolute;top: 206px; font-size: 0.8em;"></div>
-                      <div class="issue_assigned_to" data-collapse-expand="issue-5" data-number-of-rows="11" id="assigned_to_issue_5" style="position: absolute;top: 246px; font-size: 0.8em;"></div>
-                      <div class="issue_assigned_to" data-collapse-expand="issue-13" data-number-of-rows="12" id="assigned_to_issue_13" style="position: absolute;top: 266px; font-size: 0.8em;"></div>
+                      <div class="issue_assigned_to" data-collapse-expand="issue-12" data-number-of-rows="9" id="assigned_to_issue_12" style="position: absolute;inset-block-start: 206px; font-size: 0.8em;"></div>
+                      <div class="issue_assigned_to" data-collapse-expand="issue-5" data-number-of-rows="11" id="assigned_to_issue_5" style="position: absolute;inset-block-start: 246px; font-size: 0.8em;"></div>
+                      <div class="issue_assigned_to" data-collapse-expand="issue-13" data-number-of-rows="12" id="assigned_to_issue_13" style="position: absolute;inset-block-start: 266px; font-size: 0.8em;"></div>
                     </div>
                   </div>
                 </td>
-                <td class="gantt_updated_on_column gantt_selected_column last_gantt_selected_column" id="updated_on">
+                <td class="gantt_updated_on_column gantt_selected_column last_gantt_selected_column" data-action="resize@window-&gt;gantt--column#handleWindowResize" data-controller="gantt--column" data-gantt--column-column-value="updated_on" data-gantt--column-min-width-value="20" id="updated_on">
                   <div class="gantt_updated_on_container gantt_selected_column_container" style="position: relative;height: 572px;">
                     <div class="gantt_hdr" style="height: 548px;overflow: hidden;"></div>
-                    <div class="gantt_hdr" style="height: 18px;background: #eee;">
+                    <div class="gantt_hdr" style="height: 18px;background: #f1f3f5;">
                       <p class="gantt_hdr_selected_column_name">Updated</p>
                     </div>
                     <div class="gantt_updated_on gantt_selected_column_content">
-                      <div class="issue_updated_on" data-collapse-expand="issue-8" data-number-of-rows="1" id="updated_on_issue_8" style="position: absolute;top: 46px; font-size: 0.8em;">01/05/2026 12:00 PM</div>
-                      <div class="issue_updated_on" data-collapse-expand="issue-3" data-number-of-rows="2" id="updated_on_issue_3" style="position: absolute;top: 66px; font-size: 0.8em;">07/19/2006 07:07 PM</div>
-                      <div class="issue_updated_on" data-collapse-expand="issue-7" data-number-of-rows="3" id="updated_on_issue_7" style="position: absolute;top: 86px; font-size: 0.8em;">01/05/2026 12:00 PM</div>
-                      <div class="issue_updated_on" data-collapse-expand="issue-1" data-number-of-rows="4" id="updated_on_issue_1" style="position: absolute;top: 106px; font-size: 0.8em;">01/14/2026 12:00 PM</div>
-                      <div class="issue_updated_on" data-collapse-expand="issue-11" data-number-of-rows="6" id="updated_on_issue_11" style="position: absolute;top: 146px; font-size: 0.8em;">01/14/2026 12:00 PM</div>
-                      <div class="issue_updated_on" data-collapse-expand="issue-2" data-number-of-rows="8" id="updated_on_issue_2" style="position: absolute;top: 186px; font-size: 0.8em;">07/19/2006 07:09 PM</div>
-                      <div class="issue_updated_on" data-collapse-expand="issue-12" data-number-of-rows="9" id="updated_on_issue_12" style="position: absolute;top: 206px; font-size: 0.8em;">01/14/2026 12:00 PM</div>
-                      <div class="issue_updated_on" data-collapse-expand="issue-5" data-number-of-rows="11" id="updated_on_issue_5" style="position: absolute;top: 246px; font-size: 0.8em;">01/13/2026 12:00 PM</div>
-                      <div class="issue_updated_on" data-collapse-expand="issue-13" data-number-of-rows="12" id="updated_on_issue_13" style="position: absolute;top: 266px; font-size: 0.8em;">01/13/2026 12:00 PM</div>
+                      <div class="issue_updated_on" data-collapse-expand="issue-8" data-number-of-rows="1" id="updated_on_issue_8" style="position: absolute;inset-block-start: 46px; font-size: 0.8em;">01/05/2026 12:00 PM</div>
+                      <div class="issue_updated_on" data-collapse-expand="issue-3" data-number-of-rows="2" id="updated_on_issue_3" style="position: absolute;inset-block-start: 66px; font-size: 0.8em;">07/19/2006 07:07 PM</div>
+                      <div class="issue_updated_on" data-collapse-expand="issue-7" data-number-of-rows="3" id="updated_on_issue_7" style="position: absolute;inset-block-start: 86px; font-size: 0.8em;">01/05/2026 12:00 PM</div>
+                      <div class="issue_updated_on" data-collapse-expand="issue-1" data-number-of-rows="4" id="updated_on_issue_1" style="position: absolute;inset-block-start: 106px; font-size: 0.8em;">01/14/2026 12:00 PM</div>
+                      <div class="issue_updated_on" data-collapse-expand="issue-11" data-number-of-rows="6" id="updated_on_issue_11" style="position: absolute;inset-block-start: 146px; font-size: 0.8em;">01/14/2026 12:00 PM</div>
+                      <div class="issue_updated_on" data-collapse-expand="issue-2" data-number-of-rows="8" id="updated_on_issue_2" style="position: absolute;inset-block-start: 186px; font-size: 0.8em;">07/19/2006 07:09 PM</div>
+                      <div class="issue_updated_on" data-collapse-expand="issue-12" data-number-of-rows="9" id="updated_on_issue_12" style="position: absolute;inset-block-start: 206px; font-size: 0.8em;">01/14/2026 12:00 PM</div>
+                      <div class="issue_updated_on" data-collapse-expand="issue-5" data-number-of-rows="11" id="updated_on_issue_5" style="position: absolute;inset-block-start: 246px; font-size: 0.8em;">01/13/2026 12:00 PM</div>
+                      <div class="issue_updated_on" data-collapse-expand="issue-13" data-number-of-rows="12" id="updated_on_issue_13" style="position: absolute;inset-block-start: 266px; font-size: 0.8em;">01/13/2026 12:00 PM</div>
                     </div>
                   </div>
                 </td>
                 <td>
-                  <div id="gantt_area" style="position:relative;height:572px;overflow:auto;">
-                    <div class="gantt_hdr" style="width: 1459px;height: 18px;background: #eee;"></div>
-                    <div class="gantt_hdr" style="left: 0px;width: 61px;height: 548px;">
+                  <div data-gantt--chart-target="ganttArea" id="gantt_area" style="position:relative;height:572px;overflow:auto;">
+                    <div class="gantt_hdr" style="width: 1459px;height: 18px;background: #f1f3f5;"></div>
+                    <div class="gantt_hdr" style="inset-inline-start: 0px;width: 61px;height: 548px;">
                       <a href="/issues/gantt?month=1&amp;months=24&amp;year=2006&amp;zoom=1" title="January 2006">2006-1</a>
                     </div>
-                    <div class="gantt_hdr" style="left: 62px;width: 55px;height: 548px;">
+                    <div class="gantt_hdr" style="inset-inline-start: 62px;width: 55px;height: 548px;">
                       <a href="/issues/gantt?month=2&amp;months=24&amp;year=2006&amp;zoom=1" title="February 2006">2006-2</a>
                     </div>
-                    <div class="gantt_hdr" style="left: 118px;width: 61px;height: 548px;">
+                    <div class="gantt_hdr" style="inset-inline-start: 118px;width: 61px;height: 548px;">
                       <a href="/issues/gantt?month=3&amp;months=24&amp;year=2006&amp;zoom=1" title="March 2006">2006-3</a>
                     </div>
-                    <div class="gantt_hdr" style="left: 180px;width: 59px;height: 548px;">
+                    <div class="gantt_hdr" style="inset-inline-start: 180px;width: 59px;height: 548px;">
                       <a href="/issues/gantt?month=4&amp;months=24&amp;year=2006&amp;zoom=1" title="April 2006">2006-4</a>
                     </div>
-                    <div class="gantt_hdr" style="left: 240px;width: 61px;height: 548px;">
+                    <div class="gantt_hdr" style="inset-inline-start: 240px;width: 61px;height: 548px;">
                       <a href="/issues/gantt?month=5&amp;months=24&amp;year=2006&amp;zoom=1" title="May 2006">2006-5</a>
                     </div>
-                    <div class="gantt_hdr" style="left: 302px;width: 59px;height: 548px;">
+                    <div class="gantt_hdr" style="inset-inline-start: 302px;width: 59px;height: 548px;">
                       <a href="/issues/gantt?month=6&amp;months=24&amp;year=2006&amp;zoom=1" title="June 2006">2006-6</a>
                     </div>
-                    <div class="gantt_hdr" style="left: 362px;width: 61px;height: 548px;">
+                    <div class="gantt_hdr" style="inset-inline-start: 362px;width: 61px;height: 548px;">
                       <a href="/issues/gantt?month=7&amp;months=24&amp;year=2006&amp;zoom=1" title="July 2006">2006-7</a>
                     </div>
-                    <div class="gantt_hdr" style="left: 424px;width: 61px;height: 548px;">
+                    <div class="gantt_hdr" style="inset-inline-start: 424px;width: 61px;height: 548px;">
                       <a href="/issues/gantt?month=8&amp;months=24&amp;year=2006&amp;zoom=1" title="August 2006">2006-8</a>
                     </div>
-                    <div class="gantt_hdr" style="left: 486px;width: 59px;height: 548px;">
+                    <div class="gantt_hdr" style="inset-inline-start: 486px;width: 59px;height: 548px;">
                       <a href="/issues/gantt?month=9&amp;months=24&amp;year=2006&amp;zoom=1" title="September 2006">2006-9</a>
                     </div>
-                    <div class="gantt_hdr" style="left: 546px;width: 61px;height: 548px;">
+                    <div class="gantt_hdr" style="inset-inline-start: 546px;width: 61px;height: 548px;">
                       <a href="/issues/gantt?month=10&amp;months=24&amp;year=2006&amp;zoom=1" title="October 2006">2006-10</a>
                     </div>
-                    <div class="gantt_hdr" style="left: 608px;width: 59px;height: 548px;">
+                    <div class="gantt_hdr" style="inset-inline-start: 608px;width: 59px;height: 548px;">
                       <a href="/issues/gantt?month=11&amp;months=24&amp;year=2006&amp;zoom=1" title="November 2006">2006-11</a>
                     </div>
-                    <div class="gantt_hdr" style="left: 668px;width: 61px;height: 548px;">
+                    <div class="gantt_hdr" style="inset-inline-start: 668px;width: 61px;height: 548px;">
                       <a href="/issues/gantt?month=12&amp;months=24&amp;year=2006&amp;zoom=1" title="December 2006">2006-12</a>
                     </div>
-                    <div class="gantt_hdr" style="left: 730px;width: 61px;height: 548px;">
+                    <div class="gantt_hdr" style="inset-inline-start: 730px;width: 61px;height: 548px;">
                       <a href="/issues/gantt?month=1&amp;months=24&amp;year=2007&amp;zoom=1" title="January 2007">2007-1</a>
                     </div>
-                    <div class="gantt_hdr" style="left: 792px;width: 55px;height: 548px;">
+                    <div class="gantt_hdr" style="inset-inline-start: 792px;width: 55px;height: 548px;">
                       <a href="/issues/gantt?month=2&amp;months=24&amp;year=2007&amp;zoom=1" title="February 2007">2007-2</a>
                     </div>
-                    <div class="gantt_hdr" style="left: 848px;width: 61px;height: 548px;">
+                    <div class="gantt_hdr" style="inset-inline-start: 848px;width: 61px;height: 548px;">
                       <a href="/issues/gantt?month=3&amp;months=24&amp;year=2007&amp;zoom=1" title="March 2007">2007-3</a>
                     </div>
-                    <div class="gantt_hdr" style="left: 910px;width: 59px;height: 548px;">
+                    <div class="gantt_hdr" style="inset-inline-start: 910px;width: 59px;height: 548px;">
                       <a href="/issues/gantt?month=4&amp;months=24&amp;year=2007&amp;zoom=1" title="April 2007">2007-4</a>
                     </div>
-                    <div class="gantt_hdr" style="left: 970px;width: 61px;height: 548px;">
+                    <div class="gantt_hdr" style="inset-inline-start: 970px;width: 61px;height: 548px;">
                       <a href="/issues/gantt?month=5&amp;months=24&amp;year=2007&amp;zoom=1" title="May 2007">2007-5</a>
                     </div>
-                    <div class="gantt_hdr" style="left: 1032px;width: 59px;height: 548px;">
+                    <div class="gantt_hdr" style="inset-inline-start: 1032px;width: 59px;height: 548px;">
                       <a href="/issues/gantt?month=6&amp;months=24&amp;year=2007&amp;zoom=1" title="June 2007">2007-6</a>
                     </div>
-                    <div class="gantt_hdr" style="left: 1092px;width: 61px;height: 548px;">
+                    <div class="gantt_hdr" style="inset-inline-start: 1092px;width: 61px;height: 548px;">
                       <a href="/issues/gantt?month=7&amp;months=24&amp;year=2007&amp;zoom=1" title="July 2007">2007-7</a>
                     </div>
-                    <div class="gantt_hdr" style="left: 1154px;width: 61px;height: 548px;">
+                    <div class="gantt_hdr" style="inset-inline-start: 1154px;width: 61px;height: 548px;">
                       <a href="/issues/gantt?month=8&amp;months=24&amp;year=2007&amp;zoom=1" title="August 2007">2007-8</a>
                     </div>
-                    <div class="gantt_hdr" style="left: 1216px;width: 59px;height: 548px;">
+                    <div class="gantt_hdr" style="inset-inline-start: 1216px;width: 59px;height: 548px;">
                       <a href="/issues/gantt?month=9&amp;months=24&amp;year=2007&amp;zoom=1" title="September 2007">2007-9</a>
                     </div>
-                    <div class="gantt_hdr" style="left: 1276px;width: 61px;height: 548px;">
+                    <div class="gantt_hdr" style="inset-inline-start: 1276px;width: 61px;height: 548px;">
                       <a href="/issues/gantt?month=10&amp;months=24&amp;year=2007&amp;zoom=1" title="October 2007">2007-10</a>
                     </div>
-                    <div class="gantt_hdr" style="left: 1338px;width: 59px;height: 548px;">
+                    <div class="gantt_hdr" style="inset-inline-start: 1338px;width: 59px;height: 548px;">
                       <a href="/issues/gantt?month=11&amp;months=24&amp;year=2007&amp;zoom=1" title="November 2007">2007-11</a>
                     </div>
-                    <div class="gantt_hdr" style="left: 1398px;width: 61px;height: 548px;">
+                    <div class="gantt_hdr" style="inset-inline-start: 1398px;width: 61px;height: 548px;">
                       <a href="/issues/gantt?month=12&amp;months=24&amp;year=2007&amp;zoom=1" title="December 2007">2007-12</a>
                     </div>
                     <form accept-charset="UTF-8" action="/issues/gantt" data-cm-url="/issues/context_menu" method="post" name="form-RANDOM">
                       <input autocomplete="off" name="authenticity_token" type="hidden" value="{{CSRF}}">
                       <input autocomplete="off" name="back_url" type="hidden" value="/issues/gantt?f%5B%5D=status_id&amp;month=1&amp;months=24&amp;op%5Bstatus_id%5D=%2A&amp;set_filter=1&amp;year=2006&amp;zoom=1">
-                      <div class="task project task_todo" data-collapse-expand="project-1" data-number-of-rows="0" style="top:26px;left:362px;width:1096px;"></div>
-                      <div class="task project marker starting" data-collapse-expand="project-1" data-number-of-rows="0" style="top:26px;left:362px;width:15px;"></div>
-                      <div class="task project label" data-collapse-expand="project-1" data-number-of-rows="0" style="top:26px;left:1468px;width:15px;">eCookbook</div>
-                      <div class="task leaf label" data-collapse-expand="issue-3" data-number-of-rows="2" style="top:66px;left:8px;width:15px;">New 0%</div>
-                      <div class="task leaf label" data-collapse-expand="issue-7" data-number-of-rows="3" style="top:86px;left:8px;width:15px;">New 0%</div>
-                      <div class="task leaf label" data-collapse-expand="issue-1" data-number-of-rows="4" style="top:106px;left:8px;width:15px;">New 0%</div>
-                      <div class="task version label" data-collapse-expand="version-1" data-number-of-rows="5" style="top:126px;left:8px;width:15px;">eCookbook -0.1 100%</div>
-                      <div class="task leaf label" data-collapse-expand="issue-11" data-number-of-rows="6" style="top:146px;left:8px;width:15px;">Closed 0%</div>
-                      <div class="task version label" data-collapse-expand="version-2" data-number-of-rows="7" style="top:166px;left:8px;width:15px;">eCookbook -1.0 65%</div>
-                      <div class="task leaf label" data-collapse-expand="issue-2" data-number-of-rows="8" style="top:186px;left:8px;width:15px;">Assigned 30%</div>
-                      <div class="task leaf label" data-collapse-expand="issue-12" data-number-of-rows="9" style="top:206px;left:8px;width:15px;">Closed 0%</div>
+                      <div class="task project task_todo" data-collapse-expand="project-1" data-number-of-rows="0" style="inset-block-start:26px;inset-inline-start:362px;width:1096px;"></div>
+                      <div class="task project marker starting" data-collapse-expand="project-1" data-number-of-rows="0" style="inset-block-start:26px;inset-inline-start:362px;width:15px;"></div>
+                      <div class="task project label" data-collapse-expand="project-1" data-number-of-rows="0" style="inset-block-start:26px;inset-inline-start:1468px;width:15px;">eCookbook</div>
+                      <div class="task leaf label" data-collapse-expand="issue-3" data-number-of-rows="2" style="inset-block-start:66px;inset-inline-start:8px;width:15px;">New 0%</div>
+                      <div class="task leaf label" data-collapse-expand="issue-7" data-number-of-rows="3" style="inset-block-start:86px;inset-inline-start:8px;width:15px;">New 0%</div>
+                      <div class="task leaf label" data-collapse-expand="issue-1" data-number-of-rows="4" style="inset-block-start:106px;inset-inline-start:8px;width:15px;">New 0%</div>
+                      <div class="task version label" data-collapse-expand="version-1" data-number-of-rows="5" style="inset-block-start:126px;inset-inline-start:8px;width:15px;">eCookbook -0.1 100%</div>
+                      <div class="task leaf label" data-collapse-expand="issue-11" data-number-of-rows="6" style="inset-block-start:146px;inset-inline-start:8px;width:15px;">Closed 0%</div>
+                      <div class="task version label" data-collapse-expand="version-2" data-number-of-rows="7" style="inset-block-start:166px;inset-inline-start:8px;width:15px;">eCookbook -1.0 65%</div>
+                      <div class="task leaf label" data-collapse-expand="issue-2" data-number-of-rows="8" style="inset-block-start:186px;inset-inline-start:8px;width:15px;">Assigned 30%</div>
+                      <div class="task leaf label" data-collapse-expand="issue-12" data-number-of-rows="9" style="inset-block-start:206px;inset-inline-start:8px;width:15px;">Closed 0%</div>
                     </form>
-                    <div id="gantt_draw_area" style="position: absolute;height: 530px;top: 19px;left: 0px;width: 1459px;"></div>
+                    <div data-gantt--chart-target="drawArea" id="gantt_draw_area" style="position: absolute;height: 530px;inset-block-start: 19px;inset-inline-start: 0px;width: 1459px;"></div>
                   </div>
                 </td>
               </tr>
@@ -862,23 +897,6 @@ $(document).ready(function(){
               <a class="pdf" href="/issues/gantt.pdf?f%5B%5D=status_id&amp;month=1&amp;months=24&amp;op%5Bstatus_id%5D=%2A&amp;set_filter=1&amp;year=2006&amp;zoom=1" rel="nofollow">PDF</a>
             </span>
           </p>
-          <script>//<![CDATA[
-
-  var issue_relation_type = {"blocks":{"landscape_margin":16,"color":"#F34F4F"},"precedes":{"landscape_margin":20,"color":"#628FEA"}};
-  $(function() {
-    disable_unavailable_columns('tracker,id,subject'.split(','));
-    drawGanttHandler();
-    resizableSubjectColumn();
-    drawSelectedColumns();
-    $("#draw_relations, #draw_progress_line, #draw_selected_columns").change(drawGanttHandler);
-    $('div.gantt_subjects .expander').on('click', ganttEntryClick);
-  });
-  $(window).resize(function() {
-    drawGanttHandler();
-    resizableSubjectColumn();
-  });
-
-//]]></script>
           <div style="clear:both;"></div>
         </div>
       </div>

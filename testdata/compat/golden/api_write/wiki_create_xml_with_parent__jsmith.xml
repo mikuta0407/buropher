@@ -10,6 +10,7 @@ location: /projects/ecookbook/wiki/XML_child
   <version>1</version>
   <author id="2" name="Johnny Smith"/>
   <comments/>
+  <project id="1" name="eCookbook"/>
   <created_on>TIMESTAMP</created_on>
   <updated_on>TIMESTAMP</updated_on>
 </wiki_page>

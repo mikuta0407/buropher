@@ -39,7 +39,7 @@ content-type: text/html
               Description
               <span class="required">*</span>
             </label>
-            <textarea class="wiki-edit" cols="60" data-action="beforeinput-&gt;list-autofill#handleBeforeInput" data-auto-complete="true" data-controller="list-autofill" data-list-autofill-text-formatting-param="common_mark" id="news_description" name="news[description]" rows="15"></textarea>
+            <textarea class="wiki-edit" cols="60" data-action="beforeinput-&gt;list-autofill#handleBeforeInput keydown.tab-&gt;selection-indent#run keydown.shift+tab-&gt;selection-indent#run paste-&gt;table-paste#handlePaste" data-auto-complete="true" data-controller="list-autofill selection-indent table-paste" data-list-autofill-text-formatting-param="common_mark" data-selection-indent-text-formatting-param="common_mark" data-table-paste-text-formatting-param="common_mark" id="news_description" name="news[description]" rows="15"></textarea>
           </p>
           <p id="attachments_form">
             <label>Files</label>
@@ -49,7 +49,7 @@ content-type: text/html
                   <use href="/assets/icons-DIGEST.svg#icon--del"></use>
                 </svg>
                 <svg aria-hidden="true" class="s16 icon-svg svg-attachment">
-                  <use href="/assets/icons-DIGEST.svg#icon--attachment"></use>
+                  <use href="/assets/icons-DIGEST.svg#icon--file"></use>
                 </svg>
                 <svg aria-hidden="true" class="s16 icon-svg svg-loader">
                   <use href="/assets/icons-DIGEST.svg#icon--loader"></use>
@@ -74,45 +74,47 @@ var wikiToolbar = new jsToolBar(document.getElementById('news_description')); wi
       </form>
     </div>
     <h2>News</h2>
-    <article class="news-article">
-      <header>
-        <h3>
-          <span class="avatar-color-2 s24 avatar" role="img">JS</span>
-          <a href="/news/2">100,000 downloads for eCookbook</a>
-        </h3>
-        <p class="author">
-          Added by
-          <a class="user active" href="/users/2">John Smith</a>
-          <a href="/projects/ecookbook/activity?from=2006-07-19" title="07/19/2006 08:42 PM">over 19 years</a>
-          ago
-        </p>
-      </header>
-      <div class="wiki">
-        <p>eCookbook 1.0 have downloaded 100,000 times</p>
-      </div>
-    </article>
-    <article class="news-article">
-      <header>
-        <h3>
-          <span class="avatar-color-2 s24 avatar" role="img">JS</span>
-          <a href="/news/1">eCookbook first release !</a>
-          (1 comment)
-        </h3>
-        <p class="author">
-          Added by
-          <a class="user active" href="/users/2">John Smith</a>
-          <a href="/projects/ecookbook/activity?from=2006-07-19" title="07/19/2006 08:40 PM">over 19 years</a>
-          ago
-        </p>
-      </header>
-      <div class="wiki">
-        <p>eCookbook 1.0 has been released.</p>
-        <p>
-          Visit
-          <a class="external" href="http://ecookbook.somenet.foo/">http://ecookbook.somenet.foo/</a>
-        </p>
-      </div>
-    </article>
+    <div id="news-list">
+      <article class="news-article">
+        <header>
+          <h3>
+            <span class="avatar-color-2 s24 avatar" role="img">JS</span>
+            <a href="/news/2">100,000 downloads for eCookbook</a>
+          </h3>
+          <p class="author">
+            Added by
+            <a class="user active" href="/users/2">John Smith</a>
+            <a href="/projects/ecookbook/activity?from=2006-07-19" title="07/19/2006 08:42 PM">over 19 years</a>
+            ago
+          </p>
+        </header>
+        <div class="wiki">
+          <p>eCookbook 1.0 have downloaded 100,000 times</p>
+        </div>
+      </article>
+      <article class="news-article">
+        <header>
+          <h3>
+            <span class="avatar-color-2 s24 avatar" role="img">JS</span>
+            <a href="/news/1">eCookbook first release !</a>
+            (2 comments)
+          </h3>
+          <p class="author">
+            Added by
+            <a class="user active" href="/users/2">John Smith</a>
+            <a href="/projects/ecookbook/activity?from=2006-07-19" title="07/19/2006 08:40 PM">over 19 years</a>
+            ago
+          </p>
+        </header>
+        <div class="wiki">
+          <p>eCookbook 1.0 has been released.</p>
+          <p>
+            Visit
+            <a class="external" href="http://ecookbook.somenet.foo/">http://ecookbook.somenet.foo/</a>
+          </p>
+        </div>
+      </article>
+    </div>
     <span class="pagination">
       <ul class="pages"></ul>
       <span>

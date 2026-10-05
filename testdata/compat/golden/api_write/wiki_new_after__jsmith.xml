@@ -8,6 +8,7 @@ content-type: application/xml
   <version>1</version>
   <author id="2" name="Johnny Smith"/>
   <comments>created via api</comments>
+  <project id="1" name="eCookbook"/>
   <created_on>TIMESTAMP</created_on>
   <updated_on>TIMESTAMP</updated_on>
 </wiki_page>

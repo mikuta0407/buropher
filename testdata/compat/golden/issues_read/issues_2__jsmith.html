@@ -2,7 +2,7 @@ status: 200
 content-type: text/html
 
 <!DOCTYPE html>
-<html lang="en">
+<html dir="ltr" lang="en">
   <head>
     <meta charset="utf-8">
     <title>Feature request #2: Add ingredients categories - eCookbook - Redmine</title>
@@ -15,6 +15,7 @@ content-type: text/html
     <link href="/assets/jquery/jquery-ui-1.13.2-DIGEST.css" media="all" rel="stylesheet">
     <link href="/assets/tribute-5.1.3-DIGEST.css" media="all" rel="stylesheet">
     <link href="/assets/application-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/dropdown-DIGEST.css" media="all" rel="stylesheet">
     <link href="/assets/responsive-DIGEST.css" media="all" rel="stylesheet">
     <script data-turbo-track="reload" type="importmap">{
   "imports": {
@@ -23,12 +24,27 @@ content-type: text/html
     "@hotwired/stimulus": "/assets/stimulus.min-DIGEST.js",
     "@hotwired/stimulus-loading": "/assets/stimulus-loading-DIGEST.js",
     "turndown": "/assets/turndown-DIGEST.js",
+    "tablesort": "/assets/tablesort.min-DIGEST.js",
+    "tablesort.number": "/assets/tablesort.number.min-DIGEST.js",
+    "chart.js": "/assets/chart.min-DIGEST.js",
     "controllers/api_key_copy_controller": "/assets/controllers/api_key_copy_controller-DIGEST.js",
     "controllers/application": "/assets/controllers/application-DIGEST.js",
+    "controllers/clipboard_controller": "/assets/controllers/clipboard_controller-DIGEST.js",
+    "controllers/custom_field_default_value_controller": "/assets/controllers/custom_field_default_value_controller-DIGEST.js",
+    "controllers/dropdown_controller": "/assets/controllers/dropdown_controller-DIGEST.js",
+    "controllers/gantt/chart_controller": "/assets/controllers/gantt/chart_controller-DIGEST.js",
+    "controllers/gantt/column_controller": "/assets/controllers/gantt/column_controller-DIGEST.js",
+    "controllers/gantt/options_controller": "/assets/controllers/gantt/options_controller-DIGEST.js",
+    "controllers/gantt/subjects_controller": "/assets/controllers/gantt/subjects_controller-DIGEST.js",
     "controllers": "/assets/controllers/index-DIGEST.js",
     "controllers/list_autofill_controller": "/assets/controllers/list_autofill_controller-DIGEST.js",
     "controllers/quote_reply_controller": "/assets/controllers/quote_reply_controller-DIGEST.js",
-    "controllers/sticky_issue_header_controller": "/assets/controllers/sticky_issue_header_controller-DIGEST.js"
+    "controllers/reports/details_controller": "/assets/controllers/reports/details_controller-DIGEST.js",
+    "controllers/repositories/stats_controller": "/assets/controllers/repositories/stats_controller-DIGEST.js",
+    "controllers/selection_indent_controller": "/assets/controllers/selection_indent_controller-DIGEST.js",
+    "controllers/sticky_issue_header_controller": "/assets/controllers/sticky_issue_header_controller-DIGEST.js",
+    "controllers/table_paste_controller": "/assets/controllers/table_paste_controller-DIGEST.js",
+    "controllers/tablesort_controller": "/assets/controllers/tablesort_controller-DIGEST.js"
   }
 }</script>
     <link href="/assets/requestjs-DIGEST.js" rel="modulepreload">
@@ -36,12 +52,26 @@ content-type: text/html
     <link href="/assets/stimulus.min-DIGEST.js" rel="modulepreload">
     <link href="/assets/stimulus-loading-DIGEST.js" rel="modulepreload">
     <link href="/assets/turndown-DIGEST.js" rel="modulepreload">
+    <link href="/assets/tablesort.min-DIGEST.js" rel="modulepreload">
+    <link href="/assets/tablesort.number.min-DIGEST.js" rel="modulepreload">
     <link href="/assets/controllers/api_key_copy_controller-DIGEST.js" rel="modulepreload">
     <link href="/assets/controllers/application-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/clipboard_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/custom_field_default_value_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/dropdown_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/gantt/chart_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/gantt/column_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/gantt/options_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/gantt/subjects_controller-DIGEST.js" rel="modulepreload">
     <link href="/assets/controllers/index-DIGEST.js" rel="modulepreload">
     <link href="/assets/controllers/list_autofill_controller-DIGEST.js" rel="modulepreload">
     <link href="/assets/controllers/quote_reply_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/reports/details_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/repositories/stats_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/selection_indent_controller-DIGEST.js" rel="modulepreload">
     <link href="/assets/controllers/sticky_issue_header_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/table_paste_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/tablesort_controller-DIGEST.js" rel="modulepreload">
     <script type="module">import "application"</script>
     <script src="/assets/jquery-3.7.1-ui-1.13.3-DIGEST.js"></script>
     <script src="/assets/rails-ujs-DIGEST.js"></script>
@@ -61,7 +91,7 @@ rm = window.rm || {};rm.AutoComplete = rm.AutoComplete || {};rm.AutoComplete.dat
     <script src="/assets/jstoolbar/common_mark-DIGEST.js"></script>
     <script src="/assets/jstoolbar/lang/jstoolbar-en-DIGEST.js"></script>
     <script>//<![CDATA[
-var wikiImageMimeTypes = ["image/gif","image/jpeg","image/png","image/tiff","image/webp","image/x-ms-bmp"];var userHlLanguages = ["c","cpp","csharp","css","diff","go","groovy","html","java","javascript","objc","perl","php","python","r","ruby","sass","scala","shell","sql","swift","xml","yaml"];
+var wikiImageMimeTypes = ["image/avif","image/gif","image/jpeg","image/png","image/tiff","image/webp","image/x-ms-bmp"];var userHlLanguages = ["c","cpp","csharp","css","diff","go","groovy","html","java","javascript","objc","perl","php","python","r","ruby","sass","scala","shell","sql","swift","xml","yaml"];
 //]]></script>
     <link href="/assets/jstoolbar-DIGEST.css" media="screen" rel="stylesheet">
     <script>//<![CDATA[
@@ -72,7 +102,7 @@ var datepickerOptions={dateFormat: 'yy-mm-dd', firstDay: 0, showOn: 'button', bu
     <script src="/assets/context_menu-DIGEST.js"></script>
     <link href="/assets/context_menu-DIGEST.css" media="screen" rel="stylesheet">
   </head>
-  <body class="project-ecookbook has-main-menu controller-issues action-show avatars-off" data-text-formatting="common_mark">
+  <body class="project-ecookbook has-main-menu controller-issues action-show" data-text-formatting="common_mark">
     <div id="wrapper">
       <div class="flyout-menu js-flyout-menu">
         <div class="flyout-menu__search">
@@ -101,36 +131,54 @@ var datepickerOptions={dateFormat: 'yy-mm-dd', firstDay: 0, showOn: 'button', bu
         <h3>Profile</h3>
         <span class="js-profile-menu"></span>
       </div>
-      <div id="top-menu">
-        <div id="account">
-          <ul>
-            <li>
-              <a class="my-account" href="/my/account">My account</a>
-            </li>
-            <li>
-              <a class="logout" data-method="post" href="/logout" rel="nofollow">Sign out</a>
-            </li>
-          </ul>
+      <nav class="top-menu" id="top-menu">
+        <div class="general-menu">
+          <div class="top-menu__links">
+            <ul>
+              <li>
+                <a class="home" href="/">Home</a>
+              </li>
+              <li>
+                <a class="my-page" href="/my/page">My page</a>
+              </li>
+              <li>
+                <a class="projects" href="/projects">Projects</a>
+              </li>
+              <li>
+                <a class="help" href="https://www.redmine.org/guide" rel="noopener" target="_blank">Help</a>
+              </li>
+            </ul>
+          </div>
         </div>
-        <div id="loggedas">
-          Logged in as
-          <a class="user active" href="/users/2">jsmith</a>
+        <div class="profile-menu">
+          <div class="dropdown" data-controller="dropdown" id="account">
+            <a class="dropdown-trigger" data-action="click-&gt;dropdown#toggle" href="#">
+              <span class="avatar-color-2 s22 avatar" role="img">JS</span>
+              <svg aria-hidden="true" class="s14 icon-svg">
+                <use href="/assets/icons-DIGEST.svg#icon--angle-down"></use>
+              </svg>
+            </a>
+            <div class="dropdown-content hidden" data-dropdown-target="content">
+              <div class="user-info">
+                <span class="user-name">John Smith</span>
+                <span class="user-login">@jsmith</span>
+              </div>
+              <div class="dropdown-divider"></div>
+              <ul>
+                <li>
+                  <a class="my-profile" href="/users/current">Profile</a>
+                </li>
+                <li>
+                  <a class="my-account" href="/my/account">My account</a>
+                </li>
+                <li>
+                  <a class="logout" data-method="post" href="/logout" rel="nofollow">Sign out</a>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
-        <ul>
-          <li>
-            <a class="home" href="/">Home</a>
-          </li>
-          <li>
-            <a class="my-page" href="/my/page">My page</a>
-          </li>
-          <li>
-            <a class="projects" href="/projects">Projects</a>
-          </li>
-          <li>
-            <a class="help" href="https://www.redmine.org/guide" rel="noopener" target="_blank">Help</a>
-          </li>
-        </ul>
-      </div>
+      </nav>
       <div id="header">
         <a class="mobile-toggle-button js-flyout-menu-toggle-button" href="#"></a>
         <div id="quick-search">
@@ -269,7 +317,7 @@ $('#sidebar-switch-panel').css('visibility', 'visible');
                 <a class="query" data-disable-with="Public query for all projects" href="/projects/ecookbook/issues?query_id=4" title="Description for Public query for all projects">Public query for all projects</a>
               </li>
             </ul>
-            <div id="watchers">
+            <div data-watchable-id="2" id="watchers">
               <div class="contextual">
                 <a data-method="get" data-remote="true" href="/watchers/new?object_id=2&amp;object_type=issue">Add</a>
               </div>
@@ -278,21 +326,21 @@ $('#sidebar-switch-panel').css('visibility', 'visible');
                 <li class="user-3">
                   <span class="avatar-color-3 s16 avatar" role="img">DL</span>
                   <a class="user active user" href="/users/3">Dave Lopper</a>
-                  <a class="delete icon-only icon-del" data-method="delete" data-remote="true" href="/issues/2/watchers/3" rel="nofollow" title="Delete">
+                  <a class="delete icon-only icon-link-break" data-method="delete" data-remote="true" href="/issues/2/watchers/3" rel="nofollow" title="Remove">
                     <svg aria-hidden="true" class="s18 icon-svg">
-                      <use href="/assets/icons-DIGEST.svg#icon--del"></use>
+                      <use href="/assets/icons-DIGEST.svg#icon--link-break"></use>
                     </svg>
-                    <span class="icon-label">Delete</span>
+                    <span class="icon-label">Remove</span>
                   </a>
                 </li>
                 <li class="user-1">
                   <span class="avatar-color-1 s16 avatar" role="img">RA</span>
                   <a class="user active user" href="/users/1">Redmine Admin</a>
-                  <a class="delete icon-only icon-del" data-method="delete" data-remote="true" href="/issues/2/watchers/1" rel="nofollow" title="Delete">
+                  <a class="delete icon-only icon-link-break" data-method="delete" data-remote="true" href="/issues/2/watchers/1" rel="nofollow" title="Remove">
                     <svg aria-hidden="true" class="s18 icon-svg">
-                      <use href="/assets/icons-DIGEST.svg#icon--del"></use>
+                      <use href="/assets/icons-DIGEST.svg#icon--link-break"></use>
                     </svg>
-                    <span class="icon-label">Delete</span>
+                    <span class="icon-label">Remove</span>
                   </a>
                 </li>
               </ul>
@@ -336,7 +384,7 @@ $('#sidebar-switch-panel').css('visibility', 'visible');
               </span>
               <div class="drdn-content">
                 <div class="drdn-items">
-                  <a class="icon icon-copy-link" data-clipboard-text="{{BASE}}/issues/2" href="#" onclick="copyDataClipboardTextToClipboard(this);; return false;">
+                  <a class="icon icon-copy-link" data-action="clipboard#copyText" data-clipboard-text="{{BASE}}/issues/2" data-controller="clipboard" href="#">
                     <svg aria-hidden="true" class="s18 icon-svg">
                       <use href="/assets/icons-DIGEST.svg#icon--copy-link"></use>
                     </svg>
@@ -356,13 +404,19 @@ $('#sidebar-switch-panel').css('visibility', 'visible');
           <span class="badge badge-status-open">open</span>
           <div class="issue tracker-2 status-2 priority-5 priority-default created-by-me details">
             <div class="next-prev-links contextual">
-              <a accesskey="p" href="/issues/1" title="#1">« Previous</a>
-              |
-              <span class="position">
-                <a href="/issues?f%5B%5D=status_id&amp;op%5Bstatus_id%5D=%2A&amp;page=1&amp;per_page=25&amp;set_filter=1&amp;sort=id&amp;v%5Bstatus_id%5D%5B%5D=">2 of 14</a>
+              <span class="pagination">
+                <ul class="pages">
+                  <li class="previous page">
+                    <a accesskey="p" href="/issues/1" title="#1">« Previous</a>
+                  </li>
+                  <li class="page position">
+                    <a href="/issues?f%5B%5D=status_id&amp;op%5Bstatus_id%5D=%2A&amp;page=1&amp;per_page=25&amp;set_filter=1&amp;sort=id&amp;v%5Bstatus_id%5D%5B%5D=">2 of 14</a>
+                  </li>
+                  <li class="next page">
+                    <a accesskey="n" href="/issues/3" title="#3">Next »</a>
+                  </li>
+                </ul>
               </span>
-              |
-              <a accesskey="n" href="/issues/3" title="#3">Next »</a>
             </div>
             <div class="avatar-with-child">
               <span class="avatar-color-2 s50 avatar" role="img" title="Author: John Smith">JS</span>
@@ -424,7 +478,7 @@ $('#sidebar-switch-panel').css('visibility', 'visible');
                     </div>
                   </div>
                 </div>
-                <div class="splitcontentleft">
+                <div class="splitcontentright">
                   <div class="start-date attribute">
                     <div class="label">Start date:</div>
                     <div class="value">01/13/2026</div>
@@ -463,7 +517,7 @@ $('#sidebar-switch-panel').css('visibility', 'visible');
                     <div class="value">2.05</div>
                   </div>
                 </div>
-                <div class="splitcontentleft">
+                <div class="splitcontentright">
                   <div class="date_cf cf_8 attribute">
                     <div class="label">
                       <span>Custom date</span>
@@ -516,11 +570,11 @@ $('#sidebar-switch-panel').css('visibility', 'visible');
                     <td>
                       <a class="icon icon-attachment" href="/attachments/4">
                         <svg aria-hidden="true" class="s18 icon-svg">
-                          <use href="/assets/icons-DIGEST.svg#icon--attachment"></use>
+                          <use href="/assets/icons-DIGEST.svg#icon--file"></use>
                         </svg>
                         <span class="icon-label">source.rb</span>
                       </a>
-                      <span class="size">(153 Bytes)</span>
+                      <span class="size">(174 Bytes)</span>
                       <a class="icon-only icon-download" href="/attachments/download/4/source.rb" title="Download">
                         <svg aria-hidden="true" class="s18 icon-svg">
                           <use href="/assets/icons-DIGEST.svg#icon--download"></use>
@@ -545,7 +599,7 @@ $('#sidebar-switch-panel').css('visibility', 'visible');
                     <td>
                       <a class="icon icon-attachment" href="/attachments/10">
                         <svg aria-hidden="true" class="s18 icon-svg">
-                          <use href="/assets/icons-DIGEST.svg#icon--attachment"></use>
+                          <use href="/assets/icons-DIGEST.svg#icon--photo"></use>
                         </svg>
                         <span class="icon-label">picture.jpg</span>
                       </a>
@@ -583,7 +637,12 @@ $('#sidebar-switch-panel').css('visibility', 'visible');
             <hr>
             <div class="" id="issue_tree">
               <div class="contextual">
-                <a href="/projects/ecookbook/issues/new?back_url=%2Fissues%2F2&amp;issue%5Bparent_issue_id%5D=2&amp;issue%5Btracker_id%5D=2">Add</a>
+                <a class="icon icon-add" href="/projects/ecookbook/issues/new?back_url=%2Fissues%2F2&amp;issue%5Bparent_issue_id%5D=2&amp;issue%5Btracker_id%5D=2">
+                  <svg aria-hidden="true" class="s18 icon-svg">
+                    <use href="/assets/icons-DIGEST.svg#icon--add"></use>
+                  </svg>
+                  <span class="icon-label">Add</span>
+                </a>
               </div>
               <p>
                 <strong>Subtasks</strong>
@@ -596,7 +655,12 @@ $('#sidebar-switch-panel').css('visibility', 'visible');
             <hr>
             <div class="" id="relations">
               <div class="contextual">
-                <a href="#" onclick="$(&#39;#new-relation-form&#39;).toggle(); $(&#39;#relation_issue_to_id:visible&#39;).focus(); return false;">Add</a>
+                <a class="icon icon-link-add" href="#" onclick="$(&#39;#new-relation-form&#39;).toggle(); $(&#39;#relation_issue_to_id:visible&#39;).focus(); return false;">
+                  <svg aria-hidden="true" class="s18 icon-svg">
+                    <use href="/assets/icons-DIGEST.svg#icon--link-add"></use>
+                  </svg>
+                  <span class="icon-label">Add</span>
+                </a>
               </div>
               <p>
                 <strong>Related issues</strong>
@@ -644,11 +708,11 @@ $('#sidebar-switch-panel').css('visibility', 'visible');
                           <p class="percent"></p>
                         </td>
                         <td class="buttons">
-                          <a class="icon-only icon-link-break" data-confirm="Are you sure?" data-method="delete" data-remote="true" href="/relations/2?issue_id=2" rel="nofollow" title="Delete relation">
+                          <a class="icon-only icon-link-break" data-confirm="Are you sure?" data-method="delete" data-remote="true" href="/relations/2?issue_id=2" rel="nofollow" title="Remove relation">
                             <svg aria-hidden="true" class="s18 icon-svg">
                               <use href="/assets/icons-DIGEST.svg#icon--link-break"></use>
                             </svg>
-                            <span class="icon-label">Delete relation</span>
+                            <span class="icon-label">Remove relation</span>
                           </a>
                           <a class="icon-only icon-actions js-contextmenu" href="#" title="Actions">
                             <svg aria-hidden="true" class="s18 icon-svg">
@@ -759,7 +823,7 @@ setPredecessorFieldsVisibility();
                           </span>
                           <div class="drdn-content">
                             <div class="drdn-items">
-                              <a class="icon icon-copy-link" data-clipboard-text="{{BASE}}/issues/2#note-1" href="#" onclick="copyDataClipboardTextToClipboard(this);; return false;">
+                              <a class="icon icon-copy-link" data-action="clipboard#copyText" data-clipboard-text="{{BASE}}/issues/2#note-1" data-controller="clipboard" href="#">
                                 <svg aria-hidden="true" class="s18 icon-svg">
                                   <use href="/assets/icons-DIGEST.svg#icon--copy-link"></use>
                                 </svg>
@@ -853,7 +917,7 @@ showIssueHistory("history", this.href)
               </span>
               <div class="drdn-content">
                 <div class="drdn-items">
-                  <a class="icon icon-copy-link" data-clipboard-text="{{BASE}}/issues/2" href="#" onclick="copyDataClipboardTextToClipboard(this);; return false;">
+                  <a class="icon icon-copy-link" data-action="clipboard#copyText" data-clipboard-text="{{BASE}}/issues/2" data-controller="clipboard" href="#">
                     <svg aria-hidden="true" class="s18 icon-svg">
                       <use href="/assets/icons-DIGEST.svg#icon--copy-link"></use>
                     </svg>
@@ -948,7 +1012,7 @@ showIssueHistory("history", this.href)
                     <p>
                       <label for="issue_description">Description</label>
                       <span id="issue_description_and_toolbar" style="display:none">
-                        <textarea class="wiki-edit" cols="60" data-action="beforeinput-&gt;list-autofill#handleBeforeInput" data-auto-complete="true" data-controller="list-autofill" data-list-autofill-text-formatting-param="common_mark" id="issue_description" name="issue[description]" rows="10">Ingredients of the recipe should be classified by categories</textarea>
+                        <textarea class="wiki-edit" cols="60" data-action="beforeinput-&gt;list-autofill#handleBeforeInput keydown.tab-&gt;selection-indent#run keydown.shift+tab-&gt;selection-indent#run paste-&gt;table-paste#handlePaste" data-auto-complete="true" data-controller="list-autofill selection-indent table-paste" data-list-autofill-text-formatting-param="common_mark" data-selection-indent-text-formatting-param="common_mark" data-table-paste-text-formatting-param="common_mark" id="issue_description" name="issue[description]" rows="10">Ingredients of the recipe should be classified by categories</textarea>
                       </span>
                       <a class="icon icon-edit" href="#" onclick="$(this).hide(); $(&#34;#issue_description_and_toolbar&#34;).show(); return false;">
                         <span>
@@ -1223,7 +1287,7 @@ $(document).ready(function(){
                 </fieldset>
                 <fieldset id="add_notes">
                   <legend>Notes</legend>
-                  <textarea class="wiki-edit" cols="60" data-action="beforeinput-&gt;list-autofill#handleBeforeInput" data-auto-complete="true" data-controller="list-autofill" data-list-autofill-text-formatting-param="common_mark" id="issue_notes" name="issue[notes]" rows="10"></textarea>
+                  <textarea class="wiki-edit" cols="60" data-action="beforeinput-&gt;list-autofill#handleBeforeInput keydown.tab-&gt;selection-indent#run keydown.shift+tab-&gt;selection-indent#run paste-&gt;table-paste#handlePaste" data-auto-complete="true" data-controller="list-autofill selection-indent table-paste" data-list-autofill-text-formatting-param="common_mark" data-selection-indent-text-formatting-param="common_mark" data-table-paste-text-formatting-param="common_mark" id="issue_notes" name="issue[notes]" rows="10"></textarea>
                   <script>//<![CDATA[
 var wikiToolbar = new jsToolBar(document.getElementById('issue_notes')); wikiToolbar.setHelpLink('/help/wiki_syntax'); wikiToolbar.setPreviewUrl('/issues/preview?issue_id=2&project_id=ecookbook'); wikiToolbar.draw();
 //]]></script>
@@ -1239,7 +1303,7 @@ var wikiToolbar = new jsToolBar(document.getElementById('issue_notes')); wikiToo
                   <div id="existing-attachments" style="display:none;">
                     <span class="existing-attachment">
                       <svg aria-hidden="true" class="s12 icon-svg">
-                        <use href="/assets/icons-DIGEST.svg#icon--attachment"></use>
+                        <use href="/assets/icons-DIGEST.svg#icon--file"></use>
                       </svg>
                       <input class="icon icon-attachment filename" disabled="disabled" id="" name="" type="text" value="source.rb">
                       <label>
@@ -1249,7 +1313,7 @@ var wikiToolbar = new jsToolBar(document.getElementById('issue_notes')); wikiToo
                     </span>
                     <span class="existing-attachment">
                       <svg aria-hidden="true" class="s12 icon-svg">
-                        <use href="/assets/icons-DIGEST.svg#icon--attachment"></use>
+                        <use href="/assets/icons-DIGEST.svg#icon--photo"></use>
                       </svg>
                       <input class="icon icon-attachment filename" disabled="disabled" id="" name="" type="text" value="picture.jpg">
                       <label>
@@ -1266,7 +1330,7 @@ var wikiToolbar = new jsToolBar(document.getElementById('issue_notes')); wikiToo
                           <use href="/assets/icons-DIGEST.svg#icon--del"></use>
                         </svg>
                         <svg aria-hidden="true" class="s16 icon-svg svg-attachment">
-                          <use href="/assets/icons-DIGEST.svg#icon--attachment"></use>
+                          <use href="/assets/icons-DIGEST.svg#icon--file"></use>
                         </svg>
                         <svg aria-hidden="true" class="s16 icon-svg svg-loader">
                           <use href="/assets/icons-DIGEST.svg#icon--loader"></use>

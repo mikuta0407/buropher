@@ -2,7 +2,7 @@ status: 200
 content-type: text/html
 
 <!DOCTYPE html>
-<html lang="en">
+<html dir="ltr" lang="en">
   <head>
     <meta charset="utf-8">
     <title>Calendar - Redmine</title>
@@ -15,6 +15,7 @@ content-type: text/html
     <link href="/assets/jquery/jquery-ui-1.13.2-DIGEST.css" media="all" rel="stylesheet">
     <link href="/assets/tribute-5.1.3-DIGEST.css" media="all" rel="stylesheet">
     <link href="/assets/application-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/dropdown-DIGEST.css" media="all" rel="stylesheet">
     <link href="/assets/responsive-DIGEST.css" media="all" rel="stylesheet">
     <script data-turbo-track="reload" type="importmap">{
   "imports": {
@@ -23,12 +24,27 @@ content-type: text/html
     "@hotwired/stimulus": "/assets/stimulus.min-DIGEST.js",
     "@hotwired/stimulus-loading": "/assets/stimulus-loading-DIGEST.js",
     "turndown": "/assets/turndown-DIGEST.js",
+    "tablesort": "/assets/tablesort.min-DIGEST.js",
+    "tablesort.number": "/assets/tablesort.number.min-DIGEST.js",
+    "chart.js": "/assets/chart.min-DIGEST.js",
     "controllers/api_key_copy_controller": "/assets/controllers/api_key_copy_controller-DIGEST.js",
     "controllers/application": "/assets/controllers/application-DIGEST.js",
+    "controllers/clipboard_controller": "/assets/controllers/clipboard_controller-DIGEST.js",
+    "controllers/custom_field_default_value_controller": "/assets/controllers/custom_field_default_value_controller-DIGEST.js",
+    "controllers/dropdown_controller": "/assets/controllers/dropdown_controller-DIGEST.js",
+    "controllers/gantt/chart_controller": "/assets/controllers/gantt/chart_controller-DIGEST.js",
+    "controllers/gantt/column_controller": "/assets/controllers/gantt/column_controller-DIGEST.js",
+    "controllers/gantt/options_controller": "/assets/controllers/gantt/options_controller-DIGEST.js",
+    "controllers/gantt/subjects_controller": "/assets/controllers/gantt/subjects_controller-DIGEST.js",
     "controllers": "/assets/controllers/index-DIGEST.js",
     "controllers/list_autofill_controller": "/assets/controllers/list_autofill_controller-DIGEST.js",
     "controllers/quote_reply_controller": "/assets/controllers/quote_reply_controller-DIGEST.js",
-    "controllers/sticky_issue_header_controller": "/assets/controllers/sticky_issue_header_controller-DIGEST.js"
+    "controllers/reports/details_controller": "/assets/controllers/reports/details_controller-DIGEST.js",
+    "controllers/repositories/stats_controller": "/assets/controllers/repositories/stats_controller-DIGEST.js",
+    "controllers/selection_indent_controller": "/assets/controllers/selection_indent_controller-DIGEST.js",
+    "controllers/sticky_issue_header_controller": "/assets/controllers/sticky_issue_header_controller-DIGEST.js",
+    "controllers/table_paste_controller": "/assets/controllers/table_paste_controller-DIGEST.js",
+    "controllers/tablesort_controller": "/assets/controllers/tablesort_controller-DIGEST.js"
   }
 }</script>
     <link href="/assets/requestjs-DIGEST.js" rel="modulepreload">
@@ -36,12 +52,26 @@ content-type: text/html
     <link href="/assets/stimulus.min-DIGEST.js" rel="modulepreload">
     <link href="/assets/stimulus-loading-DIGEST.js" rel="modulepreload">
     <link href="/assets/turndown-DIGEST.js" rel="modulepreload">
+    <link href="/assets/tablesort.min-DIGEST.js" rel="modulepreload">
+    <link href="/assets/tablesort.number.min-DIGEST.js" rel="modulepreload">
     <link href="/assets/controllers/api_key_copy_controller-DIGEST.js" rel="modulepreload">
     <link href="/assets/controllers/application-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/clipboard_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/custom_field_default_value_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/dropdown_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/gantt/chart_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/gantt/column_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/gantt/options_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/gantt/subjects_controller-DIGEST.js" rel="modulepreload">
     <link href="/assets/controllers/index-DIGEST.js" rel="modulepreload">
     <link href="/assets/controllers/list_autofill_controller-DIGEST.js" rel="modulepreload">
     <link href="/assets/controllers/quote_reply_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/reports/details_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/repositories/stats_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/selection_indent_controller-DIGEST.js" rel="modulepreload">
     <link href="/assets/controllers/sticky_issue_header_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/table_paste_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/tablesort_controller-DIGEST.js" rel="modulepreload">
     <script type="module">import "application"</script>
     <script src="/assets/jquery-3.7.1-ui-1.13.3-DIGEST.js"></script>
     <script src="/assets/rails-ujs-DIGEST.js"></script>
@@ -63,7 +93,7 @@ var datepickerOptions={dateFormat: 'yy-mm-dd', firstDay: 0, showOn: 'button', bu
     <script src="/assets/context_menu-DIGEST.js"></script>
     <link href="/assets/context_menu-DIGEST.css" media="screen" rel="stylesheet">
   </head>
-  <body class="has-main-menu controller-calendars action-show avatars-off" data-text-formatting="common_mark">
+  <body class="has-main-menu controller-calendars action-show" data-text-formatting="common_mark">
     <div id="wrapper">
       <div class="flyout-menu js-flyout-menu">
         <div class="flyout-menu__search">
@@ -91,39 +121,57 @@ var datepickerOptions={dateFormat: 'yy-mm-dd', firstDay: 0, showOn: 'button', bu
         <h3>Profile</h3>
         <span class="js-profile-menu"></span>
       </div>
-      <div id="top-menu">
-        <div id="account">
-          <ul>
-            <li>
-              <a class="my-account" href="/my/account">My account</a>
-            </li>
-            <li>
-              <a class="logout" data-method="post" href="/logout" rel="nofollow">Sign out</a>
-            </li>
-          </ul>
+      <nav class="top-menu" id="top-menu">
+        <div class="general-menu">
+          <div class="top-menu__links">
+            <ul>
+              <li>
+                <a class="home" href="/">Home</a>
+              </li>
+              <li>
+                <a class="my-page" href="/my/page">My page</a>
+              </li>
+              <li>
+                <a class="projects" href="/projects">Projects</a>
+              </li>
+              <li>
+                <a class="administration" href="/admin">Administration</a>
+              </li>
+              <li>
+                <a class="help" href="https://www.redmine.org/guide" rel="noopener" target="_blank">Help</a>
+              </li>
+            </ul>
+          </div>
         </div>
-        <div id="loggedas">
-          Logged in as
-          <a class="user active" href="/users/1">admin</a>
+        <div class="profile-menu">
+          <div class="dropdown" data-controller="dropdown" id="account">
+            <a class="dropdown-trigger" data-action="click-&gt;dropdown#toggle" href="#">
+              <span class="avatar-color-1 s22 avatar" role="img">RA</span>
+              <svg aria-hidden="true" class="s14 icon-svg">
+                <use href="/assets/icons-DIGEST.svg#icon--angle-down"></use>
+              </svg>
+            </a>
+            <div class="dropdown-content hidden" data-dropdown-target="content">
+              <div class="user-info">
+                <span class="user-name">Redmine Admin</span>
+                <span class="user-login">@admin</span>
+              </div>
+              <div class="dropdown-divider"></div>
+              <ul>
+                <li>
+                  <a class="my-profile" href="/users/current">Profile</a>
+                </li>
+                <li>
+                  <a class="my-account" href="/my/account">My account</a>
+                </li>
+                <li>
+                  <a class="logout" data-method="post" href="/logout" rel="nofollow">Sign out</a>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
-        <ul>
-          <li>
-            <a class="home" href="/">Home</a>
-          </li>
-          <li>
-            <a class="my-page" href="/my/page">My page</a>
-          </li>
-          <li>
-            <a class="projects" href="/projects">Projects</a>
-          </li>
-          <li>
-            <a class="administration" href="/admin">Administration</a>
-          </li>
-          <li>
-            <a class="help" href="https://www.redmine.org/guide" rel="noopener" target="_blank">Help</a>
-          </li>
-        </ul>
-      </div>
+      </nav>
       <div id="header">
         <a class="mobile-toggle-button js-flyout-menu-toggle-button" href="#"></a>
         <div id="quick-search">
@@ -226,8 +274,8 @@ $('#sidebar-switch-panel').css('visibility', 'visible');
                     <script>//<![CDATA[
 
 var operatorLabels = {"=":"is","!":"is not","o":"open","c":"closed","!*":"none","*":"any","\u003e=":"\u003e=","\u003c=":"\u003c=","\u003e\u003c":"between","\u003ct+":"in less than","\u003et+":"in more than","\u003e\u003ct+":"in the next","t+":"in","nd":"tomorrow","t":"today","ld":"yesterday","nw":"next week","w":"this week","lw":"last week","l2w":"last 2 weeks","nm":"next month","m":"this month","lm":"last month","y":"this year","\u003et-":"less than days ago","\u003ct-":"more than days ago","\u003e\u003ct-":"in the past","t-":"days ago","~":"contains","!~":"doesn't contain","*~":"contains any of","^":"starts with","$":"ends with","=p":"any issues in project","=!p":"any issues not in project","!p":"no issues in project","*o":"any open issues","!o":"no open issues","ev":"has been","!ev":"has never been","cf":"changed from"};
-var operatorByType = {"list":["=","!"],"list_with_history":["=","!","ev","!ev","cf"],"list_status":["o","=","!","ev","!ev","cf","c","*"],"list_optional":["=","!","!*","*"],"list_optional_with_history":["=","!","ev","!ev","cf","!*","*"],"list_subprojects":["*","!*","=","!"],"date":["=","\u003e=","\u003c=","\u003e\u003c","\u003ct+","\u003et+","\u003e\u003ct+","t+","nd","t","ld","nw","w","lw","l2w","nm","m","lm","y","\u003et-","\u003ct-","\u003e\u003ct-","t-","!*","*"],"date_past":["=","\u003e=","\u003c=","\u003e\u003c","\u003et-","\u003ct-","\u003e\u003ct-","t-","t","ld","w","lw","l2w","m","lm","y","!*","*"],"string":["~","*~","=","!~","!","^","$","!*","*"],"text":["~","*~","!~","^","$","!*","*"],"search":["~","*~","!~"],"integer":["=","\u003e=","\u003c=","\u003e\u003c","!*","*"],"float":["=","\u003e=","\u003c=","\u003e\u003c","!*","*"],"relation":["=","!","=p","=!p","!p","*o","!o","!*","*"],"tree":["=","~","!*","*"]};
-var availableFilters = {"status_id":{"type":"list_status","name":"Status","remote":true,"values":[["New","1"],["Assigned","2"],["Resolved","3"],["Feedback","4"],["Closed","5"],["Rejected","6"]]},"project_id":{"type":"list","name":"Project","remote":true},"tracker_id":{"type":"list_with_history","name":"Tracker","values":[["Bug","1"],["Feature request","2"],["Support request","3"]]},"priority_id":{"type":"list_with_history","name":"Priority","values":[["Low","4"],["Normal","5"],["High","6"],["Urgent","7"],["Immediate","8"],["Inactive Priority","15"]]},"author_id":{"type":"list","name":"Author","remote":true},"author.group":{"type":"list","name":"Author's Group","remote":true},"author.role":{"type":"list","name":"Author's Role","remote":true},"assigned_to_id":{"type":"list_optional_with_history","name":"Assignee","remote":true},"member_of_group":{"type":"list_optional","name":"Assignee's group","remote":true},"assigned_to_role":{"type":"list_optional","name":"Assignee's role","remote":true},"fixed_version_id":{"type":"list_optional_with_history","name":"Target version","remote":true},"fixed_version.due_date":{"type":"date","name":"Target version's Due date","values":null},"fixed_version.status":{"type":"list","name":"Target version's Status","values":[["open","open"],["locked","locked"],["closed","closed"]]},"subject":{"type":"text","name":"Subject","values":null},"description":{"type":"text","name":"Description","values":null},"notes":{"type":"text","name":"Notes","values":null},"created_on":{"type":"date_past","name":"Created","values":null},"updated_on":{"type":"date_past","name":"Updated","values":null},"closed_on":{"type":"date_past","name":"Closed","values":null},"start_date":{"type":"date","name":"Start date","values":null},"due_date":{"type":"date","name":"Due date","values":null},"estimated_hours":{"type":"float","name":"Estimated time","values":null},"spent_time":{"type":"float","name":"Spent time","values":null},"done_ratio":{"type":"integer","name":"% Done","values":null},"is_private":{"type":"list","name":"Private","values":[["yes","1"],["no","0"]]},"attachment":{"type":"text","name":"File","values":null},"attachment_description":{"type":"text","name":"File description","values":null},"watcher_id":{"type":"list","name":"Watcher","remote":true},"updated_by":{"type":"list","name":"Updated by","remote":true},"last_updated_by":{"type":"list","name":"Last updated by","remote":true},"project.status":{"type":"list","name":"Project's Status","remote":true},"cf_2":{"type":"string","name":"Searchable field","values":null},"cf_1":{"type":"list_optional","name":"Database","remote":true},"cf_9":{"type":"date","name":"Project 1 cf","values":null},"project.cf_3":{"type":"list_optional","name":"Project's Development status","remote":true},"relates":{"type":"relation","name":"Related to","remote":true},"duplicates":{"type":"relation","name":"Is duplicate of","remote":true},"duplicated":{"type":"relation","name":"Has duplicate","remote":true},"blocks":{"type":"relation","name":"Blocks","remote":true},"blocked":{"type":"relation","name":"Blocked by","remote":true},"precedes":{"type":"relation","name":"Precedes","remote":true},"follows":{"type":"relation","name":"Follows","remote":true},"copied_to":{"type":"relation","name":"Copied to","remote":true},"copied_from":{"type":"relation","name":"Copied from","remote":true},"parent_id":{"type":"tree","name":"Parent task","values":null},"child_id":{"type":"tree","name":"Subtasks","values":null},"issue_id":{"type":"integer","name":"Issue","values":null},"any_searchable":{"type":"search","name":"Any searchable text","values":null}};
+var operatorByType = {"list":["=","!"],"list_with_history":["=","!","ev","!ev","cf"],"list_status":["o","=","!","ev","!ev","cf","c","*"],"list_optional":["=","!","!*","*"],"list_optional_with_history":["=","!","ev","!ev","cf","!*","*"],"list_subprojects":["*","!*","=","!"],"date":["=","\u003e=","\u003c=","\u003e\u003c","\u003ct+","\u003et+","\u003e\u003ct+","t+","nd","t","ld","nw","w","lw","l2w","nm","m","lm","y","\u003et-","\u003ct-","\u003e\u003ct-","t-","!*","*"],"date_past":["=","\u003e=","\u003c=","\u003e\u003c","\u003et-","\u003ct-","\u003e\u003ct-","t-","t","ld","w","lw","l2w","m","lm","y","!*","*"],"string":["~","*~","=","!~","!","^","$","!*","*"],"text":["~","*~","!~","^","$","!*","*"],"search":["~","*~","!~"],"integer":["=","\u003e=","\u003c=","\u003e\u003c","!*","*"],"float":["=","\u003e=","\u003c=","\u003e\u003c","!*","*"],"hour":["=","\u003e=","\u003c=","\u003e\u003c","!*","*"],"relation":["=","!","=p","=!p","!p","*o","!o","!*","*"],"tree":["=","~","!*","*"]};
+var availableFilters = {"status_id":{"type":"list_status","name":"Status","remote":true,"values":[["New","1"],["Assigned","2"],["Resolved","3"],["Feedback","4"],["Closed","5"],["Rejected","6"]]},"project_id":{"type":"list","name":"Project","remote":true},"tracker_id":{"type":"list_with_history","name":"Tracker","values":[["Bug","1"],["Feature request","2"],["Support request","3"]]},"priority_id":{"type":"list_with_history","name":"Priority","values":[["Low","4"],["Normal","5"],["High","6"],["Urgent","7"],["Immediate","8"],["Inactive Priority","15"]]},"author_id":{"type":"list","name":"Author","remote":true},"author.group":{"type":"list","name":"Author's Group","remote":true},"author.role":{"type":"list","name":"Author's Role","remote":true},"assigned_to_id":{"type":"list_optional_with_history","name":"Assignee","remote":true},"member_of_group":{"type":"list_optional","name":"Assignee's group","remote":true},"assigned_to_role":{"type":"list_optional","name":"Assignee's role","remote":true},"fixed_version_id":{"type":"list_optional_with_history","name":"Target version","remote":true},"fixed_version.due_date":{"type":"date","name":"Target version's Due date","values":null},"fixed_version.status":{"type":"list","name":"Target version's Status","values":[["open","open"],["locked","locked"],["closed","closed"]]},"subject":{"type":"text","name":"Subject","values":null},"description":{"type":"text","name":"Description","values":null},"notes":{"type":"text","name":"Notes","values":null},"created_on":{"type":"date_past","name":"Created","values":null},"updated_on":{"type":"date_past","name":"Updated","values":null},"closed_on":{"type":"date_past","name":"Closed","values":null},"start_date":{"type":"date","name":"Start date","values":null},"due_date":{"type":"date","name":"Due date","values":null},"estimated_hours":{"type":"hour","name":"Estimated time","values":null},"spent_time":{"type":"hour","name":"Spent time","values":null},"done_ratio":{"type":"integer","name":"% Done","values":null},"is_private":{"type":"list","name":"Private","values":[["yes","1"],["no","0"]]},"attachment":{"type":"text","name":"File","values":null},"attachment_description":{"type":"text","name":"File description","values":null},"watcher_id":{"type":"list","name":"Watcher","remote":true},"updated_by":{"type":"list","name":"Updated by","remote":true},"last_updated_by":{"type":"list","name":"Last updated by","remote":true},"project.status":{"type":"list","name":"Project's Status","remote":true},"cf_2":{"type":"string","name":"Searchable field","values":null},"cf_1":{"type":"list_optional","name":"Database","remote":true},"cf_9":{"type":"date","name":"Project 1 cf","values":null},"project.cf_3":{"type":"list_optional","name":"Project's Development status","remote":true},"relates":{"type":"relation","name":"Related to","remote":true},"duplicates":{"type":"relation","name":"Is duplicate of","remote":true},"duplicated":{"type":"relation","name":"Has duplicate","remote":true},"blocks":{"type":"relation","name":"Blocks","remote":true},"blocked":{"type":"relation","name":"Blocked by","remote":true},"precedes":{"type":"relation","name":"Precedes","remote":true},"follows":{"type":"relation","name":"Follows","remote":true},"copied_to":{"type":"relation","name":"Copied to","remote":true},"copied_from":{"type":"relation","name":"Copied from","remote":true},"parent_id":{"type":"tree","name":"Parent task","values":null},"child_id":{"type":"tree","name":"Subtasks","values":null},"issue_id":{"type":"integer","name":"Issue","values":null},"any_searchable":{"type":"search","name":"Any searchable text","values":null}};
 var labelDayPlural = "days";
 
 var filtersUrl = "\/queries\/filter?type=IssueQuery";
@@ -394,43 +442,43 @@ $(document).ready(function(){
               </li>
               <li class="other-month nwday calbody">
                 <p class="day-num">
-                  30
+                  <span class="day-value">30</span>
                   <span class="abbr-day">(Sun)</span>
                 </p>
               </li>
               <li class="this-month calbody">
                 <p class="day-num">
-                  1
+                  <span class="day-value">1</span>
                   <span class="abbr-day">(Mon)</span>
                 </p>
               </li>
               <li class="this-month calbody">
                 <p class="day-num">
-                  2
+                  <span class="day-value">2</span>
                   <span class="abbr-day">(Tue)</span>
                 </p>
               </li>
               <li class="this-month calbody">
                 <p class="day-num">
-                  3
+                  <span class="day-value">3</span>
                   <span class="abbr-day">(Wed)</span>
                 </p>
               </li>
               <li class="this-month calbody">
                 <p class="day-num">
-                  4
+                  <span class="day-value">4</span>
                   <span class="abbr-day">(Thu)</span>
                 </p>
               </li>
               <li class="this-month calbody">
                 <p class="day-num">
-                  5
+                  <span class="day-value">5</span>
                   <span class="abbr-day">(Fri)</span>
                 </p>
               </li>
               <li class="this-month nwday calbody">
                 <p class="day-num">
-                  6
+                  <span class="day-value">6</span>
                   <span class="abbr-day">(Sat)</span>
                 </p>
               </li>
@@ -440,43 +488,43 @@ $(document).ready(function(){
               </li>
               <li class="this-month nwday calbody">
                 <p class="day-num">
-                  7
+                  <span class="day-value">7</span>
                   <span class="abbr-day">(Sun)</span>
                 </p>
               </li>
               <li class="this-month calbody">
                 <p class="day-num">
-                  8
+                  <span class="day-value">8</span>
                   <span class="abbr-day">(Mon)</span>
                 </p>
               </li>
               <li class="this-month calbody">
                 <p class="day-num">
-                  9
+                  <span class="day-value">9</span>
                   <span class="abbr-day">(Tue)</span>
                 </p>
               </li>
               <li class="this-month calbody">
                 <p class="day-num">
-                  10
+                  <span class="day-value">10</span>
                   <span class="abbr-day">(Wed)</span>
                 </p>
               </li>
               <li class="this-month calbody">
                 <p class="day-num">
-                  11
+                  <span class="day-value">11</span>
                   <span class="abbr-day">(Thu)</span>
                 </p>
               </li>
               <li class="this-month calbody">
                 <p class="day-num">
-                  12
+                  <span class="day-value">12</span>
                   <span class="abbr-day">(Fri)</span>
                 </p>
               </li>
               <li class="this-month nwday calbody">
                 <p class="day-num">
-                  13
+                  <span class="day-value">13</span>
                   <span class="abbr-day">(Sat)</span>
                 </p>
               </li>
@@ -486,43 +534,43 @@ $(document).ready(function(){
               </li>
               <li class="this-month nwday calbody">
                 <p class="day-num">
-                  14
+                  <span class="day-value">14</span>
                   <span class="abbr-day">(Sun)</span>
                 </p>
               </li>
               <li class="this-month calbody">
                 <p class="day-num">
-                  15
+                  <span class="day-value">15</span>
                   <span class="abbr-day">(Mon)</span>
                 </p>
               </li>
               <li class="this-month calbody">
                 <p class="day-num">
-                  16
+                  <span class="day-value">16</span>
                   <span class="abbr-day">(Tue)</span>
                 </p>
               </li>
               <li class="this-month calbody">
                 <p class="day-num">
-                  17
+                  <span class="day-value">17</span>
                   <span class="abbr-day">(Wed)</span>
                 </p>
               </li>
               <li class="this-month calbody">
                 <p class="day-num">
-                  18
+                  <span class="day-value">18</span>
                   <span class="abbr-day">(Thu)</span>
                 </p>
               </li>
               <li class="this-month calbody">
                 <p class="day-num">
-                  19
+                  <span class="day-value">19</span>
                   <span class="abbr-day">(Fri)</span>
                 </p>
               </li>
               <li class="this-month nwday calbody">
                 <p class="day-num">
-                  20
+                  <span class="day-value">20</span>
                   <span class="abbr-day">(Sat)</span>
                 </p>
               </li>
@@ -532,43 +580,43 @@ $(document).ready(function(){
               </li>
               <li class="this-month nwday calbody">
                 <p class="day-num">
-                  21
+                  <span class="day-value">21</span>
                   <span class="abbr-day">(Sun)</span>
                 </p>
               </li>
               <li class="this-month calbody">
                 <p class="day-num">
-                  22
+                  <span class="day-value">22</span>
                   <span class="abbr-day">(Mon)</span>
                 </p>
               </li>
               <li class="this-month calbody">
                 <p class="day-num">
-                  23
+                  <span class="day-value">23</span>
                   <span class="abbr-day">(Tue)</span>
                 </p>
               </li>
               <li class="this-month calbody">
                 <p class="day-num">
-                  24
+                  <span class="day-value">24</span>
                   <span class="abbr-day">(Wed)</span>
                 </p>
               </li>
               <li class="this-month calbody">
                 <p class="day-num">
-                  25
+                  <span class="day-value">25</span>
                   <span class="abbr-day">(Thu)</span>
                 </p>
               </li>
               <li class="this-month calbody">
                 <p class="day-num">
-                  26
+                  <span class="day-value">26</span>
                   <span class="abbr-day">(Fri)</span>
                 </p>
               </li>
               <li class="this-month nwday calbody">
                 <p class="day-num">
-                  27
+                  <span class="day-value">27</span>
                   <span class="abbr-day">(Sat)</span>
                 </p>
               </li>
@@ -578,25 +626,25 @@ $(document).ready(function(){
               </li>
               <li class="this-month nwday calbody">
                 <p class="day-num">
-                  28
+                  <span class="day-value">28</span>
                   <span class="abbr-day">(Sun)</span>
                 </p>
               </li>
               <li class="this-month calbody">
                 <p class="day-num">
-                  29
+                  <span class="day-value">29</span>
                   <span class="abbr-day">(Mon)</span>
                 </p>
               </li>
               <li class="this-month calbody">
                 <p class="day-num">
-                  30
+                  <span class="day-value">30</span>
                   <span class="abbr-day">(Tue)</span>
                 </p>
               </li>
               <li class="this-month calbody">
                 <p class="day-num">
-                  31
+                  <span class="day-value">31</span>
                   <span class="abbr-day">(Wed)</span>
                 </p>
                 <div class="issue tracker-1 status-1 priority-4 priority-lowest overdue behind-schedule tooltip hascontextmenu starting">
@@ -637,19 +685,19 @@ $(document).ready(function(){
               </li>
               <li class="other-month calbody">
                 <p class="day-num">
-                  1
+                  <span class="day-value">1</span>
                   <span class="abbr-day">(Thu)</span>
                 </p>
               </li>
               <li class="other-month calbody">
                 <p class="day-num">
-                  2
+                  <span class="day-value">2</span>
                   <span class="abbr-day">(Fri)</span>
                 </p>
               </li>
               <li class="other-month nwday calbody">
                 <p class="day-num">
-                  3
+                  <span class="day-value">3</span>
                   <span class="abbr-day">(Sat)</span>
                 </p>
               </li>

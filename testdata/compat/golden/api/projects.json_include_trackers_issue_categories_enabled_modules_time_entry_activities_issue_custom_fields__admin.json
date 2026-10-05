@@ -159,20 +159,6 @@ content-type: application/json
         }
       ],
       "issue_categories": [],
-      "time_entry_activities": [
-        {
-          "id": 9,
-          "name": "Design"
-        },
-        {
-          "id": 10,
-          "name": "Development"
-        },
-        {
-          "id": 11,
-          "name": "QA"
-        }
-      ],
       "enabled_modules": [
         {
           "id": 14,
@@ -228,41 +214,7 @@ content-type: application/json
           "value": null
         }
       ],
-      "trackers": [],
-      "issue_categories": [],
-      "time_entry_activities": [
-        {
-          "id": 9,
-          "name": "Design"
-        },
-        {
-          "id": 10,
-          "name": "Development"
-        },
-        {
-          "id": 11,
-          "name": "QA"
-        }
-      ],
       "enabled_modules": [],
-      "issue_custom_fields": [
-        {
-          "id": 2,
-          "name": "Searchable field"
-        },
-        {
-          "id": 1,
-          "name": "Database"
-        },
-        {
-          "id": 6,
-          "name": "Float field"
-        },
-        {
-          "id": 8,
-          "name": "Custom date"
-        }
-      ],
       "created_on": "2006-07-19T17:15:51Z",
       "updated_on": "2006-07-19T17:17:07Z"
     },
@@ -382,41 +334,7 @@ content-type: application/json
           "value": null
         }
       ],
-      "trackers": [],
-      "issue_categories": [],
-      "time_entry_activities": [
-        {
-          "id": 9,
-          "name": "Design"
-        },
-        {
-          "id": 10,
-          "name": "Development"
-        },
-        {
-          "id": 11,
-          "name": "QA"
-        }
-      ],
       "enabled_modules": [],
-      "issue_custom_fields": [
-        {
-          "id": 2,
-          "name": "Searchable field"
-        },
-        {
-          "id": 1,
-          "name": "Database"
-        },
-        {
-          "id": 6,
-          "name": "Float field"
-        },
-        {
-          "id": 8,
-          "name": "Custom date"
-        }
-      ],
       "created_on": "2006-07-19T17:15:51Z",
       "updated_on": "2006-07-19T17:17:07Z"
     },
@@ -458,20 +376,6 @@ content-type: application/json
         {
           "id": 3,
           "name": "Stock management"
-        }
-      ],
-      "time_entry_activities": [
-        {
-          "id": 9,
-          "name": "Design"
-        },
-        {
-          "id": 10,
-          "name": "Development"
-        },
-        {
-          "id": 11,
-          "name": "QA"
         }
       ],
       "enabled_modules": [

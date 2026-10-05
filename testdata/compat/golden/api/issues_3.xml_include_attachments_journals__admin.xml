@@ -54,7 +54,7 @@ content-type: application/xml
     <attachment>
       <id>5</id>
       <filename>changeset_iso8859-1.diff</filename>
-      <filesize>687</filesize>
+      <filesize>686</filesize>
       <content_type>text/x-diff</content_type>
       <description/>
       <content_url>{{BASE}}/attachments/download/5/changeset_iso8859-1.diff</content_url>
@@ -74,7 +74,7 @@ content-type: application/xml
     <attachment>
       <id>14</id>
       <filename>changeset_utf8.diff</filename>
-      <filesize>687</filesize>
+      <filesize>691</filesize>
       <content_type>text/x-diff</content_type>
       <description/>
       <content_url>{{BASE}}/attachments/download/14/changeset_utf8.diff</content_url>

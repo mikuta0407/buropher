@@ -9,6 +9,10 @@ content-type: application/json
         "title": "Parent_page"
       },
       "version": 1,
+      "project": {
+        "id": 2,
+        "name": "OnlineStore"
+      },
       "created_on": "2007-03-07T23:18:07Z",
       "updated_on": "2007-03-07T23:18:07Z"
     },
@@ -18,18 +22,30 @@ content-type: application/json
         "title": "Parent_page"
       },
       "version": 1,
+      "project": {
+        "id": 2,
+        "name": "OnlineStore"
+      },
       "created_on": "2007-03-07T23:18:07Z",
       "updated_on": "2007-03-07T23:18:07Z"
     },
     {
       "title": "Parent_page",
       "version": 1,
+      "project": {
+        "id": 2,
+        "name": "OnlineStore"
+      },
       "created_on": "2007-03-07T23:18:07Z",
       "updated_on": "2007-03-07T23:18:07Z"
     },
     {
       "title": "Start_page",
       "version": 1,
+      "project": {
+        "id": 2,
+        "name": "OnlineStore"
+      },
       "created_on": "2007-03-07T23:18:07Z",
       "updated_on": "2007-03-07T23:18:07Z"
     }

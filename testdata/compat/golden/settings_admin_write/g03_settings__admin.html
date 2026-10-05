@@ -2,7 +2,7 @@ status: 200
 content-type: text/html
 
 <!DOCTYPE html>
-<html lang="en">
+<html dir="ltr" lang="en">
   <head>
     <meta charset="utf-8">
     <title>Settings - Administration - Buropher test</title>
@@ -15,6 +15,7 @@ content-type: text/html
     <link href="/assets/jquery/jquery-ui-1.13.2-DIGEST.css" media="all" rel="stylesheet">
     <link href="/assets/tribute-5.1.3-DIGEST.css" media="all" rel="stylesheet">
     <link href="/assets/themes/classic/application-DIGEST.css" media="all" rel="stylesheet">
+    <link href="/assets/dropdown-DIGEST.css" media="all" rel="stylesheet">
     <link href="/assets/responsive-DIGEST.css" media="all" rel="stylesheet">
     <script data-turbo-track="reload" type="importmap">{
   "imports": {
@@ -23,12 +24,27 @@ content-type: text/html
     "@hotwired/stimulus": "/assets/stimulus.min-DIGEST.js",
     "@hotwired/stimulus-loading": "/assets/stimulus-loading-DIGEST.js",
     "turndown": "/assets/turndown-DIGEST.js",
+    "tablesort": "/assets/tablesort.min-DIGEST.js",
+    "tablesort.number": "/assets/tablesort.number.min-DIGEST.js",
+    "chart.js": "/assets/chart.min-DIGEST.js",
     "controllers/api_key_copy_controller": "/assets/controllers/api_key_copy_controller-DIGEST.js",
     "controllers/application": "/assets/controllers/application-DIGEST.js",
+    "controllers/clipboard_controller": "/assets/controllers/clipboard_controller-DIGEST.js",
+    "controllers/custom_field_default_value_controller": "/assets/controllers/custom_field_default_value_controller-DIGEST.js",
+    "controllers/dropdown_controller": "/assets/controllers/dropdown_controller-DIGEST.js",
+    "controllers/gantt/chart_controller": "/assets/controllers/gantt/chart_controller-DIGEST.js",
+    "controllers/gantt/column_controller": "/assets/controllers/gantt/column_controller-DIGEST.js",
+    "controllers/gantt/options_controller": "/assets/controllers/gantt/options_controller-DIGEST.js",
+    "controllers/gantt/subjects_controller": "/assets/controllers/gantt/subjects_controller-DIGEST.js",
     "controllers": "/assets/controllers/index-DIGEST.js",
     "controllers/list_autofill_controller": "/assets/controllers/list_autofill_controller-DIGEST.js",
     "controllers/quote_reply_controller": "/assets/controllers/quote_reply_controller-DIGEST.js",
-    "controllers/sticky_issue_header_controller": "/assets/controllers/sticky_issue_header_controller-DIGEST.js"
+    "controllers/reports/details_controller": "/assets/controllers/reports/details_controller-DIGEST.js",
+    "controllers/repositories/stats_controller": "/assets/controllers/repositories/stats_controller-DIGEST.js",
+    "controllers/selection_indent_controller": "/assets/controllers/selection_indent_controller-DIGEST.js",
+    "controllers/sticky_issue_header_controller": "/assets/controllers/sticky_issue_header_controller-DIGEST.js",
+    "controllers/table_paste_controller": "/assets/controllers/table_paste_controller-DIGEST.js",
+    "controllers/tablesort_controller": "/assets/controllers/tablesort_controller-DIGEST.js"
   }
 }</script>
     <link href="/assets/requestjs-DIGEST.js" rel="modulepreload">
@@ -36,12 +52,26 @@ content-type: text/html
     <link href="/assets/stimulus.min-DIGEST.js" rel="modulepreload">
     <link href="/assets/stimulus-loading-DIGEST.js" rel="modulepreload">
     <link href="/assets/turndown-DIGEST.js" rel="modulepreload">
+    <link href="/assets/tablesort.min-DIGEST.js" rel="modulepreload">
+    <link href="/assets/tablesort.number.min-DIGEST.js" rel="modulepreload">
     <link href="/assets/controllers/api_key_copy_controller-DIGEST.js" rel="modulepreload">
     <link href="/assets/controllers/application-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/clipboard_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/custom_field_default_value_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/dropdown_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/gantt/chart_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/gantt/column_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/gantt/options_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/gantt/subjects_controller-DIGEST.js" rel="modulepreload">
     <link href="/assets/controllers/index-DIGEST.js" rel="modulepreload">
     <link href="/assets/controllers/list_autofill_controller-DIGEST.js" rel="modulepreload">
     <link href="/assets/controllers/quote_reply_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/reports/details_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/repositories/stats_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/selection_indent_controller-DIGEST.js" rel="modulepreload">
     <link href="/assets/controllers/sticky_issue_header_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/table_paste_controller-DIGEST.js" rel="modulepreload">
+    <link href="/assets/controllers/tablesort_controller-DIGEST.js" rel="modulepreload">
     <script type="module">import "application"</script>
     <script src="/assets/jquery-3.7.1-ui-1.13.3-DIGEST.js"></script>
     <script src="/assets/rails-ujs-DIGEST.js"></script>
@@ -61,11 +91,11 @@ rm = window.rm || {};rm.AutoComplete = rm.AutoComplete || {};rm.AutoComplete.dat
     <script src="/assets/jstoolbar/textile-DIGEST.js"></script>
     <script src="/assets/jstoolbar/lang/jstoolbar-en-DIGEST.js"></script>
     <script>//<![CDATA[
-var wikiImageMimeTypes = ["image/gif","image/jpeg","image/png","image/tiff","image/webp","image/x-ms-bmp"];var userHlLanguages = ["c","cpp","csharp","css","diff","go","groovy","html","java","javascript","objc","perl","php","python","r","ruby","sass","scala","shell","sql","swift","xml","yaml"];
+var wikiImageMimeTypes = ["image/avif","image/gif","image/jpeg","image/png","image/tiff","image/webp","image/x-ms-bmp"];var userHlLanguages = ["c","cpp","csharp","css","diff","go","groovy","html","java","javascript","objc","perl","php","python","r","ruby","sass","scala","shell","sql","swift","xml","yaml"];
 //]]></script>
     <link href="/assets/jstoolbar-DIGEST.css" media="screen" rel="stylesheet">
   </head>
-  <body class="theme-Classic controller-settings action-index avatars-on" data-text-formatting="textile">
+  <body class="theme-Classic controller-settings action-index" data-text-formatting="textile">
     <div id="wrapper">
       <div class="flyout-menu js-flyout-menu">
         <div class="flyout-menu__search">
@@ -91,39 +121,57 @@ var wikiImageMimeTypes = ["image/gif","image/jpeg","image/png","image/tiff","ima
         <h3>Profile</h3>
         <span class="js-profile-menu"></span>
       </div>
-      <div id="top-menu">
-        <div id="account">
-          <ul>
-            <li>
-              <a class="my-account" href="/my/account">My account</a>
-            </li>
-            <li>
-              <a class="logout" data-method="post" href="/logout" rel="nofollow">Sign out</a>
-            </li>
-          </ul>
+      <nav class="top-menu" id="top-menu">
+        <div class="general-menu">
+          <div class="top-menu__links">
+            <ul>
+              <li>
+                <a class="home" href="/">Home</a>
+              </li>
+              <li>
+                <a class="my-page" href="/my/page">My page</a>
+              </li>
+              <li>
+                <a class="projects" href="/projects">Projects</a>
+              </li>
+              <li>
+                <a class="administration" href="/admin">Administration</a>
+              </li>
+              <li>
+                <a class="help" href="https://www.redmine.org/guide" rel="noopener" target="_blank">Help</a>
+              </li>
+            </ul>
+          </div>
         </div>
-        <div id="loggedas">
-          Logged in as
-          <a class="user active" href="/users/1">admin</a>
+        <div class="profile-menu">
+          <div class="dropdown" data-controller="dropdown" id="account">
+            <a class="dropdown-trigger" data-action="click-&gt;dropdown#toggle" href="#">
+              <img alt="" class="gravatar avatar" initials="AR" src="https://www.gravatar.com/avatar/7833d2d28cf2c03834091ec1567351f6da614983803a269572ca1d68bf69613b?rating=PG&amp;size=22&amp;default=initials&amp;initials=AR" srcset="https://www.gravatar.com/avatar/7833d2d28cf2c03834091ec1567351f6da614983803a269572ca1d68bf69613b?rating=PG&amp;size=44&amp;default=initials&amp;initials=AR 2x" title="Admin, Redmine">
+              <svg aria-hidden="true" class="s14 icon-svg">
+                <use href="/assets/icons-DIGEST.svg#icon--angle-down"></use>
+              </svg>
+            </a>
+            <div class="dropdown-content hidden" data-dropdown-target="content">
+              <div class="user-info">
+                <span class="user-name">Admin, Redmine</span>
+                <span class="user-login">@admin</span>
+              </div>
+              <div class="dropdown-divider"></div>
+              <ul>
+                <li>
+                  <a class="my-profile" href="/users/current">Profile</a>
+                </li>
+                <li>
+                  <a class="my-account" href="/my/account">My account</a>
+                </li>
+                <li>
+                  <a class="logout" data-method="post" href="/logout" rel="nofollow">Sign out</a>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
-        <ul>
-          <li>
-            <a class="home" href="/">Home</a>
-          </li>
-          <li>
-            <a class="my-page" href="/my/page">My page</a>
-          </li>
-          <li>
-            <a class="projects" href="/projects">Projects</a>
-          </li>
-          <li>
-            <a class="administration" href="/admin">Administration</a>
-          </li>
-          <li>
-            <a class="help" href="https://www.redmine.org/guide" rel="noopener" target="_blank">Help</a>
-          </li>
-        </ul>
-      </div>
+      </nav>
       <div id="header">
         <a class="mobile-toggle-button js-flyout-menu-toggle-button" href="#"></a>
         <div id="quick-search">
@@ -320,7 +368,7 @@ $('#sidebar-switch-panel').css('visibility', 'visible');
                 <a href="/settings?tab=authentication" id="tab-authentication" onclick="showTab(&#39;authentication&#39;, this.href); return false;">Authentication</a>
               </li>
               <li>
-                <a href="/settings?tab=api" id="tab-api" onclick="showTab(&#39;api&#39;, this.href); return false;">API</a>
+                <a href="/settings?tab=integrations" id="tab-integrations" onclick="showTab(&#39;integrations&#39;, this.href); return false;">Integrations</a>
               </li>
               <li>
                 <a href="/settings?tab=projects" id="tab-projects" onclick="showTab(&#39;projects&#39;, this.href); return false;">Projects</a>
@@ -370,7 +418,7 @@ $('#sidebar-switch-panel').css('visibility', 'visible');
                 </p>
                 <p>
                   <label for="settings_welcome_text">Welcome text</label>
-                  <textarea class="wiki-edit" cols="60" data-action="beforeinput-&gt;list-autofill#handleBeforeInput" data-controller="list-autofill" data-list-autofill-text-formatting-param="textile" id="settings_welcome_text" name="settings[welcome_text]" rows="5">Welcome to Redmine, an open-source, flexible project management software.
+                  <textarea class="wiki-edit" cols="60" data-action="beforeinput-&gt;list-autofill#handleBeforeInput keydown.tab-&gt;selection-indent#run keydown.shift+tab-&gt;selection-indent#run paste-&gt;table-paste#handlePaste" data-controller="list-autofill selection-indent table-paste" data-list-autofill-text-formatting-param="textile" data-selection-indent-text-formatting-param="textile" data-table-paste-text-formatting-param="textile" id="settings_welcome_text" name="settings[welcome_text]" rows="5">Welcome to Redmine, an open-source, flexible project management software.
 
 Note: You can modify this message in the &#34;Welcome text&#34; setting (Administration &gt; Settings &gt; General).</textarea>
                 </p>
@@ -601,13 +649,14 @@ var wikiToolbar = new jsToolBar(document.getElementById('settings_welcome_text')
                   <label for="settings_gravatar_default">Default Gravatar image</label>
                   <select id="settings_gravatar_default" name="settings[gravatar_default]">
                     <option value="">none</option>
+                    <option selected="selected" value="initials">Initials</option>
+                    <option value="color">Color</option>
+                    <option value="mm">Mystery man</option>
                     <option value="identicon">Identicons</option>
                     <option value="monsterid">Monster ids</option>
-                    <option value="mm">Mystery man</option>
+                    <option value="wavatar">Wavatars</option>
                     <option value="retro">Retro</option>
                     <option value="robohash">Robohash</option>
-                    <option value="wavatar">Wavatars</option>
-                    <option selected="selected" value="initials">Initials</option>
                   </select>
                   <em class="info">
                     Users&#39; initials are sent to
@@ -803,8 +852,8 @@ var wikiToolbar = new jsToolBar(document.getElementById('settings_welcome_text')
               <input data-disable-with="Save" name="commit" type="submit" value="Save">
             </form>
           </div>
-          <div class="tab-content" id="tab-content-api" style="display:none">
-            <form accept-charset="UTF-8" action="/settings/edit?tab=api" method="post" name="form-RANDOM">
+          <div class="tab-content" id="tab-content-integrations" style="display:none">
+            <form accept-charset="UTF-8" action="/settings/edit?tab=integrations" method="post" name="form-RANDOM">
               <input autocomplete="off" name="authenticity_token" type="hidden" value="{{CSRF}}">
               <div class="box tabular settings">
                 <p>
@@ -816,6 +865,11 @@ var wikiToolbar = new jsToolBar(document.getElementById('settings_welcome_text')
                   <label for="settings_jsonp_enabled">Enable JSONP support</label>
                   <input autocomplete="off" name="settings[jsonp_enabled]" type="hidden" value="0">
                   <input id="settings_jsonp_enabled" name="settings[jsonp_enabled]" type="checkbox" value="1">
+                </p>
+                <p>
+                  <label for="settings_webhooks_enabled">Enable webhooks</label>
+                  <input autocomplete="off" name="settings[webhooks_enabled]" type="hidden" value="0">
+                  <input id="settings_webhooks_enabled" name="settings[webhooks_enabled]" type="checkbox" value="1">
                 </p>
               </div>
               <input data-disable-with="Save" name="commit" type="submit" value="Save">
@@ -1016,6 +1070,7 @@ $(document).ready(function(){
                       <option value="only_my_events">Only for things I watch or I&#39;m involved in</option>
                       <option selected="selected" value="only_assigned">Only for things I watch or I am assigned to</option>
                       <option value="only_owner">Only for things I watch or I am the owner of</option>
+                      <option value="only_my_watches">Only for things I watch</option>
                       <option value="none">No events</option>
                     </select>
                   </p>
@@ -1057,9 +1112,11 @@ $(document).ready(function(){
                       <option value="Puerto Rico">(GMT-04:00) Puerto Rico</option>
                       <option value="Santiago">(GMT-04:00) Santiago</option>
                       <option value="Newfoundland">(GMT-03:30) Newfoundland</option>
+                      <option value="Asuncion">(GMT-03:00) Asuncion</option>
                       <option value="Brasilia">(GMT-03:00) Brasilia</option>
                       <option value="Buenos Aires">(GMT-03:00) Buenos Aires</option>
                       <option value="Montevideo">(GMT-03:00) Montevideo</option>
+                      <option value="Greenland">(GMT-02:00) Greenland</option>
                       <option value="Mid-Atlantic">(GMT-02:00) Mid-Atlantic</option>
                       <option value="Azores">(GMT-01:00) Azores</option>
                       <option value="Cape Verde Is.">(GMT-01:00) Cape Verde Is.</option>
@@ -1189,6 +1246,10 @@ $(document).ready(function(){
                       <input checked="checked" name="settings[default_users_auto_watch_on][]" type="checkbox" value="issue_contributed_to">
                       Issues I contributed to
                     </label>
+                    <label class="block">
+                      <input name="settings[default_users_auto_watch_on][]" type="checkbox" value="issue_assigned_to_me">
+                      Issues assigned to me
+                    </label>
                   </p>
                 </div>
               </fieldset>
@@ -1238,12 +1299,30 @@ $(document).ready(function(){
                 <p>
                   <label for="settings_issue_group_assignment">Allow issue assignment to groups</label>
                   <input autocomplete="off" name="settings[issue_group_assignment]" type="hidden" value="0">
-                  <input id="settings_issue_group_assignment" name="settings[issue_group_assignment]" type="checkbox" value="1">
+                  <input data-enables="#settings_assignee_dropdown_display_format" id="settings_issue_group_assignment" name="settings[issue_group_assignment]" type="checkbox" value="1">
+                </p>
+                <p>
+                  <label for="settings_assignee_dropdown_display_format">Assignee drop-down display format</label>
+                  <select id="settings_assignee_dropdown_display_format" name="settings[assignee_dropdown_display_format]">
+                    <option selected="selected" value="users_then_groups">Users then groups</option>
+                    <option value="groups_then_users">Groups then users</option>
+                    <option value="users_by_group">Users by group</option>
+                  </select>
                 </p>
                 <p>
                   <label for="settings_default_issue_start_date_to_creation_date">Use current date as start date for new issues</label>
                   <input autocomplete="off" name="settings[default_issue_start_date_to_creation_date]" type="hidden" value="0">
-                  <input checked="checked" id="settings_default_issue_start_date_to_creation_date" name="settings[default_issue_start_date_to_creation_date]" type="checkbox" value="1">
+                  <input id="settings_default_issue_start_date_to_creation_date" name="settings[default_issue_start_date_to_creation_date]" type="checkbox" value="1">
+                </p>
+                <p>
+                  <label for="settings_default_issue_due_date_offset_enabled">Enable default due date for new issues</label>
+                  <input autocomplete="off" name="settings[default_issue_due_date_offset_enabled]" type="hidden" value="0">
+                  <input data-enables="#settings_default_issue_due_date_offset" id="settings_default_issue_due_date_offset_enabled" name="settings[default_issue_due_date_offset_enabled]" type="checkbox" value="1">
+                </p>
+                <p>
+                  <label></label>
+                  <input disabled="disabled" id="settings_default_issue_due_date_offset" name="settings[default_issue_due_date_offset]" size="6" type="text" value="">
+                  days relative to today
                 </p>
                 <p>
                   <label for="settings_display_subprojects_issues">Display subprojects issues on main projects by default</label>
@@ -1794,14 +1873,14 @@ $(document).ready(function(){
               </fieldset>
               <fieldset class="box">
                 <legend>Email header</legend>
-                <textarea class="wiki-edit" data-action="beforeinput-&gt;list-autofill#handleBeforeInput" data-controller="list-autofill" data-list-autofill-text-formatting-param="textile" id="settings_emails_header" name="settings[emails_header]" rows="5"></textarea>
+                <textarea class="wiki-edit" data-action="beforeinput-&gt;list-autofill#handleBeforeInput keydown.tab-&gt;selection-indent#run keydown.shift+tab-&gt;selection-indent#run paste-&gt;table-paste#handlePaste" data-controller="list-autofill selection-indent table-paste" data-list-autofill-text-formatting-param="textile" data-selection-indent-text-formatting-param="textile" data-table-paste-text-formatting-param="textile" id="settings_emails_header" name="settings[emails_header]" rows="5"></textarea>
                 <script>//<![CDATA[
 var wikiToolbar = new jsToolBar(document.getElementById('settings_emails_header')); wikiToolbar.setHelpLink('/help/wiki_syntax'); wikiToolbar.setPreviewUrl('/preview/text'); wikiToolbar.draw();
 //]]></script>
               </fieldset>
               <fieldset class="box">
                 <legend>Email footer</legend>
-                <textarea class="wiki-edit" data-action="beforeinput-&gt;list-autofill#handleBeforeInput" data-controller="list-autofill" data-list-autofill-text-formatting-param="textile" id="settings_emails_footer" name="settings[emails_footer]" rows="5">You have received this notification because you have either subscribed to it, or are involved in it.
+                <textarea class="wiki-edit" data-action="beforeinput-&gt;list-autofill#handleBeforeInput keydown.tab-&gt;selection-indent#run keydown.shift+tab-&gt;selection-indent#run paste-&gt;table-paste#handlePaste" data-controller="list-autofill selection-indent table-paste" data-list-autofill-text-formatting-param="textile" data-selection-indent-text-formatting-param="textile" data-table-paste-text-formatting-param="textile" id="settings_emails_footer" name="settings[emails_footer]" rows="5">You have received this notification because you have either subscribed to it, or are involved in it.
 To change your notification preferences, please click here: http://hostname/my/account</textarea>
                 <script>//<![CDATA[
 var wikiToolbar = new jsToolBar(document.getElementById('settings_emails_footer')); wikiToolbar.setHelpLink('/help/wiki_syntax'); wikiToolbar.setPreviewUrl('/preview/text'); wikiToolbar.draw();

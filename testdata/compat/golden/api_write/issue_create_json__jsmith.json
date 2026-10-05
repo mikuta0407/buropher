@@ -28,7 +28,7 @@ location: {{BASE}}/issues/15
     },
     "subject": "API test",
     "description": "API description",
-    "start_date": "2026-01-15",
+    "start_date": null,
     "due_date": null,
     "done_ratio": 0,
     "is_private": false,

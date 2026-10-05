@@ -6,6 +6,10 @@ content-type: application/json
     {
       "title": "Another_page",
       "version": 1,
+      "project": {
+        "id": 1,
+        "name": "eCookbook"
+      },
       "created_on": "2007-03-07T23:18:07Z",
       "updated_on": "2007-03-07T23:18:07Z"
     },
@@ -15,6 +19,10 @@ content-type: application/json
         "title": "Another_page"
       },
       "version": 1,
+      "project": {
+        "id": 1,
+        "name": "eCookbook"
+      },
       "created_on": "2007-03-07T23:18:07Z",
       "updated_on": "2007-03-07T23:18:07Z"
     },
@@ -24,6 +32,10 @@ content-type: application/json
         "title": "Child_1"
       },
       "version": 1,
+      "project": {
+        "id": 1,
+        "name": "eCookbook"
+      },
       "created_on": "2007-03-07T23:18:07Z",
       "updated_on": "2007-03-07T23:18:07Z"
     },
@@ -33,12 +45,20 @@ content-type: application/json
         "title": "Another_page"
       },
       "version": 1,
+      "project": {
+        "id": 1,
+        "name": "eCookbook"
+      },
       "created_on": "2007-03-07T23:18:07Z",
       "updated_on": "2007-03-07T23:18:07Z"
     },
     {
       "title": "CookBook_documentation",
       "version": 3,
+      "project": {
+        "id": 1,
+        "name": "eCookbook"
+      },
       "created_on": "2007-03-06T23:08:07Z",
       "updated_on": "2007-03-06T23:10:51Z"
     },
@@ -48,18 +68,30 @@ content-type: application/json
         "title": "CookBook_documentation"
       },
       "version": 1,
+      "project": {
+        "id": 1,
+        "name": "eCookbook"
+      },
       "created_on": "2007-03-07T23:18:07Z",
       "updated_on": "2007-03-07T23:18:07Z"
     },
     {
       "title": "Page_with_sections",
       "version": 3,
+      "project": {
+        "id": 1,
+        "name": "eCookbook"
+      },
       "created_on": "2007-03-07T23:18:07Z",
       "updated_on": "2007-03-07T23:18:07Z"
     },
     {
       "title": "Этика_менеджмента",
       "version": 1,
+      "project": {
+        "id": 1,
+        "name": "eCookbook"
+      },
       "created_on": "2007-03-07T23:18:07Z",
       "updated_on": "2007-03-07T23:18:07Z"
     }
