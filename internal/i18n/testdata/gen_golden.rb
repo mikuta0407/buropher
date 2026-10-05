@@ -4,7 +4,7 @@
 #
 # 使い方（リポジトリルートから。DB は読み取りのみで変更しない）:
 #   SECRET_KEY_BASE=x RAILS_ENV=production GOLDEN_OUT=$PWD/internal/i18n/testdata \
-#     _reference/redmine-migrated/bin/rails runner internal/i18n/testdata/gen_golden.rb
+#     _reference/redmine7-migrated/bin/rails runner internal/i18n/testdata/gen_golden.rb
 #
 # 出力:
 #   golden.json         ... l() / format_* / strftime / distance_* / number_* / タイムゾーン等のケース
