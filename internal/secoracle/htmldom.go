@@ -20,7 +20,7 @@ var impliedElements = toSet("tbody", "tr", "colgroup", "p", "html", "head", "bod
 var booleanAttrs = toSet("checked", "compact", "declare", "defer", "disabled", "ismap",
 	"multiple", "nohref", "noresize", "noshade", "nowrap", "readonly", "selected")
 
-// CheckDOMRender は htmldom の木 t と、その直列化 htmldom.Render(t) をブラウザ（HTML5 パーサ）が解析した
+// CheckDOMRender は htmldom の木 t と、その直列化 htmldom.RenderHTML5(t)（Redmine 7.0 の Nokogiri HTML5 直列化）をブラウザ（HTML5 パーサ）が解析した
 // 木とを比べる差分オラクル。サニタイザが判定した木と、ブラウザが実際に構築する木が食い違わないこと
 // （直列化で要素・属性が増えない、属性値が変わらない）を確かめる。
 //
@@ -63,7 +63,7 @@ func CheckDOMRender(t *htmldom.Node) error {
 	}
 	collect(t)
 
-	out := htmldom.Render(t)
+	out := htmldom.RenderHTML5(t)
 	nodes, err := ParseBody(out)
 	if err != nil {
 		return err

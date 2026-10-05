@@ -44,6 +44,8 @@ type Node struct {
 	Type NodeType
 	// Data は要素名・テキスト内容・コメント内容・PI のターゲット名。
 	Data string
+	// Namespace は HTML5 解析時の外部要素の名前空間（"svg" / "math"。HTML 要素は空）。
+	Namespace string
 	// PIContent は PI の内容（無い場合は HasPIContent=false）。
 	PIContent    string
 	HasPIContent bool
