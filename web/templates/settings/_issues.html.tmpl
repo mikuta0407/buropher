@@ -18,7 +18,7 @@
 
 <p>{{setting_check_box "default_issue_start_date_to_creation_date"}}</p>
 
-{{- $offsetEnabled := $v.DueDateOffsetEnabled}}
+{{$offsetEnabled := $v.DueDateOffsetEnabled -}}
 <p>
   <label for="settings_default_issue_due_date_offset_enabled">
     {{l "label_enable_default_issue_due_date_offset"}}
