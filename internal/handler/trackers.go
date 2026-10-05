@@ -99,6 +99,9 @@ func (f *trackerForm) assign(p *httpx.Params) {
 	if v, ok := p.StringOK("is_in_roadmap"); ok {
 		t.IsInRoadmap = castBool(v)
 	}
+	if v, ok := p.StringOK("private_by_default"); ok {
+		t.PrivateByDefault = castBool(v)
+	}
 	if p.Has("core_fields") {
 		t.SetCoreFields(p.Strings("core_fields"))
 	}
@@ -121,6 +124,7 @@ func (f *trackerForm) copyFrom(src *domain.Tracker) {
 	t := f.Tracker
 	t.DefaultStatusID = src.DefaultStatusID
 	t.IsInRoadmap = src.IsInRoadmap
+	t.PrivateByDefault = src.PrivateByDefault
 	t.DisabledCoreFields = slices.Clone(src.DisabledCoreFields)
 	t.Description = src.Description
 	t.CustomFieldIDs = slices.Clone(src.CustomFieldIDs)

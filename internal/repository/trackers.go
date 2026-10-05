@@ -19,13 +19,14 @@ type trackerRow struct {
 	Description        sql.NullString `db:"description"`
 	Position           int            `db:"position"`
 	IsInRoadmap        bool           `db:"is_in_roadmap"`
+	PrivateByDefault   bool           `db:"private_by_default"`
 	DefaultStatusID    int64          `db:"default_status_id"`
 	DisabledCoreFields string         `db:"disabled_core_fields"`
 }
 
 func (r *trackerRow) tracker() *domain.Tracker {
 	t := &domain.Tracker{ID: r.ID, Name: r.Name, Position: r.Position, IsInRoadmap: r.IsInRoadmap,
-		DefaultStatusID: r.DefaultStatusID, DisabledCoreFields: []string{}}
+		PrivateByDefault: r.PrivateByDefault, DefaultStatusID: r.DefaultStatusID, DisabledCoreFields: []string{}}
 	if r.Description.Valid {
 		s := r.Description.String
 		t.Description = &s
@@ -37,7 +38,7 @@ func (r *trackerRow) tracker() *domain.Tracker {
 // TrackerPositionScope は Tracker の acts_as_positioned（スコープなし）。
 var TrackerPositionScope = PositionScope{Table: "trackers"}
 
-const trackerCols = `id, name, description, position, is_in_roadmap, default_status_id, disabled_core_fields`
+const trackerCols = `id, name, description, position, is_in_roadmap, private_by_default, default_status_id, disabled_core_fields`
 
 // ListTrackers は Tracker.sorted（position 順）を返す。
 func ListTrackers(ctx context.Context, q db.Queryer) ([]*domain.Tracker, error) {
@@ -100,16 +101,17 @@ func SaveTracker(ctx context.Context, q db.Queryer, t *domain.Tracker) error {
 		return err
 	}
 	if t.ID == 0 {
-		id, err := q.InsertReturningID(ctx, `INSERT INTO trackers (name, description, position, is_in_roadmap, default_status_id, disabled_core_fields)
-  VALUES (?, ?, ?, ?, ?, ?)`, t.Name, t.Description, t.Position, t.IsInRoadmap, t.DefaultStatusID, string(dj))
+		id, err := q.InsertReturningID(ctx, `INSERT INTO trackers (name, description, position, is_in_roadmap, private_by_default, default_status_id, disabled_core_fields)
+  VALUES (?, ?, ?, ?, ?, ?, ?)`, t.Name, t.Description, t.Position, t.IsInRoadmap, t.PrivateByDefault, t.DefaultStatusID, string(dj))
 		if err != nil {
 			return err
 		}
 		t.ID = id
 		return nil
 	}
-	_, err = q.Exec(ctx, `UPDATE trackers SET name = ?, description = ?, position = ?, is_in_roadmap = ?, default_status_id = ?,
-  disabled_core_fields = ? WHERE id = ?`, t.Name, t.Description, t.Position, t.IsInRoadmap, t.DefaultStatusID, string(dj), t.ID)
+	_, err = q.Exec(ctx, `UPDATE trackers SET name = ?, description = ?, position = ?, is_in_roadmap = ?, private_by_default = ?,
+  default_status_id = ?, disabled_core_fields = ? WHERE id = ?`, t.Name, t.Description, t.Position, t.IsInRoadmap, t.PrivateByDefault,
+		t.DefaultStatusID, string(dj), t.ID)
 	return err
 }
 
