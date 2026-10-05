@@ -27,6 +27,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"unicode/utf8"
 
 	"github.com/mikuta0407/buropher/internal/auth/ldap"
 	"github.com/mikuta0407/buropher/internal/db"
@@ -415,8 +416,29 @@ func (a *App) syncLDAPSource(ctx context.Context, rec *domain.AuthSourceRecord) 
 }
 
 // updateLDAPUserAttrs は氏名・メールアドレスをディレクトリの値に合わせる（空の値では上書きしない）。
+// 値はユーザーのモデルと同じ規則（氏名の長さ・メールアドレスの書式・長さ・許可／拒否ドメイン）で検証し、
+// 通らない値は保存しない（ディレクトリの自分のエントリを編集できるユーザーが任意の値を入れられるため）。
 func (a *App) updateLDAPUserAttrs(ctx context.Context, u *domain.User, info *ldap.UserInfo, now time.Time, res *ldapSyncResult) (bool, error) {
 	changed := false
+	info2 := *info
+	info = &info2
+	if utf8.RuneCountInString(info.Firstname) > 30 {
+		res.logf("%s: invalid firstname in the directory (not updated)", u.Login)
+		info.Firstname = ""
+	}
+	if utf8.RuneCountInString(info.Lastname) > 255 {
+		res.logf("%s: invalid lastname in the directory (not updated)", u.Login)
+		info.Lastname = ""
+	}
+	if info.Mail != "" {
+		info.Mail = domain.NormalizeEmail(info.Mail)
+		host := info.Mail[strings.LastIndex(info.Mail, "@")+1:]
+		if !domain.EmailRegexp.MatchString(info.Mail) || utf8.RuneCountInString(info.Mail) > domain.MailLengthLimit ||
+			!domain.ValidEmailDomain(host, a.Settings.String("email_domains_denied"), a.Settings.String("email_domains_allowed")) {
+			res.logf("%s: invalid email %s in the directory (not updated)", u.Login, info.Mail)
+			info.Mail = ""
+		}
+	}
 	if (info.Firstname != "" && info.Firstname != u.Firstname) || (info.Lastname != "" && info.Lastname != u.Lastname) {
 		// 氏名だけを保存する（同期の間に管理者が行ったロック・降格を読み込み時の値で戻さない）
 		orig := *u
