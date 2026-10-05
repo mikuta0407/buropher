@@ -44,9 +44,6 @@ func (d *Deps) issuesContextMenu(r *view.Render, p *Page) html {
 	}
 	ctx.Values[contextMenuIncludedKey] = true
 	r.ContentFor("header_tags", d.jsInclude("context_menu")+d.stylesheetLinkTag(p, "context_menu"))
-	if p.l("direction") == "rtl" {
-		r.ContentFor("header_tags", d.stylesheetLinkTag(p, "context_menu_rtl"))
-	}
 	return ""
 }
 

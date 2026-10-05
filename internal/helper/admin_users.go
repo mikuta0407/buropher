@@ -349,9 +349,6 @@ func (d *Deps) contextMenu(r *view.Render, p *Page) html {
 	p.contextMenuIncluded = true
 	tags := d.jsInclude("context_menu") + d.stylesheetLinkTag(p, "context_menu")
 	r.ContentFor("header_tags", tags)
-	if p.l("direction") == "rtl" {
-		r.ContentFor("header_tags", d.stylesheetLinkTag(p, "context_menu_rtl"))
-	}
 	return ""
 }
 

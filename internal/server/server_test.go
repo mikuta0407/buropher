@@ -268,7 +268,7 @@ func TestLoginRequiredAndErrors(t *testing.T) {
 	// CSRF トークンなしの POST は 422 のエラーページ（common/error）
 	res, body = post(t, c, ts.URL+"/login", url.Values{"username": {"admin"}, "password": {"admin"}})
 	if res.StatusCode != 422 || !strings.Contains(body, "<h2>422</h2>") || !strings.Contains(body, "Invalid form authenticity token.") ||
-		!strings.Contains(body, `<title>422 - Redmine</title>`) || !strings.Contains(body, `class="controller-account action-login avatars-off"`) {
+		!strings.Contains(body, `<title>422 - Redmine</title>`) || !strings.Contains(body, `class="controller-account action-login"`) {
 		t.Errorf("csrf failure: %d\n%s", res.StatusCode, body)
 	}
 }

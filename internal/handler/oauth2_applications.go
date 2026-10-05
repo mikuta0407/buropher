@@ -25,8 +25,9 @@ import (
 //
 // before_action :authenticate_admin!（Redmine の admin_authenticator: REST API が無効か管理者でなければ deny_access）、
 // require_sudo_mode :create, :show, :update, :destroy。
-// メニュー項目（:applications）は current_menu_item（controller_name = oauth2_applications）と一致しないため選択表示されない。
-var Oauth2ApplicationsController = &Controller{Name: "oauth2_applications", MainMenu: false}
+// menu_item :applications（Redmine 7.0.1 #44273 で管理メニューの Applications が選択表示されるようになった）。
+var Oauth2ApplicationsController = &Controller{Name: "oauth2_applications", MainMenu: false,
+	MenuItem: func(string) string { return "applications" }}
 
 // routesOAuth2Applications は use_doorkeeper の applications（controllers applications: 'oauth2_applications'）。
 //

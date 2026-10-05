@@ -30,7 +30,7 @@ func (d *Deps) Avatar(p *Page, u *domain.User, opts *rails.Hash) template.HTML {
 			cls += " " + rails.ToS(c)
 		}
 		o.Set("class", "group-avatar "+cls)
-		return d.imageTag(r, p, "group.png", rails.NewHash("size", 24, "alt", "", "title", "", "class", "gravatar").Update(o))
+		return d.imageTag(r, p, "group.svg", rails.NewHash("size", 24, "alt", "", "title", "", "class", "gravatar").Update(o))
 	}
 	return d.avatar(r, p, u, opts)
 }

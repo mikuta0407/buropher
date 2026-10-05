@@ -897,9 +897,9 @@ func (v *issueShowView) DescendantsTree() template.HTML {
 		if manage {
 			u := "/issues/" + strconv.FormatInt(child.ID, 10) + "?" + helper.ToQuery(rails.NewHash(
 				"back_url", urlroot.Path("/issues/"+strconv.FormatInt(v.M.Row.ID, 10)), "issue", rails.NewHash("parent_issue_id", ""), "no_flash", "1"))
-			buttons = rails.LinkTo(l.icon("link-break", l.L("label_delete_link_to_subtask")), u,
+			buttons = rails.LinkTo(l.icon("link-break", l.L("label_subtask_remove")), u,
 				rails.NewHash("method", "put", "data", rails.NewHash("confirm", l.L("text_are_you_sure")),
-					"title", l.L("label_delete_link_to_subtask"), "class", "icon-only icon-link-break"))
+					"title", l.L("label_subtask_remove"), "class", "icon-only icon-link-break"))
 		}
 		buttons += l.a.Helpers.LinkToContextMenu(l.page)
 		row := rails.ContentTag("td", rails.CheckBoxTag("ids[]", child.ID, false, rails.NewHash("id", nil)), rails.NewHash("class", "checkbox")) +
@@ -931,10 +931,10 @@ func (v *issueShowView) IssueRelations() template.HTML {
 		css := "issue hascontextmenu " + l.cssClasses(other) + " rel-" + relationTypeFor(rel, other.ID)
 		var buttons template.HTML
 		if manage {
-			buttons = rails.LinkTo(l.icon("link-break", l.L("label_relation_delete")),
+			buttons = rails.LinkTo(l.icon("link-break", l.L("label_relation_remove")),
 				"/relations/"+strconv.FormatInt(rel.ID, 10)+"?issue_id="+strconv.FormatInt(v.M.Row.ID, 10),
 				rails.NewHash("remote", true, "method", "delete", "data", rails.NewHash("confirm", l.L("text_are_you_sure")),
-					"title", l.L("label_relation_delete"), "class", "icon-only icon-link-break"))
+					"title", l.L("label_relation_remove"), "class", "icon-only icon-link-break"))
 		}
 		buttons += l.a.Helpers.LinkToContextMenu(l.page)
 		subject := l.relationToS(rel, v.M.Row.ID, string(l.linkToIssue(other, redmine.LinkToIssueOptions{Project: cross})))
@@ -1113,9 +1113,10 @@ func (v *issueShowView) WatcherItems() []watcherItem {
 				rails.NewHash("class", "icon-only icon-warning", "title", l.L("notice_invalid_watcher")))
 		}
 		if remove {
-			it.Delete = rails.LinkTo(l.icon("del", l.L("button_delete")),
+			// Redmine 7.0（#34917）: link-break アイコンと "Remove"（watchers_helper.rb）。
+			it.Delete = rails.LinkTo(l.icon("link-break", l.L("button_remove")),
 				"/issues/"+strconv.FormatInt(v.M.Row.ID, 10)+"/watchers/"+strconv.FormatInt(u.ID, 10),
-				rails.NewHash("remote", true, "method", "delete", "class", "delete icon-only icon-del", "title", l.L("button_delete")))
+				rails.NewHash("remote", true, "method", "delete", "class", "delete icon-only icon-link-break", "title", l.L("button_remove")))
 		}
 		out = append(out, it)
 	}

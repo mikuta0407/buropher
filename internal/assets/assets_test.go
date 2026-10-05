@@ -48,7 +48,7 @@ var notShipped = map[string]bool{
 	"stimulus.js":                      true,
 }
 
-// Redmine 6.1.2 の manifest にある論理パスが（同梱対象については）全て解決できること。
+// Redmine 7.0.1 の manifest にある論理パスが（同梱対象については）全て解決できること。
 func TestManifestLogicalPaths(t *testing.T) {
 	p := newEmbedded(t)
 	f, err := os.Open("testdata/redmine-assets-manifest.txt")
@@ -281,13 +281,13 @@ func TestExtraThemes(t *testing.T) {
 	}
 }
 
-// curl -s http://127.0.0.1:3999/login の head 部（ダイジェストを正規化）。
+// curl -s http://127.0.0.1:3998/login（Redmine 7.0.1）の head 部（ダイジェストを正規化）。
 const redmineLoginHead = `<link rel="shortcut icon" type="image/x-icon" href="/assets/favicon-X.ico" />
 <link rel="stylesheet" href="/assets/jquery/jquery-ui-1.13.2-X.css" media="all" />
 <link rel="stylesheet" href="/assets/tribute-5.1.3-X.css" media="all" />
 <link rel="stylesheet" href="/assets/application-X.css" media="all" />
+<link rel="stylesheet" href="/assets/dropdown-X.css" media="all" />
 <link rel="stylesheet" href="/assets/responsive-X.css" media="all" />
-
 <script type="importmap" data-turbo-track="reload">{
   "imports": {
     "@rails/request.js": "/assets/requestjs-X.js",
@@ -295,12 +295,27 @@ const redmineLoginHead = `<link rel="shortcut icon" type="image/x-icon" href="/a
     "@hotwired/stimulus": "/assets/stimulus.min-X.js",
     "@hotwired/stimulus-loading": "/assets/stimulus-loading-X.js",
     "turndown": "/assets/turndown-X.js",
+    "tablesort": "/assets/tablesort.min-X.js",
+    "tablesort.number": "/assets/tablesort.number.min-X.js",
+    "chart.js": "/assets/chart.min-X.js",
     "controllers/api_key_copy_controller": "/assets/controllers/api_key_copy_controller-X.js",
     "controllers/application": "/assets/controllers/application-X.js",
+    "controllers/clipboard_controller": "/assets/controllers/clipboard_controller-X.js",
+    "controllers/custom_field_default_value_controller": "/assets/controllers/custom_field_default_value_controller-X.js",
+    "controllers/dropdown_controller": "/assets/controllers/dropdown_controller-X.js",
+    "controllers/gantt/chart_controller": "/assets/controllers/gantt/chart_controller-X.js",
+    "controllers/gantt/column_controller": "/assets/controllers/gantt/column_controller-X.js",
+    "controllers/gantt/options_controller": "/assets/controllers/gantt/options_controller-X.js",
+    "controllers/gantt/subjects_controller": "/assets/controllers/gantt/subjects_controller-X.js",
     "controllers": "/assets/controllers/index-X.js",
     "controllers/list_autofill_controller": "/assets/controllers/list_autofill_controller-X.js",
     "controllers/quote_reply_controller": "/assets/controllers/quote_reply_controller-X.js",
-    "controllers/sticky_issue_header_controller": "/assets/controllers/sticky_issue_header_controller-X.js"
+    "controllers/reports/details_controller": "/assets/controllers/reports/details_controller-X.js",
+    "controllers/repositories/stats_controller": "/assets/controllers/repositories/stats_controller-X.js",
+    "controllers/selection_indent_controller": "/assets/controllers/selection_indent_controller-X.js",
+    "controllers/sticky_issue_header_controller": "/assets/controllers/sticky_issue_header_controller-X.js",
+    "controllers/table_paste_controller": "/assets/controllers/table_paste_controller-X.js",
+    "controllers/tablesort_controller": "/assets/controllers/tablesort_controller-X.js"
   }
 }</script>
 <link rel="modulepreload" href="/assets/requestjs-X.js">
@@ -308,12 +323,26 @@ const redmineLoginHead = `<link rel="shortcut icon" type="image/x-icon" href="/a
 <link rel="modulepreload" href="/assets/stimulus.min-X.js">
 <link rel="modulepreload" href="/assets/stimulus-loading-X.js">
 <link rel="modulepreload" href="/assets/turndown-X.js">
+<link rel="modulepreload" href="/assets/tablesort.min-X.js">
+<link rel="modulepreload" href="/assets/tablesort.number.min-X.js">
 <link rel="modulepreload" href="/assets/controllers/api_key_copy_controller-X.js">
 <link rel="modulepreload" href="/assets/controllers/application-X.js">
+<link rel="modulepreload" href="/assets/controllers/clipboard_controller-X.js">
+<link rel="modulepreload" href="/assets/controllers/custom_field_default_value_controller-X.js">
+<link rel="modulepreload" href="/assets/controllers/dropdown_controller-X.js">
+<link rel="modulepreload" href="/assets/controllers/gantt/chart_controller-X.js">
+<link rel="modulepreload" href="/assets/controllers/gantt/column_controller-X.js">
+<link rel="modulepreload" href="/assets/controllers/gantt/options_controller-X.js">
+<link rel="modulepreload" href="/assets/controllers/gantt/subjects_controller-X.js">
 <link rel="modulepreload" href="/assets/controllers/index-X.js">
 <link rel="modulepreload" href="/assets/controllers/list_autofill_controller-X.js">
 <link rel="modulepreload" href="/assets/controllers/quote_reply_controller-X.js">
+<link rel="modulepreload" href="/assets/controllers/reports/details_controller-X.js">
+<link rel="modulepreload" href="/assets/controllers/repositories/stats_controller-X.js">
+<link rel="modulepreload" href="/assets/controllers/selection_indent_controller-X.js">
 <link rel="modulepreload" href="/assets/controllers/sticky_issue_header_controller-X.js">
+<link rel="modulepreload" href="/assets/controllers/table_paste_controller-X.js">
+<link rel="modulepreload" href="/assets/controllers/tablesort_controller-X.js">
 <script type="module">import "application"</script>
 <script src="/assets/jquery-3.7.1-ui-1.13.3-X.js"></script>
 <script src="/assets/rails-ujs-X.js"></script>
@@ -323,7 +352,7 @@ const redmineLoginHead = `<link rel="shortcut icon" type="image/x-icon" href="/a
 func TestHelpersMatchRedmineHead(t *testing.T) {
 	p := newEmbedded(t)
 	got := string(p.FaviconLinkTag("favicon.ico")) + "\n" +
-		string(p.StylesheetLinkTagMedia("all", "jquery/jquery-ui-1.13.2", "tribute-5.1.3", "application", "responsive")) + "\n\n" +
+		string(p.StylesheetLinkTagMedia("all", "jquery/jquery-ui-1.13.2", "tribute-5.1.3", "application", "dropdown", "responsive")) + "\n" +
 		string(p.ImportmapTags()) + "\n" +
 		string(p.JavascriptIncludeTag("jquery-3.7.1-ui-1.13.3", "rails-ujs", "tribute-5.1.3.min")) +
 		string(p.JavascriptIncludeTag("application-legacy", "responsive"))

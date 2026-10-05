@@ -11,7 +11,7 @@
   {{range $attachment := .Edits}}
     <tr>
       <td colspan="2">
-        <span class="icon icon-attachment">{{sprite_icon "attachment" $attachment.FilenameWas}}</span>
+        <span class="icon icon-attachment">{{file_type_icon $attachment.ContentType $attachment.FilenameWas}}</span>
         <span class="size">({{number_to_human_size $attachment.Filesize}})</span>
         <span class="author">{{if $attachment.Author}}{{user_name $attachment.Author}}{{end}}, {{format_time $attachment.CreatedOn}}</span>
       </td>

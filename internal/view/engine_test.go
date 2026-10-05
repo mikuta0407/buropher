@@ -57,7 +57,7 @@ func TestRenderWithLayout(t *testing.T) {
 <meta name="csrf-token" content="TOK" />
 <!-- page specific tags -->
 &lt;raw-is-escaped&gt;</head>
-<body class="project-proj has-main-menu controller-issues action-index avatars-off textarea-monospace">
+<body class="project-proj has-main-menu controller-issues action-index textarea-monospace">
 <div id="sidebar"><h3>Side &amp; All &lt;issues&gt;</h3>
 </div>
 <div id="content">

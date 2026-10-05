@@ -15,7 +15,7 @@
 <ul>
 {{range $issue := $a.RelatedIssues}}
   <li id="related-issue-{{$issue.ID}}">{{link_to_issue $issue}}
-    {{if $manage}}{{link_to (sprite_icon "link-break" (l "label_relation_delete")) (printf "%s/issues/%d" (repo_url "revision" $p $repo "" $cs.Identifier) $issue.ID) (hash "remote" true "method" "delete" "data" (hash "confirm" (l "text_are_you_sure")) "title" (l "label_relation_delete") "class" "icon-only icon-link-break")}}{{end}}
+    {{if $manage}}{{link_to (sprite_icon "link-break" (l "label_relation_remove")) (printf "%s/issues/%d" (repo_url "revision" $p $repo "" $cs.Identifier) $issue.ID) (hash "remote" true "method" "delete" "data" (hash "confirm" (l "text_are_you_sure")) "title" (l "label_relation_remove") "class" "icon-only icon-link-break")}}{{end}}
   </li>
 {{end}}
 </ul>

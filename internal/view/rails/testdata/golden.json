@@ -941,7 +941,7 @@
   },
   {
     "id": "fb-hidden_field-opts",
-    "output": "<input value=\"v\" autocomplete=\"off\" type=\"hidden\" name=\"issue[subject]\" />",
+    "output": "<input autocomplete=\"off\" value=\"v\" type=\"hidden\" name=\"issue[subject]\" />",
     "safe": true
   },
   {

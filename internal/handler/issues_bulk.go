@@ -781,14 +781,9 @@ func (v *bulkEditView) customFieldTag(cf *customfield.CustomField) template.HTML
 	return cf.Format().BulkEditTag(env, id, name, cf, objs, value, rails.NewHash("class", css, "data", data))
 }
 
-// listAutofillHash は list_autofill_data_attributes。
+// listAutofillHash は wiki_textarea_stimulus_attributes。
 func listAutofillHash(l *issueLookup) *rails.Hash {
-	f := l.a.Settings.String("text_formatting")
-	if strings.TrimSpace(f) == "" {
-		return rails.NewHash()
-	}
-	return rails.NewHash("controller", "list-autofill", "action", "beforeinput->list-autofill#handleBeforeInput",
-		"list_autofill_text_formatting_param", f)
+	return helper.WikiTextareaStimulusAttributes(l.a.Settings.String("text_formatting"))
 }
 
 // NotesData は {:auto_complete => true}.merge(list_autofill_data_attributes)。
