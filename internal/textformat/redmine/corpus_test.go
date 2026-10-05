@@ -19,13 +19,14 @@ import (
 	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/testfixtures"
+	"github.com/mikuta0407/buropher/internal/textformat/internal/fixtures"
 )
 
 // frozenNow は参照 Redmine（COMPAT_FROZEN_TIME）と同じ固定時刻。
 var frozenNow = time.Date(2026, 1, 15, 12, 0, 0, 0, time.UTC)
 
 // iconsPath は参照環境の asset_path("icons.svg")。
-const iconsPath = "/assets/icons-a9735328.svg"
+const iconsPath = "/assets/icons-0476c1d7.svg"
 
 type corpusCase struct {
 	ID         string         `json:"id"`
@@ -239,13 +240,16 @@ func TestCorpus(t *testing.T) {
 		if os.Getenv("CORPUS_DUMP") != "" {
 			t.Logf("%s\n%s", c.ID, got)
 		}
-		if got == *c.HTML {
+		// 属性値の < > は buropher ではエスケープする（Redmine リンクの置換で属性の中に差し込まれた
+		// タグは対象外のため、元の期待値との一致も認める）
+		want := fixtures.EscapeAttrAngles(*c.HTML)
+		if got == want || got == *c.HTML {
 			pass++
 			continue
 		}
 		failed = append(failed, c.ID)
 		if os.Getenv("CORPUS_VERBOSE") != "" {
-			t.Errorf("%s\ntext: %q\nwant: %s\ngot:  %s", c.ID, c.Text, *c.HTML, got)
+			t.Errorf("%s\ntext: %q\nwant: %s\ngot:  %s", c.ID, c.Text, want, got)
 		}
 	}
 	t.Logf("corpus: %d/%d exact match", pass, len(cases))

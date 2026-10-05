@@ -5,12 +5,13 @@
 
 package highlight
 
-// Rouge 4.7 の c.rb / cpp.rb の移植。
+// Rouge 5.1 の c.rb / cpp.rb の移植。
 
 const (
-	cKeywords = `auto break case const continue default do else enum extern
-for goto if register restricted return sizeof static struct
-switch typedef union volatile virtual while
+	cKeywords = `alignas alignof auto break case const constexpr continue
+default do else enum extern for goto if register return
+sizeof static static_assert struct switch typedef typeof
+typeof_unqual union volatile while
 _Alignas _Alignof _Atomic _Generic _Imaginary
 _Noreturn _Static_assert _Thread_local`
 	cKeywordsType = `int long float short double char unsigned signed void
@@ -25,12 +26,15 @@ uint_least64_t int_fast8_t int_fast16_t int_fast32_t
 int_fast64_t uint_fast8_t uint_fast16_t uint_fast32_t
 uint_fast64_t intptr_t uintptr_t intmax_t
 uintmax_t
-char16_t char32_t`
+char16_t char32_t
+_BitInt _Decimal128 _Decimal32 _Decimal64 bool nullptr_t`
 	cReserved = `__asm __int8 __based __except __int16 __stdcall __cdecl
 __fastcall __int32 __declspec __finally __int61 __try __leave
 inline _inline __inline naked _naked __naked restrict _restrict
-__restrict thread _thread __thread typename _typename __typename`
-	cWS = `(?:\s|//.*?\n|/[*].*?[*]/)+`
+__restrict thread _thread __thread thread_local
+typename _typename __typename`
+	// cWS は Ruby で埋め込まれる Regexp（(?-mix:...)）に合わせて外側の m（dotall）を打ち消す
+	cWS = `(?-s:(?:\s|//.*?\n|/[*].*?[*]/)+)`
 	cID = `[a-zA-Z_][a-zA-Z0-9_]*`
 )
 
@@ -74,7 +78,7 @@ func buildC(tag string, keywords, keywordsType, reserved, builtins map[string]bo
 		rule(`[~!%^&*+=\|?:<>/-]`, "o"),
 		rule(`[()\[\],.;]`, "p"),
 		rule(`\bcase\b`, "k", "case"),
-		rule(`(?:true|false|NULL)\b`, "nb"),
+		rule(`(?:true|false|NULL|nullptr)\b`, "nb"),
 		ruleF(cID, func(c *rctx) {
 			name := c.m.String()
 			switch {
@@ -157,18 +161,17 @@ func init() {
 	})
 	registerRouge("cpp", func() *rlexer {
 		l := buildC("cpp",
-			wordset(cKeywords+` asm auto catch char8_t concept
-consteval constexpr constinit const_cast co_await co_return co_yield
-delete dynamic_cast explicit export friend
-mutable namespace new operator private protected public
-reinterpret_cast requires restrict size_of static_cast this throw throws
-typeid typename using virtual final override import module
-alignas alignof decltype noexcept static_assert
-thread_local try`),
-			wordset(cKeywordsType+` bool`),
+			wordset(cKeywords+` and and_eq asm bitand bitor catch compl concept consteval
+constinit const_cast co_await co_return co_yield decltype
+delete dynamic_cast explicit export final friend import
+module mutable namespace new noexcept not not_eq operator or
+or_eq override private protected public reinterpret_cast
+requires size_of static_cast this throw throws try typeid
+typename using virtual xor xor_eq`),
+			wordset(cKeywordsType+` char8_t`),
 			wordset(cReserved+` __virtual_inheritance __uuidof __super __single_inheritance
 __multiple_inheritance __interface __event`), nil)
-		const dq = `\d('?\d)*`
+		const dq = `(?:\d('?\d)*)`
 		l.prependRules("root",
 			rule(`(?:__offload|__blockingoffload|__outer)\b`, "kp"),
 		)

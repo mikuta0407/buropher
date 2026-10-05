@@ -20,9 +20,9 @@ import (
 	"github.com/mikuta0407/buropher/internal/textformat/htmldom"
 )
 
-// allowedElements は html-pipeline の ALLOWLIST の要素に Redmine が input と u を加えたもの。
+// allowedElements は Redmine の SanitizationFilter::ALLOWLIST の要素。
 var allowedElements = toSet(
-	"h1", "h2", "h3", "h4", "h5", "h6", "h7", "h8", "br", "b", "i", "strong", "em", "a", "pre", "code", "img", "tt",
+	"h1", "h2", "h3", "h4", "h5", "h6", "br", "b", "i", "strong", "em", "a", "pre", "code", "img", "tt",
 	"div", "ins", "del", "sup", "sub", "p", "ol", "ul", "table", "thead", "tbody", "tfoot", "blockquote",
 	"dl", "dt", "dd", "kbd", "q", "samp", "var", "hr", "ruby", "rt", "rp", "li", "tr", "td", "th", "s", "strike", "summary",
 	"details", "caption", "figure", "figcaption",
@@ -106,7 +106,7 @@ var allowedCSSProperties = toSet(
 	"margin", "margin-left", "margin-right", "margin-top", "margin-bottom",
 	"border", "border-left", "border-right", "border-top", "border-bottom", "border-radius", "border-style", "border-collapse", "border-spacing",
 	"font", "font-style", "font-variant", "font-weight", "font-stretch", "font-size", "line-height", "font-family",
-	"text-align",
+	"text-align", "text-decoration",
 	"float",
 )
 
@@ -359,41 +359,49 @@ func Node(frag *htmldom.Node) {
 	traverse(frag, transformNode)
 }
 
-// ExternalLinks は ExternalLinksFilter（外部リンクに class="external"、
+// ExternalLink は ExternalLinksScrubber（外部リンクに class="external"、
 // mailto に class="email"、target 付き外部リンクに rel="noopener" を付与）。
-func ExternalLinks(frag *htmldom.Node) {
-	for _, a := range frag.FindAll(func(n *htmldom.Node) bool { return n.IsElement("a") }) {
-		href, ok := a.GetAttr("href")
-		if !ok {
-			continue
-		}
-		if strings.HasPrefix(href, "/") || strings.HasPrefix(href, "#") || !strings.Contains(href, ":") {
-			continue
-		}
-		scheme := uriScheme(href)
-		if scheme == "" {
-			continue
-		}
-		cls := "external"
-		if scheme == "mailto" {
-			cls = "email"
-		}
-		if k := a.AttrVal("class"); strings.TrimSpace(k) != "" {
-			cls = k + " " + cls
-		}
-		a.SetAttr("class", cls)
-		if t := a.AttrVal("target"); strings.TrimSpace(t) != "" && scheme != "mailto" {
-			rel := strings.Fields(a.AttrVal("rel"))
-			rel = append(rel, "noopener")
-			a.SetAttr("rel", strings.Join(rel, " "))
-		}
+func ExternalLink(a *htmldom.Node) {
+	if !a.IsElement("a") {
+		return
+	}
+	href, ok := a.GetAttr("href")
+	if !ok {
+		return
+	}
+	if strings.HasPrefix(href, "/") || strings.HasPrefix(href, "#") || !strings.Contains(href, ":") {
+		return
+	}
+	scheme := uriScheme(href)
+	if scheme == "" {
+		return
+	}
+	cls := "external"
+	if scheme == "mailto" {
+		cls = "email"
+	}
+	if k := a.AttrVal("class"); strings.TrimSpace(k) != "" {
+		cls = k + " " + cls
+	}
+	a.SetAttr("class", cls)
+	if t := a.AttrVal("target"); strings.TrimSpace(t) != "" && scheme != "mailto" {
+		rel := strings.Fields(a.AttrVal("rel"))
+		rel = append(rel, "noopener")
+		a.SetAttr("rel", strings.Join(rel, " "))
 	}
 }
 
 // HTML は Redmine::WikiFormatting::HtmlSanitizer.call（サニタイズ＋外部リンク処理）。
+// HTML5 パーサの上限（木の深さ 400 等）を超えた場合はエスケープしたテキストを返す。
 func HTML(html string) string {
-	frag := htmldom.ParseFragment(html)
+	frag, err := htmldom.ParseHTML5Fragment(html)
+	if err != nil {
+		return htmldom.EscapeHTML5Text(html)
+	}
 	Node(frag)
-	ExternalLinks(frag)
-	return htmldom.Render(frag)
+	frag.ScrubTopDown(func(n *htmldom.Node) bool {
+		ExternalLink(n)
+		return false
+	})
+	return htmldom.RenderHTML5(frag)
 }

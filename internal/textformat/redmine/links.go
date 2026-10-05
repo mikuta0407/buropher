@@ -9,6 +9,7 @@ import (
 	"html/template"
 	"strconv"
 	"strings"
+	"unicode/utf8"
 
 	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/view/rails"
@@ -25,58 +26,32 @@ func (r *Renderer) objectAttachments(obj *Object, extra []*Attachment) []*Attach
 	return atts
 }
 
-var (
-	reInlineImage = rxi(`src="([^/"]+\.(bmp|gif|jpg|jpe|jpeg|png|webp))"([^>]*)`)
-	reTitleAndAlt = rxi(`[` + spIn + `]+(title|alt)="([^"]*)"`)
-)
-
-var descAngleEscaper = strings.NewReplacer("<", "&lt;", ">", "&gt;")
-
-// parseInlineAttachments は parse_inline_attachments。
-func (r *Renderer) parseInlineAttachments(text string, obj *Object, opts Options) string {
-	if opts.NoInlineAttachments {
-		return text
-	}
-	if !strings.Contains(strings.ToLower(text), "src=\"") {
-		return text
-	}
-	atts := r.objectAttachments(obj, opts.Attachments)
-	if len(atts) == 0 {
-		return text
-	}
-	return gsub(reInlineImage, text, func(m md) string {
-		filename, other := m.s(1), m.s(3)
-		found := latestAttach(atts, cgiUnescape(filename))
+// inlineAttachmentFinder は InlineAttachmentsScrubber の find_attachment（options[:attachments] と
+// オブジェクトの添付から、ファイル名が一致する最新の添付を探す）。添付の読み込みは最初の画像まで遅らせる
+// （Redmine 7.0.1 #44348: 添付の多いオブジェクトで整形が遅くならないように）。
+func (r *Renderer) inlineAttachmentFinder(obj *Object, opts Options) func(string) (string, string, bool) {
+	var atts []*Attachment
+	loaded := false
+	return func(filename string) (string, string, bool) {
+		if !loaded {
+			atts = r.objectAttachments(obj, opts.Attachments)
+			loaded = true
+		}
+		if len(atts) == 0 {
+			return "", "", false
+		}
+		name := cgiUnescape(filename)
+		if !utf8.ValidString(name) {
+			return "", "", false
+		}
+		found := latestAttach(atts, name)
 		if found == nil {
-			return m.all()
+			return "", "", false
 		}
-		imageURL := r.downloadNamedAttachmentURL(found)
-		// Redmine は '"' を除くだけだが、後段のリンク置換（#1 → <a class="...">）で属性が閉じて
-		// 説明の残りが生の HTML になるため、< と > もエスケープする（XSS 対策。含まない説明は同じ出力）
-		desc := descAngleEscaper.Replace(strings.ReplaceAll(found.Description.String, `"`, ""))
-		// title / alt を取り出してから取り除く（scan(...).to_h：同じキーは最初の位置に後の値）
-		var keys []string
-		vals := map[string]string{}
-		for _, t := range scan(reTitleAndAlt, other) {
-			k := t.s(1)
-			if _, ok := vals[k]; !ok {
-				keys = append(keys, k)
-			}
-			vals[k] = t.s(2)
-		}
-		other = gsub(reTitleAndAlt, other, func(md) string { return "" })
-		var ta string
-		if !blank(desc) && blank(vals["alt"]) {
-			ta = ` title="` + desc + `" alt="` + desc + `"`
-		} else {
-			parts := make([]string, len(keys))
-			for i, k := range keys {
-				parts[i] = k + `="` + vals[k] + `"`
-			}
-			ta = " " + strings.Join(parts, " ")
-		}
-		return `src="` + imageURL + `"` + ta + ` loading="lazy"` + other
-	})
+		// 説明の '"' はスクラバが除く。< と > は直列化で属性値でもエスケープするため、後段のリンク置換で
+		// 属性が閉じても生の HTML にはならない（htmldom.RenderHTML5 を参照）
+		return r.downloadNamedAttachmentURL(found), found.Description.String, true
+	}
 }
 
 // ---- Wiki リンク ----

@@ -6,7 +6,7 @@ package redmine
 // ToHTML は Redmine::WikiFormatting.to_html(r.TextFormatting, text)（マクロ・Redmine リンクの解決をしない
 // 書式変換のみ。添付ファイルの Markdown / Textile のプレビュー（common/_markup）や、メールの
 // emails_header / emails_footer に使う）。
-// 正規表現の照合時間切れでは装飾なしのテキストを返す。
+// 正規表現の照合時間切れ・HTML5 パーサの上限超過では装飾なしのテキストを返す。
 func (r *Renderer) ToHTML(text string) (out string) {
 	defer func() {
 		// recover は defer された関数から直接呼ぶ必要がある
@@ -14,5 +14,9 @@ func (r *Renderer) ToHTML(text string) (out string) {
 			out = string(fallbackOnMatchTimeout(rec, text))
 		}
 	}()
-	return r.toHTML(text)
+	html, err := r.toHTML(text, nil, Options{})
+	if err != nil {
+		return string(plainFallback(text))
+	}
+	return html
 }

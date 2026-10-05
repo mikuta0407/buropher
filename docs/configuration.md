@@ -135,6 +135,27 @@ See [pdf.md](pdf.md).
 | `scm.git_command` | `BUROPHER_SCM_GIT_COMMAND` | `git` | Git executable (Redmine's `scm_git_command`). |
 | `scm.fetch_interval` | `BUROPHER_SCM_FETCH_INTERVAL` | `""` | Fetch new changesets of all repositories at this interval (e.g. `15m`). Replaces the usual cron job running `Repository.fetch_changesets`. |
 
+### `[preview]`
+
+Preview of Microsoft Office / LibreOffice attachments, as in Redmine 7.0: the file is
+converted to Markdown with [Pandoc](https://pandoc.org/) and rendered with the CommonMark
+formatter. `.docx` and `.odt` are supported by all Pandoc versions, `.xlsx` and `.pptx` need
+Pandoc 3.8.3 or later. Pandoc is optional; without it these attachments show "No preview
+available" as before. Pandoc runs without a shell, with `--sandbox` (Pandoc 2.15 or later),
+with the input format given explicitly, and at most two conversions at a time. Converted
+previews are cached as `derived_cache/markdownized_previews/<digest>_<size>.md` under
+`storage.attachments_path` (they may contain the document's text, so they live with the
+attachments) and are removed with the attachment.
+
+| Key | Env | Default | Description |
+|---|---|---|---|
+| `preview.pandoc_command` | `BUROPHER_PANDOC_COMMAND` | `pandoc` | Pandoc executable (Redmine's `pandoc_command`). |
+| `preview.markdownized_preview_generation_timeout` | | `10` | Timeout of one conversion in seconds. |
+| `preview.markdownized_preview_max_source_size` | | `10485760` | Larger files (bytes) are not converted. |
+| `preview.markdownized_preview_max_output_size` | | `102400` | The Markdown output is truncated to this many bytes. |
+
+Administration > Information shows whether Pandoc is available.
+
 ### `[webhook]`
 
 | Key | Env | Default | Description |

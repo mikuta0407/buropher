@@ -123,10 +123,12 @@ func (p *urlAutolinkParser) Parse(parent ast.Node, block text.Reader, pc parser.
 	if !canRewindText(parent, source, seg.Start, rewind) {
 		return nil
 	}
-	linkEnd, ok := checkDomain(line[3:], true)
+	// comrak 0.44 以降: relaxed_autolinks でなければドメインに "." が必要（http://localhost 等は対象外）
+	linkEnd, ok := checkDomain(line[3:], false)
 	if !ok {
 		return nil
 	}
+	linkEnd += 3
 	for linkEnd < len(line) && !isSpace(line[linkEnd]) {
 		linkEnd++
 	}
@@ -228,10 +230,12 @@ func (p *wwwAutolinkParser) Parse(parent ast.Node, block text.Reader, pc parser.
 
 // wwwMatch は data（"www." で始まる）からリンク末尾を求める。
 func wwwMatch(data []byte) (int, bool) {
-	linkEnd, ok := checkDomain(data, false)
+	// comrak 0.44 以降: "www." を除いた部分でドメインを検査する（www.com 等は対象外）
+	linkEnd, ok := checkDomain(data[4:], false)
 	if !ok {
 		return 0, false
 	}
+	linkEnd += 4
 	for linkEnd < len(data) && !isSpace(data[linkEnd]) {
 		linkEnd++
 	}
@@ -418,12 +422,12 @@ func (p *footnoteRefParser) lookahead(line []byte, pc parser.Context, block text
 			if len(bytes.TrimSpace(label)) == 0 {
 				label = line[1:end]
 			}
-			if _, ok := pc.Reference(util.ToLinkReference(label)); ok {
+			if peekReference(pc, util.ToLinkReference(label)) {
 				return nil
 			}
 		}
 	}
-	if _, ok := pc.Reference(util.ToLinkReference(line[1:end])); ok {
+	if peekReference(pc, util.ToLinkReference(line[1:end])) {
 		return nil
 	}
 	name := string(content)

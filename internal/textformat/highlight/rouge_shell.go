@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-// Rouge 4.7 の shell.rb の移植。
+// Rouge 5.1 の shell.rb の移植。
 
 const shellKeywords = `if|fi|else|while|do|done|for|then|return|function|select|continue|until|esac|elif|in`
 
@@ -38,11 +38,11 @@ func init() {
 		l := &rlexer{tag: "shell"}
 		l.state("basic",
 			rule(`#.*$`, "c"),
-			rule(`\b(`+shellKeywords+`)\s*\b`, "k"),
-			rule(`\bcase\b`, "k", "case"),
-			rule(`\b(`+shellBuiltins+`)\s*\b(?!(\.|-))`, "nb"),
+			rule(`(`+shellKeywords+`)\s*\b`, "k"),
+			rule(`case\b`, "k", "case"),
+			rule(`(`+shellBuiltins+`)\s*\b(?!(\.|-))`, "nb"),
 			rule(`[.](?=\s)`, "nb"),
-			ruleG(`(\b\w+)(=)`, toks("nv", "o")),
+			ruleG(`(\w+)(=)`, toks("nv", "o")),
 			rule(`[\[\]{}()!=>]`, "o"),
 			rule(`&&|\|\|`, "o"),
 			rule(`<<<`, "o"),
@@ -114,14 +114,24 @@ func init() {
 			rule(`\)`, "o", "#pop"),
 			mixin("root"),
 		)
+		l.state("curly_interp",
+			rule(`[}]`, "si", "#pop"),
+			rule(`[{]`, "o", "curly_inner"),
+			mixin("root"),
+		)
+		l.state("curly_inner",
+			rule(`[{]`, "o", "#push"),
+			rule(`[}]`, "o", "#pop"),
+			mixin("root"),
+		)
 		l.state("math",
 			rule(`\)\)`, "k", "#pop"),
-			rule(`[-+*/%^|&!]|\*\*|\|\|`, "o"),
+			rule(`[-+*/%^|&!]|\*\*|\|\||<<|>>`, "o"),
 			rule(`\d+(#\w+)?`, "m"),
 			mixin("root"),
 		)
 		l.state("case",
-			rule(`\besac\b`, "k", "#pop"),
+			rule(`esac\b`, "k", "#pop"),
 			rule(`\|`, "p"),
 			rule(`\)`, "p", "case_stanza"),
 			mixin("root"),
@@ -138,7 +148,9 @@ func init() {
 			rule(`\\$`, "se"),
 			rule(`\\.`, "se"),
 			rule(`\$\(\(`, "k", "math"),
-			rule(`\$\(`, "si", "paren_interp"),
+			rule(`\$[(]`, "si", "paren_interp"),
+			// https://www.gnu.org/software/bash/manual/bash.html#Command-Substitution-1
+			rule(`\$[{][\s|]`, "si", "curly_interp"),
 			rule(`\$\{#?`, "k", "curly"),
 			rule("`", "sb", "backticks"),
 			rule(`\$#?(\w+|.)`, "nv"),

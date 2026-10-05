@@ -3,13 +3,13 @@
   "name": "rouge-demo-abap",
   "mode": "highlight",
   "lang": "abap",
-  "input": "lo_obj ?= lo_obj->do_nothing( 'Char' && ` String` ).\n\nSELECT SINGLE * FROM mara INTO ls_mara WHERE matkl EQ '1324'.\nLOOP AT lt_mara ASSIGNING <mara>.\n  CHECK <mara>-mtart EQ '0001'.\nENDLOOP.\n"
+  "input": "* Create a new object\nDATA(lo_obj) = new zcl_obj_factory(\n  EXPORTING\n    input = |some nice string|\n)\nDATA(lo_subobj) ?= lo_obj->do_nothing( 'Char' && ` String` ).\n\n\" fetch material data\nSELECT SINGLE matnr, matkl, mtart, maktx\n  FROM mara \n  INNER JOIN makt \n    ON makt~matnr EQ mara~matnr\n  INTO @data(ls_mara) \n  WHERE matkl EQ '1324'\n    AND spras EQ @sy-langu.\n\nLOOP AT lt_mara ASSIGNING FIELD-SYMBOL(<mara>).\n  CHECK <mara>-mtart = '0001'.\nENDLOOP.\n\nCALL FUNCTION 'DO_NOTHING'\n  EXPORTING\n    input = 'input'\n  IMPORTING\n    output = 'output'\n  CHANGING\n    to_change = lv_some_variable  \n  TABLES\n    table_to_change = lt_some_table\n  EXCEPTIONS\n    ERROR = 1\n    OTHERS = 2.\n"
  },
  {
   "name": "rouge-demo-file-abap",
   "mode": "highlight_file",
   "filename": "demo.abap",
-  "input": "lo_obj ?= lo_obj->do_nothing( 'Char' && ` String` ).\n\nSELECT SINGLE * FROM mara INTO ls_mara WHERE matkl EQ '1324'.\nLOOP AT lt_mara ASSIGNING <mara>.\n  CHECK <mara>-mtart EQ '0001'.\nENDLOOP.\n"
+  "input": "* Create a new object\nDATA(lo_obj) = new zcl_obj_factory(\n  EXPORTING\n    input = |some nice string|\n)\nDATA(lo_subobj) ?= lo_obj->do_nothing( 'Char' && ` String` ).\n\n\" fetch material data\nSELECT SINGLE matnr, matkl, mtart, maktx\n  FROM mara \n  INNER JOIN makt \n    ON makt~matnr EQ mara~matnr\n  INTO @data(ls_mara) \n  WHERE matkl EQ '1324'\n    AND spras EQ @sy-langu.\n\nLOOP AT lt_mara ASSIGNING FIELD-SYMBOL(<mara>).\n  CHECK <mara>-mtart = '0001'.\nENDLOOP.\n\nCALL FUNCTION 'DO_NOTHING'\n  EXPORTING\n    input = 'input'\n  IMPORTING\n    output = 'output'\n  CHANGING\n    to_change = lv_some_variable  \n  TABLES\n    table_to_change = lt_some_table\n  EXCEPTIONS\n    ERROR = 1\n    OTHERS = 2.\n"
  },
  {
   "name": "rouge-demo-actionscript",
@@ -34,6 +34,18 @@
   "mode": "highlight_file",
   "filename": "demo.ada",
   "input": "with Ada.Directories;\nwith Ada.Direct_IO;\nwith Ada.Text_IO;\n\nprocedure Extra_IO.Read_File (Name : String) is\n\n   package Dirs renames Ada.Directories;\n   package Text_IO renames Ada.Text_IO;\n\n   -- Get the size of the file for a new string.\n   Size : Natural := Natural (Dirs.Size (Name));\n   subtype File_String is String (1 .. Size);\n\n   -- Instantiate Direct_IO for our file type.\n   package FIO is new Ada.Direct_IO (File_String);\n\n   File     : FIO.File_Type;\n   Contents : File_String;\n\nbegin\n   FIO.Open (File, FIO.In_File, Name);\n   FIO.Read (File, Contents);\n   FIO.Close (File);\n\n   Text_IO.Put (Contents);\nend Extra_IO.Read_File;\n"
+ },
+ {
+  "name": "rouge-demo-addmusick",
+  "mode": "highlight",
+  "lang": "addmusick",
+  "input": "#SPC {\n  #author \"jneen\"\n  #title \"oh, you know\"\n  #game \"N/A\"\n}\n\n#option TempoImmunity\n\n\"INST=@8o4\"\n\n#0\nl8INSTq7Fdq7Eeq7Ffge4q78cq7Fd^4r4^4\n"
+ },
+ {
+  "name": "rouge-demo-file-addmusick",
+  "mode": "highlight_file",
+  "filename": "demo.addmusick",
+  "input": "#SPC {\n  #author \"jneen\"\n  #title \"oh, you know\"\n  #game \"N/A\"\n}\n\n#option TempoImmunity\n\n\"INST=@8o4\"\n\n#0\nl8INSTq7Fdq7Eeq7Ffge4q78cq7Fd^4r4^4\n"
  },
  {
   "name": "rouge-demo-apache",
@@ -72,15 +84,15 @@
   "input": "FORMAT: 1A\nHOST: http://polls.apiblueprint.org/\n\n# Polls\n\nPolls is a simple API allowing consumers to view polls and vote in them.\n\n# Polls API Root [/]\n\n## Group Question\n\nResources related to questions in the API.\n\n## Question [/questions/{question_id}]\n\n+ Parameters\n    + question_id: 1 (number, required) - ID of the Question in form of an integer\n\n+ Attributes\n    + question: `Favourite programming language?` (required)\n    + published_at: `2014-11-11T08:40:51.620Z` - An ISO8601 date when the question was published\n    + choices (array[Choice], required) - An array of Choice objects\n    + url: /questions/1\n\n### View a Questions Detail [GET]\n\n+ Response 200 (application/json)\n    + Attributes (Question)\n\n### Delete a Question [DELETE]\n\n+ Relation: delete\n+ Response 204\n"
  },
  {
-  "name": "rouge-demo-applescript",
+  "name": "rouge-demo-apple_script",
   "mode": "highlight",
-  "lang": "applescript",
+  "lang": "apple_script",
   "input": "-- AppleScript playing with iTunes\ntell application \"iTunes\" to get current selection\n"
  },
  {
-  "name": "rouge-demo-file-applescript",
+  "name": "rouge-demo-file-apple_script",
   "mode": "highlight_file",
-  "filename": "demo.applescript",
+  "filename": "demo.apple_script",
   "input": "-- AppleScript playing with iTunes\ntell application \"iTunes\" to get current selection\n"
  },
  {
@@ -396,18 +408,6 @@
   "input": "# prints \"hello, world\" to the screen\n~# echo Hello, World\nHello, World\n\n# don't run this\n~# rm -rf --no-preserve-root /\n"
  },
  {
-  "name": "rouge-demo-coq",
-  "mode": "highlight",
-  "lang": "coq",
-  "input": "Require Import Coq.Lists.List.\n\nSection with_T.\n  Context {T : Type}.\n\n  Fixpoint length (ls : list T) : nat :=\n    match ls with\n    | nil => 0\n    | _ :: ls => S (length ls)\n    end.\nEnd with_T.\n\nDefinition a_string := \"hello\nworld\".\nDefinition escape_string := \"0123\".\nDefinition zero_string := \"0\".\n"
- },
- {
-  "name": "rouge-demo-file-coq",
-  "mode": "highlight_file",
-  "filename": "demo.coq",
-  "input": "Require Import Coq.Lists.List.\n\nSection with_T.\n  Context {T : Type}.\n\n  Fixpoint length (ls : list T) : nat :=\n    match ls with\n    | nil => 0\n    | _ :: ls => S (length ls)\n    end.\nEnd with_T.\n\nDefinition a_string := \"hello\nworld\".\nDefinition escape_string := \"0123\".\nDefinition zero_string := \"0\".\n"
- },
- {
   "name": "rouge-demo-cpp",
   "mode": "highlight",
   "lang": "cpp",
@@ -598,6 +598,18 @@
   "mode": "highlight_file",
   "filename": "demo.dot",
   "input": "// The graph name and the semicolons are optional\ngraph G {\n\ta -- b -- c;\n\tb -- d;\n}\n"
+ },
+ {
+  "name": "rouge-demo-dylan",
+  "mode": "highlight",
+  "lang": "dylan",
+  "input": "// Various keywords and constants\ndefine method demo(x :: <integer>, #key y = \"demo\") => ()\n  let z = #xFEE8 + #o277;\n  let w = '\\n';\n  format-out(\"%d %s %d %c\", x + 100, y, z, w);\nend method;\n\ndemo(99, y: \"hello\");\n"
+ },
+ {
+  "name": "rouge-demo-file-dylan",
+  "mode": "highlight_file",
+  "filename": "demo.dylan",
+  "input": "// Various keywords and constants\ndefine method demo(x :: <integer>, #key y = \"demo\") => ()\n  let z = #xFEE8 + #o277;\n  let w = '\\n';\n  format-out(\"%d %s %d %c\", x + 100, y, z, w);\nend method;\n\ndemo(99, y: \"hello\");\n"
  },
  {
   "name": "rouge-demo-ecl",
@@ -1203,13 +1215,13 @@
   "name": "rouge-demo-java",
   "mode": "highlight",
   "lang": "java",
-  "input": "public class java {\n    public static void main(String[] args) {\n        System.out.println(\"Hello World\");\n    }\n}\n"
+  "input": "import java.util.List;\nimport static java.util.Collections.sort;\n\npublic class java {\n    public static void main(String[] args) {\n        System.out.println(\"Hello World\");\n    }\n}\n"
  },
  {
   "name": "rouge-demo-file-java",
   "mode": "highlight_file",
   "filename": "demo.java",
-  "input": "public class java {\n    public static void main(String[] args) {\n        System.out.println(\"Hello World\");\n    }\n}\n"
+  "input": "import java.util.List;\nimport static java.util.Collections.sort;\n\npublic class java {\n    public static void main(String[] args) {\n        System.out.println(\"Hello World\");\n    }\n}\n"
  },
  {
   "name": "rouge-demo-javascript",
@@ -1330,6 +1342,18 @@
   "mode": "highlight_file",
   "filename": "demo.julia",
   "input": "function mandel(z)\n    c = z\n    maxiter = 80\n    for n = 1:maxiter\n        if abs(z) > 2\n            return n-1\n        end\n        z = z^2 + c\n    end\n    return maxiter\nend\n"
+ },
+ {
+  "name": "rouge-demo-kick_assembler",
+  "mode": "highlight",
+  "lang": "kick_assembler",
+  "input": "BasicUpstart2(start)\n\n.const GET_CHAR = $ffe4\n\nstart:\n  jsr get_char\n  rts\n\n// Routine\nget_char: {\n  jsr GET_CHAR\n  beq get_char\n  rts\n}\n"
+ },
+ {
+  "name": "rouge-demo-file-kick_assembler",
+  "mode": "highlight_file",
+  "filename": "demo.kick_assembler",
+  "input": "BasicUpstart2(start)\n\n.const GET_CHAR = $ffe4\n\nstart:\n  jsr get_char\n  rts\n\n// Routine\nget_char: {\n  jsr GET_CHAR\n  beq get_char\n  rts\n}\n"
  },
  {
   "name": "rouge-demo-kotlin",
@@ -1800,6 +1824,18 @@
   "input": "program FizzBuzz(output);\nvar\n  i: Integer;\nbegin\n  for i := 1 to 100 do\n    if i mod 15 = 0 then\n      WriteLn('FizzBuzz')\n    else if i mod 3 = 0 then\n      WriteLn('Fizz')\n    else if i mod 5 = 0 then\n      WriteLn('Buzz')\n    else\n      WriteLn(i)\nend.\n"
  },
  {
+  "name": "rouge-demo-pdf",
+  "mode": "highlight",
+  "lang": "pdf",
+  "input": "%PDF-1.6\n%©©©©\n\n1 0 obj<</Type/Catalog/Pages 2 0 R/StructTreeRoot null/MarkInfo<</Marked false>>>>\nendobj\n2 0 obj<</Type/Pages/Kids[3 0 R]/Count 1>>\nendobj\n3 0 obj<</Type/Page/Parent 2 0 R/MediaBox[.0 0 200 200]/Contents 4 0 R/Resources<<>>>>\nendobj\n4 0 obj<</Length 60>>\nstream\n  +8 w 1 j\n  1.0 0 0 rg\n  0 0 1 RG\n  10 10 180 180 re B\nendstream\nendobj\nxref\n0 5\n0000000000 65535 f\n0000000021 00000 n\n0000000113 00000 n\n0000000165 00000 n\n0000000261 00000 n\ntrailer\n<</Root 1 0 R/Size 5/ID[<18D6B641245C03F28E67D93AD879D6EC><18D6B641245C03F28E67D93AD879D6EC>]>>\nstartxref\n371\n%%EOF\n"
+ },
+ {
+  "name": "rouge-demo-file-pdf",
+  "mode": "highlight_file",
+  "filename": "demo.pdf",
+  "input": "%PDF-1.6\n%©©©©\n\n1 0 obj<</Type/Catalog/Pages 2 0 R/StructTreeRoot null/MarkInfo<</Marked false>>>>\nendobj\n2 0 obj<</Type/Pages/Kids[3 0 R]/Count 1>>\nendobj\n3 0 obj<</Type/Page/Parent 2 0 R/MediaBox[.0 0 200 200]/Contents 4 0 R/Resources<<>>>>\nendobj\n4 0 obj<</Length 60>>\nstream\n  +8 w 1 j\n  1.0 0 0 rg\n  0 0 1 RG\n  10 10 180 180 re B\nendstream\nendobj\nxref\n0 5\n0000000000 65535 f\n0000000021 00000 n\n0000000113 00000 n\n0000000165 00000 n\n0000000261 00000 n\ntrailer\n<</Root 1 0 R/Size 5/ID[<18D6B641245C03F28E67D93AD879D6EC><18D6B641245C03F28E67D93AD879D6EC>]>>\nstartxref\n371\n%%EOF\n"
+ },
+ {
   "name": "rouge-demo-perl",
   "mode": "highlight",
   "lang": "perl",
@@ -2086,6 +2122,18 @@
   "mode": "highlight_file",
   "filename": "demo.robot_framework",
   "input": "*** Settings ***\nDocument\t  Example taken from http://robotframework.org/\nSuite Setup       Open Browser To Login Page\nSuite Teardown    Close Browser\nTest Setup        Go To Login Page\nTest Template     Login With Invalid Credentials Should Fail\nResource          resource.txt\n\n*** Test Cases ***               User Name        Password\nInvalid Username                 invalid          ${VALID PASSWORD}\nInvalid Password                 ${VALID USER}    invalid\nInvalid Username And Password    invalid          whatever\nEmpty Username                   ${EMPTY}         ${VALID PASSWORD}\nEmpty Password                   ${VALID USER}    ${EMPTY}\nEmpty Username And Password      ${EMPTY}         ${EMPTY}\n\n*** Keywords ***\nLogin With Invalid Credentials Should Fail\n    [Arguments]    ${username}    ${password}\n    Input Username    ${username}\n    Input Password    ${password}\n    Submit Credentials\n    Login Should Have Failed\n\nLogin Should Have Failed\n    Location Should Be    ${ERROR URL}\n    Title Should Be    Error Page\n"
+ },
+ {
+  "name": "rouge-demo-rocq",
+  "mode": "highlight",
+  "lang": "rocq",
+  "input": "Require Import Coq.Lists.List.\n\nSection with_T.\n  Context {T : Type}.\n\n  Fixpoint length (ls : list T) : nat :=\n    match ls with\n    | nil => 0\n    | _ :: ls => S (length ls)\n    end.\nEnd with_T.\n\nDefinition a_string := \"hello\nworld\".\nDefinition escape_string := \"0123\".\nDefinition zero_string := \"0\".\n"
+ },
+ {
+  "name": "rouge-demo-file-rocq",
+  "mode": "highlight_file",
+  "filename": "demo.rocq",
+  "input": "Require Import Coq.Lists.List.\n\nSection with_T.\n  Context {T : Type}.\n\n  Fixpoint length (ls : list T) : nat :=\n    match ls with\n    | nil => 0\n    | _ :: ls => S (length ls)\n    end.\nEnd with_T.\n\nDefinition a_string := \"hello\nworld\".\nDefinition escape_string := \"0123\".\nDefinition zero_string := \"0\".\n"
  },
  {
   "name": "rouge-demo-ruby",
@@ -2460,6 +2508,18 @@
   "input": "To write \\LaTeX\\ you would type \\verb:\\LaTeX:.\n"
  },
  {
+  "name": "rouge-demo-thrift",
+  "mode": "highlight",
+  "lang": "thrift",
+  "input": "namespace * tutorial\n\ninclude \"shared.thrift\"\n\nstruct Work {\n  1: i32 num1 = 0,\n  2: i32 num2,\n  3: Operation op,\n  4: optional string comment,\n}\n\nservice Calculator extends shared.SharedService {\n  i32 add(1: i32 num1, 2: i32 num2),\n  oneway void zip()\n}\n"
+ },
+ {
+  "name": "rouge-demo-file-thrift",
+  "mode": "highlight_file",
+  "filename": "demo.thrift",
+  "input": "namespace * tutorial\n\ninclude \"shared.thrift\"\n\nstruct Work {\n  1: i32 num1 = 0,\n  2: i32 num2,\n  3: Operation op,\n  4: optional string comment,\n}\n\nservice Calculator extends shared.SharedService {\n  i32 add(1: i32 num1, 2: i32 num2),\n  oneway void zip()\n}\n"
+ },
+ {
   "name": "rouge-demo-toml",
   "mode": "highlight",
   "lang": "toml",
@@ -2602,6 +2662,18 @@
   "mode": "highlight_file",
   "filename": "demo.verilog",
   "input": "/**\n * Verilog Lexer\n */\nmodule Foo(\n  input logic Clk_CI,\n  input logic Rst_RBI,\n  input logic A,\n  input logic B,\n  output logic C\n);\n  logic C_DN, C_DP;\n\n  assign C = C_DP;\n\n  always_comb begin : proc_next_state\n    C_DN = A + B;\n  end\n\n  // Clocked process\n  always_ff @(posedge Clk_CI, negedge Rst_RBI) begin\n    if(~Rst_RBI) begin\n      C_DP <= 1'b0;\n    end else begin\n      C_DP <= C_DN;\n    end\n  end\nendmodule\n"
+ },
+ {
+  "name": "rouge-demo-veryl",
+  "mode": "highlight",
+  "lang": "veryl",
+  "input": "/// Module A\nmodule ModuleA #(\n    param ParamA: u32 = 10,\n) (\n    i_clk : input  clock            ,\n    i_rst : input  reset            ,\n    i_sel : input  logic            ,\n    i_data: input  logic<ParamA> [2],\n    o_data: output logic<ParamA>    ,\n) {\n    var r_data: logic<ParamA>;\n\n    always_ff {\n        if_reset {\n            r_data = 0;\n        } else if i_sel {\n            r_data = i_data[0];\n        } else {\n            r_data = i_data[1];\n        }\n    }\n\n    assign o_data = r_data;\n}\n"
+ },
+ {
+  "name": "rouge-demo-file-veryl",
+  "mode": "highlight_file",
+  "filename": "demo.veryl",
+  "input": "/// Module A\nmodule ModuleA #(\n    param ParamA: u32 = 10,\n) (\n    i_clk : input  clock            ,\n    i_rst : input  reset            ,\n    i_sel : input  logic            ,\n    i_data: input  logic<ParamA> [2],\n    o_data: output logic<ParamA>    ,\n) {\n    var r_data: logic<ParamA>;\n\n    always_ff {\n        if_reset {\n            r_data = 0;\n        } else if i_sel {\n            r_data = i_data[0];\n        } else {\n            r_data = i_data[1];\n        }\n    }\n\n    assign o_data = r_data;\n}\n"
  },
  {
   "name": "rouge-demo-vhdl",

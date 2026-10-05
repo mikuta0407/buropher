@@ -1,14 +1,15 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 // Copyright (C) 2026 mikuta0407 and Buropher contributors
 
-// Package commonmark は Redmine 6.1.2 の CommonMark 整形
+// Package commonmark は Redmine 7.0 の CommonMark 整形
 // （Redmine::WikiFormatting::CommonMark::Formatter）を移植したもの。
 //
-// Redmine は commonmarker（Rust の comrak 0.41）で Markdown を HTML にし、
-// html-pipeline のフィルタ群（Sanitization → SyntaxHighlight → FixupAutoLinks →
-// ExternalLinks → AlertsIcons）で後処理する。本パッケージは goldmark で構文解析し、
-// comrak と同じ規則で HTML を生成したうえで、libxml2 互換 DOM（htmldom）上で
-// 同じ順序のフィルタを適用する。
+// Redmine は commonmarker（Rust の comrak）で Markdown を HTML にし、Loofah.html5_fragment
+// （Nokogiri の HTML5 パーサ）で解析した断片を SanitizationFilter（Sanitize gem）で無害化した後、
+// Loofah のスクラバ（Copypre → SyntaxHighlight → Tablesort → FixupAutoLinks → ExternalLinks →
+// AlertsIcons → InlineAttachments → HiresImages）を各ノードに順に適用する。
+// 本パッケージは goldmark で構文解析し、comrak と同じ規則で HTML を生成したうえで、
+// htmldom の HTML5 パーサ上で同じ処理を同じ順序で行う。
 //
 // Redmine リンク（#123, [[Wiki]] 等）とマクロは別レイヤ（parse_redmine_links 相当）で
 // 処理するため、ここでは扱わない（テキストはそのまま出力される）。
@@ -19,11 +20,13 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/yuin/goldmark/parser"
 	"github.com/yuin/goldmark/text"
 
 	"github.com/mikuta0407/buropher/internal/textformat/highlight"
 	"github.com/mikuta0407/buropher/internal/textformat/htmldom"
 	"github.com/mikuta0407/buropher/internal/textformat/sanitize"
+	"github.com/mikuta0407/buropher/internal/textformat/scrubber"
 )
 
 // Options は整形オプション。
@@ -34,20 +37,61 @@ type Options struct {
 	// IconsPath はアイコンスプライト SVG の URL（asset_path('icons.svg') 相当）。
 	// 空の場合は "/assets/icons.svg"。
 	IconsPath string
-	// Translate は I18n.t 相当（label_alert_note 等）。nil または空文字列を返すと既定値を使う。
+	// Translate は I18n.t 相当（label_alert_note, button_copy 等）。nil または空文字列を返すと既定値を使う。
 	Translate func(key string) string
+	// TablesortEnabled は Setting.wiki_tablesort_enabled?。
+	TablesortEnabled bool
+	// FindAttachment は本文に埋め込まれた添付画像を探す（InlineAttachmentsScrubber）。
+	FindAttachment func(filename string) (url, description string, ok bool)
 }
 
 // Format は Markdown テキストを Redmine と同じ HTML に変換する。
+// HTML5 パーサの上限（木の深さ 400 等）を超えた場合はエスケープしたテキストを返す（FormatE を参照）。
 func Format(src string, opts Options) string {
+	out, err := FormatE(src, opts)
+	if err != nil {
+		return htmldom.EscapeHTML5Text(src)
+	}
+	return out
+}
+
+// FormatE は Format と同じだが、HTML5 パーサの上限を超えた場合にエラーを返す
+// （Redmine では Nokogiri が ArgumentError を送出し、ページ全体がエラーになる）。
+func FormatE(src string, opts Options) (string, error) {
+	frag, err := formatTree(src, opts)
+	if err != nil {
+		return "", err
+	}
+	return htmldom.RenderHTML5(frag), nil
+}
+
+// formatTree は整形結果の木（直列化の前）を返す。
+func formatTree(src string, opts Options) (*htmldom.Node, error) {
 	html := MarkdownToHTML(src, !opts.DisableHardBreaks)
-	frag := htmldom.ParseFragment(html)
+	frag, err := htmldom.ParseHTML5Fragment(html)
+	if err != nil {
+		return nil, err
+	}
 	sanitize.Node(frag)
-	SyntaxHighlightFilter(frag)
-	FixupAutoLinksFilter(frag)
-	sanitize.ExternalLinks(frag)
-	AlertsIconsFilter(frag, opts)
-	return htmldom.Render(frag)
+	so := &scrubber.Options{
+		IconsPath:        opts.IconsPath,
+		Translate:        opts.Translate,
+		TablesortEnabled: opts.TablesortEnabled,
+		FindAttachment:   opts.FindAttachment,
+	}
+	// 時間制限は本文内のコードブロックで共有する（遅いブロックを多数並べても合計が制限内に収まる）
+	budget := highlight.NewBudget()
+	scrubber.Run(frag,
+		func(n *htmldom.Node) bool { scrubber.CopyPre(n, so); return false },
+		func(n *htmldom.Node) bool { return syntaxHighlight(n, budget) },
+		func(n *htmldom.Node) bool { scrubber.Tablesort(n, so); return false },
+		func(n *htmldom.Node) bool { fixupAutoLink(n); return false },
+		func(n *htmldom.Node) bool { sanitize.ExternalLink(n); return false },
+		func(n *htmldom.Node) bool { alertsIcons(n, opts); return false },
+		func(n *htmldom.Node) bool { scrubber.InlineAttachments(n, so); return false },
+		func(n *htmldom.Node) bool { scrubber.HiresImages(n); return false },
+	)
+	return frag, nil
 }
 
 // MarkdownToHTML は MarkdownFilter 相当（\r を除去し comrak 互換の HTML を生成、末尾空白を除去）。
@@ -60,10 +104,52 @@ func MarkdownToHTML(src string, hardbreaks bool) string {
 	}
 	b = capContainerDepth(b)
 	p := newParser()
-	doc := p.Parse(text.NewReader(b))
+	doc := p.Parse(text.NewReader(b), parser.WithContext(newRefBudgetContext(len(src))))
 	r := &renderer{src: b, hardbreaks: hardbreaks}
 	r.render(doc)
 	return strings.TrimRight(r.buf.String(), " \t\n\v\f\r\x00")
+}
+
+// refBudgetContext は comrak の RefMap#lookup の上限（展開した参照の URL とタイトルの合計バイト数を
+// 文書の長さ（最大 100000）までに制限する。comrak 0.53 では min(total_size, 100000)）を再現する。
+type refBudgetContext struct {
+	parser.Context
+	max, used int
+}
+
+func newRefBudgetContext(totalSize int) *refBudgetContext {
+	return &refBudgetContext{Context: parser.NewContext(), max: min(totalSize, 100000)}
+}
+
+// Reference は参照を解決し、その大きさを上限から差し引く（上限を超える場合は未定義として扱う）。
+func (c *refBudgetContext) Reference(label string) (parser.Reference, bool) {
+	r, ok := c.peekReference(label)
+	if ok {
+		c.used += len(r.Destination()) + len(r.Title())
+	}
+	return r, ok
+}
+
+// peekReference は Reference と同じ判定を、上限を消費せずに行う。
+func (c *refBudgetContext) peekReference(label string) (parser.Reference, bool) {
+	r, ok := c.Context.Reference(label)
+	if !ok {
+		return nil, false
+	}
+	if len(r.Destination())+len(r.Title()) > c.max-c.used {
+		return nil, false
+	}
+	return r, true
+}
+
+// peekReference は pc が refBudgetContext なら上限を消費しない判定を、そうでなければ pc.Reference を使う。
+func peekReference(pc parser.Context, label string) bool {
+	if c, ok := pc.(*refBudgetContext); ok {
+		_, found := c.peekReference(label)
+		return found
+	}
+	_, found := pc.Reference(label)
+	return found
 }
 
 // maxContainerMarkers は 1 行の先頭に並べられるコンテナ（引用 ">"・リスト項目 "- " "1. " など）の印の数の上限。
@@ -157,38 +243,35 @@ func isThematicBreakLine(line []byte) bool {
 
 var reLanguageClass = regexp.MustCompile(`\Alanguage-(\S+)\z`)
 
-// SyntaxHighlightFilter は pre > code.language-xxx を Rouge 互換でハイライトする。
-func SyntaxHighlightFilter(frag *htmldom.Node) {
-	codes := frag.FindAll(func(n *htmldom.Node) bool {
-		return n.IsElement("code") && n.Parent != nil && n.Parent.IsElement("pre")
-	})
-	// 時間制限は本文内のコードブロックで共有する（遅いブロックを多数並べても合計が制限内に収まる）
-	budget := highlight.NewBudget()
-	for _, node := range codes {
-		cls := node.AttrVal("class")
-		if strings.TrimSpace(cls) == "" {
-			continue
-		}
-		m := reLanguageClass.FindStringSubmatch(cls)
-		if m == nil {
-			continue
-		}
-		lang := m[1]
-		txt := node.Text()
-		if !node.HasAttr("data-language") {
-			node.SetAttr("data-language", lang)
-		}
-		if highlight.LanguageSupported(lang) {
-			nodes := highlight.Nodes(txt, lang, budget)
-			node.RemoveChildren()
-			for _, c := range nodes {
-				node.AppendChild(c)
-			}
-			node.SetAttr("class", lang+" syntaxhl")
-		} else {
-			node.RemoveAttr("class")
-		}
+// syntaxHighlight は SyntaxHighlightScrubber（pre > code.language-xxx を Rouge 互換でハイライトする）。
+func syntaxHighlight(node *htmldom.Node, budget *highlight.Budget) bool {
+	if !node.IsElement("code") || !node.Parent.IsElement("pre") {
+		return false
 	}
+	cls := node.AttrVal("class")
+	if blank(cls) {
+		return false
+	}
+	m := reLanguageClass.FindStringSubmatch(cls)
+	if m == nil {
+		return false
+	}
+	lang := m[1]
+	txt := node.Text()
+	if !node.HasAttr("data-language") {
+		node.SetAttr("data-language", lang)
+	}
+	if highlight.LanguageSupported(lang) {
+		nodes := highlight.Nodes(txt, lang, budget)
+		node.RemoveChildren()
+		for _, c := range nodes {
+			node.AppendChild(c)
+		}
+		node.SetAttr("class", lang+" syntaxhl")
+	} else {
+		node.RemoveAttr("class")
+	}
+	return true
 }
 
 var (
@@ -196,18 +279,19 @@ var (
 	reHiresImage     = regexp.MustCompile(`.+@\dx\.(bmp|gif|jpg|jpe|jpeg|png)\z`)
 )
 
-// FixupAutoLinksFilter はユーザー参照や高解像度画像名の誤った mailto 自動リンクを元に戻す。
-func FixupAutoLinksFilter(frag *htmldom.Node) {
-	for _, a := range frag.FindAll(func(n *htmldom.Node) bool { return n.IsElement("a") }) {
-		href, ok := a.GetAttr("href")
-		if !ok || !strings.HasPrefix(href, "mailto:") {
-			continue
-		}
-		p := a.PrevSibling
-		if (p != nil && p.Type == htmldom.TextNode && reUserLinkPrefix.MatchString(p.Data)) ||
-			reHiresImage.MatchString(a.Text()) {
-			a.ReplaceWith(htmldom.NewText(a.Text()))
-		}
+// fixupAutoLink は FixupAutoLinksScrubber（ユーザー参照や高解像度画像名の誤った mailto 自動リンクを元に戻す）。
+func fixupAutoLink(a *htmldom.Node) {
+	if !a.IsElement("a") {
+		return
+	}
+	href, ok := a.GetAttr("href")
+	if !ok || !strings.HasPrefix(href, "mailto:") {
+		return
+	}
+	p := a.PrevSibling
+	if (p != nil && p.Type == htmldom.TextNode && reUserLinkPrefix.MatchString(p.Data)) ||
+		reHiresImage.MatchString(a.Text()) {
+		a.ReplaceWith(htmldom.NewText(a.Text()))
 	}
 }
 
@@ -222,61 +306,54 @@ var alertIcons = map[string]string{
 
 var reAlertType = regexp.MustCompile(`markdown-alert-(\w+)`)
 
-// AlertsIconsFilter はアラートのタイトルを翻訳し、アイコンを挿入する。
-func AlertsIconsFilter(frag *htmldom.Node, opts Options) {
-	titles := frag.FindAll(func(n *htmldom.Node) bool {
-		return n.IsElement("p") && hasClass(n, "markdown-alert-title")
-	})
-	for _, node := range titles {
-		parent := node.Parent
-		if parent == nil || parent.Type != htmldom.ElementNode {
-			continue
-		}
-		pc, ok := parent.GetAttr("class")
-		if !ok {
-			continue
-		}
-		m := reAlertType.FindStringSubmatch(pc)
-		if m == nil {
-			continue
-		}
-		alertType := m[1]
-		icon, ok := alertIcons[alertType]
-		if !ok {
-			continue
-		}
-		if _, known := alertIcons[strings.ToLower(node.Text())]; known {
-			label := ""
-			if opts.Translate != nil {
-				label = opts.Translate("label_alert_" + alertType)
-			}
-			if label == "" {
-				label = alertDefaultTitle(alertType)
-			}
-			node.SetText(label)
-		}
-		first := node.FirstChild
-		if first == nil {
-			continue
-		}
-		iconsPath := opts.IconsPath
-		if iconsPath == "" {
-			iconsPath = "/assets/icons.svg"
-		}
-		svg := htmldom.NewElement("svg", htmldom.Attr{Name: "class", Value: "s18 icon-svg"}, htmldom.Attr{Name: "aria-hidden", Value: "true"})
-		svg.AppendChild(htmldom.NewElement("use", htmldom.Attr{Name: "href", Value: iconsPath + "#icon--" + icon}))
-		span := htmldom.NewElement("span", htmldom.Attr{Name: "class", Value: "icon-label"})
-		span.AppendChild(htmldom.NewText(node.Text()))
-		first.ReplaceWith(svg, span)
+// alertsIcons は AlertsIconsScrubber（アラートのタイトルを翻訳し、アイコンを挿入する）。
+func alertsIcons(node *htmldom.Node, opts Options) {
+	if !node.IsElement("p") || node.AttrVal("class") != "markdown-alert-title" {
+		return
 	}
+	if !node.HasAttr("class") {
+		return
+	}
+	parent := node.Parent
+	if parent == nil || parent.Type != htmldom.ElementNode {
+		return
+	}
+	pc, ok := parent.GetAttr("class")
+	if !ok {
+		return
+	}
+	m := reAlertType.FindStringSubmatch(pc)
+	if m == nil {
+		return
+	}
+	alertType := m[1]
+	icon, ok := alertIcons[alertType]
+	if !ok {
+		return
+	}
+	if _, known := alertIcons[strings.ToLower(node.Text())]; known {
+		label := ""
+		if opts.Translate != nil {
+			label = opts.Translate("label_alert_" + alertType)
+		}
+		if label == "" {
+			label = alertDefaultTitle(alertType)
+		}
+		node.SetText(label)
+	}
+	first := node.FirstChild
+	if first == nil {
+		return
+	}
+	iconsPath := opts.IconsPath
+	if iconsPath == "" {
+		iconsPath = "/assets/icons.svg"
+	}
+	svg := scrubber.SpriteIcon(iconsPath, icon)
+	span := htmldom.NewElement("span", htmldom.Attr{Name: "class", Value: "icon-label"})
+	span.AppendChild(htmldom.NewText(node.Text()))
+	first.ReplaceWith(svg, span)
 }
 
-// hasClass は CSS のクラスセレクタ相当の判定。
-func hasClass(n *htmldom.Node, cls string) bool {
-	for _, c := range strings.Fields(n.AttrVal("class")) {
-		if c == cls {
-			return true
-		}
-	}
-	return false
-}
+// blank は Ruby の String#blank?。
+func blank(s string) bool { return strings.TrimSpace(s) == "" }

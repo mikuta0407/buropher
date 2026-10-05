@@ -7,7 +7,7 @@ package highlight
 
 import "strings"
 
-// Rouge 4.7 の rust.rb の移植。
+// Rouge 5.1 の rust.rb の移植。
 
 var rustKeywords = strings.Fields(`as async await break const continue crate dyn else enum extern false
 fn for if impl in let log loop match mod move mut pub ref return self
@@ -150,6 +150,7 @@ func init() {
 		l.state("string",
 			rule(`"`, "s", "#pop"),
 			rule(escapes, "se"),
+			rule(`\\\n[ \t\r\n]*`, "se"),
 			rule(`(?m)[^"\\]+`, "s"),
 		)
 		return l

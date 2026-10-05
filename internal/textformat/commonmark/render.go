@@ -172,6 +172,22 @@ func (r *renderer) blockLines(n ast.Node) string {
 	return sb.String()
 }
 
+// fencedLines はコードフェンスの内容。comrak 0.48 以降は文書末尾に仮想の改行を補わないため、
+// 閉じていないフェンスの最終行が改行で終わらない場合は改行を付けない（goldmark は ForceNewline で補う）。
+func (r *renderer) fencedLines(n ast.Node) string {
+	var sb strings.Builder
+	lines := n.Lines()
+	for i := 0; i < lines.Len(); i++ {
+		s := lines.At(i)
+		v := s.Value(r.src)
+		if s.ForceNewline && (s.Stop <= 0 || s.Stop > len(r.src) || r.src[s.Stop-1] != '\n') {
+			v = bytes.TrimSuffix(v, []byte("\n"))
+		}
+		sb.Write(v)
+	}
+	return sb.String()
+}
+
 func listTight(n ast.Node) bool {
 	if l, ok := n.(*ast.List); ok {
 		return l.IsTight
@@ -232,7 +248,7 @@ func (r *renderer) node(n ast.Node) {
 		} else {
 			r.write("<pre><code>")
 		}
-		r.escape(r.blockLines(n))
+		r.escape(r.fencedLines(n))
 		r.write("</code></pre>\n")
 	case *ast.HTMLBlock:
 		r.cr()

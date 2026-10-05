@@ -137,6 +137,10 @@ func (a *App) AdminInfo(c *Req) {
 		{c.L("text_file_repository_writable"), writable},
 		{c.L("text_all_migrations_have_been_run"), migrated},
 	}
+	// Office 文書のプレビューに使う Pandoc（任意。ImageMagick / Ghostscript は使わないため出さない）
+	if a.AttachmentStore != nil {
+		checks = append(checks, adminInfoCheck{c.L("text_pandoc_available"), a.AttachmentStore.Markdownizer.Available()})
+	}
 	c.renderAdmin("admin/info", map[string]any{
 		"VersionedName":     brand.Name + " " + a.version(),
 		"Checklist":         checks,

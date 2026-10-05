@@ -28,7 +28,9 @@ import (
 // このファイルは Attachment#thumbnail と Redmine::Thumbnail.generate の移植。
 // ImageMagick（convert -thumbnail "NxN>"）の代わりに純 Go で縮小する。
 // 出力形式は元画像と同じ（PNG / JPEG / GIF / BMP）。WebP は書き出せないため PNG で保存する。
-// PDF のサムネイルは生成できない（常に失敗し、コントローラは 404 を返す）。
+// PDF・Illustrator のサムネイルは生成できない（常に失敗し、コントローラは 404 を返す）。
+// Ghostscript を呼ばないため、Redmine 6.1.3 の #44145（%% の DSC コメントを前置した PostScript が
+// PDF として convert/gs に渡り実行される）は起こらない。AVIF も純 Go では展開できないため生成できない。
 
 // thumbnailsDir は Attachment.thumbnails_storage_path。
 func (s *Store) thumbnailsDir() string {
@@ -86,7 +88,8 @@ var thumbnailGenSem = make(chan struct{}, 2)
 // Thumbnail は Attachment#thumbnail(:size => size)（生成済みならそのパス、生成できなければ false）。
 // 生成の枠（thumbnailGenSem）を待つ間に ctx が終わった（クライアントが切断した等）場合は生成しない。
 func (s *Store) Thumbnail(ctx context.Context, a *domain.Attachment, size int) (string, bool) {
-	if !a.Thumbnailable() || !s.Readable(a) || a.IsPDF() || !reHexDigest.MatchString(a.Digest) {
+	// 画像以外（PDF・Illustrator）は外部コマンドに渡さず、生成しない
+	if !a.Thumbnailable() || !a.IsImage() || !s.Readable(a) || !reHexDigest.MatchString(a.Digest) {
 		return "", false
 	}
 	size = s.ThumbnailSize(size)

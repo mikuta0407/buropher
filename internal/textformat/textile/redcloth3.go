@@ -316,7 +316,7 @@ func (rc *redcloth) pba(textIn *string, element string) string {
 // 真偽判定にしか使わないので、バックトラックしない RE2 (regexp パッケージ) で評価する
 // (所有量指定子 (min-|max-)?+ は後続と排他的なため通常の ? と等価)。
 var reStyles = regexp.MustCompile(`(?im)^(color|(min-|max-)?(width|height)|border|background|padding|margin|font|text|float)(-[a-z]+)*:` +
-	reS + `*((` + `[0-9]+%?|[0-9]+px|[0-9]+(\.[0-9]+)?em|#[0-9a-f]+|[a-z]+` + `)` + reS + `*)+$`)
+	reS + `*((` + `[0-9]+%?|[0-9]+px|[0-9]+(\.[0-9]+)?em|#[0-9a-f]+|[a-z]+(?:-[a-z]+)*` + `)` + reS + `*)+$`)
 
 // sanitize_styles (redcloth3.rb:516-522)
 func sanitizeStyles(str string) string {
@@ -942,7 +942,6 @@ func (rc *redcloth) glyphsTextile(text string, level int) string {
 }
 
 var (
-	reCodeClassW  = rx(`<code` + reS + `+class="(` + reW + `+)">`)
 	reOfftagFirst = rx(`<` + offtags + `([^>]*)>`)
 	reClassAttr   = rxi(`(class=("[^"]+"|'[^']+'))`)
 )
@@ -987,8 +986,9 @@ func (rc *redcloth) ripOfftags(text string, escapeAftertag, escapeLine bool) str
 				tail.WriteString(line)
 				line = ""
 			} else {
-				// ハイライト対象の <code class="..."> の中身はエスケープしない
-				if m.ok(5) && escapeAftertag && !matches(reCodeClassW, first) {
+				// 常にエスケープする（Redmine 7.0.1 で <code class="..."> の例外を廃止。ハイライトは
+				// 解析後の inner_text に対して行うため影響しない）
+				if m.ok(5) && escapeAftertag {
 					aftertag = htmlesc(aftertag, escNoQuotes)
 				}
 				line = "<redpre#" + strconv.Itoa(len(rc.preList)) + ">"

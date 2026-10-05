@@ -5,13 +5,13 @@
 
 package highlight
 
-// Rouge 4.7 の java.rb / go.rb の移植。
+// Rouge 5.1 の java.rb / go.rb の移植。
 
 func init() {
 	registerRouge("java", func() *rlexer {
 		const (
-			keywords     = `assert|break|case|catch|continue|default|do|else|finally|for|if|goto|instanceof|new|return|switch|this|throw|try|while`
-			declarations = `abstract|const|enum|extends|final|implements|native|private|protected|public|static|strictfp|super|synchronized|throws|transient|volatile`
+			keywords     = `assert|break|case|catch|continue|default|do|else|finally|for|if|goto|instanceof|new|return|switch|this|throw|try|while|yield|when`
+			declarations = `abstract|const|extends|final|implements|native|permits|private|protected|public|sealed|static|strictfp|super|synchronized|throws|transient|volatile`
 			types        = `boolean|byte|char|double|float|int|long|short|var|void`
 			id           = `[[:alpha:]_][[:word:]]*`
 			constName    = `[\p{Lu}][\p{Lu}0-9_]*\b`
@@ -38,12 +38,14 @@ func init() {
 				c.token("", m3)
 				c.token("o", m4)
 			}),
+			rule(`non-sealed\b`, "kd"),
+			rule(`@interface\b`, "kd", "class"),
 			rule(`@`+id, "nd"),
 			rule(`(?:`+declarations+`)\b`, "kd"),
 			rule(`(?:`+types+`)\b`, "kt"),
 			rule(`(?:true|false|null)\b`, "kc"),
-			rule(`(?:class|interface|record)\b`, "kd", "class"),
-			rule(`(?:import|package)\b`, "kn", "import"),
+			rule(`(?:class|enum|interface|record)\b`, "kd", "class"),
+			rule(`(?:import(?:\s+(?:static|module))?|package)\b`, "kn", "import"),
 			rule(`(?m)"""\s*\n.*?(?<!\\)"""`, "sh"),
 			rule(`"(\\\\|\\"|[^"])*"`, "s"),
 			rule(`'(?:\\.|[^\\]|\\u[0-9a-f]{4})'`, "sc"),

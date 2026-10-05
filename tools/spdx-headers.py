@@ -37,7 +37,19 @@ OLD_HEADERS = [
 ]
 
 
+# Files forked from BSD-licensed projects (the original copyright notice stays below the header).
+BSD_FORKS = [
+    ("internal/textformat/htmldom/internal/h5/", [
+        "// Forked from golang.org/x/net/html v0.58.0 (Copyright 2009 The Go Authors,",
+        "// BSD-3-Clause; see LICENSE in this directory) and modified for Buropher.",
+    ]),
+]
+
+
 def header_for(path):
+    for prefix, note in BSD_FORKS:
+        if path.startswith(prefix):
+            return ["// SPDX-License-Identifier: BSD-3-Clause AND GPL-2.0-or-later", COPYRIGHT] + note
     for prefix, note in MIT_PORTS:
         if path.startswith(prefix) and not path.endswith("_test.go"):
             return ["// SPDX-License-Identifier: GPL-2.0-or-later AND MIT", COPYRIGHT] + note

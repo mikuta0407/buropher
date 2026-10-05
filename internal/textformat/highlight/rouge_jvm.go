@@ -5,7 +5,7 @@
 
 package highlight
 
-// Rouge 4.7 の scala.rb / groovy.rb の移植。
+// Rouge 5.1 の scala.rb / groovy.rb の移植。
 
 var (
 	groovyKeywords = wordset(`assert break case catch continue default do else finally for
@@ -114,6 +114,11 @@ func init() {
 	registerRouge("groovy", func() *rlexer {
 		l := &rlexer{tag: "groovy"}
 		l.state("root",
+			// groovy はファイル先頭のシバンを許す
+			rule(`\A#!(.*?)$`, "cp"),
+			rule(``, "", "base"),
+		)
+		l.state("base",
 			ruleF(`(?x)^
           (\s*(?:\w[\w.\[\]]*\s+)+?) # return arguments
           (\w\w*) # method name

@@ -7,7 +7,7 @@ package highlight
 
 import "strings"
 
-// Rouge 4.7 の css.rb / html.rb / xml.rb の移植。
+// Rouge 5.1 の css.rb / html.rb / xml.rb の移植。
 
 const (
 	cssIdent  = `[\p{L}_-][` + pWord + `\p{Cf}-]*`
@@ -55,6 +55,7 @@ func init() {
 			rule(`(?i)(true|false)`, "no"),
 			rule(`\-\-`+cssIdent, "l"),
 			rule(`[*+/-]`, "o"),
+			ruleG(`(url(?:-prefix)?)([(])(.*?)([)])`, toks("nf", "p", "sx", "p")),
 			ruleF(cssIdent, func(c *rctx) {
 				w := strings.ToLower(c.m.String())
 				switch {
@@ -104,6 +105,7 @@ func init() {
 				c.groups(tok, "", "p")
 				c.push("stanza_value")
 			}),
+			mixin("root"),
 		)
 		l.state("stanza_value",
 			rule(`;`, "p", "#pop"),

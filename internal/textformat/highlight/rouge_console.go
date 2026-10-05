@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-// Rouge 4.7 の console.rb の移植（既定オプション: lang=shell, prompt=$ # > ;）。
+// Rouge 5.1 の console.rb の移植（既定オプション: lang=shell, prompt=$ # > ;）。
 
 var (
 	reConsoleSnip = regexp.MustCompile(`\A[ \t\n\v\f\r]*(?:<[.]+>|[.]+)[ \t\n\v\f\r]*\z`)

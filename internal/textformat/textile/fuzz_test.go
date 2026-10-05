@@ -30,7 +30,7 @@ func FuzzFormat(f *testing.F) {
 	f.Fuzz(func(t *testing.T, src string) {
 		var out string
 		secoracle.Bounded(t, len(src), 0, func() { out = Format(src, nil) })
-		if err := secoracle.CheckHTML(out, secoracle.HTMLPolicy{BareElement: secoracle.TextileBareElement}); err != nil {
+		if err := secoracle.CheckHTML(out, secoracle.HTMLPolicy{BareElement: secoracle.TextileBareElement, SVG: true}); err != nil {
 			t.Fatalf("input %q\noutput %q\n%v", src, out, err)
 		}
 		_, _ = GetSection(src, 1)

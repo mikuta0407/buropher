@@ -96,6 +96,13 @@ linters:
           - gosec
           - ineffassign
           - errorlint
+      # golang.org/x/net/html のフォーク（上流のコードは手を入れた箇所以外そのまま保つ）
+      - path: internal/textformat/htmldom/internal/h5/
+        linters:
+          - errcheck
+          - errorlint
+          - gosec
+          - unused
       # 開発用ツール（互換性チェッカ・性能計測・データ生成）
       - path: ^tools/
         linters:
@@ -108,8 +115,8 @@ linters:
         text: "G402" # 証明書検証の無効化は Redmine 互換の設定項目（LDAP verify_peer / IMAP・POP3 の ssl=force）でのみ
         path: internal/(auth/ldap/ldap_ext|mailhandler/(imap|pop3))\.go
       - linters: [gosec]
-        text: "G204" # 実行するのは管理者が設定した SCM / sendmail コマンド（引数は配列で渡しシェルを経由しない）
-        path: internal/(scm/|mail/sender\.go|handler/settings\.go)
+        text: "G204" # 実行するのは管理者が設定した SCM / sendmail / pandoc コマンド（引数は配列で渡しシェルを経由しない）
+        path: internal/(scm/|mail/sender\.go|handler/settings\.go|attachments/markdownize\.go)
       - linters: [gosec]
         text: "G202" # 識別子は quoteIdent / 定数式のみを連結（値はプレースホルダ）
         path: internal/redmineimport/export/export\.go

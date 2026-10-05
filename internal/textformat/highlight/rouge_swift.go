@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-// Rouge 4.7 の swift.rb の移植。
+// Rouge 5.1 の swift.rb の移植。
 
 var (
 	swiftKeywords = wordset(`autoreleasepool await break case catch consume continue default defer discard do each else fallthrough guard if in for repeat return switch throw try where while

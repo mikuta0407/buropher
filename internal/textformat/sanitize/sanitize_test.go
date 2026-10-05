@@ -13,9 +13,12 @@ import (
 
 // filter は SanitizationFilter.to_html 相当（サニタイズのみ）。
 func filter(html string) string {
-	frag := htmldom.ParseFragment(html)
+	frag, err := htmldom.ParseHTML5Fragment(html)
+	if err != nil {
+		panic(err)
+	}
 	Node(frag)
-	return htmldom.Render(frag)
+	return htmldom.RenderHTML5(frag)
 }
 
 // 以下は Redmine の test/unit/lib/redmine/wiki_formatting/common_mark/sanitization_filter_test.rb の移植。
@@ -102,10 +105,11 @@ func TestShouldSanitizeHTMLStrings(t *testing.T) {
 		},
 		{
 			`<b>Lo<!-- comment -->rem</b> <a href="pants" title="foo" style="text-decoration: underline;">ipsum</a> <a href="http://foo.com/"><strong>dolor</strong></a> sit<br/>amet <style>.foo { color: #fff; }</style> <script>alert("hello world");</script>`,
-			`<b>Lorem</b> <a href="pants" title="foo">ipsum</a> <a href="http://foo.com/"><strong>dolor</strong></a> sit<br>amet .foo { color: #fff; } `,
+			`<b>Lorem</b> <a href="pants" title="foo" style="text-decoration: underline;">ipsum</a> <a href="http://foo.com/"><strong>dolor</strong></a> sit<br>amet .foo { color: #fff; } `,
 		},
 		{
 			`Lo<!-- comment -->rem</b> <a href=pants title="foo>ipsum <a href="http://foo.com/"><strong>dolor</a></strong> sit<br/>amet <script>alert("hello world");`,
+			// buropher は属性値の < > もエスケープする（htmldom.RenderHTML5 を参照）
 			`Lorem <a href="pants" title="foo&gt;ipsum &lt;a href="><strong>dolor</strong></a> sit<br>amet `,
 		},
 		{
@@ -135,9 +139,9 @@ func TestShouldNotAllowProtocols(t *testing.T) {
 		"hex encoding":                       {`<a href="javascript&#x3A;">foo</a>`, `<a>foo</a>`},
 		"long hex encoding":                  {`<a href="javascript&#x003A;">foo</a>`, `<a>foo</a>`},
 		"hex encoding without semicolons":    {`<a href=&#x6A&#x61&#x76&#x61&#x73&#x63&#x72&#x69&#x70&#x74&#x3A&#x61&#x6C&#x65&#x72&#x74&#x28&#x27&#x58&#x53&#x53&#x27&#x29>foo</a>`, `<a>foo</a>`},
-		"null char":                          {"<img src=java\x00script:alert(\"XSS\")>", `<img src="java">`},
+		"null char":                          {"<img src=java\x00script:alert(\"XSS\")>", `<img>`},
 		"invalid URL char":                   {`<img src=java\script:alert("XSS")>`, `<img>`},
-		"spaces and entities":                {`<img src=" &#14;  javascript:alert('XSS');">`, `<img src="">`},
+		"spaces and entities":                {`<img src=" &#14;  javascript:alert('XSS');">`, `<img>`},
 		"protocol whitespace":                {`<a href=" http://example.com/"></a>`, `<a href="http://example.com/"></a>`},
 		"data images sources":                {`<img src="data:image/png;base64,foobar">`, `<img>`},
 		"data URIs":                          {`<a href="data:text/html;base64,foobar">XSS</a>`, `<a>XSS</a>`},
@@ -184,9 +188,12 @@ func TestHTMLSanitizerStrictTaskListItems(t *testing.T) {
 // external_links_filter_test.rb の移植。
 
 func externalLinks(html string) string {
-	frag := htmldom.ParseFragment(html)
-	ExternalLinks(frag)
-	return htmldom.Render(frag)
+	frag, err := htmldom.ParseHTML5Fragment(html)
+	if err != nil {
+		panic(err)
+	}
+	frag.ScrubTopDown(func(n *htmldom.Node) bool { ExternalLink(n); return false })
+	return htmldom.RenderHTML5(frag)
 }
 
 func TestExternalLinksFilter(t *testing.T) {
@@ -210,7 +217,7 @@ func TestFixtures(t *testing.T) {
 	}
 	for _, e := range f.ByMode("sanitize") {
 		t.Run(e.Name, func(t *testing.T) {
-			assertEqual(t, e.ExpectedString(), HTML(e.Input))
+			assertEqual(t, fixtures.EscapeAttrAngles(e.ExpectedString()), HTML(e.Input))
 		})
 	}
 }
