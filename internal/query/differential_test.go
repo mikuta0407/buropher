@@ -19,7 +19,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/db/dbtest"
 )
 
-// testdata/differential.json.gz は testdata/gen/dump_differential.rb を Redmine 6.1.2 (公式フィクスチャ、
+// testdata/differential.json.gz は testdata/gen/dump_differential.rb を Redmine 7.0.1 (公式フィクスチャ、
 // 時刻固定 2026-01-15 12:00 UTC) で実行して得た正解データ。フィルタ×演算子×値、ソート、グループ、
 // 合計の組み合わせごとの結果 (id の並び・件数・グループ別件数・合計) を持つ。
 
@@ -128,11 +128,8 @@ func applyRichScenario(tdb *testDB) {
 		{28, "issue", 1, "a"}, {28, "issue", 1, "b"}, {28, "issue", 2, "b"}, {28, "issue", 3, "c"}, {28, "issue", 5, "a"},
 		{29, "time_entry", 1, "billable"}, {29, "time_entry", 2, "internal"},
 	} {
-		var val any
-		if v.value != "" {
-			val = v.value
-		}
-		x(`INSERT INTO custom_values (id, customized_kind, customized_id, custom_field_id, value) VALUES (?, ?, ?, ?, ?)`, 100+i, v.kind, v.id, v.cf, val)
+		// dump_differential.rb と同じく '' は空文字のまま入れる（NULL にすると 7.0 の !~ が NULL を含むため結果が変わる）
+		x(`INSERT INTO custom_values (id, customized_kind, customized_id, custom_field_id, value) VALUES (?, ?, ?, ?, ?)`, 100+i, v.kind, v.id, v.cf, v.value)
 	}
 	ts := func(s string) db.Time {
 		t, err := db.ParseTime(s)

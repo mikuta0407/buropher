@@ -1,4 +1,4 @@
-# Redmine 6.1.2 (公式フィクスチャ投入済み DB, 時刻固定) で、保存クエリの可視性・編集可否、
+# Redmine 7.0.1 (公式フィクスチャ投入済み DB, 時刻固定) で、保存クエリの可視性・編集可否、
 # build_from_params、既定クエリの解決、IssueQuery#issues の preload 値、available_filters_as_json を
 # 評価して JSON に書き出す。
 #
