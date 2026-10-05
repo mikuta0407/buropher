@@ -234,7 +234,6 @@ sq:
   error_exceeds_maximum_hours_per_day: "S’mund të regjistrohen më shumë se %{max_hours} orë në të njëjtën ditë (janë regjistruar tashmë %{logged_hours} orë)"
   error_can_not_delete_auth_source: "Kjo mënyrë mirëfilltësimesh është në përdorim dhe s’mund të fshihet."
   error_spent_on_future_date: "S’mund të regjistrohet kohë në një datë të ardhshme"
-  error_not_allowed_to_log_time_for_other_users: "S’keni leje të regjistroni kohë për përdorues të tjerë"
   error_can_not_execute_macro_html: "Gabim në ekzekutimin e makros <strong>%{name}</strong> (%{error})"
   error_macro_does_not_accept_block: "Kjo makro nuk pranon bllok teksti"
   error_childpages_macro_no_argument: "Pa argument, kjo makro mund të thirret vetëm që prej faqesh wiki"
@@ -708,7 +707,6 @@ sq:
   label_confirmation: Ripohim
   label_export_to: 'I gatshëm edhe në:'
   label_read: Lexoni…
-  label_public_projects: Projekte publike
   label_open_issues: e hapur
   label_open_issues_plural: të hapura
   label_closed_issues: e mbyllur
@@ -744,8 +742,6 @@ sq:
   label_months_from: muaj nga
   label_gantt: Gantt
   label_internal: I brendshëm
-  label_last_changes: "%{count} ndryshimet e fundit"
-  label_change_view_all: Shihni krejt ndryshimet
   label_comment: Koment
   label_comment_plural: Komente
   label_x_comments:
@@ -783,7 +779,6 @@ sq:
   label_last_month: muajin e fundit
   label_next_month: muajin e ardhshëm
   label_this_year: këtë vit
-  label_date_range: Interval datash
   label_less_than_ago: më pak se ditë më parë
   label_more_than_ago: më shumë se ditë më parë
   label_ago: ditë më parë
@@ -832,7 +827,6 @@ sq:
   label_wiki_page_new: Faqe Wiki e re
   label_index_by_title: Tregues sipas titujsh
   label_index_by_date: Tregues sipas datash
-  label_current_version: Versioni i tanishëm
   label_preview: Paraparje
   label_feed_plural: Prurje
   label_changes_details: Hollësi të krejt ndryshimeve
@@ -859,9 +853,7 @@ sq:
   label_applied_status: Gjendje e aplikuar
   label_loading: Po ngarkohet…
   label_relation_new: Marrëdhënie e re
-  label_relation_delete: Fshije marrëdhënien
   label_relates_to: E lidhur me
-  label_delete_link_to_subtask: Fshije lidhjen te nënpunë
   label_duplicates: Është përsëdytje e
   label_duplicated_by: Ka përsëdytje
   label_blocks: Bllokon
@@ -890,8 +882,6 @@ sq:
   label_year: Vit
   label_month: Muaj
   label_week: Javë
-  label_date_from: Nga
-  label_date_to: Për
   label_language_based: Bazuar në gjuhën e përdoruesit
   label_sort_by: "Renditi sipas %{value}"
   label_send_test_email: Dërgo një email provë
@@ -936,7 +926,6 @@ sq:
   label_ldaps_warning: Këshillohet të përdoret një lidhje e fshehtëzuar LDAPS me kontroll dëshmish, për të penguar çfarëdo manipulimi gjatë procesit të mirëfilltësimit.
   label_downloads_abbr: D/L
   label_optional_description: Përshkrim opsional
-  label_add_another_file: Shtoni kartelë tjetër
   label_preferences: Parapëlqime
   label_chronological_order: Në rend kohor
   label_reverse_chronological_order: Në rend kohor së prapthi
@@ -1207,10 +1196,8 @@ sq:
   text_issues_destroy_confirmation: 'Jeni i sigurt se doni të fshihet çështja(et) e përzgjedhura?'
   text_issues_destroy_descendants_confirmation: "Kjo do të fshijë edhe %{count} nënpunë."
   text_time_entries_destroy_confirmation: 'Jeni i sigurt se doni të fshihet zëri(at) kohor(ë) i përzgjedhur?'
-  text_select_project_modules: 'Përzgjidhni module që të aktivizohen për këtë projekt:'
   text_default_administrator_account_changed: U ndryshua llogaria parazgjedhje e përgjegjësit
   text_file_repository_writable: Drejtori bashkëngjitjes e shkrueshme
-  text_plugin_assets_writable: Drejtori mjetesh shtojcash e shkrueshme
   text_minimagick_available: MiniMagick gati (opsionale)
   text_convert_available: Ka mbulim për shndërrime ImageMagick (opsionale)
   text_gs_available: Ka mbulim për ImageMagick PDF (opsionale)
@@ -1280,9 +1267,7 @@ sq:
   enumeration_doc_categories: Kategori dokumentesh
   enumeration_activities: Veprimtari (ndjekje kohore)
   enumeration_system_activity: Veprimtari Sistemi
-  description_filter: Filtër
   description_search: Fushë kërkimi
-  description_choose_project: Projekte
   description_project_scope: Fokus kërkimi
   description_notes: Shënime
   description_message_content: Lëndë mesazhi
@@ -1497,9 +1482,46 @@ sq:
   label_position: Position
   label_message: Message
   twofa_already_setup: Two-factor authentication already set up
+  permission_use_webhooks: Use webhooks
+  label_webhook_plural: Webhooks
+  label_webhook_new: New webhook
+  label_webhook_edit: Edit webhook
+  label_webhook_events: Events
+  webhook_url_info: Redmine will send a POST request to this URL whenever one of the
+    selected events occurs in one of the selected projects.
+  webhook_secret_info_html: If provided, Redmine will use this to create a hash signature
+    that is sent with each delivery as the value of the X-Redmine-Signature-256 header.
+  setting_webhooks_enabled: Enable webhooks
+  label_integrations: Integrations
   label_alert_note: Note
   label_alert_tip: Tip
   label_alert_warning: Warning
   label_alert_caution: Caution
   label_alert_important: Important
   field_ratio_interval: Ratio interval
+  webhook_event_created: "%{object_name} created"
+  webhook_event_updated: "%{object_name} updated"
+  webhook_event_deleted: "%{object_name} deleted"
+  label_auto_watch_on_issue_assigned_to_me: Issues assigned to me
+  label_relation_remove: Remove relation
+  label_subtask_remove: Remove subtask
+  button_remove: Remove
+  label_open_in_full_view: Open in full view
+  text_pandoc_available: Pandoc available (optional)
+  label_user_mail_option_only_my_watches: Only for things I watch
+  label_last_used_on: 'Last used: %{value} ago'
+  label_never_used: Never used
+  setting_assignee_dropdown_display_format: Assignee drop-down display format
+  label_assignee_dropdown_display_format_users_then_groups: Users then groups
+  label_assignee_dropdown_display_format_groups_then_users: Groups then users
+  label_enable_default_issue_due_date_offset: Enable default due date for new issues
+  label_days_relative_to_today: days relative to today
+  label_assignee_dropdown_display_format_users_by_group: Users by group
+  button_remove_from_group: Remove from group
+  button_add_to_group: Add to group
+  setting_default_issue_due_date_offset: Default due date for new issues
+  field_private_by_default: Private by default
+  field_default_value_mode: Default value mode
+  label_absolute: Absolute
+  label_relative: Relative
+  text_users_remove_from_group_confirmation: Are you sure you want to remove the selected user(s) from the group %{group}?

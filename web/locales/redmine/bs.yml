@@ -497,7 +497,6 @@ bs:
   label_confirmation: Potvrda
   label_export_to: 'Također dostupno kao'
   label_read: Čitaj...
-  label_public_projects: Javni projekti
   label_open_issues: Otvoren
   label_open_issues_plural: Otvoreni
   label_closed_issues: Zatvoren
@@ -526,8 +525,6 @@ bs:
   label_months_from: mjeseci od
   label_gantt: Gantogram
   label_internal: Interno
-  label_last_changes: "posljednjih %{count} promjena"
-  label_change_view_all: Pregledaj sve promjene
   label_comment: Komentar
   label_comment_plural: Komentari
   label_x_comments:
@@ -555,7 +552,6 @@ bs:
   label_this_month: ovaj mjesec
   label_last_month: posljednji mjesec
   label_this_year: ova godina
-  label_date_range: Datumski opseg
   label_less_than_ago: ranije nego (dani)
   label_more_than_ago: starije nego (dani)
   label_ago: prije (dani)
@@ -590,7 +586,6 @@ bs:
   label_wiki_page_plural: Wiki stranice
   label_index_by_title: Indeks prema naslovima
   label_index_by_date: Indeks po datumima
-  label_current_version: Tekuća verzija
   label_preview: Pregled
   label_feed_plural: Feedovi
   label_changes_details: Detalji svih promjena
@@ -614,7 +609,6 @@ bs:
   label_applied_status: Status je primjenjen
   label_loading: Učitavam...
   label_relation_new: Nova relacija
-  label_relation_delete: Izbriši relaciju
   label_relates_to: korelira sa
   label_duplicates: duplikat
   label_duplicated_by: duplicirano od
@@ -639,8 +633,6 @@ bs:
   label_year: Godina
   label_month: Mjesec
   label_week: Sedmica
-  label_date_from: Od
-  label_date_to: Do
   label_language_based: Bazirano na korisnikovom jeziku
   label_sort_by: "Sortiraj po %{value}"
   label_send_test_email: Pošalji testni email
@@ -673,7 +665,6 @@ bs:
   label_ldap_authentication: LDAP authentifikacija
   label_downloads_abbr: D/L
   label_optional_description: Opis (neobavezno)
-  label_add_another_file: Dodaj još jedan fajl
   label_preferences: Postavke
   label_chronological_order: Hronološki poredak
   label_reverse_chronological_order: Obrnuti hronološki poredak
@@ -751,10 +742,8 @@ bs:
   text_load_default_configuration: Učitaj uobičajenu konfiguraciju
   text_status_changed_by_changeset: "Primjenjeno u setu promjena %{value}."
   text_issues_destroy_confirmation: 'Sigurno želite izbrisati odabranu/e aktivnost/i ?'
-  text_select_project_modules: 'Odaberi module koje želite u ovom projektu:'
   text_default_administrator_account_changed: Uobičajeni administratorski račun je promjenjen
   text_file_repository_writable: U folder sa fajlovima koji su prilozi se može zapisivati
-  text_plugin_assets_writable: U folder sa pluginima se može zapisivati
   text_minimagick_available: MiniMagick available (optional)
   text_destroy_time_entries_question: "%{hours} sati je prijavljeno na aktivnostima koje želite brisati. Želite li to učiniti ?"
   text_destroy_time_entries: Izbriši prijavljeno vrijeme
@@ -960,14 +949,12 @@ bs:
   text_git_repository_note: Repozitorij je prazan i lokalni (npr. /gitrepo, c:\gitrepo)
   description_query_sort_criteria_direction: Smjer sortiranja
   description_project_scope: Opseg pretrage
-  description_filter: Filter
   description_user_mail_notification: Postavke email notifikacija
   description_message_content: Sadržaj poruke
   description_available_columns: Dostupne kolone
   description_issue_category_reassign: Odaberite kategoriju tiketa
   description_search: Polje pretrage
   description_notes: Komentari
-  description_choose_project: Projekti
   description_query_sort_criteria_attribute: Atributi sortiranja
   description_wiki_subpages_reassign: Odaberite novu matičnu stranicu
   description_selected_columns: Označene kolone
@@ -1232,8 +1219,6 @@ bs:
   error_token_expired: This password recovery link has expired, please try again.
   error_spent_on_future_date: Cannot log time on a future date
   setting_timelog_accept_future_dates: Accept time logs on future dates
-  label_delete_link_to_subtask: Izbriši relaciju
-  error_not_allowed_to_log_time_for_other_users: You are not allowed to log time
     for other users
   permission_log_time_for_other_users: Log spent time for other users
   label_tomorrow: tomorrow
@@ -1521,9 +1506,46 @@ bs:
   label_position: Position
   label_message: Message
   twofa_already_setup: Two-factor authentication already set up
+  permission_use_webhooks: Use webhooks
+  label_webhook_plural: Webhooks
+  label_webhook_new: New webhook
+  label_webhook_edit: Edit webhook
+  label_webhook_events: Events
+  webhook_url_info: Redmine will send a POST request to this URL whenever one of the
+    selected events occurs in one of the selected projects.
+  webhook_secret_info_html: If provided, Redmine will use this to create a hash signature
+    that is sent with each delivery as the value of the X-Redmine-Signature-256 header.
+  setting_webhooks_enabled: Enable webhooks
+  label_integrations: Integrations
   label_alert_note: Note
   label_alert_tip: Tip
   label_alert_warning: Warning
   label_alert_caution: Caution
   label_alert_important: Important
   field_ratio_interval: Ratio interval
+  webhook_event_created: "%{object_name} created"
+  webhook_event_updated: "%{object_name} updated"
+  webhook_event_deleted: "%{object_name} deleted"
+  label_auto_watch_on_issue_assigned_to_me: Issues assigned to me
+  label_relation_remove: Remove relation
+  label_subtask_remove: Remove subtask
+  button_remove: Remove
+  label_open_in_full_view: Open in full view
+  text_pandoc_available: Pandoc available (optional)
+  label_user_mail_option_only_my_watches: Only for things I watch
+  label_last_used_on: 'Last used: %{value} ago'
+  label_never_used: Never used
+  setting_assignee_dropdown_display_format: Assignee drop-down display format
+  label_assignee_dropdown_display_format_users_then_groups: Users then groups
+  label_assignee_dropdown_display_format_groups_then_users: Groups then users
+  label_enable_default_issue_due_date_offset: Enable default due date for new issues
+  label_days_relative_to_today: days relative to today
+  label_assignee_dropdown_display_format_users_by_group: Users by group
+  button_remove_from_group: Remove from group
+  button_add_to_group: Add to group
+  setting_default_issue_due_date_offset: Default due date for new issues
+  field_private_by_default: Private by default
+  field_default_value_mode: Default value mode
+  label_absolute: Absolute
+  label_relative: Relative
+  text_users_remove_from_group_confirmation: Are you sure you want to remove the selected user(s) from the group %{group}?

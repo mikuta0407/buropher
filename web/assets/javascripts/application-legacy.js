@@ -36,14 +36,14 @@ function toggleRowGroup(el) {
   var n = tr.next();
   tr.toggleClass('open');
   $(el).toggleClass('icon-expanded icon-collapsed');
-  toggleExpendCollapseIcon(el)
+  toggleExpandCollapseIcon(el)
   while (n.length && !n.hasClass('group')) {
     n.toggle();
     n = n.next('tr');
   }
 }
 
-function toggleExpendCollapseIcon(el) {
+function toggleExpandCollapseIcon(el) {
   const svg = el.getElementsByTagName('svg').item(0)
 
   if (svg === null) {
@@ -83,7 +83,7 @@ function collapseAllRowGroups(el) {
       $(this).removeClass('open');
       var expander = $(this).find('.expander');
       expander.switchClass('icon-expanded', 'icon-collapsed');
-      toggleExpendCollapseIcon(expander[0]);
+      toggleExpandCollapseIcon(expander[0]);
     } else {
       $(this).hide();
     }
@@ -97,7 +97,7 @@ function expandAllRowGroups(el) {
       $(this).addClass('open');
       var expander = $(this).find('.expander');
       expander.switchClass('icon-collapsed', 'icon-expanded');
-      toggleExpendCollapseIcon(expander[0]);
+      toggleExpandCollapseIcon(expander[0]);
     } else {
       $(this).show();
     }
@@ -117,7 +117,7 @@ function toggleFieldset(el) {
   var fieldset = $(el).parents('fieldset').first();
   fieldset.toggleClass('collapsed');
   fieldset.children('legend').toggleClass('icon-expanded icon-collapsed');
-  toggleExpendCollapseIcon(fieldset.children('legend')[0])
+  toggleExpandCollapseIcon(fieldset.children('legend')[0])
   fieldset.children('div').toggle();
 }
 
@@ -296,6 +296,7 @@ function buildFilterRow(field, operator, values) {
     break;
   case "integer":
   case "float":
+  case "hour":
   case "tree":
     tr.find('.values').append(
       '<span style="display:none;"><input type="text" name="v['+field+'][]" id="values_'+fieldId+'_1" size="14" class="value" /></span>' +
@@ -612,7 +613,7 @@ function scmEntryClick(id, url) {
         el.find('.expander').switchClass('icon-expanded', 'icon-collapsed');
         el.addClass('collapsed');
         updateSVGIcon(folder[0], 'folder')
-        toggleExpendCollapseIcon(expander[0]);
+        toggleExpandCollapseIcon(expander[0]);
 
         return false;
     } else if (el.hasClass('loaded')) {
@@ -620,7 +621,7 @@ function scmEntryClick(id, url) {
         el.find('.expander').switchClass('icon-collapsed', 'icon-expanded');
         el.removeClass('collapsed');
         updateSVGIcon(folder[0], 'folder-open')
-        toggleExpendCollapseIcon(expander[0]);
+        toggleExpandCollapseIcon(expander[0]);
 
         return false;
     }
@@ -635,7 +636,7 @@ function scmEntryClick(id, url) {
         el.addClass('open').addClass('loaded').removeClass('loading');
         el.find('.expander').switchClass('icon-collapsed', 'icon-expanded');
         updateSVGIcon(folder[0], 'folder-open')
-        toggleExpendCollapseIcon(expander[0]);
+        toggleExpandCollapseIcon(expander[0]);
       }
     });
     return true;
@@ -796,22 +797,85 @@ function multipleAutocompleteField(fieldId, url, options) {
   });
 }
 
-function observeSearchfield(fieldId, targetId, url) {
+function observeSearchfield(fieldId, targetId, url, options) {
   $('#'+fieldId).each(function() {
     var $this = $(this);
     $this.addClass('autocomplete');
     $this.attr('data-value-was', $this.val());
+    var checkedValues = {};
+    var cbSelector = options && options.checkboxSelector;
+    var $form = cbSelector ? $this.closest('form') : null;
+    function checkboxName() {
+      if (!cbSelector) return null;
+      return $form.find(cbSelector).first().attr('name');
+    }
+
+    function saveChecked() {
+      if (!cbSelector) return;
+      $form.find(cbSelector).not('.hidden-checked-value').each(function() {
+        if ($(this).prop('checked')) {
+          checkedValues[$(this).val()] = true;
+        } else {
+          delete checkedValues[$(this).val()];
+        }
+      });
+    }
+
+    function restoreChecked() {
+      if (!cbSelector) return;
+      // Restore checkboxes that are visible in the current page
+      $form.find(cbSelector).not('.hidden-checked-value').each(function() {
+        if (checkedValues[$(this).val()]) {
+          $(this).prop('checked', true);
+        }
+      });
+      // Sync hidden inputs for checked values not visible as checkboxes
+      $form.find('input.hidden-checked-value').remove();
+      var cbName = checkboxName();
+      if (!cbName) return;
+      $.each(checkedValues, function(val) {
+        if ($form.find(cbSelector + '[value="' + val + '"]').length === 0) {
+          $form.append(
+            $('<input type="hidden" class="hidden-checked-value">').attr('name', cbName).val(val)
+          );
+        }
+      });
+    }
+
+    if (cbSelector) {
+      // Track checkbox changes via delegation
+      $form.on('change', cbSelector, function() {
+        if ($(this).prop('checked')) {
+          checkedValues[$(this).val()] = true;
+        } else {
+          delete checkedValues[$(this).val()];
+        }
+        restoreChecked();
+      });
+      // Handle pagination (remote links replacing content)
+      $form.on('ajax:before', 'a[data-remote]', function() {
+        saveChecked();
+      });
+      $form.on('ajax:complete', 'a[data-remote]', function() {
+        restoreChecked();
+      });
+    }
+
     var check = function() {
       var val = $this.val();
       if ($this.attr('data-value-was') != val){
         $this.attr('data-value-was', val);
+        saveChecked();
         $.ajax({
           url: url,
           type: 'get',
           data: {q: $this.val()},
           success: function(data){ if(targetId) $('#'+targetId).html(data); },
           beforeSend: function(){ $this.addClass('ajax-loading'); },
-          complete: function(){ $this.removeClass('ajax-loading'); }
+          complete: function(){
+            $this.removeClass('ajax-loading');
+            restoreChecked();
+          }
         });
       }
     };
@@ -1170,7 +1234,6 @@ $(document).ready(function(){
       data: "text=" + element + '&' + attachments,
       success: function(data){
         jstBlock.find('.wiki-preview').html(data);
-        setupWikiTableSortableHeader();
       }
     });
   });
@@ -1284,6 +1347,27 @@ function inlineAutoComplete(element) {
       xhr.send();
     }, 200);
 
+    const autocompleteSearchCache = {};
+    const latestAutocompleteSearchQuery = {};
+
+    const cachedAutocompleteResults = function(url, text) {
+      const cache = autocompleteSearchCache[url];
+
+      if (!cache) {
+        return null;
+      }
+
+      if (text === cache.query) {
+        return cache.results;
+      }
+
+      if (cache.query && text.startsWith(cache.query) && cache.results.length === 0) {
+        return [];
+      }
+
+      return null;
+    }
+
     const tribute = new Tribute({
       collection: [
         {
@@ -1341,11 +1425,29 @@ function inlineAutoComplete(element) {
           },
           values: function (text, cb) {
             const url = getDataSource('users');
-            if (url) {
-              remoteSearch(url + encodeURIComponent(text), function (users) {
-                return cb(users);
-              });
+            if (!url) {
+              return cb([]);
             }
+
+            latestAutocompleteSearchQuery[url] = text;
+
+            const cachedUsers = cachedAutocompleteResults(url, text);
+            if (cachedUsers !== null) {
+              return cb(cachedUsers);
+            }
+
+            remoteSearch(url + encodeURIComponent(text), function (users) {
+              // Ignore stale responses for queries that are no longer current.
+              if (latestAutocompleteSearchQuery[url] !== text) {
+                return;
+              }
+
+              autocompleteSearchCache[url] = {
+                query: text,
+                results: users
+              };
+              return cb(users);
+            });
           },
           menuItemTemplate: function (user) {
             return sanitizeHTML(user.original.name);
@@ -1439,8 +1541,6 @@ $(document).ready(defaultFocus);
 $(document).ready(setupAttachmentDetail);
 $(document).ready(setupTabs);
 $(document).ready(setupFilePreviewNavigation);
-$(document).ready(setupWikiTableSortableHeader);
 $(document).on('focus', '[data-auto-complete=true]', function(event) {
   inlineAutoComplete(event.target);
 });
-document.addEventListener("DOMContentLoaded", () => { setupCopyButtonsToPreElements(); });

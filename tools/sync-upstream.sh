@@ -4,7 +4,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 SRC=${1:-_reference/redmine}
-GEMS=${2:-_reference/vendor_bundle/ruby/3.3.0/gems}
+GEMS=${2:-_reference/vendor_bundle7/ruby/3.3.0/gems}
 
 sync() { rm -rf "$2"; mkdir -p "$(dirname "$2")"; cp -a "$1" "$2"; }
 
@@ -17,7 +17,7 @@ sync "$SRC/app/javascript" "web/assets/javascript"
 sync "$SRC/vendor/javascript" "web/assets/vendor"
 # gem 同梱の JS
 mkdir -p web/assets/javascripts
-cp "$GEMS"/actionview-7.*/app/assets/javascripts/rails-ujs.js web/assets/javascripts/rails-ujs.js
+cp "$GEMS"/actionview-8.*/app/assets/javascripts/rails-ujs.js web/assets/javascripts/rails-ujs.js
 for f in stimulus.min.js stimulus.min.js.map stimulus-loading.js; do
   [ -f "$GEMS"/stimulus-rails-1.*/app/assets/javascripts/$f ] && cp "$GEMS"/stimulus-rails-1.*/app/assets/javascripts/$f web/assets/vendor/$f
 done
@@ -27,7 +27,7 @@ sync "$SRC/config/locales" "web/locales/redmine"
 # Rails / doorkeeper-i18n gem 同梱ロケール（Redmine 実行時の I18n.load_path に先に積まれる分。MIT）
 rm -rf web/locales/rails; mkdir -p web/locales/rails
 for g in activesupport:active_support activemodel:active_model activerecord:active_record actionview:action_view; do
-  cp "$GEMS"/${g%%:*}-7.*/lib/${g#*:}/locale/en.yml "web/locales/rails/${g%%:*}.en.yml"
+  cp "$GEMS"/${g%%:*}-8.*/lib/${g#*:}/locale/en.yml "web/locales/rails/${g%%:*}.en.yml"
 done
 # doorkeeper-i18n は available_locales（= Redmine のロケール）に含まれるものだけを読み込む
 for f in "$GEMS"/doorkeeper-i18n-*/rails/locales/*.yml; do

@@ -195,6 +195,8 @@ CREATE TABLE trackers (
   description TEXT,
   position INTEGER NOT NULL DEFAULT 1,
   {{bool "is_in_roadmap" true}},
+  -- 新規チケットの「プライベート」の既定値 (Redmine 7.0 trackers.private_by_default)
+  {{bool "private_by_default" false}},
   default_status_id {{ref}} NOT NULL REFERENCES issue_statuses (id) ON DELETE RESTRICT,
   -- 無効化された標準フィールド名の配列 (旧 fields_bits)
   {{json "disabled_core_fields"}} NOT NULL DEFAULT '[]'
@@ -892,7 +894,7 @@ CREATE INDEX user_recent_projects_project_id ON user_recent_projects (project_id
 CREATE TABLE user_notification_settings (
   user_id {{ref}} PRIMARY KEY REFERENCES user_accounts (principal_id) ON DELETE CASCADE,
   -- NULL = 未設定 (Setting.default_notification_option を適用)
-  mail_notification TEXT CHECK (mail_notification IN ('all', 'selected', 'only_my_events', 'only_assigned', 'only_owner', 'none')),
+  mail_notification TEXT CHECK (mail_notification IN ('all', 'selected', 'only_my_events', 'only_assigned', 'only_owner', 'only_my_watches', 'none')),
   {{bool "no_self_notified" true}},
   {{bool "notify_about_high_priority_issues" false}},
   channels TEXT NOT NULL DEFAULT 'email' CHECK (channels IN ('email', 'discord', 'both'))
@@ -1065,6 +1067,31 @@ CREATE UNIQUE INDEX oauth_access_tokens_token ON oauth_access_tokens (token);
 CREATE UNIQUE INDEX oauth_access_tokens_refresh_token ON oauth_access_tokens (refresh_token);
 CREATE INDEX oauth_access_tokens_resource_owner_id ON oauth_access_tokens (resource_owner_id);
 CREATE INDEX oauth_access_tokens_application_id ON oauth_access_tokens (application_id);
+
+-- =====================================================================
+-- Webhook (Redmine 7.0 webhooks / projects_webhooks)
+-- =====================================================================
+CREATE TABLE webhooks (
+  {{pk}},
+  url TEXT NOT NULL,
+  -- HMAC 署名 (X-Redmine-Signature-256) の共有鍵。NULL / 空なら署名しない
+  secret TEXT,
+  -- 購読イベント名の配列 (例: ["issue.created", "wiki_page.updated"])
+  {{json "events"}} NOT NULL DEFAULT '[]',
+  user_id {{ref}} NOT NULL REFERENCES user_accounts (principal_id) ON DELETE CASCADE,
+  {{bool "active" false}},
+  {{ts "created_at"}} NOT NULL,
+  {{ts "updated_at"}} NOT NULL
+);
+CREATE INDEX webhooks_user_id ON webhooks (user_id);
+CREATE INDEX webhooks_active ON webhooks (active);
+
+CREATE TABLE webhook_projects (
+  webhook_id {{ref}} NOT NULL REFERENCES webhooks (id) ON DELETE CASCADE,
+  project_id {{ref}} NOT NULL REFERENCES projects (id) ON DELETE CASCADE,
+  PRIMARY KEY (webhook_id, project_id)
+);
+CREATE INDEX webhook_projects_project_id ON webhook_projects (project_id);
 
 -- =====================================================================
 -- 基盤: ジョブキュー・通知

@@ -412,7 +412,6 @@
   label_confirmation: Bekreftelse
   label_export_to: Eksporter til
   label_read: Leser...
-  label_public_projects: Offentlige prosjekt
   label_open_issues: åpen
   label_open_issues_plural: åpne
   label_closed_issues: lukket
@@ -441,8 +440,6 @@
   label_months_from: måneder fra
   label_gantt: Gantt
   label_internal: Intern
-  label_last_changes: "siste %{count} endringer"
-  label_change_view_all: Vis alle endringer
   label_comment: Kommentar
   label_comment_plural: Kommentarer
   label_x_comments:
@@ -470,7 +467,6 @@
   label_this_month: denne måneden
   label_last_month: siste måned
   label_this_year: dette året
-  label_date_range: Dato-spenn
   label_less_than_ago: mindre enn dager siden
   label_more_than_ago: mer enn dager siden
   label_ago: dager siden
@@ -503,7 +499,6 @@
   label_wiki_page_plural: Wiki-sider
   label_index_by_title: Indekser etter tittel
   label_index_by_date: Indekser etter dato
-  label_current_version: Gjeldende versjon
   label_preview: Forhåndsvis
   label_feed_plural: Feeder
   label_changes_details: Detaljer om alle endringer
@@ -527,7 +522,6 @@
   label_applied_status: Gitt status
   label_loading: Laster...
   label_relation_new: Ny relasjon
-  label_relation_delete: Slett relasjon
   label_relates_to: relatert til
   label_duplicates: dupliserer
   label_duplicated_by: duplisert av
@@ -552,8 +546,6 @@
   label_year: År
   label_month: Måned
   label_week: Uke
-  label_date_from: Fra
-  label_date_to: Til
   label_language_based: Basert på brukerens språk
   label_sort_by: "Sorter etter %{value}"
   label_send_test_email: Send en epost-test
@@ -585,7 +577,6 @@
   label_ldap_authentication: LDAP-autentisering
   label_downloads_abbr: Nedl.
   label_optional_description: Valgfri beskrivelse
-  label_add_another_file: Legg til en fil til
   label_preferences: Brukerinnstillinger
   label_chronological_order: I kronologisk rekkefølge
   label_reverse_chronological_order: I omvendt kronologisk rekkefølge
@@ -659,7 +650,6 @@
   text_load_default_configuration: Last inn standardkonfigurasjonen
   text_status_changed_by_changeset: "Brukt i endringssett %{value}."
   text_issues_destroy_confirmation: 'Er du sikker på at du vil slette valgte sak(er) ?'
-  text_select_project_modules: 'Velg moduler du vil aktivere for dette prosjektet:'
   text_default_administrator_account_changed: Standard administrator-konto er endret
   text_file_repository_writable: Fil-arkivet er skrivbart
   text_minimagick_available: MiniMagick er tilgjengelig (valgfritt)
@@ -763,7 +753,6 @@
   label_updated_time_by: "Oppdatert av %{author} for %{age} siden"
   text_diff_truncated: '... This diff was truncated because it exceeds the maximum size that can be displayed.'
   setting_diff_max_lines_displayed: Max number of diff lines displayed
-  text_plugin_assets_writable: Plugin assets directory writable
   warning_attachments_not_saved: "%{count} fil(er) kunne ikke lagres."
   button_create_and_continue: Opprett og fortsett
   text_custom_field_possible_values_info: 'En linje for hver verdi'
@@ -943,14 +932,12 @@
 
   description_query_sort_criteria_direction: Sorteringsretning
   description_project_scope: Search scope
-  description_filter: Filter
   description_user_mail_notification: Mail notification settings
   description_message_content: Meldingsinnhold
   description_available_columns: Tilgjengelige kolonner
   description_issue_category_reassign: Choose issue category
   description_search: Søkefelt
   description_notes: Notes
-  description_choose_project: Prosjekter
   description_query_sort_criteria_attribute: Sort attribute
   description_wiki_subpages_reassign: Velg ny overordnet side
   description_selected_columns: Valgte kolonner
@@ -1237,8 +1224,6 @@
   error_token_expired: This password recovery link has expired, please try again.
   error_spent_on_future_date: Cannot log time on a future date
   setting_timelog_accept_future_dates: Accept time logs on future dates
-  label_delete_link_to_subtask: Slett relasjon
-  error_not_allowed_to_log_time_for_other_users: You are not allowed to log time
     for other users
   permission_log_time_for_other_users: Log spent time for other users
   label_tomorrow: tomorrow
@@ -1526,9 +1511,46 @@
   label_position: Position
   label_message: Message
   twofa_already_setup: Two-factor authentication already set up
+  permission_use_webhooks: Use webhooks
+  label_webhook_plural: Webhooks
+  label_webhook_new: New webhook
+  label_webhook_edit: Edit webhook
+  label_webhook_events: Events
+  webhook_url_info: Redmine will send a POST request to this URL whenever one of the
+    selected events occurs in one of the selected projects.
+  webhook_secret_info_html: If provided, Redmine will use this to create a hash signature
+    that is sent with each delivery as the value of the X-Redmine-Signature-256 header.
+  setting_webhooks_enabled: Enable webhooks
+  label_integrations: Integrations
   label_alert_note: Note
   label_alert_tip: Tip
   label_alert_warning: Warning
   label_alert_caution: Caution
   label_alert_important: Important
   field_ratio_interval: Ratio interval
+  webhook_event_created: "%{object_name} created"
+  webhook_event_updated: "%{object_name} updated"
+  webhook_event_deleted: "%{object_name} deleted"
+  label_auto_watch_on_issue_assigned_to_me: Issues assigned to me
+  label_relation_remove: Remove relation
+  label_subtask_remove: Remove subtask
+  button_remove: Remove
+  label_open_in_full_view: Open in full view
+  text_pandoc_available: Pandoc available (optional)
+  label_user_mail_option_only_my_watches: Only for things I watch
+  label_last_used_on: 'Last used: %{value} ago'
+  label_never_used: Never used
+  setting_assignee_dropdown_display_format: Assignee drop-down display format
+  label_assignee_dropdown_display_format_users_then_groups: Users then groups
+  label_assignee_dropdown_display_format_groups_then_users: Groups then users
+  label_enable_default_issue_due_date_offset: Enable default due date for new issues
+  label_days_relative_to_today: days relative to today
+  label_assignee_dropdown_display_format_users_by_group: Users by group
+  button_remove_from_group: Remove from group
+  button_add_to_group: Add to group
+  setting_default_issue_due_date_offset: Default due date for new issues
+  field_private_by_default: Private by default
+  field_default_value_mode: Default value mode
+  label_absolute: Absolute
+  label_relative: Relative
+  text_users_remove_from_group_confirmation: Are you sure you want to remove the selected user(s) from the group %{group}?

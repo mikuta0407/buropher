@@ -1,0 +1,268 @@
+/**
+ * Redmine - project management software
+ * Copyright (C) 2006-  Jean-Philippe Lang
+ * This code is released under the GNU General Public License.
+ */
+
+.gantt_subjects div > span.expander {
+  margin-inline-start: 0;
+  cursor: pointer;
+}
+
+.gantt_subjects .avatar {
+  margin-inline-end: 4px;
+}
+
+.gantt_subjects div.project-name a,
+.gantt_subjects div.version-name a {
+  margin-inline-start: 4px;
+}
+
+/***** Gantt chart *****/
+table.gantt-table {
+  inline-size: 100%;
+  border-collapse: collapse;
+  /* Force LTR for Gantt even in RTL locales because column resizing, relation lines, and the progress line don't work in RTL yet. */
+  direction: ltr;
+}
+
+table.gantt-table td {
+  padding: 0;
+}
+
+.gantt_hdr {
+  position: absolute;
+  inset-block-start: 0;
+  block-size: 16px;
+  border-block: 1px solid var(--oc-gray-4);
+  border-inline-start: 1px solid var(--oc-gray-4);
+  text-align: center;
+  overflow: hidden;
+}
+
+#gantt_area .gantt_hdr {
+  border-inline-start: 0;
+  border-inline-end: 1px solid var(--oc-gray-4);
+}
+
+.gantt_subjects_container:not(.draw_selected_columns) .gantt_hdr,
+.last_gantt_selected_column .gantt_hdr {
+  border-inline-end: 1px solid var(--oc-gray-4);
+}
+
+.last_gantt_selected_column .gantt_selected_column_container,
+.gantt_subjects_container .gantt_subjects * {
+  z-index: 10;
+}
+
+.gantt_subjects_column + td {
+  padding: 0;
+}
+
+.gantt_hdr.nwday {
+  background-color: var(--oc-gray-1);
+  color: var(--oc-gray-6);
+}
+
+.gantt_subjects,
+.gantt_selected_column_content.gantt_hdr {
+  font-size: 0.8em;
+  position: relative;
+  z-index: 1;
+}
+
+.gantt_subjects div,
+.gantt_selected_column_content div {
+  line-height: 16px;
+  block-size: 16px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: clip;
+  inline-size: 100%;
+}
+
+.gantt_subjects div.issue-subject:hover {
+  background-color: var(--oc-yellow-0);
+}
+
+.gantt_selected_column_content > div {
+  padding-inline-start: 3px;
+  box-sizing: border-box;
+}
+
+.gantt_hdr_selected_column_name {
+  position: absolute;
+  inset-block-start: 50%;
+  inline-size: 100%;
+  transform: translateY(-50%);
+  -webkit-transform: translateY(-50%);
+  font-size: 0.8em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+td.gantt_selected_column {
+  inline-size: 50px;
+}
+
+td.gantt_selected_column .gantt_hdr,
+.gantt_selected_column_container {
+  inline-size: 49px;
+}
+
+td.gantt_watcher_users_column div.issue_watcher_users ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+td.gantt_watcher_users_column div.issue_watcher_users ul li {
+  display: inline;
+}
+
+td.gantt_watcher_users_column div.issue_watcher_users ul li:not(:last-child)::after {
+  content: ', ';
+  white-space: pre;
+}
+
+.task {
+  position: absolute;
+  block-size: 8px;
+  font-size: 0.8em;
+  color: var(--oc-gray-6);
+  padding: 0;
+  margin: 0;
+  line-height: 16px;
+  white-space: nowrap;
+}
+
+.task.label {
+  inline-size: 100%;
+}
+
+.task.label.project,
+.task.label.version {
+  font-weight: bold;
+}
+
+.task_late {
+  background: var(--oc-red-5) url(/task_late.png);
+  border: 1px solid var(--oc-red-5);
+}
+
+.task_done {
+  background: var(--oc-green-7) url(/task_done.png);
+  border: 1px solid var(--oc-green-7);
+}
+
+.task_todo {
+  background: var(--oc-gray-5) url(/task_todo.png);
+  border: 1px solid var(--oc-gray-5);
+}
+
+.task_todo.parent {
+  background: var(--oc-gray-6);
+  border: 1px solid var(--oc-gray-6);
+  block-size: 3px;
+}
+
+.task_late.parent,
+.task_done.parent {
+  block-size: 3px;
+}
+
+.task.parent.marker.starting {
+  position: absolute;
+  background: url(/task_parent_end.png) no-repeat 0 0;
+  inline-size: 8px;
+  block-size: 16px;
+  margin-inline-start: -4px;
+  inset-inline-start: 0;
+  inset-block-start: -1px;
+}
+
+.task.parent.marker.ending {
+  position: absolute;
+  background: url(/task_parent_end.png) no-repeat 0 0;
+  inline-size: 8px;
+  block-size: 16px;
+  margin-inline-start: -4px;
+  inset-inline-end: 0;
+  inset-block-start: -1px;
+}
+
+.version.task_late {
+  background: var(--oc-red-5) url(/milestone_late.png);
+  border: 1px solid var(--oc-red-5);
+  block-size: 2px;
+  margin-block-start: 3px;
+}
+
+.version.task_done {
+  background: var(--oc-green-7) url(/milestone_done.png);
+  border: 1px solid var(--oc-green-7);
+  block-size: 2px;
+  margin-block-start: 3px;
+}
+
+.version.task_todo {
+  background: var(--oc-white) url(/milestone_todo.png);
+  border: 1px solid var(--oc-white);
+  block-size: 2px;
+  margin-block-start: 3px;
+}
+
+.version.marker {
+  background-image: url(/version_marker.png);
+  background-repeat: no-repeat;
+  border: 0;
+  margin-inline-start: -4px;
+  margin-block-start: 1px;
+}
+
+.project.task_late {
+  background: var(--oc-red-5) url(/milestone_late.png);
+  border: 1px solid var(--oc-red-5);
+  block-size: 2px;
+  margin-block-start: 3px;
+}
+
+.project.task_done {
+  background: var(--oc-green-7) url(/milestone_done.png);
+  border: 1px solid var(--oc-green-7);
+  block-size: 2px;
+  margin-block-start: 3px;
+}
+
+.project.task_todo {
+  background: var(--oc-white) url(/milestone_todo.png);
+  border: 1px solid var(--oc-white);
+  block-size: 2px;
+  margin-block-start: 3px;
+}
+
+.project.marker {
+  background-image: url(/project_marker.png);
+  background-repeat: no-repeat;
+  border: 0;
+  margin-inline-start: -4px;
+  margin-block-start: 1px;
+}
+
+/* RTL adjustment (disabled while Gantt is forced LTR).  Enable when RTL is supported.
+[dir="rtl"] :is(.marker, .task.parent.marker) {
+  background-position: right;
+}
+*/
+
+.version-behind-schedule a,
+.issue-behind-schedule a {
+  color: var(--oc-yellow-8);
+}
+
+.version-overdue a,
+.issue-overdue a,
+.project-overdue a {
+  color: var(--oc-red-8);
+}

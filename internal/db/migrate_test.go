@@ -24,7 +24,7 @@ var expectedTables = []string{
 	"custom_fields_trackers", "custom_values",
 	"workflow_transitions", "workflow_field_rules",
 	"versions", "issue_categories", "issues", "issue_relations", "issue_journals", "issue_journal_details",
-	"watchers", "time_entries",
+	"watchers", "time_entries", "webhooks", "webhook_projects",
 	"wikis", "wiki_pages", "wiki_page_versions", "wiki_redirects",
 	"boards", "messages", "news", "news_comments", "documents", "reactions", "attachments",
 	"queries", "queries_roles",

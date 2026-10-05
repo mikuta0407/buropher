@@ -178,6 +178,8 @@ CREATE TABLE trackers (
   description TEXT,
   position INTEGER NOT NULL DEFAULT 1,
   is_in_roadmap INTEGER NOT NULL DEFAULT 1 CHECK (is_in_roadmap IN (0, 1)),
+  -- 新規チケットの「プライベート」の既定値 (Redmine 7.0 trackers.private_by_default)
+  private_by_default INTEGER NOT NULL DEFAULT 0 CHECK (private_by_default IN (0, 1)),
   default_status_id INTEGER NOT NULL REFERENCES issue_statuses (id) ON DELETE RESTRICT,
   -- 無効化された標準フィールド名の配列 (旧 fields_bits)
   disabled_core_fields TEXT CHECK (json_valid(disabled_core_fields)) NOT NULL DEFAULT '[]'
@@ -875,7 +877,7 @@ CREATE INDEX user_recent_projects_project_id ON user_recent_projects (project_id
 CREATE TABLE user_notification_settings (
   user_id INTEGER PRIMARY KEY REFERENCES user_accounts (principal_id) ON DELETE CASCADE,
   -- NULL = 未設定 (Setting.default_notification_option を適用)
-  mail_notification TEXT CHECK (mail_notification IN ('all', 'selected', 'only_my_events', 'only_assigned', 'only_owner', 'none')),
+  mail_notification TEXT CHECK (mail_notification IN ('all', 'selected', 'only_my_events', 'only_assigned', 'only_owner', 'only_my_watches', 'none')),
   no_self_notified INTEGER NOT NULL DEFAULT 1 CHECK (no_self_notified IN (0, 1)),
   notify_about_high_priority_issues INTEGER NOT NULL DEFAULT 0 CHECK (notify_about_high_priority_issues IN (0, 1)),
   channels TEXT NOT NULL DEFAULT 'email' CHECK (channels IN ('email', 'discord', 'both'))
@@ -1050,6 +1052,31 @@ CREATE INDEX oauth_access_tokens_resource_owner_id ON oauth_access_tokens (resou
 CREATE INDEX oauth_access_tokens_application_id ON oauth_access_tokens (application_id);
 
 -- =====================================================================
+-- Webhook (Redmine 7.0 webhooks / projects_webhooks)
+-- =====================================================================
+CREATE TABLE webhooks (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  url TEXT NOT NULL,
+  -- HMAC 署名 (X-Redmine-Signature-256) の共有鍵。NULL / 空なら署名しない
+  secret TEXT,
+  -- 購読イベント名の配列 (例: ["issue.created", "wiki_page.updated"])
+  events TEXT CHECK (json_valid(events)) NOT NULL DEFAULT '[]',
+  user_id INTEGER NOT NULL REFERENCES user_accounts (principal_id) ON DELETE CASCADE,
+  active INTEGER NOT NULL DEFAULT 0 CHECK (active IN (0, 1)),
+  created_at TEXT CHECK (created_at GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9][0-9][0-9][0-9]Z') NOT NULL,
+  updated_at TEXT CHECK (updated_at GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9][0-9][0-9][0-9]Z') NOT NULL
+);
+CREATE INDEX webhooks_user_id ON webhooks (user_id);
+CREATE INDEX webhooks_active ON webhooks (active);
+
+CREATE TABLE webhook_projects (
+  webhook_id INTEGER NOT NULL REFERENCES webhooks (id) ON DELETE CASCADE,
+  project_id INTEGER NOT NULL REFERENCES projects (id) ON DELETE CASCADE,
+  PRIMARY KEY (webhook_id, project_id)
+);
+CREATE INDEX webhook_projects_project_id ON webhook_projects (project_id);
+
+-- =====================================================================
 -- 基盤: ジョブキュー・通知
 -- =====================================================================
 CREATE TABLE jobs (
@@ -1114,6 +1141,8 @@ PRAGMA defer_foreign_keys = ON;
 DROP TABLE IF EXISTS discord_dm_channels;
 DROP TABLE IF EXISTS notification_deliveries;
 DROP TABLE IF EXISTS jobs;
+DROP TABLE IF EXISTS webhook_projects;
+DROP TABLE IF EXISTS webhooks;
 DROP TABLE IF EXISTS oauth_access_tokens;
 DROP TABLE IF EXISTS oauth_access_grants;
 DROP TABLE IF EXISTS oauth_applications;
