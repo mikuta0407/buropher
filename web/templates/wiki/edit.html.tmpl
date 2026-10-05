@@ -33,7 +33,7 @@
 <div id="existing-attachments" style="{{if not $ev.DeletedAttachmentIDs}}display:none;{{end}}">
   {{range $attachment := .Attachments}}
   <span class="existing-attachment">
-    {{sprite_icon "attachment" (hash "size" 12)}}
+    {{sprite_icon (icon_for_mime_type $attachment.ContentType) (hash "size" 12)}}
     {{text_field_tag "" $attachment.Filename (hash "class" "icon icon-attachment filename" "disabled" true)}}
     <label class='inline'>
       {{check_box_tag "wiki_page[deleted_attachment_ids][]" $attachment.ID (str_slice_contains_id $ev.DeletedAttachmentIDs $attachment.ID) (hash "id" nil "class" "deleted_attachment")}} {{l "button_delete"}}

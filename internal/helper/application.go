@@ -86,11 +86,19 @@ func (d *Deps) RequestFuncs(r *view.Render) ttemplate.FuncMap {
 		},
 		// icon_for_mime_type / file_type_icon の MIME タイプ → アイコン名（file_type_icon(m, ...) は
 		// sprite_icon (icon_for_mime_type m) ... と書く）
-		"icon_for_mime_type": func(mime any) string { return iconForMimeType(rails.ToS(mime)) },
-		"notice_icon":        func(typ string) html { return d.noticeIcon(pg(), typ) },
-		"avatar":             func(u any, args ...any) html { return d.avatar(r, pg(), toUser(u), optHash(args)) },
-		"link_to_user":       func(u any, args ...any) html { return d.linkToUser(pg(), u, optHash(args)) },
-		"user_path":          func(u any) string { return userPath(toUser(u)) },
+		"icon_for_mime_type": func(mime any) string {
+			if p, ok := mime.(*string); ok {
+				if p == nil {
+					return iconForMimeType("")
+				}
+				return iconForMimeType(*p)
+			}
+			return iconForMimeType(rails.ToS(mime))
+		},
+		"notice_icon":  func(typ string) html { return d.noticeIcon(pg(), typ) },
+		"avatar":       func(u any, args ...any) html { return d.avatar(r, pg(), toUser(u), optHash(args)) },
+		"link_to_user": func(u any, args ...any) html { return d.linkToUser(pg(), u, optHash(args)) },
+		"user_path":    func(u any) string { return userPath(toUser(u)) },
 
 		// --- menus ---
 		"display_main_menu": func(project any) bool { return pg().displayMainMenu(toProject(project)) },

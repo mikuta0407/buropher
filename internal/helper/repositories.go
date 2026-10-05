@@ -430,6 +430,9 @@ func RepositoryBreadcrumbs(project *domain.Project, repo *domain.Repository, pat
 	return template.HTML(strings.Join(crumbs, `<span class="separator">/</span>`))
 }
 
+// IconForMimeType は IconsHelper#icon_for_mime_type（ハンドラで HTML を組み立てる箇所用）。
+func IconForMimeType(mime string) string { return iconForMimeType(mime) }
+
 // iconForMimeType は IconsHelper#icon_for_mime_type（MIME タイプ "type/subtype" からアイコン名を決める）。
 func iconForMimeType(mime string) string {
 	switch mime {
