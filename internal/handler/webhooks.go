@@ -271,14 +271,14 @@ func (a *App) WebhooksIndex(c *Req) {
 	var rows []webhookRow
 	for _, w := range ws {
 		row := webhookRow{Webhook: w}
-		// webhook.projects.visible
-		for _, p := range all {
-			if slices.Contains(w.ProjectIDs, p.ID) && slices.Contains(visible, p.ID) {
-				row.Projects = append(row.Projects, p)
+		// webhook.projects.visible（projects_webhooks の行順 = 保存時の project_id 順）
+		for _, id := range w.ProjectIDs {
+			for _, p := range all {
+				if p.ID == id && slices.Contains(visible, p.ID) {
+					row.Projects = append(row.Projects, p)
+				}
 			}
 		}
-		// projects_webhooks の行順（保存時に project_id 順で作る）
-		slices.SortFunc(row.Projects, func(x, y *domain.Project) int { return int(x.ID - y.ID) })
 		rows = append(rows, row)
 	}
 	c.Render("webhooks/index", map[string]any{"Webhooks": rows})
