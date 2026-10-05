@@ -19,13 +19,13 @@ import (
 	"github.com/mikuta0407/buropher/internal/view/rails"
 )
 
-// このファイルは ContextMenusController#time_entries（context_menus/time_entries.html）の移植。
+// このファイルは ContextMenus::TimeEntriesController#index（context_menus/time_entries.html）の移植。
 // ルートは routesTimelogContextMenu（routesTimelog から登録）。
 
-// routesTimelogContextMenu は match '/time_entries/context_menu', :to => 'context_menus#time_entries', :via => [:get, :post]。
+// routesTimelogContextMenu は match '/time_entries/context_menu', :to => 'context_menus/time_entries#index', :via => [:get, :post]。
 func (a *App) routesTimelogContextMenu(r Router) {
-	a.Handle(r, "GET", "/time_entries/context_menu", ContextMenusController, "time_entries", a.ContextMenusTimeEntries)
-	a.Handle(r, "POST", "/time_entries/context_menu", ContextMenusController, "time_entries", a.ContextMenusTimeEntries)
+	a.Handle(r, "GET", "/time_entries/context_menu", ContextMenusTimeEntriesController, "index", a.ContextMenusTimeEntries)
+	a.Handle(r, "POST", "/time_entries/context_menu", ContextMenusTimeEntriesController, "index", a.ContextMenusTimeEntries)
 }
 
 // teCMFolder は CF の副メニュー。
@@ -86,7 +86,7 @@ func teContextMenuLink(c *Req, name any, url string, class string, selected, dis
 	return rails.LinkTo(label, url, h)
 }
 
-// ContextMenusTimeEntries は context_menus#time_entries（layout なし）。
+// ContextMenusTimeEntries は ContextMenus::TimeEntriesController#index（layout なし）。
 func (a *App) ContextMenusTimeEntries(c *Req) {
 	ctx := c.Ctx()
 	ids := idsFromParam(c.Params().Slice("ids"))
@@ -101,15 +101,16 @@ func (a *App) ContextMenusTimeEntries(c *Req) {
 	editable := true
 	for _, r := range rs {
 		t := timelog.FromRecord(r)
-		// 本家は TimeEntry.where(:id => ...) で可視性を見ないため、見えない工数の存在とそのプロジェクトの
-		// 作業分類名が分かった。見えない工数は無いものとして扱う
+		// Redmine 6.1.3 #44109: 見えない工数が 1 件でも含まれていれば 404
+		// （if @time_entries.blank? || !@time_entries.all?(&:visible?) then render_404）
 		vis, err := env.Visible(ctx, t, c.User)
 		if err != nil {
 			a.internalError(c, "time entry visible", err)
 			return
 		}
 		if !vis {
-			continue
+			c.Render404("")
+			return
 		}
 		entries = append(entries, t)
 		p, err := env.Project(ctx, t.ProjectID)

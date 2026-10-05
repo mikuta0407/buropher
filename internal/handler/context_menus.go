@@ -10,20 +10,30 @@ import (
 	"github.com/mikuta0407/buropher/internal/view"
 )
 
-// ContextMenusController（app/controllers/context_menus_controller.rb）。
-// 現在は users アクションのみ（issues / time_entries / projects は各機能で追加する）。
-var ContextMenusController = &Controller{Name: "context_menus", MainMenu: true}
+// Redmine 7.0 #44169 でコンテキストメニューは ContextMenus::BaseController を継承する名前空間付きの
+// コントローラ（app/controllers/context_menus/{issues,projects,time_entries,users}_controller.rb）に分割され、
+// アクションはいずれも index になった（URL は従来どおり）。
+var (
+	// ContextMenusIssuesController は ContextMenus::IssuesController。
+	ContextMenusIssuesController = &Controller{Name: "context_menus/issues", MainMenu: true}
+	// ContextMenusProjectsController は ContextMenus::ProjectsController。
+	ContextMenusProjectsController = &Controller{Name: "context_menus/projects", MainMenu: true}
+	// ContextMenusTimeEntriesController は ContextMenus::TimeEntriesController。
+	ContextMenusTimeEntriesController = &Controller{Name: "context_menus/time_entries", MainMenu: true}
+	// ContextMenusUsersController は ContextMenus::UsersController。
+	ContextMenusUsersController = &Controller{Name: "context_menus/users", MainMenu: true}
+)
 
 // routesContextMenus は context_menus コントローラのルートを登録する。
 func (a *App) routesContextMenus(r Router) {
 	for _, m := range []string{http.MethodGet, http.MethodPost} {
-		// match '/users/context_menu', to: 'context_menus#users', via: [:get, :post]
-		// 本家は管理者に限定しておらず、任意の id のユーザーの存在とロック状態が分かる（一覧は管理者専用）
-		a.Handle(r, m, "/users/context_menu", ContextMenusController, "users", a.ContextMenusUsers, RequireAdmin())
+		// match '/users/context_menu', to: 'context_menus/users#index', via: [:get, :post]
+		// before_action :require_admin（Redmine 6.1.3 #44109）
+		a.Handle(r, m, "/users/context_menu", ContextMenusUsersController, "index", a.ContextMenusUsers, RequireAdmin())
 	}
 }
 
-// ContextMenusUsers は context_menus#users（layout なし）。
+// ContextMenusUsers は ContextMenus::UsersController#index（layout なし）。
 func (a *App) ContextMenusUsers(c *Req) {
 	users, err := repository.UsersWhereIDs(c.Ctx(), a.DB, idsFromParam(c.Params().Slice("ids")))
 	if err != nil {

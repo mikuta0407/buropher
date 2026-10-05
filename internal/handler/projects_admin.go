@@ -19,27 +19,25 @@ import (
 	"github.com/mikuta0407/buropher/internal/view"
 )
 
-// このファイルは AdminController#projects（ProjectAdminQuery の一覧）と ContextMenusController#projects、
+// このファイルは AdminController#projects（ProjectAdminQuery の一覧）と ContextMenus::ProjectsController#index、
 // projects#destroy / bulk_destroy（DestroyProjectJob / DestroyProjectsJob）。
 //
-// TODO(dedupe): admin users の移植で AdminController / ContextMenusController の他のアクションが
+// TODO(dedupe): admin users の移植で AdminController の他のアクションが
 // 追加されたら、コントローラ変数を共通化する。
 
 // AdminProjectsController は AdminController（projects アクションのみ）。layout 'admin'、main_menu false。
 var AdminProjectsController = &Controller{Name: "admin", MainMenu: false}
 
-// ContextMenusProjectsController は ContextMenusController（projects アクション）。
-var ContextMenusProjectsController = &Controller{Name: "context_menus", MainMenu: true}
 
-// routesAdminProjects は admin#projects と context_menus#projects のルートを登録する。
+// routesAdminProjects は admin#projects と context_menus/projects#index のルートを登録する。
 //
 //	get 'admin/projects', :to => 'admin#projects'
-//	match '/admin/projects_context_menu', :to => 'context_menus#projects', :as => 'projects_context_menu', :via => [:get, :post]
+//	match '/admin/projects_context_menu', :to => 'context_menus/projects#index', :as => 'projects_context_menu', :via => [:get, :post]
 func (a *App) routesAdminProjects(r Router) {
 	a.Handle(r, http.MethodGet, "/admin/projects", AdminProjectsController, "projects", a.AdminProjects, RequireAdmin())
 	for _, m := range []string{http.MethodGet, http.MethodPost} {
-		// 本家は管理者に限定しておらず、非公開プロジェクトの名前・識別子・アーカイブ状態が任意の id で分かる
-		a.Handle(r, m, "/admin/projects_context_menu", ContextMenusProjectsController, "projects", a.ContextMenusProjects, RequireAdmin())
+		// before_action :require_admin（Redmine 6.1.3 #44109）
+		a.Handle(r, m, "/admin/projects_context_menu", ContextMenusProjectsController, "index", a.ContextMenusProjects, RequireAdmin())
 	}
 }
 
@@ -87,7 +85,7 @@ func (a *App) AdminProjects(c *Req) {
 	c.renderAdmin("admin/projects", data, httpx.IsXHR(c.R))
 }
 
-// ContextMenusProjects は context_menus#projects（レイアウトなし）。
+// ContextMenusProjects は ContextMenus::ProjectsController#index（レイアウトなし）。
 func (a *App) ContextMenusProjects(c *Req) {
 	ids := paramIDs(c.Params().Strings("ids"))
 	var projects []*domain.Project
