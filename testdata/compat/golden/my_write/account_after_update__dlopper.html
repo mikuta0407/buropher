@@ -2,10 +2,10 @@ status: 200
 content-type: text/html
 
 <!DOCTYPE html>
-<html dir="ltr" lang="fr">
+<html dir="ltr" lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Mon compte - Redmine</title>
+    <title>My account - Redmine</title>
     <meta content="width=device-width, initial-scale=1" name="viewport">
     <meta content="Redmine" name="description">
     <meta content="issue,bug,tracker" name="keywords">
@@ -79,7 +79,7 @@ content-type: text/html
     <script src="/assets/application-legacy-DIGEST.js"></script>
     <script src="/assets/responsive-DIGEST.js"></script>
     <script>//<![CDATA[
-rm = window.rm || {};rm.I18n = rm.I18n || {};rm.I18n = Object.freeze({buttonCopy: 'Copier'});
+rm = window.rm || {};rm.I18n = rm.I18n || {};rm.I18n = Object.freeze({buttonCopy: 'Copy'});
 //]]></script>
     <script>//<![CDATA[
 rm = window.rm || {};rm.AutoComplete = rm.AutoComplete || {};rm.AutoComplete.dataSources = JSON.parse('{"issues":"/issues/auto_complete?q=","wiki_pages":"/wiki_pages/auto_complete?q="}');
@@ -94,9 +94,9 @@ rm = window.rm || {};rm.AutoComplete = rm.AutoComplete || {};rm.AutoComplete.dat
               <svg aria-hidden="true" class="s18 icon-svg">
                 <use href="/assets/icons-DIGEST.svg#icon--search"></use>
               </svg>
-              <span class="icon-label hidden">Recherche</span>
+              <span class="icon-label hidden">Search</span>
             </label>
-            <input class="small js-search-input" id="flyout-search" name="q" placeholder="Recherche" type="text">
+            <input class="small js-search-input" id="flyout-search" name="q" placeholder="Search" type="text">
           </form>
         </div>
         <div class="flyout-menu__avatar">
@@ -105,10 +105,10 @@ rm = window.rm || {};rm.AutoComplete = rm.AutoComplete || {};rm.AutoComplete.dat
           </a>
           <a class="user active" href="/users/3">dlopper</a>
         </div>
-        <h3>Général</h3>
+        <h3>General</h3>
         <span class="js-general-menu"></span>
         <span class="js-sidebar flyout-menu__sidebar"></span>
-        <h3>Profil</h3>
+        <h3>Profile</h3>
         <span class="js-profile-menu"></span>
       </div>
       <nav class="top-menu" id="top-menu">
@@ -116,16 +116,16 @@ rm = window.rm || {};rm.AutoComplete = rm.AutoComplete || {};rm.AutoComplete.dat
           <div class="top-menu__links">
             <ul>
               <li>
-                <a class="home" href="/">Accueil</a>
+                <a class="home" href="/">Home</a>
               </li>
               <li>
-                <a class="my-page" href="/my/page">Ma page</a>
+                <a class="my-page" href="/my/page">My page</a>
               </li>
               <li>
-                <a class="projects" href="/projects">Projets</a>
+                <a class="projects" href="/projects">Projects</a>
               </li>
               <li>
-                <a class="help" href="https://www.redmine.org/guide" rel="noopener" target="_blank">Aide</a>
+                <a class="help" href="https://www.redmine.org/guide" rel="noopener" target="_blank">Help</a>
               </li>
             </ul>
           </div>
@@ -146,13 +146,13 @@ rm = window.rm || {};rm.AutoComplete = rm.AutoComplete || {};rm.AutoComplete.dat
               <div class="dropdown-divider"></div>
               <ul>
                 <li>
-                  <a class="my-profile" href="/users/current">Profil</a>
+                  <a class="my-profile" href="/users/current">Profile</a>
                 </li>
                 <li>
-                  <a class="my-account" href="/my/account">Mon compte</a>
+                  <a class="my-account" href="/my/account">My account</a>
                 </li>
                 <li>
-                  <a class="logout" data-method="post" href="/logout" rel="nofollow">Déconnexion</a>
+                  <a class="logout" data-method="post" href="/logout" rel="nofollow">Sign out</a>
                 </li>
               </ul>
             </div>
@@ -165,7 +165,7 @@ rm = window.rm || {};rm.AutoComplete = rm.AutoComplete || {};rm.AutoComplete.dat
           <form accept-charset="UTF-8" action="/search" method="get" name="form-RANDOM">
             <input autocomplete="off" name="scope" type="hidden">
             <label for="q">
-              <a accesskey="4" href="/search">Recherche</a>
+              <a accesskey="4" href="/search">Search</a>
               :
             </label>
             <input accesskey="f" class="small" data-auto-complete="true" id="q" name="q" size="20" type="text">
@@ -189,36 +189,36 @@ $('#main.collapsiblesidebar').collapsibleSidebar();
 $('#sidebar-switch-panel').css('visibility', 'visible');
 //]]></script>
           <div id="sidebar-wrapper">
-            <h3>Mon compte</h3>
+            <h3>My account</h3>
             <p>
-              Identifiant:
+              Login:
               <strong>
                 <a class="user active" href="/users/3">dlopper</a>
               </strong>
               <br>
-              Créé: 19/07/2006 17:33
+              Created: 07/19/2006 05:33 PM
             </p>
             <p>
               <a class="icon icon-del" href="/my/account/destroy">
                 <svg aria-hidden="true" class="s18 icon-svg">
                   <use href="/assets/icons-DIGEST.svg#icon--del"></use>
                 </svg>
-                <span class="icon-label">Supprimer mon compte</span>
+                <span class="icon-label">Delete my account</span>
               </a>
             </p>
-            <h4>Clé d&#39;accès Atom</h4>
+            <h4>Atom access key</h4>
             <p>
-              Clé d&#39;accès Atom créée il y a moins d&#39;une minute
+              Atom access key created less than a minute ago
               <br>
-              Jamais utilisée (
-              <a data-method="post" href="/my/atom_key" rel="nofollow">Réinitialiser</a>
+              Never used (
+              <a data-method="post" href="/my/atom_key" rel="nofollow">Reset</a>
               )
             </p>
-            <h4>Clé d&#39;accès API</h4>
+            <h4>API access key</h4>
             <div data-controller="api-key-copy">
               <div class="api-key-actions">
-                <a data-remote="true" href="/my/api_key">Afficher</a>
-                <a aria-label="Copier" class="copy-api-key-link icon icon-only" data-action="click-&gt;api-key-copy#copy" href="#" role="button" style="display: none;" tabindex="0" title="Copier">
+                <a data-remote="true" href="/my/api_key">Show</a>
+                <a aria-label="Copy" class="copy-api-key-link icon icon-only" data-action="click-&gt;api-key-copy#copy" href="#" role="button" style="display: none;" tabindex="0" title="Copy">
                   <svg aria-hidden="true" class="s18 icon-svg">
                     <use href="/assets/icons-DIGEST.svg#icon--copy"></use>
                   </svg>
@@ -229,8 +229,8 @@ $('#sidebar-switch-panel').css('visibility', 'visible');
 $('#api-access-key').hide();
 //]]></script>
               <p>
-                Clé d&#39;accès API manquante (
-                <a data-method="post" href="/my/api_key" rel="nofollow">Réinitialiser</a>
+                Missing an API access key (
+                <a data-method="post" href="/my/api_key" rel="nofollow">Reset</a>
                 )
               </p>
             </div>
@@ -293,7 +293,7 @@ $('#api-access-key').hide();
                     <input id="user_mail" name="user[mail]" type="text" value="dave2@somenet.foo">
                   </p>
                   <p>
-                    <label for="user_language">Langue</label>
+                    <label for="user_language">Language</label>
                     <select id="user_language" name="user[language]">
                       <option value="">(auto)</option>
                       <option value="sq">Albanian (Shqip)</option>
@@ -349,8 +349,8 @@ $('#api-access-key').hide();
                     </select>
                   </p>
                   <p>
-                    <label>Double authentification</label>
-                    <a data-method="post" href="/my/twofa/totp/activate/init" rel="nofollow">Activer la double authentification</a>
+                    <label>Two-factor authentication</label>
+                    <a data-method="post" href="/my/twofa/totp/activate/init" rel="nofollow">Enable authenticator app</a>
                     <br>
                   </p>
                   <p>
@@ -367,33 +367,33 @@ $('#api-access-key').hide();
                   </p>
                 </fieldset>
                 <p class="mobile-hide">
-                  <input data-disable-with="Sauvegarder" name="commit" type="submit" value="Sauvegarder">
+                  <input data-disable-with="Save" name="commit" type="submit" value="Save">
                 </p>
               </div>
               <div class="splitcontentright">
                 <fieldset class="box">
-                  <legend>Notifications par mail</legend>
+                  <legend>Email notifications</legend>
                   <p>
-                    <label class="hidden-for-sighted" for="user_mail_notification">Option de notification</label>
+                    <label class="hidden-for-sighted" for="user_mail_notification">Mail notification settings</label>
                     <select id="user_mail_notification" name="user[mail_notification]" onchange="if (this.value == &#34;selected&#34;) {$(&#34;#notified-projects&#34;).show();} else {$(&#34;#notified-projects&#34;).hide();}">
-                      <option value="all">Pour tous les événements de tous mes projets</option>
-                      <option value="selected">Pour tous les événements des projets sélectionnés...</option>
-                      <option value="only_my_events">Seulement pour ce que je surveille ou qui me concerne</option>
-                      <option selected="selected" value="only_assigned">Seulement pour ce que je surveille ou qui m&#39;est assigné</option>
-                      <option value="only_owner">Seulement pour ce que je surveille ou que j&#39;ai créé</option>
-                      <option value="only_my_watches">Seulement pour ce que je surveille</option>
-                      <option value="none">Aucune notification</option>
+                      <option value="all">For any event on all my projects</option>
+                      <option value="selected">For any event on the selected projects only...</option>
+                      <option value="only_my_events">Only for things I watch or I&#39;m involved in</option>
+                      <option selected="selected" value="only_assigned">Only for things I watch or I am assigned to</option>
+                      <option value="only_owner">Only for things I watch or I am the owner of</option>
+                      <option value="only_my_watches">Only for things I watch</option>
+                      <option value="none">No events</option>
                     </select>
                   </p>
                   <fieldset id="notified-projects" style="display:none;">
                     <legend>
-                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;#notified-projects input[type=checkbox]&#39;); return false;" title="Tout cocher / Tout décocher">
+                      <a class="icon icon-checked" href="#" onclick="toggleCheckboxesBySelector(&#39;#notified-projects input[type=checkbox]&#39;); return false;" title="Check all / Uncheck all">
                         <svg aria-hidden="true" class="s18 icon-svg">
                           <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
                         </svg>
                         <span class="icon-label"></span>
                       </a>
-                      Projets
+                      Projects
                     </legend>
                     <ul class="projects root">
                       <li class="root">
@@ -408,7 +408,7 @@ $('#api-access-key').hide();
                     <input autocomplete="off" id="user_notified_project_ids_" name="user[notified_project_ids][]" type="hidden" value="">
                     <p>
                       <em class="info">
-                        Pour les projets non sélectionnés, vous recevrez seulement des notifications pour ce que vous surveillez ou à quoi vous participez (exemple: demandes dont vous êtes l&#39;auteur ou la personne assignée).
+                        For unselected projects, you will only receive notifications about things you watch or you&#39;re involved in (eg. issues you&#39;re the author or assignee).
                       </em>
                     </p>
                   </fieldset>
@@ -416,42 +416,42 @@ $('#api-access-key').hide();
                     <input autocomplete="off" name="pref[notify_about_high_priority_issues]" type="hidden" value="0">
                     <input id="pref_notify_about_high_priority_issues" name="pref[notify_about_high_priority_issues]" type="checkbox" value="1">
                     <label for="pref_notify_about_high_priority_issues">
-                      Me notifier aussi des demandes avec une priorité
+                      Also notify me about issues with a priority of
                       <em>high</em>
-                      ou supérieure
+                      or higher
                     </label>
                   </p>
                   <p>
                     <input autocomplete="off" name="pref[no_self_notified]" type="hidden" value="0">
                     <input id="pref_no_self_notified" name="pref[no_self_notified]" type="checkbox" value="1">
-                    <label for="pref_no_self_notified">Je ne veux pas être notifié des changements que j&#39;effectue</label>
+                    <label for="pref_no_self_notified">I don&#39;t want to be notified of changes that I make myself</label>
                   </p>
                 </fieldset>
                 <fieldset class="box">
-                  <legend>Observation automatique</legend>
+                  <legend>Auto watch</legend>
                   <input autocomplete="off" name="pref[auto_watch_on][]" type="hidden" value="">
                   <p>
                     <input checked="checked" id="pref_auto_watch_on_issue_created" name="pref[auto_watch_on][]" type="checkbox" value="issue_created">
-                    <label for="pref_auto_watch_on_issue_created">Demandes que j&#39;ai créées</label>
+                    <label for="pref_auto_watch_on_issue_created">Issues I created</label>
                   </p>
                   <p>
                     <input id="pref_auto_watch_on_issue_contributed_to" name="pref[auto_watch_on][]" type="checkbox" value="issue_contributed_to">
-                    <label for="pref_auto_watch_on_issue_contributed_to">Demandes auxquelles j&#39;ai contribué</label>
+                    <label for="pref_auto_watch_on_issue_contributed_to">Issues I contributed to</label>
                   </p>
                   <p>
                     <input id="pref_auto_watch_on_issue_assigned_to_me" name="pref[auto_watch_on][]" type="checkbox" value="issue_assigned_to_me">
-                    <label for="pref_auto_watch_on_issue_assigned_to_me">Demandes qui me sont assignées</label>
+                    <label for="pref_auto_watch_on_issue_assigned_to_me">Issues assigned to me</label>
                   </p>
                 </fieldset>
                 <fieldset class="box tabular">
-                  <legend>Préférences</legend>
+                  <legend>Preferences</legend>
                   <p>
-                    <label for="pref_hide_mail">Cacher mon adresse mail</label>
+                    <label for="pref_hide_mail">Hide my email address</label>
                     <input autocomplete="off" name="pref[hide_mail]" type="hidden" value="0">
                     <input id="pref_hide_mail" name="pref[hide_mail]" type="checkbox" value="1">
                   </p>
                   <p>
-                    <label for="pref_time_zone">Fuseau horaire</label>
+                    <label for="pref_time_zone">Time zone</label>
                     <select id="pref_time_zone" name="pref[time_zone]">
                       <option label=" " value=""></option>
                       <option value="International Date Line West">(GMT-12:00) International Date Line West</option>
@@ -526,6 +526,7 @@ $('#api-access-key').hide();
                       <option value="Helsinki">(GMT+02:00) Helsinki</option>
                       <option value="Jerusalem">(GMT+02:00) Jerusalem</option>
                       <option value="Kaliningrad">(GMT+02:00) Kaliningrad</option>
+                      <option value="Kyiv">(GMT+02:00) Kyiv</option>
                       <option value="Pretoria">(GMT+02:00) Pretoria</option>
                       <option value="Riga">(GMT+02:00) Riga</option>
                       <option value="Sofia">(GMT+02:00) Sofia</option>
@@ -562,6 +563,7 @@ $('#api-access-key').hide();
                       <option value="Kathmandu">(GMT+05:45) Kathmandu</option>
                       <option value="Dhaka">(GMT+06:00) Dhaka</option>
                       <option value="Urumqi">(GMT+06:00) Urumqi</option>
+                      <option value="Rangoon">(GMT+06:30) Rangoon</option>
                       <option value="Bangkok">(GMT+07:00) Bangkok</option>
                       <option value="Hanoi">(GMT+07:00) Hanoi</option>
                       <option value="Jakarta">(GMT+07:00) Jakarta</option>
@@ -607,72 +609,72 @@ $('#api-access-key').hide();
                     </select>
                   </p>
                   <p>
-                    <label for="pref_comments_sorting">Afficher les commentaires</label>
+                    <label for="pref_comments_sorting">Display comments</label>
                     <select id="pref_comments_sorting" name="pref[comments_sorting]">
-                      <option value="asc">Dans l&#39;ordre chronologique</option>
-                      <option selected="selected" value="desc">Dans l&#39;ordre chronologique inverse</option>
+                      <option value="asc">In chronological order</option>
+                      <option selected="selected" value="desc">In reverse chronological order</option>
                     </select>
                   </p>
                   <p>
-                    <label for="pref_warn_on_leaving_unsaved">M&#39;avertir lorsque je quitte une page contenant du texte non sauvegardé</label>
+                    <label for="pref_warn_on_leaving_unsaved">Warn me when leaving a page with unsaved text</label>
                     <input autocomplete="off" name="pref[warn_on_leaving_unsaved]" type="hidden" value="0">
                     <input id="pref_warn_on_leaving_unsaved" name="pref[warn_on_leaving_unsaved]" type="checkbox" value="1">
                   </p>
                   <p>
-                    <label for="pref_textarea_font">Police utilisée pour les champs texte</label>
+                    <label for="pref_textarea_font">Font used for text areas</label>
                     <select id="pref_textarea_font" name="pref[textarea_font]">
-                      <option value="">Police par défaut</option>
-                      <option selected="selected" value="monospace">Police non proportionnelle</option>
-                      <option value="proportional">Police proportionnelle</option>
+                      <option value="">Default font</option>
+                      <option selected="selected" value="monospace">Monospaced font</option>
+                      <option value="proportional">Proportional font</option>
                     </select>
                   </p>
                   <p>
-                    <label for="pref_recently_used_projects">Nombre de projets consultés récemment affichés dans le menu</label>
+                    <label for="pref_recently_used_projects">Number of recently used projects in jump box</label>
                     <input id="pref_recently_used_projects" name="pref[recently_used_projects]" size="2" type="text" value="5">
                   </p>
                   <p>
-                    <label for="pref_history_default_tab">Onglet par défaut de l&#39;historique d&#39;une demande</label>
+                    <label for="pref_history_default_tab">Issue&#39;s history default tab</label>
                     <select id="pref_history_default_tab" name="pref[history_default_tab]">
                       <option selected="selected" value="notes">Notes</option>
-                      <option value="history">Historique</option>
-                      <option value="properties">Changements</option>
-                      <option value="time_entries">Temps passé</option>
-                      <option value="changesets">Révisions associées</option>
-                      <option value="last_tab_visited">Dernier onglet visité</option>
+                      <option value="history">History</option>
+                      <option value="properties">Property changes</option>
+                      <option value="time_entries">Spent time</option>
+                      <option value="changesets">Associated revisions</option>
+                      <option value="last_tab_visited">Last visited tab</option>
                     </select>
                   </p>
                   <p>
-                    <label for="pref_toolbar_language_options">Langages de la barre d&#39;outils de mise en évidence du code</label>
+                    <label for="pref_toolbar_language_options">Code highlighting toolbar languages</label>
                     <textarea id="pref_toolbar_language_options" name="pref[toolbar_language_options]" rows="4">ruby,go</textarea>
                   </p>
                   <p>
-                    <label for="pref_default_issue_query">Rapport par défaut</label>
+                    <label for="pref_default_issue_query">Default issue query</label>
                     <select id="pref_default_issue_query" name="pref[default_issue_query]">
-                      <option value="">aucun</option>
-                      <optgroup label="Pour tous les utilisateurs">
+                      <option value="">none</option>
+                      <optgroup label="For all users">
                         <option value="4">Public query for all projects</option>
                         <option value="5">Open issues by priority and tracker</option>
                         <option value="6">Open issues grouped by tracker</option>
                         <option value="9">Open issues grouped by list custom field</option>
                       </optgroup>
-                      <optgroup label="Mes rapports personnalisés">
+                      <optgroup label="My custom queries">
                         <option value="3">Private query for all projects</option>
                       </optgroup>
                     </select>
                   </p>
                   <p>
-                    <label for="pref_default_project_query">Rapport par défaut du project</label>
+                    <label for="pref_default_project_query">Default project query</label>
                     <select id="pref_default_project_query" name="pref[default_project_query]">
-                      <option value="">aucun</option>
-                      <optgroup label="Pour tous les utilisateurs">
+                      <option value="">none</option>
+                      <optgroup label="For all users">
                         <option value="11">Projects as list</option>
                       </optgroup>
-                      <optgroup label="Mes rapports personnalisés"></optgroup>
+                      <optgroup label="My custom queries"></optgroup>
                     </select>
                   </p>
                 </fieldset>
                 <p class="mobile-show">
-                  <input data-disable-with="Sauvegarder" name="commit" type="submit" value="Sauvegarder">
+                  <input data-disable-with="Save" name="commit" type="submit" value="Save">
                 </p>
               </div>
             </div>
@@ -686,7 +688,7 @@ $('#api-access-key').hide();
           <svg aria-hidden="true" class="s18 icon-svg svg-loader">
             <use href="/assets/icons-DIGEST.svg#icon--loader"></use>
           </svg>
-          <span class="icon-label">Chargement...</span>
+          <span class="icon-label">Loading...</span>
         </span>
       </div>
       <div id="ajax-modal" style="display:none;"></div>
