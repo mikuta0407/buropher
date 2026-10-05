@@ -47,6 +47,8 @@ func init() {
 				return langOptionsForSelect(pg(), len(blank) == 0 || blank[0])
 			},
 			"time_zone_options": func() [][2]string { return i18n.TimeZoneOptions() },
+			// users/_form の User.lastname_before_firstname?（#4507: 姓・名の入力欄の順序を表示書式に合わせる）
+			"users_form_lastname_first": func() bool { return domain.LastnameBeforeFirstname(pg().userFormat()) },
 			"render_project_nested_lists": func(projects []*domain.Project, partial string, locals ...map[string]any) (html, error) {
 				return renderProjectNestedLists(r, pg(), projects, partial, locals...)
 			},
@@ -333,6 +335,9 @@ func (d *Deps) linkToPrincipal(p *Page, v any) html {
 	case *domain.Group:
 		name := GroupName(p, x)
 		return rails.LinkTo(d.spriteIcon(p, "group", nil, nil)+rails.H(name), "/groups/"+strconv.FormatInt(x.ID, 10), rails.NewHash("class", "group"))
+	case *repository.MemberPrincipal:
+		// メンバーのプリンシパル（プロジェクト設定のメンバー一覧。組込グループを含む）
+		return d.linkToPrincipalHTML(p, x, rails.NewHash())
 	}
 	return rails.H(rails.ToS(v))
 }

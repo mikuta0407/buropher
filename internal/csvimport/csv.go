@@ -47,6 +47,8 @@ type Options struct {
 	Wrapper string
 	// Encoding は外部エンコーディング（空なら UTF-8。UTF-8 は BOM を除く 'bom|UTF-8'）。
 	Encoding string
+	// Newline は row_sep（空なら :auto。#41434: 先頭部分に CRLF があれば "\r\n" を明示する）。
+	Newline string
 }
 
 // Parse は data を CSV として解析する（Ruby の csv 3.x の parse_quotable_robust と同じ規則）。
@@ -64,7 +66,11 @@ func Parse(data []byte, o Options, fn func(Row) bool) error {
 	if utf8.RuneCountInString(o.Wrapper) == 1 {
 		quote = o.Wrapper
 	}
-	p := &parser{s: text, sep: sep, quote: quote, rowSep: detectRowSeparator(text)}
+	rowSep := o.Newline
+	if rowSep == "" {
+		rowSep = detectRowSeparator(text)
+	}
+	p := &parser{s: text, sep: sep, quote: quote, rowSep: rowSep}
 	return p.parse(fn)
 }
 

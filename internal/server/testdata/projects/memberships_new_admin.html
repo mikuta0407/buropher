@@ -199,7 +199,7 @@ rm = window.rm || {};rm.AutoComplete = rm.AutoComplete || {};rm.AutoComplete.dat
   <p><input type="text" name="principal_search" id="principal_search" /></p>
   <script>
 //<![CDATA[
-observeSearchfield('principal_search', null, '/projects/ecookbook/memberships/autocomplete.js')
+observeSearchfield('principal_search', null, '/projects/ecookbook/memberships/autocomplete.js', {checkboxSelector: 'input[name="membership[user_ids][]"]'})
 //]]>
 </script>
   <div id="principals_for_new_member">

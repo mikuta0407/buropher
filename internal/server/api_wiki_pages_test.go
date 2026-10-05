@@ -29,6 +29,8 @@ func TestAPIWikiPages(t *testing.T) {
 			case "CookBook_documentation":
 				doc = true
 				assertXMLText(t, p, "version", "3")
+				// #44353
+				assertXMLCount(t, p, `project[id="1"][name="eCookbook"]`, 1)
 				assertXMLCount(t, p, "created_on", 1)
 				assertXMLCount(t, p, "updated_on", 1)
 			case "Page_with_an_inline_image":
@@ -50,6 +52,8 @@ func TestAPIWikiPages(t *testing.T) {
 		for _, e := range []string{"text", "author", "comments", "created_on", "updated_on"} {
 			assertXMLCount(t, x, "wiki_page > "+e, 1)
 		}
+		// #43569
+		assertXMLCount(t, x, `wiki_page > project[id="1"][name="eCookbook"]`, 1)
 	})
 
 	t.Run("GET /projects/:project_id/wiki/:title.xml?include=attachments should include attachments", func(t *testing.T) {

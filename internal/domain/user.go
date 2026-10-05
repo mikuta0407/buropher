@@ -71,6 +71,15 @@ func ValidUserFormat(format string) bool {
 	return ok
 }
 
+// LastnameBeforeFirstname は User.lastname_before_firstname?（表示書式で姓が名より前。#4507）。
+func LastnameBeforeFirstname(format string) bool {
+	switch format {
+	case "lastname_firstname", "lastnamefirstname", "lastname_comma_firstname":
+		return true
+	}
+	return false
+}
+
 // formatter は User.name_formatter (未知の書式は firstname_lastname)。
 func formatter(format string) userFormat {
 	if f, ok := userFormats[format]; ok {
@@ -180,6 +189,9 @@ type Token struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
+
+// Used は Token#used?（作成後に使われたことがあるか。#43938）。
+func (t *Token) Used() bool { return !t.UpdatedAt.IsZero() && t.UpdatedAt.After(t.CreatedAt) }
 
 // ---------------------------------------------------------------- ニュース
 

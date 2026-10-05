@@ -371,6 +371,17 @@ func DetachSession(r *http.Request) *http.Request {
 	return r
 }
 
+// NullSession は Rails の NullSession（ApplicationController#api_session。#44249）に相当する。
+// DetachSession と同じく空の使い捨てのセッションに差し替え、さらに元のセッションも保存・クッキー発行を
+// しない（有効期限の延長もしない）。API リクエストがブラウザのセッションの状態（パスワード変更・
+// 2 要素認証の有効化の要求など）を変えて、セキュリティポリシーを回避できないようにする。
+func NullSession(r *http.Request) *http.Request {
+	if s := SessionOf(r); s != nil && !s.detached {
+		s.committed = true
+	}
+	return DetachSession(r)
+}
+
 // ID はセッション ID を返す（未保存の新規セッションは空）。
 func (s *Session) ID() string { return s.rec.ID }
 

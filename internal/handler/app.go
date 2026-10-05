@@ -304,6 +304,10 @@ func (a *App) Handle(r chi.Router, method, pattern string, ctrl *Controller, act
 	})(inner)
 	h := func(w http.ResponseWriter, r *http.Request) {
 		r = r.WithContext(context.WithValue(r.Context(), ctxRoute, routeInfo{ctrl, action}))
+		// api_session（#44249）: API リクエストは既存のセッションを使わず、変更も保存もしない
+		if httpx.IsAPIRequest(r) {
+			r = httpx.NullSession(r)
+		}
 		csrf.ServeHTTP(w, r)
 	}
 	httpx.Route(r, method, pattern, h)
@@ -497,7 +501,10 @@ func (a *App) requireLogin(c *Req) bool {
 		c.W.WriteHeader(http.StatusFound)
 	case format == "xml" || format == "json":
 		if a.Settings.Bool("rest_api_enabled") && c.cfg.acceptAPIAuth {
-			c.W.Header().Set("WWW-Authenticate", `Basic realm="`+a.Realm()+` API"`)
+			// API キー（key パラメータ / X-Redmine-API-Key）で失敗した場合は Basic 認証を促さない（#44165）
+			if apiKeyFromRequest(c) == "" {
+				c.W.Header().Set("WWW-Authenticate", `Basic realm="`+a.Realm()+` API"`)
+			}
 			httpx.Head(c.W, c.R, http.StatusUnauthorized)
 		} else {
 			httpx.Head(c.W, c.R, http.StatusForbidden)

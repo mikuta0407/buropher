@@ -49,6 +49,14 @@ func authCreateToken(t *testing.T, d *db.DB, userID int64, action string) string
 	return tok.Value
 }
 
+// expectBasicChallenge は 401 応答の WWW-Authenticate（Basic 認証の要求）の有無を確かめる。
+func expectBasicChallenge(t *testing.T, res apiResp, want bool) {
+	t.Helper()
+	if got := res.Header.Get("WWW-Authenticate") != ""; got != want {
+		t.Errorf("WWW-Authenticate present = %v, want %v (%q)", got, want, res.Header.Get("WWW-Authenticate"))
+	}
+}
+
 func TestAPIAuthentication(t *testing.T) {
 	ts, d := newFixtureServer(t)
 
@@ -69,7 +77,9 @@ func TestAPIAuthentication(t *testing.T) {
 	})
 	t.Run("deny_basic_wrong_password", func(t *testing.T) {
 		_, login := authGenerateUser(t, ts, "my_password")
-		apiGet(t, ts, "/users/current.xml", apiBasic(login, "wrong_password")).expectStatus(t, http.StatusUnauthorized)
+		res := apiGet(t, ts, "/users/current.xml", apiBasic(login, "wrong_password"))
+		res.expectStatus(t, http.StatusUnauthorized)
+		expectBasicChallenge(t, res, true)
 	})
 	t.Run("deny_basic_if_twofa_active", func(t *testing.T) {
 		id, login := authGenerateUser(t, ts, "my_password")
@@ -86,7 +96,9 @@ func TestAPIAuthentication(t *testing.T) {
 	t.Run("deny_basic_wrong_api_key", func(t *testing.T) {
 		id, _ := authGenerateUser(t, ts, "")
 		key := authCreateToken(t, d, id, "feeds")
-		apiGet(t, ts, "/users/current.xml", apiBasic(key, "X")).expectStatus(t, http.StatusUnauthorized)
+		res := apiGet(t, ts, "/users/current.xml", apiBasic(key, "X"))
+		res.expectStatus(t, http.StatusUnauthorized)
+		expectBasicChallenge(t, res, true)
 	})
 	t.Run("accept_api_key_parameter", func(t *testing.T) {
 		id, _ := authGenerateUser(t, ts, "")
@@ -96,7 +108,10 @@ func TestAPIAuthentication(t *testing.T) {
 	t.Run("deny_wrong_api_key_parameter", func(t *testing.T) {
 		id, _ := authGenerateUser(t, ts, "")
 		key := authCreateToken(t, d, id, "feeds")
-		apiGet(t, ts, "/users/current.xml?key="+key).expectStatus(t, http.StatusUnauthorized)
+		res := apiGet(t, ts, "/users/current.xml?key="+key)
+		res.expectStatus(t, http.StatusUnauthorized)
+		// API キーで認証に失敗した場合は Basic 認証を促さない（#44165）
+		expectBasicChallenge(t, res, false)
 	})
 	t.Run("accept_api_key_header", func(t *testing.T) {
 		id, _ := authGenerateUser(t, ts, "")
@@ -106,7 +121,9 @@ func TestAPIAuthentication(t *testing.T) {
 	t.Run("deny_wrong_api_key_header", func(t *testing.T) {
 		id, _ := authGenerateUser(t, ts, "")
 		key := authCreateToken(t, d, id, "feeds")
-		apiGet(t, ts, "/users/current.xml", apiKeyHeader(key)).expectStatus(t, http.StatusUnauthorized)
+		res := apiGet(t, ts, "/users/current.xml", apiKeyHeader(key))
+		res.expectStatus(t, http.StatusUnauthorized)
+		expectBasicChallenge(t, res, false)
 	})
 	t.Run("basic_header_with_wrong_password", func(t *testing.T) {
 		// credentials('jsmith') は password = 'jsmith'（fixtures の jsmith のパスワードと一致）だが、

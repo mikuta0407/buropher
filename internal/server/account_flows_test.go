@@ -47,8 +47,12 @@ func (m *recMailer) AccountActivationRequest(_ context.Context, u *domain.User, 
 	m.add("activation_request " + u.Login + " " + link)
 	return nil
 }
-func (m *recMailer) PasswordUpdated(_ context.Context, u, _ *domain.User) error {
-	m.add("password_updated " + u.Login)
+func (m *recMailer) PasswordUpdated(_ context.Context, u, sender *domain.User) error {
+	by := "(nil)"
+	if sender != nil {
+		by = sender.Login
+	}
+	m.add("password_updated " + u.Login + " by " + by)
 	return nil
 }
 func (m *recMailer) SecurityNotification(_ context.Context, u, _ *domain.User, n handler.SecurityNotice) error {
@@ -79,6 +83,15 @@ func TestAccountMailerCalls(t *testing.T) {
 	want := "lost_password jsmith jsmith@somenet.foo http://localhost:3000/account/lost_password?token=" + tok
 	if got := mailer.all(); got != want {
 		t.Fatalf("lost password mail:\n got %q\nwant %q", got, want)
+	}
+	// パスワードの再設定 → 本人を送信者とするセキュリティ通知（#44173。匿名ではなく本人の操作として送る）
+	res, _ := get(t, c, ts.URL+"/account/lost_password?token="+tok)
+	res.Body.Close()
+	_, page = get(t, c, ts.URL+"/account/lost_password")
+	post(t, c, ts.URL+"/account/lost_password", url.Values{"authenticity_token": {csrfToken(t, page)},
+		"new_password": {"newpassw0rd"}, "new_password_confirmation": {"newpassw0rd"}})
+	if got := mailer.all(); !strings.Contains(got, "password_updated jsmith by jsmith") {
+		t.Fatalf("password updated mail:\n%s", got)
 	}
 	// 自己登録（管理者による有効化）→ 管理者への依頼メール
 	_, page = get(t, c, ts.URL+"/account/register")

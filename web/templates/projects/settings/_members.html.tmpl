@@ -22,8 +22,7 @@
   <td class="name">
     <span class="icon">
       {{if $member.Principal}}
-        {{principal_icon $member.MemberPrincipal}}
-        {{link_to_principal_user $member.MemberPrincipal}}
+        {{link_to_principal $member.MemberPrincipal}}
       {{end}}
     </span>
   </td>
@@ -40,6 +39,17 @@
 {{end}}
   </tbody>
 </table>
+<p class="other-formats hide-when-print">{{l "label_export_to"}}  <span>{{link_to "CSV" (current_path_with_format "csv") (hash "class" "csv" "rel" "nofollow" "onclick" "showModal('csv-export-options', '330px'); return false;")}}</span>
+</p><div id="csv-export-options" style="display: none;">
+  <h3 class="title">{{l "label_export_options" (hash "export_format" "CSV")}}</h3>
+  {{form_tag (printf "/projects/%d/memberships.csv" $p.ID) (hash "method" "get" "id" "csv-export-form")}}
+  {{export_csv_encoding_select_tag}}
+  <p class="buttons">
+    {{submit_tag (l "button_export") (hash "name" nil "onclick" "hideModal(this);" "data" (hash "disable_with" false))}}
+    {{link_to_function (l "button_cancel") "hideModal(this);"}}
+  </p>
+  {{end_form}}
+</div>
 {{else}}
 <p class="nodata">{{l "label_no_data"}}</p>
 {{end}}

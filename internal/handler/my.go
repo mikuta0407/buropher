@@ -60,6 +60,7 @@ func (a *App) myAccountData(c *Req, m *userModel) (map[string]any, error) {
 		return nil, err
 	}
 	data["ChangePasswordAllowed"] = a.changePasswordAllowed(c, m.User)
+	data["LastnameBeforeFirstname"] = domain.LastnameBeforeFirstname(a.Settings.String("user_format"))
 	data["RestAPIEnabled"] = a.Settings.Bool("rest_api_enabled")
 	// Webhook.enabled? && @user.allowed_to?(:use_webhooks, nil, global: true)
 	data["WebhooksLink"] = a.webhooksEnabled() && c.AllowedToGlobally(domain.Perm("use_webhooks"))

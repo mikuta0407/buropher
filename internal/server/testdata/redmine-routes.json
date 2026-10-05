@@ -5,10 +5,8 @@
     "path": "/cable",
     "controller": null,
     "action": null,
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "native_oauth_authorization",
@@ -16,10 +14,8 @@
     "path": "/oauth/authorize/native(.:format)",
     "controller": "doorkeeper/authorizations",
     "action": "show",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "oauth_authorization",
@@ -27,10 +23,8 @@
     "path": "/oauth/authorize(.:format)",
     "controller": "doorkeeper/authorizations",
     "action": "new",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -38,10 +32,8 @@
     "path": "/oauth/authorize(.:format)",
     "controller": "doorkeeper/authorizations",
     "action": "destroy",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -49,10 +41,8 @@
     "path": "/oauth/authorize(.:format)",
     "controller": "doorkeeper/authorizations",
     "action": "create",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "oauth_token",
@@ -60,10 +50,8 @@
     "path": "/oauth/token(.:format)",
     "controller": "doorkeeper/tokens",
     "action": "create",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "oauth_revoke",
@@ -71,10 +59,8 @@
     "path": "/oauth/revoke(.:format)",
     "controller": "doorkeeper/tokens",
     "action": "revoke",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "oauth_applications",
@@ -82,10 +68,8 @@
     "path": "/oauth/applications(.:format)",
     "controller": "oauth2_applications",
     "action": "index",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -93,10 +77,8 @@
     "path": "/oauth/applications(.:format)",
     "controller": "oauth2_applications",
     "action": "create",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "new_oauth_application",
@@ -104,10 +86,8 @@
     "path": "/oauth/applications/new(.:format)",
     "controller": "oauth2_applications",
     "action": "new",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "edit_oauth_application",
@@ -115,10 +95,8 @@
     "path": "/oauth/applications/:id/edit(.:format)",
     "controller": "oauth2_applications",
     "action": "edit",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "oauth_application",
@@ -126,10 +104,8 @@
     "path": "/oauth/applications/:id(.:format)",
     "controller": "oauth2_applications",
     "action": "show",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -137,10 +113,8 @@
     "path": "/oauth/applications/:id(.:format)",
     "controller": "oauth2_applications",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -148,10 +122,8 @@
     "path": "/oauth/applications/:id(.:format)",
     "controller": "oauth2_applications",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -159,10 +131,8 @@
     "path": "/oauth/applications/:id(.:format)",
     "controller": "oauth2_applications",
     "action": "destroy",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "oauth_authorized_applications",
@@ -170,10 +140,8 @@
     "path": "/oauth/authorized_applications(.:format)",
     "controller": "doorkeeper/authorized_applications",
     "action": "index",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "oauth_authorized_application",
@@ -181,10 +149,8 @@
     "path": "/oauth/authorized_applications/:id(.:format)",
     "controller": "doorkeeper/authorized_applications",
     "action": "destroy",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "oauth_token_info",
@@ -192,10 +158,8 @@
     "path": "/oauth/token/info(.:format)",
     "controller": "doorkeeper/token_info",
     "action": "show",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "root",
@@ -203,10 +167,8 @@
     "path": "/",
     "controller": "welcome",
     "action": "index",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "home",
@@ -214,10 +176,8 @@
     "path": "/",
     "controller": "welcome",
     "action": "index",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "signin",
@@ -225,10 +185,8 @@
     "path": "/login(.:format)",
     "controller": "account",
     "action": "login",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "signout",
@@ -236,10 +194,8 @@
     "path": "/logout(.:format)",
     "controller": "account",
     "action": "logout",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "account_twofa_confirm",
@@ -247,10 +203,8 @@
     "path": "/account/twofa/confirm(.:format)",
     "controller": "account",
     "action": "twofa_confirm",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "account_twofa_resend",
@@ -258,10 +212,8 @@
     "path": "/account/twofa/resend(.:format)",
     "controller": "account",
     "action": "twofa_resend",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "account_twofa",
@@ -269,10 +221,8 @@
     "path": "/account/twofa(.:format)",
     "controller": "account",
     "action": "twofa",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "register",
@@ -280,10 +230,8 @@
     "path": "/account/register(.:format)",
     "controller": "account",
     "action": "register",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "lost_password",
@@ -291,10 +239,8 @@
     "path": "/account/lost_password(.:format)",
     "controller": "account",
     "action": "lost_password",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "account_activate",
@@ -302,10 +248,8 @@
     "path": "/account/activate(.:format)",
     "controller": "account",
     "action": "activate",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "activation_email",
@@ -313,10 +257,71 @@
     "path": "/account/activation_email(.:format)",
     "controller": "account",
     "action": "activation_email",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
+  },
+  {
+    "name": "webhooks",
+    "verb": "GET",
+    "path": "/webhooks(.:format)",
+    "controller": "webhooks",
+    "action": "index",
+    "defaults": {},
+    "requirements": {}
+  },
+  {
+    "name": null,
+    "verb": "POST",
+    "path": "/webhooks(.:format)",
+    "controller": "webhooks",
+    "action": "create",
+    "defaults": {},
+    "requirements": {}
+  },
+  {
+    "name": "new_webhook",
+    "verb": "GET",
+    "path": "/webhooks/new(.:format)",
+    "controller": "webhooks",
+    "action": "new",
+    "defaults": {},
+    "requirements": {}
+  },
+  {
+    "name": "edit_webhook",
+    "verb": "GET",
+    "path": "/webhooks/:id/edit(.:format)",
+    "controller": "webhooks",
+    "action": "edit",
+    "defaults": {},
+    "requirements": {}
+  },
+  {
+    "name": "webhook",
+    "verb": "PATCH",
+    "path": "/webhooks/:id(.:format)",
+    "controller": "webhooks",
+    "action": "update",
+    "defaults": {},
+    "requirements": {}
+  },
+  {
+    "name": null,
+    "verb": "PUT",
+    "path": "/webhooks/:id(.:format)",
+    "controller": "webhooks",
+    "action": "update",
+    "defaults": {},
+    "requirements": {}
+  },
+  {
+    "name": null,
+    "verb": "DELETE",
+    "path": "/webhooks/:id(.:format)",
+    "controller": "webhooks",
+    "action": "destroy",
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "preview_news",
@@ -324,10 +329,8 @@
     "path": "/news/preview(.:format)",
     "controller": "previews",
     "action": "news",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "preview_issue",
@@ -335,10 +338,8 @@
     "path": "/issues/preview(.:format)",
     "controller": "previews",
     "action": "issue",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "preview_text",
@@ -346,10 +347,8 @@
     "path": "/preview/text(.:format)",
     "controller": "previews",
     "action": "text",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -357,10 +356,8 @@
     "path": "/projects/:id/wiki/destroy(.:format)",
     "controller": "wikis",
     "action": "destroy",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "new_board_message",
@@ -368,10 +365,8 @@
     "path": "/boards/:board_id/topics/new(.:format)",
     "controller": "messages",
     "action": "new",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "board_message",
@@ -379,10 +374,8 @@
     "path": "/boards/:board_id/topics/:id(.:format)",
     "controller": "messages",
     "action": "show",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -390,10 +383,8 @@
     "path": "/boards/:board_id/topics/quote/:id(.:format)",
     "controller": "messages",
     "action": "quote",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -401,10 +392,8 @@
     "path": "/boards/:board_id/topics/:id/edit(.:format)",
     "controller": "messages",
     "action": "edit",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "preview_board_message",
@@ -412,10 +401,8 @@
     "path": "/boards/:board_id/topics/preview(.:format)",
     "controller": "messages",
     "action": "preview",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -423,10 +410,8 @@
     "path": "/boards/:board_id/topics/:id/replies(.:format)",
     "controller": "messages",
     "action": "reply",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -434,10 +419,8 @@
     "path": "/boards/:board_id/topics/:id/edit(.:format)",
     "controller": "messages",
     "action": "edit",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -445,10 +428,8 @@
     "path": "/boards/:board_id/topics/:id/destroy(.:format)",
     "controller": "messages",
     "action": "destroy",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "auto_complete_issues",
@@ -456,10 +437,8 @@
     "path": "/issues/auto_complete(.:format)",
     "controller": "auto_completes",
     "action": "issues",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "auto_complete_wiki_pages",
@@ -467,21 +446,17 @@
     "path": "/wiki_pages/auto_complete(.:format)",
     "controller": "auto_completes",
     "action": "wiki_pages",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "issues_context_menu",
     "verb": "GET|POST",
     "path": "/issues/context_menu(.:format)",
-    "controller": "context_menus",
-    "action": "issues",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "controller": "context_menus/issues",
+    "action": "index",
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "issue_changes",
@@ -489,10 +464,8 @@
     "path": "/issues/changes(.:format)",
     "controller": "journals",
     "action": "index",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "quoted_issue",
@@ -500,8 +473,7 @@
     "path": "/issues/:id/quoted(.:format)",
     "controller": "journals",
     "action": "new",
-    "defaults": {
-    },
+    "defaults": {},
     "requirements": {
       "id": "(?-mix:\\d+)"
     }
@@ -512,10 +484,8 @@
     "path": "/journals/:id/diff(.:format)",
     "controller": "journals",
     "action": "diff",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "edit_journal",
@@ -523,10 +493,8 @@
     "path": "/journals/:id/edit(.:format)",
     "controller": "journals",
     "action": "edit",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "journal",
@@ -534,10 +502,8 @@
     "path": "/journals/:id(.:format)",
     "controller": "journals",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -545,10 +511,8 @@
     "path": "/journals/:id(.:format)",
     "controller": "journals",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "reactions",
@@ -556,10 +520,8 @@
     "path": "/reactions(.:format)",
     "controller": "reactions",
     "action": "create",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "reaction",
@@ -567,10 +529,8 @@
     "path": "/reactions/:id(.:format)",
     "controller": "reactions",
     "action": "destroy",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "project_gantt",
@@ -578,10 +538,8 @@
     "path": "/projects/:project_id/issues/gantt(.:format)",
     "controller": "gantts",
     "action": "show",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "issues_gantt",
@@ -589,10 +547,8 @@
     "path": "/issues/gantt(.:format)",
     "controller": "gantts",
     "action": "show",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "project_calendar",
@@ -600,10 +556,8 @@
     "path": "/projects/:project_id/issues/calendar(.:format)",
     "controller": "calendars",
     "action": "show",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "issues_calendar",
@@ -611,10 +565,8 @@
     "path": "/issues/calendar(.:format)",
     "controller": "calendars",
     "action": "show",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "project_issues_report",
@@ -622,10 +574,8 @@
     "path": "/projects/:id/issues/report(.:format)",
     "controller": "reports",
     "action": "issue_report",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "project_issues_report_details",
@@ -633,10 +583,8 @@
     "path": "/projects/:id/issues/report/:detail(.:format)",
     "controller": "reports",
     "action": "issue_report_details",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "new_issues_import",
@@ -683,10 +631,8 @@
     "path": "/imports(.:format)",
     "controller": "imports",
     "action": "create",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "import",
@@ -694,10 +640,8 @@
     "path": "/imports/:id(.:format)",
     "controller": "imports",
     "action": "show",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "import_settings",
@@ -705,10 +649,8 @@
     "path": "/imports/:id/settings(.:format)",
     "controller": "imports",
     "action": "settings",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "import_mapping",
@@ -716,10 +658,8 @@
     "path": "/imports/:id/mapping(.:format)",
     "controller": "imports",
     "action": "mapping",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "import_run",
@@ -727,10 +667,8 @@
     "path": "/imports/:id/run(.:format)",
     "controller": "imports",
     "action": "run",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "my_account",
@@ -738,10 +676,8 @@
     "path": "/my/account(.:format)",
     "controller": "my",
     "action": "account",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "delete_my_account",
@@ -749,10 +685,8 @@
     "path": "/my/account/destroy(.:format)",
     "controller": "my",
     "action": "destroy",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "my_page",
@@ -760,10 +694,8 @@
     "path": "/my/page(.:format)",
     "controller": "my",
     "action": "page",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -771,10 +703,8 @@
     "path": "/my/page(.:format)",
     "controller": "my",
     "action": "update_page",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "my",
@@ -782,10 +712,8 @@
     "path": "/my(.:format)",
     "controller": "my",
     "action": "index",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "my_api_key",
@@ -793,10 +721,8 @@
     "path": "/my/api_key(.:format)",
     "controller": "my",
     "action": "show_api_key",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -804,10 +730,8 @@
     "path": "/my/api_key(.:format)",
     "controller": "my",
     "action": "reset_api_key",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "my_atom_key",
@@ -815,10 +739,8 @@
     "path": "/my/atom_key(.:format)",
     "controller": "my",
     "action": "reset_atom_key",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "my_password",
@@ -826,10 +748,8 @@
     "path": "/my/password(.:format)",
     "controller": "my",
     "action": "password",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "my_add_block",
@@ -837,10 +757,8 @@
     "path": "/my/add_block(.:format)",
     "controller": "my",
     "action": "add_block",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "my_remove_block",
@@ -848,10 +766,8 @@
     "path": "/my/remove_block(.:format)",
     "controller": "my",
     "action": "remove_block",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "my_order_blocks",
@@ -859,10 +775,8 @@
     "path": "/my/order_blocks(.:format)",
     "controller": "my",
     "action": "order_blocks",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "my_twofa_activate_init",
@@ -870,10 +784,8 @@
     "path": "/my/twofa/activate/init(.:format)",
     "controller": "twofa",
     "action": "activate_init",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -881,10 +793,8 @@
     "path": "/my/twofa/:scheme/activate/init(.:format)",
     "controller": "twofa",
     "action": "activate_init",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -892,10 +802,8 @@
     "path": "/my/twofa/:scheme/activate/confirm(.:format)",
     "controller": "twofa",
     "action": "activate_confirm",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -903,10 +811,8 @@
     "path": "/my/twofa/:scheme/activate(.:format)",
     "controller": "twofa",
     "action": "activate",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -914,10 +820,8 @@
     "path": "/my/twofa/:scheme/deactivate/init(.:format)",
     "controller": "twofa",
     "action": "deactivate_init",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -925,10 +829,8 @@
     "path": "/my/twofa/:scheme/deactivate/confirm(.:format)",
     "controller": "twofa",
     "action": "deactivate_confirm",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -936,10 +838,8 @@
     "path": "/my/twofa/:scheme/deactivate(.:format)",
     "controller": "twofa",
     "action": "deactivate",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "my_twofa_select_scheme",
@@ -947,10 +847,8 @@
     "path": "/my/twofa/select_scheme(.:format)",
     "controller": "twofa",
     "action": "select_scheme",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "my_twofa_backup_codes_init",
@@ -958,10 +856,8 @@
     "path": "/my/twofa/backup_codes/init(.:format)",
     "controller": "twofa_backup_codes",
     "action": "init",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "my_twofa_backup_codes_confirm",
@@ -969,10 +865,8 @@
     "path": "/my/twofa/backup_codes/confirm(.:format)",
     "controller": "twofa_backup_codes",
     "action": "confirm",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "my_twofa_backup_codes_create",
@@ -980,10 +874,8 @@
     "path": "/my/twofa/backup_codes/create(.:format)",
     "controller": "twofa_backup_codes",
     "action": "create",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "my_twofa_backup_codes",
@@ -991,10 +883,8 @@
     "path": "/my/twofa/backup_codes(.:format)",
     "controller": "twofa_backup_codes",
     "action": "show",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -1002,21 +892,17 @@
     "path": "/users/:user_id/twofa/deactivate(.:format)",
     "controller": "twofa",
     "action": "admin_deactivate",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "users_context_menu",
     "verb": "GET|POST",
     "path": "/users/context_menu(.:format)",
-    "controller": "context_menus",
-    "action": "users",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "controller": "context_menus/users",
+    "action": "index",
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "bulk_destroy_users",
@@ -1024,10 +910,8 @@
     "path": "/users/bulk_destroy(.:format)",
     "controller": "users",
     "action": "bulk_destroy",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "bulk_lock_users",
@@ -1035,10 +919,8 @@
     "path": "/users/bulk_lock(.:format)",
     "controller": "users",
     "action": "bulk_lock",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "bulk_unlock_users",
@@ -1046,10 +928,8 @@
     "path": "/users/bulk_unlock(.:format)",
     "controller": "users",
     "action": "bulk_unlock",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "user_memberships",
@@ -1057,10 +937,8 @@
     "path": "/users/:user_id/memberships(.:format)",
     "controller": "principal_memberships",
     "action": "index",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -1068,10 +946,8 @@
     "path": "/users/:user_id/memberships(.:format)",
     "controller": "principal_memberships",
     "action": "create",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "new_user_membership",
@@ -1079,10 +955,8 @@
     "path": "/users/:user_id/memberships/new(.:format)",
     "controller": "principal_memberships",
     "action": "new",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "edit_user_membership",
@@ -1090,10 +964,8 @@
     "path": "/users/:user_id/memberships/:id/edit(.:format)",
     "controller": "principal_memberships",
     "action": "edit",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "user_membership",
@@ -1101,10 +973,8 @@
     "path": "/users/:user_id/memberships/:id(.:format)",
     "controller": "principal_memberships",
     "action": "show",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -1112,10 +982,8 @@
     "path": "/users/:user_id/memberships/:id(.:format)",
     "controller": "principal_memberships",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -1123,10 +991,8 @@
     "path": "/users/:user_id/memberships/:id(.:format)",
     "controller": "principal_memberships",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -1134,10 +1000,8 @@
     "path": "/users/:user_id/memberships/:id(.:format)",
     "controller": "principal_memberships",
     "action": "destroy",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "user_email_addresses",
@@ -1145,10 +1009,8 @@
     "path": "/users/:user_id/email_addresses(.:format)",
     "controller": "email_addresses",
     "action": "index",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -1156,10 +1018,8 @@
     "path": "/users/:user_id/email_addresses(.:format)",
     "controller": "email_addresses",
     "action": "create",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "user_email_address",
@@ -1167,10 +1027,8 @@
     "path": "/users/:user_id/email_addresses/:id(.:format)",
     "controller": "email_addresses",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -1178,10 +1036,8 @@
     "path": "/users/:user_id/email_addresses/:id(.:format)",
     "controller": "email_addresses",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -1189,10 +1045,8 @@
     "path": "/users/:user_id/email_addresses/:id(.:format)",
     "controller": "email_addresses",
     "action": "destroy",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "users",
@@ -1200,10 +1054,8 @@
     "path": "/users(.:format)",
     "controller": "users",
     "action": "index",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -1211,10 +1063,8 @@
     "path": "/users(.:format)",
     "controller": "users",
     "action": "create",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "new_user",
@@ -1222,10 +1072,8 @@
     "path": "/users/new(.:format)",
     "controller": "users",
     "action": "new",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "edit_user",
@@ -1233,10 +1081,8 @@
     "path": "/users/:id/edit(.:format)",
     "controller": "users",
     "action": "edit",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "user",
@@ -1244,10 +1090,8 @@
     "path": "/users/:id(.:format)",
     "controller": "users",
     "action": "show",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -1255,10 +1099,8 @@
     "path": "/users/:id(.:format)",
     "controller": "users",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -1266,10 +1108,8 @@
     "path": "/users/:id(.:format)",
     "controller": "users",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -1277,10 +1117,8 @@
     "path": "/users/:id(.:format)",
     "controller": "users",
     "action": "destroy",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "watch",
@@ -1288,10 +1126,8 @@
     "path": "/watchers/watch(.:format)",
     "controller": "watchers",
     "action": "watch",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "watchers_watch",
@@ -1299,10 +1135,8 @@
     "path": "/watchers/watch(.:format)",
     "controller": "watchers",
     "action": "unwatch",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "new_watchers",
@@ -1310,10 +1144,8 @@
     "path": "/watchers/new(.:format)",
     "controller": "watchers",
     "action": "new",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "watchers",
@@ -1321,10 +1153,8 @@
     "path": "/watchers(.:format)",
     "controller": "watchers",
     "action": "create",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "watchers_append",
@@ -1332,10 +1162,8 @@
     "path": "/watchers/append(.:format)",
     "controller": "watchers",
     "action": "append",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -1343,10 +1171,8 @@
     "path": "/watchers(.:format)",
     "controller": "watchers",
     "action": "destroy",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "watchers_autocomplete_for_mention",
@@ -1354,10 +1180,8 @@
     "path": "/watchers/autocomplete_for_mention(.:format)",
     "controller": "watchers",
     "action": "autocomplete_for_mention",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "watchers_autocomplete_for_user",
@@ -1365,10 +1189,8 @@
     "path": "/watchers/autocomplete_for_user(.:format)",
     "controller": "watchers",
     "action": "autocomplete_for_user",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -1402,10 +1224,8 @@
     "path": "/projects/autocomplete(.:format)",
     "controller": "projects",
     "action": "autocomplete",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "bulk_destroy_projects",
@@ -1413,10 +1233,8 @@
     "path": "/projects/bulk_destroy(.:format)",
     "controller": "projects",
     "action": "bulk_destroy",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "settings_project",
@@ -1424,10 +1242,8 @@
     "path": "/projects/:id/settings(/:tab)(.:format)",
     "controller": "projects",
     "action": "settings",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "archive_project",
@@ -1435,10 +1251,8 @@
     "path": "/projects/:id/archive(.:format)",
     "controller": "projects",
     "action": "archive",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "unarchive_project",
@@ -1446,10 +1260,8 @@
     "path": "/projects/:id/unarchive(.:format)",
     "controller": "projects",
     "action": "unarchive",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "close_project",
@@ -1457,10 +1269,8 @@
     "path": "/projects/:id/close(.:format)",
     "controller": "projects",
     "action": "close",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "reopen_project",
@@ -1468,10 +1278,8 @@
     "path": "/projects/:id/reopen(.:format)",
     "controller": "projects",
     "action": "reopen",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "copy_project",
@@ -1479,10 +1287,8 @@
     "path": "/projects/:id/copy(.:format)",
     "controller": "projects",
     "action": "copy",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "bookmark_project",
@@ -1490,10 +1296,8 @@
     "path": "/projects/:id/bookmark(.:format)",
     "controller": "projects",
     "action": "bookmark",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "autocomplete_project_memberships",
@@ -1501,10 +1305,8 @@
     "path": "/projects/:project_id/memberships/autocomplete(.:format)",
     "controller": "members",
     "action": "autocomplete",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "project_memberships",
@@ -1512,10 +1314,8 @@
     "path": "/projects/:project_id/memberships(.:format)",
     "controller": "members",
     "action": "index",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -1523,10 +1323,8 @@
     "path": "/projects/:project_id/memberships(.:format)",
     "controller": "members",
     "action": "create",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "new_project_membership",
@@ -1534,10 +1332,8 @@
     "path": "/projects/:project_id/memberships/new(.:format)",
     "controller": "members",
     "action": "new",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "edit_membership",
@@ -1545,10 +1341,8 @@
     "path": "/memberships/:id/edit(.:format)",
     "controller": "members",
     "action": "edit",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "membership",
@@ -1556,10 +1350,8 @@
     "path": "/memberships/:id(.:format)",
     "controller": "members",
     "action": "show",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -1567,10 +1359,8 @@
     "path": "/memberships/:id(.:format)",
     "controller": "members",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -1578,10 +1368,8 @@
     "path": "/memberships/:id(.:format)",
     "controller": "members",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -1589,10 +1377,8 @@
     "path": "/memberships/:id(.:format)",
     "controller": "members",
     "action": "destroy",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "project_enumerations",
@@ -1600,10 +1386,8 @@
     "path": "/projects/:project_id/enumerations(.:format)",
     "controller": "project_enumerations",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -1611,10 +1395,8 @@
     "path": "/projects/:project_id/enumerations(.:format)",
     "controller": "project_enumerations",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -1622,10 +1404,8 @@
     "path": "/projects/:project_id/enumerations(.:format)",
     "controller": "project_enumerations",
     "action": "destroy",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "project_copy_issue",
@@ -1633,10 +1413,8 @@
     "path": "/projects/:project_id/issues/:copy_from/copy(.:format)",
     "controller": "issues",
     "action": "new",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "project_issues",
@@ -1644,10 +1422,8 @@
     "path": "/projects/:project_id/issues(.:format)",
     "controller": "issues",
     "action": "index",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -1655,10 +1431,8 @@
     "path": "/projects/:project_id/issues(.:format)",
     "controller": "issues",
     "action": "create",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "new_project_issue",
@@ -1666,10 +1440,8 @@
     "path": "/projects/:project_id/issues/new(.:format)",
     "controller": "issues",
     "action": "new",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "project_issues_new",
@@ -1677,10 +1449,8 @@
     "path": "/projects/:project_id/issues/new(.:format)",
     "controller": "issues",
     "action": "new",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "project_files",
@@ -1688,10 +1458,8 @@
     "path": "/projects/:project_id/files(.:format)",
     "controller": "files",
     "action": "index",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -1699,10 +1467,8 @@
     "path": "/projects/:project_id/files(.:format)",
     "controller": "files",
     "action": "create",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "new_project_file",
@@ -1710,10 +1476,8 @@
     "path": "/projects/:project_id/files/new(.:format)",
     "controller": "files",
     "action": "new",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "close_completed_project_versions",
@@ -1721,10 +1485,8 @@
     "path": "/projects/:project_id/versions/close_completed(.:format)",
     "controller": "versions",
     "action": "close_completed",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "project_versions",
@@ -1732,10 +1494,8 @@
     "path": "/projects/:project_id/versions(.:format)",
     "controller": "versions",
     "action": "create",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "new_project_version",
@@ -1743,10 +1503,8 @@
     "path": "/projects/:project_id/versions/new(.:format)",
     "controller": "versions",
     "action": "new",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -1754,10 +1512,8 @@
     "path": "/projects/:project_id/versions.:format",
     "controller": "versions",
     "action": "index",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "project_roadmap",
@@ -1765,10 +1521,8 @@
     "path": "/projects/:project_id/roadmap",
     "controller": "versions",
     "action": "index",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -1776,10 +1530,8 @@
     "path": "/projects/:project_id/versions(.:format)",
     "controller": "versions",
     "action": "index",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "project_news_index",
@@ -1787,10 +1539,8 @@
     "path": "/projects/:project_id/news(.:format)",
     "controller": "news",
     "action": "index",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -1798,10 +1548,8 @@
     "path": "/projects/:project_id/news(.:format)",
     "controller": "news",
     "action": "create",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "new_project_news",
@@ -1809,10 +1557,8 @@
     "path": "/projects/:project_id/news/new(.:format)",
     "controller": "news",
     "action": "new",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "report_project_time_entries",
@@ -1820,10 +1566,8 @@
     "path": "/projects/:project_id/time_entries/report(.:format)",
     "controller": "timelog",
     "action": "report",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "project_time_entries",
@@ -1831,10 +1575,8 @@
     "path": "/projects/:project_id/time_entries(.:format)",
     "controller": "timelog",
     "action": "index",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -1842,10 +1584,8 @@
     "path": "/projects/:project_id/time_entries(.:format)",
     "controller": "timelog",
     "action": "create",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "new_project_time_entry",
@@ -1853,10 +1593,8 @@
     "path": "/projects/:project_id/time_entries/new(.:format)",
     "controller": "timelog",
     "action": "new",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "project_queries",
@@ -1864,10 +1602,8 @@
     "path": "/projects/:project_id/queries(.:format)",
     "controller": "queries",
     "action": "create",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "new_project_query",
@@ -1875,10 +1611,8 @@
     "path": "/projects/:project_id/queries/new(.:format)",
     "controller": "queries",
     "action": "new",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "project_issue_categories",
@@ -1886,10 +1620,8 @@
     "path": "/projects/:project_id/issue_categories(.:format)",
     "controller": "issue_categories",
     "action": "index",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -1897,10 +1629,8 @@
     "path": "/projects/:project_id/issue_categories(.:format)",
     "controller": "issue_categories",
     "action": "create",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "new_project_issue_category",
@@ -1908,10 +1638,8 @@
     "path": "/projects/:project_id/issue_categories/new(.:format)",
     "controller": "issue_categories",
     "action": "new",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "edit_issue_category",
@@ -1919,10 +1647,8 @@
     "path": "/issue_categories/:id/edit(.:format)",
     "controller": "issue_categories",
     "action": "edit",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "issue_category",
@@ -1930,10 +1656,8 @@
     "path": "/issue_categories/:id(.:format)",
     "controller": "issue_categories",
     "action": "show",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -1941,10 +1665,8 @@
     "path": "/issue_categories/:id(.:format)",
     "controller": "issue_categories",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -1952,10 +1674,8 @@
     "path": "/issue_categories/:id(.:format)",
     "controller": "issue_categories",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -1963,10 +1683,8 @@
     "path": "/issue_categories/:id(.:format)",
     "controller": "issue_categories",
     "action": "destroy",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "project_documents",
@@ -1974,10 +1692,8 @@
     "path": "/projects/:project_id/documents(.:format)",
     "controller": "documents",
     "action": "index",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -1985,10 +1701,8 @@
     "path": "/projects/:project_id/documents(.:format)",
     "controller": "documents",
     "action": "create",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "new_project_document",
@@ -1996,10 +1710,8 @@
     "path": "/projects/:project_id/documents/new(.:format)",
     "controller": "documents",
     "action": "new",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "project_boards",
@@ -2007,10 +1719,8 @@
     "path": "/projects/:project_id/boards(.:format)",
     "controller": "boards",
     "action": "index",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -2018,10 +1728,8 @@
     "path": "/projects/:project_id/boards(.:format)",
     "controller": "boards",
     "action": "create",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "new_project_board",
@@ -2029,10 +1737,8 @@
     "path": "/projects/:project_id/boards/new(.:format)",
     "controller": "boards",
     "action": "new",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "edit_project_board",
@@ -2040,10 +1746,8 @@
     "path": "/projects/:project_id/boards/:id/edit(.:format)",
     "controller": "boards",
     "action": "edit",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "project_board",
@@ -2051,10 +1755,8 @@
     "path": "/projects/:project_id/boards/:id(.:format)",
     "controller": "boards",
     "action": "show",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -2062,10 +1764,8 @@
     "path": "/projects/:project_id/boards/:id(.:format)",
     "controller": "boards",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -2073,10 +1773,8 @@
     "path": "/projects/:project_id/boards/:id(.:format)",
     "controller": "boards",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -2084,10 +1782,8 @@
     "path": "/projects/:project_id/boards/:id(.:format)",
     "controller": "boards",
     "action": "destroy",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "committers_repository",
@@ -2095,10 +1791,8 @@
     "path": "/repositories/:id/committers(.:format)",
     "controller": "repositories",
     "action": "committers",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "project_repositories",
@@ -2106,10 +1800,8 @@
     "path": "/projects/:project_id/repositories(.:format)",
     "controller": "repositories",
     "action": "create",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "new_project_repository",
@@ -2117,10 +1809,8 @@
     "path": "/projects/:project_id/repositories/new(.:format)",
     "controller": "repositories",
     "action": "new",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "edit_repository",
@@ -2128,10 +1818,8 @@
     "path": "/repositories/:id/edit(.:format)",
     "controller": "repositories",
     "action": "edit",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "repository",
@@ -2139,10 +1827,8 @@
     "path": "/repositories/:id(.:format)",
     "controller": "repositories",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -2150,10 +1836,8 @@
     "path": "/repositories/:id(.:format)",
     "controller": "repositories",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -2161,10 +1845,8 @@
     "path": "/repositories/:id(.:format)",
     "controller": "repositories",
     "action": "destroy",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "project_wiki_index",
@@ -2172,10 +1854,8 @@
     "path": "/projects/:project_id/wiki/index(.:format)",
     "controller": "wiki",
     "action": "index",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "rename_project_wiki_page",
@@ -2183,10 +1863,8 @@
     "path": "/projects/:project_id/wiki/:id/rename(.:format)",
     "controller": "wiki",
     "action": "rename",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -2194,10 +1872,8 @@
     "path": "/projects/:project_id/wiki/:id/rename(.:format)",
     "controller": "wiki",
     "action": "rename",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "history_project_wiki_page",
@@ -2205,10 +1881,8 @@
     "path": "/projects/:project_id/wiki/:id/history(.:format)",
     "controller": "wiki",
     "action": "history",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "diff_project_wiki_page",
@@ -2216,10 +1890,8 @@
     "path": "/projects/:project_id/wiki/:id/diff(.:format)",
     "controller": "wiki",
     "action": "diff",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "preview_project_wiki_page",
@@ -2227,10 +1899,8 @@
     "path": "/projects/:project_id/wiki/:id/preview(.:format)",
     "controller": "wiki",
     "action": "preview",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "protect_project_wiki_page",
@@ -2238,10 +1908,8 @@
     "path": "/projects/:project_id/wiki/:id/protect(.:format)",
     "controller": "wiki",
     "action": "protect",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "add_attachment_project_wiki_page",
@@ -2249,10 +1917,8 @@
     "path": "/projects/:project_id/wiki/:id/add_attachment(.:format)",
     "controller": "wiki",
     "action": "add_attachment",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "export_project_wiki_page_index",
@@ -2260,10 +1926,8 @@
     "path": "/projects/:project_id/wiki/export(.:format)",
     "controller": "wiki",
     "action": "export",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "date_index_project_wiki_page_index",
@@ -2271,10 +1935,8 @@
     "path": "/projects/:project_id/wiki/date_index(.:format)",
     "controller": "wiki",
     "action": "date_index",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "project_wiki_page_index",
@@ -2282,10 +1944,8 @@
     "path": "/projects/:project_id/wiki/new(.:format)",
     "controller": "wiki",
     "action": "new",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "new_project_wiki_page",
@@ -2293,10 +1953,8 @@
     "path": "/projects/:project_id/wiki/new(.:format)",
     "controller": "wiki",
     "action": "new",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "edit_project_wiki_page",
@@ -2304,10 +1962,8 @@
     "path": "/projects/:project_id/wiki/:id/edit(.:format)",
     "controller": "wiki",
     "action": "edit",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "project_wiki_page",
@@ -2315,10 +1971,8 @@
     "path": "/projects/:project_id/wiki/:id(.:format)",
     "controller": "wiki",
     "action": "show",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -2326,10 +1980,8 @@
     "path": "/projects/:project_id/wiki/:id(.:format)",
     "controller": "wiki",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -2337,10 +1989,8 @@
     "path": "/projects/:project_id/wiki/:id(.:format)",
     "controller": "wiki",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -2348,10 +1998,8 @@
     "path": "/projects/:project_id/wiki/:id(.:format)",
     "controller": "wiki",
     "action": "destroy",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "project_wiki",
@@ -2359,10 +2007,8 @@
     "path": "/projects/:project_id/wiki(.:format)",
     "controller": "wiki",
     "action": "show",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -2370,8 +2016,7 @@
     "path": "/projects/:project_id/wiki/:id/:version(.:format)",
     "controller": "wiki",
     "action": "show",
-    "defaults": {
-    },
+    "defaults": {},
     "requirements": {
       "version": "(?-mix:\\d+)"
     }
@@ -2382,10 +2027,8 @@
     "path": "/projects/:project_id/wiki/:id/:version(.:format)",
     "controller": "wiki",
     "action": "destroy_version",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -2393,10 +2036,8 @@
     "path": "/projects/:project_id/wiki/:id/:version/annotate(.:format)",
     "controller": "wiki",
     "action": "annotate",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -2404,10 +2045,8 @@
     "path": "/projects/:project_id/wiki/:id/:version/diff(.:format)",
     "controller": "wiki",
     "action": "diff",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "projects",
@@ -2415,10 +2054,8 @@
     "path": "/projects(.:format)",
     "controller": "projects",
     "action": "index",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -2426,10 +2063,8 @@
     "path": "/projects(.:format)",
     "controller": "projects",
     "action": "create",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "new_project",
@@ -2437,10 +2072,8 @@
     "path": "/projects/new(.:format)",
     "controller": "projects",
     "action": "new",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "edit_project",
@@ -2448,10 +2081,8 @@
     "path": "/projects/:id/edit(.:format)",
     "controller": "projects",
     "action": "edit",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "project",
@@ -2459,10 +2090,8 @@
     "path": "/projects/:id(.:format)",
     "controller": "projects",
     "action": "show",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -2470,10 +2099,8 @@
     "path": "/projects/:id(.:format)",
     "controller": "projects",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -2481,10 +2108,8 @@
     "path": "/projects/:id(.:format)",
     "controller": "projects",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -2492,10 +2117,8 @@
     "path": "/projects/:id(.:format)",
     "controller": "projects",
     "action": "destroy",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "edit_issue",
@@ -2503,10 +2126,8 @@
     "path": "/issues/:id/edit(.:format)",
     "controller": "issues",
     "action": "edit",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "tab_issue",
@@ -2514,10 +2135,8 @@
     "path": "/issues/:id/tab/:name(.:format)",
     "controller": "issues",
     "action": "issue_tab",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "bulk_edit_issues",
@@ -2525,10 +2144,8 @@
     "path": "/issues/bulk_edit(.:format)",
     "controller": "issues",
     "action": "bulk_edit",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "bulk_update_issues",
@@ -2536,10 +2153,8 @@
     "path": "/issues/bulk_update(.:format)",
     "controller": "issues",
     "action": "bulk_update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "issue_time_entries",
@@ -2547,10 +2162,8 @@
     "path": "/issues/:issue_id/time_entries(.:format)",
     "controller": "timelog",
     "action": "create",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "new_issue_time_entry",
@@ -2558,10 +2171,8 @@
     "path": "/issues/:issue_id/time_entries/new(.:format)",
     "controller": "timelog",
     "action": "new",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "issue_relations",
@@ -2569,10 +2180,8 @@
     "path": "/issues/:issue_id/relations(.:format)",
     "controller": "issue_relations",
     "action": "index",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -2580,10 +2189,8 @@
     "path": "/issues/:issue_id/relations(.:format)",
     "controller": "issue_relations",
     "action": "create",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "relation",
@@ -2591,10 +2198,8 @@
     "path": "/relations/:id(.:format)",
     "controller": "issue_relations",
     "action": "show",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -2602,10 +2207,8 @@
     "path": "/relations/:id(.:format)",
     "controller": "issue_relations",
     "action": "destroy",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "issues",
@@ -2613,10 +2216,8 @@
     "path": "/issues(.:format)",
     "controller": "issues",
     "action": "index",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -2624,10 +2225,8 @@
     "path": "/issues(.:format)",
     "controller": "issues",
     "action": "create",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "new_issue",
@@ -2635,10 +2234,8 @@
     "path": "/issues/new(.:format)",
     "controller": "issues",
     "action": "new",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -2646,10 +2243,8 @@
     "path": "/issues/:id/edit(.:format)",
     "controller": "issues",
     "action": "edit",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "issue",
@@ -2657,10 +2252,8 @@
     "path": "/issues/:id(.:format)",
     "controller": "issues",
     "action": "show",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -2668,10 +2261,8 @@
     "path": "/issues/:id(.:format)",
     "controller": "issues",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -2679,10 +2270,8 @@
     "path": "/issues/:id(.:format)",
     "controller": "issues",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -2690,10 +2279,8 @@
     "path": "/issues/:id(.:format)",
     "controller": "issues",
     "action": "destroy",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "issues_new",
@@ -2701,10 +2288,8 @@
     "path": "/issues/new(.:format)",
     "controller": "issues",
     "action": "new",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -2712,10 +2297,8 @@
     "path": "/issues(.:format)",
     "controller": "issues",
     "action": "destroy",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "queries",
@@ -2723,10 +2306,8 @@
     "path": "/queries(.:format)",
     "controller": "queries",
     "action": "index",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -2734,10 +2315,8 @@
     "path": "/queries(.:format)",
     "controller": "queries",
     "action": "create",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "new_query",
@@ -2745,10 +2324,8 @@
     "path": "/queries/new(.:format)",
     "controller": "queries",
     "action": "new",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "edit_query",
@@ -2756,10 +2333,8 @@
     "path": "/queries/:id/edit(.:format)",
     "controller": "queries",
     "action": "edit",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "query",
@@ -2767,10 +2342,8 @@
     "path": "/queries/:id(.:format)",
     "controller": "queries",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -2778,10 +2351,8 @@
     "path": "/queries/:id(.:format)",
     "controller": "queries",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -2789,10 +2360,8 @@
     "path": "/queries/:id(.:format)",
     "controller": "queries",
     "action": "destroy",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "queries_filter",
@@ -2800,10 +2369,8 @@
     "path": "/queries/filter(.:format)",
     "controller": "queries",
     "action": "filter",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "news_index",
@@ -2811,10 +2378,8 @@
     "path": "/news(.:format)",
     "controller": "news",
     "action": "index",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -2822,10 +2387,8 @@
     "path": "/news(.:format)",
     "controller": "news",
     "action": "create",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "new_news",
@@ -2833,10 +2396,8 @@
     "path": "/news/new(.:format)",
     "controller": "news",
     "action": "new",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "edit_news",
@@ -2844,10 +2405,8 @@
     "path": "/news/:id/edit(.:format)",
     "controller": "news",
     "action": "edit",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "news",
@@ -2855,10 +2414,8 @@
     "path": "/news/:id(.:format)",
     "controller": "news",
     "action": "show",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -2866,10 +2423,8 @@
     "path": "/news/:id(.:format)",
     "controller": "news",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -2877,10 +2432,8 @@
     "path": "/news/:id(.:format)",
     "controller": "news",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -2888,10 +2441,8 @@
     "path": "/news/:id(.:format)",
     "controller": "news",
     "action": "destroy",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -2899,10 +2450,8 @@
     "path": "/news/:id/comments(.:format)",
     "controller": "comments",
     "action": "create",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -2910,10 +2459,8 @@
     "path": "/news/:id/comments/:comment_id(.:format)",
     "controller": "comments",
     "action": "destroy",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "status_by_version",
@@ -2921,10 +2468,8 @@
     "path": "/versions/:id/status_by(.:format)",
     "controller": "versions",
     "action": "status_by",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "edit_version",
@@ -2932,10 +2477,8 @@
     "path": "/versions/:id/edit(.:format)",
     "controller": "versions",
     "action": "edit",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "version",
@@ -2943,10 +2486,8 @@
     "path": "/versions/:id(.:format)",
     "controller": "versions",
     "action": "show",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -2954,10 +2495,8 @@
     "path": "/versions/:id(.:format)",
     "controller": "versions",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -2965,10 +2504,8 @@
     "path": "/versions/:id(.:format)",
     "controller": "versions",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -2976,10 +2513,8 @@
     "path": "/versions/:id(.:format)",
     "controller": "versions",
     "action": "destroy",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "add_attachment_document",
@@ -2987,10 +2522,8 @@
     "path": "/documents/:id/add_attachment(.:format)",
     "controller": "documents",
     "action": "add_attachment",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "edit_document",
@@ -2998,10 +2531,8 @@
     "path": "/documents/:id/edit(.:format)",
     "controller": "documents",
     "action": "edit",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "document",
@@ -3009,10 +2540,8 @@
     "path": "/documents/:id(.:format)",
     "controller": "documents",
     "action": "show",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -3020,10 +2549,8 @@
     "path": "/documents/:id(.:format)",
     "controller": "documents",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -3031,10 +2558,8 @@
     "path": "/documents/:id(.:format)",
     "controller": "documents",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -3042,21 +2567,17 @@
     "path": "/documents/:id(.:format)",
     "controller": "documents",
     "action": "destroy",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "time_entries_context_menu",
     "verb": "GET|POST",
     "path": "/time_entries/context_menu(.:format)",
-    "controller": "context_menus",
-    "action": "time_entries",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "controller": "context_menus/time_entries",
+    "action": "index",
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "edit_time_entry",
@@ -3064,10 +2585,8 @@
     "path": "/time_entries/:id/edit(.:format)",
     "controller": "timelog",
     "action": "edit",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "report_time_entries",
@@ -3075,10 +2594,8 @@
     "path": "/time_entries/report(.:format)",
     "controller": "timelog",
     "action": "report",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "bulk_edit_time_entries",
@@ -3086,10 +2603,8 @@
     "path": "/time_entries/bulk_edit(.:format)",
     "controller": "timelog",
     "action": "bulk_edit",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "bulk_update_time_entries",
@@ -3097,10 +2612,8 @@
     "path": "/time_entries/bulk_update(.:format)",
     "controller": "timelog",
     "action": "bulk_update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "time_entries",
@@ -3108,10 +2621,8 @@
     "path": "/time_entries(.:format)",
     "controller": "timelog",
     "action": "index",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -3119,10 +2630,8 @@
     "path": "/time_entries(.:format)",
     "controller": "timelog",
     "action": "create",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "new_time_entry",
@@ -3130,10 +2639,8 @@
     "path": "/time_entries/new(.:format)",
     "controller": "timelog",
     "action": "new",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -3141,10 +2648,8 @@
     "path": "/time_entries/:id/edit(.:format)",
     "controller": "timelog",
     "action": "edit",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "time_entry",
@@ -3152,10 +2657,8 @@
     "path": "/time_entries/:id(.:format)",
     "controller": "timelog",
     "action": "show",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -3163,10 +2666,8 @@
     "path": "/time_entries/:id(.:format)",
     "controller": "timelog",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -3174,10 +2675,8 @@
     "path": "/time_entries/:id(.:format)",
     "controller": "timelog",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -3185,8 +2684,7 @@
     "path": "/time_entries/:id(.:format)",
     "controller": "timelog",
     "action": "destroy",
-    "defaults": {
-    },
+    "defaults": {},
     "requirements": {
       "id": "(?-mix:\\d+)"
     }
@@ -3197,10 +2695,8 @@
     "path": "/time_entries/destroy(.:format)",
     "controller": "timelog",
     "action": "destroy",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "time_entries_new",
@@ -3208,10 +2704,8 @@
     "path": "/time_entries/new(.:format)",
     "controller": "timelog",
     "action": "new",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "time_entries_bulk_edit",
@@ -3219,10 +2713,8 @@
     "path": "/time_entries/bulk_edit(.:format)",
     "controller": "timelog",
     "action": "bulk_edit",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "project_activity",
@@ -3230,10 +2722,8 @@
     "path": "/projects/:id/activity(.:format)",
     "controller": "activities",
     "action": "index",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "activity",
@@ -3241,10 +2731,8 @@
     "path": "/activity(.:format)",
     "controller": "activities",
     "action": "index",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -3252,10 +2740,8 @@
     "path": "/projects/:id/repository/:repository_id/statistics(.:format)",
     "controller": "repositories",
     "action": "stats",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -3263,10 +2749,8 @@
     "path": "/projects/:id/repository/:repository_id/graph(.:format)",
     "controller": "repositories",
     "action": "graph",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -3274,10 +2758,8 @@
     "path": "/projects/:id/repository/:repository_id/fetch_changesets(.:format)",
     "controller": "repositories",
     "action": "fetch_changesets",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -3285,10 +2767,8 @@
     "path": "/projects/:id/repository/:repository_id/revisions/:rev(.:format)",
     "controller": "repositories",
     "action": "revision",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -3296,10 +2776,8 @@
     "path": "/projects/:id/repository/:repository_id/revision(.:format)",
     "controller": "repositories",
     "action": "revision",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -3307,10 +2785,8 @@
     "path": "/projects/:id/repository/:repository_id/revisions/:rev/issues(.:format)",
     "controller": "repositories",
     "action": "add_related_issue",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -3318,10 +2794,8 @@
     "path": "/projects/:id/repository/:repository_id/revisions/:rev/issues/:issue_id(.:format)",
     "controller": "repositories",
     "action": "remove_related_issue",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -3329,10 +2803,8 @@
     "path": "/projects/:id/repository/:repository_id/revisions(.:format)",
     "controller": "repositories",
     "action": "revisions",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -3346,7 +2818,7 @@
     "requirements": {
       "format": "(?-mix:html)",
       "path": "(?-mix:.*)",
-      "rev": "(?-mix:[a-z0-9\\.\\-_]+)"
+      "rev": "(?-mix:[a-z0-9.\\-_]+)"
     }
   },
   {
@@ -3361,7 +2833,7 @@
     "requirements": {
       "format": "(?-mix:html)",
       "path": "(?-mix:.*)",
-      "rev": "(?-mix:[a-z0-9\\.\\-_]+)"
+      "rev": "(?-mix:[a-z0-9.\\-_]+)"
     }
   },
   {
@@ -3376,7 +2848,7 @@
     "requirements": {
       "format": "(?-mix:html)",
       "path": "(?-mix:.*)",
-      "rev": "(?-mix:[a-z0-9\\.\\-_]+)"
+      "rev": "(?-mix:[a-z0-9.\\-_]+)"
     }
   },
   {
@@ -3391,7 +2863,7 @@
     "requirements": {
       "format": "(?-mix:html)",
       "path": "(?-mix:.*)",
-      "rev": "(?-mix:[a-z0-9\\.\\-_]+)"
+      "rev": "(?-mix:[a-z0-9.\\-_]+)"
     }
   },
   {
@@ -3406,7 +2878,7 @@
     "requirements": {
       "format": "(?-mix:html)",
       "path": "(?-mix:.*)",
-      "rev": "(?-mix:[a-z0-9\\.\\-_]+)"
+      "rev": "(?-mix:[a-z0-9.\\-_]+)"
     }
   },
   {
@@ -3491,7 +2963,7 @@
     "requirements": {
       "format": "(?-mix:(html|diff))",
       "path": "(?-mix:.*)",
-      "rev": "(?-mix:[a-z0-9\\.\\-_]+)"
+      "rev": "(?-mix:[a-z0-9.\\-_]+)"
     }
   },
   {
@@ -3528,10 +3000,8 @@
     "path": "/projects/:id/repository/:repository_id(.:format)",
     "controller": "repositories",
     "action": "show",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -3539,10 +3009,8 @@
     "path": "/projects/:id/repository(.:format)",
     "controller": "repositories",
     "action": "show",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "named_attachment",
@@ -3580,8 +3048,7 @@
     "path": "/attachments/download/:id(.:format)",
     "controller": "attachments",
     "action": "download",
-    "defaults": {
-    },
+    "defaults": {},
     "requirements": {
       "id": "(?-mix:\\d+)"
     }
@@ -3592,8 +3059,7 @@
     "path": "/attachments/thumbnail/:id(/:size)(.:format)",
     "controller": "attachments",
     "action": "thumbnail",
-    "defaults": {
-    },
+    "defaults": {},
     "requirements": {
       "id": "(?-mix:\\d+)",
       "size": "(?-mix:\\d+)"
@@ -3605,10 +3071,8 @@
     "path": "/attachments/:id(.:format)",
     "controller": "attachments",
     "action": "show",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -3616,10 +3080,8 @@
     "path": "/attachments/:id(.:format)",
     "controller": "attachments",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -3627,10 +3089,8 @@
     "path": "/attachments/:id(.:format)",
     "controller": "attachments",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -3638,10 +3098,8 @@
     "path": "/attachments/:id(.:format)",
     "controller": "attachments",
     "action": "destroy",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "object_attachments_edit",
@@ -3649,10 +3107,8 @@
     "path": "/attachments/:object_type/:object_id/edit(.:format)",
     "controller": "attachments",
     "action": "edit_all",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "object_attachments",
@@ -3660,10 +3116,8 @@
     "path": "/attachments/:object_type/:object_id(.:format)",
     "controller": "attachments",
     "action": "update_all",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "object_attachments_download",
@@ -3671,10 +3125,8 @@
     "path": "/attachments/:object_type/:object_id/download(.:format)",
     "controller": "attachments",
     "action": "download_all",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "group_memberships",
@@ -3682,10 +3134,8 @@
     "path": "/groups/:group_id/memberships(.:format)",
     "controller": "principal_memberships",
     "action": "index",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -3693,10 +3143,8 @@
     "path": "/groups/:group_id/memberships(.:format)",
     "controller": "principal_memberships",
     "action": "create",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "new_group_membership",
@@ -3704,10 +3152,8 @@
     "path": "/groups/:group_id/memberships/new(.:format)",
     "controller": "principal_memberships",
     "action": "new",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "edit_group_membership",
@@ -3715,10 +3161,8 @@
     "path": "/groups/:group_id/memberships/:id/edit(.:format)",
     "controller": "principal_memberships",
     "action": "edit",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "group_membership",
@@ -3726,10 +3170,8 @@
     "path": "/groups/:group_id/memberships/:id(.:format)",
     "controller": "principal_memberships",
     "action": "show",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -3737,10 +3179,8 @@
     "path": "/groups/:group_id/memberships/:id(.:format)",
     "controller": "principal_memberships",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -3748,10 +3188,8 @@
     "path": "/groups/:group_id/memberships/:id(.:format)",
     "controller": "principal_memberships",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -3759,10 +3197,8 @@
     "path": "/groups/:group_id/memberships/:id(.:format)",
     "controller": "principal_memberships",
     "action": "destroy",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "autocomplete_for_user_group",
@@ -3770,10 +3206,8 @@
     "path": "/groups/:id/autocomplete_for_user(.:format)",
     "controller": "groups",
     "action": "autocomplete_for_user",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "groups",
@@ -3781,10 +3215,8 @@
     "path": "/groups(.:format)",
     "controller": "groups",
     "action": "index",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -3792,10 +3224,8 @@
     "path": "/groups(.:format)",
     "controller": "groups",
     "action": "create",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "new_group",
@@ -3803,10 +3233,8 @@
     "path": "/groups/new(.:format)",
     "controller": "groups",
     "action": "new",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "edit_group",
@@ -3814,10 +3242,8 @@
     "path": "/groups/:id/edit(.:format)",
     "controller": "groups",
     "action": "edit",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "group",
@@ -3825,10 +3251,8 @@
     "path": "/groups/:id(.:format)",
     "controller": "groups",
     "action": "show",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -3836,10 +3260,8 @@
     "path": "/groups/:id(.:format)",
     "controller": "groups",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -3847,10 +3269,8 @@
     "path": "/groups/:id(.:format)",
     "controller": "groups",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -3858,10 +3278,8 @@
     "path": "/groups/:id(.:format)",
     "controller": "groups",
     "action": "destroy",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "new_group_users",
@@ -3869,8 +3287,7 @@
     "path": "/groups/:id/users/new(.:format)",
     "controller": "groups",
     "action": "new_users",
-    "defaults": {
-    },
+    "defaults": {},
     "requirements": {
       "id": "(?-mix:\\d+)"
     }
@@ -3881,8 +3298,18 @@
     "path": "/groups/:id/users(.:format)",
     "controller": "groups",
     "action": "add_users",
-    "defaults": {
-    },
+    "defaults": {},
+    "requirements": {
+      "id": "(?-mix:\\d+)"
+    }
+  },
+  {
+    "name": null,
+    "verb": "DELETE",
+    "path": "/groups/:id/users(.:format)",
+    "controller": "groups",
+    "action": "remove_users",
+    "defaults": {},
     "requirements": {
       "id": "(?-mix:\\d+)"
     }
@@ -3893,8 +3320,7 @@
     "path": "/groups/:id/users/:user_id(.:format)",
     "controller": "groups",
     "action": "remove_user",
-    "defaults": {
-    },
+    "defaults": {},
     "requirements": {
       "id": "(?-mix:\\d+)"
     }
@@ -3905,10 +3331,8 @@
     "path": "/trackers/fields(.:format)",
     "controller": "trackers",
     "action": "fields",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "trackers",
@@ -3916,10 +3340,8 @@
     "path": "/trackers(.:format)",
     "controller": "trackers",
     "action": "index",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -3927,10 +3349,8 @@
     "path": "/trackers(.:format)",
     "controller": "trackers",
     "action": "create",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "new_tracker",
@@ -3938,10 +3358,8 @@
     "path": "/trackers/new(.:format)",
     "controller": "trackers",
     "action": "new",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "edit_tracker",
@@ -3949,10 +3367,8 @@
     "path": "/trackers/:id/edit(.:format)",
     "controller": "trackers",
     "action": "edit",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "tracker",
@@ -3960,10 +3376,8 @@
     "path": "/trackers/:id(.:format)",
     "controller": "trackers",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -3971,10 +3385,8 @@
     "path": "/trackers/:id(.:format)",
     "controller": "trackers",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -3982,10 +3394,8 @@
     "path": "/trackers/:id(.:format)",
     "controller": "trackers",
     "action": "destroy",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "update_issue_done_ratio_issue_statuses",
@@ -3993,10 +3403,8 @@
     "path": "/issue_statuses/update_issue_done_ratio(.:format)",
     "controller": "issue_statuses",
     "action": "update_issue_done_ratio",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "issue_statuses",
@@ -4004,10 +3412,8 @@
     "path": "/issue_statuses(.:format)",
     "controller": "issue_statuses",
     "action": "index",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -4015,10 +3421,8 @@
     "path": "/issue_statuses(.:format)",
     "controller": "issue_statuses",
     "action": "create",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "new_issue_status",
@@ -4026,10 +3430,8 @@
     "path": "/issue_statuses/new(.:format)",
     "controller": "issue_statuses",
     "action": "new",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "edit_issue_status",
@@ -4037,10 +3439,8 @@
     "path": "/issue_statuses/:id/edit(.:format)",
     "controller": "issue_statuses",
     "action": "edit",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "issue_status",
@@ -4048,10 +3448,8 @@
     "path": "/issue_statuses/:id(.:format)",
     "controller": "issue_statuses",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -4059,10 +3457,8 @@
     "path": "/issue_statuses/:id(.:format)",
     "controller": "issue_statuses",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -4070,10 +3466,8 @@
     "path": "/issue_statuses/:id(.:format)",
     "controller": "issue_statuses",
     "action": "destroy",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "custom_field_enumerations",
@@ -4081,10 +3475,8 @@
     "path": "/custom_fields/:custom_field_id/enumerations(.:format)",
     "controller": "custom_field_enumerations",
     "action": "index",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -4092,10 +3484,8 @@
     "path": "/custom_fields/:custom_field_id/enumerations(.:format)",
     "controller": "custom_field_enumerations",
     "action": "create",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "custom_field_enumeration",
@@ -4103,10 +3493,8 @@
     "path": "/custom_fields/:custom_field_id/enumerations/:id(.:format)",
     "controller": "custom_field_enumerations",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -4114,10 +3502,8 @@
     "path": "/custom_fields/:custom_field_id/enumerations/:id(.:format)",
     "controller": "custom_field_enumerations",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -4125,10 +3511,8 @@
     "path": "/custom_fields/:custom_field_id/enumerations/:id(.:format)",
     "controller": "custom_field_enumerations",
     "action": "destroy",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -4136,10 +3520,8 @@
     "path": "/custom_fields/:custom_field_id/enumerations(.:format)",
     "controller": "custom_field_enumerations",
     "action": "update_each",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "custom_fields",
@@ -4147,10 +3529,8 @@
     "path": "/custom_fields(.:format)",
     "controller": "custom_fields",
     "action": "index",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -4158,10 +3538,8 @@
     "path": "/custom_fields(.:format)",
     "controller": "custom_fields",
     "action": "create",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "new_custom_field",
@@ -4169,10 +3547,8 @@
     "path": "/custom_fields/new(.:format)",
     "controller": "custom_fields",
     "action": "new",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "edit_custom_field",
@@ -4180,10 +3556,8 @@
     "path": "/custom_fields/:id/edit(.:format)",
     "controller": "custom_fields",
     "action": "edit",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "custom_field",
@@ -4191,10 +3565,8 @@
     "path": "/custom_fields/:id(.:format)",
     "controller": "custom_fields",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -4202,10 +3574,8 @@
     "path": "/custom_fields/:id(.:format)",
     "controller": "custom_fields",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -4213,10 +3583,8 @@
     "path": "/custom_fields/:id(.:format)",
     "controller": "custom_fields",
     "action": "destroy",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "permissions_roles",
@@ -4224,10 +3592,8 @@
     "path": "/roles/permissions(.:format)",
     "controller": "roles",
     "action": "permissions",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -4235,10 +3601,8 @@
     "path": "/roles/permissions(.:format)",
     "controller": "roles",
     "action": "update_permissions",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "roles",
@@ -4246,10 +3610,8 @@
     "path": "/roles(.:format)",
     "controller": "roles",
     "action": "index",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -4257,10 +3619,8 @@
     "path": "/roles(.:format)",
     "controller": "roles",
     "action": "create",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "new_role",
@@ -4268,10 +3628,8 @@
     "path": "/roles/new(.:format)",
     "controller": "roles",
     "action": "new",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "edit_role",
@@ -4279,10 +3637,8 @@
     "path": "/roles/:id/edit(.:format)",
     "controller": "roles",
     "action": "edit",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "role",
@@ -4290,10 +3646,8 @@
     "path": "/roles/:id(.:format)",
     "controller": "roles",
     "action": "show",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -4301,10 +3655,8 @@
     "path": "/roles/:id(.:format)",
     "controller": "roles",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -4312,10 +3664,8 @@
     "path": "/roles/:id(.:format)",
     "controller": "roles",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -4323,10 +3673,8 @@
     "path": "/roles/:id(.:format)",
     "controller": "roles",
     "action": "destroy",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "enumerations",
@@ -4334,10 +3682,8 @@
     "path": "/enumerations(.:format)",
     "controller": "enumerations",
     "action": "index",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -4345,10 +3691,8 @@
     "path": "/enumerations(.:format)",
     "controller": "enumerations",
     "action": "create",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "new_enumeration",
@@ -4356,10 +3700,8 @@
     "path": "/enumerations/new(.:format)",
     "controller": "enumerations",
     "action": "new",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "edit_enumeration",
@@ -4367,10 +3709,8 @@
     "path": "/enumerations/:id/edit(.:format)",
     "controller": "enumerations",
     "action": "edit",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "enumeration",
@@ -4378,10 +3718,8 @@
     "path": "/enumerations/:id(.:format)",
     "controller": "enumerations",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -4389,10 +3727,8 @@
     "path": "/enumerations/:id(.:format)",
     "controller": "enumerations",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -4400,10 +3736,8 @@
     "path": "/enumerations/:id(.:format)",
     "controller": "enumerations",
     "action": "destroy",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -4411,10 +3745,8 @@
     "path": "/enumerations/:type(.:format)",
     "controller": "enumerations",
     "action": "index",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "search",
@@ -4422,10 +3754,8 @@
     "path": "(/projects/:id)/search(.:format)",
     "controller": "search",
     "action": "index",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "mail_handler",
@@ -4433,10 +3763,8 @@
     "path": "/mail_handler(.:format)",
     "controller": "mail_handler",
     "action": "new",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -4444,10 +3772,8 @@
     "path": "/mail_handler(.:format)",
     "controller": "mail_handler",
     "action": "index",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "admin",
@@ -4455,10 +3781,8 @@
     "path": "/admin(.:format)",
     "controller": "admin",
     "action": "index",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "admin_projects",
@@ -4466,10 +3790,8 @@
     "path": "/admin/projects(.:format)",
     "controller": "admin",
     "action": "projects",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "admin_plugins",
@@ -4477,10 +3799,8 @@
     "path": "/admin/plugins(.:format)",
     "controller": "admin",
     "action": "plugins",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "admin_info",
@@ -4488,10 +3808,8 @@
     "path": "/admin/info(.:format)",
     "controller": "admin",
     "action": "info",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "test_email",
@@ -4499,10 +3817,8 @@
     "path": "/admin/test_email(.:format)",
     "controller": "admin",
     "action": "test_email",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "admin_default_configuration",
@@ -4510,21 +3826,17 @@
     "path": "/admin/default_configuration(.:format)",
     "controller": "admin",
     "action": "default_configuration",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "projects_context_menu",
     "verb": "GET|POST",
     "path": "/admin/projects_context_menu(.:format)",
-    "controller": "context_menus",
-    "action": "projects",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "controller": "context_menus/projects",
+    "action": "index",
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "try_connection_auth_source",
@@ -4532,10 +3844,8 @@
     "path": "/auth_sources/:id/test_connection(.:format)",
     "controller": "auth_sources",
     "action": "test_connection",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "autocomplete_for_new_user_auth_sources",
@@ -4543,10 +3853,8 @@
     "path": "/auth_sources/autocomplete_for_new_user(.:format)",
     "controller": "auth_sources",
     "action": "autocomplete_for_new_user",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "auth_sources",
@@ -4554,10 +3862,8 @@
     "path": "/auth_sources(.:format)",
     "controller": "auth_sources",
     "action": "index",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -4565,10 +3871,8 @@
     "path": "/auth_sources(.:format)",
     "controller": "auth_sources",
     "action": "create",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "new_auth_source",
@@ -4576,10 +3880,8 @@
     "path": "/auth_sources/new(.:format)",
     "controller": "auth_sources",
     "action": "new",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "edit_auth_source",
@@ -4587,10 +3889,8 @@
     "path": "/auth_sources/:id/edit(.:format)",
     "controller": "auth_sources",
     "action": "edit",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "auth_source",
@@ -4598,10 +3898,8 @@
     "path": "/auth_sources/:id(.:format)",
     "controller": "auth_sources",
     "action": "show",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -4609,10 +3907,8 @@
     "path": "/auth_sources/:id(.:format)",
     "controller": "auth_sources",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -4620,10 +3916,8 @@
     "path": "/auth_sources/:id(.:format)",
     "controller": "auth_sources",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -4631,10 +3925,8 @@
     "path": "/auth_sources/:id(.:format)",
     "controller": "auth_sources",
     "action": "destroy",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "edit_workflows",
@@ -4642,10 +3934,8 @@
     "path": "/workflows/edit(.:format)",
     "controller": "workflows",
     "action": "edit",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "workflows",
@@ -4653,10 +3943,8 @@
     "path": "/workflows/update(.:format)",
     "controller": "workflows",
     "action": "update",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "permissions_workflows",
@@ -4664,10 +3952,8 @@
     "path": "/workflows/permissions(.:format)",
     "controller": "workflows",
     "action": "permissions",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "update_permissions_workflows",
@@ -4675,10 +3961,8 @@
     "path": "/workflows/update_permissions(.:format)",
     "controller": "workflows",
     "action": "update_permissions",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "copy_workflows",
@@ -4686,10 +3970,8 @@
     "path": "/workflows/copy(.:format)",
     "controller": "workflows",
     "action": "copy",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "duplicate_workflows",
@@ -4697,10 +3979,8 @@
     "path": "/workflows/duplicate(.:format)",
     "controller": "workflows",
     "action": "duplicate",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -4708,10 +3988,8 @@
     "path": "/workflows(.:format)",
     "controller": "workflows",
     "action": "index",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "settings",
@@ -4719,10 +3997,8 @@
     "path": "/settings(.:format)",
     "controller": "settings",
     "action": "index",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "settings_edit",
@@ -4730,10 +4006,8 @@
     "path": "/settings/edit(.:format)",
     "controller": "settings",
     "action": "edit",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "plugin_settings",
@@ -4741,10 +4015,8 @@
     "path": "/settings/plugin/:id(.:format)",
     "controller": "settings",
     "action": "plugin",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "sys_projects",
@@ -4752,10 +4024,8 @@
     "path": "/sys/projects(.:format)",
     "controller": "sys",
     "action": "projects",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -4763,10 +4033,8 @@
     "path": "/sys/projects/:id/repository(.:format)",
     "controller": "sys",
     "action": "create_project_repository",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "sys_fetch_changesets",
@@ -4774,10 +4042,8 @@
     "path": "/sys/fetch_changesets(.:format)",
     "controller": "sys",
     "action": "fetch_changesets",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "uploads",
@@ -4785,10 +4051,8 @@
     "path": "/uploads(.:format)",
     "controller": "attachments",
     "action": "upload",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": null,
@@ -4796,8 +4060,7 @@
     "path": "/robots.:format",
     "controller": "welcome",
     "action": "robots",
-    "defaults": {
-    },
+    "defaults": {},
     "requirements": {
       "format": "txt"
     }
@@ -4808,8 +4071,7 @@
     "path": "/help/wiki_syntax(/:type)(.:format)",
     "controller": "help",
     "action": "show_wiki_syntax",
-    "defaults": {
-    },
+    "defaults": {},
     "requirements": {
       "type": "(?-mix:detailed)"
     }
@@ -4820,10 +4082,8 @@
     "path": "/help/code_highlighting(.:format)",
     "controller": "help",
     "action": "show_code_highlighting",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   },
   {
     "name": "rails_health_check",
@@ -4831,9 +4091,7 @@
     "path": "/up(.:format)",
     "controller": "rails/health",
     "action": "show",
-    "defaults": {
-    },
-    "requirements": {
-    }
+    "defaults": {},
+    "requirements": {}
   }
 ]

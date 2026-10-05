@@ -237,6 +237,21 @@ func (a *App) computeSafe(c *Req, f *projectForm) error {
 			return err
 		}
 	}
+	// Redmine 7.0.1 #44310: inherit_members の変更にはメンバーの管理権限が必要
+	// （新規なら管理者か既定のメンバーロールが manage_members を持つこと、既存なら user.allowed_to?(:manage_members, project)）
+	if f.safeInheritMembers {
+		if f.id == 0 {
+			if !c.User.IsAdmin() {
+				r, err := a.defaultMemberRole(c)
+				if err != nil {
+					return err
+				}
+				f.safeInheritMembers = r != nil && r.HasPermission("manage_members")
+			}
+		} else {
+			f.safeInheritMembers = c.AllowedTo(domain.Perm("manage_members"), f.Project)
+		}
+	}
 	return nil
 }
 
@@ -457,7 +472,9 @@ func (a *App) validateProject(c *Req, f *projectForm) error {
 	if identifierChanged && (!projectIdentifierRe.MatchString(p.Identifier) || digitsOnlyRe.MatchString(p.Identifier)) {
 		f.errs.Add("identifier", "invalid", nil)
 	}
-	if p.Identifier == "new" {
+	// validates_exclusion_of :identifier, :in => %w(new autocomplete bulk_destroy),
+	//   :if => -> { new_record? || will_save_change_to_identifier? }（Redmine 6.1.3 #43910）
+	if (f.id == 0 || identifierChanged) && slices.Contains([]string{"new", "autocomplete", "bulk_destroy"}, p.Identifier) {
 		f.errs.Add("identifier", "exclusion", nil)
 	}
 	// validate_parent

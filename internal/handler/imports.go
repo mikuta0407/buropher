@@ -333,7 +333,8 @@ func (m *importModel) mappingValue(key string) any { return m.mapping()[key] }
 
 // csvOptions は read_rows の CSV オプション。
 func (m *importModel) csvOptions() csvimport.Options {
-	return csvimport.Options{Separator: m.setting("separator"), Wrapper: m.setting("wrapper"), Encoding: m.setting("encoding")}
+	return csvimport.Options{Separator: m.setting("separator"), Wrapper: m.setting("wrapper"), Encoding: m.setting("encoding"),
+		Newline: m.setting("newline")}
 }
 
 // readRows は read_rows（ファイルが無ければ何もしない）。
@@ -483,9 +484,12 @@ func (m *importModel) setDefaultSettings(projectID string) {
 	separator := m.lu("general_csv_separator")
 	wrapper := `"`
 	encoding := m.lu("general_csv_encoding")
+	// newline はファイルが無ければ nil（空文字は row_sep: :auto）
+	var newline any
 	if data, ok, _ := m.content(); ok {
 		head := csvimport.ReadHead(data, 4096)
 		separator = csvimport.GuessSeparator(head)
+		newline = csvimport.GuessNewline(head)
 		wrapper = csvimport.GuessWrapper(head)
 		if guessed, ok := csvimport.GuessEncoding(head, m.a.Settings.String("repositories_encodings")); ok {
 			if c := csvimport.CanonicalEncoding(guessed, settings.Encodings); guessed != "" && c != "" {
@@ -501,7 +505,7 @@ func (m *importModel) setDefaultSettings(projectID string) {
 		dateFormat = csvimport.DateFormats[0]
 	}
 	s := m.Settings.V
-	s["separator"], s["wrapper"], s["encoding"], s["date_format"], s["notifications"] = separator, wrapper, encoding, dateFormat, "0"
+	s["separator"], s["newline"], s["wrapper"], s["encoding"], s["date_format"], s["notifications"] = separator, newline, wrapper, encoding, dateFormat, "0"
 	if strings.TrimSpace(projectID) != "" {
 		// 存在しないプロジェクトでも失敗しない（Project.find は id か識別子）
 		if p, err := m.c.lookupProjectAny(projectID); err == nil && p != nil {

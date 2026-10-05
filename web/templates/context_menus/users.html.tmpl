@@ -30,7 +30,30 @@
       </li>
     {{end}}
     <li>
-      {{link_to (sprite_icon "del" (l "button_delete")) (printf "/users/bulk_destroy?%s" (to_query (hash "ids" .IDs))) (hash "method" "delete" "class" "icon icon-del")}}
+      {{link_to (sprite_icon "del" (l "button_delete")) .BulkDestroyURL (hash "method" "delete" "class" "icon icon-del")}}
     </li>
+  {{end}}
+
+  {{if .Groups}}
+    <li class="folder">
+      <a href="#" class="submenu">{{l "button_add_to_group"}}</a>
+      <span class="icon-only">{{sprite_icon "angle-right" (hash "rtl" true)}}</span>
+      <ul>
+        {{range $g := .Groups}}
+          <li>{{context_menu_link $g.Name (printf "/groups/%d/users?%s" $g.ID (to_query (hash "user_ids" $.IDs "back_url" $.Back))) (hash "method" "post")}}</li>
+        {{end}}
+      </ul>
+    </li>
+    {{if .CommonGroups}}
+      <li class="folder">
+        <a href="#" class="submenu">{{l "button_remove_from_group"}}</a>
+        <span class="icon-only">{{sprite_icon "angle-right" (hash "rtl" true)}}</span>
+        <ul>
+          {{range $g := .CommonGroups}}
+              <li>{{context_menu_link $g.Name (printf "/groups/%d/users?%s" $g.ID (to_query (hash "user_ids" $.IDs "back_url" $.Back))) (hash "method" "delete")}}</li>
+          {{end}}
+        </ul>
+      </li>
+    {{end}}
   {{end}}
 </ul>

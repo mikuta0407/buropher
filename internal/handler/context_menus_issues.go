@@ -3,7 +3,7 @@
 
 package handler
 
-// ContextMenusController#issues（チケット一覧・詳細の右クリックメニュー。context_menus/issues）。
+// ContextMenus::IssuesController#index（チケット一覧・詳細の右クリックメニュー。context_menus/issues）。
 
 import (
 	"html/template"
@@ -25,11 +25,11 @@ import (
 	"github.com/mikuta0407/buropher/internal/view/rails"
 )
 
-// routesContextMenusIssues は match '/issues/context_menu', :to => 'context_menus#issues', :via => [:get, :post]。
+// routesContextMenusIssues は match '/issues/context_menu', :to => 'context_menus/issues#index', :via => [:get, :post]。
 func (a *App) routesContextMenusIssues(r Router) {
 	for _, m := range []string{http.MethodGet, http.MethodPost} {
-		// before_action :find_issues, :only => :issues（ContextMenusController は authorize しない）
-		a.Handle(r, m, "/issues/context_menu", ContextMenusController, "issues", a.ContextMenusIssues, Before(a.findIssues))
+		// before_action :find_issues, :only => :index（ContextMenus::IssuesController は authorize しない）
+		a.Handle(r, m, "/issues/context_menu", ContextMenusIssuesController, "index", a.ContextMenusIssues, Before(a.findIssues))
 	}
 }
 
@@ -119,7 +119,7 @@ type cmCustomField struct {
 	Options []customfield.Option
 }
 
-// ContextMenusIssues は ContextMenusController#issues。
+// ContextMenusIssues は ContextMenus::IssuesController#index。
 func (a *App) ContextMenusIssues(c *Req) {
 	rows, _ := c.local(ctxIssues).([]*query.IssueRow)
 	l := a.newIssueLookup(c)
