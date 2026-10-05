@@ -7,7 +7,7 @@
 {{range $attachment := .attachments}}
 <tr>
   <td>
-    {{link_to_attachment $attachment (hash "class" "icon icon-attachment " "icon" "attachment") -}}
+    {{link_to_attachment $attachment (hash "class" "icon icon-attachment " "icon" (icon_for_mime_type $attachment.ContentType)) -}}
     <span class="size">({{number_to_human_size $attachment.Filesize}})</span>
     {{link_to_attachment $attachment (hash "class" "icon-only icon-download " "title" (l "button_download") "download" true "icon" "download") -}}
   </td>

@@ -84,6 +84,17 @@ func (d *Deps) RequestFuncs(r *view.Render) ttemplate.FuncMap {
 			}
 			return d.spriteIcon(pg(), rails.ToS(name), label, opts)
 		},
+		// icon_for_mime_type / file_type_icon の MIME タイプ → アイコン名（file_type_icon(m, ...) は
+		// sprite_icon (icon_for_mime_type m) ... と書く）
+		"icon_for_mime_type": func(mime any) string {
+			if p, ok := mime.(*string); ok {
+				if p == nil {
+					return iconForMimeType("")
+				}
+				return iconForMimeType(*p)
+			}
+			return iconForMimeType(rails.ToS(mime))
+		},
 		"notice_icon":  func(typ string) html { return d.noticeIcon(pg(), typ) },
 		"avatar":       func(u any, args ...any) html { return d.avatar(r, pg(), toUser(u), optHash(args)) },
 		"link_to_user": func(u any, args ...any) html { return d.linkToUser(pg(), u, optHash(args)) },

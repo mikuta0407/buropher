@@ -135,3 +135,37 @@ func TestThumbnailRejectsNonHexDigestOnDelete(t *testing.T) {
 		t.Errorf("other thumbnail removed: %v", err)
 	}
 }
+
+// #44145（Redmine 6.1.3）: 先頭に %% の DSC コメントや %!PS を置いた PostScript を .pdf / .ai として添付しても、
+// サムネイルの生成で外部コマンド（ImageMagick / Ghostscript）に渡さない。buropher は画像以外のサムネイルを
+// 生成しないため、PDF・Illustrator のサムネイルは常に作られない（ファイルも書かれない）。
+func TestThumbnailNeverInterpretsPostScript(t *testing.T) {
+	dir := t.TempDir()
+	root := filepath.Join(dir, "files")
+	thumbs := filepath.Join(dir, "thumbs")
+	if err := os.MkdirAll(filepath.Join(root, "2026", "01"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	payloads := map[string]string{
+		"dsc.pdf":   "%%BoundingBox: 0 0 10 10\n%PDF-1.4\n(/tmp/pwned) (w) file closefile\nshowpage\n",
+		"magic.pdf": "%!PS\n%PDF-2.0\n/Helvetica findfont 24 scalefont setfont\nshowpage\n",
+		"logo.ai":   "%!PS-Adobe-3.0\n%%Creator: x\n%PDF-1.5\nshowpage\n",
+	}
+	s := &Store{Root: root, ThumbnailsRoot: thumbs}
+	for fn, body := range payloads {
+		if err := os.WriteFile(filepath.Join(root, "2026", "01", fn), []byte(body), 0o644); err != nil {
+			t.Fatal(err)
+		}
+		a := &domain.Attachment{Filename: fn, DiskDirectory: "2026/01", DiskFilename: fn, Filesize: int64(len(body)),
+			Digest: strings.Repeat("cd", 32)}
+		if !a.Thumbnailable() {
+			t.Fatalf("%s: thumbnailable? = false", fn)
+		}
+		if p, ok := s.Thumbnail(context.Background(), a, 100); ok {
+			t.Errorf("%s: thumbnail generated at %s", fn, p)
+		}
+	}
+	if m, _ := filepath.Glob(filepath.Join(thumbs, "*")); len(m) > 0 {
+		t.Errorf("files written: %v", m)
+	}
+}

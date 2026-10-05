@@ -20,8 +20,14 @@
   <div class="filecontent wiki">
   {{.Markup}}
 </div>
+  {{else if eq .Kind "markdownized"}}
+  <div class="filecontent wiki">
+  {{.Markup}}
+</div>
   {{else if eq .Kind "image"}}
   <img alt="{{$att.Filename}}" class="filecontent image" src="{{url_path (download_named_attachment_path $att)}}" />
+  {{else if eq .Kind "pdf"}}
+  {{partial "common/pdf" (dict "path" (url_path (download_named_attachment_path $att)))}}
   {{else if eq .Kind "diff"}}
   {{form_tag request_path (hash "method" "get")}}
     <p>

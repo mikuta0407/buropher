@@ -207,7 +207,8 @@ func detectContentType(att *domain.Attachment, isThumb bool) string {
 			ct = "application/octet-stream"
 		}
 	}
-	if isThumb && ct == "application/pdf" {
+	// 画像以外のファイルのサムネイルは PNG で保存される
+	if isThumb && !strings.HasPrefix(ct, "image/") {
 		ct = "image/png"
 	}
 	return ct

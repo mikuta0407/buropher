@@ -84,15 +84,25 @@ func (a *Attachment) Title() string {
 	return a.Filename
 }
 
-var reImageFilename = regexp.MustCompile(`(?i)\.(bmp|gif|jpg|jpe|jpeg|png|webp)$`)
+var reImageFilename = regexp.MustCompile(`(?i)\.(avif|bmp|gif|jpg|jpe|jpeg|png|webp)$`)
 
-// IsImage は Attachment#image?（拡張子が bmp/gif/jpg/jpe/jpeg/png/webp）。
+// IsImage は Attachment#image?（拡張子が avif/bmp/gif/jpg/jpe/jpeg/png/webp）。
 // is_image?（MIME タイプが image/*）は IsImageType。
 func (a *Attachment) IsImage() bool { return reImageFilename.MatchString(a.Filename) }
 
-// Thumbnailable は Attachment#thumbnailable?。
+// Thumbnailable は Attachment#thumbnailable?（Illustrator のファイルは PDF 互換のことが多いため PDF と同じ扱い）。
 func (a *Attachment) Thumbnailable() bool {
-	return ThumbnailsAvailable && (a.IsImage() || (a.IsPDF() && ThumbnailPDFAvailable))
+	if !ThumbnailsAvailable {
+		return false
+	}
+	if a.IsImage() {
+		return true
+	}
+	if !ThumbnailPDFAvailable {
+		return false
+	}
+	m := mimetype.Of(a.Filename)
+	return m == "application/pdf" || m == "application/illustrator"
 }
 
 // IsText は Attachment#is_text?。

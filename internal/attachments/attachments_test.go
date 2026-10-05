@@ -80,6 +80,10 @@ func TestDiskFilenameBase(t *testing.T) {
 		strings.Repeat("a", 51) + ".txt": md5hex(strings.Repeat("a", 51)+".txt") + ".txt",
 		strings.Repeat("a", 50):          strings.Repeat("a", 50),
 		"with space.txt":                 md5hex("with space.txt") + ".txt",
+		// #44186 / #44216: 長すぎる拡張子は付けない（MD5 + 拡張子が 50 文字以下のときだけ付ける）
+		"file." + strings.Repeat("a", 250): md5hex("file." + strings.Repeat("a", 250)),
+		"日本." + strings.Repeat("b", 17):    md5hex("日本."+strings.Repeat("b", 17)) + "." + strings.Repeat("b", 17),
+		"日本." + strings.Repeat("b", 18):    md5hex("日本." + strings.Repeat("b", 18)),
 	}
 	for in, want := range cases {
 		if got := DiskFilenameBase(in); got != want {
