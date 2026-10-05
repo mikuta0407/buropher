@@ -6,8 +6,11 @@ package server_test
 import (
 	"context"
 	"net/http"
+	"net/url"
 	"strings"
 	"testing"
+
+	"github.com/mikuta0407/buropher/internal/db"
 )
 
 // 見えないチケット（非公開）の関連は、プロジェクトの権限があっても一覧・追加できない
@@ -100,6 +103,37 @@ func TestIssueImportProjectWithoutImportPermission(t *testing.T) {
 	if n := queryInt(t, d, `SELECT COUNT(*) FROM issue_categories WHERE id > ? AND project_id = 2`, c0); n != 0 {
 		t.Errorf("category created in project 2 without manage_categories")
 	}
+}
+
+// 既存の工数は log_time の無いプロジェクトへ移せない（update / bulk_update）。
+func TestTimeEntryMoveToProjectWithoutLogTime(t *testing.T) {
+	ts, d := newFixtureServer(t)
+	ctx := context.Background()
+	enableTimeTracking := func(d *db.DB) {
+		if _, err := d.Exec(ctx, `INSERT INTO project_modules (project_id, name) VALUES (2, 'time_tracking')`); err != nil {
+			t.Fatal(err)
+		}
+	}
+	// jsmith は project 2 で Developer。工数管理を有効にして log_time を外す
+	enableTimeTracking(d)
+	if _, err := d.Exec(ctx, `DELETE FROM role_permissions WHERE role_id = 2 AND permission = 'log_time'`); err != nil {
+		t.Fatal(err)
+	}
+	res := apiCall(t, ts, http.MethodPut, "/time_entries/1.json", "", `{"time_entry":{"project_id":2,"issue_id":""}}`, apiCreds("jsmith"))
+	if res.Status != http.StatusUnprocessableEntity {
+		t.Errorf("update: status %d %s", res.Status, res.Body)
+	}
+	c := login(t, ts, "jsmith", "jsmith")
+	projSubmit(t, c, ts, http.MethodPost, "/time_entries/bulk_update",
+		url.Values{"ids[]": {"1"}, "time_entry[project_id]": {"2"}, "time_entry[issue_id]": {"none"}}, false)
+	if p := queryInt(t, d, `SELECT project_id FROM time_entries WHERE id = 1`); p != 1 {
+		t.Errorf("time entry moved to project %d", p)
+	}
+	// log_time のあるプロジェクトへは従来どおり移せる
+	ts, d = newFixtureServer(t)
+	enableTimeTracking(d)
+	res = apiCall(t, ts, http.MethodPut, "/time_entries/1.json", "", `{"time_entry":{"project_id":2,"issue_id":""}}`, apiCreds("jsmith"))
+	res.expectStatus(t, http.StatusNoContent)
 }
 
 // チケット削除で工数を付け替える先に、見えないチケット（非公開）は指定できない。
