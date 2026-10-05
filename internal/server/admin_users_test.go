@@ -20,7 +20,7 @@ import (
 // このファイルは管理画面のユーザー・グループ（UsersController / GroupsController /
 // PrincipalMembershipsController / EmailAddressesController / ContextMenusController#users）と
 // users / groups の REST API のテスト。
-// testdata/admin_users/* は参照 Redmine 6.1.2（公式フィクスチャ、私用インスタンスをリセットした直後）の
+// testdata/admin_users/* は参照 Redmine 7.0.1（公式フィクスチャ、私用インスタンスをリセットした直後）の
 // `compat fetch -raw` の出力に CSRF・フォーム名・ダイジェスト・ベース URL・キーの置換をしたもの。
 
 var (
@@ -41,6 +41,9 @@ func normalizeUsersAdmin(s, base string) string {
 
 func compareUsersGolden(t *testing.T, name, got string) {
 	t.Helper()
+	if recaptureGolden(t, "testdata/admin_users/"+name, got, recaptureBase()) {
+		return
+	}
 	want, err := os.ReadFile("testdata/admin_users/" + name)
 	if err != nil {
 		t.Fatal(err)

@@ -17,7 +17,7 @@ import (
 )
 
 // ゴールデンテスト: testdata/cases.json の各ケースを Go で実行し、
-// tools/golden/rails_helpers.rb が実際の Redmine 6.1.2 で生成した testdata/golden.json と比較する。
+// tools/golden/rails_helpers.rb が実際の Redmine 7.0.1 で生成した testdata/golden.json と比較する。
 
 type goldenCase struct {
 	ID      string            `json:"id"`

@@ -16,7 +16,7 @@ import (
 	"go.yaml.in/yaml/v3"
 )
 
-// testdata/redmine/*.yml は Redmine 6.1.2 の test/fixtures/*.yml の無改変コピー (GPL-2.0-or-later)。
+// testdata/redmine/*.yml は Redmine 7.0.1 の test/fixtures/*.yml の無改変コピー (GPL-2.0-or-later)。
 //
 //go:embed testdata/redmine/*.yml
 var fixtureFS embed.FS

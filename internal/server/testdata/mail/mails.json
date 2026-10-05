@@ -7,12 +7,8 @@
         "to": [
           "jsmith@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[eCookbook - Bug #1] (New) Cannot print recipes",
         "headers": {
           "From": "John Smith <redmine@example.net>",
@@ -20,8 +16,8 @@
           "Message-ID": "<redmine.issue-1.20260112120000.2@example.net>",
           "References": "<redmine.issue-1.20260112120000.2@example.net>",
           "Subject": "[eCookbook - Bug #1] (New) Cannot print recipes",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "ecookbook",
           "X-Redmine-Issue-Tracker": "Bug",
           "X-Redmine-Issue-Id": "1",
@@ -42,7 +38,7 @@
           "Message-ID",
           "References",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -67,12 +63,8 @@
         "to": [
           "dlopper@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[eCookbook - Bug #1] (New) Cannot print recipes",
         "headers": {
           "From": "John Smith <redmine@example.net>",
@@ -80,8 +72,8 @@
           "Message-ID": "<redmine.issue-1.20260112120000.3@example.net>",
           "References": "<redmine.issue-1.20260112120000.3@example.net>",
           "Subject": "[eCookbook - Bug #1] (New) Cannot print recipes",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "ecookbook",
           "X-Redmine-Issue-Tracker": "Bug",
           "X-Redmine-Issue-Id": "1",
@@ -102,7 +94,7 @@
           "Message-ID",
           "References",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -132,12 +124,8 @@
         "to": [
           "jsmith@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[eCookbook - Feature request #2] (Assigned) Add ingredients categories",
         "headers": {
           "From": "John Smith <redmine@example.net>",
@@ -145,8 +133,8 @@
           "Message-ID": "<redmine.issue-2.20060719190421.2@example.net>",
           "References": "<redmine.issue-2.20060719190421.2@example.net>",
           "Subject": "[eCookbook - Feature request #2] (Assigned) Add ingredients categories",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "ecookbook",
           "X-Redmine-Issue-Tracker": "Feature request",
           "X-Redmine-Issue-Id": "2",
@@ -168,7 +156,7 @@
           "Message-ID",
           "References",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -185,8 +173,8 @@
           "Auto-Submitted",
           "List-Id"
         ],
-        "text": "Issue #2 has been reported by John Smith.\n\n----------------------------------------\nFeature request #2: Add ingredients categories\nhttp://localhost:3000/issues/2\n\n* Author: John Smith\n* Status: Assigned\n* Priority: Normal\n* Assignee: Dave Lopper\n* Target version: 1.0\n* Start date: 2026-01-13\n* Float field: 2.05\n----------------------------------------\nIngredients of the recipe should be classified by categories\n\n---Files--------------------------------\nsource.rb (153 Bytes)\npicture.jpg (452 Bytes)\n\n\n-- \nYou have received this notification because you have either subscribed to it, or are involved in it.\nTo change your notification preferences, please click here: http://hostname/my/account\n",
-        "html": "<!DOCTYPE html>\n<html>\n<head>\n\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><style>a:link{color:#1864ab}\na:visited{color:#1864ab}\na:hover{color:#c92a2a}\na:active{color:#c92a2a}</style></head>\n<body style=\"font-family:sans-serif;font-size:14px;line-height:1.5;color:#212529\">\nIssue <a href=\"http://localhost:3000/issues/2\" style=\"color:#1864ab\">#2</a> has been reported by John Smith.\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\n<h1 style=\"font-family:sans-serif;margin:0px;font-size:1.3em\">\n  <a href=\"http://localhost:3000/issues/2\" style=\"color:#1864ab\">Feature request #2: Add ingredients categories</a>\n  <span class=\"badge badge-status-open\" style=\"position:relative;font-weight:bold;font-size:10px;bottom:2px;padding:1px 3px;margin-right:2px;margin-left:2px;border-radius:2px;text-transform:uppercase;text-decoration:none;color:#1864ab;border:1px solid #1864ab\">open</span>\n</h1>\n\n<ul class=\"details\" style=\"color:#868e96;margin-bottom:1.5em\"><li><strong>Author: </strong>John Smith</li>\n<li><strong>Status: </strong>Assigned</li>\n<li><strong>Priority: </strong>Normal</li>\n<li><strong>Assignee: </strong>Dave Lopper</li>\n<li><strong>Target version: </strong>1.0</li>\n<li><strong>Start date: </strong>2026-01-13</li>\n<li><strong>Float field: </strong>2.05</li></ul>\n\n<p>Ingredients of the recipe should be classified by categories</p>\n\n  <fieldset class=\"attachments\" style=\"border-width:1px 0 0 0;border-style:solid;border-color:#ced4da\"><legend>Files</legend>\n    <a href=\"http://localhost:3000/attachments/download/4/source.rb\" style=\"color:#1864ab\">source.rb</a>\n    (153 Bytes)<br>\n    <a href=\"http://localhost:3000/attachments/download/10/picture.jpg\" style=\"color:#1864ab\">picture.jpg</a>\n    (452 Bytes)<br>\n  </fieldset>\n\n\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\n<span class=\"footer\" style=\"font-size:0.8em;font-style:italic\"><p>You have received this notification because you have either subscribed to it, or are involved in it.<br>\nTo change your notification preferences, please click here: http://hostname/my/account</p></span>\n</body>\n</html>\n",
+        "text": "Issue #2 has been reported by John Smith.\n\n----------------------------------------\nFeature request #2: Add ingredients categories\nhttp://localhost:3000/issues/2\n\n* Author: John Smith\n* Status: Assigned\n* Priority: Normal\n* Assignee: Dave Lopper\n* Target version: 1.0\n* Start date: 2026-01-13\n* Float field: 2.05\n----------------------------------------\nIngredients of the recipe should be classified by categories\n\n---Files--------------------------------\nsource.rb (174 Bytes)\npicture.jpg (452 Bytes)\n\n\n-- \nYou have received this notification because you have either subscribed to it, or are involved in it.\nTo change your notification preferences, please click here: http://hostname/my/account\n",
+        "html": "<!DOCTYPE html>\n<html>\n<head>\n\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><style>a:link{color:#1864ab}\na:visited{color:#1864ab}\na:hover{color:#c92a2a}\na:active{color:#c92a2a}</style></head>\n<body style=\"font-family:sans-serif;font-size:14px;line-height:1.5;color:#212529\">\nIssue <a href=\"http://localhost:3000/issues/2\" style=\"color:#1864ab\">#2</a> has been reported by John Smith.\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\n<h1 style=\"font-family:sans-serif;margin:0px;font-size:1.3em\">\n  <a href=\"http://localhost:3000/issues/2\" style=\"color:#1864ab\">Feature request #2: Add ingredients categories</a>\n  <span class=\"badge badge-status-open\" style=\"position:relative;font-weight:bold;font-size:10px;bottom:2px;padding:1px 3px;margin-right:2px;margin-left:2px;border-radius:2px;text-transform:uppercase;text-decoration:none;color:#1864ab;border:1px solid #1864ab\">open</span>\n</h1>\n\n<ul class=\"details\" style=\"color:#868e96;margin-bottom:1.5em\"><li><strong>Author: </strong>John Smith</li>\n<li><strong>Status: </strong>Assigned</li>\n<li><strong>Priority: </strong>Normal</li>\n<li><strong>Assignee: </strong>Dave Lopper</li>\n<li><strong>Target version: </strong>1.0</li>\n<li><strong>Start date: </strong>2026-01-13</li>\n<li><strong>Float field: </strong>2.05</li></ul>\n\n<p>Ingredients of the recipe should be classified by categories</p>\n\n  <fieldset class=\"attachments\" style=\"border-width:1px 0 0 0;border-style:solid;border-color:#ced4da\"><legend>Files</legend>\n    <a href=\"http://localhost:3000/attachments/download/4/source.rb\" style=\"color:#1864ab\">source.rb</a>\n    (174 Bytes)<br>\n    <a href=\"http://localhost:3000/attachments/download/10/picture.jpg\" style=\"color:#1864ab\">picture.jpg</a>\n    (452 Bytes)<br>\n  </fieldset>\n\n\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\n<span class=\"footer\" style=\"font-size:0.8em;font-style:italic\"><p>You have received this notification because you have either subscribed to it, or are involved in it.<br>\nTo change your notification preferences, please click here: http://hostname/my/account</p></span>\n</body>\n</html>\n",
         "text_cte": "7bit"
       },
       {
@@ -194,12 +182,8 @@
         "to": [
           "dlopper@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[eCookbook - Feature request #2] (Assigned) Add ingredients categories",
         "headers": {
           "From": "John Smith <redmine@example.net>",
@@ -207,8 +191,8 @@
           "Message-ID": "<redmine.issue-2.20060719190421.3@example.net>",
           "References": "<redmine.issue-2.20060719190421.3@example.net>",
           "Subject": "[eCookbook - Feature request #2] (Assigned) Add ingredients categories",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "ecookbook",
           "X-Redmine-Issue-Tracker": "Feature request",
           "X-Redmine-Issue-Id": "2",
@@ -230,7 +214,7 @@
           "Message-ID",
           "References",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -247,8 +231,8 @@
           "Auto-Submitted",
           "List-Id"
         ],
-        "text": "Issue #2 has been reported by John Smith.\n\n----------------------------------------\nFeature request #2: Add ingredients categories\nhttp://localhost:3000/issues/2\n\n* Author: John Smith\n* Status: Assigned\n* Priority: Normal\n* Assignee: Dave Lopper\n* Target version: 1.0\n* Start date: 2026-01-13\n* Float field: 2.05\n----------------------------------------\nIngredients of the recipe should be classified by categories\n\n---Files--------------------------------\nsource.rb (153 Bytes)\npicture.jpg (452 Bytes)\n\n\n-- \nYou have received this notification because you have either subscribed to it, or are involved in it.\nTo change your notification preferences, please click here: http://hostname/my/account\n",
-        "html": "<!DOCTYPE html>\n<html>\n<head>\n\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><style>a:link{color:#1864ab}\na:visited{color:#1864ab}\na:hover{color:#c92a2a}\na:active{color:#c92a2a}</style></head>\n<body style=\"font-family:sans-serif;font-size:14px;line-height:1.5;color:#212529\">\nIssue <a href=\"http://localhost:3000/issues/2\" style=\"color:#1864ab\">#2</a> has been reported by John Smith.\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\n<h1 style=\"font-family:sans-serif;margin:0px;font-size:1.3em\">\n  <a href=\"http://localhost:3000/issues/2\" style=\"color:#1864ab\">Feature request #2: Add ingredients categories</a>\n  <span class=\"badge badge-status-open\" style=\"position:relative;font-weight:bold;font-size:10px;bottom:2px;padding:1px 3px;margin-right:2px;margin-left:2px;border-radius:2px;text-transform:uppercase;text-decoration:none;color:#1864ab;border:1px solid #1864ab\">open</span>\n</h1>\n\n<ul class=\"details\" style=\"color:#868e96;margin-bottom:1.5em\"><li><strong>Author: </strong>John Smith</li>\n<li><strong>Status: </strong>Assigned</li>\n<li><strong>Priority: </strong>Normal</li>\n<li><strong>Assignee: </strong>Dave Lopper</li>\n<li><strong>Target version: </strong>1.0</li>\n<li><strong>Start date: </strong>2026-01-13</li>\n<li><strong>Float field: </strong>2.05</li></ul>\n\n<p>Ingredients of the recipe should be classified by categories</p>\n\n  <fieldset class=\"attachments\" style=\"border-width:1px 0 0 0;border-style:solid;border-color:#ced4da\"><legend>Files</legend>\n    <a href=\"http://localhost:3000/attachments/download/4/source.rb\" style=\"color:#1864ab\">source.rb</a>\n    (153 Bytes)<br>\n    <a href=\"http://localhost:3000/attachments/download/10/picture.jpg\" style=\"color:#1864ab\">picture.jpg</a>\n    (452 Bytes)<br>\n  </fieldset>\n\n\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\n<span class=\"footer\" style=\"font-size:0.8em;font-style:italic\"><p>You have received this notification because you have either subscribed to it, or are involved in it.<br>\nTo change your notification preferences, please click here: http://hostname/my/account</p></span>\n</body>\n</html>\n",
+        "text": "Issue #2 has been reported by John Smith.\n\n----------------------------------------\nFeature request #2: Add ingredients categories\nhttp://localhost:3000/issues/2\n\n* Author: John Smith\n* Status: Assigned\n* Priority: Normal\n* Assignee: Dave Lopper\n* Target version: 1.0\n* Start date: 2026-01-13\n* Float field: 2.05\n----------------------------------------\nIngredients of the recipe should be classified by categories\n\n---Files--------------------------------\nsource.rb (174 Bytes)\npicture.jpg (452 Bytes)\n\n\n-- \nYou have received this notification because you have either subscribed to it, or are involved in it.\nTo change your notification preferences, please click here: http://hostname/my/account\n",
+        "html": "<!DOCTYPE html>\n<html>\n<head>\n\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><style>a:link{color:#1864ab}\na:visited{color:#1864ab}\na:hover{color:#c92a2a}\na:active{color:#c92a2a}</style></head>\n<body style=\"font-family:sans-serif;font-size:14px;line-height:1.5;color:#212529\">\nIssue <a href=\"http://localhost:3000/issues/2\" style=\"color:#1864ab\">#2</a> has been reported by John Smith.\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\n<h1 style=\"font-family:sans-serif;margin:0px;font-size:1.3em\">\n  <a href=\"http://localhost:3000/issues/2\" style=\"color:#1864ab\">Feature request #2: Add ingredients categories</a>\n  <span class=\"badge badge-status-open\" style=\"position:relative;font-weight:bold;font-size:10px;bottom:2px;padding:1px 3px;margin-right:2px;margin-left:2px;border-radius:2px;text-transform:uppercase;text-decoration:none;color:#1864ab;border:1px solid #1864ab\">open</span>\n</h1>\n\n<ul class=\"details\" style=\"color:#868e96;margin-bottom:1.5em\"><li><strong>Author: </strong>John Smith</li>\n<li><strong>Status: </strong>Assigned</li>\n<li><strong>Priority: </strong>Normal</li>\n<li><strong>Assignee: </strong>Dave Lopper</li>\n<li><strong>Target version: </strong>1.0</li>\n<li><strong>Start date: </strong>2026-01-13</li>\n<li><strong>Float field: </strong>2.05</li></ul>\n\n<p>Ingredients of the recipe should be classified by categories</p>\n\n  <fieldset class=\"attachments\" style=\"border-width:1px 0 0 0;border-style:solid;border-color:#ced4da\"><legend>Files</legend>\n    <a href=\"http://localhost:3000/attachments/download/4/source.rb\" style=\"color:#1864ab\">source.rb</a>\n    (174 Bytes)<br>\n    <a href=\"http://localhost:3000/attachments/download/10/picture.jpg\" style=\"color:#1864ab\">picture.jpg</a>\n    (452 Bytes)<br>\n  </fieldset>\n\n\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\n<span class=\"footer\" style=\"font-size:0.8em;font-style:italic\"><p>You have received this notification because you have either subscribed to it, or are involved in it.<br>\nTo change your notification preferences, please click here: http://hostname/my/account</p></span>\n</body>\n</html>\n",
         "text_cte": "7bit"
       },
       {
@@ -256,12 +240,8 @@
         "to": [
           "admin@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[eCookbook - Feature request #2] (Assigned) Add ingredients categories",
         "headers": {
           "From": "John Smith <redmine@example.net>",
@@ -269,8 +249,8 @@
           "Message-ID": "<redmine.issue-2.20060719190421.1@example.net>",
           "References": "<redmine.issue-2.20060719190421.1@example.net>",
           "Subject": "[eCookbook - Feature request #2] (Assigned) Add ingredients categories",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "ecookbook",
           "X-Redmine-Issue-Tracker": "Feature request",
           "X-Redmine-Issue-Id": "2",
@@ -292,7 +272,7 @@
           "Message-ID",
           "References",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -309,8 +289,8 @@
           "Auto-Submitted",
           "List-Id"
         ],
-        "text": "Issue #2 has been reported by John Smith.\n\n----------------------------------------\nFeature request #2: Add ingredients categories\nhttp://localhost:3000/issues/2\n\n* Author: John Smith\n* Status: Assigned\n* Priority: Normal\n* Assignee: Dave Lopper\n* Target version: 1.0\n* Start date: 2026-01-13\n* Float field: 2.05\n----------------------------------------\nIngredients of the recipe should be classified by categories\n\n---Files--------------------------------\nsource.rb (153 Bytes)\npicture.jpg (452 Bytes)\n\n\n-- \nYou have received this notification because you have either subscribed to it, or are involved in it.\nTo change your notification preferences, please click here: http://hostname/my/account\n",
-        "html": "<!DOCTYPE html>\n<html>\n<head>\n\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><style>a:link{color:#1864ab}\na:visited{color:#1864ab}\na:hover{color:#c92a2a}\na:active{color:#c92a2a}</style></head>\n<body style=\"font-family:sans-serif;font-size:14px;line-height:1.5;color:#212529\">\nIssue <a href=\"http://localhost:3000/issues/2\" style=\"color:#1864ab\">#2</a> has been reported by John Smith.\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\n<h1 style=\"font-family:sans-serif;margin:0px;font-size:1.3em\">\n  <a href=\"http://localhost:3000/issues/2\" style=\"color:#1864ab\">Feature request #2: Add ingredients categories</a>\n  <span class=\"badge badge-status-open\" style=\"position:relative;font-weight:bold;font-size:10px;bottom:2px;padding:1px 3px;margin-right:2px;margin-left:2px;border-radius:2px;text-transform:uppercase;text-decoration:none;color:#1864ab;border:1px solid #1864ab\">open</span>\n</h1>\n\n<ul class=\"details\" style=\"color:#868e96;margin-bottom:1.5em\"><li><strong>Author: </strong>John Smith</li>\n<li><strong>Status: </strong>Assigned</li>\n<li><strong>Priority: </strong>Normal</li>\n<li><strong>Assignee: </strong>Dave Lopper</li>\n<li><strong>Target version: </strong>1.0</li>\n<li><strong>Start date: </strong>2026-01-13</li>\n<li><strong>Float field: </strong>2.05</li></ul>\n\n<p>Ingredients of the recipe should be classified by categories</p>\n\n  <fieldset class=\"attachments\" style=\"border-width:1px 0 0 0;border-style:solid;border-color:#ced4da\"><legend>Files</legend>\n    <a href=\"http://localhost:3000/attachments/download/4/source.rb\" style=\"color:#1864ab\">source.rb</a>\n    (153 Bytes)<br>\n    <a href=\"http://localhost:3000/attachments/download/10/picture.jpg\" style=\"color:#1864ab\">picture.jpg</a>\n    (452 Bytes)<br>\n  </fieldset>\n\n\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\n<span class=\"footer\" style=\"font-size:0.8em;font-style:italic\"><p>You have received this notification because you have either subscribed to it, or are involved in it.<br>\nTo change your notification preferences, please click here: http://hostname/my/account</p></span>\n</body>\n</html>\n",
+        "text": "Issue #2 has been reported by John Smith.\n\n----------------------------------------\nFeature request #2: Add ingredients categories\nhttp://localhost:3000/issues/2\n\n* Author: John Smith\n* Status: Assigned\n* Priority: Normal\n* Assignee: Dave Lopper\n* Target version: 1.0\n* Start date: 2026-01-13\n* Float field: 2.05\n----------------------------------------\nIngredients of the recipe should be classified by categories\n\n---Files--------------------------------\nsource.rb (174 Bytes)\npicture.jpg (452 Bytes)\n\n\n-- \nYou have received this notification because you have either subscribed to it, or are involved in it.\nTo change your notification preferences, please click here: http://hostname/my/account\n",
+        "html": "<!DOCTYPE html>\n<html>\n<head>\n\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><style>a:link{color:#1864ab}\na:visited{color:#1864ab}\na:hover{color:#c92a2a}\na:active{color:#c92a2a}</style></head>\n<body style=\"font-family:sans-serif;font-size:14px;line-height:1.5;color:#212529\">\nIssue <a href=\"http://localhost:3000/issues/2\" style=\"color:#1864ab\">#2</a> has been reported by John Smith.\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\n<h1 style=\"font-family:sans-serif;margin:0px;font-size:1.3em\">\n  <a href=\"http://localhost:3000/issues/2\" style=\"color:#1864ab\">Feature request #2: Add ingredients categories</a>\n  <span class=\"badge badge-status-open\" style=\"position:relative;font-weight:bold;font-size:10px;bottom:2px;padding:1px 3px;margin-right:2px;margin-left:2px;border-radius:2px;text-transform:uppercase;text-decoration:none;color:#1864ab;border:1px solid #1864ab\">open</span>\n</h1>\n\n<ul class=\"details\" style=\"color:#868e96;margin-bottom:1.5em\"><li><strong>Author: </strong>John Smith</li>\n<li><strong>Status: </strong>Assigned</li>\n<li><strong>Priority: </strong>Normal</li>\n<li><strong>Assignee: </strong>Dave Lopper</li>\n<li><strong>Target version: </strong>1.0</li>\n<li><strong>Start date: </strong>2026-01-13</li>\n<li><strong>Float field: </strong>2.05</li></ul>\n\n<p>Ingredients of the recipe should be classified by categories</p>\n\n  <fieldset class=\"attachments\" style=\"border-width:1px 0 0 0;border-style:solid;border-color:#ced4da\"><legend>Files</legend>\n    <a href=\"http://localhost:3000/attachments/download/4/source.rb\" style=\"color:#1864ab\">source.rb</a>\n    (174 Bytes)<br>\n    <a href=\"http://localhost:3000/attachments/download/10/picture.jpg\" style=\"color:#1864ab\">picture.jpg</a>\n    (452 Bytes)<br>\n  </fieldset>\n\n\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\n<span class=\"footer\" style=\"font-size:0.8em;font-style:italic\"><p>You have received this notification because you have either subscribed to it, or are involved in it.<br>\nTo change your notification preferences, please click here: http://hostname/my/account</p></span>\n</body>\n</html>\n",
         "text_cte": "7bit"
       }
     ]
@@ -323,12 +303,8 @@
         "to": [
           "jsmith@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[eCookbook - Bug #3] (New) Error 281 when updating a recipe",
         "headers": {
           "From": "John Smith <redmine@example.net>",
@@ -336,8 +312,8 @@
           "Message-ID": "<redmine.issue-3.20060719190727.2@example.net>",
           "References": "<redmine.issue-3.20060719190727.2@example.net>",
           "Subject": "[eCookbook - Bug #3] (New) Error 281 when updating a recipe",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "ecookbook",
           "X-Redmine-Issue-Tracker": "Bug",
           "X-Redmine-Issue-Id": "3",
@@ -359,7 +335,7 @@
           "Message-ID",
           "References",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -376,8 +352,8 @@
           "Auto-Submitted",
           "List-Id"
         ],
-        "text": "Issue #3 has been reported by John Smith.\n\n----------------------------------------\nBug #3: Error 281 when updating a recipe\nhttp://localhost:3000/issues/3\n\n* Author: John Smith\n* Status: New\n* Priority: Low\n* Assignee: Dave Lopper\n* Start date: 2025-12-31\n* Due date: 2026-01-10\n* Searchable field: 125\n* Database: MySQL\n* Float field: 11.65\n----------------------------------------\nError 281 is encountered when saving a recipe\n\n---Files--------------------------------\nerror281.txt (28 Bytes)\nchangeset_iso8859-1.diff (687 Bytes)\narchive.zip (157 Bytes)\nchangeset_utf8.diff (687 Bytes)\n\n\n-- \nYou have received this notification because you have either subscribed to it, or are involved in it.\nTo change your notification preferences, please click here: http://hostname/my/account\n",
-        "html": "<!DOCTYPE html>\n<html>\n<head>\n\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><style>a:link{color:#1864ab}\na:visited{color:#1864ab}\na:hover{color:#c92a2a}\na:active{color:#c92a2a}</style></head>\n<body style=\"font-family:sans-serif;font-size:14px;line-height:1.5;color:#212529\">\nIssue <a href=\"http://localhost:3000/issues/3\" style=\"color:#1864ab\">#3</a> has been reported by John Smith.\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\n<h1 style=\"font-family:sans-serif;margin:0px;font-size:1.3em\">\n  <a href=\"http://localhost:3000/issues/3\" style=\"color:#1864ab\">Bug #3: Error 281 when updating a recipe</a>\n  <span class=\"badge badge-status-open\" style=\"position:relative;font-weight:bold;font-size:10px;bottom:2px;padding:1px 3px;margin-right:2px;margin-left:2px;border-radius:2px;text-transform:uppercase;text-decoration:none;color:#1864ab;border:1px solid #1864ab\">open</span>\n</h1>\n\n<ul class=\"details\" style=\"color:#868e96;margin-bottom:1.5em\"><li><strong>Author: </strong>John Smith</li>\n<li><strong>Status: </strong>New</li>\n<li><strong>Priority: </strong>Low</li>\n<li><strong>Assignee: </strong>Dave Lopper</li>\n<li><strong>Start date: </strong>2025-12-31</li>\n<li><strong>Due date: </strong>2026-01-10</li>\n<li><strong>Searchable field: </strong>125</li>\n<li><strong>Database: </strong>MySQL</li>\n<li><strong>Float field: </strong>11.65</li></ul>\n\n<p>Error 281 is encountered when saving a recipe</p>\n\n  <fieldset class=\"attachments\" style=\"border-width:1px 0 0 0;border-style:solid;border-color:#ced4da\"><legend>Files</legend>\n    <a href=\"http://localhost:3000/attachments/download/1/error281.txt\" style=\"color:#1864ab\">error281.txt</a>\n    (28 Bytes)<br>\n    <a href=\"http://localhost:3000/attachments/download/5/changeset_iso8859-1.diff\" style=\"color:#1864ab\">changeset_iso8859-1.diff</a>\n    (687 Bytes)<br>\n    <a href=\"http://localhost:3000/attachments/download/6/archive.zip\" style=\"color:#1864ab\">archive.zip</a>\n    (157 Bytes)<br>\n    <a href=\"http://localhost:3000/attachments/download/14/changeset_utf8.diff\" style=\"color:#1864ab\">changeset_utf8.diff</a>\n    (687 Bytes)<br>\n  </fieldset>\n\n\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\n<span class=\"footer\" style=\"font-size:0.8em;font-style:italic\"><p>You have received this notification because you have either subscribed to it, or are involved in it.<br>\nTo change your notification preferences, please click here: http://hostname/my/account</p></span>\n</body>\n</html>\n",
+        "text": "Issue #3 has been reported by John Smith.\n\n----------------------------------------\nBug #3: Error 281 when updating a recipe\nhttp://localhost:3000/issues/3\n\n* Author: John Smith\n* Status: New\n* Priority: Low\n* Assignee: Dave Lopper\n* Start date: 2025-12-31\n* Due date: 2026-01-10\n* Searchable field: 125\n* Database: MySQL\n* Float field: 11.65\n----------------------------------------\nError 281 is encountered when saving a recipe\n\n---Files--------------------------------\nerror281.txt (28 Bytes)\nchangeset_iso8859-1.diff (686 Bytes)\narchive.zip (157 Bytes)\nchangeset_utf8.diff (691 Bytes)\n\n\n-- \nYou have received this notification because you have either subscribed to it, or are involved in it.\nTo change your notification preferences, please click here: http://hostname/my/account\n",
+        "html": "<!DOCTYPE html>\n<html>\n<head>\n\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><style>a:link{color:#1864ab}\na:visited{color:#1864ab}\na:hover{color:#c92a2a}\na:active{color:#c92a2a}</style></head>\n<body style=\"font-family:sans-serif;font-size:14px;line-height:1.5;color:#212529\">\nIssue <a href=\"http://localhost:3000/issues/3\" style=\"color:#1864ab\">#3</a> has been reported by John Smith.\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\n<h1 style=\"font-family:sans-serif;margin:0px;font-size:1.3em\">\n  <a href=\"http://localhost:3000/issues/3\" style=\"color:#1864ab\">Bug #3: Error 281 when updating a recipe</a>\n  <span class=\"badge badge-status-open\" style=\"position:relative;font-weight:bold;font-size:10px;bottom:2px;padding:1px 3px;margin-right:2px;margin-left:2px;border-radius:2px;text-transform:uppercase;text-decoration:none;color:#1864ab;border:1px solid #1864ab\">open</span>\n</h1>\n\n<ul class=\"details\" style=\"color:#868e96;margin-bottom:1.5em\"><li><strong>Author: </strong>John Smith</li>\n<li><strong>Status: </strong>New</li>\n<li><strong>Priority: </strong>Low</li>\n<li><strong>Assignee: </strong>Dave Lopper</li>\n<li><strong>Start date: </strong>2025-12-31</li>\n<li><strong>Due date: </strong>2026-01-10</li>\n<li><strong>Searchable field: </strong>125</li>\n<li><strong>Database: </strong>MySQL</li>\n<li><strong>Float field: </strong>11.65</li></ul>\n\n<p>Error 281 is encountered when saving a recipe</p>\n\n  <fieldset class=\"attachments\" style=\"border-width:1px 0 0 0;border-style:solid;border-color:#ced4da\"><legend>Files</legend>\n    <a href=\"http://localhost:3000/attachments/download/1/error281.txt\" style=\"color:#1864ab\">error281.txt</a>\n    (28 Bytes)<br>\n    <a href=\"http://localhost:3000/attachments/download/5/changeset_iso8859-1.diff\" style=\"color:#1864ab\">changeset_iso8859-1.diff</a>\n    (686 Bytes)<br>\n    <a href=\"http://localhost:3000/attachments/download/6/archive.zip\" style=\"color:#1864ab\">archive.zip</a>\n    (157 Bytes)<br>\n    <a href=\"http://localhost:3000/attachments/download/14/changeset_utf8.diff\" style=\"color:#1864ab\">changeset_utf8.diff</a>\n    (691 Bytes)<br>\n  </fieldset>\n\n\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\n<span class=\"footer\" style=\"font-size:0.8em;font-style:italic\"><p>You have received this notification because you have either subscribed to it, or are involved in it.<br>\nTo change your notification preferences, please click here: http://hostname/my/account</p></span>\n</body>\n</html>\n",
         "text_cte": "7bit"
       },
       {
@@ -385,12 +361,8 @@
         "to": [
           "dlopper@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[eCookbook - Bug #3] (New) Error 281 when updating a recipe",
         "headers": {
           "From": "John Smith <redmine@example.net>",
@@ -398,8 +370,8 @@
           "Message-ID": "<redmine.issue-3.20060719190727.3@example.net>",
           "References": "<redmine.issue-3.20060719190727.3@example.net>",
           "Subject": "[eCookbook - Bug #3] (New) Error 281 when updating a recipe",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "ecookbook",
           "X-Redmine-Issue-Tracker": "Bug",
           "X-Redmine-Issue-Id": "3",
@@ -421,7 +393,7 @@
           "Message-ID",
           "References",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -438,8 +410,8 @@
           "Auto-Submitted",
           "List-Id"
         ],
-        "text": "Issue #3 has been reported by John Smith.\n\n----------------------------------------\nBug #3: Error 281 when updating a recipe\nhttp://localhost:3000/issues/3\n\n* Author: John Smith\n* Status: New\n* Priority: Low\n* Assignee: Dave Lopper\n* Start date: 2025-12-31\n* Due date: 2026-01-10\n* Searchable field: 125\n* Database: MySQL\n* Float field: 11.65\n----------------------------------------\nError 281 is encountered when saving a recipe\n\n---Files--------------------------------\nerror281.txt (28 Bytes)\nchangeset_iso8859-1.diff (687 Bytes)\narchive.zip (157 Bytes)\nchangeset_utf8.diff (687 Bytes)\n\n\n-- \nYou have received this notification because you have either subscribed to it, or are involved in it.\nTo change your notification preferences, please click here: http://hostname/my/account\n",
-        "html": "<!DOCTYPE html>\n<html>\n<head>\n\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><style>a:link{color:#1864ab}\na:visited{color:#1864ab}\na:hover{color:#c92a2a}\na:active{color:#c92a2a}</style></head>\n<body style=\"font-family:sans-serif;font-size:14px;line-height:1.5;color:#212529\">\nIssue <a href=\"http://localhost:3000/issues/3\" style=\"color:#1864ab\">#3</a> has been reported by John Smith.\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\n<h1 style=\"font-family:sans-serif;margin:0px;font-size:1.3em\">\n  <a href=\"http://localhost:3000/issues/3\" style=\"color:#1864ab\">Bug #3: Error 281 when updating a recipe</a>\n  <span class=\"badge badge-status-open\" style=\"position:relative;font-weight:bold;font-size:10px;bottom:2px;padding:1px 3px;margin-right:2px;margin-left:2px;border-radius:2px;text-transform:uppercase;text-decoration:none;color:#1864ab;border:1px solid #1864ab\">open</span>\n</h1>\n\n<ul class=\"details\" style=\"color:#868e96;margin-bottom:1.5em\"><li><strong>Author: </strong>John Smith</li>\n<li><strong>Status: </strong>New</li>\n<li><strong>Priority: </strong>Low</li>\n<li><strong>Assignee: </strong>Dave Lopper</li>\n<li><strong>Start date: </strong>2025-12-31</li>\n<li><strong>Due date: </strong>2026-01-10</li>\n<li><strong>Searchable field: </strong>125</li>\n<li><strong>Database: </strong>MySQL</li>\n<li><strong>Float field: </strong>11.65</li></ul>\n\n<p>Error 281 is encountered when saving a recipe</p>\n\n  <fieldset class=\"attachments\" style=\"border-width:1px 0 0 0;border-style:solid;border-color:#ced4da\"><legend>Files</legend>\n    <a href=\"http://localhost:3000/attachments/download/1/error281.txt\" style=\"color:#1864ab\">error281.txt</a>\n    (28 Bytes)<br>\n    <a href=\"http://localhost:3000/attachments/download/5/changeset_iso8859-1.diff\" style=\"color:#1864ab\">changeset_iso8859-1.diff</a>\n    (687 Bytes)<br>\n    <a href=\"http://localhost:3000/attachments/download/6/archive.zip\" style=\"color:#1864ab\">archive.zip</a>\n    (157 Bytes)<br>\n    <a href=\"http://localhost:3000/attachments/download/14/changeset_utf8.diff\" style=\"color:#1864ab\">changeset_utf8.diff</a>\n    (687 Bytes)<br>\n  </fieldset>\n\n\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\n<span class=\"footer\" style=\"font-size:0.8em;font-style:italic\"><p>You have received this notification because you have either subscribed to it, or are involved in it.<br>\nTo change your notification preferences, please click here: http://hostname/my/account</p></span>\n</body>\n</html>\n",
+        "text": "Issue #3 has been reported by John Smith.\n\n----------------------------------------\nBug #3: Error 281 when updating a recipe\nhttp://localhost:3000/issues/3\n\n* Author: John Smith\n* Status: New\n* Priority: Low\n* Assignee: Dave Lopper\n* Start date: 2025-12-31\n* Due date: 2026-01-10\n* Searchable field: 125\n* Database: MySQL\n* Float field: 11.65\n----------------------------------------\nError 281 is encountered when saving a recipe\n\n---Files--------------------------------\nerror281.txt (28 Bytes)\nchangeset_iso8859-1.diff (686 Bytes)\narchive.zip (157 Bytes)\nchangeset_utf8.diff (691 Bytes)\n\n\n-- \nYou have received this notification because you have either subscribed to it, or are involved in it.\nTo change your notification preferences, please click here: http://hostname/my/account\n",
+        "html": "<!DOCTYPE html>\n<html>\n<head>\n\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><style>a:link{color:#1864ab}\na:visited{color:#1864ab}\na:hover{color:#c92a2a}\na:active{color:#c92a2a}</style></head>\n<body style=\"font-family:sans-serif;font-size:14px;line-height:1.5;color:#212529\">\nIssue <a href=\"http://localhost:3000/issues/3\" style=\"color:#1864ab\">#3</a> has been reported by John Smith.\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\n<h1 style=\"font-family:sans-serif;margin:0px;font-size:1.3em\">\n  <a href=\"http://localhost:3000/issues/3\" style=\"color:#1864ab\">Bug #3: Error 281 when updating a recipe</a>\n  <span class=\"badge badge-status-open\" style=\"position:relative;font-weight:bold;font-size:10px;bottom:2px;padding:1px 3px;margin-right:2px;margin-left:2px;border-radius:2px;text-transform:uppercase;text-decoration:none;color:#1864ab;border:1px solid #1864ab\">open</span>\n</h1>\n\n<ul class=\"details\" style=\"color:#868e96;margin-bottom:1.5em\"><li><strong>Author: </strong>John Smith</li>\n<li><strong>Status: </strong>New</li>\n<li><strong>Priority: </strong>Low</li>\n<li><strong>Assignee: </strong>Dave Lopper</li>\n<li><strong>Start date: </strong>2025-12-31</li>\n<li><strong>Due date: </strong>2026-01-10</li>\n<li><strong>Searchable field: </strong>125</li>\n<li><strong>Database: </strong>MySQL</li>\n<li><strong>Float field: </strong>11.65</li></ul>\n\n<p>Error 281 is encountered when saving a recipe</p>\n\n  <fieldset class=\"attachments\" style=\"border-width:1px 0 0 0;border-style:solid;border-color:#ced4da\"><legend>Files</legend>\n    <a href=\"http://localhost:3000/attachments/download/1/error281.txt\" style=\"color:#1864ab\">error281.txt</a>\n    (28 Bytes)<br>\n    <a href=\"http://localhost:3000/attachments/download/5/changeset_iso8859-1.diff\" style=\"color:#1864ab\">changeset_iso8859-1.diff</a>\n    (686 Bytes)<br>\n    <a href=\"http://localhost:3000/attachments/download/6/archive.zip\" style=\"color:#1864ab\">archive.zip</a>\n    (157 Bytes)<br>\n    <a href=\"http://localhost:3000/attachments/download/14/changeset_utf8.diff\" style=\"color:#1864ab\">changeset_utf8.diff</a>\n    (691 Bytes)<br>\n  </fieldset>\n\n\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\n<span class=\"footer\" style=\"font-size:0.8em;font-style:italic\"><p>You have received this notification because you have either subscribed to it, or are involved in it.<br>\nTo change your notification preferences, please click here: http://hostname/my/account</p></span>\n</body>\n</html>\n",
         "text_cte": "7bit"
       }
     ]
@@ -452,12 +424,8 @@
         "to": [
           "jsmith@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[OnlineStore - Bug #4] (New) Issue on project 2",
         "headers": {
           "From": "John Smith <redmine@example.net>",
@@ -465,8 +433,8 @@
           "Message-ID": "<redmine.issue-4.20260110120000.2@example.net>",
           "References": "<redmine.issue-4.20260110120000.2@example.net>",
           "Subject": "[OnlineStore - Bug #4] (New) Issue on project 2",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "onlinestore",
           "X-Redmine-Issue-Tracker": "Bug",
           "X-Redmine-Issue-Id": "4",
@@ -488,7 +456,7 @@
           "Message-ID",
           "References",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -519,12 +487,8 @@
         "to": [
           "jsmith@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[Private child of eCookbook - Bug #6] (New) Issue of a private subproject",
         "headers": {
           "From": "John Smith <redmine@example.net>",
@@ -532,8 +496,8 @@
           "Message-ID": "<redmine.issue-6.20260115115900.2@example.net>",
           "References": "<redmine.issue-6.20260115115900.2@example.net>",
           "Subject": "[Private child of eCookbook - Bug #6] (New) Issue of a private subproject",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "private-child",
           "X-Redmine-Issue-Tracker": "Bug",
           "X-Redmine-Issue-Id": "6",
@@ -554,7 +518,7 @@
           "Message-ID",
           "References",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -579,12 +543,8 @@
         "to": [
           "admin@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[Private child of eCookbook - Bug #6] (New) Issue of a private subproject",
         "headers": {
           "From": "John Smith <redmine@example.net>",
@@ -592,8 +552,8 @@
           "Message-ID": "<redmine.issue-6.20260115115900.1@example.net>",
           "References": "<redmine.issue-6.20260115115900.1@example.net>",
           "Subject": "[Private child of eCookbook - Bug #6] (New) Issue of a private subproject",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "private-child",
           "X-Redmine-Issue-Tracker": "Bug",
           "X-Redmine-Issue-Id": "6",
@@ -614,7 +574,7 @@
           "Message-ID",
           "References",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -644,12 +604,8 @@
         "to": [
           "jsmith@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[eCookbook Subproject 1 - Bug #14] (New) Private issue on public project",
         "headers": {
           "From": "John Smith <redmine@example.net>",
@@ -657,8 +613,8 @@
           "Message-ID": "<redmine.issue-14.20251231120000.2@example.net>",
           "References": "<redmine.issue-14.20251231120000.2@example.net>",
           "Subject": "[eCookbook Subproject 1 - Bug #14] (New) Private issue on public project",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "subproject1",
           "X-Redmine-Issue-Tracker": "Bug",
           "X-Redmine-Issue-Id": "14",
@@ -679,7 +635,7 @@
           "Message-ID",
           "References",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -695,8 +651,8 @@
           "Auto-Submitted",
           "List-Id"
         ],
-        "text": "Issue #14 has been reported by John Smith.\r\n\r\n----------------------------------------\r\nBug #14: Private issue on public project\r\nhttp://localhost:3000/issues/14\r\n\r\n* Author: John Smith\r\n* Status: New\r\n* Priority: Normal\r\n----------------------------------------\r\nThis is a private issue\r\n\r\n---Files--------------------------------\r\nprivate.diff (687 Bytes)\r\ntestfile.png (2.59 KB)\r\ntestfile.PNG (3.5 KB)\r\ntestテスト.png (2.59 KB)\r\nTestテスト.PNG (3.5 KB)\r\nroot_attachment.txt (54 Bytes)\r\n\r\n\r\n-- \r\nYou have received this notification because you have either subscribed to it, or are involved in it.\r\nTo change your notification preferences, please click here: http://hostname/my/account\r\n",
-        "html": "<!DOCTYPE html>\r\n<html>\r\n<head>\r\n\r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><style>a:link{color:#1864ab}\r\na:visited{color:#1864ab}\r\na:hover{color:#c92a2a}\r\na:active{color:#c92a2a}</style></head>\r\n<body style=\"font-family:sans-serif;font-size:14px;line-height:1.5;color:#212529\">\r\nIssue <a href=\"http://localhost:3000/issues/14\" style=\"color:#1864ab\">#14</a> has been reported by John Smith.\r\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\r\n<h1 style=\"font-family:sans-serif;margin:0px;font-size:1.3em\">\r\n  <a href=\"http://localhost:3000/issues/14\" style=\"color:#1864ab\">Bug #14: Private issue on public project</a>\r\n  <span class=\"badge badge-status-open\" style=\"position:relative;font-weight:bold;font-size:10px;bottom:2px;padding:1px 3px;margin-right:2px;margin-left:2px;border-radius:2px;text-transform:uppercase;text-decoration:none;color:#1864ab;border:1px solid #1864ab\">open</span>\r\n</h1>\r\n\r\n<ul class=\"details\" style=\"color:#868e96;margin-bottom:1.5em\"><li><strong>Author: </strong>John Smith</li>\r\n<li><strong>Status: </strong>New</li>\r\n<li><strong>Priority: </strong>Normal</li></ul>\r\n\r\n<p>This is a private issue</p>\r\n\r\n  <fieldset class=\"attachments\" style=\"border-width:1px 0 0 0;border-style:solid;border-color:#ced4da\"><legend>Files</legend>\r\n    <a href=\"http://localhost:3000/attachments/download/15/private.diff\" style=\"color:#1864ab\">private.diff</a>\r\n    (687 Bytes)<br>\r\n    <a href=\"http://localhost:3000/attachments/download/16/testfile.png\" style=\"color:#1864ab\">testfile.png</a>\r\n    (2.59 KB)<br>\r\n    <a href=\"http://localhost:3000/attachments/download/17/testfile.PNG\" style=\"color:#1864ab\">testfile.PNG</a>\r\n    (3.5 KB)<br>\r\n    <a href=\"http://localhost:3000/attachments/download/18/test%E3%83%86%E3%82%B9%E3%83%88.png\" style=\"color:#1864ab\">testテスト.png</a>\r\n    (2.59 KB)<br>\r\n    <a href=\"http://localhost:3000/attachments/download/19/Test%E3%83%86%E3%82%B9%E3%83%88.PNG\" style=\"color:#1864ab\">Testテスト.PNG</a>\r\n    (3.5 KB)<br>\r\n    <a href=\"http://localhost:3000/attachments/download/20/root_attachment.txt\" style=\"color:#1864ab\">root_attachment.txt</a>\r\n    (54 Bytes)<br>\r\n  </fieldset>\r\n\r\n\r\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\r\n<span class=\"footer\" style=\"font-size:0.8em;font-style:italic\"><p>You have received this notification because you have either subscribed to it, or are involved in it.<br>\r\nTo change your notification preferences, please click here: http://hostname/my/account</p></span>\r\n</body>\r\n</html>\r\n",
+        "text": "Issue #14 has been reported by John Smith.\n\n----------------------------------------\nBug #14: Private issue on public project\nhttp://localhost:3000/issues/14\n\n* Author: John Smith\n* Status: New\n* Priority: Normal\n----------------------------------------\nThis is a private issue\n\n---Files--------------------------------\nprivate.diff (691 Bytes)\ntestfile.png (2.59 KB)\ntestfile.PNG (3.5 KB)\ntestテスト.png (2.59 KB)\nTestテスト.PNG (3.5 KB)\nroot_attachment.txt (54 Bytes)\n\n\n-- \nYou have received this notification because you have either subscribed to it, or are involved in it.\nTo change your notification preferences, please click here: http://hostname/my/account\n",
+        "html": "<!DOCTYPE html>\n<html>\n<head>\n\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><style>a:link{color:#1864ab}\na:visited{color:#1864ab}\na:hover{color:#c92a2a}\na:active{color:#c92a2a}</style></head>\n<body style=\"font-family:sans-serif;font-size:14px;line-height:1.5;color:#212529\">\nIssue <a href=\"http://localhost:3000/issues/14\" style=\"color:#1864ab\">#14</a> has been reported by John Smith.\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\n<h1 style=\"font-family:sans-serif;margin:0px;font-size:1.3em\">\n  <a href=\"http://localhost:3000/issues/14\" style=\"color:#1864ab\">Bug #14: Private issue on public project</a>\n  <span class=\"badge badge-status-open\" style=\"position:relative;font-weight:bold;font-size:10px;bottom:2px;padding:1px 3px;margin-right:2px;margin-left:2px;border-radius:2px;text-transform:uppercase;text-decoration:none;color:#1864ab;border:1px solid #1864ab\">open</span>\n</h1>\n\n<ul class=\"details\" style=\"color:#868e96;margin-bottom:1.5em\"><li><strong>Author: </strong>John Smith</li>\n<li><strong>Status: </strong>New</li>\n<li><strong>Priority: </strong>Normal</li></ul>\n\n<p>This is a private issue</p>\n\n  <fieldset class=\"attachments\" style=\"border-width:1px 0 0 0;border-style:solid;border-color:#ced4da\"><legend>Files</legend>\n    <a href=\"http://localhost:3000/attachments/download/15/private.diff\" style=\"color:#1864ab\">private.diff</a>\n    (691 Bytes)<br>\n    <a href=\"http://localhost:3000/attachments/download/16/testfile.png\" style=\"color:#1864ab\">testfile.png</a>\n    (2.59 KB)<br>\n    <a href=\"http://localhost:3000/attachments/download/17/testfile.PNG\" style=\"color:#1864ab\">testfile.PNG</a>\n    (3.5 KB)<br>\n    <a href=\"http://localhost:3000/attachments/download/18/test%E3%83%86%E3%82%B9%E3%83%88.png\" style=\"color:#1864ab\">testテスト.png</a>\n    (2.59 KB)<br>\n    <a href=\"http://localhost:3000/attachments/download/19/Test%E3%83%86%E3%82%B9%E3%83%88.PNG\" style=\"color:#1864ab\">Testテスト.PNG</a>\n    (3.5 KB)<br>\n    <a href=\"http://localhost:3000/attachments/download/20/root_attachment.txt\" style=\"color:#1864ab\">root_attachment.txt</a>\n    (54 Bytes)<br>\n  </fieldset>\n\n\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\n<span class=\"footer\" style=\"font-size:0.8em;font-style:italic\"><p>You have received this notification because you have either subscribed to it, or are involved in it.<br>\nTo change your notification preferences, please click here: http://hostname/my/account</p></span>\n</body>\n</html>\n",
         "text_cte": "quoted-printable"
       }
     ]
@@ -709,12 +665,8 @@
         "to": [
           "jsmith@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[eCookbook - Bug #1] (New) Cannot print recipes",
         "headers": {
           "From": "Redmine Admin <redmine@example.net>",
@@ -722,8 +674,8 @@
           "Message-ID": "<redmine.journal-1.20260113000000.2@example.net>",
           "References": "<redmine.issue-1.20260112120000.2@example.net>",
           "Subject": "[eCookbook - Bug #1] (New) Cannot print recipes",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "ecookbook",
           "X-Redmine-Issue-Tracker": "Bug",
           "X-Redmine-Issue-Id": "1",
@@ -744,7 +696,7 @@
           "Message-ID",
           "References",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -769,12 +721,8 @@
         "to": [
           "dlopper@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[eCookbook - Bug #1] (New) Cannot print recipes",
         "headers": {
           "From": "Redmine Admin <redmine@example.net>",
@@ -782,8 +730,8 @@
           "Message-ID": "<redmine.journal-1.20260113000000.3@example.net>",
           "References": "<redmine.issue-1.20260112120000.3@example.net>",
           "Subject": "[eCookbook - Bug #1] (New) Cannot print recipes",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "ecookbook",
           "X-Redmine-Issue-Tracker": "Bug",
           "X-Redmine-Issue-Id": "1",
@@ -804,7 +752,7 @@
           "Message-ID",
           "References",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -834,12 +782,8 @@
         "to": [
           "jsmith@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[eCookbook - Bug #1] Cannot print recipes",
         "headers": {
           "From": "John Smith <redmine@example.net>",
@@ -847,8 +791,8 @@
           "Message-ID": "<redmine.journal-2.20260114000000.2@example.net>",
           "References": "<redmine.issue-1.20260112120000.2@example.net>",
           "Subject": "[eCookbook - Bug #1] Cannot print recipes",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "ecookbook",
           "X-Redmine-Issue-Tracker": "Bug",
           "X-Redmine-Issue-Id": "1",
@@ -869,7 +813,7 @@
           "Message-ID",
           "References",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -894,12 +838,8 @@
         "to": [
           "dlopper@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[eCookbook - Bug #1] Cannot print recipes",
         "headers": {
           "From": "John Smith <redmine@example.net>",
@@ -907,8 +847,8 @@
           "Message-ID": "<redmine.journal-2.20260114000000.3@example.net>",
           "References": "<redmine.issue-1.20260112120000.3@example.net>",
           "Subject": "[eCookbook - Bug #1] Cannot print recipes",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "ecookbook",
           "X-Redmine-Issue-Tracker": "Bug",
           "X-Redmine-Issue-Id": "1",
@@ -929,7 +869,7 @@
           "Message-ID",
           "References",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -959,12 +899,8 @@
         "to": [
           "jsmith@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[eCookbook - Feature request #2] Add ingredients categories",
         "headers": {
           "From": "John Smith <redmine@example.net>",
@@ -972,8 +908,8 @@
           "Message-ID": "<redmine.journal-3.20260114000000.2@example.net>",
           "References": "<redmine.issue-2.20060719190421.2@example.net>",
           "Subject": "[eCookbook - Feature request #2] Add ingredients categories",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "ecookbook",
           "X-Redmine-Issue-Tracker": "Feature request",
           "X-Redmine-Issue-Id": "2",
@@ -995,7 +931,7 @@
           "Message-ID",
           "References",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -1012,8 +948,8 @@
           "Auto-Submitted",
           "List-Id"
         ],
-        "text": "Issue #2 has been updated by John Smith.\n\nDescription updated\nSearchable field changed from Old value to New value\nFile 060719210727_picture.jpg added\n\nA comment with inline image: !picture.jpg! and a reference to #1 and r2.\n\n----------------------------------------\nFeature request #2: Add ingredients categories\nhttp://localhost:3000/issues/2#change-3\n\n* Author: John Smith\n* Status: Assigned\n* Priority: Normal\n* Assignee: Dave Lopper\n* Target version: 1.0\n* Start date: 2026-01-13\n* Float field: 2.05\n----------------------------------------\nIngredients of the recipe should be classified by categories\n\n---Files--------------------------------\nsource.rb (153 Bytes)\npicture.jpg (452 Bytes)\n\n\n-- \nYou have received this notification because you have either subscribed to it, or are involved in it.\nTo change your notification preferences, please click here: http://hostname/my/account\n",
-        "html": "<!DOCTYPE html>\n<html>\n<head>\n\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><style>a:link{color:#1864ab}\na:visited{color:#1864ab}\na:hover{color:#c92a2a}\na:active{color:#c92a2a}</style></head>\n<body style=\"font-family:sans-serif;font-size:14px;line-height:1.5;color:#212529\">\nIssue <a href=\"http://localhost:3000/issues/2#change-3\" style=\"color:#1864ab\">#2</a> has been updated by John Smith.\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\n\n<ul class=\"journal details\" style=\"color:#868e96;margin-bottom:1.5em\">\n  <li><strong>Description</strong> updated (<a title=\"View differences\" href=\"http://localhost:3000/journals/3/diff?detail_id=4\" style=\"color:#1864ab\">diff</a>)</li>\n  <li><strong>Searchable field</strong> changed from <i>Old value</i> to <i>New value</i></li>\n  <li><strong>File</strong> <a href=\"http://localhost:3000/attachments/4\" style=\"color:#1864ab\">source.rb</a> added</li>\n</ul>\n\n<p>A comment with inline image: !picture.jpg! and a reference to <a class=\"issue tracker-1 status-1 priority-4 priority-lowest behind-schedule created-by-me\" title=\"Bug: Cannot print recipes (New)\" href=\"http://localhost:3000/issues/1\" style=\"color:#1864ab\">#1</a> and <a class=\"changeset\" title=\"This commit fixes #1, #2 and references #1 &amp; #3\" href=\"http://localhost:3000/projects/ecookbook/repository/10/revisions/2\" style=\"color:#1864ab\">r2</a>.</p>\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\n<h1 style=\"font-family:sans-serif;margin:0px;font-size:1.3em\">\n  <a href=\"http://localhost:3000/issues/2#change-3\" style=\"color:#1864ab\">Feature request #2: Add ingredients categories</a>\n  <span class=\"badge badge-status-open\" style=\"position:relative;font-weight:bold;font-size:10px;bottom:2px;padding:1px 3px;margin-right:2px;margin-left:2px;border-radius:2px;text-transform:uppercase;text-decoration:none;color:#1864ab;border:1px solid #1864ab\">open</span>\n</h1>\n\n<ul class=\"details\" style=\"color:#868e96;margin-bottom:1.5em\"><li><strong>Author: </strong>John Smith</li>\n<li><strong>Status: </strong>Assigned</li>\n<li><strong>Priority: </strong>Normal</li>\n<li><strong>Assignee: </strong>Dave Lopper</li>\n<li><strong>Target version: </strong>1.0</li>\n<li><strong>Start date: </strong>2026-01-13</li>\n<li><strong>Float field: </strong>2.05</li></ul>\n\n<p>Ingredients of the recipe should be classified by categories</p>\n\n  <fieldset class=\"attachments\" style=\"border-width:1px 0 0 0;border-style:solid;border-color:#ced4da\"><legend>Files</legend>\n    <a href=\"http://localhost:3000/attachments/download/4/source.rb\" style=\"color:#1864ab\">source.rb</a>\n    (153 Bytes)<br>\n    <a href=\"http://localhost:3000/attachments/download/10/picture.jpg\" style=\"color:#1864ab\">picture.jpg</a>\n    (452 Bytes)<br>\n  </fieldset>\n\n\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\n<span class=\"footer\" style=\"font-size:0.8em;font-style:italic\"><p>You have received this notification because you have either subscribed to it, or are involved in it.<br>\nTo change your notification preferences, please click here: http://hostname/my/account</p></span>\n</body>\n</html>\n",
+        "text": "Issue #2 has been updated by John Smith.\n\nDescription updated\nSearchable field changed from Old value to New value\nFile 060719210727_picture.jpg added\n\nA comment with inline image: !picture.jpg! and a reference to #1 and r2.\n\n----------------------------------------\nFeature request #2: Add ingredients categories\nhttp://localhost:3000/issues/2#change-3\n\n* Author: John Smith\n* Status: Assigned\n* Priority: Normal\n* Assignee: Dave Lopper\n* Target version: 1.0\n* Start date: 2026-01-13\n* Float field: 2.05\n----------------------------------------\nIngredients of the recipe should be classified by categories\n\n---Files--------------------------------\nsource.rb (174 Bytes)\npicture.jpg (452 Bytes)\n\n\n-- \nYou have received this notification because you have either subscribed to it, or are involved in it.\nTo change your notification preferences, please click here: http://hostname/my/account\n",
+        "html": "<!DOCTYPE html>\n<html>\n<head>\n\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><style>a:link{color:#1864ab}\na:visited{color:#1864ab}\na:hover{color:#c92a2a}\na:active{color:#c92a2a}</style></head>\n<body style=\"font-family:sans-serif;font-size:14px;line-height:1.5;color:#212529\">\nIssue <a href=\"http://localhost:3000/issues/2#change-3\" style=\"color:#1864ab\">#2</a> has been updated by John Smith.\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\n\n<ul class=\"journal details\" style=\"color:#868e96;margin-bottom:1.5em\">\n  <li><strong>Description</strong> updated (<a title=\"View differences\" href=\"http://localhost:3000/journals/3/diff?detail_id=4\" style=\"color:#1864ab\">diff</a>)</li>\n  <li><strong>Searchable field</strong> changed from <i>Old value</i> to <i>New value</i></li>\n  <li><strong>File</strong> <a href=\"http://localhost:3000/attachments/4\" style=\"color:#1864ab\">source.rb</a> added</li>\n</ul>\n\n<p>A comment with inline image: !picture.jpg! and a reference to <a class=\"issue tracker-1 status-1 priority-4 priority-lowest behind-schedule created-by-me\" title=\"Bug: Cannot print recipes (New)\" href=\"http://localhost:3000/issues/1\" style=\"color:#1864ab\">#1</a> and <a class=\"changeset\" title=\"This commit fixes #1, #2 and references #1 &amp; #3\" href=\"http://localhost:3000/projects/ecookbook/repository/10/revisions/2\" style=\"color:#1864ab\">r2</a>.</p>\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\n<h1 style=\"font-family:sans-serif;margin:0px;font-size:1.3em\">\n  <a href=\"http://localhost:3000/issues/2#change-3\" style=\"color:#1864ab\">Feature request #2: Add ingredients categories</a>\n  <span class=\"badge badge-status-open\" style=\"position:relative;font-weight:bold;font-size:10px;bottom:2px;padding:1px 3px;margin-right:2px;margin-left:2px;border-radius:2px;text-transform:uppercase;text-decoration:none;color:#1864ab;border:1px solid #1864ab\">open</span>\n</h1>\n\n<ul class=\"details\" style=\"color:#868e96;margin-bottom:1.5em\"><li><strong>Author: </strong>John Smith</li>\n<li><strong>Status: </strong>Assigned</li>\n<li><strong>Priority: </strong>Normal</li>\n<li><strong>Assignee: </strong>Dave Lopper</li>\n<li><strong>Target version: </strong>1.0</li>\n<li><strong>Start date: </strong>2026-01-13</li>\n<li><strong>Float field: </strong>2.05</li></ul>\n\n<p>Ingredients of the recipe should be classified by categories</p>\n\n  <fieldset class=\"attachments\" style=\"border-width:1px 0 0 0;border-style:solid;border-color:#ced4da\"><legend>Files</legend>\n    <a href=\"http://localhost:3000/attachments/download/4/source.rb\" style=\"color:#1864ab\">source.rb</a>\n    (174 Bytes)<br>\n    <a href=\"http://localhost:3000/attachments/download/10/picture.jpg\" style=\"color:#1864ab\">picture.jpg</a>\n    (452 Bytes)<br>\n  </fieldset>\n\n\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\n<span class=\"footer\" style=\"font-size:0.8em;font-style:italic\"><p>You have received this notification because you have either subscribed to it, or are involved in it.<br>\nTo change your notification preferences, please click here: http://hostname/my/account</p></span>\n</body>\n</html>\n",
         "text_cte": "7bit"
       },
       {
@@ -1021,12 +957,8 @@
         "to": [
           "dlopper@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[eCookbook - Feature request #2] Add ingredients categories",
         "headers": {
           "From": "John Smith <redmine@example.net>",
@@ -1034,8 +966,8 @@
           "Message-ID": "<redmine.journal-3.20260114000000.3@example.net>",
           "References": "<redmine.issue-2.20060719190421.3@example.net>",
           "Subject": "[eCookbook - Feature request #2] Add ingredients categories",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "ecookbook",
           "X-Redmine-Issue-Tracker": "Feature request",
           "X-Redmine-Issue-Id": "2",
@@ -1057,7 +989,7 @@
           "Message-ID",
           "References",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -1074,8 +1006,8 @@
           "Auto-Submitted",
           "List-Id"
         ],
-        "text": "Issue #2 has been updated by John Smith.\n\nDescription updated\nSearchable field changed from Old value to New value\nFile 060719210727_picture.jpg added\n\nA comment with inline image: !picture.jpg! and a reference to #1 and r2.\n\n----------------------------------------\nFeature request #2: Add ingredients categories\nhttp://localhost:3000/issues/2#change-3\n\n* Author: John Smith\n* Status: Assigned\n* Priority: Normal\n* Assignee: Dave Lopper\n* Target version: 1.0\n* Start date: 2026-01-13\n* Float field: 2.05\n----------------------------------------\nIngredients of the recipe should be classified by categories\n\n---Files--------------------------------\nsource.rb (153 Bytes)\npicture.jpg (452 Bytes)\n\n\n-- \nYou have received this notification because you have either subscribed to it, or are involved in it.\nTo change your notification preferences, please click here: http://hostname/my/account\n",
-        "html": "<!DOCTYPE html>\n<html>\n<head>\n\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><style>a:link{color:#1864ab}\na:visited{color:#1864ab}\na:hover{color:#c92a2a}\na:active{color:#c92a2a}</style></head>\n<body style=\"font-family:sans-serif;font-size:14px;line-height:1.5;color:#212529\">\nIssue <a href=\"http://localhost:3000/issues/2#change-3\" style=\"color:#1864ab\">#2</a> has been updated by John Smith.\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\n\n<ul class=\"journal details\" style=\"color:#868e96;margin-bottom:1.5em\">\n  <li><strong>Description</strong> updated (<a title=\"View differences\" href=\"http://localhost:3000/journals/3/diff?detail_id=4\" style=\"color:#1864ab\">diff</a>)</li>\n  <li><strong>Searchable field</strong> changed from <i>Old value</i> to <i>New value</i></li>\n  <li><strong>File</strong> <a href=\"http://localhost:3000/attachments/4\" style=\"color:#1864ab\">source.rb</a> added</li>\n</ul>\n\n<p>A comment with inline image: !picture.jpg! and a reference to <a class=\"issue tracker-1 status-1 priority-4 priority-lowest behind-schedule\" title=\"Bug: Cannot print recipes (New)\" href=\"http://localhost:3000/issues/1\" style=\"color:#1864ab\">#1</a> and <a class=\"changeset\" title=\"This commit fixes #1, #2 and references #1 &amp; #3\" href=\"http://localhost:3000/projects/ecookbook/repository/10/revisions/2\" style=\"color:#1864ab\">r2</a>.</p>\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\n<h1 style=\"font-family:sans-serif;margin:0px;font-size:1.3em\">\n  <a href=\"http://localhost:3000/issues/2#change-3\" style=\"color:#1864ab\">Feature request #2: Add ingredients categories</a>\n  <span class=\"badge badge-status-open\" style=\"position:relative;font-weight:bold;font-size:10px;bottom:2px;padding:1px 3px;margin-right:2px;margin-left:2px;border-radius:2px;text-transform:uppercase;text-decoration:none;color:#1864ab;border:1px solid #1864ab\">open</span>\n</h1>\n\n<ul class=\"details\" style=\"color:#868e96;margin-bottom:1.5em\"><li><strong>Author: </strong>John Smith</li>\n<li><strong>Status: </strong>Assigned</li>\n<li><strong>Priority: </strong>Normal</li>\n<li><strong>Assignee: </strong>Dave Lopper</li>\n<li><strong>Target version: </strong>1.0</li>\n<li><strong>Start date: </strong>2026-01-13</li>\n<li><strong>Float field: </strong>2.05</li></ul>\n\n<p>Ingredients of the recipe should be classified by categories</p>\n\n  <fieldset class=\"attachments\" style=\"border-width:1px 0 0 0;border-style:solid;border-color:#ced4da\"><legend>Files</legend>\n    <a href=\"http://localhost:3000/attachments/download/4/source.rb\" style=\"color:#1864ab\">source.rb</a>\n    (153 Bytes)<br>\n    <a href=\"http://localhost:3000/attachments/download/10/picture.jpg\" style=\"color:#1864ab\">picture.jpg</a>\n    (452 Bytes)<br>\n  </fieldset>\n\n\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\n<span class=\"footer\" style=\"font-size:0.8em;font-style:italic\"><p>You have received this notification because you have either subscribed to it, or are involved in it.<br>\nTo change your notification preferences, please click here: http://hostname/my/account</p></span>\n</body>\n</html>\n",
+        "text": "Issue #2 has been updated by John Smith.\n\nDescription updated\nSearchable field changed from Old value to New value\nFile 060719210727_picture.jpg added\n\nA comment with inline image: !picture.jpg! and a reference to #1 and r2.\n\n----------------------------------------\nFeature request #2: Add ingredients categories\nhttp://localhost:3000/issues/2#change-3\n\n* Author: John Smith\n* Status: Assigned\n* Priority: Normal\n* Assignee: Dave Lopper\n* Target version: 1.0\n* Start date: 2026-01-13\n* Float field: 2.05\n----------------------------------------\nIngredients of the recipe should be classified by categories\n\n---Files--------------------------------\nsource.rb (174 Bytes)\npicture.jpg (452 Bytes)\n\n\n-- \nYou have received this notification because you have either subscribed to it, or are involved in it.\nTo change your notification preferences, please click here: http://hostname/my/account\n",
+        "html": "<!DOCTYPE html>\n<html>\n<head>\n\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><style>a:link{color:#1864ab}\na:visited{color:#1864ab}\na:hover{color:#c92a2a}\na:active{color:#c92a2a}</style></head>\n<body style=\"font-family:sans-serif;font-size:14px;line-height:1.5;color:#212529\">\nIssue <a href=\"http://localhost:3000/issues/2#change-3\" style=\"color:#1864ab\">#2</a> has been updated by John Smith.\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\n\n<ul class=\"journal details\" style=\"color:#868e96;margin-bottom:1.5em\">\n  <li><strong>Description</strong> updated (<a title=\"View differences\" href=\"http://localhost:3000/journals/3/diff?detail_id=4\" style=\"color:#1864ab\">diff</a>)</li>\n  <li><strong>Searchable field</strong> changed from <i>Old value</i> to <i>New value</i></li>\n  <li><strong>File</strong> <a href=\"http://localhost:3000/attachments/4\" style=\"color:#1864ab\">source.rb</a> added</li>\n</ul>\n\n<p>A comment with inline image: !picture.jpg! and a reference to <a class=\"issue tracker-1 status-1 priority-4 priority-lowest behind-schedule\" title=\"Bug: Cannot print recipes (New)\" href=\"http://localhost:3000/issues/1\" style=\"color:#1864ab\">#1</a> and <a class=\"changeset\" title=\"This commit fixes #1, #2 and references #1 &amp; #3\" href=\"http://localhost:3000/projects/ecookbook/repository/10/revisions/2\" style=\"color:#1864ab\">r2</a>.</p>\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\n<h1 style=\"font-family:sans-serif;margin:0px;font-size:1.3em\">\n  <a href=\"http://localhost:3000/issues/2#change-3\" style=\"color:#1864ab\">Feature request #2: Add ingredients categories</a>\n  <span class=\"badge badge-status-open\" style=\"position:relative;font-weight:bold;font-size:10px;bottom:2px;padding:1px 3px;margin-right:2px;margin-left:2px;border-radius:2px;text-transform:uppercase;text-decoration:none;color:#1864ab;border:1px solid #1864ab\">open</span>\n</h1>\n\n<ul class=\"details\" style=\"color:#868e96;margin-bottom:1.5em\"><li><strong>Author: </strong>John Smith</li>\n<li><strong>Status: </strong>Assigned</li>\n<li><strong>Priority: </strong>Normal</li>\n<li><strong>Assignee: </strong>Dave Lopper</li>\n<li><strong>Target version: </strong>1.0</li>\n<li><strong>Start date: </strong>2026-01-13</li>\n<li><strong>Float field: </strong>2.05</li></ul>\n\n<p>Ingredients of the recipe should be classified by categories</p>\n\n  <fieldset class=\"attachments\" style=\"border-width:1px 0 0 0;border-style:solid;border-color:#ced4da\"><legend>Files</legend>\n    <a href=\"http://localhost:3000/attachments/download/4/source.rb\" style=\"color:#1864ab\">source.rb</a>\n    (174 Bytes)<br>\n    <a href=\"http://localhost:3000/attachments/download/10/picture.jpg\" style=\"color:#1864ab\">picture.jpg</a>\n    (452 Bytes)<br>\n  </fieldset>\n\n\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\n<span class=\"footer\" style=\"font-size:0.8em;font-style:italic\"><p>You have received this notification because you have either subscribed to it, or are involved in it.<br>\nTo change your notification preferences, please click here: http://hostname/my/account</p></span>\n</body>\n</html>\n",
         "text_cte": "7bit"
       },
       {
@@ -1083,12 +1015,8 @@
         "to": [
           "admin@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[eCookbook - Feature request #2] Add ingredients categories",
         "headers": {
           "From": "John Smith <redmine@example.net>",
@@ -1096,8 +1024,8 @@
           "Message-ID": "<redmine.journal-3.20260114000000.1@example.net>",
           "References": "<redmine.issue-2.20060719190421.1@example.net>",
           "Subject": "[eCookbook - Feature request #2] Add ingredients categories",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "ecookbook",
           "X-Redmine-Issue-Tracker": "Feature request",
           "X-Redmine-Issue-Id": "2",
@@ -1119,7 +1047,7 @@
           "Message-ID",
           "References",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -1136,8 +1064,8 @@
           "Auto-Submitted",
           "List-Id"
         ],
-        "text": "Issue #2 has been updated by John Smith.\n\nDescription updated\nSearchable field changed from Old value to New value\nFile 060719210727_picture.jpg added\n\nA comment with inline image: !picture.jpg! and a reference to #1 and r2.\n\n----------------------------------------\nFeature request #2: Add ingredients categories\nhttp://localhost:3000/issues/2#change-3\n\n* Author: John Smith\n* Status: Assigned\n* Priority: Normal\n* Assignee: Dave Lopper\n* Target version: 1.0\n* Start date: 2026-01-13\n* Float field: 2.05\n----------------------------------------\nIngredients of the recipe should be classified by categories\n\n---Files--------------------------------\nsource.rb (153 Bytes)\npicture.jpg (452 Bytes)\n\n\n-- \nYou have received this notification because you have either subscribed to it, or are involved in it.\nTo change your notification preferences, please click here: http://hostname/my/account\n",
-        "html": "<!DOCTYPE html>\n<html>\n<head>\n\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><style>a:link{color:#1864ab}\na:visited{color:#1864ab}\na:hover{color:#c92a2a}\na:active{color:#c92a2a}</style></head>\n<body style=\"font-family:sans-serif;font-size:14px;line-height:1.5;color:#212529\">\nIssue <a href=\"http://localhost:3000/issues/2#change-3\" style=\"color:#1864ab\">#2</a> has been updated by John Smith.\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\n\n<ul class=\"journal details\" style=\"color:#868e96;margin-bottom:1.5em\">\n  <li><strong>Description</strong> updated (<a title=\"View differences\" href=\"http://localhost:3000/journals/3/diff?detail_id=4\" style=\"color:#1864ab\">diff</a>)</li>\n  <li><strong>Searchable field</strong> changed from <i>Old value</i> to <i>New value</i></li>\n  <li><strong>File</strong> <a href=\"http://localhost:3000/attachments/4\" style=\"color:#1864ab\">source.rb</a> added</li>\n</ul>\n\n<p>A comment with inline image: !picture.jpg! and a reference to <a class=\"issue tracker-1 status-1 priority-4 priority-lowest behind-schedule\" title=\"Bug: Cannot print recipes (New)\" href=\"http://localhost:3000/issues/1\" style=\"color:#1864ab\">#1</a> and <a class=\"changeset\" title=\"This commit fixes #1, #2 and references #1 &amp; #3\" href=\"http://localhost:3000/projects/ecookbook/repository/10/revisions/2\" style=\"color:#1864ab\">r2</a>.</p>\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\n<h1 style=\"font-family:sans-serif;margin:0px;font-size:1.3em\">\n  <a href=\"http://localhost:3000/issues/2#change-3\" style=\"color:#1864ab\">Feature request #2: Add ingredients categories</a>\n  <span class=\"badge badge-status-open\" style=\"position:relative;font-weight:bold;font-size:10px;bottom:2px;padding:1px 3px;margin-right:2px;margin-left:2px;border-radius:2px;text-transform:uppercase;text-decoration:none;color:#1864ab;border:1px solid #1864ab\">open</span>\n</h1>\n\n<ul class=\"details\" style=\"color:#868e96;margin-bottom:1.5em\"><li><strong>Author: </strong>John Smith</li>\n<li><strong>Status: </strong>Assigned</li>\n<li><strong>Priority: </strong>Normal</li>\n<li><strong>Assignee: </strong>Dave Lopper</li>\n<li><strong>Target version: </strong>1.0</li>\n<li><strong>Start date: </strong>2026-01-13</li>\n<li><strong>Float field: </strong>2.05</li></ul>\n\n<p>Ingredients of the recipe should be classified by categories</p>\n\n  <fieldset class=\"attachments\" style=\"border-width:1px 0 0 0;border-style:solid;border-color:#ced4da\"><legend>Files</legend>\n    <a href=\"http://localhost:3000/attachments/download/4/source.rb\" style=\"color:#1864ab\">source.rb</a>\n    (153 Bytes)<br>\n    <a href=\"http://localhost:3000/attachments/download/10/picture.jpg\" style=\"color:#1864ab\">picture.jpg</a>\n    (452 Bytes)<br>\n  </fieldset>\n\n\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\n<span class=\"footer\" style=\"font-size:0.8em;font-style:italic\"><p>You have received this notification because you have either subscribed to it, or are involved in it.<br>\nTo change your notification preferences, please click here: http://hostname/my/account</p></span>\n</body>\n</html>\n",
+        "text": "Issue #2 has been updated by John Smith.\n\nDescription updated\nSearchable field changed from Old value to New value\nFile 060719210727_picture.jpg added\n\nA comment with inline image: !picture.jpg! and a reference to #1 and r2.\n\n----------------------------------------\nFeature request #2: Add ingredients categories\nhttp://localhost:3000/issues/2#change-3\n\n* Author: John Smith\n* Status: Assigned\n* Priority: Normal\n* Assignee: Dave Lopper\n* Target version: 1.0\n* Start date: 2026-01-13\n* Float field: 2.05\n----------------------------------------\nIngredients of the recipe should be classified by categories\n\n---Files--------------------------------\nsource.rb (174 Bytes)\npicture.jpg (452 Bytes)\n\n\n-- \nYou have received this notification because you have either subscribed to it, or are involved in it.\nTo change your notification preferences, please click here: http://hostname/my/account\n",
+        "html": "<!DOCTYPE html>\n<html>\n<head>\n\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><style>a:link{color:#1864ab}\na:visited{color:#1864ab}\na:hover{color:#c92a2a}\na:active{color:#c92a2a}</style></head>\n<body style=\"font-family:sans-serif;font-size:14px;line-height:1.5;color:#212529\">\nIssue <a href=\"http://localhost:3000/issues/2#change-3\" style=\"color:#1864ab\">#2</a> has been updated by John Smith.\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\n\n<ul class=\"journal details\" style=\"color:#868e96;margin-bottom:1.5em\">\n  <li><strong>Description</strong> updated (<a title=\"View differences\" href=\"http://localhost:3000/journals/3/diff?detail_id=4\" style=\"color:#1864ab\">diff</a>)</li>\n  <li><strong>Searchable field</strong> changed from <i>Old value</i> to <i>New value</i></li>\n  <li><strong>File</strong> <a href=\"http://localhost:3000/attachments/4\" style=\"color:#1864ab\">source.rb</a> added</li>\n</ul>\n\n<p>A comment with inline image: !picture.jpg! and a reference to <a class=\"issue tracker-1 status-1 priority-4 priority-lowest behind-schedule\" title=\"Bug: Cannot print recipes (New)\" href=\"http://localhost:3000/issues/1\" style=\"color:#1864ab\">#1</a> and <a class=\"changeset\" title=\"This commit fixes #1, #2 and references #1 &amp; #3\" href=\"http://localhost:3000/projects/ecookbook/repository/10/revisions/2\" style=\"color:#1864ab\">r2</a>.</p>\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\n<h1 style=\"font-family:sans-serif;margin:0px;font-size:1.3em\">\n  <a href=\"http://localhost:3000/issues/2#change-3\" style=\"color:#1864ab\">Feature request #2: Add ingredients categories</a>\n  <span class=\"badge badge-status-open\" style=\"position:relative;font-weight:bold;font-size:10px;bottom:2px;padding:1px 3px;margin-right:2px;margin-left:2px;border-radius:2px;text-transform:uppercase;text-decoration:none;color:#1864ab;border:1px solid #1864ab\">open</span>\n</h1>\n\n<ul class=\"details\" style=\"color:#868e96;margin-bottom:1.5em\"><li><strong>Author: </strong>John Smith</li>\n<li><strong>Status: </strong>Assigned</li>\n<li><strong>Priority: </strong>Normal</li>\n<li><strong>Assignee: </strong>Dave Lopper</li>\n<li><strong>Target version: </strong>1.0</li>\n<li><strong>Start date: </strong>2026-01-13</li>\n<li><strong>Float field: </strong>2.05</li></ul>\n\n<p>Ingredients of the recipe should be classified by categories</p>\n\n  <fieldset class=\"attachments\" style=\"border-width:1px 0 0 0;border-style:solid;border-color:#ced4da\"><legend>Files</legend>\n    <a href=\"http://localhost:3000/attachments/download/4/source.rb\" style=\"color:#1864ab\">source.rb</a>\n    (174 Bytes)<br>\n    <a href=\"http://localhost:3000/attachments/download/10/picture.jpg\" style=\"color:#1864ab\">picture.jpg</a>\n    (452 Bytes)<br>\n  </fieldset>\n\n\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\n<span class=\"footer\" style=\"font-size:0.8em;font-style:italic\"><p>You have received this notification because you have either subscribed to it, or are involved in it.<br>\nTo change your notification preferences, please click here: http://hostname/my/account</p></span>\n</body>\n</html>\n",
         "text_cte": "7bit"
       }
     ]
@@ -1150,12 +1078,8 @@
         "to": [
           "jsmith@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[Private child of eCookbook - Bug #6] Issue of a private subproject",
         "headers": {
           "From": "Redmine Admin <redmine@example.net>",
@@ -1163,8 +1087,8 @@
           "Message-ID": "<redmine.journal-4.20260114000000.2@example.net>",
           "References": "<redmine.issue-6.20260115115900.2@example.net>",
           "Subject": "[Private child of eCookbook - Bug #6] Issue of a private subproject",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "private-child",
           "X-Redmine-Issue-Tracker": "Bug",
           "X-Redmine-Issue-Id": "6",
@@ -1185,7 +1109,7 @@
           "Message-ID",
           "References",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -1210,12 +1134,8 @@
         "to": [
           "admin@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[Private child of eCookbook - Bug #6] Issue of a private subproject",
         "headers": {
           "From": "Redmine Admin <redmine@example.net>",
@@ -1223,8 +1143,8 @@
           "Message-ID": "<redmine.journal-4.20260114000000.1@example.net>",
           "References": "<redmine.issue-6.20260115115900.1@example.net>",
           "Subject": "[Private child of eCookbook - Bug #6] Issue of a private subproject",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "private-child",
           "X-Redmine-Issue-Tracker": "Bug",
           "X-Redmine-Issue-Id": "6",
@@ -1245,7 +1165,7 @@
           "Message-ID",
           "References",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -1275,12 +1195,8 @@
         "to": [
           "jsmith@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[eCookbook Subproject 1 - Bug #14] Private issue on public project",
         "headers": {
           "From": "John Smith <redmine@example.net>",
@@ -1288,8 +1204,8 @@
           "Message-ID": "<redmine.journal-5.20260114000000.2@example.net>",
           "References": "<redmine.issue-14.20251231120000.2@example.net>",
           "Subject": "[eCookbook Subproject 1 - Bug #14] Private issue on public project",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "subproject1",
           "X-Redmine-Issue-Tracker": "Bug",
           "X-Redmine-Issue-Id": "14",
@@ -1310,7 +1226,7 @@
           "Message-ID",
           "References",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -1326,8 +1242,8 @@
           "Auto-Submitted",
           "List-Id"
         ],
-        "text": "Issue #14 has been updated by John Smith.\r\n\r\n\r\nA comment on a private issue.\r\n\r\n----------------------------------------\r\nBug #14: Private issue on public project\r\nhttp://localhost:3000/issues/14#change-5\r\n\r\n* Author: John Smith\r\n* Status: New\r\n* Priority: Normal\r\n----------------------------------------\r\nThis is a private issue\r\n\r\n---Files--------------------------------\r\nprivate.diff (687 Bytes)\r\ntestfile.png (2.59 KB)\r\ntestfile.PNG (3.5 KB)\r\ntestテスト.png (2.59 KB)\r\nTestテスト.PNG (3.5 KB)\r\nroot_attachment.txt (54 Bytes)\r\n\r\n\r\n-- \r\nYou have received this notification because you have either subscribed to it, or are involved in it.\r\nTo change your notification preferences, please click here: http://hostname/my/account\r\n",
-        "html": "<!DOCTYPE html>\r\n<html>\r\n<head>\r\n\r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><style>a:link{color:#1864ab}\r\na:visited{color:#1864ab}\r\na:hover{color:#c92a2a}\r\na:active{color:#c92a2a}</style></head>\r\n<body style=\"font-family:sans-serif;font-size:14px;line-height:1.5;color:#212529\">\r\nIssue <a href=\"http://localhost:3000/issues/14#change-5\" style=\"color:#1864ab\">#14</a> has been updated by John Smith.\r\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\r\n\r\n<ul class=\"journal details\" style=\"color:#868e96;margin-bottom:1.5em\">\r\n</ul>\r\n\r\n<p>A comment on a private issue.</p>\r\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\r\n<h1 style=\"font-family:sans-serif;margin:0px;font-size:1.3em\">\r\n  <a href=\"http://localhost:3000/issues/14#change-5\" style=\"color:#1864ab\">Bug #14: Private issue on public project</a>\r\n  <span class=\"badge badge-status-open\" style=\"position:relative;font-weight:bold;font-size:10px;bottom:2px;padding:1px 3px;margin-right:2px;margin-left:2px;border-radius:2px;text-transform:uppercase;text-decoration:none;color:#1864ab;border:1px solid #1864ab\">open</span>\r\n</h1>\r\n\r\n<ul class=\"details\" style=\"color:#868e96;margin-bottom:1.5em\"><li><strong>Author: </strong>John Smith</li>\r\n<li><strong>Status: </strong>New</li>\r\n<li><strong>Priority: </strong>Normal</li></ul>\r\n\r\n<p>This is a private issue</p>\r\n\r\n  <fieldset class=\"attachments\" style=\"border-width:1px 0 0 0;border-style:solid;border-color:#ced4da\"><legend>Files</legend>\r\n    <a href=\"http://localhost:3000/attachments/download/15/private.diff\" style=\"color:#1864ab\">private.diff</a>\r\n    (687 Bytes)<br>\r\n    <a href=\"http://localhost:3000/attachments/download/16/testfile.png\" style=\"color:#1864ab\">testfile.png</a>\r\n    (2.59 KB)<br>\r\n    <a href=\"http://localhost:3000/attachments/download/17/testfile.PNG\" style=\"color:#1864ab\">testfile.PNG</a>\r\n    (3.5 KB)<br>\r\n    <a href=\"http://localhost:3000/attachments/download/18/test%E3%83%86%E3%82%B9%E3%83%88.png\" style=\"color:#1864ab\">testテスト.png</a>\r\n    (2.59 KB)<br>\r\n    <a href=\"http://localhost:3000/attachments/download/19/Test%E3%83%86%E3%82%B9%E3%83%88.PNG\" style=\"color:#1864ab\">Testテスト.PNG</a>\r\n    (3.5 KB)<br>\r\n    <a href=\"http://localhost:3000/attachments/download/20/root_attachment.txt\" style=\"color:#1864ab\">root_attachment.txt</a>\r\n    (54 Bytes)<br>\r\n  </fieldset>\r\n\r\n\r\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\r\n<span class=\"footer\" style=\"font-size:0.8em;font-style:italic\"><p>You have received this notification because you have either subscribed to it, or are involved in it.<br>\r\nTo change your notification preferences, please click here: http://hostname/my/account</p></span>\r\n</body>\r\n</html>\r\n",
+        "text": "Issue #14 has been updated by John Smith.\n\n\nA comment on a private issue.\n\n----------------------------------------\nBug #14: Private issue on public project\nhttp://localhost:3000/issues/14#change-5\n\n* Author: John Smith\n* Status: New\n* Priority: Normal\n----------------------------------------\nThis is a private issue\n\n---Files--------------------------------\nprivate.diff (691 Bytes)\ntestfile.png (2.59 KB)\ntestfile.PNG (3.5 KB)\ntestテスト.png (2.59 KB)\nTestテスト.PNG (3.5 KB)\nroot_attachment.txt (54 Bytes)\n\n\n-- \nYou have received this notification because you have either subscribed to it, or are involved in it.\nTo change your notification preferences, please click here: http://hostname/my/account\n",
+        "html": "<!DOCTYPE html>\n<html>\n<head>\n\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><style>a:link{color:#1864ab}\na:visited{color:#1864ab}\na:hover{color:#c92a2a}\na:active{color:#c92a2a}</style></head>\n<body style=\"font-family:sans-serif;font-size:14px;line-height:1.5;color:#212529\">\nIssue <a href=\"http://localhost:3000/issues/14#change-5\" style=\"color:#1864ab\">#14</a> has been updated by John Smith.\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\n\n<ul class=\"journal details\" style=\"color:#868e96;margin-bottom:1.5em\">\n</ul>\n\n<p>A comment on a private issue.</p>\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\n<h1 style=\"font-family:sans-serif;margin:0px;font-size:1.3em\">\n  <a href=\"http://localhost:3000/issues/14#change-5\" style=\"color:#1864ab\">Bug #14: Private issue on public project</a>\n  <span class=\"badge badge-status-open\" style=\"position:relative;font-weight:bold;font-size:10px;bottom:2px;padding:1px 3px;margin-right:2px;margin-left:2px;border-radius:2px;text-transform:uppercase;text-decoration:none;color:#1864ab;border:1px solid #1864ab\">open</span>\n</h1>\n\n<ul class=\"details\" style=\"color:#868e96;margin-bottom:1.5em\"><li><strong>Author: </strong>John Smith</li>\n<li><strong>Status: </strong>New</li>\n<li><strong>Priority: </strong>Normal</li></ul>\n\n<p>This is a private issue</p>\n\n  <fieldset class=\"attachments\" style=\"border-width:1px 0 0 0;border-style:solid;border-color:#ced4da\"><legend>Files</legend>\n    <a href=\"http://localhost:3000/attachments/download/15/private.diff\" style=\"color:#1864ab\">private.diff</a>\n    (691 Bytes)<br>\n    <a href=\"http://localhost:3000/attachments/download/16/testfile.png\" style=\"color:#1864ab\">testfile.png</a>\n    (2.59 KB)<br>\n    <a href=\"http://localhost:3000/attachments/download/17/testfile.PNG\" style=\"color:#1864ab\">testfile.PNG</a>\n    (3.5 KB)<br>\n    <a href=\"http://localhost:3000/attachments/download/18/test%E3%83%86%E3%82%B9%E3%83%88.png\" style=\"color:#1864ab\">testテスト.png</a>\n    (2.59 KB)<br>\n    <a href=\"http://localhost:3000/attachments/download/19/Test%E3%83%86%E3%82%B9%E3%83%88.PNG\" style=\"color:#1864ab\">Testテスト.PNG</a>\n    (3.5 KB)<br>\n    <a href=\"http://localhost:3000/attachments/download/20/root_attachment.txt\" style=\"color:#1864ab\">root_attachment.txt</a>\n    (54 Bytes)<br>\n  </fieldset>\n\n\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\n<span class=\"footer\" style=\"font-size:0.8em;font-style:italic\"><p>You have received this notification because you have either subscribed to it, or are involved in it.<br>\nTo change your notification preferences, please click here: http://hostname/my/account</p></span>\n</body>\n</html>\n",
         "text_cte": "quoted-printable"
       }
     ]
@@ -1340,12 +1256,8 @@
         "to": [
           "jsmith@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[eCookbook - Bug #1] (New) Cannot print recipes",
         "headers": {
           "From": "John Smith <redmine@example.net>",
@@ -1353,7 +1265,7 @@
           "Message-ID": "<redmine.issue-1.20260112120000.2@example.net>",
           "References": "<redmine.issue-1.20260112120000.2@example.net>",
           "Subject": "[eCookbook - Bug #1] (New) Cannot print recipes",
-          "Mime-Version": "1.0",
+          "MIME-Version": "1.0",
           "Content-Type": "text/plain",
           "X-Redmine-Project": "ecookbook",
           "X-Redmine-Issue-Tracker": "Bug",
@@ -1375,7 +1287,7 @@
           "Message-ID",
           "References",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -1400,12 +1312,8 @@
         "to": [
           "dlopper@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[eCookbook - Bug #1] (New) Cannot print recipes",
         "headers": {
           "From": "John Smith <redmine@example.net>",
@@ -1413,7 +1321,7 @@
           "Message-ID": "<redmine.issue-1.20260112120000.3@example.net>",
           "References": "<redmine.issue-1.20260112120000.3@example.net>",
           "Subject": "[eCookbook - Bug #1] (New) Cannot print recipes",
-          "Mime-Version": "1.0",
+          "MIME-Version": "1.0",
           "Content-Type": "text/plain",
           "X-Redmine-Project": "ecookbook",
           "X-Redmine-Issue-Tracker": "Bug",
@@ -1435,7 +1343,7 @@
           "Message-ID",
           "References",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -1465,12 +1373,8 @@
         "to": [
           "jsmith@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[eCookbook - Bug #1] Cannot print recipes",
         "headers": {
           "From": "John Smith <redmine@example.net>",
@@ -1478,8 +1382,8 @@
           "Message-ID": "<redmine.issue-1.20260112120000.2@example.net>",
           "References": "<redmine.issue-1.20260112120000.2@example.net>",
           "Subject": "[eCookbook - Bug #1] Cannot print recipes",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "ecookbook",
           "X-Redmine-Issue-Tracker": "Bug",
           "X-Redmine-Issue-Id": "1",
@@ -1500,7 +1404,7 @@
           "Message-ID",
           "References",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -1525,12 +1429,8 @@
         "to": [
           "dlopper@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[eCookbook - Bug #1] Cannot print recipes",
         "headers": {
           "From": "John Smith <redmine@example.net>",
@@ -1538,8 +1438,8 @@
           "Message-ID": "<redmine.issue-1.20260112120000.3@example.net>",
           "References": "<redmine.issue-1.20260112120000.3@example.net>",
           "Subject": "[eCookbook - Bug #1] Cannot print recipes",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "ecookbook",
           "X-Redmine-Issue-Tracker": "Bug",
           "X-Redmine-Issue-Id": "1",
@@ -1560,7 +1460,7 @@
           "Message-ID",
           "References",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -1590,12 +1490,8 @@
         "to": [
           "jsmith@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[eCookbook - Bug #1] (New) Cannot print recipes",
         "headers": {
           "From": "John Smith <redmine@example.net>",
@@ -1603,8 +1499,8 @@
           "Message-ID": "<redmine.issue-1.20260112120000.2@example.net>",
           "References": "<redmine.issue-1.20260112120000.2@example.net>",
           "Subject": "[eCookbook - Bug #1] (New) Cannot print recipes",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "ecookbook",
           "X-Redmine-Issue-Tracker": "Bug",
           "X-Redmine-Issue-Id": "1",
@@ -1625,7 +1521,7 @@
           "Message-ID",
           "References",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -1650,12 +1546,8 @@
         "to": [
           "dlopper@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[eCookbook - Bug #1] (New) Cannot print recipes",
         "headers": {
           "From": "John Smith <redmine@example.net>",
@@ -1663,8 +1555,8 @@
           "Message-ID": "<redmine.issue-1.20260112120000.3@example.net>",
           "References": "<redmine.issue-1.20260112120000.3@example.net>",
           "Subject": "[eCookbook - Bug #1] (New) Cannot print recipes",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "ecookbook",
           "X-Redmine-Issue-Tracker": "Bug",
           "X-Redmine-Issue-Id": "1",
@@ -1685,7 +1577,7 @@
           "Message-ID",
           "References",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -1715,12 +1607,8 @@
         "to": [
           "jsmith@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[eCookbook - Bug #1] (New) Cannot print recipes",
         "headers": {
           "From": "Redmine app <redmine@somenet.foo>",
@@ -1728,8 +1616,8 @@
           "Message-ID": "<redmine.issue-1.20260112120000.2@somenet.foo>",
           "References": "<redmine.issue-1.20260112120000.2@somenet.foo>",
           "Subject": "[eCookbook - Bug #1] (New) Cannot print recipes",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "ecookbook",
           "X-Redmine-Issue-Tracker": "Bug",
           "X-Redmine-Issue-Id": "1",
@@ -1750,7 +1638,7 @@
           "Message-ID",
           "References",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -1775,12 +1663,8 @@
         "to": [
           "dlopper@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[eCookbook - Bug #1] (New) Cannot print recipes",
         "headers": {
           "From": "Redmine app <redmine@somenet.foo>",
@@ -1788,8 +1672,8 @@
           "Message-ID": "<redmine.issue-1.20260112120000.3@somenet.foo>",
           "References": "<redmine.issue-1.20260112120000.3@somenet.foo>",
           "Subject": "[eCookbook - Bug #1] (New) Cannot print recipes",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "ecookbook",
           "X-Redmine-Issue-Tracker": "Bug",
           "X-Redmine-Issue-Id": "1",
@@ -1810,7 +1694,7 @@
           "Message-ID",
           "References",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -1840,12 +1724,8 @@
         "to": [
           "jsmith@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[eCookbook - Bug #1] (New) Cannot print recipes",
         "headers": {
           "From": "Redmine Admin <redmine@example.net>",
@@ -1853,8 +1733,8 @@
           "Message-ID": "<redmine.journal-1.20260113000000.2@example.net>",
           "References": "<redmine.issue-1.20260112120000.2@example.net>",
           "Subject": "[eCookbook - Bug #1] (New) Cannot print recipes",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "ecookbook",
           "X-Redmine-Issue-Tracker": "Bug",
           "X-Redmine-Issue-Id": "1",
@@ -1875,7 +1755,7 @@
           "Message-ID",
           "References",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -1891,8 +1771,8 @@
           "Auto-Submitted",
           "List-Id"
         ],
-        "text": "チケット #1 を Redmine Admin さんが更新しました。\r\n\r\nステータス を New から Assigned に変更\r\n進捗率 を 40 から 30 に変更\r\n\r\nJournal notes\r\n\r\n----------------------------------------\r\nBug #1: Cannot print recipes\r\nhttp://localhost:3000/issues/1#change-1\r\n\r\n* 作成者: John Smith\r\n* ステータス: New\r\n* 優先度: Low\r\n* カテゴリ: Printing\r\n* 開始日: 2026-01-14\r\n* 期日: 2026-01-25\r\n* Searchable field: 125\r\n* Float field: 2.10\r\n* Custom date: 2009/12/01\r\n----------------------------------------\r\nUnable to print recipes\r\n\r\n\r\n\r\n-- \r\nYou have received this notification because you have either subscribed to it, or are involved in it.\r\nTo change your notification preferences, please click here: http://hostname/my/account\r\n",
-        "html": "<!DOCTYPE html>\r\n<html>\r\n<head>\r\n\r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><style>a:link{color:#1864ab}\r\na:visited{color:#1864ab}\r\na:hover{color:#c92a2a}\r\na:active{color:#c92a2a}</style></head>\r\n<body style=\"font-family:sans-serif;font-size:14px;line-height:1.5;color:#212529\">\r\nチケット <a href=\"http://localhost:3000/issues/1#change-1\" style=\"color:#1864ab\">#1</a> を Redmine Admin さんが更新しました。\r\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\r\n\r\n<ul class=\"journal details\" style=\"color:#868e96;margin-bottom:1.5em\">\r\n  <li><strong>ステータス</strong> を <i>New</i> から <i>Assigned</i> に変更</li>\r\n  <li><strong>進捗率</strong> を <i>40</i> から <i>30</i> に変更</li>\r\n</ul>\r\n\r\n<p>Journal notes</p>\r\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\r\n<h1 style=\"font-family:sans-serif;margin:0px;font-size:1.3em\">\r\n  <a href=\"http://localhost:3000/issues/1#change-1\" style=\"color:#1864ab\">Bug #1: Cannot print recipes</a>\r\n  <span class=\"badge badge-status-open\" style=\"position:relative;font-weight:bold;font-size:10px;bottom:2px;padding:1px 3px;margin-right:2px;margin-left:2px;border-radius:2px;text-transform:uppercase;text-decoration:none;color:#1864ab;border:1px solid #1864ab\">未完了</span>\r\n</h1>\r\n\r\n<ul class=\"details\" style=\"color:#868e96;margin-bottom:1.5em\"><li><strong>作成者: </strong>John Smith</li>\r\n<li><strong>ステータス: </strong>New</li>\r\n<li><strong>優先度: </strong>Low</li>\r\n<li><strong>カテゴリ: </strong>Printing</li>\r\n<li><strong>開始日: </strong>2026-01-14</li>\r\n<li><strong>期日: </strong>2026-01-25</li>\r\n<li><strong>Searchable field: </strong>125</li>\r\n<li><strong>Float field: </strong>2.10</li>\r\n<li><strong>Custom date: </strong>2009/12/01</li></ul>\r\n\r\n<p>Unable to print recipes</p>\r\n\r\n\r\n\r\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\r\n<span class=\"footer\" style=\"font-size:0.8em;font-style:italic\"><p>You have received this notification because you have either subscribed to it, or are involved in it.<br>\r\nTo change your notification preferences, please click here: http://hostname/my/account</p></span>\r\n</body>\r\n</html>\r\n",
+        "text": "チケット #1 を Redmine Admin さんが更新しました。\n\nステータス を New から Assigned に変更\n進捗率 を 40 から 30 に変更\n\nJournal notes\n\n----------------------------------------\nBug #1: Cannot print recipes\nhttp://localhost:3000/issues/1#change-1\n\n* 作成者: John Smith\n* ステータス: New\n* 優先度: Low\n* カテゴリ: Printing\n* 開始日: 2026-01-14\n* 期日: 2026-01-25\n* Searchable field: 125\n* Float field: 2.10\n* Custom date: 2009/12/01\n----------------------------------------\nUnable to print recipes\n\n\n\n-- \nYou have received this notification because you have either subscribed to it, or are involved in it.\nTo change your notification preferences, please click here: http://hostname/my/account\n",
+        "html": "<!DOCTYPE html>\n<html>\n<head>\n\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><style>a:link{color:#1864ab}\na:visited{color:#1864ab}\na:hover{color:#c92a2a}\na:active{color:#c92a2a}</style></head>\n<body style=\"font-family:sans-serif;font-size:14px;line-height:1.5;color:#212529\">\nチケット <a href=\"http://localhost:3000/issues/1#change-1\" style=\"color:#1864ab\">#1</a> を Redmine Admin さんが更新しました。\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\n\n<ul class=\"journal details\" style=\"color:#868e96;margin-bottom:1.5em\">\n  <li><strong>ステータス</strong> を <i>New</i> から <i>Assigned</i> に変更</li>\n  <li><strong>進捗率</strong> を <i>40</i> から <i>30</i> に変更</li>\n</ul>\n\n<p>Journal notes</p>\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\n<h1 style=\"font-family:sans-serif;margin:0px;font-size:1.3em\">\n  <a href=\"http://localhost:3000/issues/1#change-1\" style=\"color:#1864ab\">Bug #1: Cannot print recipes</a>\n  <span class=\"badge badge-status-open\" style=\"position:relative;font-weight:bold;font-size:10px;bottom:2px;padding:1px 3px;margin-right:2px;margin-left:2px;border-radius:2px;text-transform:uppercase;text-decoration:none;color:#1864ab;border:1px solid #1864ab\">未完了</span>\n</h1>\n\n<ul class=\"details\" style=\"color:#868e96;margin-bottom:1.5em\"><li><strong>作成者: </strong>John Smith</li>\n<li><strong>ステータス: </strong>New</li>\n<li><strong>優先度: </strong>Low</li>\n<li><strong>カテゴリ: </strong>Printing</li>\n<li><strong>開始日: </strong>2026-01-14</li>\n<li><strong>期日: </strong>2026-01-25</li>\n<li><strong>Searchable field: </strong>125</li>\n<li><strong>Float field: </strong>2.10</li>\n<li><strong>Custom date: </strong>2009/12/01</li></ul>\n\n<p>Unable to print recipes</p>\n\n\n\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\n<span class=\"footer\" style=\"font-size:0.8em;font-style:italic\"><p>You have received this notification because you have either subscribed to it, or are involved in it.<br>\nTo change your notification preferences, please click here: http://hostname/my/account</p></span>\n</body>\n</html>\n",
         "text_cte": "base64"
       },
       {
@@ -1900,12 +1780,8 @@
         "to": [
           "dlopper@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[eCookbook - Bug #1] (New) Cannot print recipes",
         "headers": {
           "From": "Redmine Admin <redmine@example.net>",
@@ -1913,8 +1789,8 @@
           "Message-ID": "<redmine.journal-1.20260113000000.3@example.net>",
           "References": "<redmine.issue-1.20260112120000.3@example.net>",
           "Subject": "[eCookbook - Bug #1] (New) Cannot print recipes",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "ecookbook",
           "X-Redmine-Issue-Tracker": "Bug",
           "X-Redmine-Issue-Id": "1",
@@ -1935,7 +1811,7 @@
           "Message-ID",
           "References",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -1960,12 +1836,8 @@
         "to": [
           "jsmith@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[eCookbook - Bug #1] Cannot print recipes",
         "headers": {
           "From": "John Smith <redmine@example.net>",
@@ -1973,8 +1845,8 @@
           "Message-ID": "<redmine.journal-2.20260114000000.2@example.net>",
           "References": "<redmine.issue-1.20260112120000.2@example.net>",
           "Subject": "[eCookbook - Bug #1] Cannot print recipes",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "ecookbook",
           "X-Redmine-Issue-Tracker": "Bug",
           "X-Redmine-Issue-Id": "1",
@@ -1995,7 +1867,7 @@
           "Message-ID",
           "References",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -2011,8 +1883,8 @@
           "Auto-Submitted",
           "List-Id"
         ],
-        "text": "チケット #1 を John Smith さんが更新しました。\r\n\r\n\r\nSome notes with Redmine links: #2, r2.\r\n\r\n----------------------------------------\r\nBug #1: Cannot print recipes\r\nhttp://localhost:3000/issues/1#change-2\r\n\r\n* 作成者: John Smith\r\n* ステータス: New\r\n* 優先度: Low\r\n* カテゴリ: Printing\r\n* 開始日: 2026-01-14\r\n* 期日: 2026-01-25\r\n* Searchable field: 125\r\n* Float field: 2.10\r\n* Custom date: 2009/12/01\r\n----------------------------------------\r\nUnable to print recipes\r\n\r\n\r\n\r\n-- \r\nYou have received this notification because you have either subscribed to it, or are involved in it.\r\nTo change your notification preferences, please click here: http://hostname/my/account\r\n",
-        "html": "<!DOCTYPE html>\r\n<html>\r\n<head>\r\n\r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><style>a:link{color:#1864ab}\r\na:visited{color:#1864ab}\r\na:hover{color:#c92a2a}\r\na:active{color:#c92a2a}</style></head>\r\n<body style=\"font-family:sans-serif;font-size:14px;line-height:1.5;color:#212529\">\r\nチケット <a href=\"http://localhost:3000/issues/1#change-2\" style=\"color:#1864ab\">#1</a> を John Smith さんが更新しました。\r\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\r\n\r\n<ul class=\"journal details\" style=\"color:#868e96;margin-bottom:1.5em\">\r\n</ul>\r\n\r\n<p>Some notes with Redmine links: <a class=\"issue tracker-2 status-2 priority-5 priority-default created-by-me\" title=\"Feature request: Add ingredients categories (Assigned)\" href=\"http://localhost:3000/issues/2\" style=\"color:#1864ab\">#2</a>, <a class=\"changeset\" title=\"This commit fixes #1, #2 and references #1 &amp; #3\" href=\"http://localhost:3000/projects/ecookbook/repository/10/revisions/2\" style=\"color:#1864ab\">r2</a>.</p>\r\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\r\n<h1 style=\"font-family:sans-serif;margin:0px;font-size:1.3em\">\r\n  <a href=\"http://localhost:3000/issues/1#change-2\" style=\"color:#1864ab\">Bug #1: Cannot print recipes</a>\r\n  <span class=\"badge badge-status-open\" style=\"position:relative;font-weight:bold;font-size:10px;bottom:2px;padding:1px 3px;margin-right:2px;margin-left:2px;border-radius:2px;text-transform:uppercase;text-decoration:none;color:#1864ab;border:1px solid #1864ab\">未完了</span>\r\n</h1>\r\n\r\n<ul class=\"details\" style=\"color:#868e96;margin-bottom:1.5em\"><li><strong>作成者: </strong>John Smith</li>\r\n<li><strong>ステータス: </strong>New</li>\r\n<li><strong>優先度: </strong>Low</li>\r\n<li><strong>カテゴリ: </strong>Printing</li>\r\n<li><strong>開始日: </strong>2026-01-14</li>\r\n<li><strong>期日: </strong>2026-01-25</li>\r\n<li><strong>Searchable field: </strong>125</li>\r\n<li><strong>Float field: </strong>2.10</li>\r\n<li><strong>Custom date: </strong>2009/12/01</li></ul>\r\n\r\n<p>Unable to print recipes</p>\r\n\r\n\r\n\r\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\r\n<span class=\"footer\" style=\"font-size:0.8em;font-style:italic\"><p>You have received this notification because you have either subscribed to it, or are involved in it.<br>\r\nTo change your notification preferences, please click here: http://hostname/my/account</p></span>\r\n</body>\r\n</html>\r\n",
+        "text": "チケット #1 を John Smith さんが更新しました。\n\n\nSome notes with Redmine links: #2, r2.\n\n----------------------------------------\nBug #1: Cannot print recipes\nhttp://localhost:3000/issues/1#change-2\n\n* 作成者: John Smith\n* ステータス: New\n* 優先度: Low\n* カテゴリ: Printing\n* 開始日: 2026-01-14\n* 期日: 2026-01-25\n* Searchable field: 125\n* Float field: 2.10\n* Custom date: 2009/12/01\n----------------------------------------\nUnable to print recipes\n\n\n\n-- \nYou have received this notification because you have either subscribed to it, or are involved in it.\nTo change your notification preferences, please click here: http://hostname/my/account\n",
+        "html": "<!DOCTYPE html>\n<html>\n<head>\n\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><style>a:link{color:#1864ab}\na:visited{color:#1864ab}\na:hover{color:#c92a2a}\na:active{color:#c92a2a}</style></head>\n<body style=\"font-family:sans-serif;font-size:14px;line-height:1.5;color:#212529\">\nチケット <a href=\"http://localhost:3000/issues/1#change-2\" style=\"color:#1864ab\">#1</a> を John Smith さんが更新しました。\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\n\n<ul class=\"journal details\" style=\"color:#868e96;margin-bottom:1.5em\">\n</ul>\n\n<p>Some notes with Redmine links: <a class=\"issue tracker-2 status-2 priority-5 priority-default created-by-me\" title=\"Feature request: Add ingredients categories (Assigned)\" href=\"http://localhost:3000/issues/2\" style=\"color:#1864ab\">#2</a>, <a class=\"changeset\" title=\"This commit fixes #1, #2 and references #1 &amp; #3\" href=\"http://localhost:3000/projects/ecookbook/repository/10/revisions/2\" style=\"color:#1864ab\">r2</a>.</p>\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\n<h1 style=\"font-family:sans-serif;margin:0px;font-size:1.3em\">\n  <a href=\"http://localhost:3000/issues/1#change-2\" style=\"color:#1864ab\">Bug #1: Cannot print recipes</a>\n  <span class=\"badge badge-status-open\" style=\"position:relative;font-weight:bold;font-size:10px;bottom:2px;padding:1px 3px;margin-right:2px;margin-left:2px;border-radius:2px;text-transform:uppercase;text-decoration:none;color:#1864ab;border:1px solid #1864ab\">未完了</span>\n</h1>\n\n<ul class=\"details\" style=\"color:#868e96;margin-bottom:1.5em\"><li><strong>作成者: </strong>John Smith</li>\n<li><strong>ステータス: </strong>New</li>\n<li><strong>優先度: </strong>Low</li>\n<li><strong>カテゴリ: </strong>Printing</li>\n<li><strong>開始日: </strong>2026-01-14</li>\n<li><strong>期日: </strong>2026-01-25</li>\n<li><strong>Searchable field: </strong>125</li>\n<li><strong>Float field: </strong>2.10</li>\n<li><strong>Custom date: </strong>2009/12/01</li></ul>\n\n<p>Unable to print recipes</p>\n\n\n\n<hr style=\"width:100%;height:1px;background:#ced4da;border:0;margin:1.2em 0\">\n<span class=\"footer\" style=\"font-size:0.8em;font-style:italic\"><p>You have received this notification because you have either subscribed to it, or are involved in it.<br>\nTo change your notification preferences, please click here: http://hostname/my/account</p></span>\n</body>\n</html>\n",
         "text_cte": "quoted-printable"
       }
     ]
@@ -2025,12 +1897,8 @@
         "to": [
           "jsmith@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[eCookbook] News: eCookbook first release !",
         "headers": {
           "From": "John Smith <redmine@example.net>",
@@ -2038,8 +1906,8 @@
           "Message-ID": "<redmine.news-1.20060719204026.2@example.net>",
           "References": "<redmine.news-1.20060719204026.2@example.net>",
           "Subject": "[eCookbook] News: eCookbook first release !",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "ecookbook",
           "X-Redmine-Sender": "jsmith",
           "X-Mailer": "Redmine",
@@ -2056,7 +1924,7 @@
           "Message-ID",
           "References",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -2077,12 +1945,8 @@
         "to": [
           "dlopper@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[eCookbook] News: eCookbook first release !",
         "headers": {
           "From": "John Smith <redmine@example.net>",
@@ -2090,8 +1954,8 @@
           "Message-ID": "<redmine.news-1.20060719204026.3@example.net>",
           "References": "<redmine.news-1.20060719204026.3@example.net>",
           "Subject": "[eCookbook] News: eCookbook first release !",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "ecookbook",
           "X-Redmine-Sender": "jsmith",
           "X-Mailer": "Redmine",
@@ -2108,7 +1972,7 @@
           "Message-ID",
           "References",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -2134,12 +1998,8 @@
         "to": [
           "jsmith@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "Re: [eCookbook] News: eCookbook first release !",
         "headers": {
           "From": "Redmine Admin <redmine@example.net>",
@@ -2147,8 +2007,8 @@
           "Message-ID": "<redmine.comment-1.20061210171010.2@example.net>",
           "References": "<redmine.news-1.20060719204026.2@example.net>",
           "Subject": "Re: [eCookbook] News: eCookbook first release !",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "ecookbook",
           "X-Redmine-Sender": "admin",
           "X-Mailer": "Redmine",
@@ -2165,7 +2025,7 @@
           "Message-ID",
           "References",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -2186,12 +2046,8 @@
         "to": [
           "dlopper@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "Re: [eCookbook] News: eCookbook first release !",
         "headers": {
           "From": "Redmine Admin <redmine@example.net>",
@@ -2199,8 +2055,8 @@
           "Message-ID": "<redmine.comment-1.20061210171010.3@example.net>",
           "References": "<redmine.news-1.20060719204026.3@example.net>",
           "Subject": "Re: [eCookbook] News: eCookbook first release !",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "ecookbook",
           "X-Redmine-Sender": "admin",
           "X-Mailer": "Redmine",
@@ -2217,7 +2073,7 @@
           "Message-ID",
           "References",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -2243,20 +2099,16 @@
         "to": [
           "jsmith@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[eCookbook] New document: Test document",
         "headers": {
           "From": "John Smith <redmine@example.net>",
           "To": "jsmith@somenet.foo",
-          "Message-ID": "<6968d6c00_2b0d3d12847154e@kurisu.mail>",
+          "Message-ID": "<6968d6c00_2127361ae07191b@kurisu.mail>",
           "Subject": "[eCookbook] New document: Test document",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "ecookbook",
           "X-Redmine-Sender": "jsmith",
           "X-Mailer": "Redmine",
@@ -2272,7 +2124,7 @@
           "To",
           "Message-ID",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -2293,20 +2145,16 @@
         "to": [
           "dlopper@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[eCookbook] New document: Test document",
         "headers": {
           "From": "John Smith <redmine@example.net>",
           "To": "dlopper@somenet.foo",
-          "Message-ID": "<6968d6c00_2b0d3d1284717f5@kurisu.mail>",
+          "Message-ID": "<6968d6c00_2127361ae0721c5@kurisu.mail>",
           "Subject": "[eCookbook] New document: Test document",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "ecookbook",
           "X-Redmine-Sender": "jsmith",
           "X-Mailer": "Redmine",
@@ -2322,7 +2170,7 @@
           "To",
           "Message-ID",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -2348,20 +2196,16 @@
         "to": [
           "jsmith@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[eCookbook] New file: project_file.zip and 1 file",
         "headers": {
           "From": "John Smith <redmine@example.net>",
           "To": "jsmith@somenet.foo",
-          "Message-ID": "<6968d6c00_2b0d3d1284719d9@kurisu.mail>",
+          "Message-ID": "<6968d6c00_2127361ae072363@kurisu.mail>",
           "Subject": "[eCookbook] New file: project_file.zip and 1 file",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "ecookbook",
           "X-Redmine-Sender": "jsmith",
           "X-Mailer": "Redmine",
@@ -2377,7 +2221,7 @@
           "To",
           "Message-ID",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -2398,20 +2242,16 @@
         "to": [
           "dlopper@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[eCookbook] New file: project_file.zip and 1 file",
         "headers": {
           "From": "John Smith <redmine@example.net>",
           "To": "dlopper@somenet.foo",
-          "Message-ID": "<6968d6c00_2b0d3d128472196@kurisu.mail>",
+          "Message-ID": "<6968d6c00_2127361ae072549@kurisu.mail>",
           "Subject": "[eCookbook] New file: project_file.zip and 1 file",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "ecookbook",
           "X-Redmine-Sender": "jsmith",
           "X-Mailer": "Redmine",
@@ -2427,7 +2267,7 @@
           "To",
           "Message-ID",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -2453,20 +2293,16 @@
         "to": [
           "jsmith@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[eCookbook] New file: version_file.zip",
         "headers": {
           "From": "John Smith <redmine@example.net>",
           "To": "jsmith@somenet.foo",
-          "Message-ID": "<6968d6c00_2b0d3d1284723dd@kurisu.mail>",
+          "Message-ID": "<6968d6c00_2127361ae0727d8@kurisu.mail>",
           "Subject": "[eCookbook] New file: version_file.zip",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "ecookbook",
           "X-Redmine-Sender": "jsmith",
           "X-Mailer": "Redmine",
@@ -2482,7 +2318,7 @@
           "To",
           "Message-ID",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -2503,20 +2339,16 @@
         "to": [
           "dlopper@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[eCookbook] New file: version_file.zip",
         "headers": {
           "From": "John Smith <redmine@example.net>",
           "To": "dlopper@somenet.foo",
-          "Message-ID": "<6968d6c00_2b0d3d1284725eb@kurisu.mail>",
+          "Message-ID": "<6968d6c00_2127361ae072921@kurisu.mail>",
           "Subject": "[eCookbook] New file: version_file.zip",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "ecookbook",
           "X-Redmine-Sender": "jsmith",
           "X-Mailer": "Redmine",
@@ -2532,7 +2364,7 @@
           "To",
           "Message-ID",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -2558,20 +2390,16 @@
         "to": [
           "jsmith@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[eCookbook] New file: document.txt",
         "headers": {
           "From": "John Smith <redmine@example.net>",
           "To": "jsmith@somenet.foo",
-          "Message-ID": "<6968d6c00_2b0d3d12847270@kurisu.mail>",
+          "Message-ID": "<6968d6c00_2127361ae0731d3@kurisu.mail>",
           "Subject": "[eCookbook] New file: document.txt",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "ecookbook",
           "X-Redmine-Sender": "jsmith",
           "X-Mailer": "Redmine",
@@ -2587,7 +2415,7 @@
           "To",
           "Message-ID",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -2608,20 +2436,16 @@
         "to": [
           "dlopper@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[eCookbook] New file: document.txt",
         "headers": {
           "From": "John Smith <redmine@example.net>",
           "To": "dlopper@somenet.foo",
-          "Message-ID": "<6968d6c00_2b0d3d1284729aa@kurisu.mail>",
+          "Message-ID": "<6968d6c00_2127361ae07333d@kurisu.mail>",
           "Subject": "[eCookbook] New file: document.txt",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "ecookbook",
           "X-Redmine-Sender": "jsmith",
           "X-Mailer": "Redmine",
@@ -2637,7 +2461,7 @@
           "To",
           "Message-ID",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -2663,12 +2487,8 @@
         "to": [
           "jsmith@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[eCookbook - Help - msg1] First post",
         "headers": {
           "From": "Redmine Admin <redmine@example.net>",
@@ -2676,8 +2496,8 @@
           "Message-ID": "<redmine.message-1.20070512151532.2@example.net>",
           "References": "<redmine.message-1.20070512151532.2@example.net>",
           "Subject": "[eCookbook - Help - msg1] First post",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "ecookbook",
           "X-Redmine-Topic-Id": "1",
           "X-Redmine-Sender": "admin",
@@ -2695,7 +2515,7 @@
           "Message-ID",
           "References",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -2717,12 +2537,8 @@
         "to": [
           "dlopper@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[eCookbook - Help - msg1] First post",
         "headers": {
           "From": "Redmine Admin <redmine@example.net>",
@@ -2730,8 +2546,8 @@
           "Message-ID": "<redmine.message-1.20070512151532.3@example.net>",
           "References": "<redmine.message-1.20070512151532.3@example.net>",
           "Subject": "[eCookbook - Help - msg1] First post",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "ecookbook",
           "X-Redmine-Topic-Id": "1",
           "X-Redmine-Sender": "admin",
@@ -2749,7 +2565,7 @@
           "Message-ID",
           "References",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -2771,12 +2587,8 @@
         "to": [
           "admin@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[eCookbook - Help - msg1] First post",
         "headers": {
           "From": "Redmine Admin <redmine@example.net>",
@@ -2784,8 +2596,8 @@
           "Message-ID": "<redmine.message-1.20070512151532.1@example.net>",
           "References": "<redmine.message-1.20070512151532.1@example.net>",
           "Subject": "[eCookbook - Help - msg1] First post",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "ecookbook",
           "X-Redmine-Topic-Id": "1",
           "X-Redmine-Sender": "admin",
@@ -2803,7 +2615,7 @@
           "Message-ID",
           "References",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -2830,12 +2642,8 @@
         "to": [
           "jsmith@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[eCookbook - Help - msg1] First reply",
         "headers": {
           "From": "Redmine Admin <redmine@example.net>",
@@ -2843,8 +2651,8 @@
           "Message-ID": "<redmine.message-2.20070512151800.2@example.net>",
           "References": "<redmine.message-1.20070512151532.2@example.net>",
           "Subject": "[eCookbook - Help - msg1] First reply",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "ecookbook",
           "X-Redmine-Topic-Id": "1",
           "X-Redmine-Sender": "admin",
@@ -2862,7 +2670,7 @@
           "Message-ID",
           "References",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -2884,12 +2692,8 @@
         "to": [
           "dlopper@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[eCookbook - Help - msg1] First reply",
         "headers": {
           "From": "Redmine Admin <redmine@example.net>",
@@ -2897,8 +2701,8 @@
           "Message-ID": "<redmine.message-2.20070512151800.3@example.net>",
           "References": "<redmine.message-1.20070512151532.3@example.net>",
           "Subject": "[eCookbook - Help - msg1] First reply",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "ecookbook",
           "X-Redmine-Topic-Id": "1",
           "X-Redmine-Sender": "admin",
@@ -2916,7 +2720,7 @@
           "Message-ID",
           "References",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -2938,12 +2742,8 @@
         "to": [
           "admin@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[eCookbook - Help - msg1] First reply",
         "headers": {
           "From": "Redmine Admin <redmine@example.net>",
@@ -2951,8 +2751,8 @@
           "Message-ID": "<redmine.message-2.20070512151800.1@example.net>",
           "References": "<redmine.message-1.20070512151532.1@example.net>",
           "Subject": "[eCookbook - Help - msg1] First reply",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "ecookbook",
           "X-Redmine-Topic-Id": "1",
           "X-Redmine-Sender": "admin",
@@ -2970,7 +2770,7 @@
           "Message-ID",
           "References",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -2997,20 +2797,16 @@
         "to": [
           "jsmith@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[eCookbook] 'CookBook documentation' wiki page has been added",
         "headers": {
           "From": "Redmine Admin <redmine@example.net>",
           "To": "jsmith@somenet.foo",
           "Message-ID": "<redmine.wiki_content-1.20070306231051.2@example.net>",
           "Subject": "[eCookbook] 'CookBook documentation' wiki page has been added",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "ecookbook",
           "X-Redmine-Wiki-Page-Id": "1",
           "X-Redmine-Sender": "admin",
@@ -3027,7 +2823,7 @@
           "To",
           "Message-ID",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -3049,20 +2845,16 @@
         "to": [
           "dlopper@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[eCookbook] 'CookBook documentation' wiki page has been added",
         "headers": {
           "From": "Redmine Admin <redmine@example.net>",
           "To": "dlopper@somenet.foo",
           "Message-ID": "<redmine.wiki_content-1.20070306231051.3@example.net>",
           "Subject": "[eCookbook] 'CookBook documentation' wiki page has been added",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "ecookbook",
           "X-Redmine-Wiki-Page-Id": "1",
           "X-Redmine-Sender": "admin",
@@ -3079,7 +2871,7 @@
           "To",
           "Message-ID",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -3106,20 +2898,16 @@
         "to": [
           "jsmith@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[eCookbook] 'CookBook documentation' wiki page has been updated",
         "headers": {
           "From": "Redmine Admin <redmine@example.net>",
           "To": "jsmith@somenet.foo",
           "Message-ID": "<redmine.wiki_content-1.20070306231051.2@example.net>",
           "Subject": "[eCookbook] 'CookBook documentation' wiki page has been updated",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "ecookbook",
           "X-Redmine-Wiki-Page-Id": "1",
           "X-Redmine-Sender": "admin",
@@ -3136,7 +2924,7 @@
           "To",
           "Message-ID",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -3158,20 +2946,16 @@
         "to": [
           "dlopper@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[eCookbook] 'CookBook documentation' wiki page has been updated",
         "headers": {
           "From": "Redmine Admin <redmine@example.net>",
           "To": "dlopper@somenet.foo",
           "Message-ID": "<redmine.wiki_content-1.20070306231051.3@example.net>",
           "Subject": "[eCookbook] 'CookBook documentation' wiki page has been updated",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "ecookbook",
           "X-Redmine-Wiki-Page-Id": "1",
           "X-Redmine-Sender": "admin",
@@ -3188,7 +2972,7 @@
           "To",
           "Message-ID",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -3210,20 +2994,16 @@
         "to": [
           "admin@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[eCookbook] 'CookBook documentation' wiki page has been updated",
         "headers": {
           "From": "Redmine Admin <redmine@example.net>",
           "To": "admin@somenet.foo",
           "Message-ID": "<redmine.wiki_content-1.20070306231051.1@example.net>",
           "Subject": "[eCookbook] 'CookBook documentation' wiki page has been updated",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "ecookbook",
           "X-Redmine-Wiki-Page-Id": "1",
           "X-Redmine-Sender": "admin",
@@ -3240,7 +3020,7 @@
           "To",
           "Message-ID",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -3267,20 +3047,16 @@
         "to": [
           "jsmith@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "Your Redmine account activation",
         "headers": {
           "From": "Redmine <redmine@example.net>",
           "To": "jsmith@somenet.foo",
-          "Message-ID": "<6968d6c00_2b0d3d128474281@kurisu.mail>",
+          "Message-ID": "<6968d6c00_2127361ae07469d@kurisu.mail>",
           "Subject": "Your Redmine account activation",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Mailer": "Redmine",
           "X-Redmine-Host": "localhost:3000",
           "X-Redmine-Site": "Redmine",
@@ -3294,7 +3070,7 @@
           "To",
           "Message-ID",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Mailer",
@@ -3318,20 +3094,16 @@
         "to": [
           "dlopper@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "Your Redmine account activation",
         "headers": {
           "From": "Redmine <redmine@example.net>",
           "To": "dlopper@somenet.foo",
-          "Message-ID": "<6968d6c00_2b0d3d12847442@kurisu.mail>",
+          "Message-ID": "<6968d6c00_2127361ae074828@kurisu.mail>",
           "Subject": "Your Redmine account activation",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Mailer": "Redmine",
           "X-Redmine-Host": "localhost:3000",
           "X-Redmine-Site": "Redmine",
@@ -3345,7 +3117,7 @@
           "To",
           "Message-ID",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Mailer",
@@ -3369,20 +3141,16 @@
         "to": [
           "admin@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "Redmine account activation request",
         "headers": {
           "From": "Redmine <redmine@example.net>",
           "To": "admin@somenet.foo",
-          "Message-ID": "<6968d6c00_2b0d3d12847468e@kurisu.mail>",
+          "Message-ID": "<6968d6c00_2127361ae0750e4@kurisu.mail>",
           "Subject": "Redmine account activation request",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Mailer": "Redmine",
           "X-Redmine-Host": "localhost:3000",
           "X-Redmine-Site": "Redmine",
@@ -3396,7 +3164,7 @@
           "To",
           "Message-ID",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Mailer",
@@ -3420,20 +3188,16 @@
         "to": [
           "dlopper@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "Your Redmine account activation",
         "headers": {
           "From": "Redmine <redmine@example.net>",
           "To": "dlopper@somenet.foo",
-          "Message-ID": "<6968d6c00_2b0d3d12847484c@kurisu.mail>",
+          "Message-ID": "<6968d6c00_2127361ae07526c@kurisu.mail>",
           "Subject": "Your Redmine account activation",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Mailer": "Redmine",
           "X-Redmine-Host": "localhost:3000",
           "X-Redmine-Site": "Redmine",
@@ -3447,7 +3211,7 @@
           "To",
           "Message-ID",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Mailer",
@@ -3471,20 +3235,16 @@
         "to": [
           "jsmith@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "Your Redmine password",
         "headers": {
           "From": "Redmine <redmine@example.net>",
           "To": "jsmith@somenet.foo",
-          "Message-ID": "<6968d6c00_2b0d3d1284750b2@kurisu.mail>",
+          "Message-ID": "<6968d6c00_2127361ae075491@kurisu.mail>",
           "Subject": "Your Redmine password",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Mailer": "Redmine",
           "X-Redmine-Host": "localhost:3000",
           "X-Redmine-Site": "Redmine",
@@ -3498,7 +3258,7 @@
           "To",
           "Message-ID",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Mailer",
@@ -3517,20 +3277,16 @@
         "to": [
           "other@example.net"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "Your Redmine password",
         "headers": {
           "From": "Redmine <redmine@example.net>",
           "To": "other@example.net",
-          "Message-ID": "<6968d6c00_2b0d3d1284752bb@kurisu.mail>",
+          "Message-ID": "<6968d6c00_2127361ae075688@kurisu.mail>",
           "Subject": "Your Redmine password",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Mailer": "Redmine",
           "X-Redmine-Host": "localhost:3000",
           "X-Redmine-Site": "Redmine",
@@ -3544,7 +3300,7 @@
           "To",
           "Message-ID",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Mailer",
@@ -3568,20 +3324,16 @@
         "to": [
           "dlopper@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "Your Redmine account activation",
         "headers": {
           "From": "Redmine <redmine@example.net>",
           "To": "dlopper@somenet.foo",
-          "Message-ID": "<6968d6c00_2b0d3d128475455@kurisu.mail>",
+          "Message-ID": "<6968d6c00_2127361ae0758dd@kurisu.mail>",
           "Subject": "Your Redmine account activation",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Mailer": "Redmine",
           "X-Redmine-Host": "localhost:3000",
           "X-Redmine-Site": "Redmine",
@@ -3595,7 +3347,7 @@
           "To",
           "Message-ID",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Mailer",
@@ -3619,20 +3371,16 @@
         "to": [
           "jsmith@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[Redmine] Security notification",
         "headers": {
           "From": "Redmine <redmine@example.net>",
           "To": "jsmith@somenet.foo",
-          "Message-ID": "<6968d6c00_2b0d3d12847566a@kurisu.mail>",
+          "Message-ID": "<6968d6c00_2127361ae07608a@kurisu.mail>",
           "Subject": "[Redmine] Security notification",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Sender": "jsmith",
           "X-Redmine-Url": "http://localhost:3000/my/password",
           "X-Mailer": "Redmine",
@@ -3648,7 +3396,7 @@
           "To",
           "Message-ID",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Sender",
@@ -3675,20 +3423,16 @@
           "old@example.net",
           "jsmith@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[Redmine] Security notification",
         "headers": {
           "From": "Redmine <redmine@example.net>",
           "To": "old@example.net, jsmith@somenet.foo",
-          "Message-ID": "<6968d6c00_2b0d3d1284758c7@kurisu.mail>",
+          "Message-ID": "<6968d6c00_2127361ae076227@kurisu.mail>",
           "Subject": "[Redmine] Security notification",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Sender": "admin",
           "X-Mailer": "Redmine",
           "X-Redmine-Host": "localhost:3000",
@@ -3703,7 +3447,7 @@
           "To",
           "Message-ID",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Sender",
@@ -3728,20 +3472,16 @@
         "to": [
           "jsmith@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[Redmine] Security notification",
         "headers": {
           "From": "Redmine <redmine@example.net>",
           "To": "jsmith@somenet.foo",
-          "Message-ID": "<6968d6c00_2b0d3d128476012@kurisu.mail>",
+          "Message-ID": "<6968d6c00_2127361ae076476@kurisu.mail>",
           "Subject": "[Redmine] Security notification",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Sender": "jsmith",
           "X-Mailer": "Redmine",
           "X-Redmine-Host": "localhost:3000",
@@ -3756,7 +3496,7 @@
           "To",
           "Message-ID",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Sender",
@@ -3781,20 +3521,16 @@
         "to": [
           "admin@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[Redmine] Security notification",
         "headers": {
           "From": "Redmine <redmine@example.net>",
           "To": "admin@somenet.foo",
-          "Message-ID": "<6968d6c00_2b0d3d128476224@kurisu.mail>",
+          "Message-ID": "<6968d6c00_2127361ae0766dd@kurisu.mail>",
           "Subject": "[Redmine] Security notification",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Sender": "admin",
           "X-Mailer": "Redmine",
           "X-Redmine-Host": "localhost:3000",
@@ -3809,7 +3545,7 @@
           "To",
           "Message-ID",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Sender",
@@ -3834,20 +3570,16 @@
         "to": [
           "admin@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "Redmine test",
         "headers": {
           "From": "Redmine <redmine@example.net>",
           "To": "admin@somenet.foo",
-          "Message-ID": "<6968d6c00_2b0d3d128476481@kurisu.mail>",
+          "Message-ID": "<6968d6c00_2127361ae0768e3@kurisu.mail>",
           "Subject": "Redmine test",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Mailer": "Redmine",
           "X-Redmine-Host": "localhost:3000",
           "X-Redmine-Site": "Redmine",
@@ -3861,7 +3593,7 @@
           "To",
           "Message-ID",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Mailer",
@@ -3885,20 +3617,16 @@
         "to": [
           "dlopper@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "1 issue(s) due in the next 7 days",
         "headers": {
           "From": "Redmine <redmine@example.net>",
           "To": "dlopper@somenet.foo",
-          "Message-ID": "<6968d6c00_2b0d3d128476688@kurisu.mail>",
+          "Message-ID": "<6968d6c00_2127361ae07705c@kurisu.mail>",
           "Subject": "1 issue(s) due in the next 7 days",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Mailer": "Redmine",
           "X-Redmine-Host": "localhost:3000",
           "X-Redmine-Site": "Redmine",
@@ -3912,7 +3640,7 @@
           "To",
           "Message-ID",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Mailer",
@@ -3936,20 +3664,16 @@
         "to": [
           "dlopper@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "1 issue(s) due in the next 42 days",
         "headers": {
           "From": "Redmine <redmine@example.net>",
           "To": "dlopper@somenet.foo",
-          "Message-ID": "<6968d6c00_2b0d3d1284768e4@kurisu.mail>",
+          "Message-ID": "<6968d6c00_2127361ae077292@kurisu.mail>",
           "Subject": "1 issue(s) due in the next 42 days",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Mailer": "Redmine",
           "X-Redmine-Host": "localhost:3000",
           "X-Redmine-Site": "Redmine",
@@ -3963,7 +3687,7 @@
           "To",
           "Message-ID",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Mailer",
@@ -3987,20 +3711,16 @@
         "to": [
           "dlopper@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "1 issue(s) due in the next 42 days",
         "headers": {
           "From": "Redmine <redmine@example.net>",
           "To": "dlopper@somenet.foo",
-          "Message-ID": "<6968d6c00_2b0d3d1284770c6@kurisu.mail>",
+          "Message-ID": "<6968d6c00_2127361ae07746c@kurisu.mail>",
           "Subject": "1 issue(s) due in the next 42 days",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Mailer": "Redmine",
           "X-Redmine-Host": "localhost:3000",
           "X-Redmine-Site": "Redmine",
@@ -4014,7 +3734,7 @@
           "To",
           "Message-ID",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Mailer",
@@ -4038,12 +3758,8 @@
         "to": [
           "jsmith@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[eCookbook - Bug #1] (Assigned) Cannot print recipes",
         "headers": {
           "From": "John Smith <redmine@example.net>",
@@ -4051,8 +3767,8 @@
           "Message-ID": "<redmine.journal-6.20260115120000.2@example.net>",
           "References": "<redmine.issue-1.20260112120000.2@example.net>",
           "Subject": "[eCookbook - Bug #1] (Assigned) Cannot print recipes",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "ecookbook",
           "X-Redmine-Issue-Tracker": "Bug",
           "X-Redmine-Issue-Id": "1",
@@ -4073,7 +3789,7 @@
           "Message-ID",
           "References",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",
@@ -4098,12 +3814,8 @@
         "to": [
           "dlopper@somenet.foo"
         ],
-        "cc": [
-
-        ],
-        "bcc": [
-
-        ],
+        "cc": [],
+        "bcc": [],
         "subject": "[eCookbook - Bug #1] (Assigned) Cannot print recipes",
         "headers": {
           "From": "John Smith <redmine@example.net>",
@@ -4111,8 +3823,8 @@
           "Message-ID": "<redmine.journal-6.20260115120000.3@example.net>",
           "References": "<redmine.issue-1.20260112120000.3@example.net>",
           "Subject": "[eCookbook - Bug #1] (Assigned) Cannot print recipes",
-          "Mime-Version": "1.0",
-          "Content-Type": "multipart/alternative; charset=UTF-8; boundary=BOUNDARY",
+          "MIME-Version": "1.0",
+          "Content-Type": "multipart/alternative; boundary=BOUNDARY; charset=UTF-8",
           "X-Redmine-Project": "ecookbook",
           "X-Redmine-Issue-Tracker": "Bug",
           "X-Redmine-Issue-Id": "1",
@@ -4133,7 +3845,7 @@
           "Message-ID",
           "References",
           "Subject",
-          "Mime-Version",
+          "MIME-Version",
           "Content-Type",
           "Content-Transfer-Encoding",
           "X-Redmine-Project",

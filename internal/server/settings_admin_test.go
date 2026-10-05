@@ -49,6 +49,9 @@ func compareSettingsGolden(t *testing.T, name, got, base string, edit ...func(st
 // compareGoldenDir は got と dir/name を正規化して比較する（compareAdminGolden のディレクトリ指定版）。
 func compareGoldenDir(t *testing.T, dir, name, got, base string, edit ...func(string) string) {
 	t.Helper()
+	if recaptureGolden(t, dir+name, got, base) {
+		return
+	}
 	raw, err := os.ReadFile(dir + name)
 	if err != nil {
 		t.Fatal(err)

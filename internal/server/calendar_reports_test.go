@@ -13,7 +13,7 @@ import (
 
 // このファイルはカレンダー（CalendarsController）とレポート（ReportsController）の参照 Redmine との比較テスト。
 //
-// testdata/calendar_reports/* は参照 Redmine 6.1.2（http://127.0.0.1:3998）の出力を正規化し、
+// testdata/calendar_reports/* は参照 Redmine 7.0.1（http://127.0.0.1:3998）の出力を正規化し、
 // HTML は <title>・ページ固有の head・#main だけを抜き出したもの（asNormalize）。
 // 取り直すときは BUROPHER_CALREP_GOLDEN_REF=http://127.0.0.1:3998 go test -run TestCalendarReportsMatchRedmine ./internal/server
 // （参照側は GET のみ）。

@@ -58,6 +58,9 @@ func TestAPIQueries(t *testing.T) {
 			}
 			res := apiGet(t, ts, tc.path, tc.opts...)
 			res.expectStatus(t, http.StatusOK)
+			if recaptureGolden(t, "testdata/queries/"+tc.name, res.Body, ts.URL) {
+				return
+			}
 			if res.Body != string(want) {
 				t.Errorf("GET %s\n got: %s\nwant: %s", tc.path, res.Body, want)
 			}

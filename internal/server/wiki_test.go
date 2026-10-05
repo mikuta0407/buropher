@@ -52,6 +52,9 @@ func mainPart(s string) string {
 // 環境変数 WIKI_DUMP が設定されていれば、取得した本文をそのディレクトリに書き出す（差分調査用）。
 func compareWikiGolden(t *testing.T, name, got, base string) {
 	t.Helper()
+	if recaptureGolden(t, "testdata/wiki/"+name, got, base) {
+		return
+	}
 	got = normalizeWiki(got, base)
 	if dir := os.Getenv("WIKI_DUMP"); dir != "" {
 		_ = os.WriteFile(filepath.Join(dir, name), []byte(got), 0o644)

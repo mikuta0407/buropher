@@ -30,6 +30,9 @@ func comparePage(t *testing.T, ts *httptest.Server, c *http.Client, path, golden
 	}
 	// 画像のダイジェストは buropher のアセットパイプラインと Sprockets で異なるため伏せる（tools/compat の正規化と同じ）
 	got := imageDigestRe.ReplaceAllString(normalize(normalizeFixture(body, ts.URL)), "-DIGEST.$1")
+	if recaptureGolden(t, "testdata/wfcf/"+golden, got, ts.URL) {
+		return got
+	}
 	if dir := os.Getenv("WFCF_DUMP"); dir != "" {
 		_ = os.WriteFile(filepath.Join(dir, golden), []byte(got), 0o644)
 	}

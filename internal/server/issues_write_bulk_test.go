@@ -18,6 +18,9 @@ import (
 // compareIssuesWriteGolden は testdata/issues_write/name と比較する。
 func compareIssuesWriteGolden(t *testing.T, name, got, base string) {
 	t.Helper()
+	if recaptureGolden(t, "testdata/issues_write/"+name, got, base) {
+		return
+	}
 	raw, err := os.ReadFile("testdata/issues_write/" + name)
 	if err != nil {
 		t.Fatal(err)

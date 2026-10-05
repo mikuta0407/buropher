@@ -13,7 +13,7 @@ import (
 
 // このファイルは工数（TimelogController・ContextMenusController#time_entries・API）の参照 Redmine との比較テスト。
 //
-// testdata/timelog/* は参照 Redmine 6.1.2（http://127.0.0.1:3998）の出力を正規化し、HTML は <title>・
+// testdata/timelog/* は参照 Redmine 7.0.1（http://127.0.0.1:3998）の出力を正規化し、HTML は <title>・
 // ページ固有の head・#main だけを抜き出したもの（activity_search_test.go と同じ形式）。
 // 取り直すときは BUROPHER_TIMELOG_GOLDEN_REF=http://127.0.0.1:3998 go test -run TestTimelogMatchRedmine ./internal/server
 // （参照側は GET のみ）。

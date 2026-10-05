@@ -73,6 +73,7 @@ func newFixtureServerOn(t *testing.T, d *db.DB, extra ...func(a *handler.App, r 
 	}
 	ts := httptest.NewServer(srv.Handler())
 	t.Cleanup(ts.Close)
+	setRecaptureFrom(ts.URL)
 	return srv, ts
 }
 

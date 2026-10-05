@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title/>
-  <link rel="self" href="{{BASE}}/issues/1.atom?key=a4b4af82aca56a364c252b708ec557b21693ab3e"/>
+  <link rel="self" href="{{BASE}}/issues/1.atom?key=52a0a98b39e831212a989aa8822ff2d5aa9d1ea4"/>
   <link rel="alternate" href="{{BASE}}/"/>
   <id>{{BASE}}/</id>
   <sprite_icon>{{BASE}}/assets/favicon-0e291875.ico</sprite_icon>

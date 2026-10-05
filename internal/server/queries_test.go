@@ -24,6 +24,9 @@ var queriesJumpRe = regexp.MustCompile(`<div id="project-jump".*</div></div></di
 
 func compareQueriesGolden(t *testing.T, name, got, base string) {
 	t.Helper()
+	if recaptureGolden(t, "testdata/queries/"+name, got, base) {
+		return
+	}
 	raw, err := os.ReadFile("testdata/queries/" + name)
 	if err != nil {
 		t.Fatal(err)

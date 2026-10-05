@@ -16,7 +16,7 @@ import (
 
 // このファイルはバージョン（VersionsController: ロードマップ・詳細・フォーム・API）の参照 Redmine との比較テスト。
 //
-// testdata/versions/* は参照 Redmine 6.1.2（http://127.0.0.1:3998）の出力を asNormalize で正規化したもの
+// testdata/versions/* は参照 Redmine 7.0.1（http://127.0.0.1:3998）の出力を asNormalize で正規化したもの
 // （HTML は <title>・ページ固有の head・#main だけ）。取り直すときは
 // BUROPHER_VERSIONS_GOLDEN_REF=http://127.0.0.1:3998 go test -run TestVersionsMatchRedmine ./internal/server
 

@@ -1,4 +1,4 @@
-# Rouge::Lexer.all.sort_by(&:tag) の tag / desc / aliases（Redmine 7.0.1 (Rouge 5.1.0) の参照環境から抽出。HTML エスケープ済み）
+# Rouge::Lexer.all.sort_by(&:tag) の tag / desc / aliases（Redmine 7.0.1 の参照環境の /help/code_highlighting から抽出。HTML エスケープ済み）
 abap	SAP - Advanced Business Application Programming	
 actionscript	ActionScript	as, as3
 ada	The Ada 2012 programming language	

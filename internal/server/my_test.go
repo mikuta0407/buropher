@@ -20,7 +20,7 @@ import (
 
 // このファイルはマイページ・個人設定（MyController）の参照 Redmine との比較テストと、書き込みの振る舞いのテスト。
 //
-// testdata/my/* は参照 Redmine 6.1.2 の出力を正規化し、HTML は <title>・ページ固有の head・#main だけを
+// testdata/my/* は参照 Redmine 7.0.1 の出力を正規化し、HTML は <title>・ページ固有の head・#main だけを
 // 抜き出したもの（asNormalize。プロジェクトジャンプボックスは比較しない）。
 //   - GET のみのケースは共有の参照環境（http://127.0.0.1:3998）から:
 //     BUROPHER_MY_GOLDEN_REF=http://127.0.0.1:3998 go test -run TestMyPagesMatchRedmine ./internal/server

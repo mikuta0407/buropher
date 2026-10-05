@@ -50,7 +50,7 @@ func FuzzMessageHeaders(f *testing.F) {
 		head := string(raw[:end+2])
 		allowed := map[string]bool{
 			"Date": true, "From": true, "To": true, "Cc": true, "Message-ID": true, "In-Reply-To": true,
-			"References": true, "Subject": true, "Mime-Version": true, "Content-Type": true,
+			"References": true, "Subject": true, "MIME-Version": true, "Mime-Version": true, "Content-Type": true,
 			"Content-Transfer-Encoding": true, "X-Redmine-Project": true, "X-Redmine-Issue-Assignee": true,
 		}
 		if strings.Contains(strings.ReplaceAll(head, "\r\n", ""), "\r") || strings.Contains(strings.ReplaceAll(head, "\r\n", ""), "\n") {

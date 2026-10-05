@@ -35,6 +35,9 @@ func maskRepoURL(s string) string { return repoURLRe.ReplaceAllString(s, "file:/
 // compareProjectsGolden は got と testdata/projects/name を比較する（ジャンプボックスは常に伏せる）。
 func compareProjectsGolden(t *testing.T, name, got, base string, edit ...func(string) string) {
 	t.Helper()
+	if recaptureGolden(t, "testdata/projects/"+name, got, base) {
+		return
+	}
 	raw, err := os.ReadFile("testdata/projects/" + name)
 	if err != nil {
 		t.Fatal(err)
@@ -136,6 +139,7 @@ func TestProjectsPagesMatchRedmine(t *testing.T) {
 			}
 			if strings.HasSuffix(tc.name, ".csv") {
 				body = strings.TrimPrefix(body, "\xEF\xBB\xBF")
+				recaptureGolden(t, "testdata/projects/"+tc.name, body, ts.URL)
 				raw, _ := os.ReadFile("testdata/projects/" + tc.name)
 				if want := strings.TrimPrefix(string(raw), "\xEF\xBB\xBF"); body != want {
 					t.Fatalf("csv differs\n got: %q\nwant: %q", body, want)

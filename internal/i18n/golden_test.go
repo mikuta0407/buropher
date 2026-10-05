@@ -14,7 +14,7 @@ import (
 	"time"
 )
 
-// ゴールデンデータは testdata/gen_golden.rb で実際の Redmine 6.1.2（Rails I18n）から生成したもの。
+// ゴールデンデータは testdata/gen_golden.rb で実際の Redmine 7.0.1（Rails I18n）から生成したもの。
 //
 // buropher は Redmine 本体の訳文の値に含まれる製品名 "Redmine" を読み込み時に "Buropher" へ置換する
 // （brand.SubstituteLocale）。ゴールデンは Redmine の出力そのままなので、訳文を返す関数（l / ll / lu /

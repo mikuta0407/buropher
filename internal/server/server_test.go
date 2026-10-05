@@ -55,6 +55,7 @@ func newTestServer(t *testing.T, extra map[string]any) (*httptest.Server, *db.DB
 	}
 	ts := httptest.NewServer(srv.Handler())
 	t.Cleanup(ts.Close)
+	setRecaptureFrom(ts.URL)
 	return ts, d
 }
 
@@ -72,7 +73,7 @@ var (
 )
 
 // normalize は CSRF トークン・form の乱数名・アセットのダイジェストを伏せる
-// （testdata の期待値は参照 Redmine 6.1.2 の生の出力に同じ置換をしたもの）。
+// （testdata の期待値は参照 Redmine 7.0.1 の生の出力に同じ置換をしたもの）。
 func normalize(s string) string {
 	s = csrfMetaRe.ReplaceAllString(s, `content="{{CSRF}}"`)
 	s = csrfInputRe.ReplaceAllString(s, `name="authenticity_token" value="{{CSRF}}"`)
@@ -104,6 +105,9 @@ func post(t *testing.T, c *http.Client, u string, form url.Values) (*http.Respon
 
 func compareGolden(t *testing.T, name, got string) {
 	t.Helper()
+	if recaptureGolden(t, "testdata/"+name, normalize(got), recaptureBase()) {
+		return
+	}
 	want, err := os.ReadFile("testdata/" + name)
 	if err != nil {
 		t.Fatal(err)

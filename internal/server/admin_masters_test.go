@@ -33,6 +33,9 @@ func normalizeAdmin(s, base string) string {
 // compareAdminGolden は got と testdata/admin_masters/name を正規化して比較する。
 func compareAdminGolden(t *testing.T, name, got, base string, edit ...func(string) string) {
 	t.Helper()
+	if recaptureGolden(t, "testdata/admin_masters/"+name, got, base) {
+		return
+	}
 	raw, err := os.ReadFile("testdata/admin_masters/" + name)
 	if err != nil {
 		t.Fatal(err)

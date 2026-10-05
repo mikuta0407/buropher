@@ -70,6 +70,9 @@ func normalizeIssuesRead(s, base string, html bool) string {
 
 func compareIssuesGolden(t *testing.T, name, got, base string) {
 	t.Helper()
+	if recaptureGolden(t, "testdata/issues_read/"+name, got, base) {
+		return
+	}
 	raw, err := os.ReadFile("testdata/issues_read/" + name)
 	if err != nil {
 		t.Fatal(err)
