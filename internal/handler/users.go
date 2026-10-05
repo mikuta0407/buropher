@@ -897,12 +897,8 @@ func (a *App) UsersDestroy(c *Req) {
 	p := c.Params()
 	if httpx.IsAPIRequest(c.R) || p.Present("lock") || (p.Has("confirm") && p.String("confirm") == u.Login) {
 		if p.Present("lock") {
-			if err := a.DB.WithTx(c.Ctx(), func(tx *db.Tx) error {
-				if err := repository.SetUsersStatus(c.Ctx(), tx, []int64{u.ID}, domain.StatusLocked); err != nil {
-					return err
-				}
-				return repository.DeleteUserTokensByActions(c.Ctx(), tx, u.ID, "recovery", "autologin", "session")
-			}); err != nil {
+			// @user.lock!（update_attribute なのでコールバックを通る）
+			if err := a.updateUserStatus(c, u, domain.StatusLocked); err != nil {
 				a.serverError(c, err)
 				return
 			}
@@ -973,7 +969,9 @@ func (a *App) UsersBulkLock(c *Req) { a.bulkUpdateStatus(c, domain.StatusLocked)
 // UsersBulkUnlock は users#bulk_unlock（POST /users/bulk_unlock）。
 func (a *App) UsersBulkUnlock(c *Req) { a.bulkUpdateStatus(c, domain.StatusActive) }
 
-// bulkUpdateStatus は UsersController#bulk_update_status（update_all のためコールバックなし）。
+// bulkUpdateStatus は UsersController#bulk_update_status。
+// 7.0.2 #44559 で users.each { update_attribute(:status, status) } になり、コールバック
+// （destroy_tokens・管理者のセキュリティ通知）を通る。
 func (a *App) bulkUpdateStatus(c *Req, status int) {
 	users, err := repository.LoggedUsersByIDs(c.Ctx(), a.DB, idsFromParam(c.Params().Slice("ids")), c.User.ID)
 	if err != nil {
@@ -984,29 +982,39 @@ func (a *App) bulkUpdateStatus(c *Req, status int) {
 		c.Render404("")
 		return
 	}
-	ids := make([]int64, len(users))
-	for i, u := range users {
-		ids[i] = u.ID
-	}
-	if err := a.DB.WithTx(c.Ctx(), func(tx *db.Tx) error {
-		if err := repository.SetUsersStatus(c.Ctx(), tx, ids, status); err != nil {
-			return err
+	for _, u := range users {
+		if err := a.updateUserStatus(c, u, status); err != nil {
+			a.serverError(c, err)
+			return
 		}
-		if status != domain.StatusLocked {
-			return nil
-		}
-		// buropher 独自（セキュリティ）: Redmine の update_all はコールバックを通らずセッション等が残り、
-		// ロック解除で以前のセッション・自動ログインが復活する。users#destroy の lock と同じく破棄する。
-		for _, id := range ids {
-			if err := repository.DeleteUserTokensByActions(c.Ctx(), tx, id, "recovery", "autologin", "session"); err != nil {
-				return err
-			}
-		}
-		return nil
-	}); err != nil {
-		a.serverError(c, err)
-		return
 	}
 	c.Flash().SetNotice(c.L("notice_successful_update"))
 	c.Redirect("/users")
+}
+
+// updateUserStatus は user.update_attribute(:status, status)（User#lock! など）と after_save のコールバック:
+// 有効でなくなったら recovery・autologin・session トークンを消し（destroy_tokens）、
+// 管理者のロック・ロック解除を全管理者へ通知する（deliver_security_notification）。
+func (a *App) updateUserStatus(c *Req, u *domain.User, status int) error {
+	before := userSavedSnapshot{admin: u.AdminFlag, status: u.Status}
+	changed := false
+	if err := a.DB.WithTx(c.Ctx(), func(tx *db.Tx) error {
+		var err error
+		if changed, err = repository.UpdateUserStatusFrom(c.Ctx(), tx, u.ID, u.Status, status, a.now()); err != nil {
+			return err
+		}
+		if status == domain.StatusActive {
+			return nil
+		}
+		// buropher: 状態が変わらなくても（既にロック済みなど）ロックするならセッション等は破棄する
+		return repository.DeleteUserTokensByActions(c.Ctx(), tx, u.ID, "recovery", "autologin", "session")
+	}); err != nil {
+		return err
+	}
+	if changed {
+		after := *u
+		after.Status = status
+		a.notifyUserSaved(c, &after, before, "")
+	}
+	return nil
 }

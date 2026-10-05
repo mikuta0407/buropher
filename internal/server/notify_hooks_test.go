@@ -99,4 +99,29 @@ func TestNotifyHooksFromActions(t *testing.T) {
 			}
 		}
 	})
+
+	// 7.0.2 #44559: 一括ロック・ロック解除もユーザーのコールバック（管理者のセキュリティ通知）を通す
+	t.Run("bulk_lock_and_unlock_admin", func(t *testing.T) {
+		if _, err := e.d.Exec(e.ctx, `UPDATE user_accounts SET admin = ? WHERE principal_id = 2`, true); err != nil {
+			t.Fatal(err)
+		}
+		c := login(t, ts, "admin", "admin")
+		for _, x := range []struct{ path, text string }{
+			{"/users/bulk_lock", "Administrator jsmith was removed."},
+			{"/users/bulk_unlock", "Administrator jsmith was added."},
+		} {
+			e.sender.Clear()
+			_, body := get(t, c, ts.URL+"/users")
+			post(t, c, ts.URL+x.path, url.Values{"authenticity_token": {csrfToken(t, body)}, "ids[]": {"2"}})
+			e.run()
+			ms := e.sender.Messages()
+			found := false
+			for _, m := range ms {
+				found = found || strings.Contains(m.Text, x.text)
+			}
+			if !found {
+				t.Errorf("%s: mails = %v", x.path, subjectsTo(ms))
+			}
+		}
+	})
 }
