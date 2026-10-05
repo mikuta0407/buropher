@@ -12,6 +12,7 @@ import (
 	"strings"
 	"time"
 	"unicode"
+	"unicode/utf8"
 
 	"github.com/mikuta0407/buropher/internal/customfield"
 	"github.com/mikuta0407/buropher/internal/db"
@@ -479,22 +480,25 @@ var reTokenQuotes = regexp.MustCompile(`\A"\p{Zs}*|\p{Zs}*"\z`)
 
 // Tokenize は Redmine::Search::Tokenizer#tokens: 空白区切り (引用符で句)、重複除去、
 // 1 文字の語は漢字のみ残し、先頭 5 語。
+// buropher 独自（セキュリティ）: 重複除去をすべての語どうしの比較で行うと長い検索語で二次の時間がかかるため、
+// 集合で重複を除き、残す語が 5 つそろった時点で打ち切る（結果は Redmine の uniq → select → first(5) と同じ）。
 func Tokenize(question string) []string {
-	var tokens []string
-	for _, m := range reToken.FindAllString(question, -1) {
-		t := reTokenQuotes.ReplaceAllString(m, "")
-		if !slices.Contains(tokens, t) {
-			tokens = append(tokens, t)
-		}
-	}
+	seen := map[string]bool{}
 	var out []string
-	for _, t := range tokens {
-		if len([]rune(t)) > 1 || containsHan(t) {
+	for rest := question; len(out) < 5; {
+		loc := reToken.FindStringIndex(rest)
+		if loc == nil {
+			break
+		}
+		t := reTokenQuotes.ReplaceAllString(rest[loc[0]:loc[1]], "")
+		rest = rest[loc[1]:]
+		if seen[t] {
+			continue
+		}
+		seen[t] = true
+		if utf8.RuneCountInString(t) > 1 || containsHan(t) {
 			out = append(out, t)
 		}
-	}
-	if len(out) > 5 {
-		out = out[:5]
 	}
 	return out
 }
