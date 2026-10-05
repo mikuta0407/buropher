@@ -35,7 +35,8 @@ type sudoRequirement struct {
 var sudoModeTable = map[string][]sudoRequirement{
 	"settings":        {{actions: []string{"index", "edit", "plugin"}}},
 	"email_addresses": {{actions: []string{"create", "update", "destroy"}}},
-	"auth_sources":    {{actions: []string{"update", "destroy"}}},
+	// buropher 拡張: LDAP 同期（sync）はユーザーの作成・ロックを一括で行うため、users の一括ロックと同じく sudo を求める
+	"auth_sources": {{actions: []string{"update", "destroy", "sync"}}},
 	"my": {
 		{actions: []string{"account"}, methods: []string{http.MethodPut}},
 		{actions: []string{"reset_atom_key", "reset_api_key", "show_api_key", "destroy"}},
@@ -50,10 +51,14 @@ var sudoModeTable = map[string][]sudoRequirement{
 	"users":   {{actions: []string{"create", "update", "destroy", "bulk_destroy", "bulk_lock", "bulk_unlock"}}},
 	"roles":   {{actions: []string{"create", "update", "destroy", "update_permissions"}}},
 	"members": {{actions: []string{"create", "update", "destroy"}}},
+	// buropher 拡張: 管理画面からのメンバーシップの追加・変更・削除は members と同じ操作のため sudo を求める
+	"principal_memberships": {{actions: []string{"create", "update", "destroy"}}},
+	// buropher 拡張: 管理者による他ユーザーの 2 要素認証の解除は認証手段を弱める操作のため sudo を求める
+	"twofa": {{actions: []string{"admin_deactivate"}}},
 }
 
 // adminLayoutControllers は require_sudo_mode を宣言するコントローラのうち layout 'admin' のもの。
-var adminLayoutControllers = []string{"settings", "auth_sources", "groups", "users", "roles"}
+var adminLayoutControllers = []string{"settings", "auth_sources", "groups", "users", "roles", "principal_memberships"}
 
 // sudoTimeout は SudoMode.timeout。
 func (a *App) sudoTimeout() time.Duration {
