@@ -1,9 +1,10 @@
 # syntax=docker/dockerfile:1
 # Buropher (Redmine-compatible, GPL-2.0-or-later) container image.
 #   docker build -t buropher --build-arg VERSION=$(git describe --tags --always) .
+# Prebuilt images: ghcr.io/mikuta0407/buropher (linux/amd64, linux/arm64; see .github/workflows/docker.yml).
 # Data (SQLite DB, attachments, generated secret key) lives in /data.
 
-FROM golang:1.26-alpine AS build
+FROM --platform=$BUILDPLATFORM golang:1.26-alpine AS build
 WORKDIR /src
 COPY go.mod go.sum ./
 RUN go mod download
@@ -11,7 +12,8 @@ COPY . .
 ARG VERSION=dev
 ARG COMMIT=unknown
 ARG DATE=unknown
-RUN CGO_ENABLED=0 go build -trimpath \
+ARG TARGETOS TARGETARCH
+RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build -trimpath \
       -ldflags "-s -w -X main.version=${VERSION} -X main.commit=${COMMIT} -X main.date=${DATE}" \
       -o /out/buropher ./cmd/buropher
 

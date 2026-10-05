@@ -64,6 +64,18 @@ The repository contains a [`Dockerfile`](../Dockerfile) (Alpine based, includes 
 UID 10001, data in `/data`, health check on `/healthz`) and an example
 [`docker-compose.yml`](../docker-compose.yml).
 
+Prebuilt images are published to `ghcr.io/mikuta0407/buropher` for `linux/amd64` and
+`linux/arm64`: `edge` follows the main branch, `X.Y.Z` / `X.Y` / `latest` are tagged releases.
+
+```sh
+docker volume create buropher-data
+docker run --rm -v buropher-data:/data ghcr.io/mikuta0407/buropher:edge init -admin-password 'change-me'
+docker run -d --name buropher -p 3000:3000 -v buropher-data:/data ghcr.io/mikuta0407/buropher:edge
+```
+
+To build the image yourself with docker compose (set `image:` in `docker-compose.yml` to the
+prebuilt image and remove `build:` to use it instead):
+
 ```sh
 docker compose build
 docker compose run --rm buropher init -admin-password 'change-me'

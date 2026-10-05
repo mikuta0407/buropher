@@ -1,5 +1,7 @@
 # Buropher
 
+日本語 | [English](README.en.md)
+
 Buropher は Redmine 7.0.2 互換（Redmine-compatible）のプロジェクト管理・チケットシステムを Go で再実装したものです。
 シングルバイナリ（`buropher`）で動作します。
 
@@ -21,8 +23,20 @@ Buropher is a Redmine-compatible project management web application written in G
 - [Migrating from Redmine](docs/migration-from-redmine.md) — export / import / verify, cutover checklist
 - [Compatibility](docs/compatibility.md) — what matches Redmine 7.0.2, features added in Redmine 7.0 and known deviations
 - [Development](docs/development.md) — architecture, package map, compat harness, upstream sync, releases
-- Extensions: [OIDC SSO / Entra ID](docs/sso-entra-id.md), [Discord DM notifications](docs/discord.md), [PDF](docs/pdf.md)
+- Extensions: [OIDC SSO / Entra ID](docs/sso-entra-id.md), [LDAP](docs/ldap.md), [Discord DM notifications](docs/discord.md), [PDF](docs/pdf.md)
+- [Performance](docs/performance.md)
 - Internals (Japanese): [schema](docs/schema.md), [export format](docs/export-format.md), [import rules](docs/import.md)
+
+## Docker
+
+```sh
+docker volume create buropher-data
+docker run --rm -v buropher-data:/data ghcr.io/mikuta0407/buropher:edge init -admin-password 'change-me'
+docker run -d --name buropher -p 3000:3000 -v buropher-data:/data ghcr.io/mikuta0407/buropher:edge
+```
+
+イメージは `linux/amd64` / `linux/arm64`。`edge` は main ブランチ、`X.Y.Z` / `X.Y` / `latest` はリリース版です。
+docker compose・PostgreSQL・リバースプロキシなどは [docs/install.md](docs/install.md) を参照してください。
 
 ## ビルド
 

@@ -183,3 +183,6 @@ Tags `v*` trigger `.github/workflows/release.yml`, which runs the tests and
 (amd64, arm64) and windows/amd64, archives with `LICENSE`, `README.md`, `config.example.toml`,
 `docs/` (including the license texts in `docs/licenses/`) and the systemd unit, and `checksums.txt`. The GitHub release is created as a draft.
 Local dry run: `goreleaser release --snapshot --clean`.
+
+`.github/workflows/docker.yml` publishes the container image to `ghcr.io/mikuta0407/buropher`
+(linux/amd64 + linux/arm64): pushes to `main` update `edge`, `v*` tags publish `X.Y.Z`, `X.Y` and `latest`.
