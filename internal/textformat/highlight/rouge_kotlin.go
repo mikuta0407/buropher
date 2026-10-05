@@ -7,7 +7,7 @@ package highlight
 
 import "strings"
 
-// Rouge 4.7 の kotlin.rb / nginx.rb の移植。
+// Rouge 5.1 の kotlin.rb / nginx.rb の移植。
 
 func init() {
 	registerRouge("kotlin", func() *rlexer {
@@ -59,6 +59,7 @@ while yield`), "|")
 			rule(`(?m)"(\\\\|\\"|[^"\n])*["\n]`, "s"),
 			rule(`'\\.'|'[^\\]'`, "sc"),
 			rule(`(@`+className+`)`, "nd"),
+			ruleG(`(@)(file|property|field|get|set|receiver|param|setparam|delegate)(:)`, toks("nd", "k", "p")),
 			ruleF(`(`+className+`)(<)`, func(c *rctx) { c.groups("nc", "p"); c.push("generic_parameters") }),
 			rule(className, "nc"),
 			rule(`(`+name+`)(?=\s*[({])`, "nf"),

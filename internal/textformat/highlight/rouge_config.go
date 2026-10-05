@@ -138,7 +138,7 @@ endregion pragma nullable`), "|")
 	}
 	registerRouge("ini", func() *rlexer { return iniLike("ini", `[\w\-.]+`, `[;#].*?\n`, `=`, true, false) })
 	registerRouge("properties", func() *rlexer {
-		return iniLike("properties", `[\w.-]+`, `[!#].*?\n`, `[=:]`, false, true)
+		return iniLike("properties", `(?:[\w.-]|\\u\h{4}|\\.)+`, `[!#].*`, `[=:]`, false, true)
 	})
 
 	registerRouge("conf", func() *rlexer {

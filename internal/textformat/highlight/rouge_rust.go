@@ -150,6 +150,7 @@ func init() {
 		l.state("string",
 			rule(`"`, "s", "#pop"),
 			rule(escapes, "se"),
+			rule(`\\\n[ \t\r\n]*`, "se"),
 			rule(`(?m)[^"\\]+`, "s"),
 		)
 		return l
