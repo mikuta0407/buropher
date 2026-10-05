@@ -1,0 +1,27 @@
+diff --git a/web/assets/javascript/controllers/table_paste_controller.js b/web/assets/javascript/controllers/table_paste_controller.js
+index 9c32df8..bd1bb68 100644
+--- a/web/assets/javascript/controllers/table_paste_controller.js
++++ b/web/assets/javascript/controllers/table_paste_controller.js
+@@ -1,3 +1,4 @@
++// Buropher: Redmine 7.0.2 のセキュリティ修正 #44429（DOMParser で貼り付け HTML を解析）を当てているため 7.0.1 と異なる（tools/upstream-patches/）。
+ import { Controller } from '@hotwired/stimulus'
+ 
+ class CommonMarkTableFormatter {
+@@ -94,13 +95,13 @@ export default class extends Controller {
+   }
+ 
+   #extractTable(html) {
+-    const temp = document.createElement('div')
+-    temp.innerHTML = html.replace(/\r?\n/g, '')
++    const doc = new DOMParser().parseFromString(html.replace(/\r?\n/g, ''), 'text/html')
++    if (!doc.body) return null
+ 
+-    const tables = temp.querySelectorAll('table')
++    const tables = doc.body.querySelectorAll('table')
+     if (tables.length !== 1) return null
+ 
+-    const clone = temp.cloneNode(true)
++    const clone = doc.body.cloneNode(true)
+     // Ignore metadata elements and confirm that nothing remains outside the table.
+     clone.querySelectorAll('meta, style, link, title, table').forEach(element => element.remove())
+ 
