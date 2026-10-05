@@ -376,6 +376,13 @@ func (r *Renderer) parseNonPreBlocks(text string, obj *Object, macros map[int]st
 			} else {
 				tags = append(tags, strings.ToLower(tag))
 			}
+			// pre/code タグの属性値（data-language 等）の ">" より後に置かれたマクロは実行せずに元の記述へ戻す
+			// （参照 Redmine の出力と揃えるため、属性値の &gt; の位置以降を <pre>/<code> の中のテキストと同じ扱いにする）
+			if len(macros) > 0 {
+				if i := strings.Index(fullTag, "&gt;"); i >= 0 && strings.Contains(fullTag[i:], "{{macro(") {
+					fullTag = fullTag[:i] + r.injectMacros(fullTag[i:], obj, macros, false, opts)
+				}
+			}
 			parsed.WriteString(fullTag)
 		}
 		rest = rest[consumed:]

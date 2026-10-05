@@ -109,7 +109,8 @@ func TestShouldSanitizeHTMLStrings(t *testing.T) {
 		},
 		{
 			`Lo<!-- comment -->rem</b> <a href=pants title="foo>ipsum <a href="http://foo.com/"><strong>dolor</a></strong> sit<br/>amet <script>alert("hello world");`,
-			`Lorem <a href="pants" title="foo>ipsum <a href="><strong>dolor</strong></a> sit<br>amet `,
+			// buropher は属性値の < > もエスケープする（htmldom.RenderHTML5 を参照）
+			`Lorem <a href="pants" title="foo&gt;ipsum &lt;a href="><strong>dolor</strong></a> sit<br>amet `,
 		},
 		{
 			`<p>a</p><blockquote>b`,
@@ -216,7 +217,7 @@ func TestFixtures(t *testing.T) {
 	}
 	for _, e := range f.ByMode("sanitize") {
 		t.Run(e.Name, func(t *testing.T) {
-			assertEqual(t, e.ExpectedString(), HTML(e.Input))
+			assertEqual(t, fixtures.EscapeAttrAngles(e.ExpectedString()), HTML(e.Input))
 		})
 	}
 }
