@@ -232,6 +232,13 @@ func authSourceRegistration(c *Req) (login string, sourceID int64, ok bool) {
 // AccountRegister は account#register（GET / POST /account/register）。
 func (a *App) AccountRegister(c *Req) {
 	login, sourceID, fromAuthSource := authSourceRegistration(c)
+	if fromAuthSource && a.ssoRequired(c) {
+		// buropher 拡張: SSO 必須モードでは認証方式からの登録（パスワードでのログインを伴う）を受け付けない
+		c.Session().Delete("auth_source_registration")
+		c.Flash().SetError(c.L("buropher.sso.notice_password_login_disabled"))
+		c.Redirect("/login")
+		return
+	}
 	if !a.selfRegistration() && !fromAuthSource {
 		c.Redirect("/")
 		return
@@ -356,6 +363,13 @@ func (a *App) registerAutomatically(c *Req, m *userModel) bool {
 	}
 	if !ok {
 		return false
+	}
+	if a.ssoRequired(c) {
+		// buropher 拡張: SSO 必須モードではパスワードで作ったアカウントでログインさせない
+		// （管理者以外のパスワードログインは拒否しているため、登録直後のセッションだけが抜け道になる）
+		c.Flash().SetNotice(c.L("notice_account_activated"))
+		c.Redirect("/login")
+		return true
 	}
 	if err := repository.UpdateLastLogin(c.Ctx(), a.DB, m.ID, a.now()); err != nil {
 		a.logger().Error("update last login", "err", err)
