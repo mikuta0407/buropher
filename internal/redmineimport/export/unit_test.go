@@ -15,26 +15,75 @@ import (
 )
 
 func TestCoreDefinitions(t *testing.T) {
-	if len(coreTables) != 56 {
-		t.Errorf("core tables = %d, want 56", len(coreTables))
+	cases := []struct {
+		name          string
+		tables, migs  int
+		last, release string
+	}{
+		{"6.1", 56, 322, "20250611092227", "6.1.0-6.1.5"},
+		{"7.0", 58, 327, "20260520164915", "7.0.0-7.0.1"},
 	}
-	if len(coreMigrations) != 322 {
-		t.Errorf("core migrations = %d, want 322", len(coreMigrations))
-	}
-	if coreMigrations[len(coreMigrations)-1] != "20250611092227" {
-		t.Errorf("max migration = %s", coreMigrations[len(coreMigrations)-1])
-	}
-	seen := map[string]bool{}
-	for _, v := range coreMigrations {
-		if seen[v] {
-			t.Errorf("duplicate %s", v)
+	for _, c := range cases {
+		sv := LookupSchema(c.name)
+		if sv == nil {
+			t.Fatalf("schema %s not found", c.name)
 		}
-		seen[v] = true
-	}
-	for i := 1; i <= 108; i++ {
-		if !seen[strconv.Itoa(i)] {
-			t.Errorf("missing sequential migration %d", i)
+		if len(sv.Tables) != c.tables {
+			t.Errorf("%s: core tables = %d, want %d", c.name, len(sv.Tables), c.tables)
 		}
+		if len(sv.Migrations) != c.migs {
+			t.Errorf("%s: core migrations = %d, want %d", c.name, len(sv.Migrations), c.migs)
+		}
+		if sv.Migrations[len(sv.Migrations)-1] != c.last {
+			t.Errorf("%s: max migration = %s", c.name, sv.Migrations[len(sv.Migrations)-1])
+		}
+		if sv.Releases != c.release {
+			t.Errorf("%s: releases = %s", c.name, sv.Releases)
+		}
+		seen := map[string]bool{}
+		for _, v := range sv.Migrations {
+			if seen[v] {
+				t.Errorf("%s: duplicate %s", c.name, v)
+			}
+			seen[v] = true
+		}
+		for i := 1; i <= 108; i++ {
+			if !seen[strconv.Itoa(i)] {
+				t.Errorf("%s: missing sequential migration %d", c.name, i)
+			}
+		}
+	}
+	if LatestSchema().Name != "7.0" {
+		t.Errorf("latest = %s", LatestSchema().Name)
+	}
+	// 7.0 は 6.1 の上位集合
+	in70 := map[string]bool{}
+	for _, v := range LookupSchema("7.0").Migrations {
+		in70[v] = true
+	}
+	for _, v := range LookupSchema("6.1").Migrations {
+		if !in70[v] {
+			t.Errorf("6.1 migration %s not in 7.0", v)
+		}
+	}
+}
+
+func TestCheckMigrations(t *testing.T) {
+	v61 := LookupSchema("6.1").CoreMigrations()
+	v70 := LookupSchema("7.0").CoreMigrations()
+	if c := checkMigrations(v61); !c.OK() || c.Schema.Name != "6.1" {
+		t.Errorf("6.1: %+v", c)
+	}
+	if c := checkMigrations(append(v70, "1-plugin")); !c.OK() || c.Schema.Name != "7.0" || len(c.Plugins["plugin"]) != 1 {
+		t.Errorf("7.0: %+v", c)
+	}
+	// 7.0 から 1 件欠けた DB は 7.0 基準で不足を報告
+	if c := checkMigrations(v70[:len(v70)-1]); c.OK() || c.Schema.Name != "7.0" || len(c.Missing) != 1 {
+		t.Errorf("7.0-1: %+v", c.Missing)
+	}
+	// 6.1 + 1 件は 6.1 基準で余剰を報告
+	if c := checkMigrations(append(v61, "20251007073256")); c.OK() || c.Schema.Name != "6.1" || len(c.Extra) != 1 {
+		t.Errorf("6.1+1: %+v", c.Extra)
 	}
 }
 
@@ -151,7 +200,7 @@ func TestMain_CLI(t *testing.T) {
 	if err != nil {
 		t.Fatalf("%v\n%s", err, stderr.String())
 	}
-	if !strings.Contains(stdout.String(), "exported 54 tables") {
+	if !strings.Contains(stdout.String(), "exported 56 tables") {
 		t.Errorf("stdout = %s", stdout.String())
 	}
 	if !fileExists(out) || fileExists(out+".partial") {

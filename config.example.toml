@@ -126,8 +126,9 @@
 
 [auth]
 # Ask for the password again before administrative actions (Redmine's sudo_mode).
-# env: BUROPHER_SUDO_MODE ("1"/"true")
-#sudo_mode = false
+# Enabled by default (as in Redmine 7.0); set to false to disable.
+# env: BUROPHER_SUDO_MODE ("1"/"true" enables, anything else disables)
+#sudo_mode = true
 #sudo_mode_timeout = 15          # minutes
 
 [discord]

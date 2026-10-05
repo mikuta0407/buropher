@@ -320,6 +320,8 @@ type FieldError struct {
 	// Key は Redmine の i18n キー（activerecord.errors.messages.*）。
 	Key    string
 	Detail string
+	// Args は i18n の l(key, arg) に渡す補間引数（数値は count）。
+	Args []any
 }
 
 var (
@@ -363,6 +365,16 @@ func (s *Settings) ValidateAllFromParams(params map[string]any) []FieldError {
 		addr, err := mail.ParseAddress(rubyToS(v))
 		if err != nil || !reEmail.MatchString(addr.Address) {
 			errs = append(errs, FieldError{Name: "mail_from", Key: "activerecord.errors.messages.invalid"})
+		}
+	}
+	// Redmine 7.0: 新規チケットの期日の既定値（開始日からの日数。空なら設定しない）
+	if v, ok := params["default_issue_due_date_offset"]; ok {
+		if s := strings.TrimSpace(rubyToS(v)); s != "" {
+			if n, err := strconv.ParseInt(s, 10, 64); err != nil || !reInteger.MatchString(s) {
+				errs = append(errs, FieldError{Name: "default_issue_due_date_offset", Key: "activerecord.errors.messages.not_a_number"})
+			} else if n < 0 {
+				errs = append(errs, FieldError{Name: "default_issue_due_date_offset", Key: "activerecord.errors.messages.greater_than_or_equal_to", Args: []any{0}})
+			}
 		}
 	}
 	return errs
@@ -414,8 +426,12 @@ func (s *Settings) SetAllFromParams(ctx context.Context, params map[string]any, 
 			}
 			v = b
 		}
-		if name == "commit_update_keywords" {
+		switch name {
+		case "commit_update_keywords":
 			v = CommitUpdateKeywordsFromParams(v)
+		case "default_issue_due_date_offset":
+			// Setting.default_issue_due_date_offset_from_params
+			v = strings.TrimSpace(rubyToS(v))
 		}
 		if h := hooks[name]; h != nil {
 			v = h(v)

@@ -3,7 +3,7 @@
 
 package i18n
 
-//go:generate sh -c "SECRET_KEY_BASE=x RAILS_ENV=production ../../_reference/redmine-migrated/bin/rails runner \"$(pwd)/gen_timezones.rb\" > zones_gen.go.tmp && mv zones_gen.go.tmp zones_gen.go && gofmt -w zones_gen.go"
+//go:generate sh -c "SECRET_KEY_BASE=x RAILS_ENV=production ../../_reference/redmine7-migrated/bin/rails runner \"$(pwd)/gen_timezones.rb\" > zones_gen.go.tmp && mv zones_gen.go.tmp zones_gen.go && gofmt -w zones_gen.go"
 
 import (
 	"fmt"

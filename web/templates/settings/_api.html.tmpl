@@ -1,9 +1,11 @@
-{{form_tag "/settings/edit?tab=api"}}
+{{form_tag "/settings/edit?tab=integrations"}}
 
 <div class="box tabular settings">
 <p>{{setting_check_box "rest_api_enabled"}}</p>
 
 <p>{{setting_check_box "jsonp_enabled"}}</p>
+
+<p>{{setting_check_box "webhooks_enabled"}}</p>
 </div>
 
 {{submit_tag (l "button_save")}}

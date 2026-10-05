@@ -214,6 +214,8 @@ var mappings = []mapping{
 	{source: "oauth_applications", target: "oauth_applications"},
 	{source: "oauth_access_grants", target: "oauth_access_grants"},
 	{source: "oauth_access_tokens", target: "oauth_access_tokens"},
+	{source: "webhooks", target: "webhooks"},
+	{source: "projects_webhooks", target: "webhook_projects", pair: true},
 }
 
 // srcData はアーカイブから集めた検証用データ。

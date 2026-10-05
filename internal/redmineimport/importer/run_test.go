@@ -15,6 +15,7 @@ import (
 	"time"
 
 	"github.com/mikuta0407/buropher/internal/db"
+	"github.com/mikuta0407/buropher/internal/redmineimport/archive"
 	"github.com/mikuta0407/buropher/internal/redmineimport/verify"
 )
 
@@ -81,6 +82,28 @@ func TestRequiresMigratedDB(t *testing.T) {
 	defer d.Close()
 	if _, err := Run(context.Background(), d, filepath.Join(dir, "none.tar.zst"), Options{}); err == nil {
 		t.Fatal("expected error")
+	}
+}
+
+// 未知のスキーマ版を記録したアーカイブは取り込まない。
+func TestUnsupportedSchema(t *testing.T) {
+	dir := t.TempDir()
+	p := filepath.Join(dir, "future.tar.zst")
+	f, err := os.Create(p)
+	if err != nil {
+		t.Fatal(err)
+	}
+	w, err := archive.NewWriter(f, dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := w.Close(&archive.Manifest{Source: archive.Source{DBKind: "sqlite", Timezone: "UTC"}, RedmineSchema: "8.0"}); err != nil {
+		t.Fatal(err)
+	}
+	f.Close()
+	d := newTarget(t, dir)
+	if _, err := Run(context.Background(), d, p, Options{TempDir: dir}); err == nil || !strings.Contains(err.Error(), `unsupported Redmine schema "8.0"`) {
+		t.Fatalf("err = %v", err)
 	}
 }
 

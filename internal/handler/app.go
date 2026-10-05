@@ -73,7 +73,7 @@ type App struct {
 	DiscordFeature bool
 	// Mailer は認証・アカウント関連のメール（nil ならログに記録するだけ。account_mailer.go）。
 	Mailer AccountMailer
-	// SudoMode は Redmine::Configuration['sudo_mode']（既定 false。sudo_mode.go）。
+	// SudoMode は Redmine::Configuration['sudo_mode']（設定の既定は true。sudo_mode.go）。
 	SudoMode bool
 	// SudoModeTimeout は sudo_mode_timeout（0 なら 15 分）。
 	SudoModeTimeout time.Duration
