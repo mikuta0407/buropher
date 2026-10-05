@@ -25,7 +25,9 @@ func (a *App) routesAccountRecovery(r Router) {
 		// match 'account/register', :to => 'account#register', :via => [:get, :post], :as => 'register'
 		a.Handle(r, m, "/account/register", AccountController, "register", a.AccountRegister, skip)
 		// match 'account/lost_password', :to => 'account#lost_password', :via => [:get, :post], :as => 'lost_password'
-		a.Handle(r, m, "/account/lost_password", AccountController, "lost_password", a.AccountLostPassword, skip)
+		// lost_password は 2 要素認証の有効化を求められている間も使える（#44360）
+		a.Handle(r, m, "/account/lost_password", AccountController, "lost_password", a.AccountLostPassword,
+			Skip(FilterLoginRequired, FilterPasswordChange, FilterTwofaActivation))
 	}
 	// match 'account/activate', :to => 'account#activate', :via => :get
 	a.Handle(r, http.MethodGet, "/account/activate", AccountController, "activate", a.AccountActivate, skip)
@@ -88,8 +90,9 @@ func (a *App) AccountLostPassword(c *Req) {
 		}
 		if user == nil {
 			// 存在しないメールアドレスでも同じメッセージ（アドレスの収集を防ぐ）
+			// 登録済みの場合と同じくログイン画面へリダイレクトする（応答の違いで登録の有無が分からないように。#44245）
 			c.Flash().SetNotice(c.L("notice_account_lost_email_sent"))
-			c.Render("account/lost_password", nil)
+			c.Redirect("/login")
 			return
 		}
 		if !user.Active() {
@@ -186,7 +189,8 @@ func (a *App) passwordRecovery(c *Req, prt string) {
 				if err := repository.DeleteToken(c.Ctx(), a.DB, user.ID, repository.TokenRecovery, token.Value); err != nil {
 					a.logger().Error("delete recovery token", "err", err)
 				}
-				a.deliver("password_updated", a.accountMailer().PasswordUpdated(c.Ctx(), user, c.User))
+				// 送信者は再設定したユーザー本人（X-Redmine-Sender。IP アドレスも記載される。#44173）
+				a.deliver("password_updated", a.accountMailer().PasswordUpdated(c.Ctx(), user, user))
 				c.Flash().SetNotice(c.L("notice_account_password_updated"))
 				c.Redirect("/login")
 				return
