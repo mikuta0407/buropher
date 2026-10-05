@@ -91,5 +91,14 @@ func (e *ValidationErrors) FullMessages(l Translator) []string {
 // （l("field_#{attr}"), 末尾の _id は除く）。
 func HumanAttributeName(l Translator, attr string) string {
 	name := strings.TrimSuffix(attr, "_id")
-	return l("field_" + name)
+	s := l("field_" + name)
+	if strings.HasPrefix(s, "Translation missing: ") {
+		// 訳が無ければ ActiveModel の既定（attribute.humanize。例: events → "Events"）
+		h := strings.ReplaceAll(name, "_", " ")
+		if h != "" {
+			h = strings.ToUpper(h[:1]) + h[1:]
+		}
+		return h
+	}
+	return s
 }

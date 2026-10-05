@@ -13,7 +13,7 @@ import (
 
 // このファイルはガントチャート（GanttsController#show）の参照 Redmine との比較テスト。
 //
-// testdata/gantt/* は参照 Redmine 6.1.2（http://127.0.0.1:3998）の出力を正規化し、
+// testdata/gantt/* は参照 Redmine 7.0.1（http://127.0.0.1:3998）の出力を正規化し、
 // <title>・ページ固有の head・#main だけを抜き出したもの（asNormalize）。
 // 取り直すときは BUROPHER_GANTT_GOLDEN_REF=http://127.0.0.1:3998 go test -run TestGanttMatchRedmine ./internal/server
 // （参照側は GET のみ）。

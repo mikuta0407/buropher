@@ -284,6 +284,7 @@ func (s *Service) fixIssue(ctx context.Context, tx db.Queryer, repo *domain.Repo
 		return nil, nil
 	}
 	if res != nil {
+		s.pendingIssueWebhooks = append(s.pendingIssueWebhooks, res.Webhooks...)
 		return res.Notifications, nil
 	}
 	return nil, nil
@@ -345,7 +346,9 @@ func (s *Service) logTime(ctx context.Context, tx db.Queryer, repo *domain.Repos
 	}
 	if !ok {
 		s.logger().Warn("TimeEntry could not be created by changeset", "changeset", cs.ID, "errors", t.Errors.FullMessages(loc))
+		return nil
 	}
+	s.pendingTimeEntries = append(s.pendingTimeEntries, t.ID)
 	return nil
 }
 

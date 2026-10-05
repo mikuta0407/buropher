@@ -29,12 +29,14 @@ import (
 	"github.com/mikuta0407/buropher/internal/httpx"
 	"github.com/mikuta0407/buropher/internal/i18n"
 	"github.com/mikuta0407/buropher/internal/issues"
+	"github.com/mikuta0407/buropher/internal/jobs"
 	"github.com/mikuta0407/buropher/internal/notify"
 	"github.com/mikuta0407/buropher/internal/pdf"
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/settings"
 	"github.com/mikuta0407/buropher/internal/urlroot"
 	"github.com/mikuta0407/buropher/internal/view"
+	"github.com/mikuta0407/buropher/internal/webhook"
 )
 
 // App はアプリケーション全体の依存（コントローラ共通の状態）。
@@ -94,6 +96,12 @@ type App struct {
 	MailOmitRedmineHeaders bool
 	// MessageIDPrefix は送信メールの Message-ID の接頭辞（config の mail.message_id_prefix。空なら "redmine"）。
 	MessageIDPrefix string
+	// WebhookValidator は Webhook の送信先の検証（config の webhook.blocklist。nil なら既定。webhooks_trigger.go）。
+	WebhookValidator *webhook.Validator
+	// WebhookQueue は Webhook の送信ジョブを積むキュー（RegisterWebhookJob が設定する。nil なら送信しない）。
+	WebhookQueue *jobs.Queue
+	// WebhookExecutor は Webhook の送信（nil なら WebhookValidator で検証して送る。テスト用）。
+	WebhookExecutor *webhook.Executor
 
 	// routeTable は Handle で登録したルート（ルート網羅テスト用。RouteTable）。
 	routeTable []RouteEntry

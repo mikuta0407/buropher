@@ -59,5 +59,7 @@ func (a *App) dispatchIssueNotifications(c *Req, res ...*issues.SaveResult) {
 		if err := e.Dispatch(c.Ctx(), r.Notifications); err != nil {
 			a.logger().Error("issue notification", "err", err)
 		}
+		// Webhook（after_create_commit / after_update_commit / after_destroy_commit）
+		a.triggerIssueWebhooks(c, r.Webhooks)
 	}
 }

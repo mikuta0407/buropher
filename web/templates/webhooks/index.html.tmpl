@@ -1,0 +1,35 @@
+<div class="contextual">
+  {{link_to (sprite_icon "add" (l "label_webhook_new")) "/webhooks/new" (hash "class" "icon icon-add")}}
+</div>
+
+{{title (l "label_webhook_plural")}}
+
+{{if .Webhooks}}
+<div class="autoscroll">
+<table class="list">
+  <thead><tr>
+    <th>{{l "field_active"}}</th>
+    <th>{{l "field_url"}}</th>
+    <th>{{l "label_webhook_events"}}</th>
+    <th>{{l "label_project_plural"}}</th>
+    <th></th>
+  </tr></thead>
+  <tbody>
+  {{range $w := .Webhooks}}
+    <tr id="webhook_{{$w.ID}}" class="{{cycle "odd" "even"}}">
+      <td>{{if $w.Active}}{{l "general_text_Yes"}}{{else}}{{l "general_text_No"}}{{end}}</td>
+      <td>{{truncate $w.URL (hash "length" 40)}}</td>
+      <td>{{range $i, $e := $w.Events.V}}{{if $i}}, {{end}}<code>{{$e}}</code>{{end}}</td>
+      <td>{{range $i, $p := $w.Projects}}{{if $i}}, {{end}}{{link_to_project $p}}{{end}}</td>
+      <td class="buttons">
+        {{link_to (sprite_icon "edit" (l "button_edit")) (printf "/webhooks/%d/edit" $w.ID) (hash "class" "icon icon-edit")}}
+        {{link_to (sprite_icon "del" (l "button_delete")) (printf "/webhooks/%d" $w.ID) (hash "data" (hash "confirm" (l "text_are_you_sure")) "method" "delete" "class" "icon icon-del")}}
+      </td>
+    </tr>
+  {{end}}
+  </tbody>
+</table>
+</div>
+{{else}}
+  <p class="nodata">{{l "label_no_data"}}</p>
+{{end}}

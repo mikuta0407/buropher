@@ -28,6 +28,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/urlroot"
 	"github.com/mikuta0407/buropher/internal/view"
 	"github.com/mikuta0407/buropher/internal/view/rails"
+	"github.com/mikuta0407/buropher/internal/webhook"
 	"github.com/mikuta0407/buropher/web"
 )
 
@@ -862,12 +863,22 @@ func (a *App) saveVersion(c *Req, f *versionForm, orig *domain.Version) error {
 	if err != nil {
 		return err
 	}
+	// after_create_commit / after_update_commit（変更が無い保存でも発火する）
+	if orig == nil {
+		a.triggerWebhookByID(c, webhook.TypeVersion, webhook.ActionCreated, v.ID)
+	} else {
+		a.triggerWebhookByID(c, webhook.TypeVersion, webhook.ActionUpdated, v.ID)
+	}
 	if orig != nil && orig.Sharing != v.Sharing {
 		oi, ni := slices.Index(versionSharings, orig.Sharing), slices.Index(versionSharings, v.Sharing)
 		if oi < 0 || ni < 0 || oi > ni {
 			env := issues.NewEnv(a.DB, a.Settings, c.User)
-			if _, err := env.UpdateVersionsFromSharingChange(ctx, v.ID); err != nil {
+			res, err := env.UpdateVersionsFromSharingChange(ctx, v.ID)
+			if err != nil {
 				return err
+			}
+			if res != nil {
+				a.triggerIssueWebhooks(c, res.Webhooks)
 			}
 		}
 	}
@@ -1109,6 +1120,7 @@ func (a *App) VersionsCloseCompleted(c *Req) {
 		a.internalError(c, "close completed", err)
 		return
 	}
+	var closed []int64
 	err = a.DB.WithTx(ctx, func(tx *db.Tx) error {
 		for _, v := range vs {
 			m, err := vc.model(v)
@@ -1119,6 +1131,7 @@ func (a *App) VersionsCloseCompleted(c *Req) {
 				if err := repository.SetVersionStatus(ctx, tx, v.ID, "closed"); err != nil {
 					return err
 				}
+				closed = append(closed, v.ID)
 			}
 		}
 		return nil
@@ -1127,6 +1140,8 @@ func (a *App) VersionsCloseCompleted(c *Req) {
 		a.internalError(c, "close completed", err)
 		return
 	}
+	// version.update_attribute(:status, 'closed') の after_update_commit
+	a.triggerWebhookByID(c, webhook.TypeVersion, webhook.ActionUpdated, closed...)
 	c.Redirect("/projects/" + c.Project.Identifier + "/settings/versions")
 }
 
@@ -1138,6 +1153,7 @@ func (a *App) VersionsDestroy(c *Req) {
 	// 削除できるか（チケット・カスタムフィールド・添付から参照されていないか）の判定と削除は同じトランザクションで行う
 	// （判定の後に割り当てられたチケットの対象バージョンが、記録なしに消えないように）
 	deletable := false
+	a.prepareDeleteWebhooks(c, webhook.TypeVersion, v.ID)
 	err := a.DB.WithTx(ctx, func(tx *db.Tx) error {
 		ok, err := a.versionDeletable(ctx, tx, v.ID)
 		if err != nil || !ok {
@@ -1151,6 +1167,7 @@ func (a *App) VersionsDestroy(c *Req) {
 		return
 	}
 	if deletable {
+		a.enqueuePreparedDeleteWebhooks(c, webhook.TypeVersion, v.ID)
 		if api {
 			c.RenderAPIOK()
 			return

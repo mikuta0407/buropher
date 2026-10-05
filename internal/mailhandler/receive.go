@@ -59,6 +59,9 @@ func (r *receiver) allowedTo(ctx context.Context, q db.Queryer, perm string, p *
 }
 
 func (r *receiver) dispatchNotifications(ctx context.Context, res *issues.SaveResult) {
+	if res != nil && r.h.IssueWebhooks != nil && len(res.Webhooks) > 0 {
+		r.h.IssueWebhooks(ctx, res.Webhooks)
+	}
 	if res == nil || len(res.Notifications) == 0 {
 		return
 	}

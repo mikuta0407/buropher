@@ -68,9 +68,7 @@
   {
     "name": "select_project_publicity",
     "module": null,
-    "actions": [
-
-    ],
+    "actions": [],
     "public": false,
     "require": "member",
     "read": false
@@ -170,6 +168,14 @@
     "read": false
   },
   {
+    "name": "use_webhooks",
+    "module": null,
+    "actions": [],
+    "public": false,
+    "require": "member",
+    "read": false
+  },
+  {
     "name": "view_issues",
     "module": "issue_tracking",
     "actions": [
@@ -181,6 +187,8 @@
       "versions/index",
       "versions/show",
       "versions/status_by",
+      "issue_categories/index",
+      "issue_categories/show",
       "journals/index",
       "journals/diff",
       "queries/index",
@@ -263,9 +271,7 @@
   {
     "name": "manage_subtasks",
     "module": "issue_tracking",
-    "actions": [
-
-    ],
+    "actions": [],
     "public": false,
     "require": null,
     "read": false
@@ -273,9 +279,7 @@
   {
     "name": "set_issues_private",
     "module": "issue_tracking",
-    "actions": [
-
-    ],
+    "actions": [],
     "public": false,
     "require": null,
     "read": false
@@ -283,9 +287,7 @@
   {
     "name": "set_own_issues_private",
     "module": "issue_tracking",
-    "actions": [
-
-    ],
+    "actions": [],
     "public": false,
     "require": "loggedin",
     "read": false
@@ -328,9 +330,7 @@
   {
     "name": "view_private_notes",
     "module": "issue_tracking",
-    "actions": [
-
-    ],
+    "actions": [],
     "public": false,
     "require": "member",
     "read": true
@@ -338,9 +338,7 @@
   {
     "name": "set_notes_private",
     "module": "issue_tracking",
-    "actions": [
-
-    ],
+    "actions": [],
     "public": false,
     "require": "member",
     "read": false
@@ -358,9 +356,7 @@
   {
     "name": "view_issue_watchers",
     "module": "issue_tracking",
-    "actions": [
-
-    ],
+    "actions": [],
     "public": false,
     "require": null,
     "read": true
@@ -392,9 +388,7 @@
   {
     "name": "import_issues",
     "module": "issue_tracking",
-    "actions": [
-
-    ],
+    "actions": [],
     "public": false,
     "require": null,
     "read": false
@@ -492,9 +486,7 @@
   {
     "name": "import_time_entries",
     "module": "time_tracking",
-    "actions": [
-
-    ],
+    "actions": [],
     "public": false,
     "require": null,
     "read": false
@@ -682,9 +674,7 @@
   {
     "name": "delete_wiki_pages_attachments",
     "module": "wiki",
-    "actions": [
-
-    ],
+    "actions": [],
     "public": false,
     "require": null,
     "read": false
@@ -692,9 +682,7 @@
   {
     "name": "view_wiki_page_watchers",
     "module": "wiki",
-    "actions": [
-
-    ],
+    "actions": [],
     "public": false,
     "require": null,
     "read": true
@@ -776,9 +764,7 @@
   {
     "name": "commit_access",
     "module": "repository",
-    "actions": [
-
-    ],
+    "actions": [],
     "public": false,
     "require": null,
     "read": false
@@ -881,9 +867,7 @@
   {
     "name": "view_message_watchers",
     "module": "boards",
-    "actions": [
-
-    ],
+    "actions": [],
     "public": false,
     "require": null,
     "read": true

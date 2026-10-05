@@ -16,6 +16,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/pagination"
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/view"
+	"github.com/mikuta0407/buropher/internal/webhook"
 )
 
 // NewsController（app/controllers/news_controller.rb）。
@@ -328,6 +329,7 @@ func (a *App) NewsCreate(c *Req) {
 		a.internalError(c, "create news", err)
 		return
 	}
+	a.triggerWebhookByID(c, webhook.TypeNews, webhook.ActionCreated, n.ID)
 	a.notify(c, "news_added", "news_added", n)
 	if api {
 		c.RenderAPIOK()
@@ -366,43 +368,7 @@ func (a *App) NewsShow(c *Req) {
 				return
 			}
 		}
-		n := f.News
-		c.RenderAPI(0, func(b apibuilder.Builder) {
-			b.Object("news", func() {
-				b.Value("id", n.ID)
-				if n.Project != nil {
-					b.Attrs("project", apibuilder.A("id", n.ProjectID, "name", n.Project.Name))
-				}
-				if n.Author != nil {
-					b.Attrs("author", apibuilder.A("id", n.AuthorID, "name", c.Page().UserName(n.Author)))
-				}
-				b.Value("title", n.Title)
-				if !httpx.IsBlank(n.Summary) {
-					b.Value("summary", n.Summary)
-				}
-				b.Value("description", nilIfEmptyString(n.Description))
-				b.Value("created_on", n.CreatedAt)
-				if c.IncludeInAPIResponse("attachments") {
-					b.Array("attachments", nil, func() {
-						for _, att := range atts {
-							renderAPIAttachment(c, b, att)
-						}
-					})
-				}
-				if c.IncludeInAPIResponse("comments") {
-					b.Array("comments", nil, func() {
-						for _, cm := range comments {
-							b.ObjectAttrs("comment", apibuilder.A("id", cm.ID), func() {
-								if cm.Author != nil {
-									b.Attrs("author", apibuilder.A("id", cm.AuthorID, "name", c.Page().UserName(cm.Author)))
-								}
-								b.Value("content", nilIfEmptyString(cm.Content))
-							})
-						}
-					})
-				}
-			})
-		})
+		c.RenderAPI(0, func(b apibuilder.Builder) { a.apiNews(c, b, f.News, atts, comments) })
 	case "html":
 		atts, err := repository.ContainerAttachmentList(c.Ctx(), a.DB, domain.AttachmentContainerNews, f.ID)
 		if err != nil {
@@ -456,6 +422,7 @@ func (a *App) NewsUpdate(c *Req) {
 		a.internalError(c, "update news", err)
 		return
 	}
+	a.triggerWebhookByID(c, webhook.TypeNews, webhook.ActionUpdated, f.ID)
 	if api {
 		c.RenderAPIOK()
 		return
@@ -469,6 +436,7 @@ func (a *App) NewsUpdate(c *Req) {
 func (a *App) NewsDestroy(c *Req) {
 	f := c.news()
 	var deleted []*domain.Attachment
+	a.prepareDeleteWebhooks(c, webhook.TypeNews, f.ID)
 	err := a.withTx(c, func(tx *db.Tx) error {
 		var err error
 		if deleted, err = repository.DeleteContainerAttachments(c.Ctx(), tx, domain.AttachmentContainerNews, []int64{f.ID}); err != nil {
@@ -480,6 +448,7 @@ func (a *App) NewsDestroy(c *Req) {
 		a.internalError(c, "destroy news", err)
 		return
 	}
+	a.enqueuePreparedDeleteWebhooks(c, webhook.TypeNews, f.ID)
 	a.deleteAttachmentsAfterCommit(c, deleted)
 	if httpx.IsAPIRequest(c.R) {
 		c.RenderAPIOK()
@@ -500,4 +469,42 @@ func newsEvent(n *domain.News) *activity.Event {
 		Description: n.Description, URL: "/news/" + itoa(n.ID), Type: "news", Author: author,
 		Group: "News:" + itoa(n.ID),
 	}
+}
+
+// apiNews は news/show.api.rsb の api.news（Webhook のペイロードでも使う）。
+func (a *App) apiNews(c *Req, b apibuilder.Builder, n *domain.News, atts []*domain.Attachment, comments []*domain.Comment) {
+	b.Object("news", func() {
+		b.Value("id", n.ID)
+		if n.Project != nil {
+			b.Attrs("project", apibuilder.A("id", n.ProjectID, "name", n.Project.Name))
+		}
+		if n.Author != nil {
+			b.Attrs("author", apibuilder.A("id", n.AuthorID, "name", c.Page().UserName(n.Author)))
+		}
+		b.Value("title", n.Title)
+		if !httpx.IsBlank(n.Summary) {
+			b.Value("summary", n.Summary)
+		}
+		b.Value("description", nilIfEmptyString(n.Description))
+		b.Value("created_on", n.CreatedAt)
+		if c.IncludeInAPIResponse("attachments") {
+			b.Array("attachments", nil, func() {
+				for _, att := range atts {
+					renderAPIAttachment(c, b, att)
+				}
+			})
+		}
+		if c.IncludeInAPIResponse("comments") {
+			b.Array("comments", nil, func() {
+				for _, cm := range comments {
+					b.ObjectAttrs("comment", apibuilder.A("id", cm.ID), func() {
+						if cm.Author != nil {
+							b.Attrs("author", apibuilder.A("id", cm.AuthorID, "name", c.Page().UserName(cm.Author)))
+						}
+						b.Value("content", nilIfEmptyString(cm.Content))
+					})
+				}
+			})
+		}
+	})
 }

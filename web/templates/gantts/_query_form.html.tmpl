@@ -1,0 +1,95 @@
+{{form_tag .FormAction (hash "method" "get" "id" "query_form" "data" (hash "gantt_target" "form"))}}
+  {{hidden_field_tag "set_filter" "1"}}
+  {{hidden_field_tag "gantt" "1"}}
+
+  <div id="query_form_with_buttons" class="hide-when-print">
+    <div id="query_form_content">
+      <fieldset id="filters" class="collapsible {{if not .qv.NewRecord}}collapsed{{end}}">
+        <legend onclick="toggleFieldset(this);" class="icon icon-{{if .qv.NewRecord}}expanded{{else}}collapsed{{end}}">
+          {{sprite_icon (ternary .qv.NewRecord "angle-down" "angle-right") (hash "rtl" (not .qv.NewRecord))}}
+          {{l "label_filter_plural"}}
+        </legend>
+        <div style="{{if not .qv.NewRecord}}display: none;{{end}}">
+          {{partial "queries/filters" (dict "qv" .qv)}}
+        </div>
+      </fieldset>
+
+      <fieldset id="options" class="collapsible collapsed"
+                data-controller="gantt--options"
+                data-gantt--options-unavailable-columns-value="{{.UnavailableColumnsJSON}}">
+
+        <legend onclick="toggleFieldset(this);" class="icon icon-collapsed">
+          {{sprite_icon "angle-right" (hash "rtl" true)}}
+          {{l "label_options"}}
+        </legend>
+
+        <div style="display: none;">
+          <div>
+            <fieldset>
+              <legend>{{l "field_column_names"}}</legend>
+              <div id="list-definition">
+                <div>
+                  <label for="draw_selected_columns">
+                    {{.CheckDrawSelectedColumns}}
+                    {{l "label_display"}}
+                  </label>
+                </div>
+                <div>
+                  {{partial "queries/columns" (dict "qv" .qv "tag_name" "c[]")}}
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend>{{l "label_related_issues"}}</legend>
+              <label for="draw_relations">
+                {{.CheckDrawRelations}}
+                {{range .DrawRelationTypes}}
+                  {{content_tag "span" (raw "&nbsp;&nbsp;&nbsp;") (hash "style" (printf "background-color: %s" .Color))}}
+                  {{l .Label}}
+                {{end}}
+              </label>
+            </fieldset>
+
+            <fieldset>
+              <legend>{{l "label_gantt_progress_line"}}</legend>
+              <label for="draw_progress_line">
+                {{.CheckDrawProgressLine}}
+                {{l "label_display"}}
+              </label>
+            </fieldset>
+          </div>
+        </div>
+      </fieldset>
+    </div>
+
+    <p class="contextual">
+      <span>
+        {{.ZoomIn}}
+        {{.ZoomOut}}
+      </span>
+      <span>
+        {{.PrevMonth}} |
+        {{.NextMonth}}
+      </span>
+    </p>
+
+    <p class="buttons">
+      {{.MonthsField}}
+      {{l "label_months_from"}}
+      {{.MonthSelect}}
+      {{.YearSelect}}
+      {{hidden_field_tag "zoom" .G.Zoom}}
+
+      {{link_to_function (sprite_icon "checked" (l "button_apply")) "$(\"#query_form\").submit()" (hash "class" "icon icon-checked")}}
+      {{link_to (sprite_icon "reload" (l "button_clear")) .ClearURL (hash "class" "icon icon-reload")}}
+      {{if .CanSave}}
+        {{link_to_function (sprite_icon "save" (capitalize (l "button_save_object" (hash "object_name" (l "label_query"))))) (printf "$('#query_form').attr('action', '%s').submit();" (url_path .qv.NewQueryPath)) (hash "class" "icon icon-save")}}
+      {{end}}
+      {{if .Editable}}
+        {{link_to (sprite_icon "edit" (capitalize (l "button_edit_object" (hash "object_name" (l "label_query"))))) .EditQueryURL (hash "class" "icon icon-edit")}}
+        {{link_to (sprite_icon "del" (capitalize (l "button_delete_object" (hash "object_name" (l "label_query"))))) .QueryURL (hash "method" "delete" "data" (hash "confirm" (l "text_are_you_sure")) "class" "icon icon-del")}}
+      {{end}}
+    </p>
+  </div>
+{{end_form}}
