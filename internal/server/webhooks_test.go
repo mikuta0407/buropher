@@ -517,6 +517,7 @@ func TestWebhookEditable(t *testing.T) {
 		}
 	}
 }
+
 // settings の統合タブ（Redmine 7.0 で api から integrations に改名し webhooks_enabled を追加）
 func TestWebhooksSettingsTab(t *testing.T) {
 	ts, _ := newFixtureServer(t)

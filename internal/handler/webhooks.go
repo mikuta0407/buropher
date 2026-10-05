@@ -116,7 +116,7 @@ func newWebhookForm(c *Req, w *repository.Webhook, owner *domain.User) *webhookF
 	return f
 }
 
-// SecretValue は f.text_field :secret, :value => (他人のフックなら '' / それ以外は @webhook.secret)。
+// SecretValue は f.text_field :secret, :value => (他人のフックなら ” / それ以外は @webhook.secret)。
 func (f *webhookForm) SecretValue() any {
 	if f.OtherOwner {
 		return ""
