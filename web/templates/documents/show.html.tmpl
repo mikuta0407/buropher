@@ -13,7 +13,7 @@
 <p><em>{{if $doc.Category}}{{$doc.Category.Name}}{{end}}<br />
 {{format_date $doc.CreatedAt}}</em></p>
 
-{{if .CustomValues}}
+{{if .HasCustomFields}}
 <ul>
   {{range $cv := .CustomValues}}
     <li><span class="label">{{$cv.Name}}:</span> {{$cv.Value}}</li>
