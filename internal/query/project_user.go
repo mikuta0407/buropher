@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/mikuta0407/buropher/internal/authz"
+	"github.com/mikuta0407/buropher/internal/domain"
 )
 
 // ---------------------------------------------------------------- ProjectQuery / ProjectAdminQuery
@@ -138,7 +139,11 @@ func (userKind) defaultFilters() *Filters {
 func (userKind) defaultSortCriteria() SortCriteria     { return SortCriteria{{"login", "asc"}} }
 func (userKind) availableDisplayTypes(*Query) []string { return []string{"list"} }
 func (userKind) defaultDisplayType(*Query) string      { return "list" }
-func (userKind) defaultColumnNames(*Query) []string {
+func (userKind) defaultColumnNames(q *Query) []string {
+	// 姓が先の表示書式では姓・名の順に並べる (#4507)
+	if domain.LastnameBeforeFirstname(q.env.setting("user_format")) {
+		return []string{"login", "lastname", "firstname", "mail", "admin", "created_on", "last_login_on"}
+	}
 	return []string{"login", "firstname", "lastname", "mail", "admin", "created_on", "last_login_on"}
 }
 func (userKind) defaultTotalableNames(*Query) []string { return nil }
