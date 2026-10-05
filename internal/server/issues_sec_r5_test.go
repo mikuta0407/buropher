@@ -156,6 +156,25 @@ func TestAdminQueryKindsRequireAdmin(t *testing.T) {
 	}
 }
 
+// 工数のコンテキストメニューは見えない工数を扱わない（Redmine 6.1.3 #44109）。
+func TestTimeEntryContextMenuHidesInvisible(t *testing.T) {
+	ts, d := newFixtureServer(t)
+	ctx := context.Background()
+	// dlopper（project 1 の Developer）は自分の工数だけ見える
+	if _, err := d.Exec(ctx, `UPDATE roles SET time_entries_visibility = 'own' WHERE id = 2`); err != nil {
+		t.Fatal(err)
+	}
+	c := login(t, ts, "dlopper", "foo")
+	res, body := get(t, c, ts.URL+"/time_entries/context_menu?ids[]=1")
+	if res.StatusCode != http.StatusNotFound || strings.Contains(body, "Design") {
+		t.Errorf("context menu of invisible time entry: %d %.200s", res.StatusCode, body)
+	}
+	res, _ = get(t, login(t, ts, "jsmith", "jsmith"), ts.URL+"/time_entries/context_menu?ids[]=1")
+	if res.StatusCode != http.StatusOK {
+		t.Errorf("context menu of visible time entry: %d", res.StatusCode)
+	}
+}
+
 // チケット削除で工数を付け替える先に、見えないチケット（非公開）は指定できない。
 func TestIssueDestroyReassignToInvisible(t *testing.T) {
 	ts, d := newFixtureServer(t)
