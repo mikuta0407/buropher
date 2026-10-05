@@ -8,6 +8,7 @@ import (
 	"context"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/mikuta0407/buropher/internal/db"
@@ -39,6 +40,14 @@ func TestImportFixtures(t *testing.T) {
 			t.Fatalf("import: %v", err)
 		}
 		checkFixtureFacts(t, d, rep, filesDir)
+		// 6.1 の DB に default_issue_start_date_to_creation_date の行がなければ '1' を保存する
+		// (Redmine 7.0 のマイグレーション 20260320090000 と同じ)
+		jsonEq(t, "start date setting", q1[string](t, d, `SELECT value FROM settings WHERE name = 'default_issue_start_date_to_creation_date'`), `"1"`)
+		for _, w := range rep.Warnings {
+			if strings.Contains(w, "webhooks") {
+				t.Errorf("unexpected warning for a 6.1 archive: %s", w)
+			}
+		}
 
 		vr, err := verify.Verify(ctx, d, archivePath, verify.Options{
 			FilesDir: filesDir, Digests: true, Passwords: map[string]string{"admin": "admin", "jsmith": "jsmith"},

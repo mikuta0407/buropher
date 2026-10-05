@@ -22,9 +22,11 @@ dualTest(
     await page.click('#login-submit');
     await page.waitForLoadState('load');
     s.noteURL('back_url honored');
-    await s.noteText('logged in as', '#loggedas');
+    // Redmine 7.0: ログイン中のユーザーはアカウントメニュー（ドロップダウン）に出る
+    await s.noteText('logged in as', '#account .user-login');
     s.noteRequests('login');
 
+    await page.click('#account .dropdown-trigger');
     await page.click('#account a.logout');
     await page.waitForLoadState('load');
     s.noteURL('after logout');

@@ -305,7 +305,7 @@ JOIN user_notification_settings n ON n.user_id = p.id WHERE ua.login = 'example1
 	if n := queryInt(t, d, `SELECT COUNT(*) FROM user_accounts WHERE login = 'example1' AND last_login_at IS NOT NULL AND password_hash IS NULL`); n != 1 {
 		t.Error("last_login / password hash")
 	}
-	if _, body := get(t, c, ts.URL+"/"); !strings.Contains(body, `Logged in as <a class="user active" href="/users/`+strconv.FormatInt(row.ID, 10)+`">example1</a>`) {
+	if _, body := get(t, c, ts.URL+"/"); !strings.Contains(body, `<span class="user-login">@example1</span>`) {
 		t.Error("not logged in after onthefly creation")
 	}
 	// 2 回目は既存ユーザーとして LDAP で認証

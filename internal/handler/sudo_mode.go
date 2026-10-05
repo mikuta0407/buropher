@@ -19,7 +19,7 @@ import (
 
 // このファイルは lib/redmine/sudo_mode.rb（Redmine::SudoMode）の移植。
 //
-// Redmine と同じく既定では無効（config の [auth] sudo_mode = true で有効化）。有効なときは
+// Redmine 7.0 と同じく既定で有効（config の [auth] sudo_mode = false で無効化）。有効なときは
 // require_sudo_mode を宣言したアクションで、最後のパスワード確認から sudo_mode_timeout（既定 15 分）を
 // 過ぎていればパスワード再入力フォーム（sudo_mode/new）を表示し、元のパラメータを hidden で引き継ぐ。
 // セッションの sudo 時刻はログイン直後（handle_active_user）と sudo を使ったリクエストで更新する。

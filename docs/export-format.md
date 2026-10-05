@@ -1,7 +1,7 @@
 # Redmine エクスポートアーカイブ形式(format_version 1)
 
 `buropher redmine export` が出力し、`buropher redmine import` が読み込む中立形式。
-Redmine 6.1.x の DB を**型変換せずに**保全することを目的とし、変換(TZ → UTC、真偽値の既定値補完、
+Redmine 6.1.x / 7.0.x の DB を**型変換せずに**保全することを目的とし、変換(TZ → UTC、真偽値の既定値補完、
 YAML → JSON 等)はすべてインポート側で行う。
 
 実装: `internal/redmineimport/archive`(読み書き)、`internal/redmineimport/export`(書き出し)。
@@ -31,12 +31,13 @@ YAML → JSON 等)はすべてインポート側で行う。
     "db_kind": "sqlite",                          // mysql / postgres / sqlite / sqlserver
     "db_version": "3.50.4",
     "timezone": "Asia/Tokyo",                     // --source-timezone(IANA 名、必須)
-    "redmine_version": "6.1.2.stable",            // --redmine-root 指定時のみ
+    "redmine_version": "7.0.1.stable",            // --redmine-root 指定時のみ
     "cipher_key_configured": false,               // --redmine-root 指定時のみ(鍵そのものは書かない)
     "attachments_dir": "/srv/redmine/files",      // 添付の読み取り元
     "acceptance_forced": false                    // --force で受け入れ判定を無視した場合 true
   },
-  "schema_migrations": ["1", "2", "...", "20250611092227", "1-redmine_agile"],
+  "redmine_schema": "7.0",                        // schema_migrations から判定した版("6.1" / "7.0")。無ければ "6.1"
+  "schema_migrations": ["1", "2", "...", "20260520164915", "1-redmine_agile"],
   "plugin_migrations": [ { "plugin": "redmine_agile", "versions": ["1-redmine_agile"] } ],
   "tables": [
     {
@@ -97,7 +98,9 @@ YAML → JSON 等)はすべてインポート側で行う。
 
 ### 対象テーブル
 
-Redmine 6.1.2 のコア 56 テーブルのうち、`imports` と `import_items`(CSV インポート履歴)を除く **54 テーブル**。
+判定したスキーマ版のコアテーブル(6.1: 56 個、7.0: 58 個 = 6.1 + `webhooks` / `projects_webhooks`)のうち、
+`imports` と `import_items`(CSV インポート履歴)を除く **54 / 56 テーブル**。
+7.0 では `trackers.private_by_default` 列も加わる。
 `schema_migrations` は manifest にのみ記録し、`ar_internal_metadata` は書き出さない。
 プラグインのテーブルやコアテーブルに追加された列は書き出さない(警告に列挙)。
 
@@ -114,11 +117,14 @@ Redmine 6.1.2 のコア 56 テーブルのうち、`imports` と `import_items`(
 付録 A §7 の通り。不合格ならアーカイブを作らずに終了する(`--force` で続行した場合は
 `source.acceptance_forced=true` と警告を記録し、欠落列は `null` で出力)。
 
-1. `schema_migrations` のコア版(`^\d+$`)集合が Redmine 6.1.2 の 322 件と完全一致。
-   不足 → Redmine を 6.1.x に上げて `db:migrate` するよう案内、余剰 → 未対応バージョン。
-   Redmine 6.1.0 / 6.1.1 / 6.1.2 の `db/migrate` は同一(ファイル名・内容とも)なので、6.1.0〜6.1.2 はすべて受け入れる。
+1. `schema_migrations` のコア版(`^\d+$`)集合が既知のスキーマ版のいずれかと完全一致。
+   - 6.1: 322 件。Redmine 6.1.0〜6.1.5 の `db/migrate` は同一(ファイル名・内容とも)。
+   - 7.0: 327 件(6.1 + 20251007073256, 20260319062845, 20260319170822, 20260320090000, 20260520164915)。
+     Redmine 7.0.0 / 7.0.1 の `db/migrate` は同一。
+   一致しなければ差分が最小の版を基準に、不足 → Redmine を対応版に上げて `db:migrate` するよう案内、
+   余剰 → 未対応バージョン。一致した版は manifest の `redmine_schema` に記録する。
 2. プラグイン版(`^\d+-(.+)$`)は警告として記録。
-3. コア 56 テーブルと全列の存在(名前で照合、型は DB 差を許容)。余分なテーブル・列は警告。
+3. その版のコアテーブル(6.1: 56 個 / 7.0: 58 個)と全列の存在(名前で照合、型は DB 差を許容)。余分なテーブル・列は警告。
 
 ## 6. 一貫性
 

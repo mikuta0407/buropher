@@ -54,7 +54,7 @@ var labels = map[string]string{
 	"label_login": "Sign in", "label_register": "Register", "label_project_plural": "Projects",
 	"label_activity": "Activity", "label_issue_plural": "Issues", "label_spent_time": "Spent time",
 	"label_gantt": "Gantt", "label_calendar": "Calendar", "label_news_plural": "News",
-	"label_my_account": "My account", "label_logout": "Sign out", "label_overview": "Overview",
+	"label_my_account": "My account", "label_profile": "Profile", "label_logout": "Sign out", "label_overview": "Overview",
 	"label_roadmap": "Roadmap", "label_issue_new": "New issue", "label_wiki": "Wiki",
 	"label_file_plural": "Files", "label_settings": "Settings", "label_document_plural": "Documents",
 }
@@ -70,7 +70,8 @@ func TestAccountMenuAnonymous(t *testing.T) {
 
 func TestAccountMenuLoggedIn(t *testing.T) {
 	e := &fakeEnv{loggedIn: true, labels: labels}
-	want := `<ul><li><a class="my-account" href="/my/account">My account</a></li><li><a class="logout" rel="nofollow" data-method="post" href="/logout">Sign out</a></li></ul>`
+	// Redmine 7.0.1 で :my_profile（先頭）が追加された。
+	want := `<ul><li><a class="my-profile" href="/users/current">Profile</a></li><li><a class="my-account" href="/my/account">My account</a></li><li><a class="logout" rel="nofollow" data-method="post" href="/logout">Sign out</a></li></ul>`
 	if got := string(AccountMenu().Render(e, nil)); got != want {
 		t.Errorf("got  %s\nwant %s", got, want)
 	}

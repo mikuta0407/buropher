@@ -18,7 +18,7 @@
 
 
 <div class="box tabular">
-<textarea name="content[text]" id="content_text" cols="100" rows="25" accesskey="e" class="wiki-edit" data-auto-complete="true" data-controller="list-autofill" data-action="beforeinput-&gt;list-autofill#handleBeforeInput" data-list-autofill-text-formatting-param="common_mark">
+<textarea name="content[text]" id="content_text" cols="100" rows="25" accesskey="e" class="wiki-edit" data-auto-complete="true" data-controller="list-autofill selection-indent table-paste" data-action="beforeinput-&gt;list-autofill#handleBeforeInput keydown.tab-&gt;selection-indent#run keydown.shift+tab-&gt;selection-indent#run paste-&gt;table-paste#handlePaste" data-list-autofill-text-formatting-param="common_mark" data-selection-indent-text-formatting-param="common_mark" data-table-paste-text-formatting-param="common_mark">
 h1. Another page
 
 This is a link to a ticket: #2
@@ -39,7 +39,7 @@ And this is an included page:
 <span class="attachments_form">
   <span class="attachments_icons hidden">
     <svg class="s18 icon-svg svg-del" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--del"></use></svg>
-    <svg class="s16 icon-svg svg-attachment" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--attachment"></use></svg>
+    <svg class="s16 icon-svg svg-attachment" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--file"></use></svg>
     <svg class="s16 icon-svg svg-loader" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--loader"></use></svg>
     <svg class="s16 icon-svg svg-hourglass" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--hourglass"></use></svg>
   </span>

@@ -1,0 +1,7 @@
+<h2>{{l "label_webhook_new"}}</h2>
+
+{{$f := labelled_form_for "" .Webhook (hash "url" "/webhooks")}}{{$f.Open}}
+  {{partial "webhooks/form" (dict "f" $f)}}
+  {{submit_tag (l "button_create")}}
+  {{link_to (l "button_cancel") "/webhooks"}}
+{{end_form}}

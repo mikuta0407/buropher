@@ -1,0 +1,119 @@
+# Redmine 7.0 の Webhook（設定の統合タブ・/webhooks の一覧・作成・編集・個人設定のリンク）。
+# 状態を変えるため、共用の参照環境（3998）ではなく専用の参照インスタンスに対して、
+# 参照・候補とも実行前に reset して流すこと（-reset-ref / -reset-cand）。
+# ケースは記述順に依存する。admin は全プロジェクトで use_webhooks を持つ。
+name: webhooks_write
+
+users:
+  admin: {login: admin, password: admin}
+  jsmith: {login: jsmith, password: jsmith}
+
+normalize:
+  mask_text_selectors:
+    - "#footer"
+
+requests:
+  # ---- 無効のとき ----
+  - id: w01_webhooks_disabled
+    path: /webhooks
+    user: admin
+  - id: w02_settings_tab_integrations
+    path: /settings?tab=integrations
+    user: admin
+
+  # ---- 有効にする ----
+  - id: settings_integrations_update
+    path: /settings/edit?tab=integrations
+    method: POST
+    user: admin
+    form:
+      tab: integrations
+      settings[rest_api_enabled]: "1"
+      settings[jsonp_enabled]: "0"
+      settings[webhooks_enabled]: "1"
+    expect_status: 302
+  - id: w03_settings_tab_integrations_enabled
+    path: /settings?tab=integrations
+    user: admin
+
+  # ---- 一覧（空）・新規 ----
+  - id: w04_webhooks_empty
+    path: /webhooks
+    user: admin
+  - id: w05_webhooks_new
+    path: /webhooks/new
+    user: admin
+  - id: w06_webhooks_jsmith
+    path: /webhooks
+    user: jsmith
+  - id: w07_my_account
+    path: /my/account
+    user: admin
+
+  # ---- 作成（検証エラー → 成功）----
+  - id: webhooks_create_invalid
+    path: /webhooks
+    method: POST
+    user: admin
+    form:
+      webhook[url]: "http://127.0.0.1/hook"
+      webhook[secret]: "s3cret"
+      webhook[active]: "1"
+      webhook[events][]: ["issue.created", "invalid.event", ""]
+      webhook[project_ids][]: ["1", ""]
+  - id: webhooks_create
+    path: /webhooks
+    method: POST
+    user: admin
+    form:
+      webhook[url]: "https://203.0.113.10/some/very/long/path/to/the/webhook/receiver?token=abc"
+      webhook[secret]: "s3cret"
+      webhook[active]: "1"
+      webhook[events][]: ["issue.created", "issue.updated", "wiki_page.deleted", ""]
+      webhook[project_ids][]: ["1", "2", "5", ""]
+    expect_status: 302
+  - id: webhooks_create_inactive
+    path: /webhooks
+    method: POST
+    user: admin
+    form:
+      webhook[url]: "http://203.0.113.11:8080/hook"
+      webhook[active]: "0"
+      webhook[events][]: [""]
+      webhook[project_ids][]: [""]
+    expect_status: 302
+  - id: w08_webhooks_list
+    path: /webhooks
+    user: admin
+  - id: w09_webhooks_edit
+    path: /webhooks/1/edit
+    user: admin
+
+  # ---- 更新（検証エラー → 成功）・削除 ----
+  - id: webhooks_update_invalid
+    path: /webhooks/1
+    method: PATCH
+    user: admin
+    form:
+      webhook[url]: "ftp://203.0.113.10/"
+  - id: webhooks_update
+    path: /webhooks/1
+    method: PATCH
+    user: admin
+    form:
+      webhook[url]: "https://203.0.113.12/updated"
+      webhook[active]: "0"
+    expect_status: 302
+  - id: webhooks_destroy
+    path: /webhooks/2
+    method: POST
+    user: admin
+    form:
+      _method: delete
+    expect_status: 302
+  - id: w10_webhooks_after_update
+    path: /webhooks
+    user: admin
+  - id: w11_webhooks_edit_missing
+    path: /webhooks/2/edit
+    user: admin

@@ -16,6 +16,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/query"
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/timelog"
+	"github.com/mikuta0407/buropher/internal/webhook"
 	"github.com/mikuta0407/buropher/web"
 )
 
@@ -408,6 +409,9 @@ func (a *App) TimelogDestroy(c *Req) {
 	entries := c.value(teEntriesKey{}).([]*timelog.Entry)
 	ctx := c.Ctx()
 	destroyed := true
+	for _, t := range entries {
+		a.prepareDeleteWebhooks(c, webhook.TypeTimeEntry, t.ID)
+	}
 	err := a.DB.WithTx(ctx, func(tx *db.Tx) error {
 		env := a.teEnv(c).WithQ(tx)
 		for _, t := range entries {
@@ -420,6 +424,9 @@ func (a *App) TimelogDestroy(c *Req) {
 	if err != nil {
 		a.logger().Error("destroy time entries", "err", err)
 		destroyed = false
+	}
+	if destroyed {
+		a.enqueuePreparedDeleteWebhooks(c, webhook.TypeTimeEntry)
 	}
 	if httpx.IsAPIRequest(c.R) {
 		if destroyed {

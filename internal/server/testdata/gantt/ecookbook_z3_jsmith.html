@@ -5,8 +5,7 @@
 //<![CDATA[
 var datepickerOptions={dateFormat: 'yy-mm-dd', firstDay: 0, showOn: 'button', buttonImageOnly: true, buttonImage: '/assets/calendar-DIGEST.png', showButtonPanel: true, showWeek: true, showOtherMonths: true, selectOtherMonths: true, changeMonth: true, changeYear: true, beforeShow: beforeShowDatePicker};
 //]]>
-</script>  <script src="/assets/raphael-DIGEST.js"></script>
-  <script src="/assets/gantt-DIGEST.js"></script>
+</script>  <link rel="stylesheet" href="/assets/gantt-DIGEST.css" media="all" />
 <script src="/assets/context_menu-DIGEST.js"></script><link rel="stylesheet" href="/assets/context_menu-DIGEST.css" media="screen" /></head>
 ----
 <div id="main" class="collapsiblesidebar">
@@ -45,30 +44,30 @@ $('#sidebar-switch-panel').css('visibility', 'visible');
 
     <div id="content">
         
-        <div class="contextual">
-</div>
+        
+<div class="contextual"></div>
 
 <h2>Gantt</h2>
 
 
-<form id="query_form" action="/projects/ecookbook/issues/gantt" accept-charset="UTF-8" name="query_form-RANDOM" method="get">
-<input type="hidden" name="set_filter" id="set_filter" value="1" autocomplete="off" />
-<input type="hidden" name="gantt" id="gantt" value="1" autocomplete="off" />
+<form id="query_form" data-gantt-target="form" action="/projects/ecookbook/issues/gantt" accept-charset="UTF-8" name="query_form-RANDOM" method="get">
+  <input type="hidden" name="set_filter" id="set_filter" value="1" autocomplete="off" />
+  <input type="hidden" name="gantt" id="gantt" value="1" autocomplete="off" />
 
-<div id="query_form_with_buttons" class="hide-when-print">
-<div id="query_form_content">
-  <fieldset id="filters" class="collapsible ">
-    <legend onclick="toggleFieldset(this);" class="icon icon-expanded">
-      <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--angle-down"></use></svg>
-      Filters
-    </legend>
-    <div style="">
-      <script>
+  <div id="query_form_with_buttons" class="hide-when-print">
+    <div id="query_form_content">
+      <fieldset id="filters" class="collapsible ">
+        <legend onclick="toggleFieldset(this);" class="icon icon-expanded">
+          <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--angle-down"></use></svg>
+          Filters
+        </legend>
+        <div style="">
+          <script>
 //<![CDATA[
 
 var operatorLabels = {"=":"is","!":"is not","o":"open","c":"closed","!*":"none","*":"any","\u003e=":"\u003e=","\u003c=":"\u003c=","\u003e\u003c":"between","\u003ct+":"in less than","\u003et+":"in more than","\u003e\u003ct+":"in the next","t+":"in","nd":"tomorrow","t":"today","ld":"yesterday","nw":"next week","w":"this week","lw":"last week","l2w":"last 2 weeks","nm":"next month","m":"this month","lm":"last month","y":"this year","\u003et-":"less than days ago","\u003ct-":"more than days ago","\u003e\u003ct-":"in the past","t-":"days ago","~":"contains","!~":"doesn't contain","*~":"contains any of","^":"starts with","$":"ends with","=p":"any issues in project","=!p":"any issues not in project","!p":"no issues in project","*o":"any open issues","!o":"no open issues","ev":"has been","!ev":"has never been","cf":"changed from"};
-var operatorByType = {"list":["=","!"],"list_with_history":["=","!","ev","!ev","cf"],"list_status":["o","=","!","ev","!ev","cf","c","*"],"list_optional":["=","!","!*","*"],"list_optional_with_history":["=","!","ev","!ev","cf","!*","*"],"list_subprojects":["*","!*","=","!"],"date":["=","\u003e=","\u003c=","\u003e\u003c","\u003ct+","\u003et+","\u003e\u003ct+","t+","nd","t","ld","nw","w","lw","l2w","nm","m","lm","y","\u003et-","\u003ct-","\u003e\u003ct-","t-","!*","*"],"date_past":["=","\u003e=","\u003c=","\u003e\u003c","\u003et-","\u003ct-","\u003e\u003ct-","t-","t","ld","w","lw","l2w","m","lm","y","!*","*"],"string":["~","*~","=","!~","!","^","$","!*","*"],"text":["~","*~","!~","^","$","!*","*"],"search":["~","*~","!~"],"integer":["=","\u003e=","\u003c=","\u003e\u003c","!*","*"],"float":["=","\u003e=","\u003c=","\u003e\u003c","!*","*"],"relation":["=","!","=p","=!p","!p","*o","!o","!*","*"],"tree":["=","~","!*","*"]};
-var availableFilters = {"status_id":{"type":"list_status","name":"Status","remote":true,"values":[["New","1"],["Assigned","2"],["Resolved","3"],["Feedback","4"],["Closed","5"],["Rejected","6"]]},"tracker_id":{"type":"list_with_history","name":"Tracker","values":[["Bug","1"],["Feature request","2"],["Support request","3"]]},"priority_id":{"type":"list_with_history","name":"Priority","values":[["Low","4"],["Normal","5"],["High","6"],["Urgent","7"],["Immediate","8"],["Inactive Priority","15"]]},"author_id":{"type":"list","name":"Author","remote":true},"author.group":{"type":"list","name":"Author's Group","remote":true},"author.role":{"type":"list","name":"Author's Role","remote":true},"assigned_to_id":{"type":"list_optional_with_history","name":"Assignee","remote":true},"member_of_group":{"type":"list_optional","name":"Assignee's group","remote":true},"assigned_to_role":{"type":"list_optional","name":"Assignee's role","remote":true},"fixed_version_id":{"type":"list_optional_with_history","name":"Target version","remote":true},"fixed_version.due_date":{"type":"date","name":"Target version's Due date","values":null},"fixed_version.status":{"type":"list","name":"Target version's Status","values":[["open","open"],["locked","locked"],["closed","closed"]]},"category_id":{"type":"list_optional_with_history","name":"Category","remote":true},"subject":{"type":"text","name":"Subject","values":null},"description":{"type":"text","name":"Description","values":null},"notes":{"type":"text","name":"Notes","values":null},"created_on":{"type":"date_past","name":"Created","values":null},"updated_on":{"type":"date_past","name":"Updated","values":null},"closed_on":{"type":"date_past","name":"Closed","values":null},"start_date":{"type":"date","name":"Start date","values":null},"due_date":{"type":"date","name":"Due date","values":null},"estimated_hours":{"type":"float","name":"Estimated time","values":null},"spent_time":{"type":"float","name":"Spent time","values":null},"done_ratio":{"type":"integer","name":"% Done","values":null},"is_private":{"type":"list","name":"Private","values":[["yes","1"],["no","0"]]},"attachment":{"type":"text","name":"File","values":null},"attachment_description":{"type":"text","name":"File description","values":null},"watcher_id":{"type":"list","name":"Watcher","remote":true},"updated_by":{"type":"list","name":"Updated by","remote":true},"last_updated_by":{"type":"list","name":"Last updated by","remote":true},"subproject_id":{"type":"list_subprojects","name":"Subproject","remote":true},"project.status":{"type":"list","name":"Project's Status","remote":true},"cf_2":{"type":"string","name":"Searchable field","values":null},"cf_1":{"type":"list_optional","name":"Database","remote":true},"cf_9":{"type":"date","name":"Project 1 cf","values":null},"project.cf_3":{"type":"list_optional","name":"Project's Development status","remote":true},"relates":{"type":"relation","name":"Related to","remote":true},"duplicates":{"type":"relation","name":"Is duplicate of","remote":true},"duplicated":{"type":"relation","name":"Has duplicate","remote":true},"blocks":{"type":"relation","name":"Blocks","remote":true},"blocked":{"type":"relation","name":"Blocked by","remote":true},"precedes":{"type":"relation","name":"Precedes","remote":true},"follows":{"type":"relation","name":"Follows","remote":true},"copied_to":{"type":"relation","name":"Copied to","remote":true},"copied_from":{"type":"relation","name":"Copied from","remote":true},"parent_id":{"type":"tree","name":"Parent task","values":null},"child_id":{"type":"tree","name":"Subtasks","values":null},"issue_id":{"type":"integer","name":"Issue","values":null},"any_searchable":{"type":"search","name":"Any searchable text","values":null}};
+var operatorByType = {"list":["=","!"],"list_with_history":["=","!","ev","!ev","cf"],"list_status":["o","=","!","ev","!ev","cf","c","*"],"list_optional":["=","!","!*","*"],"list_optional_with_history":["=","!","ev","!ev","cf","!*","*"],"list_subprojects":["*","!*","=","!"],"date":["=","\u003e=","\u003c=","\u003e\u003c","\u003ct+","\u003et+","\u003e\u003ct+","t+","nd","t","ld","nw","w","lw","l2w","nm","m","lm","y","\u003et-","\u003ct-","\u003e\u003ct-","t-","!*","*"],"date_past":["=","\u003e=","\u003c=","\u003e\u003c","\u003et-","\u003ct-","\u003e\u003ct-","t-","t","ld","w","lw","l2w","m","lm","y","!*","*"],"string":["~","*~","=","!~","!","^","$","!*","*"],"text":["~","*~","!~","^","$","!*","*"],"search":["~","*~","!~"],"integer":["=","\u003e=","\u003c=","\u003e\u003c","!*","*"],"float":["=","\u003e=","\u003c=","\u003e\u003c","!*","*"],"hour":["=","\u003e=","\u003c=","\u003e\u003c","!*","*"],"relation":["=","!","=p","=!p","!p","*o","!o","!*","*"],"tree":["=","~","!*","*"]};
+var availableFilters = {"status_id":{"type":"list_status","name":"Status","remote":true,"values":[["New","1"],["Assigned","2"],["Resolved","3"],["Feedback","4"],["Closed","5"],["Rejected","6"]]},"tracker_id":{"type":"list_with_history","name":"Tracker","values":[["Bug","1"],["Feature request","2"],["Support request","3"]]},"priority_id":{"type":"list_with_history","name":"Priority","values":[["Low","4"],["Normal","5"],["High","6"],["Urgent","7"],["Immediate","8"],["Inactive Priority","15"]]},"author_id":{"type":"list","name":"Author","remote":true},"author.group":{"type":"list","name":"Author's Group","remote":true},"author.role":{"type":"list","name":"Author's Role","remote":true},"assigned_to_id":{"type":"list_optional_with_history","name":"Assignee","remote":true},"member_of_group":{"type":"list_optional","name":"Assignee's group","remote":true},"assigned_to_role":{"type":"list_optional","name":"Assignee's role","remote":true},"fixed_version_id":{"type":"list_optional_with_history","name":"Target version","remote":true},"fixed_version.due_date":{"type":"date","name":"Target version's Due date","values":null},"fixed_version.status":{"type":"list","name":"Target version's Status","values":[["open","open"],["locked","locked"],["closed","closed"]]},"category_id":{"type":"list_optional_with_history","name":"Category","remote":true},"subject":{"type":"text","name":"Subject","values":null},"description":{"type":"text","name":"Description","values":null},"notes":{"type":"text","name":"Notes","values":null},"created_on":{"type":"date_past","name":"Created","values":null},"updated_on":{"type":"date_past","name":"Updated","values":null},"closed_on":{"type":"date_past","name":"Closed","values":null},"start_date":{"type":"date","name":"Start date","values":null},"due_date":{"type":"date","name":"Due date","values":null},"estimated_hours":{"type":"hour","name":"Estimated time","values":null},"spent_time":{"type":"hour","name":"Spent time","values":null},"done_ratio":{"type":"integer","name":"% Done","values":null},"is_private":{"type":"list","name":"Private","values":[["yes","1"],["no","0"]]},"attachment":{"type":"text","name":"File","values":null},"attachment_description":{"type":"text","name":"File description","values":null},"watcher_id":{"type":"list","name":"Watcher","remote":true},"updated_by":{"type":"list","name":"Updated by","remote":true},"last_updated_by":{"type":"list","name":"Last updated by","remote":true},"subproject_id":{"type":"list_subprojects","name":"Subproject","remote":true},"project.status":{"type":"list","name":"Project's Status","remote":true},"cf_2":{"type":"string","name":"Searchable field","values":null},"cf_1":{"type":"list_optional","name":"Database","remote":true},"cf_9":{"type":"date","name":"Project 1 cf","values":null},"project.cf_3":{"type":"list_optional","name":"Project's Development status","remote":true},"relates":{"type":"relation","name":"Related to","remote":true},"duplicates":{"type":"relation","name":"Is duplicate of","remote":true},"duplicated":{"type":"relation","name":"Has duplicate","remote":true},"blocks":{"type":"relation","name":"Blocks","remote":true},"blocked":{"type":"relation","name":"Blocked by","remote":true},"precedes":{"type":"relation","name":"Precedes","remote":true},"follows":{"type":"relation","name":"Follows","remote":true},"copied_to":{"type":"relation","name":"Copied to","remote":true},"copied_from":{"type":"relation","name":"Copied from","remote":true},"parent_id":{"type":"tree","name":"Parent task","values":null},"child_id":{"type":"tree","name":"Subtasks","values":null},"issue_id":{"type":"integer","name":"Issue","values":null},"any_searchable":{"type":"search","name":"Any searchable text","values":null}};
 var labelDayPlural = "days";
 
 var filtersUrl = "\/queries\/filter?project_id=1\u0026type=IssueQuery";
@@ -130,29 +129,31 @@ $(document).ready(function(){
 
 <input type="hidden" name="f[]" id="f_" value="" autocomplete="off" />
 
-    </div>
-  </fieldset>
+        </div>
+      </fieldset>
 
-  <fieldset id="options" class="collapsible collapsed">
-    <legend onclick="toggleFieldset(this);" class="icon icon-collapsed">
-      <svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--angle-right"></use></svg>
-      Options
-    </legend>
-    <div style="display: none;">
-      <div>
+      <fieldset id="options" class="collapsible collapsed"
+                data-controller="gantt--options"
+                data-gantt--options-unavailable-columns-value="[&quot;tracker&quot;,&quot;id&quot;,&quot;subject&quot;]">
+
+        <legend onclick="toggleFieldset(this);" class="icon icon-collapsed">
+          <svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--angle-right"></use></svg>
+          Options
+        </legend>
+
+        <div style="display: none;">
+          <div>
             <fieldset>
-              <legend>
-                Columns
-              </legend>
+              <legend>Columns</legend>
               <div id="list-definition">
                 <div>
-              <label for="draw_selected_columns">
-                <input name="query[draw_selected_columns]" type="hidden" value="0" autocomplete="off" /><input id="draw_selected_columns" data-enables="#list-definition .query-columns select, #list-definition .query-columns input" type="checkbox" value="1" name="query[draw_selected_columns]" />
-                  Display
-              </label>
+                  <label for="draw_selected_columns">
+                    <input name="query[draw_selected_columns]" type="hidden" value="0" autocomplete="off" /><input id="draw_selected_columns" data-enables="#list-definition .query-columns select, #list-definition .query-columns input" data-action="change-&gt;gantt--options#toggleDisplay" data-gantt--options-target="display" type="checkbox" value="1" name="query[draw_selected_columns]" />
+                    Display
+                  </label>
                 </div>
                 <div>
-              
+                  
 <div class="query-columns">
       <label for="available_c">Available Columns</label>
       <select name="available_columns[]" id="available_c" multiple="multiple" size="10" ondblclick="moveOptions(this.form.available_c, this.form.selected_c);"><option value="project">Project</option>
@@ -216,42 +217,45 @@ $(document).ready(function(){
                 </div>
               </div>
             </fieldset>
+
             <fieldset>
               <legend>Related issues</legend>
               <label for="draw_relations">
-                <input name="query[draw_relations]" type="hidden" value="0" autocomplete="off" /><input id="draw_relations" type="checkbox" value="1" checked="checked" name="query[draw_relations]" />
-                  <span style="background-color: #F34F4F">&nbsp;&nbsp;&nbsp;</span>
+                <input name="query[draw_relations]" type="hidden" value="0" autocomplete="off" /><input id="draw_relations" data-action="change-&gt;gantt--options#toggleRelations" data-gantt--options-target="relations" type="checkbox" value="1" checked="checked" name="query[draw_relations]" />
+                  <span style="background-color: #fa5252">&nbsp;&nbsp;&nbsp;</span>
                   Blocks
-                  <span style="background-color: #628FEA">&nbsp;&nbsp;&nbsp;</span>
+                  <span style="background-color: #228be6">&nbsp;&nbsp;&nbsp;</span>
                   Precedes
               </label>
             </fieldset>
+
             <fieldset>
               <legend>Progress line</legend>
               <label for="draw_progress_line">
-                <input name="query[draw_progress_line]" type="hidden" value="0" autocomplete="off" /><input id="draw_progress_line" type="checkbox" value="1" name="query[draw_progress_line]" />
+                <input name="query[draw_progress_line]" type="hidden" value="0" autocomplete="off" /><input id="draw_progress_line" data-action="change-&gt;gantt--options#toggleProgress" data-gantt--options-target="progress" type="checkbox" value="1" name="query[draw_progress_line]" />
                 Display
               </label>
             </fieldset>
-      </div>
+          </div>
+        </div>
+      </fieldset>
     </div>
-  </fieldset>
-</div>
 
-<p class="contextual">
-  <span>
-    <a class="icon icon-zoom-in" href="/projects/ecookbook/issues/gantt?action=show&amp;controller=gantts&amp;month=1&amp;months=6&amp;project_id=ecookbook&amp;year=2026&amp;zoom=4"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--zoom-in"></use></svg><span class="icon-label">Zoom in</span></a>
-    <a class="icon icon-zoom-out" href="/projects/ecookbook/issues/gantt?action=show&amp;controller=gantts&amp;month=1&amp;months=6&amp;project_id=ecookbook&amp;year=2026&amp;zoom=2"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--zoom-out"></use></svg><span class="icon-label">Zoom out</span></a>
-  </span>
-  <span>
-    <a accesskey="p" href="/projects/ecookbook/issues/gantt?month=12&amp;year=2025&amp;zoom=3">« December 2025</a> | <a accesskey="n" href="/projects/ecookbook/issues/gantt?month=2&amp;year=2026&amp;zoom=3">February »</a>
-  </span>
-</p>
+    <p class="contextual">
+      <span>
+        <a class="icon icon-zoom-in" href="/projects/ecookbook/issues/gantt?action=show&amp;controller=gantts&amp;month=1&amp;months=6&amp;project_id=ecookbook&amp;year=2026&amp;zoom=4"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--zoom-in"></use></svg><span class="icon-label">Zoom in</span></a>
+        <a class="icon icon-zoom-out" href="/projects/ecookbook/issues/gantt?action=show&amp;controller=gantts&amp;month=1&amp;months=6&amp;project_id=ecookbook&amp;year=2026&amp;zoom=2"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--zoom-out"></use></svg><span class="icon-label">Zoom out</span></a>
+      </span>
+      <span>
+        <a accesskey="p" href="/projects/ecookbook/issues/gantt?month=12&amp;year=2025&amp;zoom=3">« December 2025</a> |
+        <a accesskey="n" href="/projects/ecookbook/issues/gantt?month=2&amp;year=2026&amp;zoom=3">February »</a>
+      </span>
+    </p>
 
-<p class="buttons">
-  <input type="number" name="months" id="months" value="6" min="1" max="24" autocomplete="false" />
-  months from
-  <select id="month" name="month">
+    <p class="buttons">
+      <input type="number" name="months" id="months" value="6" min="1" max="24" autocomplete="false" />
+      months from
+      <select id="month" name="month">
 <option value="1" selected="selected">January</option>
 <option value="2">February</option>
 <option value="3">March</option>
@@ -266,7 +270,7 @@ $(document).ready(function(){
 <option value="12">December</option>
 </select>
 
-  <select id="year" name="year">
+      <select id="year" name="year">
 <option value="2021">2021</option>
 <option value="2022">2022</option>
 <option value="2023">2023</option>
@@ -280,525 +284,523 @@ $(document).ready(function(){
 <option value="2031">2031</option>
 </select>
 
-  <input type="hidden" name="zoom" id="zoom" value="3" autocomplete="off" />
+      <input type="hidden" name="zoom" id="zoom" value="3" autocomplete="off" />
 
-  <a href="#" onclick="$(&quot;#query_form&quot;).submit(); return false;" class="icon icon-checked"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--checked"></use></svg><span class="icon-label">Apply</span></a>
-  <a class="icon icon-reload" href="/projects/ecookbook/issues/gantt?set_filter=1"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--reload"></use></svg><span class="icon-label">Clear</span></a>
-    <a href="#" onclick="$(&#39;#query_form&#39;).attr(&#39;action&#39;, &#39;/projects/ecookbook/queries/new&#39;).submit();; return false;" class="icon icon-save"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--save"></use></svg><span class="icon-label">Save custom query</span></a>
-</p>
-</div>
+      <a href="#" onclick="$(&quot;#query_form&quot;).submit(); return false;" class="icon icon-checked"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--checked"></use></svg><span class="icon-label">Apply</span></a>
+      <a class="icon icon-reload" href="/projects/ecookbook/issues/gantt?set_filter=1"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--reload"></use></svg><span class="icon-label">Clear</span></a>
+        <a href="#" onclick="$(&#39;#query_form&#39;).attr(&#39;action&#39;, &#39;/projects/ecookbook/queries/new&#39;).submit();; return false;" class="icon icon-save"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--save"></use></svg><span class="icon-label">Save custom query</span></a>
+    </p>
+  </div>
 </form>
 
 
 
-<table class='gantt-table'>
-<tr>
-<td style="width:332px;" class="gantt_subjects_column">
-  <div style="position:relative;height: 628px;width: 331px;" class="gantt_subjects_container ">
-    <div style="width: 331px;height: 54px;background: #eee;" class="gantt_hdr"></div>
-    <div style="z-index: 1;width: 331px;height: 604px;overflow: hidden;" class="gantt_hdr"></div>
-    <div class="gantt_subjects">
-      <form data-cm-url="/issues/context_menu" action="/projects/ecookbook/issues/gantt" accept-charset="UTF-8" name="form-RANDOM" method="post"><input type="hidden" name="authenticity_token" value="{{CSRF}}" autocomplete="off" />        <input type="hidden" name="back_url" value="/projects/ecookbook/issues/gantt?zoom=3" autocomplete="off" />
-        <div class="project-name open" data-collapse-expand="{&quot;top_increment&quot;:20,&quot;obj_id&quot;:&quot;project-1&quot;}" data-number-of-rows="0" style="position: absolute;top:62px;left:4px;width:326px;"><span class="icon icon-expanded expander"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--angle-down"></use></svg></span><span class="icon icon-projects "><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--projects"></use></svg><a href="/projects/ecookbook">eCookbook</a></span></div><div id="issue-3" class="issue-subject hascontextmenu" title="Error 281 when updating a recipe" data-collapse-expand="{&quot;top_increment&quot;:20,&quot;obj_id&quot;:&quot;issue-3&quot;}" data-number-of-rows="1" style="position: absolute;top:82px;left:42px;width:288px;"><span class=" issue-overdue issue-behind-schedule behind-start-date"><span role="img" class="avatar-color-3 s13 avatar icon-avatar" title="Assignee: Dave Lopper">DL</span><a class="issue tracker-1 status-1 priority-4 priority-lowest overdue behind-schedule created-by-me" href="/issues/3">Bug #3</a>: Error 281 when updating a recipe<input type="checkbox" name="ids[]" value="3" style="display:none;" class="toggle-selection"></input></span></div><div id="issue-7" class="issue-subject hascontextmenu" title="Issue due today" data-collapse-expand="{&quot;top_increment&quot;:20,&quot;obj_id&quot;:&quot;issue-7&quot;}" data-number-of-rows="2" style="position: absolute;top:102px;left:42px;width:288px;"><span class=" issue-behind-schedule icon icon-issue"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--issue"></use></svg><a class="issue tracker-1 status-1 priority-5 priority-default behind-schedule created-by-me" href="/issues/7">Bug #7</a>: Issue due today<input type="checkbox" name="ids[]" value="7" style="display:none;" class="toggle-selection"></input></span></div><div id="issue-1" class="issue-subject hascontextmenu" title="Cannot print recipes" data-collapse-expand="{&quot;top_increment&quot;:20,&quot;obj_id&quot;:&quot;issue-1&quot;}" data-number-of-rows="3" style="position: absolute;top:122px;left:42px;width:288px;"><span class=" issue-behind-schedule icon icon-issue"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--issue"></use></svg><a class="issue tracker-1 status-1 priority-4 priority-lowest behind-schedule created-by-me" href="/issues/1">Bug #1</a>: Cannot print recipes<input type="checkbox" name="ids[]" value="1" style="display:none;" class="toggle-selection"></input></span></div><div id="version-2" class="version-name open" data-collapse-expand="{&quot;top_increment&quot;:20,&quot;obj_id&quot;:&quot;version-2&quot;}" data-number-of-rows="4" style="position: absolute;top:142px;left:24px;width:306px;"><span class="icon icon-expanded expander"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--angle-down"></use></svg></span><span class="icon icon-package   version-closed"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--package"></use></svg><a title="02/04/2026" href="/versions/2">1.0</a></span></div><div id="issue-2" class="issue-subject hascontextmenu" title="Add ingredients categories" data-collapse-expand="{&quot;top_increment&quot;:20,&quot;obj_id&quot;:&quot;issue-2&quot;}" data-number-of-rows="5" style="position: absolute;top:162px;left:62px;width:268px;"><span class=""><span role="img" class="avatar-color-3 s13 avatar icon-avatar" title="Assignee: Dave Lopper">DL</span><a class="issue tracker-2 status-2 priority-5 priority-default created-by-me" href="/issues/2">Feature request #2</a>: Add ingredients categories<input type="checkbox" name="ids[]" value="2" style="display:none;" class="toggle-selection"></input></span></div><div class="project-name open" data-collapse-expand="{&quot;top_increment&quot;:20,&quot;obj_id&quot;:&quot;project-5&quot;}" data-number-of-rows="6" style="position: absolute;top:182px;left:24px;width:306px;"><span class="icon icon-expanded expander"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--angle-down"></use></svg></span><span class="icon icon-projects "><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--projects"></use></svg><a href="/projects/private-child">Private child of eCookbook</a></span></div><div id="issue-6" class="issue-subject hascontextmenu" title="Issue of a private subproject" data-collapse-expand="{&quot;top_increment&quot;:20,&quot;obj_id&quot;:&quot;issue-6&quot;}" data-number-of-rows="7" style="position: absolute;top:202px;left:62px;width:268px;"><span class=" issue-behind-schedule icon icon-issue"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--issue"></use></svg><a class="issue tracker-1 status-1 priority-4 priority-lowest behind-schedule created-by-me" href="/issues/6">Bug #6</a>: Issue of a private subproject<input type="checkbox" name="ids[]" value="6" style="display:none;" class="toggle-selection"></input></span></div><div id="issue-9" class="issue-subject hascontextmenu" title="Blocked Issue" data-collapse-expand="{&quot;top_increment&quot;:20,&quot;obj_id&quot;:&quot;issue-9&quot;}" data-number-of-rows="8" style="position: absolute;top:222px;left:62px;width:268px;"><span class=" issue-behind-schedule icon icon-issue"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--issue"></use></svg><a class="issue tracker-1 status-1 priority-5 priority-default behind-schedule created-by-me" href="/issues/9">Bug #9</a>: Blocked Issue<input type="checkbox" name="ids[]" value="9" style="display:none;" class="toggle-selection"></input></span></div><div id="issue-10" class="issue-subject hascontextmenu" title="Issue Doing the Blocking" data-collapse-expand="{&quot;top_increment&quot;:20,&quot;obj_id&quot;:&quot;issue-10&quot;}" data-number-of-rows="9" style="position: absolute;top:242px;left:62px;width:268px;"><span class=" issue-behind-schedule icon icon-issue"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--issue"></use></svg><a class="issue tracker-1 status-1 priority-5 priority-default behind-schedule created-by-me" href="/issues/10">Bug #10</a>: Issue Doing the Blocking<input type="checkbox" name="ids[]" value="10" style="display:none;" class="toggle-selection"></input></span></div><div class="project-name open" data-collapse-expand="{&quot;top_increment&quot;:20,&quot;obj_id&quot;:&quot;project-3&quot;}" data-number-of-rows="10" style="position: absolute;top:262px;left:24px;width:306px;"><span class="icon icon-expanded expander"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--angle-down"></use></svg></span><span class="icon icon-projects "><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--projects"></use></svg><a href="/projects/subproject1">eCookbook Subproject 1</a></span></div><div id="issue-5" class="issue-subject hascontextmenu" title="Subproject issue" data-collapse-expand="{&quot;top_increment&quot;:20,&quot;obj_id&quot;:&quot;issue-5&quot;}" data-number-of-rows="11" style="position: absolute;top:282px;left:62px;width:268px;"><span class=" icon icon-issue"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--issue"></use></svg><a class="issue tracker-1 status-1 priority-4 priority-lowest created-by-me" href="/issues/5">Bug #5</a>: Subproject issue<input type="checkbox" name="ids[]" value="5" style="display:none;" class="toggle-selection"></input></span></div><div id="issue-13" class="issue-subject hascontextmenu" title="Subproject issue two" data-collapse-expand="{&quot;top_increment&quot;:20,&quot;obj_id&quot;:&quot;issue-13&quot;}" data-number-of-rows="12" style="position: absolute;top:302px;left:62px;width:268px;"><span class=" icon icon-issue"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--issue"></use></svg><a class="issue tracker-1 status-1 priority-4 priority-lowest created-by-me" href="/issues/13">Bug #13</a>: Subproject issue two<input type="checkbox" name="ids[]" value="13" style="display:none;" class="toggle-selection"></input></span></div><div id="issue-14" class="issue-subject hascontextmenu" title="Private issue on public project" data-collapse-expand="{&quot;top_increment&quot;:20,&quot;obj_id&quot;:&quot;issue-14&quot;}" data-number-of-rows="13" style="position: absolute;top:322px;left:62px;width:268px;"><span class=" icon icon-issue"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--issue"></use></svg><a class="issue tracker-1 status-1 priority-5 priority-default private created-by-me" href="/issues/14">Bug #14</a>: Private issue on public project<input type="checkbox" name="ids[]" value="14" style="display:none;" class="toggle-selection"></input></span></div>
-</form></div></div></td>
-  <td class="gantt_status_column gantt_selected_column " id="status">
-    <div style="position: relative;height: 628px;" class="gantt_status_container gantt_selected_column_container">
-      <div style="height: 604px;overflow: hidden;" class="gantt_hdr"></div>
-      <div style="height: 54px;background: #eee;" class="gantt_hdr"><p class="gantt_hdr_selected_column_name">Status</p></div>
-      <div class="gantt_status gantt_selected_column_content">
-        <div style="position: absolute;top: 82px; font-size: 0.8em;" class="issue_status" id="status_issue_3" data-collapse-expand="issue-3" data-number-of-rows="1">New</div><div style="position: absolute;top: 102px; font-size: 0.8em;" class="issue_status" id="status_issue_7" data-collapse-expand="issue-7" data-number-of-rows="2">New</div><div style="position: absolute;top: 122px; font-size: 0.8em;" class="issue_status" id="status_issue_1" data-collapse-expand="issue-1" data-number-of-rows="3">New</div><div style="position: absolute;top: 162px; font-size: 0.8em;" class="issue_status" id="status_issue_2" data-collapse-expand="issue-2" data-number-of-rows="5">Assigned</div><div style="position: absolute;top: 202px; font-size: 0.8em;" class="issue_status" id="status_issue_6" data-collapse-expand="issue-6" data-number-of-rows="7">New</div><div style="position: absolute;top: 222px; font-size: 0.8em;" class="issue_status" id="status_issue_9" data-collapse-expand="issue-9" data-number-of-rows="8">New</div><div style="position: absolute;top: 242px; font-size: 0.8em;" class="issue_status" id="status_issue_10" data-collapse-expand="issue-10" data-number-of-rows="9">New</div><div style="position: absolute;top: 282px; font-size: 0.8em;" class="issue_status" id="status_issue_5" data-collapse-expand="issue-5" data-number-of-rows="11">New</div><div style="position: absolute;top: 302px; font-size: 0.8em;" class="issue_status" id="status_issue_13" data-collapse-expand="issue-13" data-number-of-rows="12">New</div><div style="position: absolute;top: 322px; font-size: 0.8em;" class="issue_status" id="status_issue_14" data-collapse-expand="issue-14" data-number-of-rows="13">New</div>
-</div></div>  </td>
-  <td class="gantt_priority_column gantt_selected_column " id="priority">
-    <div style="position: relative;height: 628px;" class="gantt_priority_container gantt_selected_column_container">
-      <div style="height: 604px;overflow: hidden;" class="gantt_hdr"></div>
-      <div style="height: 54px;background: #eee;" class="gantt_hdr"><p class="gantt_hdr_selected_column_name">Priority</p></div>
-      <div class="gantt_priority gantt_selected_column_content">
-        <div style="position: absolute;top: 82px; font-size: 0.8em;" class="issue_priority" id="priority_issue_3" data-collapse-expand="issue-3" data-number-of-rows="1">Low</div><div style="position: absolute;top: 102px; font-size: 0.8em;" class="issue_priority" id="priority_issue_7" data-collapse-expand="issue-7" data-number-of-rows="2">Normal</div><div style="position: absolute;top: 122px; font-size: 0.8em;" class="issue_priority" id="priority_issue_1" data-collapse-expand="issue-1" data-number-of-rows="3">Low</div><div style="position: absolute;top: 162px; font-size: 0.8em;" class="issue_priority" id="priority_issue_2" data-collapse-expand="issue-2" data-number-of-rows="5">Normal</div><div style="position: absolute;top: 202px; font-size: 0.8em;" class="issue_priority" id="priority_issue_6" data-collapse-expand="issue-6" data-number-of-rows="7">Low</div><div style="position: absolute;top: 222px; font-size: 0.8em;" class="issue_priority" id="priority_issue_9" data-collapse-expand="issue-9" data-number-of-rows="8">Normal</div><div style="position: absolute;top: 242px; font-size: 0.8em;" class="issue_priority" id="priority_issue_10" data-collapse-expand="issue-10" data-number-of-rows="9">Normal</div><div style="position: absolute;top: 282px; font-size: 0.8em;" class="issue_priority" id="priority_issue_5" data-collapse-expand="issue-5" data-number-of-rows="11">Low</div><div style="position: absolute;top: 302px; font-size: 0.8em;" class="issue_priority" id="priority_issue_13" data-collapse-expand="issue-13" data-number-of-rows="12">Low</div><div style="position: absolute;top: 322px; font-size: 0.8em;" class="issue_priority" id="priority_issue_14" data-collapse-expand="issue-14" data-number-of-rows="13">Normal</div>
-</div></div>  </td>
-  <td class="gantt_assigned_to_column gantt_selected_column " id="assigned_to">
-    <div style="position: relative;height: 628px;" class="gantt_assigned_to_container gantt_selected_column_container">
-      <div style="height: 604px;overflow: hidden;" class="gantt_hdr"></div>
-      <div style="height: 54px;background: #eee;" class="gantt_hdr"><p class="gantt_hdr_selected_column_name">Assignee</p></div>
-      <div class="gantt_assigned_to gantt_selected_column_content">
-        <div style="position: absolute;top: 82px; font-size: 0.8em;" class="issue_assigned_to" id="assigned_to_issue_3" data-collapse-expand="issue-3" data-number-of-rows="1"><a class="user active" href="/users/3">Dave Lopper</a></div><div style="position: absolute;top: 102px; font-size: 0.8em;" class="issue_assigned_to" id="assigned_to_issue_7" data-collapse-expand="issue-7" data-number-of-rows="2"></div><div style="position: absolute;top: 122px; font-size: 0.8em;" class="issue_assigned_to" id="assigned_to_issue_1" data-collapse-expand="issue-1" data-number-of-rows="3"></div><div style="position: absolute;top: 162px; font-size: 0.8em;" class="issue_assigned_to" id="assigned_to_issue_2" data-collapse-expand="issue-2" data-number-of-rows="5"><a class="user active" href="/users/3">Dave Lopper</a></div><div style="position: absolute;top: 202px; font-size: 0.8em;" class="issue_assigned_to" id="assigned_to_issue_6" data-collapse-expand="issue-6" data-number-of-rows="7"></div><div style="position: absolute;top: 222px; font-size: 0.8em;" class="issue_assigned_to" id="assigned_to_issue_9" data-collapse-expand="issue-9" data-number-of-rows="8"></div><div style="position: absolute;top: 242px; font-size: 0.8em;" class="issue_assigned_to" id="assigned_to_issue_10" data-collapse-expand="issue-10" data-number-of-rows="9"></div><div style="position: absolute;top: 282px; font-size: 0.8em;" class="issue_assigned_to" id="assigned_to_issue_5" data-collapse-expand="issue-5" data-number-of-rows="11"></div><div style="position: absolute;top: 302px; font-size: 0.8em;" class="issue_assigned_to" id="assigned_to_issue_13" data-collapse-expand="issue-13" data-number-of-rows="12"></div><div style="position: absolute;top: 322px; font-size: 0.8em;" class="issue_assigned_to" id="assigned_to_issue_14" data-collapse-expand="issue-14" data-number-of-rows="13"></div>
-</div></div>  </td>
-  <td class="gantt_updated_on_column gantt_selected_column last_gantt_selected_column" id="updated_on">
-    <div style="position: relative;height: 628px;" class="gantt_updated_on_container gantt_selected_column_container">
-      <div style="height: 604px;overflow: hidden;" class="gantt_hdr"></div>
-      <div style="height: 54px;background: #eee;" class="gantt_hdr"><p class="gantt_hdr_selected_column_name">Updated</p></div>
-      <div class="gantt_updated_on gantt_selected_column_content">
-        <div style="position: absolute;top: 82px; font-size: 0.8em;" class="issue_updated_on" id="updated_on_issue_3" data-collapse-expand="issue-3" data-number-of-rows="1">07/19/2006 07:07 PM</div><div style="position: absolute;top: 102px; font-size: 0.8em;" class="issue_updated_on" id="updated_on_issue_7" data-collapse-expand="issue-7" data-number-of-rows="2">01/05/2026 12:00 PM</div><div style="position: absolute;top: 122px; font-size: 0.8em;" class="issue_updated_on" id="updated_on_issue_1" data-collapse-expand="issue-1" data-number-of-rows="3">01/14/2026 12:00 PM</div><div style="position: absolute;top: 162px; font-size: 0.8em;" class="issue_updated_on" id="updated_on_issue_2" data-collapse-expand="issue-2" data-number-of-rows="5">07/19/2006 07:09 PM</div><div style="position: absolute;top: 202px; font-size: 0.8em;" class="issue_updated_on" id="updated_on_issue_6" data-collapse-expand="issue-6" data-number-of-rows="7">01/15/2026 11:59 AM</div><div style="position: absolute;top: 222px; font-size: 0.8em;" class="issue_updated_on" id="updated_on_issue_9" data-collapse-expand="issue-9" data-number-of-rows="8">01/15/2026 11:59 AM</div><div style="position: absolute;top: 242px; font-size: 0.8em;" class="issue_updated_on" id="updated_on_issue_10" data-collapse-expand="issue-10" data-number-of-rows="9">01/15/2026 11:59 AM</div><div style="position: absolute;top: 282px; font-size: 0.8em;" class="issue_updated_on" id="updated_on_issue_5" data-collapse-expand="issue-5" data-number-of-rows="11">01/13/2026 12:00 PM</div><div style="position: absolute;top: 302px; font-size: 0.8em;" class="issue_updated_on" id="updated_on_issue_13" data-collapse-expand="issue-13" data-number-of-rows="12">01/13/2026 12:00 PM</div><div style="position: absolute;top: 322px; font-size: 0.8em;" class="issue_updated_on" id="updated_on_issue_14" data-collapse-expand="issue-14" data-number-of-rows="13">12/31/2025 12:00 PM</div>
-</div></div>  </td>
-<td>
-<div style="position:relative;height:628px;overflow:auto;" id="gantt_area">
-<div style="width: 1447px;height: 54px;background: #eee;" class="gantt_hdr">&nbsp;</div>
 
-  <div style="left: 0px;width: 247px;height: 18px;" class="gantt_hdr">
-    <a title="January 2026" href="/projects/ecookbook/issues/gantt?month=1&amp;months=6&amp;year=2026&amp;zoom=3">2026-1</a>
-</div>  <div style="left: 248px;width: 223px;height: 18px;" class="gantt_hdr">
-    <a title="February 2026" href="/projects/ecookbook/issues/gantt?month=2&amp;months=6&amp;year=2026&amp;zoom=3">2026-2</a>
-</div>  <div style="left: 472px;width: 247px;height: 18px;" class="gantt_hdr">
-    <a title="March 2026" href="/projects/ecookbook/issues/gantt?month=3&amp;months=6&amp;year=2026&amp;zoom=3">2026-3</a>
-</div>  <div style="left: 720px;width: 239px;height: 18px;" class="gantt_hdr">
-    <a title="April 2026" href="/projects/ecookbook/issues/gantt?month=4&amp;months=6&amp;year=2026&amp;zoom=3">2026-4</a>
-</div>  <div style="left: 960px;width: 247px;height: 18px;" class="gantt_hdr">
-    <a title="May 2026" href="/projects/ecookbook/issues/gantt?month=5&amp;months=6&amp;year=2026&amp;zoom=3">2026-5</a>
-</div>  <div style="left: 1208px;width: 239px;height: 18px;" class="gantt_hdr">
-    <a title="June 2026" href="/projects/ecookbook/issues/gantt?month=6&amp;months=6&amp;year=2026&amp;zoom=3">2026-6</a>
+<table class="gantt-table" data-controller="gantt--chart" data-action="gantt--options:toggle-display@document-&gt;gantt--chart#handleOptionsDisplay gantt--options:toggle-relations@document-&gt;gantt--chart#handleOptionsRelations gantt--options:toggle-progress@document-&gt;gantt--chart#handleOptionsProgress gantt--subjects:toggle-tree-&gt;gantt--chart#handleSubjectTreeChanged resize@window-&gt;gantt--chart#handleWindowResize" data-gantt--chart-issue-relation-types-value="{&quot;blocks&quot;:{&quot;landscape_margin&quot;:16,&quot;color&quot;:&quot;#fa5252&quot;},&quot;precedes&quot;:{&quot;landscape_margin&quot;:20,&quot;color&quot;:&quot;#228be6&quot;}}" data-gantt--chart-show-selected-columns-value="false" data-gantt--chart-show-relations-value="true" data-gantt--chart-show-progress-value="false">
+  <tr>
+    <td style="width:332px;" data-controller="gantt--column" data-action="resize@window-&gt;gantt--column#handleWindowResize" data-gantt--column-min-width-value="100" data-gantt--column-column-value="subjects" class="gantt_subjects_column">
+      <div style="position:relative;height: 628px;width: 331px;" class="gantt_subjects_container" data-gantt--chart-target="subjectsContainer">
+        <div style="width: 331px;height: 54px;background: #f1f3f5;" class="gantt_hdr"></div>
+        <div style="z-index: 1;width: 331px;height: 604px;overflow: hidden;" class="gantt_hdr"></div>
+        <div class="gantt_subjects" data-controller="gantt--subjects" data-action="gantt--column:resize-column-subjects@document-&gt;gantt--subjects#handleResizeColumn">
+          <form data-cm-url="/issues/context_menu" action="/projects/ecookbook/issues/gantt" accept-charset="UTF-8" name="form-RANDOM" method="post"><input type="hidden" name="authenticity_token" value="{{CSRF}}" autocomplete="off" />
+            <input type="hidden" name="back_url" value="/projects/ecookbook/issues/gantt?zoom=3" autocomplete="off" />
+            <div class="project-name open" data-collapse-expand="{&quot;top_increment&quot;:20,&quot;obj_id&quot;:&quot;project-1&quot;}" data-number-of-rows="0" style="position: absolute;inset-block-start:62px;inset-inline-start:4px;width:326px;"><span class="icon icon-expanded expander" data-action="click-&gt;gantt--subjects#handleEntryClick"><svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--angle-down"></use></svg></span><span class="icon icon-projects "><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--projects"></use></svg><a href="/projects/ecookbook">eCookbook</a></span></div><div id="issue-3" class="issue-subject hascontextmenu" title="Error 281 when updating a recipe" data-collapse-expand="{&quot;top_increment&quot;:20,&quot;obj_id&quot;:&quot;issue-3&quot;}" data-number-of-rows="1" style="position: absolute;inset-block-start:82px;inset-inline-start:42px;width:288px;"><span class=" issue-overdue issue-behind-schedule behind-start-date"><span role="img" class="avatar-color-3 s13 avatar icon-avatar" title="Assignee: Dave Lopper">DL</span><a class="issue tracker-1 status-1 priority-4 priority-lowest overdue behind-schedule created-by-me" href="/issues/3">Bug #3</a>: Error 281 when updating a recipe<input type="checkbox" name="ids[]" value="3" style="display:none;" class="toggle-selection"></input></span></div><div id="issue-7" class="issue-subject hascontextmenu" title="Issue due today" data-collapse-expand="{&quot;top_increment&quot;:20,&quot;obj_id&quot;:&quot;issue-7&quot;}" data-number-of-rows="2" style="position: absolute;inset-block-start:102px;inset-inline-start:42px;width:288px;"><span class=" issue-behind-schedule icon icon-issue"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--issue"></use></svg><a class="issue tracker-1 status-1 priority-5 priority-default behind-schedule created-by-me" href="/issues/7">Bug #7</a>: Issue due today<input type="checkbox" name="ids[]" value="7" style="display:none;" class="toggle-selection"></input></span></div><div id="issue-1" class="issue-subject hascontextmenu" title="Cannot print recipes" data-collapse-expand="{&quot;top_increment&quot;:20,&quot;obj_id&quot;:&quot;issue-1&quot;}" data-number-of-rows="3" style="position: absolute;inset-block-start:122px;inset-inline-start:42px;width:288px;"><span class=" issue-behind-schedule icon icon-issue"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--issue"></use></svg><a class="issue tracker-1 status-1 priority-4 priority-lowest behind-schedule created-by-me" href="/issues/1">Bug #1</a>: Cannot print recipes<input type="checkbox" name="ids[]" value="1" style="display:none;" class="toggle-selection"></input></span></div><div id="version-2" class="version-name open" data-collapse-expand="{&quot;top_increment&quot;:20,&quot;obj_id&quot;:&quot;version-2&quot;}" data-number-of-rows="4" style="position: absolute;inset-block-start:142px;inset-inline-start:24px;width:306px;"><span class="icon icon-expanded expander" data-action="click-&gt;gantt--subjects#handleEntryClick"><svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--angle-down"></use></svg></span><span class="icon icon-package   version-closed"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--package"></use></svg><a title="02/04/2026" href="/versions/2">1.0</a></span></div><div id="issue-2" class="issue-subject hascontextmenu" title="Add ingredients categories" data-collapse-expand="{&quot;top_increment&quot;:20,&quot;obj_id&quot;:&quot;issue-2&quot;}" data-number-of-rows="5" style="position: absolute;inset-block-start:162px;inset-inline-start:62px;width:268px;"><span class=""><span role="img" class="avatar-color-3 s13 avatar icon-avatar" title="Assignee: Dave Lopper">DL</span><a class="issue tracker-2 status-2 priority-5 priority-default created-by-me" href="/issues/2">Feature request #2</a>: Add ingredients categories<input type="checkbox" name="ids[]" value="2" style="display:none;" class="toggle-selection"></input></span></div><div class="project-name open" data-collapse-expand="{&quot;top_increment&quot;:20,&quot;obj_id&quot;:&quot;project-5&quot;}" data-number-of-rows="6" style="position: absolute;inset-block-start:182px;inset-inline-start:24px;width:306px;"><span class="icon icon-expanded expander" data-action="click-&gt;gantt--subjects#handleEntryClick"><svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--angle-down"></use></svg></span><span class="icon icon-projects "><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--projects"></use></svg><a href="/projects/private-child">Private child of eCookbook</a></span></div><div id="issue-6" class="issue-subject hascontextmenu" title="Issue of a private subproject" data-collapse-expand="{&quot;top_increment&quot;:20,&quot;obj_id&quot;:&quot;issue-6&quot;}" data-number-of-rows="7" style="position: absolute;inset-block-start:202px;inset-inline-start:62px;width:268px;"><span class=" issue-behind-schedule icon icon-issue"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--issue"></use></svg><a class="issue tracker-1 status-1 priority-4 priority-lowest behind-schedule created-by-me" href="/issues/6">Bug #6</a>: Issue of a private subproject<input type="checkbox" name="ids[]" value="6" style="display:none;" class="toggle-selection"></input></span></div><div id="issue-9" class="issue-subject hascontextmenu" title="Blocked Issue" data-collapse-expand="{&quot;top_increment&quot;:20,&quot;obj_id&quot;:&quot;issue-9&quot;}" data-number-of-rows="8" style="position: absolute;inset-block-start:222px;inset-inline-start:62px;width:268px;"><span class=" issue-behind-schedule icon icon-issue"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--issue"></use></svg><a class="issue tracker-1 status-1 priority-5 priority-default behind-schedule created-by-me" href="/issues/9">Bug #9</a>: Blocked Issue<input type="checkbox" name="ids[]" value="9" style="display:none;" class="toggle-selection"></input></span></div><div id="issue-10" class="issue-subject hascontextmenu" title="Issue Doing the Blocking" data-collapse-expand="{&quot;top_increment&quot;:20,&quot;obj_id&quot;:&quot;issue-10&quot;}" data-number-of-rows="9" style="position: absolute;inset-block-start:242px;inset-inline-start:62px;width:268px;"><span class=" issue-behind-schedule icon icon-issue"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--issue"></use></svg><a class="issue tracker-1 status-1 priority-5 priority-default behind-schedule created-by-me" href="/issues/10">Bug #10</a>: Issue Doing the Blocking<input type="checkbox" name="ids[]" value="10" style="display:none;" class="toggle-selection"></input></span></div><div class="project-name open" data-collapse-expand="{&quot;top_increment&quot;:20,&quot;obj_id&quot;:&quot;project-3&quot;}" data-number-of-rows="10" style="position: absolute;inset-block-start:262px;inset-inline-start:24px;width:306px;"><span class="icon icon-expanded expander" data-action="click-&gt;gantt--subjects#handleEntryClick"><svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--angle-down"></use></svg></span><span class="icon icon-projects "><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--projects"></use></svg><a href="/projects/subproject1">eCookbook Subproject 1</a></span></div><div id="issue-5" class="issue-subject hascontextmenu" title="Subproject issue" data-collapse-expand="{&quot;top_increment&quot;:20,&quot;obj_id&quot;:&quot;issue-5&quot;}" data-number-of-rows="11" style="position: absolute;inset-block-start:282px;inset-inline-start:62px;width:268px;"><span class=" icon icon-issue"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--issue"></use></svg><a class="issue tracker-1 status-1 priority-4 priority-lowest created-by-me" href="/issues/5">Bug #5</a>: Subproject issue<input type="checkbox" name="ids[]" value="5" style="display:none;" class="toggle-selection"></input></span></div><div id="issue-13" class="issue-subject hascontextmenu" title="Subproject issue two" data-collapse-expand="{&quot;top_increment&quot;:20,&quot;obj_id&quot;:&quot;issue-13&quot;}" data-number-of-rows="12" style="position: absolute;inset-block-start:302px;inset-inline-start:62px;width:268px;"><span class=" icon icon-issue"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--issue"></use></svg><a class="issue tracker-1 status-1 priority-4 priority-lowest created-by-me" href="/issues/13">Bug #13</a>: Subproject issue two<input type="checkbox" name="ids[]" value="13" style="display:none;" class="toggle-selection"></input></span></div><div id="issue-14" class="issue-subject hascontextmenu" title="Private issue on public project" data-collapse-expand="{&quot;top_increment&quot;:20,&quot;obj_id&quot;:&quot;issue-14&quot;}" data-number-of-rows="13" style="position: absolute;inset-block-start:322px;inset-inline-start:62px;width:268px;"><span class=" icon icon-issue"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--issue"></use></svg><a class="issue tracker-1 status-1 priority-5 priority-default private created-by-me" href="/issues/14">Bug #14</a>: Private issue on public project<input type="checkbox" name="ids[]" value="14" style="display:none;" class="toggle-selection"></input></span></div>
+</form></div></div></td>      <td id="status" class="gantt_status_column gantt_selected_column" data-controller="gantt--column" data-action="resize@window-&gt;gantt--column#handleWindowResize" data-gantt--column-min-width-value="20" data-gantt--column-column-value="status">
+        <div style="position: relative;height: 628px;" class="gantt_status_container gantt_selected_column_container">
+          <div style="height: 604px;overflow: hidden;" class="gantt_hdr"></div>
+          <div style="height: 54px;background: #f1f3f5;" class="gantt_hdr"><p class="gantt_hdr_selected_column_name">Status</p></div>
+          <div class="gantt_status gantt_selected_column_content">
+            <div style="position: absolute;inset-block-start: 82px; font-size: 0.8em;" class="issue_status" id="status_issue_3" data-collapse-expand="issue-3" data-number-of-rows="1">New</div><div style="position: absolute;inset-block-start: 102px; font-size: 0.8em;" class="issue_status" id="status_issue_7" data-collapse-expand="issue-7" data-number-of-rows="2">New</div><div style="position: absolute;inset-block-start: 122px; font-size: 0.8em;" class="issue_status" id="status_issue_1" data-collapse-expand="issue-1" data-number-of-rows="3">New</div><div style="position: absolute;inset-block-start: 162px; font-size: 0.8em;" class="issue_status" id="status_issue_2" data-collapse-expand="issue-2" data-number-of-rows="5">Assigned</div><div style="position: absolute;inset-block-start: 202px; font-size: 0.8em;" class="issue_status" id="status_issue_6" data-collapse-expand="issue-6" data-number-of-rows="7">New</div><div style="position: absolute;inset-block-start: 222px; font-size: 0.8em;" class="issue_status" id="status_issue_9" data-collapse-expand="issue-9" data-number-of-rows="8">New</div><div style="position: absolute;inset-block-start: 242px; font-size: 0.8em;" class="issue_status" id="status_issue_10" data-collapse-expand="issue-10" data-number-of-rows="9">New</div><div style="position: absolute;inset-block-start: 282px; font-size: 0.8em;" class="issue_status" id="status_issue_5" data-collapse-expand="issue-5" data-number-of-rows="11">New</div><div style="position: absolute;inset-block-start: 302px; font-size: 0.8em;" class="issue_status" id="status_issue_13" data-collapse-expand="issue-13" data-number-of-rows="12">New</div><div style="position: absolute;inset-block-start: 322px; font-size: 0.8em;" class="issue_status" id="status_issue_14" data-collapse-expand="issue-14" data-number-of-rows="13">New</div>
+</div></div></td>      <td id="priority" class="gantt_priority_column gantt_selected_column" data-controller="gantt--column" data-action="resize@window-&gt;gantt--column#handleWindowResize" data-gantt--column-min-width-value="20" data-gantt--column-column-value="priority">
+        <div style="position: relative;height: 628px;" class="gantt_priority_container gantt_selected_column_container">
+          <div style="height: 604px;overflow: hidden;" class="gantt_hdr"></div>
+          <div style="height: 54px;background: #f1f3f5;" class="gantt_hdr"><p class="gantt_hdr_selected_column_name">Priority</p></div>
+          <div class="gantt_priority gantt_selected_column_content">
+            <div style="position: absolute;inset-block-start: 82px; font-size: 0.8em;" class="issue_priority" id="priority_issue_3" data-collapse-expand="issue-3" data-number-of-rows="1">Low</div><div style="position: absolute;inset-block-start: 102px; font-size: 0.8em;" class="issue_priority" id="priority_issue_7" data-collapse-expand="issue-7" data-number-of-rows="2">Normal</div><div style="position: absolute;inset-block-start: 122px; font-size: 0.8em;" class="issue_priority" id="priority_issue_1" data-collapse-expand="issue-1" data-number-of-rows="3">Low</div><div style="position: absolute;inset-block-start: 162px; font-size: 0.8em;" class="issue_priority" id="priority_issue_2" data-collapse-expand="issue-2" data-number-of-rows="5">Normal</div><div style="position: absolute;inset-block-start: 202px; font-size: 0.8em;" class="issue_priority" id="priority_issue_6" data-collapse-expand="issue-6" data-number-of-rows="7">Low</div><div style="position: absolute;inset-block-start: 222px; font-size: 0.8em;" class="issue_priority" id="priority_issue_9" data-collapse-expand="issue-9" data-number-of-rows="8">Normal</div><div style="position: absolute;inset-block-start: 242px; font-size: 0.8em;" class="issue_priority" id="priority_issue_10" data-collapse-expand="issue-10" data-number-of-rows="9">Normal</div><div style="position: absolute;inset-block-start: 282px; font-size: 0.8em;" class="issue_priority" id="priority_issue_5" data-collapse-expand="issue-5" data-number-of-rows="11">Low</div><div style="position: absolute;inset-block-start: 302px; font-size: 0.8em;" class="issue_priority" id="priority_issue_13" data-collapse-expand="issue-13" data-number-of-rows="12">Low</div><div style="position: absolute;inset-block-start: 322px; font-size: 0.8em;" class="issue_priority" id="priority_issue_14" data-collapse-expand="issue-14" data-number-of-rows="13">Normal</div>
+</div></div></td>      <td id="assigned_to" class="gantt_assigned_to_column gantt_selected_column" data-controller="gantt--column" data-action="resize@window-&gt;gantt--column#handleWindowResize" data-gantt--column-min-width-value="20" data-gantt--column-column-value="assigned_to">
+        <div style="position: relative;height: 628px;" class="gantt_assigned_to_container gantt_selected_column_container">
+          <div style="height: 604px;overflow: hidden;" class="gantt_hdr"></div>
+          <div style="height: 54px;background: #f1f3f5;" class="gantt_hdr"><p class="gantt_hdr_selected_column_name">Assignee</p></div>
+          <div class="gantt_assigned_to gantt_selected_column_content">
+            <div style="position: absolute;inset-block-start: 82px; font-size: 0.8em;" class="issue_assigned_to" id="assigned_to_issue_3" data-collapse-expand="issue-3" data-number-of-rows="1"><a class="user active" href="/users/3">Dave Lopper</a></div><div style="position: absolute;inset-block-start: 102px; font-size: 0.8em;" class="issue_assigned_to" id="assigned_to_issue_7" data-collapse-expand="issue-7" data-number-of-rows="2"></div><div style="position: absolute;inset-block-start: 122px; font-size: 0.8em;" class="issue_assigned_to" id="assigned_to_issue_1" data-collapse-expand="issue-1" data-number-of-rows="3"></div><div style="position: absolute;inset-block-start: 162px; font-size: 0.8em;" class="issue_assigned_to" id="assigned_to_issue_2" data-collapse-expand="issue-2" data-number-of-rows="5"><a class="user active" href="/users/3">Dave Lopper</a></div><div style="position: absolute;inset-block-start: 202px; font-size: 0.8em;" class="issue_assigned_to" id="assigned_to_issue_6" data-collapse-expand="issue-6" data-number-of-rows="7"></div><div style="position: absolute;inset-block-start: 222px; font-size: 0.8em;" class="issue_assigned_to" id="assigned_to_issue_9" data-collapse-expand="issue-9" data-number-of-rows="8"></div><div style="position: absolute;inset-block-start: 242px; font-size: 0.8em;" class="issue_assigned_to" id="assigned_to_issue_10" data-collapse-expand="issue-10" data-number-of-rows="9"></div><div style="position: absolute;inset-block-start: 282px; font-size: 0.8em;" class="issue_assigned_to" id="assigned_to_issue_5" data-collapse-expand="issue-5" data-number-of-rows="11"></div><div style="position: absolute;inset-block-start: 302px; font-size: 0.8em;" class="issue_assigned_to" id="assigned_to_issue_13" data-collapse-expand="issue-13" data-number-of-rows="12"></div><div style="position: absolute;inset-block-start: 322px; font-size: 0.8em;" class="issue_assigned_to" id="assigned_to_issue_14" data-collapse-expand="issue-14" data-number-of-rows="13"></div>
+</div></div></td>      <td id="updated_on" class="gantt_updated_on_column gantt_selected_column last_gantt_selected_column" data-controller="gantt--column" data-action="resize@window-&gt;gantt--column#handleWindowResize" data-gantt--column-min-width-value="20" data-gantt--column-column-value="updated_on">
+        <div style="position: relative;height: 628px;" class="gantt_updated_on_container gantt_selected_column_container">
+          <div style="height: 604px;overflow: hidden;" class="gantt_hdr"></div>
+          <div style="height: 54px;background: #f1f3f5;" class="gantt_hdr"><p class="gantt_hdr_selected_column_name">Updated</p></div>
+          <div class="gantt_updated_on gantt_selected_column_content">
+            <div style="position: absolute;inset-block-start: 82px; font-size: 0.8em;" class="issue_updated_on" id="updated_on_issue_3" data-collapse-expand="issue-3" data-number-of-rows="1">07/19/2006 07:07 PM</div><div style="position: absolute;inset-block-start: 102px; font-size: 0.8em;" class="issue_updated_on" id="updated_on_issue_7" data-collapse-expand="issue-7" data-number-of-rows="2">01/05/2026 12:00 PM</div><div style="position: absolute;inset-block-start: 122px; font-size: 0.8em;" class="issue_updated_on" id="updated_on_issue_1" data-collapse-expand="issue-1" data-number-of-rows="3">01/14/2026 12:00 PM</div><div style="position: absolute;inset-block-start: 162px; font-size: 0.8em;" class="issue_updated_on" id="updated_on_issue_2" data-collapse-expand="issue-2" data-number-of-rows="5">07/19/2006 07:09 PM</div><div style="position: absolute;inset-block-start: 202px; font-size: 0.8em;" class="issue_updated_on" id="updated_on_issue_6" data-collapse-expand="issue-6" data-number-of-rows="7">01/15/2026 11:59 AM</div><div style="position: absolute;inset-block-start: 222px; font-size: 0.8em;" class="issue_updated_on" id="updated_on_issue_9" data-collapse-expand="issue-9" data-number-of-rows="8">01/15/2026 11:59 AM</div><div style="position: absolute;inset-block-start: 242px; font-size: 0.8em;" class="issue_updated_on" id="updated_on_issue_10" data-collapse-expand="issue-10" data-number-of-rows="9">01/15/2026 11:59 AM</div><div style="position: absolute;inset-block-start: 282px; font-size: 0.8em;" class="issue_updated_on" id="updated_on_issue_5" data-collapse-expand="issue-5" data-number-of-rows="11">01/13/2026 12:00 PM</div><div style="position: absolute;inset-block-start: 302px; font-size: 0.8em;" class="issue_updated_on" id="updated_on_issue_13" data-collapse-expand="issue-13" data-number-of-rows="12">01/13/2026 12:00 PM</div><div style="position: absolute;inset-block-start: 322px; font-size: 0.8em;" class="issue_updated_on" id="updated_on_issue_14" data-collapse-expand="issue-14" data-number-of-rows="13">12/31/2025 12:00 PM</div>
+</div></div></td>    <td>
+      <div style="position:relative;height:628px;overflow:auto;" id="gantt_area" data-gantt--chart-target="ganttArea">
+        <div style="width: 1447px;height: 54px;background: #f1f3f5;" class="gantt_hdr">&nbsp;</div>
+
+          <div style="inset-inline-start: 0px;width: 247px;height: 18px;" class="gantt_hdr">
+            <a title="January 2026" href="/projects/ecookbook/issues/gantt?month=1&amp;months=6&amp;year=2026&amp;zoom=3">2026-1</a>
+</div>          <div style="inset-inline-start: 248px;width: 223px;height: 18px;" class="gantt_hdr">
+            <a title="February 2026" href="/projects/ecookbook/issues/gantt?month=2&amp;months=6&amp;year=2026&amp;zoom=3">2026-2</a>
+</div>          <div style="inset-inline-start: 472px;width: 247px;height: 18px;" class="gantt_hdr">
+            <a title="March 2026" href="/projects/ecookbook/issues/gantt?month=3&amp;months=6&amp;year=2026&amp;zoom=3">2026-3</a>
+</div>          <div style="inset-inline-start: 720px;width: 239px;height: 18px;" class="gantt_hdr">
+            <a title="April 2026" href="/projects/ecookbook/issues/gantt?month=4&amp;months=6&amp;year=2026&amp;zoom=3">2026-4</a>
+</div>          <div style="inset-inline-start: 960px;width: 247px;height: 18px;" class="gantt_hdr">
+            <a title="May 2026" href="/projects/ecookbook/issues/gantt?month=5&amp;months=6&amp;year=2026&amp;zoom=3">2026-5</a>
+</div>          <div style="inset-inline-start: 1208px;width: 239px;height: 18px;" class="gantt_hdr">
+            <a title="June 2026" href="/projects/ecookbook/issues/gantt?month=6&amp;months=6&amp;year=2026&amp;zoom=3">2026-6</a>
 </div>
-    <div style="left: 0px;top: 19px;width: 31px;height: 17px;" class="gantt_hdr">&nbsp;</div>
-    <div style="left: 32px;top: 19px;width: 55px;height: 17px;" class="gantt_hdr">
-      <small>
-        2
-</small></div>    <div style="left: 88px;top: 19px;width: 55px;height: 17px;" class="gantt_hdr">
-      <small>
-        3
-</small></div>    <div style="left: 144px;top: 19px;width: 55px;height: 17px;" class="gantt_hdr">
-      <small>
-        4
-</small></div>    <div style="left: 200px;top: 19px;width: 55px;height: 17px;" class="gantt_hdr">
-      <small>
-        5
-</small></div>    <div style="left: 256px;top: 19px;width: 55px;height: 17px;" class="gantt_hdr">
-      <small>
-        6
-</small></div>    <div style="left: 312px;top: 19px;width: 55px;height: 17px;" class="gantt_hdr">
-      <small>
-        7
-</small></div>    <div style="left: 368px;top: 19px;width: 55px;height: 17px;" class="gantt_hdr">
-      <small>
-        8
-</small></div>    <div style="left: 424px;top: 19px;width: 55px;height: 17px;" class="gantt_hdr">
-      <small>
-        9
-</small></div>    <div style="left: 480px;top: 19px;width: 55px;height: 17px;" class="gantt_hdr">
-      <small>
-        10
-</small></div>    <div style="left: 536px;top: 19px;width: 55px;height: 17px;" class="gantt_hdr">
-      <small>
-        11
-</small></div>    <div style="left: 592px;top: 19px;width: 55px;height: 17px;" class="gantt_hdr">
-      <small>
-        12
-</small></div>    <div style="left: 648px;top: 19px;width: 55px;height: 17px;" class="gantt_hdr">
-      <small>
-        13
-</small></div>    <div style="left: 704px;top: 19px;width: 55px;height: 17px;" class="gantt_hdr">
-      <small>
-        14
-</small></div>    <div style="left: 760px;top: 19px;width: 55px;height: 17px;" class="gantt_hdr">
-      <small>
-        15
-</small></div>    <div style="left: 816px;top: 19px;width: 55px;height: 17px;" class="gantt_hdr">
-      <small>
-        16
-</small></div>    <div style="left: 872px;top: 19px;width: 55px;height: 17px;" class="gantt_hdr">
-      <small>
-        17
-</small></div>    <div style="left: 928px;top: 19px;width: 55px;height: 17px;" class="gantt_hdr">
-      <small>
-        18
-</small></div>    <div style="left: 984px;top: 19px;width: 55px;height: 17px;" class="gantt_hdr">
-      <small>
-        19
-</small></div>    <div style="left: 1040px;top: 19px;width: 55px;height: 17px;" class="gantt_hdr">
-      <small>
-        20
-</small></div>    <div style="left: 1096px;top: 19px;width: 55px;height: 17px;" class="gantt_hdr">
-      <small>
-        21
-</small></div>    <div style="left: 1152px;top: 19px;width: 55px;height: 17px;" class="gantt_hdr">
-      <small>
-        22
-</small></div>    <div style="left: 1208px;top: 19px;width: 55px;height: 17px;" class="gantt_hdr">
-      <small>
-        23
-</small></div>    <div style="left: 1264px;top: 19px;width: 55px;height: 17px;" class="gantt_hdr">
-      <small>
-        24
-</small></div>    <div style="left: 1320px;top: 19px;width: 55px;height: 17px;" class="gantt_hdr">
-      <small>
-        25
-</small></div>    <div style="left: 1376px;top: 19px;width: 55px;height: 17px;" class="gantt_hdr">
-      <small>
-        26
-</small></div>    <div style="left: 1432px;top: 19px;width: 15px;height: 17px;" class="gantt_hdr">
-      <small>
+            <div style="inset-inline-start: 0px;inset-block-start: 19px;width: 31px;height: 17px;" class="gantt_hdr">&nbsp;</div>
+            <div style="inset-inline-start: 32px;inset-block-start: 19px;width: 55px;height: 17px;" class="gantt_hdr">
+              <small>
+                2
+</small></div>            <div style="inset-inline-start: 88px;inset-block-start: 19px;width: 55px;height: 17px;" class="gantt_hdr">
+              <small>
+                3
+</small></div>            <div style="inset-inline-start: 144px;inset-block-start: 19px;width: 55px;height: 17px;" class="gantt_hdr">
+              <small>
+                4
+</small></div>            <div style="inset-inline-start: 200px;inset-block-start: 19px;width: 55px;height: 17px;" class="gantt_hdr">
+              <small>
+                5
+</small></div>            <div style="inset-inline-start: 256px;inset-block-start: 19px;width: 55px;height: 17px;" class="gantt_hdr">
+              <small>
+                6
+</small></div>            <div style="inset-inline-start: 312px;inset-block-start: 19px;width: 55px;height: 17px;" class="gantt_hdr">
+              <small>
+                7
+</small></div>            <div style="inset-inline-start: 368px;inset-block-start: 19px;width: 55px;height: 17px;" class="gantt_hdr">
+              <small>
+                8
+</small></div>            <div style="inset-inline-start: 424px;inset-block-start: 19px;width: 55px;height: 17px;" class="gantt_hdr">
+              <small>
+                9
+</small></div>            <div style="inset-inline-start: 480px;inset-block-start: 19px;width: 55px;height: 17px;" class="gantt_hdr">
+              <small>
+                10
+</small></div>            <div style="inset-inline-start: 536px;inset-block-start: 19px;width: 55px;height: 17px;" class="gantt_hdr">
+              <small>
+                11
+</small></div>            <div style="inset-inline-start: 592px;inset-block-start: 19px;width: 55px;height: 17px;" class="gantt_hdr">
+              <small>
+                12
+</small></div>            <div style="inset-inline-start: 648px;inset-block-start: 19px;width: 55px;height: 17px;" class="gantt_hdr">
+              <small>
+                13
+</small></div>            <div style="inset-inline-start: 704px;inset-block-start: 19px;width: 55px;height: 17px;" class="gantt_hdr">
+              <small>
+                14
+</small></div>            <div style="inset-inline-start: 760px;inset-block-start: 19px;width: 55px;height: 17px;" class="gantt_hdr">
+              <small>
+                15
+</small></div>            <div style="inset-inline-start: 816px;inset-block-start: 19px;width: 55px;height: 17px;" class="gantt_hdr">
+              <small>
+                16
+</small></div>            <div style="inset-inline-start: 872px;inset-block-start: 19px;width: 55px;height: 17px;" class="gantt_hdr">
+              <small>
+                17
+</small></div>            <div style="inset-inline-start: 928px;inset-block-start: 19px;width: 55px;height: 17px;" class="gantt_hdr">
+              <small>
+                18
+</small></div>            <div style="inset-inline-start: 984px;inset-block-start: 19px;width: 55px;height: 17px;" class="gantt_hdr">
+              <small>
+                19
+</small></div>            <div style="inset-inline-start: 1040px;inset-block-start: 19px;width: 55px;height: 17px;" class="gantt_hdr">
+              <small>
+                20
+</small></div>            <div style="inset-inline-start: 1096px;inset-block-start: 19px;width: 55px;height: 17px;" class="gantt_hdr">
+              <small>
+                21
+</small></div>            <div style="inset-inline-start: 1152px;inset-block-start: 19px;width: 55px;height: 17px;" class="gantt_hdr">
+              <small>
+                22
+</small></div>            <div style="inset-inline-start: 1208px;inset-block-start: 19px;width: 55px;height: 17px;" class="gantt_hdr">
+              <small>
+                23
+</small></div>            <div style="inset-inline-start: 1264px;inset-block-start: 19px;width: 55px;height: 17px;" class="gantt_hdr">
+              <small>
+                24
+</small></div>            <div style="inset-inline-start: 1320px;inset-block-start: 19px;width: 55px;height: 17px;" class="gantt_hdr">
+              <small>
+                25
+</small></div>            <div style="inset-inline-start: 1376px;inset-block-start: 19px;width: 55px;height: 17px;" class="gantt_hdr">
+              <small>
+                26
+</small></div>            <div style="inset-inline-start: 1432px;inset-block-start: 19px;width: 15px;height: 17px;" class="gantt_hdr">
+              <small>
 </small></div>
 
-    <div style="left: 0px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 8px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      F
-</div>    <div style="left: 16px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 24px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 32px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      M
-</div>    <div style="left: 40px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 48px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      W
-</div>    <div style="left: 56px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 64px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      F
-</div>    <div style="left: 72px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 80px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 88px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      M
-</div>    <div style="left: 96px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 104px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      W
-</div>    <div style="left: 112px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 120px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      F
-</div>    <div style="left: 128px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 136px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 144px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      M
-</div>    <div style="left: 152px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 160px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      W
-</div>    <div style="left: 168px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 176px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      F
-</div>    <div style="left: 184px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 192px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 200px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      M
-</div>    <div style="left: 208px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 216px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      W
-</div>    <div style="left: 224px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 232px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      F
-</div>    <div style="left: 240px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 248px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 256px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      M
-</div>    <div style="left: 264px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 272px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      W
-</div>    <div style="left: 280px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 288px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      F
-</div>    <div style="left: 296px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 304px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 312px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      M
-</div>    <div style="left: 320px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 328px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      W
-</div>    <div style="left: 336px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 344px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      F
-</div>    <div style="left: 352px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 360px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 368px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      M
-</div>    <div style="left: 376px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 384px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      W
-</div>    <div style="left: 392px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 400px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      F
-</div>    <div style="left: 408px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 416px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 424px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      M
-</div>    <div style="left: 432px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 440px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      W
-</div>    <div style="left: 448px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 456px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      F
-</div>    <div style="left: 464px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 472px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 480px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      M
-</div>    <div style="left: 488px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 496px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      W
-</div>    <div style="left: 504px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 512px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      F
-</div>    <div style="left: 520px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 528px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 536px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      M
-</div>    <div style="left: 544px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 552px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      W
-</div>    <div style="left: 560px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 568px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      F
-</div>    <div style="left: 576px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 584px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 592px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      M
-</div>    <div style="left: 600px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 608px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      W
-</div>    <div style="left: 616px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 624px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      F
-</div>    <div style="left: 632px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 640px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 648px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      M
-</div>    <div style="left: 656px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 664px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      W
-</div>    <div style="left: 672px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 680px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      F
-</div>    <div style="left: 688px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 696px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 704px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      M
-</div>    <div style="left: 712px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 720px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      W
-</div>    <div style="left: 728px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 736px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      F
-</div>    <div style="left: 744px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 752px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 760px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      M
-</div>    <div style="left: 768px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 776px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      W
-</div>    <div style="left: 784px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 792px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      F
-</div>    <div style="left: 800px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 808px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 816px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      M
-</div>    <div style="left: 824px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 832px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      W
-</div>    <div style="left: 840px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 848px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      F
-</div>    <div style="left: 856px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 864px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 872px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      M
-</div>    <div style="left: 880px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 888px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      W
-</div>    <div style="left: 896px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 904px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      F
-</div>    <div style="left: 912px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 920px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 928px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      M
-</div>    <div style="left: 936px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 944px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      W
-</div>    <div style="left: 952px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 960px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      F
-</div>    <div style="left: 968px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 976px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 984px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      M
-</div>    <div style="left: 992px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 1000px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      W
-</div>    <div style="left: 1008px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 1016px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      F
-</div>    <div style="left: 1024px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 1032px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 1040px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      M
-</div>    <div style="left: 1048px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 1056px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      W
-</div>    <div style="left: 1064px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 1072px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      F
-</div>    <div style="left: 1080px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 1088px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 1096px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      M
-</div>    <div style="left: 1104px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 1112px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      W
-</div>    <div style="left: 1120px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 1128px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      F
-</div>    <div style="left: 1136px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 1144px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 1152px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      M
-</div>    <div style="left: 1160px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 1168px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      W
-</div>    <div style="left: 1176px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 1184px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      F
-</div>    <div style="left: 1192px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 1200px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 1208px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      M
-</div>    <div style="left: 1216px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 1224px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      W
-</div>    <div style="left: 1232px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 1240px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      F
-</div>    <div style="left: 1248px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 1256px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 1264px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      M
-</div>    <div style="left: 1272px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 1280px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      W
-</div>    <div style="left: 1288px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 1296px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      F
-</div>    <div style="left: 1304px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 1312px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 1320px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      M
-</div>    <div style="left: 1328px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 1336px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      W
-</div>    <div style="left: 1344px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 1352px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      F
-</div>    <div style="left: 1360px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 1368px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 1376px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      M
-</div>    <div style="left: 1384px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 1392px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      W
-</div>    <div style="left: 1400px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
-</div>    <div style="left: 1408px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      F
-</div>    <div style="left: 1416px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 1424px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
-      S
-</div>    <div style="left: 1432px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      M
-</div>    <div style="left: 1440px;top: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
-      T
+            <div style="inset-inline-start: 0px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 8px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              F
+</div>            <div style="inset-inline-start: 16px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 24px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 32px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              M
+</div>            <div style="inset-inline-start: 40px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 48px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              W
+</div>            <div style="inset-inline-start: 56px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 64px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              F
+</div>            <div style="inset-inline-start: 72px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 80px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 88px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              M
+</div>            <div style="inset-inline-start: 96px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 104px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              W
+</div>            <div style="inset-inline-start: 112px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 120px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              F
+</div>            <div style="inset-inline-start: 128px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 136px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 144px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              M
+</div>            <div style="inset-inline-start: 152px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 160px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              W
+</div>            <div style="inset-inline-start: 168px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 176px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              F
+</div>            <div style="inset-inline-start: 184px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 192px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 200px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              M
+</div>            <div style="inset-inline-start: 208px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 216px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              W
+</div>            <div style="inset-inline-start: 224px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 232px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              F
+</div>            <div style="inset-inline-start: 240px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 248px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 256px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              M
+</div>            <div style="inset-inline-start: 264px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 272px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              W
+</div>            <div style="inset-inline-start: 280px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 288px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              F
+</div>            <div style="inset-inline-start: 296px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 304px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 312px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              M
+</div>            <div style="inset-inline-start: 320px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 328px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              W
+</div>            <div style="inset-inline-start: 336px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 344px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              F
+</div>            <div style="inset-inline-start: 352px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 360px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 368px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              M
+</div>            <div style="inset-inline-start: 376px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 384px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              W
+</div>            <div style="inset-inline-start: 392px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 400px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              F
+</div>            <div style="inset-inline-start: 408px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 416px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 424px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              M
+</div>            <div style="inset-inline-start: 432px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 440px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              W
+</div>            <div style="inset-inline-start: 448px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 456px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              F
+</div>            <div style="inset-inline-start: 464px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 472px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 480px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              M
+</div>            <div style="inset-inline-start: 488px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 496px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              W
+</div>            <div style="inset-inline-start: 504px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 512px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              F
+</div>            <div style="inset-inline-start: 520px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 528px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 536px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              M
+</div>            <div style="inset-inline-start: 544px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 552px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              W
+</div>            <div style="inset-inline-start: 560px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 568px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              F
+</div>            <div style="inset-inline-start: 576px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 584px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 592px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              M
+</div>            <div style="inset-inline-start: 600px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 608px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              W
+</div>            <div style="inset-inline-start: 616px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 624px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              F
+</div>            <div style="inset-inline-start: 632px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 640px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 648px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              M
+</div>            <div style="inset-inline-start: 656px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 664px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              W
+</div>            <div style="inset-inline-start: 672px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 680px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              F
+</div>            <div style="inset-inline-start: 688px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 696px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 704px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              M
+</div>            <div style="inset-inline-start: 712px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 720px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              W
+</div>            <div style="inset-inline-start: 728px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 736px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              F
+</div>            <div style="inset-inline-start: 744px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 752px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 760px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              M
+</div>            <div style="inset-inline-start: 768px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 776px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              W
+</div>            <div style="inset-inline-start: 784px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 792px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              F
+</div>            <div style="inset-inline-start: 800px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 808px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 816px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              M
+</div>            <div style="inset-inline-start: 824px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 832px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              W
+</div>            <div style="inset-inline-start: 840px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 848px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              F
+</div>            <div style="inset-inline-start: 856px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 864px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 872px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              M
+</div>            <div style="inset-inline-start: 880px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 888px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              W
+</div>            <div style="inset-inline-start: 896px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 904px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              F
+</div>            <div style="inset-inline-start: 912px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 920px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 928px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              M
+</div>            <div style="inset-inline-start: 936px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 944px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              W
+</div>            <div style="inset-inline-start: 952px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 960px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              F
+</div>            <div style="inset-inline-start: 968px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 976px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 984px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              M
+</div>            <div style="inset-inline-start: 992px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 1000px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              W
+</div>            <div style="inset-inline-start: 1008px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 1016px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              F
+</div>            <div style="inset-inline-start: 1024px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 1032px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 1040px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              M
+</div>            <div style="inset-inline-start: 1048px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 1056px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              W
+</div>            <div style="inset-inline-start: 1064px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 1072px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              F
+</div>            <div style="inset-inline-start: 1080px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 1088px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 1096px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              M
+</div>            <div style="inset-inline-start: 1104px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 1112px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              W
+</div>            <div style="inset-inline-start: 1120px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 1128px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              F
+</div>            <div style="inset-inline-start: 1136px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 1144px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 1152px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              M
+</div>            <div style="inset-inline-start: 1160px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 1168px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              W
+</div>            <div style="inset-inline-start: 1176px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 1184px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              F
+</div>            <div style="inset-inline-start: 1192px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 1200px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 1208px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              M
+</div>            <div style="inset-inline-start: 1216px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 1224px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              W
+</div>            <div style="inset-inline-start: 1232px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 1240px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              F
+</div>            <div style="inset-inline-start: 1248px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 1256px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 1264px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              M
+</div>            <div style="inset-inline-start: 1272px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 1280px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              W
+</div>            <div style="inset-inline-start: 1288px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 1296px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              F
+</div>            <div style="inset-inline-start: 1304px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 1312px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 1320px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              M
+</div>            <div style="inset-inline-start: 1328px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 1336px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              W
+</div>            <div style="inset-inline-start: 1344px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 1352px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              F
+</div>            <div style="inset-inline-start: 1360px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 1368px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 1376px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              M
+</div>            <div style="inset-inline-start: 1384px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 1392px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              W
+</div>            <div style="inset-inline-start: 1400px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
+</div>            <div style="inset-inline-start: 1408px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              F
+</div>            <div style="inset-inline-start: 1416px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 1424px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr nwday">
+              S
+</div>            <div style="inset-inline-start: 1432px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              M
+</div>            <div style="inset-inline-start: 1440px;inset-block-start: 37px;width: 7px;height: 567px;font-size:0.7em;" class="gantt_hdr">
+              T
 </div>
-<form data-cm-url="/issues/context_menu" action="/projects/ecookbook/issues/gantt" accept-charset="UTF-8" name="form-RANDOM" method="post"><input type="hidden" name="authenticity_token" value="{{CSRF}}" autocomplete="off" />  <input type="hidden" name="back_url" value="/projects/ecookbook/issues/gantt?zoom=3" autocomplete="off" />
-  <div style="top:62px;left:0px;width:278px;" class="task project task_todo" data-collapse-expand="project-1" data-number-of-rows="0">&nbsp;</div><div style="top:62px;left:280px;width:15px;" class="task project marker ending" data-collapse-expand="project-1" data-number-of-rows="0">&nbsp;</div><div style="top:62px;left:288px;width:15px;" class="task project label" data-collapse-expand="project-1" data-number-of-rows="0">eCookbook</div><div style="top:82px;left:0px;width:78px;" class="task leaf task_todo" id="task-todo-issue-3" data-collapse-expand="issue-3" data-number-of-rows="1">&nbsp;</div><div style="top:82px;left:0px;width:78px;" class="task leaf task_late" data-collapse-expand="issue-3" data-number-of-rows="1">&nbsp;</div><div style="top:82px;left:88px;width:15px;" class="task leaf label" data-collapse-expand="issue-3" data-number-of-rows="1">New 0%</div><div style="position: absolute;top:82px;left:0px;width:80px;height:12px;" class="tooltip hascontextmenu" data-collapse-expand="issue-3" data-number-of-rows="1"><span class="tip"><a class="issue tracker-1 status-1 priority-4 priority-lowest overdue behind-schedule created-by-me" href="/issues/3">Bug #3</a>: Error 281 when updating a recipe<br /><br /><strong>Project</strong>: <a href="/projects/ecookbook">eCookbook</a><br /><strong>Status</strong>: New<br /><strong>Start date</strong>: 12/31/2025<br /><strong>Due date</strong>: 01/10/2026<br /><strong>Assignee</strong>: <span role="img" class="avatar-color-3 s13 avatar" title="Assignee">DL</span> Dave Lopper<br /><strong>Priority</strong>: Low</span><input type="checkbox" name="ids[]" value="3" style="display:none;" class="toggle-selection"></input></div><div style="top:102px;left:32px;width:86px;" class="task leaf task_todo" id="task-todo-issue-7" data-collapse-expand="issue-7" data-number-of-rows="2">&nbsp;</div><div style="top:102px;left:32px;width:86px;" class="task leaf task_late" data-collapse-expand="issue-7" data-number-of-rows="2">&nbsp;</div><div style="top:102px;left:128px;width:15px;" class="task leaf label" data-collapse-expand="issue-7" data-number-of-rows="2">New 0%</div><div style="position: absolute;top:102px;left:32px;width:88px;height:12px;" class="tooltip hascontextmenu" data-collapse-expand="issue-7" data-number-of-rows="2"><span class="tip"><a class="issue tracker-1 status-1 priority-5 priority-default behind-schedule created-by-me" href="/issues/7">Bug #7</a>: Issue due today<br /><br /><strong>Project</strong>: <a href="/projects/ecookbook">eCookbook</a><br /><strong>Status</strong>: New<br /><strong>Start date</strong>: 01/05/2026<br /><strong>Due date</strong>: 01/15/2026<br /><strong>Assignee</strong>:  <br /><strong>Priority</strong>: Normal</span><input type="checkbox" name="ids[]" value="7" style="display:none;" class="toggle-selection"></input></div><div style="top:122px;left:104px;width:94px;" class="task leaf task_todo" id="task-todo-issue-1" data-collapse-expand="issue-1" data-number-of-rows="3">&nbsp;</div><div style="top:122px;left:104px;width:14px;" class="task leaf task_late" data-collapse-expand="issue-1" data-number-of-rows="3">&nbsp;</div><div style="top:122px;left:208px;width:15px;" class="task leaf label" data-collapse-expand="issue-1" data-number-of-rows="3">New 0%</div><div style="position: absolute;top:122px;left:104px;width:96px;height:12px;" class="tooltip hascontextmenu" data-collapse-expand="issue-1" data-number-of-rows="3"><span class="tip"><a class="issue tracker-1 status-1 priority-4 priority-lowest behind-schedule created-by-me" href="/issues/1">Bug #1</a>: Cannot print recipes<br /><br /><strong>Project</strong>: <a href="/projects/ecookbook">eCookbook</a><br /><strong>Status</strong>: New<br /><strong>Start date</strong>: 01/14/2026<br /><strong>Due date</strong>: 01/25/2026<br /><strong>Assignee</strong>:  <br /><strong>Priority</strong>: Low</span><input type="checkbox" name="ids[]" value="1" style="display:none;" class="toggle-selection"></input></div><div style="top:142px;left:96px;width:182px;" class="task version task_todo" id="task-todo-version-2" data-collapse-expand="version-2" data-number-of-rows="4">&nbsp;</div><div style="top:142px;left:96px;width:117px;" class="task version task_done" id="task-done-version-2" data-collapse-expand="version-2" data-number-of-rows="4">&nbsp;</div><div style="top:142px;left:96px;width:15px;" class="task version marker starting" data-collapse-expand="version-2" data-number-of-rows="4">&nbsp;</div><div style="top:142px;left:280px;width:15px;" class="task version marker ending" data-collapse-expand="version-2" data-number-of-rows="4">&nbsp;</div><div style="top:142px;left:288px;width:15px;" class="task version label" data-collapse-expand="version-2" data-number-of-rows="4">1.0 65%</div><div style="top:162px;left:96px;width:182px;" class="task leaf task_todo" id="task-todo-issue-2" data-collapse-expand="issue-2" data-number-of-rows="5">&nbsp;</div><div style="top:162px;left:96px;width:53px;" class="task leaf task_done" id="task-done-issue-2" data-collapse-expand="issue-2" data-number-of-rows="5">&nbsp;</div><div style="top:162px;left:288px;width:15px;" class="task leaf label" data-collapse-expand="issue-2" data-number-of-rows="5">Assigned 30%</div><div style="position: absolute;top:162px;left:96px;width:184px;height:12px;" class="tooltip hascontextmenu" data-collapse-expand="issue-2" data-number-of-rows="5"><span class="tip"><a class="issue tracker-2 status-2 priority-5 priority-default created-by-me" href="/issues/2">Feature request #2</a>: Add ingredients categories<br /><br /><strong>Project</strong>: <a href="/projects/ecookbook">eCookbook</a><br /><strong>Status</strong>: Assigned<br /><strong>Start date</strong>: 01/13/2026<br /><strong>Due date</strong>: <br /><strong>Assignee</strong>: <span role="img" class="avatar-color-3 s13 avatar" title="Assignee">DL</span> Dave Lopper<br /><strong>Priority</strong>: Normal</span><input type="checkbox" name="ids[]" value="2" style="display:none;" class="toggle-selection"></input></div><div style="top:182px;left:112px;width:14px;" class="task project task_todo" data-collapse-expand="project-5" data-number-of-rows="6">&nbsp;</div><div style="top:182px;left:112px;width:15px;" class="task project marker starting" data-collapse-expand="project-5" data-number-of-rows="6">&nbsp;</div><div style="top:182px;left:128px;width:15px;" class="task project marker ending" data-collapse-expand="project-5" data-number-of-rows="6">&nbsp;</div><div style="top:182px;left:136px;width:15px;" class="task project label" data-collapse-expand="project-5" data-number-of-rows="6">Private child of eCookbook</div><div style="top:202px;left:112px;width:14px;" class="task leaf task_todo" id="task-todo-issue-6" data-collapse-expand="issue-6" data-number-of-rows="7">&nbsp;</div><div style="top:202px;left:112px;width:6px;" class="task leaf task_late" data-collapse-expand="issue-6" data-number-of-rows="7">&nbsp;</div><div style="top:202px;left:136px;width:15px;" class="task leaf label" data-collapse-expand="issue-6" data-number-of-rows="7">New 0%</div><div style="position: absolute;top:202px;left:112px;width:16px;height:12px;" class="tooltip hascontextmenu" data-collapse-expand="issue-6" data-number-of-rows="7"><span class="tip"><a class="issue tracker-1 status-1 priority-4 priority-lowest behind-schedule created-by-me" href="/issues/6">Bug #6</a>: Issue of a private subproject<br /><br /><strong>Project</strong>: <a href="/projects/private-child">Private child of eCookbook</a><br /><strong>Status</strong>: New<br /><strong>Start date</strong>: 01/15/2026<br /><strong>Due date</strong>: 01/16/2026<br /><strong>Assignee</strong>:  <br /><strong>Priority</strong>: Low</span><input type="checkbox" name="ids[]" value="6" style="display:none;" class="toggle-selection"></input></div><div style="top:222px;left:112px;width:14px;" class="task leaf task_todo" id="task-todo-issue-9" data-collapse-expand="issue-9" data-number-of-rows="8">&nbsp;</div><div style="top:222px;left:112px;width:6px;" class="task leaf task_late" data-collapse-expand="issue-9" data-number-of-rows="8">&nbsp;</div><div style="top:222px;left:136px;width:15px;" class="task leaf label" data-collapse-expand="issue-9" data-number-of-rows="8">New 0%</div><div style="position: absolute;top:222px;left:112px;width:16px;height:12px;" class="tooltip hascontextmenu" data-collapse-expand="issue-9" data-number-of-rows="8"><span class="tip"><a class="issue tracker-1 status-1 priority-5 priority-default behind-schedule created-by-me" href="/issues/9">Bug #9</a>: Blocked Issue<br /><br /><strong>Project</strong>: <a href="/projects/private-child">Private child of eCookbook</a><br /><strong>Status</strong>: New<br /><strong>Start date</strong>: 01/15/2026<br /><strong>Due date</strong>: 01/16/2026<br /><strong>Assignee</strong>:  <br /><strong>Priority</strong>: Normal</span><input type="checkbox" name="ids[]" value="9" style="display:none;" class="toggle-selection"></input></div><div style="top:242px;left:112px;width:14px;" class="task leaf task_todo" id="task-todo-issue-10" data-rels="{&quot;blocks&quot;:[9]}" data-collapse-expand="issue-10" data-number-of-rows="9">&nbsp;</div><div style="top:242px;left:112px;width:6px;" class="task leaf task_late" data-collapse-expand="issue-10" data-number-of-rows="9">&nbsp;</div><div style="top:242px;left:136px;width:15px;" class="task leaf label" data-collapse-expand="issue-10" data-number-of-rows="9">New 0%</div><div style="position: absolute;top:242px;left:112px;width:16px;height:12px;" class="tooltip hascontextmenu" data-collapse-expand="issue-10" data-number-of-rows="9"><span class="tip"><a class="issue tracker-1 status-1 priority-5 priority-default behind-schedule created-by-me" href="/issues/10">Bug #10</a>: Issue Doing the Blocking<br /><br /><strong>Project</strong>: <a href="/projects/private-child">Private child of eCookbook</a><br /><strong>Status</strong>: New<br /><strong>Start date</strong>: 01/15/2026<br /><strong>Due date</strong>: 01/16/2026<br /><strong>Assignee</strong>:  <br /><strong>Priority</strong>: Normal</span><input type="checkbox" name="ids[]" value="10" style="display:none;" class="toggle-selection"></input></div>
+        <form data-cm-url="/issues/context_menu" action="/projects/ecookbook/issues/gantt" accept-charset="UTF-8" name="form-RANDOM" method="post"><input type="hidden" name="authenticity_token" value="{{CSRF}}" autocomplete="off" />
+          <input type="hidden" name="back_url" value="/projects/ecookbook/issues/gantt?zoom=3" autocomplete="off" />
+          <div style="inset-block-start:62px;inset-inline-start:0px;width:278px;" class="task project task_todo" data-collapse-expand="project-1" data-number-of-rows="0">&nbsp;</div><div style="inset-block-start:62px;inset-inline-start:280px;width:15px;" class="task project marker ending" data-collapse-expand="project-1" data-number-of-rows="0">&nbsp;</div><div style="inset-block-start:62px;inset-inline-start:288px;width:15px;" class="task project label" data-collapse-expand="project-1" data-number-of-rows="0">eCookbook</div><div style="inset-block-start:82px;inset-inline-start:0px;width:78px;" class="task leaf task_todo" id="task-todo-issue-3" data-collapse-expand="issue-3" data-number-of-rows="1">&nbsp;</div><div style="inset-block-start:82px;inset-inline-start:0px;width:78px;" class="task leaf task_late" data-collapse-expand="issue-3" data-number-of-rows="1">&nbsp;</div><div style="inset-block-start:82px;inset-inline-start:88px;width:15px;" class="task leaf label" data-collapse-expand="issue-3" data-number-of-rows="1">New 0%</div><div style="position: absolute;inset-block-start:82px;inset-inline-start:0px;width:80px;height:12px;" class="tooltip hascontextmenu" data-collapse-expand="issue-3" data-number-of-rows="1"><span class="tip"><a class="issue tracker-1 status-1 priority-4 priority-lowest overdue behind-schedule created-by-me" href="/issues/3">Bug #3</a>: Error 281 when updating a recipe<br /><br /><strong>Project</strong>: <a href="/projects/ecookbook">eCookbook</a><br /><strong>Status</strong>: New<br /><strong>Start date</strong>: 12/31/2025<br /><strong>Due date</strong>: 01/10/2026<br /><strong>Assignee</strong>: <span role="img" class="avatar-color-3 s13 avatar" title="Assignee">DL</span> Dave Lopper<br /><strong>Priority</strong>: Low</span><input type="checkbox" name="ids[]" value="3" style="display:none;" class="toggle-selection"></input></div><div style="inset-block-start:102px;inset-inline-start:32px;width:86px;" class="task leaf task_todo" id="task-todo-issue-7" data-collapse-expand="issue-7" data-number-of-rows="2">&nbsp;</div><div style="inset-block-start:102px;inset-inline-start:32px;width:86px;" class="task leaf task_late" data-collapse-expand="issue-7" data-number-of-rows="2">&nbsp;</div><div style="inset-block-start:102px;inset-inline-start:128px;width:15px;" class="task leaf label" data-collapse-expand="issue-7" data-number-of-rows="2">New 0%</div><div style="position: absolute;inset-block-start:102px;inset-inline-start:32px;width:88px;height:12px;" class="tooltip hascontextmenu" data-collapse-expand="issue-7" data-number-of-rows="2"><span class="tip"><a class="issue tracker-1 status-1 priority-5 priority-default behind-schedule created-by-me" href="/issues/7">Bug #7</a>: Issue due today<br /><br /><strong>Project</strong>: <a href="/projects/ecookbook">eCookbook</a><br /><strong>Status</strong>: New<br /><strong>Start date</strong>: 01/05/2026<br /><strong>Due date</strong>: 01/15/2026<br /><strong>Assignee</strong>:  <br /><strong>Priority</strong>: Normal</span><input type="checkbox" name="ids[]" value="7" style="display:none;" class="toggle-selection"></input></div><div style="inset-block-start:122px;inset-inline-start:104px;width:94px;" class="task leaf task_todo" id="task-todo-issue-1" data-collapse-expand="issue-1" data-number-of-rows="3">&nbsp;</div><div style="inset-block-start:122px;inset-inline-start:104px;width:14px;" class="task leaf task_late" data-collapse-expand="issue-1" data-number-of-rows="3">&nbsp;</div><div style="inset-block-start:122px;inset-inline-start:208px;width:15px;" class="task leaf label" data-collapse-expand="issue-1" data-number-of-rows="3">New 0%</div><div style="position: absolute;inset-block-start:122px;inset-inline-start:104px;width:96px;height:12px;" class="tooltip hascontextmenu" data-collapse-expand="issue-1" data-number-of-rows="3"><span class="tip"><a class="issue tracker-1 status-1 priority-4 priority-lowest behind-schedule created-by-me" href="/issues/1">Bug #1</a>: Cannot print recipes<br /><br /><strong>Project</strong>: <a href="/projects/ecookbook">eCookbook</a><br /><strong>Status</strong>: New<br /><strong>Start date</strong>: 01/14/2026<br /><strong>Due date</strong>: 01/25/2026<br /><strong>Assignee</strong>:  <br /><strong>Priority</strong>: Low</span><input type="checkbox" name="ids[]" value="1" style="display:none;" class="toggle-selection"></input></div><div style="inset-block-start:142px;inset-inline-start:96px;width:182px;" class="task version task_todo" id="task-todo-version-2" data-collapse-expand="version-2" data-number-of-rows="4">&nbsp;</div><div style="inset-block-start:142px;inset-inline-start:96px;width:117px;" class="task version task_done" id="task-done-version-2" data-collapse-expand="version-2" data-number-of-rows="4">&nbsp;</div><div style="inset-block-start:142px;inset-inline-start:96px;width:15px;" class="task version marker starting" data-collapse-expand="version-2" data-number-of-rows="4">&nbsp;</div><div style="inset-block-start:142px;inset-inline-start:280px;width:15px;" class="task version marker ending" data-collapse-expand="version-2" data-number-of-rows="4">&nbsp;</div><div style="inset-block-start:142px;inset-inline-start:288px;width:15px;" class="task version label" data-collapse-expand="version-2" data-number-of-rows="4">1.0 65%</div><div style="inset-block-start:162px;inset-inline-start:96px;width:182px;" class="task leaf task_todo" id="task-todo-issue-2" data-collapse-expand="issue-2" data-number-of-rows="5">&nbsp;</div><div style="inset-block-start:162px;inset-inline-start:96px;width:53px;" class="task leaf task_done" id="task-done-issue-2" data-collapse-expand="issue-2" data-number-of-rows="5">&nbsp;</div><div style="inset-block-start:162px;inset-inline-start:288px;width:15px;" class="task leaf label" data-collapse-expand="issue-2" data-number-of-rows="5">Assigned 30%</div><div style="position: absolute;inset-block-start:162px;inset-inline-start:96px;width:184px;height:12px;" class="tooltip hascontextmenu" data-collapse-expand="issue-2" data-number-of-rows="5"><span class="tip"><a class="issue tracker-2 status-2 priority-5 priority-default created-by-me" href="/issues/2">Feature request #2</a>: Add ingredients categories<br /><br /><strong>Project</strong>: <a href="/projects/ecookbook">eCookbook</a><br /><strong>Status</strong>: Assigned<br /><strong>Start date</strong>: 01/13/2026<br /><strong>Due date</strong>: <br /><strong>Assignee</strong>: <span role="img" class="avatar-color-3 s13 avatar" title="Assignee">DL</span> Dave Lopper<br /><strong>Priority</strong>: Normal</span><input type="checkbox" name="ids[]" value="2" style="display:none;" class="toggle-selection"></input></div><div style="inset-block-start:182px;inset-inline-start:112px;width:14px;" class="task project task_todo" data-collapse-expand="project-5" data-number-of-rows="6">&nbsp;</div><div style="inset-block-start:182px;inset-inline-start:112px;width:15px;" class="task project marker starting" data-collapse-expand="project-5" data-number-of-rows="6">&nbsp;</div><div style="inset-block-start:182px;inset-inline-start:128px;width:15px;" class="task project marker ending" data-collapse-expand="project-5" data-number-of-rows="6">&nbsp;</div><div style="inset-block-start:182px;inset-inline-start:136px;width:15px;" class="task project label" data-collapse-expand="project-5" data-number-of-rows="6">Private child of eCookbook</div><div style="inset-block-start:202px;inset-inline-start:112px;width:14px;" class="task leaf task_todo" id="task-todo-issue-6" data-collapse-expand="issue-6" data-number-of-rows="7">&nbsp;</div><div style="inset-block-start:202px;inset-inline-start:112px;width:6px;" class="task leaf task_late" data-collapse-expand="issue-6" data-number-of-rows="7">&nbsp;</div><div style="inset-block-start:202px;inset-inline-start:136px;width:15px;" class="task leaf label" data-collapse-expand="issue-6" data-number-of-rows="7">New 0%</div><div style="position: absolute;inset-block-start:202px;inset-inline-start:112px;width:16px;height:12px;" class="tooltip hascontextmenu" data-collapse-expand="issue-6" data-number-of-rows="7"><span class="tip"><a class="issue tracker-1 status-1 priority-4 priority-lowest behind-schedule created-by-me" href="/issues/6">Bug #6</a>: Issue of a private subproject<br /><br /><strong>Project</strong>: <a href="/projects/private-child">Private child of eCookbook</a><br /><strong>Status</strong>: New<br /><strong>Start date</strong>: 01/15/2026<br /><strong>Due date</strong>: 01/16/2026<br /><strong>Assignee</strong>:  <br /><strong>Priority</strong>: Low</span><input type="checkbox" name="ids[]" value="6" style="display:none;" class="toggle-selection"></input></div><div style="inset-block-start:222px;inset-inline-start:112px;width:14px;" class="task leaf task_todo" id="task-todo-issue-9" data-collapse-expand="issue-9" data-number-of-rows="8">&nbsp;</div><div style="inset-block-start:222px;inset-inline-start:112px;width:6px;" class="task leaf task_late" data-collapse-expand="issue-9" data-number-of-rows="8">&nbsp;</div><div style="inset-block-start:222px;inset-inline-start:136px;width:15px;" class="task leaf label" data-collapse-expand="issue-9" data-number-of-rows="8">New 0%</div><div style="position: absolute;inset-block-start:222px;inset-inline-start:112px;width:16px;height:12px;" class="tooltip hascontextmenu" data-collapse-expand="issue-9" data-number-of-rows="8"><span class="tip"><a class="issue tracker-1 status-1 priority-5 priority-default behind-schedule created-by-me" href="/issues/9">Bug #9</a>: Blocked Issue<br /><br /><strong>Project</strong>: <a href="/projects/private-child">Private child of eCookbook</a><br /><strong>Status</strong>: New<br /><strong>Start date</strong>: 01/15/2026<br /><strong>Due date</strong>: 01/16/2026<br /><strong>Assignee</strong>:  <br /><strong>Priority</strong>: Normal</span><input type="checkbox" name="ids[]" value="9" style="display:none;" class="toggle-selection"></input></div><div style="inset-block-start:242px;inset-inline-start:112px;width:14px;" class="task leaf task_todo" id="task-todo-issue-10" data-rels="{&quot;blocks&quot;:[9]}" data-collapse-expand="issue-10" data-number-of-rows="9">&nbsp;</div><div style="inset-block-start:242px;inset-inline-start:112px;width:6px;" class="task leaf task_late" data-collapse-expand="issue-10" data-number-of-rows="9">&nbsp;</div><div style="inset-block-start:242px;inset-inline-start:136px;width:15px;" class="task leaf label" data-collapse-expand="issue-10" data-number-of-rows="9">New 0%</div><div style="position: absolute;inset-block-start:242px;inset-inline-start:112px;width:16px;height:12px;" class="tooltip hascontextmenu" data-collapse-expand="issue-10" data-number-of-rows="9"><span class="tip"><a class="issue tracker-1 status-1 priority-5 priority-default behind-schedule created-by-me" href="/issues/10">Bug #10</a>: Issue Doing the Blocking<br /><br /><strong>Project</strong>: <a href="/projects/private-child">Private child of eCookbook</a><br /><strong>Status</strong>: New<br /><strong>Start date</strong>: 01/15/2026<br /><strong>Due date</strong>: 01/16/2026<br /><strong>Assignee</strong>:  <br /><strong>Priority</strong>: Normal</span><input type="checkbox" name="ids[]" value="10" style="display:none;" class="toggle-selection"></input></div>
 </form>
-  <div style="position: absolute;height: 550px;top: 55px;left: 119px;width:10px;border-left: 1px dashed red;" id="today_line">&nbsp;</div>
-<div style="position: absolute;height: 550px;top: 55px;left: 0px;width: 1447px;" id="gantt_draw_area"></div>
-</div>
-</td>
-</tr>
-</table>
+          <div style="position: absolute;height: 550px;inset-block-start: 55px;inset-inline-start: 119px;width:10px;border-inline-start: 1px dashed red;" id="today_line">&nbsp;</div>
 
+        <div style="position: absolute;height: 550px;inset-block-start: 55px;inset-inline-start: 0px;width: 1447px;" id="gantt_draw_area" data-gantt--chart-target="drawArea"></div>
+      </div>
+    </td>
+  </tr>
+</table>
 <span class="pagination">
   <ul class="pages">
     <li class="previous page">
@@ -815,25 +817,8 @@ $(document).ready(function(){
 
 
 
-<script>
-//<![CDATA[
 
-  var issue_relation_type = {"blocks":{"landscape_margin":16,"color":"#F34F4F"},"precedes":{"landscape_margin":20,"color":"#628FEA"}};
-  $(function() {
-    disable_unavailable_columns('tracker,id,subject'.split(','));
-    drawGanttHandler();
-    resizableSubjectColumn();
-    drawSelectedColumns();
-    $("#draw_relations, #draw_progress_line, #draw_selected_columns").change(drawGanttHandler);
-    $('div.gantt_subjects .expander').on('click', ganttEntryClick);
-  });
-  $(window).resize(function() {
-    drawGanttHandler();
-    resizableSubjectColumn();
-  });
 
-//]]>
-</script>
 
         
         <div style="clear:both;"></div>

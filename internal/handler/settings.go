@@ -67,8 +67,8 @@ func (a *App) SettingsEdit(c *Req) {
 		if p := c.Params().Map("settings"); p != nil {
 			params = p.ToMap()
 		}
-		// 期日の既定値が無効化されたらオフセットを空にする（Redmine 7.0 #31518）
-		if v, ok := params["default_issue_due_date_offset_enabled"]; ok && rails.ToS(v) == "0" {
+		// Redmine 7.0: 期日の既定値のチェックを外したらオフセットを空にする
+		if rails.ToS(params["default_issue_due_date_offset_enabled"]) == "0" {
 			params["default_issue_due_date_offset"] = ""
 		}
 		changed, ferrs, err := a.Settings.SetAllFromParams(c.Ctx(), params, map[string]func(any) any{
@@ -157,7 +157,7 @@ func (a *App) newSettingsView(c *Req, errs []helper.SettingError) (*settingsView
 		{Name: "general", Partial: "settings/general", Label: "label_general"},
 		{Name: "display", Partial: "settings/display", Label: "label_display"},
 		{Name: "authentication", Partial: "settings/authentication", Label: "label_authentication"},
-		{Name: "api", Partial: "settings/api", Label: "label_api"},
+		{Name: "integrations", Partial: "settings/api", Label: "label_integrations"},
 		{Name: "projects", Partial: "settings/projects", Label: "label_project_plural"},
 		{Name: "users", Partial: "settings/users", Label: "label_user_plural"},
 		{Name: "issues", Partial: "settings/issues", Label: "label_issue_tracking"},
@@ -434,6 +434,15 @@ func (v *settingsView) NotificationOptions() []any {
 	}
 }
 
+// DueDateOffsetEnabled は settings/_issues の default_due_date_offset_enabled（Redmine 7.0）。
+// 送信後の再表示では送信値、それ以外は default_issue_due_date_offset が設定されているか。
+func (v *settingsView) DueDateOffsetEnabled() bool {
+	if p := v.c.Params().Map("settings"); p != nil && v.c.R.Method == http.MethodPost {
+		return rails.ToS(p.ToMap()["default_issue_due_date_offset_enabled"]) != "0"
+	}
+	return strings.TrimSpace(v.a.Settings.String("default_issue_due_date_offset")) != ""
+}
+
 // AutoWatchOnOptions は UserPreference::AUTO_WATCH_ON_OPTIONS の選択肢。
 func (v *settingsView) AutoWatchOnOptions() []any {
 	var out []any
@@ -441,15 +450,6 @@ func (v *settingsView) AutoWatchOnOptions() []any {
 		out = append(out, []any{v.c.L("label_auto_watch_on_" + o), o})
 	}
 	return out
-}
-
-// DefaultIssueDueDateOffsetEnabled は settings/_issues の default_due_date_offset_enabled
-// （再表示時は params の enabled、それ以外は Setting.default_issue_due_date_offset.present?）。
-func (v *settingsView) DefaultIssueDueDateOffsetEnabled() bool {
-	if p := v.c.Params().Map("settings"); p != nil {
-		return p.String("default_issue_due_date_offset_enabled") != "0"
-	}
-	return strings.TrimSpace(v.a.Settings.String("default_issue_due_date_offset")) != ""
 }
 
 // DoneRatioOptions は Issue::DONE_RATIO_OPTIONS の選択肢。

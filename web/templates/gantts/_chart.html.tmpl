@@ -1,0 +1,67 @@
+{{/* app/views/gantts/_chart.html.erb（寸法・見出し・バーは ganttViewData で計算する） */}}
+
+{{if .Truncated}}
+  <p class="warning">{{.TruncatedNotice}}</p>
+{{end}}
+
+{{content_tag_open "table" .ChartTableOptions}}
+  <tr>
+    {{content_tag_open "td" .SubjectsColumnOptions}}
+      {{content_tag_open "div" (hash "style" .SubjectsContainerStyle "class" .SubjectsContainerClass "data" (hash "gantt--chart-target" "subjectsContainer"))}}
+        {{content_tag "div" "" (hash "style" .SubjectsHdrStyle1 "class" "gantt_hdr")}}
+        {{content_tag "div" "" (hash "style" .SubjectsHdrStyle2 "class" "gantt_hdr")}}
+        <div class="gantt_subjects" data-controller="gantt--subjects" data-action="gantt--column:resize-column-subjects@document-&gt;gantt--subjects#handleResizeColumn">
+          {{form_tag request_path (hash "data" (hash "cm_url" "/issues/context_menu"))}}
+            {{hidden_field_tag "back_url" .BackURL (hash "id" nil)}}
+            {{.Subjects}}
+          {{end_form}}
+        {{end_tag "div"}}
+      {{end_tag "div"}}
+    {{end_tag "td"}}
+    {{range $col := .Columns}}
+      {{content_tag_open "td" $col.Options}}
+        {{content_tag_open "div" (hash "style" $.ColumnContainerStyle "class" (printf "gantt_%s_container gantt_selected_column_container" $col.Name))}}
+          {{content_tag "div" "" (hash "style" $.ColumnHdrStyle1 "class" "gantt_hdr")}}
+          {{content_tag "div" (content_tag "p" $col.Caption (hash "class" "gantt_hdr_selected_column_name")) (hash "style" $.ColumnHdrStyle2 "class" "gantt_hdr")}}
+          {{content_tag_open "div" (hash "class" (printf "gantt_%s gantt_selected_column_content" $col.Name))}}
+          {{if $col.Content}}
+            {{$col.Content}}
+          {{else}}
+            {{/* 空白だけのブロックは capture が "\n" を返す */}}
+          {{end}}
+          {{end_tag "div"}}
+        {{end_tag "div"}}
+      {{end_tag "td"}}
+    {{end}}
+    <td>
+      <div style="position:relative;height:{{.AreaHeight}}px;overflow:auto;" id="gantt_area" data-gantt--chart-target="ganttArea">
+        {{content_tag "div" (raw "&nbsp;") (hash "style" .AreaHdrStyle "class" "gantt_hdr")}}
+
+{{.AreaHeaders}}        {{form_tag request_path (hash "data" (hash "cm_url" "/issues/context_menu"))}}
+          {{hidden_field_tag "back_url" .BackURL (hash "id" nil)}}
+          {{.Lines}}
+        {{end_form}}
+
+        {{if .TodayStyle}}
+          {{content_tag "div" (raw "&nbsp;") (hash "style" .TodayStyle "id" "today_line")}}
+        {{end}}
+
+        {{content_tag "div" "" (hash "style" .DrawAreaStyle "id" "gantt_draw_area" "data" (hash "gantt--chart-target" "drawArea"))}}
+      </div>
+    </td>
+  </tr>
+{{end_tag "table"}}
+
+<span class="pagination">
+  <ul class="pages">
+    <li class="previous page">
+      {{link_to (printf "« %s" (l "label_previous")) .PrevURL}}
+    </li><li class="next page">
+      {{link_to (printf "%s »" (l "label_next")) .NextURL}}
+    </li>
+  </ul>
+</span>
+
+<p class="other-formats hide-when-print">{{l "label_export_to"}}  <span>{{link_to "PDF" .PDFURL (hash "class" "pdf" "rel" "nofollow")}}</span>
+  
+</p>

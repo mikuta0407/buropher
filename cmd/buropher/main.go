@@ -217,7 +217,7 @@ func initCmd(args []string) error {
 	cfgPath := fs.String("config", "", "path to config.toml")
 	lang := fs.String("lang", "en", "language of the default data")
 	login := fs.String("admin-login", "admin", "administrator login")
-	email := fs.String("admin-email", "admin@example.net", "administrator email")
+	email := fs.String("admin-email", "admin@dummy.invalid", "administrator email")
 	// 環境変数のパスワードをフラグの既定値にすると -h の使い方に表示されるため、解析後に補う
 	pw := fs.String("admin-password", "", "administrator password (default: $BUROPHER_ADMIN_PASSWORD; random if empty)")
 	noData := fs.Bool("no-default-data", false, "do not load default roles/trackers/statuses")

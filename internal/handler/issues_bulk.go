@@ -28,6 +28,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/urlroot"
 	"github.com/mikuta0407/buropher/internal/view"
 	"github.com/mikuta0407/buropher/internal/view/rails"
+	"github.com/mikuta0407/buropher/internal/webhook"
 )
 
 // routesIssuesBulk は issues#bulk_edit / bulk_update / destroy のルートを登録する。
@@ -761,21 +762,9 @@ func (v *bulkEditView) customFieldTag(cf *customfield.CustomField) template.HTML
 	return cf.Format().BulkEditTag(env, id, name, cf, objs, value, rails.NewHash("class", css, "data", data))
 }
 
-// listAutofillHash は wiki_textarea_stimulus_attributes（Redmine 7.0 で list_autofill_data_attributes から置き換え）。
+// listAutofillHash は wiki_textarea_stimulus_attributes。
 func listAutofillHash(l *issueLookup) *rails.Hash {
-	return wikiTextareaStimulusHash(l.a.Settings.String("text_formatting"))
-}
-
-// wikiTextareaStimulusHash は ApplicationHelper#wiki_textarea_stimulus_attributes（Setting.text_formatting が空なら {}）。
-func wikiTextareaStimulusHash(f string) *rails.Hash {
-	if strings.TrimSpace(f) == "" {
-		return rails.NewHash()
-	}
-	return rails.NewHash("controller", "list-autofill selection-indent table-paste",
-		"action", "beforeinput->list-autofill#handleBeforeInput keydown.tab->selection-indent#run keydown.shift+tab->selection-indent#run paste->table-paste#handlePaste",
-		"list_autofill_text_formatting_param", f,
-		"selection_indent_text_formatting_param", f,
-		"table_paste_text_formatting_param", f)
+	return helper.WikiTextareaStimulusAttributes(l.a.Settings.String("text_formatting"))
 }
 
 // NotesData は {:auto_complete => true}.merge(list_autofill_data_attributes)。
@@ -1036,6 +1025,11 @@ func (a *App) IssuesDestroy(c *Req) {
 		}
 		atts = append(atts, list...)
 	}
+	// Webhook（issue.deleted / time_entry.deleted）のペイロードは削除の前に計算する
+	a.prepareDeleteWebhooks(c, webhook.TypeIssue, all...)
+	if opts.Todo == issues.TimeEntriesDestroy || hours == 0 {
+		a.prepareDeleteWebhooks(c, webhook.TypeTimeEntry, a.issueDestroyTimeEntryIDs(ctx, all)...)
+	}
 	res, err := e.DestroyIssues(ctx, ids, opts)
 	switch {
 	case errors.Is(err, issues.ErrTimeEntryIssueRequired):
@@ -1059,6 +1053,7 @@ func (a *App) IssuesDestroy(c *Req) {
 			a.logger().Error("delete attachments from disk", "err", err)
 		}
 	}
+	a.enqueuePreparedDeleteWebhooks(c, webhook.TypeTimeEntry)
 	a.dispatchIssueNotifications(c, res)
 	if api {
 		c.RenderAPIOK()

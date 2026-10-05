@@ -23,6 +23,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/timelog"
 	"github.com/mikuta0407/buropher/internal/view/rails"
+	"github.com/mikuta0407/buropher/internal/webhook"
 )
 
 // routesIssuesWrite は issues コントローラの作成・更新系のルートを登録する。
@@ -885,6 +886,10 @@ func (a *App) saveIssueWithChildRecords(c *Req, st *issueEditState, res *attachm
 		saved, sres = true, r
 		return nil
 	})
+	if err == nil && saved && logTime && st.te != nil && st.te.ID != 0 {
+		// 作業時間の after_create_commit
+		a.triggerWebhookByID(c, webhook.TypeTimeEntry, webhook.ActionCreated, st.te.ID)
+	}
 	if errors.Is(err, errIssueRollback) {
 		return false, nil, nil
 	}

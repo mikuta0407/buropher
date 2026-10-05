@@ -74,4 +74,5 @@ func (a *App) Routes(r Router) {
 	a.routesSys(r)
 	a.routesMailHandler(r)
 	a.routesHelp(r)
+	a.routesWebhooks(r)
 }

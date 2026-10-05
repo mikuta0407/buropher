@@ -23,7 +23,7 @@
   </td>
   <td class="buttons">
       {{link_to (sprite_icon "edit" (l "button_edit")) (printf "%s/memberships/%d/edit" $base $m.Member.ID) (hash "remote" true "class" "icon icon-edit")}}
-      {{if $m.Deletable}}{{delete_link (printf "%s/memberships/%d" $base $m.Member.ID) (hash "remote" true)}}{{end}}
+      {{if $m.Deletable}}{{remove_link (printf "%s/memberships/%d" $base $m.Member.ID) (hash "remote" true)}}{{end}}
   </td>
       {{call_hook "view_memberships_table_row"}}
   </tr>

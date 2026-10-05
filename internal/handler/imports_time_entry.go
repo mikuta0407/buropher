@@ -21,6 +21,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/textformat/redmine"
 	"github.com/mikuta0407/buropher/internal/timelog"
+	"github.com/mikuta0407/buropher/internal/webhook"
 )
 
 // このファイルは TimeEntryImport（app/models/time_entry_import.rb）の移植。
@@ -288,6 +289,7 @@ func (m *importModel) timeEntryBuildAndSave(ctx context.Context, row csvimport.R
 	if !saved {
 		return importResult{obj: t, message: strings.Join(t.Errors.FullMessages(m.c.Loc), "\n")}, nil
 	}
+	m.a.TriggerWebhook(ctx, webhook.TypeTimeEntry, webhook.ActionCreated, t.ID)
 	return importResult{obj: t, persisted: true, objID: t.ID}, nil
 }
 

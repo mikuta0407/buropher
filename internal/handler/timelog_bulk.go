@@ -19,6 +19,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/timelog"
 	"github.com/mikuta0407/buropher/internal/view"
 	"github.com/mikuta0407/buropher/internal/view/rails"
+	"github.com/mikuta0407/buropher/internal/webhook"
 )
 
 // このファイルは timelog#bulk_edit / bulk_update（timelog/bulk_edit.html, bulk_edit.js）の移植。
@@ -331,6 +332,7 @@ func (a *App) TimelogBulkUpdate(c *Req) {
 		}
 		if ok {
 			saved = append(saved, t)
+			a.triggerWebhookByID(c, webhook.TypeTimeEntry, webhook.ActionUpdated, t.ID)
 		} else {
 			unsaved = append(unsaved, t)
 		}

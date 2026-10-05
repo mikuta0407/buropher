@@ -665,7 +665,7 @@ func (f *queryFormView) DrawCheckBox(name string) template.HTML {
 		checked = q.DrawProgressLine()
 	case "draw_selected_columns":
 		checked = q.DrawSelectedColumns()
-		opts.Set("data", rails.NewHash("enables", "span.query-columns select, span.query-columns input"))
+		opts.Set("data", rails.NewHash("enables", "#list-definition .query-columns select, #list-definition .query-columns input"))
 	}
 	return rails.CheckBoxTag("query["+name+"]", "1", checked, opts)
 }

@@ -1,6 +1,6 @@
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
 <meta charset="utf-8" />
 <title>Settings - Administration - Redmine</title>
@@ -8,13 +8,13 @@
 <meta name="description" content="Redmine" />
 <meta name="keywords" content="issue,bug,tracker" />
 <meta name="csrf-param" content="authenticity_token" />
-<meta name="csrf-token" content="yZebf1el1yI5K2_ZsgO9p2JxrGU6FUpgWABxxaxvggsPk56rTLpFGDpMA_3omRc99zSuoyLz8lSlSIWHVmxYrA" />
+<meta name="csrf-token" content="GoC2dN9QTuwhbmYV3IY0q-XPiEHrFnevui6cH7rhN5zOHGAFvjz0ZOGOlhFHVsPYPvlkFxxqre_0qmpfrsrB_g" />
 <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon-0e291875.ico" />
 <link rel="stylesheet" href="/assets/jquery/jquery-ui-1.13.2-70e53573.css" media="all" />
 <link rel="stylesheet" href="/assets/tribute-5.1.3-c23a7bf2.css" media="all" />
-<link rel="stylesheet" href="/assets/application-6dc0ec44.css" media="all" />
-<link rel="stylesheet" href="/assets/responsive-194751d3.css" media="all" />
-
+<link rel="stylesheet" href="/assets/application-5bad425e.css" media="all" />
+<link rel="stylesheet" href="/assets/dropdown-90f15d9b.css" media="all" />
+<link rel="stylesheet" href="/assets/responsive-b138584c.css" media="all" />
 <script type="importmap" data-turbo-track="reload">{
   "imports": {
     "@rails/request.js": "/assets/requestjs-64720317.js",
@@ -22,12 +22,27 @@
     "@hotwired/stimulus": "/assets/stimulus.min-7ea3d58b.js",
     "@hotwired/stimulus-loading": "/assets/stimulus-loading-25917588.js",
     "turndown": "/assets/turndown-93630580.js",
+    "tablesort": "/assets/tablesort.min-8f8a27b3.js",
+    "tablesort.number": "/assets/tablesort.number.min-5c169183.js",
+    "chart.js": "/assets/chart.min-cae696ba.js",
     "controllers/api_key_copy_controller": "/assets/controllers/api_key_copy_controller-75f835b3.js",
     "controllers/application": "/assets/controllers/application-fab29967.js",
+    "controllers/clipboard_controller": "/assets/controllers/clipboard_controller-33f6e136.js",
+    "controllers/custom_field_default_value_controller": "/assets/controllers/custom_field_default_value_controller-8e4989aa.js",
+    "controllers/dropdown_controller": "/assets/controllers/dropdown_controller-9c4fc4bc.js",
+    "controllers/gantt/chart_controller": "/assets/controllers/gantt/chart_controller-c7840aff.js",
+    "controllers/gantt/column_controller": "/assets/controllers/gantt/column_controller-414fc5e5.js",
+    "controllers/gantt/options_controller": "/assets/controllers/gantt/options_controller-ac0d91d9.js",
+    "controllers/gantt/subjects_controller": "/assets/controllers/gantt/subjects_controller-f9af7aea.js",
     "controllers": "/assets/controllers/index-dfefe98d.js",
     "controllers/list_autofill_controller": "/assets/controllers/list_autofill_controller-5f013171.js",
     "controllers/quote_reply_controller": "/assets/controllers/quote_reply_controller-3e6a21f7.js",
-    "controllers/sticky_issue_header_controller": "/assets/controllers/sticky_issue_header_controller-18502bbe.js"
+    "controllers/reports/details_controller": "/assets/controllers/reports/details_controller-21eb4cbd.js",
+    "controllers/repositories/stats_controller": "/assets/controllers/repositories/stats_controller-d8c4e406.js",
+    "controllers/selection_indent_controller": "/assets/controllers/selection_indent_controller-01007880.js",
+    "controllers/sticky_issue_header_controller": "/assets/controllers/sticky_issue_header_controller-18502bbe.js",
+    "controllers/table_paste_controller": "/assets/controllers/table_paste_controller-961189c1.js",
+    "controllers/tablesort_controller": "/assets/controllers/tablesort_controller-0dce155e.js"
   }
 }</script>
 <link rel="modulepreload" href="/assets/requestjs-64720317.js">
@@ -35,17 +50,31 @@
 <link rel="modulepreload" href="/assets/stimulus.min-7ea3d58b.js">
 <link rel="modulepreload" href="/assets/stimulus-loading-25917588.js">
 <link rel="modulepreload" href="/assets/turndown-93630580.js">
+<link rel="modulepreload" href="/assets/tablesort.min-8f8a27b3.js">
+<link rel="modulepreload" href="/assets/tablesort.number.min-5c169183.js">
 <link rel="modulepreload" href="/assets/controllers/api_key_copy_controller-75f835b3.js">
 <link rel="modulepreload" href="/assets/controllers/application-fab29967.js">
+<link rel="modulepreload" href="/assets/controllers/clipboard_controller-33f6e136.js">
+<link rel="modulepreload" href="/assets/controllers/custom_field_default_value_controller-8e4989aa.js">
+<link rel="modulepreload" href="/assets/controllers/dropdown_controller-9c4fc4bc.js">
+<link rel="modulepreload" href="/assets/controllers/gantt/chart_controller-c7840aff.js">
+<link rel="modulepreload" href="/assets/controllers/gantt/column_controller-414fc5e5.js">
+<link rel="modulepreload" href="/assets/controllers/gantt/options_controller-ac0d91d9.js">
+<link rel="modulepreload" href="/assets/controllers/gantt/subjects_controller-f9af7aea.js">
 <link rel="modulepreload" href="/assets/controllers/index-dfefe98d.js">
 <link rel="modulepreload" href="/assets/controllers/list_autofill_controller-5f013171.js">
 <link rel="modulepreload" href="/assets/controllers/quote_reply_controller-3e6a21f7.js">
+<link rel="modulepreload" href="/assets/controllers/reports/details_controller-21eb4cbd.js">
+<link rel="modulepreload" href="/assets/controllers/repositories/stats_controller-d8c4e406.js">
+<link rel="modulepreload" href="/assets/controllers/selection_indent_controller-01007880.js">
 <link rel="modulepreload" href="/assets/controllers/sticky_issue_header_controller-18502bbe.js">
+<link rel="modulepreload" href="/assets/controllers/table_paste_controller-961189c1.js">
+<link rel="modulepreload" href="/assets/controllers/tablesort_controller-0dce155e.js">
 <script type="module">import "application"</script>
 <script src="/assets/jquery-3.7.1-ui-1.13.3-3ca148b8.js"></script>
 <script src="/assets/rails-ujs-3de06f48.js"></script>
-<script src="/assets/tribute-5.1.3.min-6c16c47a.js"></script><script src="/assets/application-legacy-54b0807d.js"></script>
-<script src="/assets/responsive-aa0cdb6f.js"></script>
+<script src="/assets/tribute-5.1.3.min-6c16c47a.js"></script><script src="/assets/application-legacy-0e66e381.js"></script>
+<script src="/assets/responsive-73a80fb9.js"></script>
 <script>
 //<![CDATA[
 $(window).on('load', function(){ warnLeavingUnsaved('The current page contains unsaved text that will be lost if you leave this page.'); });
@@ -66,19 +95,19 @@ rm = window.rm || {};rm.AutoComplete = rm.AutoComplete || {};rm.AutoComplete.dat
 <!-- page specific tags -->
 <script src="/assets/jstoolbar/jstoolbar-d7c21366.js"></script><script src="/assets/jstoolbar/common_mark-8a9a868d.js"></script><script src="/assets/jstoolbar/lang/jstoolbar-en-85c9edfe.js"></script><script>
 //<![CDATA[
-var wikiImageMimeTypes = ["image/gif","image/jpeg","image/png","image/tiff","image/webp","image/x-ms-bmp"];var userHlLanguages = ["c","cpp","csharp","css","diff","go","groovy","html","java","javascript","objc","perl","php","python","r","ruby","sass","scala","shell","sql","swift","xml","yaml"];
+var wikiImageMimeTypes = ["image/avif","image/gif","image/jpeg","image/png","image/tiff","image/webp","image/x-ms-bmp"];var userHlLanguages = ["c","cpp","csharp","css","diff","go","groovy","html","java","javascript","objc","perl","php","python","r","ruby","sass","scala","shell","sql","swift","xml","yaml"];
 //]]>
-</script><link rel="stylesheet" href="/assets/jstoolbar-57267577.css" media="screen" /></head>
-<body class="controller-settings action-index avatars-off" data-text-formatting="common_mark">
+</script><link rel="stylesheet" href="/assets/jstoolbar-958fd745.css" media="screen" /></head>
+<body class="controller-settings action-index" data-text-formatting="common_mark">
 
 <div id="wrapper">
 
 <div class="flyout-menu js-flyout-menu">
 
         <div class="flyout-menu__search">
-            <form action="/search" accept-charset="UTF-8" name="form-51210f58" method="get">
+            <form action="/search" accept-charset="UTF-8" name="form-5faa1f68" method="get">
             
-            <label class="search-magnifier search-magnifier--flyout" for="flyout-search"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--search"></use></svg><span class="icon-label hidden">Search</span></label>
+            <label class="search-magnifier search-magnifier--flyout" for="flyout-search"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-0476c1d7.svg#icon--search"></use></svg><span class="icon-label hidden">Search</span></label>
             <input type="text" name="q" id="flyout-search" class="small js-search-input" placeholder="Search" />
 </form>        </div>
 
@@ -98,26 +127,42 @@ var wikiImageMimeTypes = ["image/gif","image/jpeg","image/png","image/tiff","ima
 
 </div>
 
+<nav class="top-menu" id="top-menu">
+  <div class="general-menu">
+    <div class="top-menu__links">
+        <ul><li><a class="home" href="/">Home</a></li><li><a class="my-page" href="/my/page">My page</a></li><li><a class="projects" href="/projects">Projects</a></li><li><a class="administration" href="/admin">Administration</a></li><li><a target="_blank" rel="noopener" class="help" href="https://www.redmine.org/guide">Help</a></li></ul>    </div>
+  </div>
 
-<div id="top-menu">
-    <div id="account">
-        <ul><li><a class="my-account" href="/my/account">My account</a></li><li><a class="logout" rel="nofollow" data-method="post" href="/logout">Sign out</a></li></ul>    </div>
-    <div id="loggedas">Logged in as <a class="user active" href="/users/1">admin</a></div>
-    <ul><li><a class="home" href="/">Home</a></li><li><a class="my-page" href="/my/page">My page</a></li><li><a class="projects" href="/projects">Projects</a></li><li><a class="administration" href="/admin">Administration</a></li><li><a target="_blank" rel="noopener" class="help" href="https://www.redmine.org/guide">Help</a></li></ul></div>
+  <div class="profile-menu">
+    <div id="account" class="dropdown" data-controller="dropdown">
+      <a href="#" class="dropdown-trigger" data-action="click->dropdown#toggle">
+        <span role="img" class="avatar-color-1 s22 avatar">RA</span>
+        <svg class="s14 icon-svg" aria-hidden="true"><use href="/assets/icons-0476c1d7.svg#icon--angle-down"></use></svg>
+      </a>
+      <div class="dropdown-content hidden" data-dropdown-target="content">
+        <div class="user-info">
+          <span class="user-name">Redmine Admin</span>
+          <span class="user-login">@admin</span>
+        </div>
+        <div class="dropdown-divider"></div>
+        <ul><li><a class="my-profile" href="/users/current">Profile</a></li><li><a class="my-account" href="/my/account">My account</a></li><li><a class="logout" rel="nofollow" data-method="post" href="/logout">Sign out</a></li></ul>      </div>
+    </div>
+  </div>
+</nav>
 
 <div id="header">
 
     <a href="#" class="mobile-toggle-button js-flyout-menu-toggle-button"></a>
 
     <div id="quick-search">
-        <form action="/search" accept-charset="UTF-8" name="form-54fb667f" method="get">
+        <form action="/search" accept-charset="UTF-8" name="form-0f84f9b9" method="get">
         <input type="hidden" name="scope" autocomplete="off" />
         
         <label for='q'>
           <a accesskey="4" href="/search">Search</a>:
         </label>
         <input type="text" name="q" id="q" size="20" class="small" accesskey="f" data-auto-complete="true" />
-</form>        <div id="project-jump" class="drdn"><span class="drdn-trigger">Jump to a project...</span><div class="drdn-content"><div class="quick-search"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--search"></use></svg><input type="text" name="q" id="projects-quick-search" value="" class="autocomplete" data-automcomplete-url="/projects/autocomplete.js?jump=settings" autocomplete="off" /></div><div class="drdn-items projects selection"><strong>Bookmarks</strong><a title="eCookbook" href="/projects/ecookbook?jump=settings"><span style="padding-inline-start:0px;">eCookbook</span></a><a title="Private child of eCookbook" href="/projects/private-child?jump=settings"><span style="padding-inline-start:16px;">Private child of eCookbook</span></a><strong>Recently used</strong><a title="eCookbook Subproject 1" href="/projects/subproject1?jump=settings"><span style="padding-inline-start:0px;">eCookbook Subproject 1</span></a><a title="OnlineStore" href="/projects/onlinestore?jump=settings"><span style="padding-inline-start:0px;">OnlineStore</span></a><strong>All Projects</strong><a title="Private child of eCookbook" href="/projects/private-child?jump=settings"><span style="padding-inline-start:0px;">Private child of eCookbook</span></a></div><div class="drdn-items all-projects selection"><a href="/projects?jump=settings">All Projects</a></div></div></div>
+</form>        <div id="project-jump" class="drdn"><span class="drdn-trigger">Jump to a project...</span><div class="drdn-content"><div class="quick-search"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-0476c1d7.svg#icon--search"></use></svg><input type="text" name="q" id="projects-quick-search" value="" class="autocomplete" data-automcomplete-url="/projects/autocomplete.js?jump=settings" autocomplete="off" /></div><div class="drdn-items projects selection"><strong>Bookmarks</strong><a title="eCookbook" href="/projects/ecookbook?jump=settings"><span style="padding-inline-start:0px;">eCookbook</span></a><a title="Private child of eCookbook" href="/projects/private-child?jump=settings"><span style="padding-inline-start:16px;">Private child of eCookbook</span></a><strong>Recently used</strong><a title="eCookbook Subproject 1" href="/projects/subproject1?jump=settings"><span style="padding-inline-start:0px;">eCookbook Subproject 1</span></a><a title="OnlineStore" href="/projects/onlinestore?jump=settings"><span style="padding-inline-start:0px;">OnlineStore</span></a><strong>All Projects</strong><a title="Private child of eCookbook" href="/projects/private-child?jump=settings"><span style="padding-inline-start:0px;">Private child of eCookbook</span></a></div><div class="drdn-items all-projects selection"><a href="/projects?jump=settings">All Projects</a></div></div></div>
     </div>
 
     <h1>Redmine</h1>
@@ -133,7 +178,7 @@ $('#main.collapsiblesidebar').collapsibleSidebar();
     <div id="sidebar">
           <div id="sidebar-switch-panel" style="visibility: hidden;">
             <a id="sidebar-switch-button" class="" href="#">
-              <svg class="s20 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--chevrons-right"></use></svg></a>
+              <svg class="s20 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-0476c1d7.svg#icon--chevrons-right"></use></svg></a>
           </div>
           <script>
 //<![CDATA[
@@ -143,7 +188,7 @@ $('#sidebar-switch-panel').css('visibility', 'visible');
         <div id="sidebar-wrapper">
               <h3>Administration</h3>
     <div id="admin-menu">
-  <ul><li><a class="icon icon-projects projects" href="/admin/projects"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--projects"></use></svg><span class="icon-label">Projects</span></a></li><li><a class="icon icon-user users" href="/users"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--user"></use></svg><span class="icon-label">Users</span></a></li><li><a class="icon icon-group groups" href="/groups"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--group"></use></svg><span class="icon-label">Groups</span></a></li><li><a class="icon icon-roles roles" href="/roles"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--roles"></use></svg><span class="icon-label">Roles and permissions</span></a></li><li><a class="icon icon-issue trackers" href="/trackers"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--issue"></use></svg><span class="icon-label">Trackers</span></a></li><li><a class="icon icon-issue-edit issue-statuses" href="/issue_statuses"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--issue-edit"></use></svg><span class="icon-label">Issue statuses</span></a></li><li><a class="icon icon-workflows workflows" href="/workflows/edit"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--workflows"></use></svg><span class="icon-label">Workflow</span></a></li><li><a class="icon icon-custom-fields custom-fields" href="/custom_fields"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--custom-fields"></use></svg><span class="icon-label">Custom fields</span></a></li><li><a class="icon icon-list enumerations" href="/enumerations"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--list"></use></svg><span class="icon-label">Enumerations</span></a></li><li><a class="icon icon-settings settings selected" href="/settings"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--settings"></use></svg><span class="icon-label">Settings</span></a></li><li><a class="icon icon-server-authentication ldap-authentication" href="/auth_sources"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--server-authentication"></use></svg><span class="icon-label">LDAP authentication</span></a></li><li><a class="icon icon-applications applications" href="/oauth/applications"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--apps"></use></svg><span class="icon-label">Applications</span></a></li><li><a class="icon icon-plugins plugins" href="/admin/plugins"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--plugins"></use></svg><span class="icon-label">Plugins</span></a></li><li><a class="icon icon-help info" href="/admin/info"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--help"></use></svg><span class="icon-label">Information</span></a></li></ul>
+  <ul><li><a class="icon icon-projects projects" href="/admin/projects"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-0476c1d7.svg#icon--projects"></use></svg><span class="icon-label">Projects</span></a></li><li><a class="icon icon-user users" href="/users"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-0476c1d7.svg#icon--user"></use></svg><span class="icon-label">Users</span></a></li><li><a class="icon icon-group groups" href="/groups"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-0476c1d7.svg#icon--group"></use></svg><span class="icon-label">Groups</span></a></li><li><a class="icon icon-roles roles" href="/roles"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-0476c1d7.svg#icon--roles"></use></svg><span class="icon-label">Roles and permissions</span></a></li><li><a class="icon icon-issue trackers" href="/trackers"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-0476c1d7.svg#icon--issue"></use></svg><span class="icon-label">Trackers</span></a></li><li><a class="icon icon-issue-edit issue-statuses" href="/issue_statuses"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-0476c1d7.svg#icon--issue-edit"></use></svg><span class="icon-label">Issue statuses</span></a></li><li><a class="icon icon-workflows workflows" href="/workflows/edit"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-0476c1d7.svg#icon--workflows"></use></svg><span class="icon-label">Workflow</span></a></li><li><a class="icon icon-custom-fields custom-fields" href="/custom_fields"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-0476c1d7.svg#icon--custom-fields"></use></svg><span class="icon-label">Custom fields</span></a></li><li><a class="icon icon-list enumerations" href="/enumerations"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-0476c1d7.svg#icon--list"></use></svg><span class="icon-label">Enumerations</span></a></li><li><a class="icon icon-settings settings selected" href="/settings"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-0476c1d7.svg#icon--settings"></use></svg><span class="icon-label">Settings</span></a></li><li><a class="icon icon-server-authentication ldap-authentication" href="/auth_sources"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-0476c1d7.svg#icon--server-authentication"></use></svg><span class="icon-label">LDAP authentication</span></a></li><li><a class="icon icon-applications applications" href="/oauth/applications"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-0476c1d7.svg#icon--apps"></use></svg><span class="icon-label">Applications</span></a></li><li><a class="icon icon-plugins plugins" href="/admin/plugins"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-0476c1d7.svg#icon--plugins"></use></svg><span class="icon-label">Plugins</span></a></li><li><a class="icon icon-help info" href="/admin/info"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-0476c1d7.svg#icon--help"></use></svg><span class="icon-label">Information</span></a></li></ul>
 </div>
 
 
@@ -163,7 +208,7 @@ $('#sidebar-switch-panel').css('visibility', 'visible');
     <li><a id="tab-general" class="selected" onclick="showTab(&#39;general&#39;, this.href); return false;" href="/settings?tab=general">General</a></li>
     <li><a id="tab-display" onclick="showTab(&#39;display&#39;, this.href); return false;" href="/settings?tab=display">Display</a></li>
     <li><a id="tab-authentication" onclick="showTab(&#39;authentication&#39;, this.href); return false;" href="/settings?tab=authentication">Authentication</a></li>
-    <li><a id="tab-api" onclick="showTab(&#39;api&#39;, this.href); return false;" href="/settings?tab=api">API</a></li>
+    <li><a id="tab-integrations" onclick="showTab(&#39;integrations&#39;, this.href); return false;" href="/settings?tab=integrations">Integrations</a></li>
     <li><a id="tab-projects" onclick="showTab(&#39;projects&#39;, this.href); return false;" href="/settings?tab=projects">Projects</a></li>
     <li><a id="tab-users" onclick="showTab(&#39;users&#39;, this.href); return false;" href="/settings?tab=users">Users</a></li>
     <li><a id="tab-issues" onclick="showTab(&#39;issues&#39;, this.href); return false;" href="/settings?tab=issues">Issue tracking</a></li>
@@ -175,20 +220,20 @@ $('#sidebar-switch-panel').css('visibility', 'visible');
   </ul>
   <div class="tabs-buttons" style="display:none;">
     <button class="tab-left icon-only" type="button" onclick="moveTabLeft(this);">
-      <svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--angle-left"></use></svg>
+      <svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-0476c1d7.svg#icon--angle-left"></use></svg>
     </button>
     <button class="tab-right icon-only" type="button" onclick="moveTabRight(this);">
-      <svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--angle-right"></use></svg>
+      <svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-0476c1d7.svg#icon--angle-right"></use></svg>
     </button>
   </div>
 </div>
 
-  <div id="tab-content-general" class="tab-content"><form action="/settings/edit" accept-charset="UTF-8" name="form-c494e4ab" method="post"><input type="hidden" name="authenticity_token" value="W6YiS8b4cxDNFvpSVCZDV7haoI19cslsDNuBmWdjvjqdoief3efhKs5xlnYOvOnNLR-iS2WUcVjxk3XbnWBknQ" autocomplete="off" />
+  <div id="tab-content-general" class="tab-content"><form action="/settings/edit" accept-charset="UTF-8" name="form-06149e48" method="post"><input type="hidden" name="authenticity_token" value="C3eSD9McAT7lDt-ed1FD9pyYMAkGuDpmMzo4889qEMvf60R-snC7tiXuL5rsgbSFR67cX_HE4CZ9vs6z20HmqQ" autocomplete="off" />
 
 <div class="box tabular settings">
 <p><label for="settings_app_title">Application title</label><input type="text" name="settings[app_title]" id="settings_app_title" value="Redmine" size="30" /></p>
 
-<p><label for="settings_welcome_text">Welcome text</label><textarea name="settings[welcome_text]" id="settings_welcome_text" cols="60" rows="5" class="wiki-edit" data-controller="list-autofill" data-action="beforeinput-&gt;list-autofill#handleBeforeInput" data-list-autofill-text-formatting-param="common_mark">
+<p><label for="settings_welcome_text">Welcome text</label><textarea name="settings[welcome_text]" id="settings_welcome_text" cols="60" rows="5" class="wiki-edit" data-controller="list-autofill selection-indent table-paste" data-action="beforeinput-&gt;list-autofill#handleBeforeInput keydown.tab-&gt;selection-indent#run keydown.shift+tab-&gt;selection-indent#run paste-&gt;table-paste#handlePaste" data-list-autofill-text-formatting-param="common_mark" data-selection-indent-text-formatting-param="common_mark" data-table-paste-text-formatting-param="common_mark">
 Welcome to Redmine, an open-source, flexible project management software.
 
 Note: You can modify this message in the &quot;Welcome text&quot; setting (Administration &gt; Settings &gt; General).</textarea></p>
@@ -256,7 +301,7 @@ var wikiToolbar = new jsToolBar(document.getElementById('settings_welcome_text')
 
 //]]>
 </script></div>
-  <div id="tab-content-display" style="display:none" class="tab-content"><form action="/settings/edit?tab=display" accept-charset="UTF-8" name="form-185a9571" method="post"><input type="hidden" name="authenticity_token" value="CaWkcXU1m6K5D0k9XcAOaE0uuSiVIqftC29YuclSEwbPoaGlbioJmLpoJRkHWqTy2Gu77o3EH9n2J6z7M1HJoQ" autocomplete="off" />
+  <div id="tab-content-display" style="display:none" class="tab-content"><form action="/settings/edit?tab=display" accept-charset="UTF-8" name="form-7ea64d83" method="post"><input type="hidden" name="authenticity_token" value="u0eN0_yPN_JDNk1Rf_QkdvlNeMDFlUYbo1XmEqJOyIJv21uineONeoPWvVXkJNMFInuUljLpnFvt0RBStmU-4A" autocomplete="off" />
 
 <div class="box tabular settings">
 <p><label for="settings_ui_theme">Theme</label><select name="settings[ui_theme]" id="settings_ui_theme"><option selected="selected" value="">Default</option>
@@ -355,13 +400,14 @@ var wikiToolbar = new jsToolBar(document.getElementById('settings_welcome_text')
 
 <p>
   <label for="settings_gravatar_default">Default Gravatar image</label><select name="settings[gravatar_default]" id="settings_gravatar_default"><option value="">none</option>
+<option value="initials">Initials</option>
+<option value="color">Color</option>
+<option value="mm">Mystery man</option>
 <option selected="selected" value="identicon">Identicons</option>
 <option value="monsterid">Monster ids</option>
-<option value="mm">Mystery man</option>
-<option value="retro">Retro</option>
-<option value="robohash">Robohash</option>
 <option value="wavatar">Wavatars</option>
-<option value="initials">Initials</option></select>
+<option value="retro">Retro</option>
+<option value="robohash">Robohash</option></select>
   <em class="hidden">
     Users' initials are sent to <a href="https://www.gravatar.com">https://www.gravatar.com</a> to generate their avatars.
   </em>
@@ -398,7 +444,7 @@ var wikiToolbar = new jsToolBar(document.getElementById('settings_welcome_text')
 
 //]]>
 </script></div>
-  <div id="tab-content-authentication" style="display:none" class="tab-content"><form action="/settings/edit?tab=authentication" accept-charset="UTF-8" name="form-1cb5f423" method="post"><input type="hidden" name="authenticity_token" value="CjA3LsCOxesyWw8GGbM7xa7M8oOuCDRnb0mQNzENxbXMNDL625FX0TE8YyJDKZFfO4nwRbbujFOSAWR1yw4fEg" autocomplete="off" />
+  <div id="tab-content-authentication" style="display:none" class="tab-content"><form action="/settings/edit?tab=authentication" accept-charset="UTF-8" name="form-055b29d0" method="post"><input type="hidden" name="authenticity_token" value="dpI_x-x0Ou8GGYcRGhimvnrZZ6RSiejQlwopBQbjztKiDum2jRiAZ8b5dxWByFHNoe-L8qX1MpDZjt9FEsg4sA" autocomplete="off" />
 
 <div class="box tabular settings">
 <p><label for="settings_login_required">Authentication required</label><select name="settings[login_required]" id="settings_login_required"><option value="1">Yes</option>
@@ -476,17 +522,19 @@ var wikiToolbar = new jsToolBar(document.getElementById('settings_welcome_text')
 
 <input type="submit" name="commit" value="Save" data-disable-with="Save" />
 </form></div>
-  <div id="tab-content-api" style="display:none" class="tab-content"><form action="/settings/edit?tab=api" accept-charset="UTF-8" name="form-6f7d4b75" method="post"><input type="hidden" name="authenticity_token" value="lyuBZjHt_HyNbj2o_cX0LRVO7azCnZcJQb443OX1InZRL4SyKvJuRo4JUYynX163gAvvatp7Lz289syeH_b40Q" autocomplete="off" />
+  <div id="tab-content-integrations" style="display:none" class="tab-content"><form action="/settings/edit?tab=integrations" accept-charset="UTF-8" name="form-dd763c5a" method="post"><input type="hidden" name="authenticity_token" value="UQ9DmcNE2vzvBBvzJYZLJOmB8gxQ6ZRcCtienkUm7B-Fk5XooihgdC_k6_e-VrxXMrceWqeVThxEXGjeUQ0afQ" autocomplete="off" />
 
 <div class="box tabular settings">
 <p><label for="settings_rest_api_enabled">Enable REST web service</label><input type="hidden" name="settings[rest_api_enabled]" value="0" autocomplete="off" /><input type="checkbox" name="settings[rest_api_enabled]" id="settings_rest_api_enabled" value="1" checked="checked" /></p>
 
 <p><label for="settings_jsonp_enabled">Enable JSONP support</label><input type="hidden" name="settings[jsonp_enabled]" value="0" autocomplete="off" /><input type="checkbox" name="settings[jsonp_enabled]" id="settings_jsonp_enabled" value="1" /></p>
+
+<p><label for="settings_webhooks_enabled">Enable webhooks</label><input type="hidden" name="settings[webhooks_enabled]" value="0" autocomplete="off" /><input type="checkbox" name="settings[webhooks_enabled]" id="settings_webhooks_enabled" value="1" /></p>
 </div>
 
 <input type="submit" name="commit" value="Save" data-disable-with="Save" />
 </form></div>
-  <div id="tab-content-projects" style="display:none" class="tab-content"><form action="/settings/edit?tab=projects" accept-charset="UTF-8" name="form-ed3ab5dc" method="post"><input type="hidden" name="authenticity_token" value="Xz3ccQiri49rZQK6tdbhOyV4ohI4zZroG2aUzN_YJlGZOdmlE7QZtWgCbp7vTEuhsD2g1CArItzmLmCOJdv89g" autocomplete="off" />
+  <div id="tab-content-projects" style="display:none" class="tab-content"><form action="/settings/edit?tab=projects" accept-charset="UTF-8" name="form-b3f9e34e" method="post"><input type="hidden" name="authenticity_token" value="xrnQrDAqNAh_hZjwmv1WQqOVqSdaJ_QoRfD9uDedmYYSJQbdUUaOgL9laPQBLaExeKNFca1bLmgLdAv4I7Zv5A" autocomplete="off" />
 
 <div class="box tabular settings">
 <p><label for="settings_default_projects_public">New projects are public by default</label><input type="hidden" name="settings[default_projects_public]" value="0" autocomplete="off" /><input type="checkbox" name="settings[default_projects_public]" id="settings_default_projects_public" value="1" checked="checked" /></p>
@@ -527,8 +575,8 @@ var wikiToolbar = new jsToolBar(document.getElementById('settings_welcome_text')
 <option value="cf_3">Development status</option></select>
 </div>
 <div class="buttons">
-      <button type="button" class="move-right" onclick="moveOptions(this.form.available_settings_project_list_defaults_column_names, this.form.selected_settings_project_list_defaults_column_names);"><svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--arrow-narrow-right"></use></svg></button>
-      <button type="button" class="move-left" onclick="moveOptions(this.form.selected_settings_project_list_defaults_column_names, this.form.available_settings_project_list_defaults_column_names);"><svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--arrow-narrow-left"></use></svg></button>
+      <button type="button" class="move-right" onclick="moveOptions(this.form.available_settings_project_list_defaults_column_names, this.form.selected_settings_project_list_defaults_column_names);"><svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-0476c1d7.svg#icon--arrow-narrow-right"></use></svg></button>
+      <button type="button" class="move-left" onclick="moveOptions(this.form.selected_settings_project_list_defaults_column_names, this.form.available_settings_project_list_defaults_column_names);"><svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-0476c1d7.svg#icon--arrow-narrow-left"></use></svg></button>
 </div>
 <div class="query-columns">
       <label for="selected_settings_project_list_defaults_column_names">Selected Columns</label>
@@ -567,7 +615,7 @@ $(document).ready(function(){
 
 <input type="submit" name="commit" value="Save" data-disable-with="Save" />
 </form></div>
-  <div id="tab-content-users" style="display:none" class="tab-content"><form action="/settings/edit?tab=users" accept-charset="UTF-8" name="form-f121403a" method="post"><input type="hidden" name="authenticity_token" value="XvcZbtvCZscDC86eWBJHhqE9hkG4F3vF4skOTCRxqxOY8xy6wN30_QBsoroCiO0cNHiEh6Dxw_EfgfoO3nJxtA" autocomplete="off" />
+  <div id="tab-content-users" style="display:none" class="tab-content"><form action="/settings/edit?tab=users" accept-charset="UTF-8" name="form-2d503753" method="post"><input type="hidden" name="authenticity_token" value="7dDIYHPD38x67TDohEx9wPkibOJAraxp8iEFaXTwSak5TB4REq9lRLoNwOwfnIqzIhSAtLfRdim8pfMpYNu_yw" autocomplete="off" />
 
   <div class="box tabular settings">
     <p><label for="settings_max_additional_emails">Maximum number of additional email addresses</label><input type="text" name="settings[max_additional_emails]" id="settings_max_additional_emails" value="5" size="6" /></p>
@@ -592,6 +640,7 @@ $(document).ready(function(){
 <option value="only_my_events">Only for things I watch or I&#39;m involved in</option>
 <option selected="selected" value="only_assigned">Only for things I watch or I am assigned to</option>
 <option value="only_owner">Only for things I watch or I am the owner of</option>
+<option value="only_my_watches">Only for things I watch</option>
 <option value="none">No events</option></select></p>
       <p><label for="settings_default_users_no_self_notified">I don&#39;t want to be notified of changes that I make myself</label><input type="hidden" name="settings[default_users_no_self_notified]" value="0" autocomplete="off" /><input type="checkbox" name="settings[default_users_no_self_notified]" id="settings_default_users_no_self_notified" value="1" checked="checked" /></p>
       <p><label for="settings_default_users_time_zone">Time zone</label><select name="settings[default_users_time_zone]" id="settings_default_users_time_zone"><option selected="selected" value="">none</option>
@@ -624,9 +673,11 @@ $(document).ready(function(){
 <option value="Puerto Rico">(GMT-04:00) Puerto Rico</option>
 <option value="Santiago">(GMT-04:00) Santiago</option>
 <option value="Newfoundland">(GMT-03:30) Newfoundland</option>
+<option value="Asuncion">(GMT-03:00) Asuncion</option>
 <option value="Brasilia">(GMT-03:00) Brasilia</option>
 <option value="Buenos Aires">(GMT-03:00) Buenos Aires</option>
 <option value="Montevideo">(GMT-03:00) Montevideo</option>
+<option value="Greenland">(GMT-02:00) Greenland</option>
 <option value="Mid-Atlantic">(GMT-02:00) Mid-Atlantic</option>
 <option value="Azores">(GMT-01:00) Azores</option>
 <option value="Cape Verde Is.">(GMT-01:00) Cape Verde Is.</option>
@@ -743,13 +794,13 @@ $(document).ready(function(){
 <option value="Nuku&#39;alofa">(GMT+13:00) Nuku&#39;alofa</option>
 <option value="Samoa">(GMT+13:00) Samoa</option>
 <option value="Tokelau Is.">(GMT+13:00) Tokelau Is.</option></select></p>
-      <p><label>Auto watch</label><input type="hidden" name="settings[default_users_auto_watch_on][]" id="settings_default_users_auto_watch_on_" value="" autocomplete="off" /><label class="block"><input type="checkbox" name="settings[default_users_auto_watch_on][]" value="issue_created" checked="checked" />Issues I created</label><label class="block"><input type="checkbox" name="settings[default_users_auto_watch_on][]" value="issue_contributed_to" checked="checked" />Issues I contributed to</label></p>
+      <p><label>Auto watch</label><input type="hidden" name="settings[default_users_auto_watch_on][]" id="settings_default_users_auto_watch_on_" value="" autocomplete="off" /><label class="block"><input type="checkbox" name="settings[default_users_auto_watch_on][]" value="issue_created" checked="checked" />Issues I created</label><label class="block"><input type="checkbox" name="settings[default_users_auto_watch_on][]" value="issue_contributed_to" checked="checked" />Issues I contributed to</label><label class="block"><input type="checkbox" name="settings[default_users_auto_watch_on][]" value="issue_assigned_to_me" />Issues assigned to me</label></p>
     </div>
   </fieldset>
 
   <input type="submit" name="commit" value="Save" data-disable-with="Save" />
 </form></div>
-  <div id="tab-content-issues" style="display:none" class="tab-content"><form action="/settings/edit?tab=issues" accept-charset="UTF-8" name="form-3b000fd2" method="post"><input type="hidden" name="authenticity_token" value="Bj8cnXSnC_DJseu7VpIPghPfNcMwagUP1Bq3HYA9INPAOxlJb7iZysrWh58MCKUYhpo3BSiMvTspUkNfej76dA" autocomplete="off" />
+  <div id="tab-content-issues" style="display:none" class="tab-content"><form action="/settings/edit?tab=issues" accept-charset="UTF-8" name="form-32c1553f" method="post"><input type="hidden" name="authenticity_token" value="iRa59u1MC6iDgZl2gPN8WPmSZlBRHlPuOy-XqltZpXZdim-HjCCxIENhaXIbI4srIqSKBqZiia51q2HqT3JTFA" autocomplete="off" />
 
 <div class="box tabular settings">
 <p><label for="settings_cross_project_issue_relations">Allow cross-project issue relations</label><input type="hidden" name="settings[cross_project_issue_relations]" value="0" autocomplete="off" /><input type="checkbox" name="settings[cross_project_issue_relations]" id="settings_cross_project_issue_relations" value="1" /></p>
@@ -770,9 +821,26 @@ $(document).ready(function(){
 
 <p><label for="settings_close_duplicate_issues">Close duplicate issues automatically</label><input type="hidden" name="settings[close_duplicate_issues]" value="0" autocomplete="off" /><input type="checkbox" name="settings[close_duplicate_issues]" id="settings_close_duplicate_issues" value="1" checked="checked" /></p>
 
-<p><label for="settings_issue_group_assignment">Allow issue assignment to groups</label><input type="hidden" name="settings[issue_group_assignment]" value="0" autocomplete="off" /><input type="checkbox" name="settings[issue_group_assignment]" id="settings_issue_group_assignment" value="1" /></p>
+<p><label for="settings_issue_group_assignment">Allow issue assignment to groups</label><input type="hidden" name="settings[issue_group_assignment]" value="0" autocomplete="off" /><input type="checkbox" name="settings[issue_group_assignment]" id="settings_issue_group_assignment" value="1" data-enables="#settings_assignee_dropdown_display_format" /></p>
 
-<p><label for="settings_default_issue_start_date_to_creation_date">Use current date as start date for new issues</label><input type="hidden" name="settings[default_issue_start_date_to_creation_date]" value="0" autocomplete="off" /><input type="checkbox" name="settings[default_issue_start_date_to_creation_date]" id="settings_default_issue_start_date_to_creation_date" value="1" checked="checked" /></p>
+<p><label for="settings_assignee_dropdown_display_format">Assignee drop-down display format</label><select name="settings[assignee_dropdown_display_format]" id="settings_assignee_dropdown_display_format"><option selected="selected" value="users_then_groups">Users then groups</option>
+<option value="groups_then_users">Groups then users</option>
+<option value="users_by_group">Users by group</option></select></p>
+
+<p><label for="settings_default_issue_start_date_to_creation_date">Use current date as start date for new issues</label><input type="hidden" name="settings[default_issue_start_date_to_creation_date]" value="0" autocomplete="off" /><input type="checkbox" name="settings[default_issue_start_date_to_creation_date]" id="settings_default_issue_start_date_to_creation_date" value="1" /></p>
+
+<p>
+  <label for="settings_default_issue_due_date_offset_enabled">
+    Enable default due date for new issues
+  </label>
+  <input type="hidden" name="settings[default_issue_due_date_offset_enabled]" value="0" autocomplete="off" />
+  <input type="checkbox" name="settings[default_issue_due_date_offset_enabled]" id="settings_default_issue_due_date_offset_enabled" value="1" data-enables="#settings_default_issue_due_date_offset" />
+</p>
+<p>
+  <label>&nbsp;</label>
+  <input type="text" name="settings[default_issue_due_date_offset]" id="settings_default_issue_due_date_offset" value="" size="6" disabled="disabled" />
+  days relative to today
+</p>
 
 <p><label for="settings_display_subprojects_issues">Display subprojects issues on main projects by default</label><input type="hidden" name="settings[display_subprojects_issues]" value="0" autocomplete="off" /><input type="checkbox" name="settings[display_subprojects_issues]" id="settings_display_subprojects_issues" value="1" checked="checked" /></p>
 
@@ -840,8 +908,8 @@ $(document).ready(function(){
 <option value="is_private">Private</option></select>
 </div>
 <div class="buttons">
-      <button type="button" class="move-right" onclick="moveOptions(this.form.available_settings_issue_list_default_columns, this.form.selected_settings_issue_list_default_columns);"><svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--arrow-narrow-right"></use></svg></button>
-      <button type="button" class="move-left" onclick="moveOptions(this.form.selected_settings_issue_list_default_columns, this.form.available_settings_issue_list_default_columns);"><svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--arrow-narrow-left"></use></svg></button>
+      <button type="button" class="move-right" onclick="moveOptions(this.form.available_settings_issue_list_default_columns, this.form.selected_settings_issue_list_default_columns);"><svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-0476c1d7.svg#icon--arrow-narrow-right"></use></svg></button>
+      <button type="button" class="move-left" onclick="moveOptions(this.form.selected_settings_issue_list_default_columns, this.form.available_settings_issue_list_default_columns);"><svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-0476c1d7.svg#icon--arrow-narrow-left"></use></svg></button>
 </div>
 <div class="query-columns">
       <label for="selected_settings_issue_list_default_columns">Selected Columns</label>
@@ -921,8 +989,8 @@ $(document).ready(function(){
 <option value="is_private">Private</option></select>
 </div>
 <div class="buttons">
-      <button type="button" class="move-right" onclick="moveOptions(this.form.available_settings_related_issues_default_columns, this.form.selected_settings_related_issues_default_columns);"><svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--arrow-narrow-right"></use></svg></button>
-      <button type="button" class="move-left" onclick="moveOptions(this.form.selected_settings_related_issues_default_columns, this.form.available_settings_related_issues_default_columns);"><svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--arrow-narrow-left"></use></svg></button>
+      <button type="button" class="move-right" onclick="moveOptions(this.form.available_settings_related_issues_default_columns, this.form.selected_settings_related_issues_default_columns);"><svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-0476c1d7.svg#icon--arrow-narrow-right"></use></svg></button>
+      <button type="button" class="move-left" onclick="moveOptions(this.form.selected_settings_related_issues_default_columns, this.form.available_settings_related_issues_default_columns);"><svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-0476c1d7.svg#icon--arrow-narrow-left"></use></svg></button>
 </div>
 <div class="query-columns">
       <label for="selected_settings_related_issues_default_columns">Selected Columns</label>
@@ -967,7 +1035,7 @@ $(document).ready(function(){
 
 <input type="submit" name="commit" value="Save" data-disable-with="Save" />
 </form></div>
-  <div id="tab-content-timelog" style="display:none" class="tab-content"><form action="/settings/edit?tab=timelog" accept-charset="UTF-8" name="form-b236e8a6" method="post"><input type="hidden" name="authenticity_token" value="XzLioUIPas_iP2XBl4UjT00mZSQLuNYRu27RCKlWncmZNud1WRD49eFYCeXNH4nV2GNn4hNebiVGJiVKU1VHbg" autocomplete="off" />
+  <div id="tab-content-timelog" style="display:none" class="tab-content"><form action="/settings/edit?tab=timelog" accept-charset="UTF-8" name="form-3f26269d" method="post"><input type="hidden" name="authenticity_token" value="3FKebtqS1fPdzi3U6UYvnBvy1h1pCUleVrJxo-5VLHQIzkgfu_5vex0u3dByltjvwMQ6S551kx4YNofj-n7aFg" autocomplete="off" />
 
 <div class="box tabular settings">
 <p><label>Required fields for time logs</label><input type="hidden" name="settings[timelog_required_fields][]" id="settings_timelog_required_fields_" value="" autocomplete="off" /><label class="block"><input type="checkbox" name="settings[timelog_required_fields][]" value="issue_id" />Issue</label><label class="block"><input type="checkbox" name="settings[timelog_required_fields][]" value="comments" />Comment</label></p>
@@ -1008,8 +1076,8 @@ $(document).ready(function(){
 <option value="project.cf_3">Development status</option></select>
 </div>
 <div class="buttons">
-      <button type="button" class="move-right" onclick="moveOptions(this.form.available_settings_time_entry_list_defaults_column_names, this.form.selected_settings_time_entry_list_defaults_column_names);"><svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--arrow-narrow-right"></use></svg></button>
-      <button type="button" class="move-left" onclick="moveOptions(this.form.selected_settings_time_entry_list_defaults_column_names, this.form.available_settings_time_entry_list_defaults_column_names);"><svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--arrow-narrow-left"></use></svg></button>
+      <button type="button" class="move-right" onclick="moveOptions(this.form.available_settings_time_entry_list_defaults_column_names, this.form.selected_settings_time_entry_list_defaults_column_names);"><svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-0476c1d7.svg#icon--arrow-narrow-right"></use></svg></button>
+      <button type="button" class="move-left" onclick="moveOptions(this.form.selected_settings_time_entry_list_defaults_column_names, this.form.available_settings_time_entry_list_defaults_column_names);"><svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-0476c1d7.svg#icon--arrow-narrow-left"></use></svg></button>
 </div>
 <div class="query-columns">
       <label for="selected_settings_time_entry_list_defaults_column_names">Selected Columns</label>
@@ -1048,7 +1116,7 @@ $(document).ready(function(){
 
 <input type="submit" name="commit" value="Save" data-disable-with="Save" />
 </form></div>
-  <div id="tab-content-attachments" style="display:none" class="tab-content"><form action="/settings/edit?tab=attachments" accept-charset="UTF-8" name="form-ce3fb71a" method="post"><input type="hidden" name="authenticity_token" value="N_vHOrQkDrwRrIf0B8E6rSAPhiJV4yhnDEgAhmuKZNHx_8LurzuchhLL69BdW5A3tUqE5E0FkFPxAPTEkYm-dg" autocomplete="off" />
+  <div id="tab-content-attachments" style="display:none" class="tab-content"><form action="/settings/edit?tab=attachments" accept-charset="UTF-8" name="form-84df68af" method="post"><input type="hidden" name="authenticity_token" value="slV1ryh8TGMi4g_dEQiJywoXDjFTGeex9OZiqE2Qp8ZmyaPeSRD26-IC_9mK2H640SHiZ6RlPfG6YpToWbtRpA" autocomplete="off" />
 
 <div class="box tabular settings">
 <p><label for="settings_attachment_max_size">Maximum attachment size</label><input type="text" name="settings[attachment_max_size]" id="settings_attachment_max_size" value="5120" size="6" /> KB</p>
@@ -1073,7 +1141,7 @@ $(document).ready(function(){
 
 <input type="submit" name="commit" value="Save" data-disable-with="Save" />
 </form></div>
-  <div id="tab-content-notifications" style="display:none" class="tab-content"><form action="/settings/edit?tab=notifications" accept-charset="UTF-8" name="form-0343f7f7" method="post"><input type="hidden" name="authenticity_token" value="7npbFMKRkLCLyjRuYrH9wBymAuA69PXQ_9pda_-7Nukofl7A2Y4CioitWEo4K1daieMAJiISTeQCkqkpBbjsTg" autocomplete="off" />
+  <div id="tab-content-notifications" style="display:none" class="tab-content"><form action="/settings/edit?tab=notifications" accept-charset="UTF-8" name="form-ecdd2c15" method="post"><input type="hidden" name="authenticity_token" value="N234A3-oIDcdBrRN6oSA_YvCE9nvC-AvyA7vOCvDGDbj8S5yHsSav93mRElxVHeOUPT_jxh3Om-Gihl4P-juVA" autocomplete="off" />
 
 <div class="box tabular settings">
 <p><label for="settings_mail_from">Emission email address</label><input type="text" name="settings[mail_from]" id="settings_mail_from" value="redmine@example.net" size="60" /></p>
@@ -1119,7 +1187,7 @@ $(document).ready(function(){
 </fieldset>
 
 <fieldset class="box"><legend>Email header</legend>
-<textarea name="settings[emails_header]" id="settings_emails_header" class="wiki-edit" rows="5" data-controller="list-autofill" data-action="beforeinput-&gt;list-autofill#handleBeforeInput" data-list-autofill-text-formatting-param="common_mark">
+<textarea name="settings[emails_header]" id="settings_emails_header" class="wiki-edit" rows="5" data-controller="list-autofill selection-indent table-paste" data-action="beforeinput-&gt;list-autofill#handleBeforeInput keydown.tab-&gt;selection-indent#run keydown.shift+tab-&gt;selection-indent#run paste-&gt;table-paste#handlePaste" data-list-autofill-text-formatting-param="common_mark" data-selection-indent-text-formatting-param="common_mark" data-table-paste-text-formatting-param="common_mark">
 </textarea>
 <script>
 //<![CDATA[
@@ -1129,7 +1197,7 @@ var wikiToolbar = new jsToolBar(document.getElementById('settings_emails_header'
 </fieldset>
 
 <fieldset class="box"><legend>Email footer</legend>
-<textarea name="settings[emails_footer]" id="settings_emails_footer" class="wiki-edit" rows="5" data-controller="list-autofill" data-action="beforeinput-&gt;list-autofill#handleBeforeInput" data-list-autofill-text-formatting-param="common_mark">
+<textarea name="settings[emails_footer]" id="settings_emails_footer" class="wiki-edit" rows="5" data-controller="list-autofill selection-indent table-paste" data-action="beforeinput-&gt;list-autofill#handleBeforeInput keydown.tab-&gt;selection-indent#run keydown.shift+tab-&gt;selection-indent#run paste-&gt;table-paste#handlePaste" data-list-autofill-text-formatting-param="common_mark" data-selection-indent-text-formatting-param="common_mark" data-table-paste-text-formatting-param="common_mark">
 You have received this notification because you have either subscribed to it, or are involved in it.
 To change your notification preferences, please click here: http://hostname/my/account</textarea>
 <script>
@@ -1145,7 +1213,7 @@ var wikiToolbar = new jsToolBar(document.getElementById('settings_emails_footer'
 
 <input type="submit" name="commit" value="Save" data-disable-with="Save" />
 </form></div>
-  <div id="tab-content-mail_handler" style="display:none" class="tab-content"><form action="/settings/edit?tab=mail_handler" accept-charset="UTF-8" name="form-80866255" method="post"><input type="hidden" name="authenticity_token" value="YLy5xsYByUtAo8gJ-qHEElQ0aZ25M6HOM2Cozss0MxumuLwS3R5bcUPEpC2gO26IwXFrW6HVGfrOKFyMMTfpvA" autocomplete="off" />
+  <div id="tab-content-mail_handler" style="display:none" class="tab-content"><form action="/settings/edit?tab=mail_handler" accept-charset="UTF-8" name="form-4b3b3e17" method="post"><input type="hidden" name="authenticity_token" value="ggP274u9_jI9Y35IZ7VRU2mr50X8OLxjD5xmagsKK8pWnyCe6tFEuv2Djkz8ZaYgsp0LEwtEZiNBGJAqHyHdqA" autocomplete="off" />
 
 <div class="box tabular settings">
   <p>
@@ -1182,7 +1250,7 @@ var wikiToolbar = new jsToolBar(document.getElementById('settings_emails_footer'
 <input type="submit" name="commit" value="Save" data-disable-with="Save" />
 
 </form></div>
-  <div id="tab-content-repositories" style="display:none" class="tab-content"><form action="/settings/edit?tab=repositories" accept-charset="UTF-8" name="form-7006c74e" method="post"><input type="hidden" name="authenticity_token" value="a9FDUHaQzw1gV9XMNacnUTfpIAQZn7P9DxurhcPZYiGt1UaEbY9dN2MwuehvPY3LoqwiwgF5C8nyU1_HOdq4hg" autocomplete="off" />
+  <div id="tab-content-repositories" style="display:none" class="tab-content"><form action="/settings/edit?tab=repositories" accept-charset="UTF-8" name="form-3a21464f" method="post"><input type="hidden" name="authenticity_token" value="ZEuN4xNtnqySCrliwYwAaucgsmVk9T8m5I2FHMZuBJaw11uScgEkJFLqSWZaXPcZPBZeM5OJ5WaqCXNc0kXy9A" autocomplete="off" />
 
 <fieldset class="box settings enabled_scm">
 <legend>Enabled SCM</legend>
@@ -1359,7 +1427,7 @@ var wikiToolbar = new jsToolBar(document.getElementById('settings_emails_footer'
 <option value="100">100 %</option></select>
       </td>
       <td class="buttons">
-        <a class="delete-commit-keywords icon-only icon-del" title="Delete" href="#"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--del"></use></svg><span class="icon-label">Delete</span></a>
+        <a class="delete-commit-keywords icon-only icon-del" title="Delete" href="#"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-0476c1d7.svg#icon--del"></use></svg><span class="icon-label">Delete</span></a>
       </td>
     </tr>
     <tr>
@@ -1368,7 +1436,7 @@ var wikiToolbar = new jsToolBar(document.getElementById('settings_emails_footer'
       <td></td>
       <td></td>
       <td class="buttons">
-        <a class="add-commit-keywords icon-only icon-add" title="Add" href="#"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--add"></use></svg><span class="icon-label">Add</span></a>
+        <a class="add-commit-keywords icon-only icon-add" title="Add" href="#"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-0476c1d7.svg#icon--add"></use></svg><span class="icon-label">Add</span></a>
       </td>
     </tr>
   </tbody>
@@ -1414,11 +1482,11 @@ showTab('general', this.href)
 
 <div id="ajax-indicator" style="display:none;">
   <span class="icon">
-    <svg class="s18 icon-svg svg-loader" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--loader"></use></svg><span class="icon-label">Loading...</span>
+    <svg class="s18 icon-svg svg-loader" aria-hidden="true"><use href="/assets/icons-0476c1d7.svg#icon--loader"></use></svg><span class="icon-label">Loading...</span>
   </span>
 </div>
 <div id="ajax-modal" style="display:none;"></div>
-<div id="icon-copy-source" style="display: none;"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--"></use></svg></div>
+<div id="icon-copy-source" style="display: none;"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-0476c1d7.svg#icon--"></use></svg></div>
 
 </div>
 

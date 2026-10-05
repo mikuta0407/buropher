@@ -114,6 +114,11 @@ func Run(ctx context.Context, d *db.DB, archivePath string, opt Options) (*Repor
 	if err != nil || m.Source.Timezone == "" {
 		return rep, fmt.Errorf("importer: invalid source timezone %q in manifest: %w", m.Source.Timezone, err)
 	}
+	switch m.RedmineSchema {
+	case "", "6.1", "7.0":
+	default:
+		return rep, fmt.Errorf("importer: unsupported Redmine schema %q in manifest (supported: 6.1, 7.0)", m.RedmineSchema)
+	}
 	if m.Source.AcceptanceForced {
 		rep.warnf("the archive was exported with --force (acceptance check failed); results may be incomplete")
 	}
@@ -269,6 +274,7 @@ func (im *imp) run() error {
 		{"attachments", im.importAttachments},
 		{"watchers", im.importWatchers},
 		{"reactions", im.importReactions},
+		{"webhooks", im.importWebhooks},
 		{"oauth", im.importOAuth},
 		{"derived values", im.recompute},
 		{"sequences", im.resetSequences},

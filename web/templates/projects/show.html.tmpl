@@ -24,10 +24,6 @@
 
 <h2>{{l "label_overview"}}</h2>
 
-{{if not $p.Active}}
-  <p class="warning"><span class="icon icon-lock">{{sprite_icon "lock" (l "text_project_closed")}}</span></p>
-{{end}}
-
 <div class="splitcontent">
 <div class="splitcontentleft">
   {{if present $p.Description}}

@@ -23,13 +23,13 @@
 <p><label for="news_title">Title<span class="required"> *</span></label><input size="60" type="text" value="" name="news[title]" id="news_title" /></p>
 <p><label for="news_summary">Summary</label><textarea cols="60" rows="2" name="news[summary]" id="news_summary">
 </textarea></p>
-<p><label for="news_description">Description<span class="required"> *</span></label><textarea cols="60" rows="15" class="wiki-edit" data-auto-complete="true" data-controller="list-autofill" data-action="beforeinput-&gt;list-autofill#handleBeforeInput" data-list-autofill-text-formatting-param="common_mark" name="news[description]" id="news_description">
+<p><label for="news_description">Description<span class="required"> *</span></label><textarea cols="60" rows="15" class="wiki-edit" data-auto-complete="true" data-controller="list-autofill selection-indent table-paste" data-action="beforeinput-&gt;list-autofill#handleBeforeInput keydown.tab-&gt;selection-indent#run keydown.shift+tab-&gt;selection-indent#run paste-&gt;table-paste#handlePaste" data-list-autofill-text-formatting-param="common_mark" data-selection-indent-text-formatting-param="common_mark" data-table-paste-text-formatting-param="common_mark" name="news[description]" id="news_description">
 </textarea></p>
 <p id="attachments_form"><label>Files</label>
 <span class="attachments_form">
   <span class="attachments_icons hidden">
     <svg class="s18 icon-svg svg-del" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--del"></use></svg>
-    <svg class="s16 icon-svg svg-attachment" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--attachment"></use></svg>
+    <svg class="s16 icon-svg svg-attachment" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--file"></use></svg>
     <svg class="s16 icon-svg svg-loader" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--loader"></use></svg>
     <svg class="s16 icon-svg svg-hourglass" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--hourglass"></use></svg>
   </span>

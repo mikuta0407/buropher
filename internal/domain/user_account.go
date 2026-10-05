@@ -25,7 +25,7 @@ var MailNotificationOptions = []MailNotificationOption{
 	{"only_my_events", "label_user_mail_option_only_my_events"},
 	{"only_assigned", "label_user_mail_option_only_assigned"},
 	{"only_owner", "label_user_mail_option_only_owner"},
-	{"only_my_watches", "label_user_mail_option_only_my_watches"},
+	{"only_my_watches", "label_user_mail_option_only_my_watches"}, // Redmine 7.0 (#37978)
 	{"none", "label_user_mail_option_none"},
 }
 

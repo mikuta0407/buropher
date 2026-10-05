@@ -3,7 +3,6 @@ NotoSans-Bold.woff2
 NotoSans-BoldItalic.woff2
 NotoSans-Italic.woff2
 NotoSans-Regular.woff2
-OFL.txt
 action_cable.js
 actioncable.esm.js
 actioncable.js
@@ -46,13 +45,24 @@ comment.png
 comments.png
 context_menu.css
 context_menu.js
-context_menu_rtl.css
 controllers/api_key_copy_controller.js
 controllers/application.js
+controllers/clipboard_controller.js
+controllers/custom_field_default_value_controller.js
+controllers/dropdown_controller.js
+controllers/gantt/chart_controller.js
+controllers/gantt/column_controller.js
+controllers/gantt/options_controller.js
+controllers/gantt/subjects_controller.js
 controllers/index.js
 controllers/list_autofill_controller.js
 controllers/quote_reply_controller.js
+controllers/reports/details_controller.js
+controllers/repositories/stats_controller.js
+controllers/selection_indent_controller.js
 controllers/sticky_issue_header_controller.js
+controllers/table_paste_controller.js
+controllers/tablesort_controller.js
 copy.png
 copy_link.png
 database_go.png
@@ -63,6 +73,7 @@ doorkeeper/admin/application.css
 doorkeeper/application.css
 doorkeeper/bootstrap.min.css
 download.png
+dropdown.css
 duplicate.png
 edit.png
 email.png
@@ -93,8 +104,9 @@ folder.png
 folder_open.png
 folder_open_add.png
 folder_open_orange.png
-gantt.js
+gantt.css
 group.png
+group.svg
 help.png
 history.png
 hourglass-empty.svg
@@ -243,6 +255,7 @@ jstoolbar/table.svg
 jstoolbar/textile.js
 jstoolbar/underline.svg
 jstoolbar/wiki_link.svg
+legacy-icons-compat.css
 lightning.png
 link.png
 link_break.png
@@ -255,6 +268,7 @@ milestone_late.png
 milestone_todo.png
 move.png
 news.png
+open-color.css
 package.png
 plugin.png
 project_identifier.js
@@ -263,7 +277,6 @@ projects.png
 rails-requestjs.js
 rails-ujs.esm.js
 rails-ujs.js
-raphael.js
 reload.png
 reorder.png
 report.png
@@ -272,7 +285,6 @@ requestjs.js
 responsive.css
 responsive.js
 revision_graph.js
-rtl.css
 save.png
 scm.css
 search.svg
@@ -289,6 +301,8 @@ stimulus.min.js.map
 table_multiple.png
 tablesort-5.2.1.min.js
 tablesort-5.2.1.number.min.js
+tablesort.min.js
+tablesort.number.min.js
 tag_blue.png
 tag_blue_add.png
 tag_blue_delete.png

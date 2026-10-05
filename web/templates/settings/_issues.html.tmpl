@@ -18,17 +18,17 @@
 
 <p>{{setting_check_box "default_issue_start_date_to_creation_date"}}</p>
 
-{{$dueEnabled := $v.DefaultIssueDueDateOffsetEnabled -}}
+{{$offsetEnabled := $v.DueDateOffsetEnabled -}}
 <p>
   <label for="settings_default_issue_due_date_offset_enabled">
     {{l "label_enable_default_issue_due_date_offset"}}
   </label>
   {{hidden_field_tag "settings[default_issue_due_date_offset_enabled]" 0 (hash "id" nil)}}
-  {{check_box_tag "settings[default_issue_due_date_offset_enabled]" 1 $dueEnabled (hash "id" "settings_default_issue_due_date_offset_enabled" "data" (hash "enables" "#settings_default_issue_due_date_offset"))}}
+  {{check_box_tag "settings[default_issue_due_date_offset_enabled]" 1 $offsetEnabled (hash "id" "settings_default_issue_due_date_offset_enabled" "data" (hash "enables" "#settings_default_issue_due_date_offset"))}}
 </p>
 <p>
   <label>&nbsp;</label>
-  {{setting_text_field "default_issue_due_date_offset" (hash "label" false "size" 6 "disabled" (not $dueEnabled))}}
+  {{setting_text_field "default_issue_due_date_offset" (hash "label" false "size" 6 "disabled" (not $offsetEnabled))}}
   {{l "label_days_relative_to_today"}}
 </p>
 

@@ -430,14 +430,42 @@ func RepositoryBreadcrumbs(project *domain.Project, repo *domain.Repository, pat
 	return template.HTML(strings.Join(crumbs, `<span class="separator">/</span>`))
 }
 
-// iconForMimeType は IconsHelper#icon_for_mime_type。
-func iconForMimeType(mime string) string {
+// IconForMimeType は IconsHelper#icon_for_mime_type（Redmine 7.0: MIME タイプ（"text/x-ruby" 等）から
+// ファイル種別アイコン名を決める。#43797 / #43805）。
+func IconForMimeType(mime string) string {
 	switch mime {
-	case "text-plain", "text-x-c", "text-x-csharp", "text-x-java", "text-x-php", "text-x-ruby", "text-xml", "text-css", "text-html",
-		"image-gif", "image-jpeg", "image-png", "image-tiff", "application-pdf", "application-zip", "application-gzip", "application-javascript":
-		return mime
+	case "text/x-c", "text/x-csharp", "text/x-java", "text/x-php", "text/x-ruby", "text/xml", "text/css", "text/html",
+		"application/pdf", "application/zip", "application/gzip", "application/javascript":
+		return strings.ReplaceAll(mime, "/", "-")
 	}
-	return "file"
+	top, sub, _ := strings.Cut(mime, "/")
+	name := ""
+	switch top {
+	case "audio":
+		name = "file-music"
+	case "image":
+		name = "photo"
+	case "text":
+		if sub == "markdown" || sub == "plain" || sub == "x-textile" {
+			name = "text-plain"
+		}
+	case "video":
+		name = "movie"
+	default:
+		// Office Open XML 文書（旧形式 .doc/.xls/.ppt はプレビュー非対応のため対象外）
+		switch mime {
+		case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
+			name = "file-type-ppt"
+		case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+			name = "file-type-xls"
+		case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+			name = "file-type-docx"
+		}
+	}
+	if name == "" {
+		return "file"
+	}
+	return name
 }
 
 // fileIcon は IconsHelper#file_icon(entry, name)。
@@ -445,7 +473,7 @@ func (d *Deps) fileIcon(p *Page, e *scm.Entry, name string) html {
 	if e.IsDir() {
 		return d.spriteIcon(p, "folder", name, nil)
 	}
-	return d.spriteIcon(p, iconForMimeType(mimetype.CSSClassOf(name)), name, nil)
+	return d.spriteIcon(p, IconForMimeType(mimetype.Of(name)), name, nil)
 }
 
 // scmChangeIconName は scm_change_icon のアイコン名。

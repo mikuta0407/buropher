@@ -635,7 +635,7 @@ func (l *issueLookup) attachmentLinks(containerPath string, id int64, atts []*re
 	for _, a := range atts {
 		aid := strconv.FormatInt(a.ID, 10)
 		b.WriteString("<tr>\n  <td>\n    ")
-		b.WriteString(string(rails.LinkTo(l.icon("attachment", a.Filename), "/attachments/"+aid, rails.NewHash("class", "icon icon-attachment "))))
+		b.WriteString(string(rails.LinkTo(l.icon(helper.IconForMimeType(derefStr(a.ContentType)), a.Filename), "/attachments/"+aid, rails.NewHash("class", "icon icon-attachment "))))
 		b.WriteString("    <span class=\"size\">(")
 		b.WriteString(string(rails.H(l.c.Loc.NumberToHumanSize(a.Filesize))))
 		b.WriteString(")</span>\n    ")
@@ -1113,6 +1113,7 @@ func (v *issueShowView) WatcherItems() []watcherItem {
 				rails.NewHash("class", "icon-only icon-warning", "title", l.L("notice_invalid_watcher")))
 		}
 		if remove {
+			// Redmine 7.0（#34917）: link-break アイコンと "Remove"（watchers_helper.rb）。
 			it.Delete = rails.LinkTo(l.icon("link-break", l.L("button_remove")),
 				"/issues/"+strconv.FormatInt(v.M.Row.ID, 10)+"/watchers/"+strconv.FormatInt(u.ID, 10),
 				rails.NewHash("remote", true, "method", "delete", "class", "delete icon-only icon-link-break", "title", l.L("button_remove")))
