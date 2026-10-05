@@ -53,7 +53,7 @@ func TestBytesHeaderInjection(t *testing.T) {
 	// 各行の先頭のヘッダ名で確認する（継続行は WSP 始まり）。
 	allowed := map[string]bool{
 		"Date": true, "From": true, "To": true, "Cc": true, "Message-ID": true,
-		"In-Reply-To": true, "References": true, "Subject": true, "Mime-Version": true,
+		"In-Reply-To": true, "References": true, "Subject": true, "MIME-Version": true,
 		"Content-Type": true, "Content-Transfer-Encoding": true, "X-Test": true,
 	}
 	for _, line := range strings.Split(string(headerPart), "\r\n") {

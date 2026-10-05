@@ -117,7 +117,8 @@ func GenerateMessageID() string {
 
 // Bytes は RFC 5322 形式のメッセージ（CRLF 改行）を返す。
 // ヘッダの順序は mail gem の出力（Date, From, To, Cc, Message-ID, In-Reply-To, References, Subject,
-// Mime-Version, Content-Type, Content-Transfer-Encoding, その他）に合わせる。
+// MIME-Version, Content-Type, Content-Transfer-Encoding, その他）に合わせる
+// （MIME-Version の表記は Redmine 7.0 の mail 2.9 に合わせる。Defect #38513）。
 func (m *Message) Bytes() ([]byte, error) {
 	var buf bytes.Buffer
 	date := m.Date
@@ -150,7 +151,7 @@ func (m *Message) Bytes() ([]byte, error) {
 	w("In-Reply-To", m.InReplyTo)
 	w("References", m.References)
 	w("Subject", encodeWord(m.Subject))
-	w("Mime-Version", "1.0")
+	w("MIME-Version", "1.0")
 	var body bytes.Buffer
 	if m.HTML == "" {
 		cte, enc := encodeBody(m.Text)
