@@ -207,7 +207,7 @@ func (m *Markdownizer) Convert(ctx context.Context, source, target, filename str
 	select {
 	case m.sem <- struct{}{}:
 	case <-ctx.Done():
-		return false, ctx.Err()
+		return false, nil
 	}
 	defer func() { <-m.sem }()
 	// 待っている間に他の要求が変換していればそれを使う
