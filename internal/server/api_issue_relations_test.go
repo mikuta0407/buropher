@@ -121,4 +121,32 @@ func TestAPIIssueRelations(t *testing.T) {
 			t.Error("relation 2 remains")
 		}
 	})
+	// #44309: 相手のチケットが見えない関連は一覧に含めない
+	t.Run("GET /issues/:issue_id/relations.json should not include relations with invisible issues", func(t *testing.T) {
+		ts, d := newFixtureServer(t)
+		// 関連 2 (2 relates 3) の相手 #3 を dlopper (Developer, issues_visibility=default) から見えない非公開チケットにする
+		issuesAPIExec(t, d, `UPDATE issues SET is_private = ?, author_id = 1, assigned_to_id = NULL WHERE id = 3`, true)
+		res := apiGet(t, ts, "/issues/2/relations.json", apiCreds("dlopper"))
+		res.expectStatus(t, 200)
+		if regexp.MustCompile(`"id":2\b`).MatchString(res.Body) {
+			t.Errorf("relation with invisible issue listed: %s", res.Body)
+		}
+		res = apiGet(t, ts, "/issues/2/relations.json", apiCreds("jsmith"))
+		res.expectStatus(t, 200)
+		if !regexp.MustCompile(`"id":2\b`).MatchString(res.Body) {
+			t.Errorf("visible relation missing: %s", res.Body)
+		}
+	})
+	t.Run("GET /issues/:issue_id/relations.json for an invisible issue should deny access", func(t *testing.T) {
+		ts, d := newFixtureServer(t)
+		issuesAPIExec(t, d, `UPDATE issues SET is_private = ?, author_id = 1, assigned_to_id = NULL WHERE id = 2`, true)
+		res := apiGet(t, ts, "/issues/2/relations.json", apiCreds("dlopper"))
+		res.expectStatus(t, http.StatusForbidden)
+	})
+	t.Run("GET /relations/:id.json with invisible issue should deny access", func(t *testing.T) {
+		ts, d := newFixtureServer(t)
+		issuesAPIExec(t, d, `UPDATE issues SET is_private = ?, author_id = 1, assigned_to_id = NULL WHERE id = 3`, true)
+		res := apiGet(t, ts, "/relations/2.json", apiCreds("dlopper"))
+		res.expectStatus(t, http.StatusForbidden)
+	})
 }
