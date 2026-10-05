@@ -51,6 +51,16 @@ type Store interface {
 	DestroyAllForUser(ctx context.Context, userID int64, exceptID string) error
 }
 
+// SessionPruner は Store が任意で実装する、ユーザーごとのログインセッション数の上限の適用。
+type SessionPruner interface {
+	// PruneUserSessions はユーザーのセッションを新しいもの keep 件（exceptID を含む）に減らす。
+	PruneUserSessions(ctx context.Context, userID int64, keep int, exceptID string) error
+}
+
+// MaxSessionsPerUser はユーザーごとのログインセッション数の上限（Redmine の Token の
+// add_action :session, max_instances: 10）。
+const MaxSessionsPerUser = 10
+
 // ExpiryPolicy は Redmine の session_lifetime / session_timeout 設定（0 = 無効）。
 type ExpiryPolicy struct {
 	Lifetime time.Duration // セッション開始からの最大時間
@@ -461,6 +471,14 @@ func (s *Session) persistLogin() {
 		return
 	}
 	s.rec.ID, s.rec.ExpiresAt, s.rec.IP, s.rec.UserAgent = rec.ID, rec.ExpiresAt, rec.IP, rec.UserAgent
+	// Redmine は session トークンの作成時（delete_previous_tokens）に同じユーザーの古いものを消し、
+	// 10 件までしか残さない。上限が無いと、一度漏れたセッション（既定では無期限）が、本人が何度
+	// ログインし直しても有効なまま残り、ログインを繰り返すだけで sessions の行も際限なく増える。
+	if p, ok := s.m.Store.(SessionPruner); ok {
+		if err := p.PruneUserSessions(context.WithoutCancel(s.r.Context()), rec.UserID, MaxSessionsPerUser, rec.ID); err != nil {
+			s.m.logger().Error("session prune failed", "err", err)
+		}
+	}
 	s.persisted = true
 	s.fromClient = false
 }
