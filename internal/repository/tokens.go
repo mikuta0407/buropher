@@ -141,7 +141,22 @@ func FindActiveTokenUser(ctx context.Context, q db.Queryer, action, key string, 
 	if err != nil {
 		return nil, err
 	}
-	return FindActiveUser(ctx, q, t.UserID)
+	u, err := FindActiveUser(ctx, q, t.UserID)
+	if err != nil {
+		return nil, err
+	}
+	// Redmine 7.0: 使用日時（updated_on）を記録する（書き込みを減らすため 1 分以内の再利用では更新しない）
+	if t.UpdatedAt.IsZero() || !t.UpdatedAt.After(now.Add(-time.Minute)) {
+		if _, err := q.Exec(ctx, `UPDATE tokens SET updated_at = ? WHERE id = ?`, db.NewTime(now), t.ID); err != nil {
+			return nil, err
+		}
+	}
+	return u, nil
+}
+
+// TokenUsed は Token#used?（作成後に使われていれば true）。
+func TokenUsed(t *domain.Token) bool {
+	return !t.UpdatedAt.IsZero() && t.UpdatedAt.After(t.CreatedAt)
 }
 
 // DeleteToken はユーザのアクション・値が一致するトークンを消す (User#delete_autologin_token 等)。
