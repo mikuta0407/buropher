@@ -51,7 +51,10 @@ const (
 // routesOIDC は OIDC ログインのルート（routesAccount から呼ぶ）。
 func (a *App) routesOIDC(r Router) {
 	skip := Skip(FilterLoginRequired, FilterPasswordChange, FilterTwofaActivation)
-	a.Handle(r, http.MethodGet, "/auth/oidc/{id}/start", OIDCController, "start", a.OIDCStart, skip)
+	// POST はログイン中のユーザーへの連携（mode=link）用（CSRF トークンを検証する）
+	for _, m := range []string{http.MethodGet, http.MethodPost} {
+		a.Handle(r, m, "/auth/oidc/{id}/start", OIDCController, "start", a.OIDCStart, skip)
+	}
 	a.Handle(r, http.MethodGet, "/auth/oidc/{id}/callback", OIDCController, "callback", a.OIDCCallback, skip)
 }
 
@@ -187,7 +190,7 @@ func (a *App) oidcFail(c *Req, reason string, err error) {
 	c.Redirect("/login")
 }
 
-// OIDCStart は GET /auth/oidc/{id}/start。
+// OIDCStart は GET / POST /auth/oidc/{id}/start（mode=link は POST のみ）。
 // mode=link はログイン中のユーザーへの連携、mode=sudo は sudo モードの再認証（prompt=login）。
 func (a *App) OIDCStart(c *Req) {
 	rec := a.findOIDCSource(c)
@@ -202,6 +205,14 @@ func (a *App) OIDCStart(c *Req) {
 	mode := c.Params().String("mode")
 	if (mode == "link" || mode == "sudo") && !c.User.Logged() {
 		mode = ""
+	}
+	if mode == "link" && c.R.Method != http.MethodPost {
+		// buropher 拡張（セキュリティ）: 連携の開始は CSRF トークン付きの POST に限る。GET で始められると、
+		// 被害者のブラウザを攻撃者の IdP アカウントでログインさせたうえで（IdP のログイン CSRF 等）、
+		// 外部サイトからのリンク 1 つで攻撃者の ID を被害者のアカウントに連携させ、パスワード変更後も
+		// 残るログイン手段を作れた（sudo モードは既定で無効）
+		c.Redirect("/my/sso")
+		return
 	}
 	if mode == "link" {
 		// 攻撃者の IdP アカウントを連携されると、乗っ取ったセッションからパスワード変更後も残るログイン手段を

@@ -142,7 +142,7 @@ func TestSudoModeOIDCLinkAndUnlink(t *testing.T) {
 		method, path string
 		form         url.Values
 	}{
-		{"GET", "/auth/oidc/" + e.id + "/start?mode=link", nil},
+		{"POST", "/auth/oidc/" + e.id + "/start?mode=link", nil},
 		{"POST", "/my/sso/" + identID, url.Values{"_method": {"delete"}}},
 		{"GET", "/my/discord/link", nil},
 	} {
@@ -157,7 +157,7 @@ func TestSudoModeOIDCLinkAndUnlink(t *testing.T) {
 		t.Errorf("identity unlinked without sudo")
 	}
 	// パスワードを再入力すれば連携を開始できる（IdP へリダイレクト）
-	st, loc, _ := ae.do("victim", "GET", "/auth/oidc/"+e.id+"/start?mode=link&sudo_password=jsmith", nil, "")
+	st, loc, _ := ae.do("victim", "POST", "/auth/oidc/"+e.id+"/start?mode=link", url.Values{"sudo_password": {"jsmith"}}, "")
 	if st != 302 || !strings.HasPrefix(loc, e.idp.URL()+"/authorize") {
 		t.Errorf("link after sudo: %d %q", st, loc)
 	}

@@ -31,7 +31,7 @@
 <h3>{{l "buropher.sso.label_link_identity"}}</h3>
 <p>
 {{range $b := .Linkable}}
-  {{link_to (l "buropher.sso.button_link_with" (hash "provider" $b.Label)) $b.URL (hash "class" "button")}}
+  {{button_to (l "buropher.sso.button_link_with" (hash "provider" $b.Label)) $b.URL (hash "method" "post" "class" "button")}}
 {{end}}
 </p>
 {{end}}

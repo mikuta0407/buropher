@@ -85,6 +85,12 @@ func (a *App) passwordAuthentication(c *Req) {
 	}
 	switch {
 	case unsaved != nil:
+		if a.ssoRequired(c) {
+			// buropher 拡張: SSO 必須モードでは、LDAP のパスワードで認証したユーザーの登録（その後のログイン）も
+			// 始めさせない（作成されるのは管理者でないユーザーのため）
+			c.Flash().Now("error", c.L("buropher.sso.notice_password_login_disabled"))
+			return
+		}
 		// onthefly_creation_failed: session[:auth_source_registration] を設定して account/register を描画する
 		a.ontheflyCreationFailed(c, unsaved)
 	case user == nil:

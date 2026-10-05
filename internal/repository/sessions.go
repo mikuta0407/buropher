@@ -21,7 +21,10 @@ import (
 // sudo 時刻は Record.SudoAt を data の "_sudo_at" に保存する（sudo_until 列は未使用）。
 type SessionStore struct{ DB *db.DB }
 
-var _ httpx.Store = SessionStore{}
+var (
+	_ httpx.Store         = SessionStore{}
+	_ httpx.SessionPruner = SessionStore{}
+)
 
 const sudoKey = "_sudo_at"
 
@@ -138,6 +141,25 @@ func (s SessionStore) DestroyAllForUser(ctx context.Context, userID int64, excep
 	}
 	_, err := s.DB.Exec(ctx, `DELETE FROM sessions WHERE user_id = ? AND id <> ?`, userID, hashSessionID(exceptID))
 	return err
+}
+
+// PruneUserSessions はユーザーのログインセッションを新しいもの keep 件（exceptID を含む）に減らす
+// （Token の add_action :session, max_instances: 10 と delete_previous_tokens に相当。httpx.SessionPruner）。
+func (s SessionStore) PruneUserSessions(ctx context.Context, userID int64, keep int, exceptID string) error {
+	var ids []string
+	if err := s.DB.Select(ctx, &ids, `SELECT id FROM sessions WHERE user_id = ? AND id <> ? ORDER BY last_seen_at DESC, created_at DESC`,
+		userID, hashSessionID(exceptID)); err != nil {
+		return err
+	}
+	if keep < 1 {
+		keep = 1
+	}
+	for _, id := range ids[min(len(ids), keep-1):] {
+		if _, err := s.DB.Exec(ctx, `DELETE FROM sessions WHERE id = ?`, id); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // DeleteExpiredSessions は失効したセッションを削除する（定期ジョブ用）。
