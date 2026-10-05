@@ -23,7 +23,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/testfixtures"
 )
 
-// ground_truth.json は testdata/gen/dump_ground_truth.rb を Redmine 6.1.2 (公式フィクスチャ) で
+// ground_truth.json は testdata/gen/dump_ground_truth.rb を Redmine 7.0.1 (公式フィクスチャ) で
 // 実行して生成した正解データ。
 //
 //go:embed testdata/ground_truth.json

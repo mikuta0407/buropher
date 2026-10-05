@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 // Copyright (C) 2026 mikuta0407 and Buropher contributors
 
-// Package doorkeeper は Redmine 6.1.2 が使う OAuth2 プロバイダ Doorkeeper 5.8.2 の、
+// Package doorkeeper は Redmine 7.0.1 が使う OAuth2 プロバイダ Doorkeeper 5.8.2 の、
 // Redmine の設定（config/initializers/30-redmine.rb）で有効な部分の移植。
 //
 // Redmine の Doorkeeper 設定:

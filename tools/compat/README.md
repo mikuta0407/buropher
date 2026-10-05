@@ -1,6 +1,6 @@
 # 互換テストハーネス (tools/compat)
 
-本物の Redmine 6.1.2（参照）と buropher（候補）に同じリクエスト列を流し、
+本物の Redmine 7.0.1（参照）と buropher（候補）に同じリクエスト列を流し、
 レスポンスを正規化して unified diff で比較する。設計は `_planning/08_testing.md`。
 
 ```
@@ -29,8 +29,8 @@ tools/compat/redmine-ref.sh stop
 tools/compat/redmine-ref.sh setup --force   # 作り直し
 ```
 
-- `_reference/redmine-migrated`（バンドル設定・プリコンパイル済みアセット・secret_token 込み）を
-  `_reference/redmine-fixtures` にコピーし、新規 sqlite DB を `db:migrate`、
+- `_reference/redmine7-migrated`（バンドル設定・プリコンパイル済みアセット・secret_token 込み）を
+  `_reference/redmine7-fixtures` にコピーし、新規 sqlite DB を `db:migrate`、
   `test/fixtures/*.yml` 全 43 セットを `ActiveRecord::FixtureSet.create_fixtures` で投入する。
   投入直後の DB は `db/redmine.pristine.sqlite3` に保存され、`reset` で書き戻す。
 - **時刻固定**: fixtures 内の ERB（`1.day.ago` 等）は `COMPAT_FROZEN_TIME`（既定 `2026-01-15 12:00:00 UTC`）で評価し、
@@ -40,7 +40,7 @@ tools/compat/redmine-ref.sh setup --force   # 作り直し
   (`Setting.rest_api_enabled = 1`。テストの `with_settings` 相当）。
 - 添付ファイルの保存先は `test/fixtures/files`（テストの `set_fixtures_attachments_directory` 相当）。
 - アセットは public/assets（プリコンパイル済み）を Rails が配信（`RAILS_SERVE_STATIC_FILES=1`）。
-- ログ: `_reference/redmine-fixtures/log/compat-server.out`, `production.log`。
+- ログ: `_reference/redmine7-fixtures/log/compat-server.out`, `production.log`。
 - 3999 で動いている `redmine-migrated` インスタンスには触れない。
 - サブパス配置の確認: `COMPAT_REF_RELATIVE_URL_ROOT=/redmine`（参照。`COMPAT_REF_DIR`/`COMPAT_REF_PORT` で別インスタンスに）と
   `BUROPHER_RELATIVE_URL_ROOT=/redmine`（候補）で起動し、`-ref http://127.0.0.1:<port>/redmine -cand http://127.0.0.1:<port>/redmine`
@@ -216,7 +216,7 @@ entries:
 ## 6. buropher 側で check するときの前提
 
 ゴールデンは「fixtures 投入済み DB + 時刻 2026-01-15 12:00:00 UTC + REST API 有効 + シナリオ順に逐次アクセス」の結果。
-buropher も同じ DB（`_reference/redmine-fixtures/db/redmine.pristine.sqlite3`、または同等の import 結果）と
+buropher も同じ DB（`_reference/redmine7-fixtures/db/redmine.pristine.sqlite3`、または同等の import 結果）と
 同じ固定時刻で起動し、実行前に DB を初期状態へ戻すこと（`-reset-cand`）。
 
 ## 7. 既知の制約

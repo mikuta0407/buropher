@@ -1,7 +1,7 @@
 # buropher DB schema
 
 This document describes the database schema of buropher (initial migration `00001_initial_schema`)
-and records where it deviates from Redmine 6.1.2. The design basis is the internal planning
+and records where it deviates from Redmine 7.0.1 (originally designed against 6.1.2). The design basis is the internal planning
 document "Appendix A: Redmine DB schema analysis"; decisions taken while implementing it
 (gaps, contradictions) are listed in [Decisions and deviations](#decisions-and-deviations).
 
@@ -68,7 +68,7 @@ Enumerations are `TEXT`/`INTEGER` + `CHECK (... IN (...))` (no PG ENUM types).
 
 ## Tables
 
-74 tables. "Redmine" names the source table; *new* marks buropher-only tables.
+76 tables. "Redmine" names the source table; *new* marks buropher-only tables.
 
 ### Principals and authentication
 
@@ -104,7 +104,7 @@ Enumerations are `TEXT`/`INTEGER` + `CHECK (... IN (...))` (no PG ENUM types).
 | `role_permissions` | `roles.permissions` | (role_id, permission, all_trackers). |
 | `role_permission_trackers` | `roles.settings[permissions_tracker_ids]` | Tracker restriction for issue permissions when `all_trackers` is false. |
 | `roles_managed_roles` | `roles_managed_roles` | |
-| `trackers` | `trackers` | `fields_bits` → `disabled_core_fields` JSON array of field names. |
+| `trackers` | `trackers` | `fields_bits` → `disabled_core_fields` JSON array of field names. `private_by_default` (Redmine 7.0). |
 | `issue_statuses` | `issue_statuses` | |
 | `workflow_transitions` | `workflows` (WorkflowTransition) | `old_status_id` NULL = new issue (was 0). |
 | `workflow_field_rules` | `workflows` (WorkflowPermission) | Exactly one of `core_field` / `custom_field_id`; `rule` readonly / required. |
@@ -178,6 +178,8 @@ Enumerations are `TEXT`/`INTEGER` + `CHECK (... IN (...))` (no PG ENUM types).
 | `oauth_applications` | same | Doorkeeper compatible (bcrypt secret). |
 | `oauth_access_grants` | same | SHA-256 token, PKCE columns. |
 | `oauth_access_tokens` | same | SHA-256 token / refresh token. |
+| `webhooks` | `webhooks` (Redmine 7.0) | Target `url`, plain-text `secret` (HMAC key), `events` JSON array, owner `user_id`, `active`. |
+| `webhook_projects` | `projects_webhooks` (Redmine 7.0) | Projects a webhook applies to (PK webhook_id, project_id). |
 | `jobs` | — | *New.* Persistent job queue (`state`, `run_at`, `attempts`, `locked_by/at`, optional `unique_key` unique while pending/running). |
 | `notification_deliveries` | — | *New.* Delivery log per channel (email / discord). |
 | `discord_dm_channels` | — | *New.* Cached Discord DM channel per user + consecutive failure counter (fallback to e-mail). |

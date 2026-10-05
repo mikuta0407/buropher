@@ -4,7 +4,7 @@
 // Package brand は製品名・ライセンス表記など、buropher のブランディングに関する定数と
 // Redmine 由来の訳文に対するブランド置換を提供する。
 //
-// buropher は Redmine 6.1.2 を Go で再実装した派生著作物であり、利用者に見える製品名は
+// buropher は Redmine（現在の互換対象は 7.0.1）を Go で再実装した派生著作物であり、利用者に見える製品名は
 // "Buropher" とする。一方で、HTTP/メールヘッダ（X-Redmine-*）・Message-ID・REST API の要素名・
 // CSS クラス・JS グローバルなど機械が読む互換識別子は Redmine のまま維持する（docs/compatibility.md）。
 package brand
@@ -17,7 +17,7 @@ const (
 	// Upstream は派生元の製品名。
 	Upstream = "Redmine"
 	// UpstreamVersion は互換対象の Redmine のバージョン（web/UPSTREAM_VERSION）。
-	UpstreamVersion = "6.1.2"
+	UpstreamVersion = "7.0.1"
 	// UpstreamURL は派生元のプロジェクト URL（Redmine::Info.url）。
 	UpstreamURL = "https://www.redmine.org/"
 	// UpstreamCopyright は派生元の著作権表示。

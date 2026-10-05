@@ -197,9 +197,10 @@ func (a *App) MyAccount(c *Req) {
 
 // renderMyAccountAPI は my/account.api.rsb。
 func (a *App) renderMyAccountAPI(c *Req, u *domain.User) {
-	// buropher 独自（セキュリティ）: OAuth のトークンには API キーを返さない（users/show.api.rsb と同じ条件）。
-	// Redmine 6.1.2 の my/account.api.rsb は常に返すため、スコープを限定したトークンから
-	// スコープの制限を受けない API キーを取得できてしまう。
+	// OAuth のトークンには API キーを返さない（users/show.api.rsb と同じ条件。Redmine 7.0 の
+	// my/account.api.rsb の `unless User.current.authorized_by_oauth?`）。buropher は 6.1.2 移植時から
+	// 先行して返していなかった（6.1.2 は常に返すため、スコープを限定したトークンから
+	// スコープの制限を受けない API キーを取得できた）。
 	var apiKey any
 	if !u.AuthorizedByOAuth() {
 		k, err := repository.APIKey(c.Ctx(), a.DB, u.ID)

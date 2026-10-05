@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 // Copyright (C) 2026 mikuta0407 and Buropher contributors
 
-// Package wikidiff は Redmine 6.1.2 の Wiki 差分・注釈 (annotate) 処理を
+// Package wikidiff は Redmine 7.0.1 の Wiki 差分・注釈 (annotate) 処理を
 // 純 Go で移植したものである。Ruby 版と入力に対して同一の結果を返すことを目的とする。
 //
 // 移植元:

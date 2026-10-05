@@ -4,7 +4,7 @@
 
 - Go 1.26 (see `go.mod`). Pure Go, `CGO_ENABLED=0`.
 - Optional: PostgreSQL for the PostgreSQL test targets (`BUROPHER_TEST_PG_DSN`).
-- Optional, for the compatibility harness and generators only: a Redmine 6.1.2 checkout with Ruby
+- Optional, for the compatibility harness and generators only: a Redmine 7.0.1 checkout with Ruby
   and its bundle under `_reference/` (git-ignored).
 
 ```sh
@@ -29,7 +29,7 @@ PostgreSQL run against SQLite only unless `BUROPHER_TEST_PG_DSN` is set, e.g.
   notes such as `schema.md`, `import.md`, `export-format.md`, `pdf.md` are Japanese).
 - Ports of Redmine code reference the original file/method in the comment (e.g.
   `Issue#visible?`, `app/helpers/application_helper.rb`), so behaviour can be compared with upstream.
-- Behaviour should match Redmine 6.1.2 byte-for-byte where the compat harness can observe it. Any
+- Behaviour should match Redmine 7.0.1 byte-for-byte where the compat harness can observe it. Any
   intentional difference goes into `testdata/compat/allowlist.yml` with a reason.
 
 ## Architecture
@@ -95,7 +95,7 @@ JSON. Migrations are generated for both dialects from templates in
 
 ## Compatibility harness
 
-`tools/compat` compares buropher with a real Redmine 6.1.2 loaded with Redmine's test fixtures,
+`tools/compat` compares buropher with a real Redmine 7.0.1 loaded with Redmine's test fixtures,
 with time frozen so that output is deterministic. Full documentation (Japanese):
 [`tools/compat/README.md`](../tools/compat/README.md).
 
@@ -125,7 +125,7 @@ requests made (method, path, query and form fields), dialogs (`confirm`, `before
 JavaScript errors and HTTP errors (4xx/5xx, e.g. a missing route used by an XHR).
 
 Requirements: Node.js 22, the `_reference/` checkout used by the compat harness (Ruby, Redmine
-6.1.2 with its bundle) and Go.
+7.0.1 with its bundle) and Go.
 
 ```sh
 cd e2e
@@ -163,15 +163,17 @@ size differs are reported as soft failures; their `-ref.png`, `-cand.png` and `-
 ## Upstream sync
 
 `web/assets` (images, fonts, JavaScript, stylesheets, themes), `web/locales/redmine`,
-`web/locales/rails` and `web/public` are copied from Redmine 6.1.2 and the gems it bundles:
+`web/locales/rails` and `web/public` are copied from Redmine 7.0.1 and the gems it bundles, and
+the license texts of the bundled third-party assets from Redmine's `doc/licenses` to
+`docs/licenses`:
 
 ```sh
-tools/sync-upstream.sh _reference/redmine _reference/vendor_bundle/ruby/3.3.0/gems
+tools/sync-upstream.sh _reference/redmine _reference/vendor_bundle7/ruby/3.3.0/gems
 git diff --stat web/    # review, then run the tests and the compat harness
 ```
 
 The synced version is recorded in `web/UPSTREAM_VERSION`. Generated Go tables derived from Redmine
-(e.g. `internal/redmineimport/export/schema_gen.go` from `tools/gen/dump-schema.rb`,
+(e.g. `internal/redmineimport/export/schema_gen_61.go` / `schema_gen_70.go` from `tools/gen/dump-schema.rb`,
 `internal/i18n/zones_gen.go`) are regenerated with the scripts referenced in their headers.
 
 ## Releases
@@ -179,5 +181,5 @@ The synced version is recorded in `web/UPSTREAM_VERSION`. Generated Go tables de
 Tags `v*` trigger `.github/workflows/release.yml`, which runs the tests and
 [GoReleaser](https://goreleaser.com) (`.goreleaser.yaml`): static binaries for linux/darwin
 (amd64, arm64) and windows/amd64, archives with `LICENSE`, `README.md`, `config.example.toml`,
-`docs/` and the systemd unit, and `checksums.txt`. The GitHub release is created as a draft.
+`docs/` (including the license texts in `docs/licenses/`) and the systemd unit, and `checksums.txt`. The GitHub release is created as a draft.
 Local dry run: `goreleaser release --snapshot --clean`.
