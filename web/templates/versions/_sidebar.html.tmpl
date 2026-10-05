@@ -34,13 +34,13 @@
 <ul>
 {{range $v := .SideVersions}}
   <li>
-    {{link_to $v.Name (printf "#%s" $v.Anchor)}}
+    {{link_to $v.Name (printf "#version-%d" $v.ID)}}
   </li>
 {{end}}
 </ul>
 {{if .CompletedVersions}}
 <p>
-  {{link_to_function (sprite_icon "angle-right" (l "label_completed_versions") (hash "rtl" true)) "$(\"#toggle-completed-versions\").toggleClass(\"icon-collapsed icon-expanded\"); $(\"#completed-versions\").toggle(); toggleExpendCollapseIcon(this);" (hash "id" "toggle-completed-versions" "class" "icon icon-collapsed collapsible")}}
+  {{link_to_function (sprite_icon "angle-right" (l "label_completed_versions") (hash "rtl" true)) "$(\"#toggle-completed-versions\").toggleClass(\"icon-collapsed icon-expanded\"); $(\"#completed-versions\").toggle(); toggleExpandCollapseIcon(this);" (hash "id" "toggle-completed-versions" "class" "icon icon-collapsed collapsible")}}
   <ul id = "completed-versions" style = "display:none;">
     {{range $l := .CompletedVersions}}
       <li>{{$l}}</li>
