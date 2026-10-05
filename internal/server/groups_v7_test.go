@@ -100,7 +100,11 @@ func TestGroupsRemoveUsers(t *testing.T) {
 	if res, _ := send(t, c, ts.URL, http.MethodDelete, "/groups/10/users/8", nil); res.StatusCode != 200 || count() != 1 {
 		t.Errorf("remove_user without confirmation: %d count=%d", res.StatusCode, count())
 	}
-	if res, _ := send(t, c, ts.URL, http.MethodDelete, "/groups/10/users/8", url.Values{"confirm": {"Yes"}}); res.StatusCode != 302 || count() != 0 {
+	// js では確認画面が無く 204（暗黙の head :no_content）
+	if res, _ := send(t, c, ts.URL, http.MethodDelete, "/groups/10/users/8.js", nil); res.StatusCode != 204 || count() != 1 {
+		t.Errorf("remove_user js without confirmation: %d count=%d", res.StatusCode, count())
+	}
+	if res, _ := send(t, c, ts.URL, http.MethodDelete, "/groups/10/users/8", url.Values{"confirm": {"Yes"}});res.StatusCode != 302 || count() != 0 {
 		t.Errorf("remove_user: %d count=%d", res.StatusCode, count())
 	}
 }

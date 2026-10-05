@@ -697,6 +697,11 @@ func (a *App) GroupsRemoveUsers(c *Req) {
 		}
 		return
 	}
+	// 確認画面（remove_users.erb）は HTML のみ。js 等ではテンプレートが無く暗黙の head :no_content
+	if f := httpx.Format(c.R); f != "" && f != "html" {
+		c.head(http.StatusNoContent)
+		return
+	}
 	userIDs := make([]any, len(users))
 	for i, u := range users {
 		userIDs[i] = u.ID
