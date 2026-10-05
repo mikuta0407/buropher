@@ -189,7 +189,7 @@ func (a *App) issueToPDF(c *Req, l *issueLookup, v *issueShowView) (*pdf.Doc, er
 	if err != nil {
 		return nil, err
 	}
-	images := a.pdfImageLoader(atts)
+	images := a.pdfImageLoader(ctx, atts)
 	issueObj := &redmine.Object{Kind: "issue", ID: r.ID, Project: m.Project}
 
 	d.SetFontStyle("B", 9)
@@ -570,7 +570,7 @@ func (a *App) issuesToPDF(c *Req, q *query.Query, rows []*query.IssueRow) (*pdf.
 				if err != nil {
 					return nil, err
 				}
-				images = a.pdfImageLoader(atts)
+				images = a.pdfImageLoader(ctx, atts)
 			} else {
 				text = l.pdfText(text, nil)
 			}

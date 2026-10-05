@@ -121,6 +121,7 @@ ja:
       error_no_account: "この ID に連携したアカウントがありません。管理者に連絡してください。"
       error_already_linked: "このアカウントは既にこのプロバイダの別の ID と連携しています。"
       error_identity_taken: "この ID は既に別のアカウントと連携しています。"
+      error_admin_link_required: "管理者のアカウントには自動で連携しません。パスワードでログインし、マイアカウントからこの ID を連携してください。"
       error_link_required: "このアカウントは 2 要素認証を使用しています。パスワードでログインし、マイアカウントからこの ID を連携してください。"
       error_user_creation_failed: "アカウントを自動作成できませんでした。管理者に連絡してください。"
       error_last_identity: "アカウントにログインする唯一の手段のため、連携を解除できません。"

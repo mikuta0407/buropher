@@ -5,6 +5,7 @@ package attachments
 
 import (
 	"bytes"
+	"context"
 	"encoding/binary"
 	"hash/crc32"
 	"image"
@@ -37,7 +38,7 @@ func TestThumbnailRejectsNonHexDigest(t *testing.T) {
 	s := &Store{Root: root, ThumbnailsRoot: thumbs}
 	a := &domain.Attachment{Filename: "x.png", DiskDirectory: "2026/01", DiskFilename: "x.png", Filesize: int64(buf.Len()),
 		Digest: "../escape"}
-	if p, ok := s.Thumbnail(a, 100); ok {
+	if p, ok := s.Thumbnail(context.Background(), a, 100); ok {
 		t.Errorf("thumbnail generated at %s", p)
 	}
 	if m, _ := filepath.Glob(filepath.Join(dir, "escape*")); len(m) > 0 {
@@ -54,7 +55,7 @@ func TestThumbnailRejectsNonHexDigest(t *testing.T) {
 	}
 	// 正しい digest なら作れる
 	a.Digest = strings.Repeat("ab", 32)
-	if _, ok := s.Thumbnail(a, 100); !ok {
+	if _, ok := s.Thumbnail(context.Background(), a, 100); !ok {
 		t.Error("thumbnail not generated for hex digest")
 	}
 }
@@ -116,7 +117,7 @@ func TestThumbnailRejectsNonHexDigestOnDelete(t *testing.T) {
 	}
 	a := &domain.Attachment{Filename: "a.png", DiskDirectory: "2026/01", DiskFilename: "1_a.png", Filesize: int64(buf.Len()),
 		Digest: "../../escaped"}
-	if p, ok := s.Thumbnail(a, 100); ok || p != "" {
+	if p, ok := s.Thumbnail(context.Background(), a, 100); ok || p != "" {
 		t.Errorf("Thumbnail = %q, %v; want refused", p, ok)
 	}
 	if _, err := os.Stat(filepath.Join(base, "escaped_"+strconv.FormatInt(a.Filesize, 10)+"_100.thumb")); err == nil {
@@ -124,7 +125,7 @@ func TestThumbnailRejectsNonHexDigestOnDelete(t *testing.T) {
 	}
 	// 16 進の digest なら作れる
 	a.Digest = "0123456789abcdef0123456789abcdef"
-	other, ok := s.Thumbnail(a, 100)
+	other, ok := s.Thumbnail(context.Background(), a, 100)
 	if !ok {
 		t.Fatal("thumbnail with a hex digest should be generated")
 	}

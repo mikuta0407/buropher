@@ -159,7 +159,7 @@
 //     共通の添付基盤を差し替えるときは NewWikiAttachmentSaver を合わせる。
 //   - AttachmentsController の残りのアクション（attachments_more.go）: show（テキストはシンタックスハイライト、
 //     Markdown / Textile は書式変換、画像、.diff / .patch は internal/unifieddiff による inline / sbs 表示、その他は
-//     common/_other）、thumbnail（a.AttachmentStore.Thumbnail(att, size)。純 Go の縮小で ThumbnailsRoot に
+//     common/_other）、thumbnail（a.AttachmentStore.Thumbnail(ctx, att, size)。純 Go の縮小で ThumbnailsRoot に
 //     "#{digest}_#{filesize}_#{size}.thumb" を保存。PDF は生成せず 404）、update（API のみ）、destroy（チケットの
 //     添付は issues.Env の InitJournal / JournalizeAttachment / SaveJournal でジャーナルに記録）、edit_all /
 //     update_all / download_all（/attachments/<object_type>/<id>/...）。

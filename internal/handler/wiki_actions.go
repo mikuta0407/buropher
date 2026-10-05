@@ -779,6 +779,9 @@ func (a *App) WikiUpdate(c *Req) {
 		var removedAttachments []*domain.Attachment
 		err := a.DB.WithTx(c.Ctx(), func(tx *db.Tx) error {
 			removedAttachments = nil
+			if err := checkWikiParentInTx(c, tx, page); err != nil {
+				return err
+			}
 			if wasNew {
 				if err := repository.CreateWikiPage(c.Ctx(), tx, page, now); err != nil {
 					return err
@@ -810,6 +813,8 @@ func (a *App) WikiUpdate(c *Req) {
 			return nil
 		})
 		switch {
+		case errors.Is(err, errWikiParentCycle):
+			pageErrs.Add("parent_title", "circular_dependency")
 		case errors.Is(err, repository.ErrStaleObject):
 			conflict = true
 			if wasNew {
@@ -884,6 +889,45 @@ func authorIDOf(u *domain.User) *int64 {
 	}
 	id := u.ID
 	return &id
+}
+
+// errWikiParentCycle はトランザクション内の再検査で親ページの循環を見つけたことを表す。
+var errWikiParentCycle = errors.New("wiki: circular parent")
+
+// checkWikiParentInTx は保存トランザクションの中で親ページの循環を検査し直す。
+// validateWikiPage の検査はトランザクションの外でロックせずに行うため、2 つのページを互いの親にする
+// 変更が並行すると、どちらの検査も相手の変更前の parent_id を読んで通り、parent_id が循環した。
+// 関係する Wiki の行をロックして（PostgreSQL の SELECT ... FOR UPDATE。SQLite の書き込み
+// トランザクションは直列化される）親の変更を直列化し、コミット済みの最新の親をたどり直す。
+func checkWikiParentInTx(c *Req, tx *db.Tx, page *domain.WikiPage, wikiIDs ...int64) error {
+	if page.ParentID == nil || page.NewRecord() {
+		return nil
+	}
+	ids := append([]int64{page.WikiID}, wikiIDs...)
+	query, args, err := db.In(`SELECT id FROM wikis WHERE id IN (?) ORDER BY id`+db.ForUpdate(tx), ids)
+	if err != nil {
+		return err
+	}
+	var locked []int64
+	if err := tx.Select(c.Ctx(), &locked, query, args...); err != nil {
+		return err
+	}
+	seen := map[int64]bool{}
+	for pid := page.ParentID; pid != nil && !seen[*pid]; {
+		if *pid == page.ID {
+			return errWikiParentCycle
+		}
+		seen[*pid] = true
+		p, err := repository.GetWikiPageByID(c.Ctx(), tx, 0, *pid)
+		if errors.Is(err, repository.ErrNotFound) {
+			return nil
+		}
+		if err != nil {
+			return err
+		}
+		pid = p.ParentID
+	}
+	return nil
 }
 
 // validateWikiPage は WikiPage の検証（title・parent）。
@@ -1115,6 +1159,9 @@ func (a *App) WikiRename(c *Req) {
 			now := a.now()
 			createRedirect := rails2s(form.RedirectExistingLinks) != "0"
 			err := a.DB.WithTx(c.Ctx(), func(tx *db.Tx) error {
+				if err := checkWikiParentInTx(c, tx, page, oldWikiID); err != nil {
+					return err
+				}
 				if page.Title != oldTitle || page.WikiID != oldWikiID {
 					if err := repository.WikiHandleRename(c.Ctx(), tx, oldWikiID, oldTitle, page.WikiID, page.Title, createRedirect, now); err != nil {
 						return err
@@ -1133,18 +1180,22 @@ func (a *App) WikiRename(c *Req) {
 				}
 				return nil
 			})
-			if err != nil {
+			switch {
+			case errors.Is(err, errWikiParentCycle):
+				errs.Add("parent_title", "circular_dependency")
+			case err != nil:
 				a.wikiError(c, err)
 				return
-			}
-			_ = targetWiki
-			if err := a.loadPageProject(c, page); err != nil {
-				a.wikiError(c, err)
+			default:
+				_ = targetWiki
+				if err := a.loadPageProject(c, page); err != nil {
+					a.wikiError(c, err)
+					return
+				}
+				c.Flash().SetNotice(c.L("notice_successful_update"))
+				c.Redirect(wikiPagePath(page.Project, page.Title))
 				return
 			}
-			c.Flash().SetNotice(c.L("notice_successful_update"))
-			c.Redirect(wikiPagePath(page.Project, page.Title))
-			return
 		}
 	}
 	data, err := a.wikiPageData(c, page)

@@ -45,7 +45,8 @@ func Parse(raw []byte) *Part {
 			}
 		}
 	}
-	return parsePart(bytes.TrimLeft(raw, " \t\r\n"), ascii, 0)
+	budget := maxParts
+	return parsePart(bytes.TrimLeft(raw, " \t\r\n"), ascii, 0, &budget)
 }
 
 func isASCII(b []byte) bool {
@@ -60,14 +61,23 @@ func isASCII(b []byte) bool {
 // maxDepth は入れ子の multipart の上限（異常なメールで無限に再帰しないため）。
 const maxDepth = 50
 
-func parsePart(raw []byte, ascii bool, depth int) *Part {
+// maxParts は 1 通のメールで解析する MIME パートの数の上限（入れ子を含む全体）。mail gem には上限が無く、
+// 境界だけの短いパートを大量に並べたメールで、パートごとの解析・添付ファイルの保存を際限なく行わせられた
+// （buropher の DoS 対策）。上限を超えたパートは無視する。
+const maxParts = 1000
+
+// MaxMessageBytes は IMAP / POP3 で受信する 1 通のメールの大きさの上限（バイト）。超えるメールは読み込まず、
+// 処理できなかったメールとして扱う（受信のたびに巨大なメールを丸ごとメモリに読まないため）。
+var MaxMessageBytes int64 = 64 << 20
+
+func parsePart(raw []byte, ascii bool, depth int, budget *int) *Part {
 	p := &Part{asciiOnly: ascii}
 	headerPart, body := splitHeaderBody(raw)
 	p.Header = parseHeader(headerPart)
 	p.Body = body
 	if depth < maxDepth && p.MainType() == "multipart" {
 		if b := p.contentTypeParam("boundary"); b != "" {
-			p.Parts = splitMultipart(body, b, ascii, depth+1)
+			p.Parts = splitMultipart(body, b, ascii, depth+1, budget)
 		}
 	}
 	return p
@@ -140,13 +150,19 @@ func parseHeader(b []byte) []HeaderField {
 }
 
 // splitMultipart は Mail::Body#split!（境界で分割し、前文と後文を捨てる）。
-func splitMultipart(body []byte, boundary string, ascii bool, depth int) []*Part {
+func splitMultipart(body []byte, boundary string, ascii bool, depth int, budget *int) []*Part {
 	delim := []byte("--" + boundary)
 	var starts []int // 各境界行の次の行の先頭
 	var ends []int   // 各境界行の直前（改行を含まない）
 	closed := false
 	pos := 0
+	capped := false
 	for pos <= len(body) && !closed {
+		if len(starts) > *budget {
+			// パートの数の上限（残り）を超える境界は探さない
+			capped = true
+			break
+		}
 		i := bytes.Index(body[pos:], delim)
 		if i < 0 {
 			break
@@ -198,13 +214,18 @@ func splitMultipart(body []byte, boundary string, ascii bool, depth int) []*Part
 		if k > 0 && len(bytes.TrimSpace(seg)) == 0 {
 			continue
 		}
-		parts = append(parts, parsePart(seg, ascii, depth))
+		if *budget <= 0 {
+			return parts
+		}
+		*budget--
+		parts = append(parts, parsePart(seg, ascii, depth, budget))
 	}
-	if !closed && len(starts) > 0 {
+	if !closed && !capped && len(starts) > 0 {
 		// 終端の境界が無い場合は最後のパートを末尾まで
 		seg := body[starts[len(starts)-1]:]
-		if len(bytes.TrimSpace(seg)) != 0 {
-			parts = append(parts, parsePart(seg, ascii, depth))
+		if len(bytes.TrimSpace(seg)) != 0 && *budget > 0 {
+			*budget--
+			parts = append(parts, parsePart(seg, ascii, depth, budget))
 		}
 	}
 	return parts

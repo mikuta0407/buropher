@@ -7,6 +7,7 @@ import (
 	"context"
 	"crypto/tls"
 	"fmt"
+	"io"
 	"log/slog"
 	"net"
 	"sync"
@@ -184,18 +185,23 @@ func CheckIMAP(ctx context.Context, o IMAPOptions, receive ReceiveFunc, logger *
 			break
 		}
 		set := imap.UIDSetNum(uid)
-		msgs, err := c.Fetch(set, &imap.FetchOptions{BodySection: []*imap.FetchItemBodySection{section}}).Collect()
+		raw, found, tooBig, err := imapFetchBody(c, set, section)
 		if err != nil {
 			return fmt.Errorf("imap: fetch %d: %w", uid, err)
 		}
-		if len(msgs) == 0 {
+		if !found {
 			continue
 		}
-		raw := msgs[0].FindBodySection(section)
-		logger.Debug(fmt.Sprintf("Receiving message %d", uid))
-		conn.end()
-		ok := receive(ctx, raw)
-		conn.begin()
+		ok := false
+		if tooBig {
+			// 大きすぎるメールは読まずに「処理できなかった」ものとして扱う
+			logger.Warn(fmt.Sprintf("Message %d exceeds the maximum size (%d bytes)", uid, MaxMessageBytes))
+		} else {
+			logger.Debug(fmt.Sprintf("Receiving message %d", uid))
+			conn.end()
+			ok = receive(ctx, raw)
+			conn.begin()
+		}
 		if ok {
 			logger.Debug(fmt.Sprintf("Message %d successfully received", uid))
 			if o.MoveOnSuccess != "" {
@@ -206,7 +212,7 @@ func CheckIMAP(ctx context.Context, o IMAPOptions, receive ReceiveFunc, logger *
 			if err := c.Store(set, &imap.StoreFlags{Op: imap.StoreFlagsAdd, Flags: []imap.Flag{imap.FlagSeen, imap.FlagDeleted}}, nil).Close(); err != nil {
 				return fmt.Errorf("imap: store %d: %w", uid, err)
 			}
-		} else if ctx.Err() != nil {
+		} else if !tooBig && ctx.Err() != nil {
 			// 停止（ctx のキャンセル）で受信が中断された: 処理できなかったとはみなさず、未読のまま残す
 			break
 		} else {
@@ -231,4 +237,41 @@ func CheckIMAP(ctx context.Context, o IMAPOptions, receive ReceiveFunc, logger *
 		logger.Debug("imap: logout", "err", err)
 	}
 	return nil
+}
+
+// imapFetchBody は 1 通のメールの BODY[] を取得する（found はメールが返ったか）。
+// 本文は MaxMessageBytes までしか読まず、超えるものは tooBig とする（Collect は応答の
+// リテラルを大きさに関係なくすべてメモリに読むため使わない）。
+func imapFetchBody(c *imapclient.Client, set imap.UIDSet, section *imap.FetchItemBodySection) (raw []byte, found, tooBig bool, err error) {
+	cmd := c.Fetch(set, &imap.FetchOptions{BodySection: []*imap.FetchItemBodySection{section}})
+	for msg := cmd.Next(); msg != nil; msg = cmd.Next() {
+		if found {
+			continue
+		}
+		found = true
+		for item := msg.Next(); item != nil; item = msg.Next() {
+			b, ok := item.(imapclient.FetchItemDataBodySection)
+			if !ok || b.Literal == nil || raw != nil || tooBig {
+				continue
+			}
+			if b.Literal.Size() > MaxMessageBytes {
+				tooBig = true
+				continue
+			}
+			data, rerr := io.ReadAll(io.LimitReader(b.Literal, MaxMessageBytes+1))
+			if rerr != nil {
+				_ = cmd.Close()
+				return nil, false, false, rerr
+			}
+			if int64(len(data)) > MaxMessageBytes {
+				tooBig = true
+				continue
+			}
+			raw = data
+		}
+	}
+	if err := cmd.Close(); err != nil {
+		return nil, false, false, err
+	}
+	return raw, found, tooBig, nil
 }
