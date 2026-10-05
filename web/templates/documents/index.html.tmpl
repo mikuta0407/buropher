@@ -21,7 +21,7 @@
 
 {{range $group := .Groups}}
   <div class="document-group document-group-{{$.SortBy}}">
-    <h3 class="group-name">{{$group.Name}}</h3>
+    <h3 class="group-name">{{if eq $.SortBy "date"}}{{format_activity_day $group.Day}}{{else}}{{$group.Name}}{{end}}</h3>
     {{range $document := $group.Documents}}{{partial "documents/document" (dict "document" $document)}}{{end}}
   </div>
 {{end}}

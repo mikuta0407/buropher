@@ -214,7 +214,9 @@ func (a *App) saveDocumentCustomValues(c *Req, tx *db.Tx, f *documentForm, isNew
 
 // documentGroup は index のグループ（@grouped の 1 キー分）。
 type documentGroup struct {
-	Name      string
+	Name string
+	// Day は sort_by=date のときのグループの日付（updated_on.to_date）。
+	Day       time.Time
 	Documents []*domain.Document
 }
 
@@ -251,6 +253,7 @@ func groupDocuments(c *Req, docs []*domain.Document, sortBy string) []documentGr
 		name  string
 		key   any
 		order int
+		day   time.Time
 		docs  []*domain.Document
 	}
 	var groups []*group
@@ -270,8 +273,11 @@ func groupDocuments(c *Req, docs []*domain.Document, sortBy string) []documentGr
 		sort.SliceStable(sorted, func(i, j int) bool { return sorted[i].UpdatedOn().After(sorted[j].UpdatedOn()) })
 		for _, d := range sorted {
 			// updated_on.to_date（Time.zone = UTC の日付）
-			day := d.UpdatedOn().UTC().Format("2006-01-02")
-			g := find(day, day, func() *group { return &group{name: day, key: day} })
+			u := d.UpdatedOn().UTC()
+			day := u.Format("2006-01-02")
+			g := find(day, day, func() *group {
+				return &group{name: day, key: day, day: time.Date(u.Year(), u.Month(), u.Day(), 0, 0, 0, 0, time.UTC)}
+			})
 			g.docs = append(g.docs, d)
 		}
 		sort.SliceStable(groups, func(i, j int) bool { return groups[i].name > groups[j].name })
@@ -316,7 +322,7 @@ func groupDocuments(c *Req, docs []*domain.Document, sortBy string) []documentGr
 	}
 	out := make([]documentGroup, len(groups))
 	for i, g := range groups {
-		out[i] = documentGroup{Name: g.name, Documents: g.docs}
+		out[i] = documentGroup{Name: g.name, Day: g.day, Documents: g.docs}
 	}
 	return out
 }
