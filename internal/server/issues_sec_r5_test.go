@@ -41,3 +41,32 @@ func TestIssueRelationsInvisibleIssue(t *testing.T) {
 		t.Errorf("visible relations missing: %s", res.Body)
 	}
 }
+
+// チケット削除で工数を付け替える先に、見えないチケット（非公開）は指定できない。
+func TestIssueDestroyReassignToInvisible(t *testing.T) {
+	ts, d := newFixtureServer(t)
+	ctx := context.Background()
+	if _, err := d.Exec(ctx, `UPDATE issues SET is_private = ?, author_id = 1, assigned_to_id = NULL WHERE id = 2`, true); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := d.Exec(ctx, `UPDATE roles SET issues_visibility = 'default' WHERE id = 1`); err != nil {
+		t.Fatal(err)
+	}
+	res := apiCall(t, ts, http.MethodDelete, "/issues/1.json?todo=reassign&reassign_to_id=2", "", "", apiCreds("jsmith"))
+	var n int
+	if err := d.Get(ctx, &n, `SELECT COUNT(*) FROM time_entries WHERE issue_id = 2`); err != nil {
+		t.Fatal(err)
+	}
+	if n != 0 {
+		t.Errorf("time entries reassigned to invisible issue (status %d)", res.Status)
+	}
+	// 見えるチケットへは付け替えられる
+	res = apiCall(t, ts, http.MethodDelete, "/issues/1.json?todo=reassign&reassign_to_id=3", "", "", apiCreds("jsmith"))
+	res.expectStatus(t, http.StatusNoContent)
+	if err := d.Get(ctx, &n, `SELECT COUNT(*) FROM time_entries WHERE issue_id = 3`); err != nil {
+		t.Fatal(err)
+	}
+	if n < 2 {
+		t.Errorf("time entries not reassigned to visible issue: %d", n)
+	}
+}
