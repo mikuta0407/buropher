@@ -211,6 +211,12 @@ rm = window.rm || {};rm.AutoComplete = rm.AutoComplete || {};rm.AutoComplete.dat
           <div id="sidebar-wrapper"></div>
         </div>
         <div id="content">
+          <div class="flash notice" id="flash_notice">
+            <svg aria-hidden="true" class="s18 icon-svg">
+              <use href="/assets/icons-DIGEST.svg#icon--checked"></use>
+            </svg>
+            Successful creation.
+          </div>
           <div class="contextual">
             <a class="icon icon-add" href="/webhooks/new">
               <svg aria-hidden="true" class="s18 icon-svg">
@@ -221,7 +227,7 @@ rm = window.rm || {};rm.AutoComplete = rm.AutoComplete || {};rm.AutoComplete.dat
           </div>
           <h2>Webhooks</h2>
           <div class="autoscroll">
-            <table class="list">
+            <table class="list webhooks">
               <thead>
                 <tr>
                   <th>Active</th>
@@ -234,7 +240,7 @@ rm = window.rm || {};rm.AutoComplete = rm.AutoComplete || {};rm.AutoComplete.dat
               <tbody>
                 <tr class="odd" id="webhook_2">
                   <td>No</td>
-                  <td>http://203.0.113.11:8080/hook</td>
+                  <td title="http://203.0.113.11:8080/hook">http://203.0.113.11:8080/hook</td>
                   <td></td>
                   <td></td>
                   <td class="buttons">
@@ -254,7 +260,7 @@ rm = window.rm || {};rm.AutoComplete = rm.AutoComplete || {};rm.AutoComplete.dat
                 </tr>
                 <tr class="even" id="webhook_1">
                   <td>Yes</td>
-                  <td>https://203.0.113.10/some/very/long/p...</td>
+                  <td title="https://203.0.113.10/some/very/long/path/to/the/webhook/receiver?token=abc">https://203.0.113.10/some/very/long/p...</td>
                   <td>
                     <code>issue.created</code>
                     ,
