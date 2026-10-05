@@ -59,7 +59,7 @@ var labels = map[string]string{
 	"label_file_plural": "Files", "label_settings": "Settings", "label_document_plural": "Documents",
 }
 
-// 期待値は Redmine 6.1.2 の実出力（匿名ユーザー）。
+// 期待値は Redmine 7.0.1 の実出力（匿名ユーザー）。
 func TestAccountMenuAnonymous(t *testing.T) {
 	e := &fakeEnv{settings: map[string]string{"self_registration": "2"}, labels: labels}
 	want := `<ul><li><a class="login" href="/login">Sign in</a></li><li><a class="register" href="/account/register">Register</a></li></ul>`

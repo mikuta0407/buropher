@@ -5,7 +5,7 @@
 set -e
 here="$(cd "$(dirname "$0")" && pwd)"
 work="${1:-/home/mikuta0407/projects/buropher/_reference/issue-test}"
-pristine="${REDMINE_PRISTINE_DB:-/home/mikuta0407/projects/buropher/_reference/redmine-fixtures/db/redmine.pristine.sqlite3}"
+pristine="${REDMINE_PRISTINE_DB:-/home/mikuta0407/projects/buropher/_reference/redmine7-fixtures/db/redmine.pristine.sqlite3}"
 mkdir -p "$work"
 for n in "" 2; do
   cp "$pristine" "$work/scenario$n.sqlite3"

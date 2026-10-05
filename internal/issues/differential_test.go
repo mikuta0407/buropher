@@ -370,9 +370,8 @@ func diffSetup(t *testing.T) *tc {
 	c.setting("text_formatting", "common_mark")
 	c.setting("wiki_tablesort_enabled", "0")
 	c.setting("rest_api_enabled", "1")
-	// testdata/scenario.json は Redmine 6.1.2 の DB (この行なし = 当時の既定値 1) で生成したもの。
-	// 7.0 で新規インストールの既定は 0 になったため、6.1 の DB を取り込んだときと同じく '1' を明示する。
-	c.setting("default_issue_start_date_to_creation_date", "1")
+	// testdata/scenario*.json は Redmine 7.0.1 の DB で生成したもの。
+	// default_issue_start_date_to_creation_date の行はなく、7.0 の既定値 0 が使われる。
 	return c
 }
 

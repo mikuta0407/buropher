@@ -25,9 +25,7 @@
       "value": {
         "ok": true,
         "id": 15,
-        "errors": [
-
-        ]
+        "errors": []
       }
     },
     {
@@ -36,9 +34,7 @@
       "value": {
         "ok": true,
         "id": 15,
-        "errors": [
-
-        ]
+        "errors": []
       }
     },
     {
@@ -47,9 +43,7 @@
       "value": {
         "ok": true,
         "id": 16,
-        "errors": [
-
-        ]
+        "errors": []
       }
     },
     {
@@ -58,9 +52,7 @@
       "value": {
         "ok": true,
         "id": 17,
-        "errors": [
-
-        ]
+        "errors": []
       }
     },
     {
@@ -69,9 +61,7 @@
       "value": {
         "ok": true,
         "id": 17,
-        "errors": [
-
-        ]
+        "errors": []
       }
     },
     {
@@ -80,9 +70,7 @@
       "value": {
         "ok": true,
         "id": 2,
-        "errors": [
-
-        ]
+        "errors": []
       }
     },
     {
@@ -91,9 +79,7 @@
       "value": {
         "ok": true,
         "id": 15,
-        "errors": [
-
-        ]
+        "errors": []
       }
     },
     {
@@ -102,9 +88,7 @@
       "value": {
         "ok": true,
         "id": 18,
-        "errors": [
-
-        ]
+        "errors": []
       }
     },
     {
@@ -113,9 +97,7 @@
       "value": {
         "ok": true,
         "id": 17,
-        "errors": [
-
-        ]
+        "errors": []
       }
     },
     {
@@ -147,9 +129,7 @@
       "value": {
         "ok": true,
         "id": 21,
-        "errors": [
-
-        ]
+        "errors": []
       }
     },
     {
@@ -158,9 +138,7 @@
       "value": {
         "ok": true,
         "id": 22,
-        "errors": [
-
-        ]
+        "errors": []
       }
     },
     {
@@ -169,9 +147,7 @@
       "value": {
         "ok": true,
         "id": 6,
-        "errors": [
-
-        ]
+        "errors": []
       }
     },
     {
@@ -190,9 +166,7 @@
       "value": {
         "ok": true,
         "id": 22,
-        "errors": [
-
-        ]
+        "errors": []
       }
     },
     {
@@ -201,9 +175,7 @@
       "value": {
         "ok": true,
         "id": 23,
-        "errors": [
-
-        ]
+        "errors": []
       }
     },
     {
@@ -212,9 +184,7 @@
       "value": {
         "ok": true,
         "id": 24,
-        "errors": [
-
-        ]
+        "errors": []
       }
     },
     {
@@ -223,9 +193,7 @@
       "value": {
         "ok": true,
         "id": 23,
-        "errors": [
-
-        ]
+        "errors": []
       }
     },
     {
@@ -234,9 +202,7 @@
       "value": {
         "ok": true,
         "id": 24,
-        "errors": [
-
-        ]
+        "errors": []
       }
     }
   ],
@@ -1049,7 +1015,7 @@
       "root_id": 18,
       "subject": "Diff G",
       "description": null,
-      "start_date": "2026-01-15",
+      "start_date": null,
       "due_date": null,
       "done_ratio": 10,
       "estimated_hours": null,
@@ -1073,7 +1039,7 @@
       "root_id": 18,
       "subject": "Diff H",
       "description": null,
-      "start_date": "2026-01-15",
+      "start_date": null,
       "due_date": null,
       "done_ratio": 40,
       "estimated_hours": 2.0,
@@ -1097,7 +1063,7 @@
       "root_id": 18,
       "subject": "Diff I",
       "description": null,
-      "start_date": "2026-01-15",
+      "start_date": null,
       "due_date": null,
       "done_ratio": 0,
       "estimated_hours": 6.0,
@@ -1121,7 +1087,7 @@
       "root_id": 21,
       "subject": "Diff J",
       "description": null,
-      "start_date": "2026-01-15",
+      "start_date": null,
       "due_date": null,
       "done_ratio": 0,
       "estimated_hours": null,
@@ -1145,7 +1111,7 @@
       "root_id": 22,
       "subject": "Diff K",
       "description": null,
-      "start_date": "2026-01-15",
+      "start_date": null,
       "due_date": null,
       "done_ratio": 0,
       "estimated_hours": null,
@@ -1169,7 +1135,7 @@
       "root_id": 23,
       "subject": "Diff L",
       "description": null,
-      "start_date": "2026-01-15",
+      "start_date": null,
       "due_date": null,
       "done_ratio": 0,
       "estimated_hours": null,
@@ -1193,7 +1159,7 @@
       "root_id": 23,
       "subject": "Diff M",
       "description": null,
-      "start_date": "2026-01-15",
+      "start_date": null,
       "due_date": null,
       "done_ratio": 0,
       "estimated_hours": null,
@@ -1309,9 +1275,7 @@
       "created_on": "2026-01-14 00:00:00",
       "updated_on": "2026-01-14 00:00:00",
       "updated_by_id": null,
-      "details": [
-
-      ]
+      "details": []
     },
     {
       "id": 10,
@@ -1472,9 +1436,7 @@
       "created_on": "2026-01-15 12:00:00",
       "updated_on": "2026-01-15 12:00:00",
       "updated_by_id": null,
-      "details": [
-
-      ]
+      "details": []
     },
     {
       "id": 24,

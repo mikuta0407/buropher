@@ -1,4 +1,4 @@
-# Redmine 6.1.2 (公式テストフィクスチャ投入済み DB) から権限判定の正解データを JSON に書き出す。
+# Redmine 7.0.1 (公式テストフィクスチャ投入済み DB) から権限判定の正解データを JSON に書き出す。
 #
 #   internal/authz/testdata/gen/runner.sh <DB のコピー> internal/authz/testdata/gen/dump_ground_truth.rb <出力 JSON>
 #

@@ -6,5 +6,5 @@ set -e
 export ORIG_PWD="$PWD"
 db="$(realpath "$1")"; shift
 script="$(realpath "$1")"; shift
-cd "${REDMINE_FIXTURES_ROOT:-/home/mikuta0407/projects/buropher/_reference/redmine-fixtures}"
-SECRET_KEY_BASE=x RAILS_ENV=production TZ=UTC DATABASE_URL="sqlite3:$db" exec bin/rails runner "$script" "$@"
+cd "${REDMINE_FIXTURES_ROOT:-/home/mikuta0407/projects/buropher/_reference/redmine7-fixtures}"
+SECRET_KEY_BASE=x RAILS_ENV=production TZ=UTC DATABASE_URL="sqlite3:$db" exec bundle3.3 exec rails runner "$script" "$@"

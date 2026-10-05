@@ -9,7 +9,7 @@ import (
 	"testing"
 )
 
-// TestInlineCSSGolden は roadie（Redmine 6.1.2 同梱版）の出力と一致することを確かめる。
+// TestInlineCSSGolden は roadie（Redmine 7.0.1 同梱版）の出力と一致することを確かめる。
 // 期待値は testdata/gen_roadie.rb（入力は make_inputs.py が作る roadie_inputs.json）で生成する。
 func TestInlineCSSGolden(t *testing.T) {
 	head, err := os.ReadFile("testdata/layout_head.html")

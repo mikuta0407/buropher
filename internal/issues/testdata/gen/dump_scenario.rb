@@ -1,4 +1,4 @@
-# Redmine 6.1.2 (公式フィクスチャ投入済み DB) でチケット操作のシナリオ (作成・更新・ワークフロー・
+# Redmine 7.0.1 (公式フィクスチャ投入済み DB) でチケット操作のシナリオ (作成・更新・ワークフロー・
 # 親子・関連と再スケジュール・コピー・移動・クローズ・削除) を実行し、結果の DB 状態と通知を JSON に書き出す。
 #
 #   internal/issues/testdata/gen/runner.sh <DB のコピー> internal/issues/testdata/gen/dump_scenario.rb <出力 JSON>
