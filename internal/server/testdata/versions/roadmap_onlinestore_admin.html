@@ -56,11 +56,11 @@ $('#sidebar-switch-panel').css('visibility', 'visible');
 <h3>Versions</h3>
 <ul>
   <li>
-    <a href="#Systemwide_visible_version">Systemwide visible version</a>
+    <a href="#version-7">Systemwide visible version</a>
   </li>
 </ul>
 <p>
-  <a href="#" onclick="$(&quot;#toggle-completed-versions&quot;).toggleClass(&quot;icon-collapsed icon-expanded&quot;); $(&quot;#completed-versions&quot;).toggle(); toggleExpendCollapseIcon(this);; return false;" id="toggle-completed-versions" class="icon icon-collapsed collapsible"><svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--angle-right"></use></svg><span class="icon-label">Completed versions</span></a>
+  <a href="#" onclick="$(&quot;#toggle-completed-versions&quot;).toggleClass(&quot;icon-collapsed icon-expanded&quot;); $(&quot;#completed-versions&quot;).toggle(); toggleExpandCollapseIcon(this);; return false;" id="toggle-completed-versions" class="icon icon-collapsed collapsible"><svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--angle-right"></use></svg><span class="icon-label">Completed versions</span></a>
   <ul id = "completed-versions" style = "display:none;">
       <li><a title="07/01/2006" href="/versions/5">Alpha</a></li>
   </ul>
@@ -83,10 +83,10 @@ $('#sidebar-switch-panel').css('visibility', 'visible');
 
   <div id="roadmap">
   <article class="version-article version-incompleted version-open">
-      <div class="contextual">
-        <a title="Edit" class="icon-only icon-edit" href="/versions/7/edit"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--edit"></use></svg><span class="icon-label">Edit</span></a>
-      </div>
-    <header>
+    <header id="version-7">
+        <div class="contextual">
+          <a title="Edit" class="icon-only icon-edit" href="/versions/7/edit"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--edit"></use></svg><span class="icon-label">Edit</span></a>
+        </div>
       <h3 class="icon icon-package version inline-flex">
         <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--package"></use></svg>
         <a name="Systemwide_visible_version" href="/versions/7">Systemwide visible version</a>

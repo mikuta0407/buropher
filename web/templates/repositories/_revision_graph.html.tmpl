@@ -14,7 +14,6 @@ $(window).resize(revisionGraphHandler);
 <div id="holder" class="revision-graph"></div>
 
 {{define "repositories/_revision_graph#header_tags"}}
-  {{javascript_include_tag "raphael"}}
   {{javascript_include_tag "revision_graph"}}
 {{end}}
 {{content_for "header_tags" (capture "repositories/_revision_graph#header_tags")}}

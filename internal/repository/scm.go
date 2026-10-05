@@ -293,18 +293,24 @@ func FindChangesetByRevisionPrefix(ctx context.Context, q db.Queryer, repoID int
 	return getChangeset(ctx, q, `changesets.repository_id = ? AND changesets.revision LIKE ?`+ChangesetOrder, repoID, likePrefix(prefix))
 }
 
-// PreviousChangeset は Changeset#previous（id が小さい直前のもの）。
+// PreviousChangeset は Changeset#previous（Repository#previous_changeset: 一覧と同じ
+// committed_on・id の順で直前のもの。Redmine 7.0 #43965）。
 func PreviousChangeset(ctx context.Context, q db.Queryer, cs *domain.Changeset) (*domain.Changeset, error) {
-	c, err := getChangeset(ctx, q, `changesets.id < ? AND changesets.repository_id = ? ORDER BY changesets.id DESC`, cs.ID, cs.RepositoryID)
+	t := db.NewTime(cs.CommittedOn)
+	c, err := getChangeset(ctx, q, `changesets.repository_id = ? AND (changesets.committed_at < ? OR (changesets.committed_at = ? AND changesets.id < ?))
+ORDER BY changesets.committed_at DESC, changesets.id DESC`, cs.RepositoryID, t, t, cs.ID)
 	if errors.Is(err, ErrNotFound) {
 		return nil, nil
 	}
 	return c, err
 }
 
-// NextChangeset は Changeset#next（id が大きい直後のもの）。
+// NextChangeset は Changeset#next（Repository#next_changeset: 一覧と同じ committed_on・id の順で
+// 直後のもの。Redmine 7.0 #43965）。
 func NextChangeset(ctx context.Context, q db.Queryer, cs *domain.Changeset) (*domain.Changeset, error) {
-	c, err := getChangeset(ctx, q, `changesets.id > ? AND changesets.repository_id = ? ORDER BY changesets.id ASC`, cs.ID, cs.RepositoryID)
+	t := db.NewTime(cs.CommittedOn)
+	c, err := getChangeset(ctx, q, `changesets.repository_id = ? AND (changesets.committed_at > ? OR (changesets.committed_at = ? AND changesets.id > ?))
+ORDER BY changesets.committed_at ASC, changesets.id ASC`, cs.RepositoryID, t, t, cs.ID)
 	if errors.Is(err, ErrNotFound) {
 		return nil, nil
 	}

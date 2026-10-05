@@ -15,6 +15,7 @@
 
 <h2>{{l "label_news_plural"}}</h2>
 
+<div id="news-list">
 {{if not .Newss}}
 <p class="nodata">{{l "label_no_data"}}</p>
 {{else}}
@@ -32,6 +33,7 @@
     </article>
 {{end}}
 {{end}}
+</div>
 <span class="pagination">{{pagination_links_full .Pages}}</span>
 
 {{other_formats_open -}}

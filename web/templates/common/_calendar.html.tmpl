@@ -13,7 +13,8 @@
     </li>
     {{range $day := $week}}
     <li class="{{$cal.DayCSSClasses $day}} calbody">
-      <p class="day-num">{{$day.Day}}
+      <p class="day-num">
+        <span class="day-value">{{$day.Day}}</span>
         <span class="abbr-day">({{$cal.AbbrDayName $day}})</span>
       </p>
       {{range $e := $cal.EventsOn $day}}

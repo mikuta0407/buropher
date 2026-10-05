@@ -330,7 +330,7 @@ func (a *App) roadmapData(c *Req) (map[string]any, error) {
 	}
 	var sideVersions []map[string]any
 	for _, r := range rows {
-		sideVersions = append(sideVersions, map[string]any{"Name": formatVersionName(p, r.versionModel), "Anchor": r.Anchor})
+		sideVersions = append(sideVersions, map[string]any{"Name": formatVersionName(p, r.versionModel), "ID": r.ID})
 	}
 	return map[string]any{
 		"Versions":          rows,

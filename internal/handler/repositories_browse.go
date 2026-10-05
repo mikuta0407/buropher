@@ -292,6 +292,8 @@ type graphCommit struct {
 	scmid   string
 	href    string
 	space   *int
+	// verticalChildren は同じ列に子コミットがあること（vertical_children）。
+	verticalChildren bool
 }
 
 // indexCommits は RepositoriesHelper#index_commits（リビジョングラフの JSON と幅）。
@@ -327,20 +329,35 @@ func (a *App) indexCommits(c *Req, s *repoState, commits []*domain.Changeset) (s
 		}
 		byScmid[cs.Scmid] = gc
 	}
-	space := -1
-	matched := false
+	// Redmine 7.0（#42762）: 最新のコミットから処理し、次にブランチの先頭、最後にどこからも
+	// 辿れなかったコミットを処理する。
+	space := indexHead(0, commits[0].Scmid, byScmid)
 	for _, h := range heads {
-		if _, ok := byScmid[h.Scmid]; ok {
-			base := -1
-			if matched {
-				base = space
-			}
-			space = indexHead(base+1, h.Scmid, byScmid)
-			matched = true
+		if gc, ok := byScmid[h.Scmid]; ok && gc.space == nil {
+			space = indexHead(space+1, h.Scmid, byScmid)
 		}
 	}
-	if !matched {
-		space = indexHead(0, commits[0].Scmid, byScmid)
+	for {
+		var orphan *domain.Changeset
+		for _, cs := range commits {
+			if byScmid[cs.Scmid].space == nil {
+				orphan = cs
+				break
+			}
+		}
+		if orphan == nil {
+			break
+		}
+		space = indexHead(space+1, orphan.Scmid, byScmid)
+	}
+	// 同じ列に子を持つコミットに vertical_children を付ける（S 字の接続線のため）
+	for _, k := range order {
+		gc := byScmid[k]
+		for _, ps := range gc.parents {
+			if pc := byScmid[ps]; pc != nil && pc.space != nil && gc.space != nil && *pc.space == *gc.space {
+				pc.verticalChildren = true
+			}
+		}
 	}
 	var b strings.Builder
 	b.WriteByte('{')
@@ -366,6 +383,9 @@ func (a *App) indexCommits(c *Req, s *repoState, commits []*domain.Changeset) (s
 		b.WriteString(`,"scmid":` + jsonString(gc.scmid) + `,"href":` + jsonString(gc.href))
 		if gc.space != nil {
 			b.WriteString(`,"space":` + strconv.Itoa(*gc.space))
+		}
+		if gc.verticalChildren {
+			b.WriteString(`,"vertical_children":true`)
 		}
 		b.WriteByte('}')
 	}
@@ -725,6 +745,9 @@ func (a *App) entryAndRaw(c *Req, isRaw bool) {
 	switch {
 	case mimetype.IsType("image", s.path):
 		kind = "image"
+	case mimetype.Of(s.path) == "application/pdf":
+		// Redmine 7.0 #22483: PDF はページ内に表示する
+		kind = "pdf"
 	case mimetype.Of(s.path) == "text/x-textile":
 		kind = "markup"
 		data["Markup"] = a.markupToHTML(c, "textile", stringOrEmpty(data["Content"]))
@@ -1006,14 +1029,10 @@ func withAtomFormatExt(u, ext string) string {
 func (a *App) RepositoriesStats(c *Req) {
 	s := c.repoState()
 	c.Render("repositories/stats", map[string]any{
-		"Repository":   s.repo,
-		"MonthURL":     helperRepositoryURL(c.Project, s.repo, "graph", "", "", [2]string{"graph", "commits_per_month"}),
-		"AuthorURL":    helperRepositoryURL(c.Project, s.repo, "graph", "", "", [2]string{"graph", "commits_per_author"}),
-		"BackURL":      helperRepositoryURL(c.Project, s.repo, "show", "", ""),
-		"RevisionsTxt": jsonString(c.L("label_revision_plural")),
-		"ChangesTxt":   jsonString(c.L("label_change_plural")),
-		"MonthTitle":   jsonString(c.L("label_commits_per_month")),
-		"AuthorTitle":  jsonString(c.L("label_commits_per_author")),
+		"Repository": s.repo,
+		"MonthURL":   helperRepositoryURL(c.Project, s.repo, "graph", "", "", [2]string{"graph", "commits_per_month"}),
+		"AuthorURL":  helperRepositoryURL(c.Project, s.repo, "graph", "", "", [2]string{"graph", "commits_per_author"}),
+		"BackURL":    helperRepositoryURL(c.Project, s.repo, "show", "", ""),
 	})
 }
 

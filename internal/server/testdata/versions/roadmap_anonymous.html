@@ -62,20 +62,20 @@ $('#sidebar-switch-panel').css('visibility', 'visible');
 <h3>Versions</h3>
 <ul>
   <li>
-    <a href="#1.0">1.0</a>
+    <a href="#version-2">1.0</a>
   </li>
   <li>
-    <a href="#2.0">2.0</a>
+    <a href="#version-3">2.0</a>
   </li>
   <li>
-    <a href="#subproject1-2.0">eCookbook Subproject 1 - 2.0</a>
+    <a href="#version-4">eCookbook Subproject 1 - 2.0</a>
   </li>
   <li>
-    <a href="#private-child-Private_Version_of_public_subproject">Private child of eCookbook - Private Version of public subproject</a>
+    <a href="#version-6">Private child of eCookbook - Private Version of public subproject</a>
   </li>
 </ul>
 <p>
-  <a href="#" onclick="$(&quot;#toggle-completed-versions&quot;).toggleClass(&quot;icon-collapsed icon-expanded&quot;); $(&quot;#completed-versions&quot;).toggle(); toggleExpendCollapseIcon(this);; return false;" id="toggle-completed-versions" class="icon icon-collapsed collapsible"><svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--angle-right"></use></svg><span class="icon-label">Completed versions</span></a>
+  <a href="#" onclick="$(&quot;#toggle-completed-versions&quot;).toggleClass(&quot;icon-collapsed icon-expanded&quot;); $(&quot;#completed-versions&quot;).toggle(); toggleExpandCollapseIcon(this);; return false;" id="toggle-completed-versions" class="icon icon-collapsed collapsible"><svg class="s18 icon-svg icon-rtl" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--angle-right"></use></svg><span class="icon-label">Completed versions</span></a>
   <ul id = "completed-versions" style = "display:none;">
       <li><a title="07/01/2006" href="/versions/1">0.1</a></li>
   </ul>
@@ -96,7 +96,7 @@ $('#sidebar-switch-panel').css('visibility', 'visible');
 
   <div id="roadmap">
   <article class="version-article version-incompleted version-locked">
-    <header>
+    <header id="version-2">
       <h3 class="icon icon-package version inline-flex">
         <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--package"></use></svg>
         <a title="02/04/2026" name="1.0" href="/versions/2">1.0</a>
@@ -137,7 +137,7 @@ $('#sidebar-switch-panel').css('visibility', 'visible');
 </form>    
   </article>
   <article class="version-article version-incompleted version-open">
-    <header>
+    <header id="version-3">
       <h3 class="icon icon-package version inline-flex">
         <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--package"></use></svg>
         <a name="2.0" href="/versions/3">2.0</a>
@@ -155,7 +155,7 @@ $('#sidebar-switch-panel').css('visibility', 'visible');
     
   </article>
   <article class="version-article version-incompleted version-open">
-    <header>
+    <header id="version-4">
       <h3 class="icon icon-package version inline-flex">
         <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--package"></use></svg>
         <a name="subproject1-2.0" href="/versions/4">eCookbook Subproject 1 - 2.0</a>
@@ -173,7 +173,7 @@ $('#sidebar-switch-panel').css('visibility', 'visible');
     
   </article>
   <article class="version-article version-incompleted version-open">
-    <header>
+    <header id="version-6">
       <h3 class="icon icon-package version inline-flex">
         <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--package"></use></svg>
         Private child of eCookbook - Private Version of public subproject

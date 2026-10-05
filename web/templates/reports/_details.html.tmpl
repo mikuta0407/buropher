@@ -1,52 +1,3 @@
-{{define "reports/_details#js"}}
-
-  function renderChart(canvas_id, title, chartData){
-    var backgroundColors = ['rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(255, 206, 86, 0.2)', 'rgba(75, 192, 192, 0.2)', 'rgba(153, 102, 255, 0.2)', 'rgba(255, 159, 64, 0.2)'];
-    var borderColors = ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)', 'rgba(255, 206, 86, 1)', 'rgba(75, 192, 192, 1)', 'rgba(153, 102, 255, 1)', 'rgba(255, 159, 64, 1)'];
-    for (var i = 0; i < chartData.datasets.length; i++) {
-      chartData.datasets[i].backgroundColor = backgroundColors[i % backgroundColors.length];
-      chartData.datasets[i].borderColor = borderColors[i % borderColors.length];
-      chartData.datasets[i].borderWidth = 1;
-    }
-    new Chart($(canvas_id), {
-      type: 'bar',
-      data: chartData,
-      options: {
-        indexAxis: 'y',
-        elements: {
-          bar: {borderWidth: 2}
-        },
-        responsive: true,
-        plugins: {
-          legend: {position: 'right'},
-          title: {
-            display: true,
-            text: title
-          }
-        },
-        scales: {
-          yAxis: {stacked: true},
-          xAxis: {stacked: true, ticks: {precision: 0}}
-        }
-      }
-    });
-  }
-  $(document).ready(function(){
-    var chartData1 = {
-      labels: {{.table.ChartLabelsJSON}},
-      datasets: {{.table.ChartDatasets1JSON}}
-    };
-    var chartData2 = {
-      labels: {{.table.ChartStatusesJSON}},
-      datasets: {{.table.ChartDatasets2JSON}}
-    };
-    renderChart("#issues_by_{{.detail}}", "{{l "label_issues_by" (hash "value" .report_title)}}", chartData1);
-    renderChart("#issues_by_status", "{{l "label_issues_by" (hash "value" (l "field_status"))}}", chartData2);
-  });
-{{end}}
-{{define "reports/_details#header_tags"}}
-  {{javascript_include_tag "chart.min"}}
-{{end}}
 {{$t := .table}}
 {{if $t.Empty}}
     <p><i>{{l "label_no_data"}}</i></p>
@@ -99,12 +50,22 @@
   {{end_form}}
 </div>
 
-<div class="issue-report-graph hide-when-print">
-  <canvas id="issues_by_{{.detail}}"></canvas>
+<div class="issue-report-graph hide-when-print" data-controller="reports--details" data-reports--details-title-value="{{l "label_issues_by" (hash "value" .report_title)}}">
+  <template data-reports--details-target="labels">
+    {{$t.ChartLabelsJSON}}
+  </template>
+  <template data-reports--details-target="datasets">
+    {{$t.ChartDatasets1JSON}}
+  </template>
+  <canvas id="issues_by_{{.detail}}" data-reports--details-target="canvas"></canvas>
 </div>
-<div class="issue-report-graph hide-when-print">
-  <canvas id="issues_by_status"></canvas>
+<div class="issue-report-graph hide-when-print" data-controller="reports--details" data-reports--details-title-value="{{l "label_issues_by" (hash "value" (l "field_status"))}}">
+  <template data-reports--details-target="labels">
+    {{$t.ChartStatusesJSON}}
+  </template>
+  <template data-reports--details-target="datasets">
+    {{$t.ChartDatasets2JSON}}
+  </template>
+  <canvas id="issues_by_status" data-reports--details-target="canvas"></canvas>
 </div>
-{{javascript_tag (capture "reports/_details#js" .) -}}
-{{content_for "header_tags" (capture "reports/_details#header_tags" .)}}
 {{end}}

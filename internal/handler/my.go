@@ -101,6 +101,10 @@ func (a *App) mySidebarData(c *Req, u *domain.User, data map[string]any) error {
 	}
 	if atom != nil {
 		data["AtomTokenAge"] = c.Loc.DistanceOfTimeInWords(a.now(), atom.CreatedAt)
+		// Redmine 7.0 #43938: 最後に使った日時
+		if repository.TokenUsed(atom) {
+			data["AtomTokenUsedAge"] = c.Loc.DistanceOfTimeInWords(a.now(), atom.UpdatedAt)
+		}
 	}
 	data["RestAPIEnabled"] = a.Settings.Bool("rest_api_enabled")
 	api, err := repository.UserToken(ctx, a.DB, u.ID, repository.TokenAPI)
@@ -109,6 +113,9 @@ func (a *App) mySidebarData(c *Req, u *domain.User, data map[string]any) error {
 	}
 	if api != nil {
 		data["APITokenAge"] = c.Loc.DistanceOfTimeInWords(a.now(), api.CreatedAt)
+		if repository.TokenUsed(api) {
+			data["APITokenUsedAge"] = c.Loc.DistanceOfTimeInWords(a.now(), api.UpdatedAt)
+		}
 	}
 	return nil
 }

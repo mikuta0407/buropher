@@ -13,9 +13,14 @@
 
 <p>
 {{if $a.AtomTokenAge}}
-{{l "label_feeds_access_key_created_on" $a.AtomTokenAge}}
+  {{l "label_feeds_access_key_created_on" $a.AtomTokenAge}}<br />
+  {{if $a.AtomTokenUsedAge}}
+    {{l "label_last_used_on" $a.AtomTokenUsedAge}}
+  {{else}}
+    {{l "label_never_used"}}
+  {{end}}
 {{else}}
-{{l "label_missing_feeds_access_key"}}
+  {{l "label_missing_feeds_access_key"}}
 {{end}}
 ({{link_to (l "button_reset") "/my/atom_key" (hash "method" "post")}})
 </p>
@@ -40,9 +45,14 @@
   {{javascript_tag "$('#api-access-key').hide();"}}
   <p>
   {{if $a.APITokenAge}}
-  {{l "label_api_access_key_created_on" $a.APITokenAge}}
+    {{l "label_api_access_key_created_on" $a.APITokenAge}}<br />
+    {{if $a.APITokenUsedAge}}
+      {{l "label_last_used_on" $a.APITokenUsedAge}}
+    {{else}}
+      {{l "label_never_used"}}
+    {{end}}
   {{else}}
-  {{l "label_missing_api_access_key"}}
+    {{l "label_missing_api_access_key"}}
   {{end}}
   ({{link_to (l "button_reset") "/my/api_key" (hash "method" "post")}})
   </p>
