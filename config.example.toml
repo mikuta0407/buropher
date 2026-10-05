@@ -162,6 +162,20 @@
 # Themes are read at startup. env: BUROPHER_THEMES_DIR
 #themes_dir = ""
 
+[preview]
+# Preview of Microsoft Office / LibreOffice attachments (.docx, .odt; also .xlsx, .pptx with
+# Pandoc >= 3.8.3), converted to Markdown with Pandoc like Redmine 7.0. Optional: when Pandoc
+# is not available the attachment page shows "No preview available" as before.
+# Pandoc executable (Redmine's pandoc_command). Empty = "pandoc" from PATH.
+# env: BUROPHER_PANDOC_COMMAND
+#pandoc_command = ""
+# Timeout of one conversion in seconds (0 = 10).
+#markdownized_preview_generation_timeout = 10
+# Files larger than this (bytes) are not converted (0 = 10485760, 10 MB).
+#markdownized_preview_max_source_size = 10485760
+# The Markdown output is truncated to this size in bytes (0 = 102400, 100 KB).
+#markdownized_preview_max_output_size = 102400
+
 [mail_receive]
 # Poll a mailbox periodically and feed emails to the mail handler
 # (instead of cron + rake redmine:email:receive_imap / receive_pop3). See `buropher mail receive -h`.

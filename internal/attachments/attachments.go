@@ -53,6 +53,8 @@ type Store struct {
 	Logger *slog.Logger
 	// ThumbnailsRoot はサムネイルの保存先（Attachment.thumbnails_storage_path。空なら Root の親の tmp/thumbnails）。
 	ThumbnailsRoot string
+	// Markdownizer は Office 文書の Markdown プレビューの変換（nil なら使わない。Redmine::Markdownizer）。
+	Markdownizer *Markdownizer
 }
 
 func (s *Store) now() time.Time {
@@ -419,6 +421,7 @@ func (s *Store) DeleteFromDisk(ctx context.Context, q db.Queryer, atts ...*domai
 			firstErr = err
 		}
 		s.deleteThumbnails(a)
+		s.deleteMarkdownizedPreview(a)
 	}
 	return firstErr
 }

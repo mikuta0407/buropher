@@ -31,6 +31,8 @@ type Config struct {
 	MailReceive MailReceive `toml:"mail_receive"`
 	// Web は画面まわり（外部テーマ等）の設定。
 	Web Web `toml:"web"`
+	// Preview は添付ファイルのプレビュー（Office 文書の Markdown 変換）の設定。
+	Preview Preview `toml:"preview"`
 	// DevAssetsDir が空でなければ embed ではなくディスクからアセット/テンプレートを読む（開発用）。
 	DevWebDir string `toml:"dev_web_dir"`
 }
@@ -220,6 +222,19 @@ type Web struct {
 	ThemesDir string `toml:"themes_dir"`
 }
 
+// Preview は Office 文書（Microsoft Office / LibreOffice）のプレビューの設定（Redmine 7.0 の
+// configuration.yml の pandoc_command / markdownized_preview_* 相当）。Pandoc が使えなければプレビューしない。
+type Preview struct {
+	// PandocCommand は Pandoc の実行ファイル（空なら PATH の "pandoc"。見つからなければプレビューしない）。
+	PandocCommand string `toml:"pandoc_command"`
+	// MarkdownizedPreviewGenerationTimeout は 1 回の変換の時間制限（秒。0 なら 10）。
+	MarkdownizedPreviewGenerationTimeout int `toml:"markdownized_preview_generation_timeout"`
+	// MarkdownizedPreviewMaxSourceSize は変換する元ファイルの最大バイト数（0 なら 10485760）。
+	MarkdownizedPreviewMaxSourceSize int64 `toml:"markdownized_preview_max_source_size"`
+	// MarkdownizedPreviewMaxOutputSize は保存する Markdown の最大バイト数（超えた分は切り捨てる。0 なら 102400）。
+	MarkdownizedPreviewMaxOutputSize int64 `toml:"markdownized_preview_max_output_size"`
+}
+
 func Default() *Config {
 	return &Config{
 		Server:   Server{Addr: ":3000"},
@@ -260,6 +275,7 @@ func Load(path string) (*Config, error) {
 		"BUROPHER_SCM_FETCH_INTERVAL":     &c.SCM.FetchInterval,
 		"BUROPHER_SCM_GIT_PATH_REGEXP":    &c.SCM.GitPathRegexp,
 		"BUROPHER_THEMES_DIR":             &c.Web.ThemesDir,
+		"BUROPHER_PANDOC_COMMAND":         &c.Preview.PandocCommand,
 	}
 	for k, p := range env {
 		if v, ok := os.LookupEnv(k); ok {
