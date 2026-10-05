@@ -1065,6 +1065,12 @@ func (a *App) WikiRename(c *Req) {
 						targetWiki = w
 						page.WikiID = w.ID
 						form.WikiID = w.ID
+						if w.ID != ws.Wiki.ID {
+							// self.wiki = w の後なので、is_start_page の safe_attribute? と既定値
+							// （wiki.start_page == title_was）は移動先の Wiki・プロジェクトで判定する
+							canManage = c.AllowedTo(domain.Perm("manage_wiki"), p)
+							form.IsStartPage = w.StartPage == oldTitle
+						}
 					}
 				}
 			}

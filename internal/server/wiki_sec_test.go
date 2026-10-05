@@ -61,3 +61,37 @@ func TestWikiUpdateCrossWikiRedirectNeedsTargetPermission(t *testing.T) {
 		t.Errorf("admin update: version %d (before %d), %v", after, before, err)
 	}
 }
+
+// TestWikiMoveToOtherWikiStartPageNeedsTargetManageWiki はページを他プロジェクトの Wiki へ移動するとき、
+// 移動先で manage_wiki が無ければ移動先 Wiki のメインページを変えられないことを確認する。
+func TestWikiMoveToOtherWikiStartPageNeedsTargetManageWiki(t *testing.T) {
+	ts, d := newFixtureServer(t)
+	ctx := context.Background()
+	// jsmith は ecookbook で Manager、onlinestore で Developer（rename_wiki_pages のみ追加、manage_wiki なし）
+	if _, err := d.Exec(ctx, `INSERT INTO role_permissions (role_id, permission, position) VALUES (2, 'rename_wiki_pages', 100)`); err != nil {
+		t.Fatal(err)
+	}
+	c := login(t, ts, "jsmith", "jsmith")
+	for _, kv := range [][]string{
+		{"wiki_page[title]", "Another_page", "wiki_page[wiki_id]", "2", "wiki_page[is_start_page]", "1"},
+		// ecookbook のメインページをそのまま移動（is_start_page の既定値）
+		{"wiki_page[title]", "CookBook_documentation", "wiki_page[wiki_id]", "2"},
+	} {
+		title := kv[1]
+		res, _ := post(t, c, ts.URL+"/projects/ecookbook/wiki/"+title+"/rename", wikiForm(t, c, ts, kv...))
+		if res.StatusCode != 302 {
+			t.Fatalf("move %s: status %d", title, res.StatusCode)
+		}
+		var wikiID int64
+		if err := d.Get(ctx, &wikiID, `SELECT wiki_id FROM wiki_pages WHERE title = ?`, title); err != nil || wikiID != 2 {
+			t.Fatalf("move %s: wiki_id = %d, %v", title, wikiID, err)
+		}
+		var start string
+		if err := d.Get(ctx, &start, `SELECT start_page FROM wikis WHERE id = 2`); err != nil {
+			t.Fatal(err)
+		}
+		if start != "Start page" {
+			t.Fatalf("move %s: onlinestore start page changed to %q without manage_wiki", title, start)
+		}
+	}
+}
