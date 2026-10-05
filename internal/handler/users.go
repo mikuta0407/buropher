@@ -436,7 +436,12 @@ func (a *App) renderUserShowAPI(c *Req, u *domain.User, memberships []*membershi
 	ctx := c.Ctx()
 	cur := c.User
 	self := cur.ID == u.ID && cur.Logged()
-	pref, _ := repository.GetUserPreference(ctx, a.DB, u.ID)
+	pref, err := repository.GetUserPreference(ctx, a.DB, u.ID)
+	if err != nil {
+		// 読めなければ hide_mail が分からないため、メールアドレスを出さずにエラーにする
+		a.serverError(c, err)
+		return
+	}
 	var apiKey string
 	if cur.IsAdmin() || (self && !cur.AuthorizedByOAuth()) {
 		var err error
@@ -472,7 +477,7 @@ func (a *App) renderUserShowAPI(c *Req, u *domain.User, memberships []*membershi
 			}
 			b.Value("firstname", u.Firstname)
 			b.Value("lastname", u.Lastname)
-			if cur.IsAdmin() || pref == nil || !pref.HideMail {
+			if cur.IsAdmin() || !pref.HideMail {
 				b.Value("mail", nilIfEmpty(u.Mail))
 			}
 			b.Value("created_on", u.CreatedAt)

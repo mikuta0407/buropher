@@ -66,12 +66,15 @@ func (a *App) findGroup() ActionOption {
 		}
 		// Group.visible: 管理者以外は有効な（status = 1）グループのみ（Principal.visible）
 		if !c.User.IsAdmin() {
+			// 条件を作れなければ見せない（Group.visible.find は例外で止まる）
 			cond, err := c.Authz().PrincipalVisibleCondition(c.Ctx())
-			if err == nil {
-				if ok, err := repository.PrincipalVisible(c.Ctx(), a.DB, cond, id); err != nil || !ok {
-					c.Render404("")
-					return
-				}
+			if err != nil {
+				a.serverError(c, err)
+				return
+			}
+			if ok, err := repository.PrincipalVisible(c.Ctx(), a.DB, cond, id); err != nil || !ok {
+				c.Render404("")
+				return
 			}
 		}
 		c.setValue(groupCtxKey{}, g)
