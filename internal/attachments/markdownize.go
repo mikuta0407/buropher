@@ -242,7 +242,7 @@ func (m *Markdownizer) Convert(ctx context.Context, source, target, filename str
 				"stderr", string(cmd.Stderr.(*limitedBuffer).buf))
 			return false, nil
 		}
-		m.logger().Error("Markdownized preview generation failed:\nCommand: "+cmdline+"\nException was: "+err.Error())
+		m.logger().Error("Markdownized preview generation failed:\nCommand: " + cmdline + "\nException was: " + err.Error())
 		return false, nil
 	}
 	// 同じプレビューを並行して作っても互いの一時ファイルを壊さないよう、一時ファイル名は一意にする

@@ -82,7 +82,7 @@ func GuessSeparator(content []byte) string {
 	return ","
 }
 
-// GuessNewline は content.index("\r\n") ? "\r\n" : ''（#41434。空は row_sep: :auto）。
+// GuessNewline は content.index("\r\n") ? "\r\n" : ”（#41434。空は row_sep: :auto）。
 func GuessNewline(content []byte) string {
 	if bytes.Contains(content, []byte("\r\n")) {
 		return "\r\n"

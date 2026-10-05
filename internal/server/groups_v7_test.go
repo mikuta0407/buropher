@@ -104,7 +104,7 @@ func TestGroupsRemoveUsers(t *testing.T) {
 	if res, _ := send(t, c, ts.URL, http.MethodDelete, "/groups/10/users/8.js", nil); res.StatusCode != 204 || count() != 1 {
 		t.Errorf("remove_user js without confirmation: %d count=%d", res.StatusCode, count())
 	}
-	if res, _ := send(t, c, ts.URL, http.MethodDelete, "/groups/10/users/8", url.Values{"confirm": {"Yes"}});res.StatusCode != 302 || count() != 0 {
+	if res, _ := send(t, c, ts.URL, http.MethodDelete, "/groups/10/users/8", url.Values{"confirm": {"Yes"}}); res.StatusCode != 302 || count() != 0 {
 		t.Errorf("remove_user: %d count=%d", res.StatusCode, count())
 	}
 }
