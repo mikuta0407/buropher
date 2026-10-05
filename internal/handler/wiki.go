@@ -243,6 +243,19 @@ func (c *Req) wikiEditable(page *domain.WikiPage) bool {
 	return c.AllowedTo(domain.Perm("protect_wiki_pages"), c.wikiPageProject(page))
 }
 
+// wikiRedirectTargetEditable は他プロジェクトの Wiki への転送（ページを別プロジェクトへ移動した跡）で
+// 見つかったページを、URL のプロジェクトのページとして編集・プレビューしてよいか。
+// Redmine の wiki#update / #preview は find_page が他の Wiki へのリダイレクトをたどった結果を
+// そのまま使い、転送先プロジェクトの権限を確かめない（非メンバーが非公開プロジェクトのページを書き換えられる）。
+// buropher は転送先プロジェクトで view_wiki_pages と edit_wiki_pages の両方を持つときだけ許す。
+func (c *Req) wikiRedirectTargetEditable(w *domain.Wiki, page *domain.WikiPage, redirected bool) bool {
+	if !redirected || page == nil || page.NewRecord() || w == nil || page.WikiID == w.ID {
+		return true
+	}
+	p := c.wikiPageProject(page)
+	return c.AllowedTo(domain.Perm("view_wiki_pages"), p) && c.AllowedTo(domain.Perm("edit_wiki_pages"), p)
+}
+
 func (c *Req) wikiPageProject(page *domain.WikiPage) *domain.Project {
 	if page.Project != nil {
 		return page.Project

@@ -625,13 +625,13 @@ type WikiPageOptions struct {
 // WikiUpdate は wiki#update（新規作成・更新・セクション編集・競合検出・API）。
 func (a *App) WikiUpdate(c *Req) {
 	ws := c.wikiState()
-	page, _, err := a.findOrNewPage(c, ws.Wiki, c.Params().String("id"))
+	page, redirected, err := a.findOrNewPage(c, ws.Wiki, c.Params().String("id"))
 	if err != nil {
 		a.wikiError(c, err)
 		return
 	}
 	ws.Page = page
-	if !c.wikiEditable(page) {
+	if !c.wikiRedirectTargetEditable(ws.Wiki, page, redirected) || !c.wikiEditable(page) {
 		c.Render403("")
 		return
 	}
@@ -1711,10 +1711,14 @@ func (a *App) wikiSendExport(c *Req, page *domain.WikiPage, content *domain.Wiki
 // WikiPreview は wiki#preview。
 func (a *App) WikiPreview(c *Req) {
 	ws := c.wikiState()
-	page, _, err := a.findPage(c, ws.Wiki, c.Params().String("id"), true)
+	page, redirected, err := a.findPage(c, ws.Wiki, c.Params().String("id"), true)
 	if err != nil {
 		a.wikiError(c, err)
 		return
+	}
+	if !c.wikiRedirectTargetEditable(ws.Wiki, page, redirected) {
+		// 権限の無いプロジェクトのページ（添付ファイル・本文）はプレビューに使わない
+		page = nil
 	}
 	if page != nil && !c.wikiEditable(page) {
 		c.Render403("")
