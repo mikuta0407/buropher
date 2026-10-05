@@ -30,7 +30,8 @@ Created: 07/19/2006 05:33 PM</p>
 <h4>Atom access key</h4>
 
 <p>
-Atom access key created less than a minute ago
+  Atom access key created less than a minute ago<br />
+    Never used
 (<a rel="nofollow" data-method="post" href="/my/atom_key">Reset</a>)
 </p>
 
@@ -56,7 +57,8 @@ $('#api-access-key').hide();
 //]]>
 </script>
   <p>
-  API access key created less than a minute ago
+    API access key created less than a minute ago<br />
+      Never used
   (<a rel="nofollow" data-method="post" href="/my/api_key">Reset</a>)
   </p>
 </div>
@@ -87,8 +89,8 @@ $('#api-access-key').hide();
 <div class="splitcontentleft">
 <fieldset class="box tabular">
   <legend>Information</legend>
-  <p><label for="user_firstname">First name<span class="required"> *</span></label><input type="text" value="Dave" name="user[firstname]" id="user_firstname" /></p>
-  <p><label for="user_lastname">Last name<span class="required"> *</span></label><input type="text" value="Lopper" name="user[lastname]" id="user_lastname" /></p>
+    <p><label for="user_firstname">First name<span class="required"> *</span></label><input type="text" value="Dave" name="user[firstname]" id="user_firstname" /></p>
+    <p><label for="user_lastname">Last name<span class="required"> *</span></label><input type="text" value="Lopper" name="user[lastname]" id="user_lastname" /></p>
   <p><label for="user_mail">Email<span class="required"> *</span></label><input type="text" value="dlopper@somenet.foo" name="user[mail]" id="user_mail" /></p>
   <p><label for="user_language">Language</label><select name="user[language]" id="user_language"><option value="">(auto)</option>
 <option value="sq">Albanian (Shqip)</option>
@@ -164,6 +166,7 @@ $('#api-access-key').hide();
 <option value="only_my_events">Only for things I watch or I&#39;m involved in</option>
 <option value="only_assigned">Only for things I watch or I am assigned to</option>
 <option value="only_owner">Only for things I watch or I am the owner of</option>
+<option value="only_my_watches">Only for things I watch</option>
 <option value="none">No events</option></select>
 </p>
 <fieldset id="notified-projects" style="display:none;">
@@ -195,6 +198,8 @@ $('#api-access-key').hide();
     <p><input type="checkbox" value="issue_created" name="pref[auto_watch_on][]" id="pref_auto_watch_on_issue_created" /> <label for="pref_auto_watch_on_issue_created">Issues I created</label></p>
 
     <p><input type="checkbox" value="issue_contributed_to" name="pref[auto_watch_on][]" id="pref_auto_watch_on_issue_contributed_to" /> <label for="pref_auto_watch_on_issue_contributed_to">Issues I contributed to</label></p>
+
+    <p><input type="checkbox" value="issue_assigned_to_me" name="pref[auto_watch_on][]" id="pref_auto_watch_on_issue_assigned_to_me" /> <label for="pref_auto_watch_on_issue_assigned_to_me">Issues assigned to me</label></p>
 
 </fieldset>
 

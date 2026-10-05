@@ -88,7 +88,7 @@ func TestJournalsEdit(t *testing.T) {
 func TestJournalsNewQuote(t *testing.T) {
 	ts, d := newFixtureServer(t)
 	admin := login(t, ts, "admin", "admin")
-	head := "showAndScrollTo(\"update\");\n\nvar notes = $('#issue_notes').val();\nif (notes > \"\") { notes = notes + \"\\n\\n\"}\n\n"
+	head := "$('#update').show();\nshowAndScrollTo(\"add_notes\");\n\nvar notes = $('#issue_notes').val();\nif (notes > \"\") { notes = notes + \"\\n\\n\"}\n\n"
 
 	// チケットの説明を引用
 	res, body := projSubmit(t, admin, ts, http.MethodPost, "/issues/1/quoted", nil, true)
@@ -171,13 +171,13 @@ func TestJournalsUpdate(t *testing.T) {
 		!strings.Contains(body, "'journal has-details'") {
 		t.Errorf("journal with details: %d %s", res.StatusCode, body)
 	}
-	// 詳細の無いジャーナルの注記を空にすると削除
+	// 詳細の無いジャーナルの注記を空にすると履歴から取り除く（Redmine 7.0 #44258: ジャーナル自体は残す）
 	res, body = projSubmit(t, admin, ts, http.MethodPut, "/journals/2", url.Values{"journal[notes]": {""}}, true)
 	if res.StatusCode != http.StatusOK || body != "  $(\"#change-2\").remove();\n\n\n" {
-		t.Errorf("destroy: %d %q", res.StatusCode, body)
+		t.Errorf("remove: %d %q", res.StatusCode, body)
 	}
-	if n := queryInt(t, d, `SELECT COUNT(*) FROM issue_journals WHERE id = 2`); n != 0 {
-		t.Errorf("journal not destroyed")
+	if n := queryInt(t, d, `SELECT COUNT(*) FROM issue_journals WHERE id = 2`); n != 1 {
+		t.Errorf("journal destroyed")
 	}
 	// html はチケットへリダイレクト
 	res, _ = projSubmit(t, admin, ts, http.MethodPatch, "/journals/3", url.Values{"journal[notes]": {"html update"}}, false)
