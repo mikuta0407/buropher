@@ -19,6 +19,26 @@ import (
 type SaveResult struct {
 	// Notifications はコミット後にキューへ積む通知 (Mailer.deliver_issue_add / deliver_issue_edit)。
 	Notifications []Notification
+	// Webhooks はコミット後に発火する Webhook（acts_as_webhookable の after_create_commit /
+	// after_update_commit / after_destroy_commit）。保存・削除したチケットごとに 1 件（保存開始順）。
+	Webhooks []WebhookEvent
+}
+
+// Webhook のアクション（acts_as_webhookable の events）。
+const (
+	WebhookCreated = "created"
+	WebhookUpdated = "updated"
+	WebhookDeleted = "deleted"
+)
+
+// WebhookEvent はコミット後に発火する Webhook の 1 件（Webhook.trigger("issue.<action>", issue)）。
+type WebhookEvent struct {
+	// Action は WebhookCreated / WebhookUpdated / WebhookDeleted。
+	Action    string
+	IssueID   int64
+	ProjectID int64
+	// JournalID は issue.updated の current_journal（保存されていなければ 0。Issue::Webhookable）。
+	JournalID int64
 }
 
 // saveState は 1 回の (入れ子の保存を含む) 保存処理で共有する状態。
@@ -41,6 +61,8 @@ type commitRecord struct {
 	destroyed         bool
 	destroyedParentID *int64
 	withoutNestedSet  bool
+	// saved は INSERT / UPDATE まで終えた（after_*_commit の対象）。
+	saved bool
 }
 
 func (st *saveState) addIssue(iss *Issue) *commitRecord {
@@ -183,6 +205,7 @@ func (e *Env) save(ctx context.Context, iss *Issue, validate bool, st *saveState
 			return false, err
 		}
 	}
+	rec.saved = true
 	// changes_applied
 	prev := *iss.orig0()
 	iss.saved = &prev
@@ -536,6 +559,7 @@ func (e *Env) updateNestedSetAttributesOnParentChange(ctx context.Context, iss *
 // runCommitCallbacks はコミット後のコールバック (create_parent_issue_journal, add_auto_watcher,
 // send_notification, Journal#send_notification) をトランザクションに参加した順に実行する。
 func (e *Env) runCommitCallbacks(ctx context.Context, st *saveState) error {
+	defer st.collectWebhooks()
 	for i := 0; i < len(st.records); i++ {
 		r := st.records[i]
 		switch {
@@ -558,6 +582,33 @@ func (e *Env) runCommitCallbacks(ctx context.Context, st *saveState) error {
 		}
 	}
 	return nil
+}
+
+// collectWebhooks は保存・削除したチケットの Webhook（after_create_commit / after_update_commit /
+// after_destroy_commit）を SaveResult.Webhooks に記録する（同じチケットは 1 件）。
+func (st *saveState) collectWebhooks() {
+	seen := map[int64]bool{}
+	for _, r := range st.records {
+		if r.issue == nil || r.issue.ID == 0 || seen[r.issue.ID] {
+			continue
+		}
+		ev := WebhookEvent{IssueID: r.issue.ID, ProjectID: r.issue.ProjectID}
+		switch {
+		case r.destroyed:
+			ev.Action = WebhookDeleted
+		case !r.saved:
+			continue
+		case r.created:
+			ev.Action = WebhookCreated
+		default:
+			ev.Action = WebhookUpdated
+			if j := r.issue.currentJournal; j != nil && j.persisted {
+				ev.JournalID = j.ID
+			}
+		}
+		seen[r.issue.ID] = true
+		st.result.Webhooks = append(st.result.Webhooks, ev)
+	}
 }
 
 // createParentIssueJournal は create_parent_issue_journal: 親チケットに child_id の変更を記録する。

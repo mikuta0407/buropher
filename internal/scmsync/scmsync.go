@@ -39,6 +39,13 @@ type Service struct {
 	Notifier issues.Notifier
 	// Logger はログ出力先（nil なら slog.Default()）。
 	Logger *slog.Logger
+	// Webhooks はコミット後に Webhook を発火する（キーワードで更新したチケットの issue.updated と、
+	// 記録した作業時間の time_entry.created。nil なら発火しない）。
+	Webhooks func(ctx context.Context, issueEvents []issues.WebhookEvent, timeEntryIDs []int64)
+
+	// pendingIssueWebhooks / pendingTimeEntries は取り込み中のリビジョンで発火する Webhook（コミット後に Webhooks へ渡す）。
+	pendingIssueWebhooks []issues.WebhookEvent
+	pendingTimeEntries   []int64
 }
 
 func (s *Service) logger() *slog.Logger {
@@ -179,14 +186,20 @@ func (s *Service) saveRevisions(ctx context.Context, repo *domain.Repository, g 
 			continue
 		}
 		var notifications []issues.Notification
+		s.pendingIssueWebhooks, s.pendingTimeEntries = nil, nil
 		err := s.DB.WithTx(ctx, func(tx *db.Tx) error {
 			ns, err := s.saveRevision(ctx, tx, repo, rev, committers, user)
 			notifications = ns
 			return err
 		})
 		if err != nil {
+			s.pendingIssueWebhooks, s.pendingTimeEntries = nil, nil
 			return err
 		}
+		if s.Webhooks != nil && (len(s.pendingIssueWebhooks) > 0 || len(s.pendingTimeEntries) > 0) {
+			s.Webhooks(ctx, s.pendingIssueWebhooks, s.pendingTimeEntries)
+		}
+		s.pendingIssueWebhooks, s.pendingTimeEntries = nil, nil
 		if len(notifications) > 0 {
 			env := issues.NewEnv(s.DB, s.Settings, user)
 			env.Notifier = s.Notifier

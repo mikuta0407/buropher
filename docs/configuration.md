@@ -135,6 +135,26 @@ See [pdf.md](pdf.md).
 | `scm.git_command` | `BUROPHER_SCM_GIT_COMMAND` | `git` | Git executable (Redmine's `scm_git_command`). |
 | `scm.fetch_interval` | `BUROPHER_SCM_FETCH_INTERVAL` | `""` | Fetch new changesets of all repositories at this interval (e.g. `15m`). Replaces the usual cron job running `Repository.fetch_changesets`. |
 
+### `[webhook]`
+
+| Key | Env | Default | Description |
+|---|---|---|---|
+| `webhook.blocklist` | `BUROPHER_WEBHOOK_BLOCKLIST` (comma-separated) | `[]` | IPs, networks (CIDR), host names and `*.domain` wildcards that must not be used as webhook targets (Redmine's `webhook_blocklist`). |
+
+Webhooks (Redmine 7.0) are enabled in *Administration > Settings > Integrations*; users need
+the *Use webhooks* permission and manage their hooks from *My account > Webhooks*. Target URLs
+must use `http`/`https`, must not use a blocked port (WHATWG "bad ports") and must resolve only
+to allowed addresses: loopback, link-local, unspecified (`0.0.0.0/8`, `::`), multicast and
+`255.255.255.255` are always rejected, plus everything in `webhook.blocklist`. Private networks
+are **not** blocked by default (same as Redmine); list your internal networks (e.g.
+`10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`, `fc00::/7`) to prevent SSRF. The host is
+resolved again on delivery and the request goes only to the validated addresses (no proxy,
+no redirects). Deliveries run on the job queue (`[jobs]`) and are not retried; a failed
+delivery is logged and kept as a failed job. Requests carry `User-Agent: Buropher`,
+`Content-Type: application/json`, Basic authentication from the URL's user info and, when a
+secret is set, `X-Redmine-Signature-256: sha256=<HMAC-SHA256 of the body>` (also sent as
+`X-Buropher-Signature-256`).
+
 ### Other environment variables
 
 | Variable | Used by | Description |

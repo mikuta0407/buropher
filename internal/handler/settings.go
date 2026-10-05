@@ -153,7 +153,7 @@ func (a *App) newSettingsView(c *Req, errs []helper.SettingError) (*settingsView
 		{Name: "general", Partial: "settings/general", Label: "label_general"},
 		{Name: "display", Partial: "settings/display", Label: "label_display"},
 		{Name: "authentication", Partial: "settings/authentication", Label: "label_authentication"},
-		{Name: "api", Partial: "settings/api", Label: "label_api"},
+		{Name: "integrations", Partial: "settings/api", Label: "label_integrations"},
 		{Name: "projects", Partial: "settings/projects", Label: "label_project_plural"},
 		{Name: "users", Partial: "settings/users", Label: "label_user_plural"},
 		{Name: "issues", Partial: "settings/issues", Label: "label_issue_tracking"},

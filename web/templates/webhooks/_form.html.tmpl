@@ -1,0 +1,41 @@
+{{$f := .f}}{{$webhook := (assigns).Webhook -}}
+{{error_messages_for $webhook.Errors}}
+
+<div class="splitcontent">
+  <div class="splitcontentleft">
+    <div class="box tabular">
+      <p>{{$f.TextField "url" (hash "required" true "size" 60)}}
+        <em class="info">{{l "webhook_url_info"}}</em>
+      </p>
+      <p>
+        {{$f.TextField "secret"}}
+        <em class="info">{{raw (l "webhook_secret_info_html")}}</em>
+      </p>
+      <p>{{$f.CheckBox "active"}}</p>
+    </div>
+
+    <h3>{{l "label_webhook_events"}}</h3>
+    <div class="box tabular" id="events">
+    {{range $g := (assigns).EventGroups}}
+      <fieldset id="{{$g.Type}}_events"><legend>{{toggle_checkboxes_link (printf "#%s_events input" $g.Type)}}{{$g.Label}}</legend>
+        {{range $e := $g.Events}}
+          <label class="floating">
+            {{check_box_tag "webhook[events][]" $e.Name ($webhook.HasEvent $e.Name) (hash "id" (printf "webhook_events_%s" $e.Name))}}
+            {{$e.Label}}
+          </label>
+        {{end}}
+        </fieldset>
+    {{end}}
+    <br />{{check_all_links "events"}}
+    {{hidden_field_tag "webhook[events][]" ""}}
+    </div>
+  </div>
+
+  <div class="splitcontentright">
+    <fieldset class="box" id="webhook_project_ids"><legend>{{toggle_checkboxes_link "#webhook_project_ids input[type=checkbox]"}}{{l "label_project_plural"}}</legend>
+      {{render_project_nested_check_boxes "webhook[project_ids][]" (assigns).Projects $webhook.W.ProjectIDs}}
+      {{hidden_field_tag "webhook[project_ids][]" "" (hash "id" nil)}}
+    </fieldset>
+
+  </div>
+</div>

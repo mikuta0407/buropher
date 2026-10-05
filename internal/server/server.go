@@ -44,6 +44,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/settings"
 	"github.com/mikuta0407/buropher/internal/urlroot"
 	"github.com/mikuta0407/buropher/internal/view"
+	"github.com/mikuta0407/buropher/internal/webhook"
 	"github.com/mikuta0407/buropher/web"
 )
 
@@ -170,6 +171,7 @@ func New(cfg *config.Config, d *db.DB, opts ...Options) (*Server, error) {
 	app.AuthRealm = cfg.Server.AuthRealm
 	app.MailOmitRedmineHeaders = !cfg.Mail.SendRedmineHeaders()
 	app.MessageIDPrefix = cfg.Mail.MessageIDPrefix
+	app.WebhookValidator = webhook.NewValidator(cfg.Webhook.Blocklist)
 	if box, err := secretbox.New(string(secret)); err == nil {
 		app.Secrets = box
 	}

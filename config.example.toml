@@ -162,6 +162,14 @@
 # Themes are read at startup. env: BUROPHER_THEMES_DIR
 #themes_dir = ""
 
+[webhook]
+# Hosts, IP addresses and IP networks that must NOT be used as webhook targets (Redmine's
+# webhook_blocklist). Loopback, link-local, unspecified and multicast addresses are always
+# rejected; add your internal networks and hostnames here to prevent SSRF attacks.
+# Entries are IPs, CIDRs, host names or "*.domain" wildcards.
+# env: BUROPHER_WEBHOOK_BLOCKLIST (comma-separated; replaces this list)
+#blocklist = ["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "fc00::/7", "example.org", "*.example.com"]
+
 [mail_receive]
 # Poll a mailbox periodically and feed emails to the mail handler
 # (instead of cron + rake redmine:email:receive_imap / receive_pop3). See `buropher mail receive -h`.

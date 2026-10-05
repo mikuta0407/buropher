@@ -87,6 +87,7 @@ aliases where noted:
 |---|---|
 | `X-Redmine-API-Key`, `X-Redmine-Switch-User` request headers | Accepted as before. `X-Buropher-API-Key` / `X-Buropher-Switch-User` are accepted as aliases; if both are given, `X-Buropher-*` wins. `X-Redmine-Nometa` / `X-Buropher-Nometa` likewise. |
 | `X-Redmine-*` mail headers (`X-Redmine-Project`, `-Issue-Id`, `-Host`, `-Site`, ...) | Every header is also sent as `X-Buropher-*` with the same value, right after its `X-Redmine-*` counterpart. `[mail] redmine_compat_headers = false` (env `BUROPHER_MAIL_REDMINE_HEADERS=false`) sends only `X-Buropher-*`. The mail handler does not depend on either family. |
+| Webhook `X-Redmine-Signature-256` header | Kept (same HMAC-SHA256 value as Redmine, so existing receivers keep verifying); the same value is also sent as `X-Buropher-Signature-256`. The webhook `User-Agent` is `Buropher` (Redmine sends `Redmine`), like `X-Mailer`. |
 | `Message-ID` / `References` tokens `redmine.<class>-<id>.<time>[.<user>]@<host>` | Default prefix stays `redmine` so replies to mails sent by Redmine before the migration keep threading; `[mail] message_id_prefix = "buropher"` switches new mails. Incoming replies are matched with either prefix. |
 | `WWW-Authenticate` realm (`Basic realm="Redmine API"`, `Bearer realm="Redmine"`) | Kept by default for API clients; configurable with `[server] auth_realm`. |
 | REST API element names, form parameter names, CSS classes/ids, JavaScript globals, session/autologin cookie names | Unchanged (Redmine clients, themes and scripts depend on them). |

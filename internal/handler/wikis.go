@@ -10,6 +10,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/db"
 	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/repository"
+	"github.com/mikuta0407/buropher/internal/webhook"
 )
 
 // WikisController（app/controllers/wikis_controller.rb）。
@@ -38,6 +39,12 @@ func (a *App) WikisDestroy(c *Req) {
 		}
 		if w != nil {
 			var removedAttachments []*domain.Attachment
+			// has_many :pages, dependent: :destroy の各ページの wiki_page.deleted（削除の前に計算する）
+			if a.webhooksEnabled() {
+				if ids, err := repository.WikiPageIDs(c.Ctx(), a.DB, w.ID); err == nil {
+					a.prepareDeleteWebhooks(c, webhook.TypeWikiPage, ids...)
+				}
+			}
 			err := a.DB.WithTx(c.Ctx(), func(tx *db.Tx) error {
 				ids, err := repository.WikiPageIDs(c.Ctx(), tx, w.ID)
 				if err != nil {
@@ -63,6 +70,7 @@ func (a *App) WikisDestroy(c *Req) {
 				a.wikiError(c, err)
 				return
 			}
+			a.enqueuePreparedDeleteWebhooks(c, webhook.TypeWikiPage)
 			a.deleteAttachmentsAfterCommit(c, removedAttachments)
 			c.Redirect("/projects/" + projectParam(c.Project))
 			return

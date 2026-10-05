@@ -441,6 +441,7 @@ func (m *importModel) issueBuildAndSave(ctx context.Context, row csvimport.Row, 
 		if err := env.Dispatch(ctx, res.Notifications); err != nil {
 			m.a.logger().Error("import issue notification", "err", err)
 		}
+		m.a.TriggerIssueWebhooks(ctx, res.Webhooks)
 	}
 	return importResult{obj: iss, persisted: true, objID: iss.ID}, nil
 }
@@ -652,6 +653,7 @@ func (m *importModel) issueCreateRelation(ctx context.Context, fromID, toID int6
 		if err := env.Dispatch(ctx, res.Notifications); err != nil {
 			m.a.logger().Error("import relation notification", "err", err)
 		}
+		m.a.TriggerIssueWebhooks(ctx, res.Webhooks)
 	}
 	return ok, nil
 }
@@ -684,6 +686,7 @@ func (m *importModel) issueSetAsParentCallback(ctx context.Context, res importRe
 	}
 	if sr != nil {
 		_ = env.Dispatch(ctx, sr.Notifications)
+		m.a.TriggerIssueWebhooks(ctx, sr.Webhooks)
 	}
 	return nil
 }

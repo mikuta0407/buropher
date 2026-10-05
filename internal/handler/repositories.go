@@ -141,7 +141,7 @@ func (c *Req) repoState() *repoState {
 // App.Notifier はテスト用の上書きで、本番では nil のため、それを渡すとキーワードによる更新が通知されない）。
 func (a *App) scmService() *scmsync.Service {
 	return &scmsync.Service{DB: a.DB, Settings: a.Settings, GitCommand: a.GitCommand, Bundle: a.Bundle, Now: a.Now,
-		Notifier: a.issueNotifier(), Logger: a.Logger}
+		Notifier: a.issueNotifier(), Logger: a.Logger, Webhooks: a.scmWebhooks}
 }
 
 // SCMService は定期取り込み（server の scm.fetch_interval）用の scmService。通知先は呼び出し時点の設定で決まる。
