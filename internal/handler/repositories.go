@@ -788,6 +788,17 @@ func (a *App) RepositoriesRemoveRelatedIssue(c *Req) {
 			a.internalError(c, "visible issue", err)
 			return
 		}
+		// add_related_issue と同じく OAuth トークンのスコープも見る（SQL の可視条件はスコープを見ない）
+		if is != nil {
+			p, err := repository.GetProject(ctx, a.DB, is.ProjectID)
+			if err != nil {
+				a.internalError(c, "issue project", err)
+				return
+			}
+			if !c.AllowedTo(domain.Perm("view_issues"), p) {
+				is = nil
+			}
+		}
 		issue = is
 	}
 	if issue != nil {
