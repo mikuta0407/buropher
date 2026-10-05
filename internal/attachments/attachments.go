@@ -103,12 +103,15 @@ var (
 // ASCII（英数字 _ . -）のみで 50 文字以下ならそのまま、それ以外は ActiveSupport::Digest.hexdigest
 // （Redmine は load_defaults を呼ばないため MD5 の 16 進 32 文字）に元の拡張子を付けたもの。
 func DiskFilenameBase(filename string) string {
-	if reASCIIFilename.MatchString(filename) && len(filename) <= 50 {
+	const maxFilenameLength = 50
+	if reASCIIFilename.MatchString(filename) && len(filename) <= maxFilenameLength {
 		return filename
 	}
 	sum := md5.Sum([]byte(filename))
 	ascii := hex.EncodeToString(sum[:])
-	if m := reFilenameExt.FindStringSubmatch(filename); m != nil {
+	// 拡張子は MD5 と合わせて 50 文字以下のときだけ残す（長すぎる拡張子でディスク上のファイル名が
+	// 長くなりすぎ、保存に失敗しないように。Redmine 7.0 の #44186）
+	if m := reFilenameExt.FindStringSubmatch(filename); m != nil && len(ascii)+len(m[1]) <= maxFilenameLength {
 		ascii += m[1]
 	}
 	return ascii
