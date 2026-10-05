@@ -124,6 +124,7 @@ func (a *App) newEnumerationForm(c *Req, e *domain.Enumeration) (*enumerationFor
 	if err != nil {
 		return nil, err
 	}
+	resolveCFDefaultValues(cfs, a.userToday(c))
 	f := &enumerationForm{formModel: newFormModel(c, "enumeration", e.ID), Enumeration: e, cfs: cfs,
 		values: map[int64][]string{}, given: map[int64]bool{}}
 	if e.ID != 0 {

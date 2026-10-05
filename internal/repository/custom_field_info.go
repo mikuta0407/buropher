@@ -50,6 +50,9 @@ func (r *customFieldInfoRow) info() *domain.CustomFieldInfo {
 		if s, ok := fs["edit_tag_style"].(string); ok {
 			c.EditTagStyle = s
 		}
+		if s, ok := fs["default_value_mode"].(string); ok {
+			c.DefaultValueMode = s
+		}
 	}
 	return c
 }

@@ -6,6 +6,9 @@ package customfield
 import (
 	"slices"
 	"strconv"
+	"time"
+
+	"github.com/mikuta0407/buropher/internal/domain"
 )
 
 // Type は owner_kind と Redmine のクラス名・関連情報の対応（CustomFieldsHelper::CUSTOM_FIELDS_TABS）。
@@ -107,7 +110,16 @@ func (cf *CustomField) DescriptionString() string { return strOrEmpty(cf.Descrip
 // RegexpString は regexp（nil は ""）。
 func (cf *CustomField) RegexpString() string { return strOrEmpty(cf.Regexp) }
 
-// DefaultValueString は default_value（nil は ""）。
+// DefaultValueMode は default_value_mode（日付書式の format_store。未設定は ""）。
+func (cf *CustomField) DefaultValueMode() string { return cf.Setting("default_value_mode") }
+
+// DefaultValueOn は CustomField#default_value（7.0.1 #44129: 日付書式の date_offset モードでは
+// 保存値を today（User.current.today）からの日数として評価した日付）。
+func (cf *CustomField) DefaultValueOn(today time.Time) *string {
+	return domain.CustomFieldDefaultValue(cf.FieldFormat, cf.DefaultValueMode(), cf.DefaultValue, today)
+}
+
+// DefaultValueString は default_value（nil は ""）。保存値のまま（相対既定値は評価しない）。
 func (cf *CustomField) DefaultValueString() string { return strOrEmpty(cf.DefaultValue) }
 
 // CSSClasses は css_classes。

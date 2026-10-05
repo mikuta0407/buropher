@@ -29,6 +29,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/customfield"
 	"github.com/mikuta0407/buropher/internal/db"
 	"github.com/mikuta0407/buropher/internal/domain"
+	"github.com/mikuta0407/buropher/internal/i18n"
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/settings"
 )
@@ -94,6 +95,36 @@ func (e *Env) now() time.Time {
 func (e *Env) today() time.Time {
 	y, m, d := e.now().Date()
 	return time.Date(y, m, d, 0, 0, 0, 0, time.UTC)
+}
+
+// userToday は User.current.today（ユーザーのタイムゾーン。未設定ならサーバのローカル時刻）。
+// カスタムフィールドの相対既定値（7.0.1 #44129）の評価に使う。
+func (e *Env) userToday(ctx context.Context) time.Time {
+	t := e.now()
+	var loc *time.Location
+	if e.User != nil && e.User.ID != 0 {
+		if pref, err := repository.GetUserPreference(ctx, e.Q, e.User.ID); err == nil && pref != nil {
+			loc = i18n.UserLocation(pref.TimeZone)
+		}
+	}
+	if loc == nil {
+		loc = time.Local
+	}
+	y, m, d := t.In(loc).Date()
+	return time.Date(y, m, d, 0, 0, 0, 0, time.UTC)
+}
+
+// cfDefaultValue は custom_field.default_value（相対既定値なら User.current.today から評価する）。
+// Redmine は value ||= custom_field.default_value なので空文字列の既定値も "" として入る。
+func (e *Env) cfDefaultValue(ctx context.Context, cf *customfield.CustomField) *string {
+	if cf.DefaultValue == nil {
+		return nil
+	}
+	if cf.FieldFormat == "date" && cf.DefaultValueMode() == domain.DefaultValueModeDateOffset {
+		return cf.DefaultValueOn(e.userToday(ctx))
+	}
+	s := *cf.DefaultValue
+	return &s
 }
 
 func (e *Env) formatDate(t time.Time) string {

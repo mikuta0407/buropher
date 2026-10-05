@@ -115,7 +115,7 @@ func (f *cfForm) Send(method string) (any, bool) {
 	case "persisted?":
 		return cf.ID != 0, true
 	case "url_pattern", "full_width_layout", "text_formatting", "edit_tag_style", "user_role", "version_status",
-		"extensions_allowed", "thousands_delimiter", "ratio_interval":
+		"extensions_allowed", "thousands_delimiter", "ratio_interval", "default_value_mode":
 		return cf.SettingValue(method), true
 	}
 	return nil, false
@@ -312,7 +312,7 @@ func strPtr(s string) *string { return &s }
 // ---------------------------------------------------------------- safe_attributes
 
 var cfSettingKeys = []string{"url_pattern", "text_formatting", "edit_tag_style", "user_role", "version_status",
-	"extensions_allowed", "full_width_layout", "thousands_delimiter", "ratio_interval"}
+	"extensions_allowed", "full_width_layout", "thousands_delimiter", "ratio_interval", "default_value_mode"}
 
 // railsBool は ActiveModel::Type::Boolean のキャスト（"0", "f", "false", "off", "" などは偽）。
 func railsBool(v any) bool {
@@ -712,6 +712,23 @@ func (a *App) CustomFieldsDestroy(c *Req) {
 
 // CustomFieldModel は helper.CustomFieldModel。
 func (f *cfForm) CustomFieldModel() *customfield.CustomField { return f.CF }
+
+// DefaultValueModeOrFixed は @custom_field.default_value_mode.presence || 'fixed_date'（_date.html.erb）。
+func (f *cfForm) DefaultValueModeOrFixed() string {
+	if m := f.CF.DefaultValueMode(); m != "" {
+		return m
+	}
+	return "fixed_date"
+}
+
+// DefaultValueForMode は _date.html.erb の fixed_date_default_value / date_offset_default_value
+// （モードが一致すれば保存値 @custom_field[:default_value]、そうでなければ nil）。
+func (f *cfForm) DefaultValueForMode(mode string) any {
+	if f.DefaultValueModeOrFixed() != mode {
+		return nil
+	}
+	return f.DefaultValueAttr()
+}
 
 // DefaultValueAttr は default_value（nil は nil）。
 func (f *cfForm) DefaultValueAttr() any {

@@ -46,15 +46,6 @@ func (iss *Issue) setCustomFieldDefault() bool {
 	return iss.NewRecord() || iss.AttrChanged("project_id") || iss.AttrChanged("tracker_id")
 }
 
-func defaultValue(cf *customfield.CustomField) *string {
-	// Redmine は value ||= custom_field.default_value なので空文字列の既定値も "" として入る
-	if cf.DefaultValue == nil {
-		return nil
-	}
-	s := *cf.DefaultValue
-	return &s
-}
-
 // storedValue は DB の custom_values から field の値を作る (行が無ければ ok = false)。
 func (iss *Issue) storedValue(cf *customfield.CustomField) (CFValue, bool) {
 	var vals []sql.NullString
@@ -106,7 +97,7 @@ func (e *Env) CustomFieldValues(ctx context.Context, iss *Issue) ([]*CustomField
 			} else {
 				var dv *string
 				if iss.setCustomFieldDefault() {
-					dv = defaultValue(cf)
+					dv = e.cfDefaultValue(ctx, cf)
 				}
 				if cf.Multiple {
 					if dv != nil {

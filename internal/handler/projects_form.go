@@ -138,7 +138,7 @@ func (a *App) newProjectForm(c *Req) (*projectForm, error) {
 			f.TrackerIDs = append(f.TrackerIDs, t.ID)
 		}
 	}
-	if f.CFValues, err = a.projectCustomFieldValues(ctx, p); err != nil {
+	if f.CFValues, err = a.projectCustomFieldValues(c, p); err != nil {
 		return nil, err
 	}
 	return f, nil
@@ -158,7 +158,7 @@ func (a *App) loadProjectForm(c *Req, p *domain.Project) (*projectForm, error) {
 	if f.IssueCustomFieldIDs, err = repository.ProjectIssueCustomFieldIDs(ctx, a.DB, p.ID); err != nil {
 		return nil, err
 	}
-	if f.CFValues, err = a.projectCustomFieldValues(ctx, p); err != nil {
+	if f.CFValues, err = a.projectCustomFieldValues(c, p); err != nil {
 		return nil, err
 	}
 	return f, nil

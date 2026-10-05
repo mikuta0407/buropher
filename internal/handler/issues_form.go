@@ -222,7 +222,8 @@ func (a *App) newTimeEntryFormModel(l *issueLookup, m *issueModel) *timeEntryFor
 		}
 		v := &issueCFValue{CF: cf, Multi: cf.Multiple}
 		if d := cf.DefaultValueString(); d != "" {
-			v.Values = []string{d}
+			// 日付の相対既定値（7.0.1 #44129）は User.current.today から評価する
+			v.Values = []string{*cf.DefaultValueOn(l.userToday())}
 		} else if cf.Multiple {
 			v.Values = []string{""}
 		}

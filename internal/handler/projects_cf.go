@@ -37,7 +37,8 @@ type projectCFValue = domain.CustomFieldValue
 
 // projectCustomFieldValues は project.custom_field_values（全 ProjectCustomField、position 順）。
 // 新規プロジェクト（p.ID == 0）は既定値で初期化する。
-func (a *App) projectCustomFieldValues(ctx context.Context, p *domain.Project) ([]*projectCFValue, error) {
+func (a *App) projectCustomFieldValues(c *Req, p *domain.Project) ([]*projectCFValue, error) {
+	ctx := c.Ctx()
 	infos, err := repository.ProjectCustomFieldInfos(ctx, a.DB)
 	if err != nil {
 		return nil, err
@@ -55,7 +56,7 @@ func (a *App) projectCustomFieldValues(ctx context.Context, p *domain.Project) (
 		if vals, ok := stored[cf.ID]; ok {
 			v.Values = vals
 		} else if p.ID == 0 && cf.DefaultValue != nil && *cf.DefaultValue != "" {
-			v.Values = []string{*cf.DefaultValue}
+			v.Values = []string{*cf.DefaultValueOn(a.userToday(c))}
 		}
 		out[i] = v
 	}
@@ -98,7 +99,7 @@ func (a *App) visibleCustomFieldValues(c *Req, p *domain.Project, values []*proj
 
 // projectVisibleCustomFieldValues は project.visible_custom_field_values。
 func (a *App) projectVisibleCustomFieldValues(c *Req, p *domain.Project) ([]*projectCFValue, error) {
-	all, err := a.projectCustomFieldValues(c.Ctx(), p)
+	all, err := a.projectCustomFieldValues(c, p)
 	if err != nil {
 		return nil, err
 	}

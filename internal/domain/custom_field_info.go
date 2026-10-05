@@ -3,7 +3,10 @@
 
 package domain
 
-import "strconv"
+import (
+	"strconv"
+	"time"
+)
 
 // CustomFieldInfo はカスタムフィールドの定義のうち、トラッカー・列挙の管理画面と
 // 列挙の値の入力欄（custom_field_tag）に必要な属性だけを持つ軽量な型。
@@ -25,6 +28,13 @@ type CustomFieldInfo struct {
 	PossibleValues []string
 	// EditTagStyle は format_settings.edit_tag_style（"", "check_box", "radio"）。
 	EditTagStyle string
+	// DefaultValueMode は format_settings.default_value_mode（日付書式の "fixed_date" / "date_offset"）。
+	DefaultValueMode string
+}
+
+// DefaultValueOn は CustomField#default_value（日付書式の相対既定値は today からの日数として評価する）。
+func (c *CustomFieldInfo) DefaultValueOn(today time.Time) *string {
+	return CustomFieldDefaultValue(c.FieldFormat, c.DefaultValueMode, c.DefaultValue, today)
 }
 
 // CSSClasses は CustomField#css_classes。
