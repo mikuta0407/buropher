@@ -165,6 +165,10 @@ type Controller struct {
 	DefaultSearchScope string
 	// MenuItem は menu_item の宣言をアクション名から決める関数（nil なら menu.CurrentMenuItem）。
 	MenuItem func(action string) string
+	// FullURLFor は helper_method :url_for でコントローラの url_for をビューに公開している
+	// （ContextMenus::BaseController）。ビューで Hash から作る URL（メニューのリンク等）が
+	// only_path にならず完全 URL になる。
+	FullURLFor bool
 }
 
 // Filter は ApplicationController の before_action の種類（skip_before_action の指定に使う）。

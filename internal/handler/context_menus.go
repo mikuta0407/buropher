@@ -20,13 +20,13 @@ import (
 // Name は controller_name（名前空間を除いた名前。エラー画面の body の class・既定の検索対象・選択中のメニューに効く）。
 var (
 	// ContextMenusIssuesController は ContextMenus::IssuesController。
-	ContextMenusIssuesController = &Controller{Name: "issues", MainMenu: true, DefaultSearchScope: "issues"}
+	ContextMenusIssuesController = &Controller{Name: "issues", MainMenu: true, DefaultSearchScope: "issues", FullURLFor: true}
 	// ContextMenusProjectsController は ContextMenus::ProjectsController。
-	ContextMenusProjectsController = &Controller{Name: "projects", MainMenu: true}
+	ContextMenusProjectsController = &Controller{Name: "projects", MainMenu: true, FullURLFor: true}
 	// ContextMenusTimeEntriesController は ContextMenus::TimeEntriesController。
-	ContextMenusTimeEntriesController = &Controller{Name: "time_entries", MainMenu: true}
+	ContextMenusTimeEntriesController = &Controller{Name: "time_entries", MainMenu: true, FullURLFor: true}
 	// ContextMenusUsersController は ContextMenus::UsersController。
-	ContextMenusUsersController = &Controller{Name: "users", MainMenu: true}
+	ContextMenusUsersController = &Controller{Name: "users", MainMenu: true, FullURLFor: true}
 )
 
 // contextMenuURLFor は ContextMenus::BaseController#url_for（helper_method）で作る URL。

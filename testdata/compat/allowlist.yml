@@ -71,6 +71,24 @@ entries:
       - '^\s*<input (checked="checked" )?name="settings\[enabled_scm\]\[\]" type="checkbox" value="(Subversion|Mercurial|Cvs|Bazaar|Filesystem)">$'
       - '^\s*(Subversion|Mercurial|Cvs|Bazaar|Filesystem|svn|hg|cvs|bzr)$'
       - '^\s*<span class="icon icon-(ok|error)"></span>$'
+  - case: "issues_v7_write/*settings_issues*"
+    reason: "settings_admin と同じ（設定画面全体を描画するので SCM 表は Git のみ。D-15）"
+    lines:
+      - '^\s*</?(tr|td|label)>$'
+      - '^\s*<td class="scm_name">$'
+      - '^\s*<td></td>$'
+      - '^\s*<input (checked="checked" )?name="settings\[enabled_scm\]\[\]" type="checkbox" value="(Subversion|Mercurial|Cvs|Bazaar|Filesystem)">$'
+      - '^\s*(Subversion|Mercurial|Cvs|Bazaar|Filesystem|svn|hg|cvs|bzr)$'
+      - '^\s*<span class="icon icon-(ok|error)"></span>$'
+  - case: "webhooks_write/*settings_tab_integrations*"
+    reason: "settings_admin と同じ（設定画面全体を描画するので SCM 表は Git のみ。D-15）"
+    lines:
+      - '^\s*</?(tr|td|label)>$'
+      - '^\s*<td class="scm_name">$'
+      - '^\s*<td></td>$'
+      - '^\s*<input (checked="checked" )?name="settings\[enabled_scm\]\[\]" type="checkbox" value="(Subversion|Mercurial|Cvs|Bazaar|Filesystem)">$'
+      - '^\s*(Subversion|Mercurial|Cvs|Bazaar|Filesystem|svn|hg|cvs|bzr)$'
+      - '^\s*<span class="icon icon-(ok|error)"></span>$'
   - case: "settings_admin/admin_info__admin"
     reason: "admin#info は意図的に buropher のバージョン・Go のバージョン・DB アダプタ等を表示する（Redmine の Ruby / Rails / ImageMagick の確認項目は持たない）。レイアウトと CSS クラスは同じ"
     ignore: true
