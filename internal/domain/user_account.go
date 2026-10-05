@@ -25,6 +25,7 @@ var MailNotificationOptions = []MailNotificationOption{
 	{"only_my_events", "label_user_mail_option_only_my_events"},
 	{"only_assigned", "label_user_mail_option_only_assigned"},
 	{"only_owner", "label_user_mail_option_only_owner"},
+	{"only_my_watches", "label_user_mail_option_only_my_watches"}, // Redmine 7.0 (#37978)
 	{"none", "label_user_mail_option_none"},
 }
 
@@ -156,7 +157,7 @@ var TextareaFontOptions = []string{"monospace", "proportional"}
 var DefaultToolbarLanguageOptions = []string{"c", "cpp", "csharp", "css", "diff", "go", "groovy", "html", "java", "javascript", "objc", "perl", "php", "python", "r", "ruby", "sass", "scala", "shell", "sql", "swift", "xml", "yaml"}
 
 // AutoWatchOnOptions は UserPreference::AUTO_WATCH_ON_OPTIONS。
-var AutoWatchOnOptions = []string{"issue_created", "issue_contributed_to"}
+var AutoWatchOnOptions = []string{"issue_created", "issue_contributed_to", "issue_assigned_to_me"}
 
 // UserPreferenceDetail はユーザー編集画面で扱う個人設定の全項目（user_preferences 行）。
 type UserPreferenceDetail struct {

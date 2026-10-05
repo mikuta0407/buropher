@@ -37,6 +37,9 @@ type Manifest struct {
 
 	// SchemaMigrations は書き出し元の schema_migrations.version 全件(コア+プラグイン, ソート済み)。
 	SchemaMigrations []string `json:"schema_migrations"`
+	// RedmineSchema は書き出し元のスキーマ版("6.1" / "7.0")。schema_migrations のコア集合から判定する。
+	// 空(この項目より前のアーカイブ)は "6.1" とみなす。
+	RedmineSchema string `json:"redmine_schema,omitempty"`
 	// PluginMigrations はプラグイン由来のマイグレーション(<version>-<plugin_id>)をプラグイン別にまとめたもの。
 	PluginMigrations []PluginMigrations `json:"plugin_migrations"`
 

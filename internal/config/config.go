@@ -163,7 +163,8 @@ type Discord struct {
 
 // Auth は認証まわりの設定（Redmine の configuration.yml の sudo_mode / sudo_mode_timeout 相当）。
 type Auth struct {
-	// SudoMode は sudo モード（管理操作の前にパスワードを再入力させる）を有効にする。既定 false（Redmine と同じ）。
+	// SudoMode は sudo モード（管理操作の前にパスワードを再入力させる）を有効にする。
+	// 既定 true（Redmine 7.0 で既定有効になった。#44052）。無効にするには明示的に false を指定する。
 	SudoMode bool `toml:"sudo_mode"`
 	// SudoModeTimeout は sudo モードの有効時間（分）。0 なら 15。
 	SudoModeTimeout int `toml:"sudo_mode_timeout"`
@@ -236,6 +237,7 @@ func Default() *Config {
 		Server:   Server{Addr: ":3000"},
 		Database: Database{Driver: "sqlite", DSN: "data/buropher.db"},
 		Storage:  Storage{AttachmentsPath: "data/files"},
+		Auth:     Auth{SudoMode: true},
 	}
 }
 

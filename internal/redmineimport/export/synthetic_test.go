@@ -18,7 +18,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/redmineimport/archive"
 )
 
-// ---- 合成スキーマ: coreTables から各方言の DDL を作り、Redmine 6.1.2 相当の空 DB を作る ----
+// ---- 合成スキーマ: スキーマ版のコアテーブルから各方言の DDL を作り、Redmine 相当の空 DB を作る ----
 
 func ddlType(kind string, c columnDef, table string) string {
 	switch c.Type {
@@ -88,8 +88,14 @@ func ddlType(kind string, c columnDef, table string) string {
 	panic("unknown type " + c.Type)
 }
 
-// createSchema は合成 Redmine 6.1.2 スキーマを作る。
+// createSchema は最新の合成 Redmine スキーマを作る。
 func createSchema(t *testing.T, db *sql.DB, kind string) {
+	t.Helper()
+	createSchemaVersion(t, db, kind, LatestSchema())
+}
+
+// createSchemaVersion は指定スキーマ版の合成 Redmine スキーマを作る。
+func createSchemaVersion(t *testing.T, db *sql.DB, kind string, sv *SchemaVersion) {
 	t.Helper()
 	exec := func(q string, args ...any) {
 		t.Helper()
@@ -97,7 +103,7 @@ func createSchema(t *testing.T, db *sql.DB, kind string) {
 			t.Fatalf("%s: %v", q, err)
 		}
 	}
-	for _, td := range coreTables {
+	for _, td := range sv.Tables {
 		var cols []string
 		for _, c := range td.Columns {
 			def := quoteIdent(kind, c.Name) + " " + ddlType(kind, c, td.Name)
@@ -110,7 +116,7 @@ func createSchema(t *testing.T, db *sql.DB, kind string) {
 	}
 	exec("CREATE TABLE schema_migrations (version " + ddlType(kind, columnDef{Name: "version", Type: "string"}, "") + " PRIMARY KEY)")
 	exec("CREATE TABLE ar_internal_metadata (" + quoteIdent(kind, "key") + " varchar(255) PRIMARY KEY, value varchar(255))")
-	for _, v := range coreMigrations {
+	for _, v := range sv.Migrations {
 		exec("INSERT INTO schema_migrations (version) VALUES ("+ph(kind, 1)+")", v)
 	}
 }
@@ -223,11 +229,15 @@ func checkSynthetic(t *testing.T, kind string, m *archive.Manifest, rows map[str
 	if m.Source.DBKind != kind || m.Source.Timezone != "Asia/Tokyo" {
 		t.Errorf("source: %+v", m.Source)
 	}
-	if len(m.SchemaMigrations) != 322 || len(m.PluginMigrations) != 0 {
+	sv := LookupSchema(m.RedmineSchema)
+	if sv == nil {
+		t.Fatalf("redmine_schema = %q", m.RedmineSchema)
+	}
+	if len(m.SchemaMigrations) != len(sv.Migrations) || len(m.PluginMigrations) != 0 {
 		t.Errorf("migrations: %d plugins %v", len(m.SchemaMigrations), m.PluginMigrations)
 	}
-	if len(m.Tables) != 54 {
-		t.Errorf("tables = %d, want 54", len(m.Tables))
+	if len(m.Tables) != len(sv.Tables)-2 {
+		t.Errorf("tables = %d, want %d", len(m.Tables), len(sv.Tables)-2)
 	}
 	for _, x := range []string{"imports", "import_items", "schema_migrations", "ar_internal_metadata"} {
 		if _, ok := m.Table(x); ok {
@@ -284,29 +294,40 @@ func checkSynthetic(t *testing.T, kind string, m *archive.Manifest, rows map[str
 
 func newSQLiteSynthetic(t *testing.T, boolT, boolF any) string {
 	t.Helper()
+	return newSQLiteSyntheticVersion(t, LatestSchema(), boolT, boolF)
+}
+
+func newSQLiteSyntheticVersion(t *testing.T, sv *SchemaVersion, boolT, boolF any) string {
+	t.Helper()
 	p := filepath.Join(t.TempDir(), "redmine.sqlite3")
 	db, err := sql.Open("sqlite", p)
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer db.Close()
-	createSchema(t, db, KindSQLite)
+	createSchemaVersion(t, db, KindSQLite, sv)
 	populateSynthetic(t, db, KindSQLite, boolT, boolF)
 	return p
 }
 
 func TestSyntheticSQLite(t *testing.T) {
 	// 新しい Rails は 1/0、古い SQLite DB は 't'/'f' で真偽値を保存する
-	for name, b := range map[string][2]any{"int": {1, 0}, "tf": {"t", "f"}} {
-		t.Run(name, func(t *testing.T) {
-			p := newSQLiteSynthetic(t, b[0], b[1])
-			out := filepath.Join(t.TempDir(), "out.tar.zst")
-			m, rows, files := exportForTest(t, Options{DSN: "sqlite://" + p, SourceTimezone: "Asia/Tokyo", Output: out, FilesDir: makeFilesDir(t), IncludeFiles: true})
-			checkSynthetic(t, KindSQLite, m, rows, files)
-			if len(m.Warnings) != 1 || !containsStr(m.Warnings, "1 attachment files referenced by attachments are missing") {
-				t.Errorf("warnings: %v", m.Warnings)
-			}
-		})
+	// 受け入れる全スキーマ版(6.1 / 7.0)で確認する
+	for _, sv := range schemaVersions {
+		for name, b := range map[string][2]any{"int": {1, 0}, "tf": {"t", "f"}} {
+			t.Run(sv.Name+"/"+name, func(t *testing.T) {
+				p := newSQLiteSyntheticVersion(t, sv, b[0], b[1])
+				out := filepath.Join(t.TempDir(), "out.tar.zst")
+				m, rows, files := exportForTest(t, Options{DSN: "sqlite://" + p, SourceTimezone: "Asia/Tokyo", Output: out, FilesDir: makeFilesDir(t), IncludeFiles: true})
+				if m.RedmineSchema != sv.Name {
+					t.Errorf("redmine_schema = %q, want %q", m.RedmineSchema, sv.Name)
+				}
+				checkSynthetic(t, KindSQLite, m, rows, files)
+				if len(m.Warnings) != 1 || !containsStr(m.Warnings, "1 attachment files referenced by attachments are missing") {
+					t.Errorf("warnings: %v", m.Warnings)
+				}
+			})
+		}
 	}
 }
 
@@ -364,8 +385,12 @@ func TestAcceptance(t *testing.T) {
 		wantErr string // 空なら成功(警告を確認)
 		warn    string
 	}{
-		{"missing migration", []string{"DELETE FROM schema_migrations WHERE version = '20250611092227'"}, "core migrations of Redmine 6.1.2 are missing", ""},
-		{"extra core migration", []string{"INSERT INTO schema_migrations VALUES ('20260101000000')"}, "unknown to Redmine 6.1.2", ""},
+		{"missing migration", []string{"DELETE FROM schema_migrations WHERE version = '20250611092227'"}, "core migrations of Redmine 7.0 are missing", ""},
+		{"extra core migration", []string{"INSERT INTO schema_migrations VALUES ('20270101000000')"}, "unknown to Redmine 7.0", ""},
+		// 7.0 へ移行途中(6.1 + 7.0 の一部)の DB は受け入れない
+		{"partially migrated to 7.0", []string{"DELETE FROM schema_migrations WHERE version IN ('20260319062845', '20260319170822', '20260320090000', '20260520164915')"},
+			"1 core migrations unknown to Redmine 6.1 were found (e.g. 20251007073256)", ""},
+		{"7.0 migrations with 6.1 tables", []string{"DROP TABLE webhooks"}, "core table webhooks is missing", ""},
 		{"missing table", []string{"DROP TABLE reactions"}, "core table reactions is missing", ""},
 		{"missing column", []string{"ALTER TABLE issues DROP COLUMN closed_on"}, "column issues.closed_on is missing", ""},
 		{"plugin", []string{"INSERT INTO schema_migrations VALUES ('1-redmine_agile')", "INSERT INTO schema_migrations VALUES ('2-redmine_agile')",
@@ -395,7 +420,7 @@ func TestAcceptance(t *testing.T) {
 			if !containsStr(m.Warnings, c.warn) || !containsStr(m.Warnings, "agile_data") || !containsStr(m.Warnings, "agile_points") {
 				t.Errorf("warnings = %v", m.Warnings)
 			}
-			if len(m.PluginMigrations) != 1 || m.PluginMigrations[0].Plugin != "redmine_agile" || len(m.SchemaMigrations) != 324 {
+			if len(m.PluginMigrations) != 1 || m.PluginMigrations[0].Plugin != "redmine_agile" || len(m.SchemaMigrations) != len(LatestSchema().Migrations)+2 {
 				t.Errorf("plugin migrations = %+v", m.PluginMigrations)
 			}
 		})

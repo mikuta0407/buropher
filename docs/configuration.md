@@ -105,7 +105,7 @@ The same can be run on demand: `buropher reminders -days 7 -tracker 1 -project f
 
 | Key | Env | Default | Description |
 |---|---|---|---|
-| `auth.sudo_mode` | `BUROPHER_SUDO_MODE` (`1`/`true`) | `false` | Require the password again before sensitive administrative actions (Redmine's `sudo_mode`). |
+| `auth.sudo_mode` | `BUROPHER_SUDO_MODE` (`1`/`true` enables, other values disable) | `true` | Require the password again before sensitive administrative actions (Redmine's `sudo_mode`; enabled by default since Redmine 7.0). |
 | `auth.sudo_mode_timeout` | | `0` (= 15) | Minutes the sudo mode stays active. |
 
 LDAP and OpenID Connect providers are configured in *Administration > Authentication modes*

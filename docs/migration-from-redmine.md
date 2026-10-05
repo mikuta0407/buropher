@@ -16,10 +16,10 @@ described in [export-format.md](export-format.md); the conversion rules in [impo
 
 ## 1. Prerequisites
 
-- **Redmine 6.1.x** (6.1.0, 6.1.1 and 6.1.2 share the same database schema and are all accepted).
-  Older versions: upgrade Redmine to 6.1.x and run `bundle exec rake db:migrate RAILS_ENV=production`
-  first. The exporter compares `schema_migrations` with the 322 core migrations of 6.1 and refuses
-  any other set.
+- **Redmine 6.1.x or 7.0.x** (6.1.0 – 6.1.5 share one database schema, 7.0.0 and 7.0.1 another;
+  all are accepted). Older versions: upgrade Redmine to 6.1.x or 7.0.x and run
+  `bundle exec rake db:migrate RAILS_ENV=production` first. The exporter compares `schema_migrations`
+  with the 322 core migrations of 6.1 and the 327 of 7.0 and refuses any other set.
 - Source database: MySQL/MariaDB, PostgreSQL, SQLite or SQL Server, reachable from the machine that
   runs the export (it can be the Redmine host or any other machine).
 - Read access to Redmine's `files/` directory (attachments), or a copy of it.
@@ -128,7 +128,7 @@ pages (projects, issues, wiki, time entries, a saved query) with the old Redmine
 
 Rehearsal (with a copy of production):
 
-1. [ ] Redmine is on 6.1.x; note plugins in use (their data will not be migrated).
+1. [ ] Redmine is on 6.1.x or 7.0.x; note plugins in use (their data will not be migrated).
 2. [ ] Export, import with `--dry-run`, then a real import into a scratch database; read all warnings.
 3. [ ] `verify` passes; spot-check pages, attachments, logins (local, LDAP, 2FA), API access.
 4. [ ] Measure export and import duration to plan the maintenance window.
@@ -177,8 +177,8 @@ Not migrated:
 
 | Symptom | Cause / fix |
 |---|---|
-| `N core migrations of Redmine 6.1.2 are missing` | Redmine is older than 6.1 or `db:migrate` was not run. Upgrade Redmine and migrate, then export again. |
-| `N core migrations unknown to Redmine 6.1.2 were found` | Redmine is newer than 6.1.x (or a plugin added unprefixed migrations). Not supported. |
+| `N core migrations of Redmine 6.1 (or 7.0) are missing` | Redmine is older than 6.1 or `db:migrate` was not run. Upgrade Redmine and migrate, then export again. |
+| `N core migrations unknown to Redmine 6.1 (or 7.0) were found` | Redmine is newer than 7.0.x (or a plugin added unprefixed migrations). Not supported. |
 | `--dsn and --source-timezone are required` | Both options are mandatory; there is no default time zone on purpose. |
 | Timestamps are off by a fixed number of hours | Wrong `--source-timezone`. Re-export with the right zone and re-import into a fresh database. |
 | Import fails with "not empty" | The target database was initialized (`buropher init`) or a previous import succeeded. Drop/recreate it and run `buropher migrate` only. |

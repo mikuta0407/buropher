@@ -93,16 +93,16 @@ vr, err := verify.Verify(ctx, db, "export.tar.zst", verify.Options{FilesDir: "..
 
 | Redmine | buropher | 主な規則・判断 |
 |---|---|---|
-| settings | settings / legacy_settings | `settings.yml` にある名前のみ settings。serialized は YAML → JSON、それ以外は **JSON 文字列**(int 項目も文字列のまま: `internal/settings` が非シリアライズ値を文字列で扱うため。付録 A の「int は number」から変更)。未知・廃止・プラグインの設定と YAML が読めない値は legacy_settings へ原文退避。同名の重複は ID 最小を採用。updated_on NULL はインポート時刻 |
+| settings | settings / legacy_settings | `settings.yml` にある名前のみ settings。serialized は YAML → JSON、それ以外は **JSON 文字列**(int 項目も文字列のまま: `internal/settings` が非シリアライズ値を文字列で扱うため。付録 A の「int は number」から変更)。未知・廃止・プラグインの設定と YAML が読めない値は legacy_settings へ原文退避。同名の重複は ID 最小を採用。updated_on NULL はインポート時刻。`default_issue_start_date_to_creation_date` の行がない(6.1 の)DB は `'1'` を保存(Redmine 7.0 のマイグレーション 20260320090000 と同じく従来の挙動を保つ。新規インストールの既定は 0) |
 | auth_sources | auth_sources | `AuthSourceLdap` のみ(他は破棄、参照ユーザーの auth_source_id は NULL)。kind `ldap`、`config` JSON(`host` `port` `account` `base_dn` `filter` `timeout` `tls` `verify_peer` `attr_login` `attr_firstname` `attr_lastname` `attr_mail`、値のないキーは省略)、`account_password` → `secret`(§6)。enabled=true、position は行順、created/updated はインポート時刻 |
 | users | principals / user_accounts | type → kind(未知の type は破棄、NULL はログインがあれば User)。組込(匿名ユーザー・組込グループ)の 2 行目以降は user / group に変換。グループ系は lastname → `name`(firstname/lastname は空)。status 0〜3 以外は既定値。user_accounts は User / AnonymousUser のみ: `password_hash` = `redmine-sha1$<salt>$<hash>`(salt 空なら `redmine-sha1-nosalt$$<hash>`、空なら NULL、匿名ユーザーは常に NULL)、language はそのまま、存在しない auth_source → NULL、twofa_scheme `totp` 以外は 2FA リセット、TOTP 鍵は §6(復元できなければ 2FA リセット)。匿名ユーザー・組込グループがなければ作成 |
 | email_addresses | email_addresses | ユーザー不在・空・重複(大文字小文字無視)を破棄。既定アドレスが複数なら 2 つ目以降を解除、0 件なら最古を既定に |
 | groups_users | group_users | group 側は kind=group(組込グループ不可)、user 側は kind=user のみ |
-| tokens | tokens / twofa_backup_codes | `api` `feeds` は常に、`autologin` は設定 `autologin`(日数)が正で期限内のみ、`recovery` `register` は 1 日以内のみ(基準は `Options.Now`)。`session` `twofa_session` は破棄(全員再ログイン)。`twofa_backup_code` は値の SHA-256 hex を twofa_backup_codes へ |
+| tokens | tokens / twofa_backup_codes | updated_on → updated_at(Redmine 7.0 では最終使用日時)。`api` `feeds` は常に、`autologin` は設定 `autologin`(日数)が正で期限内のみ、`recovery` `register` は 1 日以内のみ(基準は `Options.Now`)。`session` `twofa_session` は破棄(全員再ログイン)。`twofa_backup_code` は値の SHA-256 hex を twofa_backup_codes へ |
 | user_preferences | user_preferences / user_project_bookmarks / user_recent_projects | others の既知キーを列へ(comments_sorting asc/desc、warn_on_leaving_unsaved 未設定=true、textarea_font、recently_used_projects 既定 3、history_default_tab、toolbar_language_options、default_issue_query / default_project_query → 種別の合うクエリ ID、auto_watch_on、my_page_layout、my_page_settings)。`bookmarked_project_ids` / `recently_used_project_ids` は存在するプロジェクトだけ子テーブルへ(順序 = position)。その他のキーは `extra`。同一ユーザーの 2 行目は破棄 |
-| (users + user_preferences) | user_notification_settings | 全ユーザー(匿名含む)に 1 行: mail_notification(`''`/未知 → NULL)、no_self_notified / notify_about_high_priority_issues(others の `true`/`'1'`。設定行のないユーザーは `default_users_no_self_notified`)、channels=`email` |
+| (users + user_preferences) | user_notification_settings | 全ユーザー(匿名含む)に 1 行: mail_notification(7.0 の `only_my_watches` を含む。`''`/未知 → NULL)、no_self_notified / notify_about_high_priority_issues(others の `true`/`'1'`。設定行のないユーザーは `default_users_no_self_notified`)、channels=`email` |
 | members.mail_notification | user_notified_projects | 真のメンバーのうちプリンシパルがユーザーのもの |
-| issue_statuses / trackers | 同名 | position NULL は末尾に採番。default_done_ratio 範囲外 → NULL。trackers.default_status_id 不在 → 先頭ステータス。fields_bits → `disabled_core_fields`(CORE_FIELDS 順、bit 10 以上は無視して記録) |
+| issue_statuses / trackers | 同名 | position NULL は末尾に採番。default_done_ratio 範囲外 → NULL。trackers.default_status_id 不在 → 先頭ステータス。fields_bits → `disabled_core_fields`(CORE_FIELDS 順、bit 10 以上は無視して記録)。trackers.private_by_default(7.0)はそのまま、6.1 は false |
 | enumerations | issue_priorities / document_categories / time_entry_activities | type で振り分け(`Enumeration` 等の異常な type は破棄)。優先度・文書カテゴリの project_id/parent_id は無視。活動のプロジェクト上書きは: プロジェクト不在 → 破棄(工数は親活動へ付け替え)、親が不正 → 無効なシステム活動として残す。position_name は再計算 |
 | roles | roles / role_permissions / role_permission_trackers | name 空は `Role <id>`。builtin の重複・不正値は 0。visibility 不正値は既定値。permissions は Redmine と同じ正規表現 `:([a-z0-9_]+)` で抽出し、`internal/permission` にない権限は破棄して記録。settings の `permissions_all_trackers[perm] == '0'` → all_trackers=false、`permissions_tracker_ids[perm]` の存在するトラッカーを role_permission_trackers へ。default_time_entry_activity_id は活動の取り込み後に設定 |
 | projects | projects / project_closure | lft/rgt は使わず parent_id から閉包(自己行 depth 0 を含む)。identifier NULL → `project-<id>`、status 不正 → 1。homepage/description はそのまま(`''` と NULL を区別)。default_version_id / default_issue_query_id は後段で UPDATE(不在なら NULL) |
@@ -127,6 +127,7 @@ vr, err := verify.Verify(ctx, db, "export.tar.zst", verify.Options{FilesDir: "..
 | attachments | 同名 | container_type → container_kind(未知は破棄、コンテナ不在は破棄、type/id の片方だけ空なら未紐付け扱い)。digest は長さで sha256(64)/ md5(32)、それ以外は NULL |
 | watchers / reactions | 同名 | 種別変換(`EnabledModule` → project_module)、参照先不在・user NULL・重複を破棄。reactions はユーザー(user_accounts)のみ |
 | oauth_* | 同名 | アプリは全件(uid 重複は破棄)。grant は未失効かつ期限内のみ。access token は未失効で、期限切れでも refresh_token があれば残す |
+| webhooks / projects_webhooks(7.0) | webhooks / webhook_projects | ユーザー不在・URL 空の Webhook は破棄。events は YAML 配列 → JSON 文字列配列(空要素除去、配列でなければ空)。**secret は平文のまま**(Redmine も平文で保存し編集フォームに表示する。HMAC 署名に平文が必要で、buropher へのログイン資格情報でもないため §6 の再暗号化はしない。空文字は NULL)。projects_webhooks は Webhook・プロジェクト不在と重複を破棄。6.1 のアーカイブには無い |
 | imports / import_items | — | 移行しない(アーカイブにも含まれない) |
 
 ## 6. 秘密値(TOTP 鍵、LDAP バインドパスワード、リポジトリのパスワード)

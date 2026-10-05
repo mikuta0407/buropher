@@ -15,7 +15,7 @@ import (
 
 // redmineRootInfo は --redmine-root から読み取った情報。
 type redmineRootInfo struct {
-	Version             string // 例 "6.1.2.stable"
+	Version             string // 例 "7.0.1.stable"
 	CipherKey           string // database_cipher_key(マニフェストには書かない)
 	AttachmentsPath     string // attachments_storage_path(未設定なら <root>/files)
 	CipherKeyConfigured bool
@@ -48,8 +48,8 @@ func readRedmineRoot(root, env string) (*redmineRootInfo, []string, error) {
 			info.Version += "." + br
 		}
 	}
-	if parts["MAJOR"] != "6" || parts["MINOR"] != "1" {
-		warns = append(warns, fmt.Sprintf("redmine root reports version %s (expected 6.1.x)", info.Version))
+	if mm := parts["MAJOR"] + "." + parts["MINOR"]; LookupSchema(mm) == nil {
+		warns = append(warns, fmt.Sprintf("redmine root reports version %s (expected %s)", info.Version, supportedReleases()))
 	}
 
 	info.AttachmentsPath = filepath.Join(root, "files")

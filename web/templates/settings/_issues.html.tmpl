@@ -12,9 +12,25 @@
 
 <p>{{setting_check_box "close_duplicate_issues"}}</p>
 
-<p>{{setting_check_box "issue_group_assignment"}}</p>
+<p>{{setting_check_box "issue_group_assignment" (hash "data" (hash "enables" "#settings_assignee_dropdown_display_format"))}}</p>
+
+<p>{{setting_select "assignee_dropdown_display_format" (labelled_options "label_assignee_dropdown_display_format_users_then_groups" "users_then_groups" "label_assignee_dropdown_display_format_groups_then_users" "groups_then_users" "label_assignee_dropdown_display_format_users_by_group" "users_by_group")}}</p>
 
 <p>{{setting_check_box "default_issue_start_date_to_creation_date"}}</p>
+
+{{- $offsetEnabled := $v.DueDateOffsetEnabled}}
+<p>
+  <label for="settings_default_issue_due_date_offset_enabled">
+    {{l "label_enable_default_issue_due_date_offset"}}
+  </label>
+  {{hidden_field_tag "settings[default_issue_due_date_offset_enabled]" 0 (hash "id" nil)}}
+  {{check_box_tag "settings[default_issue_due_date_offset_enabled]" 1 $offsetEnabled (hash "id" "settings_default_issue_due_date_offset_enabled" "data" (hash "enables" "#settings_default_issue_due_date_offset"))}}
+</p>
+<p>
+  <label>&nbsp;</label>
+  {{setting_text_field "default_issue_due_date_offset" (hash "label" false "size" 6 "disabled" (not $offsetEnabled))}}
+  {{l "label_days_relative_to_today"}}
+</p>
 
 <p>{{setting_check_box "display_subprojects_issues"}}</p>
 

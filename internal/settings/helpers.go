@@ -58,6 +58,20 @@ func (s *Settings) PerPageOptionsArray() []int {
 	return out
 }
 
+// DefaultIssueDueDateOffsetInDays は Setting.default_issue_due_date_offset_in_days（Redmine 7.0）。
+// 未設定・不正・負の値なら ok=false。
+func (s *Settings) DefaultIssueDueDateOffsetInDays() (int, bool) {
+	v := strings.TrimSpace(s.String("default_issue_due_date_offset"))
+	if v == "" || !reInteger.MatchString(v) {
+		return 0, false
+	}
+	n, err := strconv.Atoi(v)
+	if err != nil || n < 0 {
+		return 0, false
+	}
+	return n, true
+}
+
 // TwofaRequired は Setting.twofa_required?。
 func (s *Settings) TwofaRequired() bool { return s.String("twofa") == "2" }
 

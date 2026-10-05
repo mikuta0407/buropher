@@ -21,7 +21,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/redmineimport/rubyyaml"
 )
 
-// 実際の Redmine 6.1.2 が作った DB での結合テスト。
+// 実際の Redmine 6.1.2 / 7.0.1 が作った DB での結合テスト。
 // _reference/export-test/ 以下(リポジトリ外)に置いた DB コピーを使い、無ければスキップする。
 //   sample.sqlite3 … redmine:load_default_data + サンプルデータ
 //   rich.sqlite3 + rich-files/ … sample に testdata/populate.rb を適用したもの
@@ -60,6 +60,7 @@ var yamlColumns = map[string][]string{
 	"roles":            {"permissions", "settings"},
 	"custom_fields":    {"possible_values", "format_store"},
 	"repositories":     {"extra_info"},
+	"webhooks":         {"events"},
 }
 
 // checkRealExport は書き出し元と件数・型・YAML 可読性を照合する。
@@ -70,14 +71,18 @@ func checkRealExport(t *testing.T, dbPath string, m *archive.Manifest, rows map[
 		t.Fatal(err)
 	}
 	defer src.Close()
-	if len(m.SchemaMigrations) != 322 || len(m.PluginMigrations) != 0 || m.Source.AcceptanceForced {
+	sv := LookupSchema(m.RedmineSchema)
+	if sv == nil {
+		t.Fatalf("redmine_schema = %q", m.RedmineSchema)
+	}
+	if len(m.SchemaMigrations) != len(sv.Migrations) || len(m.PluginMigrations) != 0 || m.Source.AcceptanceForced {
 		t.Errorf("migrations %d plugins %v forced %v", len(m.SchemaMigrations), m.PluginMigrations, m.Source.AcceptanceForced)
 	}
-	if len(m.Tables) != 54 {
+	if len(m.Tables) != len(sv.Tables)-2 {
 		t.Errorf("tables %d", len(m.Tables))
 	}
 	types := map[string]map[string]string{}
-	for _, td := range coreTables {
+	for _, td := range sv.Tables {
 		types[td.Name] = map[string]string{}
 		for _, c := range td.Columns {
 			types[td.Name][c.Name] = c.Type
@@ -160,7 +165,7 @@ func TestRealSampleSQLite(t *testing.T) {
 	m, rows, _ := exportForTest(t, opt)
 	checkRealExport(t, p, m, rows)
 	if opt.RedmineRoot != "" {
-		if m.Source.RedmineVersion != "6.1.2.stable" || m.Source.CipherKeyConfigured == nil {
+		if !regexp.MustCompile(`^\d+\.\d+\.\d+`).MatchString(m.Source.RedmineVersion) || m.Source.CipherKeyConfigured == nil {
 			t.Errorf("redmine root info: %+v", m.Source)
 		}
 	}
@@ -171,6 +176,36 @@ func TestRealSampleSQLite(t *testing.T) {
 		}
 	}
 	t.Logf("sample: %d tables, warnings %v", len(m.Tables), m.Warnings)
+}
+
+// Redmine 7.0.1 の公式フィクスチャを読み込んだ DB(_reference/redmine7-fixtures)を書き出す。
+func TestRealFixtures70SQLite(t *testing.T) {
+	dir := findExportTestDir(t)
+	root := filepath.Join(filepath.Dir(dir), "redmine7-fixtures")
+	p := filepath.Join(root, "db", "redmine.pristine.sqlite3")
+	if !fileExists(p) {
+		t.Skip("redmine7-fixtures/db/redmine.pristine.sqlite3 not found")
+	}
+	out := filepath.Join(t.TempDir(), "fixtures70.tar.zst")
+	m, rows, _ := exportForTest(t, Options{DSN: "sqlite://" + p, SourceTimezone: "UTC", Output: out, RedmineRoot: root})
+	if m.RedmineSchema != "7.0" {
+		t.Fatalf("redmine_schema = %q", m.RedmineSchema)
+	}
+	if !strings.HasPrefix(m.Source.RedmineVersion, "7.0.") {
+		t.Errorf("redmine version = %q", m.Source.RedmineVersion)
+	}
+	checkRealExport(t, p, m, rows)
+	for _, tb := range []string{"webhooks", "projects_webhooks"} {
+		if _, ok := m.Table(tb); !ok {
+			t.Errorf("table %s not exported", tb)
+		}
+	}
+	for _, r := range rows["trackers"] {
+		if _, ok := r["private_by_default"].(bool); !ok {
+			t.Errorf("trackers.private_by_default = %#v", r["private_by_default"])
+		}
+	}
+	t.Logf("fixtures70: %d tables, warnings %v", len(m.Tables), m.Warnings)
 }
 
 func fileExists(p string) bool {
@@ -340,7 +375,7 @@ func dumpRows(t *testing.T, path string, rows map[string][]archive.Row) {
 		t.Fatal(err)
 	}
 	defer f.Close()
-	names := CoreTableNames()
+	names := LatestSchema().CoreTableNames()
 	for _, n := range names {
 		for _, r := range rows[n] {
 			b, _ := json.Marshal(r) // map のキーはソートされる

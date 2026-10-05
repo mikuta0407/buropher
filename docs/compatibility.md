@@ -105,4 +105,4 @@ passing without per-case allowlisting.
 | | Supported |
 |---|---|
 | buropher database | SQLite, PostgreSQL |
-| Migration source | Redmine 6.1.0 – 6.1.2 on MySQL/MariaDB, PostgreSQL, SQLite or SQL Server |
+| Migration source | Redmine 6.1.0 – 6.1.5 or 7.0.0 – 7.0.1 on MySQL/MariaDB, PostgreSQL, SQLite or SQL Server |
