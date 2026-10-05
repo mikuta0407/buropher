@@ -2,7 +2,7 @@
 require 'json'
 require 'yaml'
 require 'cgi'
-R = '/home/mikuta0407/projects/buropher/_reference/redmine'
+R = File.expand_path('../../../_reference/redmine', __dir__)
 module ActionView; module Helpers; module TagHelper; end; module TextHelper; end; module OutputSafetyHelper; end; end; end
 require 'erb'
 
@@ -151,7 +151,7 @@ LINES = ["a", "b", "c", "", "foo", "bar <x>", "a", "  "]
   out_ann << ann_case(vers)
 end
 
-D = '/home/mikuta0407/projects/buropher/.claude/worktrees/agent-a289f1e2206643f63/internal/wikidiff/testdata/'
+D = __dir__ + '/'
 File.write(D + 'arraydiff.json', JSON.generate(out_diff))
 File.write(D + 'wordhtml.json', JSON.generate(out_html))
 File.write(D + 'annotate.json', JSON.generate(out_ann))
