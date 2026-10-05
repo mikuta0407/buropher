@@ -272,7 +272,6 @@ var wikiToolbar = new jsToolBar(document.getElementById('project_description'));
   <tr id="member-3" class="member">
   <td class="name">
     <span class="icon">
-        
         <a class="user active" href="/users/2">John Smith</a>
     </span>
   </td>
@@ -290,7 +289,6 @@ Are you sure you want to continue?" class="icon icon-link-break" data-remote="tr
   <tr id="member-10" class="member">
   <td class="name">
     <span class="icon">
-        
         <a class="user active" href="/users/8">User Misc</a>
     </span>
   </td>
@@ -307,8 +305,7 @@ Are you sure you want to continue?" class="icon icon-link-break" data-remote="tr
   <tr id="member-9" class="member">
   <td class="name">
     <span class="icon">
-        <svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--group"></use></svg>
-        B Team
+        <a class="group" href="/groups/11"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--group"></use></svg>B Team</a>
     </span>
   </td>
   <td class="roles">
@@ -323,6 +320,17 @@ Are you sure you want to continue?" class="icon icon-link-break" data-remote="tr
   </tr>
   </tbody>
 </table>
+<p class="other-formats hide-when-print">Also available in:  <span><a class="csv" rel="nofollow" onclick="showModal(&#39;csv-export-options&#39;, &#39;330px&#39;); return false;" href="/projects/onlinestore/settings.csv">CSV</a></span>
+</p><div id="csv-export-options" style="display: none;">
+  <h3 class="title">CSV export options</h3>
+  <form id="csv-export-form" action="/projects/2/memberships.csv" accept-charset="UTF-8" name="csv-export-form-38d66c3c" method="get">
+  <p><label>Encoding <select name="encoding" id="encoding"><option selected="selected" value="UTF-8">UTF-8</option>
+<option value="ISO-8859-1">ISO-8859-1</option></select></label></p>
+  <p class="buttons">
+    <input type="submit" value="Export" onclick="hideModal(this);" />
+    <a href="#" onclick="hideModal(this);; return false;">Cancel</a>
+  </p>
+</form></div>
 </div>
   <div id="tab-content-issues" style="display:none" class="tab-content"><form class="edit_project" id="project_issue_tracking" action="/projects/onlinestore" accept-charset="UTF-8" name="project_issue_tracking-6237d014" method="post"><input type="hidden" name="_method" value="patch" autocomplete="off" /><input type="hidden" name="authenticity_token" value="a-v5853VqSDvw4P1Uc0KEuW6qxwKJsupdYcfb1IfNn31hlXk57Im1s0kr4G9chs3ajR77sm0cfaWkja0vj9gOg" autocomplete="off" />
   <input type="hidden" name="tab" id="tab" value="issues" autocomplete="off" />

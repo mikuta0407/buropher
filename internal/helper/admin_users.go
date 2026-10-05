@@ -333,6 +333,9 @@ func (d *Deps) linkToPrincipal(p *Page, v any) html {
 	case *domain.Group:
 		name := GroupName(p, x)
 		return rails.LinkTo(d.spriteIcon(p, "group", nil, nil)+rails.H(name), "/groups/"+strconv.FormatInt(x.ID, 10), rails.NewHash("class", "group"))
+	case *repository.MemberPrincipal:
+		// メンバーのプリンシパル（プロジェクト設定のメンバー一覧。組込グループを含む）
+		return d.linkToPrincipalHTML(p, x, rails.NewHash())
 	}
 	return rails.H(rails.ToS(v))
 }

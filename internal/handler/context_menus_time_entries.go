@@ -19,13 +19,13 @@ import (
 	"github.com/mikuta0407/buropher/internal/view/rails"
 )
 
-// このファイルは ContextMenusController#time_entries（context_menus/time_entries.html）の移植。
+// このファイルは ContextMenus::TimeEntriesController#index（context_menus/time_entries.html）の移植。
 // ルートは routesTimelogContextMenu（routesTimelog から登録）。
 
-// routesTimelogContextMenu は match '/time_entries/context_menu', :to => 'context_menus#time_entries', :via => [:get, :post]。
+// routesTimelogContextMenu は match '/time_entries/context_menu', :to => 'context_menus/time_entries#index', :via => [:get, :post]。
 func (a *App) routesTimelogContextMenu(r Router) {
-	a.Handle(r, "GET", "/time_entries/context_menu", ContextMenusController, "time_entries", a.ContextMenusTimeEntries)
-	a.Handle(r, "POST", "/time_entries/context_menu", ContextMenusController, "time_entries", a.ContextMenusTimeEntries)
+	a.Handle(r, "GET", "/time_entries/context_menu", ContextMenusTimeEntriesController, "index", a.ContextMenusTimeEntries)
+	a.Handle(r, "POST", "/time_entries/context_menu", ContextMenusTimeEntriesController, "index", a.ContextMenusTimeEntries)
 }
 
 // teCMFolder は CF の副メニュー。
@@ -86,7 +86,7 @@ func teContextMenuLink(c *Req, name any, url string, class string, selected, dis
 	return rails.LinkTo(label, url, h)
 }
 
-// ContextMenusTimeEntries は context_menus#time_entries（layout なし）。
+// ContextMenusTimeEntries は ContextMenus::TimeEntriesController#index（layout なし）。
 func (a *App) ContextMenusTimeEntries(c *Req) {
 	ctx := c.Ctx()
 	ids := idsFromParam(c.Params().Slice("ids"))
@@ -101,15 +101,16 @@ func (a *App) ContextMenusTimeEntries(c *Req) {
 	editable := true
 	for _, r := range rs {
 		t := timelog.FromRecord(r)
-		// 本家は TimeEntry.where(:id => ...) で可視性を見ないため、見えない工数の存在とそのプロジェクトの
-		// 作業分類名が分かった。見えない工数は無いものとして扱う
+		// Redmine 6.1.3 #44109: 見えない工数が 1 件でも含まれていれば 404
+		// （if @time_entries.blank? || !@time_entries.all?(&:visible?) then render_404）
 		vis, err := env.Visible(ctx, t, c.User)
 		if err != nil {
 			a.internalError(c, "time entry visible", err)
 			return
 		}
 		if !vis {
-			continue
+			c.Render404("")
+			return
 		}
 		entries = append(entries, t)
 		p, err := env.Project(ctx, t.ProjectID)
@@ -167,15 +168,16 @@ func (a *App) ContextMenusTimeEntries(c *Req) {
 	}
 	page := c.Page()
 	data := map[string]any{}
+	// 編集・一括編集・作業分類・削除のリンクはハッシュから作るため完全 URL（contextMenuURLFor）
 	if single != nil {
-		data["EditLink"] = teContextMenuLink(c, a.Helpers.Icon(page, "edit", c.L("button_edit"), nil), "/time_entries/"+strconv.FormatInt(single.ID, 10)+"/edit", "icon icon-edit", false, !editable, "", nil)
+		data["EditLink"] = teContextMenuLink(c, a.Helpers.Icon(page, "edit", c.L("button_edit"), nil), contextMenuURLFor(c, "/time_entries/"+strconv.FormatInt(single.ID, 10)+"/edit"), "icon icon-edit", false, !editable, "", nil)
 	} else {
 		data["EditLink"] = teContextMenuLink(c, a.Helpers.Icon(page, "edit", c.L("label_bulk_edit"), nil),
-			helper.URLWithQuery("/time_entries/bulk_edit", rails.NewHash("ids", idList)), "icon icon-edit", false, !editable, "", nil)
+			contextMenuURLFor(c, helper.URLWithQuery("/time_entries/bulk_edit", rails.NewHash("ids", idList))), "icon icon-edit", false, !editable, "", nil)
 	}
 	var actLinks []template.HTML
 	for _, act := range acts {
-		u := helper.URLWithQuery("/time_entries/bulk_update", withBack(rails.NewHash("ids", idList, "time_entry", rails.NewHash("activity_id", act.ID))))
+		u := contextMenuURLFor(c, helper.URLWithQuery("/time_entries/bulk_update", withBack(rails.NewHash("ids", idList, "time_entry", rails.NewHash("activity_id", act.ID)))))
 		sel := single != nil && single.ActivityID != nil && *single.ActivityID == act.ID
 		actLinks = append(actLinks, teContextMenuLink(c, act.Name, u, "", sel, !editable, "post", nil))
 	}
@@ -230,7 +232,7 @@ func (a *App) ContextMenusTimeEntries(c *Req) {
 	}
 	data["Folders"] = folders
 	data["DeleteLink"] = teContextMenuLink(c, a.Helpers.Icon(page, "del", c.L("button_delete"), nil),
-		helper.URLWithQuery("/time_entries/destroy", withBack(rails.NewHash("ids", idList))), "icon icon-del", false, !editable,
+		contextMenuURLFor(c, helper.URLWithQuery("/time_entries/destroy", withBack(rails.NewHash("ids", idList)))), "icon icon-del", false, !editable,
 		"delete", rails.NewHash("confirm", c.L("text_time_entries_destroy_confirmation")))
 	c.Render("context_menus/time_entries", data, RenderOptions{Layout: view.NoLayout})
 }

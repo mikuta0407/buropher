@@ -6,6 +6,8 @@ package handler
 import (
 	"errors"
 	"net/http"
+	"net/url"
+	"slices"
 	"strconv"
 	"strings"
 	"unicode/utf8"
@@ -43,6 +45,8 @@ func (a *App) routesGroups(r Router) {
 	// get 'groups/:id/users/new' / post 'groups/:id/users' / delete 'groups/:id/users/:user_id'（:id => /\d+/）
 	a.Handle(r, http.MethodGet, "/groups/{id:[0-9]+}/users/new", GroupsController, "new_users", a.GroupsNewUsers, adm, fg)
 	a.Handle(r, http.MethodPost, "/groups/{id:[0-9]+}/users", GroupsController, "add_users", a.GroupsAddUsers, api, adm, fg)
+	// delete 'groups/:id/users', :to => 'groups#remove_users'（Redmine 7.0 #43640）
+	a.Handle(r, http.MethodDelete, "/groups/{id:[0-9]+}/users", GroupsController, "remove_users", a.GroupsRemoveUsers, api, adm, fg)
 	a.Handle(r, http.MethodDelete, "/groups/{id:[0-9]+}/users/{user_id}", GroupsController, "remove_user", a.GroupsRemoveUser, api, adm, fg)
 }
 
@@ -634,39 +638,100 @@ func (a *App) GroupsAddUsers(c *Req) {
 		data["Added"] = users
 		c.Render("groups/add_users", data, RenderOptions{Format: "js"})
 	default:
-		c.Redirect("/groups/" + itoa(g.ID) + "/edit?tab=users")
+		// Redmine 7.0 #43640: 成功メッセージを出し、back_url（ユーザー一覧のコンテキストメニュー）へ戻る
+		c.Flash().SetNotice(c.L("notice_successful_update"))
+		c.RedirectBackOrDefault("/groups/"+itoa(g.ID)+"/edit?tab=users", false)
 	}
 }
 
-// GroupsRemoveUser は groups#remove_user（DELETE のみ実際に外す）。
-func (a *App) GroupsRemoveUser(c *Req) {
+// GroupsRemoveUsers は groups#remove_users（Redmine 7.0 #43640。params[:user_id] || params[:user_ids]）。
+// 確認欄に「Yes」が入力された DELETE（API は確認なし）でのみ外し、それ以外は確認画面を表示する。
+func (a *App) GroupsRemoveUsers(c *Req) {
 	g := c.value(groupCtxKey{}).(*domain.Group)
-	uid, err := strconv.ParseInt(c.Params().String("user_id"), 10, 64)
+	p := c.Params()
+	v, ok := p.Get("user_id")
+	if !ok || v == nil {
+		v, _ = p.Get("user_ids")
+	}
+	// @users = @group.users.where(:id => ...).to_a
+	ids := idsFromParam(v)
+	members, err := repository.GroupUsers(c.Ctx(), a.DB, g.ID)
 	if err != nil {
-		c.Render404("")
-		return
-	}
-	if _, err := repository.GetUser(c.Ctx(), a.DB, uid); err != nil {
-		c.Render404("")
-		return
-	}
-	if err := a.DB.WithTx(c.Ctx(), func(tx *db.Tx) error { return repository.RemoveUserFromGroup(c.Ctx(), tx, g.ID, uid) }); err != nil {
 		a.serverError(c, err)
 		return
 	}
-	c.ResetAuthz()
-	switch {
-	case httpx.IsAPIRequest(c.R):
-		c.RenderAPIOK()
-	case httpx.Format(c.R) == "js":
-		m, _ := a.loadGroupModel(c, g)
-		data, err := a.groupFormData(c, m)
+	var users []*domain.User
+	for _, u := range members {
+		if slices.Contains(ids, u.ID) {
+			users = append(users, u)
+		}
+	}
+	if len(users) == 0 {
+		c.Render404("")
+		return
+	}
+	api := httpx.IsAPIRequest(c.R)
+	if c.R.Method == http.MethodDelete && (api || p.String("confirm") == c.L("general_text_Yes")) {
+		err := a.DB.WithTx(c.Ctx(), func(tx *db.Tx) error {
+			for _, u := range users {
+				if err := repository.RemoveUserFromGroup(c.Ctx(), tx, g.ID, u.ID); err != nil {
+					return err
+				}
+			}
+			return nil
+		})
 		if err != nil {
 			a.serverError(c, err)
 			return
 		}
-		c.Render("groups/remove_user", data, RenderOptions{Format: "js"})
-	default:
-		c.Redirect("/groups/" + itoa(g.ID) + "/edit?tab=users")
+		c.ResetAuthz()
+		switch {
+		case api:
+			c.RenderAPIOK()
+		case httpx.Format(c.R) == "" || httpx.Format(c.R) == "html":
+			c.Flash().SetNotice(c.L("notice_successful_delete"))
+			c.RedirectBackOrDefault("/groups/"+itoa(g.ID)+"/edit?tab=users", false)
+		default:
+			// respond_to に無い形式（js など）は ActionController::UnknownFormat
+			c.RenderError(http.StatusNotAcceptable, "")
+		}
+		return
 	}
+	// 確認画面（remove_users.erb）は HTML のみ。js 等ではテンプレートが無く暗黙の head :no_content
+	if f := httpx.Format(c.R); f != "" && f != "html" {
+		c.head(http.StatusNoContent)
+		return
+	}
+	userIDs := make([]any, len(users))
+	for i, u := range users {
+		userIDs[i] = u.ID
+	}
+	data := map[string]any{
+		"Group":     g,
+		"Users":     users,
+		"IDsQuery":  helper.ToQuery(rails.NewHash("user_ids", userIDs)),
+		"CancelURL": cancelButtonURL(c, "/users"),
+	}
+	c.Render("groups/remove_users", data, adminLayoutXHR(c))
+}
+
+// GroupsRemoveUser は groups#remove_user（Redmine 7.0 で非推奨。remove_users に委ねる）。
+func (a *App) GroupsRemoveUser(c *Req) { a.GroupsRemoveUsers(c) }
+
+// cancelButtonURL は cancel_button_tag(fallback_url) の URL（validate_back_url(back_url) || fallback_url）。
+func cancelButtonURL(c *Req, fallback string) string {
+	back := c.Params().String("back_url")
+	if back == "" {
+		if ref := c.R.Header.Get("Referer"); ref != "" {
+			if u, err := url.QueryUnescape(ref); err == nil {
+				back = u
+			} else {
+				back = ref
+			}
+		}
+	}
+	if u, ok := httpx.ValidateBackURL(c.R, back, ""); ok && u != "" {
+		return u
+	}
+	return fallback
 }

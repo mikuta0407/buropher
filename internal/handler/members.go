@@ -85,6 +85,11 @@ func (c *Req) member() *repository.MemberPrincipal {
 
 // MembersIndex は members#index（API のみ。HTML は 406）。
 func (a *App) MembersIndex(c *Req) {
+	// format.csv（Redmine 7.0 #37480）
+	if httpx.Format(c.R) == "csv" {
+		a.sendMembersCSV(c)
+		return
+	}
 	if httpx.Negotiate(c.R, "html", "xml", "json") == "html" || !httpx.IsAPIRequest(c.R) {
 		c.head(http.StatusNotAcceptable)
 		return
@@ -115,6 +120,50 @@ func (a *App) MembersIndex(c *Req) {
 		arr.children = append(arr.children, el)
 	}
 	c.renderAPIRoot(arr, apiMetaMin(c, count, offset, limit), http.StatusOK)
+}
+
+// sendMembersCSV は MembersHelper#members_to_csv（@project.memberships を id 順、メンバーのロールごとに 1 行）を
+// "#{@project.identifier}-members.csv" として送る。
+func (a *App) sendMembersCSV(c *Req) {
+	ctx := c.Ctx()
+	members, err := repository.ProjectMembersWithPrincipals(ctx, a.DB, c.Project.ID, false)
+	if err != nil {
+		a.internalError(c, "members", err)
+		return
+	}
+	var roleIDs []int64
+	for _, m := range members {
+		for _, mr := range m.Member.MemberRoles {
+			roleIDs = append(roleIDs, mr.RoleID)
+		}
+	}
+	rs, err := repository.RolesByIDs(ctx, a.DB, roleIDs)
+	if err != nil {
+		a.internalError(c, "roles", err)
+		return
+	}
+	byID := map[int64]*domain.Role{}
+	for _, r := range rs {
+		byID[r.ID] = r
+	}
+	page := c.Page()
+	rows := [][]string{{c.L("field_principal"), c.L("field_type"), c.L("label_role"), c.L("label_project")}}
+	for _, m := range members {
+		kind := c.L("label_user")
+		if m.Group != nil {
+			kind = c.L("label_group")
+		}
+		// member.roles（has_many :through。継承したロールも含む）
+		for _, mr := range m.Member.MemberRoles {
+			r := byID[mr.RoleID]
+			if r == nil {
+				continue
+			}
+			rows = append(rows, []string{helper.PrincipalName(page, m), kind, r.Name, c.Project.Name})
+		}
+	}
+	// Redmine::Export::CSV.generate(encoding: params[:encoding])（区切り文字は既定）
+	c.sendCSV(c.Project.Identifier+"-members.csv", rows, false)
 }
 
 // MembersShow は members#show（API のみ）。

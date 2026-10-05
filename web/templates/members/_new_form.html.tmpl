@@ -2,7 +2,7 @@
 <fieldset class="box">
   <legend>{{label_tag "principal_search" (l "label_principal_search")}}</legend>
   <p>{{text_field_tag "principal_search" nil}}</p>
-  {{javascript_tag (printf "observeSearchfield('principal_search', null, '%s')" (j (url_path (printf "/projects/%s/memberships/autocomplete.js" $a.Project.Identifier))))}}
+  {{javascript_tag (printf "observeSearchfield('principal_search', null, '%s', {checkboxSelector: 'input[name=\"membership[user_ids][]\"]'})" (j (url_path (printf "/projects/%s/memberships/autocomplete.js" $a.Project.Identifier))))}}
   <div id="principals_for_new_member">
     {{$a.PrincipalsForNewMembers}}
   </div>

@@ -319,7 +319,6 @@ var wikiToolbar = new jsToolBar(document.getElementById('project_description'));
   <tr id="member-1" class="member">
   <td class="name">
     <span class="icon">
-        
         <a class="user active" href="/users/2">John Smith</a>
     </span>
   </td>
@@ -336,7 +335,6 @@ var wikiToolbar = new jsToolBar(document.getElementById('project_description'));
   <tr id="member-2" class="member">
   <td class="name">
     <span class="icon">
-        
         <a class="user active" href="/users/3">Dave Lopper</a>
     </span>
   </td>
@@ -353,7 +351,6 @@ var wikiToolbar = new jsToolBar(document.getElementById('project_description'));
   <tr id="member-4" class="member">
   <td class="name">
     <span class="icon">
-        
         <a class="user locked" href="/users/5">Dave2 Lopper2</a>
     </span>
   </td>
@@ -369,6 +366,17 @@ var wikiToolbar = new jsToolBar(document.getElementById('project_description'));
   </tr>
   </tbody>
 </table>
+<p class="other-formats hide-when-print">Also available in:  <span><a class="csv" rel="nofollow" onclick="showModal(&#39;csv-export-options&#39;, &#39;330px&#39;); return false;" href="/projects/ecookbook/settings.csv">CSV</a></span>
+</p><div id="csv-export-options" style="display: none;">
+  <h3 class="title">CSV export options</h3>
+  <form id="csv-export-form" action="/projects/1/memberships.csv" accept-charset="UTF-8" name="csv-export-form-536be7d0" method="get">
+  <p><label>Encoding <select name="encoding" id="encoding"><option selected="selected" value="UTF-8">UTF-8</option>
+<option value="ISO-8859-1">ISO-8859-1</option></select></label></p>
+  <p class="buttons">
+    <input type="submit" value="Export" onclick="hideModal(this);" />
+    <a href="#" onclick="hideModal(this);; return false;">Cancel</a>
+  </p>
+</form></div>
 </div>
   <div id="tab-content-issues" style="display:none" class="tab-content"><form class="edit_project" id="project_issue_tracking" action="/projects/ecookbook" accept-charset="UTF-8" name="project_issue_tracking-f77c42ba" method="post"><input type="hidden" name="_method" value="patch" autocomplete="off" /><input type="hidden" name="authenticity_token" value="DzsDA1qHMQx_gXse3GhH__7hhik68J17i8ilDNcJxSC7DP3OOTHGCml2YP2Y0hxGvjdCwOkQZ0UDyEeyPy9DjA" autocomplete="off" />
   <input type="hidden" name="tab" id="tab" value="issues" autocomplete="off" />

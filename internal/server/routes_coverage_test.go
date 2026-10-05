@@ -19,7 +19,7 @@ import (
 	"github.com/mikuta0407/buropher/web"
 )
 
-// redmineRoute は testdata/redmine-routes.json（Redmine 6.1.2 の `rails routes` を JSON で出力したもの）の 1 行。
+// redmineRoute は testdata/redmine-routes.json（Redmine 6.1.2 の `rails routes` を JSON で出力したもの。7.0.1 の変更を手で反映している）の 1 行。
 type redmineRoute struct {
 	Name         *string           `json:"name"`
 	Verb         string            `json:"verb"`
@@ -50,6 +50,11 @@ var controllerAliases = map[string]string{
 	"doorkeeper/authorized_applications": "authorized_applications",
 	"doorkeeper/tokens":                  "tokens",
 	"doorkeeper/token_info":              "token_info",
+	// ContextMenus::*Controller（Redmine 7.0 #44169）の controller_name は名前空間を除いた名前
+	"context_menus/issues":       "issues",
+	"context_menus/projects":     "projects",
+	"context_menus/time_entries": "time_entries",
+	"context_menus/users":        "users",
 }
 
 // routeParamValues は動的セグメントの代表値（"controller:param" が優先、無ければ "param"）。
