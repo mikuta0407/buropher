@@ -42,6 +42,35 @@ func TestIssueRelationsInvisibleIssue(t *testing.T) {
 	}
 }
 
+// プロジェクト・バージョンのファイルの一括ダウンロードは view_files が無ければ拒否する
+// （個別のダウンロードと同じく attachment.visible? を確認する）。
+func TestAttachmentsDownloadAllRequiresViewFiles(t *testing.T) {
+	ts, d := newFixtureServer(t)
+	ctx := context.Background()
+	for kind, fn := range map[string]string{"project": "pfile.txt", "version": "vfile.txt"} {
+		id := uploadAPI(t, ts.URL, "filename="+fn, "secret "+kind)
+		if _, err := d.Exec(ctx, `UPDATE attachments SET container_kind = ?, container_id = 1 WHERE id = ?`, kind, id); err != nil {
+			t.Fatal(err)
+		}
+	}
+	c := login(t, ts, "jsmith", "jsmith")
+	for _, path := range []string{"/attachments/projects/1/download", "/attachments/versions/1/download"} {
+		res, _ := get(t, c, ts.URL+path)
+		if res.StatusCode != http.StatusOK {
+			t.Fatalf("%s before disabling files: %d", path, res.StatusCode)
+		}
+	}
+	if _, err := d.Exec(ctx, `DELETE FROM project_modules WHERE project_id = 1 AND name = 'files'`); err != nil {
+		t.Fatal(err)
+	}
+	for _, path := range []string{"/attachments/projects/1/download", "/attachments/versions/1/download"} {
+		res, body := get(t, c, ts.URL+path)
+		if res.StatusCode != http.StatusForbidden {
+			t.Errorf("%s without view_files: %d %.100q", path, res.StatusCode, body)
+		}
+	}
+}
+
 // チケット削除で工数を付け替える先に、見えないチケット（非公開）は指定できない。
 func TestIssueDestroyReassignToInvisible(t *testing.T) {
 	ts, d := newFixtureServer(t)
