@@ -416,7 +416,12 @@ func toggleLink(name any, id string, opts *rails.Hash) html {
 		onclick += "$(window).scrollTop($('#" + focus + "').position().top); "
 	}
 	onclick += "return false;"
-	return rails.LinkTo(name, "#", rails.NewHash("onclick", onclick))
+	// Redmine 7.0: options の :class を html_options に引き継ぐ。
+	o := rails.NewHash()
+	if c, ok := opts.Lookup("class"); ok {
+		o.Set("class", c)
+	}
+	return rails.LinkTo(name, "#", o.Set("onclick", onclick))
 }
 
 // boardMessageURL は board_message_path(board_id, id, :r => r, :anchor => anchor)（link_to_message の URL）。
@@ -567,8 +572,9 @@ func (d *Deps) contentWatchersList(r *view.Render, p *Page, objectType string, i
 		}
 		if removeAllowed {
 			u := "/watchers?object_id=" + strconv.FormatInt(id, 10) + "&object_type=" + objectType + "&user_id=" + strconv.FormatInt(pid, 10)
-			s += " " + rails.LinkTo(d.spriteIcon(p, "del", p.l("button_delete"), nil), u,
-				rails.NewHash("remote", true, "method", "delete", "class", "delete icon-only icon-del", "title", p.l("button_delete")))
+			// Redmine 7.0（#34917）: 削除ではなく「外す」なので link-break アイコンと "Remove"。
+			s += " " + rails.LinkTo(d.spriteIcon(p, "link-break", p.l("button_remove"), nil), u,
+				rails.NewHash("remote", true, "method", "delete", "class", "delete icon-only icon-link-break", "title", p.l("button_remove")))
 		}
 		b.WriteString(string(rails.ContentTag("li", s, rails.NewHash("class", "user-"+strconv.FormatInt(pid, 10)))))
 	}

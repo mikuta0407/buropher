@@ -88,7 +88,8 @@ func init() {
 				d.headsForWikiFormatter(r, pg(), &headsIncluded)
 				return ""
 			},
-			"list_autofill_data_attributes": func() *rails.Hash { return listAutofillDataAttributes(pg()) },
+			"list_autofill_data_attributes":     func() *rails.Hash { return listAutofillDataAttributes(pg()) },
+			"wiki_textarea_stimulus_attributes": func() *rails.Hash { return listAutofillDataAttributes(pg()) },
 			"update_data_sources_for_auto_complete": func(sources *rails.Hash) html {
 				return updateDataSourcesForAutoComplete(sources)
 			},
@@ -397,14 +398,24 @@ func (d *Deps) headsForWikiFormatter(r *view.Render, p *Page, included *bool) {
 	}
 }
 
-// listAutofillDataAttributes は ApplicationHelper#list_autofill_data_attributes。
+// listAutofillDataAttributes は ApplicationHelper#wiki_textarea_stimulus_attributes
+// （Redmine 7.0 で list_autofill_data_attributes から改名）。
 func listAutofillDataAttributes(p *Page) *rails.Hash {
-	f := p.setting("text_formatting")
-	if strings.TrimSpace(f) == "" {
+	return WikiTextareaStimulusAttributes(p.setting("text_formatting"))
+}
+
+// WikiTextareaStimulusAttributes は ApplicationHelper#wiki_textarea_stimulus_attributes
+// （Setting.text_formatting が空なら {}）。textFormatting は Setting.text_formatting。
+func WikiTextareaStimulusAttributes(textFormatting string) *rails.Hash {
+	if strings.TrimSpace(textFormatting) == "" {
 		return rails.NewHash()
 	}
-	return rails.NewHash("controller", "list-autofill", "action", "beforeinput->list-autofill#handleBeforeInput",
-		"list_autofill_text_formatting_param", f)
+	return rails.NewHash(
+		"controller", "list-autofill selection-indent table-paste",
+		"action", "beforeinput->list-autofill#handleBeforeInput keydown.tab->selection-indent#run keydown.shift+tab->selection-indent#run paste->table-paste#handlePaste",
+		"list_autofill_text_formatting_param", textFormatting,
+		"selection_indent_text_formatting_param", textFormatting,
+		"table_paste_text_formatting_param", textFormatting)
 }
 
 // updateDataSourcesForAutoComplete は ApplicationHelper#update_data_sources_for_auto_complete。

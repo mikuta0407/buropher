@@ -22,7 +22,7 @@ $('#sidebar-switch-panel').css('visibility', 'visible');
 
 <h3>Watchers (1)</h3>
 
-<ul class="watchers"><li class="user-1"><span role="img" class="avatar-color-1 s16 avatar">RA</span><a class="user active user" href="/users/1">Redmine Admin</a> <a class="delete icon-only icon-del" title="Delete" data-remote="true" rel="nofollow" data-method="delete" href="/watchers?object_id=1&amp;object_type=message&amp;user_id=1"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--del"></use></svg><span class="icon-label">Delete</span></a></li></ul>
+<ul class="watchers"><li class="user-1"><span role="img" class="avatar-color-1 s16 avatar">RA</span><a class="user active user" href="/users/1">Redmine Admin</a> <a class="delete icon-only icon-link-break" title="Remove" data-remote="true" rel="nofollow" data-method="delete" href="/watchers?object_id=1&amp;object_type=message&amp;user_id=1"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--link-break"></use></svg><span class="icon-label">Remove</span></a></li></ul>
 
     </div>
 
@@ -61,7 +61,7 @@ in the forum</p>
 <table>
 <tr>
   <td>
-    <a class="icon icon-attachment " href="/attachments/13"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--attachment"></use></svg><span class="icon-label">foo.zip</span></a>    <span class="size">(452 Bytes)</span>
+    <a class="icon icon-attachment " href="/attachments/13"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--file"></use></svg><span class="icon-label">foo.zip</span></a>    <span class="size">(452 Bytes)</span>
     <a class="icon-only icon-download " title="Download" href="/attachments/download/13/foo.zip"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--download"></use></svg><span class="icon-label">foo.zip</span></a>  </td>
   <td></td>
   <td>
@@ -138,7 +138,7 @@ in the forum</p>
 
 <p>
 <label class="hidden-for-sighted" for="message_content">Message content</label>
-<textarea cols="80" rows="15" class="wiki-edit" id="message_content" accesskey="e" data-auto-complete="true" data-controller="list-autofill" data-action="beforeinput-&gt;list-autofill#handleBeforeInput" data-list-autofill-text-formatting-param="common_mark" name="reply[content]">
+<textarea cols="80" rows="15" class="wiki-edit" id="message_content" accesskey="e" data-auto-complete="true" data-controller="list-autofill selection-indent table-paste" data-action="beforeinput-&gt;list-autofill#handleBeforeInput keydown.tab-&gt;selection-indent#run keydown.shift+tab-&gt;selection-indent#run paste-&gt;table-paste#handlePaste" data-list-autofill-text-formatting-param="common_mark" data-selection-indent-text-formatting-param="common_mark" data-table-paste-text-formatting-param="common_mark" name="reply[content]">
 </textarea></p>
 <script>
 //<![CDATA[
@@ -152,7 +152,7 @@ var wikiToolbar = new jsToolBar(document.getElementById('message_content')); wik
 <span class="attachments_form">
   <span class="attachments_icons hidden">
     <svg class="s18 icon-svg svg-del" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--del"></use></svg>
-    <svg class="s16 icon-svg svg-attachment" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--attachment"></use></svg>
+    <svg class="s16 icon-svg svg-attachment" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--file"></use></svg>
     <svg class="s16 icon-svg svg-loader" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--loader"></use></svg>
     <svg class="s16 icon-svg svg-hourglass" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--hourglass"></use></svg>
   </span>

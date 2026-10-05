@@ -68,21 +68,14 @@ func (d *Deps) RequestFuncs(r *view.Render) ttemplate.FuncMap {
 
 		// --- icons / avatars / users ---
 		"sprite_icon": func(name any, args ...any) html {
-			var label any
-			var opts *rails.Hash
-			switch len(args) {
-			case 0:
-			case 1:
-				if h, ok := args[0].(*rails.Hash); ok {
-					opts = h
-				} else {
-					label = args[0]
-				}
-			default:
-				label = args[0]
-				opts = optHash(args[1:])
-			}
+			label, opts := spriteIconArgs(args)
 			return d.spriteIcon(pg(), rails.ToS(name), label, opts)
+		},
+		// icon_for_mime_type / file_type_icon（Redmine 7.0 の IconsHelper）。
+		"icon_for_mime_type": func(mime any) string { return IconForMimeType(rails.ToS(mime)) },
+		"file_type_icon": func(mime any, args ...any) html {
+			label, opts := spriteIconArgs(args)
+			return d.spriteIcon(pg(), IconForMimeType(rails.ToS(mime)), label, opts)
 		},
 		"notice_icon":  func(typ string) html { return d.noticeIcon(pg(), typ) },
 		"avatar":       func(u any, args ...any) html { return d.avatar(r, pg(), toUser(u), optHash(args)) },
@@ -256,9 +249,6 @@ func (d *Deps) jsInclude(sources ...string) html {
 // javascriptHeads は ApplicationHelper#javascript_heads。
 func (d *Deps) javascriptHeads(p *Page) html {
 	tags := d.jsInclude("jquery-3.7.1-ui-1.13.3", "rails-ujs", "tribute-5.1.3.min")
-	if p.settingBool("wiki_tablesort_enabled") {
-		tags += d.jsInclude("tablesort-5.2.1.min.js", "tablesort-5.2.1.number.min.js")
-	}
 	tags += d.jsInclude("application-legacy", "responsive")
 	if p.pref().WarnOnLeavingUnsaved {
 		warn := rails.EscapeJavascriptString(p.l("text_warn_on_leaving_unsaved"))
@@ -404,6 +394,23 @@ func (d *Deps) noticeIcon(p *Page, typ string) html {
 		name = "warning"
 	}
 	return d.spriteIcon(p, name, nil, nil)
+}
+
+// spriteIconArgs は sprite_icon(name, [label], [options]) の残りの引数を分解する。
+func spriteIconArgs(args []any) (label any, opts *rails.Hash) {
+	switch len(args) {
+	case 0:
+	case 1:
+		if h, ok := args[0].(*rails.Hash); ok {
+			opts = h
+		} else {
+			label = args[0]
+		}
+	default:
+		label = args[0]
+		opts = optHash(args[1:])
+	}
+	return label, opts
 }
 
 // FlashIcon は view.Options.FlashIcon に渡す関数。

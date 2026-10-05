@@ -532,11 +532,11 @@ func (l *issueLookup) relationDetailValue(id string, noHTML, onlyPath bool) any 
 
 // ---------------------------------------------------------------- reactions / quote / copy link
 
-// copyObjectURLLink は copy_object_url_link(url)（link_to_function なので href / onclick が先）。
+// copyObjectURLLink は copy_object_url_link(url)（Redmine 7.0 で clipboard Stimulus コントローラーに移行）。
 func (l *issueLookup) copyObjectURLLink(u string) template.HTML {
-	return rails.ContentTag("a", l.icon("copy-link", l.L("button_copy_link")),
-		rails.NewHash("href", "#", "onclick", "copyDataClipboardTextToClipboard(this);; return false;", "class", "icon icon-copy-link",
-			"data", rails.NewHash("clipboard-text", u)))
+	return rails.LinkTo(l.icon("copy-link", l.L("button_copy_link")), "#",
+		rails.NewHash("class", "icon icon-copy-link",
+			"data", rails.NewHash("clipboard_text", u, "controller", "clipboard", "action", "clipboard#copyText")))
 }
 
 // quoteReplyButton は quote_reply_button(url:, icon_only:)。

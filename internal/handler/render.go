@@ -58,7 +58,6 @@ func (c *Req) ViewContext() *view.Context {
 		Controller:     c.Controller.Name,
 		Action:         c.Action,
 		AppTitle:       a.Settings.String("app_title"),
-		AvatarsEnabled: a.Settings.Bool("gravatar_enabled"),
 		FormNameSuffix: a.FormNameSuffix,
 		Values:         map[string]any{helper.PageKey: page},
 	}

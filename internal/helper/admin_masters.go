@@ -56,6 +56,9 @@ func (d *Deps) mastersFuncs(r *view.Render, pg func() *Page) ttemplate.FuncMap {
 		"delete_link": func(url string, args ...any) html {
 			return d.deleteLink(pg(), url, optHash(args))
 		},
+		"remove_link": func(url string, args ...any) html {
+			return d.removeLink(pg(), url, optHash(args))
+		},
 		"toggle_checkboxes_link": func(selector string, args ...any) html {
 			return d.toggleCheckboxesLink(pg(), selector, optHash(args))
 		},
@@ -131,6 +134,12 @@ func (d *Deps) deleteLink(p *Page, url string, opts *rails.Hash) html {
 	}
 	o := rails.NewHash("method", "delete", "data", rails.NewHash("confirm", p.l("text_are_you_sure")), "class", "icon icon-del").Update(opts)
 	return rails.LinkTo(d.spriteIcon(p, "del", buttonName, nil), url, o)
+}
+
+// removeLink は ApplicationHelper#remove_link（Redmine 7.0 #34917。関連を外すだけの操作用）。
+func (d *Deps) removeLink(p *Page, url string, opts *rails.Hash) html {
+	o := rails.NewHash("method", "delete", "data", rails.NewHash("confirm", p.l("text_are_you_sure")), "class", "icon icon-link-break").Update(opts)
+	return rails.LinkTo(d.spriteIcon(p, "link-break", p.l("button_remove"), nil), url, o)
 }
 
 // linkToFunction は ApplicationHelper#link_to_function。
