@@ -61,6 +61,7 @@ func TestJournalsEdit(t *testing.T) {
 	if res.StatusCode != http.StatusOK || !strings.HasPrefix(res.Header.Get("Content-Type"), "text/javascript") {
 		t.Fatalf("edit.js: %d %s", res.StatusCode, res.Header.Get("Content-Type"))
 	}
+	recaptureGolden(t, "testdata/issues_write/journal_2_edit_admin.js", body, ts.URL)
 	raw, err := os.ReadFile("testdata/issues_write/journal_2_edit_admin.js")
 	if err != nil {
 		t.Fatal(err)

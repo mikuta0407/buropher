@@ -58,6 +58,9 @@ func contentMain(s string) string {
 // CONTENT_DUMP が設定されていれば取得した本文をそのディレクトリに書き出す。
 func compareContentGolden(t *testing.T, name, got, base string) {
 	t.Helper()
+	if recaptureGolden(t, "testdata/content/"+name, got, base) {
+		return
+	}
 	got = normalizeContent(got, base)
 	if dir := os.Getenv("CONTENT_DUMP"); dir != "" {
 		_ = os.WriteFile(filepath.Join(dir, name), []byte(got), 0o644)

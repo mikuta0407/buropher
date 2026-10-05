@@ -3,7 +3,7 @@
 
 package server_test
 
-// メールの互換テスト: Redmine 6.1.2 の Mailer が生成したメール（testdata/mail/mails.json。
+// メールの互換テスト: Redmine 7.0.1 の Mailer が生成したメール（testdata/mail/mails.json。
 // testdata/mail/gen/regen.sh で再生成）と、buropher の Mailer（handler.App.RenderMail）の出力を比べる。
 // 受信者ごとに件名・ヘッダ・text 本文・html 本文（roadie 適用後）を比較する。
 // Date と（対象オブジェクトの無いメールの）ランダムな Message-ID は比較しない。
@@ -289,7 +289,7 @@ func compareMail(t *testing.T, gm goldenMail, m *mail.Message) {
 	}
 	for k, want := range gm.Headers {
 		switch k {
-		case "To", "Subject", "Mime-Version", "Content-Type":
+		case "To", "Subject", "Mime-Version", "MIME-Version", "Content-Type":
 			continue
 		case "Message-ID":
 			if randomMessageID(want) {

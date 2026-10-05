@@ -16,7 +16,7 @@ import (
 // このファイルは活動（ActivitiesController・Atom・ユーザー詳細の活動欄）と検索（SearchController・API）の
 // 参照 Redmine との比較テスト。
 //
-// testdata/activity_search/* は参照 Redmine 6.1.2（http://127.0.0.1:3998）の出力を正規化し、
+// testdata/activity_search/* は参照 Redmine 7.0.1（http://127.0.0.1:3998）の出力を正規化し、
 // HTML は <title>・ページ固有の head・#main（サイドバーと本文）だけを抜き出したもの
 // （共有の参照環境では閲覧で変わるプロジェクトジャンプボックスを比較から外すため）。
 // 取り直すときは BUROPHER_ACTIVITY_GOLDEN_REF=http://127.0.0.1:3998 go test -run TestActivitySearchMatchRedmine ./internal/server

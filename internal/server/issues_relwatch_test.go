@@ -58,6 +58,9 @@ func xhr(t *testing.T, c *http.Client, method, u string, form url.Values) (*http
 
 func compareRelWatch(t *testing.T, name, got string) {
 	t.Helper()
+	if recaptureGolden(t, "testdata/relwatch/"+name, got, recaptureBase()) {
+		return
+	}
 	want, err := os.ReadFile("testdata/relwatch/" + name)
 	if err != nil {
 		t.Fatal(err)
