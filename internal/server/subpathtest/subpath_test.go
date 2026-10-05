@@ -94,6 +94,10 @@ func TestRelativeURLRoot(t *testing.T) {
 	if res.StatusCode != 404 || body != "Not Found: /projects" {
 		t.Fatalf("outside root: %d %q", res.StatusCode, body)
 	}
+	// 本文にパスを含むので MIME スニッフィングさせない
+	if res.Header.Get("X-Content-Type-Options") != "nosniff" {
+		t.Errorf("outside root: X-Content-Type-Options = %q", res.Header.Get("X-Content-Type-Options"))
+	}
 
 	c := newClient(t)
 	res, body = do(t, c, "GET", ts.URL+"/redmine/login", nil)

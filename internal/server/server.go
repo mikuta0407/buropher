@@ -239,6 +239,9 @@ func mountRelativeURLRoot(next chi.Router) http.Handler {
 		if !ok {
 			w.Header().Set("Content-Type", "text/plain")
 			w.Header().Set("X-Cascade", "pass")
+			// buropher 独自（多層防御）: 本文にリクエストのパスをそのまま含むため、MIME スニッフィングで
+			// HTML として解釈させない（Rack::URLMap は付けない）
+			w.Header().Set("X-Content-Type-Options", "nosniff")
 			w.WriteHeader(http.StatusNotFound)
 			_, _ = w.Write([]byte("Not Found: " + r.URL.Path))
 			return
