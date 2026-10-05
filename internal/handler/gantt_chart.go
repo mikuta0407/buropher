@@ -35,8 +35,8 @@ var ganttDrawTypes = []struct {
 	LandscapeMargin int
 	Color           string
 }{
-	{"blocks", 16, "#F34F4F"},
-	{"precedes", 20, "#628FEA"},
+	{"blocks", 16, "#fa5252"},   // oc-red-6
+	{"precedes", 20, "#228be6"}, // oc-blue-6
 }
 
 // ganttUnavailableColumns は Gantt::UNAVAILABLE_COLUMNS。
@@ -892,12 +892,13 @@ func (g *ganttChart) htmlSubject(o *ganttOptions, obj any) {
 		"number_of_rows", g.numberOfRows))
 	indent := o.indent
 	if hasChildren {
-		content = rails.ContentTag("span", g.icon("angle-down"), rails.NewHash("class", "icon icon-expanded expander")) + content
+		content = rails.ContentTag("span", g.a.Helpers.Icon(g.l.page, "angle-down", nil, rails.NewHash("rtl", true)),
+			rails.NewHash("class", "icon icon-expanded expander", "data", rails.NewHash("action", "click->gantt--subjects#handleEntryClick"))) + content
 		opts.Set("class", rails.ToS(opts.Get("class"))+" open")
 	} else {
 		indent += 18
 	}
-	style := "position: absolute;top:" + strconv.Itoa(o.top) + "px;left:" + strconv.Itoa(indent) + "px;"
+	style := "position: absolute;inset-block-start:" + strconv.Itoa(o.top) + "px;inset-inline-start:" + strconv.Itoa(indent) + "px;"
 	if o.subjectWidth != 0 {
 		style += "width:" + strconv.Itoa(o.subjectWidth-indent) + "px;"
 	}
@@ -1011,11 +1012,11 @@ func (g *ganttChart) htmlTask(o *ganttOptions, c ganttCoords, markers bool, labe
 	dataOpts := func() *rails.Hash {
 		return rails.NewHash("collapse_expand", objKey, "number_of_rows", g.numberOfRows)
 	}
-	top := "top:" + strconv.Itoa(o.top) + "px;"
+	top := "inset-block-start:" + strconv.Itoa(o.top) + "px;"
 	nbsp := template.HTML("&nbsp;")
 	if c.barStart != nil && c.barEnd != nil {
 		width := *c.barEnd - *c.barStart - 2
-		style := top + "left:" + strconv.Itoa(*c.barStart) + "px;" + "width:" + strconv.Itoa(width) + "px;"
+		style := top + "inset-inline-start:" + strconv.Itoa(*c.barStart) + "px;" + "width:" + strconv.Itoa(width) + "px;"
 		var htmlID any
 		switch x := obj.(type) {
 		case *query.IssueRow:
@@ -1033,12 +1034,12 @@ func (g *ganttChart) htmlTask(o *ganttOptions, c ganttCoords, markers bool, labe
 		out.WriteString(string(rails.ContentTag("div", nbsp, rails.NewHash("style", style, "class", css+" task_todo", "id", htmlID, "data", data))))
 		if c.barLateEnd != nil {
 			width := *c.barLateEnd - *c.barStart - 2
-			style := top + "left:" + strconv.Itoa(*c.barStart) + "px;" + "width:" + strconv.Itoa(width) + "px;"
+			style := top + "inset-inline-start:" + strconv.Itoa(*c.barStart) + "px;" + "width:" + strconv.Itoa(width) + "px;"
 			out.WriteString(string(rails.ContentTag("div", nbsp, rails.NewHash("style", style, "class", css+" task_late", "data", dataOpts()))))
 		}
 		if c.barProgressEnd != nil {
 			width := *c.barProgressEnd - *c.barStart - 2
-			style := top + "left:" + strconv.Itoa(*c.barStart) + "px;" + "width:" + strconv.Itoa(width) + "px;"
+			style := top + "inset-inline-start:" + strconv.Itoa(*c.barStart) + "px;" + "width:" + strconv.Itoa(width) + "px;"
 			var htmlID any
 			switch x := obj.(type) {
 			case *query.IssueRow:
@@ -1051,11 +1052,11 @@ func (g *ganttChart) htmlTask(o *ganttOptions, c ganttCoords, markers bool, labe
 	}
 	if markers {
 		if c.start != nil {
-			style := top + "left:" + strconv.Itoa(*c.start) + "px;" + "width:15px;"
+			style := top + "inset-inline-start:" + strconv.Itoa(*c.start) + "px;" + "width:15px;"
 			out.WriteString(string(rails.ContentTag("div", nbsp, rails.NewHash("style", style, "class", css+" marker starting", "data", dataOpts()))))
 		}
 		if c.end != nil {
-			style := top + "left:" + strconv.Itoa(*c.end) + "px;" + "width:15px;"
+			style := top + "inset-inline-start:" + strconv.Itoa(*c.end) + "px;" + "width:15px;"
 			out.WriteString(string(rails.ContentTag("div", nbsp, rails.NewHash("style", style, "class", css+" marker ending", "data", dataOpts()))))
 		}
 	}
@@ -1065,14 +1066,14 @@ func (g *ganttChart) htmlTask(o *ganttOptions, c ganttCoords, markers bool, labe
 		if c.barEnd != nil {
 			be = *c.barEnd
 		}
-		style := top + "left:" + strconv.Itoa(be+8) + "px;" + "width:15px;"
+		style := top + "inset-inline-start:" + strconv.Itoa(be+8) + "px;" + "width:15px;"
 		out.WriteString(string(rails.ContentTag("div", label, rails.NewHash("style", style, "class", css+" label", "data", dataOpts()))))
 	}
 	if issue != nil && c.barStart != nil && c.barEnd != nil {
 		s := rails.ContentTag("span", g.issueTooltip(issue), rails.NewHash("class", "tip"))
 		s += rails.ContentTag("input", nil, rails.NewHash("type", "checkbox", "name", "ids[]", "value", issue.ID,
 			"style", "display:none;", "class", "toggle-selection"))
-		style := "position: absolute;" + top + "left:" + strconv.Itoa(*c.barStart) + "px;" +
+		style := "position: absolute;" + top + "inset-inline-start:" + strconv.Itoa(*c.barStart) + "px;" +
 			"width:" + strconv.Itoa(*c.barEnd-*c.barStart) + "px;" + "height:12px;"
 		out.WriteString(string(rails.ContentTag("div", s, rails.NewHash("style", style, "class", "tooltip hascontextmenu", "data", dataOpts()))))
 	}
@@ -1114,7 +1115,7 @@ func (g *ganttChart) issueTooltip(r *query.IssueRow) template.HTML {
 // columnContentForIssue は column_content_for_issue(issue, options)。
 func (g *ganttChart) columnContentForIssue(r *query.IssueRow, o *ganttOptions) {
 	name := o.column.Name
-	style := "position: absolute;top: " + strconv.Itoa(o.top) + "px; font-size: 0.8em;"
+	style := "position: absolute;inset-block-start: " + strconv.Itoa(o.top) + "px; font-size: 0.8em;"
 	content := rails.ContentTag("div", g.l.columnContent(o.column, r), rails.NewHash("style", style, "class", "issue_"+name,
 		"id", name+"_issue_"+strconv.FormatInt(r.ID, 10),
 		"data", rails.NewHash("collapse_expand", "issue-"+strconv.FormatInt(r.ID, 10), "number_of_rows", g.numberOfRows)))

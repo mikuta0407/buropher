@@ -107,8 +107,23 @@ func (a *App) GanttsShow(c *Req) {
 type ganttColumnView struct {
 	Name    string
 	Caption string
-	Last    bool
+	Options *rails.Hash
 	Content rails.HTML
+}
+
+// ganttColumnOptions は gantt_column_tag(column_name, min_width:, **options) の td の属性。
+func ganttColumnOptions(column string, minWidth int, opts *rails.Hash) *rails.Hash {
+	cls := "gantt_" + column + "_column"
+	if c := rails.ToS(opts.Get("class")); c != "" {
+		cls += " " + c
+	}
+	opts.Set("data", rails.NewHash(
+		"controller", "gantt--column",
+		"action", "resize@window->gantt--column#handleWindowResize",
+		"gantt--column-min-width-value", minWidth,
+		"gantt--column-column-value", column))
+	opts.Set("class", cls)
+	return opts
 }
 
 // ganttViewData は gantts/show.html.erb の値を組み立てる（ビュー内の計算と @gantt.render を含む）。
@@ -139,9 +154,19 @@ func (a *App) ganttViewData(c *Req, g *ganttChart, q *query.Query, qv *queryView
 	}
 	data["FormAction"] = helper.URLWithQuery(path, formParams)
 	data["CheckDrawSelectedColumns"] = ganttCheckBox("draw_selected_columns", q.DrawSelectedColumns(),
-		rails.NewHash("data-enables", "#list-definition .query-columns select, #list-definition .query-columns input"))
-	data["CheckDrawRelations"] = ganttCheckBox("draw_relations", q.DrawRelations(), nil)
-	data["CheckDrawProgressLine"] = ganttCheckBox("draw_progress_line", q.DrawProgressLine(), nil)
+		rails.NewHash("data", rails.NewHash(
+			"enables", "#list-definition .query-columns select, #list-definition .query-columns input",
+			"action", "change->gantt--options#toggleDisplay",
+			"gantt--options-target", "display")))
+	data["CheckDrawRelations"] = ganttCheckBox("draw_relations", q.DrawRelations(),
+		rails.NewHash("data", rails.NewHash("action", "change->gantt--options#toggleRelations", "gantt--options-target", "relations")))
+	data["CheckDrawProgressLine"] = ganttCheckBox("draw_progress_line", q.DrawProgressLine(),
+		rails.NewHash("data", rails.NewHash("action", "change->gantt--options#toggleProgress", "gantt--options-target", "progress")))
+	// [IssueRelation::TYPE_BLOCKS, IssueRelation::TYPE_PRECEDES] の凡例
+	data["DrawRelationTypes"] = []map[string]string{
+		{"Color": ganttDrawTypes[0].Color, "Label": "label_blocks"},
+		{"Color": ganttDrawTypes[1].Color, "Label": "label_precedes"},
+	}
 
 	// gantt_zoom_link
 	page := c.Page()
@@ -187,8 +212,7 @@ func (a *App) ganttViewData(c *Req, g *ganttChart, q *query.Query, qv *queryView
 	data["EditQueryURL"] = "/queries/" + strconv.FormatInt(q.ID, 10) + "/edit?gantt=1"
 	data["QueryURL"] = "/queries/" + strconv.FormatInt(q.ID, 10) + "?gantt=1"
 	data["BackURL"] = urlroot.Path(helper.URLWithQuery(path, reqParams))
-	data["DrawTypesJSON"] = ganttDrawTypesJSON()
-	data["UnavailableColumns"] = strings.Join(ganttUnavailableColumns, ",")
+	data["UnavailableColumnsJSON"] = `["` + strings.Join(ganttUnavailableColumns, `","`) + `"]`
 
 	sidebar, err := a.sidebarQueriesHTML(c, query.KindIssue, q, path)
 	if err != nil {
@@ -231,18 +255,32 @@ func (a *App) ganttViewData(c *Req, g *ganttChart, q *query.Query, qv *queryView
 
 	data["Truncated"] = g.Truncated
 	data["TruncatedNotice"] = c.L("notice_gantt_chart_truncated", map[string]any{"max": g.MaxRows})
+	// gantt_chart_tag(query)
+	boolStr := func(b bool) string { return strconv.FormatBool(b) }
+	data["ChartTableOptions"] = rails.NewHash("class", "gantt-table", "data", rails.NewHash(
+		"controller", "gantt--chart",
+		"action", "gantt--options:toggle-display@document->gantt--chart#handleOptionsDisplay "+
+			"gantt--options:toggle-relations@document->gantt--chart#handleOptionsRelations "+
+			"gantt--options:toggle-progress@document->gantt--chart#handleOptionsProgress "+
+			"gantt--subjects:toggle-tree->gantt--chart#handleSubjectTreeChanged "+
+			"resize@window->gantt--chart#handleWindowResize",
+		"gantt--chart-issue-relation-types-value", ganttDrawTypesJSON(),
+		"gantt--chart-show-selected-columns-value", boolStr(q.DrawSelectedColumns()),
+		"gantt--chart-show-relations-value", boolStr(q.DrawRelations()),
+		"gantt--chart-show-progress-value", boolStr(q.DrawProgressLine())))
 	subjectTD := subjectWidth + 2
 	if q.DrawSelectedColumns() {
 		subjectTD = subjectWidth + 1
 	}
-	data["SubjectTDWidth"] = subjectTD
+	data["SubjectsColumnOptions"] = ganttColumnOptions("subjects", 100,
+		rails.NewHash("style", "width:"+itoa(subjectTD)+"px;"))
 	data["SubjectsContainerStyle"] = "position:relative;" + "height: " + itoa(tHeight+24) + "px;" + "width: " + itoa(subjectWidth+1) + "px;"
-	containerClass := "gantt_subjects_container "
+	containerClass := "gantt_subjects_container"
 	if q.DrawSelectedColumns() {
-		containerClass += "draw_selected_columns"
+		containerClass += " draw_selected_columns"
 	}
 	data["SubjectsContainerClass"] = containerClass
-	data["SubjectsHdrStyle1"] = "width: " + itoa(subjectWidth+1) + "px;" + "height: " + itoa(headersHeight) + "px;" + "background: #eee;"
+	data["SubjectsHdrStyle1"] = "width: " + itoa(subjectWidth+1) + "px;" + "height: " + itoa(headersHeight) + "px;" + "background: #f1f3f5;"
 	data["SubjectsHdrStyle2"] = "z-index: 1;" + "width: " + itoa(subjectWidth+1) + "px;" + "height: " + itoa(tHeight) + "px;" + "overflow: hidden;"
 	data["Subjects"] = rails.HTML(g.subjects.String())
 
@@ -256,8 +294,13 @@ func (a *App) ganttViewData(c *Req, g *ganttChart, q *query.Query, qv *queryView
 			continue
 		}
 		content := g.selectedColumnContent(col, ganttOptions{top: headersHeight + 8, zoom: zoom, gWidth: gWidth})
-		colViews = append(colViews, ganttColumnView{Name: strings.ReplaceAll(col.Name, ".", "_"), Caption: qv.Caption(col),
-			Last: i == len(cols)-1, Content: rails.HTML(content)})
+		name := strings.ReplaceAll(col.Name, ".", "_")
+		cls := "gantt_selected_column"
+		if i == len(cols)-1 {
+			cls += " last_gantt_selected_column"
+		}
+		colViews = append(colViews, ganttColumnView{Name: name, Caption: qv.Caption(col),
+			Options: ganttColumnOptions(name, 20, rails.NewHash("id", name, "class", cls)), Content: rails.HTML(content)})
 	}
 	if g.l.err != nil {
 		return nil, g.l.err
@@ -265,17 +308,18 @@ func (a *App) ganttViewData(c *Req, g *ganttChart, q *query.Query, qv *queryView
 	data["Columns"] = colViews
 	data["ColumnContainerStyle"] = "position: relative;" + "height: " + itoa(tHeight+24) + "px;"
 	data["ColumnHdrStyle1"] = "height: " + itoa(tHeight) + "px;" + "overflow: hidden;"
-	data["ColumnHdrStyle2"] = "height: " + itoa(headersHeight) + "px;" + "background: #eee;"
+	data["ColumnHdrStyle2"] = "height: " + itoa(headersHeight) + "px;" + "background: #f1f3f5;"
 	data["AreaHeight"] = tHeight + 24
-	data["AreaHeaders"] = rails.HTML(g.areaHeaders(c, zoom, gWidth, gHeight, headerHeight, headersHeight, showWeeks, showDays, showDayNum))
+	data["AreaHdrStyle"] = "width: " + itoa(gWidth-1) + "px;" + "height: " + itoa(headersHeight) + "px;" + "background: #f1f3f5;"
+	data["AreaHeaders"] = rails.HTML(g.areaHeaders(c, zoom, gHeight, headerHeight, showWeeks, showDays, showDayNum))
 	data["Lines"] = rails.HTML(g.lines.String())
 	if !g.today.Before(g.DateFrom) && !g.today.After(g.DateTo) {
 		todayLeft := int(ganttDays(g.today)-ganttDays(g.DateFrom)+1)*zoom - 1
-		data["TodayStyle"] = "position: absolute;" + "height: " + itoa(gHeight) + "px;" + "top: " + itoa(headersHeight+1) + "px;" +
-			"left: " + itoa(todayLeft) + "px;" + "width:10px;" + "border-left: 1px dashed red;"
+		data["TodayStyle"] = "position: absolute;" + "height: " + itoa(gHeight) + "px;" + "inset-block-start: " + itoa(headersHeight+1) + "px;" +
+			"inset-inline-start: " + itoa(todayLeft) + "px;" + "width:10px;" + "border-inline-start: 1px dashed red;"
 	}
-	data["DrawAreaStyle"] = "position: absolute;" + "height: " + itoa(gHeight) + "px;" + "top: " + itoa(headersHeight+1) + "px;" +
-		"left: 0px;" + "width: " + itoa(gWidth-1) + "px;"
+	data["DrawAreaStyle"] = "position: absolute;" + "height: " + itoa(gHeight) + "px;" + "inset-block-start: " + itoa(headersHeight+1) + "px;" +
+		"inset-inline-start: 0px;" + "width: " + itoa(gWidth-1) + "px;"
 
 	// ページ送り・他形式
 	data["PrevURL"] = withReq(g.ParamsPrevious())
@@ -323,12 +367,9 @@ func ganttCheckBox(name string, checked bool, extra *rails.Hash) rails.HTML {
 }
 
 // areaHeaders は #gantt_area の見出し（月・週・日番号・曜日）の HTML（ERB の空白を含めて再現する）。
-func (g *ganttChart) areaHeaders(c *Req, zoom, gWidth, gHeight, headerHeight, headersHeight int, showWeeks, showDays, showDayNum bool) string {
+func (g *ganttChart) areaHeaders(c *Req, zoom, gHeight, headerHeight int, showWeeks, showDays, showDayNum bool) string {
 	itoa := strconv.Itoa
 	var b strings.Builder
-	b.WriteString(string(rails.ContentTag("div", rails.HTML("&nbsp;"), rails.NewHash("style",
-		"width: "+itoa(gWidth-1)+"px;"+"height: "+itoa(headersHeight)+"px;"+"background: #eee;", "class", "gantt_hdr"))))
-	b.WriteString("\n\n")
 	path := ganttPath(g.Project)
 
 	// Months headers
@@ -341,12 +382,12 @@ func (g *ganttChart) areaHeaders(c *Req, zoom, gWidth, gHeight, headerHeight, he
 	for i := 0; i < g.Months; i++ {
 		next := monthF.AddDate(0, 1, 0)
 		width := int(ganttDays(next)-ganttDays(monthF))*zoom - 1
-		style := "left: " + itoa(left) + "px;" + "width: " + itoa(width) + "px;" + "height: " + itoa(height) + "px;"
+		style := "inset-inline-start: " + itoa(left) + "px;" + "width: " + itoa(width) + "px;" + "height: " + itoa(height) + "px;"
 		params := rails.NewHash("zoom", g.Zoom, "year", monthF.Year(), "month", int(monthF.Month()), "months", g.Months)
 		link := rails.LinkTo(itoa(monthF.Year())+"-"+itoa(int(monthF.Month())), helper.URLWithQuery(path, params),
 			rails.NewHash("title", c.Loc.MonthName(int(monthF.Month()))+" "+itoa(monthF.Year())))
-		b.WriteString("  " + string(rails.Tag("div", rails.NewHash("style", style, "class", "gantt_hdr"), true)))
-		b.WriteString("\n    " + string(link) + "\n</div>")
+		b.WriteString("          " + string(rails.Tag("div", rails.NewHash("style", style, "class", "gantt_hdr"), true)))
+		b.WriteString("\n            " + string(link) + "\n</div>")
 		left = left + width + 1
 		monthF = next
 	}
@@ -366,8 +407,8 @@ func (g *ganttChart) areaHeaders(c *Req, zoom, gWidth, gHeight, headerHeight, he
 		} else {
 			weekF = g.DateFrom.AddDate(0, 0, 7-cwday+1)
 			width := (7-cwday+1)*zoom - 1
-			style := "left: " + itoa(left) + "px;" + "top: 19px;" + "width: " + itoa(width) + "px;" + "height: " + itoa(height) + "px;"
-			b.WriteString("    " + string(rails.ContentTag("div", rails.HTML("&nbsp;"), rails.NewHash("style", style, "class", "gantt_hdr"))) + "\n")
+			style := "inset-inline-start: " + itoa(left) + "px;" + "inset-block-start: 19px;" + "width: " + itoa(width) + "px;" + "height: " + itoa(height) + "px;"
+			b.WriteString("            " + string(rails.ContentTag("div", rails.HTML("&nbsp;"), rails.NewHash("style", style, "class", "gantt_hdr"))) + "\n")
 			left = left + width + 1
 		}
 		for !weekF.After(g.DateTo) {
@@ -377,12 +418,12 @@ func (g *ganttChart) areaHeaders(c *Req, zoom, gWidth, gHeight, headerHeight, he
 			} else {
 				width = int(ganttDays(g.DateTo)-ganttDays(weekF)+1)*zoom - 1
 			}
-			style := "left: " + itoa(left) + "px;" + "top: 19px;" + "width: " + itoa(width) + "px;" + "height: " + itoa(height) + "px;"
-			b.WriteString("    " + string(rails.Tag("div", rails.NewHash("style", style, "class", "gantt_hdr"), true)))
-			b.WriteString("\n      <small>")
+			style := "inset-inline-start: " + itoa(left) + "px;" + "inset-block-start: 19px;" + "width: " + itoa(width) + "px;" + "height: " + itoa(height) + "px;"
+			b.WriteString("            " + string(rails.Tag("div", rails.NewHash("style", style, "class", "gantt_hdr"), true)))
+			b.WriteString("\n              <small>")
 			if width >= 16 {
 				_, wk := weekF.ISOWeek()
-				b.WriteString("\n        " + itoa(wk) + "\n")
+				b.WriteString("\n                " + itoa(wk) + "\n")
 			} else {
 				b.WriteString("\n")
 			}
@@ -402,13 +443,13 @@ func (g *ganttChart) areaHeaders(c *Req, zoom, gWidth, gHeight, headerHeight, he
 		dayNum := g.DateFrom
 		for i := 0; i < nDays; i++ {
 			width := zoom - 1
-			style := "left:" + itoa(left) + "px;" + "top:37px;" + "width:" + itoa(width) + "px;" + "height:" + itoa(height) + "px;" + "font-size:0.7em;"
+			style := "inset-inline-start:" + itoa(left) + "px;" + "inset-block-start:37px;" + "width:" + itoa(width) + "px;" + "height:" + itoa(height) + "px;" + "font-size:0.7em;"
 			cls := "gantt_hdr"
 			if containsInt(g.nonWorking, wday) {
 				cls += " nwday"
 			}
-			b.WriteString("    " + string(rails.Tag("div", rails.NewHash("style", style, "class", cls), true)))
-			b.WriteString("\n      " + itoa(dayNum.Day()) + "\n</div>")
+			b.WriteString("            " + string(rails.Tag("div", rails.NewHash("style", style, "class", cls), true)))
+			b.WriteString("\n              " + itoa(dayNum.Day()) + "\n</div>")
 			left = left + width + 1
 			dayNum = dayNum.AddDate(0, 0, 1)
 			wday++
@@ -430,13 +471,13 @@ func (g *ganttChart) areaHeaders(c *Req, zoom, gWidth, gHeight, headerHeight, he
 		for i := 0; i < nDays; i++ {
 			d := g.DateFrom.AddDate(0, 0, i)
 			width := zoom - 1
-			style := "left: " + itoa(left) + "px;" + "top: " + itoa(top) + "px;" + "width: " + itoa(width) + "px;" + "height: " + itoa(height) + "px;" + "font-size:0.7em;"
+			style := "inset-inline-start: " + itoa(left) + "px;" + "inset-block-start: " + itoa(top) + "px;" + "width: " + itoa(width) + "px;" + "height: " + itoa(height) + "px;" + "font-size:0.7em;"
 			cls := "gantt_hdr"
 			if containsInt(g.nonWorking, isoWeekday(d)) {
 				cls += " nwday"
 			}
-			b.WriteString("    " + string(rails.Tag("div", rails.NewHash("style", style, "class", cls), true)))
-			b.WriteString("\n      " + string(rails.H(c.Loc.DayLetter(isoWeekday(d)))) + "\n</div>")
+			b.WriteString("            " + string(rails.Tag("div", rails.NewHash("style", style, "class", cls), true)))
+			b.WriteString("\n              " + string(rails.H(c.Loc.DayLetter(isoWeekday(d)))) + "\n</div>")
 			left = left + width + 1
 		}
 	}
