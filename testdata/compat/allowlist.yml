@@ -119,3 +119,8 @@ entries:
   - case: "api/custom_fields.*"
     reason: "フィクスチャの custom_fields id 11（type が基底クラス CustomField）は custom_fields.owner_kind の CHECK 制約に合わずインポートされない"
     ignore: true
+
+  # ---- my_write ----
+  - case: "my_write/account_after_update__dlopper"
+    reason: "Redmine 7.0.x の上流不具合: メールアドレス変更時のセキュリティ通知が Async(mailers) の DeliveryJob で非同期に配送され、Mailer.with_user_locale が設定する I18n.locale が直後のリクエスト（言語を fr に変えた直後の /my/account）に漏れて英語で描画される（タイミング依存。メールアドレスを変えなければ fr になる）。buropher はユーザーの言語（fr）で描画する"
+    ignore: true
