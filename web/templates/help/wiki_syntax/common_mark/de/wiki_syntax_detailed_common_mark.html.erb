@@ -27,6 +27,7 @@
         <li><a href='#12'>Makros</a></li>
         <li><a href='#13'>Hervorgehobener Programmcode</a></li>
         <li><a href='#15'>Roh HTML</a></li>
+        <li><a href='#16'>Alerts</a></li>
     </ul>
 
     <h2><a name="2" class="wiki-page"></a>Links</h2>
@@ -182,10 +183,10 @@
         <p>URLs (beginnend mit: www, http, https, ftp, ftps, sftp und sftps) und E-Mail-Adressen werden automatisch in anklickbare Links umgewandelt:</p>
 
 <pre>
-https://www.redmine.org, someone@foo.bar
+https://www.redmine.org, someone@example.com
 </pre>
 
-        <p>Anzeige: <a class="external" href="https://www.redmine.org">https://www.redmine.org</a>, <a href="mailto:someone@foo.bar" class="email">someone@foo.bar</a></p>
+        <p>Anzeige: <a class="external" href="https://www.redmine.org">https://www.redmine.org</a>, <a href="mailto:someone@example.com" class="email">someone@example.com</a></p>
 
         <p>Wenn Sie anstelle der URL einen bestimmten Text anzeigen möchten, können Sie die Standard-Markdown-Syntax verwenden:</p>
 
@@ -329,8 +330,8 @@ Es kann durch Klicken auf einen Link erweitert werden.
     <p>Sie können Code an jeder Stelle hervorheben, die Wiki-Formatierung mit dieser Syntax unterstützt (beachten Sie, dass beim Sprachnamen oder Alias ​​die Groß-/Kleinschreibung nicht beachtet wird):</p>
 
 <pre>
-``` ruby
-    Geben Sie hier Ihren Code ein.
+```ruby
+  Geben Sie hier Ihren Code ein.
 ```
 </pre>
 
@@ -367,6 +368,53 @@ Es kann durch Klicken auf einen Link erweitert werden.
 <tr><td>bar</td></tr>
 <tr><td align="center" colspan="2">bar</td></tr>
 </table>
+
+<h2><a name="16" class="wiki-page"></a>Warnungen</h2>
+
+<p>
+<dl>
+  <dt><code>NOTE</code></dt>
+  <dd>
+    <pre><code>> [!NOTE]<br>> Änderungen an Wiki-Seiten werden als Historie gespeichert, sodass Sie bei Bedarf frühere Versionen wiederherstellen können.</code></pre>
+    <div class="markdown-alert markdown-alert-note">
+    <p class="markdown-alert-title">Hinweis</p>
+    <p>Änderungen an Wiki-Seiten werden als Historie gespeichert, sodass Sie bei Bedarf frühere Versionen wiederherstellen können.</p>
+    </div>
+  </dd>
+  <dt><code>TIP</code></dt>
+  <dd>
+    <pre><code>> [!TIP]<br>> Um den Änderungsverlauf eines Tickets schnell einzusehen, nutzen Sie die Registerkarte „Historie“ für einen bequemen Zugriff.</code></pre>
+    <div class="markdown-alert markdown-alert-tip">
+      <p class="markdown-alert-title">Tipp</p>
+      <p>Um den Änderungsverlauf eines Tickets schnell einzusehen, nutzen Sie die Registerkarte „Historie“ für einen bequemen Zugriff.</p>
+    </div>
+  </dd>
+  <dt><code>IMPORTANT</code></dt>
+  <dd>
+    <pre><code>> [!IMPORTANT]<br>> Das Ändern von Rollenberechtigungen kann sich auf den Zugriff der Benutzer in allen Projekten auswirken. Achten Sie daher auf mögliche Folgen.</code></pre>
+    <div class="markdown-alert markdown-alert-important">
+        <p class="markdown-alert-title">Wichtig</p>
+        <p>Das Ändern von Rollenberechtigungen kann sich auf den Zugriff der Benutzer in allen Projekten auswirken. Achten Sie daher auf mögliche Folgen.</p>
+    </div>
+  </dd>
+  <dt><code>CAUTION</code></dt>
+  <dd>
+    <pre><code>> [!CAUTION]<br>> Achten Sie bei der Installation von Plugins darauf, die Kompatibilität zu überprüfen. Versionsunterschiede können zu unerwartetem Verhalten führen.</code></pre>
+    <div class="markdown-alert markdown-alert-caution">
+        <p class="markdown-alert-title">Achtung</p>
+        <p>Achten Sie bei der Installation von Plugins darauf, die Kompatibilität zu überprüfen. Versionsunterschiede können zu unerwartetem Verhalten führen.</p>
+    </div>
+  </dd>
+  <dt><code>WARNING</code></dt>
+  <dd>
+    <pre><code>> [!WARNING]<br>> Das Löschen eines Tickets ist ein unwiderruflicher Vorgang. Vergewissern Sie sich, dass dies wirklich notwendig ist, bevor Sie fortfahren.</code></pre>
+    <div class="markdown-alert markdown-alert-warning">
+        <p class="markdown-alert-title">Warnung</p>
+        <p>Das Löschen eines Tickets ist ein unwiderruflicher Vorgang. Vergewissern Sie sich, dass dies wirklich notwendig ist, bevor Sie fortfahren.</p>
+    </div>
+  </dd>
+</dl>
+</p>
 
 </body>
 </html>

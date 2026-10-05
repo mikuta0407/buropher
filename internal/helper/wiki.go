@@ -397,14 +397,23 @@ func (d *Deps) headsForWikiFormatter(r *view.Render, p *Page, included *bool) {
 	}
 }
 
-// listAutofillDataAttributes は ApplicationHelper#list_autofill_data_attributes。
+// listAutofillDataAttributes は ApplicationHelper#wiki_textarea_stimulus_attributes（6.1 の list_autofill_data_attributes）。
 func listAutofillDataAttributes(p *Page) *rails.Hash {
-	f := p.setting("text_formatting")
-	if strings.TrimSpace(f) == "" {
+	return WikiTextareaStimulusAttributes(p.setting("text_formatting"))
+}
+
+// WikiTextareaStimulusAttributes は ApplicationHelper#wiki_textarea_stimulus_attributes
+// （Setting.text_formatting が空なら {}。リストの自動補完・Tab による字下げ #44061・表の貼り付け #43950）。
+func WikiTextareaStimulusAttributes(textFormatting string) *rails.Hash {
+	if strings.TrimSpace(textFormatting) == "" {
 		return rails.NewHash()
 	}
-	return rails.NewHash("controller", "list-autofill", "action", "beforeinput->list-autofill#handleBeforeInput",
-		"list_autofill_text_formatting_param", f)
+	return rails.NewHash(
+		"controller", "list-autofill selection-indent table-paste",
+		"action", "beforeinput->list-autofill#handleBeforeInput keydown.tab->selection-indent#run keydown.shift+tab->selection-indent#run paste->table-paste#handlePaste",
+		"list_autofill_text_formatting_param", textFormatting,
+		"selection_indent_text_formatting_param", textFormatting,
+		"table_paste_text_formatting_param", textFormatting)
 }
 
 // updateDataSourcesForAutoComplete は ApplicationHelper#update_data_sources_for_auto_complete。
