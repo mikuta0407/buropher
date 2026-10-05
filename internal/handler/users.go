@@ -315,12 +315,8 @@ func (a *App) UsersShow(c *Req) {
 		return
 	}
 	// show projects based on current user visibility
-	projCond, err := c.Authz().VisibleCondition(ctx, authz.ConditionOptions{})
-	if err != nil {
-		a.serverError(c, err)
-		return
-	}
-	memberships, err := a.membershipRows(c, u.ID, projCond, false)
+	// （7.0.2 #44468: @user.memberships.visible = view_members を持つプロジェクトだけ）
+	memberships, err := a.visibleMembershipRows(c, u.ID)
 	if err != nil {
 		a.serverError(c, err)
 		return

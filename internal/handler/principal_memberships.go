@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/mikuta0407/buropher/internal/authz"
 	"github.com/mikuta0407/buropher/internal/db"
 	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/helper"
@@ -174,6 +175,16 @@ func sortRowsByProject(rows []*membershipRow, ns map[int64]repository.NestedSetV
 	sort.SliceStable(rows, func(i, j int) bool {
 		return ns[rows[i].Member.ProjectID].Lft < ns[rows[j].Member.ProjectID].Lft
 	})
+}
+
+// visibleMembershipRows は principal.memberships.visible（Member.visible: 現在のユーザーが
+// view_members を持つプロジェクトのメンバーシップ。7.0.2 #44468）を返す。並びは membershipRows(.., false) と同じ。
+func (a *App) visibleMembershipRows(c *Req, principalID int64) ([]*membershipRow, error) {
+	cond, err := c.Authz().AllowedToCondition(c.Ctx(), "view_members", authz.ConditionOptions{}, nil)
+	if err != nil {
+		return nil, err
+	}
+	return a.membershipRows(c, principalID, cond, false)
 }
 
 // membershipRows は principal.memberships（アーカイブされていないプロジェクト）をプロジェクトのツリー順に返す。
