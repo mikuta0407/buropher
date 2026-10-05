@@ -322,7 +322,7 @@ func (a *App) GroupsShow(c *Req) {
 	if httpx.IsAPIRequest(c.R) {
 		var rows []*membershipRow
 		if c.IncludeInAPIResponse("memberships") {
-			if rows, err = a.membershipRows(c, g.ID, "", false); err != nil {
+			if rows, err = a.visibleMembershipRows(c, g.ID); err != nil {
 				a.serverError(c, err)
 				return
 			}
@@ -451,7 +451,7 @@ func (a *App) GroupsCreate(c *Req) {
 			users, _ := repository.GroupUsers(c.Ctx(), a.DB, m.ID)
 			var rows []*membershipRow
 			if c.IncludeInAPIResponse("memberships") {
-				rows, _ = a.membershipRows(c, m.ID, "", false)
+				rows, _ = a.visibleMembershipRows(c, m.ID)
 			}
 			cv, _ := a.principalCustomValuesByID(c, "group", []int64{m.ID}, true)
 			a.renderGroupShowAPI(c, m.Group, users, rows, cv[m.ID], http.StatusCreated)

@@ -516,3 +516,31 @@ func TestWebhookTriggeredByActions(t *testing.T) {
 		t.Errorf("time entry %v", te)
 	}
 }
+
+// ペイロードはフックの利用者に見える範囲だけを含む: 非公開の注記（view_private_notes が無い）と
+// 見えないカスタムフィールドは出さない。管理者には出す。
+func TestWebhookPayloadVisibilityForHookUser(t *testing.T) {
+	e := newWebhookEnv(t)
+	e.exec(`UPDATE issue_journals SET private_notes = ? WHERE id = 1`, true)
+	e.exec(`UPDATE custom_fields SET visible = ? WHERE id = 2`, false)
+	for _, x := range []struct {
+		login   string
+		visible bool
+	}{{"dlopper", false}, {"admin", true}} {
+		u, err := repository.FindUserByLogin(e.ctx, e.d, x.login)
+		if err != nil {
+			t.Fatal(err)
+		}
+		got, ok, err := e.app.WebhookPayload(e.ctx, u, "issue.updated", 1, 1)
+		if err != nil || !ok {
+			t.Fatalf("%s: ok=%v err=%v", x.login, ok, err)
+		}
+		s := string(got)
+		if strings.Contains(s, "Journal notes") != x.visible || strings.Contains(s, `"journal"`) != x.visible {
+			t.Errorf("%s: private journal visible=%v: %s", x.login, !x.visible, s)
+		}
+		if strings.Contains(s, "Searchable field") != x.visible {
+			t.Errorf("%s: hidden custom field visible=%v: %s", x.login, !x.visible, s)
+		}
+	}
+}

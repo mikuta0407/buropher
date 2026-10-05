@@ -40,6 +40,11 @@ mkdir -p web/public
 cp "$SRC/public/404.html" "$SRC/public/500.html" web/public/
 # 製品名の置換（Buropher のブランディング。ロケールは internal/i18n が読み込み時に置換する）
 sed -i 's/Redmine/Buropher/g' web/public/404.html web/public/500.html
+# UPSTREAM_VERSION より新しい本家のセキュリティ修正（tools/upstream-patches/*.patch。例: 7.0.2 #44429）を当て直す
+for p in tools/upstream-patches/*.patch; do
+  [ -f "$p" ] || continue
+  patch -p1 -N -r - --no-backup-if-mismatch < "$p" || echo "WARN: $p did not apply (already upstream?)" >&2
+done
 # バージョン記録
 grep -E "MAJOR|MINOR|TINY" "$SRC/lib/redmine/version.rb" | head -3 > web/UPSTREAM_VERSION
 echo "synced from $SRC"

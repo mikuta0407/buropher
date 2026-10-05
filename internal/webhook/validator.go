@@ -24,6 +24,7 @@ import (
 // buropher 独自の強化: マルチキャストは 224.0.0.0/24 だけでなく全域（224.0.0.0/4・ff00::/8）、
 // 0.0.0.0/8 と 255.255.255.255 も拒否する。ホスト名の末尾の "." は除いてからブロックリストと照合する。
 // inet_aton 形式の数値ホスト（"2130706433"・"0x7f000001"・"127.1" など）は IPv4 として検査する。
+// IPv6 に埋め込まれた IPv4（IPv4 互換・NAT64・6to4）もその IPv4 として検査する（embeddedIPv4）。
 type Validator struct {
 	blockedNets  []netip.Prefix
 	blockedHosts []string // 完全一致（小文字）
@@ -203,7 +204,32 @@ func (v *Validator) AllowedAddr(a netip.Addr) bool {
 			return false
 		}
 	}
+	if v4, ok := embeddedIPv4(a); ok && !v.AllowedAddr(v4) {
+		return false
+	}
 	return true
+}
+
+// embeddedIPv4 は IPv6 アドレスに埋め込まれた IPv4 アドレスを返す。
+//   - IPv4 互換アドレス（::a.b.c.d。Redmine の IPAddr#native と同じく IPv4 として検査する）
+//   - buropher 独自: NAT64 の既知プレフィックス 64:ff9b::/96 と 6to4 の 2002::/16
+//     （経路によっては埋め込まれた IPv4 へ届くため、そのアドレスも検査する）
+func embeddedIPv4(a netip.Addr) (netip.Addr, bool) {
+	if !a.Is6() {
+		return netip.Addr{}, false
+	}
+	b := a.As16()
+	switch {
+	case b == [16]byte{} || a == netip.IPv6Loopback():
+		return netip.Addr{}, false
+	case [12]byte(b[:12]) == [12]byte{}:
+		return netip.AddrFrom4([4]byte(b[12:])), true
+	case [12]byte(b[:12]) == [12]byte{0x00, 0x64, 0xff, 0x9b}:
+		return netip.AddrFrom4([4]byte(b[12:])), true
+	case b[0] == 0x20 && b[1] == 0x02:
+		return netip.AddrFrom4([4]byte(b[2:6])), true
+	}
+	return netip.Addr{}, false
 }
 
 func (v *Validator) resolve(ctx context.Context, host string) ([]netip.Addr, error) {

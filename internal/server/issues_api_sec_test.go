@@ -9,8 +9,7 @@ import (
 	"testing"
 )
 
-// GET /issues/:id?include=children は閲覧できない子チケット（非公開など）を出さない
-// （本家の render_api_issue_children は issue.children をすべて出し、件名が漏れる）。
+// GET /issues/:id?include=children は閲覧できない子チケット（非公開など）を出さない（7.0.2 #44467）。
 func TestIssueAPIChildrenHidesInvisible(t *testing.T) {
 	ts, d := newFixtureServer(t)
 	ctx := context.Background()

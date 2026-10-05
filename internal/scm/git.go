@@ -233,7 +233,8 @@ func splitLinesKeep(b []byte) []string {
 
 // ---------------------------------------------------------------- ブランチ・タグ
 
-var reBranch = regexp.MustCompile(`\s*(\*?)\s*(.*?)\s*([0-9a-f]{40}).*$`)
+// reBranch は git branch --verbose --no-abbrev の 1 行。リビジョンの前は空白必須（7.0.2 #44476: 名前中の 40 桁 16 進数と取り違えない）。
+var reBranch = regexp.MustCompile(`\s*(\*?)\s*(.*?)\s+([0-9a-f]{40}).*$`)
 
 // Branches は branches（名前順。失敗時は nil）。
 func (g *Git) Branches(ctx context.Context) []Branch {
