@@ -20,6 +20,9 @@ requests:
   - id: w02_settings_tab_integrations
     path: /settings?tab=integrations
     user: admin
+  - id: w02a_admin_webhooks_disabled_empty
+    path: /admin/webhooks
+    user: admin
 
   # ---- 有効にする ----
   - id: settings_integrations_update
@@ -116,4 +119,85 @@ requests:
     user: admin
   - id: w11_webhooks_edit_missing
     path: /webhooks/2/edit
+    user: admin
+
+  # ---- 管理画面の Webhook 一覧（Redmine 7.0.2 Feature #44337）----
+  - id: w12_admin_webhooks
+    path: /admin/webhooks
+    user: admin
+  # jsmith を管理者にして jsmith のフックを作る（管理者は他人のフックを編集できる）
+  - id: users_jsmith_admin
+    path: /users/2
+    method: PATCH
+    user: admin
+    form:
+      user[admin]: "1"
+    expect_status: 302
+  - id: w13_webhooks_new_back_url
+    path: /webhooks/new?back_url=%2Fadmin%2Fwebhooks
+    user: jsmith
+  - id: webhooks_create_jsmith
+    path: /webhooks
+    method: POST
+    user: jsmith
+    form:
+      back_url: /admin/webhooks
+      webhook[url]: "http://203.0.113.20/jsmith"
+      webhook[secret]: "jsecret"
+      webhook[active]: "1"
+      webhook[events][]: ["issue.created", ""]
+      webhook[project_ids][]: ["1", "3", ""]
+    expect_status: 302
+  - id: w14_admin_webhooks_two
+    path: /admin/webhooks
+    user: admin
+  - id: w15_webhooks_edit_other
+    path: /webhooks/3/edit?back_url=%2Fadmin%2Fwebhooks
+    user: admin
+  # 他人のフックの更新で secret を空にすると元の secret を保つ
+  - id: webhooks_update_other
+    path: /webhooks/3
+    method: PATCH
+    user: admin
+    form:
+      back_url: /admin/webhooks
+      webhook[url]: "http://203.0.113.21/jsmith"
+      webhook[secret]: ""
+    expect_status: 302
+  - id: w16_admin_webhooks_updated
+    path: /admin/webhooks
+    user: admin
+  - id: w17_webhooks_edit_own_secret_kept
+    path: /webhooks/3/edit
+    user: jsmith
+
+  # ---- 無効にしても管理者は一覧・編集できる ----
+  - id: settings_integrations_disable
+    path: /settings/edit?tab=integrations
+    method: POST
+    user: admin
+    form:
+      tab: integrations
+      settings[rest_api_enabled]: "1"
+      settings[jsonp_enabled]: "0"
+      settings[webhooks_enabled]: "0"
+    expect_status: 302
+  - id: w18_admin_webhooks_disabled
+    path: /admin/webhooks
+    user: admin
+  - id: w19_webhooks_edit_disabled_admin
+    path: /webhooks/3/edit
+    user: admin
+  - id: w20_webhooks_index_disabled
+    path: /webhooks
+    user: admin
+  - id: webhooks_destroy_disabled_admin
+    path: /webhooks/3?back_url=%2Fadmin%2Fwebhooks
+    method: POST
+    user: admin
+    form:
+      _method: delete
+    expect_status: 302
+  - id: w21_admin_webhooks_after_destroy
+    path: /admin/webhooks
     user: admin

@@ -140,6 +140,7 @@ func AdminMenu() *Menu {
 	add("ldap_authentication", "auth_sources", "index", "/auth_sources", "", "server-authentication", "icon-server-authentication", false, nil)
 	add("applications", "oauth2_applications", "index", "/oauth/applications", "doorkeeper.layouts.admin.nav.applications", "apps", "icon-applications", false,
 		func(e Env, _ Project) bool { return e.Setting("rest_api_enabled") == "1" })
+	add("webhooks", "admin", "webhooks", "/admin/webhooks", "label_webhook_plural", "webhook", "icon-webhook", false, nil)
 	add("plugins", "admin", "plugins", "/admin/plugins", "", "plugins", "icon-plugins", true, nil)
 	add("info", "admin", "info", "/admin/info", "label_information_plural", "help", "icon-help", true, nil)
 	return m
@@ -221,7 +222,7 @@ var controllerMenuItems = map[string]struct {
 		"settings": "settings", "index": "projects", "new": "projects", "copy": "projects", "create": "projects"}},
 	"messages": {"boards", nil},
 	"timelog":  {"time_entries", nil},
-	"admin":    {"admin", map[string]string{"projects": "projects", "plugins": "plugins", "info": "info"}},
+	"admin":    {"admin", map[string]string{"projects": "projects", "plugins": "plugins", "webhooks": "webhooks", "info": "info"}},
 	"files":    {"files", nil},
 }
 

@@ -126,7 +126,7 @@ func TestWebhooksController(t *testing.T) {
 		if res.StatusCode != 200 {
 			t.Fatalf("status %d", res.StatusCode)
 		}
-		if !strings.Contains(body, "<td>"+hook.URL+"</td>") || strings.Contains(body, other.URL) {
+		if !strings.Contains(body, `<td title="`+hook.URL+`">`+hook.URL+"</td>") || strings.Contains(body, other.URL) {
 			t.Errorf("index body:\n%s", body)
 		}
 		if !strings.Contains(body, `<code>issue.created</code>, <code>issue.updated</code>`) ||
@@ -260,6 +260,263 @@ func TestWebhooksController(t *testing.T) {
 	})
 }
 
+// webhooks_controller_test.rb のうち Redmine 7.0.2（Feature #44337）で追加された、管理者による他人のフックの
+// 編集・削除、back_url、secret の扱い、flash のテスト。
+func TestWebhooksControllerAdmin(t *testing.T) {
+	e := newWebhookEnv(t)
+	hook := e.createHook(3, "https://example.com/some/hook", false, []string{"issue.created", "issue.updated"}, 1)
+	other := e.createHook(1, "https://example.com/other/hook", false, []string{"issue.created", "issue.updated"}, 1)
+	setSecret := func(s string) { e.exec(`UPDATE webhooks SET secret = ? WHERE id = ?`, s, hook.ID) }
+	reload := func() *repository.Webhook {
+		t.Helper()
+		w, err := repository.GetWebhook(e.ctx, e.d, e.app.Secrets, hook.ID)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return w
+	}
+	editPath := e.ts.URL + "/webhooks/" + itoa(hook.ID) + "/edit"
+	hookPath := e.ts.URL + "/webhooks/" + itoa(hook.ID)
+	admin := login(t, e.ts, "admin", "admin")
+	dlopper := login(t, e.ts, "dlopper", "foo")
+	patch := func(c *http.Client, vals url.Values) *http.Response {
+		t.Helper()
+		_, body := get(t, c, e.ts.URL+"/my/account")
+		vals.Set("authenticity_token", csrfToken(t, body))
+		vals.Set("_method", "patch")
+		res, _ := post(t, c, hookPath, vals)
+		return res
+	}
+
+	t.Run("index should not list hooks of other users to admins", func(t *testing.T) {
+		_, body := get(t, admin, e.ts.URL+"/webhooks")
+		if !strings.Contains(body, ">"+other.URL+"</td>") || strings.Contains(body, ">"+hook.URL+"</td>") {
+			t.Errorf("body:\n%s", body)
+		}
+	})
+	t.Run("admin should edit hook of other user", func(t *testing.T) {
+		res, body := get(t, admin, editPath)
+		if res.StatusCode != 200 || !strings.Contains(body, `<input type="text" name="webhook_user" id="webhook_user" value="Dave Lopper" disabled="disabled" />`) {
+			t.Errorf("status %d body:\n%s", res.StatusCode, body)
+		}
+	})
+	t.Run("edit should not show the owner of ones own hook", func(t *testing.T) {
+		_, body := get(t, dlopper, editPath)
+		if strings.Contains(body, `id="webhook_user"`) {
+			t.Error("owner field should not be shown")
+		}
+	})
+	t.Run("edit should not disclose secret of other user", func(t *testing.T) {
+		setSecret("v3rys3cret")
+		_, body := get(t, admin, editPath)
+		if !strings.Contains(body, `id="webhook_secret"`) || strings.Contains(body, "v3rys3cret") {
+			t.Errorf("body:\n%s", body)
+		}
+		if !strings.Contains(body, "The secret of another user is not displayed.") {
+			t.Error("missing webhook_secret_keep_info")
+		}
+	})
+	t.Run("update should keep secret of other user when submitted blank", func(t *testing.T) {
+		setSecret("v3rys3cret")
+		patch(admin, url.Values{"webhook[url]": {hook.URL}, "webhook[secret]": {""}})
+		if s := reload().Secret; s != "v3rys3cret" {
+			t.Errorf("secret %q", s)
+		}
+	})
+	t.Run("update should replace secret of other user when a new one is submitted", func(t *testing.T) {
+		setSecret("v3rys3cret")
+		patch(admin, url.Values{"webhook[url]": {hook.URL}, "webhook[secret]": {"newsecret"}})
+		if s := reload().Secret; s != "newsecret" {
+			t.Errorf("secret %q", s)
+		}
+	})
+	t.Run("owner should see and be able to clear their own secret", func(t *testing.T) {
+		setSecret("v3rys3cret")
+		_, body := get(t, dlopper, editPath)
+		if !strings.Contains(body, `value="v3rys3cret"`) {
+			t.Error("owner should see the secret")
+		}
+		patch(dlopper, url.Values{"webhook[url]": {hook.URL}, "webhook[secret]": {""}})
+		if s := reload().Secret; s != "" {
+			t.Errorf("secret %q", s)
+		}
+	})
+	t.Run("admin should update hook of other user without becoming its owner", func(t *testing.T) {
+		res := patch(admin, url.Values{"webhook[url]": {"https://example.com/fixed/hook"}})
+		if res.StatusCode != 302 || !strings.HasSuffix(res.Header.Get("Location"), "/webhooks") {
+			t.Fatalf("status %d location %s", res.StatusCode, res.Header.Get("Location"))
+		}
+		w := reload()
+		if w.URL != "https://example.com/fixed/hook" || w.UserID != 3 {
+			t.Errorf("updated %+v", w)
+		}
+		// flash[:notice] = l(:notice_successful_update)
+		if _, body := get(t, admin, e.ts.URL+"/webhooks"); !strings.Contains(body, "Successful update.") {
+			t.Error("missing flash notice")
+		}
+		// setable_projects は所有者（dlopper）を基準にする: admin でも dlopper が use_webhooks を持たない
+		// プロジェクト 2 は付けられない
+		patch(admin, url.Values{"webhook[project_ids][]": {"1", "2", ""}})
+		if ids := reload().ProjectIDs; len(ids) != 1 || ids[0] != 1 {
+			t.Errorf("project ids %v", ids)
+		}
+	})
+	t.Run("admin should deactivate hook of other user", func(t *testing.T) {
+		e.exec(`UPDATE webhooks SET active = ? WHERE id = ?`, true, hook.ID)
+		patch(admin, url.Values{"webhook[active]": {"0"}})
+		if reload().Active {
+			t.Error("still active")
+		}
+	})
+	t.Run("update should redirect to back_url", func(t *testing.T) {
+		res := patch(admin, url.Values{"webhook[url]": {"https://example.com/fixed/hook"}, "back_url": {"/admin/webhooks"}})
+		if res.StatusCode != 302 || !strings.HasSuffix(res.Header.Get("Location"), "/admin/webhooks") {
+			t.Errorf("status %d location %s", res.StatusCode, res.Header.Get("Location"))
+		}
+	})
+	t.Run("create should redirect to back_url", func(t *testing.T) {
+		_, body := get(t, dlopper, e.ts.URL+"/webhooks/new?back_url=%2Fadmin%2Fwebhooks")
+		if !strings.Contains(body, `<input type="hidden" name="back_url" value="/admin/webhooks" autocomplete="off" />`) ||
+			!strings.Contains(body, `<a href="/admin/webhooks">Cancel</a>`) {
+			t.Errorf("new body:\n%s", body)
+		}
+		res, _ := post(t, dlopper, e.ts.URL+"/webhooks", url.Values{
+			"authenticity_token":     {csrfToken(t, body)},
+			"webhook[url]":           {"https://example.com/new/hook"},
+			"webhook[events][]":      {"issue.created"},
+			"webhook[project_ids][]": {"1"},
+			"back_url":               {"/admin/webhooks"},
+		})
+		if res.StatusCode != 302 || !strings.HasSuffix(res.Header.Get("Location"), "/admin/webhooks") {
+			t.Errorf("status %d location %s", res.StatusCode, res.Header.Get("Location"))
+		}
+		if _, body := get(t, dlopper, e.ts.URL+"/webhooks"); !strings.Contains(body, "Successful creation.") {
+			t.Error("missing flash notice")
+		}
+	})
+	t.Run("new should prefill attributes from params", func(t *testing.T) {
+		_, body := get(t, dlopper, e.ts.URL+"/webhooks/new?webhook%5Burl%5D=https%3A%2F%2Fexample.com%2Fprefilled")
+		if !strings.Contains(body, `value="https://example.com/prefilled"`) {
+			t.Error("url should be prefilled")
+		}
+	})
+	t.Run("create without webhook params should render the form", func(t *testing.T) {
+		_, body := get(t, dlopper, e.ts.URL+"/webhooks/new")
+		res, body := post(t, dlopper, e.ts.URL+"/webhooks", url.Values{"authenticity_token": {csrfToken(t, body)}})
+		if res.StatusCode != 200 || !strings.Contains(body, "errorExplanation") {
+			t.Errorf("status %d", res.StatusCode)
+		}
+	})
+	t.Run("admin should keep access to existing hooks when disabled", func(t *testing.T) {
+		_ = e.app.Settings.Set(e.ctx, "webhooks_enabled", "0")
+		defer func() { _ = e.app.Settings.Set(e.ctx, "webhooks_enabled", "1") }()
+		for _, p := range []string{"/webhooks", "/webhooks/new"} {
+			if res, _ := get(t, admin, e.ts.URL+p); res.StatusCode != 403 {
+				t.Errorf("%s: status %d", p, res.StatusCode)
+			}
+		}
+		// 管理者でないユーザーは自分のフックでも編集できない
+		if res, _ := get(t, dlopper, editPath); res.StatusCode != 403 {
+			t.Errorf("dlopper edit: status %d", res.StatusCode)
+		}
+		if res, _ := get(t, admin, editPath); res.StatusCode != 200 {
+			t.Errorf("edit: status %d", res.StatusCode)
+		}
+		if res := patch(admin, url.Values{"webhook[url]": {"https://example.com/fixed/hook"}}); res.StatusCode != 302 {
+			t.Errorf("update: status %d", res.StatusCode)
+		}
+		_, body := get(t, admin, e.ts.URL+"/my/account")
+		res, _ := post(t, admin, hookPath, url.Values{"authenticity_token": {csrfToken(t, body)}, "_method": {"delete"}})
+		if res.StatusCode != 302 {
+			t.Fatalf("destroy: status %d", res.StatusCode)
+		}
+		if _, err := repository.GetWebhook(e.ctx, e.d, e.app.Secrets, hook.ID); err != repository.ErrNotFound {
+			t.Errorf("not deleted: %v", err)
+		}
+		// flash[:notice] = l(:notice_successful_delete)
+		if _, body := get(t, admin, e.ts.URL+"/admin/webhooks"); !strings.Contains(body, "Successful deletion.") {
+			t.Error("missing flash notice")
+		}
+	})
+}
+
+// admin_controller_test.rb（Redmine 7.0.2 Feature #44337: 管理画面の Webhook 一覧）
+func TestAdminWebhooks(t *testing.T) {
+	e := newWebhookEnv(t)
+	hook := e.createHook(3, "https://example.com/dlopper/hook", false, []string{"issue.created"}, 1)
+	other := e.createHook(1, "https://example.com/admin/hook", false, []string{"issue.updated"}, 1)
+	admin := login(t, e.ts, "admin", "admin")
+
+	t.Run("index should link to webhooks", func(t *testing.T) {
+		_, body := get(t, admin, e.ts.URL+"/admin")
+		if !regexp.MustCompile(`<div id="admin-menu">[\s\S]*<a class="icon icon-webhook webhooks" href="/admin/webhooks">`).MatchString(body) {
+			t.Error("admin menu should link to /admin/webhooks")
+		}
+	})
+	t.Run("webhooks", func(t *testing.T) {
+		res, body := get(t, admin, e.ts.URL+"/admin/webhooks")
+		if res.StatusCode != 200 {
+			t.Fatalf("status %d", res.StatusCode)
+		}
+		for _, want := range []string{
+			`<tr id="webhook_` + itoa(hook.ID) + `"`,
+			`<td><a class="user active" href="/users/3">Dave Lopper</a></td>`,
+			`<td title="https://example.com/dlopper/hook">https://example.com/dlopper/hook</td>`,
+			`href="/webhooks/` + itoa(hook.ID) + `/edit?back_url=%2Fadmin%2Fwebhooks"`,
+			`<tr id="webhook_` + itoa(other.ID) + `"`,
+			`<a class="icon icon-add" href="/webhooks/new?back_url=%2Fadmin%2Fwebhooks">`,
+			`<li><a class="icon icon-webhook webhooks selected" href="/admin/webhooks">`,
+		} {
+			if !strings.Contains(body, want) {
+				t.Errorf("missing %q", want)
+			}
+		}
+		// order(*User.fields_for_order_statement, :url): Dave Lopper < Redmine Admin
+		if strings.Index(body, `id="webhook_`+itoa(hook.ID)+`"`) > strings.Index(body, `id="webhook_`+itoa(other.ID)+`"`) {
+			t.Error("webhooks should be ordered by user name")
+		}
+		if strings.Contains(body, `class="warning"`) {
+			t.Error("warning should not be shown when enabled")
+		}
+	})
+	t.Run("webhooks should remain accessible without creation link when disabled", func(t *testing.T) {
+		_ = e.app.Settings.Set(e.ctx, "webhooks_enabled", "0")
+		defer func() { _ = e.app.Settings.Set(e.ctx, "webhooks_enabled", "1") }()
+		res, body := get(t, admin, e.ts.URL+"/admin/webhooks")
+		if res.StatusCode != 200 || !strings.Contains(body, `<table class="list webhooks">`) ||
+			strings.Contains(body, `<div class="contextual">`) ||
+			!regexp.MustCompile(`<p class="warning">[^<]*<a href="/settings\?tab=integrations">Integrations</a>`).MatchString(body) {
+			t.Errorf("status %d body:\n%s", res.StatusCode, body)
+		}
+	})
+	t.Run("webhooks should be denied to non admin users", func(t *testing.T) {
+		if res, _ := get(t, login(t, e.ts, "jsmith", "jsmith"), e.ts.URL+"/admin/webhooks"); res.StatusCode != 403 {
+			t.Errorf("status %d", res.StatusCode)
+		}
+	})
+	t.Run("webhooks without hooks", func(t *testing.T) {
+		e.exec(`DELETE FROM webhook_projects`)
+		e.exec(`DELETE FROM webhooks`)
+		_, body := get(t, admin, e.ts.URL+"/admin/webhooks")
+		if !strings.Contains(body, `<p class="nodata">No data to display</p>`) {
+			t.Error("nodata should be shown")
+		}
+	})
+}
+
+// webhook_test.rb（Redmine 7.0.2: Webhook.editable / editable?）
+func TestWebhookEditable(t *testing.T) {
+	w := &repository.Webhook{UserID: 3}
+	for _, tc := range []struct {
+		userID int64
+		admin  bool
+		want   bool
+	}{{1, true, true}, {3, false, true}, {2, false, false}, {0, false, false}} {
+		if got := w.Editable(tc.userID, tc.admin); got != tc.want {
+			t.Errorf("Editable(%d, %v) = %v", tc.userID, tc.admin, got)
+		}
+	}
+}
 // settings の統合タブ（Redmine 7.0 で api から integrations に改名し webhooks_enabled を追加）
 func TestWebhooksSettingsTab(t *testing.T) {
 	ts, _ := newFixtureServer(t)

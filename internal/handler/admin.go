@@ -29,12 +29,14 @@ var AdminController = AdminProjectsController
 //
 //	get 'admin', :to => 'admin#index'
 //	get 'admin/plugins', :to => 'admin#plugins'
+//	get 'admin/webhooks', :to => 'admin#webhooks'
 //	get 'admin/info', :to => 'admin#info'
 //	post 'admin/test_email', :to => 'admin#test_email', :as => 'test_email'
 //	post 'admin/default_configuration', :to => 'admin#default_configuration'
 func (a *App) routesAdmin(r Router) {
 	a.Handle(r, http.MethodGet, "/admin", AdminController, "index", a.AdminIndex, RequireAdmin())
 	a.Handle(r, http.MethodGet, "/admin/plugins", AdminController, "plugins", a.AdminPlugins, RequireAdmin())
+	a.Handle(r, http.MethodGet, "/admin/webhooks", AdminController, "webhooks", a.AdminWebhooks, RequireAdmin())
 	a.Handle(r, http.MethodGet, "/admin/info", AdminController, "info", a.AdminInfo, RequireAdmin())
 	a.Handle(r, http.MethodPost, "/admin/test_email", AdminController, "test_email", a.AdminTestEmail, RequireAdmin())
 	a.Handle(r, http.MethodPost, "/admin/default_configuration", AdminController, "default_configuration", a.AdminDefaultConfiguration, RequireAdmin())

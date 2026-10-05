@@ -1,0 +1,13 @@
+{{if .WebhooksEnabled}}
+<div class="contextual">
+  {{link_to (sprite_icon "add" (l "label_webhook_new")) "/webhooks/new?back_url=%2Fadmin%2Fwebhooks" (hash "class" "icon icon-add")}}
+</div>
+{{end}}
+
+{{title (l "label_webhook_plural")}}
+
+{{if not .WebhooksEnabled}}
+  <p class="warning">{{raw (l "webhook_disabled_info_html" (hash "link" (link_to (l "label_integrations") "/settings?tab=integrations")))}}</p>
+{{end}}
+
+{{partial "webhooks/list" (dict "webhooks" .Webhooks "show_author" true "back_query" "?back_url=%2Fadmin%2Fwebhooks")}}

@@ -109,6 +109,7 @@ func (d *Deps) RequestFuncs(r *view.Render) ttemplate.FuncMap {
 		"back_url":                  func() string { return backURL(pg()) },
 		"safe_back_url":             func() string { return safeBackURL(pg()) },
 		"back_url_hidden_field_tag": func() html { return backURLHiddenFieldTag(pg()) },
+		"cancel_button_tag":         func(fallback string) html { return cancelButtonTag(pg(), fallback) },
 		"textilizable":              func(text any, args ...any) html { return d.textilizable(pg(), text, args...) },
 		"link_to_project": func(p any, args ...any) html {
 			var opts, htmlOpts *rails.Hash
@@ -809,6 +810,18 @@ func backURLHiddenFieldTag(p *Page) html {
 		return ""
 	}
 	return rails.HiddenFieldTag("back_url", u, rails.NewHash("id", nil))
+}
+
+// cancelButtonTag は ApplicationHelper#cancel_button_tag(fallback_url)
+// （link_to l(:button_cancel), validate_back_url(back_url) || fallback_url）。
+func cancelButtonTag(p *Page, fallback string) html {
+	url := fallback
+	if p.Request != nil {
+		if u, ok := httpx.ValidateBackURL(p.Request, backURL(p), ""); ok && u != "" {
+			url = u
+		}
+	}
+	return rails.LinkTo(p.l("button_cancel"), url, nil)
 }
 
 // Textilizable は DB・ページ文脈なしで text を Setting の既定（common_mark）で整形する簡易版。
