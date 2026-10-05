@@ -4,8 +4,8 @@
 package query
 
 import (
-	"errors"
 	"context"
+	"errors"
 	"net/url"
 	"slices"
 	"strings"

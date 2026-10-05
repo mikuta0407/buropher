@@ -149,9 +149,9 @@ type Renderer struct {
 	onlyPath          bool
 	includedWikiPages []int64
 	// includeCount は最上位の 1 回の描画（入れ子の include を含む）で展開した include の数。
-	includeCount int
-	groupIDs          []int64
-	groupIDsLoaded    bool
+	includeCount   int
+	groupIDs       []int64
+	groupIDsLoaded bool
 }
 
 func (r *Renderer) l(key string, args ...any) string {

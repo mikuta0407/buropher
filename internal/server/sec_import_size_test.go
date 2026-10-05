@@ -10,12 +10,18 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"github.com/mikuta0407/buropher/internal/handler"
 )
 
-// TestImportFileSizeLimit は、attachment_max_size を超える CSV のインポートを受け付けないことを確かめる。
+// TestImportFileSizeLimit は、上限（attachment_max_size と handler.ImportMinMaxBytes の大きい方）を超える
+// CSV のインポートを受け付けないことを確かめる。
 // インポートのファイルは settings・mapping・run の各リクエストで丸ごとメモリに読むため、
 // max_request_body_mb の既定（無制限）では巨大なファイルで何度でもメモリを使わせられた。
 func TestImportFileSizeLimit(t *testing.T) {
+	saved := handler.ImportMinMaxBytes
+	handler.ImportMinMaxBytes = 0
+	t.Cleanup(func() { handler.ImportMinMaxBytes = saved })
 	srv, ts, d := newFixtureServerFull(t)
 	if err := srv.App().Settings.Set(context.Background(), "attachment_max_size", "1"); err != nil {
 		t.Fatal(err)
@@ -37,4 +43,22 @@ func TestImportFileSizeLimit(t *testing.T) {
 
 	// 上限以下のファイルは従来どおり
 	importUpload(t, jsmith, ts, "IssueImport", "import_issues.csv", "")
+}
+
+// TestImportFileSizeLimitFloor は、attachment_max_size が小さくても下限（ImportMinMaxBytes）までの
+// CSV は受け付けることを確かめる。
+func TestImportFileSizeLimitFloor(t *testing.T) {
+	srv, ts, _ := newFixtureServerFull(t)
+	if err := srv.App().Settings.Set(context.Background(), "attachment_max_size", "1"); err != nil {
+		t.Fatal(err)
+	}
+	jsmith := login(t, ts, "jsmith", "jsmith")
+	big := filepath.Join(t.TempDir(), "big.csv")
+	if err := os.WriteFile(big, []byte("subject;tracker\n"+strings.Repeat("a;Bug\n", 400)), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	res, body := importUploadRaw(t, jsmith, ts, "IssueImport", big, "")
+	if strings.Contains(body, "exceeds the maximum allowed file size") {
+		t.Errorf("a file under the import floor was refused: status %d", res.StatusCode)
+	}
 }

@@ -92,8 +92,8 @@ func TestCapContainerDepth(t *testing.T) {
 		"",
 		"- a\n  - b\n",
 		strings.Repeat("- ", maxContainerMarkers) + "x\n" + strings.Repeat(">", maxContainerMarkers) + " y",
-		strings.Repeat("- ", 300) + "-",       // 長い水平線
-		strings.Repeat("* ", 300) + "*\n",     // 長い水平線
+		strings.Repeat("- ", 300) + "-",      // 長い水平線
+		strings.Repeat("* ", 300) + "*\n",    // 長い水平線
 		"    " + strings.Repeat("- a ", 300), // 先頭の印は 1 つだけ
 	} {
 		if got := string(capContainerDepth([]byte(src))); got != src {

@@ -274,7 +274,7 @@ func (m *importModel) content() ([]byte, bool, error) {
 }
 
 // errImportFileTooBig はインポートのファイルが上限（importMaxBytes）を超えていることを表す。
-var errImportFileTooBig = errors.New("import: file exceeds attachment_max_size")
+var errImportFileTooBig = errors.New("import: file exceeds the maximum import size")
 
 // readFileLimit は path を最大 limit バイトまで読む（超えていれば errImportFileTooBig）。
 func readFileLimit(path string, limit int64) ([]byte, error) {
@@ -293,13 +293,15 @@ func readFileLimit(path string, limit int64) ([]byte, error) {
 	return b, nil
 }
 
-// importMaxBytes はインポートのファイルの最大サイズ（attachment_max_size。KB 単位、0 以下なら既定の 5120KB）。
+// ImportMinMaxBytes はインポートのファイルの最大サイズの下限（64MiB）。attachment_max_size（既定 5MB）が
+// 小さくても通常の大きさの CSV は受け付ける。
+// テストから変更できるよう変数にしている。
+var ImportMinMaxBytes int64 = 64 << 20
+
+// importMaxBytes はインポートのファイルの最大サイズ（attachment_max_size と ImportMinMaxBytes の大きい方）。
 func (a *App) importMaxBytes() int64 {
 	kb, _ := strconv.ParseInt(a.Settings.String("attachment_max_size"), 10, 64)
-	if kb <= 0 {
-		kb = 5120
-	}
-	return kb * 1024
+	return max(kb*1024, ImportMinMaxBytes)
 }
 
 // removeFile は remove_file。
@@ -725,7 +727,7 @@ func (a *App) ImportsCreate(c *Req) {
 	m := a.newImportModel(c, imp)
 	if f := c.Params().File("file"); f != nil && f.Size > 0 {
 		// インポートのファイルは各段階（settings・mapping・run）で丸ごとメモリに読むため、
-		// 添付ファイルの最大サイズ（attachment_max_size）を超えるものは受け付けない
+		// 上限（importMaxBytes）を超えるものは受け付けない
 		if max := a.importMaxBytes(); f.Size > max {
 			c.Flash().Now("error", c.L("error_attachment_too_big", map[string]any{"max_size": c.Loc.NumberToHumanSize(max)}))
 			a.renderImport(c, "imports/new", t, nil, map[string]any{"Type": t.Class, "ProjectIDParam": importParamOrNil(c.Params(), "project_id")})

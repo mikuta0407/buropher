@@ -367,8 +367,8 @@ func (a *App) DocumentsShow(c *Req) {
 		"Attachments":     atts,
 		"HasCustomFields": len(all) > 0,
 		"CustomValues":    cvs,
-		"CanEdit":      c.AllowedTo(domain.Perm("edit_documents"), c.Project),
-		"CanDelete":    c.AllowedTo(domain.Perm("delete_documents"), c.Project),
+		"CanEdit":         c.AllowedTo(domain.Perm("edit_documents"), c.Project),
+		"CanDelete":       c.AllowedTo(domain.Perm("delete_documents"), c.Project),
 	})
 }
 
