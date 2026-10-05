@@ -67,7 +67,7 @@ func CheckPOP3(ctx context.Context, o POP3Options, receive ReceiveFunc, logger *
 	if err := c.auth(o.Username, o.Password, o.APOP); err != nil {
 		return err
 	}
-	ids, err := c.list()
+	ids, sizes, err := c.list()
 	if err != nil {
 		return err
 	}
@@ -79,6 +79,16 @@ func CheckPOP3(ctx context.Context, o POP3Options, receive ReceiveFunc, logger *
 			if ctx.Err() != nil {
 				// 停止中: 残りはサーバに残す（QUIT で処理済みの分の削除を確定する）
 				break
+			}
+			if sizes[id] > MaxMessageBytes {
+				// 大きすぎるメールは読まずに「処理できなかった」ものとして扱う
+				logger.Warn(fmt.Sprintf("--> Message %d exceeds the maximum size (%d bytes)", id, MaxMessageBytes))
+				if o.DeleteUnprocessed {
+					if err := c.dele(id); err != nil {
+						return err
+					}
+				}
+				continue
 			}
 			msg, err := c.retr(id)
 			if err != nil {
@@ -176,10 +186,20 @@ func (c *pop3Conn) cmd(format string, args ...any) (string, error) {
 }
 
 // readMulti は複数行の応答（"." で終わる。行頭の ".." は "." に戻す）。
+// MaxMessageBytes を超える応答は読み込まずにエラーとする（LIST の大きさと違うメールを返すサーバ対策）。
 func (c *pop3Conn) readMulti() ([]byte, error) {
 	var buf bytes.Buffer
+	var line []byte
 	for {
-		line, err := c.r.ReadBytes('\n')
+		// 改行の無い長い行も上限までしか溜めない（ReadBytes は行末まで際限なく読む）
+		chunk, err := c.r.ReadSlice('\n')
+		line = append(line, chunk...)
+		if int64(buf.Len()+len(line)) > MaxMessageBytes {
+			return nil, fmt.Errorf("pop3: response exceeds %d bytes", MaxMessageBytes)
+		}
+		if errors.Is(err, bufio.ErrBufferFull) {
+			continue
+		}
 		if err != nil {
 			if err == io.EOF {
 				return nil, errors.New("pop3: unexpected EOF")
@@ -194,6 +214,7 @@ func (c *pop3Conn) readMulti() ([]byte, error) {
 			line = line[1:]
 		}
 		buf.Write(line)
+		line = line[:0]
 	}
 }
 
@@ -216,15 +237,17 @@ func (c *pop3Conn) auth(user, pass string, apop bool) error {
 	return err
 }
 
-func (c *pop3Conn) list() ([]int, error) {
+// list は LIST（メールの番号と大きさ）。
+func (c *pop3Conn) list() ([]int, map[int]int64, error) {
 	if _, err := c.cmd("LIST"); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	body, err := c.readMulti()
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	var ids []int
+	sizes := map[int]int64{}
 	for _, line := range strings.Split(string(body), "\n") {
 		f := strings.Fields(line)
 		if len(f) == 0 {
@@ -232,9 +255,12 @@ func (c *pop3Conn) list() ([]int, error) {
 		}
 		if n, err := strconv.Atoi(f[0]); err == nil {
 			ids = append(ids, n)
+			if len(f) > 1 {
+				sizes[n], _ = strconv.ParseInt(f[1], 10, 64)
+			}
 		}
 	}
-	return ids, nil
+	return ids, sizes, nil
 }
 
 func (c *pop3Conn) retr(id int) ([]byte, error) {
