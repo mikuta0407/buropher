@@ -9,7 +9,9 @@ import (
 	"errors"
 	"net/http"
 	"regexp"
+	"slices"
 	"strings"
+	"unicode/utf8"
 
 	"github.com/go-chi/chi/v5"
 
@@ -124,8 +126,13 @@ func (a *App) SysCreateProjectRepository(w http.ResponseWriter, r *http.Request)
 			repo.IsDefault = castBool(v)
 		}
 	}
-	if repo.URL == "" || len(repo.URL) > 255 || (repo.Identifier != "" && (!domain.RepositoryIdentifierRe.MatchString(repo.Identifier) ||
-		domain.RepositoryIdentifierAllDigits.MatchString(repo.Identifier))) || !a.validRepositoryPath(repo) {
+	// Repository / Repository::Git の検証（repositories#create の validateRepository と同じ規則）
+	if repo.URL == "" || utf8.RuneCountInString(repo.URL) > 255 || utf8.RuneCountInString(repo.Login) > 60 ||
+		(repo.Identifier != "" && (!domain.RepositoryIdentifierRe.MatchString(repo.Identifier) ||
+			domain.RepositoryIdentifierAllDigits.MatchString(repo.Identifier) ||
+			utf8.RuneCountInString(repo.Identifier) > domain.RepositoryIdentifierMaxLength)) ||
+		slices.Contains(domain.RepositoryReservedIdentifiers, repo.Identifier) ||
+		!slices.Contains(a.Settings.Strings("enabled_scm"), "Git") || !a.validRepositoryPath(repo) {
 		httpx.Head(w, r, http.StatusUnprocessableEntity)
 		return
 	}
