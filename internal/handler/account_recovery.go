@@ -270,6 +270,9 @@ func (a *App) AccountRegister(c *Req) {
 					a.serverError(c, err)
 					return
 				}
+				if a.loginAfterRegistration(c, u) {
+					return
+				}
 				a.setLoggedUser(c, u)
 				c.Flash().SetNotice(c.L("notice_account_activated"))
 				c.Redirect("/my/account")
@@ -365,9 +368,26 @@ func (a *App) registerAutomatically(c *Req, m *userModel) bool {
 		a.serverError(c, err)
 		return true
 	}
+	if a.loginAfterRegistration(c, u) {
+		return true
+	}
 	a.setLoggedUser(c, u)
 	c.Flash().SetNotice(c.L("notice_account_activated"))
 	c.Redirect("/my/account")
+	return true
+}
+
+// loginAfterRegistration は登録で有効になったユーザーをログインさせずに終える場合に true を返す
+// （ログイン画面へリダイレクト済み）。buropher 拡張: SSO 必須モードでは管理者以外のパスワード（ローカル・LDAP）
+// によるログインを認めないため、自動有効化・LDAP ユーザーの登録の直後にもセッションを開始しない。
+// 開始すると、SSO を経ずにパスワードで作ったアカウントでログインしたままにできた。
+func (a *App) loginAfterRegistration(c *Req, u *domain.User) bool {
+	if a.localLoginAllowed(c, u) {
+		return false
+	}
+	c.Flash().SetNotice(c.L("notice_account_activated"))
+	c.Flash().SetError(c.L("buropher.sso.notice_password_login_disabled"))
+	c.Redirect("/login")
 	return true
 }
 
