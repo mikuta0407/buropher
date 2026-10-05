@@ -242,6 +242,11 @@ func (a *App) buildNewIssueFromParams(c *Req) *issueNewState {
 		t := a.newIssueLookup(c).userToday()
 		iss.SetStartDate(&t)
 	}
+	// 期日の既定値（今日からのオフセット日数。Redmine 7.0 #31518）
+	if days, ok := a.Settings.DefaultIssueDueDateOffsetInDays(); ok && iss.DueDate == nil {
+		t := a.newIssueLookup(c).userToday().AddDate(0, 0, days)
+		iss.SetDueDate(&t)
+	}
 
 	attrs := issueParamsOf(c.Params().Map("issue"))
 	if attrs == nil {
@@ -254,6 +259,13 @@ func (a *App) buildNewIssueFromParams(c *Req) *issueNewState {
 	}
 	if c.Action == "new" && c.Params().String("form_update_triggered_by") == "issue_project_id" {
 		delete(attrs, "fixed_version_id")
+	}
+	if trig := c.Params().String("form_update_triggered_by"); c.Action == "new" &&
+		(trig == "issue_project_id" || trig == "issue_tracker_id") {
+		// 未チェックの値を捨て、選択したトラッカーの「プライベート」既定値を適用させる（Redmine 7.0 #9432）
+		if v, ok := attrs["is_private"]; !ok || rails.ToS(v) != "1" {
+			delete(attrs, "is_private")
+		}
 	}
 	if v, ok := attrs["assigned_to_id"]; ok && rails.ToS(v) == "me" {
 		attrs["assigned_to_id"] = strconv.FormatInt(c.User.ID, 10)

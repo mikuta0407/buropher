@@ -198,7 +198,7 @@ func (a *App) categoryFormData(c *Req, f *categoryForm) (map[string]any, error) 
 	if err != nil {
 		return nil, err
 	}
-	opts := principalsOptionsForSelect(c, c.Page(), users, groups, derefID(f.IssueCategoryInfo.AssignedToID))
+	opts := a.principalsOptionsForSelect(c, c.Page(), users, groups, derefID(f.IssueCategoryInfo.AssignedToID))
 	return map[string]any{"Category": f, "AssigneeOptions": opts, "Project": c.Project}, nil
 }
 

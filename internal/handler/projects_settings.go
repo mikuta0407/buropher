@@ -678,58 +678,33 @@ func (a *App) projectDefaultAssignedToOptions(c *Req, page *helper.Page, p *doma
 	if err != nil {
 		return "", err
 	}
-	return principalsOptionsForSelect(c, page, users, groups, derefID(p.DefaultAssignedToID)), nil
+	return a.principalsOptionsForSelect(c, page, users, groups, derefID(p.DefaultAssignedToID)), nil
 }
 
 // principalsOptionsForSelect は ApplicationHelper#principals_options_for_select。
-func principalsOptionsForSelect(c *Req, page *helper.Page, users map[int64]*domain.User, groups map[int64]*domain.Group, selected any) template.HTML {
-	type item struct {
-		id    int64
-		name  string
-		group bool
-	}
-	var items []item
-	hasMe := false
+func (a *App) principalsOptionsForSelect(c *Req, page *helper.Page, users map[int64]*domain.User, groups map[int64]*domain.Group, selected any) template.HTML {
+	var items []principalOption
+	var meID int64
 	for id, u := range users {
 		if id == c.User.ID {
-			hasMe = true
+			meID = id
 		}
-		items = append(items, item{id, helper.PrincipalName(page, u), false})
+		items = append(items, principalOption{ID: id, Name: helper.PrincipalName(page, u)})
 	}
 	for id, g := range groups {
-		items = append(items, item{id, helper.PrincipalName(page, g), true})
+		items = append(items, principalOption{ID: id, Name: helper.PrincipalName(page, g), Group: true})
 	}
 	// collection.sort（Principal#<=>: 同種は名前の casecmp、ユーザーが先）
 	sort.SliceStable(items, func(i, j int) bool {
-		if items[i].group != items[j].group {
-			return !items[i].group
+		if items[i].Group != items[j].Group {
+			return !items[i].Group
 		}
-		if c := casecmp(items[i].name, items[j].name); c != 0 {
+		if c := casecmp(items[i].Name, items[j].Name); c != 0 {
 			return c < 0
 		}
-		return items[i].id < items[j].id
+		return items[i].ID < items[j].ID
 	})
-	sel := rails.ToS(selected)
-	var s, g strings.Builder
-	if hasMe {
-		s.WriteString(string(rails.ContentTag("option", "<< "+c.L("label_me")+" >>", rails.NewHash("value", c.User.ID))))
-	}
-	for _, it := range items {
-		attr := ""
-		if strconv.FormatInt(it.id, 10) == sel {
-			attr = ` selected="selected"`
-		}
-		opt := `<option value="` + strconv.FormatInt(it.id, 10) + `"` + attr + `>` + string(rails.H(it.name)) + `</option>`
-		if it.group {
-			g.WriteString(opt)
-		} else {
-			s.WriteString(opt)
-		}
-	}
-	if g.Len() > 0 {
-		s.WriteString(`<optgroup label="` + string(rails.H(c.L("label_group_plural"))) + `">` + g.String() + `</optgroup>`)
-	}
-	return template.HTML(s.String())
+	return a.principalsOptionTags(c, meID, items, nil, rails.ToS(selected))
 }
 
 // projectDefaultIssueQueryOptions は project_default_issue_query_options(project)。

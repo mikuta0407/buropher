@@ -67,6 +67,10 @@ func (a *App) SettingsEdit(c *Req) {
 		if p := c.Params().Map("settings"); p != nil {
 			params = p.ToMap()
 		}
+		// 期日の既定値が無効化されたらオフセットを空にする（Redmine 7.0 #31518）
+		if v, ok := params["default_issue_due_date_offset_enabled"]; ok && rails.ToS(v) == "0" {
+			params["default_issue_due_date_offset"] = ""
+		}
 		changed, ferrs, err := a.Settings.SetAllFromParams(c.Ctx(), params, map[string]func(any) any{
 			// Setting.twofa_from_params: 2FA を無効にしたら全ユーザーのペアリングを解除する
 			"twofa": func(v any) any {
@@ -95,7 +99,7 @@ func (a *App) SettingsEdit(c *Req) {
 			return
 		}
 		for _, e := range ferrs {
-			msg := c.L(e.Key)
+			msg := c.L(e.Key, e.Args...)
 			if e.Detail != "" {
 				msg += " (" + e.Detail + ")"
 			}
@@ -425,6 +429,7 @@ func (v *settingsView) NotificationOptions() []any {
 		[]any{l("label_user_mail_option_only_my_events"), "only_my_events"},
 		[]any{l("label_user_mail_option_only_assigned"), "only_assigned"},
 		[]any{l("label_user_mail_option_only_owner"), "only_owner"},
+		[]any{l("label_user_mail_option_only_my_watches"), "only_my_watches"},
 		[]any{l("label_user_mail_option_none"), "none"},
 	}
 }
@@ -432,10 +437,19 @@ func (v *settingsView) NotificationOptions() []any {
 // AutoWatchOnOptions は UserPreference::AUTO_WATCH_ON_OPTIONS の選択肢。
 func (v *settingsView) AutoWatchOnOptions() []any {
 	var out []any
-	for _, o := range []string{"issue_created", "issue_contributed_to"} {
+	for _, o := range domain.AutoWatchOnOptions {
 		out = append(out, []any{v.c.L("label_auto_watch_on_" + o), o})
 	}
 	return out
+}
+
+// DefaultIssueDueDateOffsetEnabled は settings/_issues の default_due_date_offset_enabled
+// （再表示時は params の enabled、それ以外は Setting.default_issue_due_date_offset.present?）。
+func (v *settingsView) DefaultIssueDueDateOffsetEnabled() bool {
+	if p := v.c.Params().Map("settings"); p != nil {
+		return p.String("default_issue_due_date_offset_enabled") != "0"
+	}
+	return strings.TrimSpace(v.a.Settings.String("default_issue_due_date_offset")) != ""
 }
 
 // DoneRatioOptions は Issue::DONE_RATIO_OPTIONS の選択肢。

@@ -558,35 +558,15 @@ func (v *bulkEditView) AssigneeOptions() template.HTML {
 	l := v.l
 	s := noChangeOption(l) + rails.ContentTag("option", l.L("label_nobody"), rails.NewHash("value", "none", "selected", v.ParamIs("assigned_to_id", "none")))
 	sel := paramToS(v.IssueParams, "assigned_to_id")
-	var b strings.Builder
-	cur := l.c.User
-	if cur.Logged() && slices.ContainsFunc(v.Assignables, func(p *issues.PrincipalRef) bool { return p.ID == cur.ID }) {
-		b.WriteString(string(rails.ContentTag("option", "<< "+l.L("label_me")+" >>", rails.NewHash("value", cur.ID))))
+	var meID int64
+	if cur := l.c.User; cur.Logged() && slices.ContainsFunc(v.Assignables, func(p *issues.PrincipalRef) bool { return p.ID == cur.ID }) {
+		meID = cur.ID
 	}
-	var users, groups strings.Builder
+	collection := make([]principalOption, 0, len(v.Assignables))
 	for _, p := range v.Assignables {
-		attr := ""
-		if strconv.FormatInt(p.ID, 10) == sel {
-			attr = ` selected="selected"`
-		}
-		name := l.principalName(l.principal(p.ID))
-		opt := `<option value="` + strconv.FormatInt(p.ID, 10) + `"` + attr + `>` + string(rails.H(name)) + `</option>`
-		if p.Kind.IsGroup() {
-			groups.WriteString(opt)
-		} else {
-			users.WriteString(opt)
-		}
+		collection = append(collection, principalOption{ID: p.ID, Name: l.principalName(l.principal(p.ID)), Group: p.Kind.IsGroup()})
 	}
-	if groups.Len() == 0 {
-		b.WriteString(users.String())
-	} else {
-		for _, g := range [][2]string{{l.L("label_user_plural"), users.String()}, {l.L("label_group_plural"), groups.String()}} {
-			if g[1] != "" {
-				b.WriteString(`<optgroup label="` + string(rails.H(g[0])) + `">` + g[1] + `</optgroup>`)
-			}
-		}
-	}
-	return s + template.HTML(b.String())
+	return s + l.a.principalsOptionTags(l.c, meID, collection, nil, sel)
 }
 
 // CategoryOptions は (No change) + none + @categories。
@@ -781,14 +761,21 @@ func (v *bulkEditView) customFieldTag(cf *customfield.CustomField) template.HTML
 	return cf.Format().BulkEditTag(env, id, name, cf, objs, value, rails.NewHash("class", css, "data", data))
 }
 
-// listAutofillHash は list_autofill_data_attributes。
+// listAutofillHash は wiki_textarea_stimulus_attributes（Redmine 7.0 で list_autofill_data_attributes から置き換え）。
 func listAutofillHash(l *issueLookup) *rails.Hash {
-	f := l.a.Settings.String("text_formatting")
+	return wikiTextareaStimulusHash(l.a.Settings.String("text_formatting"))
+}
+
+// wikiTextareaStimulusHash は ApplicationHelper#wiki_textarea_stimulus_attributes（Setting.text_formatting が空なら {}）。
+func wikiTextareaStimulusHash(f string) *rails.Hash {
 	if strings.TrimSpace(f) == "" {
 		return rails.NewHash()
 	}
-	return rails.NewHash("controller", "list-autofill", "action", "beforeinput->list-autofill#handleBeforeInput",
-		"list_autofill_text_formatting_param", f)
+	return rails.NewHash("controller", "list-autofill selection-indent table-paste",
+		"action", "beforeinput->list-autofill#handleBeforeInput keydown.tab->selection-indent#run keydown.shift+tab->selection-indent#run paste->table-paste#handlePaste",
+		"list_autofill_text_formatting_param", f,
+		"selection_indent_text_formatting_param", f,
+		"table_paste_text_formatting_param", f)
 }
 
 // NotesData は {:auto_complete => true}.merge(list_autofill_data_attributes)。

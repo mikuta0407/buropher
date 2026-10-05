@@ -33,6 +33,7 @@ func (e *Env) NewBlank(ctx context.Context) (*Issue, error) {
 //   - トラッカー: trackerID (0 ならユーザが利用できる先頭のトラッカー) と、その既定ステータス
 //   - 作成者: author (nil なら User.current)
 //   - 開始日: Setting.default_issue_start_date_to_creation_date なら今日
+//   - 期日: Setting.default_issue_due_date_offset があれば今日 + オフセット日数
 //
 // カテゴリ・プロジェクトの既定担当者は保存時 (default_assign) に設定される。
 func (e *Env) New(ctx context.Context, p *domain.Project, trackerID int64, author *domain.User) (*Issue, error) {
@@ -53,6 +54,11 @@ func (e *Env) New(ctx context.Context, p *domain.Project, trackerID int64, autho
 	iss.AuthorID = author.ID
 	if e.Settings != nil && e.Settings.Bool("default_issue_start_date_to_creation_date") {
 		iss.StartDate = ptrTime(e.today())
+	}
+	if e.Settings != nil {
+		if days, ok := e.Settings.DefaultIssueDueDateOffsetInDays(); ok {
+			iss.DueDate = ptrTime(e.today().AddDate(0, 0, days))
+		}
 	}
 	if trackerID != 0 {
 		if err := e.SetTrackerID(ctx, iss, trackerID); err != nil {

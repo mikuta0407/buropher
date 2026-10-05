@@ -152,6 +152,11 @@ func (r *receiver) receiveIssue(ctx context.Context) (any, error) {
 			t := time.Date(y, m, d, 0, 0, 0, 0, time.UTC)
 			iss.StartDate = &t
 		}
+		if days, ok := r.h.Settings.DefaultIssueDueDateOffsetInDays(); ok && iss.DueDate == nil {
+			y, m, d := r.h.now().UTC().Date()
+			t := time.Date(y, m, d+days, 0, 0, 0, 0, time.UTC)
+			iss.DueDate = &t
+		}
 		if r.opts.issue["is_private"] == "1" {
 			iss.IsPrivate = true
 		}

@@ -169,7 +169,7 @@ func (a *App) teBuildFormData(c *Req, t *timelog.Entry) (*teFormData, error) {
 		if err != nil {
 			return nil, err
 		}
-		d.UserOptions = tePrincipalsOptions(c, users, sel, involved)
+		d.UserOptions = a.tePrincipalsOptions(c, users, sel, involved)
 	} else if !d.New && t.UserID != nil {
 		if u, err := repository.GetUser(ctx, a.DB, *t.UserID); err == nil {
 			d.UserLink = a.Helpers.LinkToPrincipal(c.Page(), u, "")
@@ -308,38 +308,26 @@ func (a *App) teProjectTreeOptions(c *Req, selected *int64) (template.HTML, erro
 }
 
 // tePrincipalsOptions は principals_options_for_select(collection, selected)。
-func tePrincipalsOptions(c *Req, users []*domain.User, selected string, involved []*domain.User) template.HTML {
+func (a *App) tePrincipalsOptions(c *Req, users []*domain.User, selected string, involved []*domain.User) template.HTML {
 	page := c.Page()
-	var b strings.Builder
+	var meID int64
 	if c.User.Logged() && slices.ContainsFunc(users, func(u *domain.User) bool { return u.ID == c.User.ID }) {
-		b.WriteString(string(rails.ContentTag("option", "<< "+c.L("label_me")+" >>", rails.NewHash("value", c.User.ID))))
+		meID = c.User.ID
 	}
 	sorted := slices.Clone(users)
 	sort.SliceStable(sorted, func(i, j int) bool {
 		return strings.ToLower(helper.PrincipalName(page, sorted[i])) < strings.ToLower(helper.PrincipalName(page, sorted[j]))
 	})
-	var involvedHTML strings.Builder
+	var inv []principalOption
 	for _, p := range involved {
 		disabled := !slices.ContainsFunc(users, func(u *domain.User) bool { return u.ID == p.ID })
-		involvedHTML.WriteString(string(rails.ContentTag("option", helper.PrincipalName(page, p), rails.NewHash("value", p.ID, "disabled", disabled))))
+		inv = append(inv, principalOption{ID: p.ID, Name: helper.PrincipalName(page, p), Group: p.Kind.IsGroup(), Disabled: disabled})
 	}
-	var usersHTML strings.Builder
+	collection := make([]principalOption, 0, len(sorted))
 	for _, u := range sorted {
-		sel := ""
-		if strconv.FormatInt(u.ID, 10) == selected {
-			sel = ` selected="selected"`
-		}
-		usersHTML.WriteString(`<option value="` + strconv.FormatInt(u.ID, 10) + `"` + sel + `>` + string(rails.H(helper.PrincipalName(page, u))) + `</option>`)
+		collection = append(collection, principalOption{ID: u.ID, Name: helper.PrincipalName(page, u), Group: u.Kind.IsGroup()})
 	}
-	if involvedHTML.Len() == 0 {
-		b.WriteString(usersHTML.String())
-	} else {
-		b.WriteString(`<optgroup label="` + string(rails.H(c.L("label_involved_principals"))) + `">` + involvedHTML.String() + `</optgroup>`)
-		if usersHTML.Len() > 0 {
-			b.WriteString(`<optgroup label="` + string(rails.H(c.L("label_user_plural"))) + `">` + usersHTML.String() + `</optgroup>`)
-		}
-	}
-	return template.HTML(b.String())
+	return a.principalsOptionTags(c, meID, collection, inv, selected)
 }
 
 // teInvolvedPrincipals は @issue（チケット配下の new / create のみ）の [author, prior_assigned_to].uniq.compact。

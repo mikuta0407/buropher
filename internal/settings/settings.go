@@ -320,6 +320,8 @@ type FieldError struct {
 	// Key は Redmine の i18n キー（activerecord.errors.messages.*）。
 	Key    string
 	Detail string
+	// Args は Key の補間引数（count 等）。
+	Args []any
 }
 
 var (
@@ -365,6 +367,7 @@ func (s *Settings) ValidateAllFromParams(params map[string]any) []FieldError {
 			errs = append(errs, FieldError{Name: "mail_from", Key: "activerecord.errors.messages.invalid"})
 		}
 	}
+	errs = append(errs, validateDefaultIssueDueDateOffset(params)...)
 	return errs
 }
 
