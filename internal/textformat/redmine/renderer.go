@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 // Copyright (C) 2026 mikuta0407 and Buropher contributors
 
-// Package redmine は Redmine 6.1.2 の textilizable（app/helpers/application_helper.rb:901-946）と
+// Package redmine は Redmine 7.0.1 の textilizable（app/helpers/application_helper.rb:942-987）と
 // 関連ヘルパー・マクロ（lib/redmine/wiki_formatting/macros.rb）・引用返信（lib/redmine/quote_reply.rb）の移植。
 //
 // 処理順は Redmine と同じ:

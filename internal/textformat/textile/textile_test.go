@@ -3,7 +3,8 @@
 
 package textile
 
-// Redmine 6.1.2 の test/unit/lib/redmine/wiki_formatting/textile_formatter_test.rb の移植。
+// Redmine 6.1.2 の test/unit/lib/redmine/wiki_formatting/textile_formatter_test.rb の移植
+// （7.0.1 で追加されたテストは v7_test.go）。
 
 import (
 	"errors"

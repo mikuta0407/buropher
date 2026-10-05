@@ -28,6 +28,7 @@ RUN apk add --no-cache git ca-certificates tzdata \
  && chown buropher:buropher /data
 COPY --from=build /out/buropher /usr/local/bin/buropher
 COPY LICENSE NOTICE THIRD_PARTY_NOTICES.md /usr/share/doc/buropher/
+COPY docs/licenses /usr/share/doc/buropher/licenses/
 ENV BUROPHER_ADDR=:3000 \
     BUROPHER_DB_DRIVER=sqlite \
     BUROPHER_DB_DSN=/data/buropher.db \

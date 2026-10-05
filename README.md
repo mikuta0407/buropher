@@ -1,12 +1,12 @@
 # Buropher
 
-Buropher は Redmine 6.1.2 互換（Redmine-compatible）のプロジェクト管理・チケットシステムを Go で再実装したものです。
+Buropher は Redmine 7.0.1 互換（Redmine-compatible）のプロジェクト管理・チケットシステムを Go で再実装したものです。
 シングルバイナリ（`buropher`）で動作します。
 
 Buropher is a Redmine-compatible project management web application written in Go
 (a derivative work of [Redmine](https://www.redmine.org/), GPL-2.0-or-later).
 
-- 見た目・標準機能・使い勝手は Redmine 6.1.2 と互換
+- 見た目・標準機能・使い勝手は Redmine 7.0.1 と互換
 - DB は専用スキーマ（SQLite / PostgreSQL）。既存 Redmine からは export → import で移行
 - 追加機能: LDAP 認証の強化、OIDC SSO（Microsoft Entra ID など）、Discord DM 通知
 - Redmine プラグインには非対応
@@ -19,7 +19,7 @@ Buropher is a Redmine-compatible project management web application written in G
 - [Configuration](docs/configuration.md) — config keys, environment variables, relevant settings
   (example: [config.example.toml](config.example.toml))
 - [Migrating from Redmine](docs/migration-from-redmine.md) — export / import / verify, cutover checklist
-- [Compatibility](docs/compatibility.md) — what matches Redmine 6.1.2 and known deviations
+- [Compatibility](docs/compatibility.md) — what matches Redmine 7.0.1, features added in Redmine 7.0 and known deviations
 - [Development](docs/development.md) — architecture, package map, compat harness, upstream sync, releases
 - Extensions: [OIDC SSO / Entra ID](docs/sso-entra-id.md), [Discord DM notifications](docs/discord.md), [PDF](docs/pdf.md)
 - Internals (Japanese): [schema](docs/schema.md), [export format](docs/export-format.md), [import rules](docs/import.md)
@@ -34,7 +34,8 @@ make build        # bin/buropher
 
 ## upstream アセットの同期
 
-`web/assets` と `web/locales/redmine` は Redmine 6.1.2 から取り込んだものです。
+`web/assets` と `web/locales/redmine` は Redmine 7.0.1 から取り込んだものです（同期した版は `web/UPSTREAM_VERSION`）。
+同梱ライブラリ・アイコン・フォントのライセンス文は Redmine の `doc/licenses` から `docs/licenses/` に取り込んでいます。
 
 ```sh
 tools/sync-upstream.sh <redmine-src> <gems-dir>

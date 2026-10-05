@@ -1,6 +1,6 @@
 # 移行・計画用ドキュメント（git管理しない）
 /_planning/
-# 参照用の Redmine 6.1.2 ソース
+# 参照用の Redmine ソース・実行環境
 /_reference/
 # ビルド成果物・実行時データ
 /bin/

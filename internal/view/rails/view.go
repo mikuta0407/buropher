@@ -36,7 +36,7 @@ type View struct {
 	cycles map[string]*cycle
 }
 
-// NewView は Redmine 6.1.2 の設定（utf8 hidden なし、submit の自動 disable あり、CSRF 保護あり）で View を作る。
+// NewView は Redmine 7.0.1 の設定（utf8 hidden なし、submit の自動 disable あり、CSRF 保護あり）で View を作る。
 func NewView(csrfToken string) *View {
 	return &View{
 		ProtectAgainstForgery:         true,
