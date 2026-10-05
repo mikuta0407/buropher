@@ -77,7 +77,7 @@ func (e *webhookEnv) exec(q string, args ...any) {
 func (e *webhookEnv) createHook(userID int64, u string, active bool, events []string, projectIDs ...int64) *repository.Webhook {
 	e.t.Helper()
 	w := &repository.Webhook{URL: u, UserID: userID, Active: active, Events: db.NewJSON(events), ProjectIDs: projectIDs}
-	if err := repository.SaveWebhook(e.ctx, e.d, e.app.Secrets, w, db.NewTime(frozenTime)); err != nil {
+	if err := repository.SaveWebhook(e.ctx, e.d, w, db.NewTime(frozenTime)); err != nil {
 		e.t.Fatal(err)
 	}
 	return w
@@ -203,9 +203,9 @@ func TestWebhooksController(t *testing.T) {
 			strings.Join(w.Events.V, ",") != "issue.created" || len(w.ProjectIDs) != 1 || w.ProjectIDs[0] != 1 {
 			t.Errorf("created %+v", w)
 		}
-		// secret は暗号化して保存する
+		// secret は Redmine と同じく平文で保存する
 		var stored string
-		if err := e.d.Get(e.ctx, &stored, `SELECT secret FROM webhooks WHERE id = ?`, w.ID); err != nil || !strings.HasPrefix(stored, "sb1:") {
+		if err := e.d.Get(e.ctx, &stored, `SELECT secret FROM webhooks WHERE id = ?`, w.ID); err != nil || stored != "s3cret" {
 			t.Errorf("stored secret %q %v", stored, err)
 		}
 	})

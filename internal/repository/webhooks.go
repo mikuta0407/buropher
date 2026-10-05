@@ -5,10 +5,9 @@ package repository
 
 // Webhook（app/models/webhook.rb）の保存。webhooks と webhook_projects（Redmine の projects_webhooks）。
 //
-// secret（HMAC 署名の共有鍵）は他の秘密値と同じく secretbox（server.secret_key 由来の鍵）で暗号化して
-// 保存する（"sb1:..."）。Redmine は平文で保存するため、インポートした値など secretbox 形式でない値は
-// 平文として読む。box が nil（secret_key 未設定）なら平文で保存する。
-// webhooks の読み書きはこのファイルの関数だけで行うこと（暗号化の扱いを 1 か所にまとめるため）。
+// secret（HMAC 署名の共有鍵）は Redmine と同じく平文で保存する（編集画面に表示し、署名の計算に使うため。
+// Redmine からのインポートも平文のまま移す）。secretbox 形式（"sb1:..."）の値があれば復号して読む。
+// webhooks の読み書きはこのファイルの関数だけで行うこと。
 
 import (
 	"context"
@@ -76,7 +75,7 @@ func loadWebhooks(ctx context.Context, q db.Queryer, box *secretbox.Box, query s
 	ids := make([]int64, len(rows))
 	for i, r := range rows {
 		w := &Webhook{ID: r.ID, URL: r.URL, Events: r.Events, UserID: r.UserID, Active: r.Active,
-			CreatedAt: r.CreatedAt, UpdatedAt: r.UpdatedAt, storedSecret: r.Secret}
+			CreatedAt: r.CreatedAt, UpdatedAt: r.UpdatedAt}
 		if w.Events.V == nil {
 			w.Events.V = []string{}
 		}
@@ -159,20 +158,9 @@ WHERE w.active = ? AND wp.project_id = ?`, true, projectID)
 }
 
 // SaveWebhook は webhook.save（新規なら INSERT。webhook_projects は w.ProjectIDs に置き換える）。
-// secret は box があれば暗号化して保存する（変更が無ければ保存値をそのまま使う）。
-func SaveWebhook(ctx context.Context, q db.Queryer, box *secretbox.Box, w *Webhook, now db.Time) error {
+func SaveWebhook(ctx context.Context, q db.Queryer, w *Webhook, now db.Time) error {
 	var secret *string
-	switch {
-	case w.Secret == "":
-	case w.storedSecret != nil && openWebhookSecret(box, w.storedSecret) == w.Secret && (box == nil || secretbox.IsSealed(*w.storedSecret)):
-		secret = w.storedSecret
-	case box != nil:
-		s, err := box.Seal(w.Secret)
-		if err != nil {
-			return err
-		}
-		secret = &s
-	default:
+	if w.Secret != "" {
 		s := w.Secret
 		secret = &s
 	}
@@ -197,7 +185,6 @@ func SaveWebhook(ctx context.Context, q db.Queryer, box *secretbox.Box, w *Webho
 			return err
 		}
 	}
-	w.storedSecret = secret
 	ids := uniqIDs(w.ProjectIDs)
 	slices.Sort(ids)
 	for _, p := range ids {

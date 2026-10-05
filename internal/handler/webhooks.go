@@ -237,7 +237,7 @@ func (a *App) validateAndSaveWebhook(c *Req, f *webhookForm) (bool, error) {
 		return false, nil
 	}
 	if err := a.DB.WithTx(c.Ctx(), func(tx *db.Tx) error {
-		return repository.SaveWebhook(c.Ctx(), tx, a.Secrets, w, db.NewTime(a.now()))
+		return repository.SaveWebhook(c.Ctx(), tx, w, db.NewTime(a.now()))
 	}); err != nil {
 		return false, err
 	}
