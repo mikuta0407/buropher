@@ -19,7 +19,7 @@ import (
 	"github.com/mikuta0407/buropher/web"
 )
 
-// redmineRoute は testdata/redmine-routes.json（Redmine 6.1.2 の `rails routes` を JSON で出力したもの。7.0.1 の変更を手で反映している）の 1 行。
+// redmineRoute は testdata/redmine-routes.json（Redmine 7.0.1 の全ルートを tools/gen/dump-routes.rb で JSON に出力したもの）の 1 行。
 type redmineRoute struct {
 	Name         *string           `json:"name"`
 	Verb         string            `json:"verb"`
@@ -169,7 +169,7 @@ type routeFinder interface {
 	Find(rctx *chi.Context, method, path string) string
 }
 
-// TestRedmineRouteCoverage は Redmine 6.1.2 の全ルート（routeExclusions を除く）が buropher のルータで
+// TestRedmineRouteCoverage は Redmine 7.0.1 の全ルート（routeExclusions を除く）が buropher のルータで
 // 同じ controller#action に解決されることを確認する。GET のルートは管理者で実際にリクエストし、
 // ルーティング外の 404（public/404.html）や 500 にならないことも確認する。
 // 結果の一覧は BUROPHER_ROUTE_REPORT にファイル名を指定すると書き出す。
