@@ -112,7 +112,9 @@ func (s *Service) PasswordUpdated(ctx context.Context, user, sender *domain.User
 		return
 	}
 	// 初回ログイン時に変更を強制される既定の admin アカウントのダミーアドレスには送らない
-	if user.AdminFlag && user.Login == "admin" && user.Mail == "admin@example.net" {
+	// (Redmine 7.0 で既定アドレスが admin@dummy.invalid になった。#43808。
+	// 以前の buropher が作った admin@example.net も同様に扱う)
+	if user.AdminFlag && user.Login == "admin" && (user.Mail == "admin@dummy.invalid" || user.Mail == "admin@example.net") {
 		return
 	}
 	s.SecurityNotification(ctx, []int64{user.ID}, sender, remoteIP, SecurityOptions{

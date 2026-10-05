@@ -119,9 +119,11 @@ func init() {
 				return opts
 			},
 			"gravatar_default_setting_options": func() []any {
+				// Redmine 7.0 で "Color" が追加され、並びも変わった（#43658）
 				return []any{
-					[]any{"Identicons", "identicon"}, []any{"Monster ids", "monsterid"}, []any{"Mystery man", "mm"},
-					[]any{"Retro", "retro"}, []any{"Robohash", "robohash"}, []any{"Wavatars", "wavatar"}, []any{"Initials", "initials"},
+					[]any{"Initials", "initials"}, []any{"Color", "color"}, []any{"Mystery man", "mm"},
+					[]any{"Identicons", "identicon"}, []any{"Monster ids", "monsterid"}, []any{"Wavatars", "wavatar"},
+					[]any{"Retro", "retro"}, []any{"Robohash", "robohash"},
 				}
 			},
 		}

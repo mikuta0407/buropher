@@ -50,7 +50,7 @@
         <div id="existing-attachments" style="{{$F.ExistingAttachmentsStyle}}">
           {{range $attachment := $F.ExistingAttachments}}
           <span class="existing-attachment">
-            {{sprite_icon (icon_for_mime_type $attachment.ContentType) (hash "size" 12)}}
+            {{file_type_icon $attachment.ContentType (hash "size" 12)}}
             {{text_field_tag "" $attachment.Filename (hash "class" "icon icon-attachment filename" "disabled" true)}}
             <label>
               {{check_box_tag "issue[deleted_attachment_ids][]" $attachment.ID ($F.AttachmentDeleted $attachment.ID) (hash "id" nil "class" "deleted_attachment")}} {{l "button_delete"}}

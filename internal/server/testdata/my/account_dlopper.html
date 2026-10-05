@@ -71,6 +71,7 @@ $('#api-access-key').hide();
         <div class="contextual">
 <a class="icon icon-email-add" data-remote="true" href="/users/3/email_addresses"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--email"></use></svg><span class="icon-label">Emails</span></a>
 <a class="icon icon-passwd" href="/my/password"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--key"></use></svg><span class="icon-label">Change password</span></a>
+
 <a class="icon icon-applications" href="/oauth/authorized_applications"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-DIGEST.svg#icon--apps"></use></svg><span class="icon-label">Authorized applications</span></a>
 
 </div>
@@ -164,6 +165,7 @@ $('#api-access-key').hide();
 <option value="only_my_events">Only for things I watch or I&#39;m involved in</option>
 <option value="only_assigned">Only for things I watch or I am assigned to</option>
 <option value="only_owner">Only for things I watch or I am the owner of</option>
+<option value="only_my_watches">Only for things I watch</option>
 <option value="none">No events</option></select>
 </p>
 <fieldset id="notified-projects" style="display:none;">
@@ -195,6 +197,8 @@ $('#api-access-key').hide();
     <p><input type="checkbox" value="issue_created" name="pref[auto_watch_on][]" id="pref_auto_watch_on_issue_created" /> <label for="pref_auto_watch_on_issue_created">Issues I created</label></p>
 
     <p><input type="checkbox" value="issue_contributed_to" name="pref[auto_watch_on][]" id="pref_auto_watch_on_issue_contributed_to" /> <label for="pref_auto_watch_on_issue_contributed_to">Issues I contributed to</label></p>
+
+    <p><input type="checkbox" value="issue_assigned_to_me" name="pref[auto_watch_on][]" id="pref_auto_watch_on_issue_assigned_to_me" /> <label for="pref_auto_watch_on_issue_assigned_to_me">Issues assigned to me</label></p>
 
 </fieldset>
 
@@ -232,9 +236,11 @@ $('#api-access-key').hide();
 <option value="Puerto Rico">(GMT-04:00) Puerto Rico</option>
 <option value="Santiago">(GMT-04:00) Santiago</option>
 <option value="Newfoundland">(GMT-03:30) Newfoundland</option>
+<option value="Asuncion">(GMT-03:00) Asuncion</option>
 <option value="Brasilia">(GMT-03:00) Brasilia</option>
 <option value="Buenos Aires">(GMT-03:00) Buenos Aires</option>
 <option value="Montevideo">(GMT-03:00) Montevideo</option>
+<option value="Greenland">(GMT-02:00) Greenland</option>
 <option value="Mid-Atlantic">(GMT-02:00) Mid-Atlantic</option>
 <option value="Azores">(GMT-01:00) Azores</option>
 <option value="Cape Verde Is.">(GMT-01:00) Cape Verde Is.</option>

@@ -56,10 +56,9 @@ type Context struct {
 	AppTitle string
 
 	// body_css_classes 用の設定値。
-	Theme          string // テーマ名（"theme-<name>"、空ならなし）
-	HasMainMenu    bool   // display_main_menu?(@project)
-	AvatarsEnabled bool   // Setting.gravatar_enabled?
-	TextareaFont   string // User.current.pref.textarea_font（"monospace" / "proportional" のときのみ付与）
+	Theme        string // テーマ名（"theme-<name>"、空ならなし）
+	HasMainMenu  bool   // display_main_menu?(@project)
+	TextareaFont string // User.current.pref.textarea_font（"monospace" / "proportional" のときのみ付与）
 
 	// Flash は表示する flash メッセージ。
 	Flash []Flash

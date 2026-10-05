@@ -28,6 +28,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/urlroot"
 	"github.com/mikuta0407/buropher/internal/view"
 	"github.com/mikuta0407/buropher/internal/view/rails"
+	"github.com/mikuta0407/buropher/internal/webhook"
 )
 
 // routesIssuesBulk は issues#bulk_edit / bulk_update / destroy のルートを登録する。
@@ -781,7 +782,7 @@ func (v *bulkEditView) customFieldTag(cf *customfield.CustomField) template.HTML
 	return cf.Format().BulkEditTag(env, id, name, cf, objs, value, rails.NewHash("class", css, "data", data))
 }
 
-// listAutofillHash は list_autofill_data_attributes。
+// listAutofillHash は wiki_textarea_stimulus_attributes。
 func listAutofillHash(l *issueLookup) *rails.Hash {
 	return helper.WikiTextareaStimulusAttributes(l.a.Settings.String("text_formatting"))
 }
@@ -1044,6 +1045,11 @@ func (a *App) IssuesDestroy(c *Req) {
 		}
 		atts = append(atts, list...)
 	}
+	// Webhook（issue.deleted / time_entry.deleted）のペイロードは削除の前に計算する
+	a.prepareDeleteWebhooks(c, webhook.TypeIssue, all...)
+	if opts.Todo == issues.TimeEntriesDestroy || hours == 0 {
+		a.prepareDeleteWebhooks(c, webhook.TypeTimeEntry, a.issueDestroyTimeEntryIDs(ctx, all)...)
+	}
 	res, err := e.DestroyIssues(ctx, ids, opts)
 	switch {
 	case errors.Is(err, issues.ErrTimeEntryIssueRequired):
@@ -1067,6 +1073,7 @@ func (a *App) IssuesDestroy(c *Req) {
 			a.logger().Error("delete attachments from disk", "err", err)
 		}
 	}
+	a.enqueuePreparedDeleteWebhooks(c, webhook.TypeTimeEntry)
 	a.dispatchIssueNotifications(c, res)
 	if api {
 		c.RenderAPIOK()

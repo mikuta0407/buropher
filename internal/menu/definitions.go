@@ -81,6 +81,10 @@ func TopMenu() *Menu {
 // AccountMenu は :account_menu。
 func AccountMenu() *Menu {
 	m := &Menu{Name: "account_menu"}
+	// :my_profile は first: true（先頭に挿入）。
+	m.Push(&Item{Name: "my_profile", Controller: "users", Action: "show", URL: path("/users/current"),
+		Caption: "label_profile",
+		Cond:    func(e Env, _ Project) bool { return e.LoggedIn() }}, "")
 	m.Push(&Item{Name: "login", URL: path("/login"), PermMode: PermNone,
 		Cond: func(e Env, _ Project) bool { return !e.LoggedIn() }}, "")
 	m.Push(&Item{Name: "register", URL: path("/account/register"), PermMode: PermNone,

@@ -88,7 +88,8 @@ func init() {
 				d.headsForWikiFormatter(r, pg(), &headsIncluded)
 				return ""
 			},
-			"list_autofill_data_attributes": func() *rails.Hash { return listAutofillDataAttributes(pg()) },
+			"list_autofill_data_attributes":     func() *rails.Hash { return listAutofillDataAttributes(pg()) },
+			"wiki_textarea_stimulus_attributes": func() *rails.Hash { return listAutofillDataAttributes(pg()) },
 			"update_data_sources_for_auto_complete": func(sources *rails.Hash) html {
 				return updateDataSourcesForAutoComplete(sources)
 			},
@@ -397,13 +398,14 @@ func (d *Deps) headsForWikiFormatter(r *view.Render, p *Page, included *bool) {
 	}
 }
 
-// listAutofillDataAttributes は ApplicationHelper#wiki_textarea_stimulus_attributes（6.1 の list_autofill_data_attributes）。
+// listAutofillDataAttributes は ApplicationHelper#wiki_textarea_stimulus_attributes
+// （Redmine 7.0 で list_autofill_data_attributes から改名）。
 func listAutofillDataAttributes(p *Page) *rails.Hash {
 	return WikiTextareaStimulusAttributes(p.setting("text_formatting"))
 }
 
 // WikiTextareaStimulusAttributes は ApplicationHelper#wiki_textarea_stimulus_attributes
-// （Setting.text_formatting が空なら {}。リストの自動補完・Tab による字下げ #44061・表の貼り付け #43950）。
+// （Setting.text_formatting が空なら {}）。textFormatting は Setting.text_formatting。
 func WikiTextareaStimulusAttributes(textFormatting string) *rails.Hash {
 	if strings.TrimSpace(textFormatting) == "" {
 		return rails.NewHash()

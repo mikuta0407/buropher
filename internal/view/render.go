@@ -273,11 +273,6 @@ func (r *Render) BodyCSSClasses() string {
 		css = append(css, "has-main-menu")
 	}
 	css = append(css, "controller-"+c.Controller, "action-"+c.Action)
-	if c.AvatarsEnabled {
-		css = append(css, "avatars-on")
-	} else {
-		css = append(css, "avatars-off")
-	}
 	if c.TextareaFont == "monospace" || c.TextareaFont == "proportional" {
 		css = append(css, "textarea-"+c.TextareaFont)
 	}

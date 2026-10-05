@@ -62,6 +62,8 @@ type Handler struct {
 	Logger *slog.Logger
 	// IssueNotifier はチケットの通知（issue_added / issue_updated）の配送先（nil なら破棄）。
 	IssueNotifier issues.Notifier
+	// IssueWebhooks はチケットの Webhook（issue.created / issue.updated）の発火（nil なら発火しない）。
+	IssueWebhooks func(ctx context.Context, evs []issues.WebhookEvent)
 	// ContentNotifier はフォーラム・ニュースの通知（nil なら通知しない）。
 	ContentNotifier ContentNotifier
 	// AccountMailer は作成したユーザーへのアカウント情報のメール（nil ならログに記録するだけ）。

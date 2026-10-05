@@ -47,7 +47,7 @@ func Init(ctx context.Context, d *db.DB, opt Options) error {
 		opt.AdminLogin = "admin"
 	}
 	if opt.AdminEmail == "" {
-		opt.AdminEmail = "admin@example.net"
+		opt.AdminEmail = "admin@dummy.invalid"
 	}
 	if opt.AdminPassword == "" {
 		return errors.New("bootstrap: admin password is required")

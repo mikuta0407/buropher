@@ -5,18 +5,17 @@ package helper
 
 import "testing"
 
-// IconsHelper#icon_for_mime_type（Redmine 7.0 の #43797: 添付一覧にファイルの種類のアイコンを出す）。
+// Redmine 7.0 の IconsHelper#icon_for_mime_type（#43797 / #43805）。
 func TestIconForMimeType(t *testing.T) {
 	cases := map[string]string{
 		"text/x-ruby":     "text-x-ruby",
 		"application/pdf": "application-pdf",
-		"application/zip": "application-zip",
 		"text/plain":      "text-plain",
 		"text/markdown":   "text-plain",
 		"text/x-textile":  "text-plain",
-		"text/csv":        "file",
+		"text/x-diff":     "file",
 		"image/png":       "photo",
-		"image/svg+xml":   "photo",
+		"image/gif":       "photo",
 		"audio/mpeg":      "file-music",
 		"video/mp4":       "movie",
 		"application/vnd.openxmlformats-officedocument.wordprocessingml.document":   "file-type-docx",
@@ -26,9 +25,9 @@ func TestIconForMimeType(t *testing.T) {
 		"application/octet-stream": "file",
 		"":                         "file",
 	}
-	for in, want := range cases {
-		if got := iconForMimeType(in); got != want {
-			t.Errorf("iconForMimeType(%q) = %q, want %q", in, got, want)
+	for mime, want := range cases {
+		if got := IconForMimeType(mime); got != want {
+			t.Errorf("IconForMimeType(%q) = %q, want %q", mime, got, want)
 		}
 	}
 }

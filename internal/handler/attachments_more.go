@@ -544,7 +544,13 @@ func (a *App) AttachmentsDestroy(c *Req) {
 				return err
 			}
 			j.JournalizeAttachment(att.ID, att.Filename, false)
-			_, jres, err = env.SaveJournal(c.Ctx(), iss, j)
+			var saved bool
+			saved, jres, err = env.SaveJournal(c.Ctx(), iss, j)
+			if saved && jres != nil {
+				// Redmine 7.0: ジャーナルだけを保存するため Webhook.trigger('issue.updated') を明示的に呼ぶ
+				jres.Webhooks = append(jres.Webhooks, issues.WebhookEvent{Action: issues.WebhookUpdated,
+					IssueID: iss.ID, ProjectID: iss.ProjectID, JournalID: j.ID})
+			}
 			return err
 		}
 		return repository.DeleteAttachment(c.Ctx(), tx, att.ID)

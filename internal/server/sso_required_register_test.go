@@ -42,7 +42,7 @@ VALUES (90, 'ldap', 'LDAP', TRUE, 2, TRUE, ?, '2026-01-15T12:00:00.000000Z', '20
 	if res.StatusCode == 302 && strings.Contains(res.Header.Get("Location"), "/my/account") {
 		t.Fatal("LDAP user logged in through the registration form under sso_required")
 	}
-	if _, body := get(t, c, e.ts.URL+"/my/account"); strings.Contains(body, "Logged in as") {
+	if _, body := get(t, c, e.ts.URL+"/my/account"); strings.Contains(body, `class="user-login"`) {
 		t.Fatal("session is logged in")
 	}
 	if n := queryInt(t, e.d, `SELECT COUNT(*) FROM user_accounts WHERE login = 'nomail'`); n != 0 {
@@ -66,7 +66,7 @@ func TestSSORequiredAutomaticRegistrationDoesNotLogIn(t *testing.T) {
 	if res.StatusCode != 302 {
 		t.Fatalf("register: %d", res.StatusCode)
 	}
-	if _, body := get(t, c, e.ts.URL+"/my/page"); strings.Contains(body, "Logged in as") {
+	if _, body := get(t, c, e.ts.URL+"/my/page"); strings.Contains(body, `class="user-login"`) {
 		t.Fatal("automatically registered user is logged in under sso_required")
 	}
 }

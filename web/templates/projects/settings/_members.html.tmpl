@@ -33,7 +33,7 @@
   </td>
   <td class="buttons">
       {{link_to (sprite_icon "edit" (l "button_edit")) (printf "/memberships/%d/edit" $member.Member.ID) (hash "remote" true "class" "icon icon-edit")}}
-      {{if $member.Deletable}}{{delete_link (printf "/memberships/%d" $member.Member.ID) (hash "remote" true "data" (ternary $member.ConfirmOwn (hash "confirm" (l "text_own_membership_delete_confirmation")) (hash)))}}{{end}}
+      {{if $member.Deletable}}{{remove_link (printf "/memberships/%d" $member.Member.ID) (hash "remote" true "data" (ternary $member.ConfirmOwn (hash "confirm" (l "text_own_membership_delete_confirmation")) (hash)))}}{{end}}
   </td>
   {{call_hook "view_projects_settings_members_table_row"}}
   </tr>

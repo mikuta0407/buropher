@@ -192,7 +192,7 @@ func TestLoginLogoutFlow(t *testing.T) {
 		t.Fatalf("home status %d", res.StatusCode)
 	}
 	for _, want := range []string{
-		`<div id="loggedas">Logged in as <a class="user active" href="/users/`,
+		`<span class="user-login">@admin</span>`,
 		`<a class="my-page" href="/my/page">My page</a>`,
 		`<a class="administration" href="/admin">Administration</a>`,
 		`<a class="logout" rel="nofollow" data-method="post" href="/logout">Sign out</a>`,
@@ -268,7 +268,7 @@ func TestLoginRequiredAndErrors(t *testing.T) {
 	// CSRF トークンなしの POST は 422 のエラーページ（common/error）
 	res, body = post(t, c, ts.URL+"/login", url.Values{"username": {"admin"}, "password": {"admin"}})
 	if res.StatusCode != 422 || !strings.Contains(body, "<h2>422</h2>") || !strings.Contains(body, "Invalid form authenticity token.") ||
-		!strings.Contains(body, `<title>422 - Redmine</title>`) || !strings.Contains(body, `class="controller-account action-login avatars-off"`) {
+		!strings.Contains(body, `<title>422 - Redmine</title>`) || !strings.Contains(body, `class="controller-account action-login"`) {
 		t.Errorf("csrf failure: %d\n%s", res.StatusCode, body)
 	}
 }
@@ -283,7 +283,7 @@ func TestLocalization(t *testing.T) {
 	}
 	b, _ := readUnbranded(res.Body)
 	res.Body.Close()
-	if !strings.Contains(string(b), `<html lang="ja">`) || !strings.Contains(string(b), "ログイン") {
+	if !strings.Contains(string(b), `<html lang="ja" dir="ltr">`) || !strings.Contains(string(b), "ログイン") {
 		t.Error("Accept-Language not applied")
 	}
 }

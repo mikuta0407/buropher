@@ -1,16 +1,16 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 // Copyright (C) 2026 mikuta0407 and Buropher contributors
 
-// Package export は Redmine 6.1.x の DB を読み取り専用で読み、中立形式のアーカイブ
+// Package export は Redmine 6.1.x / 7.0.x の DB を読み取り専用で読み、中立形式のアーカイブ
 // (internal/redmineimport/archive)へ書き出す。Ruby 環境は不要。
 //
 // 処理の流れ:
 //  1. 読み取り専用・一貫スナップショットのトランザクションを開始
-//  2. 受け入れ判定(付録 A §7): schema_migrations のコア集合が 6.1.2 の 322 件と完全一致、
-//     プラグイン版は警告、コア 56 テーブル・列の存在確認。
-//     6.1.0 / 6.1.1 / 6.1.2 の db/migrate はファイル名・内容とも同一(2026-10 に各タグで確認)のため、
-//     完全一致判定のまま 6.1.0〜6.1.2 をすべて受け入れる
-//  3. コアテーブル(imports/import_items を除く 54 個)を主キー順に ndjson へ書き出し
+//  2. 受け入れ判定(付録 A §7): schema_migrations のコア集合が既知のスキーマ版
+//     (6.1: 6.1.0〜6.1.5 の 322 件 / 7.0: 7.0.0〜7.0.1 の 327 件)のいずれかと完全一致、
+//     プラグイン版は警告、その版のコアテーブル(6.1: 56 個 / 7.0: 58 個)・列の存在確認。
+//     一致した版はマニフェストの redmine_schema に記録する
+//  3. コアテーブル(imports/import_items を除く)を主キー順に ndjson へ書き出し
 //  4. attachments が参照する添付ファイルを収集(欠損はマニフェストに記録)
 package export
 
@@ -197,6 +197,10 @@ func Run(ctx context.Context, opt Options) (*archive.Manifest, error) {
 		}
 	}
 
+	if v := m.Source.RedmineVersion; v != "" && m.RedmineSchema != "" && !strings.HasPrefix(v, m.RedmineSchema+".") {
+		warn("redmine root reports version %s, but the database schema is Redmine %s", v, m.RedmineSchema)
+	}
+
 	// 書き出し
 	partial := outAbs + ".partial"
 	f, err := os.OpenFile(partial, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0o600)
@@ -356,13 +360,15 @@ func accept(ctx context.Context, tx *sql.Tx, kind string, m *archive.Manifest, w
 	})
 	m.SchemaMigrations = versions
 	mc := checkMigrations(versions)
+	sv := mc.Schema
+	m.RedmineSchema = sv.Name
 	if len(mc.Missing) > 0 {
-		problems = append(problems, fmt.Sprintf("%d core migrations of Redmine 6.1.2 are missing (e.g. %s): upgrade Redmine to 6.1.x and run `rake db:migrate` before exporting",
-			len(mc.Missing), strings.Join(head(mc.Missing, 5), ", ")))
+		problems = append(problems, fmt.Sprintf("%d core migrations of Redmine %s are missing (e.g. %s): upgrade Redmine to a supported version (%s) and run `rake db:migrate` before exporting",
+			len(mc.Missing), sv.Name, strings.Join(head(mc.Missing, 5), ", "), supportedReleases()))
 	}
 	if len(mc.Extra) > 0 {
-		problems = append(problems, fmt.Sprintf("%d core migrations unknown to Redmine 6.1.2 were found (e.g. %s): unsupported Redmine version",
-			len(mc.Extra), strings.Join(head(mc.Extra, 5), ", ")))
+		problems = append(problems, fmt.Sprintf("%d core migrations unknown to Redmine %s were found (e.g. %s): unsupported Redmine version (supported: %s)",
+			len(mc.Extra), sv.Name, strings.Join(head(mc.Extra, 5), ", "), supportedReleases()))
 	}
 	plugins := make([]string, 0, len(mc.Plugins))
 	for p := range mc.Plugins {
@@ -380,7 +386,7 @@ func accept(ctx context.Context, tx *sql.Tx, kind string, m *archive.Manifest, w
 	// 4. 構造チェック
 	core := map[string]bool{}
 	var plan []tablePlan
-	for _, td := range coreTables {
+	for _, td := range sv.Tables {
 		core[td.Name] = true
 		if !tables[td.Name] {
 			problems = append(problems, fmt.Sprintf("core table %s is missing", td.Name))
@@ -425,6 +431,15 @@ func accept(ctx context.Context, tx *sql.Tx, kind string, m *archive.Manifest, w
 		return plan, &AcceptanceError{Problems: problems}
 	}
 	return plan, nil
+}
+
+// supportedReleases は受け入れる Redmine リリースの一覧(表示用)。
+func supportedReleases() string {
+	rs := make([]string, len(schemaVersions))
+	for i, v := range schemaVersions {
+		rs[i] = v.Releases
+	}
+	return strings.Join(rs, ", ")
 }
 
 func head(s []string, n int) []string {

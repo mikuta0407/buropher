@@ -430,45 +430,42 @@ func RepositoryBreadcrumbs(project *domain.Project, repo *domain.Repository, pat
 	return template.HTML(strings.Join(crumbs, `<span class="separator">/</span>`))
 }
 
-// IconForMimeType は IconsHelper#icon_for_mime_type（ハンドラで HTML を組み立てる箇所用）。
-func IconForMimeType(mime string) string { return iconForMimeType(mime) }
-
-// iconForMimeType は IconsHelper#icon_for_mime_type（MIME タイプ "type/subtype" からアイコン名を決める）。
-func iconForMimeType(mime string) string {
+// IconForMimeType は IconsHelper#icon_for_mime_type（Redmine 7.0: MIME タイプ（"text/x-ruby" 等）から
+// ファイル種別アイコン名を決める。#43797 / #43805）。
+func IconForMimeType(mime string) string {
 	switch mime {
 	case "text/x-c", "text/x-csharp", "text/x-java", "text/x-php", "text/x-ruby", "text/xml", "text/css", "text/html",
 		"application/pdf", "application/zip", "application/gzip", "application/javascript":
 		return strings.ReplaceAll(mime, "/", "-")
 	}
-	// mime.to_s.split('/')
-	parts := strings.Split(mime, "/")
-	sub := ""
-	if len(parts) > 1 {
-		sub = parts[1]
-	}
-	switch parts[0] {
+	top, sub, _ := strings.Cut(mime, "/")
+	name := ""
+	switch top {
 	case "audio":
-		return "file-music"
+		name = "file-music"
 	case "image":
-		return "photo"
+		name = "photo"
 	case "text":
 		if sub == "markdown" || sub == "plain" || sub == "x-textile" {
-			return "text-plain"
+			name = "text-plain"
 		}
 	case "video":
-		return "movie"
+		name = "movie"
 	default:
-		// Microsoft Office Open XML の文書（プレビューできない旧形式 .doc/.xls/.ppt は含めない）
+		// Office Open XML 文書（旧形式 .doc/.xls/.ppt はプレビュー非対応のため対象外）
 		switch mime {
 		case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
-			return "file-type-ppt"
+			name = "file-type-ppt"
 		case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
-			return "file-type-xls"
+			name = "file-type-xls"
 		case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-			return "file-type-docx"
+			name = "file-type-docx"
 		}
 	}
-	return "file"
+	if name == "" {
+		return "file"
+	}
+	return name
 }
 
 // fileIcon は IconsHelper#file_icon(entry, name)。
@@ -476,7 +473,7 @@ func (d *Deps) fileIcon(p *Page, e *scm.Entry, name string) html {
 	if e.IsDir() {
 		return d.spriteIcon(p, "folder", name, nil)
 	}
-	return d.spriteIcon(p, iconForMimeType(mimetype.Of(name)), name, nil)
+	return d.spriteIcon(p, IconForMimeType(mimetype.Of(name)), name, nil)
 }
 
 // scmChangeIconName は scm_change_icon のアイコン名。

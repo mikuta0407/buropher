@@ -37,7 +37,7 @@ func (a *App) routesMailHandler(r Router) {
 func (a *App) MailHandler() *mailhandler.Handler {
 	h := &mailhandler.Handler{
 		DB: a.DB, Settings: a.Settings, Bundle: a.Bundle, Attachments: a.AttachmentStore,
-		Now: a.Now, Logger: a.Logger, IssueNotifier: a.issueNotifier(),
+		Now: a.Now, Logger: a.Logger, IssueNotifier: a.issueNotifier(), IssueWebhooks: a.TriggerIssueWebhooks,
 	}
 	if m, ok := a.Mailer.(mailhandler.AccountMailer); ok {
 		h.AccountMailer = m

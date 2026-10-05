@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-# internal/view/rails のゴールデンテスト用フィクスチャを、実際の Redmine 6.1.2（Rails 7.2）の
+# internal/view/rails のゴールデンテスト用フィクスチャを、実際の Redmine 7.0.1（Rails 8.1）の
 # ActionView ヘルパーで生成するスクリプト。
 #
 # 使い方（Redmine のルートで rails runner として実行。DB へは書き込まない）:
-#   cd _reference/redmine-migrated
+#   cd _reference/redmine7-migrated
 #   SECRET_KEY_BASE=x RAILS_ENV=production bin/rails runner \
 #     /path/to/buropher/tools/golden/rails_helpers.rb /path/to/buropher/internal/view/rails/testdata
 #

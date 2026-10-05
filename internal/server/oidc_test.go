@@ -130,16 +130,14 @@ func stripTags(s string) string {
 func (e *ssoEnv) currentUser(c *http.Client) string {
 	e.t.Helper()
 	_, body := get(e.t, c, e.ts.URL+"/my/account")
-	i := strings.Index(body, `id="loggedas"`)
+	// Redmine 7.0 のアカウントメニュー（<span class="user-login">@login</span>）からログイン ID を取る
+	const marker = `<span class="user-login">@`
+	i := strings.Index(body, marker)
 	if i < 0 {
 		return ""
 	}
-	f := strings.Fields(stripTags(body[i+len(`id="loggedas">`) : i+strings.Index(body[i:], "</div>")]))
-	if len(f) == 0 {
-		return ""
-	}
-	// 言語によらずログイン ID（最後の語）で比べる
-	return "Logged in as " + f[len(f)-1]
+	rest := body[i+len(marker):]
+	return "Logged in as " + rest[:strings.Index(rest, "</span>")]
 }
 
 func TestOIDCAdminPages(t *testing.T) {

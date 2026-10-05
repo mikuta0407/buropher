@@ -131,16 +131,23 @@ func (p *Pipeline) FaviconLinkTag(source string) template.HTML {
 // ---- importmap ----
 
 // pin は config/importmap.rb（+ requestjs-rails の config/importmap.rb）の pin。
-type pin struct{ name, path string }
+// noPreload は preload: false（modulepreload を出さない）。
+type pin struct {
+	name, path string
+	noPreload  bool
+}
 
 // staticPins は importmap の pin 定義（出力順）。
 // requestjs-rails gem の pin が先に描画され、その後 Redmine の config/importmap.rb。
 var staticPins = []pin{
-	{"@rails/request.js", "requestjs.js"},
-	{"application", "application.js"},
-	{"@hotwired/stimulus", "stimulus.min.js"},
-	{"@hotwired/stimulus-loading", "stimulus-loading.js"},
-	{"turndown", "turndown.js"},
+	{"@rails/request.js", "requestjs.js", false},
+	{"application", "application.js", false},
+	{"@hotwired/stimulus", "stimulus.min.js", false},
+	{"@hotwired/stimulus-loading", "stimulus-loading.js", false},
+	{"turndown", "turndown.js", false},
+	{"tablesort", "tablesort.min.js", false},
+	{"tablesort.number", "tablesort.number.min.js", false},
+	{"chart.js", "chart.min.js", true},
 }
 
 // pinAllFrom は pin_all_from "app/javascript/controllers", under: "controllers"。
@@ -151,8 +158,9 @@ var pinAllFrom = []struct{ dir, under string }{
 var indexRe = regexp.MustCompile(`(?:/|^)index$`)
 
 type importmapData struct {
-	names []string
-	paths []string // 解決済み URL（names と同順）
+	names     []string
+	paths     []string // 解決済み URL（names と同順）
+	noPreload []bool   // preload: false の pin（names と同順）
 }
 
 func (p *Pipeline) buildImportmap(idx *index) importmapData {
@@ -169,19 +177,21 @@ func (p *Pipeline) buildImportmap(idx *index) importmapData {
 		return u
 	}
 	var d importmapData
-	set := func(name, logical string) {
+	set := func(name, logical string, noPreload bool) {
 		u := resolve(logical)
 		for i, n := range d.names {
 			if n == name {
 				d.paths[i] = u
+				d.noPreload[i] = noPreload
 				return
 			}
 		}
 		d.names = append(d.names, name)
 		d.paths = append(d.paths, u)
+		d.noPreload = append(d.noPreload, noPreload)
 	}
 	for _, pn := range staticPins {
-		set(pn.name, pn.path)
+		set(pn.name, pn.path, pn.noPreload)
 	}
 	for _, dir := range pinAllFrom {
 		var files []string
@@ -202,7 +212,7 @@ func (p *Pipeline) buildImportmap(idx *index) importmapData {
 			if n := indexRe.ReplaceAllString(noExt, ""); n != "" {
 				modName += "/" + n
 			}
-			set(modName, dir.under+"/"+rel)
+			set(modName, dir.under+"/"+rel, false)
 		}
 	}
 	return d
@@ -273,8 +283,11 @@ func (p *Pipeline) ImportmapTags() template.HTML {
 	b.WriteString(`<script type="importmap" data-turbo-track="reload">`)
 	b.WriteString(p.ImportmapJSON())
 	b.WriteString("</script>\n")
-	// 全 pin が preload: true。
-	for _, u := range d.paths {
+	// preload: false の pin（chart.js）以外を modulepreload する。
+	for i, u := range d.paths {
+		if d.noPreload[i] {
+			continue
+		}
 		b.WriteString(`<link rel="modulepreload" href="` + escapeAttr(u) + "\">\n")
 	}
 	b.WriteString(`<script type="module">import "application"</script>`)

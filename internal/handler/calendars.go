@@ -157,9 +157,9 @@ func (a *App) calendarEvents(c *Req, issueIDs, versionIDs []int64) ([]*calendar.
 
 // calendarGroupAvatar は avatar(group, :size => '13', :title => l(:field_assigned_to))（group_avatar）。
 func (a *App) calendarGroupAvatar(c *Req) template.HTML {
-	src := "/images/group.png"
+	src := "/images/group.svg"
 	if a.Assets != nil {
-		src = a.Assets.AssetPath("group.png")
+		src = a.Assets.AssetPath("group.svg")
 	}
 	return rails.Tag("img", rails.NewHash("alt", "", "title", c.L("field_assigned_to"), "class", "group-avatar avatar",
 		"src", src, "width", "13", "height", "13"))

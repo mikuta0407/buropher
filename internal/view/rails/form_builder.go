@@ -345,7 +345,10 @@ func (f *FormBuilder) RawTypedField(fieldType, method string, opts ...*Hash) HTM
 func (f *FormBuilder) HiddenField(method string, opts ...*Hash) HTML {
 	options := firstHash(opts)
 	o := f.objectify(options)
-	o.Set("autocomplete", "off")
+	// Rails 8: @options.reverse_merge!(autocomplete: "off")（指定がなければ先頭に入る）
+	if _, ok := o.Lookup("autocomplete"); !ok {
+		o = NewHash("autocomplete", "off").Update(o)
+	}
 	return f.renderTextField("hidden", method, o)
 }
 

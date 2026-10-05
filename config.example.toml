@@ -126,8 +126,9 @@
 
 [auth]
 # Ask for the password again before administrative actions (Redmine's sudo_mode).
-# env: BUROPHER_SUDO_MODE ("1"/"true")
-#sudo_mode = false
+# Enabled by default (as in Redmine 7.0); set to false to disable.
+# env: BUROPHER_SUDO_MODE ("1"/"true" enables, anything else disables)
+#sudo_mode = true
 #sudo_mode_timeout = 15          # minutes
 
 [discord]
@@ -175,6 +176,14 @@
 #markdownized_preview_max_source_size = 10485760
 # The Markdown output is truncated to this size in bytes (0 = 102400, 100 KB).
 #markdownized_preview_max_output_size = 102400
+
+[webhook]
+# Hosts, IP addresses and IP networks that must NOT be used as webhook targets (Redmine's
+# webhook_blocklist). Loopback, link-local, unspecified and multicast addresses are always
+# rejected; add your internal networks and hostnames here to prevent SSRF attacks.
+# Entries are IPs, CIDRs, host names or "*.domain" wildcards.
+# env: BUROPHER_WEBHOOK_BLOCKLIST (comma-separated; replaces this list)
+#blocklist = ["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "fc00::/7", "example.org", "*.example.com"]
 
 [mail_receive]
 # Poll a mailbox periodically and feed emails to the mail handler

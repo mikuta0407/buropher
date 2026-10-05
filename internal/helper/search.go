@@ -25,16 +25,10 @@ func init() {
 			"search_type_label": func(t string) string {
 				return pg().l("label_" + ActivitySingularize(t) + "_plural")
 			},
-			// wiki_textarea_stimulus_attributes（Setting.text_formatting が空なら {}）
-			"list_autofill_data_attributes": func() *rails.Hash {
-				return WikiTextareaStimulusAttributes(pg().setting("text_formatting"))
-			},
 			"param_string": func(key string) string { return pg().Params().String(key) },
-			// search_input_data は {:auto_complete => true}（Redmine 7.0 で list-autofill は外れた）。
-			"search_input_data": func() *rails.Hash {
-				return rails.NewHash("auto_complete", true)
-			},
-			"truncate_chars": func(s string, n int) string { return rails.StringTruncate(s, n, "", nil) },
+			// search_input_data は {:auto_complete => true}（Redmine 7.0 で list_autofill は外れた）。
+			"search_input_data": func() *rails.Hash { return rails.NewHash("auto_complete", true) },
+			"truncate_chars":    func(s string, n int) string { return rails.StringTruncate(s, n, "", nil) },
 		}
 	})
 }

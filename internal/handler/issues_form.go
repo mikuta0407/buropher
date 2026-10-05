@@ -495,7 +495,7 @@ func (f *issueEditForm) DescriptionRows() int {
 	return n
 }
 
-// ListAutofillData は {:auto_complete => true}.merge(list_autofill_data_attributes)。
+// ListAutofillData は {:auto_complete => true}.merge(wiki_textarea_stimulus_attributes)。
 func (f *issueEditForm) ListAutofillData() *rails.Hash {
 	h := rails.NewHash("auto_complete", true)
 	h.Update(helper.WikiTextareaStimulusAttributes(f.l.a.Settings.String("text_formatting")))

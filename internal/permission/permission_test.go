@@ -9,8 +9,8 @@ import (
 )
 
 func TestDefinitions(t *testing.T) {
-	if n := len(All()); n != 79 {
-		t.Fatalf("permissions = %d, want 79", n)
+	if n := len(All()); n != 80 {
+		t.Fatalf("permissions = %d, want 80", n)
 	}
 	want := []string{"issue_tracking", "time_tracking", "news", "documents", "files", "wiki", "repository", "boards", "calendar", "gantt"}
 	if got := AvailableProjectModules(); !slices.Equal(got, want) {
