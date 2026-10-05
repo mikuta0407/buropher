@@ -157,6 +157,7 @@ ja:
       notice_linked: "Discord アカウントと連携しました。"
       notice_unlinked: "Discord アカウントとの連携を解除しました。"
       notice_test_sent: "Discord アカウントにテストメッセージを送信しました。"
+      error_test_too_soon: "テストメッセージの再送信は少し時間をおいてから行ってください。"
       error_disabled: "Discord 通知は有効になっていません。"
       error_link_failed: "Discord アカウントと連携できませんでした: %{value}"
       error_test_failed: "テストメッセージを送信できませんでした: %{value}"

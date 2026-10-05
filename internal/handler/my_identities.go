@@ -6,6 +6,7 @@ package handler
 import (
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/repository"
@@ -84,10 +85,14 @@ func (a *App) MySSOUnlink(c *Req) {
 		a.serverError(c, err)
 		return
 	}
-	found := false
+	// ログイン手段になる OIDC の連携だけを数える（Discord の連携ではログインできない）
+	found, target, logins := false, "", 0
 	for _, ident := range ids {
 		if ident.ID == id {
-			found = true
+			found, target = true, ident.Provider
+		}
+		if strings.HasPrefix(ident.Provider, "oidc:") {
+			logins++
 		}
 	}
 	if !found {
@@ -105,7 +110,7 @@ func (a *App) MySSOUnlink(c *Req) {
 			passwordLogin = true
 		}
 	}
-	if len(ids) == 1 && !passwordLogin {
+	if strings.HasPrefix(target, "oidc:") && logins == 1 && !passwordLogin {
 		c.Flash().SetError(c.L("buropher.sso.error_last_identity"))
 		c.Redirect("/my/sso")
 		return

@@ -194,9 +194,27 @@ func (ss *session) userGroups(conn *goldap.Conn, userDN, login string, entry *go
 		if entry == nil {
 			return nil, nil
 		}
+		// グループの検索ベースが指定されていれば、その下のグループだけを使う（対応表は CN だけでも一致するため、
+		// ディレクトリの別の場所に同じ CN のグループを作れるユーザーが対応するグループに入れてしまう）
+		var base *goldap.DN
+		if g.BaseDN != "" {
+			b, err := goldap.ParseDN(g.BaseDN)
+			if err != nil {
+				return nil, err
+			}
+			base = b
+		}
 		for _, a := range entry.Attributes {
-			if strings.EqualFold(a.Name, g.memberOfAttr()) {
-				groups = append(groups, a.Values...)
+			if !strings.EqualFold(a.Name, g.memberOfAttr()) {
+				continue
+			}
+			for _, v := range a.Values {
+				if base != nil {
+					if pd, err := goldap.ParseDN(v); err != nil || !(base.EqualFold(pd) || base.AncestorOfFold(pd)) {
+						continue
+					}
+				}
+				groups = append(groups, v)
 			}
 		}
 	default:

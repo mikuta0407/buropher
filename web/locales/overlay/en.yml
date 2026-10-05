@@ -159,6 +159,7 @@ en:
       notice_linked: "Your Discord account has been linked."
       notice_unlinked: "Your Discord account has been unlinked."
       notice_test_sent: "A test message has been sent to your Discord account."
+      error_test_too_soon: "Please wait a little before sending another test message."
       error_disabled: "Discord notifications are not enabled."
       error_link_failed: "Could not link your Discord account: %{value}"
       error_test_failed: "Could not send a test message: %{value}"

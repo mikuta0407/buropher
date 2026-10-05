@@ -84,6 +84,10 @@ func (a *App) passwordAuthentication(c *Req) {
 		return
 	}
 	switch {
+	case unsaved != nil && a.ssoRequired(c):
+		// buropher 拡張: SSO 必須モードではオンザフライ作成に失敗した LDAP ユーザーにも登録画面を出さない
+		// （登録画面の送信でパスワードによるログインが成立してしまう）
+		c.Flash().Now("error", c.L("buropher.sso.notice_password_login_disabled"))
 	case unsaved != nil:
 		if a.ssoRequired(c) {
 			// buropher 拡張: SSO 必須モードでは、LDAP のパスワードで認証したユーザーの登録（その後のログイン）も
