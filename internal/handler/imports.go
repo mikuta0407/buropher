@@ -123,11 +123,18 @@ func (a *App) routesImports(r Router) {
 		Before(func(c *Req) { a.setImportType(c, importTypeByClass(c.Params().String("type"))) }), Before(a.authorizeImport))
 	find := Before(a.findImport)
 	auth := Before(a.authorizeImport)
+	// buropher 独自（セキュリティ）: ユーザーのインポートは管理者を含むユーザーを作成できるため、
+	// users#create と同じく実行（POST）に sudo を求める
+	userImportSudo := Before(func(c *Req) {
+		if t := c.importType(); t != nil && t.Kind == "user" {
+			a.sudoRequestFilter(c, []string{http.MethodPost})
+		}
+	})
 	a.Handle(r, http.MethodGet, "/imports/{id}", ImportsController, "show", a.ImportsShow, find, auth)
 	for _, m := range []string{http.MethodGet, http.MethodPost} {
 		a.Handle(r, m, "/imports/{id}/settings", ImportsController, "settings", a.ImportsSettings, find, auth)
 		a.Handle(r, m, "/imports/{id}/mapping", ImportsController, "mapping", a.ImportsMapping, find, auth)
-		a.Handle(r, m, "/imports/{id}/run", ImportsController, "run", a.ImportsRun, find, auth)
+		a.Handle(r, m, "/imports/{id}/run", ImportsController, "run", a.ImportsRun, find, auth, userImportSudo)
 	}
 }
 
