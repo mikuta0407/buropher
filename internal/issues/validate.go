@@ -99,7 +99,7 @@ func (e *Env) forceDefaultValueOnNoneditableCustomFields(ctx context.Context, is
 	}
 	for _, v := range vs {
 		if !slices.Contains(ed, v.Field) {
-			dv := defaultValue(v.Field)
+			dv := e.cfDefaultValue(ctx, v.Field)
 			if dv == nil {
 				v.Value = castCustomFieldInput(v.Field, nil)
 			} else {

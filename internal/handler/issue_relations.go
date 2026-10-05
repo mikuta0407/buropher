@@ -51,9 +51,8 @@ const ctxRelation = "relation"
 
 // findRelationsIssue は IssueRelationsController#find_issue（Issue.find(params[:issue_id])）。
 //
-// 本家は可視性を見ないため、プロジェクトで view_issues / manage_issue_relations を持つだけで
-// 見えないチケット（非公開など）の関連一覧（関連先の番号）を API で取得でき、関連の追加で
-// そのチケットにジャーナルを書き込めた。buropher はチケットが見えなければ拒否する。
+// 7.0.1 (#44309) で本家も raise Unauthorized unless @issue.visible? を追加した
+// (buropher は 6.1.2 移植時点から先行して拒否していた)。
 func (a *App) findRelationsIssue(c *Req) {
 	id, ok := c.Params().IntStrict("issue_id")
 	if !ok {
@@ -149,7 +148,9 @@ func (a *App) IssueRelationsIndex(c *Req) {
 		a.internalError(c, "relations", err)
 		return
 	}
-	rels, err := e.Relations(c.Ctx(), iss)
+	// 7.0.1 (#44309): 相手のチケットが見えない関連は返さない
+	// (@issue.relations.select {|r| r.other_issue(@issue)&.visible?})。
+	rels, err := e.VisibleRelations(c.Ctx(), iss, c.User)
 	if err != nil {
 		a.internalError(c, "relations", err)
 		return

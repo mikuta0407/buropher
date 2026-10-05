@@ -198,7 +198,10 @@ func includeInAPIResponseMin(c *Req, arg string) bool {
 func (a *App) projectAPIIncludes(c *Req, p *domain.Project) ([]*apiEl, error) {
 	ctx := c.Ctx()
 	var out []*apiEl
-	if includeInAPIResponseMin(c, "trackers") {
+	// 7.0.1 (#44328): trackers / issue_categories / issue_custom_fields は view_issues、
+	// time_entry_activities は view_time_entries があるプロジェクトでだけ返す。
+	viewIssues := c.AllowedTo(domain.Perm("view_issues"), p)
+	if includeInAPIResponseMin(c, "trackers") && viewIssues {
 		vis, err := trackerVisibleCondition(c)
 		if err != nil {
 			return nil, err
@@ -213,7 +216,7 @@ func (a *App) projectAPIIncludes(c *Req, p *domain.Project) ([]*apiEl, error) {
 		}
 		out = append(out, arr)
 	}
-	if includeInAPIResponseMin(c, "issue_categories") {
+	if includeInAPIResponseMin(c, "issue_categories") && viewIssues {
 		cats, err := repository.ProjectIssueCategories(ctx, a.DB, p.ID)
 		if err != nil {
 			return nil, err
@@ -224,7 +227,7 @@ func (a *App) projectAPIIncludes(c *Req, p *domain.Project) ([]*apiEl, error) {
 		}
 		out = append(out, arr)
 	}
-	if includeInAPIResponseMin(c, "time_entry_activities") {
+	if includeInAPIResponseMin(c, "time_entry_activities") && c.AllowedTo(domain.Perm("view_time_entries"), p) {
 		acts, err := repository.ProjectActivities(ctx, a.DB, p.ID, false)
 		if err != nil {
 			return nil, err
@@ -246,7 +249,7 @@ func (a *App) projectAPIIncludes(c *Req, p *domain.Project) ([]*apiEl, error) {
 		}
 		out = append(out, arr)
 	}
-	if includeInAPIResponseMin(c, "issue_custom_fields") {
+	if includeInAPIResponseMin(c, "issue_custom_fields") && viewIssues {
 		ids, err := repository.ProjectIssueCustomFieldIDs(ctx, a.DB, p.ID)
 		if err != nil {
 			return nil, err

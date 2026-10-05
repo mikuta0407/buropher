@@ -9,6 +9,8 @@ import (
 	"unicode/utf8"
 
 	"github.com/mikuta0407/buropher/internal/view/rails"
+
+	"github.com/mikuta0407/buropher/internal/domain"
 )
 
 // Errors は ActiveModel::Errors（追加順を保つ属性ごとのエラー）。
@@ -110,7 +112,14 @@ func ValidateField(env *Env, cf *CustomField, nameTaken bool) *Errors {
 			errs.Add("regexp", msg("invalid"))
 		}
 	}
-	if dv := cf.DefaultValueString(); trimSpace(dv) != "" && len(errs.On("regexp")) == 0 {
+	if cf.FieldFormat == "date" && cf.DefaultValueMode() == domain.DefaultValueModeDateOffset {
+		// validate_date_default_value_offset（7.0.1 #44129。空なら検証しない）
+		if dv := trimSpace(cf.DefaultValueString()); dv != "" {
+			if _, ok := domain.ParseRubyInteger10(dv); !ok {
+				errs.Add("default_value", msg("not_a_number"))
+			}
+		}
+	} else if dv := cf.DefaultValueString(); trimSpace(dv) != "" && len(errs.On("regexp")) == 0 {
 		for _, m := range ValidateFieldValue(env, cf, dv) {
 			errs.Add("default_value", m)
 		}

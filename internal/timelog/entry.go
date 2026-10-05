@@ -425,7 +425,8 @@ func (e *Env) loadCustomValues(ctx context.Context, t *Entry) error {
 		if vs, ok := stored[cf.ID]; ok {
 			t.CFValues[cf.ID] = vs
 		} else if t.ID == 0 && cf.DefaultValue != nil && *cf.DefaultValue != "" {
-			t.CFValues[cf.ID] = []string{*cf.DefaultValue}
+			// 日付の相対既定値（7.0.1 #44129）は User.current.today から評価する
+			t.CFValues[cf.ID] = []string{*cf.DefaultValueOn(e.Today())}
 		} else {
 			t.CFValues[cf.ID] = nil
 		}

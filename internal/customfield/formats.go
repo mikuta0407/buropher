@@ -12,6 +12,7 @@ import (
 	"time"
 	"unicode/utf8"
 
+	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/view/rails"
 )
 
@@ -93,10 +94,24 @@ var (
 			}
 			return []string{env.l("activerecord.errors.messages.not_a_date")}
 		},
-		editTag:     dateEditTag,
-		bulkEditTag: dateBulkEditTag,
-		FilterType:  "date",
-		groupable:   true,
+		editTag:         dateEditTag,
+		bulkEditTag:     dateBulkEditTag,
+		FilterType:      "date",
+		groupable:       true,
+		FieldAttributes: []string{"default_value_mode"},
+		// before_custom_field_save（7.0.1 #44129）: モードを fixed_date / date_offset に正規化し、
+		// date_offset なら既定値（日数）の前後の空白を除く。
+		beforeSave: func(env *Env, cf *CustomField) {
+			mode := domain.DefaultValueModeFixedDate
+			if cf.DefaultValueMode() == domain.DefaultValueModeDateOffset {
+				mode = domain.DefaultValueModeDateOffset
+			}
+			cf.SetSetting("default_value_mode", mode)
+			if mode == domain.DefaultValueModeDateOffset {
+				s := strings.TrimSpace(cf.DefaultValueString())
+				cf.DefaultValue = &s
+			}
+		},
 	}
 	// ListFormat は 'list'（List）。
 	ListFormat = &Format{
