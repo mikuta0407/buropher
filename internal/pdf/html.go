@@ -622,6 +622,9 @@ func (fl *flow) image(n *html.Node, st inlineStyle) {
 	fl.toks = append(fl.toks, token{kind: tokImage, img: name, w: w, imgH: h, ts: st.TextStyle, link: st.link})
 }
 
+// pdfImageSlots は PDF に埋め込む画像を同時に展開・登録できる数。
+var pdfImageSlots = make(chan struct{}, 2)
+
 // registerImage は画像を fpdf に登録し、名前と大きさ（px）を返す。
 func (d *Doc) registerImage(data []byte) (name string, w, h float64, ok bool) {
 	sum := sha1.Sum(data)
@@ -633,6 +636,10 @@ func (d *Doc) registerImage(data []byte) (name string, w, h float64, ok bool) {
 	if err != nil || cfg.Width == 0 || cfg.Height == 0 || cfg.Width*cfg.Height > 50_000_000 {
 		return "", 0, 0, false
 	}
+	// buropher 独自（セキュリティ）: 画像の展開（最大 5,000 万画素で数百 MB）と PNG への再符号化は
+	// リクエストごとに行うため、同時に行う数を制限する（並行した PDF の要求でメモリを使い尽くさない）
+	pdfImageSlots <- struct{}{}
+	defer func() { <-pdfImageSlots }()
 	var r *bytes.Reader
 	typ := "PNG"
 	switch format {
