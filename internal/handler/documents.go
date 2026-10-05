@@ -350,14 +350,23 @@ func (a *App) DocumentsShow(c *Req) {
 		return
 	}
 	f.Attachments = atts
+	// render_custom_field_values(@document): visible_custom_field_values（CustomFieldValue#visible? は
+	// custom_field.visible? だけを見るので管理者にも非表示フィールドは出さない）の、値が空でないもの
 	var cvs []documentCustomValue
-	for _, v := range f.CustomFieldValues() {
-		cvs = append(cvs, documentCustomValue{Name: v.Field.Name, Value: strings.Join(v.Values, ", ")})
+	all := f.CustomFieldValues()
+	for _, v := range all {
+		if !v.Field.Visible {
+			continue
+		}
+		if s := strings.Join(v.Values, ", "); strings.TrimSpace(s) != "" {
+			cvs = append(cvs, documentCustomValue{Name: v.Field.Name, Value: s})
+		}
 	}
 	c.Render("documents/show", map[string]any{
-		"Document":     f,
-		"Attachments":  atts,
-		"CustomValues": cvs,
+		"Document":        f,
+		"Attachments":     atts,
+		"HasCustomFields": len(all) > 0,
+		"CustomValues":    cvs,
 		"CanEdit":      c.AllowedTo(domain.Perm("edit_documents"), c.Project),
 		"CanDelete":    c.AllowedTo(domain.Perm("delete_documents"), c.Project),
 	})

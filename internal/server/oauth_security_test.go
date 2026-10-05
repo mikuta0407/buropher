@@ -43,6 +43,34 @@ func TestOAuthAddRelatedIssueRequiresViewIssuesScope(t *testing.T) {
 	}
 }
 
+// TestOAuthRemoveRelatedIssueRequiresViewIssuesScope は、view_issues スコープの無い OAuth トークンでは
+// リビジョンとチケットの関連を外せないことを確認する（add_related_issue と同じ判定）。
+func TestOAuthRemoveRelatedIssueRequiresViewIssuesScope(t *testing.T) {
+	f := newContentFixture(t)
+	admin := login(t, f.ts, "admin", "admin")
+	jsmith := login(t, f.ts, "jsmith", "jsmith")
+	withView := oauthTokenFor(t, f.ts.URL, admin, jsmith, "manage_related_issues", "view_changesets", "browse_repository", "view_issues")
+	res, body := oauthDo(t, newClient(t), http.MethodPost, f.ts.URL+"/projects/1/repository/10/revisions/4/issues.json",
+		url.Values{"issue_id": {"2"}}, bearer(withView))
+	if res.StatusCode != http.StatusNoContent || repoChangesetIssues(t, f) != "2" {
+		t.Fatalf("link: status %d %s", res.StatusCode, body)
+	}
+	noView := oauthTokenFor(t, f.ts.URL, admin, jsmith, "manage_related_issues", "view_changesets", "browse_repository")
+	res, body = oauthDo(t, newClient(t), http.MethodDelete, f.ts.URL+"/projects/1/repository/10/revisions/4/issues/2.json",
+		nil, bearer(noView))
+	if res.StatusCode/100 == 5 {
+		t.Fatalf("status %d %s", res.StatusCode, body)
+	}
+	if s := repoChangesetIssues(t, f); s != "2" {
+		t.Errorf("issue unlinked without view_issues scope: %q", s)
+	}
+	res, _ = oauthDo(t, newClient(t), http.MethodDelete, f.ts.URL+"/projects/1/repository/10/revisions/4/issues/2.json",
+		nil, bearer(withView))
+	if s := repoChangesetIssues(t, f); res.StatusCode != http.StatusNoContent || s != "" {
+		t.Errorf("with view_issues: status %d issues %q", res.StatusCode, s)
+	}
+}
+
 // oauthTokenFor は管理者がアプリケーションを作り、user が scopes で同意したアクセストークンを返す。
 func oauthTokenFor(t *testing.T, ts string, admin, user *http.Client, scopes ...string) string {
 	t.Helper()
