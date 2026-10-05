@@ -671,7 +671,7 @@ func (a *App) findDownloadableAttachments(c *Req) {
 		c.DenyAccess()
 		return
 	}
-	max :=int64(a.Settings.Int("bulk_download_max_size")) * 1024
+	max := int64(a.Settings.Int("bulk_download_max_size")) * 1024
 	if total > max {
 		c.Flash().SetError(c.L("error_bulk_download_size_too_big", map[string]any{"max_size": c.Loc.NumberToHumanSize(max)}))
 		c.RedirectBackOrDefault(a.containerURL(c, st.Container), true)
