@@ -138,7 +138,7 @@ in the forum</p>
 
 <p>
 <label class="hidden-for-sighted" for="message_content">Message content</label>
-<textarea cols="80" rows="15" class="wiki-edit" id="message_content" accesskey="e" data-auto-complete="true" data-controller="list-autofill" data-action="beforeinput-&gt;list-autofill#handleBeforeInput" data-list-autofill-text-formatting-param="common_mark" name="reply[content]">
+<textarea cols="80" rows="15" class="wiki-edit" id="message_content" accesskey="e" data-auto-complete="true" data-controller="list-autofill selection-indent table-paste" data-action="beforeinput-&gt;list-autofill#handleBeforeInput keydown.tab-&gt;selection-indent#run keydown.shift+tab-&gt;selection-indent#run paste-&gt;table-paste#handlePaste" data-list-autofill-text-formatting-param="common_mark" data-selection-indent-text-formatting-param="common_mark" data-table-paste-text-formatting-param="common_mark" name="reply[content]">
 </textarea></p>
 <script>
 //<![CDATA[

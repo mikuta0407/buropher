@@ -485,7 +485,7 @@ showIssueHistory("history", this.href)
 <p>
   <label for="issue_description">Description</label>
   <span id="issue_description_and_toolbar" style="display:none">
-    <textarea cols="60" class="wiki-edit" rows="10" data-auto-complete="true" data-controller="list-autofill" data-action="beforeinput-&gt;list-autofill#handleBeforeInput" data-list-autofill-text-formatting-param="common_mark" name="issue[description]" id="issue_description">
+    <textarea cols="60" class="wiki-edit" rows="10" data-auto-complete="true" data-controller="list-autofill selection-indent table-paste" data-action="beforeinput-&gt;list-autofill#handleBeforeInput keydown.tab-&gt;selection-indent#run keydown.shift+tab-&gt;selection-indent#run paste-&gt;table-paste#handlePaste" data-list-autofill-text-formatting-param="common_mark" data-selection-indent-text-formatting-param="common_mark" data-table-paste-text-formatting-param="common_mark" name="issue[description]" id="issue_description">
 Ingredients of the recipe should be classified by categories</textarea>
 </span>  <a href="#" onclick="$(this).hide(); $(&quot;#issue_description_and_toolbar&quot;).show(); return false;" class="icon icon-edit"><span><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--edit"></use></svg><span class="icon-label">Edit</span></span></a>
 </p>
@@ -684,7 +684,7 @@ $(document).ready(function(){
 <option selected="selected" value="0">No</option></select></p>
     </fieldset>
       <fieldset id="add_notes"><legend>Notes</legend>
-      <textarea cols="60" rows="10" class="wiki-edit" data-auto-complete="true" data-controller="list-autofill" data-action="beforeinput-&gt;list-autofill#handleBeforeInput" data-list-autofill-text-formatting-param="common_mark" name="issue[notes]" id="issue_notes">
+      <textarea cols="60" rows="10" class="wiki-edit" data-auto-complete="true" data-controller="list-autofill selection-indent table-paste" data-action="beforeinput-&gt;list-autofill#handleBeforeInput keydown.tab-&gt;selection-indent#run keydown.shift+tab-&gt;selection-indent#run paste-&gt;table-paste#handlePaste" data-list-autofill-text-formatting-param="common_mark" data-selection-indent-text-formatting-param="common_mark" data-table-paste-text-formatting-param="common_mark" name="issue[notes]" id="issue_notes">
 </textarea>
       <script>
 //<![CDATA[

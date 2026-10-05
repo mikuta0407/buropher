@@ -188,7 +188,7 @@ $('#sidebar-switch-panel').css('visibility', 'visible');
 <div class="box tabular settings">
 <p><label for="settings_app_title">Application title</label><input type="text" name="settings[app_title]" id="settings_app_title" value="Redmine" size="30" /></p>
 
-<p><label for="settings_welcome_text">Welcome text</label><textarea name="settings[welcome_text]" id="settings_welcome_text" cols="60" rows="5" class="wiki-edit" data-controller="list-autofill" data-action="beforeinput-&gt;list-autofill#handleBeforeInput" data-list-autofill-text-formatting-param="common_mark">
+<p><label for="settings_welcome_text">Welcome text</label><textarea name="settings[welcome_text]" id="settings_welcome_text" cols="60" rows="5" class="wiki-edit" data-controller="list-autofill selection-indent table-paste" data-action="beforeinput-&gt;list-autofill#handleBeforeInput keydown.tab-&gt;selection-indent#run keydown.shift+tab-&gt;selection-indent#run paste-&gt;table-paste#handlePaste" data-list-autofill-text-formatting-param="common_mark" data-selection-indent-text-formatting-param="common_mark" data-table-paste-text-formatting-param="common_mark">
 Welcome to Redmine, an open-source, flexible project management software.
 
 Note: You can modify this message in the &quot;Welcome text&quot; setting (Administration &gt; Settings &gt; General).</textarea></p>
@@ -1119,7 +1119,7 @@ $(document).ready(function(){
 </fieldset>
 
 <fieldset class="box"><legend>Email header</legend>
-<textarea name="settings[emails_header]" id="settings_emails_header" class="wiki-edit" rows="5" data-controller="list-autofill" data-action="beforeinput-&gt;list-autofill#handleBeforeInput" data-list-autofill-text-formatting-param="common_mark">
+<textarea name="settings[emails_header]" id="settings_emails_header" class="wiki-edit" rows="5" data-controller="list-autofill selection-indent table-paste" data-action="beforeinput-&gt;list-autofill#handleBeforeInput keydown.tab-&gt;selection-indent#run keydown.shift+tab-&gt;selection-indent#run paste-&gt;table-paste#handlePaste" data-list-autofill-text-formatting-param="common_mark" data-selection-indent-text-formatting-param="common_mark" data-table-paste-text-formatting-param="common_mark">
 </textarea>
 <script>
 //<![CDATA[
@@ -1129,7 +1129,7 @@ var wikiToolbar = new jsToolBar(document.getElementById('settings_emails_header'
 </fieldset>
 
 <fieldset class="box"><legend>Email footer</legend>
-<textarea name="settings[emails_footer]" id="settings_emails_footer" class="wiki-edit" rows="5" data-controller="list-autofill" data-action="beforeinput-&gt;list-autofill#handleBeforeInput" data-list-autofill-text-formatting-param="common_mark">
+<textarea name="settings[emails_footer]" id="settings_emails_footer" class="wiki-edit" rows="5" data-controller="list-autofill selection-indent table-paste" data-action="beforeinput-&gt;list-autofill#handleBeforeInput keydown.tab-&gt;selection-indent#run keydown.shift+tab-&gt;selection-indent#run paste-&gt;table-paste#handlePaste" data-list-autofill-text-formatting-param="common_mark" data-selection-indent-text-formatting-param="common_mark" data-table-paste-text-formatting-param="common_mark">
 You have received this notification because you have either subscribed to it, or are involved in it.
 To change your notification preferences, please click here: http://hostname/my/account</textarea>
 <script>

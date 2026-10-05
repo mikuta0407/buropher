@@ -43,7 +43,7 @@ $('#sidebar-switch-panel').css('visibility', 'visible');
 <option value="2">User documentation</option>
 <option value="3">Technical documentation</option></select></p>
   <p><label for="document_title">Title<span class="required"> *</span></label><input size="60" type="text" value="" name="document[title]" id="document_title" /></p>
-  <p><label for="document_description">Description</label><textarea cols="60" rows="15" class="wiki-edit" data-auto-complete="true" data-controller="list-autofill" data-action="beforeinput-&gt;list-autofill#handleBeforeInput" data-list-autofill-text-formatting-param="common_mark" name="document[description]" id="document_description">
+  <p><label for="document_description">Description</label><textarea cols="60" rows="15" class="wiki-edit" data-auto-complete="true" data-controller="list-autofill selection-indent table-paste" data-action="beforeinput-&gt;list-autofill#handleBeforeInput keydown.tab-&gt;selection-indent#run keydown.shift+tab-&gt;selection-indent#run paste-&gt;table-paste#handlePaste" data-list-autofill-text-formatting-param="common_mark" data-selection-indent-text-formatting-param="common_mark" data-table-paste-text-formatting-param="common_mark" name="document[description]" id="document_description">
 </textarea></p>
 
 

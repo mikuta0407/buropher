@@ -317,7 +317,7 @@ $(function() { $('#issue_custom_field_values_8').addClass('date').datepickerFall
 
 <fieldset>
 <legend>Notes</legend>
-<textarea name="notes" id="notes" cols="60" rows="10" class="wiki-edit" data-auto-complete="true" data-controller="list-autofill" data-action="beforeinput-&gt;list-autofill#handleBeforeInput" data-list-autofill-text-formatting-param="common_mark">
+<textarea name="notes" id="notes" cols="60" rows="10" class="wiki-edit" data-auto-complete="true" data-controller="list-autofill selection-indent table-paste" data-action="beforeinput-&gt;list-autofill#handleBeforeInput keydown.tab-&gt;selection-indent#run keydown.shift+tab-&gt;selection-indent#run paste-&gt;table-paste#handlePaste" data-list-autofill-text-formatting-param="common_mark" data-selection-indent-text-formatting-param="common_mark" data-table-paste-text-formatting-param="common_mark">
 </textarea>
 <script>
 //<![CDATA[

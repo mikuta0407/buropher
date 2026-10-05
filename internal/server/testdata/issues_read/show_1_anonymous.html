@@ -339,7 +339,7 @@ showIssueHistory("history", this.href)
     
     <div class="box">
       <fieldset id="add_notes"><legend>Notes</legend>
-      <textarea cols="60" rows="10" class="wiki-edit" data-auto-complete="true" data-controller="list-autofill" data-action="beforeinput-&gt;list-autofill#handleBeforeInput" data-list-autofill-text-formatting-param="common_mark" name="issue[notes]" id="issue_notes">
+      <textarea cols="60" rows="10" class="wiki-edit" data-auto-complete="true" data-controller="list-autofill selection-indent table-paste" data-action="beforeinput-&gt;list-autofill#handleBeforeInput keydown.tab-&gt;selection-indent#run keydown.shift+tab-&gt;selection-indent#run paste-&gt;table-paste#handlePaste" data-list-autofill-text-formatting-param="common_mark" data-selection-indent-text-formatting-param="common_mark" data-table-paste-text-formatting-param="common_mark" name="issue[notes]" id="issue_notes">
 </textarea>
       <script>
 //<![CDATA[

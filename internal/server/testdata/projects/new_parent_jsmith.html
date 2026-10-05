@@ -157,7 +157,7 @@ var wikiImageMimeTypes = ["image/gif","image/jpeg","image/png","image/tiff","ima
 <!--[form:project]-->
 <p><label for="project_name">Name<span class="required"> *</span></label><input size="60" type="text" value="" name="project[name]" id="project_name" /></p>
 
-<p><label for="project_description">Description</label><textarea rows="8" class="wiki-edit" data-controller="list-autofill" data-action="beforeinput-&gt;list-autofill#handleBeforeInput" data-list-autofill-text-formatting-param="common_mark" name="project[description]" id="project_description">
+<p><label for="project_description">Description</label><textarea rows="8" class="wiki-edit" data-controller="list-autofill selection-indent table-paste" data-action="beforeinput-&gt;list-autofill#handleBeforeInput keydown.tab-&gt;selection-indent#run keydown.shift+tab-&gt;selection-indent#run paste-&gt;table-paste#handlePaste" data-list-autofill-text-formatting-param="common_mark" data-selection-indent-text-formatting-param="common_mark" data-table-paste-text-formatting-param="common_mark" name="project[description]" id="project_description">
 </textarea></p>
 <p><label for="project_identifier">Identifier<span class="required"> *</span></label><input size="60" maxlength="100" type="text" name="project[identifier]" id="project_identifier" />
   <em class="info">Length between 1 and 100 characters. Only lower case letters (a-z), numbers, dashes and underscores are allowed.<br />Once saved, the identifier cannot be changed.</em>
