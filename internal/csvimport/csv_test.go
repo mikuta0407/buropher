@@ -27,6 +27,25 @@ func rowsOf(t *testing.T, data string, o Options) ([][]string, error) {
 	return out, err
 }
 
+// #41434: 先頭行の引用符内に LF がある CRLF のファイルは、row_sep: :auto だと最初の LF で "\n" と
+// 推定して失敗する。Newline に "\r\n" を明示すれば読める。
+func TestParseExplicitCRLFNewline(t *testing.T) {
+	data := "plain_header,\"quoted_header\ncontains_LF\"\r\nfoo,bar\r\n"
+	if _, err := rowsOf(t, data, Options{Separator: ","}); err == nil {
+		t.Error("auto row_sep should fail like Ruby's CSV")
+	}
+	rows, err := rowsOf(t, data, Options{Separator: ",", Newline: "\r\n"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(rows) != 2 || rows[0][1] != "quoted_header\ncontains_LF" || strings.Join(rows[1], "|") != "foo|bar" {
+		t.Errorf("rows = %q", rows)
+	}
+	if GuessNewline([]byte(data)) != "\r\n" || GuessNewline([]byte("a,b\nc,d\n")) != "" {
+		t.Error("GuessNewline")
+	}
+}
+
 func TestParseRubyCompatible(t *testing.T) {
 	cases := []struct {
 		in   string

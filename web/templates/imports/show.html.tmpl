@@ -7,7 +7,10 @@
 {{end}}
 
 {{if gt .UnsavedCount 0}}
-  <p>{{l "notice_import_finished_with_errors" (dict "count" .UnsavedCount "total" .Total)}}:</p>
+  <div class="flash error">
+    {{notice_icon "error"}}
+    {{l "notice_import_finished_with_errors" (dict "count" .UnsavedCount "total" .Total)}}
+  </div>
 
   <table id="unsaved-items" class="list">
     <thead>
