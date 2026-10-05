@@ -3,7 +3,7 @@
 // Portions ported from Rouge (https://github.com/rouge-ruby/rouge),
 // Copyright (c) 2012 Jeanine Adkisson and contributors, MIT License.
 
-// Code generated from Rouge 4.7 lua/keywords.rb by tools/textformat/mkrougewords.py. DO NOT EDIT.
+// Code generated from Rouge 5.1 lua/keywords.rb by tools/textformat/mkrougewords.py. DO NOT EDIT.
 
 package highlight
 

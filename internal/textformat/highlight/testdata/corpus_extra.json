@@ -1,0 +1,278 @@
+[
+ {
+  "name": "rouge47-demo-java",
+  "mode": "highlight",
+  "lang": "java",
+  "input": "public class java {\n    public static void main(String[] args) {\n        System.out.println(\"Hello World\");\n    }\n}\n"
+ },
+ {
+  "name": "cr-ruby",
+  "mode": "highlight",
+  "lang": "ruby",
+  "input": "a = 1\r\nb = \"x\r\ny\"\r\n# c\r\n"
+ },
+ {
+  "name": "cr-plaintext",
+  "mode": "highlight",
+  "lang": "text",
+  "input": "a\r\nb\rc & <d>\r"
+ },
+ {
+  "name": "cr-unknown",
+  "mode": "highlight",
+  "lang": "nosuchlang",
+  "input": "a\r\nb\r"
+ },
+ {
+  "name": "cr-python",
+  "mode": "highlight",
+  "lang": "python",
+  "input": "def f():\r\n    return 'a\\r'\r\n"
+ },
+ {
+  "name": "file-crlf-rb",
+  "mode": "highlight_file",
+  "filename": "a.rb",
+  "input": "a = 1\r\nb = 2\rc\r\n"
+ },
+ {
+  "name": "anchor-ruby-begin",
+  "mode": "highlight",
+  "lang": "ruby",
+  "input": "x = 1\n=begin\nfoo\n=end\ny = 2 =begin\n__END__\nrest\n"
+ },
+ {
+  "name": "anchor-ruby-heredoc",
+  "mode": "highlight",
+  "lang": "ruby",
+  "input": "foo(<<~EOS, 1)\n  text #{x}\n  EOS\nbar <<-'X'\nraw\n  X\n"
+ },
+ {
+  "name": "anchor-ruby-misc",
+  "mode": "highlight",
+  "lang": "ruby",
+  "input": "a?b:c\nx ?a\nputs :sym, %w(a b), /re/i, a / b\ndef self.foo?(a) = a\n  @x ||= 1\n$stdout.puts __method__\n"
+ },
+ {
+  "name": "anchor-python",
+  "mode": "highlight",
+  "lang": "python",
+  "input": "@dec\nclass A(B):\n    '''doc'''\n    x: int = 0b1_0\n    def f(self, *a, **k) -> None:\n        return f\"{a!r:>10} {{x}}\" + rb'\\x00' + u'u'\nmatch x:\n    case [1, *_]:\n        pass\nprint(x if y else z)\n"
+ },
+ {
+  "name": "anchor-shell",
+  "mode": "highlight",
+  "lang": "shell",
+  "input": "#!/bin/bash\nfoo=bar # c\necho \"$foo ${bar:-x} $(ls -l)\" 'q' $'a\\n'\ncat <<EOF\nhi $x\nEOF\nif [[ -f x ]]; then echo#no; fi\nfor i in {1..3}; do :; done\n"
+ },
+ {
+  "name": "anchor-console",
+  "mode": "highlight",
+  "lang": "console",
+  "input": "$ ls -l\ntotal 0\nuser@host:~$ echo hi\nhi\n# id\n> cont\n"
+ },
+ {
+  "name": "anchor-php",
+  "mode": "highlight",
+  "lang": "php",
+  "input": "<?php\nnamespace A\\B;\nuse Foo\\Bar as Baz;\n#[Attr]\nfinal class X extends Y implements Z {\n  public const A = 1;\n  public function __construct(private readonly int $a = 0) {}\n  function f(?int $x): static { return match($x) { 1 => 'a', default => \"b{$x}\" }; }\n}\n$x = <<<EOT\n  hi $y\n  EOT;\necho strlen('x'), PHP_EOL, E_ALL;\n?>\n<b>html</b>\n"
+ },
+ {
+  "name": "anchor-perl",
+  "mode": "highlight",
+  "lang": "perl",
+  "input": "#!/usr/bin/perl\nuse strict;\nmy $x = qw(a b);\nmy @a = map { $_ * 2 } grep /x/, @b;\nprint <<\"EOT\";\nhi $x\nEOT\ns/foo/bar/g; tr/a-z/A-Z/;\n$h{key} = 1 if $x =~ m{a}i;\n=pod\n\ndoc\n\n=cut\nsub f { return shift // 1 }\n__END__\nend\n"
+ },
+ {
+  "name": "anchor-css",
+  "mode": "highlight",
+  "lang": "css",
+  "input": "@media (max-width: 10px) { a:hover::before, #id > .c[x=\"y\"] { color: #fff !important; margin: -1.5em calc(100% - 2px); --var: 1; } }\n@import url(foo.css);\n"
+ },
+ {
+  "name": "anchor-scss",
+  "mode": "highlight",
+  "lang": "scss",
+  "input": "$x: 1px;\n@mixin m($a) { width: $a; }\n.a { &:hover { @include m(2px); } #{$sel} { color: red; } }\n// c\n"
+ },
+ {
+  "name": "anchor-yaml",
+  "mode": "highlight",
+  "lang": "yaml",
+  "input": "%YAML 1.2\n---\na: 1\nb: [x, 'y', \"z\"]\nc: |\n  text\n  more\nd: &anc\n  - e: f # c\n  - *anc\n...\n"
+ },
+ {
+  "name": "anchor-markdown",
+  "mode": "highlight",
+  "lang": "markdown",
+  "input": "# Title\n\nSome *em* and **strong** and `code` [link](http://x) ![img](y)\n\n```ruby\nx = 1\n```\n\n> quote\n- item\n1. num\n\n    indented\n"
+ },
+ {
+  "name": "anchor-c",
+  "mode": "highlight",
+  "lang": "c",
+  "input": "#include <stdio.h>\n  #define X(a) (a)\nint main(void) { char *s = \"x\\n\"; /* c */ return 'a' + 0x1fUL; } // e\n"
+ },
+ {
+  "name": "anchor-cpp",
+  "mode": "highlight",
+  "lang": "cpp",
+  "input": "template <typename T> class A : public B { public: A() = default; auto f() -> int { return R\"(raw)\"s.size(); } };\nnamespace n { using x = std::vector<int>; }\n"
+ },
+ {
+  "name": "anchor-java",
+  "mode": "highlight",
+  "lang": "java",
+  "input": "package a.b;\nimport java.util.*;\n@Override public record R(int x) implements I { sealed interface S permits A {} var s = \"\"\"\n text\n \"\"\"; }\n"
+ },
+ {
+  "name": "anchor-go",
+  "mode": "highlight",
+  "lang": "go",
+  "input": "package main\nimport \"fmt\"\nfunc main() { x := []int{1}; fmt.Println(`raw`, 'a', 1e3, x) }\n"
+ },
+ {
+  "name": "anchor-lua",
+  "mode": "highlight",
+  "lang": "lua",
+  "input": "local t = { a = 1 }\nfunction t.f(x) return string.format('%d', x) end\n--[[ c ]]\nprint(#t, [[long]], math.pi, io.write)\n"
+ },
+ {
+  "name": "anchor-powershell",
+  "mode": "highlight",
+  "lang": "powershell",
+  "input": "param([string]$x)\nGet-ChildItem -Path . | Where-Object { $_.Length -gt 1 }\n<# c #>\n$h = @{ a = 1 }; Write-Host \"$x $($h.a)\"\n"
+ },
+ {
+  "name": "anchor-kotlin",
+  "mode": "highlight",
+  "lang": "kotlin",
+  "input": "package a\nfun main() { val x: Int? = null; println(\"${x ?: 0} $x\") }\n@JvmStatic data class D(val a: Int)\n"
+ },
+ {
+  "name": "anchor-swift",
+  "mode": "highlight",
+  "lang": "swift",
+  "input": "import UIKit\n@objc class A: B { let x = #\"raw\"#; func f() async throws -> Int { return 0 } }\n"
+ },
+ {
+  "name": "anchor-rust",
+  "mode": "highlight",
+  "lang": "rust",
+  "input": "#[derive(Debug)]\nfn main() { let s = r#\"x\"#; println!(\"{}\", s); 'a: loop { break 'a; } }\n"
+ },
+ {
+  "name": "anchor-groovy",
+  "mode": "highlight",
+  "lang": "groovy",
+  "input": "#!/usr/bin/env groovy\ndef x = \"a${b}\"\nprintln x\n"
+ },
+ {
+  "name": "anchor-make",
+  "mode": "highlight",
+  "lang": "make",
+  "input": "CC ?= gcc\nall: foo.o\n\t$(CC) -o $@ $^\n.PHONY: all\n"
+ },
+ {
+  "name": "anchor-properties",
+  "mode": "highlight",
+  "lang": "properties",
+  "input": "# c\na=b\nc : d \\\n  e\n! bang\n"
+ },
+ {
+  "name": "anchor-r",
+  "mode": "highlight",
+  "lang": "r",
+  "input": "x <- c(1, 2L, NA)\nf <- function(a) { a %in% x }\n"
+ },
+ {
+  "name": "anchor-objc",
+  "mode": "highlight",
+  "lang": "objective_c",
+  "input": "@interface A : NSObject\n@property (nonatomic) int x;\n@end\nNSString *s = @\"x\";\n"
+ },
+ {
+  "name": "anchor-tsx",
+  "mode": "highlight",
+  "lang": "tsx",
+  "input": "const A = (p: Props): JSX.Element => <div className=\"x\">{p.a as string}</div>;\n"
+ },
+ {
+  "name": "anchor-typescript",
+  "mode": "highlight",
+  "lang": "typescript",
+  "input": "interface I<T> { a?: T; readonly b: number }\nexport type X = keyof I<string>;\nenum E { A = 1 }\n"
+ },
+ {
+  "name": "anchor-jsx",
+  "mode": "highlight",
+  "lang": "jsx",
+  "input": "const a = <A b={1} c=\"d\">text {x}</A>;\n"
+ },
+ {
+  "name": "anchor-irb",
+  "mode": "highlight",
+  "lang": "irb",
+  "input": "irb(main):001:0> 1 + 1\n=> 2\n>> puts 'x'\nx\n"
+ },
+ {
+  "name": "anchor-sass",
+  "mode": "highlight",
+  "lang": "sass",
+  "input": "$a: 1px\n.b\n  width: $a\n  &:hover\n    color: red\n"
+ },
+ {
+  "name": "anchor-json-doc",
+  "mode": "highlight",
+  "lang": "json-doc",
+  "input": "{\n  // c\n  \"a\": [1, 2, ...],\n  b: true\n}\n"
+ },
+ {
+  "name": "anchor-apache",
+  "mode": "highlight",
+  "lang": "apache",
+  "input": "<VirtualHost *:80>\n  ServerName example.com\n  RewriteEngine On\n  # c\n</VirtualHost>\n"
+ },
+ {
+  "name": "new-addmusick",
+  "mode": "highlight",
+  "lang": "amk",
+  "input": "#amk 2\n#0 @1 v200 o4 c8 d e\n"
+ },
+ {
+  "name": "new-rocq-alias",
+  "mode": "highlight",
+  "lang": "coq",
+  "input": "Theorem t : True. Proof. trivial. Qed.\n"
+ },
+ {
+  "name": "file-asm-ambiguous",
+  "mode": "highlight_file",
+  "filename": "a.asm",
+  "input": "mov ax, 1\n"
+ },
+ {
+  "name": "file-hh-hack",
+  "mode": "highlight_file",
+  "filename": "a.hh",
+  "input": "<?hh\nasync function f(): Awaitable<void> {}\n"
+ },
+ {
+  "name": "file-hh-async",
+  "mode": "highlight_file",
+  "filename": "a.hh",
+  "input": "async function foo(): Awaitable<int> {}\n"
+ },
+ {
+  "name": "file-mml",
+  "mode": "highlight_file",
+  "filename": "a.mml",
+  "input": "#amk 2\n#0 c d e\n"
+ },
+ {
+  "name": "file-tm",
+  "mode": "highlight_file",
+  "filename": "a.tm",
+  "input": "set x 1\n"
+ }
+]

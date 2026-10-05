@@ -248,7 +248,11 @@ func shortName(tt chroma.TokenType, l *rougeLexer) string {
 	}
 }
 
-var htmlEscaper = strings.NewReplacer("&", "&amp;", "<", "&lt;", ">", "&gt;")
+// htmlEscaper は Rouge::Formatters::HTML のエスケープ（Rouge 5 から CR は取り除く）。
+var htmlEscaper = strings.NewReplacer("&", "&amp;", "<", "&lt;", ">", "&gt;", "\r", "")
+
+// crRemover は Nodes 用に CR を取り除く（htmlEscaper と同じ結果を DOM で得るため）。
+var crRemover = strings.NewReplacer("\r", "")
 
 // HighlightByLanguage は Redmine::SyntaxHighlighting.highlight_by_language（外側の pre/code は含まない）。
 // budget を渡すと時間制限を他の呼び出しと共有する。
@@ -280,13 +284,16 @@ func Nodes(text, language string, budget ...*Budget) []*htmldom.Node {
 		}
 	}
 	for _, t := range tokens(text, l, optBudget(budget)) {
+		v := crRemover.Replace(t[1])
 		if t[0] == "" {
-			plain.WriteString(t[1])
+			plain.WriteString(v)
 			continue
 		}
 		flush()
 		span := htmldom.NewElement("span", htmldom.Attr{Name: "class", Value: t[0]})
-		span.AppendChild(htmldom.NewText(t[1]))
+		if v != "" {
+			span.AppendChild(htmldom.NewText(v))
+		}
 		out = append(out, span)
 	}
 	flush()
@@ -470,7 +477,12 @@ var (
 	reVimModeline1  = regexp.MustCompile(`(?i)(?:vim|vi|ex):\s*(?:ft|filetype|syntax)=(\w+)\s?`)
 	reVimModeline2  = regexp.MustCompile(`(?:vim|vi|Vim|ex):\s*se(?:t)?.*\s(?:ft|filetype|syntax)=(\w+)\s?.*:`)
 	reShebang       = regexp.MustCompile(`(?m)\A[ \t\n\v\f\r]*#!(.*)$`)
-	reDoctype       = regexp.MustCompile(`(?s)\A[ \t\n\v\f\r]*(?:<\?.*?\?>[ \t\n\v\f\r]*)?<!DOCTYPE[ \t\n\v\f\r]+(.+?)>`)
+	// AddmusicK の detect?（先頭の空白・コメント行の後の #spc { など）
+	reAddmusickSPC    = regexp.MustCompile(`(?im)\A(?:[ \t\n\v\f\r]+|;.*?$)*#spc[ \t\n\v\f\r]*[{]`)
+	reAddmusickOption = regexp.MustCompile(`(?im)\A(?:[ \t\n\v\f\r]+|;.*?$)*#option smwvtable\b`)
+	reAddmusickAMK    = regexp.MustCompile(`(?im)\A(?:[ \t\n\v\f\r]+|;.*?$)*#amk [0-9]`)
+	rePDFHeader       = regexp.MustCompile(`\A%(?:P|F)DF-[0-9]\.[0-9]`)
+	reDoctype         = regexp.MustCompile(`(?s)\A[ \t\n\v\f\r]*(?:<\?.*?\?>[ \t\n\v\f\r]*)?<!DOCTYPE[ \t\n\v\f\r]+(.+?)>`)
 )
 
 // textAnalyzer は Rouge の TextAnalyzer（シバンと DOCTYPE の判定）。
@@ -522,6 +534,9 @@ func (t *textAnalyzer) doctypeText() (string, bool) {
 
 // rougeDetectors は detect? を持つ Rouge レキサーの判定関数。
 var rougeDetectors = map[string]func(t *textAnalyzer) bool{
+	"addmusick": func(t *textAnalyzer) bool {
+		return reAddmusickSPC.MatchString(t.text) || reAddmusickOption.MatchString(t.text) || reAddmusickAMK.MatchString(t.text)
+	},
 	"awk":          func(t *textAnalyzer) bool { return t.shebangIs("awk") },
 	"biml":         func(t *textAnalyzer) bool { return regexp.MustCompile(`<\s*Biml\b`).MatchString(t.text) },
 	"coffeescript": func(t *textAnalyzer) bool { return t.shebangIs("coffee") },
@@ -537,10 +552,10 @@ var rougeDetectors = map[string]func(t *textAnalyzer) bool{
 	"gherkin": func(t *textAnalyzer) bool { return t.shebangIs("cucumber") },
 	"groovy":  func(t *textAnalyzer) bool { return t.shebangIs("groovy") || t.shebangIs("nextflow") },
 	"hack": func(t *textAnalyzer) bool {
-		return strings.Contains(t.text, "<?hh") || t.shebangIs("hhvm") ||
-			regexp.MustCompile(`async function [a-zA-Z]`).MatchString(t.text) || strings.Contains(t.text, "): Awaitable<")
+		return strings.HasPrefix(t.text, "<?hh") || t.shebangIs("hhvm")
 	},
 	"haskell": func(t *textAnalyzer) bool { return t.shebangIs("runhaskell") },
+	"pdf":     func(t *textAnalyzer) bool { return rePDFHeader.MatchString(t.text) },
 	"haxe":    func(t *textAnalyzer) bool { return t.shebangIs("haxe") },
 	"html": func(t *textAnalyzer) bool {
 		if d, ok := t.doctypeText(); ok && regexp.MustCompile(`(?i)\bhtml\b`).MatchString(d) {

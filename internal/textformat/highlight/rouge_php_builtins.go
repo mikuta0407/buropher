@@ -3,7 +3,7 @@
 // Portions ported from Rouge (https://github.com/rouge-ruby/rouge),
 // Copyright (c) 2012 Jeanine Adkisson and contributors, MIT License.
 
-// Code generated from Rouge 4.7 php/keywords.rb by tools/textformat/mkrougewords.py. DO NOT EDIT.
+// Code generated from Rouge 5.1 php/keywords.rb by tools/textformat/mkrougewords.py. DO NOT EDIT.
 
 package highlight
 
@@ -1894,6 +1894,8 @@ var phpBuiltins = map[string]bool{
 	"opcache_get_status":                            true,
 	"opcache_invalidate":                            true,
 	"opcache_is_script_cached":                      true,
+	"opcache_is_script_cached_in_file_cache":        true,
+	"opcache_jit_blacklist":                         true,
 	"opcache_reset":                                 true,
 	"openal_buffer_create":                          true,
 	"openal_buffer_data":                            true,
