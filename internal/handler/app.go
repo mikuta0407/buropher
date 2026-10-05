@@ -489,7 +489,10 @@ func (a *App) requireLogin(c *Req) bool {
 		c.W.WriteHeader(http.StatusFound)
 	case format == "xml" || format == "json":
 		if a.Settings.Bool("rest_api_enabled") && c.cfg.acceptAPIAuth {
-			c.W.Header().Set("WWW-Authenticate", `Basic realm="`+a.Realm()+` API"`)
+			// API キー（key パラメータ / X-Redmine-API-Key）で失敗した場合は Basic 認証を促さない（#44165）
+			if apiKeyFromRequest(c) == "" {
+				c.W.Header().Set("WWW-Authenticate", `Basic realm="`+a.Realm()+` API"`)
+			}
 			httpx.Head(c.W, c.R, http.StatusUnauthorized)
 		} else {
 			httpx.Head(c.W, c.R, http.StatusForbidden)
