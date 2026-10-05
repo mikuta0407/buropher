@@ -124,3 +124,19 @@ func TestQueryOperatorDoesNotContainOnTextCustomField(t *testing.T) {
 		}
 	})
 }
+
+// test/unit/user_query_test.rb: default_columns_names は表示形式の姓名順に従う (#4507)
+func TestUserQueryDefaultColumnsNamesFollowUserFormat(t *testing.T) {
+	forEachDB(t, func(t *testing.T, tdb *testDB) {
+		tdb.setting("user_format", "lastname_firstname")
+		want := []string{"login", "lastname", "firstname", "mail", "admin", "created_on", "last_login_on"}
+		if got := tdb.newQuery(0, KindUser, 0).DefaultColumnNames(); !slices.Equal(got, want) {
+			t.Errorf("lastname_firstname: %v", got)
+		}
+		tdb.setting("user_format", "firstname_lastname")
+		want = []string{"login", "firstname", "lastname", "mail", "admin", "created_on", "last_login_on"}
+		if got := tdb.newQuery(0, KindUser, 0).DefaultColumnNames(); !slices.Equal(got, want) {
+			t.Errorf("firstname_lastname: %v", got)
+		}
+	})
+}
