@@ -359,29 +359,66 @@ VALUES (?, ?, ?, ?, ?, ?)`, j.ID, d.Property, d.PropKey, cfID, d.OldValue, d.Val
 	return nil
 }
 
-// journalAddWatcher は Journal#add_watcher (before_create): 作成者を自動ウォッチャーにする。
+// journalAddWatcher は Journal#add_watcher (before_create): 作成者 (issue_contributed_to) と
+// 担当者 (issue_assigned_to_me、Redmine 7.0 #2716) を自動ウォッチャーにする。
 func (e *Env) journalAddWatcher(ctx context.Context, j *Journal, iss *Issue) error {
 	u, err := e.UserByID(ctx, j.UserID)
-	if err != nil || u == nil || !u.Active() {
-		return err
-	}
-	p, err := e.ProjectOf(ctx, iss)
 	if err != nil {
 		return err
 	}
-	ok, err := e.allowedTo(ctx, u, "add_issue_watchers", p)
+	if u != nil && u.Kind == domain.KindUser {
+		if err := e.autoWatchIfEnabled(ctx, iss, u, "issue_contributed_to"); err != nil {
+			return err
+		}
+	}
+	if iss.AssignedToID != nil {
+		a, err := e.UserByID(ctx, *iss.AssignedToID)
+		if err != nil {
+			return err
+		}
+		if a != nil && a.Kind == domain.KindUser {
+			if err := e.autoWatchIfEnabled(ctx, iss, a, "issue_assigned_to_me"); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+// autoWatchIfEnabled は user.pref.auto_watch_on?(option) && Journal#valid_watcher?(user) なら
+// journalized.set_watcher(user, true) する。
+func (e *Env) autoWatchIfEnabled(ctx context.Context, iss *Issue, u *domain.User, option string) error {
+	aw, err := e.autoWatchOn(ctx, u.ID)
+	if err != nil || !slices.Contains(aw, option) {
+		return err
+	}
+	ok, err := e.journalValidWatcher(ctx, iss, u)
 	if err != nil || !ok {
 		return err
 	}
-	aw, err := e.autoWatchOn(ctx, u.ID)
-	if err != nil || !slices.Contains(aw, "issue_contributed_to") {
-		return err
-	}
-	watched, err := e.directlyWatchedBy(ctx, iss.ID, u.ID)
-	if err != nil || watched {
-		return err
-	}
 	return e.AddWatcher(ctx, iss, u.ID)
+}
+
+// journalValidWatcher は Journal#valid_watcher?(user)（有効・add_issue_watchers 権限・チケットを閲覧可能・未ウォッチ）。
+func (e *Env) journalValidWatcher(ctx context.Context, iss *Issue, u *domain.User) (bool, error) {
+	if !u.Active() {
+		return false, nil
+	}
+	p, err := e.ProjectOf(ctx, iss)
+	if err != nil {
+		return false, err
+	}
+	if ok, err := e.allowedTo(ctx, u, "add_issue_watchers", p); err != nil || !ok {
+		return false, err
+	}
+	if ok, err := e.Visible(ctx, iss, u); err != nil || !ok {
+		return false, err
+	}
+	watched, err := e.WatchedBy(ctx, iss, u)
+	if err != nil {
+		return false, err
+	}
+	return !watched, nil
 }
 
 // autoWatchOn は user.pref.auto_watch_on (設定行が無ければ Setting.default_users_auto_watch_on)。
@@ -708,11 +745,7 @@ func (e *Env) UpdateJournalNotes(ctx context.Context, j *Journal, notes string, 
 	}
 	j.Notes, j.NotesNull = notes, false
 	return e.inTx(ctx, func() error {
-		if strings.TrimSpace(j.Notes) == "" && len(j.Details) == 0 {
-			// save は空のジャーナルを保存せず、コントローラが destroy する
-			_, err := e.Q.Exec(ctx, `DELETE FROM issue_journals WHERE id = ?`, j.ID)
-			return err
-		}
+		// Redmine 7.0 (#44258): 注記を空にしても既存のジャーナルは削除しない（#note-N の番号がずれないように）。
 		if !changed {
 			return nil
 		}

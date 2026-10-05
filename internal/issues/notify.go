@@ -157,6 +157,8 @@ func (e *Env) notifyAbout(ctx context.Context, u *domain.User, ns *notificationS
 		return assigned || prev, nil
 	case "only_owner":
 		return isAuthor, nil
+	case "only_my_watches":
+		return e.WatchedBy(ctx, iss, u)
 	}
 	return false, nil
 }

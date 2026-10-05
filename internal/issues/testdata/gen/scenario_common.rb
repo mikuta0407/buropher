@@ -118,7 +118,6 @@ def edit_journal(id, notes)
   journal = Journal.find(id)
   journal.safe_attributes = {'notes' => notes, 'updated_by' => User.current}
   journal.save
-  journal.destroy if journal.details.empty? && journal.notes.blank?
   record('edit_journal', {'id' => id, 'exists' => Journal.exists?(id)})
 end
 
