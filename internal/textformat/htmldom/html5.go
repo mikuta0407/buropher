@@ -190,6 +190,10 @@ func writeHTML5(sb *strings.Builder, n *Node) {
 }
 
 // escapeHTML5 は Nokogiri の output_escaped_string。
+//
+// ただし Nokogiri 1.19 と異なり、属性値の "<" と ">" もエスケープする（現行の WHATWG の直列化規則と同じ）。
+// 直列化した HTML には後段で正規表現により Redmine リンク（#1, [[Wiki]] 等）を差し込むため、
+// 属性値に生の山括弧を残さないようにしておく。
 func escapeHTML5(sb *strings.Builder, s string, attr bool) {
 	start := 0
 	for i := 0; i < len(s); i++ {
@@ -203,9 +207,9 @@ func escapeHTML5(sb *strings.Builder, s string, attr bool) {
 			n = 2
 		case attr && c == '"':
 			rep = "&quot;"
-		case !attr && c == '<':
+		case c == '<':
 			rep = "&lt;"
-		case !attr && c == '>':
+		case c == '>':
 			rep = "&gt;"
 		default:
 			continue

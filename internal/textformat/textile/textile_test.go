@@ -26,6 +26,12 @@ var testOpts = &Options{Highlight: rougeLikeHighlighter}
 func toHTML(s string) string { return Format(s, testOpts) }
 
 // assertHTMLOutput は assert_html_output 相当。
+// preWrapper は CopypreScrubber が pre を包む div（テストのアイコンパスは既定値）。
+func preWrapper(pre string) string {
+	return `<div class="pre-wrapper" data-controller="clipboard"><a class="copy-pre-content-link icon-only" title="Copy" data-action="clipboard#copyPre">` +
+		`<svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons.svg#icon--copy-pre-content"></use></svg></a>` + pre + `</div>`
+}
+
 func assertHTMLOutput(t *testing.T, cases map[string]string, expectParagraph bool) {
 	t.Helper()
 	for text, expected := range cases {
@@ -238,7 +244,7 @@ He's right.
 `
 	expected := `<p>John said:</p>
 <blockquote>
-Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas sed libero.<br />
+Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas sed libero.<br>
 Nullam commodo metus accumsan nulla. Curabitur lobortis dui id dolor.
 <ul>
   <li>Donec odio lorem,</li>
@@ -259,75 +265,75 @@ Nullam commodo metus accumsan nulla. Curabitur lobortis dui id dolor.
 func TestTable(t *testing.T) {
 	raw := "This is a table with empty cells:\n\n|cell11|cell12||\n|cell21||cell23|\n|cell31|cell32|cell33|\n"
 	expected := `<p>This is a table with empty cells:</p>
-<table>
+<table><tbody>
   <tr><td>cell11</td><td>cell12</td><td></td></tr>
   <tr><td>cell21</td><td></td><td>cell23</td></tr>
   <tr><td>cell31</td><td>cell32</td><td>cell33</td></tr>
-</table>`
+</tbody></table>`
 	assertNoSpaceEqual(t, expected, raw)
 }
 
 func TestTableWithAlignment(t *testing.T) {
 	raw := "|>. right|\n|<. left|\n|<>. justify|\n"
-	expected := `<table>
+	expected := `<table><tbody>
   <tr><td style="text-align:right;">right</td></tr>
   <tr><td style="text-align:left;">left</td></tr>
   <tr><td style="text-align:justify;">justify</td></tr>
-</table>`
+</tbody></table>`
 	assertNoSpaceEqual(t, expected, raw)
 }
 
 func TestTableWithTrailingWhitespace(t *testing.T) {
 	raw := "This is a table with trailing whitespace in one row:\n\n|cell11|cell12|\n|cell21|cell22| \n|cell31|cell32|\n"
 	expected := `<p>This is a table with trailing whitespace in one row:</p>
-<table>
+<table><tbody>
   <tr><td>cell11</td><td>cell12</td></tr>
   <tr><td>cell21</td><td>cell22</td></tr>
   <tr><td>cell31</td><td>cell32</td></tr>
-</table>`
+</tbody></table>`
 	assertNoSpaceEqual(t, expected, raw)
 }
 
 func TestTableWithLineBreaks(t *testing.T) {
 	raw := "This is a table with line breaks:\n\n|cell11\ncontinued|cell12||\n|-cell21-||cell23\ncell23 line2\ncell23 *line3*|\n|cell31|cell32\ncell32 line2|cell33|\n\n"
 	expected := `<p>This is a table with line breaks:</p>
-<table>
+<table><tbody>
   <tr>
-    <td>cell11<br />continued</td>
+    <td>cell11<br>continued</td>
     <td>cell12</td>
     <td></td>
   </tr>
   <tr>
     <td><del>cell21</del></td>
     <td></td>
-    <td>cell23<br/>cell23 line2<br/>cell23 <strong>line3</strong></td>
+    <td>cell23<br>cell23 line2<br>cell23 <strong>line3</strong></td>
   </tr>
   <tr>
     <td>cell31</td>
-    <td>cell32<br/>cell32 line2</td>
+    <td>cell32<br>cell32 line2</td>
     <td>cell33</td>
   </tr>
-</table>`
+</tbody></table>`
 	assertNoSpaceEqual(t, expected, raw)
 }
 
 func TestTablesWithLists(t *testing.T) {
 	raw := "This is a table with lists:\n\n|cell11|cell12|\n|cell21|ordered list\n# item\n# item 2|\n|cell31|unordered list\n* item\n* item 2|\n\n"
 	expected := `<p>This is a table with lists:</p>
-<table>
+<table><tbody>
   <tr>
     <td>cell11</td>
     <td>cell12</td>
   </tr>
   <tr>
     <td>cell21</td>
-    <td>ordered list<br /># item<br /># item 2</td>
+    <td>ordered list<br># item<br># item 2</td>
   </tr>
   <tr>
     <td>cell31</td>
-    <td>unordered list<br />* item<br />* item 2</td>
+    <td>unordered list<br>* item<br>* item 2</td>
   </tr>
-</table>`
+</tbody></table>`
 	assertNoSpaceEqual(t, expected, raw)
 }
 
@@ -342,7 +348,7 @@ func TestTextileShouldEscapeImageURLs(t *testing.T) {
 	raw := `!/images/comment.png"onclick=&#x61;&#x6c;&#x65;&#x72;&#x74;&#x28;&#x27;&#x58;&#x53;&#x53;&#x27;&#x29;;&#x22;!`
 	expected := `<p><img src="/images/comment.png&quot;onclick=` +
 		`&amp;#x61;&amp;#x6c;&amp;#x65;&amp;#x72;&amp;#x74;&amp;#x28;` +
-		`&amp;#x27;&amp;#x58;&amp;#x53;&amp;#x53;&amp;#x27;&amp;#x29;;&amp;#x22;" alt="" /></p>`
+		`&amp;#x27;&amp;#x58;&amp;#x53;&amp;#x53;&amp;#x27;&amp;#x29;;&amp;#x22;" alt=""></p>`
 	assertNoSpaceEqual(t, expected, raw)
 }
 
@@ -492,7 +498,7 @@ func TestShouldNotAllowArbitraryClassAttributeOnOfftags(t *testing.T) {
 	}
 	for _, c := range cases {
 		assertHTMLOutput(t, map[string]string{"<code " + c[0] + ">test</code>": "<code " + c[1] + ">test</code>"}, false)
-		assertHTMLOutput(t, map[string]string{"<pre " + c[0] + ">test</pre>": "<pre>test</pre>"}, false)
+		assertHTMLOutput(t, map[string]string{"<pre " + c[0] + ">test</pre>": preWrapper(`<pre data-clipboard-target="pre">test</pre>`)}, false)
 		assertHTMLOutput(t, map[string]string{"<kbd " + c[0] + ">test</kbd>": "<kbd>test</kbd>"}, false)
 	}
 	assertHTMLOutput(t, map[string]string{
@@ -518,38 +524,37 @@ func TestShouldAllowValidLanguageClassAttributeOnCodeTags(t *testing.T) {
 func TestShouldPreserveCodeLanguageClassAttributeInDataLanguage(t *testing.T) {
 	assertHTMLOutput(t, map[string]string{
 		`<code class="foolang">unsupported language</code>`: `<code data-language="foolang">unsupported language</code>`,
-		`<code class="c-k&r">special-char language</code>`:  `<code data-language="c-k&#38;r">special-char language</code>`,
+		`<code class="c-k&r">special-char language</code>`:  `<code data-language="c-k&amp;r">special-char language</code>`,
 	}, false)
 }
 
 func TestShouldNotAllowValidLanguageClassAttributeOnNonCodeOfftags(t *testing.T) {
-	for _, tag := range []string{"pre", "kbd"} {
-		assertHTMLOutput(t, map[string]string{"<" + tag + ` class="ruby">test</` + tag + ">": "<" + tag + ">test</" + tag + ">"}, false)
-	}
+	assertHTMLOutput(t, map[string]string{`<pre class="ruby">test</pre>`: preWrapper(`<pre data-clipboard-target="pre">test</pre>`)}, false)
+	assertHTMLOutput(t, map[string]string{`<kbd class="ruby">test</kbd>`: "<kbd>test</kbd>"}, false)
 	assertHTMLOutput(t, map[string]string{`<notextile class="ruby">test</notextile>`: "test"}, false)
 }
 
 func TestShouldPrefixClassAttributeOnTags(t *testing.T) {
 	assertHTMLOutput(t, map[string]string{
-		"!(foo)test.png!": `<p><img src="test.png" class="wiki-class-foo" alt="" /></p>`,
+		"!(foo)test.png!": `<p><img src="test.png" class="wiki-class-foo" alt=""></p>`,
 		"%(foo)test%":     `<p><span class="wiki-class-foo">test</span></p>`,
 		"p(foo). test":    `<p class="wiki-class-foo">test</p>`,
-		"|(foo). test|":   "<table>\n\t\t<tr>\n\t\t\t<td class=\"wiki-class-foo\">test</td>\n\t\t</tr>\n\t</table>",
+		"|(foo). test|":   "<table>\n\t\t<tbody><tr>\n\t\t\t<td class=\"wiki-class-foo\">test</td>\n\t\t</tr>\n\t</tbody></table>",
 	}, false)
 }
 
 func TestShouldPrefixIDAttributeOnTags(t *testing.T) {
 	assertHTMLOutput(t, map[string]string{
-		"!(#foo)test.png!": `<p><img src="test.png" id="wiki-id-foo" alt="" /></p>`,
+		"!(#foo)test.png!": `<p><img src="test.png" id="wiki-id-foo" alt=""></p>`,
 		"%(#foo)test%":     `<p><span id="wiki-id-foo">test</span></p>`,
 		"p(#foo). test":    `<p id="wiki-id-foo">test</p>`,
-		"|(#foo). test|":   "<table>\n\t\t<tr>\n\t\t\t<td id=\"wiki-id-foo\">test</td>\n\t\t</tr>\n\t</table>",
+		"|(#foo). test|":   "<table>\n\t\t<tbody><tr>\n\t\t\t<td id=\"wiki-id-foo\">test</td>\n\t\t</tr>\n\t</tbody></table>",
 	}, false)
 }
 
 func TestShouldNotPrefixClassAndIDAttributesAlreadyPrefixed(t *testing.T) {
 	assertHTMLOutput(t, map[string]string{
-		"!(wiki-class-foo#wiki-id-bar)test.png!": `<p><img src="test.png" class="wiki-class-foo" id="wiki-id-bar" alt="" /></p>`,
+		"!(wiki-class-foo#wiki-id-bar)test.png!": `<p><img src="test.png" class="wiki-class-foo" id="wiki-id-bar" alt=""></p>`,
 	}, false)
 }
 
@@ -568,7 +573,7 @@ func TestShouldNotCrashWithSpecialInput(t *testing.T) {
 
 func TestShouldNotHandleAsPreformattedTextTagsThatStartsWithPre(t *testing.T) {
 	text := "<pree>\n  This is some text\n</pree>\n"
-	expected := "<p>&lt;pree&gt;<br />\n  This is some text<br />\n&lt;/pree&gt;</p>\n"
+	expected := "<p>&lt;pree&gt;<br>\n  This is some text<br>\n&lt;/pree&gt;</p>\n"
 	assertNoCRLFTabEqual(t, expected, text)
 }
 
@@ -595,12 +600,12 @@ This is a code block.
 
 <p>Foo</p>
 
-<pre>
+` + preWrapper(`<pre data-clipboard-target="pre">
 This is a code block.
 &lt;p&gt;
 &lt;!-- comments in a code block should be preserved --&gt;
 &lt;/p&gt;
-</pre>
+</pre>`) + `
 
 `
 	assertNoCRLFTabEqual(t, expected, text)
@@ -627,7 +632,7 @@ func TestShouldAllowMultipleFootnotes(t *testing.T) {
 func TestSyntaxHighlightAmpersand(t *testing.T) {
 	// test_syntax_highlight_ampersand_in_textile 相当 (x%x% の復元)
 	got := toHTML("<pre><code class=\"ruby\">\nx = a & b\n</code></pre>")
-	want := "<pre><code class=\"ruby syntaxhl\" data-language=\"ruby\"><span class=\"nb\">x = a &amp; b\n</span></code></pre>"
+	want := preWrapper("<pre data-clipboard-target=\"pre\"><code class=\"ruby syntaxhl\" data-language=\"ruby\"><span class=\"nb\">x = a &amp; b\n</span></code></pre>")
 	if got != want {
 		t.Errorf("want %q\ngot  %q", want, got)
 	}

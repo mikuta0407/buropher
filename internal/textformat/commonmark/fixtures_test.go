@@ -50,7 +50,7 @@ func TestFixtures(t *testing.T) {
 			opts.DisableHardBreaks = true
 		}
 		got := Format(e.Input, opts)
-		want := e.ExpectedString()
+		want := fixtures.EscapeAttrAngles(e.ExpectedString())
 		if got == want {
 			pass++
 			if knownDiffs[e.Name] && os.Getenv("CM_REPORT") != "" {

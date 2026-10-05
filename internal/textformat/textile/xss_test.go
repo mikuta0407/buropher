@@ -20,15 +20,15 @@ func TestRedpreTagWithAttributesIsEscaped(t *testing.T) {
 		"<redpre#0/onclick=alert(1)>x",
 	} {
 		out := Format(src, nil)
-		if err := secoracle.CheckHTML(out, secoracle.HTMLPolicy{}); err != nil {
+		if err := secoracle.CheckHTML(out, secoracle.HTMLPolicy{SVG: true}); err != nil {
 			t.Errorf("Format(%q) = %q\n%v", src, out, err)
 		}
 		if strings.Contains(out, "<redpre") {
 			t.Errorf("Format(%q) = %q: raw redpre tag", src, out)
 		}
 	}
-	// 属性なしは従来どおり（Redmine と同じ）
-	if got := Format("<redpre#0>0", nil); got != "<redpre#0>0" {
+	// 属性なしは従来どおり（Redmine と同じ。HTML5 として解析し直すため閉じタグが付く）
+	if got := Format("<redpre#0>0", nil); got != "<redpre#0>0</redpre#0>" {
 		t.Errorf("Format(<redpre#0>0) = %q", got)
 	}
 }
@@ -42,7 +42,7 @@ func TestUserWrittenShelfMarkerIsNotRetrieved(t *testing.T) {
 		"p(c). \"x\":http://a/onmouseover=alert(1)//\n\n<code> :redsh#1:</code> @ :redsh#2:@",
 	} {
 		out := Format(src, nil)
-		if err := secoracle.CheckHTML(out, secoracle.HTMLPolicy{}); err != nil {
+		if err := secoracle.CheckHTML(out, secoracle.HTMLPolicy{SVG: true}); err != nil {
 			t.Errorf("Format(%q) = %q\n%v", src, out, err)
 		}
 		if !strings.Contains(out, ":redsh#") {

@@ -8,6 +8,8 @@ import (
 	"os"
 	"strings"
 	"testing"
+
+	"github.com/mikuta0407/buropher/internal/textformat/internal/fixtures"
 )
 
 type html5Case struct {
@@ -47,6 +49,7 @@ func TestHTML5Fixtures(t *testing.T) {
 			continue
 		}
 		got := RenderHTML5(frag)
+		c.Expected = fixtures.EscapeAttrAngles(c.Expected)
 		if got != c.Expected {
 			j := 0
 			for j < len(got) && j < len(c.Expected) && got[j] == c.Expected[j] {

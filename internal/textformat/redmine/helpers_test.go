@@ -67,7 +67,7 @@ func TestLinkHelpers(t *testing.T) {
 		{"link_to_attachment download", string(r.LinkToAttachment(a, LinkToAttachmentOptions{Download: true})), `<a href="/attachments/download/3/logo.gif">logo.gif</a>`},
 		{"link_to_attachment icon", string(r.LinkToAttachment(a, LinkToAttachmentOptions{Download: true, Icon: "download",
 			HTML: rails.NewHash("class", "icon-only icon-download", "title", "Download")})),
-			`<a class="icon-only icon-download" title="Download" href="/attachments/download/3/logo.gif"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-a9735328.svg#icon--download"></use></svg><span class="icon-label">logo.gif</span></a>`},
+			`<a class="icon-only icon-download" title="Download" href="/attachments/download/3/logo.gif"><svg class="s18 icon-svg" aria-hidden="true"><use href="/assets/icons-0476c1d7.svg#icon--download"></use></svg><span class="icon-label">logo.gif</span></a>`},
 		{"link_to_attachment full", string(r.LinkToAttachment(a, LinkToAttachmentOptions{FullURL: true})), `<a href="http://test.host/attachments/3">logo.gif</a>`},
 		{"link_to_issue", string(r.LinkToIssue(is, LinkToIssueOptions{})),
 			`<a class="issue tracker-1 status-1 priority-4 priority-lowest behind-schedule" href="/issues/1">Bug #1</a>: Cannot print recipes`},

@@ -15,7 +15,7 @@ import (
 // Redmine の test/unit/lib/redmine/wiki_formatting/common_mark/*_test.rb の移植。
 
 func toHTML(text string) string {
-	return Format(text, Options{IconsPath: "/assets/icons-a9735328.svg"})
+	return Format(text, Options{IconsPath: "/assets/icons-0476c1d7.svg"})
 }
 
 func eq(t *testing.T, want, got string) {
