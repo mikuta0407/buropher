@@ -38,9 +38,12 @@ func FuzzHTML(f *testing.F) {
 		if err := secoracle.CheckHTML(out, sanitizerPolicy()); err != nil {
 			t.Fatalf("input %q\noutput %q\n%v", in, out, err)
 		}
-		frag := htmldom.ParseFragment(in)
+		frag, err := htmldom.ParseHTML5Fragment(in)
+		if err != nil {
+			return
+		}
 		Node(frag)
-		ExternalLinks(frag)
+		frag.ScrubTopDown(func(n *htmldom.Node) bool { ExternalLink(n); return false })
 		if err := secoracle.CheckDOMRender(frag); err != nil {
 			t.Fatalf("input %q\n%v", in, err)
 		}

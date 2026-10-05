@@ -2,7 +2,7 @@
 
 # Redmine の CommonMark 整形結果（正解データ）を生成するスクリプト。
 #
-# 使い方（Redmine 6.1.2 の作業ツリーで実行する。DB は参照しない）:
+# 使い方（Redmine 7.0.1 の作業ツリーで実行する。DB は参照しない）:
 #
 #   cd /path/to/redmine
 #   SECRET_KEY_BASE=x RAILS_ENV=production bin/rails runner \
@@ -93,11 +93,32 @@ end
 
 cm = Redmine::WikiFormatting::CommonMark
 
-# hardbreaks 無効版のパイプライン
+# hardbreaks 無効版の整形（Formatter#to_html と同じ処理を設定だけ変えて行う）
 no_hardbreaks_config = cm::PIPELINE_CONFIG.merge(
   commonmarker_render_options: cm::PIPELINE_CONFIG[:commonmarker_render_options].merge(hardbreaks: false)
 )
-no_hardbreaks_pipeline = HTML::Pipeline.new(cm::MarkdownPipeline.filters, no_hardbreaks_config)
+format_with = lambda do |input, config|
+  html = cm::MarkdownFilter.new(input, config).call
+  fragment = Redmine::WikiFormatting::HtmlParser.parse(html)
+  cm::SANITIZER.call(fragment)
+  scrubbers = cm::SCRUBBERS + [
+    Redmine::WikiFormatting::InlineAttachmentsScrubber.new({}),
+    Redmine::WikiFormatting::HiresImagesScrubber.new
+  ]
+  scrubber = Loofah::Scrubber.new do |node|
+    scrubbers.each do |s|
+      result = s.scrub(node)
+      break result if result == Loofah::Scrubber::STOP
+      break if node.parent.nil?
+    end
+  end
+  fragment.scrub!(scrubber)
+  fragment.to_s
+end
+
+# "tablesort": true のエントリは wiki_tablesort_enabled を有効にして整形する（DB は書き換えない）
+$tablesort = false
+Setting.define_singleton_method(:wiki_tablesort_enabled?) { $tablesort }
 
 I18n.locale = :en
 
@@ -113,13 +134,25 @@ results = entries.map do |e|
   expected =
     case e['mode'] || 'commonmark'
     when 'commonmark'
-      if e['hardbreaks'] == false
-        no_hardbreaks_pipeline.call(input)[:output].to_s
-      else
-        cm::Formatter.new(input).to_html
+      $tablesort = e['tablesort'] == true
+      begin
+        if e['hardbreaks'] == false
+          format_with.call(input, no_hardbreaks_config)
+        else
+          cm::Formatter.new(input).to_html
+        end
+      rescue ArgumentError => ex
+        # Nokogiri の HTML5 パーサの上限（木の深さ 400・属性数 400）を超えると例外になる
+        {'error' => ex.message}
+      ensure
+        $tablesort = false
       end
     when 'sanitize'
-      Redmine::WikiFormatting::HtmlSanitizer.call(input)
+      begin
+        Redmine::WikiFormatting::HtmlSanitizer.call(input)
+      rescue ArgumentError => ex
+        {'error' => ex.message}
+      end
     when 'highlight'
       Redmine::SyntaxHighlighting.highlight_by_language(input, e['lang'])
     when 'highlight_file'

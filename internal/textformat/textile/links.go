@@ -118,7 +118,7 @@ func autoMailto(text string) string {
 
 var (
 	reRestoreWiki    = rx(`\[<a href="(.*?)">(.*?)</a>\]`)
-	reRestoreQuoted  = rx(`(` + reW + `):&quot;(.+?)&quot;`)
+	reRestoreQuoted  = rx(`<[^>]*>|(` + reW + `):&quot;([^<>]+?)&quot;`)
 	reRestoreAtUser  = rx(`[@A]<a(` + reS + `class="email")? href="mailto:(.*?)">(.*?)</a>`)
 	reRestoreUser    = rx(reB + `user:<a(` + reS + `class="email")? href="mailto:(.*?)">(.*?)</a>`)
 	reRestoreAttach  = rx(reB + `attachment:<a(` + reS + `class="email")? href="mailto:(.*?)">(.*?)</a>`)
@@ -134,7 +134,14 @@ func restoreRedmineLinks(html string) string {
 	// wiki リンクを戻す 例: [[Foo]]
 	html = gsub(reRestoreWiki, html, func(m md) string { return "[[" + m.s(2) + "]]" })
 	// ダブルクォート付きの Redmine リンクを戻す 例: version:"1.0"
-	html = gsub(reRestoreQuoted, html, func(m md) string { return m.s(1) + `:"` + m.s(2) + `"` })
+	// タグ全体を先にマッチさせてそのまま残し、引用部分がタグの境界をまたがないようにする
+	// （属性値の中の &quot; を戻すと属性から抜け出せる。Redmine 6.1.3 #44138 の格納型 XSS）
+	html = gsub(reRestoreQuoted, html, func(m md) string {
+		if strings.HasPrefix(m.all(), "<") {
+			return m.all()
+		}
+		return m.s(1) + `:"` + m.s(2) + `"`
+	})
 	// ログイン名に @ を含むユーザリンクを戻す 例: [@jsmith@somenet.foo]
 	// (原典の [@\A] は文字クラス内で \A がリテラル A になる)
 	html = gsub(reRestoreAtUser, html, func(m md) string { return "@" + m.s(2) })

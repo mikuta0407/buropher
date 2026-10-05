@@ -30,6 +30,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/i18n"
 	"github.com/mikuta0407/buropher/internal/textformat/commonmark"
 	"github.com/mikuta0407/buropher/internal/textformat/highlight"
+	"github.com/mikuta0407/buropher/internal/textformat/scrubber"
 	"github.com/mikuta0407/buropher/internal/textformat/textile"
 	"github.com/mikuta0407/buropher/internal/view/rails"
 )
@@ -101,7 +102,8 @@ type Options struct {
 	FullURL bool
 	// NoHeadings は :headings => false。
 	NoHeadings bool
-	// NoInlineAttachments は :inline_attachments => false。
+	// NoInlineAttachments は :inline_attachments => false（Redmine 7.0 ではマクロに引き継ぐだけで、
+	// 添付画像の置き換え（InlineAttachmentsScrubber）はこの値を見ない）。
 	NoInlineAttachments bool
 	// EditSectionLinks は :edit_section_links。
 	EditSectionLinks *EditSectionLinks
@@ -143,6 +145,8 @@ type Renderer struct {
 	PreviewAttachments []*Attachment
 	// DisableHardBreaks は common_mark_enable_hardbreaks: false。
 	DisableHardBreaks bool
+	// TablesortEnabled は Setting.wiki_tablesort_enabled?（TablesortScrubber）。
+	TablesortEnabled bool
 	// Logger はデータ参照エラーの記録先（nil なら slog.Default()）。
 	Logger *slog.Logger
 
@@ -239,18 +243,24 @@ func (r *Renderer) Textilizable(text string, opts Options) (out template.HTML) {
 	if opts.NoFormatting {
 		text = h(text)
 	} else {
-		text = r.toHTML(text)
+		var err error
+		text, err = r.toHTML(text, obj, opts)
+		if err != nil {
+			// HTML5 パーサの上限（木の深さ 400 等）を超えた。Redmine では Nokogiri の例外でページ全体が
+			// エラーになるが、buropher では装飾なしのテキストを表示する
+			return plainFallback(text)
+		}
 	}
 
 	st := &pageState{headingAnchors: map[string]int{}}
-	text = r.parseSections(st, text, opts)
+	// Redmine 7.0: 添付画像・高解像度画像は整形時のスクラバで処理する（#43745）。
+	// セクション編集リンクはマクロの展開後に付ける（#13723: collapse マクロ内の見出し）
 	text = r.parseNonPreBlocks(text, obj, macros, opts, func(txt string) string {
-		txt = r.parseInlineAttachments(txt, obj, opts)
-		txt = parseHiresImages(txt)
 		txt = r.parseWikiLinks(txt, project, obj, opts)
 		txt = r.parseRedmineLinks(txt, project, obj, opts)
 		return txt
 	})
+	text = r.parseSections(st, text, opts)
 	text = r.parseHeadings(st, text, obj, opts)
 	if len(st.parsedHeadings) > 0 {
 		text = r.replaceTOC(text, st.parsedHeadings)
@@ -280,19 +290,28 @@ func plainFallback(text string) template.HTML {
 	return template.HTML(rails.SimpleFormat(template.HTML(h(text)), nil, rails.NewHash("sanitize", false))) //nolint:gosec // h でエスケープ済み
 }
 
-// toHTML は Redmine::WikiFormatting.to_html(Setting.text_formatting, text)。
-func (r *Renderer) toHTML(text string) string {
+// toHTML は Redmine::WikiFormatting.to_html(Setting.text_formatting, text, options)。
+// HTML5 パーサの上限を超えた場合はエラーを返す。
+func (r *Renderer) toHTML(text string, obj *Object, opts Options) (string, error) {
+	so := scrubber.Options{
+		IconsPath:        r.iconsPath(),
+		Translate:        func(key string) string { return r.l(key) },
+		TablesortEnabled: r.TablesortEnabled,
+		FindAttachment:   r.inlineAttachmentFinder(obj, opts),
+	}
 	switch r.TextFormatting {
 	case "textile":
-		return textile.Format(text, &textile.Options{Highlight: textileHighlighter(highlight.NewBudget())})
+		return textile.FormatE(text, &textile.Options{Highlight: textileHighlighter(highlight.NewBudget()), Scrub: so})
 	case "common_mark":
-		return commonmark.Format(text, commonmark.Options{
+		return commonmark.FormatE(text, commonmark.Options{
 			DisableHardBreaks: r.DisableHardBreaks,
-			IconsPath:         r.iconsPath(),
-			Translate:         func(key string) string { return r.l(key) },
+			IconsPath:         so.IconsPath,
+			Translate:         so.Translate,
+			TablesortEnabled:  so.TablesortEnabled,
+			FindAttachment:    so.FindAttachment,
 		})
 	default:
-		return NullFormat(text)
+		return NullFormat(text), nil
 	}
 }
 
@@ -356,6 +375,13 @@ func (r *Renderer) parseNonPreBlocks(text string, obj *Object, macros map[int]st
 				}
 			} else {
 				tags = append(tags, strings.ToLower(tag))
+			}
+			// pre/code タグの属性値（data-language 等）の ">" より後に置かれたマクロは実行せずに元の記述へ戻す
+			// （参照 Redmine の出力と揃えるため、属性値の &gt; の位置以降を <pre>/<code> の中のテキストと同じ扱いにする）
+			if len(macros) > 0 {
+				if i := strings.Index(fullTag, "&gt;"); i >= 0 && strings.Contains(fullTag[i:], "{{macro(") {
+					fullTag = fullTag[:i] + r.injectMacros(fullTag[i:], obj, macros, false, opts)
+				}
 			}
 			parsed.WriteString(fullTag)
 		}
@@ -559,15 +585,4 @@ func SanitizeAnchorName(anchor string) string { return sanitizeAnchorName(anchor
 func sanitizeAnchorName(anchor string) string {
 	anchor = gsub(reAnchorStrip, anchor, func(md) string { return "" })
 	return gsub(reAnchorSpace, anchor, func(md) string { return "-" })
-}
-
-// ---- hires images ----
-
-var reHires = rxi(`src="([^"]+@(\dx)\.(bmp|gif|jpg|jpe|jpeg|png))"`)
-
-// parseHiresImages は parse_hires_images。
-func parseHiresImages(text string) string {
-	return gsub(reHires, text, func(m md) string {
-		return m.all() + ` srcset="` + m.s(1) + ` ` + m.s(2) + `"`
-	})
 }

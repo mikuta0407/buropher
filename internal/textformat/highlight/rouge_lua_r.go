@@ -7,7 +7,7 @@ package highlight
 
 import "strings"
 
-// Rouge 4.7 の lua.rb / r.rb の移植。
+// Rouge 5.1 の lua.rb / r.rb の移植。
 
 var (
 	rKeywords         = wordset(`if else for while repeat in next break function`)

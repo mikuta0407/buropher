@@ -9,6 +9,9 @@ import (
 	"slices"
 	"strings"
 	"testing"
+
+	"github.com/mikuta0407/buropher/internal/textformat/internal/fixtures"
+	"github.com/mikuta0407/buropher/internal/textformat/scrubber"
 )
 
 // fakeHighlighter は tools/gen-textile-fixtures.rb のフェイクハイライタと同じ挙動をする。
@@ -19,7 +22,10 @@ func fakeHighlighter(lang, code string) (string, bool) {
 	return `<span class="hl-` + lang + `">` + htmlEscapeERB(code) + `</span>`, true
 }
 
-var fakeOpts = &Options{Highlight: fakeHighlighter}
+// fixtureIconsPath は期待値を生成した Redmine 7.0.1 の asset_path('icons.svg')。
+const fixtureIconsPath = "/assets/icons-0476c1d7.svg"
+
+var fakeOpts = &Options{Highlight: fakeHighlighter, Scrub: scrubber.Options{IconsPath: fixtureIconsPath}}
 
 // deviatesFromRedmine は意図して Redmine と異なる出力にしている入力か。
 // 利用者が書いた ":redsh#N:" を buropher は shelve の目印として展開しない
@@ -57,7 +63,7 @@ func TestFixtures(t *testing.T) {
 			continue
 		}
 		got := Format(c.Input, fakeOpts)
-		if got == c.HTML {
+		if got == fixtures.EscapeAttrAngles(c.HTML) {
 			pass++
 			continue
 		}
@@ -88,7 +94,7 @@ func TestFuzzFile(t *testing.T) {
 			continue
 		}
 		got := Format(c.Input, fakeOpts)
-		if got == c.HTML {
+		if got == fixtures.EscapeAttrAngles(c.HTML) {
 			pass++
 			continue
 		}

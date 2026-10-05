@@ -4,13 +4,13 @@
 package commonmark
 
 import (
+	"errors"
 	"strings"
 	"testing"
 	"time"
 
 	"github.com/mikuta0407/buropher/internal/secoracle"
 	"github.com/mikuta0407/buropher/internal/textformat/htmldom"
-	"github.com/mikuta0407/buropher/internal/textformat/sanitize"
 )
 
 // commonmarkPolicy は CommonMark の出力に許す内容（サニタイザの許可要素とアラートのアイコン SVG）。
@@ -35,13 +35,11 @@ func FuzzFormat(f *testing.F) {
 			t.Fatalf("input %q\noutput %q\n%v", src, out, err)
 		}
 		// Format と同じ手順で作った木と、その直列化をブラウザが解析した木の差分
-		frag := htmldom.ParseFragment(MarkdownToHTML(src, true))
-		sanitize.Node(frag)
-		SyntaxHighlightFilter(frag)
-		FixupAutoLinksFilter(frag)
-		sanitize.ExternalLinks(frag)
-		AlertsIconsFilter(frag, Options{})
-		if err := secoracle.CheckDOMRender(frag); err != nil {
+		frag, err := formatTree(src, Options{})
+		if err == nil {
+			err = secoracle.CheckDOMRender(frag)
+		}
+		if err != nil && !errors.Is(err, htmldom.ErrTreeTooDeep) && !errors.Is(err, htmldom.ErrTooManyAttributes) {
 			t.Fatalf("input %q\n%v", src, err)
 		}
 		_, _ = GetSection(src, 1)

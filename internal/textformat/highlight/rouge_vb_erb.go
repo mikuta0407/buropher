@@ -5,7 +5,7 @@
 
 package highlight
 
-// Rouge 4.7 の vb.rb / erb.rb の移植。
+// Rouge 5.1 の vb.rb / erb.rb の移植。
 
 var (
 	vbKeywords = wordset(`AddHandler Alias ByRef ByVal CBool CByte CChar CDate CDbl CDec

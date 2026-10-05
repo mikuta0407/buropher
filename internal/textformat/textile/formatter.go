@@ -1,17 +1,22 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 // Copyright (C) 2026 mikuta0407 and Buropher contributors
 
-// Package textile は Redmine 6.1.2 の Textile フォーマッタ
-// (Redmine::WikiFormatting::Textile::Formatter = RedCloth3 + Redmine の拡張) の移植である。
+// Package textile は Redmine 7.0 の Textile フォーマッタ
+// (Redmine::WikiFormatting::Textile::Formatter = RedCloth3 + Redmine の拡張 + Loofah スクラバ) の移植である。
 //
 // Format が返す HTML は Redmine の Formatter#to_html と同一 (バイト単位) になることを目標にしている。
-// Redmine リンク ([[Wiki]], #123 など) やマクロ ({{toc}} など) の展開、
-// サニタイズは呼び出し側 (textilizable 相当) の責務であり、本パッケージでは行わない。
+// Redmine 7.0 (#43643) は RedCloth3 の出力を Loofah.html5_fragment (Nokogiri の HTML5 パーサ) で解析し、
+// スクラバ (Copypre → SyntaxHighlight → Tablesort → InlineAttachments → HiresImages) を適用してから
+// 直列化する。
+// Redmine リンク ([[Wiki]], #123 など) やマクロ ({{toc}} など) の展開は
+// 呼び出し側 (textilizable 相当) の責務であり、本パッケージでは行わない。
 package textile
 
 import (
-	"strconv"
 	"strings"
+
+	"github.com/mikuta0407/buropher/internal/textformat/htmldom"
+	"github.com/mikuta0407/buropher/internal/textformat/scrubber"
 )
 
 // Highlighter はシンタックスハイライタ。言語 lang がサポートされていなければ ok=false を返す。
@@ -23,14 +28,69 @@ type Highlighter func(lang, code string) (html string, ok bool)
 type Options struct {
 	// Highlight は <code class="lang"> 内のコードのハイライタ。nil なら全言語を非サポート扱いにする。
 	Highlight Highlighter
+	// Scrub は共用スクラバ (コピー用ボタン・表の並べ替え・添付画像) の設定。
+	Scrub scrubber.Options
 }
 
 // Format は Textile ソースを HTML に変換する (Formatter.new(src).to_html 相当)。
+// HTML5 パーサの上限 (木の深さ 400 等) を超えた場合はエスケープしたテキストを返す (FormatE を参照)。
 func Format(src string, opts *Options) string {
+	out, err := FormatE(src, opts)
+	if err != nil {
+		return htmldom.EscapeHTML5Text(src)
+	}
+	return out
+}
+
+// FormatE は Format と同じだが、HTML5 パーサの上限を超えた場合にエラーを返す
+// (Redmine では Nokogiri が ArgumentError を送出し、ページ全体がエラーになる)。
+func FormatE(src string, opts *Options) (string, error) {
 	// 不正な UTF-8 は U+FFFD にする（extractSections と同じ理由）
 	src = strings.ToValidUTF8(src, "�")
 	rc := newFormatter(opts)
-	return rc.toHTML(src)
+	frag, err := htmldom.ParseHTML5Fragment(rc.toHTML(src))
+	if err != nil {
+		return "", err
+	}
+	var so *scrubber.Options
+	if opts != nil {
+		so = &opts.Scrub
+	}
+	scrubber.Run(frag,
+		func(n *htmldom.Node) bool { scrubber.CopyPre(n, so); return false },
+		func(n *htmldom.Node) bool { return rc.syntaxHighlight(n) },
+		func(n *htmldom.Node) bool { scrubber.Tablesort(n, so); return false },
+		func(n *htmldom.Node) bool { scrubber.InlineAttachments(n, so); return false },
+		func(n *htmldom.Node) bool { scrubber.HiresImages(n); return false },
+	)
+	return htmldom.RenderHTML5(frag), nil
+}
+
+// syntaxHighlight は Textile::SyntaxHighlightScrubber (<pre><code class="foo"> をハイライトする)。
+func (rc *redcloth) syntaxHighlight(node *htmldom.Node) bool {
+	if !node.IsElement("code") {
+		return false
+	}
+	lang := node.AttrVal("class")
+	if blank(lang) {
+		return false
+	}
+	text := node.Text()
+	text = strings.TrimPrefix(text, "\n")
+	// Redmine::WikiFormatting::SyntaxHighlight#process
+	if !node.HasAttr("data-language") {
+		node.SetAttr("data-language", lang)
+	}
+	if html, ok := rc.highlightCode(lang, text); ok {
+		if err := node.SetInnerHTML5(html); err == nil {
+			node.SetAttr("class", lang+" syntaxhl")
+		}
+	} else {
+		node.RemoveAttr("class")
+		// 多重防御: 非対応の言語では子をエスケープしたテキストに置き換える
+		node.SetText(text)
+	}
+	return true
 }
 
 func newFormatter(opts *Options) *redcloth {
@@ -68,7 +128,7 @@ var inlineRules = []inlineRule{
 	func(_ *redcloth, t string) string { return restoreRedmineLinks(t) },
 }
 
-var reNotextileTag = rx(`</?notextile>`)
+var reNotextileTag = rx(`</?notextile>|<(?=</?notextile>)`)
 
 // userRedshMarker は利用者の入力中の ":redsh#"（shelve の目印）を retrieve から隠すための置き換え。
 const userRedshMarker = ":redsh\uFFFF#"
@@ -97,12 +157,19 @@ func (rc *redcloth) toHTML(src string) string {
 	// refs: Formatter の規則には refs_ が含まれないので何もしない
 	text = rc.blocks(text, false)
 	text = rc.inline(text)
-	text = rc.smoothOfftags(text)
+	text = rc.smoothOfftagsPlain(text)
 
 	text = rc.retrieve(text)
 	text = strings.ReplaceAll(text, userRedshMarker, ":redsh#")
 
-	text = gsub(reNotextileTag, text, func(md) string { return "" })
+	// <notextile> を取り除く。直前の "<" は &lt; にする（"<<notextile>/notextile>script>" のように
+	// 取り除いた後に新しいタグができるのを防ぐ。Redmine 7.0.1 #44308 "Frankenstein tag"）
+	text = gsub(reNotextileTag, text, func(m md) string {
+		if m.all() == "<" {
+			return "&lt;"
+		}
+		return ""
+	})
 	text = strings.ReplaceAll(text, "x%x%", "&#38;")
 	return rubyStrip(text)
 }
@@ -123,41 +190,6 @@ func (rc *redcloth) hardBreak(text string) string {
 		return text
 	}
 	return gsub(reHardBreak, text, func(m md) string { return m.s(1) + "<br />" })
-}
-
-var reCodeClass = rxm(`<code` + reS + `+class=(?:"([^"]+)"|'([^']+)')>` + reS + `?(.*)`)
-
-// smooth_offtags (formatter.rb:103-127): コードハイライト対応版
-func (rc *redcloth) smoothOfftags(text string) string {
-	if len(rc.preList) == 0 {
-		return text
-	}
-	return gsub(reRedpre, text, func(m md) string {
-		n, err := strconv.Atoi(m.s(1))
-		if err != nil || n >= len(rc.preList) {
-			return ""
-		}
-		content := rc.preList[n]
-		// この正規表現は rip_offtags が生成するデータにマッチしなければならない
-		if cm := match(reCodeClass, content); cm != nil {
-			language := cm.s(1)
-			if !cm.ok(1) {
-				language = cm.s(2)
-			}
-			code := cm.s(3)
-			// 拡張開発向けに元の言語名を残す
-			langattr := ""
-			if !blank(language) {
-				langattr = ` data-language="` + htmlEscapeERB(language) + `"`
-			}
-			if html, ok := rc.highlightCode(language, strings.ReplaceAll(code, "x%x%", "&")); ok {
-				content = `<code class="` + htmlEscapeERB(language) + ` syntaxhl"` + langattr + `>` + html
-			} else {
-				content = "<code" + langattr + ">" + htmlEscapeERB(code)
-			}
-		}
-		return content
-	})
 }
 
 func (rc *redcloth) highlightCode(lang, code string) (string, bool) {

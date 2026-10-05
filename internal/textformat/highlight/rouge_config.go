@@ -7,7 +7,7 @@ package highlight
 
 import "strings"
 
-// Rouge 4.7 の csharp.rb / ini.rb / properties.rb / conf.rb の移植。
+// Rouge 5.1 の csharp.rb / ini.rb / properties.rb / conf.rb の移植。
 
 func init() {
 	registerRouge("csharp", func() *rlexer {
@@ -138,7 +138,7 @@ endregion pragma nullable`), "|")
 	}
 	registerRouge("ini", func() *rlexer { return iniLike("ini", `[\w\-.]+`, `[;#].*?\n`, `=`, true, false) })
 	registerRouge("properties", func() *rlexer {
-		return iniLike("properties", `[\w.-]+`, `[!#].*?\n`, `[=:]`, false, true)
+		return iniLike("properties", `(?:[\w.-]|\\u\h{4}|\\.)+`, `[!#].*`, `[=:]`, false, true)
 	})
 
 	registerRouge("conf", func() *rlexer {

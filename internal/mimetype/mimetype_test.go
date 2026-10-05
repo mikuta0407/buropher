@@ -19,6 +19,9 @@ func TestOf(t *testing.T) {
 		"trailing.":     "",
 		"dir.d/noext":   "",
 		"unknown.zzzzz": "",
+		"photo.AVIF":    "image/avif",
+		"logo.ai":       "application/illustrator",
+		"image.svg":     "image/svg+xml",
 	}
 	for in, want := range cases {
 		if got := Of(in); got != want {

@@ -391,6 +391,12 @@ func (a *App) AttachmentsShow(c *Req) {
 		data["Kind"] = "diff"
 		data["DiffType"] = diffType
 		data["Diff"] = string(raw)
+	case att.IsImageType():
+		// SVG も <img> で表示する（#44126。ダウンロードは sandbox の CSP 付き・attachment で返すため、
+		// 文書として開かれてもスクリプトは動かない）
+		data["Kind"] = "image"
+	case att.IsPDF():
+		data["Kind"] = "pdf"
 	case att.IsText() && att.Filesize <= int64(a.Settings.Int("file_max_size_displayed"))*1024:
 		raw, err := os.ReadFile(a.AttachmentStore.Diskfile(att))
 		if err != nil {
@@ -409,9 +415,13 @@ func (a *App) AttachmentsShow(c *Req) {
 			data["Kind"] = "file"
 			data["Content"] = content
 		}
-	case att.IsImageType():
-		data["Kind"] = "image"
 	default:
+		// Office 文書は Pandoc で Markdown に変換して CommonMark で表示する（#8959）
+		if md, ok := a.AttachmentStore.MarkdownizedPreviewContent(c.Ctx(), att); ok {
+			data["Kind"] = "markdownized"
+			data["Markup"] = a.markupToHTML(c, "common_mark", toUTF8BySetting(md))
+			break
+		}
 		data["Kind"] = "other"
 		switch {
 		case att.IsVideo():
@@ -653,6 +663,12 @@ func (a *App) findEditableAttachments(c *Req) {
 // findDownloadableAttachments は find_downloadable_attachments（合計サイズの上限を超えれば戻る）。
 func (a *App) findDownloadableAttachments(c *Req) {
 	st := c.attachmentsState()
+	// unless @container.try(:attachments_visible?)（Redmine 6.1.3 の #43951: プロジェクト・バージョンの
+	// ファイルは view_files が無ければ一括ダウンロードできない）
+	if !c.AttachmentVisible(&domain.Attachment{ContainerKind: st.Container.Kind, ContainerID: &st.Container.ID}) {
+		c.DenyAccess()
+		return
+	}
 	list, err := repository.ContainerAttachmentList(c.Ctx(), a.DB, st.Container.Kind, st.Container.ID)
 	if err != nil {
 		a.internalError(c, "container attachments", err)

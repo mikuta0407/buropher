@@ -383,7 +383,7 @@ func (d *Deps) headsForWikiFormatter(r *view.Render, p *Page, included *bool) {
 	if !*included {
 		lang := []string{"c", "cpp", "csharp", "css", "diff", "go", "groovy", "html", "java", "javascript", "objc", "perl", "php", "python", "r", "ruby", "sass", "scala", "shell", "sql", "swift", "xml", "yaml"}
 		langJSON, _ := json.Marshal(lang)
-		mimes := `["image/gif","image/jpeg","image/png","image/tiff","image/webp","image/x-ms-bmp"]`
+		mimes := `["image/avif","image/gif","image/jpeg","image/png","image/tiff","image/webp","image/x-ms-bmp"]`
 		locale := "en"
 		if p.Loc != nil {
 			locale = strings.ToLower(p.Loc.Lang)

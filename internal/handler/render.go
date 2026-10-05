@@ -153,7 +153,7 @@ func (c *Req) Render(name string, data any, opts ...RenderOptions) {
 		c.W.Header().Add("Vary", "Accept")
 	}
 	c.W.WriteHeader(o.Status)
-	_, _ = c.W.Write(out)
+	_, _ = c.W.Write(out) //nolint:gosec // out はテンプレートでエスケープ済みの描画結果
 }
 
 // WriteJS は JavaScript の応答（*.js.erb 相当の本文）を 200 で書く。Render と同じく

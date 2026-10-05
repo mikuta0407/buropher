@@ -10,7 +10,7 @@ import (
 	"sync"
 )
 
-// Rouge 4.7 の ruby.rb の移植。
+// Rouge 5.1 の ruby.rb の移植。
 
 // rubyRegexpEscape は Ruby の Regexp.escape。
 func rubyRegexpEscape(s string) string {
@@ -41,7 +41,7 @@ func rubyRegexpEscape(s string) string {
 
 const (
 	rbLower    = `\p{Ll}\p{Lu}\p{Lt}` // /i 付きの \p{Ll}
-	rbKeywords = `BEGIN|END|alias|begin|break|case|defined\?|do|else|elsif|end|` +
+	rbKeywords = `BEGIN|END|alias|begin|break|case|defined?|do|else|elsif|end|` +
 		`ensure|for|if|in|next|redo|rescue|raise|retry|return|super|then|` +
 		`undef|unless|until|when|while|yield`
 	rbKeywordsPseudo = `loop|include|extend|raise|` +
@@ -70,6 +70,15 @@ public_instance_methods public_methods putc puts raise rand
 readline readlines require require_relative scan select self send set_trace_func
 singleton_methods sleep split sprintf srand sub syscall system
 taint test throw to_a to_s trace_var trap untaint untrace_var warn`), "|")
+
+// Rouge 5.1 では語を切り出してから集合で判定する（%w の const_defined\? は \ を含むため一致しない）
+var (
+	rbKeywordSet       = wordset(strings.ReplaceAll(rbKeywords, "|", " "))
+	rbKeywordPseudoSet = wordset(strings.ReplaceAll(rbKeywordsPseudo, "|", " "))
+	rbBuiltinQSet      = wordset(strings.ReplaceAll(rbBuiltinsQ, "|", " "))
+	rbBuiltinBSet      = wordset(strings.ReplaceAll(rbBuiltinsB, "|", " "))
+	rbBuiltinGSet      = wordset(strings.ReplaceAll(rbBuiltinsG, "|", " "))
+)
 
 type rbHeredoc struct {
 	tolerant bool
@@ -205,8 +214,18 @@ func init() {
 			rule(`\$-[0adFiIlpvw]`, "vg"),
 			rule(`::`, "o"),
 			mixin("strings"),
-			rule(`(?:`+rbKeywords+`)(?=\W|$)`, "k", "expr_start"),
-			rule(`(?:`+rbKeywordsPseudo+`)\b`, "kp", "expr_start"),
+			ruleF(`\w+[?]?`, func(c *rctx) {
+				switch w := c.m.String(); {
+				case rbKeywordSet[w]:
+					c.token("k")
+				case rbKeywordPseudoSet[w]:
+					c.token("kp")
+				default:
+					c.fallThrough()
+					return
+				}
+				c.push("expr_start")
+			}),
 			rule(`(not|and|or)\b`, "ow", "expr_start"),
 			ruleG(`(?x)
           (module)
@@ -215,9 +234,24 @@ func init() {
         `, toks("k", "", "nn")),
 			ruleF(`(def\b)(\s*)`, func(c *rctx) { c.groups("k", ""); c.push("funcname") }),
 			ruleF(`(class\b)(\s*)`, func(c *rctx) { c.groups("k", ""); c.push("classname") }),
-			rule(`(?:`+rbBuiltinsQ+`)[?]`, "nb", "expr_start"),
-			rule(`(?:`+rbBuiltinsB+`)!`, "nb", "expr_start"),
-			rule(`(?<!\.)(?:`+rbBuiltinsG+`)\b`, "nb", "method_call"),
+			ruleF(`(\w+)([?!])?`, func(c *rctx) {
+				switch w, q := c.group(1), c.group(2); {
+				case q == "?" && rbBuiltinQSet[w], q == "!" && rbBuiltinBSet[w]:
+					c.token("nb")
+				default:
+					c.fallThrough()
+					return
+				}
+				c.push("expr_start")
+			}),
+			ruleF(`(?<![.])\w+`, func(c *rctx) {
+				if rbBuiltinGSet[c.m.String()] {
+					c.token("nb")
+					c.push("method_call")
+				} else {
+					c.fallThrough()
+				}
+			}),
 			mixin("has_heredocs"),
 			rule(`\.{2,3}`, "o", "expr_start"),
 			rule(`[\p{Lu}][\p{L}0-9_]*`, "no", "method_call"),

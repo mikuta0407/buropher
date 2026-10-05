@@ -9,12 +9,13 @@ import (
 	"testing"
 
 	"github.com/mikuta0407/buropher/internal/textformat/htmldom"
+	"github.com/mikuta0407/buropher/internal/textformat/scrubber"
 )
 
 // Redmine の test/unit/lib/redmine/wiki_formatting/common_mark/*_test.rb の移植。
 
 func toHTML(text string) string {
-	return Format(text, Options{IconsPath: "/assets/icons-a9735328.svg"})
+	return Format(text, Options{IconsPath: "/assets/icons-0476c1d7.svg"})
 }
 
 func eq(t *testing.T, want, got string) {
@@ -94,7 +95,7 @@ func TestFilesWithAtShouldNotEndUpAsMailtoLinks(t *testing.T) {
 
 func TestShouldSupportSyntaxHighlight(t *testing.T) {
 	html := toHTML("~~~ruby\ndef foo\nend\n~~~\n")
-	contains(t, html, `<pre><code class="ruby syntaxhl" data-language="ruby">`)
+	contains(t, html, `<pre data-clipboard-target="pre"><code class="ruby syntaxhl" data-language="ruby">`)
 	contains(t, html, `<span class="k">def</span>`)
 }
 
@@ -190,7 +191,7 @@ func TestShouldAutolinkURLsAndEmails(t *testing.T) {
 }
 
 func TestShouldSupportHTMLTables(t *testing.T) {
-	eq(t, "<table><tr><td>Cell</td></tr></table>", toHTML(`<table style="background: red"><tr><td>Cell</td></tr></table>`))
+	eq(t, "<table><tbody><tr><td>Cell</td></tr></tbody></table>", toHTML(`<table style="background: red"><tr><td>Cell</td></tr></table>`))
 }
 
 func TestShouldRemoveUnsafeURIs(t *testing.T) {
@@ -206,9 +207,14 @@ func TestShouldEscapeUnwantedTags(t *testing.T) {
 func TestShouldSupportTaskList(t *testing.T) {
 	text := "Task list:\n* [ ] Task 1\n* [x] Task 2\n"
 	expected := "<p>Task list:</p>\n<ul class=\"contains-task-list\">\n<li class=\"task-list-item\">\n" +
-		"<input type=\"checkbox\" class=\"task-list-item-checkbox\" disabled> Task 1\n</li>\n<li class=\"task-list-item\">\n" +
-		"<input type=\"checkbox\" class=\"task-list-item-checkbox\" checked disabled> Task 2</li>\n</ul>\n"
+		"<input type=\"checkbox\" class=\"task-list-item-checkbox\" disabled=\"\"> Task 1\n</li>\n<li class=\"task-list-item\">\n" +
+		"<input type=\"checkbox\" class=\"task-list-item-checkbox\" checked=\"\" disabled=\"\"> Task 2</li>\n</ul>\n"
 	eq(t, reNewlines.ReplaceAllString(expected, ""), strings.TrimRight(reNewlines.ReplaceAllString(toHTML(text), ""), " "))
+}
+
+func TestShouldEnableCJKFriendlyEmphasisExtension(t *testing.T) {
+	eq(t, "<p><strong>この文は重要です。</strong>而且，<strong>这句话也非常重要。</strong>이 문장은 중요하지 않습니다.</p>",
+		toHTML("**この文は重要です。**而且，**这句话也非常重要。**이 문장은 중요하지 않습니다."))
 }
 
 func TestShouldRenderAlertBlocks(t *testing.T) {
@@ -234,6 +240,16 @@ func TestShouldNotRenderUnknownAlertType(t *testing.T) {
 	}
 }
 
+// scrub は HTML を HTML5 として解析し、スクラバを 1 つ適用して直列化する。
+func scrub(html string, f func(*htmldom.Node) bool) string {
+	frag, err := htmldom.ParseHTML5Fragment(html)
+	if err != nil {
+		panic(err)
+	}
+	scrubber.Run(frag, f)
+	return htmldom.RenderHTML5(frag)
+}
+
 // ---- markdown_filter_test.rb ----
 
 func TestMarkdownFilterShouldRenderMarkdown(t *testing.T) {
@@ -243,9 +259,7 @@ func TestMarkdownFilterShouldRenderMarkdown(t *testing.T) {
 // ---- fixup_auto_links_filter_test.rb ----
 
 func fixup(markdown string) string {
-	frag := htmldom.ParseFragment(MarkdownToHTML(markdown, true))
-	FixupAutoLinksFilter(frag)
-	return htmldom.Render(frag)
+	return scrub(MarkdownToHTML(markdown, true), func(n *htmldom.Node) bool { fixupAutoLink(n); return false })
 }
 
 func TestShouldFixupAutolinkedUserReferences(t *testing.T) {
@@ -260,9 +274,7 @@ func TestShouldFixupAutolinkedHiresFiles(t *testing.T) {
 // ---- alerts_icons_filter_test.rb ----
 
 func alertsFilter(markdown string, opts Options) string {
-	frag := htmldom.ParseFragment(MarkdownToHTML(markdown, true))
-	AlertsIconsFilter(frag, opts)
-	return htmldom.Render(frag)
+	return scrub(MarkdownToHTML(markdown, true), func(n *htmldom.Node) bool { alertsIcons(n, opts); return false })
 }
 
 func TestShouldRenderAlertBlocksWithLocalizedLabels(t *testing.T) {
@@ -284,9 +296,7 @@ func TestShouldNotTranslateTitleIfOverridden(t *testing.T) {
 // ---- syntax_highlight_filter_test.rb ----
 
 func highlightFilter(html string) string {
-	frag := htmldom.ParseFragment(html)
-	SyntaxHighlightFilter(frag)
-	return htmldom.Render(frag)
+	return scrub(html, func(n *htmldom.Node) bool { return syntaxHighlight(n, nil) })
 }
 
 func TestShouldHighlightSupportedLanguage(t *testing.T) {

@@ -42,6 +42,7 @@ func (d *Deps) WikiRenderer(p *Page) *redmine.Renderer {
 		ActionName:         p.Action,
 		PreviewAttachments: p.PreviewAttachments,
 		Logger:             p.Logger,
+		TablesortEnabled:   p.settingBool("wiki_tablesort_enabled"),
 	}
 	if p.Loc != nil && p.Loc.Location != nil {
 		loc := p.Loc.Location

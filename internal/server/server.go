@@ -175,7 +175,10 @@ func New(cfg *config.Config, d *db.DB, opts ...Options) (*Server, error) {
 	if box, err := secretbox.New(string(secret)); err == nil {
 		app.Secrets = box
 	}
-	app.AttachmentStore = &attachments.Store{Root: cfg.Storage.AttachmentsPath, Settings: st, Now: o.Now, Logger: o.Logger}
+	app.AttachmentStore = &attachments.Store{Root: cfg.Storage.AttachmentsPath, Settings: st, Now: o.Now, Logger: o.Logger,
+		Markdownizer: attachments.NewMarkdownizer(cfg.Preview.PandocCommand,
+			time.Duration(cfg.Preview.MarkdownizedPreviewGenerationTimeout)*time.Second,
+			cfg.Preview.MarkdownizedPreviewMaxSourceSize, cfg.Preview.MarkdownizedPreviewMaxOutputSize, o.Logger)}
 	errs.Page = app.ErrorPage()
 	if b, err := fs.ReadFile(web.Public(), "500.html"); err == nil {
 		handler.InternalErrorPage = b

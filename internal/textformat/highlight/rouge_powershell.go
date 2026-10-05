@@ -7,7 +7,7 @@ package highlight
 
 import "strings"
 
-// Rouge 4.7 の powershell.rb の移植。
+// Rouge 5.1 の powershell.rb の移植。
 
 var psAttributes = wordset(`ConfirmImpact DefaultParameterSetName HelpURI PositionalBinding
 SupportsPaging SupportsShouldProcess`)

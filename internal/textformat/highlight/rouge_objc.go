@@ -5,7 +5,7 @@
 
 package highlight
 
-// Rouge 4.7 の objective_c.rb / objective_c/common.rb の移植。
+// Rouge 5.1 の objective_c.rb / objective_c/common.rb の移植。
 
 var (
 	objcAtKeywords = wordset(`selector private protected public encode synchronized try
