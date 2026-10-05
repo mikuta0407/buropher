@@ -122,5 +122,9 @@
  {
   "name": "leading_text",
   "body": "text first\n<p>para</p>\ntrailing"
+ },
+ {
+  "name": "pre_copy_button",
+  "body": "<div class=\"pre-wrapper\" data-controller=\"sticky-copy-button\"><a class=\"copy-pre-content-link icon-only\" data-action=\"click->sticky-copy-button#copy\"><svg class=\"s18 icon-svg\" aria-hidden=\"true\"><use href=\"http://localhost:3000/assets/icons.svg#icon--copy-pre-content\"></use></svg><span class=\"icon-label hidden\">Copy</span></a><pre>foo</pre></div>\n"
  }
 ]
