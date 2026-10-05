@@ -82,6 +82,8 @@ func setupNotify(cfg *config.Config, d *db.DB, app *handler.App, o Options) (*jo
 	svc.RegisterJobs()
 	// buropher 拡張: LDAP の定期同期
 	app.RegisterLDAPSyncJob(q)
+	// Webhook の送信（WebhookJob）
+	app.RegisterWebhookJob(q)
 	app.Notify = svc
 	if svc.MailEnabled() {
 		// パスワード再発行・登録・2 要素認証のセキュリティ通知などのアカウント系メール（未設定ならログのみ）

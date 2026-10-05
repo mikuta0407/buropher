@@ -6,6 +6,7 @@ package normalize
 import (
 	"bytes"
 	"fmt"
+	"github.com/mikuta0407/buropher/internal/brand"
 	"html"
 	"regexp"
 	"sort"
@@ -330,7 +331,8 @@ func (n *Normalizer) renderElement(b *strings.Builder, x *xhtml.Node, depth int)
 	}
 	if len(kids) == 1 && kids[0].Type == xhtml.TextNode {
 		t := html.EscapeString(n.textValue(kids[0].Data))
-		if len(t) <= inlineTextMax && !strings.Contains(t, "\n") {
+		// 製品名の置換（Redmine → Buropher）で長さが変わっても、参照と同じ位置で折り返す
+		if len(strings.ReplaceAll(t, brand.Name, brand.Upstream)) <= inlineTextMax && !strings.Contains(t, "\n") {
 			b.WriteString(t)
 			b.WriteString(end)
 			b.WriteByte('\n')

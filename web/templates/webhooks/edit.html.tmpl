@@ -1,0 +1,6 @@
+<h2>{{l "label_webhook_edit"}}</h2>
+
+{{$f := labelled_form_for "" .Webhook (hash "url" (printf "/webhooks/%d" .Webhook.W.ID) "html" (hash "method" "patch"))}}{{$f.Open}}
+  {{partial "webhooks/form" (dict "f" $f)}}
+  {{submit_tag (l "button_save")}}
+{{end_form}}

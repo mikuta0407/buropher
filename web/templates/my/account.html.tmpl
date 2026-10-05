@@ -3,6 +3,7 @@
 <div class="contextual">
 {{if $a.ShowEmailsLink}}{{link_to (sprite_icon "email" (l "label_email_address_plural")) (printf "/users/%d/email_addresses" $u.ID) (hash "class" "icon icon-email-add" "remote" true)}}{{end}}
 {{if $a.ChangePasswordAllowed}}{{link_to (sprite_icon "key" (l "button_change_password")) "/my/password" (hash "class" "icon icon-passwd")}}{{end}}
+{{if $a.WebhooksLink}}{{link_to (sprite_icon "webhook" (l "label_webhook_plural")) "/webhooks" (hash "class" "icon icon-webhook")}}{{end}}
 {{if $a.RestAPIEnabled}}{{link_to (sprite_icon "apps" (l "label_oauth_authorized_application_plural")) "/oauth/authorized_applications" (hash "class" "icon icon-applications")}}{{end}}
 {{call_hook "view_my_account_contextual"}}
 </div>

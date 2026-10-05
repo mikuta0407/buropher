@@ -23,6 +23,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/urlroot"
 	"github.com/mikuta0407/buropher/internal/view"
 	"github.com/mikuta0407/buropher/internal/view/rails"
+	"github.com/mikuta0407/buropher/internal/webhook"
 )
 
 // このファイルは timelog#new / create / edit / update（timelog/_form, new, edit, new.js, edit.js）の移植。
@@ -507,6 +508,7 @@ func (a *App) TimelogCreate(c *Req) {
 		a.teRenderForm(c, t, "timelog/new", 0)
 		return
 	}
+	a.triggerWebhookByID(c, webhook.TypeTimeEntry, webhook.ActionCreated, t.ID)
 	if api {
 		c.W.Header().Set("Location", httpx.RequestBaseURL(c.R)+urlroot.Path("/time_entries/"+strconv.FormatInt(t.ID, 10)))
 		a.teRenderShowAPI(c, t, http.StatusCreated)
@@ -597,6 +599,7 @@ func (a *App) TimelogUpdate(c *Req) {
 		a.teRenderForm(c, t, "timelog/edit", 0)
 		return
 	}
+	a.triggerWebhookByID(c, webhook.TypeTimeEntry, webhook.ActionUpdated, t.ID)
 	if api {
 		c.RenderAPIOK()
 		return

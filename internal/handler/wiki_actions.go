@@ -6,6 +6,7 @@ package handler
 import (
 	"errors"
 	"net/http"
+	"slices"
 	"sort"
 	"strconv"
 	"strings"
@@ -23,6 +24,7 @@ import (
 	"github.com/mikuta0407/buropher/internal/urlroot"
 	"github.com/mikuta0407/buropher/internal/validation"
 	"github.com/mikuta0407/buropher/internal/view"
+	"github.com/mikuta0407/buropher/internal/webhook"
 	"github.com/mikuta0407/buropher/internal/wikidiff"
 )
 
@@ -388,46 +390,54 @@ func (a *App) wikiError(c *Req, err error) {
 
 // renderWikiPageAPI は wiki/show.api.rsb。
 func (a *App) renderWikiPageAPI(c *Req, page *domain.WikiPage, content *domain.WikiContentVersion, status int) {
+	c.RenderAPI(status, func(b apibuilder.Builder) {
+		a.apiWikiPage(c, b, page, content, c.IncludeInAPIResponse("attachments"))
+	})
+}
+
+// apiWikiPage は wiki/show.api.rsb の api.wiki_page（Webhook のペイロードでも使う）。
+func (a *App) apiWikiPage(c *Req, b apibuilder.Builder, page *domain.WikiPage, content *domain.WikiContentVersion, include bool) {
 	var parent *domain.WikiPage
 	if page.ParentID != nil {
 		parent, _ = repository.GetWikiPageByID(c.Ctx(), a.DB, 0, *page.ParentID)
 	}
 	var atts []*domain.Attachment
-	include := c.IncludeInAPIResponse("attachments")
 	if include {
 		atts, _ = repository.ContainerAttachmentList(c.Ctx(), a.DB, "wiki_page", page.ID)
 	}
 	userFormat := a.Settings.String("user_format")
-	c.RenderAPI(status, func(b apibuilder.Builder) {
-		b.Object("wiki_page", func() {
-			b.Value("title", page.Title)
-			if parent != nil {
-				b.Attrs("parent", apibuilder.A("title", parent.Title))
+	b.Object("wiki_page", func() {
+		b.Value("title", page.Title)
+		if parent != nil {
+			b.Attrs("parent", apibuilder.A("title", parent.Title))
+		}
+		b.Value("text", content.Text)
+		b.Value("version", content.Version)
+		if content.AuthorID != nil {
+			name := ""
+			if content.Author != nil {
+				name = content.Author.Name(userFormat)
 			}
-			b.Value("text", content.Text)
-			b.Value("version", content.Version)
-			if content.AuthorID != nil {
-				name := ""
-				if content.Author != nil {
-					name = content.Author.Name(userFormat)
+			b.Attrs("author", apibuilder.A("id", *content.AuthorID, "name", name))
+		}
+		if content.Comments == nil {
+			b.Value("comments", nil)
+		} else {
+			b.Value("comments", *content.Comments)
+		}
+		// Redmine 7.0: api.project(...) unless @page.project.nil?
+		if p := c.wikiPageProject(page); p != nil {
+			b.Attrs("project", apibuilder.A("id", p.ID, "name", p.Name))
+		}
+		b.Value("created_on", page.CreatedAt)
+		b.Value("updated_on", content.UpdatedOn)
+		if include {
+			b.Array("attachments", nil, func() {
+				for _, at := range atts {
+					a.renderAPIAttachment(c, b, at)
 				}
-				b.Attrs("author", apibuilder.A("id", *content.AuthorID, "name", name))
-			}
-			if content.Comments == nil {
-				b.Value("comments", nil)
-			} else {
-				b.Value("comments", *content.Comments)
-			}
-			b.Value("created_on", page.CreatedAt)
-			b.Value("updated_on", content.UpdatedOn)
-			if include {
-				b.Array("attachments", nil, func() {
-					for _, at := range atts {
-						a.renderAPIAttachment(c, b, at)
-					}
-				})
-			}
-		})
+			})
+		}
 	})
 }
 
@@ -828,6 +838,14 @@ func (a *App) WikiUpdate(c *Req) {
 			a.deleteAttachmentsAfterCommit(c, removedAttachments)
 		}
 	}
+	if saved && (wasNew || textChanged) {
+		// WikiPage の after_create_commit / after_update_commit（save_with_content の save）
+		action := webhook.ActionUpdated
+		if wasNew {
+			action = webhook.ActionCreated
+		}
+		a.triggerWebhookByID(c, webhook.TypeWikiPage, action, page.ID)
+	}
 	if saved && textChanged {
 		// WikiContent の after_create_commit / after_update_commit（本文が変わった場合）の通知
 		if wasNew || !hasContent {
@@ -1188,6 +1206,8 @@ func (a *App) WikiRename(c *Req) {
 				return
 			default:
 				_ = targetWiki
+				// @page.save の after_update_commit
+				a.triggerWebhookByID(c, webhook.TypeWikiPage, webhook.ActionUpdated, page.ID)
 				if err := a.loadPageProject(c, page); err != nil {
 					a.wikiError(c, err)
 					return
@@ -1357,6 +1377,8 @@ func (a *App) WikiProtect(c *Req) {
 		a.wikiError(c, err)
 		return
 	}
+	// update_attribute :protected の after_update_commit
+	a.triggerWebhookByID(c, webhook.TypeWikiPage, webhook.ActionUpdated, page.ID)
 	c.Redirect(wikiPagePath(c.Project, page.Title))
 }
 
@@ -1575,8 +1597,11 @@ func (a *App) WikiDestroy(c *Req) {
 		}
 	}
 	var removedAttachments []*domain.Attachment
+	var reassigned []int64
+	// Webhook（wiki_page.deleted）のペイロードは削除の前に計算する
+	a.prepareDeleteWebhooks(c, webhook.TypeWikiPage, append(slices.Clone(toDestroy), page.ID)...)
 	err = a.DB.WithTx(c.Ctx(), func(tx *db.Tx) error {
-		removedAttachments = nil
+		removedAttachments, reassigned = nil, nil
 		if reassignTo != nil {
 			children, err := repository.WikiPageChildPages(c.Ctx(), tx, page.ID)
 			if err != nil {
@@ -1586,6 +1611,7 @@ func (a *App) WikiDestroy(c *Req) {
 				if err := repository.SetWikiPageParent(c.Ctx(), tx, ch.ID, &reassignTo.ID); err != nil {
 					return err
 				}
+				reassigned = append(reassigned, ch.ID)
 			}
 		}
 		for _, id := range toDestroy {
@@ -1606,6 +1632,9 @@ func (a *App) WikiDestroy(c *Req) {
 		a.wikiError(c, err)
 		return
 	}
+	// 子の update_attribute(:parent, reassign_to) と削除の after_*_commit
+	a.triggerWebhookByID(c, webhook.TypeWikiPage, webhook.ActionUpdated, reassigned...)
+	a.enqueuePreparedDeleteWebhooks(c, webhook.TypeWikiPage)
 	a.deleteAttachmentsAfterCommit(c, removedAttachments)
 	if httpx.IsAPIRequest(c.R) {
 		c.RenderAPIOK()

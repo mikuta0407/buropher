@@ -1,0 +1,1178 @@
+[
+  {
+    "name": "issue_1_created_dlopper",
+    "event": "issue.created",
+    "id": 1,
+    "user": "dlopper",
+    "journal_id": null,
+    "payload": {
+      "type": "issue.created",
+      "timestamp": "2026-01-12T03:00:00Z",
+      "data": {
+        "issue": {
+          "id": 1,
+          "project": {
+            "id": 1,
+            "name": "eCookbook"
+          },
+          "tracker": {
+            "id": 1,
+            "name": "Bug"
+          },
+          "status": {
+            "id": 1,
+            "name": "New",
+            "is_closed": false
+          },
+          "priority": {
+            "id": 4,
+            "name": "Low"
+          },
+          "author": {
+            "id": 2,
+            "name": "John Smith"
+          },
+          "category": {
+            "id": 1,
+            "name": "Printing"
+          },
+          "subject": "Cannot print recipes",
+          "description": "Unable to print recipes",
+          "start_date": "2026-01-14",
+          "due_date": "2026-01-25",
+          "done_ratio": 0,
+          "is_private": false,
+          "estimated_hours": 200.0,
+          "total_estimated_hours": 200.0,
+          "custom_fields": [
+            {
+              "id": 2,
+              "name": "Searchable field",
+              "value": "125"
+            },
+            {
+              "id": 1,
+              "name": "Database",
+              "value": null
+            },
+            {
+              "id": 6,
+              "name": "Float field",
+              "value": "2.1"
+            },
+            {
+              "id": 8,
+              "name": "Custom date",
+              "value": "2009-12-01"
+            },
+            {
+              "id": 9,
+              "name": "Project 1 cf",
+              "value": null
+            }
+          ],
+          "created_on": "2026-01-12T03:00:00Z",
+          "updated_on": "2026-01-14T03:00:00Z",
+          "closed_on": null
+        }
+      }
+    }
+  },
+  {
+    "name": "news_1_created_dlopper",
+    "event": "news.created",
+    "id": 1,
+    "user": "dlopper",
+    "journal_id": null,
+    "payload": {
+      "type": "news.created",
+      "timestamp": "2006-07-19T11:40:26Z",
+      "data": {
+        "news": {
+          "id": 1,
+          "project": {
+            "id": 1,
+            "name": "eCookbook"
+          },
+          "author": {
+            "id": 2,
+            "name": "John Smith"
+          },
+          "title": "eCookbook first release !",
+          "summary": "First version was released...",
+          "description": "eCookbook 1.0 has been released.\n\nVisit http://ecookbook.somenet.foo/",
+          "created_on": "2006-07-19T11:40:26Z"
+        }
+      }
+    }
+  },
+  {
+    "name": "time_entry_1_created_dlopper",
+    "event": "time_entry.created",
+    "id": 1,
+    "user": "dlopper",
+    "journal_id": null,
+    "payload": {
+      "type": "time_entry.created",
+      "timestamp": "2007-03-23T02:54:18Z",
+      "data": {
+        "time_entry": {
+          "id": 1,
+          "project": {
+            "id": 1,
+            "name": "eCookbook"
+          },
+          "issue": {
+            "id": 1
+          },
+          "user": {
+            "id": 2,
+            "name": "John Smith"
+          },
+          "activity": {
+            "id": 9,
+            "name": "Design"
+          },
+          "hours": 4.25,
+          "comments": "My hours",
+          "spent_on": "2007-03-23",
+          "created_on": "2007-03-23T02:54:18Z",
+          "updated_on": "2007-03-23T02:54:18Z",
+          "custom_fields": [
+            {
+              "id": 10,
+              "name": "Overtime",
+              "value": null
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "version_1_created_dlopper",
+    "event": "version.created",
+    "id": 1,
+    "user": "dlopper",
+    "journal_id": null,
+    "payload": {
+      "type": "version.created",
+      "timestamp": "2006-07-19T10:00:07Z",
+      "data": {
+        "version": {
+          "id": 1,
+          "project": {
+            "id": 1,
+            "name": "eCookbook"
+          },
+          "name": "0.1",
+          "description": "Beta",
+          "status": "closed",
+          "due_date": "2006-07-01",
+          "sharing": "none",
+          "wiki_page_title": null,
+          "created_on": "2006-07-19T10:00:07Z",
+          "updated_on": "2006-07-19T10:00:07Z"
+        }
+      }
+    }
+  },
+  {
+    "name": "wiki_page_1_created_dlopper",
+    "event": "wiki_page.created",
+    "id": 1,
+    "user": "dlopper",
+    "journal_id": null,
+    "payload": {
+      "type": "wiki_page.created",
+      "timestamp": "2007-03-06T14:08:07Z",
+      "data": {
+        "wiki_page": {
+          "title": "CookBook_documentation",
+          "text": "h1. CookBook documentation\n\n{{child_pages}}\n\nSome updated [[documentation]] here with gzipped history",
+          "version": 3,
+          "author": {
+            "id": 1,
+            "name": "Redmine Admin"
+          },
+          "comments": "Gzip compression activated",
+          "project": {
+            "id": 1,
+            "name": "eCookbook"
+          },
+          "created_on": "2007-03-06T14:08:07Z",
+          "updated_on": "2007-03-06T14:10:51Z"
+        }
+      }
+    }
+  },
+  {
+    "name": "issue_1_updated_dlopper",
+    "event": "issue.updated",
+    "id": 1,
+    "user": "dlopper",
+    "journal_id": null,
+    "payload": {
+      "type": "issue.updated",
+      "timestamp": "2026-01-14T03:00:00Z",
+      "data": {
+        "issue": {
+          "id": 1,
+          "project": {
+            "id": 1,
+            "name": "eCookbook"
+          },
+          "tracker": {
+            "id": 1,
+            "name": "Bug"
+          },
+          "status": {
+            "id": 1,
+            "name": "New",
+            "is_closed": false
+          },
+          "priority": {
+            "id": 4,
+            "name": "Low"
+          },
+          "author": {
+            "id": 2,
+            "name": "John Smith"
+          },
+          "category": {
+            "id": 1,
+            "name": "Printing"
+          },
+          "subject": "Cannot print recipes",
+          "description": "Unable to print recipes",
+          "start_date": "2026-01-14",
+          "due_date": "2026-01-25",
+          "done_ratio": 0,
+          "is_private": false,
+          "estimated_hours": 200.0,
+          "total_estimated_hours": 200.0,
+          "custom_fields": [
+            {
+              "id": 2,
+              "name": "Searchable field",
+              "value": "125"
+            },
+            {
+              "id": 1,
+              "name": "Database",
+              "value": null
+            },
+            {
+              "id": 6,
+              "name": "Float field",
+              "value": "2.1"
+            },
+            {
+              "id": 8,
+              "name": "Custom date",
+              "value": "2009-12-01"
+            },
+            {
+              "id": 9,
+              "name": "Project 1 cf",
+              "value": null
+            }
+          ],
+          "created_on": "2026-01-12T03:00:00Z",
+          "updated_on": "2026-01-14T03:00:00Z",
+          "closed_on": null
+        }
+      }
+    }
+  },
+  {
+    "name": "news_1_updated_dlopper",
+    "event": "news.updated",
+    "id": 1,
+    "user": "dlopper",
+    "journal_id": null,
+    "payload": {
+      "type": "news.updated",
+      "timestamp": null,
+      "data": {
+        "news": {
+          "id": 1,
+          "project": {
+            "id": 1,
+            "name": "eCookbook"
+          },
+          "author": {
+            "id": 2,
+            "name": "John Smith"
+          },
+          "title": "eCookbook first release !",
+          "summary": "First version was released...",
+          "description": "eCookbook 1.0 has been released.\n\nVisit http://ecookbook.somenet.foo/",
+          "created_on": "2006-07-19T11:40:26Z"
+        }
+      }
+    }
+  },
+  {
+    "name": "time_entry_1_updated_dlopper",
+    "event": "time_entry.updated",
+    "id": 1,
+    "user": "dlopper",
+    "journal_id": null,
+    "payload": {
+      "type": "time_entry.updated",
+      "timestamp": "2007-03-23T02:54:18Z",
+      "data": {
+        "time_entry": {
+          "id": 1,
+          "project": {
+            "id": 1,
+            "name": "eCookbook"
+          },
+          "issue": {
+            "id": 1
+          },
+          "user": {
+            "id": 2,
+            "name": "John Smith"
+          },
+          "activity": {
+            "id": 9,
+            "name": "Design"
+          },
+          "hours": 4.25,
+          "comments": "My hours",
+          "spent_on": "2007-03-23",
+          "created_on": "2007-03-23T02:54:18Z",
+          "updated_on": "2007-03-23T02:54:18Z",
+          "custom_fields": [
+            {
+              "id": 10,
+              "name": "Overtime",
+              "value": null
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "version_1_updated_dlopper",
+    "event": "version.updated",
+    "id": 1,
+    "user": "dlopper",
+    "journal_id": null,
+    "payload": {
+      "type": "version.updated",
+      "timestamp": "2006-07-19T10:00:07Z",
+      "data": {
+        "version": {
+          "id": 1,
+          "project": {
+            "id": 1,
+            "name": "eCookbook"
+          },
+          "name": "0.1",
+          "description": "Beta",
+          "status": "closed",
+          "due_date": "2006-07-01",
+          "sharing": "none",
+          "wiki_page_title": null,
+          "created_on": "2006-07-19T10:00:07Z",
+          "updated_on": "2006-07-19T10:00:07Z"
+        }
+      }
+    }
+  },
+  {
+    "name": "wiki_page_1_updated_dlopper",
+    "event": "wiki_page.updated",
+    "id": 1,
+    "user": "dlopper",
+    "journal_id": null,
+    "payload": {
+      "type": "wiki_page.updated",
+      "timestamp": "2007-03-06T14:10:51Z",
+      "data": {
+        "wiki_page": {
+          "title": "CookBook_documentation",
+          "text": "h1. CookBook documentation\n\n{{child_pages}}\n\nSome updated [[documentation]] here with gzipped history",
+          "version": 3,
+          "author": {
+            "id": 1,
+            "name": "Redmine Admin"
+          },
+          "comments": "Gzip compression activated",
+          "project": {
+            "id": 1,
+            "name": "eCookbook"
+          },
+          "created_on": "2007-03-06T14:08:07Z",
+          "updated_on": "2007-03-06T14:10:51Z"
+        }
+      }
+    }
+  },
+  {
+    "name": "issue_1_deleted_dlopper",
+    "event": "issue.deleted",
+    "id": 1,
+    "user": "dlopper",
+    "journal_id": null,
+    "payload": {
+      "type": "issue.deleted",
+      "timestamp": null,
+      "data": {
+        "issue": {
+          "id": 1,
+          "project": {
+            "id": 1,
+            "name": "eCookbook"
+          },
+          "tracker": {
+            "id": 1,
+            "name": "Bug"
+          },
+          "status": {
+            "id": 1,
+            "name": "New",
+            "is_closed": false
+          },
+          "priority": {
+            "id": 4,
+            "name": "Low"
+          },
+          "author": {
+            "id": 2,
+            "name": "John Smith"
+          },
+          "category": {
+            "id": 1,
+            "name": "Printing"
+          },
+          "subject": "Cannot print recipes",
+          "description": "Unable to print recipes",
+          "start_date": "2026-01-14",
+          "due_date": "2026-01-25",
+          "done_ratio": 0,
+          "is_private": false,
+          "estimated_hours": 200.0,
+          "total_estimated_hours": 200.0,
+          "custom_fields": [
+            {
+              "id": 2,
+              "name": "Searchable field",
+              "value": "125"
+            },
+            {
+              "id": 1,
+              "name": "Database",
+              "value": null
+            },
+            {
+              "id": 6,
+              "name": "Float field",
+              "value": "2.1"
+            },
+            {
+              "id": 8,
+              "name": "Custom date",
+              "value": "2009-12-01"
+            },
+            {
+              "id": 9,
+              "name": "Project 1 cf",
+              "value": null
+            }
+          ],
+          "created_on": "2026-01-12T03:00:00Z",
+          "updated_on": "2026-01-14T03:00:00Z",
+          "closed_on": null
+        }
+      }
+    }
+  },
+  {
+    "name": "news_1_deleted_dlopper",
+    "event": "news.deleted",
+    "id": 1,
+    "user": "dlopper",
+    "journal_id": null,
+    "payload": {
+      "type": "news.deleted",
+      "timestamp": null,
+      "data": {
+        "news": {
+          "id": 1,
+          "project": {
+            "id": 1,
+            "name": "eCookbook"
+          },
+          "author": {
+            "id": 2,
+            "name": "John Smith"
+          },
+          "title": "eCookbook first release !",
+          "summary": "First version was released...",
+          "description": "eCookbook 1.0 has been released.\n\nVisit http://ecookbook.somenet.foo/",
+          "created_on": "2006-07-19T11:40:26Z"
+        }
+      }
+    }
+  },
+  {
+    "name": "time_entry_1_deleted_dlopper",
+    "event": "time_entry.deleted",
+    "id": 1,
+    "user": "dlopper",
+    "journal_id": null,
+    "payload": {
+      "type": "time_entry.deleted",
+      "timestamp": null,
+      "data": {
+        "time_entry": {
+          "id": 1,
+          "project": {
+            "id": 1,
+            "name": "eCookbook"
+          },
+          "issue": {
+            "id": 1
+          },
+          "user": {
+            "id": 2,
+            "name": "John Smith"
+          },
+          "activity": {
+            "id": 9,
+            "name": "Design"
+          },
+          "hours": 4.25,
+          "comments": "My hours",
+          "spent_on": "2007-03-23",
+          "created_on": "2007-03-23T02:54:18Z",
+          "updated_on": "2007-03-23T02:54:18Z",
+          "custom_fields": [
+            {
+              "id": 10,
+              "name": "Overtime",
+              "value": null
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "version_1_deleted_dlopper",
+    "event": "version.deleted",
+    "id": 1,
+    "user": "dlopper",
+    "journal_id": null,
+    "payload": {
+      "type": "version.deleted",
+      "timestamp": null,
+      "data": {
+        "version": {
+          "id": 1,
+          "project": {
+            "id": 1,
+            "name": "eCookbook"
+          },
+          "name": "0.1",
+          "description": "Beta",
+          "status": "closed",
+          "due_date": "2006-07-01",
+          "sharing": "none",
+          "wiki_page_title": null,
+          "created_on": "2006-07-19T10:00:07Z",
+          "updated_on": "2006-07-19T10:00:07Z"
+        }
+      }
+    }
+  },
+  {
+    "name": "wiki_page_1_deleted_dlopper",
+    "event": "wiki_page.deleted",
+    "id": 1,
+    "user": "dlopper",
+    "journal_id": null,
+    "payload": {
+      "type": "wiki_page.deleted",
+      "timestamp": null,
+      "data": {
+        "wiki_page": {
+          "title": "CookBook_documentation",
+          "text": "h1. CookBook documentation\n\n{{child_pages}}\n\nSome updated [[documentation]] here with gzipped history",
+          "version": 3,
+          "author": {
+            "id": 1,
+            "name": "Redmine Admin"
+          },
+          "comments": "Gzip compression activated",
+          "project": {
+            "id": 1,
+            "name": "eCookbook"
+          },
+          "created_on": "2007-03-06T14:08:07Z",
+          "updated_on": "2007-03-06T14:10:51Z"
+        }
+      }
+    }
+  },
+  {
+    "name": "issue_1_updated_journal_1_dlopper",
+    "event": "issue.updated",
+    "id": 1,
+    "user": "dlopper",
+    "journal_id": 1,
+    "payload": {
+      "type": "issue.updated",
+      "timestamp": "2026-01-12T15:00:00Z",
+      "data": {
+        "issue": {
+          "id": 1,
+          "project": {
+            "id": 1,
+            "name": "eCookbook"
+          },
+          "tracker": {
+            "id": 1,
+            "name": "Bug"
+          },
+          "status": {
+            "id": 1,
+            "name": "New",
+            "is_closed": false
+          },
+          "priority": {
+            "id": 4,
+            "name": "Low"
+          },
+          "author": {
+            "id": 2,
+            "name": "John Smith"
+          },
+          "category": {
+            "id": 1,
+            "name": "Printing"
+          },
+          "subject": "Cannot print recipes",
+          "description": "Unable to print recipes",
+          "start_date": "2026-01-14",
+          "due_date": "2026-01-25",
+          "done_ratio": 0,
+          "is_private": false,
+          "estimated_hours": 200.0,
+          "total_estimated_hours": 200.0,
+          "custom_fields": [
+            {
+              "id": 2,
+              "name": "Searchable field",
+              "value": "125"
+            },
+            {
+              "id": 1,
+              "name": "Database",
+              "value": null
+            },
+            {
+              "id": 6,
+              "name": "Float field",
+              "value": "2.1"
+            },
+            {
+              "id": 8,
+              "name": "Custom date",
+              "value": "2009-12-01"
+            },
+            {
+              "id": 9,
+              "name": "Project 1 cf",
+              "value": null
+            }
+          ],
+          "created_on": "2026-01-12T03:00:00Z",
+          "updated_on": "2026-01-14T03:00:00Z",
+          "closed_on": null
+        },
+        "journal": {
+          "id": 1,
+          "created_on": "2026-01-12T15:00:00Z",
+          "notes": "Journal notes",
+          "user": {
+            "id": 1,
+            "name": "Redmine Admin"
+          },
+          "details": [
+            {
+              "property": "attr",
+              "prop_key": "status_id",
+              "old_value": "1",
+              "value": "2"
+            },
+            {
+              "property": "attr",
+              "prop_key": "done_ratio",
+              "old_value": "40",
+              "value": "30"
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "issue_1_updated_journal_2_admin",
+    "event": "issue.updated",
+    "id": 1,
+    "user": "admin",
+    "journal_id": 2,
+    "payload": {
+      "type": "issue.updated",
+      "timestamp": "2026-01-13T15:00:00Z",
+      "data": {
+        "issue": {
+          "id": 1,
+          "project": {
+            "id": 1,
+            "name": "eCookbook"
+          },
+          "tracker": {
+            "id": 1,
+            "name": "Bug"
+          },
+          "status": {
+            "id": 1,
+            "name": "New",
+            "is_closed": false
+          },
+          "priority": {
+            "id": 4,
+            "name": "Low"
+          },
+          "author": {
+            "id": 2,
+            "name": "John Smith"
+          },
+          "category": {
+            "id": 1,
+            "name": "Printing"
+          },
+          "subject": "Cannot print recipes",
+          "description": "Unable to print recipes",
+          "start_date": "2026-01-14",
+          "due_date": "2026-01-25",
+          "done_ratio": 0,
+          "is_private": false,
+          "estimated_hours": 200.0,
+          "total_estimated_hours": 200.0,
+          "custom_fields": [
+            {
+              "id": 2,
+              "name": "Searchable field",
+              "value": "125"
+            },
+            {
+              "id": 1,
+              "name": "Database",
+              "value": null
+            },
+            {
+              "id": 6,
+              "name": "Float field",
+              "value": "2.1"
+            },
+            {
+              "id": 8,
+              "name": "Custom date",
+              "value": "2009-12-01"
+            },
+            {
+              "id": 9,
+              "name": "Project 1 cf",
+              "value": null
+            }
+          ],
+          "created_on": "2026-01-12T03:00:00Z",
+          "updated_on": "2026-01-14T03:00:00Z",
+          "closed_on": null
+        },
+        "journal": {
+          "id": 2,
+          "created_on": "2026-01-13T15:00:00Z",
+          "notes": "Some notes with Redmine links: #2, r2.",
+          "user": {
+            "id": 2,
+            "name": "John Smith"
+          },
+          "details": []
+        }
+      }
+    }
+  },
+  {
+    "name": "issue_6_updated_journal_4_jsmith",
+    "event": "issue.updated",
+    "id": 6,
+    "user": "jsmith",
+    "journal_id": 4,
+    "payload": {
+      "type": "issue.updated",
+      "timestamp": "2026-01-13T15:00:00Z",
+      "data": {
+        "issue": {
+          "id": 6,
+          "project": {
+            "id": 5,
+            "name": "Private child of eCookbook"
+          },
+          "tracker": {
+            "id": 1,
+            "name": "Bug"
+          },
+          "status": {
+            "id": 1,
+            "name": "New",
+            "is_closed": false
+          },
+          "priority": {
+            "id": 4,
+            "name": "Low"
+          },
+          "author": {
+            "id": 2,
+            "name": "John Smith"
+          },
+          "subject": "Issue of a private subproject",
+          "description": "This is an issue of a private subproject of cookbook",
+          "start_date": "2026-01-15",
+          "due_date": "2026-01-16",
+          "done_ratio": 0,
+          "is_private": false,
+          "estimated_hours": null,
+          "total_estimated_hours": null,
+          "custom_fields": [
+            {
+              "id": 2,
+              "name": "Searchable field",
+              "value": null
+            },
+            {
+              "id": 1,
+              "name": "Database",
+              "value": null
+            },
+            {
+              "id": 6,
+              "name": "Float field",
+              "value": null
+            },
+            {
+              "id": 8,
+              "name": "Custom date",
+              "value": null
+            }
+          ],
+          "created_on": "2026-01-15T02:59:00Z",
+          "updated_on": "2026-01-15T02:59:00Z",
+          "closed_on": null
+        },
+        "journal": {
+          "id": 4,
+          "created_on": "2026-01-13T15:00:00Z",
+          "notes": "A comment with a private version.",
+          "user": {
+            "id": 1,
+            "name": "Redmine Admin"
+          },
+          "details": [
+            {
+              "property": "attr",
+              "prop_key": "fixed_version_id",
+              "old_value": null,
+              "value": "6"
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "issue_3_created_admin",
+    "event": "issue.created",
+    "id": 3,
+    "user": "admin",
+    "journal_id": null,
+    "payload": {
+      "type": "issue.created",
+      "timestamp": "2006-07-19T10:07:27Z",
+      "data": {
+        "issue": {
+          "id": 3,
+          "project": {
+            "id": 1,
+            "name": "eCookbook"
+          },
+          "tracker": {
+            "id": 1,
+            "name": "Bug"
+          },
+          "status": {
+            "id": 1,
+            "name": "New",
+            "is_closed": false
+          },
+          "priority": {
+            "id": 4,
+            "name": "Low"
+          },
+          "author": {
+            "id": 2,
+            "name": "John Smith"
+          },
+          "assigned_to": {
+            "id": 3,
+            "name": "Dave Lopper"
+          },
+          "subject": "Error 281 when updating a recipe",
+          "description": "Error 281 is encountered when saving a recipe",
+          "start_date": "2025-12-31",
+          "due_date": "2026-01-10",
+          "done_ratio": 0,
+          "is_private": false,
+          "estimated_hours": 1.0,
+          "total_estimated_hours": 1.0,
+          "custom_fields": [
+            {
+              "id": 2,
+              "name": "Searchable field",
+              "value": "125"
+            },
+            {
+              "id": 1,
+              "name": "Database",
+              "value": "MySQL"
+            },
+            {
+              "id": 6,
+              "name": "Float field",
+              "value": "11.65"
+            },
+            {
+              "id": 8,
+              "name": "Custom date",
+              "value": null
+            },
+            {
+              "id": 9,
+              "name": "Project 1 cf",
+              "value": null
+            }
+          ],
+          "created_on": "2006-07-19T10:07:27Z",
+          "updated_on": "2006-07-19T10:07:27Z",
+          "closed_on": null
+        }
+      }
+    }
+  },
+  {
+    "name": "issue_14_created_jsmith",
+    "event": "issue.created",
+    "id": 14,
+    "user": "jsmith",
+    "journal_id": null,
+    "payload": {
+      "type": "issue.created",
+      "timestamp": "2025-12-31T03:00:00Z",
+      "data": {
+        "issue": {
+          "id": 14,
+          "project": {
+            "id": 3,
+            "name": "eCookbook Subproject 1"
+          },
+          "tracker": {
+            "id": 1,
+            "name": "Bug"
+          },
+          "status": {
+            "id": 1,
+            "name": "New",
+            "is_closed": false
+          },
+          "priority": {
+            "id": 5,
+            "name": "Normal"
+          },
+          "author": {
+            "id": 2,
+            "name": "John Smith"
+          },
+          "subject": "Private issue on public project",
+          "description": "This is a private issue",
+          "start_date": null,
+          "due_date": null,
+          "done_ratio": 0,
+          "is_private": true,
+          "estimated_hours": null,
+          "total_estimated_hours": null,
+          "custom_fields": [
+            {
+              "id": 2,
+              "name": "Searchable field",
+              "value": null
+            },
+            {
+              "id": 1,
+              "name": "Database",
+              "value": null
+            },
+            {
+              "id": 6,
+              "name": "Float field",
+              "value": null
+            },
+            {
+              "id": 8,
+              "name": "Custom date",
+              "value": null
+            }
+          ],
+          "created_on": "2025-12-31T03:00:00Z",
+          "updated_on": "2025-12-31T03:00:00Z",
+          "closed_on": null
+        }
+      }
+    }
+  },
+  {
+    "name": "version_2_created_admin",
+    "event": "version.created",
+    "id": 2,
+    "user": "admin",
+    "journal_id": null,
+    "payload": {
+      "type": "version.created",
+      "timestamp": "2006-07-19T10:00:33Z",
+      "data": {
+        "version": {
+          "id": 2,
+          "project": {
+            "id": 1,
+            "name": "eCookbook"
+          },
+          "name": "1.0",
+          "description": "Stable release",
+          "status": "locked",
+          "due_date": "2026-02-04",
+          "sharing": "none",
+          "wiki_page_title": "ECookBookV1",
+          "created_on": "2006-07-19T10:00:33Z",
+          "updated_on": "2006-07-19T10:00:33Z"
+        }
+      }
+    }
+  },
+  {
+    "name": "wiki_page_2_updated_jsmith",
+    "event": "wiki_page.updated",
+    "id": 2,
+    "user": "jsmith",
+    "journal_id": null,
+    "payload": {
+      "type": "wiki_page.updated",
+      "timestamp": "2007-03-07T14:18:07Z",
+      "data": {
+        "wiki_page": {
+          "title": "Another_page",
+          "text": "h1. Another page\n\nThis is a link to a ticket: #2\nAnd this is an included page:\n{{include(Page with an inline image)}}",
+          "version": 1,
+          "author": {
+            "id": 1,
+            "name": "Redmine Admin"
+          },
+          "comments": null,
+          "project": {
+            "id": 1,
+            "name": "eCookbook"
+          },
+          "created_on": "2007-03-07T14:18:07Z",
+          "updated_on": "2007-03-07T14:18:07Z"
+        }
+      }
+    }
+  },
+  {
+    "name": "time_entry_2_created_admin",
+    "event": "time_entry.created",
+    "id": 2,
+    "user": "admin",
+    "journal_id": null,
+    "payload": {
+      "type": "time_entry.created",
+      "timestamp": "2007-03-23T04:11:04Z",
+      "data": {
+        "time_entry": {
+          "id": 2,
+          "project": {
+            "id": 1,
+            "name": "eCookbook"
+          },
+          "issue": {
+            "id": 1
+          },
+          "user": {
+            "id": 1,
+            "name": "Redmine Admin"
+          },
+          "activity": {
+            "id": 9,
+            "name": "Design"
+          },
+          "hours": 150.0,
+          "comments": "",
+          "spent_on": "2007-03-12",
+          "created_on": "2007-03-23T04:11:04Z",
+          "updated_on": "2007-03-23T04:11:04Z",
+          "custom_fields": [
+            {
+              "id": 10,
+              "name": "Overtime",
+              "value": null
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "name": "news_2_created_admin",
+    "event": "news.created",
+    "id": 2,
+    "user": "admin",
+    "journal_id": null,
+    "payload": {
+      "type": "news.created",
+      "timestamp": "2006-07-19T11:42:58Z",
+      "data": {
+        "news": {
+          "id": 2,
+          "project": {
+            "id": 1,
+            "name": "eCookbook"
+          },
+          "author": {
+            "id": 2,
+            "name": "John Smith"
+          },
+          "title": "100,000 downloads for eCookbook",
+          "summary": "eCookbook 1.0 have downloaded 100,000 times",
+          "description": "eCookbook 1.0 have downloaded 100,000 times",
+          "created_on": "2006-07-19T11:42:58Z"
+        }
+      }
+    }
+  }
+]
