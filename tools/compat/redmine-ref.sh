@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# buropher 互換テスト用の参照 Redmine 7.0.1（公式 test/fixtures 投入済み）を管理するスクリプト。
+# buropher 互換テスト用の参照 Redmine 7.0.2（公式 test/fixtures 投入済み）を管理するスクリプト。
 #
 # 使い方: tools/compat/redmine-ref.sh {setup|start|stop|restart|status|reset|logs} [--force]
 #
-#   setup   _reference/redmine7-migrated（バンドル・プリコンパイル済みアセット・secret_token 込み）を
-#           _reference/redmine7-fixtures へコピーし、新規 sqlite DB を migrate、fixtures を固定時刻で投入する。
+#   setup   _reference/redmine702-migrated（バンドル・プリコンパイル済みアセット・secret_token 込み）を
+#           _reference/redmine702-fixtures へコピーし、新規 sqlite DB を migrate、fixtures を固定時刻で投入する。
 #           投入直後の DB を db/redmine.pristine.sqlite3 として保存する。--force で作り直し。
 #   start   ポート 3998 で起動（未 setup なら setup を実行）。
 #   stop    停止。
@@ -13,8 +13,8 @@
 #   logs    サーバログを tail。
 #
 # 環境変数:
-#   COMPAT_REF_DIR       配置先（既定: <repo>/_reference/redmine7-fixtures。worktree からでも本体 repo の _reference を使う）
-#   COMPAT_REF_SRC       コピー元（既定: <_reference>/redmine7-migrated）
+#   COMPAT_REF_DIR       配置先（既定: <repo>/_reference/redmine702-fixtures。worktree からでも本体 repo の _reference を使う）
+#   COMPAT_REF_SRC       コピー元（既定: <_reference>/redmine702-migrated）
 #   COMPAT_REF_PORT      ポート（既定: 3998）
 #   COMPAT_FROZEN_TIME   fixtures の ERB 評価時刻かつサーバの固定時刻（既定: 2026-01-15 12:00:00 UTC）
 #                        空文字にするとサーバ時刻は固定しない（fixtures 投入時は既定値を使用）。
@@ -28,21 +28,21 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 find_reference() {
   local d="$SCRIPT_DIR"
   while [[ "$d" != "/" ]]; do
-    if [[ -d "$d/_reference/redmine7-migrated" ]]; then
+    if [[ -d "$d/_reference/redmine702-migrated" ]]; then
       echo "$d/_reference"
       return 0
     fi
     d="$(dirname "$d")"
   done
-  echo "error: _reference/redmine7-migrated が見つかりません（COMPAT_REF_SRC / COMPAT_REF_DIR を指定してください）" >&2
+  echo "error: _reference/redmine702-migrated が見つかりません（COMPAT_REF_SRC / COMPAT_REF_DIR を指定してください）" >&2
   return 1
 }
 
 if [[ -z "${COMPAT_REF_SRC:-}" || -z "${COMPAT_REF_DIR:-}" ]]; then
   REF_ROOT="$(find_reference)"
 fi
-SRC="${COMPAT_REF_SRC:-$REF_ROOT/redmine7-migrated}"
-DIR="${COMPAT_REF_DIR:-$REF_ROOT/redmine7-fixtures}"
+SRC="${COMPAT_REF_SRC:-$REF_ROOT/redmine702-migrated}"
+DIR="${COMPAT_REF_DIR:-$REF_ROOT/redmine702-fixtures}"
 PORT="${COMPAT_REF_PORT:-3998}"
 FROZEN_DEFAULT="2026-01-15 12:00:00 UTC"
 FROZEN="${COMPAT_FROZEN_TIME-$FROZEN_DEFAULT}"

@@ -1,4 +1,3 @@
-// Buropher: Redmine 7.0.2 のセキュリティ修正 #44429（DOMParser で貼り付け HTML を解析）を当てているため 7.0.1 と異なる（tools/upstream-patches/）。
 import { Controller } from '@hotwired/stimulus'
 
 class CommonMarkTableFormatter {

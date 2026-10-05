@@ -50,9 +50,8 @@ Parts derived from Redmine 7.0.1 (GPL-2.0-or-later, Copyright (C) 2006- Jean-Phi
   libraries bundled there are listed in THIRD_PARTY_NOTICES.md; their license
   texts (Redmine's doc/licenses) are copied to docs/licenses/.
   Assets are synced from the Redmine release named in web/UPSTREAM_VERSION;
-  security fixes from later Redmine releases are applied on top of them
-  (tools/upstream-patches/: 44429 table_paste_controller.js from 7.0.2), so
-  those files deviate from that release.
+  security fixes from later Redmine releases, if any, are applied on top of
+  them (tools/upstream-patches/), so such files deviate from that release.
 - web/locales/redmine/: Redmine's translation files (config/locales), copied
   unmodified. At load time Buropher replaces the product name "Redmine" with
   "Buropher" in translation values (internal/brand, internal/i18n).

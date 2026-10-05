@@ -19,9 +19,9 @@ build() { mkdir -p "$WORK"; (cd "$ROOT" && CGO_ENABLED=0 go build -o "$BIN" ./cm
 prepare() {
   build
   rm -rf "$WORK/db" "$WORK/files"; mkdir -p "$WORK/db"
-  cp "$REF/redmine7-fixtures/db/redmine.pristine.sqlite3" "$WORK/db/src.sqlite3"
+  cp "$REF/redmine702-fixtures/db/redmine.pristine.sqlite3" "$WORK/db/src.sqlite3"
   "$BIN" redmine export --dsn "sqlite://$WORK/db/src.sqlite3" --source-timezone UTC \
-    --files "$REF/redmine7-fixtures/test/fixtures/files" -o "$WORK/db/dump.tar.zst" --overwrite --quiet
+    --files "$REF/redmine702-fixtures/test/fixtures/files" -o "$WORK/db/dump.tar.zst" --overwrite --quiet
   env_run "$BIN" migrate >/dev/null
   env_run "$BIN" redmine import --quiet "$WORK/db/dump.tar.zst" >/dev/null
   cp "$WORK/db/buropher.db" "$WORK/db/pristine.db"

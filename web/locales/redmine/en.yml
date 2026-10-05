@@ -1197,6 +1197,8 @@ en:
   webhook_event_deleted: "%{object_name} deleted"
   webhook_url_info: Redmine will send a POST request to this URL whenever one of the selected events occurs in one of the selected projects.
   webhook_secret_info_html: If provided, Redmine will use this to create a hash signature that is sent with each delivery as the value of the X-Redmine-Signature-256 header.
+  webhook_secret_keep_info: The secret of another user is not displayed. Leave this field blank to keep it unchanged.
+  webhook_disabled_info_html: Webhooks are disabled, so none of the webhooks below is triggered. They are still listed here so that they can be reviewed or removed. Webhooks can be enabled in the %{link} settings.
 
   button_login: Login
   button_submit: Submit
@@ -1384,7 +1386,7 @@ en:
   text_no_subject: no subject
   text_allowed_queries_to_select: Public (to any users) queries only selectable
   text_setting_config_change: You can configure the behaviour in config/configuration.yml. Please restart the application after editing it.
-  text_setting_gravatar_default_initials_html: Users' initials are sent to <a href="https://www.gravatar.com">https://www.gravatar.com</a> to generate their avatars.
+  text_setting_gravatar_default_initials_html: Users' initials are sent to <a href="%{url}">%{url}</a> to generate their avatars.
   text_oauth_admin_permission: Full administrative access. When authorized by an Administrator, this application will be able to read and write all data and impersonate other users.
   text_oauth_admin_permission_info: This application requests full administrative access. If you are an Administrator (or become one in the future), it will be able to read and write all data and impersonate other users on your behalf. If you want to avoid this, authorize it as a user without Administrator privileges instead.
   text_oauth_copy_secret_now: Copy the secret to a safe place now, it will not be shown again.

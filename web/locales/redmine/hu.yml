@@ -1441,7 +1441,7 @@
   reaction_text_x_other_users:
     one: 1 másik
     other: "%{count} másik"
-  text_setting_gravatar_default_initials_html: A felhasználók monogramját <a href="https://www.gravatar.com">https://www.gravatar.com</a> részére küldjük el avatárjuk generálásához.
+  text_setting_gravatar_default_initials_html: A felhasználók monogramját <a href="%{url}">%{url}</a> részére küldjük el avatárjuk generálásához.
   permission_view_project: Projektek megtekintése
   permission_search_project: Projektek keresése
   permission_view_members: Projekt tagok megtekintése
@@ -1498,3 +1498,8 @@
   label_absolute: Absolute
   label_relative: Relative
   text_users_remove_from_group_confirmation: Are you sure you want to remove the selected user(s) from the group %{group}?
+  webhook_secret_keep_info: The secret of another user is not displayed. Leave this
+    field blank to keep it unchanged.
+  webhook_disabled_info_html: Webhooks are disabled, so none of the webhooks below is
+    triggered. They are still listed here so that they can be reviewed or removed. Webhooks
+    can be enabled in the %{link} settings.

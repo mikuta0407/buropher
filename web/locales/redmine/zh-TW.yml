@@ -1510,7 +1510,7 @@
   reaction_text_x_other_users:
     one: 1 位其他用戶
     other: "%{count} 位其他用戶"
-  text_setting_gravatar_default_initials_html: 用戶姓名的首字母縮寫將被送往 <a href="https://www.gravatar.com">https://www.gravatar.com</a>
+  text_setting_gravatar_default_initials_html: 用戶姓名的首字母縮寫將被送往 <a href="%{url}">%{url}</a>
     用以產生其大頭貼.
   permission_view_project: 檢視專案
   permission_search_project: 搜尋專案
@@ -1574,3 +1574,8 @@
   label_absolute: 絕對
   label_relative: 相對
   text_users_remove_from_group_confirmation: Are you sure you want to remove the selected user(s) from the group %{group}?
+  webhook_secret_keep_info: The secret of another user is not displayed. Leave this
+    field blank to keep it unchanged.
+  webhook_disabled_info_html: Webhooks are disabled, so none of the webhooks below is
+    triggered. They are still listed here so that they can be reviewed or removed. Webhooks
+    can be enabled in the %{link} settings.
