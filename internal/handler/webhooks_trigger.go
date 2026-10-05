@@ -76,13 +76,6 @@ func (a *App) triggerWebhook(ctx context.Context, action string, obj webhookObje
 	a.enqueueWebhooks(ctx, a.prepareWebhooks(ctx, action, obj))
 }
 
-// triggerWebhooks は複数の対象をまとめて発火する。
-func (a *App) triggerWebhooks(ctx context.Context, action string, objs ...webhookObject) {
-	for _, o := range objs {
-		a.triggerWebhook(ctx, action, o)
-	}
-}
-
 // prepareWebhooks は hooks_for(event, object) の各フックのペイロードを計算する
 // （送信は enqueueWebhooks。削除の前に計算しておくために分けてある）。
 func (a *App) prepareWebhooks(ctx context.Context, action string, obj webhookObject) []pendingWebhook {
@@ -167,7 +160,10 @@ func (a *App) webhookJob(ctx context.Context, j *jobs.Job) error {
 		return err
 	}
 	user, err := repository.GetUser(ctx, a.DB, hook.UserID)
-	if err != nil || user.Status != domain.StatusActive {
+	if err != nil && !errors.Is(err, repository.ErrNotFound) {
+		return err
+	}
+	if user == nil || user.Status != domain.StatusActive {
 		a.logger().Debug("WebhookJob: user is not active", "user_id", hook.UserID)
 		return nil
 	}

@@ -10,7 +10,6 @@ import (
 	"errors"
 	"net/http"
 	"slices"
-	"strconv"
 
 	"github.com/mikuta0407/buropher/internal/authz"
 	"github.com/mikuta0407/buropher/internal/db"
@@ -264,25 +263,22 @@ func (a *App) WebhooksIndex(c *Req) {
 		a.internalError(c, "visible projects", err)
 		return
 	}
+	all, err := repository.ListProjects(ctx, a.DB)
+	if err != nil {
+		a.internalError(c, "list projects", err)
+		return
+	}
 	var rows []webhookRow
-	cache := map[int64]*domain.Project{}
 	for _, w := range ws {
 		row := webhookRow{Webhook: w}
 		// webhook.projects.visible
-		for _, pid := range w.ProjectIDs {
-			if !slices.Contains(visible, pid) {
-				continue
+		for _, p := range all {
+			if slices.Contains(w.ProjectIDs, p.ID) && slices.Contains(visible, p.ID) {
+				row.Projects = append(row.Projects, p)
 			}
-			p, ok := cache[pid]
-			if !ok {
-				if p, err = repository.GetProject(ctx, a.DB, pid); err != nil {
-					a.internalError(c, "webhook project", err)
-					return
-				}
-				cache[pid] = p
-			}
-			row.Projects = append(row.Projects, p)
 		}
+		// projects_webhooks の行順（保存時に project_id 順で作る）
+		slices.SortFunc(row.Projects, func(x, y *domain.Project) int { return int(x.ID - y.ID) })
 		rows = append(rows, row)
 	}
 	c.Render("webhooks/index", map[string]any{"Webhooks": rows})
@@ -367,6 +363,3 @@ func (a *App) WebhooksDestroy(c *Req) {
 	}
 	c.Redirect("/webhooks")
 }
-
-// webhookPath は webhook_path(webhook)。
-func webhookPath(id int64) string { return "/webhooks/" + strconv.FormatInt(id, 10) }
