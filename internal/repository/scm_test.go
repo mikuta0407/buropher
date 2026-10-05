@@ -10,13 +10,14 @@ import (
 	"testing"
 	"time"
 
+	"github.com/mikuta0407/buropher/internal/db"
 	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/repository"
 )
 
 func TestChangesetPreviousNextUseListOrder(t *testing.T) {
 	withFixtures(t, func(e *env) {
-		repoID, err := e.d.InsertReturningID(e.ctx, `INSERT INTO repositories (project_id, scm, url, identifier, is_default, created_at) VALUES (3, 'git', '/tmp/previous-order', 'order', 0, '2026-01-15T12:00:00.000000Z')`)
+		repoID, err := e.d.InsertReturningID(e.ctx, `INSERT INTO repositories (project_id, scm, url, identifier, is_default, created_at) VALUES (?, ?, ?, ?, ?, ?)`, 3, "git", "/tmp/previous-order", "order", false, db.NewTime(time.Date(2026, 1, 15, 12, 0, 0, 0, time.UTC)))
 		e.must(err)
 		mk := func(rev string, at time.Time) *domain.Changeset {
 			c := &domain.Changeset{RepositoryID: repoID, Revision: rev, Scmid: rev, CommittedOn: at, Comments: rev}
