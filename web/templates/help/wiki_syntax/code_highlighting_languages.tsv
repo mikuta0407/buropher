@@ -1,11 +1,12 @@
-# Rouge::Lexer.all.sort_by(&:tag) の tag / desc / aliases（Redmine 6.1.2 の参照環境の /help/code_highlighting から抽出。HTML エスケープ済み）
+# Rouge::Lexer.all.sort_by(&:tag) の tag / desc / aliases（Redmine 7.0.1 の参照環境の /help/code_highlighting から抽出。HTML エスケープ済み）
 abap	SAP - Advanced Business Application Programming	
 actionscript	ActionScript	as, as3
 ada	The Ada 2012 programming language	
+addmusick	AddmusicK and Ramekin MML (https://smwc.me/s/37906, https://codeberg.org/jneen/ramekin)	ramekin, addmusickff, amk, rmk
 apache	configuration files for Apache web server	
 apex	The Apex programming language (provided by salesforce)	
-apiblueprint	Markdown based API description language.	apiblueprint, apib
-applescript	The AppleScript scripting language by Apple Inc. (https://developer.apple.com/library/archive/documentation/AppleScript/Conceptual/AppleScriptLangGuide/introduction/ASLR_intro.html)	applescript
+apiblueprint	Markdown based API description language.	apib
+apple_script	The AppleScript scripting language by Apple Inc. (https://developer.apple.com/library/archive/documentation/AppleScript/Conceptual/AppleScriptLangGuide/introduction/ASLR_intro.html)	applescript, osa
 armasm	Arm assembly syntax	
 augeas	The Augeas programming language (augeas.net)	aug
 awk	pattern-directed scanning and processing language	
@@ -32,14 +33,13 @@ coffeescript	The Coffeescript programming language (coffeescript.org)	coffee, co
 common_lisp	The Common Lisp variant of Lisp (common-lisp.net)	cl, common-lisp, elisp, emacs-lisp, lisp
 conf	A generic lexer for configuration files	config, configuration
 console	A generic lexer for shell sessions. Accepts ?lang and ?output lexer options, a ?prompt option, ?comments to enable # comments, and ?error to handle error messages.	terminal, shell_session, shell-session
-coq	Coq (coq.inria.fr)	
 cpp	The C++ programming language	c++
 crystal	Crystal The Programming Language (crystal-lang.org)	cr
 csharp	a multi-paradigm language targeting .NET	c#, cs
 css	Cascading Style Sheets, used to style web pages	
 csvs	The CSV Schema Language (digital-preservation.github.io)	
 cuda	Compute Unified Device Architecture, used for programming with NVIDIA GPU	
-cypher	The Cypher query language (neo4j.com/docs/cypher-manual)	cypher
+cypher	The Cypher query language (neo4j.com/docs/cypher-manual)	
 cython	Cython and Pyrex source code (cython.org)	pyx, pyrex
 d	The D programming language(dlang.org)	dlang
 dafny	The Dafny programming language (github.com/dafny-lang/dafny)	
@@ -49,10 +49,11 @@ diff	Lexes unified diffs or patches	patch, udiff
 digdag	A simple, open source, multi-cloud workflow engine (https://www.digdag.io/)	
 docker	Dockerfile syntax	dockerfile, Dockerfile, containerfile, Containerfile
 dot	graph description language	graphviz
+dylan	Dylan Language (https://opendylan.org)	
 ecl	Enterprise Control Language (hpccsystems.com)	
 eex	Embedded Elixir	leex, heex
 eiffel	Eiffel programming language	
-elixir	Elixir language (elixir-lang.org)	elixir, exs
+elixir	Elixir language (elixir-lang.org)	exs
 elm	The Elm programming language (http://elm-lang.org/)	
 email	An email message	eml, e-mail
 epp	Embedded Puppet template files	
@@ -64,22 +65,22 @@ fluent	Fluent localization files	ftl
 fortran	Fortran 2008 (free-form)	
 freefem	The FreeFEM programming language (freefem.org)	ff
 fsharp	F# (fsharp.net)	
-gdscript	The Godot Engine programming language (https://godotengine.org/)	gd, gdscript
+gdscript	The Godot Engine programming language (https://godotengine.org/)	gd, godot
 ghc-cmm	GHC Cmm is the intermediate representation of the GHC Haskell compiler	cmm
 ghc-core	Intermediate representation of the GHC Haskell compiler.	
 gherkin	A business-readable spec DSL (github.com/cucumber/cucumber/wiki/Gherkin)	cucumber, behat
 gjs	Ember.js, JavaScript with &lt;template&gt; tags	
 glsl	The GLSL shader language	
-go	The Go programming language (http://golang.org)	go, golang
+go	The Go programming language (http://golang.org)	golang
 gradle	A powerful build system for the JVM	
 graphql	GraphQL	
 groovy	The Groovy programming language (http://www.groovy-lang.org/)	nextflow, nf
 gts	Ember.js, TypeScript with &lt;template&gt; tags	
-hack	The Hack programming language (hacklang.org)	hack, hh
+hack	The Hack programming language (hacklang.org)	hh
 haml	The Haml templating system for Ruby (haml.info)	HAML
 handlebars	the Handlebars and Mustache templating languages	hbs, mustache
 haskell	The Haskell programming language (haskell.org)	hs
-haxe	Haxe Cross-platform Toolkit (http://haxe.org)	hx, haxe
+haxe	Haxe Cross-platform Toolkit (http://haxe.org)	hx
 hcl	Hashicorp Configuration Language, used by Terraform and other Hashicorp tools	
 hlsl	HLSL, the High Level Shading Language for DirectX (docs.microsoft.com/en-us/windows/win32/direct3dhlsl/dx-graphics-hlsl)	
 hocon	Human-Optimized Config Object Notation (https://github.com/lightbend/config)	
@@ -108,11 +109,12 @@ json-doc	JavaScript Object Notation with extensions for documentation	jsonc
 json5	JSON 5 extension for JSON (json5.org)	
 jsonnet	An elegant, formally-specified config language for JSON	
 jsp	JSP	
-jsx	An XML-like syntax extension to JavaScript (facebook.github.io/jsx/)	jsx, react
+jsx	An XML-like syntax extension to JavaScript (facebook.github.io/jsx/)	react
 julia	The Julia programming language	jl
+kick_assembler	Kick assembler NMOS 65xx syntax	kickass
 kotlin	Kotlin Programming Language (http://kotlinlang.org)	
 lasso	The Lasso programming language (lassosoft.com)	lassoscript
-lean	The Lean programming language (leanprover.github.io)	lean
+lean	The Lean programming language (leanprover.github.io)	
 liquid	Liquid is a templating engine for Ruby (liquidmarkup.org)	
 literate_coffeescript	Literate coffeescript	litcoffee
 literate_haskell	Literate haskell	lithaskell, lhaskell, lhs
@@ -130,7 +132,7 @@ mathematica	Wolfram Mathematica, the world&#39;s definitive system for modern te
 matlab	Matlab	m
 meson	Meson&#39;s specification language (mesonbuild.com)	
 minizinc	MiniZinc is a free and open-source constraint modeling language (minizinc.org)	
-mojo	The Mojo programming language (modular.com)	mojo
+mojo	The Mojo programming language (modular.com)	
 moonscript	Moonscript (http://www.moonscript.org)	moon
 mosel	An optimization language used by Fico&#39;s Xpress.	
 msgtrans	RISC OS message translator messages file	
@@ -149,35 +151,37 @@ openedge	The OpenEdge ABL programming language	abl
 opentype_feature_file	Feature specifications for an OpenType font (adobe-type-tools.github.io/afdko)	fea, opentype, opentypefeature
 p4	The P4 programming language	
 pascal	a procedural programming language commonly used as a teaching language.	
+pdf	PDF - Portable Document Format (ISO 32000)	fdf, cos
 perl	The Perl scripting language (perl.org)	pl
-php	The PHP scripting language (php.net)	php, php3, php4, php5
+php	The PHP scripting language (php.net)	php3, php4, php5
 plaintext	A boring lexer that doesn&#39;t highlight anything	text
-plist	plist	plist
+plist	plist	
 plsql	Procedural Language Structured Query Language for Oracle relational database	
 pony		
-postscript	The PostScript language (adobe.com/devnet/postscript.html)	postscr, postscript, ps, eps
-powershell	powershell	posh, microsoftshell, msshell
+postscript	The PostScript language (adobe.com/devnet/postscript.html)	postscr, ps, eps
+powershell	powershell	posh, microsoftshell, msshell, pwsh
 praat	The Praat scripting language (praat.org)	
-prolog	The Prolog programming language (http://en.wikipedia.org/wiki/Prolog)	prolog
-prometheus	prometheus	prometheus
+prolog	The Prolog programming language (http://en.wikipedia.org/wiki/Prolog)	
+prometheus	prometheus	
 properties	.properties config files for Java	
 protobuf	Google&#39;s language-neutral, platform-neutral, extensible mechanism for serializing structured data	proto
 puppet	The Puppet configuration management language (puppetlabs.org)	pp
 python	The Python programming language (python.org)	py
 q	The Q programming language (kx.com)	kdb+
-qml	QML, a UI markup language	qml
-r	The R statistics language (r-project.org)	r, R, s, S
+qml	QML, a UI markup language	
+r	The R statistics language (r-project.org)	R, s, S
 racket	Racket is a Lisp descended from Scheme (racket-lang.org)	
 reasonml	New syntax on top of OCaml ecosystem (reasonml.github.io)	
 rego	The Rego open-policy-agent (OPA) policy language (openpolicyagent.org)	
 rescript	The ReScript programming language (rescript-lang.org)	
 rml	A system agnostic domain-specific language for runtime monitoring and verification (https://rmlatdibris.github.io/)	
 robot_framework	Robot Framework is a generic open source automation testing framework (robotframework.org)	robot, robot-framework
+rocq	The Rocq Prover (rocq-prover.org)	coq
 ruby	The Ruby programming language (ruby-lang.org)	rb
 rust	The Rust programming language (rust-lang.org)	rs, rust,no_run, rs,no_run, rust,ignore, rs,ignore, rust,should_panic, rs,should_panic
 sas	SAS (Statistical Analysis Software)	
 sass	The Sass stylesheet language language (sass-lang.com)	
-scala	The Scala programming language (scala-lang.org)	scala
+scala	The Scala programming language (scala-lang.org)	
 scheme	The Scheme variant of Lisp	
 scss	SCSS stylesheets (sass-lang.com)	
 sed	sed, the ultimate stream editor	
@@ -186,7 +190,7 @@ sieve	mail filtering language
 slice	Specification Language for Ice (doc.zeroc.com)	
 slim	The Slim template language	
 smalltalk	The Smalltalk programming language	st, squeak
-smarty	Smarty Template Engine	smarty
+smarty	Smarty Template Engine	
 sml	Standard ML	ml
 sparql	Semantic Query Language, for RDF data	
 sqf	Status Quo Function, a Real Virtuality engine scripting language	
@@ -200,14 +204,15 @@ swift	Multi paradigm, compiled programming language developed by Apple for iOS a
 systemd	A lexer for systemd unit files	unit-file
 syzlang	Syscall description language used by syzkaller	
 syzprog	Program description language used by syzkaller	
-tap	Test Anything Protocol	tap
+tap	Test Anything Protocol	
 tcl	The Tool Command Language (tcl.tk)	
 terraform	Terraform HCL Interpolations	tf
 tex	The TeX typesetting system	TeX, LaTeX, latex
+thrift	Apache Thrift interface definition language	apache-thrift
 toml	the TOML configuration format (https://github.com/toml-lang/toml)	
 tsx	TypeScript-compatible JSX (www.typescriptlang.org/docs/handbook/jsx.html)	
 ttcn3	The TTCN3 programming language (ttcn-3.org)	
-tulip	the tulip programming language (twitter.com/tuliplang)	tulip
+tulip	the tulip programming language (twitter.com/tuliplang)	
 turtle	Terse RDF Triple Language, TriG	
 twig	Twig template engine (twig.sensiolabs.org)	
 typescript	TypeScript, a superset of JavaScript (https://www.typescriptlang.org/)	ts
@@ -216,6 +221,7 @@ vb	Visual Basic	visualbasic
 vcl	The configuration language for Varnish HTTP Cache (varnish-cache.org)	varnishconf, varnish
 velocity	Velocity is a Java-based template engine (velocity.apache.org)	
 verilog	The System Verilog hardware description language	
+veryl	The Veryl hardware description language (https://veryl-lang.org)	
 vhdl	Very High Speed Integrated Circuit Hardware Description Language	
 viml	VimL, the scripting language for the Vim editor (vim.org)	vim, vimscript, ex
 vue	Vue.js single-file components	vuejs
