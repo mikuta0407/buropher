@@ -296,6 +296,10 @@ func (a *App) Handle(r chi.Router, method, pattern string, ctrl *Controller, act
 	})(inner)
 	h := func(w http.ResponseWriter, r *http.Request) {
 		r = r.WithContext(context.WithValue(r.Context(), ctxRoute, routeInfo{ctrl, action}))
+		// api_session（#44249）: API リクエストは既存のセッションを使わず、変更も保存もしない
+		if httpx.IsAPIRequest(r) {
+			r = httpx.NullSession(r)
+		}
 		csrf.ServeHTTP(w, r)
 	}
 	httpx.Route(r, method, pattern, h)
