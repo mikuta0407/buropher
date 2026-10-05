@@ -1,7 +1,7 @@
 {{$v := .V}}
 <div class="contextual">
 {{if $v.CanManageRelations}}
-  {{link_to (l "button_add") "#" (hash "onclick" "$('#new-relation-form').toggle(); $('#relation_issue_to_id:visible').focus(); return false;")}}
+  {{toggle_link (sprite_icon "link-add" (l "button_add")) "new-relation-form" (hash "focus" "relation_issue_to_id" "class" "icon icon-link-add")}}
 {{end}}
 </div>
 

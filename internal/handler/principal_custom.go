@@ -117,6 +117,10 @@ func (a *App) newPrincipalCustomValues(c *Req, ownerKind string) ([]principalCus
 		{
 			// CustomValue#initialize: value ||= custom_field.default_value（既定値が nil なら nil）
 			s := f.DefaultValue.String
+			// 日付の相対既定値（7.0.1 #44129）は User.current.today から評価する
+			if f.DefaultValue.Valid {
+				s = *domain.CustomFieldDefaultValue(f.FieldFormat, f.FormatSetting("default_value_mode"), &s, a.userToday(c))
+			}
 			if f.Multiple {
 				if s != "" {
 					cv.Values = []string{s}

@@ -24,7 +24,8 @@ func TestAPIJournals(t *testing.T) {
 				t.Errorf("notes %v", n)
 			}
 		})
-		t.Run("PUT /journals/:id."+f+" without journal details should destroy journal", func(t *testing.T) {
+		// Redmine 7.0 (#44258): 注記を空にしてもジャーナルは削除しない
+		t.Run("PUT /journals/:id."+f+" without journal details should not destroy journal", func(t *testing.T) {
 			ts, d := newFixtureServer(t)
 			if n := issuesAPIInt(t, d, `SELECT COUNT(*) FROM issue_journal_details WHERE journal_id = 5`); n != 0 {
 				t.Fatalf("precondition: journal 5 has %d details", n)
@@ -36,11 +37,11 @@ func TestAPIJournals(t *testing.T) {
 			if res.Body != "" {
 				t.Errorf("body %q", res.Body)
 			}
-			if after := issuesAPIInt(t, d, `SELECT COUNT(*) FROM issue_journals`); after != before-1 {
+			if after := issuesAPIInt(t, d, `SELECT COUNT(*) FROM issue_journals`); after != before {
 				t.Errorf("journals %d -> %d", before, after)
 			}
-			if n := issuesAPIInt(t, d, `SELECT COUNT(*) FROM issue_journals WHERE id = 5`); n != 0 {
-				t.Error("journal 5 not destroyed")
+			if n := issuesAPIStrings(t, d, `SELECT COALESCE(notes, 'NULL') FROM issue_journals WHERE id = 5`); len(n) != 1 || n[0] != "" {
+				t.Errorf("journal 5 notes %v", n)
 			}
 		})
 	}

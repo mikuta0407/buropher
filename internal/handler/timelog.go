@@ -309,8 +309,8 @@ func (a *App) TimelogShow(c *Req) {
 	a.teRenderShowAPI(c, t, 0)
 }
 
-// teRenderShowAPI は show.api.rsb。本家は custom_field_values（非表示・ロール限定のカスタムフィールドも含む）を
-// 出すが、閲覧できない値が漏れるため visible_custom_field_values にする。
+// teRenderShowAPI は show.api.rsb（render_api_custom_values @time_entry.visible_custom_field_values）。
+// 7.0.1 (#44146) で本家も visible_custom_field_values になった（buropher は先行して対応済み）。
 func (a *App) teRenderShowAPI(c *Req, t *timelog.Entry, status int) {
 	ctx := c.Ctx()
 	env := a.teEnv(c)

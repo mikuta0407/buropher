@@ -112,7 +112,7 @@ func TestOAuthMyAccountDoesNotLeakAPIKey(t *testing.T) {
 	}
 }
 
-// TestOAuthMyAccountCannotChangeMail は、OAuth トークンで PUT /my/account からメールアドレスを変更できないことを確認する。
+// TestOAuthMyAccountCannotChangeMail は、OAuth トークンで PUT /my/account からメールアドレス（を含むアカウント情報）を変更できないことを確認する。
 // 変更できると、任意のスコープのトークンを持つ第三者がメールアドレスを自分のものに変え、
 // パスワード再設定（lost_password）でアカウントを乗っ取れる。
 func TestOAuthMyAccountCannotChangeMail(t *testing.T) {
@@ -146,9 +146,16 @@ func TestOAuthMyAccountCannotChangeMail(t *testing.T) {
 	if mail != "jsmith@somenet.foo" {
 		t.Errorf("mail changed to %q", mail)
 	}
-	// メールアドレス以外（同じアドレスの再送信を含む）の更新は従来どおり可能
-	if st := put(`{"user":{"firstname":"Johnny","mail":"JSmith@somenet.foo"}}`); st/100 != 2 {
-		t.Errorf("firstname change via OAuth: status %d", st)
+	// Redmine 7.0 (deny_account_modification_via_oauth): メールアドレス以外の変更も OAuth からは拒否する
+	if st := put(`{"user":{"firstname":"Johnny"}}`); st != http.StatusForbidden {
+		t.Errorf("firstname change via OAuth: status %d, want 403", st)
+	}
+	var first string
+	if err := d.Get(context.Background(), &first, `SELECT firstname FROM principals WHERE id = 2`); err != nil {
+		t.Fatal(err)
+	}
+	if first != "John" {
+		t.Errorf("firstname changed to %q", first)
 	}
 }
 

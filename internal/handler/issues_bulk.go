@@ -559,35 +559,15 @@ func (v *bulkEditView) AssigneeOptions() template.HTML {
 	l := v.l
 	s := noChangeOption(l) + rails.ContentTag("option", l.L("label_nobody"), rails.NewHash("value", "none", "selected", v.ParamIs("assigned_to_id", "none")))
 	sel := paramToS(v.IssueParams, "assigned_to_id")
-	var b strings.Builder
-	cur := l.c.User
-	if cur.Logged() && slices.ContainsFunc(v.Assignables, func(p *issues.PrincipalRef) bool { return p.ID == cur.ID }) {
-		b.WriteString(string(rails.ContentTag("option", "<< "+l.L("label_me")+" >>", rails.NewHash("value", cur.ID))))
+	var meID int64
+	if cur := l.c.User; cur.Logged() && slices.ContainsFunc(v.Assignables, func(p *issues.PrincipalRef) bool { return p.ID == cur.ID }) {
+		meID = cur.ID
 	}
-	var users, groups strings.Builder
+	collection := make([]principalOption, 0, len(v.Assignables))
 	for _, p := range v.Assignables {
-		attr := ""
-		if strconv.FormatInt(p.ID, 10) == sel {
-			attr = ` selected="selected"`
-		}
-		name := l.principalName(l.principal(p.ID))
-		opt := `<option value="` + strconv.FormatInt(p.ID, 10) + `"` + attr + `>` + string(rails.H(name)) + `</option>`
-		if p.Kind.IsGroup() {
-			groups.WriteString(opt)
-		} else {
-			users.WriteString(opt)
-		}
+		collection = append(collection, principalOption{ID: p.ID, Name: l.principalName(l.principal(p.ID)), Group: p.Kind.IsGroup()})
 	}
-	if groups.Len() == 0 {
-		b.WriteString(users.String())
-	} else {
-		for _, g := range [][2]string{{l.L("label_user_plural"), users.String()}, {l.L("label_group_plural"), groups.String()}} {
-			if g[1] != "" {
-				b.WriteString(`<optgroup label="` + string(rails.H(g[0])) + `">` + g[1] + `</optgroup>`)
-			}
-		}
-	}
-	return s + template.HTML(b.String())
+	return s + l.a.principalsOptionTags(l.c, meID, collection, nil, sel)
 }
 
 // CategoryOptions は (No change) + none + @categories。

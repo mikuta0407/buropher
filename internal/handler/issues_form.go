@@ -222,7 +222,8 @@ func (a *App) newTimeEntryFormModel(l *issueLookup, m *issueModel) *timeEntryFor
 		}
 		v := &issueCFValue{CF: cf, Multi: cf.Multiple}
 		if d := cf.DefaultValueString(); d != "" {
-			v.Values = []string{d}
+			// 日付の相対既定値（7.0.1 #44129）は User.current.today から評価する
+			v.Values = []string{*cf.DefaultValueOn(l.userToday())}
 		} else if cf.Multiple {
 			v.Values = []string{""}
 		}
@@ -570,52 +571,36 @@ func (f *issueEditForm) AssigneeOptions() template.HTML {
 		}
 		return false
 	}
-	var s strings.Builder
-	cur := l.c.User
-	if cur.Logged() && contains(cur.ID) {
-		s.WriteString(string(rails.ContentTag("option", "<< "+l.L("label_me")+" >>", rails.NewHash("value", cur.ID))))
+	var meID int64
+	if cur := l.c.User; cur.Logged() && contains(cur.ID) {
+		meID = cur.ID
 	}
 	// involved principals（author, prior_assigned_to）
 	// この optgroup は既存チケットの編集時だけ表示する
-	var involved []*domain.User
+	var involved []principalOption
 	if !f.IsNew {
+		var ps []*domain.User
 		if a := l.principal(f.m.Row.AuthorID); a != nil {
-			involved = append(involved, a)
+			ps = append(ps, a)
 		}
-		if p := f.m.PriorAssignedTo(); p != nil && (len(involved) == 0 || involved[0].ID != p.ID) {
-			involved = append(involved, p)
+		if p := f.m.PriorAssignedTo(); p != nil && (len(ps) == 0 || ps[0].ID != p.ID) {
+			ps = append(ps, p)
 		}
-	}
-	var invHTML strings.Builder
-	for _, p := range involved {
-		invHTML.WriteString(string(rails.ContentTag("option", l.principalName(p), rails.NewHash("value", p.ID, "disabled", !contains(p.ID)))))
+		for _, p := range ps {
+			involved = append(involved, principalOption{ID: p.ID, Name: l.principalName(p), Group: p.Kind.IsGroup(), Disabled: !contains(p.ID)})
+		}
 	}
 	sorted := append([]*domain.User(nil), users...)
 	l.sortPrincipals(sorted)
-	var usersHTML, groupsHTML strings.Builder
+	collection := make([]principalOption, 0, len(sorted))
 	for _, u := range sorted {
-		sel := ""
-		if f.m.Row.AssignedToID != nil && *f.m.Row.AssignedToID == u.ID {
-			sel = ` selected="selected"`
-		}
-		opt := `<option value="` + strconv.FormatInt(u.ID, 10) + `"` + sel + `>` + string(rails.H(l.principalName(u))) + `</option>`
-		if u.Kind.IsGroup() {
-			groupsHTML.WriteString(opt)
-		} else {
-			usersHTML.WriteString(opt)
-		}
+		collection = append(collection, principalOption{ID: u.ID, Name: l.principalName(u), Group: u.Kind.IsGroup()})
 	}
-	if invHTML.Len() == 0 && groupsHTML.Len() == 0 {
-		s.WriteString(usersHTML.String())
-	} else {
-		for _, g := range [][2]string{{l.L("label_involved_principals"), invHTML.String()}, {l.L("label_user_plural"), usersHTML.String()},
-			{l.L("label_group_plural"), groupsHTML.String()}} {
-			if g[1] != "" {
-				s.WriteString(`<optgroup label="` + string(rails.H(g[0])) + `">` + g[1] + `</optgroup>`)
-			}
-		}
+	selected := ""
+	if f.m.Row.AssignedToID != nil {
+		selected = strconv.FormatInt(*f.m.Row.AssignedToID, 10)
 	}
-	return template.HTML(s.String())
+	return l.a.principalsOptionTags(l.c, meID, collection, involved, selected)
 }
 
 // ShowAssignToMe は @issue.assignable_users.include?(User.current)。

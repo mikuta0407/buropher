@@ -205,6 +205,7 @@ func (a *App) JournalsUpdate(c *Req) {
 		a.internalError(c, "journal update", err)
 		return
 	}
+	// update.js: @journal.notes_and_details_empty? なら履歴から取り除く（ジャーナル自体は残る。#44258）
 	destroyed := strings.TrimSpace(j.Notes) == "" && len(j.Details) == 0
 	switch httpx.Negotiate(c.R, "html", "js", "xml", "json") {
 	case "html":

@@ -14,12 +14,14 @@ var TrackerCoreFields = []string{"assigned_to_id", "category_id", "fixed_version
 
 // Tracker は trackers 行（+ project_trackers / custom_fields_trackers）。
 type Tracker struct {
-	ID              int64
-	Name            string
-	Description     *string
-	Position        int
-	IsInRoadmap     bool
-	DefaultStatusID int64
+	ID          int64
+	Name        string
+	Description *string
+	Position    int
+	IsInRoadmap bool
+	// PrivateByDefault は新規チケットの「プライベート」の既定値（Redmine 7.0 #9432）。
+	PrivateByDefault bool
+	DefaultStatusID  int64
 	// DisabledCoreFields は無効化された標準フィールド（Tracker::CORE_FIELDS の順）。
 	DisabledCoreFields []string
 

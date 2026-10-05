@@ -8,6 +8,7 @@
 <p>{{$f.TextField "name" (hash "required" true)}}</p>
 <p>{{$f.Select "default_status_id" (assigns).StatusOptions (hash "include_blank" (not $tracker.HasDefaultStatus) "required" true)}}
 </p>
+<p>{{$f.CheckBox "private_by_default"}}</p>
 <p>{{$f.CheckBox "is_in_roadmap"}}</p>
 <p>{{$f.TextArea "description" (hash "rows" 4)}}</p>
 <p>

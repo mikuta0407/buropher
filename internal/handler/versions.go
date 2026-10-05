@@ -1230,7 +1230,7 @@ func (a *App) versionCustomValues(c *Req, v *domain.Version, p *domain.Project, 
 		if vals, ok := stored[cf.ID]; ok {
 			cv.Values = vals
 		} else if v.ID == 0 && cf.DefaultValue != nil && *cf.DefaultValue != "" {
-			cv.Values = []string{*cf.DefaultValue}
+			cv.Values = []string{*cf.DefaultValueOn(a.userToday(c))}
 		}
 		out = append(out, cv)
 	}

@@ -1,3 +1,15 @@
-<p>{{.f.DateField "default_value" (hash "value" .custom_field.DefaultValueAttr "size" 10)}}</p>
-{{calendar_for "custom_field_default_value"}}
+{{$mode := .custom_field.DefaultValueModeOrFixed}}
+<div data-controller="custom-field-default-value">
+  <p>
+    {{.f.Select "default_value_mode" (list (list (l "label_absolute") "fixed_date") (list (l "label_relative") "date_offset")) (hash "selected" $mode) (hash "data" (hash "custom_field_default_value_target" "mode" "action" "custom-field-default-value#update"))}}
+  </p>
+  <p class="indent" data-custom-field-default-value-target="fixedDate" {{if ne $mode "fixed_date"}}hidden{{end}}>
+    {{.f.DateField "default_value" (hash "value" (.custom_field.DefaultValueForMode "fixed_date") "size" 10 "disabled" (ne $mode "fixed_date") "data" (hash "custom_field_default_value_target" "fixedDateInput"))}}
+    {{calendar_for "custom_field_default_value"}}
+  </p>
+  <p class="indent" data-custom-field-default-value-target="dateOffset" {{if ne $mode "date_offset"}}hidden{{end}}>
+    {{.f.TextField "default_value" (hash "id" "custom_field_default_value_offset" "value" (.custom_field.DefaultValueForMode "date_offset") "size" 6 "disabled" (ne $mode "date_offset") "data" (hash "custom_field_default_value_target" "dateOffsetInput"))}}
+    {{l "label_days_relative_to_today"}}
+  </p>
+</div>
 <p>{{.f.TextField "url_pattern" (hash "size" 50 "label" (sym "label_link_values_to"))}}</p>

@@ -212,6 +212,23 @@ func TestAPITimeEntries(t *testing.T) {
 		}
 	})
 
+	// 7.0.1 (#44146)
+	t.Run("GET /time_entries/:id.xml should only return visible custom fields", func(t *testing.T) {
+		f := newContentFixture(t)
+		f.exec(t, `INSERT INTO custom_fields (owner_kind, name, field_format, visible, position) VALUES ('time_entry', 'Visible field', 'string', ?, 98)`, false)
+		cf1 := f.int(t, `SELECT MAX(id) FROM custom_fields`)
+		f.exec(t, `INSERT INTO custom_fields (owner_kind, name, field_format, visible, position) VALUES ('time_entry', 'Non visible field', 'string', ?, 99)`, false)
+		cf2 := f.int(t, `SELECT MAX(id) FROM custom_fields`)
+		f.exec(t, `INSERT INTO custom_fields_roles (custom_field_id, role_id) SELECT ?, id FROM roles WHERE name = 'Manager'`, cf1)
+		f.exec(t, `INSERT INTO custom_fields_roles (custom_field_id, role_id) SELECT ?, id FROM roles WHERE name = 'Developer'`, cf2)
+		f.exec(t, `INSERT INTO custom_values (customized_kind, customized_id, custom_field_id, value) VALUES ('time_entry', 3, ?, 'value1'), ('time_entry', 3, ?, 'value2')`, cf1, cf2)
+		res := apiGet(t, f.ts, "/time_entries/3.xml", apiCreds("jsmith"))
+		res.expectStatus(t, 200)
+		x := res.XML(t)
+		assertXMLText(t, x, `time_entry custom_fields custom_field[id="`+cItoa(cf1)+`"][name="Visible field"] value`, "value1")
+		assertXMLCount(t, x, `time_entry custom_fields custom_field[id="`+cItoa(cf2)+`"]`, 0)
+	})
+
 	// "DELETE /time_entries/:id.xml with failure should return errors" は TimeEntry#destroy を
 	// スタブで失敗させるテストで、Go では同じ注入ができないため移植しない。
 }

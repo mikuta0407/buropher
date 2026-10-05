@@ -17,8 +17,13 @@
   <p>{{$f.PasswordField "password_confirmation" (hash "size" 25 "required" true)}}</p>
 {{end}}
 
+{{if lastname_before_firstname -}}
+<p>{{$f.TextField "lastname" (hash "required" true)}}</p>
+<p>{{$f.TextField "firstname" (hash "required" true)}}</p>
+{{else -}}
 <p>{{$f.TextField "firstname" (hash "required" true)}}</p>
 <p>{{$f.TextField "lastname" (hash "required" true)}}</p>
+{{end -}}
 <p>{{$f.TextField "mail" (hash "required" true)}}</p>
 {{$pf := labelled_fields_for "pref" .User.Pref}}
 

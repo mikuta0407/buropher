@@ -158,9 +158,7 @@ func (e *Env) notifyAbout(ctx context.Context, u *domain.User, ns *notificationS
 	case "only_owner":
 		return isAuthor, nil
 	case "only_my_watches":
-		// Redmine: object.watched_by?(self)。ウォッチャーへの通知は notified_watchers 側で行うため、
-		// ここ(作成者・担当者として通知するか)ではウォッチしていても追加しない
-		return false, nil
+		return e.WatchedBy(ctx, iss, u)
 	}
 	return false, nil
 }

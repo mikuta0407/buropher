@@ -255,3 +255,32 @@ func TestProjectJumpBox(t *testing.T) {
 		}
 	})
 }
+
+// Redmine 7.0: Token.find_active_user は使用日時（updated_on）を記録し、Token#used? で使用済みか分かる。
+func TestTokenFindActiveUserRecordsLastUse(t *testing.T) {
+	withFixtures(t, func(e *env) {
+		tok, err := repository.CreateToken(e.ctx, e.d, 2, repository.TokenAPI)
+		e.must(err)
+		if repository.TokenUsed(tok) {
+			t.Error("new token should not be used")
+		}
+		later := tok.CreatedAt.Add(5 * time.Minute)
+		if _, err := repository.FindActiveTokenUser(e.ctx, e.d, repository.TokenAPI, tok.Value, 0, later); err != nil {
+			t.Fatal(err)
+		}
+		got, err := repository.FindToken(e.ctx, e.d, repository.TokenAPI, tok.Value, 0, later)
+		e.must(err)
+		if !repository.TokenUsed(got) || got.UpdatedAt.Sub(later).Abs() > time.Millisecond {
+			t.Errorf("updated_at = %v, want %v", got.UpdatedAt, later)
+		}
+		// 1 分以内の再利用では更新しない
+		if _, err := repository.FindActiveTokenUser(e.ctx, e.d, repository.TokenAPI, tok.Value, 0, later.Add(30*time.Second)); err != nil {
+			t.Fatal(err)
+		}
+		got, err = repository.FindToken(e.ctx, e.d, repository.TokenAPI, tok.Value, 0, later)
+		e.must(err)
+		if got.UpdatedAt.Sub(later).Abs() > time.Millisecond {
+			t.Errorf("updated_at changed within a minute: %v", got.UpdatedAt)
+		}
+	})
+}

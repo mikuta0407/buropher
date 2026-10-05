@@ -388,7 +388,7 @@ func fieldsRows(left, right []template.HTML) template.HTML {
 		return s
 	}
 	content := rails.ContentTag("div", join(left), rails.NewHash("class", "splitcontentleft")) +
-		rails.ContentTag("div", join(right), rails.NewHash("class", "splitcontentleft"))
+		rails.ContentTag("div", join(right), rails.NewHash("class", "splitcontentright"))
 	return rails.ContentTag("div", content, rails.NewHash("class", "splitcontent"))
 }
 

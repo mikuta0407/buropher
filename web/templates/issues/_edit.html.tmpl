@@ -1,6 +1,7 @@
 {{$v := .V}}{{$F := .F}}
 {{$f := labelled_form_for "issue" $F.Model (hash "url" $F.FormURL "html" (hash "id" "issue-form" "multipart" true))}}
 {{$f.Open}}
+    {{call_hook "view_issues_edit_top"}}
     {{error_messages_for_list $F.ErrorMessages}}
     {{if $F.Conflict}}{{partial "issues/conflict" (dict "V" $v "F" $F)}}{{end}}
     <div class="box">

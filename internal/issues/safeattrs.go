@@ -275,6 +275,20 @@ func (e *Env) SafeAssign(ctx context.Context, iss *Issue, params Params, u *doma
 			}
 		}
 	}
+	// フォームに明示的な値が無い新規チケットには、選択中トラッカーの「プライベート」既定値を適用する（Redmine 7.0 #9432）。
+	if _, ok := attrs["is_private"]; !ok && iss.NewRecord() {
+		t, err := e.TrackerOf(ctx, iss)
+		if err != nil {
+			return err
+		}
+		if t != nil && t.PrivateByDefault {
+			if ok, err := e.SafeAttribute(ctx, iss, "is_private", u); err != nil {
+				return err
+			} else if ok {
+				attrs["is_private"] = "1"
+			}
+		}
+	}
 	if a, ok := attrs["assigned_to_id"]; ok {
 		delete(attrs, "assigned_to_id")
 		if a != nil {

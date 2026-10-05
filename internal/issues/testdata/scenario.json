@@ -6,9 +6,7 @@
       "value": {
         "ok": true,
         "id": 15,
-        "errors": [
-
-        ]
+        "errors": []
       }
     },
     {
@@ -17,9 +15,7 @@
       "value": {
         "ok": true,
         "id": 16,
-        "errors": [
-
-        ]
+        "errors": []
       }
     },
     {
@@ -28,9 +24,7 @@
       "value": {
         "ok": true,
         "id": 17,
-        "errors": [
-
-        ]
+        "errors": []
       }
     },
     {
@@ -39,9 +33,7 @@
       "value": {
         "ok": true,
         "id": 3,
-        "errors": [
-
-        ]
+        "errors": []
       }
     },
     {
@@ -50,9 +42,7 @@
       "value": {
         "ok": true,
         "id": 15,
-        "errors": [
-
-        ]
+        "errors": []
       }
     },
     {
@@ -61,9 +51,7 @@
       "value": {
         "ok": true,
         "id": 17,
-        "errors": [
-
-        ]
+        "errors": []
       }
     },
     {
@@ -72,9 +60,7 @@
       "value": {
         "ok": true,
         "id": 16,
-        "errors": [
-
-        ]
+        "errors": []
       }
     },
     {
@@ -83,9 +69,7 @@
       "value": {
         "ok": true,
         "id": 18,
-        "errors": [
-
-        ]
+        "errors": []
       }
     },
     {
@@ -94,9 +78,7 @@
       "value": {
         "ok": true,
         "id": 16,
-        "errors": [
-
-        ]
+        "errors": []
       }
     },
     {
@@ -105,9 +87,7 @@
       "value": {
         "ok": true,
         "id": 20,
-        "errors": [
-
-        ]
+        "errors": []
       }
     },
     {
@@ -116,9 +96,7 @@
       "value": {
         "ok": true,
         "id": 21,
-        "errors": [
-
-        ]
+        "errors": []
       }
     },
     {
@@ -127,9 +105,7 @@
       "value": {
         "ok": true,
         "id": 6,
-        "errors": [
-
-        ]
+        "errors": []
       }
     },
     {
@@ -138,9 +114,7 @@
       "value": {
         "ok": true,
         "id": 20,
-        "errors": [
-
-        ]
+        "errors": []
       }
     },
     {
@@ -149,9 +123,7 @@
       "value": {
         "ok": true,
         "id": 17,
-        "errors": [
-
-        ]
+        "errors": []
       }
     },
     {
@@ -1003,7 +975,7 @@
       "root_id": 20,
       "subject": "Diff E",
       "description": null,
-      "start_date": "2026-01-15",
+      "start_date": null,
       "due_date": null,
       "done_ratio": 0,
       "estimated_hours": null,
@@ -1027,7 +999,7 @@
       "root_id": 21,
       "subject": "Diff D (duplicate)",
       "description": null,
-      "start_date": "2026-01-15",
+      "start_date": null,
       "due_date": null,
       "done_ratio": 0,
       "estimated_hours": null,
@@ -1093,9 +1065,7 @@
       "created_on": "2026-01-14 00:00:00",
       "updated_on": "2026-01-14 00:00:00",
       "updated_by_id": null,
-      "details": [
-
-      ]
+      "details": []
     },
     {
       "id": 3,
@@ -1154,9 +1124,7 @@
       "created_on": "2026-01-14 00:00:00",
       "updated_on": "2026-01-14 00:00:00",
       "updated_by_id": null,
-      "details": [
-
-      ]
+      "details": []
     },
     {
       "id": 6,
@@ -1299,9 +1267,7 @@
       "created_on": "2026-01-15 12:00:00",
       "updated_on": "2026-01-15 12:00:00",
       "updated_by_id": null,
-      "details": [
-
-      ]
+      "details": []
     },
     {
       "id": 13,

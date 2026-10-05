@@ -24,6 +24,7 @@ import (
 	"strings"
 
 	"github.com/mikuta0407/buropher/internal/domain"
+	"github.com/mikuta0407/buropher/internal/issues"
 	"github.com/mikuta0407/buropher/internal/repository"
 )
 
@@ -609,6 +610,15 @@ func (q *Query) filterErrors(ctx context.Context) ([]string, error) {
 				invalid = slices.ContainsFunc(values, func(v string) bool { return strings.TrimSpace(v) != "" && !reInteger.MatchString(v) })
 			case "float":
 				invalid = slices.ContainsFunc(values, func(v string) bool { return strings.TrimSpace(v) != "" && !reFloat.MatchString(v) })
+			case "hour":
+				// "0:45" / "1h30" などの時間表記を String#to_hours で検証する (#43948, #43968)
+				unparseable := func(v string) bool { _, ok := issues.ToHours(v); return !ok }
+				switch q.OperatorFor(field) {
+				case "><":
+					invalid = slices.ContainsFunc(values, func(v string) bool { return strings.TrimSpace(v) == "" || unparseable(v) })
+				case "=", ">=", "<=":
+					invalid = slices.ContainsFunc(values, func(v string) bool { return strings.TrimSpace(v) != "" && unparseable(v) })
+				}
 			case "date", "date_past":
 				switch q.OperatorFor(field) {
 				case "=", ">=", "<=", "><":

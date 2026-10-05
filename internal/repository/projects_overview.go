@@ -90,7 +90,7 @@ func RolledUpTrackers(ctx context.Context, q db.Queryer, p *domain.Project, with
 
 func loadTrackersWhere(ctx context.Context, q db.Queryer, where string) ([]*domain.Tracker, error) {
 	var rows []trackerRow
-	if err := q.Select(ctx, &rows, `SELECT id, name, description, position, is_in_roadmap, default_status_id, disabled_core_fields
+	if err := q.Select(ctx, &rows, `SELECT `+trackerCols+`
 FROM trackers WHERE `+where+` ORDER BY position, id`); err != nil {
 		return nil, err
 	}

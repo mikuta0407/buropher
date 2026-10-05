@@ -155,6 +155,11 @@ func (r *receiver) receiveIssue(ctx context.Context) (any, error) {
 			t := time.Date(y, m, d, 0, 0, 0, 0, time.UTC)
 			iss.StartDate = &t
 		}
+		if days, ok := r.h.Settings.DefaultIssueDueDateOffsetInDays(); ok && iss.DueDate == nil {
+			y, m, d := r.h.now().UTC().Date()
+			t := time.Date(y, m, d+days, 0, 0, 0, 0, time.UTC)
+			iss.DueDate = &t
+		}
 		if r.opts.issue["is_private"] == "1" {
 			iss.IsPrivate = true
 		}
@@ -212,8 +217,7 @@ func (r *receiver) receiveIssueReply(ctx context.Context, issueID int64, fromJou
 			return unauthorized("not possible to add notes to project [%s]", project.Name)
 		}
 		if !r.opts.noPermissionCheck {
-			// 本家は notes_addable? だけを見るため、見えない（非公開・他人の）チケットにも件名の番号だけで
-			// 注記・属性変更・添付・ウォッチャー追加ができる。画面・API と同じく見えるチケットに限る
+			// unless issue.visible?(user) && issue.notes_addable?（7.0.1 #44118。buropher は 6.1.2 移植時から先行して可視性を確認していた）
 			vis, err := env.Visible(ctx, iss, r.user)
 			if err != nil {
 				return err

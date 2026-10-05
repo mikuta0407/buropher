@@ -283,7 +283,7 @@ func TestWatchersWrite(t *testing.T) {
 		t.Errorf("watchers after watch: %s", got)
 	}
 	wantHead := `$(".issue-1-watcher").each(function(){$(this).replaceWith("<a class=\"issue-1-watcher icon icon-fav\" data-remote=\"true\" rel=\"nofollow\" data-method=\"delete\" href=\"/watchers/watch?object_id=1&amp;object_type=issue\">`
-	if !strings.HasPrefix(body, wantHead) || !strings.Contains(body, "\n$('#watchers').html('<div class=\\\"contextual\\\">\\n<a data-remote=\\\"true\\\" data-method=\\\"get\\\" href=\\\"/watchers/new?object_id=1&amp;object_type=issue\\\">Add<\\/a>\\n<\\/div>\\n\\n<h3>Watchers (1)<\\/h3>") ||
+	if !strings.HasPrefix(body, wantHead) || !strings.Contains(body, "\n$('#watchers[data-watchable-id=\"1\"]').html('<div class=\\\"contextual\\\">\\n<a data-remote=\\\"true\\\" data-method=\\\"get\\\" href=\\\"/watchers/new?object_id=1&amp;object_type=issue\\\">Add<\\/a>\\n<\\/div>\\n\\n<h3>Watchers (1)<\\/h3>") ||
 		!strings.HasSuffix(body, "<\\/ul>\\n');\n") {
 		t.Errorf("watch.js: %s", body)
 	}

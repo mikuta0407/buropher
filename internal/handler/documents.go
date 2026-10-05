@@ -79,6 +79,7 @@ func (a *App) newDocumentForm(c *Req, d *domain.Document) (*documentForm, error)
 	if err != nil {
 		return nil, err
 	}
+	resolveCFDefaultValues(cfs, a.userToday(c))
 	f := &documentForm{contentForm: newContentForm(c, "document", d.ID), Document: d, cfs: cfs,
 		values: map[int64][]string{}, given: map[int64]bool{}}
 	if d.ID != 0 {

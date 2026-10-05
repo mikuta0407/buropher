@@ -1,0 +1,157 @@
+# Redmine 7.0 で追加されたチケットまわりの設定・挙動の互換シナリオ:
+#   トラッカーの「プライベート」既定値 (#9432)、期日の既定値 (#31518)、担当者ドロップダウンの並び (#43996 #44015)、
+#   担当者の自動ウォッチと only_my_watches (#2716 #37978)、氏名欄の並び (#4507)、空にした注記の保持 (#44258)。
+# 状態を変えるため、参照は専用インスタンスで実行前に reset すること（-reset-ref / -reset-cand）。
+# ケースは記述順に実行され、前のケースの結果に依存する。
+name: issues_v7_write
+
+users:
+  admin: {login: admin, password: admin}
+  jsmith: {login: jsmith, password: jsmith}
+
+normalize:
+  mask_text_selectors:
+    - "#footer"
+  regex:
+    - {pattern: '-[0-9a-f]{8}(\\" method=)', replace: '-RANDOM$1'}
+    - {pattern: 'authenticity_token\\" value=\\"[A-Za-z0-9_-]+\\"', replace: 'authenticity_token\" value=\"TOKEN\"'}
+
+requests:
+  # ---- 設定: 期日の既定値・担当者の並び（グループ → ユーザー） ----
+  - id: settings_issues_invalid_offset
+    path: /settings/edit?tab=issues
+    method: POST
+    user: admin
+    form:
+      tab: issues
+      settings[default_issue_due_date_offset_enabled]: "1"
+      settings[default_issue_due_date_offset]: "-1"
+  - id: settings_issues_update
+    path: /settings/edit?tab=issues
+    method: POST
+    user: admin
+    form:
+      tab: issues
+      settings[issue_group_assignment]: "1"
+      settings[assignee_dropdown_display_format]: "groups_then_users"
+      settings[default_issue_start_date_to_creation_date]: "1"
+      settings[default_issue_due_date_offset_enabled]: "1"
+      settings[default_issue_due_date_offset]: "7"
+    expect_status: 302
+  - id: g01_settings_issues
+    path: /settings?tab=issues
+    user: admin
+  - id: g02_issues_new
+    path: /projects/ecookbook/issues/new
+    user: jsmith
+  - id: g03_issues_edit
+    path: /issues/1/edit
+    user: jsmith
+
+  # ---- 担当者の並び: グループごとのユーザー ----
+  - id: settings_issues_users_by_group
+    path: /settings/edit?tab=issues
+    method: POST
+    user: admin
+    form:
+      tab: issues
+      settings[assignee_dropdown_display_format]: "users_by_group"
+      settings[default_issue_due_date_offset_enabled]: "0"
+      settings[default_issue_due_date_offset]: "7"
+    expect_status: 302
+  - id: g04_settings_issues
+    path: /settings?tab=issues
+    user: admin
+  - id: g05_issues_new
+    path: /projects/ecookbook/issues/new
+    user: jsmith
+  - id: g06_issues_bulk_edit
+    path: /issues/bulk_edit?ids[]=1&ids[]=2
+    user: jsmith
+
+  # ---- トラッカーの「プライベート」既定値 ----
+  - id: tracker_update_private_by_default
+    path: /trackers/1
+    method: PATCH
+    user: admin
+    form:
+      tracker[private_by_default]: "1"
+    expect_status: 302
+  - id: g07_tracker_edit
+    path: /trackers/1/edit
+    user: admin
+  - id: g08_issues_new_private
+    path: /projects/ecookbook/issues/new
+    user: jsmith
+  - id: g09_issues_new_form_update_tracker
+    path: /projects/ecookbook/issues/new.js
+    method: POST
+    user: jsmith
+    format: text
+    headers: {X-Requested-With: XMLHttpRequest}
+    form:
+      form_update_triggered_by: issue_tracker_id
+      issue[tracker_id]: "1"
+      issue[is_private]: "0"
+      issue[subject]: "switch tracker"
+  - id: issues_create_private_by_default
+    path: /projects/ecookbook/issues
+    method: POST
+    user: jsmith
+    form:
+      issue[tracker_id]: "1"
+      issue[subject]: "Private by default"
+    expect_status: 302
+  - id: g10_issue_private
+    path: /issues/15
+    user: jsmith
+
+  # ---- 個人設定: 自動ウォッチ・通知・氏名欄の並び ----
+  - id: settings_user_format
+    path: /settings/edit?tab=display
+    method: POST
+    user: admin
+    form:
+      tab: display
+      settings[user_format]: "lastname_firstname"
+    expect_status: 302
+  - id: g11_my_account
+    path: /my/account
+    user: jsmith
+  - id: my_account_update
+    path: /my/account
+    method: PUT
+    user: jsmith
+    form:
+      user[firstname]: "John"
+      user[lastname]: "Smith"
+      user[mail]: "jsmith@somenet.foo"
+      user[mail_notification]: "only_my_watches"
+      pref[auto_watch_on][]: ["", "issue_assigned_to_me"]
+    expect_status: 302
+  - id: g12_my_account
+    path: /my/account
+    user: jsmith
+  - id: g13_users_new
+    path: /users/new
+    user: admin
+  - id: g14_users_edit
+    path: /users/2/edit
+    user: admin
+
+  # ---- 空にした注記の保持 ----
+  - id: journal_update_empty
+    path: /journals/2.js
+    method: PUT
+    user: admin
+    format: text
+    headers: {X-Requested-With: XMLHttpRequest}
+    form:
+      journal[notes]: ""
+  - id: g15_issue_history
+    path: /issues/1
+    user: admin
+  - id: g16_journals_api
+    path: /issues/1.json?include=journals
+    user: admin
+    format: json

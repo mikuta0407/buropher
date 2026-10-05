@@ -174,7 +174,7 @@ func (v *userQueryView) OperatorLabelsJSON() rails.HTML {
 
 // operatorTypeOrder は Query.operators_by_filter_type の定義順。
 var operatorTypeOrder = []string{"list", "list_with_history", "list_status", "list_optional", "list_optional_with_history",
-	"list_subprojects", "date", "date_past", "string", "text", "search", "integer", "float", "relation", "tree"}
+	"list_subprojects", "date", "date_past", "string", "text", "search", "integer", "float", "hour", "relation", "tree"}
 
 // OperatorByTypeJSON は raw_json Query.operators_by_filter_type。
 func (v *userQueryView) OperatorByTypeJSON() rails.HTML {

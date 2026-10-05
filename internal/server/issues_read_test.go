@@ -231,7 +231,7 @@ func TestIssuesIndexSessionQuery(t *testing.T) {
 		t.Error("session sort not restored")
 	}
 	_, body = get(t, c, ts.URL+"/issues/2")
-	for _, want := range []string{`title="#1"`, `title="#3"`, `<span class="position">`, `2 of 14`} {
+	for _, want := range []string{`title="#1"`, `title="#3"`, `<li class="page position">`, `2 of 14`} {
 		if !strings.Contains(body, want) {
 			t.Errorf("issue 2 prev/next: %q not found", want)
 		}
