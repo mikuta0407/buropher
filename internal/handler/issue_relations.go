@@ -49,7 +49,11 @@ func (a *App) routesIssueRelations(r Router) {
 
 const ctxRelation = "relation"
 
-// findRelationsIssue は IssueRelationsController#find_issue（Issue.find(params[:issue_id])。可視性は見ない）。
+// findRelationsIssue は IssueRelationsController#find_issue（Issue.find(params[:issue_id])）。
+//
+// 本家は可視性を見ないため、プロジェクトで view_issues / manage_issue_relations を持つだけで
+// 見えないチケット（非公開など）の関連一覧（関連先の番号）を API で取得でき、関連の追加で
+// そのチケットにジャーナルを書き込めた。buropher はチケットが見えなければ拒否する。
 func (a *App) findRelationsIssue(c *Req) {
 	id, ok := c.Params().IntStrict("issue_id")
 	if !ok {
@@ -71,6 +75,16 @@ func (a *App) findRelationsIssue(c *Req) {
 		return
 	}
 	c.Project = p
+	ok, err = c.Authz().IssueVisible(c.Ctx(), &domain.Issue{ID: r.ID, ProjectID: r.ProjectID, TrackerID: r.TrackerID,
+		StatusID: r.StatusID, AuthorID: r.AuthorID, AssignedToID: r.AssignedToID, IsPrivate: r.IsPrivate}, p)
+	if err != nil {
+		a.internalError(c, "issue visible", err)
+		return
+	}
+	if !ok {
+		c.DenyAccess()
+		return
+	}
 	c.setLocal(ctxIssue, issueRowFromRead(r))
 }
 
