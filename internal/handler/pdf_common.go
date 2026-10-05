@@ -6,6 +6,7 @@ package handler
 // PDF 出力の共通部分（Redmine::Export::PDF::ITCPDF の生成・send_file_headers!・get_image_filename）。
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -78,7 +79,7 @@ var (
 const maxPDFImageSize = 32 << 20
 
 // pdfImageLoader は ITCPDF#get_image_filename（attachments の中から img の src に当たる画像を探す）。
-func (a *App) pdfImageLoader(atts []*domain.Attachment) pdf.ImageLoader {
+func (a *App) pdfImageLoader(ctx context.Context, atts []*domain.Attachment) pdf.ImageLoader {
 	return func(src string) ([]byte, bool) {
 		if a.AttachmentStore == nil {
 			return nil, false
@@ -131,7 +132,7 @@ func (a *App) pdfImageLoader(atts []*domain.Attachment) pdf.ImageLoader {
 		if m := rePDFThumbnail.FindStringSubmatch(src); m != nil {
 			if att := byID(m[1]); att != nil && a.AttachmentStore.Readable(att) {
 				size, _ := strconv.Atoi(m[2])
-				if p, ok := a.AttachmentStore.Thumbnail(att, size); ok {
+				if p, ok := a.AttachmentStore.Thumbnail(ctx, att, size); ok {
 					return read(p)
 				}
 			}

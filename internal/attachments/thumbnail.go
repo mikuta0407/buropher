@@ -5,6 +5,7 @@ package attachments
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"image"
 	"image/gif"
@@ -83,7 +84,8 @@ var reHexDigest = regexp.MustCompile(`\A[0-9a-fA-F]+\z`)
 var thumbnailGenSem = make(chan struct{}, 2)
 
 // Thumbnail は Attachment#thumbnail(:size => size)（生成済みならそのパス、生成できなければ false）。
-func (s *Store) Thumbnail(a *domain.Attachment, size int) (string, bool) {
+// 生成の枠（thumbnailGenSem）を待つ間に ctx が終わった（クライアントが切断した等）場合は生成しない。
+func (s *Store) Thumbnail(ctx context.Context, a *domain.Attachment, size int) (string, bool) {
 	if !a.Thumbnailable() || !s.Readable(a) || a.IsPDF() || !reHexDigest.MatchString(a.Digest) {
 		return "", false
 	}
@@ -95,7 +97,11 @@ func (s *Store) Thumbnail(a *domain.Attachment, size int) (string, bool) {
 	if st, err := os.Stat(target); err == nil && st.Size() > 0 {
 		return target, true
 	}
-	thumbnailGenSem <- struct{}{}
+	select {
+	case thumbnailGenSem <- struct{}{}:
+	case <-ctx.Done():
+		return "", false
+	}
 	defer func() { <-thumbnailGenSem }()
 	// 待っている間に他の要求が同じサムネイルを作っていればそれを使う
 	if st, err := os.Stat(target); err == nil && st.Size() > 0 {

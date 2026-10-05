@@ -101,7 +101,7 @@ func (a *App) writeWikiPagePDF(c *Req, d *pdf.Doc, page *domain.WikiPage) error 
 	if err != nil {
 		return err
 	}
-	d.WriteHTMLCell(190, 5, text, "", a.pdfImageLoader(atts))
+	d.WriteHTMLCell(190, 5, text, "", a.pdfImageLoader(ctx, atts))
 	if len(atts) > 0 {
 		d.Ln(5)
 		d.SetFontStyle("B", 9)

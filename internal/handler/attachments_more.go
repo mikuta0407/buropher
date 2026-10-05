@@ -443,7 +443,7 @@ func (a *App) markupToHTML(c *Req, format, text string) template.HTML {
 func (a *App) AttachmentsThumbnail(c *Req) {
 	att := c.attachment()
 	size, _ := strconv.Atoi(c.Params().String("size"))
-	path, ok := a.AttachmentStore.Thumbnail(att, size)
+	path, ok := a.AttachmentStore.Thumbnail(c.Ctx(), att, size)
 	if !ok {
 		httpx.Head(c.W, c.R, http.StatusNotFound)
 		c.Halt()
