@@ -329,10 +329,10 @@ func TestGroupsAndMemberships(t *testing.T) {
 	if res.StatusCode != 302 || uQueryInt(t, d, `SELECT COUNT(*) FROM group_users WHERE group_id = ?`, gid) != 2 {
 		t.Fatalf("add users: %d", res.StatusCode)
 	}
-	// XHR（js）の追加・削除
-	res, body = send(t, c, ts.URL, "DELETE", "/groups/"+uitoa(gid)+"/users/3.js", nil)
-	if res.StatusCode != 200 || !strings.Contains(body, "$('#tab-content-users').html(") {
-		t.Fatalf("remove user js: %d %s", res.StatusCode, body)
+	// remove_user（Redmine 7.0 で remove_users に委ねられ、確認が必要）
+	res, body = send(t, c, ts.URL, "DELETE", "/groups/"+uitoa(gid)+"/users/3", url.Values{"confirm": {"Yes"}})
+	if res.StatusCode != 302 {
+		t.Fatalf("remove user: %d %s", res.StatusCode, body)
 	}
 	if uQueryInt(t, d, `SELECT COUNT(*) FROM group_users WHERE group_id = ?`, gid) != 1 {
 		t.Error("user not removed")

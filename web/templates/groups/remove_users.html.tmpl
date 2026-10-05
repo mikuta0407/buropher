@@ -1,0 +1,21 @@
+{{title (l "label_confirmation")}}
+
+{{form_tag (printf "/groups/%d/users?%s" .Group.ID .IDsQuery) (hash "method" "delete")}}
+  {{back_url_hidden_field_tag}}
+  <div class="warning">
+    <p>{{simple_format (l "text_users_remove_from_group_confirmation" (hash "group" (content_tag "strong" .Group.Name)))}}</p>
+
+    {{range $u := .Users}}
+      <p><strong>{{user_name $u}}</strong> ({{$u.Login}})</p>
+    {{end}}
+
+    <p>{{l "text_users_bulk_destroy_confirm" (hash "yes" (l "general_text_Yes"))}}</p>
+    <p>{{text_field_tag "confirm"}}</p>
+
+  </div>
+
+  <p>
+    {{submit_tag (l "button_delete")}}
+    {{link_to (l "button_cancel") .CancelURL}}
+  </p>
+{{end_form}}

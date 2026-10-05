@@ -476,8 +476,8 @@
     "name": "issues_context_menu",
     "verb": "GET|POST",
     "path": "/issues/context_menu(.:format)",
-    "controller": "context_menus",
-    "action": "issues",
+    "controller": "context_menus/issues",
+    "action": "index",
     "defaults": {
     },
     "requirements": {
@@ -1011,8 +1011,8 @@
     "name": "users_context_menu",
     "verb": "GET|POST",
     "path": "/users/context_menu(.:format)",
-    "controller": "context_menus",
-    "action": "users",
+    "controller": "context_menus/users",
+    "action": "index",
     "defaults": {
     },
     "requirements": {
@@ -3051,8 +3051,8 @@
     "name": "time_entries_context_menu",
     "verb": "GET|POST",
     "path": "/time_entries/context_menu(.:format)",
-    "controller": "context_menus",
-    "action": "time_entries",
+    "controller": "context_menus/time_entries",
+    "action": "index",
     "defaults": {
     },
     "requirements": {
@@ -3888,6 +3888,18 @@
     }
   },
   {
+    "name": null,
+    "verb": "DELETE",
+    "path": "/groups/:id/users(.:format)",
+    "controller": "groups",
+    "action": "remove_users",
+    "defaults": {
+    },
+    "requirements": {
+      "id": "(?-mix:\\d+)"
+    }
+  },
+  {
     "name": "group_user",
     "verb": "DELETE",
     "path": "/groups/:id/users/:user_id(.:format)",
@@ -4519,8 +4531,8 @@
     "name": "projects_context_menu",
     "verb": "GET|POST",
     "path": "/admin/projects_context_menu(.:format)",
-    "controller": "context_menus",
-    "action": "projects",
+    "controller": "context_menus/projects",
+    "action": "index",
     "defaults": {
     },
     "requirements": {

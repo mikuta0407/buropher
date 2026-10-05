@@ -28,7 +28,6 @@ import (
 // AdminProjectsController は AdminController（projects アクションのみ）。layout 'admin'、main_menu false。
 var AdminProjectsController = &Controller{Name: "admin", MainMenu: false}
 
-
 // routesAdminProjects は admin#projects と context_menus/projects#index のルートを登録する。
 //
 //	get 'admin/projects', :to => 'admin#projects'

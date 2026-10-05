@@ -19,7 +19,7 @@ import (
 	"github.com/mikuta0407/buropher/web"
 )
 
-// redmineRoute は testdata/redmine-routes.json（Redmine 6.1.2 の `rails routes` を JSON で出力したもの）の 1 行。
+// redmineRoute は testdata/redmine-routes.json（Redmine 6.1.2 の `rails routes` を JSON で出力したもの。7.0.1 の変更を手で反映している）の 1 行。
 type redmineRoute struct {
 	Name         *string           `json:"name"`
 	Verb         string            `json:"verb"`

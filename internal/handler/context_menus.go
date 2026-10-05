@@ -6,6 +6,7 @@ package handler
 import (
 	"net/http"
 
+	"github.com/mikuta0407/buropher/internal/domain"
 	"github.com/mikuta0407/buropher/internal/repository"
 	"github.com/mikuta0407/buropher/internal/view"
 )
@@ -35,7 +36,12 @@ func (a *App) routesContextMenus(r Router) {
 
 // ContextMenusUsers は ContextMenus::UsersController#index（layout なし）。
 func (a *App) ContextMenusUsers(c *Req) {
-	users, err := repository.UsersWhereIDs(c.Ctx(), a.DB, idsFromParam(c.Params().Slice("ids")))
+	// User.where(id: params[:id] || params[:ids])
+	idParam, _ := c.Params().Lookup("id")
+	if idParam == nil {
+		idParam, _ = c.Params().Lookup("ids")
+	}
+	users, err := repository.UsersWhereIDs(c.Ctx(), a.DB, idsFromParam(idParam))
 	if err != nil {
 		a.serverError(c, err)
 		return
@@ -44,8 +50,11 @@ func (a *App) ContextMenusUsers(c *Req) {
 		c.Render404("")
 		return
 	}
-	// @back は users アクションでは設定されない（nil）
 	data := map[string]any{"Users": users}
+	// @back = back_url（ContextMenus::BaseController#render_context_menu）
+	if b := backURLParam(c); b != "" {
+		data["Back"] = b
+	}
 	if len(users) == 1 {
 		data["User"] = users[0]
 	}
@@ -61,5 +70,32 @@ func (a *App) ContextMenusUsers(c *Req) {
 		ids[i] = u.ID
 	}
 	data["IDs"] = ids
+	// @groups = Group.givable.sorted.to_a
+	// @common_group_ids = Group.givable.joins(:groups_users).where(groups_users: { user_id: @users.map(&:id) }).distinct.pluck(:id).to_set
+	// （名前に反して、選択したユーザーのいずれかが所属するグループ）
+	groups, err := repository.ListGroups(c.Ctx(), a.DB, false)
+	if err != nil {
+		a.serverError(c, err)
+		return
+	}
+	common := map[int64]bool{}
+	for _, u := range users {
+		gids, err := repository.UserGroupIDs(c.Ctx(), a.DB, u.ID)
+		if err != nil {
+			a.serverError(c, err)
+			return
+		}
+		for _, id := range gids {
+			common[id] = true
+		}
+	}
+	var commonGroups []*domain.Group
+	for _, g := range groups {
+		if common[g.ID] {
+			commonGroups = append(commonGroups, g)
+		}
+	}
+	data["Groups"] = groups
+	data["CommonGroups"] = commonGroups
 	c.Render("context_menus/users", data, RenderOptions{Layout: view.NoLayout})
 }

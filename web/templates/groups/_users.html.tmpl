@@ -13,7 +13,7 @@
       <tr id="user-{{$u.ID}}">
         <td class="name">{{link_to_user $u}}</td>
         <td class="buttons">
-          {{delete_link (printf "/groups/%d/users/%d" $g.ID $u.ID) (hash "remote" true)}}
+          {{link_to (sprite_icon "link-break" (l "button_remove")) (printf "/groups/%d/users?user_id=%d" $g.ID $u.ID) (hash "method" "delete" "class" "icon icon-link-break")}}
         </td>
       </tr>
     {{end}}
