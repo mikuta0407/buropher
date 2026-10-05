@@ -222,6 +222,10 @@ func TestLDAPExtForm(t *testing.T) {
 	if strings.Index(body, `id="ldap-extra"`) < strings.Index(body, `name="auth_source[attr_mail]"`) {
 		t.Error("extra fields before Redmine fields")
 	}
+	// STARTTLS の証明書の検証は新規作成では既定で有効
+	if i := strings.Index(body, `type="checkbox" value="1" checked="checked" name="auth_source[starttls_verify_peer]"`); i < 0 {
+		t.Errorf("starttls_verify_peer is not checked by default:\n%s", extract(body, `name="auth_source[starttls]"`, `</fieldset>`))
+	}
 
 	// 検証エラー
 	res, body := send(t, c, ts.URL, http.MethodPost, "/auth_sources", with("auth_source[ldap_mode]", "ldaps_verify_peer",

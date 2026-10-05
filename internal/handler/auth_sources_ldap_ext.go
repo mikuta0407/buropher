@@ -81,6 +81,11 @@ func (a *App) initLDAPExt(c *Req, f *ldapSourceForm) {
 	for _, k := range ldapExtBoolFields {
 		f.extBools[k] = rec.ConfigBool(k)
 	}
+	if _, ok := rec.Config["starttls_verify_peer"]; !ok && rec.ID == 0 {
+		// 新規作成では STARTTLS の証明書を既定で検証する（未検証の STARTTLS は能動的な中間者に
+		// サービスアカウント・ユーザーのパスワードを渡してしまう）
+		f.extBools["starttls_verify_peer"] = true
+	}
 	f.syncLastAt, _ = rec.ConfigString("sync_last_at")
 	f.syncLastLog, _ = rec.ConfigString("sync_last_log")
 	if rec.ID != 0 {
