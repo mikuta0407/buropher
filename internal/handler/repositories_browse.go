@@ -657,6 +657,10 @@ func (a *App) entryAndRaw(c *Req, isRaw bool) {
 		if mimetype.Of(s.path) == "application/pdf" {
 			disposition = "inline"
 		}
+		// buropher 独自（多層防御）: リポジトリの内容は書き込み権限のある利用者が自由に置けるため、添付ファイルの
+		// ダウンロードと同じく CSP の sandbox を付け、inline 表示される PDF や誤って描画された HTML/SVG から
+		// このオリジンでスクリプトを動かせないようにする（Redmine は付けない）
+		h.Set("Content-Security-Policy", "default-src 'none'; style-src 'unsafe-inline'; sandbox")
 		h.Set("Content-Type", typ)
 		h.Set("Content-Disposition", httpx.ContentDisposition(disposition, name))
 		h.Set("Content-Transfer-Encoding", "binary")
@@ -667,7 +671,7 @@ func (a *App) entryAndRaw(c *Req, isRaw bool) {
 			dst = io.Discard
 		}
 		if !s.git.CatTo(ctx, s.path, s.rev, dst) && !lw.started {
-			for _, k := range []string{"Content-Type", "Content-Disposition", "Content-Transfer-Encoding"} {
+			for _, k := range []string{"Content-Security-Policy", "Content-Type", "Content-Disposition", "Content-Transfer-Encoding"} {
 				h.Del(k)
 			}
 			a.showErrorNotFound(c)
@@ -877,6 +881,7 @@ func (a *App) RepositoriesDiff(c *Req) {
 			filename += "_r" + s.revTo
 		}
 		h := c.W.Header()
+		h.Set("Content-Security-Policy", "default-src 'none'; style-src 'unsafe-inline'; sandbox")
 		h.Set("Content-Type", "text/x-patch")
 		h.Set("Content-Disposition", httpx.ContentDisposition("attachment", filename+".diff"))
 		h.Set("Content-Transfer-Encoding", "binary")
@@ -887,7 +892,7 @@ func (a *App) RepositoriesDiff(c *Req) {
 			dst = io.Discard
 		}
 		if !s.git.DiffTo(ctx, s.path, s.rev, s.revTo, dst) && !lw.started {
-			for _, k := range []string{"Content-Type", "Content-Disposition", "Content-Transfer-Encoding"} {
+			for _, k := range []string{"Content-Security-Policy", "Content-Type", "Content-Disposition", "Content-Transfer-Encoding"} {
 				h.Del(k)
 			}
 			a.showErrorNotFound(c)
