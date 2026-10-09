@@ -11,8 +11,6 @@ binary (`buropher`).
 - Extras: improved LDAP authentication, OIDC SSO (Microsoft Entra ID and others), Discord DM notifications
 - Redmine plugins are not supported
 
-> Under development.
-
 ## Quick start
 
 ### Docker

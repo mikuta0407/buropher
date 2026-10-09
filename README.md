@@ -13,8 +13,6 @@ Buropher is a Redmine-compatible project management web application written in G
 - 追加機能: LDAP 認証の強化、OIDC SSO（Microsoft Entra ID など）、Discord DM 通知
 - Redmine プラグインには非対応
 
-> 開発中です。
-
 ## ドキュメント / Documentation
 
 - [Installation](docs/install.md) — binary, Docker, systemd, reverse proxy, HTTPS, backups
